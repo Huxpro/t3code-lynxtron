@@ -17,7 +17,7 @@
 
 本计划是以下材料的后续执行总纲：
 
-- `/Users/bytedance/github/t3code-lynxtron/docs/PORTING_STRATEGY.md`
+- 原型仓策略文档（已于 2026-07-29 合并进本文件 §9，原文件为一行指针）
 - `apps/lynxtron/docs/plans/00-execution-index.md`
 - `apps/lynxtron/docs/plans/05-fidelity-foundation.md`
 - `apps/lynxtron/docs/plans/06-core-surface-convergence.md`
@@ -519,3 +519,81 @@ composition boundary。
 
 不要继续扩充独立 Lynx 组件，不要先实现 editor/terminal/browser 内核，也不要在
 Sidebar V2 的 async bundle 失败上无限循环。
+
+## 9. 原型仓策略内容合并（2026-07-29）
+
+本节合并自原型仓 `t3code-lynxtron/docs/PORTING_STRATEGY.md`（2026-07-27 撰写，
+该文件已改为指向本文件的一行指针）。与本文件前 8 节或 `apps/lynxtron/docs/`
+冲突处，以本仓为准；§9.3 列出已被取代的条目。
+
+### 9.1 分层架构与共享形态（仍然有效）
+
+```
+Layer 4  App shells        apps/desktop (Electron, 不动) ｜ apps/lynxtron (host+preload+connector)
+Layer 3  Presentation      Component.web.tsx ｜ Component.lynx.tsx  +  生成的 platform CSS
+Layer 2  Shared React      route 定义、hooks、view-models（headless）、state atoms、zustand stores
+Layer 1  Platform 抽象      interfaces（Storage/Connectivity/Clipboard/Bridge/Icons/Fonts/...）
+                           → *.web.ts ｜ *.lynx.ts
+Layer 0  Platform-neutral  packages/{contracts, client-runtime, shared} + apps/web 的纯逻辑模块
+```
+
+判定规则（每个文件只属于一层）：
+
+| 层级 | 判定标准                                  | 例子                                                |
+| ---- | ----------------------------------------- | --------------------------------------------------- |
+| L0   | 不 import DOM/node API，无 JSX            | `composer-logic.ts`, `modelSelection.ts`, contracts |
+| L1   | 定义能力接口 + 平台实现各一               | `platform/storage.ts` → `storage.web.ts`/`storage.lynx.ts` |
+| L2   | 有 hooks/状态但无 JSX 或 JSX 无宿主元素   | route 定义、`useThreadActions`、atom 实例           |
+| L3   | 含宿主元素（div/view）或 DOM 事件         | 所有组件、CSS                                       |
+| L4   | 进程/窗口/桥                              | main.ts、preload.ts、connector.ts                   |
+
+共享粒度的四种形态（按优先级）：
+
+1. **整文件共享** — L0/L1 接口、L2：lynxtron 直接 import upstream 路径；
+2. **提取后共享** — 文件 90% 纯逻辑但碰了 `window`：把 DOM 部分下沉到 L1
+   接口，其余原样共享；
+3. **平台分裂** — `Component.tsx`（共享 view-model + 结构）+
+   `Component.web.tsx` / `Component.lynx.tsx`（宿主元素层）；
+4. **Lynx 专有** — 无 upstream 对应物，放 `apps/lynxtron/src`，命名与
+   upstream 同类物保持平行。
+
+### 9.2 Upstream 跟踪与回捐（仍然有效；2026-07-29 评估 §3-P3 指出尚未启动）
+
+跟踪节奏：
+
+- fork 分支模型：`main` 跟踪 upstream；移植主线为独立分支；移植工作走 PR
+  到该分支。
+- 每周（或 upstream 发版）`merge upstream/main`；由于只允许加法式改动，
+  冲突面理论上限于 `vite.config.ts`、`tsconfig`、被提取重构过的逻辑文件
+  （评估实测当前对 web 既有文件的修改面为 63 文件 / +1423 −2915 行，
+  必须尽快恢复周节奏）。
+- 每次 merge 后必跑：typecheck + upstream 全部单测 + connector smoke +
+  视觉验证链。
+
+回捐候选（按可行性排序）：
+
+1. apps/web 的 platform 接口提取（L1）——对 web/mobile 同样有益的重构；
+2. client-runtime 的小修小补（若探针发现问题）；
+3. 平台扩展名解析模式（若 mobile 未来也想共享 web 组件）；
+4. Lynx runtime issue → lynxjs org（现为 compat-matrix 的 R1–R11；
+   评估 §4-3 要求正式提 issue）。
+
+度量（让 sustainable 可检查）：
+
+- 共享率：lynxtron 构建产物中来自 upstream 路径的代码行占比
+  （目标：L0/L2 ≥ 90%，整体 ≥ 60%）；
+- ledger 覆盖：已对齐组件数 / 总数；
+- upstream diff 面积：fork 相对 upstream 的非新增行数（目标趋近于 0，
+  即只有新增没有修改）。
+
+### 9.3 已被本仓取代的原型仓内容
+
+- **R1–R9 初始 runtime backlog** → 活文档 `apps/lynxtron/docs/compat-matrix.md`
+  （现为 R1–R11，含 owner 与 remove-when）。
+- **CSS 单一 Tailwind 源管线（原 §4.3）** → 被 Tailwind v3 +
+  `@lynx-js/tailwind-preset` 变体取代（决策见 `apps/lynxtron/docs/port-ledger.md`；
+  web 保持 v4）。
+- **M0–M5 里程碑** → 被 T5–T8 阶段计划（`apps/lynxtron/docs/plans/`）取代；
+  进展核实见 `.plans/lynxtron-port-assessment-2026-07-29.md`。
+- **迁移/退役清单（原附录 A）** → 已基本执行完毕；实际 provenance 与退役
+  记录见 `apps/lynxtron/docs/implementation-status.md`。
