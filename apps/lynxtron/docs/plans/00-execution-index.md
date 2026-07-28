@@ -30,6 +30,29 @@ Every screen certification has four independent gates:
 
 Passing one gate does not imply another. In particular, a high style-generation percentage does not certify a screen.
 
+## Certification tiers
+
+The four gate definitions above are unchanged. What changes is when the full
+evidence battery is due (2026-07-29 assessment, §4-4):
+
+- **Slice-level acceptance** — required for every intermediate slice:
+  1. Affected typecheck passes.
+  2. ReactLynx scanner passes.
+  3. One fresh single-viewport (1280 × 820) Lynx DevTool capture with zero
+     renderer errors, its path recorded in the slice notes.
+
+  No dual-viewport pairs and no full state matrix are required at this tier.
+
+- **Phase-exit certification** — required at the T6, T7, and T8 exits:
+  the complete battery — all four gates, both standard viewports
+  (1280 × 820 and 1440 × 900), and the full lifecycle-state set (for example,
+  the eight-state set used for Settings General), with matched Electron/Web ↔
+  Lynx DevTool evidence.
+
+A slice that has only passed slice-level acceptance must not be reported as
+`visual-certified` or `interaction-certified`; those states are granted only
+by the phase-exit battery.
+
 ## Phase sequence
 
 | Phase | Plan                                                                                       | Exit                                                                        |
