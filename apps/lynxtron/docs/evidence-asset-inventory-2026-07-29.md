@@ -106,9 +106,12 @@ Everything excluded is recoverable at any time:
 git restore --source=8d2f45d9c --worktree -- apps/lynxtron/evidence apps/lynxtron/reports
 ```
 
-The snapshot ref is additionally pushed to the fork remote as
-`refs/backup/lynxtron-evidence-2026-07-29` so the full payload is not
-machine-local.
+To make the full payload non-machine-local, additionally push the snapshot
+commit to the fork remote as a backup ref:
+
+```bash
+git push lynxtron 8d2f45d9c:refs/backup/lynxtron-evidence-2026-07-29
+```
 
 ## Decisions needed (user)
 
