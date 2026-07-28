@@ -1,0 +1,16 @@
+{
+  "baseline": "electron-web",
+  "clientName": "@t3tools/lynxtron",
+  "route": "settings-general",
+  "theme": "system",
+  "snapshot": "016f16874aaa6944d189eba0b1a267484dc6ffbd29344d2ecb6721a1f039862e",
+  "screenshot": "evidence/2026-07-28/T5-F5/settings-general/1280x820/restored/lynx.jpg",
+  "dimensions": {
+    "format": "jpeg",
+    "width": 2560,
+    "height": 1640
+  },
+  "capturedAt": "2026-07-27T17:13:02.043Z",
+  "devToolConsoleErrors": 0,
+  "measurements": "evidence/2026-07-28/T5-F5/settings-general/1280x820/restored/lynx.lynx-measurements.json"
+}

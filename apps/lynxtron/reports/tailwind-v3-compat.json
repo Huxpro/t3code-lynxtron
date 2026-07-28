@@ -1,0 +1,94 @@
+{
+  "source": "apps/lynxtron/src/app/tailwind.css",
+  "pipeline": {
+    "tailwind": "v3",
+    "postcss": true,
+    "preset": "@lynx-js/tailwind-preset"
+  },
+  "compatibilityItems": [
+    "R6",
+    "R7",
+    "R9"
+  ],
+  "removedSelectorCount": 40,
+  "removedDeclarationCount": 7,
+  "removedSelectors": [
+    ".\\[\\&\\>span\\:last-child\\]\\:truncate>span:last-child",
+    ".\\[\\&\\>svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-4>svg:not([class*='size-'])",
+    ".\\[\\&_svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-3 svg:not([class*='size-'])",
+    ".active\\:bg-sidebar-row-active:active",
+    ".active\\:text-sidebar-foreground:active",
+    ".after\\:-inset-2::after",
+    ".after\\:absolute::after",
+    ".after\\:inset-y-0::after",
+    ".after\\:left-1\\/2::after",
+    ".after\\:w-\\[2px\\]::after",
+    ".dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]:is(.dark *)",
+    ".dark\\:text-emerald-400:is(.dark *)",
+    ".data-\\[state\\=open\\]\\:hover\\:bg-sidebar-row-hover:hover[data-state=\"open\"]",
+    ".data-\\[state\\=open\\]\\:hover\\:text-sidebar-foreground:hover[data-state=\"open\"]",
+    ".disabled\\:opacity-50:disabled",
+    ".group[data-collapsible=\"offcanvas\"] .group-data-\\[collapsible\\=offcanvas\\]\\:after\\:left-full::after",
+    ".group[data-collapsible=\"offcanvas\"] .hover\\:group-data-\\[collapsible\\=offcanvas\\]\\:bg-sidebar:hover",
+    ".group\\/menu-item:focus-within .group-focus-within\\/menu-item\\:opacity-100",
+    ".group\\/menu-item:hover .group-hover\\/menu-item\\:opacity-100",
+    ".group\\/menu-sub-item:focus-within .group-focus-within\\/menu-sub-item\\:opacity-0",
+    ".group\\/menu-sub-item:focus-within .group-focus-within\\/menu-sub-item\\:opacity-100",
+    ".group\\/menu-sub-item:hover .group-hover\\/menu-sub-item\\:opacity-0",
+    ".group\\/menu-sub-item:hover .group-hover\\/menu-sub-item\\:opacity-100",
+    ".group\\/project-header:focus-within .group-focus-within\\/project-header\\:opacity-0",
+    ".group\\/project-header:focus-within .group-focus-within\\/project-header\\:opacity-100",
+    ".group\\/project-header:focus-within .max-sm\\:group-focus-within\\/project-header\\:opacity-100",
+    ".group\\/project-header:hover .group-hover\\/project-header\\:bg-sidebar-row-hover",
+    ".group\\/project-header:hover .group-hover\\/project-header\\:opacity-0",
+    ".group\\/project-header:hover .group-hover\\/project-header\\:opacity-100",
+    ".group\\/project-header:hover .group-hover\\/project-header\\:text-sidebar-foreground",
+    ".group\\/project-header:hover .max-sm\\:group-hover\\/project-header\\:opacity-100",
+    ".hover\\:after\\:bg-sidebar-border:hover::after",
+    ".hover\\:bg-accent:hover",
+    ".hover\\:bg-sidebar-row-active:hover",
+    ".hover\\:bg-sidebar-row-hover:hover",
+    ".hover\\:text-foreground:hover",
+    ".hover\\:text-primary:hover",
+    ".hover\\:text-sidebar-foreground:hover",
+    ".md\\:after\\:hidden::after",
+    ".peer\\/menu-button:hover ~ .peer-hover\\/menu-button\\:text-sidebar-foreground"
+  ],
+  "removedDeclarations": [
+    {
+      "property": "--skeleton-highlight",
+      "value": "var(--alpha(var(--color-white)/64%))",
+      "selector": ".\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/64\\%\\)\\]"
+    },
+    {
+      "property": "-webkit-app-region",
+      "value": "no-drag",
+      "selector": ".\\[-webkit-app-region\\:no-drag\\]"
+    },
+    {
+      "property": "display",
+      "value": "grid",
+      "selector": ".grid"
+    },
+    {
+      "property": "padding-left",
+      "value": "calc(--spacing(1) - 1px)",
+      "selector": ".px-\\[calc\\(--spacing\\(1\\)-1px\\)\\]"
+    },
+    {
+      "property": "padding-right",
+      "value": "calc(--spacing(1) - 1px)",
+      "selector": ".px-\\[calc\\(--spacing\\(1\\)-1px\\)\\]"
+    },
+    {
+      "property": "width",
+      "value": "calc(var(--sidebar-width-icon) + (--spacing(4)) + 2px)",
+      "selector": ".group[data-collapsible=\"icon\"] .group-data-\\[collapsible\\=icon\\]\\:w-\\[calc\\(var\\(--sidebar-width-icon\\)\\+\\(--spacing\\(4\\)\\)\\+2px\\)\\]"
+    },
+    {
+      "property": "width",
+      "value": "calc(var(--sidebar-width-icon) + (--spacing(4)))",
+      "selector": ".group[data-collapsible=\"icon\"] .group-data-\\[collapsible\\=icon\\]\\:w-\\[calc\\(var\\(--sidebar-width-icon\\)\\+\\(--spacing\\(4\\)\\)\\)\\]"
+    }
+  ]
+}

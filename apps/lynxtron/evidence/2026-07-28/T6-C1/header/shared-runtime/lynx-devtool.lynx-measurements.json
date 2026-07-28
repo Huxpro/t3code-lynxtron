@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "sidebar-populated",
+  "anchors": {
+    "sidebar": {
+      "selector": ".sidebar",
+      "nodeId": 16,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 748
+      },
+      "box": {
+        "width": 255,
+        "height": 748
+      },
+      "text": "Toggle Sidebar T3 Code Search ⌘K Projects ⌄ T3 t3code-lynxtron ＋ New thread Working New thread 2d ago Settings",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "header": {
+      "selector": ".lynx-sidebar-chrome-header",
+      "nodeId": 18,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 52
+      },
+      "box": {
+        "width": 153,
+        "height": 52
+      },
+      "text": "Toggle Sidebar T3 Code",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "brand": {
+      "selector": ".sidebar-brand-code-label",
+      "nodeId": 26,
+      "rect": {
+        "x": 151,
+        "y": 16,
+        "width": 34,
+        "height": 20
+      },
+      "box": {
+        "width": 34,
+        "height": 20
+      },
+      "text": "Code",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(129,129,129)",
+        "fontFamily": "inherit",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "search": {
+      "selector": ".sidebar-search-label",
+      "nodeId": 159,
+      "rect": {
+        "x": 37,
+        "y": 63,
+        "width": 168,
+        "height": 20
+      },
+      "box": {
+        "width": 168,
+        "height": 20
+      },
+      "text": "Search",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "inherit",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "projectsLabel": {
+      "selector": ".sidebar-projects-label",
+      "nodeId": 42,
+      "rect": {
+        "x": 14,
+        "y": 109,
+        "width": 48,
+        "height": 16
+      },
+      "box": {
+        "width": 48,
+        "height": 16
+      },
+      "text": "Projects",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(163,163,163,0.8)",
+        "fontFamily": "inherit",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "16px"
+      }
+    },
+    "projectRow": {
+      "selector": ".sidebar-project-row-reference",
+      "nodeId": 169,
+      "rect": {
+        "x": 7,
+        "y": 133,
+        "width": 241,
+        "height": 32
+      },
+      "box": {
+        "width": 229,
+        "height": 20
+      },
+      "text": "⌄ T3 t3code-lynxtron ＋",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "firstThreadRow": {
+      "selector": ".sidebar-thread-row-reference",
+      "nodeId": 182,
+      "rect": {
+        "x": 17,
+        "y": 165,
+        "width": 229,
+        "height": 32
+      },
+      "box": {
+        "width": 219,
+        "height": 20
+      },
+      "text": "New thread Working",
+      "style": {
+        "backgroundColor": "rgba(241,243,247,0.0666667)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "settings": {
+      "selector": ".sidebar-settings-label",
+      "nodeId": 56,
+      "rect": {
+        "x": 37,
+        "y": 715,
+        "width": 57,
+        "height": 20
+      },
+      "box": {
+        "width": 57,
+        "height": 20
+      },
+      "text": "Settings",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "inherit",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": "20px"
+      }
+    }
+  },
+  "typography": {
+    "brand": {
+      "selector": ".sidebar-brand",
+      "nodeId": 24,
+      "rect": {
+        "x": 130,
+        "y": 12,
+        "width": 55,
+        "height": 28
+      },
+      "box": {
+        "width": 54.5,
+        "height": 28
+      },
+      "text": "T3 Code",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(255,255,255,0.917647)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "search": {
+      "selector": ".sidebar-search-anchor",
+      "nodeId": 33,
+      "rect": {
+        "x": 7,
+        "y": 59,
+        "width": 241,
+        "height": 32
+      },
+      "box": {
+        "width": 241,
+        "height": 32
+      },
+      "text": "Search ⌘K",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "projectsLabel": {
+      "selector": ".sidebar-projects-label",
+      "nodeId": 42,
+      "rect": {
+        "x": 14,
+        "y": 109,
+        "width": 48,
+        "height": 16
+      },
+      "box": {
+        "width": 48,
+        "height": 16
+      },
+      "text": "Projects",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(163,163,163,0.8)",
+        "fontFamily": "inherit",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "16px"
+      }
+    },
+    "projectTitle": {
+      "selector": ".sidebar-project-title-reference",
+      "nodeId": 173,
+      "rect": {
+        "x": 59,
+        "y": 140,
+        "width": 159,
+        "height": 18
+      },
+      "box": {
+        "width": 159,
+        "height": 18
+      },
+      "text": "t3code-lynxtron",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(241,243,247,0.898039)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "18px"
+      }
+    },
+    "threadTitle": {
+      "selector": ".sidebar-thread-title-reference",
+      "nodeId": 183,
+      "rect": {
+        "x": 25,
+        "y": 171,
+        "width": 175,
+        "height": 20
+      },
+      "box": {
+        "width": 175,
+        "height": 20
+      },
+      "text": "New thread",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "settings": {
+      "selector": ".sidebar-settings-row",
+      "nodeId": 54,
+      "rect": {
+        "x": 7,
+        "y": 709,
+        "width": 241,
+        "height": 32
+      },
+      "box": {
+        "width": 227,
+        "height": 21.5
+      },
+      "text": "Settings",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(163,163,163,0.8)",
+        "fontFamily": "",
+        "fontSize": "12.25px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "selector": ".chat-view-surface-reference",
+      "nodeId": 58,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 924,
+        "height": 748
+      },
+      "box": {
+        "width": 924,
+        "height": 748
+      },
+      "text": "T3 t3code-lynxtron / New thread Add action Open Commit Say hello in exactly 3 words. ● Running GPT-5.6-Sol Reasoning · Low Full access Build Local checkout No branch",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sidebarBackground": {
+      "selector": ".sidebar",
+      "nodeId": 16,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 748
+      },
+      "box": {
+        "width": 255,
+        "height": 748
+      },
+      "text": "Toggle Sidebar T3 Code Search ⌘K Projects ⌄ T3 t3code-lynxtron ＋ New thread Working New thread 2d ago Settings",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "projectRow": {
+      "selector": ".sidebar-project-title-reference",
+      "nodeId": 173,
+      "rect": {
+        "x": 59,
+        "y": 140,
+        "width": 159,
+        "height": 18
+      },
+      "box": {
+        "width": 159,
+        "height": 18
+      },
+      "text": "t3code-lynxtron",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(241,243,247,0.898039)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "18px"
+      }
+    }
+  }
+}

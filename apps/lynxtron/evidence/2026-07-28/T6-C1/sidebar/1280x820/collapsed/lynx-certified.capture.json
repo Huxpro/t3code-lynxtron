@@ -1,0 +1,18 @@
+{
+  "baseline": "electron-web",
+  "clientName": "@t3tools/lynxtron",
+  "route": "sidebar-populated",
+  "theme": "dark",
+  "snapshot": "fb23360ff7a7f4b4ab501ee7875d70a39a77bc8f5fb267c9b319686fce095c79",
+  "interactionState": "sidebar-collapsed",
+  "screenshot": "evidence/2026-07-28/T6-C1/sidebar/1280x820/collapsed/lynx-certified.jpg",
+  "dimensions": {
+    "format": "jpeg",
+    "width": 2560,
+    "height": 1640
+  },
+  "capturedAt": "2026-07-28T14:33:54.002Z",
+  "reusedScreenshot": false,
+  "devToolConsoleErrors": 0,
+  "measurements": "evidence/2026-07-28/T6-C1/sidebar/1280x820/collapsed/lynx-certified.lynx-measurements.json"
+}

@@ -1,0 +1,18 @@
+{
+  "baseline": "electron-web",
+  "clientName": "@t3tools/lynxtron",
+  "route": "sidebar-actions",
+  "theme": "dark",
+  "snapshot": "50cc0d02d0a8698497a0c13b910f6e11cb3a55206ff88aefc0341698ada92192",
+  "interactionState": "none",
+  "screenshot": "evidence/2026-07-28/T6-C1/sidebar/actions-runtime/after-fixed-settled.jpg",
+  "dimensions": {
+    "format": "jpeg",
+    "width": 2560,
+    "height": 1640
+  },
+  "capturedAt": "2026-07-28T16:04:24.104Z",
+  "reusedScreenshot": false,
+  "devToolConsoleErrors": 0,
+  "measurements": "evidence/2026-07-28/T6-C1/sidebar/actions-runtime/after-fixed-settled.lynx-measurements.json"
+}

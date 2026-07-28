@@ -1,0 +1,374 @@
+{
+  "status": "measured",
+  "route": "new-thread",
+  "viewport": {
+    "logicalWidth": 1280,
+    "logicalHeight": 820,
+    "deviceScaleFactor": 2,
+    "imageWidth": 2560,
+    "imageHeight": 1640
+  },
+  "captures": {
+    "web": {
+      "file": "/tmp/t3code-f3-captures/1280x820/electron.png",
+      "sha256": "b91e3db4ef8e1a21487713a866894e415bc1f315bfd122db7b599e8a4e495087",
+      "rendererErrors": 0
+    },
+    "lynx": {
+      "file": "../../../../../../../../tmp/t3code-f3-captures/1280x820/lynx.jpg",
+      "sha256": "fe20a5bbca0831a63ece5f5cfd2eae298ca1e3ed32e1b428b635e9394f2b3627",
+      "devToolConsoleErrors": 0
+    }
+  },
+  "schemaVersion": 1,
+  "thresholds": {
+    "anchorMaxAbsPx": 8,
+    "correspondingFontSizeMaxAbsPx": 2
+  },
+  "coordinateSystem": {
+    "web": "logical CSS pixels",
+    "lynxRaw": "Lynx DevTool box-model units",
+    "lynxCoordinateScale": 1,
+    "deviceScaleFactor": 2
+  },
+  "anchors": {
+    "sidebar": {
+      "web": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 820
+      },
+      "lynxRaw": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "lynx": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 1,
+        "height": 0,
+        "maxAbs": 1
+      },
+      "pass": true,
+      "text": {
+        "web": "Code Search ⌘K Projects t3code No threads yet Settings",
+        "lynx": "Code Search ⌘K Projects T3 t3code No threads yet Settings",
+        "exact": false
+      }
+    },
+    "workspaceHeader": {
+      "web": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "lynxRaw": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "lynx": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "maxAbs": 0
+      },
+      "pass": true,
+      "text": {
+        "web": "t3code / New thread Add action Open Commit",
+        "lynx": "T3 t3code / New thread Add action Open Commit & push",
+        "exact": false
+      }
+    },
+    "headline": {
+      "web": {
+        "x": 276,
+        "y": 271,
+        "width": 984,
+        "height": 37
+      },
+      "lynxRaw": {
+        "x": 384,
+        "y": 283,
+        "width": 768,
+        "height": 68
+      },
+      "lynx": {
+        "x": 384,
+        "y": 283,
+        "width": 768,
+        "height": 68
+      },
+      "delta": {
+        "x": 108,
+        "y": 12,
+        "width": -216,
+        "height": 31,
+        "maxAbs": 216
+      },
+      "pass": false,
+      "text": {
+        "web": "What should we build in t3code?",
+        "lynx": "[object Object] [object Object]",
+        "exact": false
+      }
+    },
+    "composer": {
+      "web": {
+        "x": 384,
+        "y": 340,
+        "width": 768,
+        "height": 172
+      },
+      "lynxRaw": {
+        "x": 384,
+        "y": 351,
+        "width": 768,
+        "height": 170
+      },
+      "lynx": {
+        "x": 384,
+        "y": 351,
+        "width": 768,
+        "height": 170
+      },
+      "delta": {
+        "x": 0,
+        "y": 11,
+        "width": 0,
+        "height": -2,
+        "maxAbs": 11
+      },
+      "pass": false,
+      "text": {
+        "web": "Ask for follow-up changes or attach images GPT-5.6-Sol Low · Standard Full access Build Current checkout Select ref",
+        "lynx": "Claude Fable 5 Reasoning · High Full access Build Local checkout No branch",
+        "exact": false
+      }
+    },
+    "checkoutBar": {
+      "web": {
+        "x": 406,
+        "y": 464,
+        "width": 724,
+        "height": 48
+      },
+      "lynxRaw": {
+        "x": 396,
+        "y": 473,
+        "width": 744,
+        "height": 48
+      },
+      "lynx": {
+        "x": 396,
+        "y": 473,
+        "width": 744,
+        "height": 48
+      },
+      "delta": {
+        "x": -10,
+        "y": 9,
+        "width": 20,
+        "height": 0,
+        "maxAbs": 20
+      },
+      "pass": false,
+      "text": {
+        "web": "Current checkout Select ref",
+        "lynx": "Local checkout No branch",
+        "exact": false
+      }
+    }
+  },
+  "typography": {
+    "brand": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.999994 0.0000455677 0.0000200868 / 0.7)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(255,255,255,0.698039)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": ""
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "Code",
+        "lynx": "Code",
+        "exact": true
+      }
+    },
+    "headline": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "30px",
+        "fontWeight": "400",
+        "lineHeight": "36px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "30px",
+        "fontWeight": "400",
+        "lineHeight": "36px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "What should we build in t3code?",
+        "lynx": "[object Object] [object Object]",
+        "exact": false
+      }
+    },
+    "composerPlaceholder": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "22.75px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": "23px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "",
+        "lynx": "",
+        "exact": true
+      }
+    },
+    "composerControl": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.603664 0.00000521541 0.00000223517 / 0.7)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(129,129,129,0.698039)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": ""
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "GPT-5.6-Sol",
+        "lynx": "[object Object]",
+        "exact": false
+      }
+    },
+    "sidebarRow": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.715469 0.0000326335 0.0000143051 / 0.8)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(241,243,247,0.898039)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": ""
+      },
+      "fontSizeDelta": 2,
+      "pass": true,
+      "text": {
+        "web": "Search ⌘K",
+        "lynx": "[object Object]",
+        "exact": false
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "web": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "rgb(245, 245, 245)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)"
+      },
+      "exact": false
+    },
+    "sidebarBackground": {
+      "web": {
+        "backgroundColor": "rgb(0, 0, 0)",
+        "color": "rgb(241, 243, 247)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(0,0,0)"
+      },
+      "exact": false
+    },
+    "composerBackground": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(18,18,18)",
+        "color": "rgb(0,0,0)"
+      },
+      "exact": false
+    }
+  },
+  "summary": {
+    "anchorsPassing": 2,
+    "anchorsTotal": 5,
+    "typographyPassing": 5,
+    "typographyTotal": 5,
+    "exactAnchorText": 0,
+    "exactAnchorTextTotal": 5,
+    "exactColors": 0,
+    "exactColorsTotal": 3
+  },
+  "masks": []
+}

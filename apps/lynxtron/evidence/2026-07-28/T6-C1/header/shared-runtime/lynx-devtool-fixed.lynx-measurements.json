@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "header-shared-runtime",
+  "anchors": {
+    "header": {
+      "selector": ".chat-header-reference",
+      "nodeId": 63,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 924,
+        "height": 52
+      },
+      "box": {
+        "width": 884,
+        "height": 52
+      },
+      "text": "T3 t3code-lynxtron / New thread Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "projectIcon": {
+      "selector": ".chat-header-project-icon-reference",
+      "nodeId": 68,
+      "rect": {
+        "x": 276,
+        "y": 20,
+        "width": 14,
+        "height": 14
+      },
+      "box": {
+        "width": 14,
+        "height": 14
+      },
+      "text": "T3",
+      "style": {
+        "backgroundColor": "rgb(54,111,251)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "projectName": {
+      "selector": ".chat-header-project-name-reference",
+      "nodeId": 70,
+      "rect": {
+        "x": 304,
+        "y": 18,
+        "width": 106,
+        "height": 18
+      },
+      "box": {
+        "width": 106,
+        "height": 18
+      },
+      "text": "t3code-lynxtron",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(129,129,129)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "threadTitle": {
+      "selector": ".chat-header-thread-title-reference",
+      "nodeId": 74,
+      "rect": {
+        "x": 445,
+        "y": 18,
+        "width": 284,
+        "height": 18
+      },
+      "box": {
+        "width": 283.75,
+        "height": 18
+      },
+      "text": "New thread",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "actions": {
+      "selector": "[data-chat-header-actions]",
+      "nodeId": 76,
+      "rect": {
+        "x": 735,
+        "y": 12,
+        "width": 425,
+        "height": 28
+      },
+      "box": {
+        "width": 425,
+        "height": 28
+      },
+      "text": "Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {
+    "projectName": {
+      "selector": ".chat-header-project-name-reference",
+      "nodeId": 70,
+      "rect": {
+        "x": 304,
+        "y": 18,
+        "width": 106,
+        "height": 18
+      },
+      "box": {
+        "width": 106,
+        "height": 18
+      },
+      "text": "t3code-lynxtron",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(129,129,129)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "threadTitle": {
+      "selector": ".chat-header-thread-title-reference",
+      "nodeId": 74,
+      "rect": {
+        "x": 445,
+        "y": 18,
+        "width": 284,
+        "height": 18
+      },
+      "box": {
+        "width": 283.75,
+        "height": 18
+      },
+      "text": "New thread",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    }
+  },
+  "colors": {
+    "headerBackground": {
+      "selector": ".chat-header-reference",
+      "nodeId": 63,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 924,
+        "height": 52
+      },
+      "box": {
+        "width": 884,
+        "height": 52
+      },
+      "text": "T3 t3code-lynxtron / New thread Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "projectName": {
+      "selector": ".chat-header-project-name-reference",
+      "nodeId": 70,
+      "rect": {
+        "x": 304,
+        "y": 18,
+        "width": 106,
+        "height": 18
+      },
+      "box": {
+        "width": 106,
+        "height": 18
+      },
+      "text": "t3code-lynxtron",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(129,129,129)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "threadTitle": {
+      "selector": ".chat-header-thread-title-reference",
+      "nodeId": 74,
+      "rect": {
+        "x": 445,
+        "y": 18,
+        "width": 284,
+        "height": 18
+      },
+      "box": {
+        "width": 283.75,
+        "height": 18
+      },
+      "text": "New thread",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    }
+  }
+}

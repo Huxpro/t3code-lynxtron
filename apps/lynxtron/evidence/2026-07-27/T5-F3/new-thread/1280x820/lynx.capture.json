@@ -1,0 +1,16 @@
+{
+  "baseline": "electron-web",
+  "clientName": "@t3tools/lynxtron",
+  "route": "new-thread",
+  "theme": "dark",
+  "snapshot": "f4b2fd37a9fce85b4efb8abf4c01543ea8655f64fc26bc0f9e4ca0bc7148b4a8",
+  "screenshot": "../../../../../../../../tmp/t3code-f3-captures/1280x820/lynx.jpg",
+  "dimensions": {
+    "format": "jpeg",
+    "width": 2560,
+    "height": 1640
+  },
+  "capturedAt": "2026-07-27T14:28:48.004Z",
+  "devToolConsoleErrors": 0,
+  "measurements": "../../../../../../../../tmp/t3code-f3-captures/1280x820/lynx.lynx-measurements.json"
+}

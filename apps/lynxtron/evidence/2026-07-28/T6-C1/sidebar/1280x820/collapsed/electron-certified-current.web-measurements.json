@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "source": "electron-cdp",
+  "route": "sidebar-collapsed",
+  "anchors": {
+    "appSurface": {
+      "selector": ".chat-view-surface-reference",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 820
+      },
+      "text": "t3code\n/\nFinish the in-monorepo Lynxtron UI migration\nAdd action\nOpen\nCommit\n\nSend a message to start the conversation.\n\n\n\n\nAsk for follow-up changes or attach images\nClaude Fable 5\nHigh · 1M\nFull access\nBuild\nCurrent checkout\nSelect ref",
+      "style": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "header": {
+      "selector": ".chat-header-reference",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 52
+      },
+      "text": "t3code\n/\nFinish the in-monorepo Lynxtron UI migration\nAdd action\nOpen\nCommit",
+      "style": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "toggle": {
+      "selector": ".sidebar-global-toggle",
+      "rect": {
+        "x": 90,
+        "y": 12,
+        "width": 28,
+        "height": 28
+      },
+      "text": "Toggle Sidebar",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "projectIcon": {
+      "selector": ".chat-header-project-icon-reference",
+      "rect": {
+        "x": 130,
+        "y": 19,
+        "width": 14,
+        "height": 14
+      },
+      "text": "",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "projectName": {
+      "selector": ".chat-header-project-name-reference",
+      "rect": {
+        "x": 150,
+        "y": 16,
+        "width": 47.5390625,
+        "height": 20
+      },
+      "text": "t3code",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "color(srgb 0.506311 0.50639 0.506398)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "threadTitle": {
+      "selector": ".chat-header-thread-title-reference",
+      "rect": {
+        "x": 223.8125,
+        "y": 16,
+        "width": 639.953125,
+        "height": 20
+      },
+      "text": "Finish the in-monorepo Lynxtron UI migration",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    }
+  },
+  "typography": {
+    "projectName": {
+      "selector": ".chat-header-project-name-reference",
+      "rect": {
+        "x": 150,
+        "y": 16,
+        "width": 47.5390625,
+        "height": 20
+      },
+      "text": "t3code",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "color(srgb 0.506311 0.50639 0.506398)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "threadTitle": {
+      "selector": ".chat-header-thread-title-reference",
+      "rect": {
+        "x": 223.8125,
+        "y": 16,
+        "width": 639.953125,
+        "height": 20
+      },
+      "text": "Finish the in-monorepo Lynxtron UI migration",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "selector": ".chat-view-surface-reference",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 820
+      },
+      "text": "t3code\n/\nFinish the in-monorepo Lynxtron UI migration\nAdd action\nOpen\nCommit\n\nSend a message to start the conversation.\n\n\n\n\nAsk for follow-up changes or attach images\nClaude Fable 5\nHigh · 1M\nFull access\nBuild\nCurrent checkout\nSelect ref",
+      "style": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "headerBackground": {
+      "selector": ".chat-header-reference",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 52
+      },
+      "text": "t3code\n/\nFinish the in-monorepo Lynxtron UI migration\nAdd action\nOpen\nCommit",
+      "style": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    }
+  }
+}
