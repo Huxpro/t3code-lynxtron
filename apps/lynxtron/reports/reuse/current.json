@@ -148,15 +148,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 222,
+            "EXCLUSIVE": 224,
             "PATCHED": 0,
             "SHARED": 88,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66459,
-            "modules": 317
+            "lines": 67225,
+            "modules": 319
           },
           "largestNonShared": [
             {
@@ -166,7 +166,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -176,8 +176,8 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -1843,7 +1843,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 28781,
+            "eligibleLines": 28802,
             "eligibleModules": 154,
             "modulesOnlyInLynx": [
               {
@@ -1898,7 +1898,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -1923,7 +1923,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -1968,7 +1968,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -1993,7 +1993,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -2033,7 +2033,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -2053,7 +2053,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -2188,8 +2188,8 @@
             "modules": 88
           },
           "reusePercent": {
-            "lines": 36.4,
-            "modules": 27.8
+            "lines": 36,
+            "modules": 27.6
           },
           "web": {
             "edges": [
@@ -3209,6 +3209,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -3425,6 +3455,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -3440,11 +3475,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -3452,16 +3482,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -4555,6 +4575,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -5507,6 +5532,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -7076,6 +7106,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -7092,7 +7127,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -7517,7 +7552,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -7909,6 +7944,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -8471,15 +8511,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 215,
+            "EXCLUSIVE": 216,
             "PATCHED": 0,
             "SHARED": 86,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 62876,
-            "modules": 308
+            "lines": 63531,
+            "modules": 309
           },
           "largestNonShared": [
             {
@@ -8494,8 +8534,8 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -8554,8 +8594,8 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 583,
-              "path": "apps/web/src/hooks/useThreadActions.ts"
+              "lines": 589,
+              "path": "apps/lynxtron/src/app/state/t3Client.ts"
             }
           ],
           "lynx": {
@@ -10051,7 +10091,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 27925,
+            "eligibleLines": 27946,
             "eligibleModules": 148,
             "modulesOnlyInLynx": [
               {
@@ -10106,7 +10146,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -10121,7 +10161,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -10161,7 +10201,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -10186,7 +10226,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -10226,7 +10266,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -10246,7 +10286,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -10376,8 +10416,8 @@
             "modules": 86
           },
           "reusePercent": {
-            "lines": 38,
-            "modules": 27.9
+            "lines": 37.6,
+            "modules": 27.8
           },
           "web": {
             "edges": [
@@ -12363,6 +12403,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -13315,6 +13360,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -15280,7 +15330,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -15672,6 +15722,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -16233,20 +16288,20 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 243,
+            "EXCLUSIVE": 244,
             "PATCHED": 0,
-            "SHARED": 92,
+            "SHARED": 93,
             "SPLIT": 8
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 71006,
-            "modules": 343
+            "lines": 71772,
+            "modules": 345
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 3776,
+              "lines": 3845,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -16256,18 +16311,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
               "classification": "EXCLUSIVE",
               "lines": 2094,
               "path": "apps/web/src/components/CommandPalette.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -16318,6 +16368,11 @@
               "classification": "EXCLUSIVE",
               "lines": 599,
               "path": "packages/client-runtime/src/presentation/markdown.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 595,
+              "path": "packages/client-runtime/src/state/threadReducer.ts"
             }
           ],
           "lynx": {
@@ -16474,8 +16529,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/OtherSettings.tsx",
@@ -17783,6 +17848,11 @@
                 "to": "packages/shared/src/sourceControl.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/state/projectGrouping.ts",
                 "request": "../environment/scoped.ts",
                 "to": "packages/client-runtime/src/environment/scoped.ts"
@@ -18348,8 +18418,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 38288,
-            "eligibleModules": 192,
+            "eligibleLines": 40211,
+            "eligibleModules": 193,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -18363,7 +18433,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -18408,7 +18478,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -18458,7 +18528,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3776,
+                "lines": 3845,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -18493,7 +18563,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -18533,7 +18603,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -18613,7 +18683,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -18638,7 +18708,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -18683,7 +18753,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -18703,7 +18773,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -18856,12 +18926,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 24880,
-            "modules": 92
+            "lines": 26466,
+            "modules": 93
           },
           "reusePercent": {
-            "lines": 35,
-            "modules": 26.8
+            "lines": 36.9,
+            "modules": 27
           },
           "web": {
             "edges": [
@@ -20336,6 +20406,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -20552,6 +20652,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -20567,11 +20672,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -20579,16 +20679,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -22032,6 +22122,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -22939,6 +23034,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -24573,6 +24673,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -24589,7 +24694,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -25069,7 +25174,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -25461,6 +25566,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -26020,15 +26130,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 338,
+            "EXCLUSIVE": 339,
             "PATCHED": 0,
-            "SHARED": 97,
+            "SHARED": 98,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97344,
-            "modules": 442
+            "lines": 97623,
+            "modules": 444
           },
           "largestNonShared": [
             {
@@ -26048,7 +26158,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -26065,11 +26175,6 @@
               "classification": "EXCLUSIVE",
               "lines": 1467,
               "path": "apps/web/src/components/ChatMarkdown.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -26105,6 +26210,11 @@
               "classification": "EXCLUSIVE",
               "lines": 730,
               "path": "packages/client-runtime/src/connection/supervisor.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 698,
+              "path": "apps/web/src/components/Icons.tsx"
             }
           ],
           "lynx": {
@@ -26216,8 +26326,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -27285,6 +27405,11 @@
                 "to": "packages/shared/src/sourceControl.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/state/projectGrouping.ts",
                 "request": "../environment/scoped.ts",
                 "to": "packages/client-runtime/src/environment/scoped.ts"
@@ -27850,8 +27975,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32051,
-            "eligibleModules": 170,
+            "eligibleLines": 33905,
+            "eligibleModules": 171,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -27865,7 +27990,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -27895,7 +28020,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -27945,7 +28070,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -27970,7 +28095,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -28015,7 +28140,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -28040,7 +28165,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -28080,7 +28205,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -28100,7 +28225,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -28226,12 +28351,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26047,
-            "modules": 97
+            "lines": 27633,
+            "modules": 98
           },
           "reusePercent": {
-            "lines": 26.8,
-            "modules": 21.9
+            "lines": 28.3,
+            "modules": 22.1
           },
           "web": {
             "edges": [
@@ -29142,8 +29267,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -31676,6 +31801,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -31892,6 +32047,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -31907,11 +32067,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -31919,16 +32074,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -33207,6 +33352,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -34224,6 +34374,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -35834,7 +35989,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -36138,6 +36293,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -36154,7 +36314,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -36769,7 +36929,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -37211,6 +37371,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -37825,13 +37990,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 394,
             "PATCHED": 0,
-            "SHARED": 16,
+            "SHARED": 17,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 87239,
-            "modules": 410
+            "lines": 87407,
+            "modules": 411
           },
           "largestNonShared": [
             {
@@ -37872,11 +38037,6 @@
             {
               "classification": "EXCLUSIVE",
               "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
               "path": "packages/contracts/src/ipc.ts"
             },
             {
@@ -37908,6 +38068,11 @@
               "classification": "EXCLUSIVE",
               "lines": 923,
               "path": "packages/client-runtime/src/relay/managedRelay.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 881,
+              "path": "packages/contracts/src/previewAutomation.ts"
             }
           ],
           "lynx": {
@@ -38019,8 +38184,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -38146,10 +38321,15 @@
                 "from": "packages/client-runtime/src/presentation/settings.ts",
                 "request": "@t3tools/contracts/settings-defaults",
                 "to": "packages/contracts/src/settingsDefaults.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 6111,
-            "eligibleModules": 35,
+            "eligibleLines": 7959,
+            "eligibleModules": 36,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -38158,7 +38338,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -38188,7 +38368,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -38228,7 +38408,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -38251,12 +38431,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 3012,
-            "modules": 16
+            "lines": 4598,
+            "modules": 17
           },
           "reusePercent": {
-            "lines": 3.5,
-            "modules": 3.9
+            "lines": 5.3,
+            "modules": 4.1
           },
           "web": {
             "edges": [
@@ -39102,8 +39282,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -42252,6 +42432,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -43269,6 +43454,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -44869,7 +45059,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -45674,7 +45864,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -46096,6 +46286,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -46704,15 +46899,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 379,
+            "EXCLUSIVE": 380,
             "PATCHED": 0,
-            "SHARED": 98,
+            "SHARED": 99,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 105710,
-            "modules": 484
+            "lines": 105989,
+            "modules": 486
           },
           "largestNonShared": [
             {
@@ -46732,7 +46927,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -46754,11 +46949,6 @@
               "classification": "EXCLUSIVE",
               "lines": 1467,
               "path": "apps/web/src/components/ChatMarkdown.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -46789,6 +46979,11 @@
               "classification": "EXCLUSIVE",
               "lines": 813,
               "path": "apps/web/src/components/ui/toast.tsx"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 730,
+              "path": "packages/client-runtime/src/connection/supervisor.ts"
             }
           ],
           "lynx": {
@@ -46900,8 +47095,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -47979,6 +48184,11 @@
                 "to": "packages/shared/src/sourceControl.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/state/projectGrouping.ts",
                 "request": "../environment/scoped.ts",
                 "to": "packages/client-runtime/src/environment/scoped.ts"
@@ -48544,8 +48754,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32092,
-            "eligibleModules": 173,
+            "eligibleLines": 33946,
+            "eligibleModules": 174,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -48559,7 +48769,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -48589,7 +48799,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -48654,7 +48864,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -48679,7 +48889,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -48724,7 +48934,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -48749,7 +48959,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -48789,7 +48999,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -48809,7 +49019,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -48931,12 +49141,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26294,
-            "modules": 98
+            "lines": 27880,
+            "modules": 99
           },
           "reusePercent": {
-            "lines": 24.9,
-            "modules": 20.2
+            "lines": 26.3,
+            "modules": 20.4
           },
           "web": {
             "edges": [
@@ -49967,8 +50177,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -53126,6 +53336,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -53342,6 +53582,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -53357,11 +53602,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -53369,16 +53609,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -55047,6 +55277,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -56079,6 +56314,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -57729,7 +57969,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -58128,6 +58368,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -58144,7 +58389,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -58819,7 +59064,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -59281,6 +59526,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -59904,15 +60154,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 338,
+            "EXCLUSIVE": 339,
             "PATCHED": 0,
-            "SHARED": 97,
+            "SHARED": 98,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97344,
-            "modules": 442
+            "lines": 97623,
+            "modules": 444
           },
           "largestNonShared": [
             {
@@ -59932,7 +60182,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -59949,11 +60199,6 @@
               "classification": "EXCLUSIVE",
               "lines": 1467,
               "path": "apps/web/src/components/ChatMarkdown.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -59989,6 +60234,11 @@
               "classification": "EXCLUSIVE",
               "lines": 730,
               "path": "packages/client-runtime/src/connection/supervisor.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 698,
+              "path": "apps/web/src/components/Icons.tsx"
             }
           ],
           "lynx": {
@@ -60100,8 +60350,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -61169,6 +61429,11 @@
                 "to": "packages/shared/src/sourceControl.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/state/projectGrouping.ts",
                 "request": "../environment/scoped.ts",
                 "to": "packages/client-runtime/src/environment/scoped.ts"
@@ -61734,8 +61999,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32051,
-            "eligibleModules": 170,
+            "eligibleLines": 33905,
+            "eligibleModules": 171,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -61749,7 +62014,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -61779,7 +62044,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -61829,7 +62094,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -61854,7 +62119,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -61899,7 +62164,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -61924,7 +62189,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -61964,7 +62229,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -61984,7 +62249,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -62110,12 +62375,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26047,
-            "modules": 97
+            "lines": 27633,
+            "modules": 98
           },
           "reusePercent": {
-            "lines": 26.8,
-            "modules": 21.9
+            "lines": 28.3,
+            "modules": 22.1
           },
           "web": {
             "edges": [
@@ -63026,8 +63291,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -65560,6 +65825,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -65776,6 +66071,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -65791,11 +66091,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -65803,16 +66098,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -67091,6 +67376,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -68108,6 +68398,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -69718,7 +70013,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -70022,6 +70317,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -70038,7 +70338,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -70653,7 +70953,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -71095,6 +71395,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -71709,13 +72014,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 394,
             "PATCHED": 0,
-            "SHARED": 16,
+            "SHARED": 17,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 87239,
-            "modules": 410
+            "lines": 87407,
+            "modules": 411
           },
           "largestNonShared": [
             {
@@ -71756,11 +72061,6 @@
             {
               "classification": "EXCLUSIVE",
               "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
               "path": "packages/contracts/src/ipc.ts"
             },
             {
@@ -71792,6 +72092,11 @@
               "classification": "EXCLUSIVE",
               "lines": 923,
               "path": "packages/client-runtime/src/relay/managedRelay.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 881,
+              "path": "packages/contracts/src/previewAutomation.ts"
             }
           ],
           "lynx": {
@@ -71903,8 +72208,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -72030,10 +72345,15 @@
                 "from": "packages/client-runtime/src/presentation/settings.ts",
                 "request": "@t3tools/contracts/settings-defaults",
                 "to": "packages/contracts/src/settingsDefaults.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 6111,
-            "eligibleModules": 35,
+            "eligibleLines": 7959,
+            "eligibleModules": 36,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -72042,7 +72362,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -72072,7 +72392,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -72112,7 +72432,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -72138,12 +72458,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 3012,
-            "modules": 16
+            "lines": 4598,
+            "modules": 17
           },
           "reusePercent": {
-            "lines": 3.5,
-            "modules": 3.9
+            "lines": 5.3,
+            "modules": 4.1
           },
           "web": {
             "edges": [
@@ -72989,8 +73309,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -76139,6 +76459,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -77156,6 +77481,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -78756,7 +79086,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -79561,7 +79891,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -79983,6 +80313,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -80594,15 +80929,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 379,
+            "EXCLUSIVE": 380,
             "PATCHED": 0,
-            "SHARED": 98,
+            "SHARED": 99,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 105710,
-            "modules": 484
+            "lines": 105989,
+            "modules": 486
           },
           "largestNonShared": [
             {
@@ -80622,7 +80957,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -80644,11 +80979,6 @@
               "classification": "EXCLUSIVE",
               "lines": 1467,
               "path": "apps/web/src/components/ChatMarkdown.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -80679,6 +81009,11 @@
               "classification": "EXCLUSIVE",
               "lines": 813,
               "path": "apps/web/src/components/ui/toast.tsx"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 730,
+              "path": "packages/client-runtime/src/connection/supervisor.ts"
             }
           ],
           "lynx": {
@@ -80790,8 +81125,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -81869,6 +82214,11 @@
                 "to": "packages/shared/src/sourceControl.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/state/projectGrouping.ts",
                 "request": "../environment/scoped.ts",
                 "to": "packages/client-runtime/src/environment/scoped.ts"
@@ -82434,8 +82784,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32092,
-            "eligibleModules": 173,
+            "eligibleLines": 33946,
+            "eligibleModules": 174,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -82449,7 +82799,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -82479,7 +82829,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -82544,7 +82894,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -82569,7 +82919,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -82614,7 +82964,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -82639,7 +82989,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -82679,7 +83029,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -82699,7 +83049,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -82821,12 +83171,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26294,
-            "modules": 98
+            "lines": 27880,
+            "modules": 99
           },
           "reusePercent": {
-            "lines": 24.9,
-            "modules": 20.2
+            "lines": 26.3,
+            "modules": 20.4
           },
           "web": {
             "edges": [
@@ -83857,8 +84207,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -87016,6 +87366,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -87232,6 +87612,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -87247,11 +87632,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -87259,16 +87639,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -88942,6 +89312,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -89974,6 +90349,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -91624,7 +92004,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -92023,6 +92403,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -92039,7 +92424,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -92714,7 +93099,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -93176,6 +93561,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -93801,13 +94191,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 394,
             "PATCHED": 0,
-            "SHARED": 16,
+            "SHARED": 17,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 87239,
-            "modules": 410
+            "lines": 87407,
+            "modules": 411
           },
           "largestNonShared": [
             {
@@ -93848,11 +94238,6 @@
             {
               "classification": "EXCLUSIVE",
               "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
               "path": "packages/contracts/src/ipc.ts"
             },
             {
@@ -93884,6 +94269,11 @@
               "classification": "EXCLUSIVE",
               "lines": 923,
               "path": "packages/client-runtime/src/relay/managedRelay.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 881,
+              "path": "packages/contracts/src/previewAutomation.ts"
             }
           ],
           "lynx": {
@@ -93995,8 +94385,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -94122,10 +94522,15 @@
                 "from": "packages/client-runtime/src/presentation/settings.ts",
                 "request": "@t3tools/contracts/settings-defaults",
                 "to": "packages/contracts/src/settingsDefaults.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 6111,
-            "eligibleModules": 35,
+            "eligibleLines": 7959,
+            "eligibleModules": 36,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -94134,7 +94539,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -94164,7 +94569,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -94204,7 +94609,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -94230,12 +94635,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 3012,
-            "modules": 16
+            "lines": 4598,
+            "modules": 17
           },
           "reusePercent": {
-            "lines": 3.5,
-            "modules": 3.9
+            "lines": 5.3,
+            "modules": 4.1
           },
           "web": {
             "edges": [
@@ -95081,8 +95486,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -98231,6 +98636,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -99248,6 +99658,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -100848,7 +101263,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -101653,7 +102068,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -102075,6 +102490,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -102686,15 +103106,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 253,
+            "EXCLUSIVE": 254,
             "PATCHED": 0,
             "SHARED": 2,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 52281,
-            "modules": 255
+            "lines": 52936,
+            "modules": 256
           },
           "largestNonShared": [
             {
@@ -102709,13 +103129,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1443,
-              "path": "packages/contracts/src/orchestration.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1443,
+              "path": "packages/contracts/src/orchestration.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -104125,6 +104545,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -104912,6 +105337,11 @@
                 "from": "packages/client-runtime/src/presentation/modelPicker.ts",
                 "request": "@t3tools/shared/searchRanking",
                 "to": "packages/shared/src/searchRanking.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -106672,7 +107102,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -106964,6 +107394,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 120,
                 "path": "packages/client-runtime/src/presentation/thread.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -107472,15 +107907,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 379,
+            "EXCLUSIVE": 380,
             "PATCHED": 0,
-            "SHARED": 98,
+            "SHARED": 99,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 105710,
-            "modules": 484
+            "lines": 105989,
+            "modules": 486
           },
           "largestNonShared": [
             {
@@ -107500,7 +107935,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -107522,11 +107957,6 @@
               "classification": "EXCLUSIVE",
               "lines": 1467,
               "path": "apps/web/src/components/ChatMarkdown.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -107557,6 +107987,11 @@
               "classification": "EXCLUSIVE",
               "lines": 813,
               "path": "apps/web/src/components/ui/toast.tsx"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 730,
+              "path": "packages/client-runtime/src/connection/supervisor.ts"
             }
           ],
           "lynx": {
@@ -107668,8 +108103,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -108747,6 +109192,11 @@
                 "to": "packages/shared/src/sourceControl.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/state/projectGrouping.ts",
                 "request": "../environment/scoped.ts",
                 "to": "packages/client-runtime/src/environment/scoped.ts"
@@ -109312,8 +109762,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32092,
-            "eligibleModules": 173,
+            "eligibleLines": 33946,
+            "eligibleModules": 174,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -109327,7 +109777,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -109357,7 +109807,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -109422,7 +109872,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -109447,7 +109897,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -109492,7 +109942,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -109517,7 +109967,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -109557,7 +110007,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -109577,7 +110027,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -109699,12 +110149,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26294,
-            "modules": 98
+            "lines": 27880,
+            "modules": 99
           },
           "reusePercent": {
-            "lines": 24.9,
-            "modules": 20.2
+            "lines": 26.3,
+            "modules": 20.4
           },
           "web": {
             "edges": [
@@ -110735,8 +111185,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -113894,6 +114344,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -114110,6 +114590,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -114125,11 +114610,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -114137,16 +114617,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -115815,6 +116285,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -116847,6 +117322,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -118497,7 +118977,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -118896,6 +119376,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -118912,7 +119397,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -119587,7 +120072,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -120049,6 +120534,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -120672,15 +121162,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 250,
+            "EXCLUSIVE": 251,
             "PATCHED": 0,
             "SHARED": 5,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 52281,
-            "modules": 255
+            "lines": 52936,
+            "modules": 256
           },
           "largestNonShared": [
             {
@@ -120695,13 +121185,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1443,
-              "path": "packages/contracts/src/orchestration.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1443,
+              "path": "packages/contracts/src/orchestration.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -120827,7 +121317,7 @@
             "modules": 5
           },
           "reusePercent": {
-            "lines": 2.7,
+            "lines": 2.6,
             "modules": 2
           },
           "web": {
@@ -122139,6 +122629,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -122926,6 +123421,11 @@
                 "from": "packages/client-runtime/src/presentation/modelPicker.ts",
                 "request": "@t3tools/shared/searchRanking",
                 "to": "packages/shared/src/searchRanking.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -124686,7 +125186,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -124978,6 +125478,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 120,
                 "path": "packages/client-runtime/src/presentation/thread.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -125489,15 +125994,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 184,
+            "EXCLUSIVE": 185,
             "PATCHED": 0,
             "SHARED": 3,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 40397,
-            "modules": 187
+            "lines": 41052,
+            "modules": 188
           },
           "largestNonShared": [
             {
@@ -125507,13 +126012,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1443,
-              "path": "packages/contracts/src/orchestration.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1443,
+              "path": "packages/contracts/src/orchestration.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -126393,6 +126898,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -127060,6 +127570,11 @@
                 "from": "packages/client-runtime/src/presentation/modelPicker.ts",
                 "request": "@t3tools/shared/searchRanking",
                 "to": "packages/shared/src/searchRanking.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -128455,7 +128970,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -128702,6 +129217,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 120,
                 "path": "packages/client-runtime/src/presentation/thread.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -129135,15 +129655,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 379,
+            "EXCLUSIVE": 380,
             "PATCHED": 0,
-            "SHARED": 98,
+            "SHARED": 99,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 105710,
-            "modules": 484
+            "lines": 105989,
+            "modules": 486
           },
           "largestNonShared": [
             {
@@ -129163,7 +129683,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -129185,11 +129705,6 @@
               "classification": "EXCLUSIVE",
               "lines": 1467,
               "path": "apps/web/src/components/ChatMarkdown.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -129220,6 +129735,11 @@
               "classification": "EXCLUSIVE",
               "lines": 813,
               "path": "apps/web/src/components/ui/toast.tsx"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 730,
+              "path": "packages/client-runtime/src/connection/supervisor.ts"
             }
           ],
           "lynx": {
@@ -129331,8 +129851,18 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/proposed-plan",
+                "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/MessagesTimeline.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
@@ -130410,6 +130940,11 @@
                 "to": "packages/shared/src/sourceControl.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/state/projectGrouping.ts",
                 "request": "../environment/scoped.ts",
                 "to": "packages/client-runtime/src/environment/scoped.ts"
@@ -130975,8 +131510,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32092,
-            "eligibleModules": 173,
+            "eligibleLines": 33946,
+            "eligibleModules": 174,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -130990,7 +131525,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 145,
+                "lines": 151,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -131020,7 +131555,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 153,
+                "lines": 394,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -131085,7 +131620,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -131110,7 +131645,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -131155,7 +131690,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -131180,7 +131715,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -131220,7 +131755,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -131240,7 +131775,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -131362,12 +131897,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26294,
-            "modules": 98
+            "lines": 27880,
+            "modules": 99
           },
           "reusePercent": {
-            "lines": 24.9,
-            "modules": 20.2
+            "lines": 26.3,
+            "modules": 20.4
           },
           "web": {
             "edges": [
@@ -132398,8 +132933,8 @@
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.logic.ts",
-                "request": "../../session-logic",
-                "to": "apps/web/src/session-logic.ts"
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/web/src/components/chat/MessagesTimeline.tsx",
@@ -135557,6 +136092,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -135773,6 +136338,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -135788,11 +136358,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -135800,16 +136365,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -137478,6 +138033,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -138510,6 +139070,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -140160,7 +140725,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 640,
+                "lines": 153,
                 "path": "apps/web/src/components/chat/MessagesTimeline.logic.ts"
               },
               {
@@ -140559,6 +141124,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -140575,7 +141145,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -141250,7 +141820,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -141712,6 +142282,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -143092,15 +143667,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 68,
+            "EXCLUSIVE": 69,
             "PATCHED": 0,
             "SHARED": 6,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 23894,
-            "modules": 77
+            "lines": 24549,
+            "modules": 78
           },
           "largestNonShared": [
             {
@@ -143110,13 +143685,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1443,
-              "path": "packages/contracts/src/orchestration.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1443,
+              "path": "packages/contracts/src/orchestration.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -143317,8 +143892,8 @@
             "modules": 6
           },
           "reusePercent": {
-            "lines": 4.1,
-            "modules": 7.8
+            "lines": 4,
+            "modules": 7.7
           },
           "web": {
             "edges": [
@@ -143609,6 +144184,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -143661,6 +144241,11 @@
                 "from": "packages/client-runtime/src/presentation/settings.ts",
                 "request": "@t3tools/contracts/settings-defaults",
                 "to": "packages/contracts/src/settingsDefaults.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/rpc/http.ts",
@@ -144366,7 +144951,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -144423,6 +145008,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 120,
                 "path": "packages/client-runtime/src/presentation/thread.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -144635,15 +145225,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 244,
+            "EXCLUSIVE": 246,
             "PATCHED": 0,
             "SHARED": 93,
             "SPLIT": 9
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 70931,
-            "modules": 346
+            "lines": 71697,
+            "modules": 348
           },
           "largestNonShared": [
             {
@@ -144653,7 +145243,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -144663,8 +145253,8 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -144718,8 +145308,8 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 583,
-              "path": "apps/web/src/hooks/useThreadActions.ts"
+              "lines": 589,
+              "path": "apps/lynxtron/src/app/state/t3Client.ts"
             }
           ],
           "lynx": {
@@ -146420,7 +147010,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 30003,
+            "eligibleLines": 30024,
             "eligibleModules": 165,
             "modulesOnlyInLynx": [
               {
@@ -146500,7 +147090,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -146525,7 +147115,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -146580,7 +147170,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -146605,7 +147195,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -146645,7 +147235,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -146665,7 +147255,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -146796,8 +147386,8 @@
             "modules": 93
           },
           "reusePercent": {
-            "lines": 35.6,
-            "modules": 26.9
+            "lines": 35.2,
+            "modules": 26.7
           },
           "web": {
             "edges": [
@@ -148312,6 +148902,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -148528,6 +149148,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -148543,11 +149168,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -148555,16 +149175,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -149908,6 +150518,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -150815,6 +151430,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -152479,6 +153099,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -152495,7 +153120,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -152965,7 +153590,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -153357,6 +153982,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -153915,15 +154545,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 264,
+            "EXCLUSIVE": 265,
             "PATCHED": 0,
             "SHARED": 11,
             "SPLIT": 5
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 56824,
-            "modules": 280
+            "lines": 57479,
+            "modules": 281
           },
           "largestNonShared": [
             {
@@ -153938,13 +154568,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1443,
-              "path": "packages/contracts/src/orchestration.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1443,
+              "path": "packages/contracts/src/orchestration.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -154200,7 +154830,7 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 3467,
+            "eligibleLines": 3482,
             "eligibleModules": 28,
             "modulesOnlyInLynx": [
               {
@@ -154260,7 +154890,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -156007,6 +156637,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -156847,6 +157482,11 @@
               },
               {
                 "from": "packages/client-runtime/src/presentation/sidebar.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
                 "request": "./session.ts",
                 "to": "packages/client-runtime/src/presentation/session.ts"
               },
@@ -158699,7 +159339,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -159041,6 +159681,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -159578,15 +160223,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 263,
+            "EXCLUSIVE": 264,
             "PATCHED": 0,
             "SHARED": 5,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 56156,
-            "modules": 271
+            "lines": 56811,
+            "modules": 272
           },
           "largestNonShared": [
             {
@@ -159601,13 +160246,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1443,
-              "path": "packages/contracts/src/orchestration.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1443,
+              "path": "packages/contracts/src/orchestration.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -159783,7 +160428,7 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 2754,
+            "eligibleLines": 2769,
             "eligibleModules": 17,
             "modulesOnlyInLynx": [
               {
@@ -159828,7 +160473,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -161525,6 +162170,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -162365,6 +163015,11 @@
               },
               {
                 "from": "packages/client-runtime/src/presentation/sidebar.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
                 "request": "./session.ts",
                 "to": "packages/client-runtime/src/presentation/session.ts"
               },
@@ -164172,7 +164827,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -164514,6 +165169,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -165050,15 +165710,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 268,
+            "EXCLUSIVE": 270,
             "PATCHED": 0,
             "SHARED": 91,
             "SPLIT": 10
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 76678,
-            "modules": 369
+            "lines": 77444,
+            "modules": 371
           },
           "largestNonShared": [
             {
@@ -165068,7 +165728,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2543,
+              "lines": 2441,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -165083,8 +165743,8 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1288,
-              "path": "apps/web/src/session-logic.ts"
+              "lines": 1586,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -166850,7 +167510,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 29610,
+            "eligibleLines": 29631,
             "eligibleModules": 165,
             "modulesOnlyInLynx": [
               {
@@ -166935,7 +167595,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 574,
+                "lines": 589,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -166960,7 +167620,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 18,
+                "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
               {
@@ -167015,7 +167675,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 39,
                 "path": "apps/web/src/components/ui/command.lynx.tsx"
               },
               {
@@ -167040,7 +167700,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 135,
+                "lines": 142,
                 "path": "apps/web/src/components/ui/menu.lynx.tsx"
               },
               {
@@ -167085,7 +167745,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 41,
+                "lines": 45,
                 "path": "apps/web/src/components/ui/tooltip.lynx.tsx"
               },
               {
@@ -167105,7 +167765,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 61,
+                "lines": 60,
                 "path": "apps/web/src/hooks/useLocalStorage.lynx.ts"
               },
               {
@@ -167236,8 +167896,8 @@
             "modules": 91
           },
           "reusePercent": {
-            "lines": 32.2,
-            "modules": 24.7
+            "lines": 31.9,
+            "modules": 24.5
           },
           "web": {
             "edges": [
@@ -169392,6 +170052,36 @@
                 "to": "apps/web/src/components/ui/tooltip.tsx"
               },
               {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/command",
+                "to": "apps/web/src/components/ui/command.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/kbd",
+                "to": "apps/web/src/components/ui/kbd.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/menu",
+                "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/sidebar",
+                "to": "apps/web/src/components/ui/sidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+                "request": "../ui/tooltip",
+                "to": "apps/web/src/components/ui/tooltip.tsx"
+              },
+              {
                 "from": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
                 "request": "../../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
@@ -169608,6 +170298,11 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
+                "request": "./sidebar/SidebarV2ControlsSurface",
+                "to": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./sidebar/SidebarV2RowSurface",
                 "to": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
               },
@@ -169623,11 +170318,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/command",
-                "to": "apps/web/src/components/ui/command.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/dialog",
                 "to": "apps/web/src/components/ui/dialog.tsx"
               },
@@ -169635,16 +170325,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "./ui/input",
                 "to": "apps/web/src/components/ui/input.web.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/kbd",
-                "to": "apps/web/src/components/ui/kbd.tsx"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "./ui/menu",
-                "to": "apps/web/src/components/ui/menu.tsx"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -171033,6 +171713,11 @@
               },
               {
                 "from": "apps/web/src/session-logic.ts",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
+              },
+              {
+                "from": "apps/web/src/session-logic.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -171945,6 +172630,11 @@
                 "from": "packages/client-runtime/src/presentation/sourceControl.ts",
                 "request": "@t3tools/shared/sourceControl",
                 "to": "packages/shared/src/sourceControl.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
               },
               {
                 "from": "packages/client-runtime/src/relay/discovery.ts",
@@ -173684,6 +174374,11 @@
                 "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 213,
+                "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"
+              },
+              {
                 "classification": "SHARED",
                 "lines": 303,
                 "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
@@ -173700,7 +174395,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2543,
+                "lines": 2441,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -174205,7 +174900,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1288,
+                "lines": 357,
                 "path": "apps/web/src/session-logic.ts"
               },
               {
@@ -174602,6 +175297,11 @@
                 "classification": "SHARED",
                 "lines": 126,
                 "path": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 1586,
+                "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "classification": "EXCLUSIVE",
