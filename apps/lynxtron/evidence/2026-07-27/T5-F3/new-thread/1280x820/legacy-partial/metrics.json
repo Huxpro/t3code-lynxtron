@@ -1,0 +1,40 @@
+{
+  "status": "partial",
+  "reason": "T5-F3 capture round closed before T5-F1/T5-F2; automated anchor and typography extraction is still required.",
+  "viewport": {
+    "logicalWidth": 1280,
+    "logicalHeight": 820,
+    "devicePixelRatio": 2,
+    "imageWidth": 2560,
+    "imageHeight": 1640
+  },
+  "captures": {
+    "web": {
+      "file": "web.png",
+      "format": "png",
+      "sha256": "40d974a648252c69084fc8d20c6fd8bbf9623a4ab43d72e3daf5062c96325fb0"
+    },
+    "lynx": {
+      "file": "lynx.png",
+      "format": "jpeg",
+      "sha256": "c67b79257d6894284a3851024c7c83bbd237137a49bad6c5e05bb7db8e0093af",
+      "devToolConsoleErrors": 0
+    }
+  },
+  "anchors": {
+    "status": "pending-automated-extraction",
+    "required": ["sidebar", "workspaceHeader", "headline", "composer", "checkoutBar"]
+  },
+  "typography": {
+    "status": "pending-automated-extraction",
+    "required": ["brand", "headline", "composerPlaceholder", "composerControl", "sidebarRow"]
+  },
+  "colors": {
+    "status": "token-evidence-only",
+    "webDarkBodyComputed": "oklch(0.145 0 0)",
+    "lynxBackgroundToken": "#0a0a0a",
+    "lynxSidebarToken": "#000000",
+    "imageRegionSampling": "pending"
+  },
+  "masks": []
+}

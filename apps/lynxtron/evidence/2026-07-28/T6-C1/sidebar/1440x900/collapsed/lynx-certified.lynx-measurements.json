@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "sidebar-collapsed",
+  "anchors": {
+    "appSurface": {
+      "selector": ".chat-view-surface-reference",
+      "nodeId": 58,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "box": {
+        "width": 1439.998779296875,
+        "height": 900
+      },
+      "text": "T3 t3code / Finish the in-monorepo Lynxtron UI migration Add action Open Commit What should we build in   t3code ? Claude Fable 5 Reasoning · High Full access Build Local checkout No branch",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "header": {
+      "selector": ".chat-header-reference",
+      "nodeId": 63,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 52
+      },
+      "box": {
+        "width": 1289.998779296875,
+        "height": 52
+      },
+      "text": "T3 t3code / Finish the in-monorepo Lynxtron UI migration Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "toggle": {
+      "selector": ".sidebar-global-toggle",
+      "nodeId": 149,
+      "rect": {
+        "x": 90,
+        "y": 10,
+        "width": 32,
+        "height": 32
+      },
+      "box": {
+        "width": 30,
+        "height": 30
+      },
+      "text": "Toggle Sidebar",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "projectIcon": {
+      "selector": ".chat-header-project-icon-reference",
+      "nodeId": 65,
+      "rect": {
+        "x": 130,
+        "y": 20,
+        "width": 14,
+        "height": 14
+      },
+      "box": {
+        "width": 14,
+        "height": 14
+      },
+      "text": "T3",
+      "style": {
+        "backgroundColor": "rgb(54,111,251)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "projectName": {
+      "selector": ".chat-header-project-name-reference",
+      "nodeId": 67,
+      "rect": {
+        "x": 152,
+        "y": 20,
+        "width": 46,
+        "height": 14
+      },
+      "box": {
+        "width": 46,
+        "height": 14
+      },
+      "text": "t3code",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(129,129,129)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": ""
+      }
+    },
+    "threadTitle": {
+      "selector": ".chat-header-thread-title-reference",
+      "nodeId": 69,
+      "rect": {
+        "x": 219,
+        "y": 20,
+        "width": 804,
+        "height": 14
+      },
+      "box": {
+        "width": 804,
+        "height": 14
+      },
+      "text": "Finish the in-monorepo Lynxtron UI migration",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {
+    "projectName": {
+      "selector": ".chat-header-project-name-reference",
+      "nodeId": 67,
+      "rect": {
+        "x": 152,
+        "y": 20,
+        "width": 46,
+        "height": 14
+      },
+      "box": {
+        "width": 46,
+        "height": 14
+      },
+      "text": "t3code",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(129,129,129)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": ""
+      }
+    },
+    "threadTitle": {
+      "selector": ".chat-header-thread-title-reference",
+      "nodeId": 69,
+      "rect": {
+        "x": 219,
+        "y": 20,
+        "width": 804,
+        "height": 14
+      },
+      "box": {
+        "width": 804,
+        "height": 14
+      },
+      "text": "Finish the in-monorepo Lynxtron UI migration",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": ""
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "selector": ".chat-view-surface-reference",
+      "nodeId": 58,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "box": {
+        "width": 1439.998779296875,
+        "height": 900
+      },
+      "text": "T3 t3code / Finish the in-monorepo Lynxtron UI migration Add action Open Commit What should we build in   t3code ? Claude Fable 5 Reasoning · High Full access Build Local checkout No branch",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "headerBackground": {
+      "selector": ".chat-header-reference",
+      "nodeId": 63,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 52
+      },
+      "box": {
+        "width": 1289.998779296875,
+        "height": 52
+      },
+      "text": "T3 t3code / Finish the in-monorepo Lynxtron UI migration Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  }
+}

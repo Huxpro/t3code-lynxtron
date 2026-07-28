@@ -1,0 +1,403 @@
+{
+  "status": "measured",
+  "route": "settings-general",
+  "viewport": {
+    "logicalWidth": 1440,
+    "logicalHeight": 900,
+    "deviceScaleFactor": 2,
+    "imageWidth": 2880,
+    "imageHeight": 1800
+  },
+  "captures": {
+    "web": {
+      "file": "/Users/bytedance/.codex/worktrees/f409/t3code/apps/lynxtron/evidence/2026-07-28/T5-F5/settings-general/1440x900/changed/electron.png",
+      "sha256": "72a67de1dc3862643424086ba18d4333f40d7ed4ac2c41ffc6cf45f2ece66cbd",
+      "rendererErrors": 0
+    },
+    "lynx": {
+      "file": "evidence/2026-07-28/T5-F5/settings-general/1440x900/changed/lynx.jpg",
+      "sha256": "db532a7fcd8055039f694454ac84f721f100b1e2d24d5c88c058b94d26c8b883",
+      "devToolConsoleErrors": 0
+    }
+  },
+  "schemaVersion": 1,
+  "thresholds": {
+    "anchorMaxAbsPx": 8,
+    "correspondingFontSizeMaxAbsPx": 2
+  },
+  "coordinateSystem": {
+    "web": "logical CSS pixels",
+    "lynxRaw": "Lynx DevTool box-model units",
+    "lynxCoordinateScale": 1,
+    "deviceScaleFactor": 2
+  },
+  "anchors": {
+    "sidebar": {
+      "web": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 900
+      },
+      "lynxRaw": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 900
+      },
+      "lynx": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 900
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 1,
+        "height": 0,
+        "maxAbs": 1
+      },
+      "pass": true,
+      "text": {
+        "web": "Code General Keybindings Providers Source Control Connections Beta Archive Back",
+        "lynx": "Code General Keybindings Providers Source Control Connections Beta Archive Back",
+        "exact": true
+      }
+    },
+    "topbar": {
+      "web": {
+        "x": 256,
+        "y": 0,
+        "width": 1184,
+        "height": 52
+      },
+      "lynxRaw": {
+        "x": 256,
+        "y": 0,
+        "width": 1184,
+        "height": 52
+      },
+      "lynx": {
+        "x": 256,
+        "y": 0,
+        "width": 1184,
+        "height": 52
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "maxAbs": 0
+      },
+      "pass": true,
+      "text": {
+        "web": "Settings Restore defaults",
+        "lynx": "Settings Restore defaults",
+        "exact": true
+      }
+    },
+    "panel": {
+      "web": {
+        "x": 256,
+        "y": 52,
+        "width": 1184,
+        "height": 848
+      },
+      "lynxRaw": {
+        "x": 256,
+        "y": 52,
+        "width": 1184,
+        "height": 848
+      },
+      "lynx": {
+        "x": 256,
+        "y": 52,
+        "width": 1184,
+        "height": 848
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "maxAbs": 0
+      },
+      "pass": true,
+      "text": {
+        "web": "General Theme Choose how T3 Code looks across the app. System Light Dark Glass opacity Control how transparent glass surfaces are. Higher values make menus, dialogs, and the composer more solid. 80% Project Grouping Combine matching repositories across environments. Time format System default follows your browser or OS clock preference. System default 12-hour 24-hour Word wrap Wrap long lines in code blocks, tables, diffs, and file previews by default. Hide whitespace changes Set whether the diff panel ignores whitespace-only edits by default. Assistant output Show token-by-token output while a response is in progress. Provider update checks Check installed provider CLIs for newer available versions. Auto-open task panel Open the right-side plan and task panel automatically when steps appear. New threads Pick the default workspace mode for newly created draft threads. Local New worktree Add project starts in Leave empty to use \"~/\" when the Add Project browser opens. Archive confirmation Require a second click on the inline archive action before a thread is archived. Delete confirmation Ask before deleting a thread and its chat history. Text generation model Configure the model used for generated commit messages, PR titles, and similar Git text. gpt-5.6-luna About Version 0.0.28 Current version of the application. Check for Updates Diagnostics Terminal logs only. View diagnostics",
+        "lynx": "General Theme Choose how T3 Code looks across the app. System ⌄ Glass opacity Control how transparent glass surfaces are. Higher values make menus, dialogs, and the composer more solid. 80 % Project Grouping ↶ Combine matching repositories across environments. Time format System default follows your browser or OS clock preference. System default ⌄ Word wrap Wrap long lines in code blocks, tables, diffs, and file previews by default. Hide whitespace changes Set whether the diff panel ignores whitespace-only edits by default. Assistant output Show token-by-token output while a response is in progress. Provider update checks Check installed provider CLIs for newer available versions. Auto-open task panel Open the right-side plan and task panel automatically when steps appear. New threads Pick the default workspace mode for newly created draft threads. Local ⌄ Add project starts in Leave empty to use ~/ Archive confirmation Require a second click on the inline archive action before a thread is archived. Delete confirmation Ask before deleting a thread and its chat history. Text generation model Configure the model used for generated commit messages, PR titles, and similar Git text. gpt-5.6-luna About Version 0.0.28 Current version of the application. Check for Updates Diagnostics Tracing is disabled. View diagnostics",
+        "exact": false
+      }
+    },
+    "generalHeading": {
+      "web": {
+        "x": 416,
+        "y": 102,
+        "width": 64.9921875,
+        "height": 28
+      },
+      "lynxRaw": {
+        "x": 416,
+        "y": 102,
+        "width": 64,
+        "height": 28
+      },
+      "lynx": {
+        "x": 416,
+        "y": 102,
+        "width": 64,
+        "height": 28
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": -0.99,
+        "height": 0,
+        "maxAbs": 0.99
+      },
+      "pass": true,
+      "text": {
+        "web": "General",
+        "lynx": "[object Object]",
+        "exact": false
+      }
+    },
+    "themeControl": {
+      "web": {
+        "x": 1120,
+        "y": 161.421875,
+        "width": 160,
+        "height": 32
+      },
+      "lynxRaw": {
+        "x": 1120,
+        "y": 161,
+        "width": 160,
+        "height": 32
+      },
+      "lynx": {
+        "x": 1120,
+        "y": 161,
+        "width": 160,
+        "height": 32
+      },
+      "delta": {
+        "x": 0,
+        "y": -0.42,
+        "width": 0,
+        "height": 0,
+        "maxAbs": 0.42
+      },
+      "pass": true,
+      "text": {
+        "web": "System Light Dark",
+        "lynx": "System ⌄",
+        "exact": false
+      }
+    },
+    "projectGroupingControl": {
+      "web": {
+        "x": 1250,
+        "y": 328.953125,
+        "width": 30,
+        "height": 18
+      },
+      "lynxRaw": {
+        "x": 1250,
+        "y": 325,
+        "width": 30,
+        "height": 18
+      },
+      "lynx": {
+        "x": 1250,
+        "y": 325,
+        "width": 30,
+        "height": 18
+      },
+      "delta": {
+        "x": 0,
+        "y": -3.95,
+        "width": 0,
+        "height": 0,
+        "maxAbs": 3.95
+      },
+      "pass": true,
+      "text": {
+        "web": "Project Grouping",
+        "lynx": "",
+        "exact": false
+      }
+    }
+  },
+  "typography": {
+    "generalHeading": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "General",
+        "lynx": "[object Object]",
+        "exact": false
+      }
+    },
+    "rowTitle": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "Theme",
+        "lynx": "[object Object]",
+        "exact": false
+      }
+    },
+    "rowDescription": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.603664 0.00000521541 0.00000223517 / 0.8)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "lineHeight": "18.85px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(129,129,129,0.8)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "normal",
+        "lineHeight": "19px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "Choose how T3 Code looks across the app.",
+        "lynx": "[object Object]",
+        "exact": false
+      }
+    },
+    "themeControl": {
+      "web": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "normal"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(255,255,255,0.0235294)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      },
+      "fontSizeDelta": 2,
+      "pass": true,
+      "text": {
+        "web": "System Light Dark",
+        "lynx": "System ⌄",
+        "exact": false
+      }
+    }
+  },
+  "colors": {
+    "mainBackground": {
+      "properties": ["backgroundColor"],
+      "web": {
+        "backgroundColor": "oklch(0.145 0 0)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(10,10,10)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(10,10,10,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(10,10,10,1)"
+        }
+      },
+      "exact": true
+    },
+    "sidebarBackground": {
+      "properties": ["backgroundColor"],
+      "web": {
+        "backgroundColor": "rgb(0, 0, 0)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(0,0,0)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(0,0,0,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(0,0,0,1)"
+        }
+      },
+      "exact": true
+    },
+    "rowText": {
+      "properties": ["color"],
+      "web": {
+        "color": "oklch(0.97 0 0)"
+      },
+      "lynx": {
+        "color": "rgb(245,245,245)"
+      },
+      "normalized": {
+        "web": {
+          "color": "rgba(245,245,245,1)"
+        },
+        "lynx": {
+          "color": "rgba(245,245,245,1)"
+        }
+      },
+      "exact": true
+    }
+  },
+  "summary": {
+    "anchorsPassing": 6,
+    "anchorsTotal": 6,
+    "typographyPassing": 4,
+    "typographyTotal": 4,
+    "exactAnchorText": 2,
+    "exactAnchorTextTotal": 6,
+    "exactColors": 3,
+    "exactColorsTotal": 3
+  },
+  "masks": []
+}

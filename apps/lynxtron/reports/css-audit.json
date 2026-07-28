@@ -1,0 +1,424 @@
+{
+  "scannedCss": "apps/web/src/index.css",
+  "uniqueStaticUtilities": 1320,
+  "syntax": {
+    "oklch(": {
+      "status": "build-transform",
+      "occurrences": 5
+    },
+    "color-mix(": {
+      "status": "build-transform",
+      "occurrences": 52
+    },
+    "@custom-variant": {
+      "status": "drop",
+      "occurrences": 2
+    },
+    "::view-transition": {
+      "status": "drop",
+      "occurrences": 8
+    },
+    ":hover": {
+      "status": "state-adapter",
+      "occurrences": 9
+    },
+    ":focus-visible": {
+      "status": "state-adapter",
+      "occurrences": 6
+    },
+    "position: fixed": {
+      "status": "probe",
+      "occurrences": 0
+    },
+    "position: sticky": {
+      "status": "probe",
+      "occurrences": 0
+    },
+    "display: grid": {
+      "status": "rewrite",
+      "occurrences": 0
+    },
+    "backdrop-filter": {
+      "status": "drop",
+      "occurrences": 16
+    }
+  },
+  "unsupportedUtilities": [
+    {
+      "utility": "hover:text-foreground",
+      "occurrences": 51
+    },
+    {
+      "utility": "grid",
+      "occurrences": 46
+    },
+    {
+      "utility": "focus-visible:ring-2",
+      "occurrences": 20
+    },
+    {
+      "utility": "focus-visible:ring-ring",
+      "occurrences": 19
+    },
+    {
+      "utility": "hover:bg-accent",
+      "occurrences": 13
+    },
+    {
+      "utility": "hover:bg-sidebar-row-hover",
+      "occurrences": 11
+    },
+    {
+      "utility": "hover:text-sidebar-foreground",
+      "occurrences": 11
+    },
+    {
+      "utility": "focus-visible:outline-none",
+      "occurrences": 8
+    },
+    {
+      "utility": "grid-cols-2",
+      "occurrences": 7
+    },
+    {
+      "utility": "backdrop-blur-md",
+      "occurrences": 6
+    },
+    {
+      "utility": "hover:bg-accent/60",
+      "occurrences": 6
+    },
+    {
+      "utility": "fixed",
+      "occurrences": 5
+    },
+    {
+      "utility": "hover:bg-muted",
+      "occurrences": 5
+    },
+    {
+      "utility": "sticky",
+      "occurrences": 4
+    },
+    {
+      "utility": "focus-visible:ring-offset-2",
+      "occurrences": 4
+    },
+    {
+      "utility": "focus-visible:ring-offset-sidebar",
+      "occurrences": 4
+    },
+    {
+      "utility": "focus-visible:ring-[3px]",
+      "occurrences": 4
+    },
+    {
+      "utility": "hover:text-foreground/80",
+      "occurrences": 3
+    },
+    {
+      "utility": "grid-cols-[1rem_minmax(0,1fr)]",
+      "occurrences": 3
+    },
+    {
+      "utility": "grid-cols-3",
+      "occurrences": 3
+    },
+    {
+      "utility": "group-hover:opacity-100",
+      "occurrences": 3
+    },
+    {
+      "utility": "focus-visible:outline-hidden",
+      "occurrences": 3
+    },
+    {
+      "utility": "focus-visible:opacity-100",
+      "occurrences": 3
+    },
+    {
+      "utility": "focus-visible:ring-offset-1",
+      "occurrences": 3
+    },
+    {
+      "utility": "focus-visible:ring-offset-background",
+      "occurrences": 3
+    },
+    {
+      "utility": "focus-visible:ring-inset",
+      "occurrences": 3
+    },
+    {
+      "utility": "hover:bg-accent/40",
+      "occurrences": 3
+    },
+    {
+      "utility": "hover:text-muted-foreground",
+      "occurrences": 3
+    },
+    {
+      "utility": "hover:underline",
+      "occurrences": 3
+    },
+    {
+      "utility": "hover:bg-muted/20",
+      "occurrences": 3
+    },
+    {
+      "utility": "grid-cols-[minmax(190px,1.1fr)_minmax(220px,0.85fr)_minmax(210px,1fr)_60px]",
+      "occurrences": 3
+    },
+    {
+      "utility": "hover:border-border",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:bg-transparent",
+      "occurrences": 2
+    },
+    {
+      "utility": "grid-cols-[minmax(0,1fr)_2rem]",
+      "occurrences": 2
+    },
+    {
+      "utility": "focus-visible:ring-1",
+      "occurrences": 2
+    },
+    {
+      "utility": "focus-visible:text-foreground",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:bg-accent/70",
+      "occurrences": 2
+    },
+    {
+      "utility": "group-hover:text-foreground/90",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:opacity-75",
+      "occurrences": 2
+    },
+    {
+      "utility": "focus-visible:rounded-sm",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:bg-white/10",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:text-white",
+      "occurrences": 2
+    },
+    {
+      "utility": "select-text",
+      "occurrences": 2
+    },
+    {
+      "utility": "focus-visible:ring-ring/70",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:bg-muted/40",
+      "occurrences": 2
+    },
+    {
+      "utility": "grid-cols-[1.25rem_0.375rem_minmax(0,1fr)]",
+      "occurrences": 2
+    },
+    {
+      "utility": "focus-visible:border-ring",
+      "occurrences": 2
+    },
+    {
+      "utility": "focus-visible:ring-ring/24",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:bg-warning/10",
+      "occurrences": 2
+    },
+    {
+      "utility": "focus-visible:ring-warning/25",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:text-destructive",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:opacity-100",
+      "occurrences": 2
+    },
+    {
+      "utility": "backdrop-blur-sm",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:cursor-pointer",
+      "occurrences": 1
+    },
+    {
+      "utility": "focus:outline-none",
+      "occurrences": 1
+    },
+    {
+      "utility": "grid-cols-[auto_1fr]",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-accent/50",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:text-foreground/70",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:text-muted-foreground/60",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:opacity-0",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:pointer-events-auto",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-popover",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:hidden",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:block",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-destructive/18",
+      "occurrences": 1
+    },
+    {
+      "utility": "focus-visible:ring-destructive/40",
+      "occurrences": 1
+    },
+    {
+      "utility": "focus-visible:ring-0",
+      "occurrences": 1
+    },
+    {
+      "utility": "focus:border-foreground",
+      "occurrences": 1
+    },
+    {
+      "utility": "focus-visible:bg-accent",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:border-solid",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:border-input",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-background/45",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-destructive/8",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:text-destructive-foreground",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:text-foreground/80",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-background/90",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-destructive",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:scale-105",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-accent/20",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-muted/55",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:text-foreground/85",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-foreground/8",
+      "occurrences": 1
+    },
+    {
+      "utility": "backdrop-blur",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:bg-border",
+      "occurrences": 1
+    },
+    {
+      "utility": "grid-cols-1",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-zinc-50",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:border-foreground",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-muted/15",
+      "occurrences": 1
+    },
+    {
+      "utility": "backdrop-blur-[1px]",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:border-border/70",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:bg-background",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:text-muted-foreground/70",
+      "occurrences": 1
+    },
+    {
+      "utility": "focus:border-ring",
+      "occurrences": 1
+    },
+    {
+      "utility": "hover:text-primary",
+      "occurrences": 1
+    }
+  ]
+}

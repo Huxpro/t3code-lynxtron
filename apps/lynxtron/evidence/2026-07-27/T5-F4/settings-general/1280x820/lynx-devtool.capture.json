@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "baseline": "electron-web",
+  "clientName": "@t3tools/lynxtron",
+  "route": "settings-general",
+  "theme": "dark",
+  "snapshot": "eebd645dbee9407952bc6f2f4c9da9bbc2cb3b430c099961c8218496d078d271",
+  "navigation": {
+    "tool": "Lynx DevTool Runtime.evaluate",
+    "hook": "__T3_LYNXTRON_NAVIGATE__",
+    "target": "/settings/general"
+  },
+  "screenshot": "lynx-devtool.jpg",
+  "screenshotSha256": "9d48b2dd13db39767fbd468a7e76bdc2c8090bb59be7db025c02b0d15598541b",
+  "bundleSha256": "c71dd324f2a47156ce9ee3542a9fc937b224ce96f124d3b10e4756bc75595fdf",
+  "dimensions": {
+    "format": "jpeg",
+    "logicalWidth": 1280,
+    "logicalHeight": 820,
+    "pixelWidth": 2560,
+    "pixelHeight": 1640
+  },
+  "devToolConsoleErrors": 0,
+  "capturedAt": "2026-07-27T15:45:28Z"
+}

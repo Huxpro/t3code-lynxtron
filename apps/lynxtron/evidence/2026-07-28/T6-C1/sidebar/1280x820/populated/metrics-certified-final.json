@@ -1,0 +1,527 @@
+{
+  "status": "measured",
+  "route": "sidebar-populated",
+  "viewport": {
+    "logicalWidth": 1280,
+    "logicalHeight": 820,
+    "deviceScaleFactor": 2,
+    "imageWidth": 2560,
+    "imageHeight": 1640
+  },
+  "captures": {
+    "web": {
+      "file": "/Users/bytedance/.codex/worktrees/f409/t3code/apps/lynxtron/evidence/2026-07-28/T6-C1/sidebar/1280x820/populated/electron-certified.png",
+      "sha256": "cb67c9ba10cd9b1bafb5eb1362c96055373f1fc402a2b9974a7c84eb07eb40ac",
+      "rendererErrors": 0
+    },
+    "lynx": {
+      "file": "evidence/2026-07-28/T6-C1/sidebar/1280x820/populated/lynx-certified-final.jpg",
+      "sha256": "e1d22d334d0592cb94c7cf3780f8f8ba25992c7b57f435253b33afe606628a7e",
+      "devToolConsoleErrors": 0
+    }
+  },
+  "schemaVersion": 1,
+  "thresholds": {
+    "anchorMaxAbsPx": 8,
+    "correspondingFontSizeMaxAbsPx": 2
+  },
+  "coordinateSystem": {
+    "web": "logical CSS pixels",
+    "lynxRaw": "Lynx DevTool box-model units",
+    "lynxCoordinateScale": 1,
+    "deviceScaleFactor": 2
+  },
+  "anchors": {
+    "sidebar": {
+      "web": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 820
+      },
+      "lynxRaw": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "lynx": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 1,
+        "height": 0,
+        "maxAbs": 1
+      },
+      "pass": true,
+      "text": {
+        "web": "Code Search ⌘K Projects t3code Finish the in-monorepo Lynxtron UI migration 2400d ago Investigate an intentionally long thread title that must truncate without moving actions 2400d ago Global keyboard bridge and focus order 2400d ago Settings",
+        "lynx": "Toggle Sidebar T3 Code Search ⌘K Projects ⌄ T3 t3code ＋ Finish the in-monorepo Lynxtron UI migration 2400d ago Investigate an intentionally long thread title that must truncate without moving actions 2400d ago Global keyboard bridge and focus order 2400d ago Settings",
+        "exact": false
+      }
+    },
+    "header": {
+      "web": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 52
+      },
+      "lynxRaw": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 52
+      },
+      "lynx": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 52
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "maxAbs": 0
+      },
+      "pass": true,
+      "text": {
+        "web": "Code",
+        "lynx": "Toggle Sidebar T3 Code",
+        "exact": false
+      }
+    },
+    "brand": {
+      "web": {
+        "x": 150.5703125,
+        "y": 16,
+        "width": 34.109375,
+        "height": 20
+      },
+      "lynxRaw": {
+        "x": 151,
+        "y": 16,
+        "width": 34,
+        "height": 20
+      },
+      "lynx": {
+        "x": 151,
+        "y": 16,
+        "width": 34,
+        "height": 20
+      },
+      "delta": {
+        "x": 0.43,
+        "y": 0,
+        "width": -0.11,
+        "height": 0,
+        "maxAbs": 0.43
+      },
+      "pass": true,
+      "text": {
+        "web": "Code",
+        "lynx": "Code",
+        "exact": true
+      }
+    },
+    "search": {
+      "web": {
+        "x": 40,
+        "y": 66,
+        "width": 163.5703125,
+        "height": 20
+      },
+      "lynxRaw": {
+        "x": 37,
+        "y": 63,
+        "width": 168,
+        "height": 20
+      },
+      "lynx": {
+        "x": 37,
+        "y": 63,
+        "width": 168,
+        "height": 20
+      },
+      "delta": {
+        "x": -3,
+        "y": -3,
+        "width": 4.43,
+        "height": 0,
+        "maxAbs": 4.43
+      },
+      "pass": true,
+      "text": {
+        "web": "Search",
+        "lynx": "Search",
+        "exact": true
+      }
+    },
+    "projectsLabel": {
+      "web": {
+        "x": 16,
+        "y": 108,
+        "width": 46.5078125,
+        "height": 16
+      },
+      "lynxRaw": {
+        "x": 14,
+        "y": 109,
+        "width": 48,
+        "height": 16
+      },
+      "lynx": {
+        "x": 14,
+        "y": 109,
+        "width": 48,
+        "height": 16
+      },
+      "delta": {
+        "x": -2,
+        "y": 1,
+        "width": 1.49,
+        "height": 0,
+        "maxAbs": 2
+      },
+      "pass": true,
+      "text": {
+        "web": "Projects",
+        "lynx": "Projects",
+        "exact": true
+      }
+    },
+    "projectRow": {
+      "web": {
+        "x": 8,
+        "y": 132,
+        "width": 239,
+        "height": 32
+      },
+      "lynxRaw": {
+        "x": 7,
+        "y": 133,
+        "width": 241,
+        "height": 32
+      },
+      "lynx": {
+        "x": 7,
+        "y": 133,
+        "width": 241,
+        "height": 32
+      },
+      "delta": {
+        "x": -1,
+        "y": 1,
+        "width": 2,
+        "height": 0,
+        "maxAbs": 2
+      },
+      "pass": true,
+      "text": {
+        "web": "t3code",
+        "lynx": "⌄ T3 t3code ＋",
+        "exact": false
+      }
+    },
+    "firstThreadRow": {
+      "web": {
+        "x": 18,
+        "y": 164,
+        "width": 227,
+        "height": 32
+      },
+      "lynxRaw": {
+        "x": 17,
+        "y": 165,
+        "width": 229,
+        "height": 32
+      },
+      "lynx": {
+        "x": 17,
+        "y": 165,
+        "width": 229,
+        "height": 32
+      },
+      "delta": {
+        "x": -1,
+        "y": 1,
+        "width": 2,
+        "height": 0,
+        "maxAbs": 2
+      },
+      "pass": true,
+      "text": {
+        "web": "Finish the in-monorepo Lynxtron UI migration 2400d ago",
+        "lynx": "Finish the in-monorepo Lynxtron UI migration 2400d ago",
+        "exact": true
+      }
+    },
+    "settings": {
+      "web": {
+        "x": 42,
+        "y": 786,
+        "width": 54.34375,
+        "height": 20
+      },
+      "lynxRaw": {
+        "x": 37,
+        "y": 787,
+        "width": 57,
+        "height": 20
+      },
+      "lynx": {
+        "x": 37,
+        "y": 787,
+        "width": 57,
+        "height": 20
+      },
+      "delta": {
+        "x": -5,
+        "y": 1,
+        "width": 2.66,
+        "height": 0,
+        "maxAbs": 5
+      },
+      "pass": true,
+      "text": {
+        "web": "Settings",
+        "lynx": "Settings",
+        "exact": true
+      }
+    }
+  },
+  "typography": {
+    "brand": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(255,255,255,0.917647)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      },
+      "fontSizeDelta": -2,
+      "pass": true,
+      "text": {
+        "web": "Code",
+        "lynx": "T3 Code",
+        "exact": false
+      }
+    },
+    "search": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(241, 243, 247)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      },
+      "fontSizeDelta": -2,
+      "pass": true,
+      "text": {
+        "web": "Search ⌘K",
+        "lynx": "Search ⌘K",
+        "exact": true
+      }
+    },
+    "projectsLabel": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.715469 0.0000326335 0.0000143051 / 0.8)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "16px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(163,163,163,0.8)",
+        "fontFamily": "inherit",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "lineHeight": "16px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "Projects",
+        "lynx": "Projects",
+        "exact": true
+      }
+    },
+    "projectTitle": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.963762 -0.000504732 -0.00571203 / 0.9)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(241,243,247,0.898039)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "18px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "t3code",
+        "lynx": "t3code",
+        "exact": true
+      }
+    },
+    "threadTitle": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(241, 243, 247)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "Finish the in-monorepo Lynxtron UI migration",
+        "lynx": "Finish the in-monorepo Lynxtron UI migration",
+        "exact": true
+      }
+    },
+    "settings": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.715469 0.0000326335 0.0000143051 / 0.8)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(163,163,163,0.8)",
+        "fontFamily": "",
+        "fontSize": "12.25px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      },
+      "fontSizeDelta": -1.75,
+      "pass": true,
+      "text": {
+        "web": "Settings",
+        "lynx": "Settings",
+        "exact": true
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "properties": ["backgroundColor", "color"],
+      "web": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "oklch(0.97 0 0)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(10,10,10,1)",
+          "color": "rgba(245,245,245,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(10,10,10,1)",
+          "color": "rgba(245,245,245,1)"
+        }
+      },
+      "exact": true
+    },
+    "sidebarBackground": {
+      "properties": ["backgroundColor", "color"],
+      "web": {
+        "backgroundColor": "rgb(0, 0, 0)",
+        "color": "rgb(241, 243, 247)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(0,0,0,1)",
+          "color": "rgba(241,243,247,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(0,0,0,1)",
+          "color": "rgba(241,243,247,1)"
+        }
+      },
+      "exact": true
+    },
+    "projectRow": {
+      "properties": ["color"],
+      "web": {
+        "color": "oklab(0.963762 -0.000504732 -0.00571203 / 0.9)"
+      },
+      "lynx": {
+        "color": "rgba(241,243,247,0.898039)"
+      },
+      "normalized": {
+        "web": {
+          "color": "rgba(241,243,247,0.9)"
+        },
+        "lynx": {
+          "color": "rgba(241,243,247,0.898)"
+        }
+      },
+      "exact": false
+    }
+  },
+  "summary": {
+    "anchorsPassing": 8,
+    "anchorsTotal": 8,
+    "typographyPassing": 6,
+    "typographyTotal": 6,
+    "exactAnchorText": 5,
+    "exactAnchorTextTotal": 8,
+    "exactColors": 2,
+    "exactColorsTotal": 3
+  },
+  "masks": []
+}

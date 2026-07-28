@@ -1,0 +1,32 @@
+{
+  "baseline": "electron-web",
+  "endpoint": "http://127.0.0.1:9341",
+  "target": {
+    "id": "9813D6436D1AFE185BC15FAA4689E1C8",
+    "title": "T3 Code (Dev)",
+    "url": "t3code-dev://app/#/f20b115c-6ce4-45da-8eb8-1dae71ca7ca7/e9b41de3-2fb4-4129-b2c2-adec8fd90bcb"
+  },
+  "route": "sidebar-populated",
+  "pathname": "/f20b115c-6ce4-45da-8eb8-1dae71ca7ca7/e9b41de3-2fb4-4129-b2c2-adec8fd90bcb",
+  "interactionState": "none",
+  "clearComposerDrafts": true,
+  "rendererHref": "t3code-dev://app/#/f20b115c-6ce4-45da-8eb8-1dae71ca7ca7/e9b41de3-2fb4-4129-b2c2-adec8fd90bcb",
+  "theme": "dark",
+  "snapshot": "afbe6cdfd8f56f360ad6486cb281dc68c43ff6d82b2518724e3d743feb6113b5",
+  "viewport": {
+    "mode": "native-window",
+    "logicalWidth": 1280,
+    "logicalHeight": 820,
+    "deviceScaleFactor": 2
+  },
+  "screenshot": "/Users/bytedance/.codex/worktrees/f409/t3code/apps/lynxtron/evidence/2026-07-28/T6-C1/sidebar/1280x820/populated/electron.png",
+  "dimensions": {
+    "format": "png",
+    "width": 2560,
+    "height": 1640
+  },
+  "measurements": "/Users/bytedance/.codex/worktrees/f409/t3code/apps/lynxtron/evidence/2026-07-28/T6-C1/sidebar/1280x820/populated/electron.web-measurements.json",
+  "rendererErrors": 0,
+  "expectedRendererErrors": [],
+  "capturedAt": "2026-07-28T13:35:08.311Z"
+}

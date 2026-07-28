@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "baseline": "electron-web",
+  "runtime": "lynx-devtool",
+  "viewport": {
+    "width": 1280,
+    "height": 820,
+    "deviceScaleFactor": 2
+  },
+  "fixture": {
+    "baseDir": "/tmp/t3code-sidebar-actions3.1Rwbxa",
+    "snapshotId": "50cc0d02d0a8698497a0c13b910f6e11cb3a55206ff88aefc0341698ada92192"
+  },
+  "menuItemBoxModels": {
+    "rename": {
+      "rect": { "x": 100, "y": 302, "width": 142, "height": 30 }
+    },
+    "archive": {
+      "rect": { "x": 100, "y": 332, "width": 142, "height": 30 }
+    },
+    "delete": {
+      "rect": { "x": 100, "y": 362, "width": 142, "height": 30 }
+    }
+  },
+  "operations": {
+    "rename": {
+      "status": "passed",
+      "title": "Investigate an intentionally long thread title that must truncate without moving actions",
+      "updatedAtBefore": "2020-01-01T00:00:01.000Z",
+      "updatedAtAfter": "2026-07-28T16:01:36.212Z"
+    },
+    "archive": {
+      "status": "passed",
+      "title": "Global keyboard bridge and focus order",
+      "archivedAt": "2026-07-28T16:01:36.523Z"
+    },
+    "delete": {
+      "status": "passed",
+      "title": "Finish the in-monorepo Lynxtron UI migration",
+      "deletedAt": "2026-07-28T16:01:36.840Z"
+    },
+    "create": {
+      "status": "passed",
+      "title": "New thread",
+      "createdThreadId": "9ca31e7d-fb3b-42df-af00-d93f6a838e7f"
+    },
+    "select": {
+      "status": "passed",
+      "title": "Investigate an intentionally long thread title that must truncate without moving actions"
+    }
+  },
+  "finalProjection": {
+    "activeThreadCount": 2,
+    "archivedThreadCount": 1,
+    "deletedThreadCount": 1
+  },
+  "authoritativeCapture": "after-fixed-settled.jpg",
+  "devToolConsoleErrors": 0
+}

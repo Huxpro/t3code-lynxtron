@@ -1,0 +1,31 @@
+{
+  "baseline": "electron-web",
+  "endpoint": "http://127.0.0.1:9333",
+  "target": {
+    "id": "B3E2CA80888BAF5850E0A195874D3DC4",
+    "title": "T3 Code (Dev)",
+    "url": "t3code-dev://app/#/draft/edf97e28-366d-4abe-9e50-2579fd1f8694"
+  },
+  "route": "settings-general",
+  "pathname": "/settings/general",
+  "interactionState": "default",
+  "rendererHref": "t3code-dev://app/#/settings/general",
+  "theme": "system",
+  "snapshot": "2eb4614a42200b7abd46b6f168efe412f9750ba5938c2d9c5081ff47eba773ba",
+  "viewport": {
+    "mode": "native-window",
+    "logicalWidth": 1440,
+    "logicalHeight": 900,
+    "deviceScaleFactor": 2
+  },
+  "screenshot": "/Users/bytedance/.codex/worktrees/f409/t3code/apps/lynxtron/evidence/2026-07-28/T5-F5/settings-general/1440x900/default/electron.png",
+  "dimensions": {
+    "format": "png",
+    "width": 2880,
+    "height": 1800
+  },
+  "measurements": "/Users/bytedance/.codex/worktrees/f409/t3code/apps/lynxtron/evidence/2026-07-28/T5-F5/settings-general/1440x900/default/electron.web-measurements.json",
+  "rendererErrors": 0,
+  "expectedRendererErrors": [],
+  "capturedAt": "2026-07-27T16:58:23.807Z"
+}
