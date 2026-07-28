@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "route": "new-thread",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "sidebar",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "workspaceHeader",
+      "web": "[data-chat-header]",
+      "lynx": "[data-chat-header]"
+    },
+    {
+      "id": "headline",
+      "web": "h1",
+      "lynx": ".hero__headline"
+    },
+    {
+      "id": "composer",
+      "web": ".chat-composer-glass-shell",
+      "lynx": ".composer-card"
+    },
+    {
+      "id": "checkoutBar",
+      "web": ".chat-composer-context-strip",
+      "lynx": ".context-strip"
+    }
+  ],
+  "typography": [
+    {
+      "id": "brand",
+      "web": ".sidebar-brand span",
+      "lynx": ".sidebar__title"
+    },
+    {
+      "id": "headline",
+      "web": "h1",
+      "lynx": ".hero__headline"
+    },
+    {
+      "id": "composerPlaceholder",
+      "web": "[data-testid=\"composer-editor\"]",
+      "lynx": ".composer__input"
+    },
+    {
+      "id": "composerControl",
+      "web": "[data-chat-provider-model-picker=\"true\"]",
+      "lynx": ".pill__label"
+    },
+    {
+      "id": "sidebarRow",
+      "web": "[data-sidebar=\"menu-button\"]",
+      "lynx": ".project-row__name"
+    }
+  ],
+  "colors": [
+    {
+      "id": "appBackground",
+      "web": "body",
+      "lynx": ".app-root"
+    },
+    {
+      "id": "sidebarBackground",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "composerBackground",
+      "web": "[data-chat-composer-form=\"true\"]",
+      "lynx": ".composer"
+    }
+  ]
+}

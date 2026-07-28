@@ -1,0 +1,13 @@
+{
+  "name": "fixture-package",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./conditioned": {
+      "lynx": "./src/conditioned.lynx.ts",
+      "browser": "./src/conditioned.web.ts",
+      "default": "./src/conditioned.ts"
+    },
+    "./shared": "./src/shared.ts"
+  }
+}

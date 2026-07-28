@@ -1,5 +1,11 @@
 # Maintainability Plans
 
+## Active port plan
+
+- `lynxtron-port-strategy.md` — Electron → Lynxtron 后续移植总纲
+
+## Existing plans
+
 1. `01-shared-model-normalization.md`
 2. `02-typed-ipc-boundaries.md`
 3. `03-split-codex-app-server-manager.md`

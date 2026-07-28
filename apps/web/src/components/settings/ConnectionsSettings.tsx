@@ -19,9 +19,7 @@ import {
   AuthReviewWriteScope,
   AuthStandardClientScopes,
   AuthTerminalOperateScope,
-  type AuthClientSession,
   type AuthEnvironmentScope,
-  type AuthPairingLink,
   type AdvertisedEndpoint,
   type DesktopDiscoveredSshHost,
   type DesktopSshEnvironmentTarget,
@@ -31,10 +29,13 @@ import {
 } from "@t3tools/contracts";
 import { connectionStatusText } from "@t3tools/client-runtime/connection";
 import {
+  projectAuthAccess,
+  type AuthClientSessionPresentation,
+} from "@t3tools/client-runtime/presentation/connections";
+import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
-import * as DateTime from "effect/DateTime";
 import * as Option from "effect/Option";
 
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
@@ -101,7 +102,6 @@ import {
   revokeServerPairingLink,
   isLoopbackHostname,
   usePrimarySessionState,
-  type ServerClientSessionRecord,
   type ServerPairingLinkRecord,
 } from "~/environments/primary";
 import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";
@@ -387,44 +387,6 @@ function endpointRowClassName(presentation: AccessSectionPresentation, isAvailab
   }
 
   return cn(ENDPOINT_ROW_CLASSNAME, !isAvailable && "bg-muted/24");
-}
-
-function sortDesktopPairingLinks(links: ReadonlyArray<ServerPairingLinkRecord>) {
-  return [...links].toSorted(
-    (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
-  );
-}
-
-function sortDesktopClientSessions(sessions: ReadonlyArray<ServerClientSessionRecord>) {
-  return [...sessions].toSorted((left, right) => {
-    if (left.current !== right.current) {
-      return left.current ? -1 : 1;
-    }
-    if (left.connected !== right.connected) {
-      return left.connected ? -1 : 1;
-    }
-    return new Date(right.issuedAt).getTime() - new Date(left.issuedAt).getTime();
-  });
-}
-
-function toDesktopPairingLinkRecord(pairingLink: AuthPairingLink): ServerPairingLinkRecord {
-  return {
-    ...pairingLink,
-    createdAt: DateTime.formatIso(pairingLink.createdAt),
-    expiresAt: DateTime.formatIso(pairingLink.expiresAt),
-  };
-}
-
-function toDesktopClientSessionRecord(clientSession: AuthClientSession): ServerClientSessionRecord {
-  return {
-    ...clientSession,
-    issuedAt: DateTime.formatIso(clientSession.issuedAt),
-    expiresAt: DateTime.formatIso(clientSession.expiresAt),
-    lastConnectedAt:
-      clientSession.lastConnectedAt === null
-        ? null
-        : DateTime.formatIso(clientSession.lastConnectedAt),
-  };
 }
 
 function selectPairingEndpoint(
@@ -889,10 +851,10 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
 });
 
 type ConnectedClientListRowProps = {
-  clientSession: ServerClientSessionRecord;
+  clientSession: AuthClientSessionPresentation;
   presentation?: AccessSectionPresentation;
   revokingClientSessionId: string | null;
-  onRevokeSession: (sessionId: ServerClientSessionRecord["sessionId"]) => void;
+  onRevokeSession: (sessionId: AuthClientSessionPresentation["sessionId"]) => void;
 };
 
 const ConnectedClientListRow = memo(function ConnectedClientListRow({
@@ -902,27 +864,13 @@ const ConnectedClientListRow = memo(function ConnectedClientListRow({
   onRevokeSession,
 }: ConnectedClientListRowProps) {
   const nowMs = useRelativeTimeTick(1_000);
-  const isLive = clientSession.current || clientSession.connected;
-  const lastConnectedAt = clientSession.lastConnectedAt;
-  const statusTooltip = isLive
-    ? lastConnectedAt
-      ? `Connected for ${formatElapsedDurationLabel(lastConnectedAt, nowMs)}`
+  const statusTooltip = clientSession.isLive
+    ? clientSession.lastConnectedAt
+      ? `Connected for ${formatElapsedDurationLabel(clientSession.lastConnectedAt, nowMs)}`
       : "Connected"
-    : lastConnectedAt
-      ? `Last connected at ${formatAccessTimestamp(lastConnectedAt)}`
+    : clientSession.lastConnectedAt
+      ? `Last connected at ${formatAccessTimestamp(clientSession.lastConnectedAt)}`
       : "Not connected yet.";
-  const deviceInfoBits = [
-    clientSession.client.deviceType !== "unknown"
-      ? clientSession.client.deviceType[0]?.toUpperCase() + clientSession.client.deviceType.slice(1)
-      : null,
-    clientSession.client.os ?? null,
-    clientSession.client.browser ?? null,
-    clientSession.client.ipAddress ?? null,
-  ].filter((value): value is string => value !== null);
-  const primaryLabel =
-    clientSession.client.label ??
-    ([clientSession.client.os, clientSession.client.browser].filter(Boolean).join(" · ") ||
-      clientSession.subject);
 
   return (
     <div className={accessRowClassName(presentation)}>
@@ -931,10 +879,10 @@ const ConnectedClientListRow = memo(function ConnectedClientListRow({
           <div className="flex min-h-5 items-center gap-1.5">
             <ConnectionStatusDot
               tooltipText={statusTooltip}
-              dotClassName={isLive ? "bg-success" : "bg-muted-foreground/30"}
-              pingClassName={isLive ? "bg-success/60 duration-2000" : null}
+              dotClassName={clientSession.isLive ? "bg-success" : "bg-muted-foreground/30"}
+              pingClassName={clientSession.isLive ? "bg-success/60 duration-2000" : null}
             />
-            <h3 className="text-sm font-medium text-foreground">{primaryLabel}</h3>
+            <h3 className="text-sm font-medium text-foreground">{clientSession.primaryLabel}</h3>
             {clientSession.current ? (
               <span className="text-[10px] text-muted-foreground/80 rounded-md border border-border/50 bg-muted/50 px-1 py-0.5">
                 This device
@@ -942,9 +890,9 @@ const ConnectedClientListRow = memo(function ConnectedClientListRow({
             ) : null}
           </div>
           <p className="text-xs text-muted-foreground">
-            {deviceInfoBits.length > 0 ? (
+            {clientSession.deviceInfoBits.length > 0 ? (
               <>
-                {deviceInfoBits.join(" · ")}
+                {clientSession.deviceInfoBits.join(" · ")}
                 <span aria-hidden> · </span>
               </>
             ) : null}
@@ -969,7 +917,7 @@ const ConnectedClientListRow = memo(function ConnectedClientListRow({
 });
 
 type AuthorizedClientsHeaderActionProps = {
-  clientSessions: ReadonlyArray<ServerClientSessionRecord>;
+  clientSessions: ReadonlyArray<AuthClientSessionPresentation>;
   isRevokingOtherClients: boolean;
   onRevokeOtherClients: () => void;
 };
@@ -1149,11 +1097,11 @@ type PairingClientsListProps = {
   presentation?: AccessSectionPresentation;
   isLoading: boolean;
   pairingLinks: ReadonlyArray<ServerPairingLinkRecord>;
-  clientSessions: ReadonlyArray<ServerClientSessionRecord>;
+  clientSessions: ReadonlyArray<AuthClientSessionPresentation>;
   revokingPairingLinkId: string | null;
   revokingClientSessionId: string | null;
   onRevokePairingLink: (id: string) => void;
-  onRevokeClientSession: (sessionId: ServerClientSessionRecord["sessionId"]) => void;
+  onRevokeClientSession: (sessionId: AuthClientSessionPresentation["sessionId"]) => void;
 };
 
 const PairingClientsList = memo(function PairingClientsList({
@@ -1893,20 +1841,19 @@ export function ConnectionsSettings() {
   const desktopPairingLinks = useMemo(() => {
     const event = authAccessChanges.data;
     if (event?.type !== "snapshot") return [];
-    return sortDesktopPairingLinks(
-      event.payload.pairingLinks.map((pairingLink: AuthPairingLink) =>
-        toDesktopPairingLinkRecord(pairingLink),
-      ),
+    const presentation = projectAuthAccess(event.payload);
+    const credentials = new Map(
+      event.payload.pairingLinks.map((pairingLink) => [pairingLink.id, pairingLink.credential]),
     );
+    return presentation.pairingLinks.map<ServerPairingLinkRecord>((pairingLink) => ({
+      ...pairingLink,
+      credential: credentials.get(pairingLink.id) ?? "",
+    }));
   }, [authAccessChanges.data]);
   const desktopClientSessions = useMemo(() => {
     const event = authAccessChanges.data;
     if (event?.type !== "snapshot") return [];
-    return sortDesktopClientSessions(
-      event.payload.clientSessions.map((clientSession: AuthClientSession) =>
-        toDesktopClientSessionRecord(clientSession),
-      ),
-    );
+    return projectAuthAccess(event.payload).clientSessions;
   }, [authAccessChanges.data]);
   const isLocalBackendNetworkAccessible = desktopBridge
     ? desktopServerExposureState?.mode === "network-accessible"
@@ -2057,7 +2004,7 @@ export function ConnectionsSettings() {
   }, []);
 
   const handleRevokeDesktopClientSession = useCallback(
-    async (sessionId: ServerClientSessionRecord["sessionId"]) => {
+    async (sessionId: AuthClientSessionPresentation["sessionId"]) => {
       setRevokingDesktopClientSessionId(sessionId);
       setDesktopAccessManagementMutationError(null);
       try {

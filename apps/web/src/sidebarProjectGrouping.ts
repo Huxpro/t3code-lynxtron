@@ -1,4 +1,4 @@
-import { scopeProjectRef } from "@t3tools/client-runtime/environment";
+import { scopeProjectRef } from "@t3tools/client-runtime/environment/scoped";
 import type { EnvironmentId, ScopedProjectRef } from "@t3tools/contracts";
 import {
   deriveLogicalProjectKeyFromSettings,

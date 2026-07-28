@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } 
 import { ColorSelector } from "../color-selector";
 import { Button } from "../ui/button";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
-import { normalizeProviderAccentColor } from "../../providerInstances";
+import { normalizeProviderAccentColor } from "@t3tools/client-runtime/presentation/provider";
 import { cn } from "../../lib/utils";
 
 const PROVIDER_ACCENT_SWATCHES = [

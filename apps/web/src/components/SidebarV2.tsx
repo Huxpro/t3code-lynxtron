@@ -23,15 +23,11 @@ import {
   CircleDashedIcon,
   ClockIcon,
   CopyIcon,
-  FolderIcon,
-  FolderPlusIcon,
   GitBranchIcon,
   EllipsisIcon,
   MessageSquareIcon,
   PlusIcon,
-  SearchIcon,
   ServerIcon,
-  SquarePenIcon,
   Trash2Icon,
   Undo2Icon,
 } from "lucide-react";
@@ -130,10 +126,12 @@ import {
 import { ProjectFavicon } from "./ProjectFavicon";
 import { ProviderInstanceIcon } from "./chat/ProviderInstanceIcon";
 import { getTriggerDisplayModelLabel } from "./chat/providerIconUtils";
-import { deriveProviderInstanceEntries, type ProviderInstanceEntry } from "../providerInstances";
+import {
+  deriveProviderInstanceEntries,
+  type ProviderInstanceEntry,
+} from "@t3tools/client-runtime/presentation/provider";
 import { primaryServerProvidersAtom } from "../state/server";
 import { stackedThreadToast, toastManager } from "./ui/toast";
-import { CommandDialogTrigger } from "./ui/command";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -145,13 +143,13 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Input } from "./ui/input";
-import { Kbd } from "./ui/kbd";
-import { Menu, MenuPopup, MenuRadioGroup, MenuRadioItem, MenuTrigger } from "./ui/menu";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "./ui/select";
-import { SidebarContent, SidebarGroup, SidebarMenuButton, useSidebar } from "./ui/sidebar";
+import { SidebarContent, SidebarGroup, useSidebar } from "./ui/sidebar";
 import { SidebarChromeFooter, SidebarChromeHeader } from "./sidebar/SidebarChrome";
+import { SidebarV2ControlsSurface } from "./sidebar/SidebarV2ControlsSurface";
+import { SidebarV2RowSurface } from "./sidebar/SidebarV2RowSurface";
 import { Popover, PopoverPopup, PopoverTrigger } from "./ui/popover";
-import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { TooltipPopup, TooltipProvider } from "./ui/tooltip";
 import { useComposerDraftStore } from "../composerDraftStore";
 
 // Settled-tail paging: recent history is the common lookup; the deep tail
@@ -180,23 +178,6 @@ function threadTimeLabel(thread: SidebarThreadSummary): string {
 function settledTimeLabel(thread: SidebarThreadSummary): string {
   const timestamp = resolveSettledTimestamp(thread);
   return timestamp === null ? "" : compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
-}
-
-// Floats at the row's right edge, vertically centered, while the jump
-// modifier is held. An overlay pill instead of an inline slot: the hint
-// must neither displace the status/time label (holding ⌘ used to blank
-// out "Working") nor shift any layout when it appears. pointer-events-none
-// so it never swallows clicks meant for the settle/un-settle buttons it
-// can overlap.
-function JumpHintBadge(props: { label: string }) {
-  return (
-    <span
-      aria-hidden
-      className="pointer-events-none absolute right-1.5 top-1/2 z-10 inline-flex h-5 -translate-y-1/2 items-center rounded-full border border-border/80 bg-background/95 px-1.5 font-mono text-[10px] font-medium tracking-tight text-foreground shadow-sm"
-    >
-      {props.label}
-    </span>
-  );
 }
 
 // Self-ticking so only this span re-renders each second, not the whole row.
@@ -649,25 +630,6 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
     [openPrLink, pr],
   );
 
-  // All Sidebar V2 rows share one surface model. Live threads used to look
-  // like elevated cards while settled threads were plain rows, leaving neither
-  // a useful hierarchy nor a reliable hover cue. Status now lives in the row
-  // content; surface is reserved for interaction (hover, multi-select, route).
-  const rowSurfaceClassName = cn(
-    "group/v2-row relative w-full cursor-pointer overflow-hidden rounded-md text-left outline-none select-none",
-    props.isActive
-      ? "bg-sidebar-row-active text-sidebar-foreground"
-      : isSelected
-        ? "bg-sidebar-row-selected text-sidebar-foreground"
-        : shouldRecede
-          ? "text-sidebar-muted-foreground/75 hover:bg-sidebar-row-hover hover:text-sidebar-foreground"
-          : "bg-transparent text-sidebar-foreground hover:bg-sidebar-row-hover",
-    isInFlight &&
-      !props.isActive &&
-      !isSelected &&
-      "opacity-70 transition-opacity hover:opacity-100",
-  );
-
   const title = isRenaming ? (
     <input
       autoFocus
@@ -684,7 +646,7 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
   ) : (
     <span
       className={cn(
-        "min-w-0 flex-1 text-sm",
+        "sidebar-v2-row-title min-w-0 flex-1 text-sm",
         shouldRecede ? "font-normal" : "font-medium",
         variant === "card"
           ? cn(
@@ -730,259 +692,102 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
       </button>
     ) : null;
 
-  if (variant === "slim") {
-    return (
-      <li
-        data-thread-item
-        className="list-none [content-visibility:auto] [contain-intrinsic-size:auto_34px]"
-      >
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <div
-                role="button"
-                tabIndex={0}
-                data-testid="sidebar-v2-row-slim"
-                className={cn(rowSurfaceClassName, "flex h-9 items-center gap-2.5 px-2.5")}
-                onClick={handleClick}
-                onDoubleClick={handleDoubleClick}
-                onKeyDown={handleKeyDown}
-                onContextMenu={handleContextMenu}
-              />
-            }
-          >
-            {/* Settled history recedes: dimmed favicon at rest, restored on
-              hover so the tail stays scannable when you're hunting. */}
-            <span
-              className={cn(
-                "shrink-0 transition-opacity",
-                !props.isActive &&
-                  "opacity-40 grayscale group-hover/v2-row:opacity-100 group-hover/v2-row:grayscale-0",
-              )}
-            >
-              <ProjectFavicon
-                environmentId={thread.environmentId}
-                cwd={props.projectCwd ?? ""}
-                className="size-4"
-                fallbackIcon={MessageSquareIcon}
-              />
-            </span>
-            {title}
-            {/* The PR badge stays outside the hover-fading slot: it must
-              remain visible AND clickable while the row is hovered. Only
-              the time/jump label yields to the settle affordance. */}
-            {prBadge}
-            <span className="relative ml-auto flex h-6 min-w-8 shrink-0 items-center justify-end">
-              <span className="inline-flex justify-end tabular-nums text-muted-foreground/55 transition-opacity group-hover/v2-row:opacity-0">
-                {variantAction === "unsnooze" && props.snoozeWakeLabelText !== null ? (
-                  // Snoozed rows show when they come BACK, not when they were
-                  // last touched — the return ticket is the row's whole story.
-                  <span className="text-xs text-blue-600 tabular-nums dark:text-blue-400">
-                    {props.snoozeWakeLabelText}
-                  </span>
-                ) : isWoke ? (
-                  // A wake can land straight in the settled tail (e.g. PR
-                  // merged while snoozed); the signal must survive the trip.
-                  <span
-                    role="status"
-                    aria-label="Woke from snooze"
-                    className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-300"
-                  >
-                    <AlarmClockIcon aria-hidden className="size-3" />
-                    Woke
-                  </span>
-                ) : (
-                  <span className="text-xs">
-                    {variantAction === "unsettle"
-                      ? settledTimeLabel(thread)
-                      : threadTimeLabel(thread)}
-                  </span>
-                )}
-              </span>
-              {variantAction === "unsnooze" ? (
-                !props.snoozeSupported ? null : (
-                  <button
-                    type="button"
-                    aria-label="Wake thread now"
-                    onClick={handleUnsnoozeClick}
-                    className="absolute inset-y-0 right-0 inline-flex cursor-pointer items-center gap-1 rounded-md bg-transparent px-2 text-xs text-muted-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover/v2-row:opacity-100"
-                  >
-                    <AlarmClockOffIcon className="size-3" />
-                  </button>
-                )
-              ) : !props.settlementSupported ? null : variantAction === "unsettle" ? (
-                <button
-                  type="button"
-                  aria-label="Un-settle thread"
-                  onClick={handleUnsettleClick}
-                  className="absolute inset-y-0 right-0 inline-flex cursor-pointer items-center gap-1 rounded-md bg-transparent px-2 text-xs text-muted-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover/v2-row:opacity-100"
-                >
-                  <Undo2Icon className="size-3" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  aria-label="Settle thread"
-                  onClick={handleSettleClick}
-                  className="absolute inset-y-0 right-0 inline-flex cursor-pointer items-center gap-1 rounded-md bg-transparent px-2 text-xs text-muted-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover/v2-row:opacity-100"
-                >
-                  <CheckIcon className="size-3" />
-                </button>
-              )}
-            </span>
-            {props.jumpLabel ? <JumpHintBadge label={props.jumpLabel} /> : null}
-          </TooltipTrigger>
-          {detailsTooltip}
-        </Tooltip>
-      </li>
-    );
-  }
-
   const diff = latestTurnDiff(thread);
+  const topStatusSurface =
+    topStatus === null
+      ? null
+      : {
+          label: topStatus.label,
+          className: topStatus.className,
+          icon:
+            topStatus.icon === "working" ? (
+              <CircleDashedIcon aria-hidden className="size-4 shrink-0" />
+            ) : topStatus.icon === "done" ? (
+              <CircleCheckIcon aria-hidden className="size-4 shrink-0" />
+            ) : topStatus.icon === "woke" ? (
+              <AlarmClockIcon aria-hidden className="size-4 shrink-0" />
+            ) : null,
+          workingDuration:
+            status === "working" ? (
+              <span aria-hidden>
+                <WorkingDuration startedAt={resolveWorkingStartedAt(thread)} />
+              </span>
+            ) : null,
+        };
 
   return (
-    <li
-      data-thread-item
-      className="list-none py-0.5 [content-visibility:auto] [contain-intrinsic-size:auto_96px]"
-    >
-      <Tooltip>
-        <TooltipTrigger
-          render={
-            <div
-              role="button"
-              tabIndex={0}
-              data-testid="sidebar-v2-row-card"
-              className={rowSurfaceClassName}
-              onClick={handleClick}
-              onDoubleClick={handleDoubleClick}
-              onKeyDown={handleKeyDown}
-              onContextMenu={handleContextMenu}
+    <SidebarV2RowSurface
+      variant={variant}
+      variantAction={variantAction}
+      isActive={props.isActive}
+      isSelected={isSelected}
+      shouldRecede={shouldRecede}
+      isInFlight={isInFlight}
+      isUnread={isUnread}
+      isWoke={isWoke}
+      settlementSupported={props.settlementSupported}
+      snoozeSupported={props.snoozeSupported}
+      showSnoozeButton={showSnoozeButton}
+      snoozeMenuOpen={snoozeMenuOpen}
+      snoozeWakeLabelText={props.snoozeWakeLabelText}
+      projectTitle={props.projectTitle}
+      threadTitle={thread.title}
+      branch={thread.branch}
+      threadTimeLabel={threadTimeLabel(thread)}
+      settledTimeLabel={settledTimeLabel(thread)}
+      topStatus={topStatusSurface}
+      jumpLabel={props.jumpLabel}
+      favicon={
+        <ProjectFavicon
+          environmentId={thread.environmentId}
+          cwd={props.projectCwd ?? ""}
+          className={variant === "slim" ? "size-4" : "size-4 shrink-0"}
+          {...(variant === "slim" ? { fallbackIcon: MessageSquareIcon } : {})}
+        />
+      }
+      title={title}
+      prBadge={prBadge}
+      diff={diff}
+      remoteIndicator={
+        isRemote ? (
+          <span className="inline-flex shrink-0 items-center text-sidebar-muted-foreground/70">
+            <ServerIcon aria-hidden className="size-3.5" />
+          </span>
+        ) : null
+      }
+      providerIndicator={
+        driverKind ? (
+          <span className="inline-flex shrink-0 items-center opacity-60">
+            <ProviderInstanceIcon
+              driverKind={driverKind}
+              displayName={thread.session?.providerName ?? modelInstanceId}
+              iconClassName="size-3.5"
             />
-          }
-        >
-          <div className="relative z-10 h-[4.875rem] px-2.5 py-2">
-            <div className="flex h-5 min-w-0 items-center gap-1.5">
-              <ProjectFavicon
-                environmentId={thread.environmentId}
-                cwd={props.projectCwd ?? ""}
-                className="size-4 shrink-0"
-              />
-              {props.projectTitle ? (
-                <span
-                  className={cn(
-                    "min-w-0 flex-1 truncate text-xs text-muted-foreground/85",
-                    shouldRecede ? "font-normal" : "font-medium",
-                  )}
-                >
-                  {props.projectTitle}
-                </span>
-              ) : (
-                <span className="flex-1" />
-              )}
-              <span className="relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
-                <span
-                  className={cn(
-                    "tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
-                    snoozeMenuOpen && "opacity-0",
-                  )}
-                >
-                  {topStatus ? (
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1 font-medium",
-                        topStatus.className,
-                      )}
-                    >
-                      {topStatus.icon === "working" ? (
-                        <CircleDashedIcon aria-hidden className="size-4 shrink-0" />
-                      ) : topStatus.icon === "done" ? (
-                        <CircleCheckIcon aria-hidden className="size-4 shrink-0" />
-                      ) : topStatus.icon === "woke" ? (
-                        <AlarmClockIcon aria-hidden className="size-4 shrink-0" />
-                      ) : null}
-                      {/* The label alone is the live region: a role="status"
-                          wrapper around the ticking duration would make
-                          screen readers announce every second. */}
-                      <span role="status">{topStatus.label}</span>
-                      {status === "working" ? (
-                        <span aria-hidden>
-                          <WorkingDuration startedAt={resolveWorkingStartedAt(thread)} />
-                        </span>
-                      ) : null}
-                    </span>
-                  ) : (
-                    threadTimeLabel(thread)
-                  )}
-                </span>
-                {props.settlementSupported || showSnoozeButton ? (
-                  <span
-                    className={cn(
-                      "absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/v2-row:opacity-100",
-                      snoozeMenuOpen && "opacity-100",
-                    )}
-                  >
-                    {showSnoozeButton ? (
-                      <SnoozePopoverButton
-                        open={snoozeMenuOpen}
-                        onOpenChange={setSnoozeMenuOpen}
-                        onSnooze={handleSnoozePreset}
-                      />
-                    ) : null}
-                    {props.settlementSupported ? (
-                      <button
-                        type="button"
-                        aria-label="Settle thread"
-                        onClick={handleSettleClick}
-                        className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-transparent px-2 text-xs text-muted-foreground hover:text-foreground"
-                      >
-                        <CheckIcon className="size-3" />
-                        Settle
-                      </button>
-                    ) : null}
-                  </span>
-                ) : null}
-              </span>
-            </div>
-            <div className="mt-1 flex min-w-0">{title}</div>
-            <div className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground/75">
-              {thread.branch ? (
-                <span className="min-w-0 flex-1 truncate whitespace-nowrap">{thread.branch}</span>
-              ) : (
-                <span className="flex-1" />
-              )}
-              {prBadge}
-              {diff ? (
-                <span className="shrink-0 font-mono">
-                  <span className="text-emerald-600 dark:text-emerald-400">+{diff.insertions}</span>{" "}
-                  <span className="text-red-600 dark:text-red-400">−{diff.deletions}</span>
-                </span>
-              ) : null}
-              <span
-                aria-hidden
-                className="pointer-events-none ml-auto inline-flex shrink-0 items-center gap-1"
-              >
-                {isRemote ? (
-                  <span className="inline-flex shrink-0 items-center text-sidebar-muted-foreground/70">
-                    <ServerIcon aria-hidden className="size-3.5" />
-                  </span>
-                ) : null}
-                {driverKind ? (
-                  <span className="inline-flex shrink-0 items-center opacity-60">
-                    <ProviderInstanceIcon
-                      driverKind={driverKind}
-                      displayName={thread.session?.providerName ?? modelInstanceId}
-                      iconClassName="size-3.5"
-                    />
-                  </span>
-                ) : null}
-              </span>
-            </div>
-          </div>
-          {props.jumpLabel ? <JumpHintBadge label={props.jumpLabel} /> : null}
-        </TooltipTrigger>
-        {detailsTooltip}
-      </Tooltip>
-    </li>
+          </span>
+        ) : null
+      }
+      detailsTooltip={detailsTooltip}
+      snoozeControl={
+        showSnoozeButton ? (
+          <SnoozePopoverButton
+            open={snoozeMenuOpen}
+            onOpenChange={setSnoozeMenuOpen}
+            onSnooze={handleSnoozePreset}
+          />
+        ) : null
+      }
+      settleIcon={<CheckIcon className="size-3" />}
+      unsettleIcon={<Undo2Icon className="size-3" />}
+      unsnoozeIcon={<AlarmClockOffIcon className="size-3" />}
+      wokeIcon={<AlarmClockIcon aria-hidden className="size-3" />}
+      onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
+      onKeyDown={handleKeyDown}
+      onContextMenu={handleContextMenu}
+      onSettleClick={handleSettleClick}
+      onUnsettleClick={handleUnsettleClick}
+      onUnsnoozeClick={handleUnsnoozeClick}
+    />
   );
 });
 
@@ -2211,153 +2016,57 @@ export default function SidebarV2() {
   const newThreadShortcutLabel =
     shortcutLabelForCommand(keybindings, "chat.newLocal") ??
     shortcutLabelForCommand(keybindings, "chat.new");
+  const projectScopeOptions = projectGroups.map((project) => ({
+    scopeKey: project.projectKey,
+    displayName: project.displayName,
+    favicon: (
+      <ProjectFavicon
+        environmentId={project.environmentId}
+        cwd={project.workspaceRoot}
+        className="size-4 shrink-0"
+      />
+    ),
+    actions: (
+      <button
+        type="button"
+        aria-label={`Project actions for ${project.displayName}`}
+        title={`Project actions for ${project.displayName}`}
+        className="ml-auto inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground/55 outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={(event) => {
+          void handleProjectActions(event, project);
+        }}
+      >
+        <EllipsisIcon className="size-3.5" />
+      </button>
+    ),
+  }));
   return (
     <>
       <SidebarChromeHeader isElectron={isElectron} />
       <SidebarContent className="gap-0">
-        <SidebarGroup className="px-2 pb-2 pt-3">
-          <div className="flex items-center gap-1">
-            <div className="min-w-0 flex-1">
-              <CommandDialogTrigger
-                render={
-                  <SidebarMenuButton
-                    size="sm"
-                    type="button"
-                    aria-label="Search threads and commands"
-                    className="h-8 gap-2 rounded-md border-0 bg-transparent px-2 py-1.5 text-sm font-medium text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
-                    data-testid="command-palette-trigger"
-                  />
-                }
-              >
-                <SearchIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
-                <div className="flex-1 truncate text-left">Search</div>
-                {commandPaletteShortcutLabel ? (
-                  <Kbd className="h-4 min-w-0 rounded-sm bg-sidebar-control-surface px-1.5 text-[10px] text-sidebar-muted-foreground ring-1 ring-sidebar-border">
-                    {commandPaletteShortcutLabel}
-                  </Kbd>
-                ) : null}
-              </CommandDialogTrigger>
-            </div>
-            <div className="shrink-0">
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <SidebarMenuButton
-                      size="sm"
-                      type="button"
-                      className="relative size-8 justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
-                      onClick={handleNewThreadClick}
-                      disabled={projects.length === 0}
-                      aria-label="New thread"
-                    />
-                  }
-                >
-                  <SquarePenIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
-                  <span
-                    className="pointer-events-none absolute left-1/2 top-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
-                    aria-hidden="true"
-                  />
-                </TooltipTrigger>
-                <TooltipPopup side="right">
-                  {newThreadShortcutLabel ? `New thread (${newThreadShortcutLabel})` : "New thread"}
-                </TooltipPopup>
-              </Tooltip>
-            </div>
-          </div>
-        </SidebarGroup>
-        {projectGroups.length > 0 ? (
-          <SidebarGroup className="px-2 pb-2 pt-0">
-            <div className="flex items-center gap-1">
-              <Menu open={projectScopeMenuOpen} onOpenChange={setProjectScopeMenuOpen}>
-                <MenuTrigger
-                  aria-label="Filter threads by project"
-                  className="flex h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md px-2 text-left text-sm font-medium text-sidebar-muted-foreground outline-none hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
-                >
-                  {scopedProjectGroup ? (
-                    <ProjectFavicon
-                      environmentId={scopedProjectGroup.environmentId}
-                      cwd={scopedProjectGroup.workspaceRoot}
-                      className="size-4 shrink-0"
-                    />
-                  ) : (
-                    <FolderIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
-                  )}
-                  <span className="min-w-0 flex-1 truncate">
-                    {scopedProjectGroup?.displayName ?? "All projects"}
-                  </span>
-                  <ChevronDownIcon className="size-4 shrink-0 text-sidebar-muted-foreground/70" />
-                </MenuTrigger>
-                <MenuPopup align="start" className="w-(--anchor-width)">
-                  <MenuRadioGroup
-                    value={projectScopeKey ?? "all"}
-                    onValueChange={(value) =>
-                      setProjectScopeKey(value === "all" ? null : (value as string))
-                    }
-                  >
-                    <MenuRadioItem
-                      value="all"
-                      closeOnClick
-                      className="h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
-                    >
-                      <FolderIcon className="size-4 shrink-0" />
-                      <span className="min-w-0 truncate text-sm">All projects</span>
-                    </MenuRadioItem>
-                    {projectGroups.map((project) => {
-                      const scopeKey = project.projectKey;
-                      return (
-                        <MenuRadioItem
-                          key={scopeKey}
-                          value={scopeKey}
-                          closeOnClick
-                          className="h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
-                        >
-                          <ProjectFavicon
-                            environmentId={project.environmentId}
-                            cwd={project.workspaceRoot}
-                            className="size-4 shrink-0"
-                          />
-                          <span className="min-w-0 truncate text-sm">{project.displayName}</span>
-                          <button
-                            type="button"
-                            aria-label={`Project actions for ${project.displayName}`}
-                            title={`Project actions for ${project.displayName}`}
-                            className="ml-auto inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground/55 outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-                            onPointerDown={(event) => event.stopPropagation()}
-                            onClick={(event) => {
-                              void handleProjectActions(event, project);
-                            }}
-                          >
-                            <EllipsisIcon className="size-3.5" />
-                          </button>
-                        </MenuRadioItem>
-                      );
-                    })}
-                  </MenuRadioGroup>
-                </MenuPopup>
-              </Menu>
-              <Tooltip>
-                <TooltipTrigger
-                  render={
-                    <SidebarMenuButton
-                      size="sm"
-                      className="relative size-8 shrink-0 justify-center rounded-md bg-transparent p-0 text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
-                      onClick={openAddProjectCommandPalette}
-                      type="button"
-                      aria-label="New project"
-                    />
-                  }
-                >
-                  <FolderPlusIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
-                  <span
-                    className="pointer-events-none absolute left-1/2 top-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
-                    aria-hidden="true"
-                  />
-                </TooltipTrigger>
-                <TooltipPopup side="right">New project</TooltipPopup>
-              </Tooltip>
-            </div>
-          </SidebarGroup>
-        ) : null}
+        <SidebarV2ControlsSurface
+          commandPaletteShortcutLabel={commandPaletteShortcutLabel}
+          newThreadShortcutLabel={newThreadShortcutLabel}
+          newThreadDisabled={projects.length === 0}
+          onNewThreadClick={handleNewThreadClick}
+          projectScopeOptions={projectScopeOptions}
+          projectScopeKey={projectScopeKey}
+          onProjectScopeKeyChange={setProjectScopeKey}
+          projectScopeMenuOpen={projectScopeMenuOpen}
+          onProjectScopeMenuOpenChange={setProjectScopeMenuOpen}
+          scopedFavicon={
+            scopedProjectGroup ? (
+              <ProjectFavicon
+                environmentId={scopedProjectGroup.environmentId}
+                cwd={scopedProjectGroup.workspaceRoot}
+                className="size-4 shrink-0"
+              />
+            ) : null
+          }
+          scopedDisplayName={scopedProjectGroup?.displayName ?? null}
+          onNewProjectClick={openAddProjectCommandPalette}
+        />
         <SidebarGroup className="min-h-0 flex-1 overflow-y-auto px-2 py-1 [scrollbar-gutter:stable]">
           <TooltipProvider
             key="sidebar-thread-tooltips-150"

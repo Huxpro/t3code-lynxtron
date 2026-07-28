@@ -1,0 +1,9 @@
+/*
+ * Lynx-only Tailwind CSS v3 entry.
+ *
+ * The Web application keeps its Tailwind v4 pipeline. Rspeedy compiles this
+ * file through postcss.config.mjs and @lynx-js/tailwind-preset so the shared
+ * Web composition can retain its utility class names in the Lynx renderer.
+ */
+@tailwind components;
+@tailwind utilities;

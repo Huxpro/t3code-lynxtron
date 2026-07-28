@@ -2,7 +2,7 @@ import { type ServerProvider } from "@t3tools/contracts";
 import { memo } from "react";
 import { InfoIcon, XIcon } from "lucide-react";
 import { cn } from "~/lib/utils";
-import { formatProviderDriverKindLabel } from "../../providerModels";
+import { formatProviderDriverKindLabel } from "@t3tools/client-runtime/presentation/provider";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 
 export function getProviderStatusBannerKey(status: ServerProvider | null): string | null {

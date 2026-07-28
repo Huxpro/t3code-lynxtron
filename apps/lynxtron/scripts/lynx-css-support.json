@@ -1,0 +1,22 @@
+{
+  "syntax": {
+    "oklch(": "build-transform",
+    "color-mix(": "build-transform",
+    "@custom-variant": "drop",
+    "::view-transition": "drop",
+    ":hover": "state-adapter",
+    ":focus-visible": "state-adapter",
+    "position: fixed": "probe",
+    "position: sticky": "probe",
+    "display: grid": "rewrite",
+    "backdrop-filter": "drop"
+  },
+  "unsupportedUtilityPatterns": [
+    "^(hover|focus|focus-visible|group-hover):",
+    "^grid($|-)",
+    "^fixed$",
+    "^sticky$",
+    "^backdrop-",
+    "^select-text$"
+  ]
+}

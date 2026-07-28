@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "route": "sidebar-v2-host-populated",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "sidebar",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "workspaceHeader",
+      "web": "[data-chat-header]",
+      "lynx": "[data-chat-header]"
+    },
+    {
+      "id": "composer",
+      "web": ".chat-composer-glass-shell",
+      "lynx": ".composer-card"
+    },
+    {
+      "id": "sidebarSearch",
+      "web": "[data-sidebar-version=\"v2\"] [data-slot=\"command-dialog-trigger\"]",
+      "lynx": ".sidebar-v2-search"
+    },
+    {
+      "id": "sidebarFirstRowTitle",
+      "web": "[data-sidebar-version=\"v2\"] .sidebar-v2-row-title",
+      "lynx": ".sidebar-v2-row-title"
+    }
+  ],
+  "typography": [
+    {
+      "id": "brand",
+      "web": ".sidebar-brand-code-label",
+      "lynx": ".sidebar-brand-code-label"
+    },
+    {
+      "id": "sidebarSearch",
+      "web": "[data-sidebar-version=\"v2\"] [data-slot=\"command-dialog-trigger\"]",
+      "lynx": ".sidebar-v2-search-label"
+    },
+    {
+      "id": "sidebarFirstRowTitle",
+      "web": "[data-sidebar-version=\"v2\"] .sidebar-v2-row-title",
+      "lynx": ".sidebar-v2-row-title"
+    }
+  ],
+  "colors": [
+    {
+      "id": "appBackground",
+      "web": "body",
+      "lynx": ".app-root"
+    },
+    {
+      "id": "sidebarBackground",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "composerBackground",
+      "web": "[data-chat-composer-form=\"true\"]",
+      "lynx": ".composer"
+    },
+    {
+      "id": "sidebarSearchBackground",
+      "web": "[data-sidebar-version=\"v2\"] [data-slot=\"command-dialog-trigger\"]",
+      "lynx": ".sidebar-v2-search"
+    }
+  ]
+}

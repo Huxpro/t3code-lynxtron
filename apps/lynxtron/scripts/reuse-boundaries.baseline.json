@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "boundarySha256": "67f5a53ff5a6cd0742d0c15e57d38b526237e6d09be6b752558eb6208e4e1fde",
+  "reviewedFor": "T6-C1 reachable index entry plus physical shared AppSidebarLayout, Sidebar, and current Header roots"
+}

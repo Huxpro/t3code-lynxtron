@@ -1,11 +1,9 @@
-import {
-  EnvironmentId,
-  ProjectId,
+import type {
+  EnvironmentId as EnvironmentIdType,
+  ProjectId as ProjectIdType,
+  ScopedProjectRef,
+  ScopedThreadRef,
   ThreadId,
-  type EnvironmentId as EnvironmentIdType,
-  type ProjectId as ProjectIdType,
-  type ScopedProjectRef,
-  type ScopedThreadRef,
 } from "@t3tools/contracts";
 
 export function scopeProjectRef(
@@ -41,7 +39,7 @@ function parseScopedKey(key: string): { environmentId: EnvironmentIdType; localI
     return null;
   }
   return {
-    environmentId: EnvironmentId.make(key.slice(0, separatorIndex)),
+    environmentId: key.slice(0, separatorIndex) as EnvironmentIdType,
     localId: key.slice(separatorIndex + 1),
   };
 }
@@ -53,7 +51,7 @@ export function parseScopedProjectKey(key: string): ScopedProjectRef | null {
   }
   return {
     environmentId: parsed.environmentId,
-    projectId: ProjectId.make(parsed.localId),
+    projectId: parsed.localId as ProjectIdType,
   };
 }
 
@@ -64,6 +62,6 @@ export function parseScopedThreadKey(key: string): ScopedThreadRef | null {
   }
   return {
     environmentId: parsed.environmentId,
-    threadId: ThreadId.make(parsed.localId),
+    threadId: parsed.localId as ThreadId,
   };
 }

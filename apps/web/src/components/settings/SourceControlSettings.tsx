@@ -1,11 +1,13 @@
 import { ChevronDownIcon, GitPullRequestIcon, RefreshCwIcon } from "lucide-react";
 import * as Duration from "effect/Duration";
-import * as Option from "effect/Option";
 import { useState, type ReactNode } from "react";
+import {
+  projectSourceControlDiscoveryItem,
+  type SourceControlItemPresentation,
+} from "@t3tools/client-runtime/presentation/source-control";
 import type {
   SourceControlProviderKind,
   SourceControlDiscoveryResult,
-  SourceControlProviderAuth,
   SourceControlProviderDiscoveryItem,
   VcsDriverKind,
   VcsDiscoveryItem,
@@ -81,33 +83,6 @@ function normalizeFetchIntervalSeconds(value: number | null): number {
   return Math.max(0, Math.round(value));
 }
 
-function optionLabel(value: Option.Option<string>): string | null {
-  return Option.getOrNull(value);
-}
-
-function isProviderDiscoveryItem(
-  item: VcsDiscoveryItem | SourceControlProviderDiscoveryItem,
-): item is SourceControlProviderDiscoveryItem {
-  return "auth" in item;
-}
-
-function isVcsNotReady(item: VcsDiscoveryItem | SourceControlProviderDiscoveryItem): boolean {
-  return !isProviderDiscoveryItem(item) && !item.implemented;
-}
-
-function authPresentation(auth: SourceControlProviderAuth): {
-  readonly label: string;
-  readonly badge: "warning" | null;
-} {
-  if (auth.status === "authenticated") {
-    return { label: "Authenticated", badge: null };
-  }
-  if (auth.status === "unauthenticated") {
-    return { label: "Not authenticated", badge: "warning" };
-  }
-  return { label: "Status unknown", badge: null };
-}
-
 function RedactedAccount(props: { readonly account: string | null }) {
   return (
     <RedactedSensitiveText
@@ -119,22 +94,21 @@ function RedactedAccount(props: { readonly account: string | null }) {
   );
 }
 
-function itemStatusDot(item: VcsDiscoveryItem | SourceControlProviderDiscoveryItem): string {
-  if (isVcsNotReady(item)) return "bg-muted-foreground/35";
-  if (item.status !== "available") return "bg-warning";
-  if (isProviderDiscoveryItem(item) && item.auth.status !== "authenticated") return "bg-warning";
-  return "bg-success";
-}
-
 function SourceControlItemMark({
-  item,
+  presentation,
 }: {
-  readonly item: VcsDiscoveryItem | SourceControlProviderDiscoveryItem;
+  readonly presentation: SourceControlItemPresentation;
 }) {
-  const dotClassName = itemStatusDot(item);
-  const Icon = isProviderDiscoveryItem(item)
-    ? SOURCE_CONTROL_PROVIDER_ICONS[item.kind]
-    : VCS_ICONS[item.kind];
+  const dotClassName =
+    presentation.statusTone === "success"
+      ? "bg-success"
+      : presentation.statusTone === "warning"
+        ? "bg-warning"
+        : "bg-muted-foreground/35";
+  const Icon =
+    presentation.section === "provider"
+      ? SOURCE_CONTROL_PROVIDER_ICONS[presentation.kind]
+      : VCS_ICONS[presentation.kind];
 
   if (!Icon) {
     return <span className={cn("size-2 shrink-0 rounded-full", dotClassName)} aria-hidden />;
@@ -154,59 +128,30 @@ function SourceControlItemMark({
   );
 }
 
-function itemSummary({
-  item,
-  auth,
-  authAccount,
+function SourceControlItemSummary({
+  presentation,
 }: {
-  readonly item: VcsDiscoveryItem | SourceControlProviderDiscoveryItem;
-  readonly auth: SourceControlProviderAuth | null;
-  readonly authAccount: string | null;
+  readonly presentation: SourceControlItemPresentation;
 }) {
-  if (isVcsNotReady(item)) {
-    return <span>Support for {item.label} is coming soon.</span>;
-  }
-
-  if (item.status !== "available") {
-    return <span>Not available on this server: {item.installHint}</span>;
-  }
-
-  if (auth) {
-    if (auth.status === "authenticated") {
+  return presentation.summaryParts.map((part, index) => {
+    const key = `${part.kind}:${index}`;
+    if (part.kind === "code") {
       return (
-        <>
-          <span>Authenticated</span>
-          {authAccount ? (
-            <>
-              <span aria-hidden>as</span>
-              <RedactedAccount account={authAccount} />
-            </>
-          ) : null}
-        </>
+        <code key={key} className="rounded bg-muted px-1 py-px text-[11px]">
+          {part.text}
+        </code>
       );
     }
-
-    if (!item.executable) {
-      return <span>Available. {item.installHint}</span>;
-    }
-
-    if (auth.status === "unauthenticated") {
+    if (part.kind === "sensitive") {
       return (
-        <span>
-          {item.label} is not authenticated on this server. Sign in or configure credentials using
-          the <code className="rounded bg-muted px-1 py-px text-[11px]">{item.executable}</code>{" "}
-          tool on the server host to enable pull request features.
+        <span key={key} className="contents">
+          <span aria-hidden>{part.prefix}</span>
+          <RedactedAccount account={part.text} />
         </span>
       );
     }
-    return (
-      <span>
-        Could not verify {item.label}. {item.installHint}
-      </span>
-    );
-  }
-
-  return <span>Available</span>;
+    return <span key={key}>{part.text}</span>;
+  });
 }
 
 function DiscoveryItemRow({
@@ -216,45 +161,39 @@ function DiscoveryItemRow({
   readonly item: VcsDiscoveryItem | SourceControlProviderDiscoveryItem;
   readonly children?: ReactNode;
 }) {
-  const version = optionLabel(item.version);
-  const enabled = isProviderDiscoveryItem(item)
-    ? item.status === "available" && item.auth.status === "authenticated"
-    : item.status === "available" && item.implemented;
-  const auth = isProviderDiscoveryItem(item) ? item.auth : null;
-  const authStatus = auth ? authPresentation(auth) : null;
-  const authAccount = auth ? optionLabel(auth.account) : null;
+  const presentation = projectSourceControlDiscoveryItem(item);
+  const isNotReady = presentation.statusTone === "muted";
   const [isExpanded, setIsExpanded] = useState(false);
   const hasDetails = children !== undefined;
 
   return (
     <div
-      className={cn(
-        "rounded-xl transition-colors hover:bg-muted/20",
-        isVcsNotReady(item) && "opacity-80",
-      )}
+      className={cn("rounded-xl transition-colors hover:bg-muted/20", isNotReady && "opacity-80")}
     >
       <div className="px-3 py-3 sm:px-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0 flex-1 space-y-1">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
-              <SourceControlItemMark item={item} />
+              <SourceControlItemMark presentation={presentation} />
               <span className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
                 {item.label}
               </span>
-              {version ? <code className="text-xs text-muted-foreground">{version}</code> : null}
-              {isVcsNotReady(item) ? (
+              {presentation.version ? (
+                <code className="text-xs text-muted-foreground">{presentation.version}</code>
+              ) : null}
+              {presentation.badgeLabel === "Coming Soon" ? (
                 <Badge variant="warning" size="sm">
                   Coming Soon
                 </Badge>
               ) : null}
-              {authStatus?.badge ? (
-                <Badge variant={authStatus.badge} size="sm">
-                  {authStatus.label}
+              {presentation.badgeLabel === "Not authenticated" ? (
+                <Badge variant="warning" size="sm">
+                  {presentation.badgeLabel}
                 </Badge>
               ) : null}
             </div>
             <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
-              {itemSummary({ item, auth, authAccount })}
+              <SourceControlItemSummary presentation={presentation} />
             </p>
           </div>
           <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
@@ -272,8 +211,12 @@ function DiscoveryItemRow({
                 />
               </Button>
             ) : null}
-            {!isVcsNotReady(item) ? (
-              <Switch checked={enabled} disabled aria-label={`${item.label} availability`} />
+            {!isNotReady ? (
+              <Switch
+                checked={presentation.enabled}
+                disabled
+                aria-label={`${item.label} availability`}
+              />
             ) : null}
           </div>
         </div>

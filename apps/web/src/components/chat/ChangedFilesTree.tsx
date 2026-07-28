@@ -1,11 +1,14 @@
+import {
+  buildChangedFilesTree,
+  changedFileName,
+  selectChangedFilePreview,
+  summarizeChangedFileScopes,
+  summarizeChangedFiles,
+  type ChangedFilesTreeNode,
+} from "@t3tools/client-runtime/presentation/diff";
 import { type TurnId } from "@t3tools/contracts";
 import { memo, useCallback, useMemo, useState } from "react";
 import { type TurnDiffFileChange } from "../../types";
-import {
-  buildTurnDiffTree,
-  summarizeTurnDiffStats,
-  type TurnDiffTreeNode,
-} from "../../lib/turnDiffTree";
 import {
   ChevronsDownUpIcon,
   ChevronsUpDownIcon,
@@ -19,11 +22,6 @@ import { DiffStatLabel, hasNonZeroStat } from "./DiffStatLabel";
 import { PierreEntryIcon } from "./PierreEntryIcon";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
-import {
-  changedFileName,
-  selectChangedFilePreview,
-  summarizeChangedFileScopes,
-} from "./changedFilesPresentation";
 
 const EMPTY_DIRECTORY_OVERRIDES: Record<string, boolean> = {};
 
@@ -49,7 +47,7 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
     onToggleAllDirectories,
     onOpenTurnDiff,
   } = props;
-  const summaryStat = useMemo(() => summarizeTurnDiffStats(files), [files]);
+  const summaryStat = useMemo(() => summarizeChangedFiles(files), [files]);
   const scopeSummary = useMemo(() => summarizeChangedFileScopes(files), [files]);
   const previewFiles = useMemo(() => selectChangedFilePreview(files), [files]);
   const compactPreviewVisible = showCompactPreview && !expanded;
@@ -209,7 +207,7 @@ export const ChangedFilesTree = memo(function ChangedFilesTree(props: {
   onOpenTurnDiff: (turnId: TurnId, filePath?: string) => void;
 }) {
   const { files, allDirectoriesExpanded, onOpenTurnDiff, resolvedTheme, turnId } = props;
-  const treeNodes = useMemo(() => buildTurnDiffTree(files), [files]);
+  const treeNodes = useMemo(() => buildChangedFilesTree(files), [files]);
   const directoryPathsKey = useMemo(
     () => collectDirectoryPaths(treeNodes).join("\u0000"),
     [treeNodes],
@@ -244,7 +242,7 @@ export const ChangedFilesTree = memo(function ChangedFilesTree(props: {
     [allDirectoriesExpanded, expansionStateKey],
   );
 
-  const renderTreeNode = (node: TurnDiffTreeNode, depth: number) => {
+  const renderTreeNode = (node: ChangedFilesTreeNode, depth: number) => {
     const leftPadding = 8 + depth * 14;
     if (node.kind === "directory") {
       const isExpanded = expandedDirectories[node.path] ?? allDirectoriesExpanded;
@@ -319,7 +317,7 @@ export const ChangedFilesTree = memo(function ChangedFilesTree(props: {
   return <div className="space-y-0.5">{treeNodes.map((node) => renderTreeNode(node, 0))}</div>;
 });
 
-function collectDirectoryPaths(nodes: ReadonlyArray<TurnDiffTreeNode>): string[] {
+function collectDirectoryPaths(nodes: ReadonlyArray<ChangedFilesTreeNode>): string[] {
   const paths: string[] = [];
   for (const node of nodes) {
     if (node.kind !== "directory") continue;

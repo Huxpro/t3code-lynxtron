@@ -9,16 +9,12 @@ import {
   type ThreadId,
   type TurnId,
 } from "@t3tools/contracts";
+export { deriveComposerSendState } from "@t3tools/client-runtime/presentation/composer";
 import { type ChatMessage, type SessionPhase, type Thread } from "../types";
 import { type ComposerImageAttachment, type DraftThreadState } from "../composerDraftStore";
 import * as Schema from "effect/Schema";
 import { appAtomRegistry } from "../rpc/atomRegistry";
 import { environmentThreadDetails } from "../state/threads";
-import {
-  filterTerminalContextsWithText,
-  stripInlineTerminalContextPlaceholders,
-  type TerminalContextDraft,
-} from "../lib/terminalContext";
 import type { DraftThreadEnvMode } from "../composerDraftStore";
 
 export const LAST_INVOKED_SCRIPT_BY_PROJECT_KEY = "t3code:last-invoked-script-by-project";
@@ -236,39 +232,6 @@ export function cloneComposerImageForRetry(
   } catch {
     return image;
   }
-}
-
-export function deriveComposerSendState(options: {
-  prompt: string;
-  imageCount: number;
-  terminalContexts: ReadonlyArray<TerminalContextDraft>;
-  /**
-   * Optional element-pick attachment count. Element contexts contribute to
-   * "sendable content" exactly like images and (text-bearing) terminal
-   * contexts do: a prompt of just element chips is still a valid send.
-   */
-  elementContextCount?: number;
-}): {
-  trimmedPrompt: string;
-  sendableTerminalContexts: TerminalContextDraft[];
-  expiredTerminalContextCount: number;
-  hasSendableContent: boolean;
-} {
-  const trimmedPrompt = stripInlineTerminalContextPlaceholders(options.prompt).trim();
-  const sendableTerminalContexts = filterTerminalContextsWithText(options.terminalContexts);
-  const expiredTerminalContextCount =
-    options.terminalContexts.length - sendableTerminalContexts.length;
-  const elementContextCount = options.elementContextCount ?? 0;
-  return {
-    trimmedPrompt,
-    sendableTerminalContexts,
-    expiredTerminalContextCount,
-    hasSendableContent:
-      trimmedPrompt.length > 0 ||
-      options.imageCount > 0 ||
-      sendableTerminalContexts.length > 0 ||
-      elementContextCount > 0,
-  };
 }
 
 export function buildExpiredTerminalContextToastCopy(

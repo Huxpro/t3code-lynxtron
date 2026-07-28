@@ -3,6 +3,7 @@ import type {
   ContextMenuOpenContext as TreeContextMenuOpenContext,
 } from "@pierre/trees";
 import type { EnvironmentId, ProjectEntry } from "@t3tools/contracts";
+import { summarizeProjectEntries } from "@t3tools/client-runtime/presentation/files";
 import { FileTree, useFileTree } from "@pierre/trees/react";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
 import { RefreshCw, Search } from "lucide-react";
@@ -38,10 +39,6 @@ const TREE_UNSAFE_CSS = `
   button[data-type='item'] { border-radius: 5px; }
 `;
 
-function treePath(entry: ProjectEntry): string {
-  return entry.kind === "directory" ? `${entry.path}/` : entry.path;
-}
-
 export default function FileBrowserPanel({
   environmentId,
   cwd,
@@ -52,12 +49,13 @@ export default function FileBrowserPanel({
   const composerRef = useComposerHandleContext();
   const entriesQuery = useProjectEntriesQuery(environmentId, cwd);
   const entries = entriesQuery.data?.entries ?? [];
+  const entriesSummary = useMemo(() => summarizeProjectEntries(entries), [entries]);
   const entryKinds = useMemo(
     () => new Map(entries.map((entry) => [entry.path, entry.kind] as const)),
     [entries],
   );
   const entryKindsRef = useRef<ReadonlyMap<string, ProjectEntry["kind"]>>(entryKinds);
-  const treePaths = useMemo(() => entries.map(treePath), [entries]);
+  const treePaths = entriesSummary.treePaths;
   const previousTreePathsRef = useRef<readonly string[]>([]);
 
   // The tree renders rows in shadow DOM and its anchor rect is unreliable, so
@@ -187,10 +185,7 @@ export default function FileBrowserPanel({
     model.resetPaths(treePaths);
   }, [entryKinds, model, treePaths]);
 
-  const fileCount = useMemo(
-    () => entries.reduce((count, entry) => count + (entry.kind === "file" ? 1 : 0), 0),
-    [entries],
-  );
+  const fileCount = entriesSummary.fileCount;
 
   // Tag tree drags with the composer mention payload. The row is read from
   // the composed event path (the tree's shadow root is open), so this does

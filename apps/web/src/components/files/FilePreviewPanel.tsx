@@ -9,6 +9,12 @@ import { VirtualizedFile, type SelectedLineRange } from "@pierre/diffs";
 import { Editor } from "@pierre/diffs/editor";
 import { EditorProvider, File, type FileOptions, Virtualizer } from "@pierre/diffs/react";
 import {
+  isMarkdownPreviewFile,
+  projectFileCacheKey,
+  setMarkdownTaskChecked,
+} from "@t3tools/client-runtime/presentation/files";
+import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coordinator";
+import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
@@ -52,10 +58,7 @@ import {
 } from "./fileCommentAnnotations";
 import { installFileEditorDismissal } from "./fileEditorDismissal";
 import { LocalCommentAnnotation } from "./LocalCommentAnnotation";
-import { projectFileCacheKey } from "./fileContentRevision";
 import { fileBreadcrumbs } from "./filePath";
-import { isMarkdownPreviewFile, setMarkdownTaskChecked } from "./filePreviewMode";
-import { FileSaveCoordinator } from "./fileSaveCoordinator";
 import {
   confirmProjectFileQueryData,
   getOptimisticProjectFileQueryData,
@@ -80,6 +83,11 @@ interface FilePreviewPanelProps {
 
 const FILE_EXPLORER_STORAGE_KEY = "t3code.fileExplorerOpen";
 const FILE_SAVE_DEBOUNCE_MS = 500;
+const FILE_SAVE_SCHEDULER = {
+  now: () => Date.now(),
+  schedule: (callback: () => void, delayMs: number) => setTimeout(callback, delayMs),
+  cancel: (handle: unknown) => clearTimeout(handle as ReturnType<typeof setTimeout>),
+};
 const FILE_LINK_REVEAL_ATTRIBUTE = "data-file-link-reveal";
 const FILE_LINK_REVEAL_UNSAFE_CSS = `
   [${FILE_LINK_REVEAL_ATTRIBUTE}][data-line] {
@@ -312,6 +320,7 @@ function useFileSaveCoordinator({
     () =>
       new FileSaveCoordinator({
         debounceMs: FILE_SAVE_DEBOUNCE_MS,
+        scheduler: FILE_SAVE_SCHEDULER,
         onPendingChange: (pending) => onPendingChange(relativePath, pending),
         persist: (nextContents) =>
           writeFile({

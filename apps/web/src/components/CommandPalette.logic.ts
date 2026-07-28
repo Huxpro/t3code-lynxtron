@@ -4,9 +4,12 @@ import {
   THREAD_JUMP_KEYBINDING_COMMANDS,
 } from "@t3tools/contracts";
 import type { SidebarThreadSortOrder } from "@t3tools/contracts/settings";
-import * as Arr from "effect/Array";
-import * as Result from "effect/Result";
 import { type ReactNode } from "react";
+import {
+  normalizeCommandPaletteSearchText,
+  parseCommandPaletteSearchQuery,
+  rankCommandPaletteSearchItems,
+} from "@t3tools/client-runtime/presentation/command-palette";
 import { sortThreads } from "../lib/threadSort";
 import { formatRelativeTimeLabel } from "../timestampFormat";
 import { type Project, type SidebarThreadSummary, type Thread } from "../types";
@@ -103,7 +106,7 @@ export function filterBrowseEntries(input: {
 }
 
 export function normalizeSearchText(value: string): string {
-  return value.trim().toLowerCase().replace(/\s+/g, " ");
+  return normalizeCommandPaletteSearchText(value);
 }
 
 export function buildProjectActionItems(input: {
@@ -196,39 +199,6 @@ export function buildThreadActionItems<TThread extends BuildThreadActionItemsThr
   });
 }
 
-function rankSearchFieldMatch(field: string, normalizedQuery: string): number {
-  const normalizedField = normalizeSearchText(field);
-  if (normalizedField.length === 0 || !normalizedField.includes(normalizedQuery)) {
-    return Number.NEGATIVE_INFINITY;
-  }
-  if (normalizedField === normalizedQuery) {
-    return 3;
-  }
-  if (normalizedField.startsWith(normalizedQuery)) {
-    return 2;
-  }
-  return 1;
-}
-
-function rankCommandPaletteItemMatch(
-  item: CommandPaletteActionItem | CommandPaletteSubmenuItem,
-  normalizedQuery: string,
-): number {
-  const terms = item.searchTerms.filter((term) => term.length > 0);
-  if (terms.length === 0) {
-    return 0;
-  }
-
-  for (const [index, field] of terms.entries()) {
-    const fieldRank = rankSearchFieldMatch(field, normalizedQuery);
-    if (fieldRank !== Number.NEGATIVE_INFINITY) {
-      return 1_000 - index * 100 + fieldRank;
-    }
-  }
-
-  return 0;
-}
-
 export function filterCommandPaletteGroups(input: {
   activeGroups: ReadonlyArray<CommandPaletteGroup>;
   query: string;
@@ -236,9 +206,9 @@ export function filterCommandPaletteGroups(input: {
   projectSearchItems: ReadonlyArray<CommandPaletteActionItem>;
   threadSearchItems: ReadonlyArray<CommandPaletteActionItem>;
 }): CommandPaletteGroup[] {
-  const isActionsFilter = input.query.startsWith(">");
-  const searchQuery = isActionsFilter ? input.query.slice(1) : input.query;
-  const normalizedQuery = normalizeSearchText(searchQuery);
+  const { actionsOnly: isActionsFilter, normalizedQuery } = parseCommandPaletteSearchQuery(
+    input.query,
+  );
 
   if (normalizedQuery.length === 0) {
     if (isActionsFilter) {
@@ -273,20 +243,11 @@ export function filterCommandPaletteGroups(input: {
   }
 
   return searchableGroups.flatMap((group) => {
-    const items = Arr.filterMap(group.items, (item, index) => {
-      const haystack = normalizeSearchText(item.searchTerms.join(" "));
-      if (!haystack.includes(normalizedQuery)) {
-        return Result.failVoid;
-      }
-
-      return Result.succeed({
-        item,
-        index,
-        rank: rankCommandPaletteItemMatch(item, normalizedQuery),
-      });
-    })
-      .toSorted((left, right) => right.rank - left.rank || left.index - right.index)
-      .map((entry) => entry.item);
+    const items = rankCommandPaletteSearchItems(
+      group.items,
+      normalizedQuery,
+      (item) => item.searchTerms,
+    );
 
     if (items.length === 0) {
       return [];

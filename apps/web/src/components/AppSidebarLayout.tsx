@@ -11,6 +11,7 @@ import { primaryServerKeybindingsAtom } from "../state/server";
 import { useClientSettings } from "../hooks/useSettings";
 import ThreadSidebar from "./Sidebar";
 import ThreadSidebarV2 from "./SidebarV2";
+import { AppShellSurface } from "./AppShellSurface";
 import { useSidebarStageBackdropVariant } from "./SidebarStageBackdrop";
 import {
   resolveInitialThreadSidebarWidth,
@@ -81,7 +82,7 @@ function SidebarControl() {
           render={
             <SidebarTrigger
               className={cn(
-                "pointer-events-auto",
+                "sidebar-global-toggle pointer-events-auto",
                 isSidebarVisible &&
                   stageBackdropVariant &&
                   "[:hover,[data-pressed]]:bg-white/15 focus-visible:ring-white/90 focus-visible:ring-offset-blue-700 [&_svg]:stroke-white/90! [&_svg]:opacity-100! [&_svg]:hover:stroke-white!",
@@ -162,27 +163,31 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider className="h-dvh! min-h-0!" defaultOpen style={sidebarProviderStyle}>
-      <Sidebar
-        side="left"
-        collapsible="offcanvas"
-        data-app-sidebar=""
-        data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}
-        className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
-        resizable={{
-          maxWidth: sidebarMaximumWidth,
-          minWidth: THREAD_SIDEBAR_MIN_WIDTH,
-          shouldAcceptWidth: ({ currentWidth, nextWidth, wrapper }) =>
-            nextWidth <= currentWidth ||
-            wrapper.clientWidth - nextWidth >= THREAD_MAIN_CONTENT_MIN_WIDTH,
-          storageKey: THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
-          onResize: setSidebarWidth,
-        }}
-      >
-        {useSidebarV2 ? <ThreadSidebarV2 /> : <ThreadSidebar />}
-        <SidebarRail />
-      </Sidebar>
-      {children}
-      <SidebarControl />
+      <AppShellSurface
+        sidebar={
+          <Sidebar
+            side="left"
+            collapsible="offcanvas"
+            data-app-sidebar=""
+            data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}
+            className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
+            resizable={{
+              maxWidth: sidebarMaximumWidth,
+              minWidth: THREAD_SIDEBAR_MIN_WIDTH,
+              shouldAcceptWidth: ({ currentWidth, nextWidth, wrapper }) =>
+                nextWidth <= currentWidth ||
+                wrapper.clientWidth - nextWidth >= THREAD_MAIN_CONTENT_MIN_WIDTH,
+              storageKey: THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
+              onResize: setSidebarWidth,
+            }}
+          >
+            {useSidebarV2 ? <ThreadSidebarV2 /> : <ThreadSidebar />}
+            <SidebarRail />
+          </Sidebar>
+        }
+        main={children}
+        globalControl={<SidebarControl />}
+      />
     </SidebarProvider>
   );
 }

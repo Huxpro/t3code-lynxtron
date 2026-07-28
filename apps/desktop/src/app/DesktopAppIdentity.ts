@@ -91,6 +91,10 @@ export const make = Effect.gen(function* () {
   });
 
   const resolveUserDataPath = Effect.gen(function* () {
+    if (Option.isSome(environment.userDataPathOverride)) {
+      return environment.userDataPathOverride.value;
+    }
+
     const legacyPath = environment.path.join(
       environment.appDataDirectory,
       environment.legacyUserDataDirName,

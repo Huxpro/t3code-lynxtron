@@ -1,11 +1,20 @@
 import * as Option from "effect/Option";
 import * as Arr from "effect/Array";
 import {
+  deriveActivePlanState,
+  findLatestProposedPlan,
+  type ActivePlanState,
+  type LatestProposedPlanState,
+} from "@t3tools/client-runtime/presentation/thread";
+import {
+  deriveSessionPresentationPhase,
+  isLatestTurnSettled as isLatestTurnSettledShared,
+} from "@t3tools/client-runtime/presentation/session";
+import {
   ApprovalRequestId,
   isToolLifecycleItemType,
   type OrchestrationLatestTurn,
   type OrchestrationThreadActivity,
-  type OrchestrationProposedPlanId,
   ProviderDriverKind,
   type ToolLifecycleItemType,
   type UserInputQuestion,
@@ -21,6 +30,13 @@ import type {
   ThreadSession,
   TurnDiffSummary,
 } from "./types";
+
+export {
+  deriveActivePlanState,
+  findLatestProposedPlan,
+  type ActivePlanState,
+  type LatestProposedPlanState,
+};
 
 export type ProviderPickerKind = ProviderDriverKind;
 
@@ -97,26 +113,6 @@ export interface PendingUserInput {
   requestId: ApprovalRequestId;
   createdAt: string;
   questions: ReadonlyArray<UserInputQuestion>;
-}
-
-export interface ActivePlanState {
-  createdAt: string;
-  turnId: TurnId | null;
-  explanation?: string | null;
-  steps: Array<{
-    step: string;
-    status: "pending" | "inProgress" | "completed";
-  }>;
-}
-
-export interface LatestProposedPlanState {
-  id: OrchestrationProposedPlanId;
-  createdAt: string;
-  updatedAt: string;
-  turnId: TurnId | null;
-  planMarkdown: string;
-  implementedAt: string | null;
-  implementationThreadId: ThreadId | null;
 }
 
 export type TimelineEntry =
@@ -295,11 +291,7 @@ export function isLatestTurnSettled(
   latestTurn: LatestTurnTiming | null,
   session: SessionActivityState | null,
 ): boolean {
-  if (!latestTurn?.startedAt) return false;
-  if (!latestTurn.completedAt) return false;
-  if (!session) return true;
-  if (session.status === "running") return false;
-  return true;
+  return isLatestTurnSettledShared(latestTurn, session);
 }
 
 export function deriveActiveWorkStartedAt(
@@ -505,93 +497,6 @@ export function derivePendingUserInputs(
   return [...openByRequestId.values()].toSorted((left, right) =>
     left.createdAt.localeCompare(right.createdAt),
   );
-}
-
-export function deriveActivePlanState(
-  activities: ReadonlyArray<OrchestrationThreadActivity>,
-  latestTurnId: TurnId | undefined,
-): ActivePlanState | null {
-  const ordered = [...activities].toSorted(compareActivitiesByOrder);
-  const allPlanActivities = ordered.filter((activity) => activity.kind === "turn.plan.updated");
-  // Prefer plan from the current turn; fall back to the most recent plan from any turn
-  // so that TodoWrite tasks persist across follow-up messages.
-  const latest = Option.firstSomeOf([
-    ...(latestTurnId
-      ? Arr.findLast(allPlanActivities, (activity) => activity.turnId === latestTurnId)
-      : Option.none()),
-    Arr.last(allPlanActivities),
-  ]).pipe(Option.getOrNull);
-  if (!latest) {
-    return null;
-  }
-  const payload =
-    latest.payload && typeof latest.payload === "object"
-      ? (latest.payload as Record<string, unknown>)
-      : null;
-  const rawPlan = payload?.plan;
-  if (!Array.isArray(rawPlan)) {
-    return null;
-  }
-  const steps: Array<{
-    step: string;
-    status: "pending" | "inProgress" | "completed";
-  }> = [];
-  for (const entry of rawPlan) {
-    if (!entry || typeof entry !== "object") {
-      continue;
-    }
-    const record = entry as Record<string, unknown>;
-    if (typeof record.step !== "string") {
-      continue;
-    }
-    const status =
-      record.status === "completed" || record.status === "inProgress" ? record.status : "pending";
-    steps.push({
-      step: record.step,
-      status,
-    });
-  }
-  if (steps.length === 0) {
-    return null;
-  }
-  return {
-    createdAt: latest.createdAt,
-    turnId: latest.turnId,
-    ...(payload && "explanation" in payload
-      ? { explanation: payload.explanation as string | null }
-      : {}),
-    steps,
-  };
-}
-
-export function findLatestProposedPlan(
-  proposedPlans: ReadonlyArray<ProposedPlan>,
-  latestTurnId: TurnId | string | null | undefined,
-): LatestProposedPlanState | null {
-  if (latestTurnId) {
-    const matchingTurnPlan = [...proposedPlans]
-      .filter((proposedPlan) => proposedPlan.turnId === latestTurnId)
-      .toSorted(
-        (left, right) =>
-          left.updatedAt.localeCompare(right.updatedAt) || left.id.localeCompare(right.id),
-      )
-      .at(-1);
-    if (matchingTurnPlan) {
-      return toLatestProposedPlanState(matchingTurnPlan);
-    }
-  }
-
-  const latestPlan = [...proposedPlans]
-    .toSorted(
-      (left, right) =>
-        left.updatedAt.localeCompare(right.updatedAt) || left.id.localeCompare(right.id),
-    )
-    .at(-1);
-  if (!latestPlan) {
-    return null;
-  }
-
-  return toLatestProposedPlanState(latestPlan);
 }
 
 export function findSidebarProposedPlan(input: {
@@ -1379,15 +1284,5 @@ export function inferCheckpointTurnCountByTurnId(
 }
 
 export function derivePhase(session: ThreadSession | null): SessionPhase {
-  if (
-    !session ||
-    session.status === "stopped" ||
-    session.status === "interrupted" ||
-    session.status === "error"
-  ) {
-    return "disconnected";
-  }
-  if (session.status === "starting") return "connecting";
-  if (session.status === "running") return "running";
-  return "ready";
+  return deriveSessionPresentationPhase(session?.status);
 }

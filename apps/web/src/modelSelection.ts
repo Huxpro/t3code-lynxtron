@@ -22,8 +22,12 @@ import {
   resolveSelectableProvider,
 } from "./providerModels";
 import { ModelEsque } from "./components/chat/providerIconUtils";
-import { type ProviderInstanceEntry, deriveProviderInstanceEntries } from "./providerInstances";
-import { sortModelsForProviderInstance } from "./modelOrdering";
+import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
+import {
+  deriveProviderModelCatalog,
+  deriveProviderModelSelectionProjection,
+  sortModelsForProviderInstance,
+} from "@t3tools/client-runtime/presentation/model-picker";
 
 const MAX_CUSTOM_MODEL_COUNT = 32;
 export const MAX_CUSTOM_MODEL_LENGTH = 256;
@@ -242,7 +246,7 @@ export function resolveAppModelSelectionForInstance(
   providers: ReadonlyArray<ServerProvider>,
   selectedModel: string | null | undefined,
 ): string | null {
-  const entry = deriveProviderInstanceEntries(providers).find(
+  const entry = deriveProviderModelCatalog({ providers, settings }).entries.find(
     (candidate) => candidate.instanceId === instanceId,
   );
   if (!entry) return null;
@@ -269,7 +273,7 @@ export function getCustomModelOptionsByInstance(
   _selectedModel?: string | null,
 ): ReadonlyMap<ProviderInstanceId, ReadonlyArray<ModelEsque>> {
   const out = new Map<ProviderInstanceId, ReadonlyArray<ModelEsque>>();
-  for (const entry of deriveProviderInstanceEntries(providers)) {
+  for (const entry of deriveProviderModelCatalog({ providers, settings }).entries) {
     out.set(entry.instanceId, getAppModelOptionsForInstance(settings, entry));
   }
   return out;
@@ -283,18 +287,16 @@ export function resolveAppModelSelectionState(
     instanceId: DEFAULT_TEXT_GENERATION_INSTANCE_ID,
     model: DEFAULT_GIT_TEXT_GENERATION_MODEL,
   };
-  const entries = deriveProviderInstanceEntries(providers);
-  const selectedEntry = entries.find(
-    (entry) => entry.instanceId === selection.instanceId && entry.enabled && entry.isAvailable,
-  );
-  const entry =
-    selectedEntry ?? entries.find((candidate) => candidate.enabled && candidate.isAvailable);
+  const projection = deriveProviderModelSelectionProjection({ providers, settings }, [selection]);
+  const entry = projection.selectedEntry;
+  const selectedEntry = entry?.instanceId === selection.instanceId ? entry : undefined;
   if (entry) {
     // When the instance changed due to fallback (e.g. selected instance was disabled),
     // don't carry over the old instance's model — use the fallback instance's default.
     const selectedModel = selectedEntry ? selection.model : null;
     const model =
       resolveAppModelSelectionForInstance(entry.instanceId, settings, providers, selectedModel) ??
+      projection.selectedModel?.slug ??
       entry.models[0]?.slug ??
       DEFAULT_GIT_TEXT_GENERATION_MODEL_BY_PROVIDER[entry.driverKind];
     if (!model) {

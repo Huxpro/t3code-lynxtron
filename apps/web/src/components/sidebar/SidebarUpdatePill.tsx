@@ -1,6 +1,7 @@
 import { DownloadIcon, RotateCwIcon, TriangleAlertIcon, XIcon } from "lucide-react";
 import { useCallback, useState } from "react";
 import { isElectron } from "../../env";
+import { getPlatform } from "../../lib/platformDetection";
 import { useDesktopUpdateState } from "../../state/desktopUpdate";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import {
@@ -111,7 +112,7 @@ export function SidebarUpdatePill() {
 
     if (action === "install") {
       const confirmed = window.confirm(
-        getDesktopUpdateInstallConfirmationMessage(state, navigator.platform),
+        getDesktopUpdateInstallConfirmationMessage(state, getPlatform()),
       );
       if (!confirmed) return;
       void bridge

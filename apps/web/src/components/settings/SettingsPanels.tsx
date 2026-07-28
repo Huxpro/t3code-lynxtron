@@ -15,6 +15,7 @@ import {
 } from "@t3tools/contracts";
 import { scopeThreadRef } from "@t3tools/client-runtime/environment";
 import { safeErrorLogAttributes } from "@t3tools/client-runtime/errors";
+import { projectGeneralSettingsRestore } from "@t3tools/client-runtime/presentation/settings";
 import {
   isAtomCommandInterrupted,
   settlePromise,
@@ -54,7 +55,8 @@ import {
   applyProviderInstanceSettings,
   deriveProviderInstanceEntries,
   sortProviderInstanceEntries,
-} from "../../providerInstances";
+} from "@t3tools/client-runtime/presentation/provider";
+import { buildProviderInstanceUpdatePatch } from "@t3tools/client-runtime/presentation/provider-settings";
 import { ensureLocalApi, readLocalApi } from "../../localApi";
 import {
   primaryServerObservabilityAtom,
@@ -82,7 +84,6 @@ import {
 import { ProviderInstanceCard } from "./ProviderInstanceCard";
 import { DRIVER_OPTIONS, getDriverOption } from "./providerDriverMeta";
 import {
-  buildProviderInstanceUpdatePatch,
   formatDiagnosticsDescription,
   isProjectGroupingEnabled,
   projectGroupingModeFromToggle,
@@ -392,81 +393,23 @@ export function useSettingsRestore(onRestored?: () => void) {
   const settings = usePrimarySettings();
   const updateSettings = useUpdatePrimarySettings();
 
-  const isGitWritingModelDirty = !Equal.equals(
-    settings.textGenerationModelSelection ?? null,
-    DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection ?? null,
+  const restoreProjection = useMemo(
+    () =>
+      projectGeneralSettingsRestore({
+        theme,
+        settings,
+        defaults: DEFAULT_UNIFIED_SETTINGS,
+        automaticGitFetchIntervalChanged:
+          Duration.toMillis(settings.automaticGitFetchInterval) !==
+          Duration.toMillis(DEFAULT_UNIFIED_SETTINGS.automaticGitFetchInterval),
+        textGenerationModelSelectionChanged: !Equal.equals(
+          settings.textGenerationModelSelection ?? null,
+          DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection ?? null,
+        ),
+      }),
+    [settings, theme],
   );
-
-  const changedSettingLabels = useMemo(
-    () => [
-      ...(theme !== "system" ? ["Theme"] : []),
-      ...(settings.glassOpacity !== DEFAULT_UNIFIED_SETTINGS.glassOpacity ? ["Glass opacity"] : []),
-      ...(settings.timestampFormat !== DEFAULT_UNIFIED_SETTINGS.timestampFormat
-        ? ["Time format"]
-        : []),
-      ...(settings.sidebarThreadPreviewCount !== DEFAULT_UNIFIED_SETTINGS.sidebarThreadPreviewCount
-        ? ["Visible threads"]
-        : []),
-      ...(settings.sidebarProjectGroupingMode !==
-      DEFAULT_UNIFIED_SETTINGS.sidebarProjectGroupingMode
-        ? ["Project Grouping"]
-        : []),
-      ...(settings.wordWrap !== DEFAULT_UNIFIED_SETTINGS.wordWrap ? ["Word wrap"] : []),
-      ...(settings.diffIgnoreWhitespace !== DEFAULT_UNIFIED_SETTINGS.diffIgnoreWhitespace
-        ? ["Diff whitespace changes"]
-        : []),
-      ...(settings.autoOpenPlanSidebar !== DEFAULT_UNIFIED_SETTINGS.autoOpenPlanSidebar
-        ? ["Auto-open task panel"]
-        : []),
-      ...(settings.enableAssistantStreaming !== DEFAULT_UNIFIED_SETTINGS.enableAssistantStreaming
-        ? ["Assistant output"]
-        : []),
-      ...(settings.enableProviderUpdateChecks !==
-      DEFAULT_UNIFIED_SETTINGS.enableProviderUpdateChecks
-        ? ["Provider update checks"]
-        : []),
-      ...(Duration.toMillis(settings.automaticGitFetchInterval) !==
-      Duration.toMillis(DEFAULT_UNIFIED_SETTINGS.automaticGitFetchInterval)
-        ? ["Automatic Git fetch interval"]
-        : []),
-      ...(settings.defaultThreadEnvMode !== DEFAULT_UNIFIED_SETTINGS.defaultThreadEnvMode
-        ? ["New thread mode"]
-        : []),
-      ...(settings.newWorktreesStartFromOrigin !==
-      DEFAULT_UNIFIED_SETTINGS.newWorktreesStartFromOrigin
-        ? ["New worktrees start from origin"]
-        : []),
-      ...(settings.addProjectBaseDirectory !== DEFAULT_UNIFIED_SETTINGS.addProjectBaseDirectory
-        ? ["Add project base directory"]
-        : []),
-      ...(settings.confirmThreadArchive !== DEFAULT_UNIFIED_SETTINGS.confirmThreadArchive
-        ? ["Archive confirmation"]
-        : []),
-      ...(settings.confirmThreadDelete !== DEFAULT_UNIFIED_SETTINGS.confirmThreadDelete
-        ? ["Delete confirmation"]
-        : []),
-      ...(isGitWritingModelDirty ? ["Git writing model"] : []),
-    ],
-    [
-      isGitWritingModelDirty,
-      settings.autoOpenPlanSidebar,
-      settings.confirmThreadArchive,
-      settings.confirmThreadDelete,
-      settings.addProjectBaseDirectory,
-      settings.defaultThreadEnvMode,
-      settings.newWorktreesStartFromOrigin,
-      settings.diffIgnoreWhitespace,
-      settings.glassOpacity,
-      settings.automaticGitFetchInterval,
-      settings.enableAssistantStreaming,
-      settings.enableProviderUpdateChecks,
-      settings.sidebarProjectGroupingMode,
-      settings.sidebarThreadPreviewCount,
-      settings.timestampFormat,
-      settings.wordWrap,
-      theme,
-    ],
-  );
+  const changedSettingLabels = restoreProjection.changedSettingLabels;
 
   const restoreDefaults = useCallback(async () => {
     if (changedSettingLabels.length === 0) return;
@@ -478,27 +421,13 @@ export function useSettingsRestore(onRestored?: () => void) {
     );
     if (!confirmed) return;
 
-    setTheme("system");
+    setTheme(restoreProjection.theme);
     updateSettings({
-      timestampFormat: DEFAULT_UNIFIED_SETTINGS.timestampFormat,
-      wordWrap: DEFAULT_UNIFIED_SETTINGS.wordWrap,
-      diffIgnoreWhitespace: DEFAULT_UNIFIED_SETTINGS.diffIgnoreWhitespace,
-      glassOpacity: DEFAULT_UNIFIED_SETTINGS.glassOpacity,
-      sidebarThreadPreviewCount: DEFAULT_UNIFIED_SETTINGS.sidebarThreadPreviewCount,
-      sidebarProjectGroupingMode: DEFAULT_UNIFIED_SETTINGS.sidebarProjectGroupingMode,
-      autoOpenPlanSidebar: DEFAULT_UNIFIED_SETTINGS.autoOpenPlanSidebar,
-      enableAssistantStreaming: DEFAULT_UNIFIED_SETTINGS.enableAssistantStreaming,
-      enableProviderUpdateChecks: DEFAULT_UNIFIED_SETTINGS.enableProviderUpdateChecks,
-      automaticGitFetchInterval: DEFAULT_UNIFIED_SETTINGS.automaticGitFetchInterval,
-      defaultThreadEnvMode: DEFAULT_UNIFIED_SETTINGS.defaultThreadEnvMode,
-      newWorktreesStartFromOrigin: DEFAULT_UNIFIED_SETTINGS.newWorktreesStartFromOrigin,
-      addProjectBaseDirectory: DEFAULT_UNIFIED_SETTINGS.addProjectBaseDirectory,
-      confirmThreadArchive: DEFAULT_UNIFIED_SETTINGS.confirmThreadArchive,
-      confirmThreadDelete: DEFAULT_UNIFIED_SETTINGS.confirmThreadDelete,
-      textGenerationModelSelection: DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection,
+      ...restoreProjection.clientPatch,
+      ...restoreProjection.serverPatch,
     });
     onRestored?.();
-  }, [changedSettingLabels, onRestored, setTheme, updateSettings]);
+  }, [changedSettingLabels, onRestored, restoreProjection, setTheme, updateSettings]);
 
   return {
     changedSettingLabels,

@@ -1,4 +1,10 @@
 import * as React from "react";
+import {
+  deriveSidebarImmediateStatus,
+  hasUnseenThreadCompletion,
+  resolveThreadStatusPill,
+  type ThreadStatusPill,
+} from "@t3tools/client-runtime/presentation/sidebar";
 import type { ContextMenuItem } from "@t3tools/contracts";
 import type { SidebarProjectSortOrder, SidebarThreadSortOrder } from "@t3tools/contracts/settings";
 import {
@@ -10,7 +16,6 @@ import {
 import type { SidebarThreadSummary, Thread } from "../types";
 import type { ThreadRouteTarget } from "../threadRoutes";
 import { cn } from "../lib/utils";
-import { isLatestTurnSettled } from "../session-logic";
 import { resolveServerBackedAppStageLabel } from "../branding.logic";
 
 export const THREAD_SELECTION_SAFE_SELECTOR = "[data-thread-item], [data-thread-selection-safe]";
@@ -94,18 +99,8 @@ export function buildMultiSelectThreadContextMenuItems(input: {
   ];
 }
 
-export interface ThreadStatusPill {
-  label:
-    | "Working"
-    | "Connecting"
-    | "Completed"
-    | "Pending Approval"
-    | "Awaiting Input"
-    | "Plan Ready";
-  colorClass: string;
-  dotClass: string;
-  pulse: boolean;
-}
+export { resolveThreadStatusPill };
+export type { ThreadStatusPill };
 
 const THREAD_STATUS_PRIORITY: Record<ThreadStatusPill["label"], number> = {
   "Pending Approval": 5,
@@ -140,16 +135,22 @@ export function resolveSidebarStageBadgeLabel(input: {
   return resolveServerBackedAppStageLabel(input);
 }
 
+type ThreadJumpTimeoutHandle = ReturnType<typeof globalThis.setTimeout> | number;
+
 export function createThreadJumpHintVisibilityController(input: {
   delayMs: number;
   onVisibilityChange: (visible: boolean) => void;
-  setTimeoutFn?: typeof globalThis.setTimeout;
-  clearTimeoutFn?: typeof globalThis.clearTimeout;
+  setTimeoutFn?: (callback: () => void, delayMs: number) => ThreadJumpTimeoutHandle;
+  clearTimeoutFn?: (timeoutId: ThreadJumpTimeoutHandle) => void;
 }): ThreadJumpHintVisibilityController {
   const setTimeoutFn = input.setTimeoutFn ?? globalThis.setTimeout;
-  const clearTimeoutFn = input.clearTimeoutFn ?? globalThis.clearTimeout;
+  const clearTimeoutFn =
+    input.clearTimeoutFn ??
+    ((timeoutId: ThreadJumpTimeoutHandle) => {
+      globalThis.clearTimeout(timeoutId as ReturnType<typeof globalThis.setTimeout>);
+    });
   let isVisible = false;
-  let timeoutId: NodeJS.Timeout | null = null;
+  let timeoutId: ThreadJumpTimeoutHandle | null = null;
 
   const clearPendingShow = () => {
     if (timeoutId === null) {
@@ -194,13 +195,24 @@ export function useThreadJumpHintVisibility(): {
   const controllerRef = React.useRef<ThreadJumpHintVisibilityController | null>(null);
 
   React.useEffect(() => {
+    const setTimeoutFn =
+      typeof globalThis.setTimeout === "function"
+        ? globalThis.setTimeout.bind(globalThis)
+        : (callback: () => void) => {
+            callback();
+            return 0;
+          };
+    const clearTimeoutFn =
+      typeof globalThis.clearTimeout === "function"
+        ? globalThis.clearTimeout.bind(globalThis)
+        : () => {};
     const controller = createThreadJumpHintVisibilityController({
       delayMs: THREAD_JUMP_HINT_SHOW_DELAY_MS,
       onVisibilityChange: (visible) => {
         setShowThreadJumpHints(visible);
       },
-      setTimeoutFn: window.setTimeout.bind(window),
-      clearTimeoutFn: window.clearTimeout.bind(window),
+      setTimeoutFn,
+      clearTimeoutFn,
     });
     controllerRef.current = controller;
 
@@ -221,14 +233,7 @@ export function useThreadJumpHintVisibility(): {
 }
 
 export function hasUnseenCompletion(thread: ThreadStatusInput): boolean {
-  if (!thread.latestTurn?.completedAt) return false;
-  const completedAt = Date.parse(thread.latestTurn.completedAt);
-  if (Number.isNaN(completedAt)) return false;
-  if (!thread.lastVisitedAt) return false;
-
-  const lastVisitedAt = Date.parse(thread.lastVisitedAt);
-  if (Number.isNaN(lastVisitedAt)) return true;
-  return completedAt > lastVisitedAt;
+  return hasUnseenThreadCompletion(thread);
 }
 
 export function shouldClearThreadSelectionOnMouseDown(target: HTMLElement | null): boolean {
@@ -409,19 +414,20 @@ type SidebarV2StatusInput = Pick<
 >;
 
 export function resolveSidebarV2Status(thread: SidebarV2StatusInput): SidebarV2Status {
-  if (thread.hasPendingApprovals) {
-    return "approval";
+  const status = deriveSidebarImmediateStatus(thread);
+  switch (status.kind) {
+    case "approval":
+    case "input":
+    case "failed":
+      return status.kind;
+    case "working":
+    case "connecting":
+      return "working";
+    case "ready":
+    case "plan-ready":
+    case "completed":
+      return "ready";
   }
-  if (thread.hasPendingUserInput) {
-    return "input";
-  }
-  if (thread.session?.status === "running" || thread.session?.status === "starting") {
-    return "working";
-  }
-  if (thread.session?.status === "error") {
-    return "failed";
-  }
-  return "ready";
 }
 
 /** NaN-safe Date.parse for sort comparators: a malformed timestamp must not
@@ -464,7 +470,7 @@ export function firstValidTimestamp(
 export function sortThreadsForSidebarV2<
   T extends { readonly id: string; readonly createdAt: string },
 >(threads: readonly T[]): T[] {
-  return [...threads].toSorted(
+  return [...threads].sort(
     (left, right) =>
       parseTimestampMs(right.createdAt) - parseTimestampMs(left.createdAt) ||
       left.id.localeCompare(right.id),
@@ -511,7 +517,7 @@ export function sortSettledThreadsForSidebarV2<
     const timestamp = resolveSettledTimestamp(thread);
     return timestamp === null ? 0 : Date.parse(timestamp);
   };
-  return [...threads].toSorted(
+  return [...threads].sort(
     (left, right) => timestampMs(right) - timestampMs(left) || left.id.localeCompare(right.id),
   );
 }
@@ -536,73 +542,6 @@ export function formatWorkingDurationLabel(elapsedMs: number): string {
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) return `${minutes}m`;
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
-}
-
-export function resolveThreadStatusPill(input: {
-  thread: ThreadStatusInput;
-}): ThreadStatusPill | null {
-  const { thread } = input;
-
-  if (thread.hasPendingApprovals) {
-    return {
-      label: "Pending Approval",
-      colorClass: "text-amber-600 dark:text-amber-300/90",
-      dotClass: "bg-amber-500 dark:bg-amber-300/90",
-      pulse: false,
-    };
-  }
-
-  if (thread.hasPendingUserInput) {
-    return {
-      label: "Awaiting Input",
-      colorClass: "text-indigo-600 dark:text-indigo-300/90",
-      dotClass: "bg-indigo-500 dark:bg-indigo-300/90",
-      pulse: false,
-    };
-  }
-
-  if (thread.session?.status === "running") {
-    return {
-      label: "Working",
-      colorClass: "text-sky-600 dark:text-sky-300/80",
-      dotClass: "bg-sky-500 dark:bg-sky-300/80",
-      pulse: true,
-    };
-  }
-
-  if (thread.session?.status === "starting") {
-    return {
-      label: "Connecting",
-      colorClass: "text-sky-600 dark:text-sky-300/80",
-      dotClass: "bg-sky-500 dark:bg-sky-300/80",
-      pulse: true,
-    };
-  }
-
-  const hasPlanReadyPrompt =
-    !thread.hasPendingUserInput &&
-    thread.interactionMode === "plan" &&
-    isLatestTurnSettled(thread.latestTurn, thread.session) &&
-    thread.hasActionableProposedPlan;
-  if (hasPlanReadyPrompt) {
-    return {
-      label: "Plan Ready",
-      colorClass: "text-violet-600 dark:text-violet-300/90",
-      dotClass: "bg-violet-500 dark:bg-violet-300/90",
-      pulse: false,
-    };
-  }
-
-  if (hasUnseenCompletion(thread)) {
-    return {
-      label: "Completed",
-      colorClass: "text-emerald-600 dark:text-emerald-300/90",
-      dotClass: "bg-emerald-500 dark:bg-emerald-300/90",
-      pulse: false,
-    };
-  }
-
-  return null;
 }
 
 export function resolveProjectStatusIndicator(
@@ -725,7 +664,7 @@ function sortProjectsByActivity<TProject extends SidebarProject>(
     return [...projects];
   }
 
-  return [...projects].toSorted((left, right) => {
+  return [...projects].sort((left, right) => {
     const rightTimestamp = getProjectSortTimestamp(right, getProjectThreads(right), sortOrder);
     const leftTimestamp = getProjectSortTimestamp(left, getProjectThreads(left), sortOrder);
     const byTimestamp =

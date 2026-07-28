@@ -3,7 +3,7 @@ import type { ScopedProjectRef, SidebarProjectGroupingMode } from "@t3tools/cont
 import type { ClientSettings } from "@t3tools/contracts/settings";
 
 import type { EnvironmentProject } from "./models.ts";
-import { normalizeProjectPathForComparison } from "./projects.ts";
+import { normalizeProjectPathForComparison } from "@t3tools/shared/path";
 
 export interface ProjectGroupingSettings {
   readonly sidebarProjectGroupingMode: SidebarProjectGroupingMode;

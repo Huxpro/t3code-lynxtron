@@ -2,13 +2,15 @@ import {
   type KeybindingCommand,
   type KeybindingShortcut,
   type KeybindingWhenNode,
-  MODEL_PICKER_JUMP_KEYBINDING_COMMANDS,
   type ResolvedKeybindingsConfig,
-  THREAD_JUMP_KEYBINDING_COMMANDS,
   type ModelPickerJumpKeybindingCommand,
   type ThreadJumpKeybindingCommand,
 } from "@t3tools/contracts";
-import { isMacPlatform } from "./lib/utils";
+import {
+  MODEL_PICKER_JUMP_KEYBINDING_COMMANDS,
+  THREAD_JUMP_KEYBINDING_COMMANDS,
+} from "@t3tools/contracts/keybinding-constants";
+import { getPlatform, isMacPlatform } from "./lib/platformDetection";
 
 export interface ShortcutEventLike {
   type?: string;
@@ -88,7 +90,7 @@ function resolveEventKeys(event: ShortcutEventLike): Set<string> {
 function matchesShortcutModifiers(
   event: ShortcutModifierStateLike,
   shortcut: KeybindingShortcut,
-  platform = navigator.platform,
+  platform = getPlatform(),
 ): boolean {
   const useMetaForMod = isMacPlatform(platform);
   const expectedMeta = shortcut.metaKey || (shortcut.modKey && useMetaForMod);
@@ -104,14 +106,14 @@ function matchesShortcutModifiers(
 function matchesShortcut(
   event: ShortcutEventLike,
   shortcut: KeybindingShortcut,
-  platform = navigator.platform,
+  platform = getPlatform(),
 ): boolean {
   if (!matchesShortcutModifiers(event, shortcut, platform)) return false;
   return resolveEventKeys(event).has(shortcut.key);
 }
 
 function resolvePlatform(options: ShortcutMatchOptions | undefined): string {
-  return options?.platform ?? navigator.platform;
+  return options?.platform ?? getPlatform();
 }
 
 function resolveContext(options: ShortcutMatchOptions | undefined): ShortcutMatchContext {
@@ -147,7 +149,7 @@ function matchesWhenClause(
   return evaluateWhenNode(whenAst, context);
 }
 
-function shortcutConflictKey(shortcut: KeybindingShortcut, platform = navigator.platform): string {
+function shortcutConflictKey(shortcut: KeybindingShortcut, platform = getPlatform()): string {
   const useMetaForMod = isMacPlatform(platform);
   const metaKey = shortcut.metaKey || (shortcut.modKey && useMetaForMod);
   const ctrlKey = shortcut.ctrlKey || (shortcut.modKey && !useMetaForMod);
@@ -229,7 +231,7 @@ function formatShortcutKeyLabel(key: string): string {
 
 export function formatShortcutLabel(
   shortcut: KeybindingShortcut,
-  platform = navigator.platform,
+  platform = getPlatform(),
 ): string {
   const keyLabel = formatShortcutKeyLabel(shortcut.key);
   const useMetaForMod = isMacPlatform(platform);
@@ -445,7 +447,7 @@ export function isOpenFavoriteEditorShortcut(
 
 export function isTerminalClearShortcut(
   event: ShortcutEventLike,
-  platform = navigator.platform,
+  platform = getPlatform(),
 ): boolean {
   if (event.type !== undefined && event.type !== "keydown") {
     return false;
@@ -469,7 +471,7 @@ export function isTerminalClearShortcut(
 
 export function terminalDeleteShortcutData(
   event: ShortcutEventLike,
-  platform = navigator.platform,
+  platform = getPlatform(),
 ): string | null {
   if (event.type !== undefined && event.type !== "keydown") {
     return null;
@@ -491,7 +493,7 @@ export function terminalDeleteShortcutData(
 
 export function terminalNavigationShortcutData(
   event: ShortcutEventLike,
-  platform = navigator.platform,
+  platform = getPlatform(),
 ): string | null {
   if (event.type !== undefined && event.type !== "keydown") {
     return null;

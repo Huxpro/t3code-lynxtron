@@ -15,8 +15,9 @@ import type {
   EnvironmentThread,
   EnvironmentThreadShell,
 } from "@t3tools/client-runtime/state/shell";
+import type { SessionPresentationPhase } from "@t3tools/client-runtime/presentation/session";
 
-export type SessionPhase = "disconnected" | "connecting" | "ready" | "running";
+export type SessionPhase = SessionPresentationPhase;
 export const DEFAULT_RUNTIME_MODE: RuntimeMode = "full-access";
 
 export const DEFAULT_INTERACTION_MODE: ProviderInteractionMode = "default";

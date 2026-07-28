@@ -137,6 +137,7 @@ export default defineConfig(() => {
     resolve: {
       tsconfigPaths: true,
       dedupe: ["react", "react-dom"],
+      extensions: [".web.tsx", ".web.ts", ".tsx", ".ts", ".jsx", ".js", ".json"],
     },
     experimental: {
       bundledDev,

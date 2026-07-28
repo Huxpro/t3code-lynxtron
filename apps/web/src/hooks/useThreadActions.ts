@@ -5,6 +5,10 @@ import {
 } from "@t3tools/client-runtime/environment";
 import { settlePromise, squashAtomCommandFailure } from "@t3tools/client-runtime/state/runtime";
 import { canSettle, canSnooze } from "@t3tools/client-runtime/state/thread-settled";
+import {
+  formatThreadActionConfirmationMessage,
+  projectThreadActionConfirmation,
+} from "@t3tools/client-runtime/presentation/thread-actions";
 import { EnvironmentId, type ScopedThreadRef, ThreadId } from "@t3tools/contracts";
 import * as Cause from "effect/Cause";
 import * as Schema from "effect/Schema";
@@ -534,13 +538,12 @@ export function useThreadActions() {
 
       if (confirmThreadDelete && localApi) {
         const title = resolved?.thread.title ?? "this thread";
+        const confirmation = projectThreadActionConfirmation({
+          action: "delete",
+          threadTitle: title,
+        });
         const confirmationResult = await settlePromise(() =>
-          localApi.dialogs.confirm(
-            [
-              `Delete thread "${title}"?`,
-              "This permanently clears conversation history for this thread.",
-            ].join("\n"),
-          ),
+          localApi.dialogs.confirm(formatThreadActionConfirmationMessage(confirmation)),
         );
         if (confirmationResult._tag === "Failure") {
           return confirmationResult;

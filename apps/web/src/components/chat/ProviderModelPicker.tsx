@@ -17,7 +17,7 @@ import {
   getTriggerDisplayModelLabel,
   getTriggerDisplayModelName,
 } from "./providerIconUtils";
-import type { ProviderInstanceEntry } from "../../providerInstances";
+import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 
 export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
   /**

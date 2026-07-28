@@ -6,12 +6,28 @@ import { TrimmedNonEmptyString, TrimmedString } from "./baseSchemas.ts";
 import { DEFAULT_GIT_TEXT_GENERATION_MODEL, ProviderOptionSelections } from "./model.ts";
 import { ModelSelection } from "./orchestration.ts";
 import { ProviderInstanceConfig, ProviderInstanceId } from "./providerInstance.ts";
+import {
+  MAX_GLASS_OPACITY_VALUE,
+  MIN_GLASS_OPACITY_VALUE,
+  PORTABLE_CLIENT_SETTINGS_DEFAULTS,
+  PORTABLE_SERVER_SETTINGS_DEFAULTS,
+} from "./settingsDefaults.ts";
+import {
+  MAX_SIDEBAR_THREAD_PREVIEW_COUNT,
+  MIN_SIDEBAR_THREAD_PREVIEW_COUNT,
+} from "./settingsConstants.ts";
+
+export {
+  MAX_SIDEBAR_THREAD_PREVIEW_COUNT,
+  MIN_SIDEBAR_THREAD_PREVIEW_COUNT,
+} from "./settingsConstants.ts";
 
 // ── Client Settings (local-only) ───────────────────────────────
 
 export const TimestampFormat = Schema.Literals(["locale", "12-hour", "24-hour"]);
 export type TimestampFormat = typeof TimestampFormat.Type;
-export const DEFAULT_TIMESTAMP_FORMAT: TimestampFormat = "locale";
+export const DEFAULT_TIMESTAMP_FORMAT: TimestampFormat =
+  PORTABLE_CLIENT_SETTINGS_DEFAULTS.timestampFormat;
 
 export const SidebarProjectSortOrder = Schema.Literals(["updated_at", "created_at", "manual"]);
 export type SidebarProjectSortOrder = typeof SidebarProjectSortOrder.Type;
@@ -27,9 +43,8 @@ export const SidebarProjectGroupingMode = Schema.Literals([
   "separate",
 ]);
 export type SidebarProjectGroupingMode = typeof SidebarProjectGroupingMode.Type;
-export const DEFAULT_SIDEBAR_PROJECT_GROUPING_MODE: SidebarProjectGroupingMode = "repository";
-export const MIN_SIDEBAR_THREAD_PREVIEW_COUNT = 1;
-export const MAX_SIDEBAR_THREAD_PREVIEW_COUNT = 15;
+export const DEFAULT_SIDEBAR_PROJECT_GROUPING_MODE: SidebarProjectGroupingMode =
+  PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarProjectGroupingMode;
 export const SidebarThreadPreviewCount = Schema.Int.check(
   Schema.isBetween({
     minimum: MIN_SIDEBAR_THREAD_PREVIEW_COUNT,
@@ -48,8 +63,8 @@ export const SidebarAutoSettleAfterDays = Schema.Number.check(
 );
 export type SidebarAutoSettleAfterDays = typeof SidebarAutoSettleAfterDays.Type;
 export const DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS: SidebarAutoSettleAfterDays = 3;
-export const MIN_GLASS_OPACITY = 40;
-export const MAX_GLASS_OPACITY = 100;
+export const MIN_GLASS_OPACITY = MIN_GLASS_OPACITY_VALUE;
+export const MAX_GLASS_OPACITY = MAX_GLASS_OPACITY_VALUE;
 export const GlassOpacity = Schema.Int.check(
   Schema.isBetween({
     minimum: MIN_GLASS_OPACITY,
@@ -57,16 +72,32 @@ export const GlassOpacity = Schema.Int.check(
   }),
 );
 export type GlassOpacity = typeof GlassOpacity.Type;
-export const DEFAULT_GLASS_OPACITY: GlassOpacity = 80;
+export const DEFAULT_GLASS_OPACITY: GlassOpacity = PORTABLE_CLIENT_SETTINGS_DEFAULTS.glassOpacity;
 
 export const ClientSettingsSchema = Schema.Struct({
-  autoOpenPlanSidebar: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(false))),
-  confirmThreadArchive: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(false))),
-  confirmThreadDelete: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(true))),
+  autoOpenPlanSidebar: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(
+      Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.autoOpenPlanSidebar),
+    ),
+  ),
+  confirmThreadArchive: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(
+      Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadArchive),
+    ),
+  ),
+  confirmThreadDelete: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(
+      Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadDelete),
+    ),
+  ),
   dismissedProviderUpdateNotificationKeys: Schema.Array(TrimmedNonEmptyString).pipe(
     Schema.withDecodingDefault(Effect.succeed([])),
   ),
-  diffIgnoreWhitespace: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(true))),
+  diffIgnoreWhitespace: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(
+      Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.diffIgnoreWhitespace),
+    ),
+  ),
   glassOpacity: GlassOpacity.pipe(
     Schema.withDecodingDefault(Effect.succeed(DEFAULT_GLASS_OPACITY)),
   ),
@@ -114,11 +145,15 @@ export const ClientSettingsSchema = Schema.Struct({
   sidebarThreadPreviewCount: SidebarThreadPreviewCount.pipe(
     Schema.withDecodingDefault(Effect.succeed(DEFAULT_SIDEBAR_THREAD_PREVIEW_COUNT)),
   ),
-  sidebarV2Enabled: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(false))),
+  sidebarV2Enabled: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarV2Enabled)),
+  ),
   timestampFormat: TimestampFormat.pipe(
     Schema.withDecodingDefault(Effect.succeed(DEFAULT_TIMESTAMP_FORMAT)),
   ),
-  wordWrap: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(true))),
+  wordWrap: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.wordWrap)),
+  ),
 });
 export type ClientSettings = typeof ClientSettingsSchema.Type;
 
@@ -398,15 +433,27 @@ export type ObservabilitySettings = typeof ObservabilitySettings.Type;
 export const DEFAULT_AUTOMATIC_GIT_FETCH_INTERVAL = Duration.seconds(30);
 
 export const ServerSettings = Schema.Struct({
-  enableAssistantStreaming: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(false))),
-  enableProviderUpdateChecks: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(true))),
+  enableAssistantStreaming: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(
+      Effect.succeed(PORTABLE_SERVER_SETTINGS_DEFAULTS.enableAssistantStreaming),
+    ),
+  ),
+  enableProviderUpdateChecks: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(
+      Effect.succeed(PORTABLE_SERVER_SETTINGS_DEFAULTS.enableProviderUpdateChecks),
+    ),
+  ),
   automaticGitFetchInterval: Schema.DurationFromMillis.pipe(
     Schema.withDecodingDefault(
       Effect.succeed(Duration.toMillis(DEFAULT_AUTOMATIC_GIT_FETCH_INTERVAL)),
     ),
   ),
   defaultThreadEnvMode: ThreadEnvMode.pipe(
-    Schema.withDecodingDefault(Effect.succeed("local" as const satisfies ThreadEnvMode)),
+    Schema.withDecodingDefault(
+      Effect.succeed(
+        PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode satisfies ThreadEnvMode,
+      ),
+    ),
   ),
   newWorktreesStartFromOrigin: Schema.Boolean.pipe(
     Schema.withDecodingDefault(Effect.succeed(true)),

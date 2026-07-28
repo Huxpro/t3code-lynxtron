@@ -11,7 +11,7 @@ import {
 
 import { usePrimarySettings, useUpdatePrimarySettings } from "../../hooks/useSettings";
 import { cn } from "../../lib/utils";
-import { normalizeProviderAccentColor } from "../../providerInstances";
+import { normalizeProviderAccentColor } from "@t3tools/client-runtime/presentation/provider";
 import { Button } from "../ui/button";
 import { ACPRegistryIcon, Gemini, GithubCopilotIcon, PiAgentIcon, type Icon } from "../Icons";
 import {

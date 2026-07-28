@@ -110,7 +110,7 @@ import { AzureDevOpsIcon, BitbucketIcon, GitHubIcon, GitLabIcon } from "./Icons"
 import { ProjectFavicon } from "./ProjectFavicon";
 import { ThreadRowLeadingStatus, ThreadRowTrailingStatus } from "./ThreadStatusIndicators";
 import { primaryServerKeybindingsAtom, primaryServerProvidersAtom } from "../state/server";
-import { resolveDefaultProviderModelSelection } from "../providerInstances";
+import { resolveDefaultProviderModelSelection } from "@t3tools/client-runtime/presentation/provider";
 import { resolveShortcutCommand, threadJumpIndexFromCommand } from "../keybindings";
 import {
   Command,

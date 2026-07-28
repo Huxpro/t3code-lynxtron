@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "route": "header-shared-runtime",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "header",
+      "web": ".chat-header-reference",
+      "lynx": ".chat-header-reference"
+    },
+    {
+      "id": "projectIcon",
+      "web": ".chat-header-project-icon-reference",
+      "lynx": ".chat-header-project-icon-reference"
+    },
+    {
+      "id": "projectName",
+      "web": ".chat-header-project-name-reference",
+      "lynx": ".chat-header-project-name-reference"
+    },
+    {
+      "id": "threadTitle",
+      "web": ".chat-header-thread-title-reference",
+      "lynx": ".chat-header-thread-title-reference"
+    },
+    {
+      "id": "actions",
+      "web": "[data-chat-header-actions]",
+      "lynx": "[data-chat-header-actions]"
+    }
+  ],
+  "typography": [
+    {
+      "id": "projectName",
+      "web": ".chat-header-project-name-reference",
+      "lynx": ".chat-header-project-name-reference"
+    },
+    {
+      "id": "threadTitle",
+      "web": ".chat-header-thread-title-reference",
+      "lynx": ".chat-header-thread-title-reference"
+    }
+  ],
+  "colors": [
+    {
+      "id": "headerBackground",
+      "web": ".chat-header-reference",
+      "lynx": ".chat-header-reference"
+    },
+    {
+      "id": "projectName",
+      "web": ".chat-header-project-name-reference",
+      "lynx": ".chat-header-project-name-reference"
+    },
+    {
+      "id": "threadTitle",
+      "web": ".chat-header-thread-title-reference",
+      "lynx": ".chat-header-thread-title-reference"
+    }
+  ]
+}

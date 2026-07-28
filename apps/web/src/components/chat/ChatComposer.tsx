@@ -19,6 +19,11 @@ import {
   PROVIDER_SEND_TURN_MAX_IMAGE_BYTES,
 } from "@t3tools/contracts";
 import type { EnvironmentConnectionPresentation } from "@t3tools/client-runtime/connection";
+import {
+  COMPOSER_RUNTIME_MODE_PRESENTATIONS,
+  getComposerInteractionModePresentation,
+  getComposerRuntimeModePresentation,
+} from "@t3tools/client-runtime/presentation/composer";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
 import { createModelSelection, normalizeModelSlug } from "@t3tools/shared/model";
 import {
@@ -176,7 +181,7 @@ import {
   resolveSelectableProviderInstanceEntry,
   sortProviderInstanceEntries,
   type ProviderInstanceEntry,
-} from "../../providerInstances";
+} from "@t3tools/client-runtime/presentation/provider";
 import { type AppModelOption, getAppModelOptionsForInstance } from "../../modelSelection";
 import type { UnifiedSettings } from "@t3tools/contracts/settings";
 import type { SessionPhase, Thread } from "../../types";
@@ -193,33 +198,14 @@ import type { ReviewCommentContext } from "../../reviewCommentContext";
 
 const IMAGE_SIZE_LIMIT_LABEL = `${Math.round(PROVIDER_SEND_TURN_MAX_IMAGE_BYTES / (1024 * 1024))}MB`;
 
-const runtimeModeConfig: Record<
-  RuntimeMode,
-  { label: string; description: string; icon: LucideIcon }
-> = {
-  "approval-required": {
-    label: "Supervised",
-    description: "Ask before commands and file changes.",
-    icon: LockIcon,
-  },
-  "auto-accept-edits": {
-    label: "Auto-accept edits",
-    description: "Auto-approve edits, ask before other actions.",
-    icon: PenLineIcon,
-  },
-  auto: {
-    label: "Auto",
-    description: "An AI reviewer approves routine actions; risky ones still ask.",
-    icon: SparklesIcon,
-  },
-  "full-access": {
-    label: "Full access",
-    description: "Allow commands and edits without prompts.",
-    icon: LockOpenIcon,
-  },
+const runtimeModeIcons: Record<RuntimeMode, LucideIcon> = {
+  "approval-required": LockIcon,
+  "auto-accept-edits": PenLineIcon,
+  auto: SparklesIcon,
+  "full-access": LockOpenIcon,
 };
 
-const runtimeModeOptions = Object.keys(runtimeModeConfig) as RuntimeMode[];
+const runtimeModeOptions = COMPOSER_RUNTIME_MODE_PRESENTATIONS.map(({ mode }) => mode);
 const COMPOSER_FLOATING_LAYER_SELECTOR = [
   '[data-slot="popover-popup"]',
   '[data-slot="menu-popup"]',
@@ -271,12 +257,10 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
   onRuntimeModeChange: (mode: RuntimeMode) => void;
   onTogglePlanSidebar: () => void;
 }) {
-  const runtimeModeOption = runtimeModeConfig[props.runtimeMode];
-  const RuntimeModeIcon = runtimeModeOption.icon;
-  const interactionModeTooltip =
-    props.interactionMode === "plan"
-      ? "Plan mode — click to return to normal build mode"
-      : "Default mode — click to enter plan mode";
+  const runtimeModeOption = getComposerRuntimeModePresentation(props.runtimeMode);
+  const RuntimeModeIcon = runtimeModeIcons[props.runtimeMode];
+  const interactionModeOption = getComposerInteractionModePresentation(props.interactionMode);
+  const interactionModeTooltip = interactionModeOption.description;
   const planSidebarTooltip = props.planSidebarOpen
     ? `Hide ${props.planSidebarLabel.toLowerCase()} sidebar`
     : `Show ${props.planSidebarLabel.toLowerCase()} sidebar`;
@@ -307,9 +291,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
           ) : (
             <BotIcon />
           )}
-          <span className="sr-only sm:not-sr-only">
-            {props.interactionMode === "plan" ? "Plan" : "Build"}
-          </span>
+          <span className="sr-only sm:not-sr-only">{interactionModeOption.label}</span>
         </TooltipTrigger>
         <TooltipPopup side="top">{interactionModeTooltip}</TooltipPopup>
       </Tooltip>
@@ -340,8 +322,8 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
           </TooltipTrigger>
           <SelectPopup alignItemWithTrigger={false}>
             {runtimeModeOptions.map((mode) => {
-              const option = runtimeModeConfig[mode];
-              const OptionIcon = option.icon;
+              const option = getComposerRuntimeModePresentation(mode);
+              const OptionIcon = runtimeModeIcons[mode];
               return (
                 <SelectItem key={mode} value={mode} hideIndicator className="min-w-64 py-2">
                   <div className="flex min-w-0 items-center gap-3">

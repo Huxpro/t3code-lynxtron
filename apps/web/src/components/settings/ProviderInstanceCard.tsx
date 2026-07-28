@@ -14,6 +14,13 @@ import * as Arr from "effect/Array";
 import * as Result from "effect/Result";
 import { useState, type ReactNode } from "react";
 import {
+  getProviderSummary,
+  getProviderVersionAdvisoryPresentation,
+  getProviderVersionLabel,
+  normalizeProviderAccentColor,
+  type ProviderStatusKey,
+} from "@t3tools/client-runtime/presentation/provider";
+import {
   isProviderDriverKind,
   type ProviderInstanceConfig,
   type ProviderInstanceEnvironmentVariable,
@@ -25,7 +32,6 @@ import {
 
 import { cn } from "../../lib/utils";
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
-import { normalizeProviderAccentColor } from "../../providerInstances";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
@@ -43,13 +49,13 @@ import { ProviderModelsSection } from "./ProviderModelsSection";
 import { ProviderInstanceIcon } from "../chat/ProviderInstanceIcon";
 import { ProviderAccentColorPicker } from "./ProviderAccentColorPicker";
 import { RedactedSensitiveText } from "./RedactedSensitiveText";
-import {
-  getProviderVersionAdvisoryPresentation,
-  PROVIDER_STATUS_STYLES,
-  getProviderSummary,
-  getProviderVersionLabel,
-  type ProviderStatusKey,
-} from "./providerStatus";
+
+const PROVIDER_STATUS_STYLES: Record<ProviderStatusKey, { readonly dot: string }> = {
+  disabled: { dot: "bg-amber-400" },
+  error: { dot: "bg-destructive" },
+  ready: { dot: "bg-success" },
+  warning: { dot: "bg-warning" },
+};
 
 const ENVIRONMENT_VARIABLE_NAME_PATTERN = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 

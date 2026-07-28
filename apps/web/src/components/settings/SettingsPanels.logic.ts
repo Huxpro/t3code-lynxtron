@@ -1,24 +1,9 @@
-import type {
-  ProviderDriverKind,
-  ProviderInstanceConfig,
-  ProviderInstanceId,
-  ServerSettings,
-  SidebarProjectGroupingMode,
-  UnifiedSettings,
-} from "@t3tools/contracts";
-import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
+import type { SidebarProjectGroupingMode } from "@t3tools/contracts";
 
-export function isProjectGroupingEnabled(mode: SidebarProjectGroupingMode): boolean {
-  return mode !== "separate";
-}
-
-export function projectGroupingModeFromToggle(
-  enabled: boolean,
-  lastEnabledMode: SidebarProjectGroupingMode = "repository",
-): SidebarProjectGroupingMode {
-  if (!enabled) return "separate";
-  return lastEnabledMode === "repository_path" ? "repository_path" : "repository";
-}
+export {
+  isProjectGroupingEnabled,
+  projectGroupingModeFromToggle,
+} from "@t3tools/client-runtime/presentation/settings";
 
 const LAST_ENABLED_PROJECT_GROUPING_MODE_KEY = "t3code:last-enabled-project-grouping-mode";
 
@@ -87,39 +72,4 @@ export function formatDiagnosticsDescription(input: {
   }
 
   return `${mode}.`;
-}
-
-export function buildProviderInstanceUpdatePatch(input: {
-  readonly settings: Pick<ServerSettings, "providers" | "providerInstances">;
-  readonly instanceId: ProviderInstanceId;
-  readonly instance: ProviderInstanceConfig;
-  readonly driver: ProviderDriverKind;
-  readonly isDefault: boolean;
-  readonly textGenerationModelSelection?:
-    | ServerSettings["textGenerationModelSelection"]
-    | undefined;
-}): Partial<UnifiedSettings> {
-  type LegacyProviderSettings = ServerSettings["providers"][keyof ServerSettings["providers"]];
-  const legacyProviderDefaults = DEFAULT_UNIFIED_SETTINGS.providers as Record<
-    string,
-    LegacyProviderSettings | undefined
-  >;
-  const legacyProviderDefault = input.isDefault ? legacyProviderDefaults[input.driver] : undefined;
-  return {
-    ...(legacyProviderDefault !== undefined
-      ? {
-          providers: {
-            ...input.settings.providers,
-            [input.driver]: legacyProviderDefault,
-          } as ServerSettings["providers"],
-        }
-      : {}),
-    providerInstances: {
-      ...input.settings.providerInstances,
-      [input.instanceId]: input.instance,
-    },
-    ...(input.textGenerationModelSelection !== undefined
-      ? { textGenerationModelSelection: input.textGenerationModelSelection }
-      : {}),
-  };
 }

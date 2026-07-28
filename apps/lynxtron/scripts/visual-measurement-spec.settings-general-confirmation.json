@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "route": "settings-general",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "sidebar",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".settings-nav"
+    },
+    {
+      "id": "topbar",
+      "web": ".settings-topbar",
+      "lynx": ".settings-topbar"
+    },
+    {
+      "id": "panel",
+      "web": ".settings-panel",
+      "lynx": ".settings-scroll"
+    },
+    {
+      "id": "generalHeading",
+      "web": ".settings-section__title",
+      "lynx": ".settings-section__title"
+    },
+    {
+      "id": "themeControl",
+      "web": "[aria-label=\"Theme preference\"]",
+      "lynx": "view.select-box--interactive"
+    },
+    {
+      "id": "projectGroupingControl",
+      "web": "[aria-label=\"Project Grouping\"]",
+      "lynx": "view.ui-switch"
+    },
+    {
+      "id": "restoreDialog",
+      "web": ".settings-restore-dialog",
+      "lynx": ".settings-restore-dialog",
+      "afterInteraction": true
+    },
+    {
+      "id": "restoreDialogTitle",
+      "web": ".settings-restore-dialog__title",
+      "lynx": ".settings-restore-dialog__title",
+      "afterInteraction": true
+    },
+    {
+      "id": "restorePrimaryAction",
+      "web": ".settings-restore-dialog__button--primary",
+      "lynx": ".settings-restore-dialog__button--primary",
+      "afterInteraction": true
+    }
+  ],
+  "typography": [
+    {
+      "id": "generalHeading",
+      "web": ".settings-section__title",
+      "lynx": ".settings-section__title"
+    },
+    {
+      "id": "rowTitle",
+      "web": ".settings-row__title",
+      "lynx": ".settings-row__title"
+    },
+    {
+      "id": "rowDescription",
+      "web": ".settings-row__desc",
+      "lynx": ".settings-row__desc"
+    },
+    {
+      "id": "themeControl",
+      "web": "[aria-label=\"Theme preference\"]",
+      "lynx": "view.select-box--interactive"
+    },
+    {
+      "id": "restoreDialogTitle",
+      "web": ".settings-restore-dialog__title",
+      "lynx": ".settings-restore-dialog__title",
+      "afterInteraction": true
+    },
+    {
+      "id": "restoreDialogDescription",
+      "web": ".settings-restore-dialog__description",
+      "lynx": ".settings-restore-dialog__description",
+      "afterInteraction": true
+    },
+    {
+      "id": "restorePrimaryAction",
+      "web": ".settings-restore-dialog__button--primary",
+      "lynx": ".settings-restore-dialog__button-label",
+      "afterInteraction": true
+    }
+  ],
+  "colors": [
+    {
+      "id": "mainBackground",
+      "web": ".settings-main",
+      "lynx": ".settings-main",
+      "properties": ["backgroundColor"]
+    },
+    {
+      "id": "sidebarBackground",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".settings-nav",
+      "properties": ["backgroundColor"]
+    },
+    {
+      "id": "rowText",
+      "web": ".settings-row__title",
+      "lynx": ".settings-row__title",
+      "properties": ["color"]
+    },
+    {
+      "id": "restoreDialogBackground",
+      "web": ".settings-restore-dialog",
+      "lynx": ".settings-restore-dialog",
+      "afterInteraction": true,
+      "properties": ["backgroundColor"]
+    },
+    {
+      "id": "restorePrimaryAction",
+      "web": ".settings-restore-dialog__button--primary",
+      "lynx": ".settings-restore-dialog__button--primary",
+      "afterInteraction": true,
+      "properties": ["backgroundColor"]
+    }
+  ]
+}

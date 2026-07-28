@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "route": "sidebar-populated",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "sidebar",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "header",
+      "web": ".lynx-sidebar-chrome-header",
+      "lynx": ".lynx-sidebar-chrome-header"
+    },
+    {
+      "id": "brand",
+      "web": ".sidebar-brand-code-label",
+      "lynx": ".sidebar-brand-code-label"
+    },
+    {
+      "id": "search",
+      "web": ".sidebar-search-label",
+      "lynx": ".sidebar-search-label"
+    },
+    {
+      "id": "projectsLabel",
+      "web": ".sidebar-projects-label",
+      "lynx": ".sidebar-projects-label"
+    },
+    {
+      "id": "projectRow",
+      "web": ".sidebar-project-row-reference",
+      "lynx": ".sidebar-project-row-reference"
+    },
+    {
+      "id": "firstThreadRow",
+      "web": ".sidebar-thread-row-reference",
+      "lynx": ".sidebar-thread-row-reference"
+    },
+    {
+      "id": "settings",
+      "web": ".sidebar-settings-label",
+      "lynx": ".sidebar-settings-label"
+    }
+  ],
+  "typography": [
+    {
+      "id": "brand",
+      "web": ".sidebar-brand",
+      "lynx": ".sidebar-brand"
+    },
+    {
+      "id": "search",
+      "web": ".sidebar-search-anchor",
+      "lynx": ".sidebar-search-anchor"
+    },
+    {
+      "id": "projectsLabel",
+      "web": ".sidebar-projects-label",
+      "lynx": ".sidebar-projects-label"
+    },
+    {
+      "id": "projectTitle",
+      "web": ".sidebar-project-title-reference",
+      "lynx": ".sidebar-project-title-reference"
+    },
+    {
+      "id": "threadTitle",
+      "web": ".sidebar-thread-title-reference",
+      "lynx": ".sidebar-thread-title-reference"
+    },
+    {
+      "id": "settings",
+      "web": ".sidebar-settings-row",
+      "lynx": ".sidebar-settings-row"
+    }
+  ],
+  "colors": [
+    {
+      "id": "appBackground",
+      "web": ".chat-view-surface-reference",
+      "lynx": ".chat-view-surface-reference"
+    },
+    {
+      "id": "sidebarBackground",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "projectRow",
+      "web": ".sidebar-project-title-reference",
+      "lynx": ".sidebar-project-title-reference",
+      "properties": ["color"]
+    }
+  ]
+}

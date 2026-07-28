@@ -16,7 +16,6 @@ import {
   buildExpiredTerminalContextToastCopy,
   buildThreadTurnInterruptInput,
   createLocalDispatchSnapshot,
-  deriveComposerSendState,
   dismissBranchMismatchForSession,
   getStartedThreadModelChangeBlockReason,
   hasServerAcknowledgedLocalDispatch,
@@ -133,79 +132,6 @@ describe("buildThreadTurnInterruptInput", () => {
     expect(buildThreadTurnInterruptInput(makeThread({ session: readySession }))).toEqual({
       threadId,
     });
-  });
-});
-
-describe("deriveComposerSendState", () => {
-  it("treats expired terminal pills as non-sendable content", () => {
-    const state = deriveComposerSendState({
-      prompt: "\uFFFC",
-      imageCount: 0,
-      terminalContexts: [
-        {
-          id: "ctx-expired",
-          threadId,
-          terminalId: "default",
-          terminalLabel: "Terminal 1",
-          lineStart: 4,
-          lineEnd: 4,
-          text: "",
-          createdAt: now,
-        },
-      ],
-    });
-
-    expect(state.trimmedPrompt).toBe("");
-    expect(state.sendableTerminalContexts).toEqual([]);
-    expect(state.expiredTerminalContextCount).toBe(1);
-    expect(state.hasSendableContent).toBe(false);
-  });
-
-  it("keeps text sendable while excluding expired terminal pills", () => {
-    const state = deriveComposerSendState({
-      prompt: `yoo \uFFFC waddup`,
-      imageCount: 0,
-      terminalContexts: [
-        {
-          id: "ctx-expired",
-          threadId,
-          terminalId: "default",
-          terminalLabel: "Terminal 1",
-          lineStart: 4,
-          lineEnd: 4,
-          text: "",
-          createdAt: now,
-        },
-      ],
-    });
-
-    expect(state.trimmedPrompt).toBe("yoo  waddup");
-    expect(state.expiredTerminalContextCount).toBe(1);
-    expect(state.hasSendableContent).toBe(true);
-  });
-
-  it("treats element contexts as sendable content (no text, no images, no terminals)", () => {
-    const state = deriveComposerSendState({
-      prompt: "",
-      imageCount: 0,
-      terminalContexts: [],
-      elementContextCount: 1,
-    });
-
-    expect(state.trimmedPrompt).toBe("");
-    expect(state.expiredTerminalContextCount).toBe(0);
-    expect(state.hasSendableContent).toBe(true);
-  });
-
-  it("does NOT treat zero element contexts as sendable", () => {
-    expect(
-      deriveComposerSendState({
-        prompt: "",
-        imageCount: 0,
-        terminalContexts: [],
-        elementContextCount: 0,
-      }).hasSendableContent,
-    ).toBe(false);
   });
 });
 

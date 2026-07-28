@@ -153,6 +153,31 @@ describe("DesktopAppIdentity", () => {
     ),
   );
 
+  it.effect("uses an explicit userData path without probing the shared application profile", () =>
+    withIdentity(
+      Effect.gen(function* () {
+        const identity = yield* DesktopAppIdentity.DesktopAppIdentity;
+        const userDataPath = yield* identity.resolveUserDataPath;
+
+        assert.equal(userDataPath, "/tmp/t3code-visual-electron-profile");
+      }),
+      {
+        environment: {
+          env: {
+            T3CODE_DESKTOP_USER_DATA_DIR: "/tmp/t3code-visual-electron-profile",
+          },
+        },
+        legacyPathProbeError: PlatformError.systemError({
+          _tag: "PermissionDenied",
+          module: "FileSystem",
+          method: "exists",
+          description: "legacy path should not be probed",
+          pathOrDescriptor: "/unexpected",
+        }),
+      },
+    ),
+  );
+
   it.effect("preserves failures while inspecting the legacy userData path", () => {
     const legacyPath = "/Users/alice/Library/Application Support/T3 Code (Alpha)";
     const cause = PlatformError.systemError({

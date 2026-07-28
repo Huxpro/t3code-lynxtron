@@ -1,6 +1,6 @@
 import { Debouncer } from "@tanstack/react-pacer";
+import { normalizeProjectPathForComparison } from "@t3tools/shared/path";
 import { create } from "zustand";
-import { normalizeProjectPathForComparison } from "./lib/projectPaths";
 
 export const PERSISTED_STATE_KEY = "t3code:ui-state:v1";
 const THREAD_CHANGED_FILES_EXPANSION_VERSION = 1;
