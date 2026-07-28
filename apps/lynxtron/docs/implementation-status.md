@@ -210,6 +210,39 @@ differ, so T6-C1 remains active and the next slice must share a larger
 composition boundary. Evidence and explicit gaps are under
 `evidence/2026-07-29/T6-C1/sidebar/sidebar-v2-host/`.
 
+## P2 native `<list>` transcript (first slice complete)
+
+The chat transcript projection is now a shared production module:
+`client-runtime/presentation/transcript` carries the complete Web pipeline —
+`deriveWorkLogEntries` (payload sniffing, tool-lifecycle collapse, ordering),
+`deriveTimelineEntries`, `deriveMessagesTimelineRows` (turn folds,
+work grouping/toggle, working row, duration starts, stable row identity),
+tool status affordances, and `formatDuration`/`formatElapsed` — with message
+and proposed-plan payloads generic per renderer. Web `session-logic.ts` and
+`MessagesTimeline.logic.ts` re-export web-typed wrappers; their 107 existing
+tests pass unchanged against the shared implementation, and the shared module
+adds 12 colocated tests. The module avoids `toSorted` and negative `at` for
+QuickJS parity and uses a schema-free tool-lifecycle literal check: an
+intermediate contracts value import grew the renderer bundle from 2,061.1 kB
+to 2,448.9 kB and was removed; the final bundle is 2,107.2 kB.
+
+The Lynx `MessagesTimeline` is now a native `<list>` host: one
+`<list-item item-key>` per shared projection row (user/assistant/system
+messages, turn folds, work rows with real command previews and
+success/failure glyphs, `+N previous tool calls` toggles, proposed-plan rows,
+live-elapsed working row), follow-at-end via `scrollToPosition`, detach on
+user scroll, and a "Jump to latest" pill. The `<scroll-view>` +
+full-`messages.map()` renderer and the clean-room activity-item CSS are
+deleted. The bridge, connector, and Effect Atom now carry canonical
+`latestTurn`, `proposedPlans`, and `activeTurnId`, which turn folds and the
+working timer require. A deterministic populated fixture
+(`scripts/prepare-transcript-visual-state.mjs`) drove a real provider turn
+through the production connector; the fresh 1280 × 820 Lynx DevTool capture
+reports zero renderer errors under
+`evidence/2026-07-29/P2/transcript/list-host/`. Anchoring-new-turn, the
+minimap, revert/turn-diff/checkpoint cards, and the full scroll-state-machine
+battery remain registered gaps for the phase exit.
+
 ## Provenance snapshot
 
 The 2026-07-27 comparison against

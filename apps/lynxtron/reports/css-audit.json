@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1320,
+  "uniqueStaticUtilities": 1388,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -66,11 +66,11 @@
     },
     {
       "utility": "hover:bg-sidebar-row-hover",
-      "occurrences": 11
+      "occurrences": 12
     },
     {
       "utility": "hover:text-sidebar-foreground",
-      "occurrences": 11
+      "occurrences": 12
     },
     {
       "utility": "focus-visible:outline-none",
@@ -101,15 +101,15 @@
       "occurrences": 4
     },
     {
+      "utility": "focus-visible:ring-[3px]",
+      "occurrences": 4
+    },
+    {
       "utility": "focus-visible:ring-offset-2",
       "occurrences": 4
     },
     {
       "utility": "focus-visible:ring-offset-sidebar",
-      "occurrences": 4
-    },
-    {
-      "utility": "focus-visible:ring-[3px]",
       "occurrences": 4
     },
     {
@@ -130,10 +130,6 @@
     },
     {
       "utility": "focus-visible:outline-hidden",
-      "occurrences": 3
-    },
-    {
-      "utility": "focus-visible:opacity-100",
       "occurrences": 3
     },
     {
@@ -166,6 +162,10 @@
     },
     {
       "utility": "grid-cols-[minmax(190px,1.1fr)_minmax(220px,0.85fr)_minmax(210px,1fr)_60px]",
+      "occurrences": 3
+    },
+    {
+      "utility": "focus-visible:opacity-100",
       "occurrences": 3
     },
     {

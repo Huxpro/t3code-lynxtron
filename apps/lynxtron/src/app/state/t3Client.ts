@@ -11,6 +11,8 @@ import {
 import type {
   ModelSelection,
   OrchestrationCheckpointSummary,
+  OrchestrationLatestTurn,
+  OrchestrationProposedPlan,
   ProviderInteractionMode,
   ProjectListEntriesResult,
   ProjectReadFileResult,
@@ -22,6 +24,7 @@ import type {
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
   RuntimeMode,
+  TurnId,
 } from "@t3tools/contracts";
 
 import type {
@@ -82,6 +85,9 @@ export interface T3ClientState {
   readonly activePlan?: ActivePlanState;
   readonly activeProposedPlan?: LatestProposedPlanState;
   readonly activities: ReadonlyArray<ActivityEntry>;
+  readonly latestTurn: OrchestrationLatestTurn | null;
+  readonly proposedPlans: ReadonlyArray<OrchestrationProposedPlan>;
+  readonly activeTurnId: TurnId | null;
 }
 
 const INITIAL_T3_CLIENT_STATE: T3ClientState = {
@@ -107,6 +113,9 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   settingsUpdatePending: false,
   settingsError: null,
   activities: [],
+  latestTurn: null,
+  proposedPlans: [],
+  activeTurnId: null,
 };
 
 export const t3ClientStateAtom = Atom.make<T3ClientState>(INITIAL_T3_CLIENT_STATE).pipe(
@@ -159,6 +168,9 @@ function resetActiveThreadState(activeThreadId?: string): void {
     activePlan: undefined,
     activeProposedPlan: undefined,
     activities: [],
+    latestTurn: null,
+    proposedPlans: [],
+    activeTurnId: null,
     ...(thread
       ? {
           modelSelection: thread.modelSelection,
@@ -276,6 +288,9 @@ function pollOnce(): void {
     activePlan: thread.activePlan ?? undefined,
     activeProposedPlan: thread.activeProposedPlan ?? undefined,
     activities: thread.activities ?? [],
+    latestTurn: thread.latestTurn ?? null,
+    proposedPlans: thread.proposedPlans ?? [],
+    activeTurnId: thread.activeTurnId ?? null,
   });
 }
 

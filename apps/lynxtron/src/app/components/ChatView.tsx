@@ -31,6 +31,9 @@ export function ChatView({ threadId }: ChatViewProps) {
     activePlan,
     activeProposedPlan,
     activities,
+    latestTurn,
+    proposedPlans,
+    activeTurnId,
   } = useT3ClientState();
   const [clientSettings] = useClientSettingsState();
   const rightPanel = useRightPanelState();
@@ -113,6 +116,9 @@ export function ChatView({ threadId }: ChatViewProps) {
               activities={activities}
               sessionStatus={sessionStatus}
               cwd={cwd}
+              latestTurn={latestTurn}
+              proposedPlans={proposedPlans}
+              activeTurnId={activeTurnId}
             />
           ) : null}
           <Composer

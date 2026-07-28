@@ -1127,10 +1127,6 @@
   height: 0;
   padding: 20px 0;
 }
-.timeline__list {
-  display: flex;
-  flex-direction: column;
-}
 .timeline__empty {
   display: flex;
   flex-direction: column;
@@ -1150,25 +1146,6 @@
   font-family: var(--font-sans);
   margin-top: 6px;
   opacity: 0.6;
-}
-.timeline__activities {
-  display: flex;
-  flex-direction: column;
-  margin: 2px 24px 12px 24px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--border);
-  background-color: var(--muted);
-}
-.timeline__activities-label {
-  color: var(--muted-foreground);
-  font-size: 10px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-  letter-spacing: 1px;
-  margin-bottom: 6px;
 }
 .timeline__running-indicator {
   display: flex;
@@ -1221,47 +1198,139 @@
   align-items: center;
 }
 
-/* ======================= Activity Items ======================= */
-.activity-item {
+/* ======= Transcript native list (surface: chat transcript; Lynx host leaf
+   for the shared transcript projection; remove-when: transcript row chrome is
+   compiled from the shared Web composition via the Tailwind v3 pipeline) ==== */
+.timeline-host {
   display: flex;
   flex-direction: column;
-  margin-bottom: 2px;
+  flex-grow: 1;
+  height: 0;
+  position: relative;
 }
-.activity-item__header {
+.timeline-list {
+  flex-grow: 1;
+  height: 100%;
+  padding: 20px 0;
+}
+.turn-fold {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 4px 6px;
-  border-radius: 6px;
+  padding: 5px 24px;
 }
-.activity-item__icon {
-  font-size: 12px;
+.turn-fold__chevron {
+  color: var(--muted-foreground);
+  font-size: 10px;
   margin-right: 6px;
+  opacity: 0.7;
+}
+.turn-fold__label {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-family: var(--font-sans);
+}
+.work-rows {
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px;
+}
+.work-entry__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 0;
+}
+.work-entry__status {
+  color: var(--muted-foreground);
+  font-size: 11px;
   width: 16px;
   text-align: center;
+  margin-right: 4px;
 }
-.activity-item__summary {
+.work-entry__status--success {
+  color: #3b82f6;
+}
+.work-entry__status--failure {
+  color: #ef4444;
+}
+.work-entry__heading {
   color: var(--foreground);
   font-size: 12px;
   font-family: var(--font-sans);
-  flex-grow: 1;
-  width: 0;
+  margin-right: 8px;
 }
-.activity-item__chevron {
-  color: var(--muted-foreground);
-  font-size: 9px;
-  opacity: 0.5;
-}
-.activity-item__body {
-  display: flex;
-  flex-direction: column;
-  padding: 4px 6px 4px 28px;
-}
-.activity-item__meta {
+.work-entry__preview {
   color: var(--muted-foreground);
   font-size: 11px;
   font-family: var(--font-mono);
-  opacity: 0.6;
+  flex-grow: 1;
+  width: 0;
+  opacity: 0.7;
+}
+.work-entry__body {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 0 6px 20px;
+}
+.work-entry__command,
+.work-entry__detail {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+  font-family: var(--font-mono);
+}
+.work-toggle {
+  display: flex;
+  flex-direction: row;
+  padding: 3px 24px 3px 44px;
+}
+.work-toggle__label {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-family: var(--font-sans);
+  opacity: 0.8;
+}
+.plan-row {
+  display: flex;
+  flex-direction: column;
+  margin: 4px 24px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  background-color: var(--muted);
+}
+.plan-row__eyebrow {
+  color: var(--muted-foreground);
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.plan-row__title {
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+.timeline-jump {
+  position: absolute;
+  bottom: 12px;
+  right: 24px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  background-color: var(--muted);
+}
+.timeline-jump__label {
+  color: var(--foreground);
+  font-size: 12px;
+  font-family: var(--font-sans);
 }
 
 /* ======================= Markdown Body ======================= */

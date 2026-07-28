@@ -1,5 +1,23 @@
-import { useMemo, useState, useCallback } from "@lynx-js/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
+import type { NodesRef } from "@lynx-js/types";
 import { isSessionBusy } from "@t3tools/client-runtime/presentation/session";
+import {
+  deriveActiveWorkStartedAt,
+  deriveMessagesTimelineRows,
+  deriveTimelineEntries,
+  deriveWorkLogEntries,
+  formatDuration,
+  workEntryIndicatesToolFailure,
+  workEntryIndicatesToolSuccess,
+  type MessagesTimelineRow,
+  type WorkLogEntry,
+} from "@t3tools/client-runtime/presentation/transcript";
+import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
+import type {
+  OrchestrationLatestTurn,
+  OrchestrationProposedPlan,
+  TurnId,
+} from "@t3tools/contracts";
 import type { ActivityEntry, ChatMessage, SessionStatus } from "../bridge";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
@@ -8,49 +26,101 @@ interface MessagesTimelineProps {
   activities: ReadonlyArray<ActivityEntry>;
   sessionStatus: SessionStatus;
   cwd?: string | undefined;
+  latestTurn?: OrchestrationLatestTurn | null;
+  proposedPlans?: ReadonlyArray<OrchestrationProposedPlan>;
+  activeTurnId?: TurnId | null;
 }
 
-const ACTIVITY_ICONS: Record<string, string> = {
-  tool: "🔧",
-  info: "ℹ",
-  error: "✗",
-  approval: "⚠",
-};
+type TimelineRow = MessagesTimelineRow<ChatMessage, OrchestrationProposedPlan>;
 
-const ACTIVITY_COLORS: Record<string, string> = {
-  tool: "#8b5cf6",
-  info: "#6b7280",
-  error: "#ef4444",
-  approval: "#eab308",
-};
+/** How close to the bottom (px) still counts as "at the end" for follow mode. */
+const FOLLOW_BOTTOM_THRESHOLD_PX = 60;
+/** ListEventSource.SCROLL — only user/fling scrolling may break follow mode. */
+const LIST_EVENT_SOURCE_SCROLL = 2;
 
-function ActivityItem({ activity }: { activity: ActivityEntry }) {
+function estimateRowSizePx(row: TimelineRow): number {
+  switch (row.kind) {
+    case "message":
+      return row.message.role === "assistant" ? 96 : 56;
+    case "work":
+      return 34;
+    case "work-toggle":
+      return 30;
+    case "turn-fold":
+      return 32;
+    case "proposed-plan":
+      return 72;
+    case "working":
+      return 34;
+  }
+}
+
+function WorkEntryRow({ entry }: { entry: WorkLogEntry }) {
   const [expanded, setExpanded] = useState(false);
-  const icon = ACTIVITY_ICONS[activity.tone] ?? "•";
-  const color = ACTIVITY_COLORS[activity.tone] ?? "#6b7280";
-
-  const toggle = useCallback(() => setExpanded((v) => !v), []);
+  const toggle = useCallback(() => setExpanded((value) => !value), []);
+  const failed = workEntryIndicatesToolFailure(entry);
+  const succeeded = workEntryIndicatesToolSuccess(entry);
+  const statusGlyph = failed ? "✗" : succeeded ? "✓" : "•";
+  const statusClass = failed
+    ? "work-entry__status work-entry__status--failure"
+    : succeeded
+      ? "work-entry__status work-entry__status--success"
+      : "work-entry__status";
+  const heading = entry.toolTitle ?? entry.label;
+  const preview = entry.command ?? entry.detail;
 
   return (
-    <view className="activity-item">
-      <view className="activity-item__header" bindtap={toggle}>
-        <text className="activity-item__icon" style={{ color } as any}>
-          {icon}
-        </text>
-        <text className="activity-item__summary">{activity.summary || activity.kind}</text>
-        <text className="activity-item__chevron">{expanded ? "▼" : "▶"}</text>
+    <view className="work-entry">
+      <view className="work-entry__header" bindtap={toggle}>
+        <text className={statusClass}>{statusGlyph}</text>
+        <text className="work-entry__heading">{heading}</text>
+        {preview ? (
+          <text className="work-entry__preview" text-maxline="1">
+            {preview}
+          </text>
+        ) : null}
       </view>
-      {expanded ? (
-        <view className="activity-item__body">
-          <text className="activity-item__meta">Kind: {activity.kind}</text>
-          <text className="activity-item__meta">Tone: {activity.tone}</text>
+      {expanded && (entry.detail || entry.command) ? (
+        <view className="work-entry__body">
+          {entry.command ? <text className="work-entry__command">{entry.command}</text> : null}
+          {entry.detail ? <text className="work-entry__detail">{entry.detail}</text> : null}
         </view>
       ) : null}
     </view>
   );
 }
 
-function MessageBubble({ message, cwd }: { message: ChatMessage; cwd?: string | undefined }) {
+function WorkingRow({ startedAt }: { startedAt: string | null }) {
+  const [elapsedLabel, setElapsedLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!startedAt) {
+      setElapsedLabel(null);
+      return;
+    }
+    const update = () => {
+      const startedMs = Date.parse(startedAt);
+      if (!Number.isFinite(startedMs)) {
+        setElapsedLabel(null);
+        return;
+      }
+      setElapsedLabel(formatDuration(Math.max(0, Date.now() - startedMs)));
+    };
+    update();
+    const timer = setInterval(update, 1_000);
+    return () => clearInterval(timer);
+  }, [startedAt]);
+
+  return (
+    <view className="timeline__running-indicator">
+      <text className="timeline__running-text">
+        {elapsedLabel ? `● Working… ${elapsedLabel}` : "● Working…"}
+      </text>
+    </view>
+  );
+}
+
+function MessageRowView({ message, cwd }: { message: ChatMessage; cwd?: string | undefined }) {
   const isUser = message.role === "user";
   const isSystem = message.role === "system";
   const hasText = message.text && message.text.trim().length > 0;
@@ -87,67 +157,238 @@ function MessageBubble({ message, cwd }: { message: ChatMessage; cwd?: string | 
   );
 }
 
+function TimelineRowView({
+  row,
+  cwd,
+  onToggleTurn,
+  onToggleWorkGroup,
+}: {
+  row: TimelineRow;
+  cwd?: string | undefined;
+  onToggleTurn: (turnId: TurnId) => void;
+  onToggleWorkGroup: (groupId: string) => void;
+}) {
+  switch (row.kind) {
+    case "message":
+      return <MessageRowView message={row.message} cwd={cwd} />;
+    case "turn-fold":
+      return (
+        <view className="turn-fold" bindtap={() => onToggleTurn(row.turnId)}>
+          <text className="turn-fold__chevron">{row.expanded ? "▾" : "▸"}</text>
+          <text className="turn-fold__label">{row.label}</text>
+        </view>
+      );
+    case "work":
+      return (
+        <view className="work-rows">
+          {row.groupedEntries.map((entry) => (
+            <WorkEntryRow key={entry.id} entry={entry} />
+          ))}
+        </view>
+      );
+    case "work-toggle":
+      return (
+        <view className="work-toggle" bindtap={() => onToggleWorkGroup(row.groupId)}>
+          <text className="work-toggle__label">
+            {row.expanded
+              ? "Show less"
+              : `+${row.hiddenCount} previous ${row.onlyToolEntries ? "tool call" : "step"}${
+                  row.hiddenCount === 1 ? "" : "s"
+                }`}
+          </text>
+        </view>
+      );
+    case "proposed-plan": {
+      const title = proposedPlanTitle(row.proposedPlan.planMarkdown) ?? "Proposed plan";
+      return (
+        <view className="plan-row">
+          <text className="plan-row__eyebrow">Proposed plan</text>
+          <text className="plan-row__title" text-maxline="2">
+            {title}
+          </text>
+        </view>
+      );
+    }
+    case "working":
+      return <WorkingRow startedAt={row.createdAt} />;
+  }
+}
+
 export function MessagesTimeline({
   messages,
   activities,
   sessionStatus,
   cwd,
+  latestTurn = null,
+  proposedPlans = [],
+  activeTurnId = null,
 }: MessagesTimelineProps) {
-  // Group activities by their prefix (first part of id before first dash, or turn)
-  const activityGroups = useMemo(() => {
-    const groups: Array<{ key: string; activities: ActivityEntry[] }> = [];
-    for (const a of activities) {
-      const last = groups[groups.length - 1];
-      // Group consecutive activities
-      if (last) {
-        last.activities.push(a);
-      } else {
-        groups.push({ key: a.id, activities: [a] });
+  const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
+  const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
+  const [isAtEnd, setIsAtEnd] = useState(true);
+  const followRef = useRef(true);
+  const listRef = useRef<NodesRef>(null);
+
+  const isWorking = isSessionBusy(sessionStatus);
+
+  const rows = useMemo<TimelineRow[]>(() => {
+    const workEntries = deriveWorkLogEntries(activities);
+    const timelineEntries = deriveTimelineEntries<ChatMessage, OrchestrationProposedPlan>(
+      messages,
+      proposedPlans,
+      workEntries,
+    );
+    const activeTurnStartedAt = deriveActiveWorkStartedAt(
+      latestTurn,
+      { status: sessionStatus, activeTurnId },
+      null,
+    );
+    return deriveMessagesTimelineRows<ChatMessage, OrchestrationProposedPlan>({
+      timelineEntries,
+      latestTurn,
+      runningTurnId: activeTurnId,
+      expandedTurnIds,
+      expandedWorkGroupIds,
+      isWorking,
+      activeTurnStartedAt,
+    });
+  }, [
+    messages,
+    activities,
+    proposedPlans,
+    latestTurn,
+    activeTurnId,
+    sessionStatus,
+    isWorking,
+    expandedTurnIds,
+    expandedWorkGroupIds,
+  ]);
+
+  const scrollToEnd = useCallback(
+    (smooth: boolean) => {
+      if (rows.length === 0) return;
+      listRef.current
+        ?.invoke({
+          method: "scrollToPosition",
+          params: { index: rows.length - 1, alignTo: "bottom", smooth },
+        })
+        .exec();
+    },
+    [rows.length],
+  );
+
+  // Follow the end while new rows arrive or the tail row grows (streaming
+  // bumps the last message's updatedAt). A user scroll away detaches follow;
+  // scrolling back to the bottom re-attaches it (see handleScroll).
+  const lastRow = rows.length > 0 ? rows[rows.length - 1] : undefined;
+  const tailFingerprint = lastRow
+    ? `${rows.length}:${lastRow.id}:${
+        lastRow.kind === "message"
+          ? `${lastRow.message.updatedAt}:${lastRow.message.text.length}`
+          : lastRow.createdAt
+      }`
+    : "empty";
+  useEffect(() => {
+    if (!followRef.current) return;
+    scrollToEnd(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tailFingerprint]);
+
+  const handleScroll = useCallback(
+    (event: {
+      detail: {
+        scrollTop: number;
+        scrollHeight: number;
+        listHeight: number;
+        eventSource: number;
+      };
+    }) => {
+      const { scrollTop, scrollHeight, listHeight, eventSource } = event.detail;
+      const distanceFromBottom = scrollHeight - scrollTop - listHeight;
+      const nearEnd = distanceFromBottom <= FOLLOW_BOTTOM_THRESHOLD_PX;
+      if (eventSource === LIST_EVENT_SOURCE_SCROLL) {
+        followRef.current = nearEnd;
       }
-    }
-    return groups;
-  }, [activities]);
+      setIsAtEnd(nearEnd);
+    },
+    [],
+  );
 
-  const isEmpty = messages.length === 0;
-  const isRunning = isSessionBusy(sessionStatus);
+  const handleJumpToLatest = useCallback(() => {
+    followRef.current = true;
+    setIsAtEnd(true);
+    scrollToEnd(true);
+  }, [scrollToEnd]);
 
-  return (
-    <scroll-view scroll-orientation="vertical" className="timeline" sticky-bottom="true">
-      {isEmpty ? (
+  const handleToggleTurn = useCallback((turnId: TurnId) => {
+    setExpandedTurnIds((current) => {
+      const next = new Set(current);
+      if (next.has(turnId)) {
+        next.delete(turnId);
+      } else {
+        next.add(turnId);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleToggleWorkGroup = useCallback((groupId: string) => {
+    setExpandedWorkGroupIds((current) => {
+      const next = new Set(current);
+      if (next.has(groupId)) {
+        next.delete(groupId);
+      } else {
+        next.add(groupId);
+      }
+      return next;
+    });
+  }, []);
+
+  if (rows.length === 0) {
+    return (
+      <view className="timeline">
         <view className="timeline__empty">
           <text className="timeline__empty-title">Start a conversation</text>
           <text className="timeline__empty-sub">
             Ask T3 Code to build, explain, or fix something in your project.
           </text>
         </view>
-      ) : (
-        <view className="timeline__list">
-          {messages.map((m) => {
-            const isAssistant = m.role === "assistant";
-            const isLastAssistant = isAssistant && m === messages[messages.length - 1];
-            const showActivities = isLastAssistant && activities.length > 0;
+      </view>
+    );
+  }
 
-            return (
-              <view key={m.id}>
-                <MessageBubble message={m} cwd={cwd} />
-                {showActivities ? (
-                  <view className="timeline__activities">
-                    <text className="timeline__activities-label">Work log</text>
-                    {activities.map((a) => (
-                      <ActivityItem key={a.id} activity={a} />
-                    ))}
-                  </view>
-                ) : null}
-              </view>
-            );
-          })}
-          {isRunning ? (
-            <view className="timeline__running-indicator">
-              <text className="timeline__running-text">● Running</text>
-            </view>
-          ) : null}
+  return (
+    <view className="timeline-host">
+      <list
+        ref={listRef}
+        className="timeline-list"
+        scroll-orientation="vertical"
+        list-type="single"
+        span-count={1}
+        initial-scroll-index={rows.length - 1}
+        scroll-event-throttle={100}
+        bindscroll={handleScroll}
+      >
+        {rows.map((row) => (
+          <list-item
+            item-key={row.id}
+            key={row.id}
+            estimated-main-axis-size-px={estimateRowSizePx(row)}
+          >
+            <TimelineRowView
+              row={row}
+              cwd={cwd}
+              onToggleTurn={handleToggleTurn}
+              onToggleWorkGroup={handleToggleWorkGroup}
+            />
+          </list-item>
+        ))}
+      </list>
+      {!isAtEnd ? (
+        <view className="timeline-jump" bindtap={handleJumpToLatest}>
+          <text className="timeline-jump__label">↓ Jump to latest</text>
         </view>
-      )}
-    </scroll-view>
+      ) : null}
+    </view>
   );
 }

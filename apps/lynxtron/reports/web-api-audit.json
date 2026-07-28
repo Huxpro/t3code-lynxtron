@@ -1,7 +1,7 @@
 {
   "scannedRoot": "apps/web/src",
-  "generatedAt": "2026-07-27T17:56:16.711Z",
-  "totalCallSites": 674,
+  "generatedAt": "2026-07-28T20:58:37.921Z",
+  "totalCallSites": 663,
   "entries": [
     {
       "api": "window",
@@ -13,7 +13,7 @@
         "apps/web/src/components/ChatMarkdown.tsx",
         "apps/web/src/components/ChatView.tsx",
         "apps/web/src/components/CommandPalette.tsx",
-        "apps/web/src/components/Sidebar.logic.ts",
+        "apps/web/src/components/Sidebar.tsx",
         "apps/web/src/components/ThreadTerminalDrawer.tsx",
         "apps/web/src/components/chat/draftHeroTransition.ts",
         "apps/web/src/components/preview/PreviewPanelShell.tsx",
@@ -85,7 +85,7 @@
     },
     {
       "api": "window.addEventListener",
-      "calls": 43,
+      "calls": 45,
       "fileCount": 28,
       "files": [
         "apps/web/src/browser/BrowserSurfaceSlot.tsx",
@@ -173,56 +173,6 @@
       ]
     },
     {
-      "api": "navigator.platform",
-      "calls": 36,
-      "fileCount": 16,
-      "files": [
-        "apps/web/src/components/AppSidebarLayout.tsx",
-        "apps/web/src/components/CommandPalette.tsx",
-        "apps/web/src/components/ComposerPromptEditor.tsx",
-        "apps/web/src/components/ProjectScriptsControl.tsx",
-        "apps/web/src/components/Sidebar.tsx",
-        "apps/web/src/components/SidebarV2.tsx",
-        "apps/web/src/components/chat/ModelPickerContent.tsx",
-        "apps/web/src/components/chat/OpenInPicker.tsx",
-        "apps/web/src/components/preview/PreviewView.tsx",
-        "apps/web/src/components/settings/KeybindingsSettings.tsx",
-        "apps/web/src/components/settings/SettingsPanels.tsx",
-        "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
-        "apps/web/src/connection/platform.ts",
-        "apps/web/src/keybindings.ts",
-        "apps/web/src/main.tsx",
-        "apps/web/src/terminal-links.ts"
-      ]
-    },
-    {
-      "api": "window.setTimeout",
-      "calls": 28,
-      "fileCount": 20,
-      "files": [
-        "apps/web/src/browser/desktopTabLifetime.ts",
-        "apps/web/src/components/AnimatedHeight.tsx",
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/GitActionsControl.tsx",
-        "apps/web/src/components/Sidebar.logic.ts",
-        "apps/web/src/components/Sidebar.tsx",
-        "apps/web/src/components/SidebarV2.tsx",
-        "apps/web/src/components/ThreadTerminalDrawer.tsx",
-        "apps/web/src/components/chat/ComposerPendingUserInputPanel.tsx",
-        "apps/web/src/components/chat/ModelPickerContent.tsx",
-        "apps/web/src/components/preview/AgentBrowserCursor.tsx",
-        "apps/web/src/components/preview/PreviewAutomationHosts.tsx",
-        "apps/web/src/components/preview/PreviewView.tsx",
-        "apps/web/src/components/preview/ZoomIndicator.tsx",
-        "apps/web/src/components/preview/useLoadingProgress.ts",
-        "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
-        "apps/web/src/components/ui/toast.tsx",
-        "apps/web/src/hooks/useNowMinute.ts",
-        "apps/web/src/proposedPlan.ts",
-        "apps/web/src/state/queries.ts"
-      ]
-    },
-    {
       "api": "window.location",
       "calls": 27,
       "fileCount": 12,
@@ -262,6 +212,32 @@
       ]
     },
     {
+      "api": "window.setTimeout",
+      "calls": 27,
+      "fileCount": 19,
+      "files": [
+        "apps/web/src/browser/desktopTabLifetime.ts",
+        "apps/web/src/components/AnimatedHeight.tsx",
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/GitActionsControl.tsx",
+        "apps/web/src/components/Sidebar.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/chat/ComposerPendingUserInputPanel.tsx",
+        "apps/web/src/components/chat/ModelPickerContent.tsx",
+        "apps/web/src/components/preview/AgentBrowserCursor.tsx",
+        "apps/web/src/components/preview/PreviewAutomationHosts.tsx",
+        "apps/web/src/components/preview/PreviewView.tsx",
+        "apps/web/src/components/preview/ZoomIndicator.tsx",
+        "apps/web/src/components/preview/useLoadingProgress.ts",
+        "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
+        "apps/web/src/components/ui/toast.tsx",
+        "apps/web/src/hooks/useNowMinute.ts",
+        "apps/web/src/proposedPlan.ts",
+        "apps/web/src/state/queries.ts"
+      ]
+    },
+    {
       "api": "window.cancelAnimationFrame",
       "calls": 26,
       "fileCount": 12,
@@ -281,15 +257,35 @@
       ]
     },
     {
+      "api": "navigator.platform",
+      "calls": 24,
+      "fileCount": 14,
+      "files": [
+        "apps/web/src/components/AppSidebarLayout.tsx",
+        "apps/web/src/components/CommandPalette.tsx",
+        "apps/web/src/components/ComposerPromptEditor.tsx",
+        "apps/web/src/components/ProjectScriptsControl.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/chat/ModelPickerContent.tsx",
+        "apps/web/src/components/chat/OpenInPicker.tsx",
+        "apps/web/src/components/preview/PreviewView.tsx",
+        "apps/web/src/components/settings/KeybindingsSettings.tsx",
+        "apps/web/src/components/settings/SettingsPanels.tsx",
+        "apps/web/src/connection/platform.ts",
+        "apps/web/src/lib/platformDetection.ts",
+        "apps/web/src/main.tsx",
+        "apps/web/src/terminal-links.ts"
+      ]
+    },
+    {
       "api": "window.clearTimeout",
-      "calls": 23,
-      "fileCount": 16,
+      "calls": 22,
+      "fileCount": 15,
       "files": [
         "apps/web/src/browser/desktopTabLifetime.ts",
         "apps/web/src/components/AnimatedHeight.tsx",
         "apps/web/src/components/ChatView.tsx",
         "apps/web/src/components/GitActionsControl.tsx",
-        "apps/web/src/components/Sidebar.logic.ts",
         "apps/web/src/components/SidebarV2.tsx",
         "apps/web/src/components/ThreadTerminalDrawer.tsx",
         "apps/web/src/components/chat/ComposerPendingUserInputPanel.tsx",
@@ -407,13 +403,14 @@
     },
     {
       "api": "navigator",
-      "calls": 11,
-      "fileCount": 7,
+      "calls": 12,
+      "fileCount": 8,
       "files": [
         "apps/web/src/components/ChatMarkdown.tsx",
         "apps/web/src/components/CommandPalette.tsx",
         "apps/web/src/components/DiffWorkerPoolProvider.tsx",
         "apps/web/src/connection/platform.ts",
+        "apps/web/src/lib/platformDetection.ts",
         "apps/web/src/lib/windowControlsOverlay.ts",
         "apps/web/src/platform/clientCapabilities.web.ts",
         "apps/web/src/terminal-links.ts"

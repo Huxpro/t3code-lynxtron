@@ -11,14 +11,17 @@
  */
 import type {
   DesktopAppBranding,
+  OrchestrationLatestTurn,
   OrchestrationMessage,
   OrchestrationMessageRole,
   OrchestrationCheckpointSummary,
   OrchestrationProjectShell,
+  OrchestrationProposedPlan,
   OrchestrationSessionStatus,
   OrchestrationThreadActivity,
   OrchestrationThreadActivityTone,
   OrchestrationThreadShell,
+  TurnId,
   ProviderInteractionMode,
   ProviderInstanceId,
   ProjectListEntriesInput,
@@ -94,6 +97,12 @@ export interface ThreadEventPayload {
   readonly activities?: ReadonlyArray<ActivityEntry>;
   readonly activePlan?: ActivePlanState | null;
   readonly activeProposedPlan?: LatestProposedPlanState | null;
+  /** Canonical turn lifecycle for transcript folds and elapsed labels. */
+  readonly latestTurn?: OrchestrationLatestTurn | null;
+  /** Canonical proposed plans rendered inline in the transcript. */
+  readonly proposedPlans?: ReadonlyArray<OrchestrationProposedPlan>;
+  /** The session's running turn id, when a turn is actively executing. */
+  readonly activeTurnId?: TurnId | null;
 }
 
 export type { ActivePlanState, LatestProposedPlanState };

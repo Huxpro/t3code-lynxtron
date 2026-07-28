@@ -51,6 +51,10 @@
       "types": "./src/presentation/commandPalette.ts",
       "default": "./src/presentation/commandPalette.ts"
     },
+    "./presentation/transcript": {
+      "types": "./src/presentation/transcript.ts",
+      "default": "./src/presentation/transcript.ts"
+    },
     "./presentation/thread": {
       "types": "./src/presentation/thread.ts",
       "default": "./src/presentation/thread.ts"

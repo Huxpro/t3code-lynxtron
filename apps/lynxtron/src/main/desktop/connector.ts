@@ -590,6 +590,9 @@ export class T3Connector {
       activities: thread.activities,
       activePlan,
       activeProposedPlan,
+      latestTurn: thread.latestTurn ?? null,
+      proposedPlans: thread.proposedPlans,
+      activeTurnId: thread.session?.activeTurnId ?? null,
     });
   }
 

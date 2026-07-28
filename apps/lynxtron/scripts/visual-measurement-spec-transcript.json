@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "route": "thread-transcript",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "sidebar",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "workspaceHeader",
+      "web": "[data-chat-header]",
+      "lynx": "[data-chat-header]"
+    },
+    {
+      "id": "timeline",
+      "web": "[data-messages-timeline]",
+      "lynx": ".timeline-list"
+    },
+    {
+      "id": "composer",
+      "web": ".chat-composer-glass-shell",
+      "lynx": ".composer-card"
+    }
+  ],
+  "typography": [
+    {
+      "id": "userMessage",
+      "web": "[data-timeline-row=\"message\"]",
+      "lynx": ".msg__text"
+    },
+    {
+      "id": "workEntry",
+      "web": "[data-timeline-row=\"work\"]",
+      "lynx": ".work-entry__heading"
+    }
+  ],
+  "colors": [
+    {
+      "id": "appBackground",
+      "web": "body",
+      "lynx": ".app-root"
+    },
+    {
+      "id": "sidebarBackground",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    }
+  ]
+}
