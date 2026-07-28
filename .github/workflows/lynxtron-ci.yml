@@ -1,0 +1,97 @@
+name: Lynxtron CI
+
+# Minimal CI for the lynxtron-port fork branch. Intentionally separate from
+# ci.yml: it must run on a fork without upstream's Blacksmith runners, and it
+# scopes checks to the Lynxtron port surface (apps/lynxtron + apps/web build).
+#
+# The typecheck step is currently REPORT-ONLY: the branch tip has known
+# TypeScript errors (inventory: apps/lynxtron/docs/typecheck-debt-2026-07-29.md).
+# Flip `continue-on-error` to false once the debt is cleared so a green tip
+# becomes an enforced merge rule.
+
+on:
+  push:
+    branches: [lynxtron-port]
+  pull_request:
+    branches: [lynxtron-port]
+
+concurrency:
+  group: lynxtron-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lynxtron typecheck / test / audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version-file: package.json
+          cache: true
+          run-install: true
+
+      - name: Typecheck (report-only while branch tip is red)
+        id: typecheck
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          pnpm --filter @t3tools/lynxtron run typecheck 2>&1 | tee typecheck.log
+
+      - name: Report typecheck result
+        if: always()
+        run: |
+          count=$(grep -cE "error TS[0-9]+" typecheck.log || true)
+          {
+            echo "## Lynxtron typecheck"
+            if [ "${{ steps.typecheck.outcome }}" = "success" ]; then
+              echo "✅ 0 errors. Consider making this step required (remove continue-on-error)."
+            else
+              echo "⚠️ **${count} TypeScript errors** — allowed to fail while the port stabilizes."
+              echo ""
+              echo "Inventory and triage: \`apps/lynxtron/docs/typecheck-debt-2026-07-29.md\`"
+              echo ""
+              echo "Top error codes:"
+              echo '```'
+              grep -oE "error TS[0-9]+" typecheck.log | sort | uniq -c | sort -rn | head -15
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload typecheck log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lynxtron-typecheck-log
+          path: typecheck.log
+
+      - name: Test
+        run: pnpm --filter @t3tools/lynxtron run test
+
+      - name: Audits (Web API + CSS compatibility)
+        run: pnpm --filter @t3tools/lynxtron run audit
+
+  build:
+    name: Web + Lynxtron build
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Vite+
+        uses: voidzero-dev/setup-vp@v1
+        with:
+          node-version-file: package.json
+          cache: true
+          run-install: true
+
+      - name: Build web (with workspace dependencies)
+        run: pnpm --filter @t3tools/web... run build
+
+      - name: Build lynxtron (with workspace dependencies)
+        run: pnpm --filter @t3tools/lynxtron... run build
