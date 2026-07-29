@@ -112,6 +112,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         <view className="chat-body">
           {!hero ? (
             <MessagesTimeline
+              key={activeThreadId ?? "no-thread"}
               messages={messages}
               activities={activities}
               sessionStatus={sessionStatus}

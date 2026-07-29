@@ -136,6 +136,21 @@ it as "what is the supported path for worker-backed rendering islands?".
 - **Ask**: guidance on the supported path for worker-backed rendering islands
   (or native rich-diff primitives).
 
+### R12 — DevTool input emulation cannot scroll (added 2026-07-29)
+
+- **Repro**: with a Lynxtron 0.0.5 desktop client attached to Lynx DevTool,
+  `Input.emulateTouchFromMouseEvent` taps (pressed/released) work, but no
+  variant scrolls a `<list>`: press + move sequences (with and without
+  `buttons: 1`), `Input.dispatchTouchEvent` touchStart/Move/End, and
+  `type: "mouseWheel"` all leave element box models unchanged.
+- **Impact**: scroll-dependent interaction certification (chat transcript
+  follow/detach, any scrollable surface) cannot be driven headlessly; only
+  tap-based passes are automatable. Also relevant: repeated CDP DOM
+  inspection wedges the single screencast frame, so at most one screenshot
+  per fresh session is reliable.
+- **Ask**: support drag or wheel scrolling in DevTool input emulation (and
+  ideally re-armable screencast frames).
+
 ## Notes for the filer
 
 - Every draft above states only what our probes recorded; attach the

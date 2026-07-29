@@ -1102,6 +1102,60 @@ export interface StableMessagesTimelineRowsState<
   result: MessagesTimelineRow<M, P, D>[];
 }
 
+/**
+ * Renderer-neutral follow/detach state for a transcript list.
+ *
+ * `following` means the list should keep pinning to the end as the tail grows
+ * (streaming, new rows). Only a user-sourced scroll may detach it; layout- or
+ * diff-sourced scroll offsets (row growth, recycling) never do. `atEnd`
+ * mirrors whether the viewport currently sits within the follow threshold and
+ * drives the jump-to-latest affordance.
+ */
+export interface TranscriptFollowState {
+  readonly following: boolean;
+  readonly atEnd: boolean;
+}
+
+export const INITIAL_TRANSCRIPT_FOLLOW_STATE: TranscriptFollowState = {
+  following: true,
+  atEnd: true,
+};
+
+/** Distance from the end (px) that still counts as "at the end". */
+export const TRANSCRIPT_FOLLOW_THRESHOLD_PX = 60;
+
+export type TranscriptFollowEvent =
+  | {
+      kind: "scrolled";
+      /** "user" for gesture/fling scrolling; "layout" for diff/layout shifts. */
+      source: "user" | "layout";
+      distanceFromEnd: number;
+      threshold?: number;
+    }
+  | { kind: "jump-to-latest" }
+  | { kind: "thread-changed" };
+
+export function reduceTranscriptFollow(
+  state: TranscriptFollowState,
+  event: TranscriptFollowEvent,
+): TranscriptFollowState {
+  switch (event.kind) {
+    case "scrolled": {
+      const threshold = event.threshold ?? TRANSCRIPT_FOLLOW_THRESHOLD_PX;
+      const atEnd = event.distanceFromEnd <= threshold;
+      const following = event.source === "user" ? atEnd : state.following;
+      if (atEnd === state.atEnd && following === state.following) {
+        return state;
+      }
+      return { following, atEnd };
+    }
+    case "jump-to-latest":
+      return INITIAL_TRANSCRIPT_FOLLOW_STATE;
+    case "thread-changed":
+      return INITIAL_TRANSCRIPT_FOLLOW_STATE;
+  }
+}
+
 export function computeMessageDurationStart(
   messages: ReadonlyArray<TimelineDurationMessage>,
 ): Map<string, string> {

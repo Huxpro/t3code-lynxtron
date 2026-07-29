@@ -7,9 +7,12 @@ import {
   deriveTimelineEntries,
   deriveWorkLogEntries,
   formatDuration,
+  INITIAL_TRANSCRIPT_FOLLOW_STATE,
+  reduceTranscriptFollow,
   workEntryIndicatesToolFailure,
   workEntryIndicatesToolSuccess,
   type MessagesTimelineRow,
+  type TranscriptFollowState,
   type WorkLogEntry,
 } from "@t3tools/client-runtime/presentation/transcript";
 import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
@@ -33,8 +36,6 @@ interface MessagesTimelineProps {
 
 type TimelineRow = MessagesTimelineRow<ChatMessage, OrchestrationProposedPlan>;
 
-/** How close to the bottom (px) still counts as "at the end" for follow mode. */
-const FOLLOW_BOTTOM_THRESHOLD_PX = 60;
 /** ListEventSource.SCROLL — only user/fling scrolling may break follow mode. */
 const LIST_EVENT_SOURCE_SCROLL = 2;
 
@@ -225,8 +226,11 @@ export function MessagesTimeline({
 }: MessagesTimelineProps) {
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
   const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
-  const [isAtEnd, setIsAtEnd] = useState(true);
-  const followRef = useRef(true);
+  const [followState, setFollowState] = useState<TranscriptFollowState>(
+    INITIAL_TRANSCRIPT_FOLLOW_STATE,
+  );
+  const followStateRef = useRef(followState);
+  followStateRef.current = followState;
   const listRef = useRef<NodesRef>(null);
 
   const isWorking = isSessionBusy(sessionStatus);
@@ -289,7 +293,7 @@ export function MessagesTimeline({
       }`
     : "empty";
   useEffect(() => {
-    if (!followRef.current) return;
+    if (!followStateRef.current.following) return;
     scrollToEnd(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tailFingerprint]);
@@ -304,19 +308,19 @@ export function MessagesTimeline({
       };
     }) => {
       const { scrollTop, scrollHeight, listHeight, eventSource } = event.detail;
-      const distanceFromBottom = scrollHeight - scrollTop - listHeight;
-      const nearEnd = distanceFromBottom <= FOLLOW_BOTTOM_THRESHOLD_PX;
-      if (eventSource === LIST_EVENT_SOURCE_SCROLL) {
-        followRef.current = nearEnd;
-      }
-      setIsAtEnd(nearEnd);
+      setFollowState((current) =>
+        reduceTranscriptFollow(current, {
+          kind: "scrolled",
+          source: eventSource === LIST_EVENT_SOURCE_SCROLL ? "user" : "layout",
+          distanceFromEnd: scrollHeight - scrollTop - listHeight,
+        }),
+      );
     },
     [],
   );
 
   const handleJumpToLatest = useCallback(() => {
-    followRef.current = true;
-    setIsAtEnd(true);
+    setFollowState((current) => reduceTranscriptFollow(current, { kind: "jump-to-latest" }));
     scrollToEnd(true);
   }, [scrollToEnd]);
 
@@ -384,7 +388,7 @@ export function MessagesTimeline({
           </list-item>
         ))}
       </list>
-      {!isAtEnd ? (
+      {!followState.atEnd ? (
         <view className="timeline-jump" bindtap={handleJumpToLatest}>
           <text className="timeline-jump__label">↓ Jump to latest</text>
         </view>

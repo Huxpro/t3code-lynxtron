@@ -33,7 +33,8 @@ async function waitFor(read, label, attempts = 150) {
  * dispatched through the real connector, so messages, activities, and the
  * latest-turn lifecycle all come from the canonical server projections.
  */
-export async function prepareTranscriptVisualState(baseDirectory) {
+export async function prepareTranscriptVisualState(baseDirectory, options = {}) {
+  const promptCount = Math.max(1, options.promptCount ?? 1);
   const baseDir = resolve(baseDirectory);
   const manifestPath = join(baseDir, "visual-state.json");
   const databasePath = join(baseDir, "userdata", "state.sqlite");
@@ -80,9 +81,26 @@ export async function prepareTranscriptVisualState(baseDirectory) {
     const { threadId } = await connector.createThread({ projectId: project.id });
     await connector.renameThread({ threadId, title });
     connector.selectThread(threadId);
+    // Earlier prompts are interrupted as soon as their user message persists:
+    // they exist to give the transcript real scroll depth, while only the
+    // final prompt is allowed to accumulate provider work.
+    for (let index = 0; index < promptCount - 1; index += 1) {
+      const before = threadPayloads.get(threadId)?.messages?.length ?? 0;
+      await connector.sendPrompt({
+        threadId,
+        text: `${promptText} (context ${index + 1} of ${promptCount})`,
+      });
+      await waitFor(
+        () => (threadPayloads.get(threadId)?.messages?.length ?? 0) > before,
+        `persisted prompt message ${index + 1}`,
+      );
+      await connector.interrupt({ threadId });
+      await new Promise((resolveWait) => setTimeout(resolveWait, 1_500));
+    }
+    const beforeFinal = threadPayloads.get(threadId)?.messages?.length ?? 0;
     await connector.sendPrompt({ threadId, text: promptText });
     await waitFor(
-      () => (threadPayloads.get(threadId)?.messages?.length ?? 0) >= 1,
+      () => (threadPayloads.get(threadId)?.messages?.length ?? 0) > beforeFinal,
       "persisted prompt message",
     );
     // Let the turn accumulate a little real work, then interrupt it so the
@@ -147,6 +165,9 @@ if (IS_MAIN_MODULE) {
   if (!baseDir) {
     throw new Error("--base-dir is required (a directory created by visual:prepare).");
   }
-  const manifest = await prepareTranscriptVisualState(baseDir);
+  const promptCountArgument = argumentValue("--prompt-count");
+  const manifest = await prepareTranscriptVisualState(baseDir, {
+    promptCount: promptCountArgument ? Number(promptCountArgument) : 1,
+  });
   process.stdout.write(`${JSON.stringify(manifest, null, 2)}\n`);
 }

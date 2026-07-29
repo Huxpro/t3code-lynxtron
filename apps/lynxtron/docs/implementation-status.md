@@ -243,6 +243,20 @@ reports zero renderer errors under
 minimap, revert/turn-diff/checkpoint cards, and the full scroll-state-machine
 battery remain registered gaps for the phase exit.
 
+The follow-up P2-S3 slice made the follow/detach contract a shared, tested
+state machine (`reduceTranscriptFollow`: user scrolls attach/detach by
+distance-from-end, layout/diff scrolls never detach, jump-to-latest and
+thread switches reset; the Lynx timeline is remounted per thread). An
+eight-prompt fixture driven through the production connector produced a
+content-overflowing settled transcript; two fresh zero-error DevTool
+sessions proved bottom-anchored initial positioning, tap-expansion of turn
+folds and the work-group toggle (label asserted via DOM), and that
+layout-shift scrolling keeps the list pinned. The user-scroll detach path is
+runtime-blocked by new R12 — Lynxtron 0.0.5 DevTool input emulation delivers
+taps only (no drag/touch/wheel scrolling) — registered in the compat matrix
+with an upstream issue draft. Evidence:
+`evidence/2026-07-29/P2/transcript/scroll-machine/`.
+
 ## Provenance snapshot
 
 The 2026-07-27 comparison against

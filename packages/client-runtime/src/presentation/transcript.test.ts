@@ -9,6 +9,8 @@ import {
   deriveTimelineEntries,
   deriveWorkLogEntries,
   formatDuration,
+  INITIAL_TRANSCRIPT_FOLLOW_STATE,
+  reduceTranscriptFollow,
   workEntryIndicatesToolFailure,
   workEntryIndicatesToolSuccess,
   type StableMessagesTimelineRowsState,
@@ -319,6 +321,71 @@ describe("computeStableMessagesTimelineRows", () => {
     const first = computeStableMessagesTimelineRows(rows, initial);
     const second = computeStableMessagesTimelineRows([...rows], first);
     expect(second).toBe(first);
+  });
+});
+
+describe("reduceTranscriptFollow", () => {
+  it("detaches only on a user scroll away from the end", () => {
+    let state = INITIAL_TRANSCRIPT_FOLLOW_STATE;
+    state = reduceTranscriptFollow(state, {
+      kind: "scrolled",
+      source: "layout",
+      distanceFromEnd: 500,
+    });
+    expect(state.following).toBe(true);
+    expect(state.atEnd).toBe(false);
+
+    state = reduceTranscriptFollow(state, {
+      kind: "scrolled",
+      source: "user",
+      distanceFromEnd: 500,
+    });
+    expect(state.following).toBe(false);
+  });
+
+  it("reattaches when the user scrolls back within the threshold", () => {
+    let state = reduceTranscriptFollow(INITIAL_TRANSCRIPT_FOLLOW_STATE, {
+      kind: "scrolled",
+      source: "user",
+      distanceFromEnd: 500,
+    });
+    state = reduceTranscriptFollow(state, {
+      kind: "scrolled",
+      source: "user",
+      distanceFromEnd: 10,
+    });
+    expect(state).toEqual({ following: true, atEnd: true });
+  });
+
+  it("resets on jump-to-latest and thread switches", () => {
+    const detached = reduceTranscriptFollow(INITIAL_TRANSCRIPT_FOLLOW_STATE, {
+      kind: "scrolled",
+      source: "user",
+      distanceFromEnd: 999,
+    });
+    expect(reduceTranscriptFollow(detached, { kind: "jump-to-latest" })).toEqual(
+      INITIAL_TRANSCRIPT_FOLLOW_STATE,
+    );
+    expect(reduceTranscriptFollow(detached, { kind: "thread-changed" })).toEqual(
+      INITIAL_TRANSCRIPT_FOLLOW_STATE,
+    );
+  });
+
+  it("returns the same reference when nothing changes", () => {
+    const state = INITIAL_TRANSCRIPT_FOLLOW_STATE;
+    expect(
+      reduceTranscriptFollow(state, { kind: "scrolled", source: "user", distanceFromEnd: 0 }),
+    ).toBe(state);
+  });
+
+  it("honors a custom threshold", () => {
+    const state = reduceTranscriptFollow(INITIAL_TRANSCRIPT_FOLLOW_STATE, {
+      kind: "scrolled",
+      source: "user",
+      distanceFromEnd: 100,
+      threshold: 120,
+    });
+    expect(state).toEqual({ following: true, atEnd: true });
   });
 });
 
