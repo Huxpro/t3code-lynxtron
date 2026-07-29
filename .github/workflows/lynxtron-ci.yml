@@ -41,6 +41,7 @@ jobs:
           # no Linux release asset (404). CI only compiles and never launches
           # the app, so let the first install fail on that script, stub the
           # binary path (install.js short-circuits when it exists), and rerun.
+          corepack enable && corepack prepare --activate
           pnpm install || true
           mkdir -p apps/lynxtron/node_modules/@lynx-js/lynxtron/dist
           touch apps/lynxtron/node_modules/@lynx-js/lynxtron/dist/lynxtron
@@ -103,6 +104,7 @@ jobs:
 
       - name: Install (stub the Lynxtron binary on Linux)
         run: |
+          corepack enable && corepack prepare --activate
           pnpm install || true
           mkdir -p apps/lynxtron/node_modules/@lynx-js/lynxtron/dist
           touch apps/lynxtron/node_modules/@lynx-js/lynxtron/dist/lynxtron
