@@ -339,6 +339,10 @@ export function useT3ClientState(): T3ClientState {
   return state;
 }
 
+export function getT3ClientSnapshot(): T3ClientState {
+  return appAtomRegistry.get(t3ClientStateAtom);
+}
+
 function selectThread(threadId: string): void {
   resetActiveThreadState(threadId);
   getBridge()?.selectThread?.(threadId);

@@ -159,6 +159,10 @@
       "types": "./src/keybindings.ts",
       "import": "./src/keybindings.ts"
     },
+    "./keyboard": {
+      "types": "./src/keyboard.ts",
+      "import": "./src/keyboard.ts"
+    },
     "./composerTrigger": {
       "types": "./src/composerTrigger.ts",
       "import": "./src/composerTrigger.ts"

@@ -34,6 +34,13 @@ renderer API is insufficient. Implement Tab, Enter, Space, Escape, arrow, and
 product shortcut paths. Visible controls are an interim fallback, not the exit
 state.
 
+Progress (P3-S2, 2026-07-30): New Thread, Quick Switch, and Settings now use
+native Menu accelerators → renderer-neutral keyboard packets →
+`sendGlobalEvent` → the shared keybinding resolver. Automated packet and
+command fixtures pass; physical accelerator acceptance is
+`pending-user-session`. General renderer keyboard/focus support remains open,
+so this item stays pending.
+
 Exit criteria:
 
 - The runtime probe records exact event support and version

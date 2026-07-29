@@ -10,6 +10,7 @@ import { GeneralSettings } from "./components/GeneralSettings";
 import { GeneralSettingsSync } from "./components/GeneralSettingsSync";
 import { ProviderSettings } from "./components/ProviderSettings";
 import { KeybindingsSettings } from "./components/KeybindingsSettings";
+import { QuickSwitch } from "./components/QuickSwitch";
 import {
   ArchiveSettings,
   BetaSettings,
@@ -19,6 +20,9 @@ import {
 import { usePathname } from "./router";
 import { appAtomRegistry } from "./state/atomRegistry";
 import { registerCapabilityProbe } from "./state/capabilityProbe";
+import { registerKeyboardCommands } from "./state/keyboardCommands";
+import { useT3ClientState } from "./state/t3Client";
+import { useQuickSwitchOpen } from "./state/uiState";
 import "./generated/lynx.css";
 import "./tailwind.css";
 import "./overrides.css";
@@ -52,10 +56,20 @@ function RootSwitch() {
   );
 }
 
+function RootOverlays() {
+  const quickSwitchOpen = useQuickSwitchOpen();
+  const { projects, threads, activeThreadId } = useT3ClientState();
+  return quickSwitchOpen ? (
+    <QuickSwitch projects={projects} threads={threads} activeThreadId={activeThreadId} />
+  ) : null;
+}
+
 registerCapabilityProbe();
+registerKeyboardCommands();
 
 root.render(
   <RegistryContext.Provider value={appAtomRegistry}>
     <RootSwitch />
+    <RootOverlays />
   </RegistryContext.Provider>,
 );

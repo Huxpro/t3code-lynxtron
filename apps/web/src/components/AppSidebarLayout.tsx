@@ -61,6 +61,7 @@ function readInitialThreadSidebarWidth(): number {
 
 function SidebarControl() {
   const keybindings = useAtomValue(primaryServerKeybindingsAtom);
+  const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
   const isSidebarVisible = useSidebarVisibility();
   const environmentIdentificationMode = useEnvironmentIdentificationMode();
@@ -78,7 +79,14 @@ function SidebarControl() {
       ) {
         return;
       }
-      if (resolveShortcutCommand(event, keybindings) !== "sidebar.toggle") return;
+      const command = resolveShortcutCommand(event, keybindings);
+      if (command === "settings.open") {
+        event.preventDefault();
+        event.stopPropagation();
+        void navigate({ to: "/settings/general" });
+        return;
+      }
+      if (command !== "sidebar.toggle") return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -88,7 +96,7 @@ function SidebarControl() {
     // Capture before focused editors consume commands such as Mod+B for rich-text formatting.
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
-  }, [keybindings, toggleSidebar]);
+  }, [keybindings, navigate, toggleSidebar]);
 
   return (
     <div

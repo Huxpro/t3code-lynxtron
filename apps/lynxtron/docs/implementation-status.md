@@ -305,6 +305,29 @@ R3 and R5 matrix rows and their upstream issue drafts now carry these probe
 facts. `clientCapabilities.keyboard` remains `available: false`; no product
 keyboard code was written in this slice.
 
+## P3-S2 discrete keyboard commands (complete; real-key acceptance pending-user-session)
+
+The first deliberately bounded R5 product path now uses Lynxtron's native
+application `Menu` accelerators for New Thread, Quick Switch, and Settings.
+The main process emits a renderer-neutral packet containing
+`type/key/code/modifiers/repeat/source/sequence` through the already-proven
+`LynxWindow.sendGlobalEvent` leg. The renderer validates and de-duplicates
+that packet, then passes it through the same shared keybinding resolver and
+canonical server keybinding config used by Web before dispatching the
+product command.
+
+This is not presented as general keyboard support. Tab, Escape, arrows,
+overlay traversal, focus movement, and renderer text-key events remain
+outside the slice and keep R5 open. Lynx no longer renders speculative
+shortcut chips or Quick Switch keyboard-navigation hints; the native menu
+is the only accelerator affordance. Packet construction, validation,
+platform `mod` mapping, `when` evaluation, and all three command resolutions
+have focused fixtures. App/main/Web/shared/contracts typechecks, builds,
+scanner, and the slice capture are the automated certification boundary.
+Because R12 prevents DevTool key injection and Menu accelerators cannot be
+triggered headlessly, physical accelerator acceptance is explicitly
+`pending-user-session`.
+
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 
 `@lynx-js/lynxtron` and `@lynx-js/lynxtron-dev-plugins` are upgraded

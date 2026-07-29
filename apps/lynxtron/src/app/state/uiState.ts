@@ -131,4 +131,7 @@ export const uiActions = {
   toggleRightPanel(): void {
     updateRightPanel({ type: "toggle-panel" });
   },
+  toggleQuickSwitch(): void {
+    appAtomRegistry.set(quickSwitchOpenAtom, !appAtomRegistry.get(quickSwitchOpenAtom));
+  },
 } as const;

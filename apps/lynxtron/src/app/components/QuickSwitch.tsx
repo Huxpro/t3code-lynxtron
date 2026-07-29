@@ -10,9 +10,8 @@ import { t3ClientActions } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
 import { Icon, type IconName } from "./Icon";
 
-// Quick switch palette — mirrors apps/web CommandPalette (⌘K).
-// NOTE: opened via the sidebar Search row; global keybindings are not
-// available on Lynxtron 0.0.5 desktop (no key-event API in the runtime).
+// Quick switch palette — mirrors apps/web CommandPalette. It can be opened
+// through the sidebar or the host's certified discrete menu command.
 
 interface QuickSwitchProps {
   projects: ReadonlyArray<ProjectSummary>;
@@ -25,7 +24,6 @@ interface ActionItem {
   icon: IconName;
   label: string;
   searchTerms: ReadonlyArray<string>;
-  hint?: string;
   run: () => void;
 }
 
@@ -48,7 +46,6 @@ export function QuickSwitch({ projects, threads, activeThreadId }: QuickSwitchPr
         icon: "square-pen",
         label: `New thread in ${projectName}`,
         searchTerms: ["new thread", "chat", "create", projectName],
-        hint: "⇧⌘O",
         run: () => {
           createThread();
           close();
@@ -134,7 +131,6 @@ export function QuickSwitch({ projects, threads, activeThreadId }: QuickSwitchPr
                   <text className="qs-row__label" text-maxline="1">
                     {a.label}
                   </text>
-                  {a.hint ? <text className="qs-row__hint">{a.hint}</text> : null}
                 </view>
               ))}
             </view>
@@ -179,13 +175,6 @@ export function QuickSwitch({ projects, threads, activeThreadId }: QuickSwitchPr
             </view>
           ) : null}
         </scroll-view>
-
-        {/* Footer hints */}
-        <view className="qs-footer">
-          <text className="qs-footer__hint">↑↓ Navigate</text>
-          <text className="qs-footer__hint">Enter Select</text>
-          <text className="qs-footer__hint">Esc Close</text>
-        </view>
       </view>
     </view>
   );

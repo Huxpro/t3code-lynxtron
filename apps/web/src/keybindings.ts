@@ -10,6 +10,7 @@ import {
   MODEL_PICKER_JUMP_KEYBINDING_COMMANDS,
   THREAD_JUMP_KEYBINDING_COMMANDS,
 } from "@t3tools/contracts/keybinding-constants";
+import { resolveRendererNeutralShortcutCommand } from "@t3tools/shared/keyboard";
 import { getPlatform, isMacPlatform } from "./lib/platformDetection";
 
 export interface ShortcutEventLike {
@@ -205,17 +206,10 @@ export function resolveShortcutCommand(
   keybindings: ResolvedKeybindingsConfig,
   options?: ShortcutMatchOptions,
 ): KeybindingCommand | null {
-  const platform = resolvePlatform(options);
-  const context = resolveContext(options);
-
-  for (let index = keybindings.length - 1; index >= 0; index -= 1) {
-    const binding = keybindings[index];
-    if (!binding) continue;
-    if (!matchesWhenClause(binding.whenAst, context)) continue;
-    if (!matchesShortcut(event, binding.shortcut, platform)) continue;
-    return binding.command;
-  }
-  return null;
+  return resolveRendererNeutralShortcutCommand(event, keybindings, {
+    platform: resolvePlatform(options),
+    context: resolveContext(options),
+  });
 }
 
 function formatShortcutKeyLabel(key: string): string {
