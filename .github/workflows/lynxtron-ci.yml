@@ -43,8 +43,11 @@ jobs:
           # binary path (install.js short-circuits when it exists), and rerun.
           corepack enable && corepack prepare --activate
           pnpm install || true
-          mkdir -p apps/lynxtron/node_modules/@lynx-js/lynxtron/dist
-          touch apps/lynxtron/node_modules/@lynx-js/lynxtron/dist/lynxtron
+          # install.js checks __dirname/dist inside the pnpm store dir, not
+          # the workspace symlink — stub the real store location.
+          LYNX_DIR=$(find node_modules/.pnpm -maxdepth 5 -type d -path "*@lynx-js+lynxtron@*/node_modules/@lynx-js/lynxtron" | head -1)
+          test -n "$LYNX_DIR"
+          mkdir -p "$LYNX_DIR/dist" && touch "$LYNX_DIR/dist/lynxtron"
           pnpm install
 
       - name: Typecheck (report-only while branch tip is red)
@@ -106,8 +109,11 @@ jobs:
         run: |
           corepack enable && corepack prepare --activate
           pnpm install || true
-          mkdir -p apps/lynxtron/node_modules/@lynx-js/lynxtron/dist
-          touch apps/lynxtron/node_modules/@lynx-js/lynxtron/dist/lynxtron
+          # install.js checks __dirname/dist inside the pnpm store dir, not
+          # the workspace symlink — stub the real store location.
+          LYNX_DIR=$(find node_modules/.pnpm -maxdepth 5 -type d -path "*@lynx-js+lynxtron@*/node_modules/@lynx-js/lynxtron" | head -1)
+          test -n "$LYNX_DIR"
+          mkdir -p "$LYNX_DIR/dist" && touch "$LYNX_DIR/dist/lynxtron"
           pnpm install
 
       - name: Build web (with workspace dependencies)
