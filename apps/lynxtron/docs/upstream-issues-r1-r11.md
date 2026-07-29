@@ -2,9 +2,7 @@
 
 Preparation for the 2026-07-29 assessment recommendation §4-3: every
 `runtime-gap` in `compat-matrix.md` gets a ready-to-file issue draft for the
-Lynx / Lynxtron teams. **None of these have been filed yet** — filing is an
-external action for the project owner. When one is filed, record the issue URL
-in the table below and in `compat-matrix.md`.
+Lynx / Lynxtron teams. R3, R5, R11, and R12 were filed on 2026-07-29 against `lynx-family/lynxtron` (URLs below, re-verified on 0.0.7); the remaining drafts target the Lynx engine (`lynx-family/lynx`) and are still unfiled.
 
 Shared environment block for every issue:
 
@@ -17,19 +15,19 @@ App: T3 Code Lynxtron port (t3code monorepo, apps/lynxtron, branch lynxtron-port
 
 ## Filing order (by product impact)
 
-| Priority | ID  | One-line title                                                                | Blocks                                        | Filed as |
-| -------- | --- | ----------------------------------------------------------------------------- | --------------------------------------------- | -------- |
-| 1        | R11 | Lynxtron 0.0.5 rejects relative async Lynx bundle URLs (`ERR_INVALID_URL`)    | T6 Sidebar V2, any code-split product surface | —        |
-| 2        | R5  | No renderer-reachable keyboard event API (global shortcuts impossible)        | T7 keyboard/focus matrix, P3                  | —        |
-| 3        | R3  | No preload→UI push channel; `sendGlobalEvent` is main-process only            | streaming UX (400 ms polling)                 | —        |
-| 4        | R4  | TanStack `RouterProvider` async transition remount crashes BackgroundSnapshot | router architecture parity                    | —        |
-| 5        | R1  | SVG content and SVG data-URIs rasterize blank                                 | all icons (lucide ecosystem)                  | —        |
-| 6        | R2  | Custom font loading silently fails (`@font-face` and `lynx.addFont`)          | pixel-level typography parity                 | —        |
-| 7        | R6  | `:hover` / `:focus-visible` selectors unsupported                             | hover/focus visual parity                     | —        |
-| 8        | R7  | `position: fixed` / `sticky` / overflow semantics diverge                     | overlay/menu geometry                         | —        |
-| 9        | R8  | Selection API absent (no text selection/copy)                                 | transcript copy UX                            | —        |
-| 10       | R9  | `oklch()` / `color-mix()` unsupported by CSS parser                           | direct token consumption                      | —        |
-| 11       | R10 | No DOM/Worker environment for diff patch rendering                            | full patch renderer                           | —        |
+| Priority | ID  | One-line title                                                                | Blocks                                        | Filed as                                                   |
+| -------- | --- | ----------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------- |
+| 1        | R11 | Lynxtron 0.0.5 rejects relative async Lynx bundle URLs (`ERR_INVALID_URL`)    | T6 Sidebar V2, any code-split product surface | [#148](https://github.com/lynx-family/lynxtron/issues/148) |
+| 2        | R5  | No renderer-reachable keyboard event API (global shortcuts impossible)        | T7 keyboard/focus matrix, P3                  | [#149](https://github.com/lynx-family/lynxtron/issues/149) |
+| 3        | R3  | No preload→UI push channel; `sendGlobalEvent` is main-process only            | streaming UX (400 ms polling)                 | [#150](https://github.com/lynx-family/lynxtron/issues/150) |
+| 4        | R4  | TanStack `RouterProvider` async transition remount crashes BackgroundSnapshot | router architecture parity                    | —                                                          |
+| 5        | R1  | SVG content and SVG data-URIs rasterize blank                                 | all icons (lucide ecosystem)                  | —                                                          |
+| 6        | R2  | Custom font loading silently fails (`@font-face` and `lynx.addFont`)          | pixel-level typography parity                 | —                                                          |
+| 7        | R6  | `:hover` / `:focus-visible` selectors unsupported                             | hover/focus visual parity                     | —                                                          |
+| 8        | R7  | `position: fixed` / `sticky` / overflow semantics diverge                     | overlay/menu geometry                         | —                                                          |
+| 9        | R8  | Selection API absent (no text selection/copy)                                 | transcript copy UX                            | —                                                          |
+| 10       | R9  | `oklch()` / `color-mix()` unsupported by CSS parser                           | direct token consumption                      | —                                                          |
+| 11       | R10 | No DOM/Worker environment for diff patch rendering                            | full patch renderer                           | —                                                          |
 
 R10 is arguably a capability request rather than a bug; file it last and frame
 it as "what is the supported path for worker-backed rendering islands?".
@@ -152,7 +150,7 @@ it as "what is the supported path for worker-backed rendering islands?".
 - **Ask**: guidance on the supported path for worker-backed rendering islands
   (or native rich-diff primitives).
 
-### R12 — DevTool input emulation cannot scroll (added 2026-07-29)
+### R12 — DevTool input emulation cannot scroll (filed as [lynxtron#151](https://github.com/lynx-family/lynxtron/issues/151))
 
 - **Repro**: with a Lynxtron 0.0.5 desktop client attached to Lynx DevTool,
   `Input.emulateTouchFromMouseEvent` taps (pressed/released) work, but no

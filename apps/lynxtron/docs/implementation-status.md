@@ -282,6 +282,25 @@ R3 and R5 matrix rows and their upstream issue drafts now carry these probe
 facts. `clientCapabilities.keyboard` remains `available: false`; no product
 keyboard code was written in this slice.
 
+## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
+
+`@lynx-js/lynxtron` and `@lynx-js/lynxtron-dev-plugins` are upgraded
+0.0.5 → 0.0.7. Builds, both typecheck programs, and a fresh zero-error
+1280 × 820 DevTool capture over the eight-prompt snapshot all pass
+(`evidence/2026-07-29/upgrade-0.0.7/`). Re-probing on 0.0.7 changed nothing
+for R3 (sendGlobalEvent works, preload still isolated), R5 (no new keyboard
+API), or R12 (still tap-only, `Input.dispatchKeyEvent` still unimplemented);
+R11 was not empirically retested — the upstream file-URL loader fix landed
+after v0.0.7. New in 0.0.7: the `lynxBridge` renderer→main invoke API
+(registered as a future option for typed host calls, not yet adopted) and
+renderer `fetch` support (not adopted; transport stays in the connector).
+The four Lynxtron-specific gaps are now filed upstream:
+[#148](https://github.com/lynx-family/lynxtron/issues/148) (R11),
+[#149](https://github.com/lynx-family/lynxtron/issues/149) (R5),
+[#150](https://github.com/lynx-family/lynxtron/issues/150) (R3),
+[#151](https://github.com/lynx-family/lynxtron/issues/151) (R12). The
+remaining R-series drafts target the Lynx engine repo and stay unfiled.
+
 ## Provenance snapshot
 
 The 2026-07-27 comparison against

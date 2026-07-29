@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "thread-transcript",
+  "anchors": {
+    "sidebar": {
+      "selector": ".sidebar",
+      "nodeId": 16,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "box": {
+        "width": 255,
+        "height": 820
+      },
+      "text": "Toggle Sidebar T3 Code Search ⌘K Projects ⌄ T3 t3code ＋ Native list transcript baseline 4h ago Settings",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "workspaceHeader": {
+      "selector": "[data-chat-header]",
+      "nodeId": 62,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "box": {
+        "width": 984,
+        "height": 52
+      },
+      "text": "T3 t3code / Native list transcript baseline Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "timeline": {
+      "selector": ".timeline-list",
+      "nodeId": 195,
+      "rect": {
+        "x": 256,
+        "y": 52,
+        "width": 1024,
+        "height": 566
+      },
+      "box": {
+        "width": 1024,
+        "height": 526
+      },
+      "text": "+1 previous tool call ✗ Runtime error I'll look at how the sidebar computes thread status labels in this repo. ▸ Worked for 216ms Explain how the sidebar derives its thread status labels. ✗ Runtime error Explain how the sidebar derives its thread status labels. (context 7 of 8) ▸ Worked for 309ms Explain how the sidebar derives its thread status labels. (context 6 of 8) ✗ Runtime error Explain how the sidebar derives its thread status labels. (context 5 of 8) Explain how the sidebar derives its thread status labels. (context 4 of 8)",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "composer": {
+      "selector": ".composer-card",
+      "nodeId": 197,
+      "rect": {
+        "x": 384,
+        "y": 630,
+        "width": 768,
+        "height": 170
+      },
+      "box": {
+        "width": 768,
+        "height": 170
+      },
+      "text": "Claude Fable 5 Reasoning · High Full access Build Local checkout No branch",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {
+    "userMessage": {
+      "selector": ".msg__text",
+      "nodeId": 276,
+      "rect": {
+        "x": 899,
+        "y": 448,
+        "width": 345,
+        "height": 22
+      },
+      "box": {
+        "width": 345,
+        "height": 22
+      },
+      "text": "Explain how the sidebar derives its thread status labels.",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": "22px"
+      }
+    },
+    "workEntry": {
+      "selector": ".work-entry__heading",
+      "nodeId": 256,
+      "rect": {
+        "x": 300,
+        "y": 585,
+        "width": 74,
+        "height": 12
+      },
+      "box": {
+        "width": 74,
+        "height": 12
+      },
+      "text": "Runtime error",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "selector": ".app-root",
+      "nodeId": 13,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 820
+      },
+      "box": {
+        "width": 1280,
+        "height": 820
+      },
+      "text": "Toggle Sidebar T3 Code Search ⌘K Projects ⌄ T3 t3code ＋ Native list transcript baseline 4h ago Settings T3 t3code / Native list transcript baseline Add action Open Commit +1 previous tool call ✗ Runtime error I'll look at how the sidebar computes thread status labels in this repo. ▸ Worked for 216ms Explain how the sidebar derives its thread status labels. ✗ Runtime error Explain how the sidebar derives its thread status labels. (context 7 of 8) ▸ Worked for 309ms Explain how the sidebar derives its thread status labels. (context 6 of 8) ✗ Runtime error Explain how the sidebar derives its thread status labels. (context 5 of 8) Explain how the sidebar derives its thread status labels. (context 4 of 8) Claude Fable 5 Reasoning · High Full access Build Local checkout No branch Toggle Sidebar",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sidebarBackground": {
+      "selector": ".sidebar",
+      "nodeId": 16,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "box": {
+        "width": 255,
+        "height": 820
+      },
+      "text": "Toggle Sidebar T3 Code Search ⌘K Projects ⌄ T3 t3code ＋ Native list transcript baseline 4h ago Settings",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  }
+}
