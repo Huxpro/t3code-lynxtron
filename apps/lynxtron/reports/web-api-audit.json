@@ -1,6 +1,6 @@
 {
   "scannedRoot": "apps/web/src",
-  "generatedAt": "2026-07-29T20:25:28.185Z",
+  "generatedAt": "2026-07-29T21:19:04.640Z",
   "totalCallSites": 703,
   "entries": [
     {
@@ -594,10 +594,7 @@
       "api": "document.keys",
       "calls": 4,
       "fileCount": 2,
-      "files": [
-        "apps/web/src/providerUpdateDismissal.ts",
-        "apps/web/src/versionSkew.ts"
-      ]
+      "files": ["apps/web/src/providerUpdateDismissal.ts", "apps/web/src/versionSkew.ts"]
     },
     {
       "api": "getSelection",
@@ -633,9 +630,7 @@
       "api": "document.credentials",
       "calls": 3,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/connection/storage.ts"
-      ]
+      "files": ["apps/web/src/connection/storage.ts"]
     },
     {
       "api": "document.getElementById",
@@ -661,17 +656,13 @@
       "api": "document.profiles",
       "calls": 3,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/connection/storage.ts"
-      ]
+      "files": ["apps/web/src/connection/storage.ts"]
     },
     {
       "api": "document.remoteDpopTokens",
       "calls": 3,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/connection/storage.ts"
-      ]
+      "files": ["apps/web/src/connection/storage.ts"]
     },
     {
       "api": "fetch",
@@ -707,26 +698,19 @@
       "api": "document.createElementNS",
       "calls": 2,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/contextMenuFallback.ts"
-      ]
+      "files": ["apps/web/src/contextMenuFallback.ts"]
     },
     {
       "api": "document.getAnimations",
       "calls": 2,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/components/chat/draftHeroTransition.ts"
-      ]
+      "files": ["apps/web/src/components/chat/draftHeroTransition.ts"]
     },
     {
       "api": "document.head",
       "calls": 2,
       "fileCount": 2,
-      "files": [
-        "apps/web/src/browser/ElectronBrowserHost.tsx",
-        "apps/web/src/hooks/useTheme.ts"
-      ]
+      "files": ["apps/web/src/browser/ElectronBrowserHost.tsx", "apps/web/src/hooks/useTheme.ts"]
     },
     {
       "api": "document.querySelectorAll",
@@ -741,91 +725,67 @@
       "api": "document.title",
       "calls": 2,
       "fileCount": 2,
-      "files": [
-        "apps/web/src/environments/primary/auth.ts",
-        "apps/web/src/routes/__root.tsx"
-      ]
+      "files": ["apps/web/src/environments/primary/auth.ts", "apps/web/src/routes/__root.tsx"]
     },
     {
       "api": "sessionStorage",
       "calls": 2,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/cloud/connectCliAuth.ts"
-      ]
+      "files": ["apps/web/src/cloud/connectCliAuth.ts"]
     },
     {
       "api": "window.open",
       "calls": 2,
       "fileCount": 2,
-      "files": [
-        "apps/web/src/localApi.ts",
-        "apps/web/src/platform/clientCapabilities.web.ts"
-      ]
+      "files": ["apps/web/src/localApi.ts", "apps/web/src/platform/clientCapabilities.web.ts"]
     },
     {
       "api": "window.sessionStorage",
       "calls": 2,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/cloud/connectCliAuth.ts"
-      ]
+      "files": ["apps/web/src/cloud/connectCliAuth.ts"]
     },
     {
       "api": "document.children",
       "calls": 1,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/markdown-list-indentation.ts"
-      ]
+      "files": ["apps/web/src/markdown-list-indentation.ts"]
     },
     {
       "api": "document.targets",
       "calls": 1,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/connection/storage.ts"
-      ]
+      "files": ["apps/web/src/connection/storage.ts"]
     },
     {
       "api": "localStorage.getItem",
       "calls": 1,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/components/settings/SettingsPanels.logic.ts"
-      ]
+      "files": ["apps/web/src/components/settings/SettingsPanels.logic.ts"]
     },
     {
       "api": "localStorage.setItem",
       "calls": 1,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/components/settings/SettingsPanels.logic.ts"
-      ]
+      "files": ["apps/web/src/components/settings/SettingsPanels.logic.ts"]
     },
     {
       "api": "navigator.hardwareConcurrency",
       "calls": 1,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/components/DiffWorkerPoolProvider.tsx"
-      ]
+      "files": ["apps/web/src/components/DiffWorkerPoolProvider.tsx"]
     },
     {
       "api": "navigator.onLine",
       "calls": 1,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/connection/platform.ts"
-      ]
+      "files": ["apps/web/src/connection/platform.ts"]
     },
     {
       "api": "window.isSecureContext",
       "calls": 1,
       "fileCount": 1,
-      "files": [
-        "apps/web/src/components/settings/ConnectionsSettings.tsx"
-      ]
+      "files": ["apps/web/src/components/settings/ConnectionsSettings.tsx"]
     }
   ]
 }

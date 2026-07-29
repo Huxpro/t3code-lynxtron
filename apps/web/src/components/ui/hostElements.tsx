@@ -8,6 +8,10 @@ export function HostListItem({ children, ...props }: React.ComponentProps<"li">)
   return <li {...props}>{children}</li>;
 }
 
+export function HostList({ children, ...props }: React.ComponentProps<"ul">) {
+  return <ul {...props}>{children}</ul>;
+}
+
 export function HostScrollView({ children, ...props }: React.ComponentProps<"div">) {
   return <div {...props}>{children}</div>;
 }

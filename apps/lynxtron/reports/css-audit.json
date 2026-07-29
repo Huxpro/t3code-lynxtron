@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1469,
+  "uniqueStaticUtilities": 1464,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -66,11 +66,11 @@
     },
     {
       "utility": "hover:bg-sidebar-row-hover",
-      "occurrences": 12
+      "occurrences": 11
     },
     {
       "utility": "hover:text-sidebar-foreground",
-      "occurrences": 12
+      "occurrences": 11
     },
     {
       "utility": "grid-cols-2",

@@ -80,6 +80,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
       confirmThreadArchive: DEFAULT_CLIENT_SETTINGS.confirmThreadArchive,
       confirmThreadDelete: DEFAULT_CLIENT_SETTINGS.confirmThreadDelete,
       diffIgnoreWhitespace: DEFAULT_CLIENT_SETTINGS.diffIgnoreWhitespace,
+      environmentIdentificationMode: DEFAULT_CLIENT_SETTINGS.environmentIdentificationMode,
       glassOpacity: DEFAULT_CLIENT_SETTINGS.glassOpacity,
       sidebarProjectGroupingMode: DEFAULT_CLIENT_SETTINGS.sidebarProjectGroupingMode,
       sidebarV2Enabled: DEFAULT_CLIENT_SETTINGS.sidebarV2Enabled,
@@ -99,6 +100,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
     const projection = projectPortableGeneralSettingsRestore({
       clientSettings: {
         ...PORTABLE_CLIENT_SETTINGS_DEFAULTS,
+        environmentIdentificationMode: "pill",
         glassOpacity: 55,
         sidebarV2Enabled: true,
         wordWrap: false,
@@ -113,6 +115,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
 
     expect(projection.changedSettingLabels).toEqual([
       "Glass opacity",
+      "Environment identification",
       "Word wrap",
       "Assistant output",
       "New worktrees start from origin",
@@ -120,6 +123,9 @@ describe("projectPortableGeneralSettingsRestore", () => {
     ]);
     expect(projection.clientPatch).not.toHaveProperty("sidebarV2Enabled");
     expect(projection.clientPatch.glassOpacity).toBe(DEFAULT_CLIENT_SETTINGS.glassOpacity);
+    expect(projection.clientPatch.environmentIdentificationMode).toBe(
+      DEFAULT_CLIENT_SETTINGS.environmentIdentificationMode,
+    );
     expect(projection.serverPatch.enableAssistantStreaming).toBe(
       DEFAULT_SERVER_SETTINGS.enableAssistantStreaming,
     );

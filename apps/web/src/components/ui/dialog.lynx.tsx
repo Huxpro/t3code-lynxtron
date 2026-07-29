@@ -14,7 +14,7 @@ export function Dialog({
 }
 
 export function DialogPopup({ children, ...props }: ChildrenProps) {
-  return <div {...props}>{children}</div>;
+  return <view {...props}>{children}</view>;
 }
 
 export const DialogContent = DialogPopup;
@@ -28,7 +28,7 @@ export const DialogPortal = ({ children }: ChildrenProps) => <>{children}</>;
 export const DialogBackdrop = (_props: ChildrenProps) => null;
 export const DialogOverlay = DialogBackdrop;
 export const DialogClose = ({ children, ...props }: ChildrenProps) => (
-  <button {...props}>{children}</button>
+  <view {...props}>{children}</view>
 );
 export const DialogTrigger = DialogClose;
 export const DialogCreateHandle = () => ({});

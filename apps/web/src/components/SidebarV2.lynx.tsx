@@ -3,11 +3,10 @@ import {
   LoaderIcon,
   RotateCcwIcon,
   RotateCwIcon,
-  SearchIcon,
   TriangleAlertIcon,
   Undo2Icon,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
 import { uiActions } from "../../../lynxtron/src/app/state/uiState";
@@ -19,10 +18,9 @@ import {
   sortThreadsForSidebarV2,
   type SidebarV2Status,
 } from "./Sidebar.logic";
-import { SidebarChromeFooter, SidebarChromeHeader } from "./sidebar/SidebarChrome";
+import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
 import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV2RowSurface";
-import { HostButton, HostText, HostView } from "./ui/hostElements";
-import { SidebarContent, SidebarGroup } from "./ui/sidebar";
+import { HostText } from "./ui/hostElements";
 
 function compactSidebarTimeLabel(label: string): string {
   if (label === "just now") return "now";
@@ -84,134 +82,139 @@ export default function SidebarV2() {
   const { activeThreadId } = useT3ClientState();
   const projects = useProjects();
   const threads = useThreadShells();
+  const [projectScopeKey, setProjectScopeKey] = useState<string | null>(null);
+  const [projectScopeMenuOpen, setProjectScopeMenuOpen] = useState(false);
   const orderedThreads = useMemo(
-    () => sortThreadsForSidebarV2(threads.filter((thread) => thread.archivedAt === null)),
-    [threads],
+    () =>
+      sortThreadsForSidebarV2(
+        threads.filter(
+          (thread) =>
+            thread.archivedAt === null &&
+            (projectScopeKey === null || thread.projectId === projectScopeKey),
+        ),
+      ),
+    [projectScopeKey, threads],
   );
   const projectById = useMemo(
     () => new Map(projects.map((project) => [project.id, project] as const)),
     [projects],
   );
+  const scopedProject =
+    projectScopeKey === null
+      ? null
+      : (projects.find((project) => project.id === projectScopeKey) ?? null);
+  const newThreadProject = scopedProject ?? projects[0] ?? null;
+  const projectScopeOptions = projects.map((project) => ({
+    scopeKey: project.id,
+    displayName: project.title,
+    favicon: (
+      <ProjectFavicon
+        environmentId={project.environmentId}
+        cwd={project.workspaceRoot}
+        className="size-4 shrink-0"
+      />
+    ),
+  }));
 
   return (
-    <>
-      <SidebarChromeHeader isElectron />
-      <SidebarContent className="sidebar-v2-content">
-        <SidebarGroup className="px-2 pt-2 pb-1">
-          <HostButton
-            type="button"
-            aria-label="Search threads and commands"
-            className="sidebar-v2-search flex h-8 w-full items-center gap-2 rounded-md border border-sidebar-border bg-sidebar-accent/45 px-2 text-left text-xs text-sidebar-muted-foreground"
-            onClick={uiActions.openQuickSwitch}
-          >
-            <SearchIcon className="size-3.5 shrink-0" />
-            <HostText className="sidebar-v2-search-label min-w-0 flex-1 truncate">
-              Search threads and commands
-            </HostText>
-          </HostButton>
-        </SidebarGroup>
+    <SidebarV2CompositionSurface
+      isElectron
+      controls={{
+        commandPaletteShortcutLabel: null,
+        newThreadShortcutLabel: null,
+        newThreadDisabled: newThreadProject === null,
+        onSearchClick: uiActions.openQuickSwitch,
+        onNewThreadClick: () => {
+          if (newThreadProject) void t3ClientActions.createThread(newThreadProject.id);
+        },
+        projectScopeOptions,
+        projectScopeKey,
+        onProjectScopeKeyChange: setProjectScopeKey,
+        projectScopeMenuOpen,
+        onProjectScopeMenuOpenChange: setProjectScopeMenuOpen,
+        scopedFavicon: scopedProject ? (
+          <ProjectFavicon
+            environmentId={scopedProject.environmentId}
+            cwd={scopedProject.workspaceRoot}
+            className="size-4 shrink-0"
+          />
+        ) : null,
+        scopedDisplayName: scopedProject?.title ?? null,
+        onNewProjectClick: uiActions.openQuickSwitch,
+      }}
+      rows={orderedThreads.map((thread) => {
+        const status = resolveSidebarV2Status(thread);
+        const isActive = thread.id === activeThreadId;
+        const project = projectById.get(thread.projectId) ?? null;
+        const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
 
-        <SidebarGroup className="min-h-0 flex-1 px-2 pb-2">
-          <HostView className="mb-1 flex items-center justify-between px-1">
-            <HostText className="sidebar-v2-section-title text-xs font-medium text-sidebar-muted-foreground/80">
-              Threads
-            </HostText>
-            {projects[0] ? (
-              <HostButton
-                type="button"
-                aria-label={`Create new thread in ${projects[0].title}`}
-                className="rounded-md px-1.5 py-1 text-xs text-sidebar-muted-foreground"
-                onClick={() => {
-                  void t3ClientActions.createThread(projects[0]?.id);
-                }}
+        return (
+          <SidebarV2RowSurface
+            key={thread.id}
+            variant="card"
+            variantAction="settle"
+            isActive={isActive}
+            isSelected={false}
+            shouldRecede={status === "ready" && !isActive}
+            isInFlight={status === "working" || status === "approval" || status === "input"}
+            isUnread={false}
+            isWoke={false}
+            settlementSupported={false}
+            snoozeSupported={false}
+            showSnoozeButton={false}
+            snoozeMenuOpen={false}
+            snoozeWakeLabelText={null}
+            projectTitle={project?.title ?? null}
+            threadTitle={thread.title}
+            branch={thread.branch ?? null}
+            threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
+            settledTimeLabel=""
+            topStatus={statusPresentation(status)}
+            jumpLabel={null}
+            favicon={
+              <ProjectFavicon
+                environmentId={thread.environmentId}
+                cwd={project?.workspaceRoot ?? ""}
+                className="size-4 shrink-0"
+              />
+            }
+            title={
+              <HostText
+                className={
+                  isActive
+                    ? "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
+                    : "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-normal text-foreground/90"
+                }
               >
-                New
-              </HostButton>
-            ) : null}
-          </HostView>
-
-          <HostView className="flex min-h-0 flex-col gap-0.5">
-            {orderedThreads.map((thread) => {
-              const status = resolveSidebarV2Status(thread);
-              const isActive = thread.id === activeThreadId;
-              const project = projectById.get(thread.projectId) ?? null;
-              const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
-
-              return (
-                <SidebarV2RowSurface
-                  key={thread.id}
-                  variant="card"
-                  variantAction="settle"
-                  isActive={isActive}
-                  isSelected={false}
-                  shouldRecede={status === "ready" && !isActive}
-                  isInFlight={status === "working" || status === "approval" || status === "input"}
-                  isUnread={false}
-                  isWoke={false}
-                  settlementSupported={false}
-                  snoozeSupported={false}
-                  showSnoozeButton={false}
-                  snoozeMenuOpen={false}
-                  snoozeWakeLabelText={null}
-                  projectTitle={project?.title ?? null}
-                  threadTitle={thread.title}
-                  branch={thread.branch ?? null}
-                  threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
-                  settledTimeLabel=""
-                  topStatus={statusPresentation(status)}
-                  jumpLabel={null}
-                  favicon={
-                    <ProjectFavicon
-                      environmentId={thread.environmentId}
-                      cwd={project?.workspaceRoot ?? ""}
-                      className="size-4 shrink-0"
-                    />
-                  }
-                  title={
-                    <HostText
-                      className={
-                        isActive
-                          ? "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
-                          : "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-normal text-foreground/90"
-                      }
-                    >
-                      {thread.title}
-                    </HostText>
-                  }
-                  prBadge={null}
-                  diff={null}
-                  remoteIndicator={null}
-                  providerIndicator={null}
-                  detailsTooltip={null}
-                  snoozeControl={null}
-                  settleIcon={<CheckIcon className="size-3" />}
-                  unsettleIcon={<Undo2Icon className="size-3" />}
-                  unsnoozeIcon={<RotateCcwIcon className="size-3" />}
-                  wokeIcon={<RotateCwIcon className="size-3" />}
-                  onClick={() => {
-                    t3ClientActions.selectThread(thread.id);
-                  }}
-                  onDoubleClick={() => {}}
-                  onKeyDown={() => {}}
-                  onContextMenu={() => {}}
-                  onSettleClick={stopPropagation}
-                  onUnsettleClick={stopPropagation}
-                  onUnsnoozeClick={stopPropagation}
-                />
-              );
-            })}
-          </HostView>
-
-          {orderedThreads.length === 0 ? (
-            <HostView className="sidebar-v2-empty flex flex-col items-center gap-2 px-2 py-6 text-center">
-              <HostText className="sidebar-v2-empty-label text-xs text-muted-foreground/60">
-                {projects.length === 0 ? "No projects yet" : "No threads yet"}
+                {thread.title}
               </HostText>
-            </HostView>
-          ) : null}
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarChromeFooter />
-    </>
+            }
+            prBadge={null}
+            diff={null}
+            remoteIndicator={null}
+            providerIndicator={null}
+            detailsTooltip={null}
+            snoozeControl={null}
+            settleIcon={<CheckIcon className="size-3" />}
+            unsettleIcon={<Undo2Icon className="size-3" />}
+            unsnoozeIcon={<RotateCcwIcon className="size-3" />}
+            wokeIcon={<RotateCwIcon className="size-3" />}
+            onClick={() => {
+              t3ClientActions.selectThread(thread.id);
+            }}
+            onDoubleClick={() => {}}
+            onKeyDown={() => {}}
+            onContextMenu={() => {}}
+            onSettleClick={stopPropagation}
+            onUnsettleClick={stopPropagation}
+            onUnsnoozeClick={stopPropagation}
+          />
+        );
+      })}
+      rowCount={orderedThreads.length}
+      hasProjects={projects.length > 0}
+      scopedDisplayName={scopedProject?.title ?? null}
+      onAddProjectClick={uiActions.openQuickSwitch}
+    />
   );
 }

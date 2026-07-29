@@ -210,6 +210,29 @@ differ, so T6-C1 remains active and the next slice must share a larger
 composition boundary. Evidence and explicit gaps are under
 `evidence/2026-07-29/T6-C1/sidebar/sidebar-v2-host/`.
 
+The 2026-07-30 maximum-composition slice removes that top-control fork.
+`SidebarV2CompositionSurface` now owns one cross-renderer subtree spanning
+Sidebar chrome, Search/New-thread, project scope/New-project, the list
+container, and empty-state placement. Web and Lynx retain only state projection
+and renderer-specific rich row actions outside it. Lynx project scope is real,
+and unverified shortcut labels remain absent there. Explicit `Sidebar.lynx`,
+`ui/sidebar.lynx`, desktop-update, badge, dialog, and router leaves cut the
+legacy DOM Sidebar graph instead of type-bridging it. The post-merge app
+typecheck baseline of 236 errors is now zero, both Lynxtron TypeScript programs
+pass, and CI typecheck is required.
+
+The strict reuse report now reads 22/325 shared modules (6.8%) and
+3,332/68,944 shared lines (4.8%) for `app-shell-sidebar`. This is an honest
+denominator correction: the previous report counted the unreachable
+3,823-line Web legacy Sidebar and its DOM dependencies as Lynx-reachable
+because no `.lynx` host leaf existed. No exclusion or mask changed. The maximum
+structural boundary is shared, but state/behavior hosts and the Web legacy
+fallback keep the declared full-product reuse gate open, so T6-C1 remains
+active. Focused tests, Web/Lynx builds, API/CSS audits, and an 11-file
+zero-issue ReactLynx scan pass. A fresh 1280 × 820 session was tapped to open
+the real project-scope menu before capture; its 2× JPEG metadata reports zero
+renderer errors.
+
 ## P2 native `<list>` transcript (first slice complete)
 
 The chat transcript projection is now a shared production module:

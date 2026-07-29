@@ -30,6 +30,17 @@ export function HostListItem({
   return <view {...props}>{children}</view>;
 }
 
+export function HostList({
+  children,
+  ref: _ref,
+  ...props
+}: Record<string, unknown> & {
+  readonly children?: ReactNode;
+  readonly ref?: unknown;
+}) {
+  return <view {...props}>{children}</view>;
+}
+
 export function HostScrollView({
   children,
   ...props

@@ -37,6 +37,7 @@ export const DownloadIcon = createIcon("arrow-up");
 export const EllipsisIcon = createIcon("ellipsis");
 export const FileJsonIcon = createIcon("file-json");
 export const FlaskConicalIcon = createIcon("flask-conical");
+export const FolderIcon = createIcon("folder");
 export const FolderOpenIcon = createIcon("folder");
 export const FolderPlusIcon = createIcon("plus");
 export const GitBranchIcon = createIcon("git-branch");

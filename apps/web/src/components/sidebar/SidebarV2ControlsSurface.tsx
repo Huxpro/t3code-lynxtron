@@ -64,14 +64,16 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                   size="sm"
                   type="button"
                   aria-label="Search threads and commands"
-                  className="h-8 gap-2 rounded-md border-0 bg-transparent px-2 py-1.5 text-sm font-medium text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
+                  className="sidebar-v2-search h-8 gap-2 rounded-md border-0 bg-transparent px-2 py-1.5 text-sm font-medium text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
                   data-testid="command-palette-trigger"
                   render={<HostButton onClick={props.onSearchClick} />}
                 />
               }
             >
               <SearchIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
-              <HostView className="flex-1 truncate text-left">Search</HostView>
+              <HostView className="sidebar-v2-search-label flex-1 truncate text-left">
+                Search
+              </HostView>
               {props.commandPaletteShortcutLabel ? (
                 <Kbd className="h-4 min-w-0 rounded-sm bg-sidebar-control-surface px-1.5 text-[10px] text-sidebar-muted-foreground ring-1 ring-sidebar-border">
                   {props.commandPaletteShortcutLabel}
@@ -117,6 +119,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
             >
               <MenuTrigger
                 aria-label="Filter threads by project"
+                data-testid="sidebar-v2-project-scope-trigger"
                 className="flex h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md px-2 text-left text-sm font-medium text-sidebar-muted-foreground outline-none hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
               >
                 {props.scopedFavicon ?? (

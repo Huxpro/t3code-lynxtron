@@ -22,6 +22,7 @@ export type PortableClientSettings = Pick<
   | "confirmThreadArchive"
   | "confirmThreadDelete"
   | "diffIgnoreWhitespace"
+  | "environmentIdentificationMode"
   | "glassOpacity"
   | "sidebarProjectGroupingMode"
   | "sidebarV2Enabled"
@@ -48,6 +49,7 @@ type GeneralClientSettingsPatch = Pick<
   | "confirmThreadArchive"
   | "confirmThreadDelete"
   | "diffIgnoreWhitespace"
+  | "environmentIdentificationMode"
   | "glassOpacity"
   | "sidebarProjectGroupingMode"
   | "timestampFormat"
@@ -196,6 +198,9 @@ export function projectPortableGeneralSettingsRestore(input: {
   return {
     changedSettingLabels: [
       ...(client.glassOpacity !== clientDefaults.glassOpacity ? ["Glass opacity"] : []),
+      ...(client.environmentIdentificationMode !== clientDefaults.environmentIdentificationMode
+        ? ["Environment identification"]
+        : []),
       ...(client.timestampFormat !== clientDefaults.timestampFormat ? ["Time format"] : []),
       ...(client.sidebarProjectGroupingMode !== clientDefaults.sidebarProjectGroupingMode
         ? ["Project Grouping"]
@@ -234,6 +239,7 @@ export function projectPortableGeneralSettingsRestore(input: {
       confirmThreadArchive: clientDefaults.confirmThreadArchive,
       confirmThreadDelete: clientDefaults.confirmThreadDelete,
       diffIgnoreWhitespace: clientDefaults.diffIgnoreWhitespace,
+      environmentIdentificationMode: clientDefaults.environmentIdentificationMode,
       glassOpacity: clientDefaults.glassOpacity,
       sidebarProjectGroupingMode: clientDefaults.sidebarProjectGroupingMode,
       timestampFormat: clientDefaults.timestampFormat,

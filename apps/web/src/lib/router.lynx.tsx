@@ -76,14 +76,14 @@ export function Link({
   readonly [key: string]: unknown;
 }) {
   return (
-    <div
+    <view
       {...props}
-      onClick={() => {
+      bindtap={() => {
         onClick?.();
         navigateLynx(resolveTo({ to, params }));
       }}
     >
       {children}
-    </div>
+    </view>
   );
 }

@@ -4,10 +4,9 @@ name: Lynxtron CI
 # ci.yml: it must run on a fork without upstream's Blacksmith runners, and it
 # scopes checks to the Lynxtron port surface (apps/lynxtron + apps/web build).
 #
-# The typecheck step is currently REPORT-ONLY: the branch tip has known
-# TypeScript errors (inventory: apps/lynxtron/docs/typecheck-debt-2026-07-29.md).
-# Flip `continue-on-error` to false once the debt is cleared so a green tip
-# becomes an enforced merge rule.
+# Lynxtron's app and desktop-host TypeScript programs are required checks.
+# The resolved historical debt inventory remains at
+# apps/lynxtron/docs/typecheck-debt-2026-07-29.md.
 
 on:
   push:
@@ -50,9 +49,8 @@ jobs:
           mkdir -p "$LYNX_DIR/dist" && touch "$LYNX_DIR/dist/lynxtron"
           pnpm install
 
-      - name: Typecheck (report-only while branch tip is red)
+      - name: Typecheck
         id: typecheck
-        continue-on-error: true
         run: |
           set -o pipefail
           pnpm --filter @t3tools/lynxtron run typecheck 2>&1 | tee typecheck.log
@@ -64,9 +62,9 @@ jobs:
           {
             echo "## Lynxtron typecheck"
             if [ "${{ steps.typecheck.outcome }}" = "success" ]; then
-              echo "✅ 0 errors. Consider making this step required (remove continue-on-error)."
+              echo "✅ 0 errors. This check is required."
             else
-              echo "⚠️ **${count} TypeScript errors** — allowed to fail while the port stabilizes."
+              echo "❌ **${count} TypeScript errors** — this required check failed."
               echo ""
               echo "Inventory and triage: \`apps/lynxtron/docs/typecheck-debt-2026-07-29.md\`"
               echo ""

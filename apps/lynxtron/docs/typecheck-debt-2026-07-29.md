@@ -1,24 +1,37 @@
-# Lynxtron typecheck debt (2026-07-29)
+# Lynxtron typecheck debt (2026-07-29, resolved 2026-07-30)
 
-`pnpm --filter @t3tools/lynxtron run typecheck` fails at the current
-`lynxtron-port` tip with **233 TypeScript errors**. This document is the
-inventory the Lynxtron CI workflow (`.github/workflows/lynxtron-ci.yml`)
-points to while its typecheck step runs in report-only mode
-(`continue-on-error: true`).
+This is the historical inventory for the **233 TypeScript errors** present on
+2026-07-29. After the upstream merge the same clusters reproduced as 236
+errors. The T6-C1 maximum-composition slice resolved the graph boundary and
+reduced both Lynxtron TypeScript programs to **0 errors** on 2026-07-30.
+`.github/workflows/lynxtron-ci.yml` now treats typecheck as a required step;
+there is no `continue-on-error` escape hatch.
 
-**No product code was changed to produce this document.** Fixing these errors
-may conflict with parallel porting sessions; treat remediation as scheduled
-work, not drive-by cleanup. When the count reaches zero, flip the CI typecheck
-step to required.
+## Resolution
 
-## Snapshot identity
+- `SidebarV2CompositionSurface` owns the renderer-neutral header/footer,
+  Search/New-thread controls, project-scope/New-project controls, thread-list
+  container, and empty-state placement for both Web and Lynx.
+- `Sidebar.lynx.tsx` and `ui/sidebar.lynx.tsx` are explicit host leaves. The
+  Lynx program no longer evaluates the DOM-heavy legacy Sidebar, Base UI
+  sidebar, desktop update pill, or alert subtree.
+- Small host leaves cover desktop-update, badge, dialog, router, icon, and
+  build-environment differences instead of adding DOM intrinsics or broad
+  ambient types to the Lynx program.
+- Environment identification is part of the portable client-settings
+  projection, so shared Sidebar chrome reads a real typed preference.
+- Verification: Lynx app + desktop-host typecheck, Web/client-runtime/contracts
+  typecheck, focused tests, an 11-file zero-issue ReactLynx scan, and a fresh
+  interacted 1280 × 820 zero-renderer-error DevTool capture all pass.
+
+## Historical snapshot identity
 
 - Branch tip: `7146bf160` (lynxtron-port)
 - Command: `tsc --noEmit -p src/app/tsconfig.json && tsc --noEmit -p src/main/desktop/tsconfig.json`
 - Result: 233 errors, all from the `src/app` program; all in `apps/web/src/**`
   files pulled into the Lynx graph (no errors in `apps/lynxtron/src/**`)
 
-## Errors by file
+## Historical errors by file
 
 | File (relative to `apps/web/src/`)         | Errors |
 | ------------------------------------------ | -----: |
@@ -33,7 +46,7 @@ step to required.
 | `state/desktopUpdate.ts`                   |      1 |
 | `components/AppSidebarLayout.lynx.tsx`     |      1 |
 
-## Errors by code
+## Historical errors by code
 
 | Code                                       | Count | Meaning here                                                                                                                                             |
 | ------------------------------------------ | ----: | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -43,7 +56,7 @@ step to required.
 | TS2322                                     |     9 | Type mismatches in the same files                                                                                                                        |
 | TS2554 / TS2345 / TS7053 / TS2367 / TS2353 |     9 | Scattered follow-on errors                                                                                                                               |
 
-## Root-cause clusters (triage, largest first)
+## Historical root-cause clusters
 
 1. **Web DOM compositions inside the Lynx type program (~206 errors).**
    `Sidebar.tsx`, `ui/sidebar.tsx`, `SidebarUpdatePill.tsx`, and `ui/alert.tsx`
@@ -63,7 +76,7 @@ step to required.
    for Lynx; these want capability-boundary splits (compare R-series entries in
    `compat-matrix.md`).
 
-## Full error list
+## Historical full error list
 
 See the CI artifact `lynxtron-typecheck-log` on any Lynxtron CI run for the
 current full listing; the 2026-07-29 baseline list is reproduced below.

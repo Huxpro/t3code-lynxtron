@@ -13,6 +13,7 @@ export const PORTABLE_CLIENT_SETTINGS_DEFAULTS = {
   confirmThreadArchive: false,
   confirmThreadDelete: true,
   diffIgnoreWhitespace: true,
+  environmentIdentificationMode: "artwork",
   glassOpacity: 80,
   sidebarProjectGroupingMode: "repository",
   sidebarV2Enabled: false,

@@ -73,6 +73,17 @@ control rows still differ from Web, so neither reuse nor fidelity gate is
 claimed. See
 `evidence/2026-07-29/T6-C1/sidebar/sidebar-v2-host/notes.md`.
 
+The 2026-07-30 follow-up shares the maximum safe structural boundary:
+`SidebarV2CompositionSurface` owns chrome, both top-control rows, the thread
+list, and empty-state placement in both renderers. Explicit Lynx host leaves
+reduce the 236-error post-merge app program to zero and make CI typecheck
+required. A fresh interacted 1280 × 820 capture reports zero renderer errors.
+The corrected strict graph is 22/325 shared modules (6.8%) and 3,332/68,944
+shared lines (4.8%): the former higher figure incorrectly treated the DOM-only
+legacy Sidebar graph as Lynx-reachable. No exclusion or mask changed. T6-C1
+remains `in_progress` because state/behavior convergence and the declared
+full-product reuse gates remain open.
+
 ## T6-C2: New-thread empty state
 
 Status: `pending`
