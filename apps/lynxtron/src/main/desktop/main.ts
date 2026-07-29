@@ -44,4 +44,35 @@ app.whenReady().then(() => {
   win.show();
   win.loadFile(LYNX_BUNDLE_PATH);
   nudgeFramedWindowViewport(win);
+
+  // P3-S1 capability probe (R3/R5): prove at runtime whether the declared
+  // LynxWindow.sendGlobalEvent delivers from main to the renderer. Only runs
+  // when explicitly requested; the renderer's inert listener logs receipt to
+  // the DevTool console. Remove when R3's push channel or R5's keyboard
+  // capability supersedes probing.
+  if (process.env.T3_LYNXTRON_CAPABILITY_PROBE === "1") {
+    // Marker for the preload-side probe: if preload sees this global, main and
+    // preload share one JS realm and the connector could reach the window
+    // handle directly (candidate R3 polling replacement).
+    (globalThis as Record<string, unknown>).__t3CapabilityProbeMainPid = process.pid;
+    (globalThis as Record<string, unknown>).__t3CapabilityProbeWindow = win;
+    setTimeout(() => {
+      try {
+        const sender = win as unknown as {
+          sendGlobalEvent?: (eventName: string, ...args: unknown[]) => boolean;
+        };
+        if (typeof sender.sendGlobalEvent !== "function") {
+          console.log("[capability-probe] sendGlobalEvent is not a function on LynxWindow");
+          return;
+        }
+        const delivered = sender.sendGlobalEvent("t3-capability-probe", {
+          from: "main",
+          sentAt: new Date().toISOString(),
+        });
+        console.log(`[capability-probe] sendGlobalEvent returned ${String(delivered)}`);
+      } catch (error) {
+        console.log(`[capability-probe] sendGlobalEvent threw: ${String(error)}`);
+      }
+    }, 4_000);
+  }
 });

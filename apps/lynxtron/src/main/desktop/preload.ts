@@ -19,6 +19,28 @@ import { resolveLynxtronPrefsPath } from "./prefsPath";
 // prebuilt connector bundle is loaded at runtime from dist/desktop.
 declare const __non_webpack_require__: (id: string) => any;
 
+// P3-S1 capability probe (R3/R5): report whether preload shares main's JS
+// realm (main plants a pid marker when T3_LYNXTRON_CAPABILITY_PROBE=1). A
+// shared realm means the connector can reach the LynxWindow handle directly
+// and push via sendGlobalEvent instead of the 400 ms poll. Remove with the
+// probe in main.ts.
+if (process.env.T3_LYNXTRON_CAPABILITY_PROBE === "1") {
+  setTimeout(() => {
+    const mainPid = (globalThis as Record<string, unknown>).__t3CapabilityProbeMainPid;
+    const sharedWindow = (globalThis as Record<string, unknown>).__t3CapabilityProbeWindow;
+    console.log(
+      `[capability-probe] preload pid=${process.pid} mainPidMarker=${String(mainPid)} sharedWindowHandle=${sharedWindow ? "yes" : "no"}`,
+    );
+    if (sharedWindow && typeof (sharedWindow as any).sendGlobalEvent === "function") {
+      const delivered = (sharedWindow as any).sendGlobalEvent("t3-capability-probe", {
+        from: "preload-via-shared-realm",
+        sentAt: new Date().toISOString(),
+      });
+      console.log(`[capability-probe] preload sendGlobalEvent returned ${String(delivered)}`);
+    }
+  }, 6_000);
+}
+
 interface LatestState {
   status: { status: string; detail?: string };
   config: any | null;

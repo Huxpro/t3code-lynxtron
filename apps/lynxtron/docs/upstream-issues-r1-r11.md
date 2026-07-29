@@ -58,19 +58,35 @@ it as "what is the supported path for worker-backed rendering islands?".
 - **Impact**: 41 product shortcuts (⌘K quick switch, Escape overlay dismissal,
   arrow navigation, Tab focus order) cannot be implemented; current fallback
   is visible-controls-only, which the port's own gates reject as final.
-- **Ask**: window-local key events (or main-process normalize +
-  `LynxWindow.sendGlobalEvent` into the renderer) with key/code/modifiers/
-  repeat, plus focus and Tab semantics.
+- **Probe results (2026-07-29, evidence
+  `evidence/2026-07-29/P3-S1/keyboard-probe/`)**: 0.0.5 declares no
+  window-level key/before-input events and no `globalShortcut`; `Menu`
+  accelerators are declared but headlessly untestable; renderer
+  `bindkeydown`/`global-bindkeydown` types exist with an empty `BaseKeyEvent`
+  detail, so key identity fields are unclear; main→renderer
+  `LynxWindow.sendGlobalEvent` was verified working end to end, so the
+  delivery leg of a main-normalized bridge already exists.
+- **Ask**: window-local key events (or main-process key capture that can feed
+  `LynxWindow.sendGlobalEvent`) with key/code/modifiers/repeat, plus focus
+  and Tab semantics.
 
 ### R3 — No preload→UI push channel
 
 - **Repro**: `sendGlobalEvent` exists on the main-process side only; preload
   cannot emit to the Lynx UI thread. Our connector coalesces state into
   snapshots the renderer polls every 400 ms into an Effect Atom.
+- **Probe results (2026-07-29, evidence
+  `evidence/2026-07-29/P3-S1/keyboard-probe/`)**: main→renderer
+  `LynxWindow.sendGlobalEvent` works end to end (verified twice); however
+  preload runs in an isolated JS realm inside the same OS process — a
+  `globalThis` marker planted by main is invisible to preload — and 0.0.5
+  declares no preload→main IPC, so the connector cannot relay through main.
 - **Impact**: streaming assistant output advances in 400 ms steps; every
   event-driven UX (busy indicators, incremental transcript updates) pays the
   polling latency and cost.
-- **Ask**: an event channel from preload (or main) into the renderer runtime.
+- **Ask**: expose `sendGlobalEvent` (or any emit channel) to preload, or
+  provide a preload→main channel so the existing working main→renderer
+  delivery can be used as a relay.
 
 ### R4 — `RouterProvider` async transition remount crash
 

@@ -257,6 +257,29 @@ taps only (no drag/touch/wheel scrolling) — registered in the compat matrix
 with an upstream issue draft. Evidence:
 `evidence/2026-07-29/P2/transcript/scroll-machine/`.
 
+## P3-S1 keyboard/push capability probe (complete)
+
+Env-gated runtime probes (`T3_LYNXTRON_CAPABILITY_PROBE=1`) plus a
+declaration inventory of Lynxtron 0.0.5 established, with DevTool console
+evidence under `evidence/2026-07-29/P3-S1/keyboard-probe/`:
+
+- main→renderer `LynxWindow.sendGlobalEvent` works end to end (verified in
+  two fresh sessions) — the delivery leg of the P3-S3 keyboard bridge and of
+  any R3 relay already exists;
+- preload runs in an isolated JS realm (a `globalThis` marker planted by
+  main is invisible to it) and 0.0.5 declares no preload→main channel, so
+  the connector cannot relay through main — R3's polling adapter stands with
+  a refined upstream ask;
+- no window-level key events and no `globalShortcut` exist; `Menu`
+  accelerators are declared but headlessly untestable; renderer
+  `bindkeydown` props are declared with an empty event detail and their
+  runtime behavior is unverifiable headlessly (CDP `Input.dispatchKeyEvent`
+  is "Not implemented", extending R12).
+
+R3 and R5 matrix rows and their upstream issue drafts now carry these probe
+facts. `clientCapabilities.keyboard` remains `available: false`; no product
+keyboard code was written in this slice.
+
 ## Provenance snapshot
 
 The 2026-07-27 comparison against

@@ -18,6 +18,7 @@ import {
 } from "./components/OtherSettings";
 import { usePathname } from "./router";
 import { appAtomRegistry } from "./state/atomRegistry";
+import { registerCapabilityProbe } from "./state/capabilityProbe";
 import "./generated/lynx.css";
 import "./tailwind.css";
 import "./overrides.css";
@@ -50,6 +51,8 @@ function RootSwitch() {
     </AppSidebarLayout>
   );
 }
+
+registerCapabilityProbe();
 
 root.render(
   <RegistryContext.Provider value={appAtomRegistry}>
