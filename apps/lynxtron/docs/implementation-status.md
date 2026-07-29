@@ -237,9 +237,11 @@ deleted. The bridge, connector, and Effect Atom now carry canonical
 `latestTurn`, `proposedPlans`, and `activeTurnId`, which turn folds and the
 working timer require. A deterministic populated fixture
 (`scripts/prepare-transcript-visual-state.mjs`) drove a real provider turn
-through the production connector; the fresh 1280 × 820 Lynx DevTool capture
-reports zero renderer errors under
-`evidence/2026-07-29/P2/transcript/list-host/`. Anchoring-new-turn, the
+through the production connector; the fresh Lynx DevTool capture reports zero
+renderer errors under `evidence/2026-07-29/P2/transcript/list-host/`
+(originally mislabeled 1280 × 820; corrected to its true 1180 × 748 default
+viewport — true 1280 × 820 and 1440 × 900 captures of the surface live under
+`evidence/2026-07-29/P2/transcript/scroll-machine/`). Anchoring-new-turn, the
 minimap, revert/turn-diff/checkpoint cards, and the full scroll-state-machine
 battery remain registered gaps for the phase exit.
 
