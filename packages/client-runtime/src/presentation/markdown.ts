@@ -54,9 +54,16 @@ export interface MarkdownListItemPresentation {
   readonly kind: "ordered" | "unordered";
   readonly marker: string;
   readonly ordinal: number | null;
+  readonly depth: number;
   readonly content: string;
   readonly taskChecked: boolean | null;
   readonly taskMarkerOffset: number | null;
+}
+
+export interface MarkdownTablePresentation {
+  readonly headers: ReadonlyArray<string>;
+  readonly alignments: ReadonlyArray<"left" | "center" | "right" | null>;
+  readonly rows: ReadonlyArray<ReadonlyArray<string>>;
 }
 
 export interface MarkdownInlinePresentation {
@@ -138,6 +145,7 @@ export function parseMarkdownListItem(line: string): MarkdownListItemPresentatio
   const prefix = line.match(/^(\s*)([-+*]|\d+[.)])\s+/);
   if (!prefix?.[2]) return null;
 
+  const indentation = prefix[1]?.replaceAll("\t", "    ").length ?? 0;
   const marker = prefix[2];
   const orderedMatch = marker.match(/^(\d+)[.)]$/);
   const remainder = line.slice(prefix[0].length);
@@ -150,10 +158,68 @@ export function parseMarkdownListItem(line: string): MarkdownListItemPresentatio
     kind: orderedMatch ? "ordered" : "unordered",
     marker,
     ordinal: orderedMatch?.[1] ? Number.parseInt(orderedMatch[1], 10) : null,
+    depth: Math.floor(indentation / 2),
     content,
     taskChecked,
     taskMarkerOffset,
   };
+}
+
+function splitMarkdownTableRow(line: string): string[] {
+  const trimmed = line.trim().replace(/^\|/, "").replace(/\|$/, "");
+  const cells: string[] = [];
+  let cell = "";
+  let escaped = false;
+  for (const character of trimmed) {
+    if (escaped) {
+      cell += character;
+      escaped = false;
+    } else if (character === "\\") {
+      escaped = true;
+      cell += character;
+    } else if (character === "|") {
+      cells.push(cell.trim());
+      cell = "";
+    } else {
+      cell += character;
+    }
+  }
+  cells.push(cell.trim());
+  return cells;
+}
+
+/**
+ * Parse a contiguous GFM-style table without depending on a renderer AST.
+ * Returns null unless the second line is a valid delimiter row.
+ */
+export function parseMarkdownTable(lines: ReadonlyArray<string>): MarkdownTablePresentation | null {
+  if (lines.length < 2 || !lines[0]?.includes("|")) return null;
+  const headers = splitMarkdownTableRow(lines[0]);
+  const delimiters = splitMarkdownTableRow(lines[1] ?? "");
+  if (
+    headers.length === 0 ||
+    delimiters.length !== headers.length ||
+    delimiters.some((cell) => !/^:?-{3,}:?$/.test(cell))
+  ) {
+    return null;
+  }
+
+  const alignments = delimiters.map((cell) =>
+    cell.startsWith(":") && cell.endsWith(":")
+      ? ("center" as const)
+      : cell.endsWith(":")
+        ? ("right" as const)
+        : cell.startsWith(":")
+          ? ("left" as const)
+          : null,
+  );
+  const rows: string[][] = [];
+  for (const line of lines.slice(2)) {
+    if (!line.includes("|") || line.trim().length === 0) break;
+    const cells = splitMarkdownTableRow(line);
+    rows.push(headers.map((_, index) => cells[index] ?? ""));
+  }
+  return { headers, alignments, rows };
 }
 
 export function findMarkdownTaskListMarkerOffset(

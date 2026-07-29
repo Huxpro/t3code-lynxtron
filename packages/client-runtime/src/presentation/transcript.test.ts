@@ -11,6 +11,7 @@ import {
   formatDuration,
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
   reduceTranscriptFollow,
+  deriveTranscriptNewTurnAnchor,
   workEntryIndicatesToolFailure,
   workEntryIndicatesToolSuccess,
   type StableMessagesTimelineRowsState,
@@ -386,6 +387,32 @@ describe("reduceTranscriptFollow", () => {
       threshold: 120,
     });
     expect(state).toEqual({ following: true, atEnd: true });
+  });
+});
+
+describe("deriveTranscriptNewTurnAnchor", () => {
+  const messages = [
+    message({ id: "u1", role: "user", createdAt: "2026-01-01T00:00:00.000Z" }),
+    message({ id: "a1", role: "assistant", createdAt: "2026-01-01T00:00:01.000Z" }),
+  ];
+
+  it("initializes existing history without requesting an anchor", () => {
+    expect(deriveTranscriptNewTurnAnchor(undefined, messages, true)).toEqual({
+      newestUserMessageId: "u1",
+      anchorMessageId: null,
+    });
+  });
+
+  it("anchors only a newly materialized user turn while following", () => {
+    const nextMessages = [
+      ...messages,
+      message({ id: "u2", role: "user", createdAt: "2026-01-01T00:00:02.000Z" }),
+    ];
+    expect(deriveTranscriptNewTurnAnchor("u1", nextMessages, true)).toEqual({
+      newestUserMessageId: "u2",
+      anchorMessageId: "u2",
+    });
+    expect(deriveTranscriptNewTurnAnchor("u1", nextMessages, false).anchorMessageId).toBeNull();
   });
 });
 

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "route": "thread-transcript-p2",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "sidebar",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".sidebar"
+    },
+    {
+      "id": "workspaceHeader",
+      "web": "[data-chat-header]",
+      "lynx": "[data-chat-header]"
+    },
+    {
+      "id": "timeline",
+      "web": "[data-messages-timeline]",
+      "lynx": ".timeline-list"
+    },
+    {
+      "id": "markdownTable",
+      "web": "table",
+      "lynx": ".md-table"
+    },
+    {
+      "id": "turnDiffCard",
+      "web": "[data-changed-files-state]",
+      "lynx": ".turn-diff-card"
+    }
+  ],
+  "typography": [
+    {
+      "id": "userMessage",
+      "web": "[data-timeline-row=\"message\"]",
+      "lynx": ".msg__text"
+    },
+    {
+      "id": "tableHeader",
+      "web": "th",
+      "lynx": ".md-table-cell--header"
+    },
+    {
+      "id": "turnDiffTitle",
+      "web": "[data-changed-files-state]",
+      "lynx": ".turn-diff-card__title"
+    }
+  ],
+  "colors": [
+    {
+      "id": "appBackground",
+      "web": "body",
+      "lynx": ".app-root"
+    },
+    {
+      "id": "tableBackground",
+      "web": "table",
+      "lynx": ".md-table"
+    },
+    {
+      "id": "turnDiffBackground",
+      "web": "[data-changed-files-state]",
+      "lynx": ".turn-diff-card"
+    }
+  ]
+}

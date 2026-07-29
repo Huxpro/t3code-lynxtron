@@ -264,9 +264,9 @@ through the production connector; the fresh Lynx DevTool capture reports zero
 renderer errors under `evidence/2026-07-29/P2/transcript/list-host/`
 (originally mislabeled 1280 × 820; corrected to its true 1180 × 748 default
 viewport — true 1280 × 820 and 1440 × 900 captures of the surface live under
-`evidence/2026-07-29/P2/transcript/scroll-machine/`). Anchoring-new-turn, the
-minimap, revert/turn-diff/checkpoint cards, and the full scroll-state-machine
-battery remain registered gaps for the phase exit.
+`evidence/2026-07-29/P2/transcript/scroll-machine/`). The minimap, actionable
+revert control, and the full scroll-state-machine battery remain registered
+gaps for the phase exit.
 
 The follow-up P2-S3 slice made the follow/detach contract a shared, tested
 state machine (`reduceTranscriptFollow`: user scrolls attach/detach by
@@ -281,6 +281,28 @@ runtime-blocked by new R12 — Lynxtron 0.0.5 DevTool input emulation delivers
 taps only (no drag/touch/wheel scrolling) — registered in the compat matrix
 with an upstream issue draft. Evidence:
 `evidence/2026-07-29/P2/transcript/scroll-machine/`.
+
+The 2026-07-30 P2 tail slice closes the remaining read-only transcript
+presentation gaps. A renderer-neutral new-turn detector now distinguishes
+initial history from a newly materialized user message; the Lynx native list
+anchors that row at the viewport start with reserved end space instead of
+following the streaming tail. User scrolling or “Jump to latest” exits the
+anchor. Canonical checkpoint summaries now flow through the existing shared
+timeline-row slot into compact, non-actionable turn-diff cards with shared
+file selection and aggregate stats; Lynx does not claim the still-unavailable
+revert operation. The shared Markdown projection gained GFM table parsing and
+list nesting depth, while the Lynx host renders tables, nested quotes, and
+nested lists without a DOM AST.
+
+Focused Markdown/transcript tests pass (44), both Lynx TypeScript programs are
+clean, the three affected ReactLynx components scan with zero findings, API/CSS
+audits and the production build pass. A fresh explicitly sized 1280 × 820
+session rendered a seeded canonical assistant message with a table, nested
+quote/list, and checkpoint card; the capture is 2560 × 1640 physical and
+reports zero renderer errors. The reusable measurement contract is
+`scripts/visual-measurement-spec-transcript-p2.json`. R12 still prevents a
+headless real-scroll gesture acceptance pass, so anchoring behavior remains
+unit/host-wiring verified rather than falsely marked as DevTool-scroll proven.
 
 ## P3-S1 keyboard/push capability probe (complete)
 

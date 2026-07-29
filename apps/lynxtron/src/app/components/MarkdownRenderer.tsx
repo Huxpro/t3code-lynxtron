@@ -3,9 +3,11 @@ import {
   parseMarkdownFenceInfo,
   parseMarkdownInline,
   parseMarkdownListItem,
+  parseMarkdownTable,
   resolveMarkdownFileLinkMeta,
   type MarkdownInlinePresentation,
   type MarkdownListItemPresentation,
+  type MarkdownTablePresentation,
 } from "@t3tools/client-runtime/presentation/markdown";
 import { clientCapabilities } from "../platform/clientCapabilities";
 
@@ -13,13 +15,15 @@ import { clientCapabilities } from "../platform/clientCapabilities";
 // formatting used in AI assistant responses.
 
 interface ParsedBlock {
-  type: "heading" | "paragraph" | "code" | "list" | "blockquote" | "hr" | "empty";
+  type: "heading" | "paragraph" | "code" | "list" | "blockquote" | "table" | "hr" | "empty";
   level?: number; // heading level
   items?: MarkdownListItemPresentation[]; // list items
   text?: string; // paragraph or blockquote text
   code?: string; // code block content
   language?: string; // code block language
   title?: string; // code block filename/title
+  quoteDepth?: number;
+  table?: MarkdownTablePresentation;
 }
 
 function activateMarkdownLink(href: string, cwd: string | undefined): void {
@@ -130,14 +134,27 @@ function parseBlocks(text: string): ParsedBlock[] {
       continue;
     }
 
-    // Blockquote
-    if (line.startsWith("> ")) {
+    // Blockquote, including nested quote markers.
+    const quoteMatch = line.match(/^((?:>\s*)+)(.*)$/);
+    if (quoteMatch) {
+      const quoteDepth = quoteMatch[1]!.match(/>/g)?.length ?? 1;
       const quoteLines: string[] = [];
-      while (i < lines.length && lines[i]!.startsWith("> ")) {
-        quoteLines.push(lines[i]!.slice(2));
+      while (i < lines.length) {
+        const nestedMatch = lines[i]!.match(/^((?:>\s*)+)(.*)$/);
+        const nestedDepth = nestedMatch?.[1]?.match(/>/g)?.length ?? 0;
+        if (!nestedMatch || nestedDepth !== quoteDepth) break;
+        quoteLines.push(nestedMatch[2] ?? "");
         i++;
       }
-      blocks.push({ type: "blockquote", text: quoteLines.join("\n") });
+      blocks.push({ type: "blockquote", text: quoteLines.join("\n"), quoteDepth });
+      continue;
+    }
+
+    // GFM table
+    const table = parseMarkdownTable(lines.slice(i));
+    if (table) {
+      blocks.push({ type: "table", table });
+      i += table.rows.length + 2;
       continue;
     }
 
@@ -161,7 +178,8 @@ function parseBlocks(text: string): ParsedBlock[] {
       lines[i]!.trim() !== "" &&
       !lines[i]!.trim().startsWith("```") &&
       !lines[i]!.match(/^(#{1,6})\s/) &&
-      !lines[i]!.startsWith("> ") &&
+      !lines[i]!.match(/^((?:>\s*)+)(.*)$/) &&
+      !parseMarkdownTable(lines.slice(i)) &&
       !parseMarkdownListItem(lines[i]!) &&
       !/^(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[i]!.trim())
     ) {
@@ -246,7 +264,9 @@ function renderBlock(block: ParsedBlock, idx: number, cwd: string | undefined): 
                   : "•";
             return (
               <view key={`${key}-${j}`} className="md-list-item">
-                <text className="md-list-bullet">{marker}</text>
+                <text className="md-list-bullet" style={{ marginLeft: item.depth * 18 } as any}>
+                  {marker}
+                </text>
                 <text className="md-list-text">
                   {renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd)}
                 </text>
@@ -259,12 +279,49 @@ function renderBlock(block: ParsedBlock, idx: number, cwd: string | undefined): 
 
     case "blockquote":
       return (
-        <view key={key} className="md-blockquote">
+        <view
+          key={key}
+          className="md-blockquote"
+          style={{ marginLeft: Math.max(0, (block.quoteDepth ?? 1) - 1) * 14 } as any}
+        >
           <text className="md-blockquote-text">
             {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd)}
           </text>
         </view>
       );
+
+    case "table": {
+      const table = block.table;
+      if (!table) return <view key={key} />;
+      return (
+        <view key={key} className="md-table">
+          <view className="md-table-row md-table-row--header">
+            {table.headers.map((header, column) => (
+              <text
+                key={`${key}-h${column}`}
+                className="md-table-cell md-table-cell--header"
+                style={{ textAlign: table.alignments[column] ?? "left" } as any}
+              >
+                {renderInline(parseMarkdownInline(header), `${key}-h${column}`, cwd)}
+              </text>
+            ))}
+          </view>
+          {table.rows.map((row, rowIndex) => (
+            <view key={`${key}-r${rowIndex}`} className="md-table-row">
+              {row.map((cell, column) => (
+                <text
+                  key={`${key}-r${rowIndex}c${column}`}
+                  className="md-table-cell"
+                  style={{ textAlign: table.alignments[column] ?? "left" } as any}
+                >
+                  {renderInline(parseMarkdownInline(cell), `${key}-r${rowIndex}c${column}`, cwd)}
+                </text>
+              ))}
+            </view>
+          ))}
+        </view>
+      );
+    }
 
     case "hr":
       return <view key={key} className="md-hr" />;

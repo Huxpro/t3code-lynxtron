@@ -2,8 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/reac
 import type { NodesRef } from "@lynx-js/types";
 import { isSessionBusy } from "@t3tools/client-runtime/presentation/session";
 import {
+  selectChangedFilePreview,
+  summarizeChangedFiles,
+} from "@t3tools/client-runtime/presentation/diff";
+import {
   deriveActiveWorkStartedAt,
   deriveMessagesTimelineRows,
+  deriveTranscriptNewTurnAnchor,
   deriveTimelineEntries,
   deriveWorkLogEntries,
   formatDuration,
@@ -18,6 +23,7 @@ import {
 import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
 import type {
   OrchestrationLatestTurn,
+  OrchestrationCheckpointSummary,
   OrchestrationProposedPlan,
   TurnId,
 } from "@t3tools/contracts";
@@ -32,9 +38,14 @@ interface MessagesTimelineProps {
   latestTurn?: OrchestrationLatestTurn | null;
   proposedPlans?: ReadonlyArray<OrchestrationProposedPlan>;
   activeTurnId?: TurnId | null;
+  checkpoints?: ReadonlyArray<OrchestrationCheckpointSummary>;
 }
 
-type TimelineRow = MessagesTimelineRow<ChatMessage, OrchestrationProposedPlan>;
+type TimelineRow = MessagesTimelineRow<
+  ChatMessage,
+  OrchestrationProposedPlan,
+  OrchestrationCheckpointSummary
+>;
 
 /** ListEventSource.SCROLL — only user/fling scrolling may break follow mode. */
 const LIST_EVENT_SOURCE_SCROLL = 2;
@@ -121,7 +132,50 @@ function WorkingRow({ startedAt }: { startedAt: string | null }) {
   );
 }
 
-function MessageRowView({ message, cwd }: { message: ChatMessage; cwd?: string | undefined }) {
+function TurnDiffCard({ summary }: { summary: OrchestrationCheckpointSummary }) {
+  const stat = summarizeChangedFiles(summary.files);
+  const preview = selectChangedFilePreview(summary.files);
+  const statusLabel =
+    summary.status === "ready"
+      ? `${summary.files.length} changed file${summary.files.length === 1 ? "" : "s"}`
+      : summary.status === "missing"
+        ? "Checkpoint unavailable"
+        : "Checkpoint failed";
+  return (
+    <view className="turn-diff-card">
+      <view className="turn-diff-card__header">
+        <text className="turn-diff-card__title">Turn changes</text>
+        <text className="turn-diff-card__status">{statusLabel}</text>
+        {summary.status === "ready" ? (
+          <text className="turn-diff-card__stat">
+            <text className="turn-diff-card__additions">+{stat.additions}</text>
+            <text className="turn-diff-card__deletions"> −{stat.deletions}</text>
+          </text>
+        ) : null}
+      </view>
+      {preview.map((file) => (
+        <view key={file.path} className="turn-diff-card__file">
+          <text className="turn-diff-card__path" text-maxline="1">
+            {file.path}
+          </text>
+          <text className="turn-diff-card__file-stat">
+            +{file.additions} −{file.deletions}
+          </text>
+        </view>
+      ))}
+    </view>
+  );
+}
+
+function MessageRowView({
+  message,
+  cwd,
+  turnDiffSummary,
+}: {
+  message: ChatMessage;
+  cwd?: string | undefined;
+  turnDiffSummary?: OrchestrationCheckpointSummary | undefined;
+}) {
   const isUser = message.role === "user";
   const isSystem = message.role === "system";
   const hasText = message.text && message.text.trim().length > 0;
@@ -154,6 +208,7 @@ function MessageRowView({ message, cwd }: { message: ChatMessage; cwd?: string |
       ) : message.streaming ? (
         <text className="msg__text msg__text--dim">Thinking…</text>
       ) : null}
+      {turnDiffSummary ? <TurnDiffCard summary={turnDiffSummary} /> : null}
     </view>
   );
 }
@@ -171,7 +226,13 @@ function TimelineRowView({
 }) {
   switch (row.kind) {
     case "message":
-      return <MessageRowView message={row.message} cwd={cwd} />;
+      return (
+        <MessageRowView
+          message={row.message}
+          cwd={cwd}
+          turnDiffSummary={row.assistantTurnDiffSummary}
+        />
+      );
     case "turn-fold":
       return (
         <view className="turn-fold" bindtap={() => onToggleTurn(row.turnId)}>
@@ -223,6 +284,7 @@ export function MessagesTimeline({
   latestTurn = null,
   proposedPlans = [],
   activeTurnId = null,
+  checkpoints = [],
 }: MessagesTimelineProps) {
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
   const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
@@ -232,6 +294,8 @@ export function MessagesTimeline({
   const followStateRef = useRef(followState);
   followStateRef.current = followState;
   const listRef = useRef<NodesRef>(null);
+  const newestUserMessageIdRef = useRef<string | null | undefined>(undefined);
+  const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
 
   const isWorking = isSessionBusy(sessionStatus);
 
@@ -247,7 +311,17 @@ export function MessagesTimeline({
       { status: sessionStatus, activeTurnId },
       null,
     );
-    return deriveMessagesTimelineRows<ChatMessage, OrchestrationProposedPlan>({
+    const turnDiffSummaryByAssistantMessageId = new Map<string, OrchestrationCheckpointSummary>();
+    for (const checkpoint of checkpoints) {
+      if (checkpoint.assistantMessageId) {
+        turnDiffSummaryByAssistantMessageId.set(checkpoint.assistantMessageId, checkpoint);
+      }
+    }
+    return deriveMessagesTimelineRows<
+      ChatMessage,
+      OrchestrationProposedPlan,
+      OrchestrationCheckpointSummary
+    >({
       timelineEntries,
       latestTurn,
       runningTurnId: activeTurnId,
@@ -255,6 +329,7 @@ export function MessagesTimeline({
       expandedWorkGroupIds,
       isWorking,
       activeTurnStartedAt,
+      turnDiffSummaryByAssistantMessageId,
     });
   }, [
     messages,
@@ -266,7 +341,29 @@ export function MessagesTimeline({
     isWorking,
     expandedTurnIds,
     expandedWorkGroupIds,
+    checkpoints,
   ]);
+
+  useEffect(() => {
+    const next = deriveTranscriptNewTurnAnchor(
+      newestUserMessageIdRef.current,
+      messages,
+      followStateRef.current.following,
+    );
+    newestUserMessageIdRef.current = next.newestUserMessageId;
+    if (!next.anchorMessageId) return;
+    setAnchorMessageId(next.anchorMessageId);
+    const rowIndex = rows.findIndex(
+      (row) => row.kind === "message" && row.message.id === next.anchorMessageId,
+    );
+    if (rowIndex < 0) return;
+    listRef.current
+      ?.invoke({
+        method: "scrollToPosition",
+        params: { index: rowIndex, alignTo: "top", smooth: false },
+      })
+      .exec();
+  }, [messages, rows]);
 
   const scrollToEnd = useCallback(
     (smooth: boolean) => {
@@ -293,10 +390,10 @@ export function MessagesTimeline({
       }`
     : "empty";
   useEffect(() => {
-    if (!followStateRef.current.following) return;
+    if (!followStateRef.current.following || anchorMessageId) return;
     scrollToEnd(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tailFingerprint]);
+  }, [tailFingerprint, anchorMessageId]);
 
   const handleScroll = useCallback(
     (event: {
@@ -308,6 +405,9 @@ export function MessagesTimeline({
       };
     }) => {
       const { scrollTop, scrollHeight, listHeight, eventSource } = event.detail;
+      if (eventSource === LIST_EVENT_SOURCE_SCROLL) {
+        setAnchorMessageId(null);
+      }
       setFollowState((current) =>
         reduceTranscriptFollow(current, {
           kind: "scrolled",
@@ -320,6 +420,7 @@ export function MessagesTimeline({
   );
 
   const handleJumpToLatest = useCallback(() => {
+    setAnchorMessageId(null);
     setFollowState((current) => reduceTranscriptFollow(current, { kind: "jump-to-latest" }));
     scrollToEnd(true);
   }, [scrollToEnd]);
@@ -387,6 +488,15 @@ export function MessagesTimeline({
             />
           </list-item>
         ))}
+        {anchorMessageId ? (
+          <list-item
+            item-key="timeline-new-turn-anchor-space"
+            key="timeline-new-turn-anchor-space"
+            estimated-main-axis-size-px={480}
+          >
+            <view className="timeline-new-turn-anchor-space" />
+          </list-item>
+        ) : null}
       </list>
       {!followState.atEnd ? (
         <view className="timeline-jump" bindtap={handleJumpToLatest}>

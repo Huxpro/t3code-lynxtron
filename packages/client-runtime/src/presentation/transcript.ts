@@ -1121,6 +1121,39 @@ export const INITIAL_TRANSCRIPT_FOLLOW_STATE: TranscriptFollowState = {
   atEnd: true,
 };
 
+export interface TranscriptNewTurnAnchor {
+  readonly newestUserMessageId: string | null;
+  readonly anchorMessageId: string | null;
+}
+
+/**
+ * Detect a newly materialized user turn without anchoring the initial history.
+ * Hosts can keep the returned newest ID in a ref and position anchorMessageId
+ * near the viewport start while the assistant response grows below it.
+ */
+export function deriveTranscriptNewTurnAnchor(
+  previousNewestUserMessageId: string | null | undefined,
+  messages: ReadonlyArray<Pick<TranscriptMessage, "id" | "role">>,
+  following: boolean,
+): TranscriptNewTurnAnchor {
+  let newestUserMessageId: string | null = null;
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (message?.role === "user") {
+      newestUserMessageId = message.id;
+      break;
+    }
+  }
+  const anchorMessageId =
+    previousNewestUserMessageId !== undefined &&
+    following &&
+    newestUserMessageId !== null &&
+    newestUserMessageId !== previousNewestUserMessageId
+      ? newestUserMessageId
+      : null;
+  return { newestUserMessageId, anchorMessageId };
+}
+
 /** Distance from the end (px) that still counts as "at the end". */
 export const TRANSCRIPT_FOLLOW_THRESHOLD_PX = 60;
 

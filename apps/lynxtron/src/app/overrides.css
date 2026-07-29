@@ -1213,6 +1213,11 @@
   height: 100%;
   padding: 20px 0;
 }
+/* surface: transcript anchoring-new-turn; gap: R7; remove-when: native list
+   exposes Web-equivalent reserved-end-space anchoring. */
+.timeline-new-turn-anchor-space {
+  height: 480px;
+}
 .turn-fold {
   display: flex;
   flex-direction: row;
@@ -1331,6 +1336,67 @@
   color: var(--foreground);
   font-size: 12px;
   font-family: var(--font-sans);
+}
+
+/* surface: transcript checkpoint/turn-diff card; gap: R7; remove-when: the
+   shared Web card composition can compile to Lynx native list children. */
+.turn-diff-card {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  background-color: var(--muted);
+}
+.turn-diff-card__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.turn-diff-card__title {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+.turn-diff-card__status {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  flex-grow: 1;
+}
+.turn-diff-card__stat,
+.turn-diff-card__file-stat {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.turn-diff-card__additions {
+  color: #22c55e;
+}
+.turn-diff-card__deletions {
+  color: #ef4444;
+}
+.turn-diff-card__file {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 3px;
+}
+.turn-diff-card__path {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  flex-grow: 1;
+  width: 0;
+}
+.turn-diff-card__file-stat {
+  color: var(--muted-foreground);
+  margin-left: 8px;
 }
 
 /* ======================= Markdown Body ======================= */
@@ -1474,6 +1540,42 @@
   line-height: 22px;
   font-family: var(--font-sans);
   font-style: italic;
+}
+/* surface: markdown tables and nested blocks; gap: R7; remove-when: the Web
+   Markdown AST renderer can be shared directly with the Lynx host. */
+.md-table {
+  display: flex;
+  flex-direction: column;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.md-table-row {
+  display: flex;
+  flex-direction: row;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--border);
+}
+.md-table-row--header {
+  border-top-width: 0;
+  background-color: var(--muted);
+}
+.md-table-cell {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 18px;
+  padding: 6px 8px;
+  flex-grow: 1;
+  width: 0;
+}
+.md-table-cell--header {
+  color: var(--muted-foreground);
+  font-weight: 600;
 }
 .md-hr {
   height: 1px;

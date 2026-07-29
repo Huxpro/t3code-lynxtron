@@ -34,6 +34,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     latestTurn,
     proposedPlans,
     activeTurnId,
+    checkpoints,
   } = useT3ClientState();
   const [clientSettings] = useClientSettingsState();
   const rightPanel = useRightPanelState();
@@ -120,6 +121,7 @@ export function ChatView({ threadId }: ChatViewProps) {
               latestTurn={latestTurn}
               proposedPlans={proposedPlans}
               activeTurnId={activeTurnId}
+              checkpoints={checkpoints}
             />
           ) : null}
           <Composer

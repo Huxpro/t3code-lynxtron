@@ -9,6 +9,7 @@ import {
   parseMarkdownFenceInfo,
   parseMarkdownInline,
   parseMarkdownListItem,
+  parseMarkdownTable,
   resolveInlineCodeFileLinkMeta,
   resolveMarkdownFileLinkMeta,
   resolveMarkdownFileLinkTarget,
@@ -78,6 +79,7 @@ describe("parseMarkdownListItem", () => {
       kind: "unordered",
       marker: "-",
       ordinal: null,
+      depth: 1,
       content: "ship the renderer",
       taskChecked: null,
       taskMarkerOffset: null,
@@ -115,6 +117,31 @@ describe("parseMarkdownListItem", () => {
   it("rejects paragraph text and malformed list prefixes", () => {
     expect(parseMarkdownListItem("plain text")).toBeNull();
     expect(parseMarkdownListItem("-missing whitespace")).toBeNull();
+  });
+});
+
+describe("parseMarkdownTable", () => {
+  it("projects headers, alignment, escaped pipes, and short rows", () => {
+    expect(
+      parseMarkdownTable([
+        "| Name | Result | Notes |",
+        "| :--- | :---: | ---: |",
+        "| Web | pass | shared \\| stable |",
+        "| Lynx | pass |",
+      ]),
+    ).toEqual({
+      headers: ["Name", "Result", "Notes"],
+      alignments: ["left", "center", "right"],
+      rows: [
+        ["Web", "pass", "shared \\| stable"],
+        ["Lynx", "pass", ""],
+      ],
+    });
+  });
+
+  it("rejects prose and malformed delimiters", () => {
+    expect(parseMarkdownTable(["one | two", "not a delimiter"])).toBeNull();
+    expect(parseMarkdownTable(["one | two", "--- | --"])).toBeNull();
   });
 });
 
