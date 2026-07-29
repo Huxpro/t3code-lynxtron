@@ -56,6 +56,7 @@ export const RotateCcwIcon = createIcon("rotate-ccw");
 export const RotateCwIcon = createIcon("refresh-cw");
 export const SearchIcon = createIcon("search");
 export const Settings2Icon = createIcon("settings-2");
+export const PaletteIcon = createIcon("palette");
 export const SettingsIcon = createIcon("settings");
 export const SquarePenIcon = createIcon("square-pen");
 export const StarIcon = createIcon("message-square");

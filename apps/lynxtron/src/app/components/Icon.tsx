@@ -61,6 +61,7 @@ export type IconName =
   | "claude"
   | "t3-wordmark"
   | "settings-2"
+  | "palette"
   | "keyboard"
   | "link-2"
   | "flask-conical"

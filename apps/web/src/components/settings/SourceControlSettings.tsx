@@ -1,4 +1,4 @@
-import { ChevronDownIcon, GitPullRequestIcon, RefreshCwIcon } from "lucide-react";
+import { ChevronDownIcon, GitPullRequestIcon, InfoIcon, RefreshCwIcon } from "lucide-react";
 import * as Duration from "effect/Duration";
 import { useState, type ReactNode } from "react";
 import {
@@ -6,13 +6,18 @@ import {
   type SourceControlItemPresentation,
 } from "@t3tools/client-runtime/presentation/source-control";
 import type {
+  BackgroundActivitySettings,
   SourceControlProviderKind,
   SourceControlDiscoveryResult,
   SourceControlProviderDiscoveryItem,
   VcsDriverKind,
   VcsDiscoveryItem,
 } from "@t3tools/contracts";
-import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
+import {
+  getBackgroundActivityBaseProfile,
+  getBackgroundActivityPresetSettings,
+  resolveServerBackgroundActivitySettings,
+} from "@t3tools/shared/backgroundActivitySettings";
 
 import { usePrimarySettings, useUpdatePrimarySettings } from "../../hooks/useSettings";
 import { cn } from "../../lib/utils";
@@ -50,6 +55,7 @@ import {
   type Icon,
 } from "../Icons";
 import { RedactedSensitiveText } from "./RedactedSensitiveText";
+import { SourceControlWritingSettingsSection } from "./SourceControlWritingSettings";
 import { SettingResetButton, SettingsPageContainer, SettingsSection } from "./settingsLayout";
 
 const EMPTY_DISCOVERY_RESULT: SourceControlDiscoveryResult = {
@@ -71,6 +77,11 @@ const VCS_ICONS: Partial<Record<VcsDriverKind, Icon>> = {
 
 const SOURCE_CONTROL_SKELETON_ROWS = ["primary", "secondary"] as const;
 const GIT_FETCH_INTERVAL_STEP_SECONDS = 5;
+type BackgroundActivityOverridePatch = Partial<{
+  [K in keyof BackgroundActivitySettings["overrides"]]:
+    | BackgroundActivitySettings["overrides"][K]
+    | undefined;
+}>;
 
 function durationToSeconds(duration: Duration.Duration): number {
   return Math.round(Duration.toMillis(duration) / 1_000);
@@ -81,6 +92,50 @@ function normalizeFetchIntervalSeconds(value: number | null): number {
     return 0;
   }
   return Math.max(0, Math.round(value));
+}
+
+function backgroundActivityOverrideSettings(
+  current: BackgroundActivitySettings,
+  overrides: BackgroundActivityOverridePatch,
+) {
+  const nextOverrides: BackgroundActivityOverridePatch = {
+    ...current.overrides,
+    ...overrides,
+  };
+  for (const [key, value] of Object.entries(nextOverrides)) {
+    if (value === undefined) {
+      delete nextOverrides[key as keyof typeof nextOverrides];
+    }
+  }
+  return {
+    backgroundActivity: {
+      schemaVersion: 1 as const,
+      profile: "custom" as const,
+      baseProfile: getBackgroundActivityBaseProfile(current),
+      overrides: nextOverrides as BackgroundActivitySettings["overrides"],
+    },
+  };
+}
+
+function BackgroundPolicyTooltip({ children }: { readonly children: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            className="inline-flex size-5 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground"
+            aria-label="Background policy details"
+          >
+            <InfoIcon className="size-3.5" />
+          </button>
+        }
+      />
+      <TooltipPopup side="top" className="max-w-72">
+        {children}
+      </TooltipPopup>
+    </Tooltip>
+  );
 }
 
 function RedactedAccount(props: { readonly account: string | null }) {
@@ -234,13 +289,16 @@ function DiscoveryItemRow({
 }
 
 function GitFetchIntervalSettings() {
-  const automaticGitFetchInterval = usePrimarySettings(
-    (settings) => settings.automaticGitFetchInterval,
-  );
+  const settings = usePrimarySettings();
   const updateSettings = useUpdatePrimarySettings();
-  const automaticGitFetchIntervalSeconds = durationToSeconds(automaticGitFetchInterval);
+  const resolvedBackgroundActivity = resolveServerBackgroundActivitySettings(settings);
+  const automaticGitFetchIntervalSeconds = durationToSeconds(
+    resolvedBackgroundActivity.automaticGitFetchInterval,
+  );
   const defaultAutomaticGitFetchIntervalSeconds = durationToSeconds(
-    DEFAULT_UNIFIED_SETTINGS.automaticGitFetchInterval,
+    getBackgroundActivityPresetSettings(
+      getBackgroundActivityBaseProfile(settings.backgroundActivity),
+    ).automaticGitFetchInterval,
   );
   const canResetFetchInterval =
     automaticGitFetchIntervalSeconds !== defaultAutomaticGitFetchIntervalSeconds;
@@ -251,6 +309,11 @@ function GitFetchIntervalSettings() {
         <div className="min-w-0 space-y-1">
           <div className="flex min-w-0 items-center gap-1">
             <span className="text-xs font-medium text-foreground">Fetch interval</span>
+            <BackgroundPolicyTooltip>
+              This interval is configured for Git only. The shared Background activity policy still
+              decides whether Git refreshes may run when the timer fires. Custom intervals appear as
+              Advanced in General settings.
+            </BackgroundPolicyTooltip>
             <span
               className={cn(
                 "inline-flex size-5 shrink-0 items-center justify-center transition-opacity",
@@ -262,9 +325,11 @@ function GitFetchIntervalSettings() {
                 <SettingResetButton
                   label="fetch interval"
                   onClick={() =>
-                    updateSettings({
-                      automaticGitFetchInterval: DEFAULT_UNIFIED_SETTINGS.automaticGitFetchInterval,
-                    })
+                    updateSettings(
+                      backgroundActivityOverrideSettings(settings.backgroundActivity, {
+                        automaticGitFetchInterval: undefined,
+                      }),
+                    )
                   }
                 />
               ) : null}
@@ -283,9 +348,11 @@ function GitFetchIntervalSettings() {
             size="sm"
             className="w-32"
             onValueChange={(value) =>
-              updateSettings({
-                automaticGitFetchInterval: Duration.seconds(normalizeFetchIntervalSeconds(value)),
-              })
+              updateSettings(
+                backgroundActivityOverrideSettings(settings.backgroundActivity, {
+                  automaticGitFetchInterval: Duration.seconds(normalizeFetchIntervalSeconds(value)),
+                }),
+              )
             }
           >
             <NumberFieldGroup>
@@ -456,6 +523,8 @@ export function SourceControlSettingsPanel() {
           onScan={handleScan}
         />
       )}
+
+      {environmentId !== null ? <SourceControlWritingSettingsSection /> : null}
     </SettingsPageContainer>
   );
 }

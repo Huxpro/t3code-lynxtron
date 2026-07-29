@@ -38,7 +38,7 @@ describe("projectGeneralSettingsRestore", () => {
         automaticGitFetchInterval: Duration.seconds(45),
       },
       defaults: DEFAULT_UNIFIED_SETTINGS,
-      automaticGitFetchIntervalChanged: true,
+      backgroundActivityChanged: true,
       textGenerationModelSelectionChanged: false,
     });
 
@@ -47,7 +47,7 @@ describe("projectGeneralSettingsRestore", () => {
       "Glass opacity",
       "Word wrap",
       "Assistant output",
-      "Automatic Git fetch interval",
+      "Background activity",
     ]);
     expect(projection.clientPatch.glassOpacity).toBe(DEFAULT_CLIENT_SETTINGS.glassOpacity);
     expect(projection.clientPatch.wordWrap).toBe(DEFAULT_CLIENT_SETTINGS.wordWrap);
@@ -66,7 +66,7 @@ describe("projectGeneralSettingsRestore", () => {
         theme: "system",
         settings: DEFAULT_UNIFIED_SETTINGS,
         defaults: DEFAULT_UNIFIED_SETTINGS,
-        automaticGitFetchIntervalChanged: false,
+        backgroundActivityChanged: false,
         textGenerationModelSelectionChanged: false,
       }).changedSettingLabels,
     ).toEqual([]);

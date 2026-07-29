@@ -6,6 +6,7 @@ import {
   GitBranchIcon,
   KeyboardIcon,
   Link2Icon,
+  PaletteIcon,
   Settings2Icon,
 } from "lucide-react";
 
@@ -18,6 +19,7 @@ const ICONS = {
   "git-branch": GitBranchIcon,
   keyboard: KeyboardIcon,
   "link-2": Link2Icon,
+  palette: PaletteIcon,
   "settings-2": Settings2Icon,
 } as const;
 

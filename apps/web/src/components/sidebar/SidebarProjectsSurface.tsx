@@ -38,45 +38,47 @@ export function SidebarProjectsSurface({
   onDeleteThread,
 }: SidebarProjectsSurfaceProps) {
   return (
-    <HostScrollView className="sidebar-content-scroll h-auto min-h-0 flex-1 overflow-y-auto">
+    <>
       <HostView
-        className="flex w-full min-w-0 flex-col gap-0"
-        data-sidebar="content"
-        data-slot="sidebar-content"
+        className="relative flex w-full min-w-0 shrink-0 flex-col px-2 pt-2 pb-1"
+        data-sidebar="group"
+        data-slot="sidebar-group"
       >
-        <HostView
-          className="relative flex w-full min-w-0 flex-col px-2 pt-2 pb-1"
-          data-sidebar="group"
-          data-slot="sidebar-group"
-        >
-          {searchControl}
-        </HostView>
-        {beforeProjects}
-        <HostView
-          className="lynx-sidebar-projects-group relative flex w-full min-w-0 flex-col px-2 py-2"
-          data-sidebar="group"
-          data-slot="sidebar-group"
-        >
-          <HostView className="mb-1 flex items-center justify-between pl-2 pr-1.5">
-            <HostText className="sidebar-projects-label text-xs font-medium text-sidebar-muted-foreground/80">
-              Projects
-            </HostText>
-            <HostView className="flex items-center gap-1">{projectControls}</HostView>
-          </HostView>
-
-          <SidebarProjectListHost
-            rows={rows}
-            onToggleProject={onToggleProject}
-            onCreateThread={onCreateThread}
-            onSelectThread={onSelectThread}
-            onRenameThread={onRenameThread}
-            onArchiveThread={onArchiveThread}
-            onDeleteThread={onDeleteThread}
-          >
-            {children}
-          </SidebarProjectListHost>
-        </HostView>
+        {searchControl}
       </HostView>
-    </HostScrollView>
+      <HostScrollView className="sidebar-content-scroll h-auto min-h-0 flex-1 overflow-y-auto">
+        <HostView
+          className="flex w-full min-w-0 flex-col gap-0"
+          data-sidebar="content"
+          data-slot="sidebar-content"
+        >
+          {beforeProjects}
+          <HostView
+            className="lynx-sidebar-projects-group relative flex w-full min-w-0 flex-col px-2 py-2"
+            data-sidebar="group"
+            data-slot="sidebar-group"
+          >
+            <HostView className="mb-1 flex items-center justify-between pl-2 pr-1.5">
+              <HostText className="sidebar-projects-label text-xs font-medium text-sidebar-muted-foreground/80">
+                Projects
+              </HostText>
+              <HostView className="flex items-center gap-1">{projectControls}</HostView>
+            </HostView>
+
+            <SidebarProjectListHost
+              rows={rows}
+              onToggleProject={onToggleProject}
+              onCreateThread={onCreateThread}
+              onSelectThread={onSelectThread}
+              onRenameThread={onRenameThread}
+              onArchiveThread={onArchiveThread}
+              onDeleteThread={onDeleteThread}
+            >
+              {children}
+            </SidebarProjectListHost>
+          </HostView>
+        </HostView>
+      </HostScrollView>
+    </>
   );
 }

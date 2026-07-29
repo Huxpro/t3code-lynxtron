@@ -10,6 +10,7 @@ import { useCallback, useEffect } from "react";
 
 import { SettingsRouteSurface } from "../components/settings/SettingsRouteSurface";
 import type { SettingsSectionPath } from "../components/settings/SettingsNavigationContent";
+import { isElectron } from "../env";
 
 function SettingsContentLayout() {
   const location = useLocation();
@@ -33,6 +34,10 @@ function SettingsContentLayout() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.key !== "Escape") return;
       event.preventDefault();
+      const activeElement = document.activeElement;
+      if (activeElement instanceof HTMLElement) {
+        activeElement.blur();
+      }
       navigateBackWithinApp();
     };
     window.addEventListener("keydown", onKeyDown);
@@ -41,10 +46,7 @@ function SettingsContentLayout() {
 
   return (
     <SettingsRouteSurface
-      electron={
-        typeof window !== "undefined" &&
-        (window.desktopBridge !== undefined || window.nativeApi !== undefined)
-      }
+      electron={isElectron}
       pathname={location.pathname}
       onBack={navigateBackWithinApp}
       onNavigate={navigateToSection}

@@ -25,6 +25,7 @@ import {
   CopyIcon,
   GitBranchIcon,
   EllipsisIcon,
+  FolderIcon,
   MessageSquareIcon,
   PlusIcon,
   ServerIcon,
@@ -92,7 +93,11 @@ import { threadEnvironment } from "../state/threads";
 import { projectEnvironment } from "../state/projects";
 import { useEnvironmentQuery } from "../state/query";
 import { useAtomCommand } from "../state/use-atom-command";
-import { buildThreadRouteParams, resolveThreadRouteTarget } from "../threadRoutes";
+import {
+  buildThreadRouteParams,
+  resolveActiveThreadRouteRef,
+  resolveThreadRouteTarget,
+} from "../threadRoutes";
 import { formatRelativeTimeLabel, parseTimestampDate } from "../timestampFormat";
 import type { SidebarThreadSummary } from "../types";
 import { cn } from "~/lib/utils";
@@ -190,7 +195,11 @@ function WorkingDuration(props: { startedAt: string | null }) {
     return () => window.clearInterval(id);
   }, [startedMs]);
   if (Number.isNaN(startedMs)) return null;
-  return <span className="tabular-nums">{formatWorkingDurationLabel(Date.now() - startedMs)}</span>;
+  return (
+    <span className="font-mono tabular-nums">
+      {formatWorkingDurationLabel(Date.now() - startedMs)}
+    </span>
+  );
 }
 
 function SidebarV2ThreadTooltip({
@@ -219,41 +228,40 @@ function SidebarV2ThreadTooltip({
     <TooltipPopup
       side="right"
       align="start"
-      sideOffset={8}
-      className="dropdown-glass max-w-80 border-0! text-left whitespace-normal shadow-lg/10 before:hidden dark:shadow-none"
-      style={{
-        background:
-          "color-mix(in srgb, var(--popover) 18%, color-mix(in srgb, var(--popover) var(--glass-opacity), transparent))",
-      }}
+      sideOffset={4}
+      variant="glass"
+      className="max-w-80 text-left whitespace-normal"
     >
-      <div className="flex max-w-80 flex-col gap-2 p-2">
-        <div className="whitespace-nowrap text-sm font-medium text-foreground">{thread.title}</div>
-        <div className="grid gap-1.5 text-xs text-muted-foreground">
+      <div className="flex min-w-0 max-w-80 flex-col gap-2 px-0.5 py-1.5">
+        <div className="min-w-0 truncate text-xs leading-none font-medium text-foreground">
+          {thread.title}
+        </div>
+        <div className="grid gap-1.5 pl-0.5 text-xs text-muted-foreground">
           {projectTitle ? (
             <div className="flex min-w-0 items-center gap-2">
               <ProjectFavicon
                 environmentId={thread.environmentId}
                 cwd={projectCwd ?? ""}
-                className="size-4 shrink-0 stroke-muted-foreground"
+                className="size-3 shrink-0 stroke-muted-foreground"
               />
-              <div className="min-w-0 wrap-break-word text-foreground/90">{projectTitle}</div>
+              <div className="min-w-0 truncate text-foreground/75">{projectTitle}</div>
             </div>
           ) : null}
           {environmentLabel ? (
             <div className="flex min-w-0 items-center gap-2">
-              <ServerIcon className="size-4 shrink-0 stroke-muted-foreground" />
-              <div className="min-w-0 wrap-break-word text-foreground/90">{environmentLabel}</div>
+              <ServerIcon className="size-3 shrink-0 stroke-muted-foreground" />
+              <div className="min-w-0 truncate text-foreground/75">{environmentLabel}</div>
             </div>
           ) : null}
           {thread.branch ? (
             <div className="flex min-w-0 items-center gap-2">
-              <GitBranchIcon className="size-4 shrink-0 stroke-muted-foreground" />
-              <div className="min-w-0 wrap-break-word text-foreground/90">{thread.branch}</div>
+              <GitBranchIcon className="size-3 shrink-0 stroke-muted-foreground" />
+              <div className="min-w-0 truncate text-foreground/75">{thread.branch}</div>
             </div>
           ) : null}
           {branchMismatch ? (
             <div className="flex min-w-0 items-start gap-2 text-warning">
-              <CircleAlertIcon aria-hidden className="mt-0.5 size-4 shrink-0 stroke-current" />
+              <CircleAlertIcon aria-hidden className="mt-0.5 size-3 shrink-0 stroke-current" />
               <div className="min-w-0 flex-1 wrap-break-word leading-5">
                 You're currently checked out on another branch.
               </div>
@@ -264,15 +272,15 @@ function SidebarV2ThreadTooltip({
               <ProviderInstanceIcon
                 driverKind={driverKind}
                 displayName={thread.session?.providerName ?? modelInstanceId}
-                iconClassName="size-4 shrink-0"
+                iconClassName="size-3 shrink-0 grayscale opacity-60"
               />
-              <div className="min-w-0 wrap-break-word text-foreground/90">{modelLabel}</div>
+              <div className="min-w-0 truncate text-foreground/75">{modelLabel}</div>
             </div>
           ) : null}
           {thread.session?.lastError ? (
             <div className="flex min-w-0 items-center gap-2 text-red-600 dark:text-red-400">
-              <CircleAlertIcon className="size-4 shrink-0 stroke-current" />
-              <div className="min-w-0 wrap-break-word">{thread.session.lastError}</div>
+              <CircleAlertIcon className="size-3 shrink-0 stroke-current" />
+              <div className="min-w-0 truncate">Error occurred</div>
             </div>
           ) : null}
         </div>
@@ -483,7 +491,6 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
   const pr = resolveThreadPr({
     threadBranch: thread.branch,
     gitStatus: gitStatus.data,
-    hasDedicatedWorktree: thread.worktreePath !== null,
   });
   const prStatus = prStatusIndicator(pr, gitStatus.data?.sourceControlProvider);
   const settledPrHoverClass = pr ? settledPrHoverColorClass(pr.state) : undefined;
@@ -861,7 +868,13 @@ export default function SidebarV2() {
     strict: false,
     select: (params) => resolveThreadRouteTarget(params),
   });
-  const routeThreadRef = routeTarget?.kind === "server" ? routeTarget.threadRef : null;
+  const routeDraftThread = useComposerDraftStore((store) =>
+    routeTarget?.kind === "draft" ? store.getDraftSession(routeTarget.draftId) : null,
+  );
+  const routeThreadRef = useMemo(
+    () => resolveActiveThreadRouteRef(routeTarget, routeDraftThread),
+    [routeDraftThread, routeTarget],
+  );
   const routeThreadKey = routeThreadRef ? scopedThreadKey(routeThreadRef) : null;
   const routeTargetRef = useRef(routeTarget);
   routeTargetRef.current = routeTarget;
@@ -2044,30 +2057,34 @@ export default function SidebarV2() {
   return (
     <>
       <SidebarChromeHeader isElectron={isElectron} />
-      <SidebarContent className="gap-0">
-        <SidebarV2ControlsSurface
-          commandPaletteShortcutLabel={commandPaletteShortcutLabel}
-          newThreadShortcutLabel={newThreadShortcutLabel}
-          newThreadDisabled={projects.length === 0}
-          onNewThreadClick={handleNewThreadClick}
-          projectScopeOptions={projectScopeOptions}
-          projectScopeKey={projectScopeKey}
-          onProjectScopeKeyChange={setProjectScopeKey}
-          projectScopeMenuOpen={projectScopeMenuOpen}
-          onProjectScopeMenuOpenChange={setProjectScopeMenuOpen}
-          scopedFavicon={
-            scopedProjectGroup ? (
-              <ProjectFavicon
-                environmentId={scopedProjectGroup.environmentId}
-                cwd={scopedProjectGroup.workspaceRoot}
-                className="size-4 shrink-0"
-              />
-            ) : null
-          }
-          scopedDisplayName={scopedProjectGroup?.displayName ?? null}
-          onNewProjectClick={openAddProjectCommandPalette}
-        />
-        <SidebarGroup className="min-h-0 flex-1 overflow-y-auto px-2 py-1 [scrollbar-gutter:stable]">
+      <SidebarContent
+        className="gap-0"
+        fixedHeader={
+          <SidebarV2ControlsSurface
+            commandPaletteShortcutLabel={commandPaletteShortcutLabel}
+            newThreadShortcutLabel={newThreadShortcutLabel}
+            newThreadDisabled={projects.length === 0}
+            onNewThreadClick={handleNewThreadClick}
+            projectScopeOptions={projectScopeOptions}
+            projectScopeKey={projectScopeKey}
+            onProjectScopeKeyChange={setProjectScopeKey}
+            projectScopeMenuOpen={projectScopeMenuOpen}
+            onProjectScopeMenuOpenChange={setProjectScopeMenuOpen}
+            scopedFavicon={
+              scopedProjectGroup ? (
+                <ProjectFavicon
+                  environmentId={scopedProjectGroup.environmentId}
+                  cwd={scopedProjectGroup.workspaceRoot}
+                  className="size-4 shrink-0"
+                />
+              ) : null
+            }
+            scopedDisplayName={scopedProjectGroup?.displayName ?? null}
+            onNewProjectClick={openAddProjectCommandPalette}
+          />
+        }
+      >
+        <SidebarGroup className="px-2 pb-1 pt-0">
           <TooltipProvider
             key="sidebar-thread-tooltips-150"
             delay={150}
@@ -2229,12 +2246,10 @@ export default function SidebarV2() {
                   <button
                     type="button"
                     onClick={showMoreSettled}
-                    className="mt-1 flex h-[30px] w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-border font-mono text-[11px] text-muted-foreground transition-colors hover:border-solid hover:border-input hover:bg-background/45 hover:text-foreground dark:border-white/15 dark:hover:border-white/30 dark:hover:bg-transparent"
+                    className="flex h-9 w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 text-left text-sm text-sidebar-muted-foreground/55 hover:bg-sidebar-row-hover hover:text-sidebar-foreground"
                   >
+                    <PlusIcon aria-hidden className="size-4 shrink-0" />
                     Show {Math.min(hiddenSettledCount, SETTLED_TAIL_PAGE_COUNT)} more
-                    <span className="text-muted-foreground/50">
-                      ({hiddenSettledCount} settled hidden)
-                    </span>
                   </button>
                 </li>
               ) : null}
@@ -2250,7 +2265,7 @@ export default function SidebarV2() {
                     onClick={openAddProjectCommandPalette}
                     className="inline-flex items-center gap-1.5 rounded-md border border-sidebar-border px-2.5 py-1 text-[11px] font-medium text-sidebar-muted-foreground transition-colors hover:bg-sidebar-row-hover hover:text-sidebar-foreground"
                   >
-                    <PlusIcon className="size-3" />
+                    <PlusIcon className="-mx-0.5 size-3" />
                     Add project
                   </button>
                 </>
@@ -2270,48 +2285,52 @@ export default function SidebarV2() {
         }}
       >
         <DialogPopup className="max-w-xl">
-          <DialogHeader className="gap-1.5">
+          <DialogHeader className="gap-3 pb-1!">
             <DialogTitle className="text-balance">Project settings</DialogTitle>
-            <DialogDescription>
-              {projectActionsTarget && projectActionsTarget.memberProjects.length > 1
-                ? `${projectActionsTarget.displayName} has an entry in each environment. Changes apply only to the entry you choose.`
-                : `Manage ${projectActionsTarget?.displayName ?? "this project"} in this environment.`}
+            <DialogDescription className="sr-only">
+              Manage project names, grouping rules, and environments.
             </DialogDescription>
+            <div className="grid gap-1.5 text-base text-muted-foreground">
+              {projectActionsTarget?.memberProjects.map((member) => (
+                <div key={member.physicalProjectKey} className="flex min-w-0 items-center gap-3">
+                  <span className="flex min-w-0 items-center gap-1">
+                    <FolderIcon className="size-3.5 shrink-0 opacity-60" />
+                    <span className="min-w-0 truncate font-mono">{member.workspaceRoot}</span>
+                    <Button
+                      size="icon-xs"
+                      variant="ghost"
+                      className="size-4 shrink-0 rounded-sm"
+                      aria-label="Copy project path"
+                      title="Copy project path"
+                      onClick={() =>
+                        copyProjectPath(member.workspaceRoot, { path: member.workspaceRoot })
+                      }
+                    >
+                      <CopyIcon className="size-3.5" />
+                    </Button>
+                  </span>
+                  <span className="flex min-w-0 shrink-0 items-center gap-1">
+                    <ServerIcon className="size-3.5 shrink-0 opacity-60" />
+                    <span className="min-w-0 truncate">
+                      {member.environmentLabel ?? "Current environment"}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
           </DialogHeader>
           <DialogPanel className="p-0">
             <div className="divide-y divide-border/60">
               {projectActionsTarget?.memberProjects.map((member) => (
                 <section
                   key={member.physicalProjectKey}
-                  className="flex min-w-0 flex-col gap-4 px-6 py-5 sm:gap-3 sm:py-4"
+                  className="grid min-w-0 gap-5 px-6 pb-5 pt-2 sm:gap-4 sm:pb-4 sm:pt-2"
                 >
-                  <div className="flex min-w-0 items-start gap-3">
-                    <ProjectFavicon
-                      environmentId={member.environmentId}
-                      cwd={member.workspaceRoot}
-                      className="size-5 shrink-0 sm:size-4"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex min-w-0 items-center gap-1.5 text-base text-muted-foreground sm:text-sm">
-                        <ServerIcon className="size-4 shrink-0 stroke-muted-foreground" />
-                        <p className="min-w-0 truncate">
-                          {member.environmentLabel ?? "Current environment"}
-                        </p>
-                      </div>
-                      <p
-                        className="truncate font-mono text-base text-muted-foreground/72 sm:text-sm"
-                        title={member.workspaceRoot}
-                      >
-                        {member.workspaceRoot}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2 sm:gap-3 sm:pl-7">
+                  <div className="grid gap-4 sm:grid-cols-2 sm:gap-3">
                     <label className="grid min-w-0 gap-1.5">
                       <span className="font-medium text-foreground">Project name</span>
                       <Input
                         key={`${member.physicalProjectKey}:${member.title}`}
-                        size="sm"
                         aria-label={`Project name in ${member.environmentLabel ?? "current environment"}`}
                         defaultValue={member.title}
                         onBlur={(event) => {
@@ -2342,8 +2361,7 @@ export default function SidebarV2() {
                         }}
                       >
                         <SelectTrigger
-                          size="sm"
-                          className="w-full"
+                          className="w-full sm:min-h-7.5"
                           aria-label={`Grouping rule for ${member.environmentLabel ?? "current environment"}`}
                         >
                           <SelectValue>
@@ -2375,32 +2393,23 @@ export default function SidebarV2() {
                       </Select>
                     </label>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 sm:pl-7">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() =>
-                        copyProjectPath(member.workspaceRoot, { path: member.workspaceRoot })
-                      }
-                    >
-                      <CopyIcon />
-                      Copy path
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-destructive-foreground hover:bg-destructive/8 hover:text-destructive-foreground sm:ml-auto"
-                      onClick={() => {
-                        const projectGroup = projectActionsTarget;
-                        if (!projectGroup) return;
-                        setProjectActionsTarget(null);
-                        void handleRemoveProjectMembers(projectGroup, [member]);
-                      }}
-                    >
-                      <Trash2Icon />
-                      Remove
-                    </Button>
-                  </div>
+                  {projectActionsTarget.memberProjects.length > 1 ? (
+                    <div className="flex justify-end">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-destructive-foreground hover:bg-destructive/8 hover:text-destructive-foreground"
+                        onClick={() => {
+                          const projectGroup = projectActionsTarget;
+                          setProjectActionsTarget(null);
+                          void handleRemoveProjectMembers(projectGroup, [member]);
+                        }}
+                      >
+                        <Trash2Icon />
+                        Remove project
+                      </Button>
+                    </div>
+                  ) : null}
                 </section>
               ))}
             </div>
@@ -2430,8 +2439,26 @@ export default function SidebarV2() {
               </div>
             ) : null}
           </DialogPanel>
-          <DialogFooter variant="bare">
-            <Button onClick={() => setProjectActionsTarget(null)}>Done</Button>
+          <DialogFooter
+            variant="bare"
+            className={cn(
+              projectActionsTarget?.memberProjects.length === 1 && "sm:justify-between",
+            )}
+          >
+            {projectActionsTarget?.memberProjects.length === 1 ? (
+              <Button
+                variant="destructive-outline"
+                onClick={() => {
+                  const projectGroup = projectActionsTarget;
+                  setProjectActionsTarget(null);
+                  void handleRemoveProjectMembers(projectGroup, projectGroup.memberProjects);
+                }}
+              >
+                <Trash2Icon />
+                Remove project
+              </Button>
+            ) : null}
+            <Button onClick={() => setProjectActionsTarget(null)}>Close</Button>
           </DialogFooter>
         </DialogPopup>
       </Dialog>

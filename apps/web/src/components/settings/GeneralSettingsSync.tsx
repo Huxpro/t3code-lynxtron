@@ -18,6 +18,7 @@ import {
 } from "./generalSettingsStore";
 import {
   formatDiagnosticsDescription,
+  hasChangedBackgroundActivitySettings,
   isProjectGroupingEnabled,
   projectGroupingModeFromToggle,
   readLastEnabledProjectGroupingMode,
@@ -47,9 +48,7 @@ export function GeneralSettingsSync() {
         theme,
         settings,
         defaults: DEFAULT_UNIFIED_SETTINGS,
-        automaticGitFetchIntervalChanged:
-          Duration.toMillis(settings.automaticGitFetchInterval) !==
-          Duration.toMillis(DEFAULT_UNIFIED_SETTINGS.automaticGitFetchInterval),
+        backgroundActivityChanged: hasChangedBackgroundActivitySettings(settings),
         textGenerationModelSelectionChanged: !Equal.equals(
           settings.textGenerationModelSelection ?? null,
           DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection ?? null,

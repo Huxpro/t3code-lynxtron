@@ -5,13 +5,19 @@
     "postcss": true,
     "preset": "@lynx-js/tailwind-preset"
   },
-  "compatibilityItems": ["R6", "R7", "R9"],
-  "removedSelectorCount": 40,
+  "compatibilityItems": [
+    "R6",
+    "R7",
+    "R9"
+  ],
+  "removedSelectorCount": 44,
   "removedDeclarationCount": 7,
   "removedSelectors": [
     ".\\[\\&\\>span\\:last-child\\]\\:truncate>span:last-child",
     ".\\[\\&\\>svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-4>svg:not([class*='size-'])",
     ".\\[\\&_svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-3 svg:not([class*='size-'])",
+    ".active\\:\\[\\&\\>svg\\]\\:opacity-100>svg:active",
+    ".active\\:\\[\\&\\>svg\\]\\:text-sidebar-foreground>svg:active",
     ".active\\:bg-sidebar-row-active:active",
     ".active\\:text-sidebar-foreground:active",
     ".after\\:-inset-2::after",
@@ -40,6 +46,8 @@
     ".group\\/project-header:hover .group-hover\\/project-header\\:opacity-100",
     ".group\\/project-header:hover .group-hover\\/project-header\\:text-sidebar-foreground",
     ".group\\/project-header:hover .max-sm\\:group-hover\\/project-header\\:opacity-100",
+    ".hover\\:\\[\\&\\>svg\\]\\:opacity-100>svg:hover",
+    ".hover\\:\\[\\&\\>svg\\]\\:text-sidebar-foreground>svg:hover",
     ".hover\\:after\\:bg-sidebar-border:hover::after",
     ".hover\\:bg-accent:hover",
     ".hover\\:bg-sidebar-row-active:hover",

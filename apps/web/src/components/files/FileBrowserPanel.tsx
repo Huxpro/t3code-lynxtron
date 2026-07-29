@@ -4,12 +4,15 @@ import type {
 } from "@pierre/trees";
 import type { EnvironmentId, ProjectEntry } from "@t3tools/contracts";
 import { summarizeProjectEntries } from "@t3tools/client-runtime/presentation/files";
-import { FileTree, useFileTree } from "@pierre/trees/react";
+import { FileTree, useFileTree, useFileTreeSearch } from "@pierre/trees/react";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
-import { RefreshCw, Search } from "lucide-react";
+import { RotateCw } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
+import { Button } from "~/components/ui/button";
+import { InputGroup, InputGroupInput } from "~/components/ui/input-group";
 import { toastManager } from "~/components/ui/toast";
+import { Tooltip, TooltipPopup, TooltipTrigger } from "~/components/ui/tooltip";
 import { useComposerHandleContext } from "~/composerHandleContext";
 import { writeTextToClipboard } from "~/hooks/useCopyToClipboard";
 import { useTheme } from "~/hooks/useTheme";
@@ -38,6 +41,55 @@ const TREE_UNSAFE_CSS = `
   }
   button[data-type='item'] { border-radius: 5px; }
 `;
+
+function RefreshFilesButton(props: { isPending: boolean; onRefresh: () => void }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            aria-label="Refresh workspace files"
+            onClick={props.onRefresh}
+          />
+        }
+      >
+        <RotateCw className={cn(props.isPending && "animate-spin")} />
+      </TooltipTrigger>
+      <TooltipPopup>{props.isPending ? "Refreshing…" : "Refresh files"}</TooltipPopup>
+    </Tooltip>
+  );
+}
+
+function FileSearchField(props: {
+  ariaLabel: string;
+  name: string;
+  onClose: () => void;
+  onValueChange: (value: string) => void;
+  value: string;
+}) {
+  return (
+    <InputGroup variant="ghost" className="h-7 min-w-0 flex-1 rounded-md">
+      <InputGroupInput
+        type="search"
+        name={props.name}
+        size="sm"
+        value={props.value}
+        aria-label={props.ariaLabel}
+        placeholder="Search files"
+        spellCheck={false}
+        onChange={(event) => props.onValueChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key !== "Escape") return;
+          props.onClose();
+          event.currentTarget.blur();
+        }}
+      />
+    </InputGroup>
+  );
+}
 
 export default function FileBrowserPanel({
   environmentId,
@@ -174,9 +226,17 @@ export default function FileBrowserPanel({
       }
     },
     paths: [],
-    search: true,
+    search: false,
     unsafeCSS: TREE_UNSAFE_CSS,
   });
+  const search = useFileTreeSearch(model);
+  const handleSearchValueChange = (value: string) => {
+    if (value.trim().length === 0) {
+      search.close();
+      return;
+    }
+    search.setValue(value);
+  };
 
   useEffect(() => {
     if (previousTreePathsRef.current === treePaths) return;
@@ -184,8 +244,6 @@ export default function FileBrowserPanel({
     previousTreePathsRef.current = treePaths;
     model.resetPaths(treePaths);
   }, [entryKinds, model, treePaths]);
-
-  const fileCount = entriesSummary.fileCount;
 
   // Tag tree drags with the composer mention payload. The row is read from
   // the composed event path (the tree's shadow root is open), so this does
@@ -218,32 +276,15 @@ export default function FileBrowserPanel({
       className="flex min-h-0 flex-1 flex-col bg-background"
       data-file-browser-panel={`${environmentId}:${cwd}`}
     >
-      <div className="flex h-9 shrink-0 items-center gap-2 border-b border-border/60 px-3">
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-xs font-medium text-foreground">{projectName}</div>
-          <div className="truncate text-[10px] leading-none text-muted-foreground">
-            {entriesQuery.isPending && entriesQuery.data === null
-              ? "Indexing…"
-              : `${fileCount.toLocaleString()} files`}
-            {entriesQuery.data?.truncated ? " · partial" : ""}
-          </div>
-        </div>
-        <button
-          type="button"
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-          aria-label="Search workspace files"
-          onClick={() => model.openSearch()}
-        >
-          <Search className="size-3.5" />
-        </button>
-        <button
-          type="button"
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
-          aria-label="Refresh workspace files"
-          onClick={entriesQuery.refresh}
-        >
-          <RefreshCw className={cn("size-3.5", entriesQuery.isPending && "animate-spin")} />
-        </button>
+      <div className="surface-subheader gap-1 px-2" data-surface-subheader>
+        <RefreshFilesButton isPending={entriesQuery.isPending} onRefresh={entriesQuery.refresh} />
+        <FileSearchField
+          name="project-files-search"
+          ariaLabel={`Search ${projectName} files`}
+          value={search.value}
+          onValueChange={handleSearchValueChange}
+          onClose={search.close}
+        />
       </div>
       {entriesQuery.error && entriesQuery.data === null ? (
         <div className="p-4 text-xs leading-relaxed text-destructive">{entriesQuery.error}</div>

@@ -9,6 +9,7 @@ import {
   parseMarkdownFenceInfo,
   parseMarkdownInline,
   parseMarkdownListItem,
+  resolveInlineCodeFileLinkMeta,
   resolveMarkdownFileLinkMeta,
   resolveMarkdownFileLinkTarget,
   resolveMarkdownCodeLanguage,
@@ -250,5 +251,46 @@ describe("Markdown link projection", () => {
     expect(suffixes.get("/repo/apps/web/src/index.ts")).toBe("web/src");
     expect(suffixes.get("/repo/apps/server/src/index.ts")).toBe("server/src");
     expect(suffixes.has("/repo/packages/contracts/src/schema.ts")).toBe(false);
+  });
+});
+
+describe("resolveInlineCodeFileLinkMeta", () => {
+  it("links file-shaped relative, absolute, and Windows paths", () => {
+    expect(
+      resolveInlineCodeFileLinkMeta(".plans/worktree-management-v1.md", "/Users/julius/project"),
+    ).toMatchObject({
+      targetPath: "/Users/julius/project/.plans/worktree-management-v1.md",
+      basename: "worktree-management-v1.md",
+    });
+    expect(resolveInlineCodeFileLinkMeta("/usr/local/bin/tool")).toMatchObject({
+      targetPath: "/usr/local/bin/tool",
+    });
+    expect(resolveInlineCodeFileLinkMeta("src\\main.ts", "/Users/julius/project")).toMatchObject({
+      targetPath: "/Users/julius/project/src/main.ts",
+    });
+  });
+
+  it("preserves source positions for file references", () => {
+    expect(resolveInlineCodeFileLinkMeta("script.ts:10", "/Users/julius/project")).toMatchObject({
+      targetPath: "/Users/julius/project/script.ts:10",
+      line: 10,
+    });
+    expect(resolveInlineCodeFileLinkMeta("Dockerfile:8:2", "/Users/julius/project")).toMatchObject({
+      basename: "Dockerfile",
+      line: 8,
+      column: 2,
+    });
+  });
+
+  it("rejects routes, hosts, commands, globs, and unresolved relative paths", () => {
+    expect(resolveInlineCodeFileLinkMeta("/chat/settings")).toBeNull();
+    expect(resolveInlineCodeFileLinkMeta("localhost:3000", "/Users/julius/project")).toBeNull();
+    expect(
+      resolveInlineCodeFileLinkMeta("example.com/index.html", "/Users/julius/project"),
+    ).toBeNull();
+    expect(resolveInlineCodeFileLinkMeta("git worktree list --porcelain")).toBeNull();
+    expect(resolveInlineCodeFileLinkMeta("src/**/*.ts", "/Users/julius/project")).toBeNull();
+    expect(resolveInlineCodeFileLinkMeta("origin/main", "/Users/julius/project")).toBeNull();
+    expect(resolveInlineCodeFileLinkMeta(".plans/worktree-management-v1.md")).toBeNull();
   });
 });

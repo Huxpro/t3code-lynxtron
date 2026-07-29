@@ -43,6 +43,11 @@ const GLOBAL_POLYFILL = `
   if (typeof globalThis.queueMicrotask === 'undefined') {
     globalThis.queueMicrotask = function(cb) { Promise.resolve().then(cb); };
   }
+  if (typeof Object.hasOwn !== 'function') {
+    Object.hasOwn = function(object, property) {
+      return Object.prototype.hasOwnProperty.call(object, property);
+    };
+  }
   // Effect Encoding constructs these globals when @effect/atom-react loads.
   // Lynx's QuickJS VM does not provide the Web Encoding API, including in
   // development bundles where tree-shaking cannot remove that module.

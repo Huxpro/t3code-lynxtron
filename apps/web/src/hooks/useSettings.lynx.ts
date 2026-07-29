@@ -37,6 +37,12 @@ export function useUpdateClientSettings() {
   return update as (patch: Record<string, unknown>) => void;
 }
 
+export function useEnvironmentIdentificationMode() {
+  return useClientSettings(
+    (settings) => settings.environmentIdentificationMode ?? ("artwork" as const),
+  );
+}
+
 export function useClientSettingsHydrated(): boolean {
   return true;
 }

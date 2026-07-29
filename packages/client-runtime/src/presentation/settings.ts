@@ -73,7 +73,10 @@ export interface GeneralSettingsRestoreProjection {
     ServerSettings,
     | "enableAssistantStreaming"
     | "enableProviderUpdateChecks"
+    | "backgroundActivity"
+    | "backgroundActivityProfile"
     | "automaticGitFetchInterval"
+    | "providerHealthRefreshInterval"
     | "defaultThreadEnvMode"
     | "newWorktreesStartFromOrigin"
     | "addProjectBaseDirectory"
@@ -93,7 +96,7 @@ export function projectGeneralSettingsRestore(input: {
   readonly theme: "system" | "light" | "dark";
   readonly settings: UnifiedSettings;
   readonly defaults: UnifiedSettings;
-  readonly automaticGitFetchIntervalChanged: boolean;
+  readonly backgroundActivityChanged: boolean;
   readonly textGenerationModelSelectionChanged: boolean;
 }): GeneralSettingsRestoreProjection {
   const { defaults, settings } = input;
@@ -102,6 +105,9 @@ export function projectGeneralSettingsRestore(input: {
     changedSettingLabels: [
       ...(input.theme !== "system" ? ["Theme"] : []),
       ...(settings.glassOpacity !== defaults.glassOpacity ? ["Glass opacity"] : []),
+      ...(settings.environmentIdentificationMode !== defaults.environmentIdentificationMode
+        ? ["Environment identification"]
+        : []),
       ...(settings.timestampFormat !== defaults.timestampFormat ? ["Time format"] : []),
       ...(settings.sidebarThreadPreviewCount !== defaults.sidebarThreadPreviewCount
         ? ["Visible threads"]
@@ -122,7 +128,7 @@ export function projectGeneralSettingsRestore(input: {
       ...(settings.enableProviderUpdateChecks !== defaults.enableProviderUpdateChecks
         ? ["Provider update checks"]
         : []),
-      ...(input.automaticGitFetchIntervalChanged ? ["Automatic Git fetch interval"] : []),
+      ...(input.backgroundActivityChanged ? ["Background activity"] : []),
       ...(settings.defaultThreadEnvMode !== defaults.defaultThreadEnvMode
         ? ["New thread mode"]
         : []),
@@ -138,12 +144,13 @@ export function projectGeneralSettingsRestore(input: {
       ...(settings.confirmThreadDelete !== defaults.confirmThreadDelete
         ? ["Delete confirmation"]
         : []),
-      ...(input.textGenerationModelSelectionChanged ? ["Git writing model"] : []),
+      ...(input.textGenerationModelSelectionChanged ? ["Text generation model"] : []),
     ],
     clientPatch: {
       timestampFormat: defaults.timestampFormat,
       wordWrap: defaults.wordWrap,
       diffIgnoreWhitespace: defaults.diffIgnoreWhitespace,
+      environmentIdentificationMode: defaults.environmentIdentificationMode,
       glassOpacity: defaults.glassOpacity,
       sidebarThreadPreviewCount: defaults.sidebarThreadPreviewCount,
       sidebarProjectGroupingMode: defaults.sidebarProjectGroupingMode,
@@ -154,7 +161,10 @@ export function projectGeneralSettingsRestore(input: {
     serverPatch: {
       enableAssistantStreaming: defaults.enableAssistantStreaming,
       enableProviderUpdateChecks: defaults.enableProviderUpdateChecks,
+      backgroundActivity: defaults.backgroundActivity,
+      backgroundActivityProfile: defaults.backgroundActivityProfile,
       automaticGitFetchInterval: defaults.automaticGitFetchInterval,
+      providerHealthRefreshInterval: defaults.providerHealthRefreshInterval,
       defaultThreadEnvMode: defaults.defaultThreadEnvMode,
       newWorktreesStartFromOrigin: defaults.newWorktreesStartFromOrigin,
       addProjectBaseDirectory: defaults.addProjectBaseDirectory,

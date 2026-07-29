@@ -27,6 +27,20 @@ const POSIX_FILE_ROOT_PREFIXES = [
   "/Volumes/",
   "/private/",
   "/root/",
+  "/usr/",
+  "/bin/",
+  "/sbin/",
+  "/lib/",
+  "/lib64/",
+  "/srv/",
+  "/dev/",
+  "/proc/",
+  "/sys/",
+  "/run/",
+  "/boot/",
+  "/media/",
+  "/workspace/",
+  "/workspaces/",
 ] as const;
 
 export interface MarkdownFenceInfo {
@@ -493,6 +507,114 @@ export function resolveMarkdownFileLinkTarget(
   return cwd ? resolvePathLinkTarget(pathWithPosition, cwd) : null;
 }
 
+const INLINE_CODE_DISQUALIFIER_PATTERN = /[\s`]/;
+const PATH_SEPARATOR_PATTERN = /[\\/]/;
+const FILE_EXTENSION_PATTERN = /\.[A-Za-z0-9_-]+$/;
+const NUMERIC_DOTTED_PATTERN = /^\d+(?:\.\d+)+$/;
+const BARE_EXTENSIONLESS_POSITION_PATTERN = /^[A-Za-z0-9_-]+(?::\d+){1,2}$/;
+const EXTENSIONLESS_FILE_NAMES = new Set([
+  "Makefile",
+  "makefile",
+  "GNUmakefile",
+  "Dockerfile",
+  "Containerfile",
+  "Justfile",
+  "justfile",
+  "Rakefile",
+  "Gemfile",
+  "Procfile",
+  "Brewfile",
+  "Caddyfile",
+  "Vagrantfile",
+  "Jenkinsfile",
+  "Podfile",
+  "Fastfile",
+  "BUILD",
+  "WORKSPACE",
+  "LICENSE",
+  "LICENCE",
+  "COPYING",
+  "NOTICE",
+  "AUTHORS",
+  "CONTRIBUTORS",
+  "CHANGELOG",
+  "README",
+  "CODEOWNERS",
+]);
+const SINGLE_LABEL_HOSTNAMES = new Set(["localhost"]);
+const GENERIC_HOSTNAME_TLDS = new Set([
+  "com",
+  "net",
+  "org",
+  "io",
+  "dev",
+  "app",
+  "ai",
+  "co",
+  "edu",
+  "gov",
+  "mil",
+  "info",
+  "biz",
+  "xyz",
+  "me",
+  "tv",
+  "cc",
+  "gg",
+  "chat",
+  "cloud",
+  "site",
+  "online",
+  "tech",
+  "store",
+  "link",
+]);
+const COUNTRY_HOSTNAME_TLDS = new Set([
+  "uk",
+  "de",
+  "fr",
+  "nl",
+  "se",
+  "no",
+  "fi",
+  "dk",
+  "pl",
+  "ch",
+  "at",
+  "be",
+  "es",
+  "it",
+  "pt",
+  "eu",
+  "us",
+  "ca",
+  "au",
+  "nz",
+  "jp",
+  "kr",
+  "cn",
+  "br",
+  "ru",
+  "mx",
+  "ie",
+  "cz",
+  "tr",
+  "sg",
+  "hk",
+]);
+
+function looksLikeHostname(segment: string, hasPosition: boolean): boolean {
+  if (segment.startsWith(".")) return false;
+  const lowered = segment.toLowerCase();
+  if (SINGLE_LABEL_HOSTNAMES.has(lowered)) return true;
+  if (NUMERIC_DOTTED_PATTERN.test(segment)) return true;
+  const labels = lowered.split(".");
+  const lastLabel = labels[labels.length - 1];
+  if (labels.length < 2 || lastLabel === undefined) return false;
+  if (GENERIC_HOSTNAME_TLDS.has(lastLabel)) return true;
+  return !hasPosition && COUNTRY_HOSTNAME_TLDS.has(lastLabel);
+}
+
 function basenameOfPath(path: string): string {
   const separatorIndex = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
   return separatorIndex >= 0 ? path.slice(separatorIndex + 1) : path;
@@ -517,7 +639,10 @@ export function resolveMarkdownFileLinkMeta(
 ): MarkdownFileLinkMeta | null {
   const targetPath = resolveMarkdownFileLinkTarget(href, cwd);
   if (!targetPath) return null;
+  return buildFileLinkMetaFromTarget(targetPath, cwd);
+}
 
+function buildFileLinkMetaFromTarget(targetPath: string, cwd?: string): MarkdownFileLinkMeta {
   const { path, line, column } = splitPathAndPosition(targetPath);
   const parsedLine = line ? Number.parseInt(line, 10) : Number.NaN;
   const parsedColumn = column ? Number.parseInt(column, 10) : Number.NaN;
@@ -533,6 +658,50 @@ export function resolveMarkdownFileLinkMeta(
     ...(lineNumber !== undefined ? { line: lineNumber } : {}),
     ...(columnNumber !== undefined ? { column: columnNumber } : {}),
   };
+}
+
+/**
+ * Inline code spans require stronger path evidence than explicit Markdown
+ * links because they commonly contain commands, identifiers, and git refs.
+ */
+export function resolveInlineCodeFileLinkMeta(
+  codeText: string,
+  cwd?: string,
+): MarkdownFileLinkMeta | null {
+  const trimmed = codeText.trim();
+  if (trimmed.length === 0 || INLINE_CODE_DISQUALIFIER_PATTERN.test(trimmed)) return null;
+
+  const candidate =
+    WINDOWS_DRIVE_PATH_PATTERN.test(trimmed) || WINDOWS_UNC_PATH_PATTERN.test(trimmed)
+      ? trimmed
+      : trimmed.split("\\").join("/");
+  const hasPosition = POSITION_SUFFIX_PATTERN.test(candidate);
+  if (!hasPosition && !PATH_SEPARATOR_PATTERN.test(candidate)) return null;
+
+  const hasExplicitPathShape =
+    RELATIVE_PATH_PREFIX_PATTERN.test(candidate) ||
+    candidate.startsWith("/") ||
+    WINDOWS_DRIVE_PATH_PATTERN.test(candidate) ||
+    WINDOWS_UNC_PATH_PATTERN.test(candidate);
+  if (!hasExplicitPathShape) {
+    const withoutPosition = candidate.replace(POSITION_SUFFIX_PATTERN, "");
+    const firstSegment = withoutPosition.split("/")[0] ?? withoutPosition;
+    if (looksLikeHostname(firstSegment, hasPosition)) return null;
+    if (!hasPosition && !FILE_EXTENSION_PATTERN.test(basenameOfPath(withoutPosition))) {
+      return null;
+    }
+  }
+
+  const resolved = resolveMarkdownFileLinkMeta(candidate, cwd);
+  if (resolved) return resolved;
+  if (
+    cwd &&
+    BARE_EXTENSIONLESS_POSITION_PATTERN.test(candidate) &&
+    EXTENSIONLESS_FILE_NAMES.has(candidate.replace(POSITION_SUFFIX_PATTERN, ""))
+  ) {
+    return buildFileLinkMetaFromTarget(resolvePathLinkTarget(candidate, cwd), cwd);
+  }
+  return null;
 }
 
 function pathParentSegments(path: string): string[] {

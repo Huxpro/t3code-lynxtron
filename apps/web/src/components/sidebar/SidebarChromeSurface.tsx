@@ -7,11 +7,13 @@ export function SidebarChromeHeaderSurface({
   backdrop,
   trigger,
   brand,
+  environmentPill,
 }: {
   readonly isElectron: boolean;
   readonly backdrop?: ReactNode;
   readonly trigger: ReactNode;
   readonly brand: ReactNode;
+  readonly environmentPill?: ReactNode;
 }) {
   return (
     <HostView
@@ -28,6 +30,7 @@ export function SidebarChromeHeaderSurface({
       {backdrop}
       {trigger}
       {brand}
+      {environmentPill}
     </HostView>
   );
 }

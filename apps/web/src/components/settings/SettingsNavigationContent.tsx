@@ -2,6 +2,7 @@ import { SettingsNavigationHost } from "./settingsNavigationHost";
 
 export type SettingsSectionPath =
   | "/settings/general"
+  | "/settings/appearance"
   | "/settings/keybindings"
   | "/settings/providers"
   | "/settings/source-control"
@@ -17,6 +18,7 @@ export interface SettingsNavigationItem {
     | "git-branch"
     | "keyboard"
     | "link-2"
+    | "palette"
     | "settings-2";
   readonly label: string;
   readonly to: SettingsSectionPath;
@@ -24,6 +26,7 @@ export interface SettingsNavigationItem {
 
 export const SETTINGS_NAV_ITEMS: ReadonlyArray<SettingsNavigationItem> = [
   { label: "General", to: "/settings/general", icon: "settings-2" },
+  { label: "Appearance", to: "/settings/appearance", icon: "palette" },
   { label: "Keybindings", to: "/settings/keybindings", icon: "keyboard" },
   { label: "Providers", to: "/settings/providers", icon: "bot" },
   { label: "Source Control", to: "/settings/source-control", icon: "git-branch" },

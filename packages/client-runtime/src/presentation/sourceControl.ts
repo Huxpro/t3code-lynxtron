@@ -81,9 +81,9 @@ export function prStatusIndicator(
 export function resolveThreadPr(input: {
   readonly threadBranch: string | null;
   readonly gitStatus: VcsStatusResult | null;
-  readonly hasDedicatedWorktree: boolean;
+  readonly hasDedicatedWorktree?: boolean;
 }): ThreadPr | null {
-  const { threadBranch, gitStatus, hasDedicatedWorktree } = input;
+  const { threadBranch, gitStatus, hasDedicatedWorktree = false } = input;
   if (gitStatus === null) return null;
   if (hasDedicatedWorktree) return gitStatus.pr ?? null;
   if (threadBranch === null || gitStatus.refName !== threadBranch) return null;

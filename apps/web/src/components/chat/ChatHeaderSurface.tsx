@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 
-import { HostText, HostView } from "../ui/hostElements";
+import { HostButton, HostText, HostView } from "../ui/hostElements";
 import { ChatHeaderTitle } from "./ChatHeaderTitle";
 
 export interface ChatHeaderSurfaceProps {
   readonly activeThreadTitle: string;
   readonly activeProjectName: string | undefined;
   readonly projectIcon?: ReactNode;
+  readonly onNewThreadInProject?: (() => void) | undefined;
   readonly actions?: ReactNode;
   readonly rightPanelOpen: boolean;
 }
@@ -20,6 +21,7 @@ export function ChatHeaderSurface({
   activeThreadTitle,
   activeProjectName,
   projectIcon,
+  onNewThreadInProject,
   actions,
   rightPanelOpen,
 }: ChatHeaderSurfaceProps) {
@@ -28,12 +30,18 @@ export function ChatHeaderSurface({
       <HostView className="topbar__crumb flex min-w-0 flex-1 items-center gap-2 overflow-hidden sm:gap-3">
         {activeProjectName ? (
           <HostView className="chat-header-project-group inline-flex shrink-0 items-center gap-2">
-            <HostView className="chat-header-project-main inline-flex min-w-0 items-center gap-1.5">
+            <HostButton
+              type="button"
+              aria-label={`New thread in ${activeProjectName}`}
+              title={`New thread in ${activeProjectName}`}
+              onClick={onNewThreadInProject}
+              className="chat-header-project-main inline-flex min-w-0 cursor-pointer items-center gap-1.5 rounded-sm bg-transparent p-0 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+            >
               {projectIcon}
               <HostText className="chat-header-project-name-reference topbar__proj-name max-w-40 truncate text-sm font-medium text-muted-foreground">
                 {activeProjectName}
               </HostText>
-            </HostView>
+            </HostButton>
             <HostText aria-hidden className="topbar__slash text-muted-foreground/40">
               /
             </HostText>
