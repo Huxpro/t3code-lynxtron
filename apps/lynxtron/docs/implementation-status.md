@@ -369,6 +369,30 @@ The four Lynxtron-specific gaps are now filed upstream:
 [#151](https://github.com/lynx-family/lynxtron/issues/151) (R12). The
 remaining R-series drafts target the Lynx engine repo and stay unfiled.
 
+## Lynxtron 0.0.8 follow-up (2026-07-30)
+
+`@lynx-js/lynxtron` and `@lynx-js/lynxtron-dev-plugins` are upgraded
+0.0.7 → 0.0.8. The release includes a V8 HandleScope crash fix, local file
+URL loading, and Windows rebuild fixes. All four filed issues remain open with
+no maintainer replies as of this check.
+
+The release does not close the probed gaps. An isolated Rspeedy entry emits a
+2.7 kB async child bundle and can be launched through the env-gated
+`T3_LYNXTRON_BUNDLE_PATH` host override; activating it still fails with
+`ERR_INVALID_URL` for `/async/./lazy-bundle-child.…bundle`, so R11 and #148
+stay open. `T3_LYNXTRON_CAPABILITY_PROBE=1` again proves main→renderer
+`sendGlobalEvent` delivery while preload reports
+`mainPidMarker=undefined sharedWindowHandle=no`, leaving R3 unchanged. The
+0.0.8 declarations still expose Menu accelerators but no window keyboard event
+or `globalShortcut` API, leaving R5 unchanged. On an eight-message canonical
+fixture, `scripts/verify-transcript-scroll.mjs --step scroll-up` still cannot
+detach follow, and direct `Input.dispatchKeyEvent` returns “Not implemented,”
+leaving R12 unchanged. The probe entry is retained under `src/app/probes/` so
+future releases can be retested without modifying the product graph. Focused
+host tests, both typecheck programs, scanner, API/CSS audits, and the production
+build pass; a fresh explicitly sized 1280 × 820 transcript capture is 2560 ×
+1640 physical with zero DevTool console errors.
+
 ## Provenance snapshot
 
 The 2026-07-27 comparison against

@@ -14,7 +14,9 @@ import { resolveLynxtronViewport } from "./windowViewport.ts";
 // utilityProcess) require the CJS `require('lynxtron')` path per port field
 // notes; the backend-wiring slice uses __non_webpack_require__ for Node deps.
 
-const LYNX_BUNDLE_PATH = path.join(__dirname, "main.lynx.bundle");
+const LYNX_BUNDLE_PATH = process.env.T3_LYNXTRON_BUNDLE_PATH
+  ? path.resolve(process.env.T3_LYNXTRON_BUNDLE_PATH)
+  : path.join(__dirname, "main.lynx.bundle");
 
 interface ResizableWindow {
   getContentSize(): number[];
