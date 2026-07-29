@@ -8,10 +8,10 @@
   "screenshot": "evidence/2026-07-29/P2/transcript/scroll-machine/01-initial-bottom.jpg",
   "dimensions": {
     "format": "jpeg",
-    "width": 2360,
-    "height": 1496
+    "width": 2560,
+    "height": 1640
   },
-  "capturedAt": "2026-07-29T01:13:08.399Z",
+  "capturedAt": "2026-07-29T03:34:03.114Z",
   "reusedScreenshot": false,
   "devToolConsoleErrors": 0,
   "measurements": "evidence/2026-07-29/P2/transcript/scroll-machine/01-initial-bottom.lynx-measurements.json"

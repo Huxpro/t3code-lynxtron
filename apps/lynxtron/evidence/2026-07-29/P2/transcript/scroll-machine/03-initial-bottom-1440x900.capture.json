@@ -5,14 +5,14 @@
   "theme": "dark",
   "snapshot": "f759563f64f60fddc7c18a8b5d3b5aaaf96d638b49743e28758d2f59899f8c1a",
   "interactionState": "none",
-  "screenshot": "evidence/2026-07-29/P2/transcript/scroll-machine/02-fold-and-group-expanded.jpg",
+  "screenshot": "evidence/2026-07-29/P2/transcript/scroll-machine/03-initial-bottom-1440x900.jpg",
   "dimensions": {
     "format": "jpeg",
-    "width": 2560,
-    "height": 1640
+    "width": 2880,
+    "height": 1800
   },
-  "capturedAt": "2026-07-29T03:36:35.440Z",
+  "capturedAt": "2026-07-29T03:37:39.021Z",
   "reusedScreenshot": false,
   "devToolConsoleErrors": 0,
-  "measurements": "evidence/2026-07-29/P2/transcript/scroll-machine/02-fold-and-group-expanded.lynx-measurements.json"
+  "measurements": "evidence/2026-07-29/P2/transcript/scroll-machine/03-initial-bottom-1440x900.lynx-measurements.json"
 }

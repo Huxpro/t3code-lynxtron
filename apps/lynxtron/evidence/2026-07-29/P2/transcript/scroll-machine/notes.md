@@ -4,7 +4,13 @@
 - Task: P2-S3 — follow/detach scroll state machine and long-transcript
   runtime interactions (slice-level tier)
 - Candidate: in-monorepo Lynxtron production bundle (2,108.1 kB)
-- Viewport: 1280 × 820 logical; theme dark
+- Viewports: 1280 × 820 (captures 01/02, 2560 × 1640 physical) and
+  1440 × 900 (capture 03, 2880 × 1800 physical), set via
+  `T3_LYNXTRON_VIEWPORT_WIDTH/HEIGHT`; theme dark. CORRECTION 2026-07-29:
+  the first pass of these captures ran at the 1180 × 748 default because the
+  env vars were unset; all three captures were retaken at the labeled sizes
+  from the same snapshot (01/02 re-asserted their tap interactions in fresh
+  sessions before their screenshots).
 - Fixture: `prepare-transcript-visual-state.mjs --prompt-count 8` — eight real
   prompts through the production connector (earlier ones interrupted after
   their user message persisted, the final one accumulated provider work);
@@ -37,6 +43,11 @@ unit tests cover detach, reattach, reset, identity, and custom thresholds
    the bottom through the layout shift, demonstrating that layout-sourced
    scroll offsets do not detach follow. Zero renderer errors.
 
+3. `03-initial-bottom-1440x900.jpg` — fresh 1440 × 900 session over the same
+   snapshot opens pinned to the transcript end with the same row set; zero
+   renderer errors. Both standard viewports are now covered for the
+   `<list>` transcript surface.
+
 ## Registered limitation (R12)
 
 The user-scroll detach → "Jump to latest" pill → tap-to-reattach path could
@@ -55,6 +66,6 @@ phase-exit work gated on R12 or an approved OS-input session.
 - client-runtime transcript tests: 17 passed.
 - Web typecheck: clean; lynxtron app typecheck: unchanged 233 pre-existing.
 - Lynx production build: pass (2,108.1 kB).
-- Both captures: zero DevTool renderer errors.
+- All three captures: zero DevTool renderer errors.
 - `verify-transcript-scroll.mjs` documents the intended headless pass; it
   currently fails at the drag step because of R12, not a product defect.

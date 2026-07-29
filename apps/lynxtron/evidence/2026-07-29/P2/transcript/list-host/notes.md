@@ -8,9 +8,14 @@
   `docs/plans/00-execution-index.md`; the full dual-viewport battery is due at
   the T6/T7/T8 phase exits.
 - Candidate: in-monorepo Lynxtron production bundle (2,107.2 kB main bundle)
-- Viewport: 1280 × 820 logical (capture reports 2360 × 1496 physical content)
+- Viewport: **1180 × 748 logical** (2360 × 1496 physical). CORRECTION
+  2026-07-29: this capture was originally mislabeled 1280 × 820 — the window
+  size comes from `T3_LYNXTRON_VIEWPORT_WIDTH/HEIGHT` (default 1180 × 748),
+  which this session did not set. Files renamed to `lynx-1180x748.*`; the
+  correctly sized 1280 × 820 and 1440 × 900 captures of the same surface are
+  under `../scroll-machine/`.
 - Theme: dark
-- Snapshot: see `lynx-1280x820.capture.json` (`snapshot` field); fixture
+- Snapshot: see `lynx-1180x748.capture.json` (`snapshot` field); fixture
   manifest `transcriptFixture` records thread id, prompt, and turn state.
 
 ## Fixture
@@ -25,7 +30,7 @@ the connector disposed, so on relaunch the thread resumes with
 
 ## What the capture proves
 
-`lynx-1280x820.jpg` (fresh session; screenshot taken before any other
+`lynx-1180x748.jpg` (fresh session; screenshot taken before any other
 inspection; zero DevTool renderer errors — the capture script fails otherwise):
 
 - The transcript renders through the native `<list>` element with one
