@@ -190,6 +190,8 @@ export default function SidebarV2() {
               </HostText>
             }
             prBadge={null}
+            isRegeneratingTitle={thread.titleRegeneration != null}
+            terminalStatusIcon={null}
             diff={null}
             remoteIndicator={null}
             providerIndicator={null}

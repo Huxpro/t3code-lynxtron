@@ -37,6 +37,8 @@ export interface SidebarV2RowSurfaceProps {
   readonly jumpLabel: string | null;
   readonly favicon: ReactNode;
   readonly title: ReactNode;
+  readonly isRegeneratingTitle: boolean;
+  readonly terminalStatusIcon: ReactNode;
   readonly prBadge: ReactNode;
   readonly diff: { readonly insertions: number; readonly deletions: number } | null;
   readonly remoteIndicator: ReactNode;
@@ -101,6 +103,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 role="button"
                 tabIndex={0}
                 data-testid="sidebar-v2-row-slim"
+                aria-busy={props.isRegeneratingTitle || undefined}
                 className={cn(
                   rowSurfaceClassName,
                   "sidebar-v2-row-slim flex h-9 items-center gap-2.5 px-2.5",
@@ -122,6 +125,12 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               {props.favicon}
             </HostText>
             {props.title}
+            {props.terminalStatusIcon}
+            {props.isRegeneratingTitle ? (
+              <HostText role="status" className="sr-only">
+                Regenerating title
+              </HostText>
+            ) : null}
             {props.prBadge}
             <HostText className="relative ml-auto flex h-6 min-w-8 shrink-0 items-center justify-end">
               <HostText className="inline-flex justify-end tabular-nums text-muted-foreground/55 transition-opacity group-hover/v2-row:opacity-0">
@@ -197,6 +206,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               role="button"
               tabIndex={0}
               data-testid="sidebar-v2-row-card"
+              aria-busy={props.isRegeneratingTitle || undefined}
               className={cn(rowSurfaceClassName, "sidebar-v2-row-card")}
               onClick={props.onClick}
               onDoubleClick={props.onDoubleClick}
@@ -223,7 +233,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               <HostText className="relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
                 <HostText
                   className={cn(
-                    "tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
+                    "pointer-events-none tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
                     props.snoozeMenuOpen && "opacity-0",
                   )}
                 >
@@ -265,7 +275,14 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 ) : null}
               </HostText>
             </HostView>
-            <HostView className="mt-1 flex min-w-0">{props.title}</HostView>
+            <HostView className="mt-1 flex min-w-0">
+              {props.title}
+              {props.isRegeneratingTitle ? (
+                <HostText role="status" className="sr-only">
+                  Regenerating title
+                </HostText>
+              ) : null}
+            </HostView>
             <HostView className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground/75">
               {props.branch ? (
                 <HostText className="min-w-0 flex-1 truncate whitespace-nowrap">
@@ -274,6 +291,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               ) : (
                 <HostText className="flex-1" />
               )}
+              {props.terminalStatusIcon}
               {props.prBadge}
               {props.diff ? (
                 <HostText className="shrink-0 font-mono">
