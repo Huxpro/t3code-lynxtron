@@ -1,7 +1,7 @@
 {
   "scannedRoot": "apps/web/src",
-  "generatedAt": "2026-07-29T22:18:27.155Z",
-  "totalCallSites": 703,
+  "generatedAt": "2026-07-30T22:11:15.117Z",
+  "totalCallSites": 709,
   "entries": [
     {
       "api": "window",
@@ -50,8 +50,8 @@
     },
     {
       "api": "window.addEventListener",
-      "calls": 55,
-      "fileCount": 30,
+      "calls": 57,
+      "fileCount": 31,
       "files": [
         "apps/web/src/browser/BrowserSurfaceSlot.tsx",
         "apps/web/src/browser/useBrowserViewportResize.ts",
@@ -68,6 +68,7 @@
         "apps/web/src/components/chat/ExpandedImageDialog.tsx",
         "apps/web/src/components/chat/ModelPickerContent.tsx",
         "apps/web/src/components/chat/OpenInPicker.tsx",
+        "apps/web/src/components/files/FilePreviewPanel.tsx",
         "apps/web/src/components/preview/PreviewAutomationHosts.tsx",
         "apps/web/src/components/preview/PreviewPanelShell.tsx",
         "apps/web/src/components/preview/previewActionBus.ts",
@@ -122,8 +123,8 @@
     },
     {
       "api": "window.removeEventListener",
-      "calls": 49,
-      "fileCount": 28,
+      "calls": 51,
+      "fileCount": 29,
       "files": [
         "apps/web/src/browser/BrowserSurfaceSlot.tsx",
         "apps/web/src/browser/useBrowserViewportResize.ts",
@@ -140,6 +141,7 @@
         "apps/web/src/components/chat/ExpandedImageDialog.tsx",
         "apps/web/src/components/chat/ModelPickerContent.tsx",
         "apps/web/src/components/chat/OpenInPicker.tsx",
+        "apps/web/src/components/files/FilePreviewPanel.tsx",
         "apps/web/src/components/preview/PreviewAutomationHosts.tsx",
         "apps/web/src/components/preview/PreviewPanelShell.tsx",
         "apps/web/src/components/preview/previewActionBus.ts",
@@ -169,7 +171,7 @@
         "apps/web/src/connection/storage.ts",
         "apps/web/src/hooks/useTheme.ts",
         "apps/web/src/lib/backgroundActivityReporter.ts",
-        "apps/web/src/lib/stashImageCompression.ts",
+        "apps/web/src/lib/imageCompression.ts",
         "apps/web/src/lib/windowControlsOverlay.ts",
         "apps/web/src/markdown-list-indentation.ts",
         "apps/web/src/modelPickerVisibility.ts",
@@ -363,7 +365,7 @@
         "apps/web/src/components/ComposerPromptEditor.tsx",
         "apps/web/src/contextMenuFallback.ts",
         "apps/web/src/hooks/useTheme.ts",
-        "apps/web/src/lib/stashImageCompression.ts",
+        "apps/web/src/lib/imageCompression.ts",
         "apps/web/src/markdown-clipboard.ts",
         "apps/web/src/pierre-icons.ts",
         "apps/web/src/proposedPlan.ts"
@@ -510,22 +512,24 @@
     },
     {
       "api": "document.querySelector",
-      "calls": 7,
-      "fileCount": 5,
+      "calls": 8,
+      "fileCount": 6,
       "files": [
         "apps/web/src/commandPaletteBus.ts",
         "apps/web/src/components/ChatView.tsx",
         "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/search/ProjectContentSearchDialog.tsx",
         "apps/web/src/hooks/useTheme.ts",
         "apps/web/src/modelPickerVisibility.ts"
       ]
     },
     {
       "api": "queueMicrotask",
-      "calls": 6,
-      "fileCount": 4,
+      "calls": 7,
+      "fileCount": 5,
       "files": [
         "apps/web/src/components/ComposerPromptEditor.tsx",
+        "apps/web/src/components/files/FileBrowserPanel.tsx",
         "apps/web/src/components/preview/PreviewChromeRow.tsx",
         "apps/web/src/components/preview/previewAutomationRequestConsumer.ts",
         "apps/web/src/components/preview/usePreviewSession.ts"

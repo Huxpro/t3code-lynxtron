@@ -568,6 +568,44 @@ passed. A fresh authenticated Web flow also switched Build to Plan and back,
 selected Supervised and restored Full access using the same shared copy, with
 no console errors.
 
+## Architecture reset (plan 10) execution
+
+### AR0 baseline (2026-07-31, merge commit `1c8205d73`)
+
+The branch merged `origin/main` `4029b858e` (35 upstream commits; conflicts in
+`SidebarV2.tsx`, `Sidebar.logic.ts`, `ChatComposer.tsx`, two keybinding
+registries, and `pnpm-lock.yaml`). Conflict resolution kept the shared
+`SidebarV2RowSurface` composition and shared runtime-mode presentations, and
+ported upstream's terminal-status icon, title-regeneration busy state, and
+settle-click pointer fix into the shared surface; both keybinding registries
+took the union. Merged typechecks (Web, Lynxtron app/main, client-runtime,
+contracts, shared) are zero-error and 141 focused tests pass.
+
+Recorded baseline after the merge:
+
+| Measure                                                                      | Value                                                             |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Production Lynx bundle (`main.lynx.bundle`)                                  | 2,081.1 kB                                                        |
+| `src/app/overrides.css`                                                      | 3,947 lines                                                       |
+| Reachable Lynx-owned product components (`src/app/components/`)              | 20 modules                                                        |
+| Strict product-surface reuse (app-shell-sidebar)                             | 22/329 modules (6.7%), 3,369/70,611 lines (4.8%)                  |
+| Strict product-surface reuse (new-thread-empty / existing-thread-transcript) | 32/464 modules (6.9%), 7,148/103,220 lines (6.9%)                 |
+| Strict product-surface reuse (composer)                                      | 17/430 modules (4%), 4,947/92,705 lines (5.3%)                    |
+| Strict product-surface reuse (model-picker)                                  | 5/272 modules (1.8%), 1,394/57,300 lines (2.4%)                   |
+| Strict product-surface reuse (settings-general feature panel / route)        | 3/4 modules (75%); 10/15 modules (66.7%), 1,260/1,799 lines (70%) |
+| Strict product-surface reuse (settings-providers)                            | 11/291 modules (3.8%), 1,730/61,496 lines (2.8%)                  |
+| Web API audit                                                                | 59 APIs                                                           |
+| CSS audit                                                                    | 1,471 distinct static utilities                                   |
+
+Both production builds and the API/CSS audits pass. A fresh explicitly sized
+1280 × 820 Lynx DevTool capture over an isolated empty base dir
+(`reports/screenshots/ar0-baseline-1280x820.jpg`) reports zero renderer
+errors; its measurement-spec anchors were not collectible against the empty
+sidebar, which matches the unseeded state. The denominator growth versus the
+pre-merge report comes from upstream surface additions (file picker, project
+search, bulk title regeneration); no exclusion, mask, or root changed
+(boundary hash `67f5a53f…`).
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

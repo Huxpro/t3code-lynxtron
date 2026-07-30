@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1464,
+  "uniqueStaticUtilities": 1471,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -82,7 +82,7 @@
     },
     {
       "utility": "sticky",
-      "occurrences": 6
+      "occurrences": 7
     },
     {
       "utility": "backdrop-blur-md",
@@ -173,6 +173,10 @@
       "occurrences": 3
     },
     {
+      "utility": "backdrop-blur-sm",
+      "occurrences": 2
+    },
+    {
       "utility": "hover:border-border",
       "occurrences": 2
     },
@@ -251,10 +255,6 @@
     {
       "utility": "hover:opacity-100",
       "occurrences": 2
-    },
-    {
-      "utility": "backdrop-blur-sm",
-      "occurrences": 1
     },
     {
       "utility": "hover:cursor-pointer",

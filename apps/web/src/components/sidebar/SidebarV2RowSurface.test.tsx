@@ -40,6 +40,8 @@ const baseProps: SidebarV2RowSurfaceProps = {
   jumpLabel: null,
   favicon: <span data-favicon>T3</span>,
   title: <span data-thread-title>Port Lynxtron</span>,
+  isRegeneratingTitle: false,
+  terminalStatusIcon: null,
   prBadge: <span data-pr-badge>#42</span>,
   diff: { insertions: 12, deletions: 3 },
   remoteIndicator: <span data-remote>Remote</span>,

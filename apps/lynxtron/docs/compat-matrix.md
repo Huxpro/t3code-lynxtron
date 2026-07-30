@@ -21,9 +21,9 @@ changes. Status values are intentionally finite:
 
 ## CSS and interaction
 
-The current audit sees 1,276 distinct static utilities. High-frequency gaps
-include `hover:text-foreground` (50), `grid` (47), focus-visible rings (20+),
-fixed positioning (5), and sticky positioning (4).
+The current audit sees 1,471 distinct static utilities. High-frequency gaps
+include `grid` (55), `hover:text-foreground` (53), focus-visible rings (20+),
+sticky positioning (7), and fixed positioning (5).
 
 | Feature                                     | Status      | Workaround                                               |
 | ------------------------------------------- | ----------- | -------------------------------------------------------- |
