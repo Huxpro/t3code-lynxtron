@@ -35,7 +35,7 @@
     {
       "id": "brand",
       "web": ".sidebar-brand span",
-      "lynx": ".sidebar__title"
+      "lynx": ".sidebar-brand-code-label"
     },
     {
       "id": "headline",
@@ -55,7 +55,7 @@
     {
       "id": "sidebarRow",
       "web": "[data-sidebar=\"menu-button\"]",
-      "lynx": ".project-row__name"
+      "lynx": ".sidebar-settings-label"
     }
   ],
   "colors": [

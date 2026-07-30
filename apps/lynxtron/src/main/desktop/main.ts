@@ -1,4 +1,4 @@
-import { app, LynxWindow, Menu } from "@lynx-js/lynxtron";
+import { app, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
 import path from "path";
 
 import {
@@ -7,12 +7,17 @@ import {
   createDiscreteKeyboardPacket,
   type DiscreteKeyboardAccelerator,
 } from "./keyboardMenu.ts";
+import { MainConnectorHost } from "./mainConnectorHost.ts";
 import { resolveLynxtronViewport } from "./windowViewport.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
 // utilityProcess) require the CJS `require('lynxtron')` path per port field
 // notes; the backend-wiring slice uses __non_webpack_require__ for Node deps.
+
+// __non_webpack_require__ bypasses rspack's compile-time require.resolve so the
+// prebuilt connector bundle is loaded at runtime from dist/desktop.
+declare const __non_webpack_require__: (id: string) => any;
 
 const LYNX_BUNDLE_PATH = process.env.T3_LYNXTRON_BUNDLE_PATH
   ? path.resolve(process.env.T3_LYNXTRON_BUNDLE_PATH)
@@ -25,6 +30,7 @@ interface ResizableWindow {
 
 interface GlobalEventWindow extends ResizableWindow {
   sendGlobalEvent(eventName: string, ...args: unknown[]): boolean;
+  on(event: "closed", listener: () => void): unknown;
 }
 
 function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
@@ -95,6 +101,49 @@ function nudgeFramedWindowViewport(win: ResizableWindow, delayMs = 600): void {
   }, delayMs);
 }
 
+/**
+ * AR1 spike: main-owned connector behind T3_LYNXTRON_MAIN_CONNECTOR=1. Main
+ * instantiates the prebuilt connector bundle, registers the typed lynxBridge
+ * handlers, and pushes sequenced events with sendGlobalEvent. The preload
+ * polling path remains the default when the flag is off; the renderer probes
+ * the typed path once and falls back to polling when it does not answer.
+ */
+function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost | null {
+  if (process.env.T3_LYNXTRON_MAIN_CONNECTOR !== "1") return null;
+  const connectorPath = path.join(__dirname, "connector.bundle.cjs");
+  const { T3Connector } = __non_webpack_require__(connectorPath);
+  const host = new MainConnectorHost({
+    window: win,
+    registerHandler: (method, handler) => {
+      lynxBridge.handle(method, (_event, params) => handler(params));
+    },
+    removeHandler: (method) => lynxBridge.removeHandler(method),
+    createConnector: (events) => new T3Connector(events),
+    onLog: (line) => console.log(line),
+  });
+  host.attach();
+  win.on("closed", () => {
+    host.dispose();
+  });
+  // Backstop: quitting the app without a window close must still release the
+  // connector-owned server process and port. Dispose is idempotent.
+  app.on("will-quit", () => {
+    host.dispose();
+  });
+  process.on("exit", () => {
+    host.dispose();
+  });
+  host.connect().catch((error: unknown) => {
+    // The connector already surfaced the failure through its status events;
+    // this catch only keeps an unhandled rejection out of main.
+    console.log(
+      `[main-connector] connect failed: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  });
+  console.log("[main-connector] main-owned connector host started (T3_LYNXTRON_MAIN_CONNECTOR=1)");
+  return host;
+}
+
 app.whenReady().then(() => {
   const viewport = resolveLynxtronViewport();
   const win = new LynxWindow({
@@ -111,6 +160,7 @@ app.whenReady().then(() => {
   win.loadFile(LYNX_BUNDLE_PATH);
   nudgeFramedWindowViewport(win);
   installDiscreteKeyboardMenu(win);
+  startMainConnectorHost(win);
 
   // P3-S1 capability probe (R3/R5): prove at runtime whether the declared
   // LynxWindow.sendGlobalEvent delivers from main to the renderer. Only runs

@@ -47,6 +47,18 @@ import { navigate } from "../router";
 import { appAtomRegistry } from "./atomRegistry";
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "./environment";
 import { getClientSettingsState, getPref, setPref, updateClientSettingsState } from "./prefsStore";
+import {
+  startMainConnectorTransport,
+  type BridgeCallModule,
+  type GlobalEventListenerRegistry,
+  type MainConnectorTransport,
+} from "./mainConnectorTransport";
+import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
+import type {
+  ConnectorCommandName,
+  ConnectorEventEnvelope,
+  ConnectorSnapshot,
+} from "../../shared/connectorProtocol.ts";
 
 interface PollBridge extends T3Bridge {
   getStatus: () => StatusEventPayload;
@@ -58,7 +70,14 @@ interface PollBridge extends T3Bridge {
 
 declare const NativeModules: {
   nodejs?: { exposed?: Partial<PollBridge> };
+  bridge?: BridgeCallModule;
 } & Record<string, unknown>;
+
+declare const lynx:
+  | {
+      getJSModule?: (name: string) => GlobalEventListenerRegistry | undefined;
+    }
+  | undefined;
 
 export interface T3ClientState {
   readonly status: ConnectionStatus;
@@ -127,14 +146,26 @@ let configFingerprint = "";
 let accessFingerprint = "";
 let shellFingerprint = "";
 let threadFingerprint = "";
+let mainTransport: MainConnectorTransport | null = null;
+let mainCommandBridge: Partial<PollBridge> | null = null;
 
-function getBridge(): Partial<PollBridge> | undefined {
+function getPreloadBridge(): Partial<PollBridge> | undefined {
   "background only";
   try {
     return NativeModules?.nodejs?.exposed;
   } catch {
     return undefined;
   }
+}
+
+function getBridge(): Partial<PollBridge> | undefined {
+  "background only";
+  const preload = getPreloadBridge();
+  // The main-owned transport overrides only connector-owned commands; preload
+  // keeps branding, preference storage, clipboard, and shell navigation in
+  // both transports.
+  if (mainCommandBridge) return { ...preload, ...mainCommandBridge };
+  return preload;
 }
 
 function patchState(partial: Partial<T3ClientState>): void {
@@ -214,90 +245,166 @@ function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelec
   }
 }
 
+function applyStatusPayload(status: StatusEventPayload): void {
+  const current = appAtomRegistry.get(t3ClientStateAtom);
+  if (status.status !== current.status || status.detail !== current.statusDetail) {
+    patchState({ status: status.status, statusDetail: status.detail });
+  }
+}
+
+function applyConfigPayload(
+  config: ServerConfig,
+  preferredSelection?: ModelSelection | null,
+): void {
+  const nextFingerprint = JSON.stringify(config);
+  if (nextFingerprint === configFingerprint) return;
+  configFingerprint = nextFingerprint;
+  applyServerConfig(config, preferredSelection);
+}
+
+function applyAccessPayload(access: AuthAccessPresentation): void {
+  const nextFingerprint = JSON.stringify(access);
+  if (nextFingerprint === accessFingerprint) return;
+  accessFingerprint = nextFingerprint;
+  patchState({ authAccess: access });
+}
+
+function applyShellPayload(shell: ShellEventPayload): void {
+  const nextFingerprint = JSON.stringify(shell);
+  if (nextFingerprint === shellFingerprint) return;
+  shellFingerprint = nextFingerprint;
+  const threads = shell.threads ?? [];
+  const stateBeforeShell = appAtomRegistry.get(t3ClientStateAtom);
+  const activeThread = threads.find((thread) => thread.id === stateBeforeShell.activeThreadId);
+  const activeModel = activeThread
+    ? stateBeforeShell.models.find(
+        (model) =>
+          model.instanceId === activeThread.modelSelection.instanceId &&
+          model.slug === activeThread.modelSelection.model,
+      )
+    : undefined;
+  patchState({
+    projects: shell.projects ?? [],
+    threads,
+    archivedThreads: shell.archivedThreads ?? [],
+    ...(activeThread
+      ? {
+          modelSelection: activeThread.modelSelection,
+          ...(activeModel ? { selectedModel: activeModel } : {}),
+        }
+      : {}),
+  });
+  const latest = appAtomRegistry.get(t3ClientStateAtom);
+  if (!latest.activeThreadId && threads.length > 0) {
+    selectThread(threads[0].id);
+  }
+}
+
+function applyThreadPayload(payload: ThreadEventPayload): void {
+  const nextFingerprint = JSON.stringify(payload);
+  if (nextFingerprint === threadFingerprint) return;
+  threadFingerprint = nextFingerprint;
+  patchState({
+    messages: payload.messages ?? [],
+    checkpoints: payload.checkpoints ?? [],
+    sessionStatus: payload.sessionStatus ?? "idle",
+    activePlan: payload.activePlan ?? undefined,
+    activeProposedPlan: payload.activeProposedPlan ?? undefined,
+    activities: payload.activities ?? [],
+    latestTurn: payload.latestTurn ?? null,
+    proposedPlans: payload.proposedPlans ?? [],
+    activeTurnId: payload.activeTurnId ?? null,
+  });
+}
+
 function pollOnce(): void {
   const bridge = getBridge();
   if (!bridge) return;
-  const current = appAtomRegistry.get(t3ClientStateAtom);
   const status = bridge.getStatus?.();
-  if (status && (status.status !== current.status || status.detail !== current.statusDetail)) {
-    patchState({ status: status.status, statusDetail: status.detail });
-  }
+  if (status) applyStatusPayload(status);
 
   const config = bridge.getConfig?.();
-  if (config) {
-    const nextFingerprint = JSON.stringify(config);
-    if (nextFingerprint !== configFingerprint) {
-      configFingerprint = nextFingerprint;
-      applyServerConfig(config);
-    }
-  }
+  if (config) applyConfigPayload(config);
 
   const access = bridge.getAccess?.();
-  if (access) {
-    const nextFingerprint = JSON.stringify(access);
-    if (nextFingerprint !== accessFingerprint) {
-      accessFingerprint = nextFingerprint;
-      patchState({ authAccess: access });
-    }
-  }
+  if (access) applyAccessPayload(access);
 
   const shell = bridge.getShell?.();
-  if (shell) {
-    const nextFingerprint = JSON.stringify(shell);
-    if (nextFingerprint !== shellFingerprint) {
-      shellFingerprint = nextFingerprint;
-      const threads = shell.threads ?? [];
-      const stateBeforeShell = appAtomRegistry.get(t3ClientStateAtom);
-      const activeThread = threads.find((thread) => thread.id === stateBeforeShell.activeThreadId);
-      const activeModel = activeThread
-        ? stateBeforeShell.models.find(
-            (model) =>
-              model.instanceId === activeThread.modelSelection.instanceId &&
-              model.slug === activeThread.modelSelection.model,
-          )
-        : undefined;
-      patchState({
-        projects: shell.projects ?? [],
-        threads,
-        archivedThreads: shell.archivedThreads ?? [],
-        ...(activeThread
-          ? {
-              modelSelection: activeThread.modelSelection,
-              ...(activeModel ? { selectedModel: activeModel } : {}),
-            }
-          : {}),
-      });
-      const latest = appAtomRegistry.get(t3ClientStateAtom);
-      if (!latest.activeThreadId && threads.length > 0) {
-        selectThread(threads[0].id);
-      }
-    }
-  }
+  if (shell) applyShellPayload(shell);
 
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   if (!activeThreadId) return;
   const thread = bridge.getThread?.(activeThreadId);
   if (!thread) return;
-  const nextFingerprint = JSON.stringify(thread);
-  if (nextFingerprint === threadFingerprint) return;
-  threadFingerprint = nextFingerprint;
-  patchState({
-    messages: thread.messages ?? [],
-    checkpoints: thread.checkpoints ?? [],
-    sessionStatus: thread.sessionStatus ?? "idle",
-    activePlan: thread.activePlan ?? undefined,
-    activeProposedPlan: thread.activeProposedPlan ?? undefined,
-    activities: thread.activities ?? [],
-    latestTurn: thread.latestTurn ?? null,
-    proposedPlans: thread.proposedPlans ?? [],
-    activeTurnId: thread.activeTurnId ?? null,
-  });
+  applyThreadPayload(thread);
 }
 
-function startT3Client(): void {
-  if (started) return;
-  started = true;
+function applyConnectorSnapshot(snapshot: ConnectorSnapshot): void {
+  applyStatusPayload(snapshot.status as StatusEventPayload);
+  if (snapshot.config) applyConfigPayload(snapshot.config);
+  applyAccessPayload(snapshot.access);
+  applyShellPayload(snapshot.shell as ShellEventPayload);
+  const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
+  if (activeThread) applyThreadPayload(activeThread as ThreadEventPayload);
+}
 
+function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
+  switch (envelope.kind) {
+    case "status":
+      applyStatusPayload(envelope.payload as StatusEventPayload);
+      return;
+    case "config":
+      applyConfigPayload(envelope.payload as ServerConfig);
+      return;
+    case "access":
+      applyAccessPayload(envelope.payload as AuthAccessPresentation);
+      return;
+    case "shell":
+      applyShellPayload(envelope.payload as ShellEventPayload);
+      return;
+    case "thread": {
+      const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+      if (envelope.threadId === activeThreadId) {
+        applyThreadPayload(envelope.payload as ThreadEventPayload);
+      }
+      return;
+    }
+    case "log":
+      // Mirror host logs to the renderer console, matching the preload path.
+      console.log(envelope.payload);
+      return;
+  }
+}
+
+function buildMainCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
+  const bridge: Record<string, (input?: unknown) => Promise<unknown>> = {};
+  for (const method of CONNECTOR_COMMAND_NAMES) {
+    bridge[method] = (input?: unknown) => transport.invoke(method, input);
+  }
+  return bridge as Partial<PollBridge>;
+}
+
+function installTransportDevToolHook(): void {
+  (
+    globalThis as {
+      __T3_LYNXTRON_CONNECTOR_TRANSPORT__?: {
+        kind: "main" | "polling";
+        lastSeq: () => number;
+        invoke: (method: string, params?: unknown) => Promise<unknown>;
+      };
+    }
+  ).__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
+    kind: mainTransport ? "main" : "polling",
+    lastSeq: () => mainTransport?.lastSeq ?? -1,
+    invoke: (method, params) => {
+      if (!mainTransport) return Promise.reject(new Error("main transport is not active"));
+      return mainTransport.invoke(method as ConnectorCommandName, params);
+    },
+  };
+}
+
+function startPollingClient(): void {
   const bridge = getBridge();
   if (!bridge?.connect) {
     patchState({
@@ -317,8 +424,7 @@ function startT3Client(): void {
         statusDetail: result.detail,
       });
       if (result.config) {
-        configFingerprint = JSON.stringify(result.config);
-        applyServerConfig(result.config, saved);
+        applyConfigPayload(result.config, saved);
       }
     })
     .catch((error: unknown) => {
@@ -329,6 +435,41 @@ function startT3Client(): void {
     });
 
   setInterval(pollOnce, 400);
+}
+
+function startT3Client(): void {
+  if (started) return;
+  started = true;
+  void bootstrapT3Client();
+}
+
+async function bootstrapT3Client(): Promise<void> {
+  "background only";
+  // AR1 spike: prefer the main-owned push transport when main registered the
+  // typed connector handlers (T3_LYNXTRON_MAIN_CONNECTOR=1). The preload
+  // polling path stays the default when the probe does not answer.
+  let eventRegistry: GlobalEventListenerRegistry | undefined;
+  try {
+    eventRegistry =
+      typeof lynx !== "undefined" ? lynx?.getJSModule?.("GlobalEventEmitter") : undefined;
+  } catch {
+    eventRegistry = undefined;
+  }
+  const transport = await startMainConnectorTransport({
+    bridge: NativeModules?.bridge,
+    eventRegistry,
+    applySnapshot: applyConnectorSnapshot,
+    applyEvent: applyConnectorEvent,
+    onLog: (line) => console.log(line),
+  });
+  if (transport) {
+    mainTransport = transport;
+    mainCommandBridge = buildMainCommandBridge(transport);
+    installTransportDevToolHook();
+    return;
+  }
+  installTransportDevToolHook();
+  startPollingClient();
 }
 
 export function useT3ClientState(): T3ClientState {

@@ -258,6 +258,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -274,6 +279,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -286,6 +296,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -708,8 +723,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 6740,
-            "eligibleModules": 59,
+            "eligibleLines": 7263,
+            "eligibleModules": 61,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -753,18 +768,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -7554,6 +7579,11 @@
             },
             {
               "classification": "EXCLUSIVE",
+              "lines": 731,
+              "path": "apps/lynxtron/src/app/state/t3Client.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
               "lines": 698,
               "path": "apps/web/src/components/Icons.tsx"
             },
@@ -7581,11 +7611,6 @@
               "classification": "EXCLUSIVE",
               "lines": 622,
               "path": "apps/web/src/connection/platform.ts"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 610,
-              "path": "apps/web/src/components/JetBrainsIcons.tsx"
             }
           ],
           "lynx": {
@@ -7611,6 +7636,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -7627,6 +7657,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -7639,6 +7674,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -9001,8 +9041,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 27946,
-            "eligibleModules": 144,
+            "eligibleLines": 28469,
+            "eligibleModules": 146,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -9051,13 +9091,23 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -15496,6 +15546,11 @@
             },
             {
               "classification": "EXCLUSIVE",
+              "lines": 731,
+              "path": "apps/lynxtron/src/app/state/t3Client.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
               "lines": 698,
               "path": "apps/web/src/components/Icons.tsx"
             },
@@ -15503,11 +15558,6 @@
               "classification": "EXCLUSIVE",
               "lines": 695,
               "path": "packages/client-runtime/src/state/runtime.ts"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 688,
-              "path": "packages/client-runtime/src/state/server.ts"
             }
           ],
           "lynx": {
@@ -15948,6 +15998,11 @@
                 "to": "packages/shared/src/keyboard.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -15964,6 +16019,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -15976,6 +16036,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -17113,8 +17178,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 33032,
-            "eligibleModules": 143,
+            "eligibleLines": 33555,
+            "eligibleModules": 145,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17268,12 +17333,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
@@ -17285,6 +17355,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 9,
                 "path": "apps/lynxtron/src/app/tailwind.css"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -25535,6 +25610,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -25551,6 +25631,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -25563,6 +25648,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -26000,8 +26090,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 12357,
-            "eligibleModules": 76,
+            "eligibleLines": 12880,
+            "eligibleModules": 78,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -26085,18 +26175,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -36573,6 +36673,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -36589,6 +36694,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -36601,6 +36711,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -36673,8 +36788,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8517,
-            "eligibleModules": 36,
+            "eligibleLines": 9040,
+            "eligibleModules": 38,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -36748,18 +36863,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -45939,6 +46064,11 @@
                 "to": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -45955,6 +46085,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -45967,6 +46102,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -46404,8 +46544,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 12398,
-            "eligibleModules": 79,
+            "eligibleLines": 12921,
+            "eligibleModules": 81,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -46504,18 +46644,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -58619,6 +58769,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -58635,6 +58790,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -58647,6 +58807,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -59084,8 +59249,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 12357,
-            "eligibleModules": 76,
+            "eligibleLines": 12880,
+            "eligibleModules": 78,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -59169,18 +59334,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -69657,6 +69832,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -69673,6 +69853,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -69685,6 +69870,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -69757,8 +69947,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8517,
-            "eligibleModules": 36,
+            "eligibleLines": 9040,
+            "eligibleModules": 38,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -69832,18 +70022,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -79029,6 +79229,11 @@
                 "to": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -79045,6 +79250,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -79057,6 +79267,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -79494,8 +79709,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 12398,
-            "eligibleModules": 79,
+            "eligibleLines": 12921,
+            "eligibleModules": 81,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -79594,18 +79809,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -91714,6 +91939,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -91730,6 +91960,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -91742,6 +91977,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -91814,8 +92054,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8517,
-            "eligibleModules": 36,
+            "eligibleLines": 9040,
+            "eligibleModules": 38,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -91889,18 +92129,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -106207,6 +106457,11 @@
                 "to": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -106223,6 +106478,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -106235,6 +106495,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -106672,8 +106937,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 12398,
-            "eligibleModules": 79,
+            "eligibleLines": 12921,
+            "eligibleModules": 81,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -106772,18 +107037,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -127865,6 +128140,11 @@
                 "to": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -127881,6 +128161,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -127893,6 +128178,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -128330,8 +128620,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 12398,
-            "eligibleModules": 79,
+            "eligibleLines": 12921,
+            "eligibleModules": 81,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -128430,18 +128720,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -142840,6 +143140,11 @@
                 "to": "apps/lynxtron/src/app/components/SettingsPage.tsx"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -142856,6 +143161,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -142868,6 +143178,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -143355,8 +143670,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 7954,
-            "eligibleModules": 70,
+            "eligibleLines": 8477,
+            "eligibleModules": 72,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -143425,18 +143740,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -151510,6 +151835,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -151526,6 +151856,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -151538,6 +151873,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -151640,8 +151980,8 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 3507,
-            "eligibleModules": 28,
+            "eligibleLines": 4030,
+            "eligibleModules": 30,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -151695,13 +152035,23 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "SPLIT",
@@ -157438,6 +157788,11 @@
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -157454,6 +157809,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -157466,6 +157826,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -157503,8 +157868,8 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 2791,
-            "eligibleModules": 17,
+            "eligibleLines": 3314,
+            "eligibleModules": 19,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -157543,13 +157908,23 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "SPLIT",
@@ -163220,6 +163595,11 @@
                 "to": "apps/lynxtron/src/app/components/SettingsPage.tsx"
               },
               {
+                "from": "apps/lynxtron/src/app/state/mainConnectorTransport.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/state/prefsStore.ts",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -163236,6 +163616,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "../../shared/connectorProtocol.ts",
+                "to": "apps/lynxtron/src/shared/connectorProtocol.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
               },
@@ -163248,6 +163633,11 @@
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
                 "request": "./environment",
                 "to": "apps/lynxtron/src/app/state/environment.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/state/t3Client.ts",
+                "request": "./mainConnectorTransport",
+                "to": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/state/t3Client.ts",
@@ -163710,8 +164100,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 7628,
-            "eligibleModules": 71,
+            "eligibleLines": 8151,
+            "eligibleModules": 73,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -163785,18 +164175,28 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 189,
+                "path": "apps/lynxtron/src/app/state/mainConnectorTransport.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 112,
                 "path": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 593,
+                "lines": 731,
                 "path": "apps/lynxtron/src/app/state/t3Client.ts"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 137,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 196,
+                "path": "apps/lynxtron/src/shared/connectorProtocol.ts"
               },
               {
                 "classification": "EXCLUSIVE",

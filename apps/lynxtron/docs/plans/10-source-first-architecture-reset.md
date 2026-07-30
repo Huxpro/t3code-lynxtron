@@ -109,8 +109,8 @@ Execute only one task at a time:
 | ID  | Task                                                | Depends on     | Status        | Primary result                                                          |
 | --- | --------------------------------------------------- | -------------- | ------------- | ----------------------------------------------------------------------- |
 | AR0 | Reconfirm the baseline and merge upstream if needed | Current branch | `completed`   | Reproducible starting point                                             |
-| AR1 | Prove a main-owned connector                        | AR0            | `in_progress` | Typed invoke and push work without changing product ownership           |
-| AR2 | Cut over from preload polling                       | AR1            | `pending`     | Reachable product state no longer polls every 400 ms                    |
+| AR1 | Prove a main-owned connector                        | AR0            | `completed`   | Typed invoke and push work without changing product ownership           |
+| AR2 | Cut over from preload polling                       | AR1            | `in_progress` | Reachable product state no longer polls every 400 ms                    |
 | AR3 | Converge transcript composition                     | AR2            | `pending`     | Shared message composition replaces the Lynx clean-room path            |
 | AR4 | Converge Composer composition                       | AR3            | `pending`     | Shared Composer chrome surrounds a bounded editor island                |
 | AR5 | Remove remaining clean-room surfaces                | AR4            | `pending`     | Settings, panels, overlays, and Sidebar behavior use shared composition |

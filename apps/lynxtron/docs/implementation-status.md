@@ -606,6 +606,40 @@ pre-merge report comes from upstream surface additions (file picker, project
 search, bulk title regeneration); no exclusion, mask, or root changed
 (boundary hash `67f5a53f…`).
 
+### AR1 main-owned connector spike (2026-07-31, complete)
+
+`T3_LYNXTRON_MAIN_CONNECTOR=1` now starts a main-owned connector host behind a
+flag; the preload polling path remains the default. One typed protocol
+(`src/shared/connectorProtocol.ts`) carries the renderer-ready exchange, one
+serializable snapshot, allowlisted command requests, sequenced
+status/config/access/shell/thread/log envelopes, a resync request, and a
+dispose path. Main instantiates the prebuilt connector bundle, delivers events
+with `LynxWindow.sendGlobalEvent`, and serves requests through
+`lynxBridge.handle`; the renderer probes the typed path once and falls back to
+polling when it does not answer. Payloads stay serializable DTOs — no Effect
+values, functions, or credentials (the connector's credential-stripped access
+projection is unchanged).
+
+Runtime evidence: with the flag on, the renderer logged
+`[main-transport] push transport active` and the DevTool hook reported
+`kind: "main"` with `lastSeq` advancing (30 events). A real
+`NativeModules.bridge.call` round trip through the hook's `invoke` created and
+selected a thread (`createThread` returned a canonical `threadId`), and the
+pushed shell event rendered the new thread in the sidebar with zero renderer
+errors (`reports/screenshots/ar1-main-connector-1280x820.jpg`, 2560 × 1640
+physical). The default run without the flag reported `kind: "polling"` with
+zero errors. `scripts/main-connector-smoke.mjs` drove the host class plus the
+production connector through real server bootstrap, ready snapshot, thread
+create/select, a real prompt, 19 strictly monotonic streamed events across all
+six kinds, interruption, resync, and shutdown. SIGTERM released the
+connector-owned server process and port; notably the polling path leaked its
+server child under the same SIGTERM (pre-existing preload behavior the AR2
+cut-over retires). 21 focused tests cover sequencing, gap/resync, command
+allowlisting, snapshot mirroring, and disposal; the ReactLynx scanner,
+typechecks, audits, reuse report, and build all pass. The stale measurement
+spec selectors (`.sidebar__title`, `.project-row__name`) were updated to the
+current V2 sidebar classes after the AR0 merge made V2 the default.
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation
