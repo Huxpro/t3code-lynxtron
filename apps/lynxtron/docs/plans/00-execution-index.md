@@ -10,6 +10,12 @@ This index turns the current `apps/lynxtron` worktree into four bounded phases. 
 - Scope: `apps/lynxtron`, shared client packages, and the minimum Web refactors needed for physical source reuse
 - Source of truth: The current Web application in the same worktree
 
+## Active execution override
+
+Use [Reset the Lynxtron port around the Web product source](./10-source-first-architecture-reset.md) for work started after 2026-07-31. Plan 10 moves connector ownership to main before further user-interface convergence, then uses deletion-driven shared composition to retire the clean-room product path.
+
+Plan 10 supersedes the task order in plans 06 and 09. Keep the certification tiers, compatibility ledger, strict reuse calculation, fidelity thresholds, and existing evidence defined in this index.
+
 ## Current baseline
 
 The monorepo port already has a working host, connector, canonical RPC data, Effect Atom state, generated theme CSS, API and CSS audits, shared presentation modules, and an Electron-versus-Lynx exploratory capture harness. The current implementation still retains 5,510 lines from the standalone prototype, or 52.7% of the current app.
@@ -62,7 +68,7 @@ by the phase-exit battery.
 | T7    | [Converge desktop interactions and system states](./07-desktop-interaction-convergence.md) | Pointer, keyboard, overlay, resize, theme, and failure states have evidence |
 | T8    | [Certify and hand off the port](./08-certification-and-handoff.md)                         | Final matrix, packaged smoke, and completion report exist                   |
 
-Use [Run the long-range port goal](./09-long-range-goal.md) when one goal should continue across all reachable tasks.
+Use [Reset the Lynxtron port around the Web product source](./10-source-first-architecture-reset.md) when one goal should continue across all reachable tasks. Keep [Run the previous long-range port goal](./09-long-range-goal.md) as historical context for the superseded sequence.
 
 ## Task state
 

@@ -2,9 +2,12 @@
 
 Use this prompt to continue the monorepo port across every reachable T5 through T8 task. The prompt preserves user work, enforces one active task, prioritizes Electron/Web UI fidelity, and requires evidence before completion.
 
+This sequence is superseded for work started after 2026-07-31. Use [Reset the Lynxtron port around the Web product source](./10-source-first-architecture-reset.md) as the active plan. Keep this page only as historical context for the earlier T5 through T8 sequence.
+
 ## Plan metadata
 
 - Content type: How-to
+- Status: Superseded by plan 10
 - Audience: The primary coding agent running a long-range goal
 - Goal: Complete all reachable tasks in the T5 through T8 plans
 - Prerequisite: An active goal created by the user
