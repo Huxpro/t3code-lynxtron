@@ -83,7 +83,7 @@ required high-priority outcomes.
 | settings primitive contract  | functional  | ten `.web`/`.lynx` leaves share import/prop paths; 37 Web-owned tokens generate unchanged; R6/R7/R9 own host differences                                            |
 | server config projection     | functional  | connector subscribes to `subscribeServerConfig` and applies shared `applyServerConfigProjection`                                                                    |
 | platform UI capabilities     | functional  | shared interfaces + `.web`/`.lynx` storage, clipboard, connectivity, keyboard, media-query, and navigation implementations                                          |
-| client state host            | in-progress | live Lynx server state uses Effect Atom; R3 still requires a 400 ms preload polling adapter rather than the web push runtime                                        |
+| client state host            | functional  | live Lynx server state uses Effect Atom fed by the main-owned sequenced push protocol (AR2); the 400 ms preload polling adapter is removed                          |
 | renderer UI state            | functional  | model picker, quick switch, and right-panel state share the app `AtomRegistry`; four listener-based stores were removed                                             |
 | panel surface state          | functional  | Web and Lynx share ordered open/activate/close/fallback/visibility transitions; hosts own surface payloads and persistence                                          |
 | local preference state       | functional  | storage stays host-backed while renderer invalidation uses `AtomRegistry` instead of a listener singleton                                                           |

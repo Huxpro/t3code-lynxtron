@@ -189,4 +189,28 @@ describe("main connector transport", () => {
     harness.emit({ seq: 1, kind: "status", payload: { status: "ready" } });
     assert.equal(harness.applied.length, 0);
   });
+
+  it("supports a renderer reload cycle: a fresh transport resyncs from the current sequence", async () => {
+    const harness = createHarness();
+    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 4, snapshot: makeSnapshot("t1") });
+    const first = await startHarness(harness);
+    assert.isNotNull(first);
+    harness.emit({ seq: 5, kind: "status", payload: { status: "ready" } });
+    assert.equal(first!.lastSeq, 5);
+
+    // Renderer reloads (window reload / bundle refresh): the old transport is
+    // disposed and a new one bootstraps from main's current snapshot.
+    first!.dispose();
+    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 9, snapshot: makeSnapshot("t2") });
+    const second = await startHarness(harness);
+    assert.isNotNull(second);
+    assert.equal(second!.lastSeq, 9);
+    assert.equal(harness.snapshots.length, 2);
+
+    harness.emit({ seq: 10, kind: "shell", payload: { projects: [], threads: [] } });
+    assert.deepEqual(
+      harness.applied.map((event) => event.seq),
+      [5, 10],
+    );
+  });
 });

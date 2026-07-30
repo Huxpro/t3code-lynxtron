@@ -2,9 +2,13 @@
  * Bridge contract between the Lynx UI and the Node preload/host layer.
  *
  * The UI never touches the network directly (Lynx has no working fetch/WebSocket).
- * All backend I/O crosses this typed boundary:
- *   - UI -> host: Promise-based calls on `NativeModules.nodejs.exposed`
- *   - host -> UI: push events via `lynx.getJSModule('GlobalEventEmitter')`
+ * Backend I/O crosses two typed boundaries:
+ *   - connector transport: the main-owned sequenced push protocol in
+ *     `src/shared/connectorProtocol.ts` (AR2; main owns the connector
+ *     lifecycle, renderer state arrives as pushed events)
+ *   - preload capabilities: the small `NativeModules.nodejs.exposed` surface
+ *     below for capabilities that stay preload-resident (branding, preference
+ *     storage, clipboard, native navigation)
  *
  * Keep runtime imports out of this file so both the UI and preload can share
  * the contract while retaining the canonical orchestration shell types.
@@ -61,21 +65,6 @@ export type ProjectSummary = OrchestrationProjectShell;
 
 export type ModelInfo = ModelPickerModel;
 
-export interface ConnectResult {
-  readonly status: ConnectionStatus;
-  readonly detail?: string;
-  readonly config?: ServerConfig;
-  readonly cwd?: string;
-}
-
-/** Host -> UI push event names (via GlobalEventEmitter). */
-export const T3_EVENTS = {
-  status: "t3:status",
-  shell: "t3:shell",
-  thread: "t3:thread",
-  log: "t3:log",
-} as const;
-
 export interface StatusEventPayload {
   readonly status: ConnectionStatus;
   readonly detail?: string;
@@ -115,10 +104,12 @@ export interface PairingCredentialResult {
   readonly expiresAt: string;
 }
 
-/** The API surface exposed by preload via contextBridge.exposeInLynxBTS. */
-export interface T3Bridge {
-  getAppBranding(): DesktopAppBranding;
-  connect(): Promise<ConnectResult>;
+/**
+ * Connector command surface, owned by main and invoked through the typed
+ * `t3:connector.command` handler (AR2). Implemented by the main transport in
+ * `state/mainConnectorTransport.ts`.
+ */
+export interface T3ConnectorCommandBridge {
   createThread(input: { projectId?: string; title?: string }): Promise<{ threadId: string }>;
   selectThread(threadId: string): Promise<void>;
   sendPrompt(input: { threadId: string; text: string }): Promise<void>;
@@ -145,6 +136,14 @@ export interface T3Bridge {
   revokePairingLink(input: { readonly id: string }): Promise<boolean>;
   revokeClientSession(input: { readonly sessionId: string }): Promise<boolean>;
   revokeOtherClientSessions(): Promise<number>;
+}
+
+/** Capabilities that stay preload-resident after AR2. */
+export interface T3PreloadCapabilityBridge {
+  getAppBranding(): DesktopAppBranding;
   openExternal(url: string): Promise<void>;
   openPath(path: string): Promise<void>;
 }
+
+/** The API surface reachable by the renderer across both boundaries. */
+export interface T3Bridge extends T3ConnectorCommandBridge, T3PreloadCapabilityBridge {}

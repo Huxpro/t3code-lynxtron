@@ -640,6 +640,33 @@ typechecks, audits, reuse report, and build all pass. The stale measurement
 spec selectors (`.sidebar__title`, `.project-row__name`) were updated to the
 current V2 sidebar classes after the AR0 merge made V2 the default.
 
+### AR2 preload-polling cut-over (2026-07-31, complete)
+
+The main-owned connector is now authoritative. `main.ts` always starts the
+connector host; the renderer bootstraps with one ready-and-snapshot exchange,
+consumes sequenced push events, and routes every connector command through
+the typed `t3:connector.command` handler. Removed: the reachable 400 ms
+polling interval, the preload `LatestState` snapshot buffers, and all
+preload connector command methods (`preload.js` shrank 8,453 → 4,847 bytes).
+Preload keeps only proven preload-resident capabilities: app branding, JSON
+preference storage, clipboard, and native/external navigation; it owns no
+product state. Connectivity now reads a standalone `connectionStatusAtom`
+instead of the deleted preload `getStatus`. A failed transport probe surfaces
+an honest error state rather than a timer-based fallback.
+
+Verification: a flagless launch reports `kind: "main"`; a hook-driven
+`createThread` returned a canonical id and the pushed shell event rendered it
+(`reports/screenshots/ar2-cutover-1280x820.jpg`, zero renderer errors).
+Startup, resync, renderer reload, and shutdown have focused tests (65 total
+across the app); SIGTERM now releases the connector-owned server on the
+default path, retiring the polling-path leak. Current credential-redaction
+tests pass; the integration smoke still drives 18 monotonic events across all
+six kinds through a real server bootstrap, prompt, interruption, and
+shutdown. R3 is closed for the T3 architecture; the upstream issue stays
+open for the missing general capability. Renderer bundle is 2,084.3 kB
+(-0.5 kB); event payloads are unchanged DTO shapes now delivered per change
+instead of per 400 ms poll cycle.
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

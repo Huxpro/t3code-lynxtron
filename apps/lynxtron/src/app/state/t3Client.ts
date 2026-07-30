@@ -45,6 +45,7 @@ import type {
 } from "../bridge";
 import { navigate } from "../router";
 import { appAtomRegistry } from "./atomRegistry";
+import { reportConnectionStatus } from "./connectionStatus";
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "./environment";
 import { getClientSettingsState, getPref, setPref, updateClientSettingsState } from "./prefsStore";
 import {
@@ -60,13 +61,7 @@ import type {
   ConnectorSnapshot,
 } from "../../shared/connectorProtocol.ts";
 
-interface PollBridge extends T3Bridge {
-  getStatus: () => StatusEventPayload;
-  getConfig: () => ServerConfig | null;
-  getAccess: () => AuthAccessPresentation;
-  getShell: () => ShellEventPayload;
-  getThread: (threadId: string) => ThreadEventPayload | null;
-}
+interface PollBridge extends T3Bridge {}
 
 declare const NativeModules: {
   nodejs?: { exposed?: Partial<PollBridge> };
@@ -247,6 +242,7 @@ function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelec
 
 function applyStatusPayload(status: StatusEventPayload): void {
   const current = appAtomRegistry.get(t3ClientStateAtom);
+  reportConnectionStatus(status.status);
   if (status.status !== current.status || status.detail !== current.statusDetail) {
     patchState({ status: status.status, statusDetail: status.detail });
   }
@@ -317,31 +313,12 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
   });
 }
 
-function pollOnce(): void {
-  const bridge = getBridge();
-  if (!bridge) return;
-  const status = bridge.getStatus?.();
-  if (status) applyStatusPayload(status);
-
-  const config = bridge.getConfig?.();
-  if (config) applyConfigPayload(config);
-
-  const access = bridge.getAccess?.();
-  if (access) applyAccessPayload(access);
-
-  const shell = bridge.getShell?.();
-  if (shell) applyShellPayload(shell);
-
-  const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
-  if (!activeThreadId) return;
-  const thread = bridge.getThread?.(activeThreadId);
-  if (!thread) return;
-  applyThreadPayload(thread);
-}
-
-function applyConnectorSnapshot(snapshot: ConnectorSnapshot): void {
+function applyConnectorSnapshot(
+  snapshot: ConnectorSnapshot,
+  preferredSelection?: ModelSelection | null,
+): void {
   applyStatusPayload(snapshot.status as StatusEventPayload);
-  if (snapshot.config) applyConfigPayload(snapshot.config);
+  if (snapshot.config) applyConfigPayload(snapshot.config, preferredSelection);
   applyAccessPayload(snapshot.access);
   applyShellPayload(snapshot.shell as ShellEventPayload);
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
@@ -389,52 +366,19 @@ function installTransportDevToolHook(): void {
   (
     globalThis as {
       __T3_LYNXTRON_CONNECTOR_TRANSPORT__?: {
-        kind: "main" | "polling";
+        kind: "main" | "unavailable";
         lastSeq: () => number;
         invoke: (method: string, params?: unknown) => Promise<unknown>;
       };
     }
   ).__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
-    kind: mainTransport ? "main" : "polling",
+    kind: mainTransport ? ("main" as const) : ("unavailable" as const),
     lastSeq: () => mainTransport?.lastSeq ?? -1,
     invoke: (method, params) => {
       if (!mainTransport) return Promise.reject(new Error("main transport is not active"));
       return mainTransport.invoke(method as ConnectorCommandName, params);
     },
   };
-}
-
-function startPollingClient(): void {
-  const bridge = getBridge();
-  if (!bridge?.connect) {
-    patchState({
-      status: "error",
-      statusDetail: "Backend bridge unavailable (NativeModules.nodejs.exposed missing).",
-    });
-    return;
-  }
-
-  patchState({ status: "connecting" });
-  bridge
-    .connect()
-    .then((result) => {
-      const saved = getPref<ModelSelection | null>("modelSelection", null);
-      patchState({
-        status: result.status,
-        statusDetail: result.detail,
-      });
-      if (result.config) {
-        applyConfigPayload(result.config, saved);
-      }
-    })
-    .catch((error: unknown) => {
-      patchState({
-        status: "error",
-        statusDetail: error instanceof Error ? error.message : String(error),
-      });
-    });
-
-  setInterval(pollOnce, 400);
 }
 
 function startT3Client(): void {
@@ -445,9 +389,10 @@ function startT3Client(): void {
 
 async function bootstrapT3Client(): Promise<void> {
   "background only";
-  // AR1 spike: prefer the main-owned push transport when main registered the
-  // typed connector handlers (T3_LYNXTRON_MAIN_CONNECTOR=1). The preload
-  // polling path stays the default when the probe does not answer.
+  // AR2: the main-owned push transport is authoritative. The renderer
+  // bootstraps with one ready-and-snapshot exchange, consumes sequenced push
+  // events, and routes commands through the typed main handlers. There is no
+  // polling fallback; a failed probe surfaces an honest error state.
   let eventRegistry: GlobalEventListenerRegistry | undefined;
   try {
     eventRegistry =
@@ -455,21 +400,32 @@ async function bootstrapT3Client(): Promise<void> {
   } catch {
     eventRegistry = undefined;
   }
+  const saved = getPref<ModelSelection | null>("modelSelection", null);
+  let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
     bridge: NativeModules?.bridge,
     eventRegistry,
-    applySnapshot: applyConnectorSnapshot,
+    applySnapshot: (snapshot) => {
+      // The first snapshot applies the locally saved model selection as the
+      // preferred projection, matching the former connect()-time behavior.
+      applyConnectorSnapshot(snapshot, firstSnapshotApplied ? null : saved);
+      firstSnapshotApplied = true;
+    },
     applyEvent: applyConnectorEvent,
     onLog: (line) => console.log(line),
   });
-  if (transport) {
-    mainTransport = transport;
-    mainCommandBridge = buildMainCommandBridge(transport);
+  if (!transport) {
     installTransportDevToolHook();
+    patchState({
+      status: "error",
+      statusDetail:
+        "Main-owned connector transport unavailable (typed bridge probe failed). The renderer cannot reach the backend.",
+    });
     return;
   }
+  mainTransport = transport;
+  mainCommandBridge = buildMainCommandBridge(transport);
   installTransportDevToolHook();
-  startPollingClient();
 }
 
 export function useT3ClientState(): T3ClientState {

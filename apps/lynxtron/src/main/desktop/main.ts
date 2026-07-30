@@ -102,14 +102,13 @@ function nudgeFramedWindowViewport(win: ResizableWindow, delayMs = 600): void {
 }
 
 /**
- * AR1 spike: main-owned connector behind T3_LYNXTRON_MAIN_CONNECTOR=1. Main
- * instantiates the prebuilt connector bundle, registers the typed lynxBridge
- * handlers, and pushes sequenced events with sendGlobalEvent. The preload
- * polling path remains the default when the flag is off; the renderer probes
- * the typed path once and falls back to polling when it does not answer.
+ * Main-owned connector (authoritative since AR2). Main instantiates the
+ * prebuilt connector bundle, registers the typed lynxBridge handlers, and
+ * pushes sequenced events with sendGlobalEvent. The renderer bootstraps with
+ * one ready-and-snapshot exchange and then consumes pushed events; no
+ * renderer-side polling remains.
  */
-function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost | null {
-  if (process.env.T3_LYNXTRON_MAIN_CONNECTOR !== "1") return null;
+function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
   const connectorPath = path.join(__dirname, "connector.bundle.cjs");
   const { T3Connector } = __non_webpack_require__(connectorPath);
   const host = new MainConnectorHost({
@@ -140,7 +139,7 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost | nul
       `[main-connector] connect failed: ${error instanceof Error ? error.message : String(error)}`,
     );
   });
-  console.log("[main-connector] main-owned connector host started (T3_LYNXTRON_MAIN_CONNECTOR=1)");
+  console.log("[main-connector] main-owned connector host started");
   return host;
 }
 

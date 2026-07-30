@@ -1,12 +1,14 @@
 import type { ClientUiCapabilities } from "@t3tools/client-runtime/platform";
 
+import { appAtomRegistry } from "../state/atomRegistry";
+import { connectionStatusAtom } from "../state/connectionStatus";
+
 interface PlatformBridge {
   getPrefs?: () => Record<string, unknown>;
   setPrefs?: (patch: Record<string, unknown>) => Record<string, unknown>;
   writeClipboardText?: (value: string) => void;
   openExternal?: (url: string) => Promise<void>;
   openPath?: (path: string) => Promise<void>;
-  getStatus?: () => { status: string };
 }
 
 declare const NativeModules: {
@@ -55,7 +57,9 @@ export const clientCapabilities: ClientUiCapabilities = {
   connectivity: {
     isOnline: () => {
       "background only";
-      return bridge()?.getStatus?.().status !== "error";
+      // Backed by the main-owned connector status stream (AR2); the preload
+      // no longer exposes connector state.
+      return appAtomRegistry.get(connectionStatusAtom) !== "error";
     },
   },
   keyboard: {
