@@ -907,6 +907,34 @@ the Files tab through the converged empty-state grid and renders the real
 16,340-file workspace tree through the shared rows with zero renderer errors
 (`reports/screenshots/ar53-files-panel-1280x820.jpg`).
 
+## Session handoff (2026-08-01, after AR5.4)
+
+- Branch `lynxtron-port`, pushed to `lynxtron/lynxtron-port`; HEAD is
+  `6cf72ad39` (AR5.4). Completed this session: AR5.2 (`6cd7b0fe7`), AR5.3 in
+  two commits (`07356b977`, `26103dc9c`), AR5.4 (`6cf72ad39`).
+- Next slice: AR5.5 root route composition and overlay ownership. Survey
+  finding: the Lynx root is already a thin host (`src/app/index.tsx`, 92
+  lines: RootSwitch + state-driven RootOverlays mounting QuickSwitch and
+  ModelPicker, matching Web's overlay ownership), and the Lynx `ChatView`
+  (154 lines) is a header/timeline/composer/right-panel host on shared
+  projections. The remaining duplication is the chat shell anatomy inside
+  Web's 6,176-line `ChatView.tsx`; the honest move is extracting a shared
+  chat-body surface (header slot, timeline/composer slot, right-panel slot)
+  rather than copying anything into `apps/lynxtron`. That extraction is the
+  largest single Web refactor in the plan and should start a fresh session.
+- After AR5.5: AR6 certification (dual viewports, light/dark, state matrix,
+  reuse/bundle finals, packaged smoke, real-input user session for R5/R12,
+  release classification).
+- Processes/ports: none left running (all Lynxtron app instances from capture
+  runs were stopped by tracked PID; the unrelated `synara` worktree instance
+  was never touched).
+- Temporary fixtures: `/tmp/t3code-ar52-settings.770L6Q` (seeded state,
+  snapshot `ed69ad13…`), `/tmp/ar53-tap-point.mjs`, `/tmp/ar5*-capture*.sh`
+  capture drivers. Repo-tracked capture specs live in
+  `apps/lynxtron/scripts/visual-measurement-spec.{settings-*,right-panel*,files-panel}.json`.
+- No new compatibility gaps; overrides.css stands at 3,187 lines (from 3,531
+  at AR5.2 start); renderer bundle is 2,277.3 kB.
+
 ### AR5.4 Sidebar state and behavior hosts (2026-08-01, complete)
 
 The Sidebar composition was already physically shared before this slice:
