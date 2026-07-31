@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1494,
+  "uniqueStaticUtilities": 1489,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -85,10 +85,6 @@
       "occurrences": 6
     },
     {
-      "utility": "hover:bg-accent/60",
-      "occurrences": 6
-    },
-    {
       "utility": "focus-visible:outline-none",
       "occurrences": 6
     },
@@ -98,6 +94,10 @@
     },
     {
       "utility": "hover:bg-muted",
+      "occurrences": 5
+    },
+    {
+      "utility": "hover:bg-accent/60",
       "occurrences": 5
     },
     {
@@ -173,10 +173,6 @@
       "occurrences": 2
     },
     {
-      "utility": "hover:border-border",
-      "occurrences": 2
-    },
-    {
       "utility": "hover:bg-transparent",
       "occurrences": 2
     },
@@ -243,6 +239,10 @@
     {
       "utility": "hover:opacity-100",
       "occurrences": 2
+    },
+    {
+      "utility": "hover:border-border",
+      "occurrences": 1
     },
     {
       "utility": "hover:cursor-pointer",

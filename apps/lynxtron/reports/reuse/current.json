@@ -15546,7 +15546,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3455,
+              "lines": 3282,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -15849,6 +15849,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
               },
@@ -15916,6 +15926,11 @@
                 "from": "apps/lynxtron/src/app/components/QuickSwitch.tsx",
                 "request": "@t3tools/client-runtime/presentation/time",
                 "to": "packages/client-runtime/src/presentation/time.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -16306,6 +16321,31 @@
                 "from": "apps/web/src/components/CommandPaletteSurface.tsx",
                 "request": "./ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/settings/GeneralSettingsContent.tsx",
@@ -17388,8 +17428,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 34792,
-            "eligibleModules": 154,
+            "eligibleLines": 34949,
+            "eligibleModules": 156,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17458,7 +17498,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
@@ -17473,7 +17513,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -17503,7 +17543,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3455,
+                "lines": 3282,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -17623,8 +17663,18 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 16,
                 "path": "apps/web/src/components/ProjectFavicon.lynx.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -25627,13 +25677,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 431,
             "PATCHED": 0,
-            "SHARED": 36,
+            "SHARED": 38,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 103891,
-            "modules": 468
+            "lines": 104090,
+            "modules": 470
           },
           "largestNonShared": [
             {
@@ -25856,8 +25906,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -26071,6 +26136,31 @@
               },
               {
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
@@ -26440,8 +26530,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13679,
-            "eligibleModules": 83,
+            "eligibleLines": 14009,
+            "eligibleModules": 85,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -26485,12 +26575,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -26686,12 +26776,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8010,
-            "modules": 36
+            "lines": 8298,
+            "modules": 38
           },
           "reusePercent": {
-            "lines": 7.7,
-            "modules": 7.7
+            "lines": 8,
+            "modules": 8.1
           },
           "web": {
             "edges": [
@@ -29657,6 +29747,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -29704,6 +29799,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -29796,9 +29901,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -35014,8 +35134,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -35043,8 +35168,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -36880,13 +37010,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 413,
             "PATCHED": 0,
-            "SHARED": 21,
+            "SHARED": 23,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93376,
-            "modules": 434
+            "lines": 93575,
+            "modules": 436
           },
           "largestNonShared": [
             {
@@ -37109,8 +37239,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -37293,6 +37438,31 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/composer.ts",
                 "request": "@t3tools/shared/providerOptions",
                 "to": "packages/shared/src/providerOptions.ts"
@@ -37323,8 +37493,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9885,
-            "eligibleModules": 44,
+            "eligibleLines": 10215,
+            "eligibleModules": 46,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -37368,12 +37538,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -37446,12 +37616,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5809,
-            "modules": 21
+            "lines": 6097,
+            "modules": 23
           },
           "reusePercent": {
-            "lines": 6.2,
-            "modules": 4.8
+            "lines": 6.5,
+            "modules": 5.3
           },
           "web": {
             "edges": [
@@ -40347,6 +40517,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -40394,6 +40569,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -40476,9 +40661,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -44739,8 +44939,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -44763,8 +44968,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -46446,13 +46656,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 481,
             "PATCHED": 0,
-            "SHARED": 37,
+            "SHARED": 39,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114218,
-            "modules": 519
+            "lines": 114417,
+            "modules": 521
           },
           "largestNonShared": [
             {
@@ -46675,8 +46885,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -46900,6 +47125,31 @@
               },
               {
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
@@ -47269,8 +47519,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13720,
-            "eligibleModules": 86,
+            "eligibleLines": 14050,
+            "eligibleModules": 88,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -47314,12 +47564,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -47526,12 +47776,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8273,
-            "modules": 37
+            "lines": 8561,
+            "modules": 39
           },
           "reusePercent": {
-            "lines": 7.2,
-            "modules": 7.1
+            "lines": 7.5,
+            "modules": 7.5
           },
           "web": {
             "edges": [
@@ -51182,6 +51432,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -51229,6 +51484,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -51451,9 +51716,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -57339,8 +57619,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -57388,8 +57673,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -59366,13 +59656,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 431,
             "PATCHED": 0,
-            "SHARED": 36,
+            "SHARED": 38,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 103891,
-            "modules": 468
+            "lines": 104090,
+            "modules": 470
           },
           "largestNonShared": [
             {
@@ -59595,8 +59885,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -59810,6 +60115,31 @@
               },
               {
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
@@ -60179,8 +60509,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13679,
-            "eligibleModules": 83,
+            "eligibleLines": 14009,
+            "eligibleModules": 85,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -60224,12 +60554,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -60425,12 +60755,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8010,
-            "modules": 36
+            "lines": 8298,
+            "modules": 38
           },
           "reusePercent": {
-            "lines": 7.7,
-            "modules": 7.7
+            "lines": 8,
+            "modules": 8.1
           },
           "web": {
             "edges": [
@@ -63396,6 +63726,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -63443,6 +63778,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -63535,9 +63880,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -68753,8 +69113,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -68782,8 +69147,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -70619,13 +70989,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 413,
             "PATCHED": 0,
-            "SHARED": 21,
+            "SHARED": 23,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93376,
-            "modules": 434
+            "lines": 93575,
+            "modules": 436
           },
           "largestNonShared": [
             {
@@ -70848,8 +71218,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -71032,6 +71417,31 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/composer.ts",
                 "request": "@t3tools/shared/providerOptions",
                 "to": "packages/shared/src/providerOptions.ts"
@@ -71062,8 +71472,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9885,
-            "eligibleModules": 44,
+            "eligibleLines": 10215,
+            "eligibleModules": 46,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -71107,12 +71517,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -71188,12 +71598,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5809,
-            "modules": 21
+            "lines": 6097,
+            "modules": 23
           },
           "reusePercent": {
-            "lines": 6.2,
-            "modules": 4.8
+            "lines": 6.5,
+            "modules": 5.3
           },
           "web": {
             "edges": [
@@ -74089,6 +74499,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -74136,6 +74551,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -74218,9 +74643,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -78481,8 +78921,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -78505,8 +78950,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -80191,13 +80641,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 481,
             "PATCHED": 0,
-            "SHARED": 37,
+            "SHARED": 39,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114227,
-            "modules": 519
+            "lines": 114426,
+            "modules": 521
           },
           "largestNonShared": [
             {
@@ -80420,8 +80870,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -80645,6 +81110,31 @@
               },
               {
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
@@ -81014,8 +81504,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13720,
-            "eligibleModules": 86,
+            "eligibleLines": 14050,
+            "eligibleModules": 88,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -81059,12 +81549,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -81271,12 +81761,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8273,
-            "modules": 37
+            "lines": 8561,
+            "modules": 39
           },
           "reusePercent": {
-            "lines": 7.2,
-            "modules": 7.1
+            "lines": 7.5,
+            "modules": 7.5
           },
           "web": {
             "edges": [
@@ -84927,6 +85417,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -84974,6 +85469,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -85196,9 +85701,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -91094,8 +91614,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -91143,8 +91668,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -93121,13 +93651,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 413,
             "PATCHED": 0,
-            "SHARED": 21,
+            "SHARED": 23,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93376,
-            "modules": 434
+            "lines": 93575,
+            "modules": 436
           },
           "largestNonShared": [
             {
@@ -93350,8 +93880,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -93534,6 +94079,31 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/composer.ts",
                 "request": "@t3tools/shared/providerOptions",
                 "to": "packages/shared/src/providerOptions.ts"
@@ -93564,8 +94134,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9885,
-            "eligibleModules": 44,
+            "eligibleLines": 10215,
+            "eligibleModules": 46,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -93609,12 +94179,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -93690,12 +94260,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5809,
-            "modules": 21
+            "lines": 6097,
+            "modules": 23
           },
           "reusePercent": {
-            "lines": 6.2,
-            "modules": 4.8
+            "lines": 6.5,
+            "modules": 5.3
           },
           "web": {
             "edges": [
@@ -96591,6 +97161,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -96638,6 +97213,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -96720,9 +97305,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -100983,8 +101583,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -101007,8 +101612,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -107894,13 +108504,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 481,
             "PATCHED": 0,
-            "SHARED": 37,
+            "SHARED": 39,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114218,
-            "modules": 519
+            "lines": 114417,
+            "modules": 521
           },
           "largestNonShared": [
             {
@@ -108123,8 +108733,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -108348,6 +108973,31 @@
               },
               {
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
@@ -108717,8 +109367,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13720,
-            "eligibleModules": 86,
+            "eligibleLines": 14050,
+            "eligibleModules": 88,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -108762,12 +109412,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -108974,12 +109624,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8273,
-            "modules": 37
+            "lines": 8561,
+            "modules": 39
           },
           "reusePercent": {
-            "lines": 7.2,
-            "modules": 7.1
+            "lines": 7.5,
+            "modules": 7.5
           },
           "web": {
             "edges": [
@@ -112630,6 +113280,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -112677,6 +113332,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -112899,9 +113564,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -118787,8 +119467,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -118836,8 +119521,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -129927,13 +130617,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 481,
             "PATCHED": 0,
-            "SHARED": 37,
+            "SHARED": 39,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114218,
-            "modules": 519
+            "lines": 114417,
+            "modules": 521
           },
           "largestNonShared": [
             {
@@ -130156,8 +130846,23 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "../../../../web/src/components/PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
+                "request": "./MarkdownRenderer",
+                "to": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
+                "request": "../../../../web/src/components/RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/RightPanel.tsx",
@@ -130381,6 +131086,31 @@
               },
               {
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
@@ -130750,8 +131480,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13720,
-            "eligibleModules": 86,
+            "eligibleLines": 14050,
+            "eligibleModules": 88,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -130795,12 +131525,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 89,
+                "lines": 84,
                 "path": "apps/lynxtron/src/app/components/PlanPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 205,
                 "path": "apps/lynxtron/src/app/components/RightPanel.tsx"
               },
               {
@@ -131007,12 +131737,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8273,
-            "modules": 37
+            "lines": 8561,
+            "modules": 39
           },
           "reusePercent": {
-            "lines": 7.2,
-            "modules": 7.1
+            "lines": 7.5,
+            "modules": 7.5
           },
           "web": {
             "edges": [
@@ -134663,6 +135393,11 @@
               },
               {
                 "from": "apps/web/src/components/PlanSidebar.tsx",
+                "request": "./PlanSurface",
+                "to": "apps/web/src/components/PlanSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "./ui/badge",
                 "to": "apps/web/src/components/ui/badge.tsx"
               },
@@ -134710,6 +135445,16 @@
                 "from": "apps/web/src/components/PlanSidebar.tsx",
                 "request": "~/state/use-atom-command",
                 "to": "apps/web/src/state/use-atom-command.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/PlanSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ProjectFavicon.tsx",
@@ -134932,9 +135677,24 @@
                 "to": "apps/web/src/components/ui/sheet.tsx"
               },
               {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
                 "request": "./chat/PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/RightPanelTabs.tsx",
+                "request": "./RightPanelSurface",
+                "to": "apps/web/src/components/RightPanelSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/RightPanelTabs.tsx",
@@ -140820,8 +141580,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 284,
+                "lines": 253,
                 "path": "apps/web/src/components/PlanSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/PlanSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -140869,8 +141634,13 @@
                 "path": "apps/web/src/components/RightPanelSheet.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 164,
+                "path": "apps/web/src/components/RightPanelSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 498,
+                "lines": 440,
                 "path": "apps/web/src/components/RightPanelTabs.tsx"
               },
               {
@@ -153982,7 +154752,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 62015,
+            "lines": 62012,
             "modules": 294
           },
           "largestNonShared": [
@@ -153993,7 +154763,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2340,
+              "lines": 2337,
               "path": "apps/web/src/components/settings/SettingsPanels.tsx"
             },
             {
@@ -158769,7 +159539,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2340,
+                "lines": 2337,
                 "path": "apps/web/src/components/settings/SettingsPanels.tsx"
               },
               {
@@ -160060,7 +160830,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 61340,
+            "lines": 61337,
             "modules": 285
           },
           "largestNonShared": [
@@ -160071,7 +160841,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2340,
+              "lines": 2337,
               "path": "apps/web/src/components/settings/SettingsPanels.tsx"
             },
             {
@@ -164677,7 +165447,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2340,
+                "lines": 2337,
                 "path": "apps/web/src/components/settings/SettingsPanels.tsx"
               },
               {
@@ -165942,7 +166712,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 85169,
+            "lines": 85166,
             "modules": 401
           },
           "largestNonShared": [
@@ -165963,7 +166733,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2340,
+              "lines": 2337,
               "path": "apps/web/src/components/settings/SettingsPanels.tsx"
             },
             {
@@ -173940,7 +174710,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2340,
+                "lines": 2337,
                 "path": "apps/web/src/components/settings/SettingsPanels.tsx"
               },
               {

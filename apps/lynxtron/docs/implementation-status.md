@@ -834,6 +834,46 @@ the providers card renders the real Claude instance summary, the connections
 row renders the live "This device" session, and the source-control row renders
 the detected Git integration through the shared surfaces.
 
+### AR5.3 Plan and right-panel chrome (2026-08-01, partial: chrome and plan)
+
+The plan panel and the right-panel chrome now compile shared physical
+compositions. `apps/web/src/components/PlanSurface.tsx` owns the plan
+explanation paragraph, the Steps section label and status rows (status colors
+and completed strikethrough included), the proposed-plan disclosure section,
+and the empty state; `apps/web/src/components/RightPanelSurface.tsx` owns the
+tab row anatomy (icon, truncated title, active/pending treatments, close
+affordance) and the empty-state card grid with its canonical copy. Web's
+`PlanSidebar` content and `RightPanelTabs` tabs and empty state render the
+same surfaces as the Lynx `PlanPanel` and `RightPanel`. Web keeps its
+behavior hosts: tab context menus, middle-click close, full-title tooltips,
+disabled-card reason tooltips, and the plan action menu. The proposed-plan
+markdown body stays a platform renderer island (Web ChatMarkdown; Lynx now
+MarkdownRenderer instead of raw text). Because hover selectors never fire on
+Lynx (R6), the tab surface takes a `closeVisible` prop so the close
+affordance stays visible without hover.
+
+Converged Lynx divergences, both toward the Web product: the right-panel add
+catalog is now the Web four-entry set with Browser and Terminal as disabled
+registered placeholders carrying honest reasons, and Plan no longer appears
+in the add menu or empty state — it opens through the proposed-plan product
+flow, as on Web. Deletions: the clean-room tab, empty-state, and plan-panel
+CSS (`overrides.css` 3,455 → 3,282 lines); new rules are glyph-leaf
+passthroughs and the disabled-menu-row treatment with
+surface/gap/remove-when comments. Thirteen focused surface tests cover tab
+anatomy, pending and hoverless close states, empty-grid disabled cards, plan
+step treatments, and the proposed-plan disclosure; 65 Lynxtron tests pass.
+Strict reuse on the existing-thread-transcript route reports 39/521 modules
+(7.5%) and 8,561/114,426 lines (7.5%), up from 37/519 and 8,273/114,227,
+boundary hash unchanged (`67f5a53f…`). Renderer bundle is 2,280.9 kB (+0.8
+kB). Runtime evidence: tap-driven DevTool captures at 1280 × 820 against
+isolated seeded state report zero renderer errors for the converged empty
+state (four cards with disabled placeholders) and the open Diff tab
+(`reports/screenshots/ar53-right-panel-{empty,diff}-1280x820.jpg`). The plan
+surface's markdown island is build- and audit-verified through the registered
+transcript island; an active-plan fixture remains follow-up evidence. The
+changed-files tree, diff chrome, and files panel stay in AR5.3's remaining
+scope.
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

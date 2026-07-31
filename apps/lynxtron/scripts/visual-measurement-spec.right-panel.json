@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "route": "right-panel",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "rightPanel",
+      "web": "[data-right-panel-tabbar]",
+      "lynx": ".right-panel"
+    },
+    {
+      "id": "tabBar",
+      "web": "[data-right-panel-tabbar]",
+      "lynx": ".right-panel__tabs"
+    },
+    {
+      "id": "content",
+      "web": ".right-panel__content",
+      "lynx": ".right-panel__content"
+    },
+    {
+      "id": "cardIcon",
+      "web": ".right-panel__empty-card-icon",
+      "lynx": ".right-panel__empty-card-icon"
+    }
+  ],
+  "typography": [],
+  "colors": []
+}

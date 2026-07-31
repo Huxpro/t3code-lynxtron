@@ -24,6 +24,11 @@ import { COLLAPSED_SIDEBAR_TITLEBAR_INSET_CLASS } from "~/workspaceTitlebar";
 
 import { PreviewPanelShell, type PreviewPanelMode } from "./preview/PreviewPanelShell";
 import { PierreEntryIcon } from "./chat/PierreEntryIcon";
+import {
+  RightPanelEmptySurface,
+  RightPanelTabSurface,
+  type RightPanelActionItem,
+} from "./RightPanelSurface";
 
 interface RightPanelTabsProps {
   mode: PreviewPanelMode;
@@ -95,94 +100,57 @@ function RightPanelEmptyState(props: {
   diffAvailable: boolean;
   filesAvailable: boolean;
 }) {
-  const actions = [
-    {
-      label: "Browser",
-      description: "Open a local app or URL.",
-      icon: Globe2,
-      available: props.browserAvailable,
-      disabledReason: SURFACE_DISABLED_REASONS.browser,
-      onClick: props.onAddBrowser,
-    },
-    {
-      label: "Terminal",
-      description: "Start a shell in this workspace.",
-      icon: TerminalSquare,
-      available: true,
-      disabledReason: null,
-      onClick: props.onAddTerminal,
-    },
-    {
-      label: "Files",
-      description: "Browse and read workspace files.",
-      icon: Files,
-      available: props.filesAvailable,
-      disabledReason: SURFACE_DISABLED_REASONS.files,
-      onClick: props.onAddFiles,
-    },
-    {
-      label: "Diff",
-      description: "Review changes in this thread.",
-      icon: FileDiff,
-      available: props.diffAvailable,
-      disabledReason: SURFACE_DISABLED_REASONS.diff,
-      onClick: props.onAddDiff,
-    },
-  ] as const;
+  const actions: ReadonlyArray<RightPanelActionItem & { readonly disabledReason: string | null }> =
+    [
+      {
+        key: "browser",
+        label: "Browser",
+        description: "Open a local app or URL.",
+        icon: <Globe2 className="size-5" />,
+        disabled: !props.browserAvailable,
+        disabledReason: SURFACE_DISABLED_REASONS.browser,
+        onSelect: props.onAddBrowser,
+      },
+      {
+        key: "terminal",
+        label: "Terminal",
+        description: "Start a shell in this workspace.",
+        icon: <TerminalSquare className="size-5" />,
+        disabled: false,
+        disabledReason: null,
+        onSelect: props.onAddTerminal,
+      },
+      {
+        key: "files",
+        label: "Files",
+        description: "Browse and read workspace files.",
+        icon: <Files className="size-5" />,
+        disabled: !props.filesAvailable,
+        disabledReason: SURFACE_DISABLED_REASONS.files,
+        onSelect: props.onAddFiles,
+      },
+      {
+        key: "diff",
+        label: "Diff",
+        description: "Review changes in this thread.",
+        icon: <FileDiff className="size-5" />,
+        disabled: !props.diffAvailable,
+        disabledReason: SURFACE_DISABLED_REASONS.diff,
+        onSelect: props.onAddDiff,
+      },
+    ];
 
+  const disabledReasonByKey = new Map(actions.map((action) => [action.key, action.disabledReason]));
   return (
-    <div className="flex min-h-0 flex-1 items-center justify-center p-6">
-      <div className="w-full max-w-xl">
-        <div className="mb-5 text-center">
-          <h3 className="text-sm font-medium text-foreground">Open a surface</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Choose what to show in the right panel.
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          {actions.map((action) => {
-            const Icon = action.icon;
-            const content = (
-              <>
-                <Icon className="mb-3 size-5" />
-                <span className="text-sm font-medium">{action.label}</span>
-                <span className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  {action.description}
-                </span>
-              </>
-            );
-            if (action.available) {
-              return (
-                <button
-                  key={action.label}
-                  type="button"
-                  onClick={action.onClick}
-                  className="flex min-h-28 w-full flex-col items-start rounded-lg border border-border/80 bg-card p-4 text-left transition hover:border-border hover:bg-accent/60 dark:border-transparent dark:shadow-none dark:inset-ring-1 dark:inset-ring-white/5"
-                >
-                  {content}
-                </button>
-              );
-            }
-            const disabledCard = (
-              <button
-                type="button"
-                className="flex min-h-28 w-full cursor-not-allowed flex-col items-start rounded-lg border border-border/80 bg-card p-4 text-left opacity-40 dark:border-transparent dark:shadow-none dark:inset-ring-1 dark:inset-ring-white/5"
-                aria-disabled="true"
-              >
-                {content}
-              </button>
-            );
-            return (
-              <DisabledReasonTooltip
-                key={action.label}
-                reason={action.disabledReason}
-                trigger={disabledCard}
-              />
-            );
-          })}
-        </div>
-      </div>
-    </div>
+    <RightPanelEmptySurface
+      actions={actions}
+      renderDisabledWrapper={(action, card) => (
+        <DisabledReasonTooltip
+          reason={disabledReasonByKey.get(action.key) ?? ""}
+          trigger={card as ReactElement}
+        />
+      )}
+    />
   );
 }
 
@@ -378,60 +346,34 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
               const pending = props.pendingSurfaceIds.has(surface.id);
               const title = surfaceTitle(surface, props.previewSessions, props.terminalLabelsById);
               return (
-                <div
+                <RightPanelTabSurface
                   key={surface.id}
-                  data-active-tab={active}
-                  onMouseDown={handleTabMouseDown}
-                  onAuxClick={(event) => handleTabAuxClick(event, surface)}
-                  onContextMenu={(event) => void handleTabContextMenu(event, surface)}
-                  className={cn(
-                    "group flex h-7 min-w-25 max-w-44 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm",
-                    active
-                      ? "bg-accent text-foreground"
-                      : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
-                  )}
-                >
-                  <Tooltip>
-                    <TooltipTrigger
-                      render={
-                        <button
-                          type="button"
-                          className="flex min-w-0 flex-1 items-center gap-1.5"
-                          onClick={() => props.onActivate(surface)}
-                        >
-                          <SurfaceIcon
-                            surface={surface}
-                            sessions={props.previewSessions}
-                            theme={resolvedTheme}
-                          />
-                          <span className="truncate">{title}</span>
-                        </button>
-                      }
+                  icon={
+                    <SurfaceIcon
+                      surface={surface}
+                      sessions={props.previewSessions}
+                      theme={resolvedTheme}
                     />
-                    <TooltipPopup>{title}</TooltipPopup>
-                  </Tooltip>
-                  <button
-                    type="button"
-                    className={cn(
-                      "relative flex size-4 shrink-0 items-center justify-center rounded hover:bg-muted focus:opacity-100",
-                      pending ? "opacity-100" : "opacity-0 group-hover:opacity-100",
-                    )}
-                    aria-label={`Close ${title}`}
-                    onClick={() => props.onCloseSurface(surface)}
-                  >
-                    {pending ? (
-                      <>
-                        <span
-                          className="size-2 rounded-full bg-current group-hover:hidden"
-                          aria-hidden
-                        />
-                        <X className="hidden size-3 group-hover:block" />
-                      </>
-                    ) : (
-                      <X className="size-3" />
-                    )}
-                  </button>
-                </div>
+                  }
+                  title={title}
+                  active={active}
+                  pending={pending}
+                  onActivate={() => props.onActivate(surface)}
+                  onClose={() => props.onCloseSurface(surface)}
+                  closeIcon={<X className="size-3" />}
+                  pendingCloseIcon={<X className="size-3" />}
+                  renderActivateWrapper={(button) => (
+                    <Tooltip>
+                      <TooltipTrigger render={button as ReactElement} />
+                      <TooltipPopup>{title}</TooltipPopup>
+                    </Tooltip>
+                  )}
+                  onMouseDown={(event) => handleTabMouseDown(event as ReactMouseEvent)}
+                  onAuxClick={(event) => handleTabAuxClick(event as ReactMouseEvent, surface)}
+                  onContextMenu={(event) =>
+                    void handleTabContextMenu(event as ReactMouseEvent, surface)
+                  }
+                />
               );
             })}
             {props.surfaces.length > 0 ? (

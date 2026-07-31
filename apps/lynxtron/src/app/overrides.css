@@ -2481,52 +2481,18 @@
   height: 40px;
 }
 
-.right-panel__tab {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 28px;
-  padding: 0 4px 0 8px;
-  border-radius: 6px;
-  margin-right: 2px;
-  background-color: transparent;
+/* surface: right panel tabs (glyph leaves); gap: R1 (raster icon set does not
+   cover surface-kind glyphs); remove-when: glyphs move to the raster icon
+   island. The tab row anatomy compiles from the shared RightPanelTabSurface
+   (AR5.3). */
+.right-panel__tab-icon {
+  font-size: 12px;
+  color: currentColor;
 }
 
-.right-panel__tab--active {
-  background-color: var(--sidebar-row-active);
-}
-
-.right-panel__tab-inner {
-  display: flex;
-  align-items: center;
-  height: 28px;
-  padding-right: 4px;
-}
-
-.right-panel__tab-label {
+.right-panel__tab-close-glyph {
+  font-size: 12px;
   color: var(--sidebar-muted-foreground);
-  font-size: 13px;
-  font-weight: 500;
-  font-family: var(--font-sans);
-}
-
-.right-panel__tab-label--active {
-  color: var(--sidebar-foreground);
-}
-
-.right-panel__tab-close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-}
-
-.right-panel__tab-close-text {
-  color: var(--sidebar-muted-foreground);
-  font-size: 14px;
-  opacity: 0.5;
 }
 
 /* Add surface button */
@@ -2586,6 +2552,13 @@
   font-family: var(--font-sans);
 }
 
+/* surface: right panel add menu (registered-placeholder rows); gap: none;
+   remove-when: the placeholder surfaces ship or the shared menu anatomy
+   covers disabled rows. */
+.right-panel__add-item--disabled {
+  opacity: 0.4;
+}
+
 .right-panel__close {
   display: flex;
   align-items: center;
@@ -2608,65 +2581,13 @@
 }
 
 /* ============= Right Panel Empty State ============= */
-.right-panel__empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 24px 16px;
-  flex-grow: 1;
-}
-
-.right-panel__empty-state-title {
-  color: var(--sidebar-foreground);
-  font-size: 14px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-}
-
-.right-panel__empty-state-desc {
-  color: var(--sidebar-muted-foreground);
-  font-size: 12px;
-  font-family: var(--font-sans);
-  margin-top: 4px;
-  margin-bottom: 20px;
-}
-
-.right-panel__empty-grid {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.right-panel__empty-card {
-  display: flex;
-  flex-direction: column;
-  padding: 14px;
-  border-radius: 8px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--sidebar-border);
-  margin-bottom: 8px;
-}
-
+/* The empty-state grid and card anatomy compile from the shared
+   RightPanelEmptySurface (AR5.3); only the card icon glyph leaf remains. */
+/* surface: right panel empty state (glyph leaf); gap: R1 (raster icon set
+   does not cover surface-kind glyphs); remove-when: glyphs move to the raster
+   icon island. */
 .right-panel__empty-card-icon {
   font-size: 20px;
-  margin-bottom: 8px;
-}
-
-.right-panel__empty-card-label {
-  color: var(--sidebar-foreground);
-  font-size: 14px;
-  font-weight: 500;
-  font-family: var(--font-sans);
-}
-
-.right-panel__empty-card-desc {
-  color: var(--sidebar-muted-foreground);
-  font-size: 12px;
-  font-family: var(--font-sans);
-  margin-top: 4px;
-  line-height: 18px;
 }
 
 /* ============= Plan Panel ============= */
@@ -2681,48 +2602,15 @@
   display: flex;
   flex-direction: column;
   padding: 12px;
+  gap: 16px;
 }
 
-.plan-panel__explanation {
-  color: var(--sidebar-muted-foreground);
-  font-size: 13px;
-  line-height: 20px;
-  font-family: var(--font-sans);
-  margin-bottom: 16px;
-}
-
-.plan-panel__section-title {
-  color: var(--sidebar-muted-foreground);
-  font-size: 10px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-}
-
-.plan-panel__steps {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-}
-
-.plan-step {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 8px 10px;
-  border-radius: 8px;
-  margin-bottom: 2px;
-}
-
-.plan-step--active {
-  background-color: rgba(59, 130, 246, 0.08);
-}
-
-.plan-step--done {
-  background-color: rgba(34, 197, 94, 0.06);
-}
-
+/* Plan explanation, steps, proposed-plan section, and empty state compile
+   from the shared PlanSurface (AR5.3); only the status-icon and chevron
+   glyph leaves remain. */
+/* surface: plan steps (status glyph leaves); gap: R1 (raster icon set does
+   not cover status glyphs); remove-when: glyphs move to the raster icon
+   island. */
 .plan-step__icon {
   width: 20px;
   height: 20px;
@@ -2755,73 +2643,12 @@
   font-size: 12px;
 }
 
-.plan-step__text {
-  color: var(--sidebar-foreground);
-  font-size: 13px;
-  line-height: 18px;
-  font-family: var(--font-sans);
-  flex-grow: 1;
-}
-
-.plan-step__text--done {
-  color: var(--sidebar-muted-foreground);
-  text-decoration: line-through;
-}
-
-.plan-panel__proposed {
-  display: flex;
-  flex-direction: column;
-}
-
-.plan-panel__proposed-header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
+/* surface: plan proposed-plan disclosure (chevron glyph leaf); gap: R1
+   (raster icon set does not cover chevron glyphs); remove-when: glyphs move
+   to the raster icon island. */
 .plan-panel__proposed-chevron {
   color: var(--sidebar-muted-foreground);
   font-size: 10px;
-  margin-right: 6px;
-}
-
-.plan-panel__markdown {
-  border-radius: 8px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--sidebar-border);
-  background-color: var(--background);
-  padding: 12px;
-}
-
-.plan-panel__markdown-text {
-  color: var(--sidebar-foreground);
-  font-size: 13px;
-  line-height: 20px;
-  font-family: var(--font-mono);
-}
-
-.plan-panel__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 0;
-}
-
-.plan-panel__empty-title {
-  color: var(--sidebar-muted-foreground);
-  font-size: 13px;
-  font-family: var(--font-sans);
-}
-
-.plan-panel__empty-desc {
-  color: var(--sidebar-muted-foreground);
-  font-size: 11px;
-  font-family: var(--font-sans);
-  margin-top: 4px;
-  opacity: 0.6;
 }
 
 /* ============= Diff Panel ============= */

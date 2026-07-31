@@ -28,6 +28,12 @@ import {
   stripDisplayedPlanMarkdown,
 } from "../proposedPlan";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "./ui/menu";
+import {
+  PlanEmptySurface,
+  PlanExplanationSurface,
+  PlanStepsSurface,
+  ProposedPlanSectionSurface,
+} from "./PlanSurface";
 import { projectEnvironment } from "~/state/projects";
 import { stackedThreadToast, toastManager } from "./ui/toast";
 import { useCopyToClipboard } from "~/hooks/useCopyToClipboard";
@@ -197,83 +203,46 @@ const PlanSidebar = memo(function PlanSidebar({
         <div className="p-3 space-y-4">
           {/* Explanation */}
           {activePlan?.explanation ? (
-            <p className="text-[13px] leading-relaxed text-muted-foreground/80">
-              {activePlan.explanation}
-            </p>
+            <PlanExplanationSurface>{activePlan.explanation}</PlanExplanationSurface>
           ) : null}
 
           {/* Plan Steps */}
           {activePlan && activePlan.steps.length > 0 ? (
-            <div className="space-y-1">
-              <p className="mb-2 text-[10px] font-semibold tracking-widest text-muted-foreground/40 uppercase">
-                Steps
-              </p>
-              {activePlan.steps.map((step) => (
-                <div
-                  key={`${step.status}:${step.step}`}
-                  className={cn(
-                    "flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors duration-200",
-                    step.status === "inProgress" && "bg-blue-500/5",
-                    step.status === "completed" && "bg-emerald-500/5",
-                  )}
-                >
-                  {stepStatusIcon(step.status)}
-                  <p
-                    className={cn(
-                      "text-[13px] leading-snug",
-                      step.status === "completed"
-                        ? "text-muted-foreground/50 line-through decoration-muted-foreground/20"
-                        : step.status === "inProgress"
-                          ? "text-foreground/90"
-                          : "text-muted-foreground/70",
-                    )}
-                  >
-                    {step.step}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <PlanStepsSurface
+              steps={activePlan.steps.map((step) => ({
+                key: `${step.status}:${step.step}`,
+                status: step.status,
+                text: step.step,
+              }))}
+              renderIcon={stepStatusIcon}
+            />
           ) : null}
 
           {/* Proposed Plan Markdown */}
           {planMarkdown ? (
-            <div className="space-y-2">
-              <button
-                type="button"
-                className="group flex w-full items-center gap-1.5 text-left"
-                onClick={() => setProposedPlanExpanded((v) => !v)}
-              >
-                {proposedPlanExpanded ? (
+            <ProposedPlanSectionSurface
+              title={planTitle ?? "Full Plan"}
+              expanded={proposedPlanExpanded}
+              onToggle={() => setProposedPlanExpanded((v) => !v)}
+              chevron={
+                proposedPlanExpanded ? (
                   <ChevronDownIcon className="size-3 shrink-0 text-muted-foreground/40 transition-transform" />
                 ) : (
                   <ChevronRightIcon className="size-3 shrink-0 text-muted-foreground/40 transition-transform" />
-                )}
-                <span className="text-[10px] font-semibold tracking-widest text-muted-foreground/40 uppercase group-hover:text-muted-foreground/60">
-                  {planTitle ?? "Full Plan"}
-                </span>
-              </button>
-              {proposedPlanExpanded ? (
-                <div className="rounded-lg border border-border/50 bg-background/50 p-3">
-                  <ChatMarkdown
-                    text={displayedPlanMarkdown ?? ""}
-                    cwd={markdownCwd}
-                    threadRef={threadRef}
-                    isStreaming={false}
-                  />
-                </div>
-              ) : null}
-            </div>
+                )
+              }
+            >
+              <ChatMarkdown
+                text={displayedPlanMarkdown ?? ""}
+                cwd={markdownCwd}
+                threadRef={threadRef}
+                isStreaming={false}
+              />
+            </ProposedPlanSectionSurface>
           ) : null}
 
           {/* Empty state */}
-          {!activePlan && !planMarkdown ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <p className="text-[13px] text-muted-foreground/40">No active plan yet.</p>
-              <p className="mt-1 text-[11px] text-muted-foreground/30">
-                Plans will appear here when generated.
-              </p>
-            </div>
-          ) : null}
+          {!activePlan && !planMarkdown ? <PlanEmptySurface /> : null}
         </div>
       </ScrollArea>
     </div>

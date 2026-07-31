@@ -1,4 +1,9 @@
 import { useCallback, useState } from "@lynx-js/react";
+import {
+  RightPanelEmptySurface,
+  RightPanelTabSurface,
+  type RightPanelActionItem,
+} from "../../../../web/src/components/RightPanelSurface";
 import type { ActivePlanState, LatestProposedPlanState } from "../bridge";
 import {
   uiActions,
@@ -15,10 +20,60 @@ interface RightPanelProps {
   activeProposedPlan: LatestProposedPlanState | null;
 }
 
-const ADDABLE_SURFACES: Array<{ kind: RightPanelKind; label: string; icon: string }> = [
-  { kind: "plan", label: "Plan", icon: "📋" },
-  { kind: "diff", label: "Diff", icon: "Δ" },
-  { kind: "files", label: "Files", icon: "📁" },
+type AddableKind = RightPanelKind | "browser" | "terminal";
+
+const SURFACE_ICONS: Record<RightPanelKind, string> = {
+  plan: "📋",
+  diff: "Δ",
+  files: "📁",
+};
+
+const ADDABLE_ICONS: Record<AddableKind, string> = {
+  ...SURFACE_ICONS,
+  browser: "🌐",
+  terminal: ">_",
+};
+
+/**
+ * Add-surface catalog, converged on the Web four-entry anatomy. Browser and
+ * Terminal stay registered placeholders (disabled with an honest reason);
+ * Plan opens through the proposed-plan product flow, not this menu.
+ */
+const ADDABLE_SURFACES: ReadonlyArray<{
+  readonly kind: AddableKind;
+  readonly label: string;
+  readonly description: string;
+  readonly disabled: boolean;
+  readonly disabledReason: string | null;
+}> = [
+  {
+    kind: "browser",
+    label: "Browser",
+    description: "Open a local app or URL.",
+    disabled: true,
+    disabledReason: "Embedded browser previews are a registered placeholder on Lynxtron.",
+  },
+  {
+    kind: "terminal",
+    label: "Terminal",
+    description: "Start a shell in this workspace.",
+    disabled: true,
+    disabledReason: "Terminal emulation is a registered placeholder on Lynxtron.",
+  },
+  {
+    kind: "files",
+    label: "Files",
+    description: "Browse and read workspace files.",
+    disabled: false,
+    disabledReason: null,
+  },
+  {
+    kind: "diff",
+    label: "Diff",
+    description: "Review changes in this thread.",
+    disabled: false,
+    disabledReason: null,
+  },
 ];
 
 function renderSurface(surface: RightPanelSurface, props: RightPanelProps) {
@@ -64,32 +119,37 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
   const activeSurface = state.surfaces.find((s) => s.id === state.activeSurfaceId) ?? null;
   const hasActiveSurface = activeSurface !== null;
 
+  const emptyActions: ReadonlyArray<RightPanelActionItem> = ADDABLE_SURFACES.map((item) => ({
+    key: item.kind,
+    icon: <text className="right-panel__empty-card-icon">{ADDABLE_ICONS[item.kind]}</text>,
+    label: item.label,
+    description: item.disabled && item.disabledReason ? item.disabledReason : item.description,
+    disabled: item.disabled,
+    onSelect: () => {
+      if (item.kind === "files" || item.kind === "diff" || item.kind === "plan") {
+        handleAddSurface(item.kind);
+      }
+    },
+  }));
+
   return (
     <view className="right-panel">
       {/* Tab bar */}
       <view className="right-panel__tabs">
         <scroll-view className="right-panel__tab-scroll" scroll-orientation="horizontal">
           <view className="right-panel__tab-list">
-            {state.surfaces.map((surface) => {
-              const isActive = surface.id === state.activeSurfaceId;
-              return (
-                <view
-                  key={surface.id}
-                  className={`right-panel__tab${isActive ? " right-panel__tab--active" : ""}`}
-                >
-                  <view className="right-panel__tab-inner" bindtap={() => handleTabClick(surface)}>
-                    <text
-                      className={`right-panel__tab-label${isActive ? " right-panel__tab-label--active" : ""}`}
-                    >
-                      {surface.label}
-                    </text>
-                  </view>
-                  <view className="right-panel__tab-close" bindtap={() => handleCloseTab(surface)}>
-                    <text className="right-panel__tab-close-text">×</text>
-                  </view>
-                </view>
-              );
-            })}
+            {state.surfaces.map((surface) => (
+              <RightPanelTabSurface
+                key={surface.id}
+                icon={<text className="right-panel__tab-icon">{SURFACE_ICONS[surface.kind]}</text>}
+                title={surface.label}
+                active={surface.id === state.activeSurfaceId}
+                onActivate={() => handleTabClick(surface)}
+                onClose={() => handleCloseTab(surface)}
+                closeIcon={<text className="right-panel__tab-close-glyph">×</text>}
+                closeVisible
+              />
+            ))}
           </view>
         </scroll-view>
         {/* Add surface button */}
@@ -105,10 +165,22 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
               {ADDABLE_SURFACES.map((item) => (
                 <view
                   key={item.kind}
-                  className="right-panel__add-item"
-                  bindtap={() => handleAddSurface(item.kind)}
+                  className={`right-panel__add-item${item.disabled ? " right-panel__add-item--disabled" : ""}`}
+                  {...(item.disabled
+                    ? {}
+                    : {
+                        bindtap: () => {
+                          if (
+                            item.kind === "files" ||
+                            item.kind === "diff" ||
+                            item.kind === "plan"
+                          ) {
+                            handleAddSurface(item.kind);
+                          }
+                        },
+                      })}
                 >
-                  <text className="right-panel__add-item-icon">{item.icon}</text>
+                  <text className="right-panel__add-item-icon">{ADDABLE_ICONS[item.kind]}</text>
                   <text className="right-panel__add-item-label">{item.label}</text>
                 </view>
               ))}
@@ -125,32 +197,7 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
         {hasActiveSurface ? (
           renderSurface(activeSurface, { activePlan, activeProposedPlan })
         ) : (
-          /* Empty state */
-          <view className="right-panel__empty-state">
-            <text className="right-panel__empty-state-title">Open a surface</text>
-            <text className="right-panel__empty-state-desc">
-              Choose what to show in the right panel.
-            </text>
-            <view className="right-panel__empty-grid">
-              {ADDABLE_SURFACES.map((item) => (
-                <view
-                  key={item.kind}
-                  className="right-panel__empty-card"
-                  bindtap={() => handleAddSurface(item.kind)}
-                >
-                  <text className="right-panel__empty-card-icon">{item.icon}</text>
-                  <text className="right-panel__empty-card-label">{item.label}</text>
-                  <text className="right-panel__empty-card-desc">
-                    {item.kind === "plan"
-                      ? "View plan steps and proposed plans."
-                      : item.kind === "diff"
-                        ? "Review changes in this thread."
-                        : "Browse and read workspace files."}
-                  </text>
-                </view>
-              ))}
-            </view>
-          </view>
+          <RightPanelEmptySurface actions={emptyActions} />
         )}
       </view>
     </view>

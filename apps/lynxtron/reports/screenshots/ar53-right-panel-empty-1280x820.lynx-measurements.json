@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "right-panel",
+  "anchors": {
+    "rightPanel": {
+      "selector": ".right-panel",
+      "nodeId": 149,
+      "rect": {
+        "x": 952,
+        "y": 52,
+        "width": 329,
+        "height": 768
+      },
+      "box": {
+        "width": 327.45281982421875,
+        "height": 768
+      },
+      "text": "+ × Open a surface Choose what to show in the right panel. 🌐 Browser Embedded browser previews are a registered placeholder on Lynxtron. >_ Terminal Terminal emulation is a registered placeholder on Lynxtron. 📁 Files Browse and read workspace files. Δ Diff Review changes in this thread.",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "tabBar": {
+      "selector": ".right-panel__tabs",
+      "nodeId": 150,
+      "rect": {
+        "x": 953,
+        "y": 52,
+        "width": 328,
+        "height": 40
+      },
+      "box": {
+        "width": 319.45281982421875,
+        "height": 39
+      },
+      "text": "+ ×",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "content": {
+      "selector": ".right-panel__content",
+      "nodeId": 159,
+      "rect": {
+        "x": 953,
+        "y": 92,
+        "width": 328,
+        "height": 728
+      },
+      "box": {
+        "width": 327.45281982421875,
+        "height": 728
+      },
+      "text": "Open a surface Choose what to show in the right panel. 🌐 Browser Embedded browser previews are a registered placeholder on Lynxtron. >_ Terminal Terminal emulation is a registered placeholder on Lynxtron. 📁 Files Browse and read workspace files. Δ Diff Review changes in this thread.",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "cardIcon": {
+      "selector": ".right-panel__empty-card-icon",
+      "nodeId": 170,
+      "rect": {
+        "x": 989,
+        "y": 292,
+        "width": 256,
+        "height": 29
+      },
+      "box": {
+        "width": 255.45281982421875,
+        "height": 29
+      },
+      "text": "🌐",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "20px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {},
+  "colors": {}
+}

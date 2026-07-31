@@ -1,6 +1,13 @@
 import { useCallback, useState } from "@lynx-js/react";
 import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
+import {
+  PlanEmptySurface,
+  PlanExplanationSurface,
+  PlanStepsSurface,
+  ProposedPlanSectionSurface,
+} from "../../../../web/src/components/PlanSurface";
 import type { ActivePlanState, LatestProposedPlanState } from "../bridge";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface PlanPanelProps {
   activePlan: ActivePlanState | null;
@@ -36,53 +43,41 @@ export function PlanPanel({ activePlan, activeProposedPlan }: PlanPanelProps) {
       <view className="plan-panel__inner">
         {/* Explanation */}
         {activePlan?.explanation ? (
-          <text className="plan-panel__explanation">{activePlan.explanation}</text>
+          <PlanExplanationSurface>{activePlan.explanation}</PlanExplanationSurface>
         ) : null}
 
         {/* Plan Steps */}
         {hasSteps ? (
-          <view className="plan-panel__steps">
-            <text className="plan-panel__section-title">Steps</text>
-            {activePlan!.steps.map((step) => (
-              <view
-                key={`${step.status}:${step.step}`}
-                className={`plan-step ${step.status === "inProgress" ? "plan-step--active" : ""} ${step.status === "completed" ? "plan-step--done" : ""}`}
-              >
-                <text className={`plan-step__icon ${stepStatusClass(step.status)}`}>
-                  {stepStatusIcon(step.status)}
-                </text>
-                <text
-                  className={`plan-step__text ${step.status === "completed" ? "plan-step__text--done" : ""}`}
-                >
-                  {step.step}
-                </text>
-              </view>
-            ))}
-          </view>
+          <PlanStepsSurface
+            steps={activePlan!.steps.map((step) => ({
+              key: `${step.status}:${step.step}`,
+              status: step.status,
+              text: step.step,
+            }))}
+            renderIcon={(status) => (
+              <text className={`plan-step__icon ${stepStatusClass(status)}`}>
+                {stepStatusIcon(status)}
+              </text>
+            )}
+          />
         ) : null}
 
         {/* Proposed Plan Markdown */}
         {planMarkdown ? (
-          <view className="plan-panel__proposed">
-            <view className="plan-panel__proposed-header" bindtap={toggleProposed}>
+          <ProposedPlanSectionSurface
+            title={planTitle ?? "Full Plan"}
+            expanded={proposedExpanded}
+            onToggle={toggleProposed}
+            chevron={
               <text className="plan-panel__proposed-chevron">{proposedExpanded ? "▼" : "▶"}</text>
-              <text className="plan-panel__section-title">{planTitle ?? "Full Plan"}</text>
-            </view>
-            {proposedExpanded ? (
-              <view className="plan-panel__markdown">
-                <text className="plan-panel__markdown-text">{planMarkdown}</text>
-              </view>
-            ) : null}
-          </view>
+            }
+          >
+            <MarkdownRenderer text={planMarkdown} streaming={false} />
+          </ProposedPlanSectionSurface>
         ) : null}
 
         {/* Empty state */}
-        {isEmpty ? (
-          <view className="plan-panel__empty">
-            <text className="plan-panel__empty-title">No active plan yet.</text>
-            <text className="plan-panel__empty-desc">Plans will appear here when generated.</text>
-          </view>
-        ) : null}
+        {isEmpty ? <PlanEmptySurface /> : null}
       </view>
     </scroll-view>
   );

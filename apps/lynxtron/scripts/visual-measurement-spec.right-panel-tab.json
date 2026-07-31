@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "route": "right-panel-tab",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "rightPanel",
+      "web": "[data-right-panel-tabbar]",
+      "lynx": ".right-panel"
+    },
+    {
+      "id": "tabBar",
+      "web": "[data-right-panel-tabbar]",
+      "lynx": ".right-panel__tabs"
+    },
+    {
+      "id": "tabIcon",
+      "web": ".right-panel__tab-icon",
+      "lynx": ".right-panel__tab-icon"
+    },
+    {
+      "id": "content",
+      "web": ".right-panel__content",
+      "lynx": ".right-panel__content"
+    }
+  ],
+  "typography": [],
+  "colors": []
+}
