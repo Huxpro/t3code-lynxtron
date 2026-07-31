@@ -224,6 +224,46 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
   }
 }
 
+/* Shared transcript working-row dots (AR3): the pulse stays in the Web
+   layer because the class is a semantic hook in TranscriptRowSurface; the
+   Lynx build renders the same dots statically. */
+.transcript-working-dot {
+  animation: status-pulse 2s infinite;
+}
+.transcript-working-dot:nth-child(2) {
+  animation-delay: 200ms;
+}
+.transcript-working-dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+
+/* AR3 transcript row affordances (hover/focus) kept in the Web layer: the
+   shared TranscriptRowSurface carries only the semantic hooks because the
+   Lynx build cannot compile hover/focus-visible selectors (R6). Values mirror
+   the Tailwind utilities the Web rows used before the convergence. */
+.transcript-turn-fold-button {
+  transition-property: color;
+  transition-duration: 150ms;
+}
+.transcript-turn-fold-button:hover {
+  color: var(--foreground);
+}
+.transcript-turn-fold-button:focus-visible,
+.transcript-work-toggle:focus-visible,
+.transcript-work-entry[role="button"]:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--ring) 70%, transparent);
+}
+.transcript-work-toggle,
+.transcript-work-entry[role="button"] {
+  transition-property: color, background-color;
+  transition-duration: 150ms;
+}
+.transcript-work-toggle:hover,
+.transcript-work-entry[role="button"]:hover {
+  background-color: color-mix(in oklab, var(--accent) 20%, transparent);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

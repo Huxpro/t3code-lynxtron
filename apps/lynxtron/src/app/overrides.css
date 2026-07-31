@@ -1120,84 +1120,6 @@
 }
 
 /* ======================= Timeline (non-hero) ======================= */
-.timeline {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  height: 0;
-  padding: 20px 0;
-}
-.timeline__empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0;
-}
-.timeline__empty-title {
-  color: var(--muted-foreground);
-  font-size: 16px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-}
-.timeline__empty-sub {
-  color: var(--muted-foreground);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  margin-top: 6px;
-  opacity: 0.6;
-}
-.timeline__running-indicator {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 8px 24px;
-}
-.timeline__running-text {
-  color: var(--muted-foreground);
-  font-size: 12px;
-  font-family: var(--font-sans);
-  opacity: 0.7;
-}
-
-/* ======================= Message rows (measured from reference) ======================= */
-.msg {
-  display: flex;
-  flex-direction: column;
-  padding: 6px 24px;
-  margin-bottom: 4px;
-}
-.msg--user {
-  align-items: flex-end;
-}
-.msg__bubble--user {
-  display: flex;
-  flex-direction: column;
-  max-width: 80%;
-  border-radius: 16px;
-  padding: 12px;
-  background-color: rgba(255, 255, 255, 0.04);
-}
-.msg__text {
-  color: var(--foreground);
-  font-size: 14px;
-  line-height: 22px;
-  font-family: var(--font-sans);
-}
-.msg__text--dim {
-  color: var(--muted-foreground);
-  opacity: 0.6;
-}
-.msg__text--system {
-  color: var(--muted-foreground);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 18px;
-}
-.msg--system {
-  align-items: center;
-}
-
 /* ======= Transcript native list (surface: chat transcript; Lynx host leaf
    for the shared transcript projection; remove-when: transcript row chrome is
    compiled from the shared Web composition via the Tailwind v3 pipeline) ==== */
@@ -1211,95 +1133,18 @@
 .timeline-list {
   flex-grow: 1;
   height: 100%;
-  padding: 20px 0;
+  /* Matches the Web transcript scroll container (px-5 at desktop widths). */
+  padding: 20px;
 }
 /* surface: transcript anchoring-new-turn; gap: R7; remove-when: native list
    exposes Web-equivalent reserved-end-space anchoring. */
 .timeline-new-turn-anchor-space {
   height: 480px;
 }
-.turn-fold {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 5px 24px;
-}
-.turn-fold__chevron {
-  color: var(--muted-foreground);
-  font-size: 10px;
-  margin-right: 6px;
-  opacity: 0.7;
-}
-.turn-fold__label {
-  color: var(--muted-foreground);
-  font-size: 12px;
-  font-family: var(--font-sans);
-}
-.work-rows {
-  display: flex;
-  flex-direction: column;
-  padding: 0 24px;
-}
-.work-entry__header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 4px 0;
-}
-.work-entry__status {
-  color: var(--muted-foreground);
-  font-size: 11px;
-  width: 16px;
-  text-align: center;
-  margin-right: 4px;
-}
-.work-entry__status--success {
-  color: #3b82f6;
-}
-.work-entry__status--failure {
-  color: #ef4444;
-}
-.work-entry__heading {
-  color: var(--foreground);
-  font-size: 12px;
-  font-family: var(--font-sans);
-  margin-right: 8px;
-}
-.work-entry__preview {
-  color: var(--muted-foreground);
-  font-size: 11px;
-  font-family: var(--font-mono);
-  flex-grow: 1;
-  width: 0;
-  opacity: 0.7;
-}
-.work-entry__body {
-  display: flex;
-  flex-direction: column;
-  padding: 2px 0 6px 20px;
-}
-.work-entry__command,
-.work-entry__detail {
-  color: var(--muted-foreground);
-  font-size: 11px;
-  line-height: 16px;
-  font-family: var(--font-mono);
-}
-.work-toggle {
-  display: flex;
-  flex-direction: row;
-  padding: 3px 24px 3px 44px;
-}
-.work-toggle__label {
-  color: var(--muted-foreground);
-  font-size: 11px;
-  font-family: var(--font-sans);
-  opacity: 0.8;
-}
 .plan-row {
   display: flex;
   flex-direction: column;
-  margin: 4px 24px;
+  margin: 4px 0;
   padding: 10px 12px;
   border-radius: 8px;
   border-width: 1px;

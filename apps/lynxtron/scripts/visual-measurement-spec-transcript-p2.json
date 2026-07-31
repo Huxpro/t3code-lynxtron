@@ -35,7 +35,7 @@
     {
       "id": "userMessage",
       "web": "[data-timeline-row=\"message\"]",
-      "lynx": ".msg__text"
+      "lynx": ".transcript-user-body"
     },
     {
       "id": "tableHeader",

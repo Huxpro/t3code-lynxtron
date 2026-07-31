@@ -66,7 +66,7 @@ sticky positioning (7), and fixed positioning (5).
 | general-settings projection  | supported   | shared grouping/restore semantics + schema-free defaults                                                                               |
 | Settings primitive contracts | adapter     | `.web`/`.lynx` leaves + generated tokens; R6/R7/R9                                                                                     |
 | server-config stream         | supported   | shared reducer in Node host; canonical config polled R3                                                                                |
-| transcript rows and folds    | supported   | shared transcript projection + native `<list>` host leaf                                                                               |
+| transcript rows and folds    | supported   | shared `TranscriptRowSurface` composition + projection; native `<list>` and Markdown as Lynx islands                                   |
 
 ## Runtime backlog
 

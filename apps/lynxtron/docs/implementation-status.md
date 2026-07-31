@@ -667,6 +667,48 @@ open for the missing general capability. Renderer bundle is 2,084.3 kB
 (-0.5 kB); event payloads are unchanged DTO shapes now delivered per change
 instead of per 400 ms poll cycle.
 
+### AR3 transcript composition convergence (2026-07-31, complete)
+
+Web and Lynx now compile the same physical transcript composition:
+`apps/web/src/components/chat/TranscriptRowSurface.tsx` owns user/system/
+assistant message row anatomy, collapsed work and tool summary rows, turn
+folds, working rows, proposed-plan and checkpoint card placement, typography,
+and semantic class names, fed by the existing shared `MessagesTimelineRow`
+projection. Platform islands enter through the `TranscriptRowElements`
+contract: Web injects `ChatMarkdown`, copy/timestamp/revert meta rows, image
+and context strips, tooltip work status, and lucide SVG chevrons/icons; Lynx
+injects its Markdown renderer, compact turn-diff and plan cards, raster work
+icons (nine new pre-rasterized lucide PNGs, R1), glyph work status, and text
+disclosure chevrons. Work-row presentation helpers
+(`transcriptRowPresentation.ts`) moved verbatim out of Web's
+`MessagesTimeline.tsx`; hover/focus affordances stay in Web's CSS layer
+(semantic hooks, R6) and the working-dot pulse in `index.css`.
+
+Deletions in the same slice: Web's private `UserTimelineRow`,
+`AssistantTimelineRow`, `TurnFoldTimelineRow`, `WorkGroupSection`,
+`SimpleWorkEntryRow`, `WorkGroupToggleTimelineRow`, `ProposedPlanTimelineRow`,
+`WorkingTimelineRow`, and their private helpers (`MessagesTimeline.tsx`
+2,081 → 1,730 lines); the Lynx clean-room row components and their CSS
+(`MessagesTimeline.tsx` 508 → 431 lines as a pure list host; `overrides.css`
+3,947 → 3,792 lines, −155 clean-room transcript rules). Only the new
+composition remains reachable.
+
+Focused evidence: 11 surface anatomy tests plus 7 presentation tests cover
+empty, short, failed, collapsed/expanded, plan, checkpoint-placement, and
+working fixtures; the existing 139 Web chat tests, 65 Lynxtron tests, and 19
+shared transcript/follow/stable-key tests pass unchanged. The CSS audit
+introduces zero new unsupported utilities and retires two
+(`focus-visible:ring-ring/70`, `hover:bg-accent/20`). Strict reuse keeps the
+unchanged denominator (boundary hash `67f5a53f…`): the transcript route
+reports 35/466 shared modules (7.5%) and 7,822/103,537 shared lines (7.6%),
+up from 32/464 and 7,148/103,220. A real two-prompt fixture rendered through
+the production app at 1280 × 820 reports zero renderer errors
+(`reports/screenshots/ar3-transcript-1280x820.jpg`); measurement metadata for
+checkpoint anchors was not collectible because the provider's credit-limited
+turns produced no checkpoint card, and real scroll-gesture acceptance stays
+deferred to a user session under R12. Renderer bundle is 2,252.3 kB
+(+168.0 kB; ≈78 kB traced to the new raster icon set).
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

@@ -74,7 +74,16 @@ export type IconName =
   | "file-json"
   | "ellipsis"
   | "trash-2"
-  | "message-square";
+  | "message-square"
+  | "check"
+  | "circle-alert"
+  | "eye"
+  | "globe"
+  | "hammer"
+  | "message-circle"
+  | "terminal"
+  | "x"
+  | "zap";
 
 interface IconProps {
   name: IconName;

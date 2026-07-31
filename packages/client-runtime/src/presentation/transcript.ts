@@ -81,6 +81,8 @@ export interface TranscriptMessage {
   readonly streaming: boolean;
   readonly createdAt: string;
   readonly updatedAt: string;
+  /** Body text; optional at the projection layer, present in both renderers. */
+  readonly text?: string;
 }
 
 /** Minimal proposed-plan shape the transcript projection needs. */

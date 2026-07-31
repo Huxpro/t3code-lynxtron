@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1471,
+  "uniqueStaticUtilities": 1478,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -8,7 +8,7 @@
     },
     "color-mix(": {
       "status": "build-transform",
-      "occurrences": 52
+      "occurrences": 54
     },
     "@custom-variant": {
       "status": "drop",
@@ -20,11 +20,11 @@
     },
     ":hover": {
       "status": "state-adapter",
-      "occurrences": 6
+      "occurrences": 9
     },
     ":focus-visible": {
       "status": "state-adapter",
-      "occurrences": 6
+      "occurrences": 9
     },
     "position: fixed": {
       "status": "probe",
@@ -50,15 +50,15 @@
     },
     {
       "utility": "hover:text-foreground",
-      "occurrences": 53
-    },
-    {
-      "utility": "focus-visible:ring-2",
-      "occurrences": 21
+      "occurrences": 52
     },
     {
       "utility": "focus-visible:ring-ring",
       "occurrences": 20
+    },
+    {
+      "utility": "focus-visible:ring-2",
+      "occurrences": 19
     },
     {
       "utility": "hover:bg-accent",
@@ -77,10 +77,6 @@
       "occurrences": 9
     },
     {
-      "utility": "focus-visible:outline-none",
-      "occurrences": 8
-    },
-    {
       "utility": "sticky",
       "occurrences": 7
     },
@@ -90,6 +86,10 @@
     },
     {
       "utility": "hover:bg-accent/60",
+      "occurrences": 6
+    },
+    {
+      "utility": "focus-visible:outline-none",
       "occurrences": 6
     },
     {
@@ -146,10 +146,6 @@
     },
     {
       "utility": "focus-visible:ring-offset-background",
-      "occurrences": 3
-    },
-    {
-      "utility": "focus-visible:ring-inset",
       "occurrences": 3
     },
     {
@@ -222,14 +218,6 @@
     },
     {
       "utility": "hover:text-white",
-      "occurrences": 2
-    },
-    {
-      "utility": "select-text",
-      "occurrences": 2
-    },
-    {
-      "utility": "focus-visible:ring-ring/70",
       "occurrences": 2
     },
     {
@@ -349,7 +337,7 @@
       "occurrences": 1
     },
     {
-      "utility": "hover:bg-accent/20",
+      "utility": "select-text",
       "occurrences": 1
     },
     {
@@ -362,6 +350,10 @@
     },
     {
       "utility": "hover:bg-foreground/8",
+      "occurrences": 1
+    },
+    {
+      "utility": "focus-visible:ring-inset",
       "occurrences": 1
     },
     {

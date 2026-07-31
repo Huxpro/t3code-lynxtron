@@ -14,11 +14,8 @@ import {
   formatDuration,
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
   reduceTranscriptFollow,
-  workEntryIndicatesToolFailure,
-  workEntryIndicatesToolSuccess,
   type MessagesTimelineRow,
   type TranscriptFollowState,
-  type WorkLogEntry,
 } from "@t3tools/client-runtime/presentation/transcript";
 import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
 import type {
@@ -27,7 +24,13 @@ import type {
   OrchestrationProposedPlan,
   TurnId,
 } from "@t3tools/contracts";
+import {
+  TranscriptEmptySurface,
+  TranscriptRowSurface,
+  type TranscriptRowElements,
+} from "../../../../web/src/components/chat/TranscriptRowSurface";
 import type { ActivityEntry, ChatMessage, SessionStatus } from "../bridge";
+import { Icon } from "./Icon";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface MessagesTimelineProps {
@@ -67,72 +70,8 @@ function estimateRowSizePx(row: TimelineRow): number {
   }
 }
 
-function WorkEntryRow({ entry }: { entry: WorkLogEntry }) {
-  const [expanded, setExpanded] = useState(false);
-  const toggle = useCallback(() => setExpanded((value) => !value), []);
-  const failed = workEntryIndicatesToolFailure(entry);
-  const succeeded = workEntryIndicatesToolSuccess(entry);
-  const statusGlyph = failed ? "✗" : succeeded ? "✓" : "•";
-  const statusClass = failed
-    ? "work-entry__status work-entry__status--failure"
-    : succeeded
-      ? "work-entry__status work-entry__status--success"
-      : "work-entry__status";
-  const heading = entry.toolTitle ?? entry.label;
-  const preview = entry.command ?? entry.detail;
-
-  return (
-    <view className="work-entry">
-      <view className="work-entry__header" bindtap={toggle}>
-        <text className={statusClass}>{statusGlyph}</text>
-        <text className="work-entry__heading">{heading}</text>
-        {preview ? (
-          <text className="work-entry__preview" text-maxline="1">
-            {preview}
-          </text>
-        ) : null}
-      </view>
-      {expanded && (entry.detail || entry.command) ? (
-        <view className="work-entry__body">
-          {entry.command ? <text className="work-entry__command">{entry.command}</text> : null}
-          {entry.detail ? <text className="work-entry__detail">{entry.detail}</text> : null}
-        </view>
-      ) : null}
-    </view>
-  );
-}
-
-function WorkingRow({ startedAt }: { startedAt: string | null }) {
-  const [elapsedLabel, setElapsedLabel] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!startedAt) {
-      setElapsedLabel(null);
-      return;
-    }
-    const update = () => {
-      const startedMs = Date.parse(startedAt);
-      if (!Number.isFinite(startedMs)) {
-        setElapsedLabel(null);
-        return;
-      }
-      setElapsedLabel(formatDuration(Math.max(0, Date.now() - startedMs)));
-    };
-    update();
-    const timer = setInterval(update, 1_000);
-    return () => clearInterval(timer);
-  }, [startedAt]);
-
-  return (
-    <view className="timeline__running-indicator">
-      <text className="timeline__running-text">
-        {elapsedLabel ? `● Working… ${elapsedLabel}` : "● Working…"}
-      </text>
-    </view>
-  );
-}
-
-function TurnDiffCard({ summary }: { summary: OrchestrationCheckpointSummary }) {
+/** Lynx checkpoint island: compact turn-diff card (full patch renderer is R10). */
+function LynxTurnDiffCard({ summary }: { summary: OrchestrationCheckpointSummary }) {
   const stat = summarizeChangedFiles(summary.files);
   const preview = selectChangedFilePreview(summary.files);
   const statusLabel =
@@ -167,113 +106,94 @@ function TurnDiffCard({ summary }: { summary: OrchestrationCheckpointSummary }) 
   );
 }
 
-function MessageRowView({
-  message,
-  cwd,
-  turnDiffSummary,
-}: {
-  message: ChatMessage;
-  cwd?: string | undefined;
-  turnDiffSummary?: OrchestrationCheckpointSummary | undefined;
-}) {
-  const isUser = message.role === "user";
-  const isSystem = message.role === "system";
-  const hasText = message.text && message.text.trim().length > 0;
-
-  if (isSystem) {
-    return (
-      <view className="msg msg--system">
-        <text className="msg__text msg__text--system">{message.text}</text>
-      </view>
-    );
-  }
-
-  if (isUser) {
-    // Reference: group flex-col items-end; bubble max-w-[80%] rounded-2xl
-    // bg-secondary (white 4%) p-3; no role label; timestamp on hover only.
-    return (
-      <view className="msg msg--user">
-        <view className="msg__bubble msg__bubble--user">
-          <text className="msg__text">{message.text}</text>
-        </view>
-      </view>
-    );
-  }
-
-  // Assistant: full-width chat-markdown, no bubble, no label.
+/** Lynx proposed-plan island: eyebrow + title card. */
+function LynxProposedPlanCard({ plan }: { plan: OrchestrationProposedPlan }) {
+  const title = proposedPlanTitle(plan.planMarkdown) ?? "Proposed plan";
   return (
-    <view className="msg msg--assistant">
-      {hasText ? (
-        <MarkdownRenderer text={message.text} streaming={message.streaming} cwd={cwd} />
-      ) : message.streaming ? (
-        <text className="msg__text msg__text--dim">Thinking…</text>
-      ) : null}
-      {turnDiffSummary ? <TurnDiffCard summary={turnDiffSummary} /> : null}
+    <view className="plan-row">
+      <text className="plan-row__eyebrow">Proposed plan</text>
+      <text className="plan-row__title" text-maxline="2">
+        {title}
+      </text>
     </view>
   );
 }
 
-function TimelineRowView({
-  row,
-  cwd,
-  onToggleTurn,
-  onToggleWorkGroup,
-}: {
-  row: TimelineRow;
-  cwd?: string | undefined;
-  onToggleTurn: (turnId: TurnId) => void;
-  onToggleWorkGroup: (groupId: string) => void;
-}) {
-  switch (row.kind) {
-    case "message":
-      return (
-        <MessageRowView
-          message={row.message}
-          cwd={cwd}
-          turnDiffSummary={row.assistantTurnDiffSummary}
-        />
-      );
-    case "turn-fold":
-      return (
-        <view className="turn-fold" bindtap={() => onToggleTurn(row.turnId)}>
-          <text className="turn-fold__chevron">{row.expanded ? "▾" : "▸"}</text>
-          <text className="turn-fold__label">{row.label}</text>
-        </view>
-      );
-    case "work":
-      return (
-        <view className="work-rows">
-          {row.groupedEntries.map((entry) => (
-            <WorkEntryRow key={entry.id} entry={entry} />
-          ))}
-        </view>
-      );
-    case "work-toggle":
-      return (
-        <view className="work-toggle" bindtap={() => onToggleWorkGroup(row.groupId)}>
-          <text className="work-toggle__label">
-            {row.expanded
-              ? "Show less"
-              : `+${row.hiddenCount} previous ${row.onlyToolEntries ? "tool call" : "step"}${
-                  row.hiddenCount === 1 ? "" : "s"
-                }`}
-          </text>
-        </view>
-      );
-    case "proposed-plan": {
-      const title = proposedPlanTitle(row.proposedPlan.planMarkdown) ?? "Proposed plan";
-      return (
-        <view className="plan-row">
-          <text className="plan-row__eyebrow">Proposed plan</text>
-          <text className="plan-row__title" text-maxline="2">
-            {title}
-          </text>
-        </view>
-      );
+/** Ticking elapsed label for the shared working row. */
+function LynxWorkingLabel({ createdAt }: { createdAt: string | null }) {
+  const [elapsedLabel, setElapsedLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!createdAt) {
+      setElapsedLabel(null);
+      return;
     }
-    case "working":
-      return <WorkingRow startedAt={row.createdAt} />;
-  }
+    const update = () => {
+      const startedMs = Date.parse(createdAt);
+      if (!Number.isFinite(startedMs)) {
+        setElapsedLabel(null);
+        return;
+      }
+      setElapsedLabel(formatDuration(Math.max(0, Date.now() - startedMs)));
+    };
+    update();
+    const timer = setInterval(update, 1_000);
+    return () => clearInterval(timer);
+  }, [createdAt]);
+
+  return (
+    <text className="transcript-working-label">
+      {createdAt && elapsedLabel ? `Working… ${elapsedLabel}` : "Working…"}
+    </text>
+  );
+}
+
+/** Platform islands handed to the shared transcript composition. */
+function buildLynxTranscriptRowElements(
+  cwd: string | undefined,
+): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
+  return {
+    renderUserBody: ({ row }) => (
+      <text className="transcript-user-body lynx-host-text whitespace-pre-wrap text-sm leading-6 text-foreground/92">
+        {row.message.text}
+      </text>
+    ),
+    renderAssistantMarkdown: ({ row }) =>
+      row.message.text && row.message.text.trim().length > 0 ? (
+        <MarkdownRenderer text={row.message.text} streaming={row.message.streaming} cwd={cwd} />
+      ) : row.message.streaming ? (
+        <text className="lynx-host-text text-sm text-muted-foreground/60">Thinking…</text>
+      ) : null,
+    renderCheckpointCard: ({ row }) =>
+      row.assistantTurnDiffSummary ? (
+        <LynxTurnDiffCard summary={row.assistantTurnDiffSummary} />
+      ) : null,
+    renderProposedPlanCard: ({ row }) => <LynxProposedPlanCard plan={row.proposedPlan} />,
+    renderWorkIcon: ({ name, className }) => <Icon name={name} size={14} className={className} />,
+    renderWorkStatus: ({ failed, succeeded }) =>
+      failed ? (
+        <text className="transcript-work-status transcript-work-status--failed text-destructive">
+          ✗
+        </text>
+      ) : succeeded ? (
+        <text className="transcript-work-status transcript-work-status--succeeded text-muted-foreground/65">
+          ✓
+        </text>
+      ) : null,
+    renderDisclosureChevron: ({ kind, expanded }) => (
+      <text
+        aria-hidden
+        className={
+          kind === "work-entry"
+            ? "transcript-disclosure-chevron text-[10px] leading-none text-muted-foreground/65"
+            : "transcript-disclosure-chevron text-[11px] leading-none text-muted-foreground/65"
+        }
+      >
+        {expanded ? "▾" : "▸"}
+      </text>
+    ),
+    renderWorkingLabel: ({ createdAt }) => <LynxWorkingLabel createdAt={createdAt} />,
+  };
 }
 
 export function MessagesTimeline({
@@ -298,6 +218,7 @@ export function MessagesTimeline({
   const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
 
   const isWorking = isSessionBusy(sessionStatus);
+  const rowElements = useMemo(() => buildLynxTranscriptRowElements(cwd), [cwd]);
 
   const rows = useMemo<TimelineRow[]>(() => {
     const workEntries = deriveWorkLogEntries(activities);
@@ -451,14 +372,10 @@ export function MessagesTimeline({
 
   if (rows.length === 0) {
     return (
-      <view className="timeline">
-        <view className="timeline__empty">
-          <text className="timeline__empty-title">Start a conversation</text>
-          <text className="timeline__empty-sub">
-            Ask T3 Code to build, explain, or fix something in your project.
-          </text>
-        </view>
-      </view>
+      <TranscriptEmptySurface
+        title="Start a conversation"
+        subtitle="Ask T3 Code to build, explain, or fix something in your project."
+      />
     );
   }
 
@@ -480,10 +397,12 @@ export function MessagesTimeline({
             key={row.id}
             estimated-main-axis-size-px={estimateRowSizePx(row)}
           >
-            <TimelineRowView
+            <TranscriptRowSurface
               row={row}
-              cwd={cwd}
-              onToggleTurn={handleToggleTurn}
+              workspaceRoot={cwd}
+              activeTurnInProgress={isWorking}
+              elements={rowElements}
+              onToggleTurnFold={handleToggleTurn}
               onToggleWorkGroup={handleToggleWorkGroup}
             />
           </list-item>
