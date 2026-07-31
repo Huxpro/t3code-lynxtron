@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1478,
+  "uniqueStaticUtilities": 1482,
   "syntax": {
     "oklch(": {
       "status": "build-transform",

@@ -20,6 +20,10 @@ export function HostHeading({ children, ...props }: React.ComponentProps<"h2">) 
   return <h2 {...props}>{children}</h2>;
 }
 
+export function HostHeadline({ children, ...props }: React.ComponentProps<"h1">) {
+  return <h1 {...props}>{children}</h1>;
+}
+
 export function HostButton({ children, ...props }: React.ComponentProps<"button">) {
   return <button {...props}>{children}</button>;
 }

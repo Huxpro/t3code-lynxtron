@@ -51,8 +51,8 @@ sticky positioning (7), and fixed positioning (5).
 | panel surface state          | supported   | shared generic reducer + host-specific surface payloads                                                                                |
 | session/sidebar view-models  | supported   | shared `client-runtime` semantics + host-specific styles                                                                               |
 | Sidebar V2 row composition   | supported   | shared card/slim hierarchy; bounded Web/Lynx state hosts                                                                               |
-| composer send-state          | supported   | shared prompt/context/attachment sendability + host editor                                                                             |
-| composer controls/dispatch   | supported   | shared mode/options/context projection + canonical commands                                                                            |
+| composer send-state          | supported   | shared `ComposerSurface` chrome + sendability projection + host editor island                                                          |
+| composer controls/dispatch   | supported   | canonical control order via `ComposerToolbarRow` + mode/options/context projection + canonical commands                                |
 | proposed-plan presentation   | supported   | shared title/preview/follow-up/export projection + host UI                                                                             |
 | model-picker view-models     | supported   | shared catalog/selection fallback/search/order + host rows                                                                             |
 | Markdown block models        | supported   | shared fence/table/list-depth projection + host UI                                                                                     |

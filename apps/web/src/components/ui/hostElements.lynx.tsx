@@ -73,6 +73,21 @@ export function HostHeading({
   );
 }
 
+export function HostHeadline({
+  children,
+  className,
+  ...props
+}: Record<string, unknown> & {
+  readonly children?: ReactNode;
+  readonly className?: string;
+}) {
+  return (
+    <text {...props} className={className ? `lynx-host-text ${className}` : "lynx-host-text"}>
+      {children}
+    </text>
+  );
+}
+
 export function HostButton({
   children,
   onClick,

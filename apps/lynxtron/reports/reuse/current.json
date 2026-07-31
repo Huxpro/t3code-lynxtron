@@ -155,7 +155,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 70613,
+            "lines": 70619,
             "modules": 329
           },
           "largestNonShared": [
@@ -181,7 +181,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -743,7 +743,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 7246,
+            "eligibleLines": 7264,
             "eligibleModules": 62,
             "modulesOnlyInLynx": [
               {
@@ -878,7 +878,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -6187,7 +6187,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -6962,7 +6962,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -7558,7 +7558,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66608,
+            "lines": 66614,
             "modules": 318
           },
           "largestNonShared": [
@@ -7574,7 +7574,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -9086,7 +9086,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 28452,
+            "eligibleLines": 28470,
             "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
@@ -9231,7 +9231,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -14165,7 +14165,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -14935,7 +14935,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -15530,7 +15530,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 77632,
+            "lines": 77638,
             "modules": 369
           },
           "largestNonShared": [
@@ -15541,7 +15541,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3792,
+              "lines": 3734,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -15666,6 +15666,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -16191,6 +16196,21 @@
                 "from": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
                 "request": "../ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -17293,8 +17313,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 33980,
-            "eligibleModules": 149,
+            "eligibleLines": 34147,
+            "eligibleModules": 150,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17308,7 +17328,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -17348,7 +17368,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -17403,7 +17423,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3792,
+                "lines": 3734,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -17503,12 +17523,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 184,
                 "path": "apps/web/src/components/chat/transcriptRowPresentation.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -17603,7 +17628,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -17706,7 +17731,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 19705,
+            "lines": 19707,
             "modules": 68
           },
           "reusePercent": {
@@ -24044,7 +24069,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -24899,7 +24924,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -25492,13 +25517,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 430,
             "PATCHED": 0,
-            "SHARED": 35,
+            "SHARED": 36,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 103537,
-            "modules": 466
+            "lines": 103717,
+            "modules": 467
           },
           "largestNonShared": [
             {
@@ -25518,7 +25543,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -25533,7 +25558,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -25633,6 +25658,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -25883,6 +25913,21 @@
                 "from": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
                 "request": "../ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -26285,8 +26330,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13460,
-            "eligibleModules": 82,
+            "eligibleLines": 13685,
+            "eligibleModules": 83,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -26300,7 +26345,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -26325,7 +26370,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -26460,7 +26505,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -26531,12 +26576,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 7822,
-            "modules": 35
+            "lines": 8013,
+            "modules": 36
           },
           "reusePercent": {
-            "lines": 7.6,
-            "modules": 7.5
+            "lines": 7.7,
+            "modules": 7.7
           },
           "web": {
             "edges": [
@@ -27117,6 +27162,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -27421,6 +27471,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -27449,6 +27509,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -34424,7 +34489,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -34533,6 +34598,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -34544,7 +34614,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -34584,7 +34654,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -34684,7 +34754,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -35014,7 +35084,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -36034,7 +36104,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -36675,13 +36745,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 20,
+            "SHARED": 21,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93022,
-            "modules": 432
+            "lines": 93202,
+            "modules": 433
           },
           "largestNonShared": [
             {
@@ -36696,7 +36766,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -36706,7 +36776,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -36816,6 +36886,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -37033,6 +37108,21 @@
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
                 "request": "@t3tools/client-runtime/presentation/paths",
                 "to": "packages/client-runtime/src/presentation/paths.ts"
@@ -37098,8 +37188,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9666,
-            "eligibleModules": 43,
+            "eligibleLines": 9891,
+            "eligibleModules": 44,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -37113,7 +37203,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -37138,7 +37228,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -37208,7 +37298,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -37221,12 +37311,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5621,
-            "modules": 20
+            "lines": 5812,
+            "modules": 21
           },
           "reusePercent": {
-            "lines": 6,
-            "modules": 4.6
+            "lines": 6.2,
+            "modules": 4.8
           },
           "web": {
             "edges": [
@@ -37742,6 +37832,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -38046,6 +38141,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -38074,6 +38179,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -44084,7 +44194,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -44193,6 +44303,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -44204,7 +44319,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -44244,7 +44359,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -44344,7 +44459,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -44579,7 +44694,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -45534,7 +45649,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -46171,13 +46286,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 479,
             "PATCHED": 0,
-            "SHARED": 36,
+            "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113757,
-            "modules": 516
+            "lines": 113937,
+            "modules": 517
           },
           "largestNonShared": [
             {
@@ -46197,7 +46312,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -46217,7 +46332,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -46312,6 +46427,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -46572,6 +46692,21 @@
                 "from": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
                 "request": "../ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -46974,8 +47109,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13501,
-            "eligibleModules": 85,
+            "eligibleLines": 13726,
+            "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -46989,7 +47124,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -47014,7 +47149,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -47164,7 +47299,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -47231,12 +47366,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8085,
-            "modules": 36
+            "lines": 8276,
+            "modules": 37
           },
           "reusePercent": {
-            "lines": 7.1,
-            "modules": 7
+            "lines": 7.3,
+            "modules": 7.2
           },
           "web": {
             "edges": [
@@ -47937,6 +48072,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -48241,6 +48381,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -48269,6 +48419,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -56524,7 +56679,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -56633,6 +56788,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -56644,7 +56804,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -56684,7 +56844,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -56784,7 +56944,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -57239,7 +57399,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -58344,7 +58504,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -59001,13 +59161,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 430,
             "PATCHED": 0,
-            "SHARED": 35,
+            "SHARED": 36,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 103537,
-            "modules": 466
+            "lines": 103717,
+            "modules": 467
           },
           "largestNonShared": [
             {
@@ -59027,7 +59187,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -59042,7 +59202,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -59142,6 +59302,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -59392,6 +59557,21 @@
                 "from": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
                 "request": "../ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -59794,8 +59974,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13460,
-            "eligibleModules": 82,
+            "eligibleLines": 13685,
+            "eligibleModules": 83,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -59809,7 +59989,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -59834,7 +60014,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -59969,7 +60149,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -60040,12 +60220,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 7822,
-            "modules": 35
+            "lines": 8013,
+            "modules": 36
           },
           "reusePercent": {
-            "lines": 7.6,
-            "modules": 7.5
+            "lines": 7.7,
+            "modules": 7.7
           },
           "web": {
             "edges": [
@@ -60626,6 +60806,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -60930,6 +61115,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -60958,6 +61153,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -67933,7 +68133,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -68042,6 +68242,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -68053,7 +68258,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -68093,7 +68298,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -68193,7 +68398,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -68523,7 +68728,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -69543,7 +69748,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -70184,13 +70389,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 20,
+            "SHARED": 21,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93022,
-            "modules": 432
+            "lines": 93202,
+            "modules": 433
           },
           "largestNonShared": [
             {
@@ -70205,7 +70410,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -70215,7 +70420,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -70325,6 +70530,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -70542,6 +70752,21 @@
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
                 "request": "@t3tools/client-runtime/presentation/paths",
                 "to": "packages/client-runtime/src/presentation/paths.ts"
@@ -70607,8 +70832,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9666,
-            "eligibleModules": 43,
+            "eligibleLines": 9891,
+            "eligibleModules": 44,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -70622,7 +70847,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -70647,7 +70872,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -70717,7 +70942,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -70733,12 +70958,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5621,
-            "modules": 20
+            "lines": 5812,
+            "modules": 21
           },
           "reusePercent": {
-            "lines": 6,
-            "modules": 4.6
+            "lines": 6.2,
+            "modules": 4.8
           },
           "web": {
             "edges": [
@@ -71254,6 +71479,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -71558,6 +71788,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -71586,6 +71826,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -77596,7 +77841,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -77705,6 +77950,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -77716,7 +77966,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -77756,7 +78006,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -77856,7 +78106,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -78091,7 +78341,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -79046,7 +79296,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -79686,13 +79936,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 479,
             "PATCHED": 0,
-            "SHARED": 36,
+            "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113766,
-            "modules": 516
+            "lines": 113946,
+            "modules": 517
           },
           "largestNonShared": [
             {
@@ -79712,7 +79962,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -79732,7 +79982,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -79827,6 +80077,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -80087,6 +80342,21 @@
                 "from": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
                 "request": "../ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -80489,8 +80759,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13501,
-            "eligibleModules": 85,
+            "eligibleLines": 13726,
+            "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -80504,7 +80774,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -80529,7 +80799,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -80679,7 +80949,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -80746,12 +81016,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8085,
-            "modules": 36
+            "lines": 8276,
+            "modules": 37
           },
           "reusePercent": {
-            "lines": 7.1,
-            "modules": 7
+            "lines": 7.3,
+            "modules": 7.2
           },
           "web": {
             "edges": [
@@ -81452,6 +81722,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -81756,6 +82031,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -81784,6 +82069,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -90049,7 +90339,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -90158,6 +90448,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -90169,7 +90464,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -90209,7 +90504,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -90309,7 +90604,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -90764,7 +91059,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -91869,7 +92164,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -92526,13 +92821,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 20,
+            "SHARED": 21,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93022,
-            "modules": 432
+            "lines": 93202,
+            "modules": 433
           },
           "largestNonShared": [
             {
@@ -92547,7 +92842,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -92557,7 +92852,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -92667,6 +92962,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -92884,6 +93184,21 @@
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
                 "request": "@t3tools/client-runtime/presentation/paths",
                 "to": "packages/client-runtime/src/presentation/paths.ts"
@@ -92949,8 +93264,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9666,
-            "eligibleModules": 43,
+            "eligibleLines": 9891,
+            "eligibleModules": 44,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -92964,7 +93279,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -92989,7 +93304,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -93059,7 +93374,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -93075,12 +93390,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5621,
-            "modules": 20
+            "lines": 5812,
+            "modules": 21
           },
           "reusePercent": {
-            "lines": 6,
-            "modules": 4.6
+            "lines": 6.2,
+            "modules": 4.8
           },
           "web": {
             "edges": [
@@ -93596,6 +93911,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -93900,6 +94220,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -93928,6 +94258,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -99938,7 +100273,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -100047,6 +100382,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -100058,7 +100398,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -100098,7 +100438,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -100198,7 +100538,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -100433,7 +100773,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -101388,7 +101728,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -102028,13 +102368,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 270,
             "PATCHED": 0,
-            "SHARED": 2,
+            "SHARED": 4,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 57302,
-            "modules": 272
+            "lines": 57535,
+            "modules": 274
           },
           "largestNonShared": [
             {
@@ -102044,12 +102384,12 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -102117,6 +102457,11 @@
             "edges": [
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
               },
@@ -102126,35 +102471,60 @@
                 "to": "packages/client-runtime/src/presentation/composer.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/composer.ts",
                 "request": "@t3tools/shared/providerOptions",
                 "to": "packages/shared/src/providerOptions.ts"
               }
             ],
-            "eligibleLines": 709,
-            "eligibleModules": 4,
+            "eligibleLines": 1106,
+            "eligibleModules": 8,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
                 "lines": 116,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 46,
+                "path": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 122,
+                "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               }
             ],
             "roots": ["apps/lynxtron/src/app/components/Composer.tsx"],
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 375,
-            "modules": 2
+            "lines": 584,
+            "modules": 4
           },
           "reusePercent": {
-            "lines": 0.7,
-            "modules": 0.7
+            "lines": 1,
+            "modules": 1.5
           },
           "web": {
             "edges": [
@@ -102410,6 +102780,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -102647,6 +103022,16 @@
                 "from": "apps/web/src/components/chat/ComposerStashMenu.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
@@ -105817,7 +106202,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -105904,6 +106289,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 176,
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -106014,6 +106404,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 10,
                 "path": "apps/web/src/components/ui/dialog-styles.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 33,
+                "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -106176,7 +106571,7 @@
                 "path": "apps/web/src/lib/backgroundActivityReporter.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 6,
                 "path": "apps/web/src/lib/cn.ts"
               },
@@ -106612,7 +107007,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -107149,13 +107544,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 479,
             "PATCHED": 0,
-            "SHARED": 36,
+            "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113757,
-            "modules": 516
+            "lines": 113937,
+            "modules": 517
           },
           "largestNonShared": [
             {
@@ -107175,7 +107570,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -107195,7 +107590,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -107290,6 +107685,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -107550,6 +107950,21 @@
                 "from": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
                 "request": "../ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -107952,8 +108367,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13501,
-            "eligibleModules": 85,
+            "eligibleLines": 13726,
+            "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -107967,7 +108382,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -107992,7 +108407,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -108142,7 +108557,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -108209,12 +108624,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8085,
-            "modules": 36
+            "lines": 8276,
+            "modules": 37
           },
           "reusePercent": {
-            "lines": 7.1,
-            "modules": 7
+            "lines": 7.3,
+            "modules": 7.2
           },
           "web": {
             "edges": [
@@ -108915,6 +109330,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -109219,6 +109639,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -109247,6 +109677,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -117502,7 +117937,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -117611,6 +118046,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -117622,7 +118062,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -117662,7 +118102,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -117762,7 +118202,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -118217,7 +118657,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -119322,7 +119762,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -119979,13 +120419,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 267,
             "PATCHED": 0,
-            "SHARED": 5,
+            "SHARED": 7,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 57302,
-            "modules": 272
+            "lines": 57535,
+            "modules": 274
           },
           "largestNonShared": [
             {
@@ -119995,12 +120435,12 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -120068,6 +120508,11 @@
             "edges": [
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
               },
@@ -120087,6 +120532,21 @@
                 "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/composer.ts",
                 "request": "@t3tools/shared/providerOptions",
                 "to": "packages/shared/src/providerOptions.ts"
@@ -120102,12 +120562,12 @@
                 "to": "packages/shared/src/searchRanking.ts"
               }
             ],
-            "eligibleLines": 1988,
-            "eligibleModules": 8,
+            "eligibleLines": 2385,
+            "eligibleModules": 12,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -120119,6 +120579,16 @@
                 "classification": "EXCLUSIVE",
                 "lines": 260,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 46,
+                "path": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 122,
+                "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               }
             ],
             "roots": [
@@ -120128,12 +120598,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 1394,
-            "modules": 5
+            "lines": 1603,
+            "modules": 7
           },
           "reusePercent": {
-            "lines": 2.4,
-            "modules": 1.8
+            "lines": 2.8,
+            "modules": 2.6
           },
           "web": {
             "edges": [
@@ -120389,6 +120859,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -120626,6 +121101,16 @@
                 "from": "apps/web/src/components/chat/ComposerStashMenu.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
@@ -123796,7 +124281,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -123883,6 +124368,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 176,
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -123993,6 +124483,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 10,
                 "path": "apps/web/src/components/ui/dialog-styles.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 33,
+                "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -124155,7 +124650,7 @@
                 "path": "apps/web/src/lib/backgroundActivityReporter.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 6,
                 "path": "apps/web/src/lib/cn.ts"
               },
@@ -124591,7 +125086,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -125136,7 +125631,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 43551,
+            "lines": 43553,
             "modules": 196
           },
           "largestNonShared": [
@@ -125147,7 +125642,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -128495,7 +128990,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -128947,13 +129442,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 479,
             "PATCHED": 0,
-            "SHARED": 36,
+            "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113757,
-            "modules": 516
+            "lines": 113937,
+            "modules": 517
           },
           "largestNonShared": [
             {
@@ -128973,7 +129468,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3222,
+              "lines": 3217,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -128993,7 +129488,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1730,
+              "lines": 1724,
               "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
             },
             {
@@ -129088,6 +129583,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
                 "request": "@t3tools/client-runtime/presentation/session",
                 "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/Composer.tsx",
+                "request": "../../../../web/src/components/chat/ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/Composer.tsx",
@@ -129348,6 +129848,21 @@
                 "from": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
                 "request": "../ui/hostElements",
                 "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -129750,8 +130265,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13501,
-            "eligibleModules": 85,
+            "eligibleLines": 13726,
+            "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -129765,7 +130280,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 218,
+                "lines": 238,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -129790,7 +130305,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 431,
+                "lines": 427,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -129940,7 +130455,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -130007,12 +130522,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8085,
-            "modules": 36
+            "lines": 8276,
+            "modules": 37
           },
           "reusePercent": {
-            "lines": 7.1,
-            "modules": 7
+            "lines": 7.3,
+            "modules": 7.2
           },
           "web": {
             "edges": [
@@ -130713,6 +131228,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ChatComposer.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChatComposer.tsx",
                 "request": "./ContextWindowMeter",
                 "to": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
@@ -131017,6 +131537,16 @@
                 "to": "apps/web/src/lib/utils.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ComposerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/ContextWindowMeter.tsx",
                 "request": "../ui/popover",
                 "to": "apps/web/src/components/ui/popover.tsx"
@@ -131045,6 +131575,11 @@
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
                 "request": "../ui/menu",
                 "to": "apps/web/src/components/ui/menu.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
+                "request": "./ComposerSurface",
+                "to": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -139300,7 +139835,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3222,
+                "lines": 3217,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -139409,6 +139944,11 @@
                 "path": "apps/web/src/components/chat/ComposerStashMenu.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 203,
+                "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 139,
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
@@ -139420,7 +139960,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 158,
+                "lines": 154,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -139460,7 +140000,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1730,
+                "lines": 1724,
                 "path": "apps/web/src/components/chat/MessagesTimeline.tsx"
               },
               {
@@ -139560,7 +140100,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 482,
+                "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
               },
               {
@@ -140015,7 +140555,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -141120,7 +141660,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -142554,7 +143094,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 25950,
+            "lines": 25952,
             "modules": 82
           },
           "largestNonShared": [
@@ -142565,7 +143105,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -143961,7 +144501,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -144192,7 +144732,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 78176,
+            "lines": 78182,
             "modules": 375
           },
           "largestNonShared": [
@@ -144218,7 +144758,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -144870,7 +145410,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8460,
+            "eligibleLines": 8478,
             "eligibleModules": 73,
             "modulesOnlyInLynx": [
               {
@@ -145040,7 +145580,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -151435,7 +151975,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -152290,7 +152830,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -152892,7 +153432,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 61498,
+            "lines": 61500,
             "modules": 291
           },
           "largestNonShared": [
@@ -152908,7 +153448,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -158314,7 +158854,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -158885,7 +159425,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60823,
+            "lines": 60825,
             "modules": 282
           },
           "largestNonShared": [
@@ -158901,7 +159441,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -164112,7 +164652,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -164682,7 +165222,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 84574,
+            "lines": 84580,
             "modules": 398
           },
           "largestNonShared": [
@@ -164713,7 +165253,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1675,
+              "lines": 1677,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -165375,7 +165915,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8134,
+            "eligibleLines": 8152,
             "eligibleModules": 74,
             "modulesOnlyInLynx": [
               {
@@ -165555,7 +166095,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 104,
+                "lines": 122,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -172760,7 +173300,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 29,
+                "lines": 33,
                 "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
@@ -173640,7 +174180,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1675,
+                "lines": 1677,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {

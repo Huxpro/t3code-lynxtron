@@ -709,6 +709,46 @@ turns produced no checkpoint card, and real scroll-gesture acceptance stays
 deferred to a user session under R12. Renderer bundle is 2,252.3 kB
 (+168.0 kB; ≈78 kB traced to the new raster icon set).
 
+### AR4 Composer composition convergence (2026-07-31, complete)
+
+Web and Lynx now compile the same physical Composer chrome:
+`apps/web/src/components/chat/ComposerSurface.tsx` owns the framed surface,
+editor area, footer toolbar row with separator anatomy, the shell width
+(`COMPOSER_SHELL_CLASS`, now applied by Web's `<form>` and the Lynx shell
+view), the context-strip ordering, and the hero headline copy. The editor
+kernel, toolbar controls, and primary actions are platform islands through
+`ComposerSurfaceElements`: Web keeps its Lexical editor, ProviderModelPicker,
+traits/mode controls, and primary-action stack with banners, attachment
+strips, stash, and command menus in the named slots; Lynx keeps its native
+`<textarea>` kernel, control pills, gradient send/stop button, and static
+context items as islands. The canonical footer order (model → option/traits →
+runtime mode → interaction mode → plan) is documented on the surface contract
+and holds in both footers. Web's `DraftHeroHeadline` renders the same
+`ComposerHeroHeadline` (h1 preserved).
+
+Deletions: the Lynx clean-room card/toolbar/separator markup and its CSS
+(`overrides.css` 3,792 → 3,734 lines); the Lynx `Composer.tsx` is now an
+editor host and event adapter with control islands (238 lines). No fake
+labels: model, runtime/interaction modes, checkout, and branch all read
+canonical projections (`projectComposerContext`, mode presentations, config
+model). New `overrides.css` rules are token passthroughs with
+surface/R7/remove-when comments (context strip tuck, card surface color,
+hero slot).
+
+Focused evidence: 10 `ComposerSurface` tests cover draft, populated,
+disabled, banner/error, interruptible-stop, collapsed, strip-order, and hero
+fixtures; 167 Web chat tests and 65 Lynxtron tests pass; the
+composer-controls smoke still toggles runtime/interaction modes against a
+real server. A real prompt through the docked Composer rendered the busy
+stop state and interruption at 1280 × 820 with zero renderer errors
+(`reports/screenshots/ar4-composer-1280x820.jpg`); measurement metadata is
+blocked by the same checkpoint-less fixture as AR3. Strict reuse on the
+Composer route reports 21/433 modules (4.8%) and 5,812/93,202 lines (6.2%),
+up from 20/432 and 5,621/93,022, boundary hash unchanged; zero new
+unsupported CSS utilities. Renderer bundle is 2,258.2 kB (+5.9 kB). Physical
+key acceptance stays `pending-user-session`; no Tab/Escape/arrow emulation
+was added.
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

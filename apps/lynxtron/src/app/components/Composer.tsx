@@ -6,6 +6,13 @@ import {
   projectComposerContext,
 } from "@t3tools/client-runtime/presentation/composer";
 import type { ProviderInteractionMode, RuntimeMode } from "@t3tools/contracts";
+import {
+  COMPOSER_SHELL_CLASS,
+  ComposerContextStrip,
+  ComposerHeroHeadline,
+  ComposerSurface,
+  ComposerToolbarRow,
+} from "../../../../web/src/components/chat/ComposerSurface";
 import { Icon, type IconName } from "./Icon";
 
 interface ComposerProps {
@@ -45,7 +52,7 @@ const RUNTIME_MODE_ICONS: Record<RuntimeMode, IconName> = {
   "full-access": "lock-open",
 };
 
-// A pill button inside the composer toolbar row.
+// A pill button inside the shared composer toolbar row (control island).
 function Pill({
   icon,
   iconColor,
@@ -125,78 +132,90 @@ export function Composer({
   const context = projectComposerContext({ branch, worktreePath });
 
   const card = (
-    <view className="composer-card">
-      <view className={disabled ? "composer composer--disabled" : "composer"}>
-        <textarea
-          className="composer__input"
-          {...({ value } as object)}
-          placeholder={
-            disabled ? "Connecting to T3 Code…" : "Ask for follow-up changes or attach images"
-          }
-          bindinput={handleInput}
-          confirm-type="send"
-          bindconfirm={handleSend}
-        />
-        <view className="composer__toolbar">
-          <view className="composer__toolbar-left">
-            <view className="pill pill--muted" bindtap={onModelTap}>
-              {providerIcon ? (
-                <Icon name={providerIcon} size={16} className="pill__brand-img" />
-              ) : null}
-              <text className="pill__label" text-maxline="1">
-                {model}
-              </text>
-              <Icon name="chevron-down" size={12} color="#71717a" className="pill__chevron-img" />
+    <view className={COMPOSER_SHELL_CLASS}>
+      <ComposerSurface
+        surfaceClassName={disabled ? "opacity-70" : undefined}
+        elements={{
+          renderEditor: () => (
+            <textarea
+              className="composer__input"
+              {...({ value } as object)}
+              placeholder={
+                disabled ? "Connecting to T3 Code…" : "Ask for follow-up changes or attach images"
+              }
+              bindinput={handleInput}
+              confirm-type="send"
+              bindconfirm={handleSend}
+            />
+          ),
+          renderFooterLeftControls: () => (
+            <ComposerToolbarRow
+              items={[
+                <view className="pill pill--muted" bindtap={onModelTap}>
+                  {providerIcon ? (
+                    <Icon name={providerIcon} size={16} className="pill__brand-img" />
+                  ) : null}
+                  <text className="pill__label" text-maxline="1">
+                    {model}
+                  </text>
+                  <Icon
+                    name="chevron-down"
+                    size={12}
+                    color="#71717a"
+                    className="pill__chevron-img"
+                  />
+                </view>,
+                modelOptionLabel && onModelOptionTap ? (
+                  <Pill label={modelOptionLabel} muted chevron onTap={onModelOptionTap} />
+                ) : null,
+                <Pill
+                  icon={RUNTIME_MODE_ICONS[runtimeMode]}
+                  label={runtimeModePresentation.label}
+                  muted
+                  chevron
+                  onTap={onRuntimeModeTap}
+                />,
+                <Pill
+                  icon={interactionMode === "plan" ? "pencil-line" : "bot"}
+                  label={interactionModePresentation.label}
+                  muted
+                  onTap={onInteractionModeTap}
+                />,
+              ]}
+            />
+          ),
+          renderFooterRightActions: () => (
+            <view
+              className={
+                busy
+                  ? "composer__send composer__send--stop"
+                  : canSend
+                    ? "composer__send composer__send--active"
+                    : "composer__send"
+              }
+              bindtap={handleSend}
+            >
+              <Icon name={busy ? "square" : "arrow-up"} size={14} color="#ffffff" />
             </view>
-            {modelOptionLabel && onModelOptionTap ? (
-              <>
-                <view className="composer__sep" />
-                <Pill label={modelOptionLabel} muted chevron onTap={onModelOptionTap} />
-              </>
-            ) : null}
-            <view className="composer__sep" />
-            <Pill
-              icon={RUNTIME_MODE_ICONS[runtimeMode]}
-              label={runtimeModePresentation.label}
-              muted
-              chevron
-              onTap={onRuntimeModeTap}
-            />
-            <view className="composer__sep" />
-            <Pill
-              icon={interactionMode === "plan" ? "pencil-line" : "bot"}
-              label={interactionModePresentation.label}
-              muted
-              onTap={onInteractionModeTap}
-            />
-          </view>
-          <view
-            className={
-              busy
-                ? "composer__send composer__send--stop"
-                : canSend
-                  ? "composer__send composer__send--active"
-                  : "composer__send"
-            }
-            bindtap={handleSend}
-          >
-            <Icon name={busy ? "square" : "arrow-up"} size={14} color="#ffffff" />
-          </view>
-        </view>
-      </view>
-      {/* Context strip: current checkout + branch */}
-      <view className="context-strip">
-        <view className="context-strip__item">
-          <Icon name="folder" size={12} color="#a1a1aa" className="context-strip__icon-img" />
-          <text className="context-strip__label">{context.checkoutLabel}</text>
-        </view>
-        <view className="context-strip__item">
-          <Icon name="git-branch" size={12} color="#a1a1aa" className="context-strip__icon-img" />
-          <text className="context-strip__label" text-maxline="1">
-            {context.branchLabel}
-          </text>
-        </view>
-      </view>
+          ),
+        }}
+      />
+      <ComposerContextStrip
+        checkout={
+          <>
+            <Icon name="folder" size={12} color="#a1a1aa" className="composer-context-icon" />
+            <text className="composer-context-label">{context.checkoutLabel}</text>
+          </>
+        }
+        branch={
+          <>
+            <Icon name="git-branch" size={12} color="#a1a1aa" className="composer-context-icon" />
+            <text className="composer-context-label" text-maxline="1">
+              {context.branchLabel}
+            </text>
+          </>
+        }
+      />
     </view>
   );
 
@@ -204,10 +223,11 @@ export function Composer({
     return (
       <view className="hero">
         <view className="hero__inner">
-          <text className="hero__headline">
-            What should we build in{" "}
-            <text className="hero__project">{projectName ?? "your project"}</text>?
-          </text>
+          <view className="hero__headline-slot">
+            <ComposerHeroHeadline
+              project={<text className="hero__project-name">{projectName ?? "your project"}</text>}
+            />
+          </view>
           {card}
         </view>
       </view>

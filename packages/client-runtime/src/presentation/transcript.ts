@@ -89,6 +89,8 @@ export interface TranscriptMessage {
 export interface TranscriptProposedPlan {
   readonly id: string;
   readonly createdAt: string;
+  /** Plan Markdown; optional at the projection layer, present in both renderers. */
+  readonly planMarkdown?: string;
 }
 
 export type TimelineEntry<

@@ -188,7 +188,11 @@ describe("TranscriptRowSurface", () => {
       kind: "proposed-plan",
       id: "pp1",
       createdAt: "2026-07-31T00:00:00.000Z",
-      proposedPlan: { planMarkdown: "# Plan\n\nDo the thing." },
+      proposedPlan: {
+        id: "plan-1",
+        createdAt: "2026-07-31T00:00:00.000Z",
+        planMarkdown: "# Plan\n\nDo the thing.",
+      },
     });
     expect(markup).toContain("transcript-proposed-plan-row");
     expect(markup).toContain("data-plan-card");

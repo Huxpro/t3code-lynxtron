@@ -14,6 +14,7 @@ import {
 import { useProjects, useThreadShells } from "~/state/entities";
 import { useEnvironments, usePrimaryEnvironmentId } from "~/state/environments";
 import { sortLogicalProjectsForSidebar } from "../Sidebar.logic";
+import { ComposerHeroHeadline } from "./ComposerSurface";
 import {
   Menu,
   MenuItem,
@@ -144,15 +145,5 @@ export function DraftHeroHeadline({
     </button>
   );
 
-  return (
-    <h1 className="mx-auto w-full max-w-5xl text-center font-normal text-2xl text-foreground tracking-tight sm:text-3xl">
-      {hasResolvedProject ? (
-        <>What should we build in {projectSelector}?</>
-      ) : canChooseProject ? (
-        <>{projectSelector} to start</>
-      ) : (
-        <>Add a project to start</>
-      )}
-    </h1>
-  );
+  return <ComposerHeroHeadline project={projectSelector} projectResolved={hasResolvedProject} />;
 }
