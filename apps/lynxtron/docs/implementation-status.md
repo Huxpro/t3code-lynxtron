@@ -947,33 +947,108 @@ keybindings placeholder). Settings mutations keep their client/server
 authority; both panel stacks run the shared `panelSurfaces` state machine;
 `overrides.css` carries only chrome and commented leaf/island rules.
 
-## Session handoff (2026-08-01, after AR5.4)
+## AR6 certification (2026-08-01)
 
-- Branch `lynxtron-port`, pushed to `lynxtron/lynxtron-port`; HEAD is
-  `6cf72ad39` (AR5.4). Completed this session: AR5.2 (`6cd7b0fe7`), AR5.3 in
-  two commits (`07356b977`, `26103dc9c`), AR5.4 (`6cf72ad39`).
-- Next slice: AR5.5 root route composition and overlay ownership. Survey
-  finding: the Lynx root is already a thin host (`src/app/index.tsx`, 92
-  lines: RootSwitch + state-driven RootOverlays mounting QuickSwitch and
-  ModelPicker, matching Web's overlay ownership), and the Lynx `ChatView`
-  (154 lines) is a header/timeline/composer/right-panel host on shared
-  projections. The remaining duplication is the chat shell anatomy inside
-  Web's 6,176-line `ChatView.tsx`; the honest move is extracting a shared
-  chat-body surface (header slot, timeline/composer slot, right-panel slot)
-  rather than copying anything into `apps/lynxtron`. That extraction is the
-  largest single Web refactor in the plan and should start a fresh session.
-- After AR5.5: AR6 certification (dual viewports, light/dark, state matrix,
-  reuse/bundle finals, packaged smoke, real-input user session for R5/R12,
-  release classification).
+### Evidence battery
+
+All captures ran against the packaged `dist/desktop` artifact (the same
+binary `pnpm run start` ships), so every row doubles as packaged-application
+smoke; each reports zero renderer errors at capture time.
+
+| Viewport | State                             | Evidence                                                                                                 |
+| -------- | --------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| 1280×820 | empty (new-thread hero)           | `ar0-baseline-1280x820.jpg` (AR0), re-verified through AR5 captures                                      |
+| 1440×900 | empty (new-thread hero)           | `ar6-new-thread-1440x900.jpg`                                                                            |
+| 1280×820 | populated (settings, real data)   | `ar52-settings-{providers,connections,source-control,beta,archive}-1280x820.jpg` (AR5.2)                 |
+| 1440×900 | populated (settings providers)    | `ar6-settings-providers-1440x900.jpg`                                                                    |
+| 1280×820 | populated (files, 16,340 entries) | `ar53-files-panel-1280x820.jpg` (AR5.3)                                                                  |
+| 1280×820 | populated (right panel, tabs)     | `ar53-right-panel-{empty,diff}-1280x820.jpg` (AR5.3), `ar55-chat-route-right-panel-1280x820.jpg` (AR5.5) |
+| 1280×820 | loading (source-control scan)     | `ar6-settings-loading-1280x820.jpg`                                                                      |
+| 1280×820 | streaming + interrupted           | `ar3-transcript-1280x820.jpg`, `ar4-composer-1280x820.jpg` (AR3/AR4, surfaces unchanged by AR5)          |
+| 1280×820 | reconnecting (server killed)      | `ar6-chat-reconnecting-1280x820.jpg`; see finding below                                                  |
+| 1280×820 | destructive confirmation          | `ar6-settings-restore-confirmation-1280x820.jpg` ("Restore default settings? This will reset: …")        |
+| light    | any                               | **not capturable — R13** (dark-only token pipeline, registered in AR6)                                   |
+
+Same-snapshot content checks: every capture's measurement sidecar pairs the
+Web and Lynx selectors per anchor and records the live text (provider card
+with the real Claude instance summary, access row with the live "This
+device" session, workspace tree with real entries, restore dialog copy), so
+content parity is inspectable per anchor rather than asserted.
+
+Reconnecting finding: killing the embedded server (`[srv] exited code=130`)
+leaves the renderer alive with zero errors; the main-owned connector
+attempts recovery and logs `connect failed: t3 server process exited before
+becoming ready`, and the Composer stays disabled while the status is not
+`ready`. Unlike Web, the Lynx chat header has no visible connection-state
+label — `connectionStatus` is plumbed but unrendered. Registered as a
+product-gap follow-up; it does not change the classification.
+
+### Final reuse and deletion report
+
+Strict denominator unchanged for the whole AR series (boundary hash
+`67f5a53f…`). Product-surface reuse, AR0 baseline → AR6:
+
+| Screen                     | AR0                        | AR6                        |
+| -------------------------- | -------------------------- | -------------------------- |
+| app-shell-sidebar          | 22/329 (6.7%), 3,369 lines | 22/329 (6.7%), 3,369 lines |
+| new-thread-empty           | 32/464 (6.9%), 7,148 lines | 41/472 (8.7%), 8,554 lines |
+| existing-thread-transcript | 32/464 (6.9%), 7,148 lines | 41/472 (8.7%), 8,554 lines |
+| composer                   | 17/430 (4.0%), 4,947 lines | 26/438 (5.9%), 6,353 lines |
+| model-picker               | 5/272 (1.8%), 1,394 lines  | 8/275 (2.9%), 1,774 lines  |
+| settings-providers         | 11/291 (3.8%), 1,730 lines | 13/294 (4.4%), 2,077 lines |
+
+Prototype deletion, AR0 → AR6: `overrides.css` 3,947 → 3,162 lines (-785,
+≈20% retired); `preload.js` 8,453 → 4,847 bytes (AR2); reachable Lynx-owned
+product modules in `src/app/components/` 20 → 19, with every remaining
+module reclassified as root adapter, capability, primitive, or registered
+hard island (AR5 exit review). Deleted clean-room compositions by owner:
+provider-card header CSS (AR5.2), source-control status/rescan (AR5.2),
+right-panel tabs/empty state (AR5.3a), plan-panel rows (AR5.3a), diff/files
+trees (AR5.3b), SidebarBrand (AR5.4), main-pane/chat-body chrome (AR5.5).
+Physically shared composition modules added: SettingsSurfaces, PlanSurface,
+RightPanelSurface, FileTreeSurface, ChatRouteSurface (plus ModelPickerSurface
+and CommandPaletteSurface in AR5.1). Renderer bundle 2,081.1 → 2,277.6 kB
+(+196.5 kB across the whole AR series; ≈78 kB traced to the raster icon set
+in AR3, the rest is shared product composition now compiled into the Lynx
+bundle — the price of deleting the second implementation).
+
+### Release classification
+
+**`chat-first-preview`**. Evidence: chat, transcript, Composer, settings,
+and navigation all work on shared compositions over the main-owned push
+transport (AR1/AR2 proved and cut over), so the port is not an
+`experimental-host`. It is not an `electron-replacement-candidate`: R5
+(renderer keyboard; physical-key acceptance `pending-user-session`), R11
+(async bundle URLs rejected upstream; the eager main bundle is the current
+mitigation), and the new R13 (light theme) remain open, and real
+keyboard/focus/wheel/drag/selection acceptance still requires an authorized
+user session (R5/R12).
+
+Open runtime gaps and removal conditions are tracked per ID in
+`compat-matrix.md` (R1–R13; R3 closed for the T3 architecture in AR2).
+
+## Session handoff (2026-08-01, after AR6)
+
+- Plan 10 is complete: AR0–AR6 all `completed`. Branch `lynxtron-port`,
+  pushed to `lynxtron/lynxtron-port`. This session: AR5.2 (`6cd7b0fe7`),
+  AR5.3 (`07356b977`, `26103dc9c`), AR5.4 (`6cf72ad39`), AR5.5 (`66946da90`),
+  AR6 (this commit).
+- Release classification: `chat-first-preview` (see the AR6 section for the
+  evidence matrix and the deletion/reuse finals).
+- Outstanding user-session work: physical keyboard/focus acceptance (R5) and
+  scroll-gesture acceptance (R12) stay `pending-user-session` and need an
+  authorized interactive session; R11 needs the upstream bundle-URL fix;
+  R13 (light theme) needs the two-theme CSS pipeline.
+- Follow-ups worth scheduling: visible connection-state treatment in the
+  Lynx chat header (Web parity); an active-plan fixture capture for the plan
+  surface's markdown island.
 - Processes/ports: none left running (all Lynxtron app instances from capture
   runs were stopped by tracked PID; the unrelated `synara` worktree instance
   was never touched).
 - Temporary fixtures: `/tmp/t3code-ar52-settings.770L6Q` (seeded state,
   snapshot `ed69ad13…`), `/tmp/ar53-tap-point.mjs`, `/tmp/ar5*-capture*.sh`
   capture drivers. Repo-tracked capture specs live in
-  `apps/lynxtron/scripts/visual-measurement-spec.{settings-*,right-panel*,files-panel}.json`.
-- No new compatibility gaps; overrides.css stands at 3,187 lines (from 3,531
-  at AR5.2 start); renderer bundle is 2,277.3 kB.
+  `apps/lynxtron/scripts/visual-measurement-spec.*.json`.
 
 ### AR5.4 Sidebar state and behavior hosts (2026-08-01, complete)
 

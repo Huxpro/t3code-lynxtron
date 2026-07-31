@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "settings-restore-confirmation",
+  "anchors": {
+    "sidebar": {
+      "selector": ".settings-nav",
+      "nodeId": 149,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "box": {
+        "width": 255,
+        "height": 820
+      },
+      "text": "General Appearance Keybindings Providers Source Control Connections Beta Archive Back",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "topbar": {
+      "selector": ".settings-topbar",
+      "nodeId": 151,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "box": {
+        "width": 984,
+        "height": 52
+      },
+      "text": "Settings Restore defaults",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "restoreDialog": {
+      "selector": ".settings-restore-dialog",
+      "nodeId": 456,
+      "rect": {
+        "x": 544,
+        "y": 337,
+        "width": 448,
+        "height": 146
+      },
+      "box": {
+        "width": 406,
+        "height": 104
+      },
+      "text": "Restore default settings? This will reset: Project Grouping. Cancel Restore",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "restoreOverlay": {
+      "selector": ".settings-restore-overlay",
+      "nodeId": 455,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 820
+      },
+      "box": {
+        "width": 1024,
+        "height": 820
+      },
+      "text": "Restore default settings? This will reset: Project Grouping. Cancel Restore",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0.54902)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {},
+  "colors": {}
+}

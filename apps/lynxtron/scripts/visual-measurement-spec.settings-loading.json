@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "route": "settings-loading",
+  "stability": {
+    "webAbsentText": []
+  },
+  "anchors": [
+    {
+      "id": "sidebar",
+      "web": "[data-sidebar=\"sidebar\"]",
+      "lynx": ".settings-nav"
+    },
+    {
+      "id": "topbar",
+      "web": ".settings-topbar",
+      "lynx": ".settings-topbar"
+    },
+    {
+      "id": "panel",
+      "web": ".settings-panel",
+      "lynx": ".settings-scroll"
+    },
+    {
+      "id": "emptyCard",
+      "web": ".settings-empty-card",
+      "lynx": ".settings-empty-card"
+    }
+  ],
+  "typography": [],
+  "colors": []
+}

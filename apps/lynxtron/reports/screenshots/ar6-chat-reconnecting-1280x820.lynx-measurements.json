@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "new-thread",
+  "anchors": {
+    "routeRoot": {
+      "selector": ".chat-view-surface-reference",
+      "nodeId": 50,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 820
+      },
+      "box": {
+        "width": 1024,
+        "height": 820
+      },
+      "text": "T3 t3code / New thread Add action Open Commit What should we build in  your project ? Select model Full access Build Local checkout No branch",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "topbar": {
+      "selector": ".topbar",
+      "nodeId": 52,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "box": {
+        "width": 984,
+        "height": 52
+      },
+      "text": "T3 t3code / New thread Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "composer": {
+      "selector": ".composer-surface",
+      "nodeId": 101,
+      "rect": {
+        "x": 433,
+        "y": 361,
+        "width": 670,
+        "height": 130
+      },
+      "box": {
+        "width": 670,
+        "height": 130
+      },
+      "text": "Select model Full access Build",
+      "style": {
+        "backgroundColor": "rgb(18,18,18)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "hero": {
+      "selector": ".hero__headline",
+      "nodeId": 94,
+      "rect": {
+        "x": 384,
+        "y": 300,
+        "width": 768,
+        "height": 28
+      },
+      "box": {
+        "width": 768,
+        "height": 28
+      },
+      "text": "What should we build in  your project ?",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "inherit",
+        "fontSize": "21px",
+        "fontWeight": "400",
+        "lineHeight": "2rem"
+      }
+    }
+  },
+  "typography": {},
+  "colors": {}
+}

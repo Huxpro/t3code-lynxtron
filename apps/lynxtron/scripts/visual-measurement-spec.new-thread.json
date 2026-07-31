@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "route": "new-thread",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "routeRoot",
+      "web": ".chat-view-surface-reference",
+      "lynx": ".chat-view-surface-reference"
+    },
+    {
+      "id": "topbar",
+      "web": "[data-chat-header]",
+      "lynx": ".topbar"
+    },
+    {
+      "id": "composer",
+      "web": ".composer-surface",
+      "lynx": ".composer-surface"
+    },
+    {
+      "id": "hero",
+      "web": ".hero__headline",
+      "lynx": ".hero__headline"
+    }
+  ],
+  "typography": [],
+  "colors": []
+}
