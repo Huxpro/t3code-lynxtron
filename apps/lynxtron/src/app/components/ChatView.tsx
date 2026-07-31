@@ -5,6 +5,7 @@ import {
   projectComposerPrimaryOption,
   toggleComposerInteractionMode,
 } from "@t3tools/client-runtime/presentation/composer";
+import { ChatRouteSurface } from "../../../../web/src/components/ChatRouteSurface";
 import { ChatHeader } from "./ChatHeader";
 import { MessagesTimeline } from "./MessagesTimeline";
 import { Composer } from "./Composer";
@@ -99,56 +100,57 @@ export function ChatView({ threadId }: ChatViewProps) {
   }, [primaryModelOption, setModelOptions]);
 
   return (
-    <view className="chat-view-surface-reference main-pane">
-      <ChatHeader
-        projectName={activeProject?.title ?? "t3code"}
-        threadTitle={activeThread?.title ?? "New thread"}
-        sessionStatus={sessionStatus}
-        connectionStatus={status}
-        statusDetail={statusDetail}
-        rightPanelOpen={rightPanel.isOpen}
-        onToggleRightPanel={handleToggleRightPanel}
-      />
-      <view className="chat-body-row">
-        <view className="chat-body">
-          {!hero ? (
-            <MessagesTimeline
-              key={activeThreadId ?? "no-thread"}
-              messages={messages}
-              activities={activities}
-              sessionStatus={sessionStatus}
-              cwd={cwd}
-              latestTurn={latestTurn}
-              proposedPlans={proposedPlans}
-              activeTurnId={activeTurnId}
-              checkpoints={checkpoints}
-            />
-          ) : null}
-          <Composer
-            hero={hero}
-            projectName={projectName}
-            modelLabel={modelLabel}
-            modelInstanceId={modelInstanceId}
-            modelOptionLabel={primaryModelOption?.presentation.displayLabel}
-            branch={activeThread?.branch ?? undefined}
-            worktreePath={activeThread?.worktreePath ?? undefined}
-            runtimeMode={activeThread?.runtimeMode ?? "full-access"}
-            interactionMode={activeThread?.interactionMode ?? "default"}
-            disabled={status !== "ready"}
-            busy={isSessionBusy(sessionStatus)}
-            onSend={sendPrompt}
-            onStop={interrupt}
-            onModelTap={uiActions.openModelPicker}
-            onModelOptionTap={primaryModelOption ? handleModelOptionTap : undefined}
-            onRuntimeModeTap={handleRuntimeModeTap}
-            onInteractionModeTap={handleInteractionModeTap}
-          />
-        </view>
+    <ChatRouteSurface
+      header={
+        <ChatHeader
+          projectName={activeProject?.title ?? "t3code"}
+          threadTitle={activeThread?.title ?? "New thread"}
+          sessionStatus={sessionStatus}
+          connectionStatus={status}
+          statusDetail={statusDetail}
+          rightPanelOpen={rightPanel.isOpen}
+          onToggleRightPanel={handleToggleRightPanel}
+        />
+      }
+      rightPanel={
         <RightPanel
           activePlan={activePlan ?? null}
           activeProposedPlan={activeProposedPlan ?? null}
         />
-      </view>
-    </view>
+      }
+    >
+      {!hero ? (
+        <MessagesTimeline
+          key={activeThreadId ?? "no-thread"}
+          messages={messages}
+          activities={activities}
+          sessionStatus={sessionStatus}
+          cwd={cwd}
+          latestTurn={latestTurn}
+          proposedPlans={proposedPlans}
+          activeTurnId={activeTurnId}
+          checkpoints={checkpoints}
+        />
+      ) : null}
+      <Composer
+        hero={hero}
+        projectName={projectName}
+        modelLabel={modelLabel}
+        modelInstanceId={modelInstanceId}
+        modelOptionLabel={primaryModelOption?.presentation.displayLabel}
+        branch={activeThread?.branch ?? undefined}
+        worktreePath={activeThread?.worktreePath ?? undefined}
+        runtimeMode={activeThread?.runtimeMode ?? "full-access"}
+        interactionMode={activeThread?.interactionMode ?? "default"}
+        disabled={status !== "ready"}
+        busy={isSessionBusy(sessionStatus)}
+        onSend={sendPrompt}
+        onStop={interrupt}
+        onModelTap={uiActions.openModelPicker}
+        onModelOptionTap={primaryModelOption ? handleModelOptionTap : undefined}
+        onRuntimeModeTap={handleRuntimeModeTap}
+        onInteractionModeTap={handleInteractionModeTap}
+      />
+    </ChatRouteSurface>
   );
 }

@@ -113,8 +113,8 @@ Execute only one task at a time:
 | AR2 | Cut over from preload polling                       | AR1            | `completed`   | Reachable product state no longer polls every 400 ms                    |
 | AR3 | Converge transcript composition                     | AR2            | `completed`   | Shared message composition replaces the Lynx clean-room path            |
 | AR4 | Converge Composer composition                       | AR3            | `completed`   | Shared Composer chrome surrounds a bounded editor island                |
-| AR5 | Remove remaining clean-room surfaces                | AR4            | `in_progress` | Settings, panels, overlays, and Sidebar behavior use shared composition |
-| AR6 | Certify the resulting product boundary              | AR5            | `pending`     | Honest release classification and final evidence                        |
+| AR5 | Remove remaining clean-room surfaces                | AR4            | `completed`   | Settings, panels, overlays, and Sidebar behavior use shared composition |
+| AR6 | Certify the resulting product boundary              | AR5            | `in_progress` | Honest release classification and final evidence                        |
 
 Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `skipped(reason)`. Keep only one row in progress.
 

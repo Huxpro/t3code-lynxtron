@@ -907,6 +907,46 @@ the Files tab through the converged empty-state grid and renders the real
 16,340-file workspace tree through the shared rows with zero renderer errors
 (`reports/screenshots/ar53-files-panel-1280x820.jpg`).
 
+### AR5.5 Root route composition and overlay ownership (2026-08-01, complete)
+
+The chat route's outer anatomy is now one physical composition.
+`apps/web/src/components/ChatRouteSurface.tsx` owns the root surface, the
+main column (header slot, banner slot, body row with the relative chat
+column), the column's maximized-away collapse, and the full-height right
+panel as a root-level sibling. Web's `ChatView` consumes it with its
+workspace topbar, thread error banner, terminal drawers, inline/sheet right
+panel modes, and expanded-image overlay in the named slots; the Lynx
+`ChatView` consumes it with its chat topbar, timeline island, and Composer.
+The Lynx right panel moves from a prototype position below the header to the
+Web anatomy — full height beside the column; measured runtime geometry
+confirms the header spans exactly the chat column (684 px) and the panel
+runs 340 × 820 beside it. Overlay ownership was already correct on Lynx
+(root-mounted, state-driven `RootOverlays` for QuickSwitch and the model
+picker, with copy and ordering converged in AR5.1), so it is unchanged.
+
+Deletions: the prototype `main-pane`, `chat-body`, and `chat-body-row`
+chrome (`overrides.css` 3,187 → 3,162 lines). Three focused
+`ChatRouteSurface` tests cover anatomy ordering, the default flexible
+column, and the maximized collapse; 45 Web chat tests (ChatView.logic and
+MessagesTimeline) and 65 Lynxtron tests pass; the Web production build is
+clean. Strict reuse on the existing-thread-transcript route reports 42/522
+modules (8.0%) and 8,817/114,566 lines (7.7%), up from 41/521 and
+8,752/114,426, boundary hash unchanged (`67f5a53f…`). Renderer bundle is
+2,277.6 kB (+0.3 kB). Runtime evidence: a tap-driven 1280 × 820 capture
+opens the right panel on the chat route with zero renderer errors
+(`reports/screenshots/ar55-chat-route-right-panel-1280x820.jpg`).
+
+AR5 exit review: no ordinary clean-room screen remains reachable from Lynx
+navigation — chat route, transcript, Composer, model picker, quick switch,
+all settings panels, and the right panel consume shared physical
+compositions. Every remaining Lynx-exclusive component is a root adapter
+(`index.tsx` RootSwitch, `ChatView` host), a capability (`Icon`/`iconData`,
+`clientCapabilities`), a primitive (`SettingsControls`), or a registered
+hard island (native list host, Markdown island, Composer editor kernel, R5
+keybindings placeholder). Settings mutations keep their client/server
+authority; both panel stacks run the shared `panelSurfaces` state machine;
+`overrides.css` carries only chrome and commented leaf/island rules.
+
 ## Session handoff (2026-08-01, after AR5.4)
 
 - Branch `lynxtron-port`, pushed to `lynxtron/lynxtron-port`; HEAD is

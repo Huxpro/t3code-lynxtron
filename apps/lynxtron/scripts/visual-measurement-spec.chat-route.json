@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "route": "chat-route",
+  "stability": {
+    "webAbsentText": ["Reconnecting...", "Connecting..."]
+  },
+  "anchors": [
+    {
+      "id": "routeRoot",
+      "web": ".chat-view-surface-reference",
+      "lynx": ".chat-view-surface-reference"
+    },
+    {
+      "id": "topbar",
+      "web": "[data-chat-header]",
+      "lynx": ".topbar"
+    },
+    {
+      "id": "rightPanel",
+      "web": "[data-right-panel-tabbar]",
+      "lynx": ".right-panel"
+    },
+    {
+      "id": "composer",
+      "web": ".composer-surface",
+      "lynx": ".composer-surface"
+    }
+  ],
+  "typography": [],
+  "colors": []
+}

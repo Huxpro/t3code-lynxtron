@@ -15546,7 +15546,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3182,
+              "lines": 3162,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -15621,6 +15621,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -16346,6 +16351,16 @@
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/CommandPaletteSurface.tsx",
@@ -17458,8 +17473,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 34994,
-            "eligibleModules": 157,
+            "eligibleLines": 35041,
+            "eligibleModules": 158,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17468,7 +17483,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -17568,7 +17583,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3182,
+                "lines": 3162,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -17695,6 +17710,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 468,
                 "path": "apps/web/src/components/chat/TranscriptRowSurface.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -25712,18 +25732,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 430,
             "PATCHED": 0,
-            "SHARED": 40,
+            "SHARED": 41,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 104230,
-            "modules": 471
+            "lines": 104286,
+            "modules": 472
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -25808,6 +25828,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -26215,6 +26240,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -26605,8 +26640,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14235,
-            "eligibleModules": 87,
+            "eligibleLines": 14302,
+            "eligibleModules": 88,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -26615,7 +26650,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -26851,12 +26886,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8489,
-            "modules": 40
+            "lines": 8554,
+            "modules": 41
           },
           "reusePercent": {
-            "lines": 8.1,
-            "modules": 8.5
+            "lines": 8.2,
+            "modules": 8.7
           },
           "web": {
             "edges": [
@@ -28676,6 +28711,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -29009,6 +29054,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -35123,13 +35173,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -37110,18 +37165,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 25,
+            "SHARED": 26,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93715,
-            "modules": 437
+            "lines": 93771,
+            "modules": 438
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -37206,6 +37261,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -37578,6 +37638,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -37633,8 +37703,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 10441,
-            "eligibleModules": 48,
+            "eligibleLines": 10508,
+            "eligibleModules": 49,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -37643,7 +37713,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -37756,12 +37826,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 6288,
-            "modules": 25
+            "lines": 6353,
+            "modules": 26
           },
           "reusePercent": {
-            "lines": 6.7,
-            "modules": 5.7
+            "lines": 6.8,
+            "modules": 5.9
           },
           "web": {
             "edges": [
@@ -39516,6 +39586,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -39849,6 +39929,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -44998,13 +45083,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -46821,18 +46911,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 41,
+            "SHARED": 42,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114557,
-            "modules": 522
+            "lines": 114613,
+            "modules": 523
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -46917,6 +47007,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -47334,6 +47429,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -47724,8 +47829,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14276,
-            "eligibleModules": 90,
+            "eligibleLines": 14343,
+            "eligibleModules": 91,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -47734,7 +47839,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -47981,12 +48086,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8752,
-            "modules": 41
+            "lines": 8817,
+            "modules": 42
           },
           "reusePercent": {
-            "lines": 7.6,
-            "modules": 7.9
+            "lines": 7.7,
+            "modules": 8
           },
           "web": {
             "edges": [
@@ -49926,6 +50031,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -50259,6 +50374,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -57668,13 +57788,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -59886,18 +60011,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 430,
             "PATCHED": 0,
-            "SHARED": 40,
+            "SHARED": 41,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 104230,
-            "modules": 471
+            "lines": 104286,
+            "modules": 472
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -59982,6 +60107,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -60389,6 +60519,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -60779,8 +60919,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14235,
-            "eligibleModules": 87,
+            "eligibleLines": 14302,
+            "eligibleModules": 88,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -60789,7 +60929,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -61025,12 +61165,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8489,
-            "modules": 40
+            "lines": 8554,
+            "modules": 41
           },
           "reusePercent": {
-            "lines": 8.1,
-            "modules": 8.5
+            "lines": 8.2,
+            "modules": 8.7
           },
           "web": {
             "edges": [
@@ -62850,6 +62990,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -63183,6 +63333,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -69297,13 +69452,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -71284,18 +71444,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 25,
+            "SHARED": 26,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93715,
-            "modules": 437
+            "lines": 93771,
+            "modules": 438
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -71380,6 +71540,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -71752,6 +71917,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -71807,8 +71982,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 10441,
-            "eligibleModules": 48,
+            "eligibleLines": 10508,
+            "eligibleModules": 49,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -71817,7 +71992,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -71933,12 +72108,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 6288,
-            "modules": 25
+            "lines": 6353,
+            "modules": 26
           },
           "reusePercent": {
-            "lines": 6.7,
-            "modules": 5.7
+            "lines": 6.8,
+            "modules": 5.9
           },
           "web": {
             "edges": [
@@ -73693,6 +73868,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -74026,6 +74211,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -79175,13 +79365,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -81001,18 +81196,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 41,
+            "SHARED": 42,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114566,
-            "modules": 522
+            "lines": 114622,
+            "modules": 523
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -81097,6 +81292,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -81514,6 +81714,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -81904,8 +82114,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14276,
-            "eligibleModules": 90,
+            "eligibleLines": 14343,
+            "eligibleModules": 91,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -81914,7 +82124,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -82161,12 +82371,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8752,
-            "modules": 41
+            "lines": 8817,
+            "modules": 42
           },
           "reusePercent": {
-            "lines": 7.6,
-            "modules": 7.9
+            "lines": 7.7,
+            "modules": 8
           },
           "web": {
             "edges": [
@@ -84106,6 +84316,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -84439,6 +84659,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -91858,13 +92083,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -94076,18 +94306,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 25,
+            "SHARED": 26,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93715,
-            "modules": 437
+            "lines": 93771,
+            "modules": 438
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -94172,6 +94402,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -94544,6 +94779,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -94599,8 +94844,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 10441,
-            "eligibleModules": 48,
+            "eligibleLines": 10508,
+            "eligibleModules": 49,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -94609,7 +94854,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -94725,12 +94970,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 6288,
-            "modules": 25
+            "lines": 6353,
+            "modules": 26
           },
           "reusePercent": {
-            "lines": 6.7,
-            "modules": 5.7
+            "lines": 6.8,
+            "modules": 5.9
           },
           "web": {
             "edges": [
@@ -96485,6 +96730,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -96818,6 +97073,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -101967,13 +102227,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -108994,18 +109259,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 41,
+            "SHARED": 42,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114557,
-            "modules": 522
+            "lines": 114613,
+            "modules": 523
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -109090,6 +109355,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -109507,6 +109777,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -109897,8 +110177,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14276,
-            "eligibleModules": 90,
+            "eligibleLines": 14343,
+            "eligibleModules": 91,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -109907,7 +110187,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -110154,12 +110434,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8752,
-            "modules": 41
+            "lines": 8817,
+            "modules": 42
           },
           "reusePercent": {
-            "lines": 7.6,
-            "modules": 7.9
+            "lines": 7.7,
+            "modules": 8
           },
           "web": {
             "edges": [
@@ -112099,6 +112379,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -112432,6 +112722,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -119841,13 +120136,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -131172,18 +131472,18 @@
           "classificationCounts": {
             "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 41,
+            "SHARED": 42,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114557,
-            "modules": 522
+            "lines": 114613,
+            "modules": 523
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6176,
+              "lines": 6167,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -131268,6 +131568,11 @@
                 "from": "apps/lynxtron/src/app/components/ChatHeader.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ChatView.tsx",
+                "request": "../../../../web/src/components/ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ChatView.tsx",
@@ -131685,6 +131990,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/PlanSurface.tsx",
                 "request": "../lib/cn",
                 "to": "apps/web/src/lib/cn.ts"
@@ -132075,8 +132390,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14276,
-            "eligibleModules": 90,
+            "eligibleLines": 14343,
+            "eligibleModules": 91,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -132085,7 +132400,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 156,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -132332,12 +132647,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8752,
-            "modules": 41
+            "lines": 8817,
+            "modules": 42
           },
           "reusePercent": {
-            "lines": 7.6,
-            "modules": 7.9
+            "lines": 7.7,
+            "modules": 8
           },
           "web": {
             "edges": [
@@ -134277,6 +134592,16 @@
                 "to": "packages/client-runtime/src/state/runtime.ts"
               },
               {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatRouteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
                 "from": "apps/web/src/components/ChatView.logic.ts",
                 "request": "../rpc/atomRegistry",
                 "to": "apps/web/src/rpc/atomRegistry.ts"
@@ -134610,6 +134935,11 @@
                 "from": "apps/web/src/components/ChatView.tsx",
                 "request": "./chat/timelineScrollAnchoring",
                 "to": "apps/web/src/components/chat/timelineScrollAnchoring.ts"
+              },
+              {
+                "from": "apps/web/src/components/ChatView.tsx",
+                "request": "./ChatRouteSurface",
+                "to": "apps/web/src/components/ChatRouteSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/ChatView.tsx",
@@ -142019,13 +142349,18 @@
                 "path": "apps/web/src/components/ChatMarkdown.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 65,
+                "path": "apps/web/src/components/ChatRouteSurface.tsx"
+              },
+              {
                 "classification": "EXCLUSIVE",
                 "lines": 529,
                 "path": "apps/web/src/components/ChatView.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6176,
+                "lines": 6167,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {

@@ -784,22 +784,9 @@
 }
 
 /* ======================= Main pane ======================= */
-.main-pane {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  width: 0;
-  height: 100%;
-  background-color: var(--background);
-  color: var(--foreground);
-}
-.chat-body {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  align-self: stretch;
-  position: relative;
-}
+/* The chat route shell (root surface, main column, body row) compiles from
+   the shared ChatRouteSurface (AR5.5); the prototype main-pane/chat-body
+   chrome is deleted. */
 
 /* ======================= Top toolbar ======================= */
 .topbar {
@@ -2429,13 +2416,6 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-}
-
-/* ============= Chat body row (main + right panel) ============= */
-.chat-body-row {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
 }
 
 /* ============= Right Panel ============= */

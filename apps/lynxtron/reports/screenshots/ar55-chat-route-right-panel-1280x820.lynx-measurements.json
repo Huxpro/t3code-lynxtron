@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "chat-route",
+  "anchors": {
+    "routeRoot": {
+      "selector": ".chat-view-surface-reference",
+      "nodeId": 50,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 820
+      },
+      "box": {
+        "width": 1024,
+        "height": 820
+      },
+      "text": "T3 t3code / New thread Add action Open Commit What should we build in  t3code ? Claude Fable 5 Reasoning · High Full access Build Local checkout No branch + × Open a surface Choose what to show in the right panel. 🌐 Browser Embedded browser previews are a registered placeholder on Lynxtron. >_ Terminal Terminal emulation is a registered placeholder on Lynxtron. 📁 Files Browse and read workspace files. Δ Diff Review changes in this thread.",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "topbar": {
+      "selector": ".topbar",
+      "nodeId": 52,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 684,
+        "height": 52
+      },
+      "box": {
+        "width": 644,
+        "height": 52
+      },
+      "text": "T3 t3code / New thread Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "rightPanel": {
+      "selector": ".right-panel",
+      "nodeId": 148,
+      "rect": {
+        "x": 940,
+        "y": 0,
+        "width": 340,
+        "height": 820
+      },
+      "box": {
+        "width": 339,
+        "height": 820
+      },
+      "text": "+ × Open a surface Choose what to show in the right panel. 🌐 Browser Embedded browser previews are a registered placeholder on Lynxtron. >_ Terminal Terminal emulation is a registered placeholder on Lynxtron. 📁 Files Browse and read workspace files. Δ Diff Review changes in this thread.",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "composer": {
+      "selector": ".composer-surface",
+      "nodeId": 101,
+      "rect": {
+        "x": 281,
+        "y": 361,
+        "width": 634,
+        "height": 130
+      },
+      "box": {
+        "width": 634,
+        "height": 130
+      },
+      "text": "Claude Fable 5 Reasoning · High Full access Build",
+      "style": {
+        "backgroundColor": "rgb(18,18,18)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {},
+  "colors": {}
+}
