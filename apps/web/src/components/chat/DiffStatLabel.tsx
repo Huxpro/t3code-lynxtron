@@ -1,5 +1,6 @@
 import { memo } from "react";
-import { cn } from "~/lib/utils";
+import { cn } from "../../lib/cn";
+import { HostText } from "../ui/hostElements";
 
 export function hasNonZeroStat(stat: { additions: number; deletions: number }): boolean {
   return stat.additions > 0 || stat.deletions > 0;
@@ -29,8 +30,8 @@ export const DiffStatLabel = memo(function DiffStatLabel(props: {
   const { additions, deletions, className, showParentheses = false, layout = "aligned" } = props;
   return (
     <>
-      {showParentheses && <span className="text-muted-foreground/70">(</span>}
-      <span
+      {showParentheses && <HostText className="text-muted-foreground/70">(</HostText>}
+      <HostText
         role="group"
         aria-label={`${additions} additions, ${deletions} deletions`}
         className={cn(
@@ -40,14 +41,14 @@ export const DiffStatLabel = memo(function DiffStatLabel(props: {
           className,
         )}
       >
-        <span aria-hidden="true" className="font-mono text-success">
+        <HostText aria-hidden="true" className="font-mono text-success">
           +{formatCompactDiffCount(additions)}
-        </span>
-        <span aria-hidden="true" className="font-mono text-destructive">
+        </HostText>
+        <HostText aria-hidden="true" className="font-mono text-destructive">
           -{formatCompactDiffCount(deletions)}
-        </span>
-      </span>
-      {showParentheses && <span className="text-muted-foreground/70">)</span>}
+        </HostText>
+      </HostText>
+      {showParentheses && <HostText className="text-muted-foreground/70">)</HostText>}
     </>
   );
 });

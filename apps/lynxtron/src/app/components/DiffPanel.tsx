@@ -6,6 +6,12 @@ import {
 import type { OrchestrationCheckpointSummary } from "@t3tools/contracts";
 import { useMemo, useState, type ReactNode } from "@lynx-js/react";
 
+import { DiffStatLabel, hasNonZeroStat } from "../../../../web/src/components/chat/DiffStatLabel";
+import {
+  FileTreeChildrenSurface,
+  FileTreeDirectoryRowSurface,
+  FileTreeFileRowSurface,
+} from "../../../../web/src/components/chat/FileTreeSurface";
 import { useT3ClientState } from "../state/t3Client";
 
 function latestFirst(
@@ -20,44 +26,11 @@ function latestFirst(
     );
 }
 
-function renderTreeNode(node: ChangedFilesTreeNode, depth: number): ReactNode {
-  const indentation = depth * 12;
-  if (node.kind === "directory") {
-    return (
-      <view key={`directory:${node.path}`} className="diff-panel__tree-group">
-        <view className="diff-panel__tree-row" style={{ paddingLeft: indentation } as any}>
-          <text className="diff-panel__tree-marker">▾</text>
-          <text className="diff-panel__tree-directory">{node.name}</text>
-          <view className="diff-panel__file-stats">
-            <text className="diff-panel__file-additions">+{node.stat.additions}</text>
-            <text className="diff-panel__file-deletions">−{node.stat.deletions}</text>
-          </view>
-        </view>
-        {node.children.map((child) => renderTreeNode(child, depth + 1))}
-      </view>
-    );
-  }
-
-  return (
-    <view
-      key={`file:${node.path}`}
-      className="diff-panel__tree-row"
-      style={{ paddingLeft: indentation } as any}
-    >
-      <text className="diff-panel__tree-marker">·</text>
-      <text className="diff-panel__file-path">{node.name}</text>
-      <view className="diff-panel__file-stats">
-        <text className="diff-panel__file-additions">+{node.stat.additions}</text>
-        <text className="diff-panel__file-deletions">−{node.stat.deletions}</text>
-      </view>
-    </view>
-  );
-}
-
 export function DiffPanel() {
   const { checkpoints, sessionStatus } = useT3ClientState();
   const orderedCheckpoints = useMemo(() => latestFirst(checkpoints), [checkpoints]);
   const [selectedTurnId, setSelectedTurnId] = useState<string | null>(null);
+  const [collapsedDirectories, setCollapsedDirectories] = useState<Record<string, boolean>>({});
   const selectedCheckpoint =
     orderedCheckpoints.find((checkpoint) => checkpoint.turnId === selectedTurnId) ??
     orderedCheckpoints[0];
@@ -69,6 +42,62 @@ export function DiffPanel() {
     () => summarizeChangedFiles(selectedCheckpoint?.files ?? []),
     [selectedCheckpoint],
   );
+  const hasDirectoryNodes = useMemo(() => tree.some((node) => node.kind === "directory"), [tree]);
+
+  const toggleDirectory = (path: string) => {
+    setCollapsedDirectories((current) => ({
+      ...current,
+      [path]: !(current[path] ?? false),
+    }));
+  };
+
+  const renderTreeNode = (node: ChangedFilesTreeNode, depth: number): ReactNode => {
+    if (node.kind === "directory") {
+      const expanded = !(collapsedDirectories[node.path] ?? false);
+      return (
+        <view key={`directory:${node.path}`}>
+          <FileTreeDirectoryRowSurface
+            name={node.name}
+            depth={depth}
+            expanded={expanded}
+            chevron={<text className="file-tree__chevron-glyph">▸</text>}
+            onToggle={() => toggleDirectory(node.path)}
+            {...(hasNonZeroStat(node.stat)
+              ? {
+                  trailing: (
+                    <DiffStatLabel
+                      additions={node.stat.additions}
+                      deletions={node.stat.deletions}
+                    />
+                  ),
+                }
+              : {})}
+          />
+          {expanded ? (
+            <FileTreeChildrenSurface>
+              {node.children.map((child) => renderTreeNode(child, depth + 1))}
+            </FileTreeChildrenSurface>
+          ) : null}
+        </view>
+      );
+    }
+
+    return (
+      <FileTreeFileRowSurface
+        key={`file:${node.path}`}
+        name={node.name}
+        depth={depth}
+        showLeadingSpacer={hasDirectoryNodes || depth > 0}
+        {...(node.stat
+          ? {
+              trailing: (
+                <DiffStatLabel additions={node.stat.additions} deletions={node.stat.deletions} />
+              ),
+            }
+          : {})}
+      />
+    );
+  };
 
   return (
     <scroll-view className="diff-panel" scroll-orientation="vertical">
@@ -104,13 +133,12 @@ export function DiffPanel() {
                   Checkpoint for turn {selectedCheckpoint?.checkpointTurnCount}
                 </text>
               </view>
-              <view className="diff-panel__file-stats">
-                <text className="diff-panel__file-additions">+{total.additions}</text>
-                <text className="diff-panel__file-deletions">−{total.deletions}</text>
-              </view>
+              <DiffStatLabel additions={total.additions} deletions={total.deletions} />
             </view>
 
-            <view className="diff-panel__files">{tree.map((node) => renderTreeNode(node, 0))}</view>
+            <FileTreeChildrenSurface>
+              {tree.map((node) => renderTreeNode(node, 0))}
+            </FileTreeChildrenSurface>
 
             <view className="diff-panel__runtime-note">
               <text className="diff-panel__runtime-note-text">

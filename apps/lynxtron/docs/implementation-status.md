@@ -874,6 +874,39 @@ transcript island; an active-plan fixture remains follow-up evidence. The
 changed-files tree, diff chrome, and files panel stay in AR5.3's remaining
 scope.
 
+### AR5.3 File trees and diff rows (2026-08-01, complete)
+
+The changed-files and workspace tree rows now compile one physical
+composition. `apps/web/src/components/chat/FileTreeSurface.tsx` owns the tree
+row anatomy (8 + depth × 14 indentation rhythm, directory rows with rotating
+chevron, folder icon, name, and trailing stats; file rows with leading
+spacer, icon, name, stats, and selected treatment), and `DiffStatLabel` moved
+onto host elements so both renderers compile it. Web's `ChangedFilesTree`
+(transcript card and expanded tree) keeps its expansion state machine,
+scroll-anchor ignore, and PierreEntry/lucide leaves while rendering the same
+rows as the Lynx `DiffPanel` and `FilesPanel`. The Lynx diff tree gains the
+Web's directory collapse interaction (was always-expanded) and the shared
+stat label (was Lynx-only addition/deletion text); the Lynx files tree keeps
+its host expansion and selection state on the shared rows. The Lynx diff
+panel's scope strip, checkpoint summary, and R10 runtime note stay honest
+host chrome around the registered full-patch-renderer gap; the Web
+`DiffPanel` git-source workspace and `FileBrowserPanel` virtualizer remain
+Web-only adoption targets for a later slice.
+
+Deletions: the clean-room diff/files tree CSS (`overrides.css` 3,282 → 3,187
+lines); the only new rule is the tree chevron glyph leaf with
+surface/R1/remove-when comments. Seven focused `FileTreeSurface` tests cover
+row anatomy, indentation rhythm, rotation, selected and spacer treatments,
+and the non-interactive row case; 38 Web chat tests (including
+ChangedFilesTree and MessagesTimeline) and 65 Lynxtron tests pass. Strict
+reuse on the existing-thread-transcript product surface reports 40/471
+modules (8.5%) and 8,489/104,230 lines (8.1%), up from 38/470 and
+8,298/104,090, boundary hash unchanged (`67f5a53f…`). Renderer bundle is
+2,282.1 kB (+1.2 kB). Runtime evidence: a tap-driven 1280 × 820 capture opens
+the Files tab through the converged empty-state grid and renders the real
+16,340-file workspace tree through the shared rows with zero renderer errors
+(`reports/screenshots/ar53-files-panel-1280x820.jpg`).
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

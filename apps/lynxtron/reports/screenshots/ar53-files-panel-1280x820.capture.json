@@ -1,0 +1,18 @@
+{
+  "baseline": "electron-web",
+  "clientName": "@t3tools/lynxtron",
+  "route": "files-panel",
+  "theme": "dark",
+  "snapshot": "ed69ad134f9a241d2e62956c8eb4bb7dbeb7849c492de4c0296a97e061c6c1c7",
+  "interactionState": "none",
+  "screenshot": "reports/screenshots/ar53-files-panel-1280x820.jpg",
+  "dimensions": {
+    "format": "jpeg",
+    "width": 2560,
+    "height": 1640
+  },
+  "capturedAt": "2026-07-31T20:21:17.681Z",
+  "reusedScreenshot": false,
+  "devToolConsoleErrors": 0,
+  "measurements": "reports/screenshots/ar53-files-panel-1280x820.lynx-measurements.json"
+}

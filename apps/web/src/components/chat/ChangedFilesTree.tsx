@@ -7,7 +7,7 @@ import {
   type ChangedFilesTreeNode,
 } from "@t3tools/client-runtime/presentation/diff";
 import { type TurnId } from "@t3tools/contracts";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState, type ReactNode } from "react";
 import { type TurnDiffFileChange } from "../../types";
 import {
   ChevronsDownUpIcon,
@@ -19,6 +19,11 @@ import {
 } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { DiffStatLabel, hasNonZeroStat } from "./DiffStatLabel";
+import {
+  FileTreeChildrenSurface,
+  FileTreeDirectoryRowSurface,
+  FileTreeFileRowSurface,
+} from "./FileTreeSurface";
 import { PierreEntryIcon } from "./PierreEntryIcon";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
@@ -242,79 +247,76 @@ export const ChangedFilesTree = memo(function ChangedFilesTree(props: {
     [allDirectoriesExpanded, expansionStateKey],
   );
 
-  const renderTreeNode = (node: ChangedFilesTreeNode, depth: number) => {
-    const leftPadding = 8 + depth * 14;
+  const renderTreeNode = (node: ChangedFilesTreeNode, depth: number): ReactNode => {
     if (node.kind === "directory") {
       const isExpanded = expandedDirectories[node.path] ?? allDirectoriesExpanded;
       return (
         <div key={`dir:${node.path}`}>
-          <button
-            type="button"
-            data-scroll-anchor-ignore
-            className="group flex w-full items-center gap-1.5 rounded-xl py-1 pr-3 text-left transition-colors hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
-            style={{ paddingLeft: `${leftPadding}px` }}
-            onClick={() => toggleDirectory(node.path)}
-          >
-            <ChevronRightIcon
-              aria-hidden="true"
-              className={cn(
-                "size-3.5 shrink-0 text-muted-foreground/70 transition-transform group-hover:text-foreground/80",
-                isExpanded && "rotate-90",
-              )}
-            />
-            {isExpanded ? (
-              <FolderIcon className="size-3.5 shrink-0 text-muted-foreground/75" />
-            ) : (
-              <FolderClosedIcon className="size-3.5 shrink-0 text-muted-foreground/75" />
-            )}
-            <span className="truncate font-mono text-[11px] text-muted-foreground/90 group-hover:text-foreground/90">
-              {node.name}
-            </span>
-            {hasNonZeroStat(node.stat) && (
-              <span className="ml-auto shrink-0 font-mono text-[10px] tabular-nums">
-                <DiffStatLabel additions={node.stat.additions} deletions={node.stat.deletions} />
-              </span>
-            )}
-          </button>
+          <FileTreeDirectoryRowSurface
+            name={node.name}
+            depth={depth}
+            expanded={isExpanded}
+            chevron={<ChevronRightIcon className="size-3.5" />}
+            folderIcon={
+              isExpanded ? (
+                <FolderIcon className="size-3.5 shrink-0 text-muted-foreground/75" />
+              ) : (
+                <FolderClosedIcon className="size-3.5 shrink-0 text-muted-foreground/75" />
+              )
+            }
+            onToggle={() => toggleDirectory(node.path)}
+            scrollAnchorIgnore
+            {...(hasNonZeroStat(node.stat)
+              ? {
+                  trailing: (
+                    <DiffStatLabel
+                      additions={node.stat.additions}
+                      deletions={node.stat.deletions}
+                    />
+                  ),
+                }
+              : {})}
+          />
           {isExpanded && (
-            <div className="space-y-0.5">
+            <FileTreeChildrenSurface>
               {node.children.map((childNode) => renderTreeNode(childNode, depth + 1))}
-            </div>
+            </FileTreeChildrenSurface>
           )}
         </div>
       );
     }
 
     return (
-      <button
+      <FileTreeFileRowSurface
         key={`file:${node.path}`}
-        type="button"
-        className="group flex w-full items-center gap-1.5 rounded-xl py-1 pr-3 text-left transition-colors hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background"
-        style={{ paddingLeft: `${leftPadding}px` }}
-        onClick={() => onOpenTurnDiff(turnId, node.path)}
-      >
-        {hasDirectoryNodes || depth > 0 ? (
-          <span aria-hidden="true" className="size-3.5 shrink-0" />
-        ) : null}
-        <PierreEntryIcon
-          pathValue={node.path}
-          kind="file"
-          theme={resolvedTheme}
-          className="size-3.5 text-muted-foreground/70"
-        />
-        <span className="truncate font-mono text-[11px] text-muted-foreground/80 group-hover:text-foreground/90">
-          {node.name}
-        </span>
-        {node.stat && (
-          <span className="ml-auto shrink-0 font-mono text-[10px] tabular-nums">
-            <DiffStatLabel additions={node.stat.additions} deletions={node.stat.deletions} />
-          </span>
-        )}
-      </button>
+        name={node.name}
+        depth={depth}
+        showLeadingSpacer={hasDirectoryNodes || depth > 0}
+        fileIcon={
+          <PierreEntryIcon
+            pathValue={node.path}
+            kind="file"
+            theme={resolvedTheme}
+            className="size-3.5 text-muted-foreground/70"
+          />
+        }
+        onSelect={() => onOpenTurnDiff(turnId, node.path)}
+        {...(node.stat
+          ? {
+              trailing: (
+                <DiffStatLabel additions={node.stat.additions} deletions={node.stat.deletions} />
+              ),
+            }
+          : {})}
+      />
     );
   };
 
-  return <div className="space-y-0.5">{treeNodes.map((node) => renderTreeNode(node, 0))}</div>;
+  return (
+    <FileTreeChildrenSurface>
+      {treeNodes.map((node) => renderTreeNode(node, 0))}
+    </FileTreeChildrenSurface>
+  );
 });
 
 function collectDirectoryPaths(nodes: ReadonlyArray<ChangedFilesTreeNode>): string[] {

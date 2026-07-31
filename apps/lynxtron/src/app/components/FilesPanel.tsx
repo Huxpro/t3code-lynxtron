@@ -7,6 +7,11 @@ import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coo
 import type { ProjectEntry, ProjectReadFileResult } from "@t3tools/contracts";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 
+import {
+  FileTreeChildrenSurface,
+  FileTreeDirectoryRowSurface,
+  FileTreeFileRowSurface,
+} from "../../../../web/src/components/chat/FileTreeSurface";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 
 interface ListingState {
@@ -139,51 +144,51 @@ function EditableFilePreview({
 function renderTreeNode(
   node: ProjectEntryTreeNode,
   depth: number,
+  hasDirectoryNodes: boolean,
   expandedDirectories: Readonly<Record<string, boolean>>,
   selectedPath: string | null,
   onToggleDirectory: (path: string) => void,
   onSelectFile: (path: string) => void,
 ): ReactNode {
-  const indentation = depth * 12;
   if (node.kind === "directory") {
     const expanded = expandedDirectories[node.path] ?? depth === 0;
     return (
-      <view key={`directory:${node.path}`} className="files-panel__tree-group">
-        <view
-          className="files-panel__tree-row"
-          style={{ paddingLeft: indentation } as any}
-          bindtap={() => onToggleDirectory(node.path)}
-        >
-          <text className="files-panel__tree-marker">{expanded ? "▾" : "▸"}</text>
-          <text className="files-panel__tree-directory">{node.name}</text>
-        </view>
-        {expanded
-          ? node.children.map((child) =>
+      <view key={`directory:${node.path}`}>
+        <FileTreeDirectoryRowSurface
+          name={node.name}
+          depth={depth}
+          expanded={expanded}
+          chevron={<text className="file-tree__chevron-glyph">▸</text>}
+          onToggle={() => onToggleDirectory(node.path)}
+        />
+        {expanded ? (
+          <FileTreeChildrenSurface>
+            {node.children.map((child) =>
               renderTreeNode(
                 child,
                 depth + 1,
+                hasDirectoryNodes,
                 expandedDirectories,
                 selectedPath,
                 onToggleDirectory,
                 onSelectFile,
               ),
-            )
-          : null}
+            )}
+          </FileTreeChildrenSurface>
+        ) : null}
       </view>
     );
   }
 
-  const selected = node.path === selectedPath;
   return (
-    <view
+    <FileTreeFileRowSurface
       key={`file:${node.path}`}
-      className={`files-panel__tree-row ${selected ? "files-panel__tree-row--selected" : ""}`}
-      style={{ paddingLeft: indentation } as any}
-      bindtap={() => onSelectFile(node.path)}
-    >
-      <text className="files-panel__tree-marker">·</text>
-      <text className="files-panel__tree-file">{node.name}</text>
-    </view>
+      name={node.name}
+      depth={depth}
+      showLeadingSpacer={hasDirectoryNodes || depth > 0}
+      selected={node.path === selectedPath}
+      onSelect={() => onSelectFile(node.path)}
+    />
   );
 }
 
@@ -248,6 +253,7 @@ export function FilesPanel() {
 
   const summary = useMemo(() => summarizeProjectEntries(listing.entries), [listing.entries]);
   const tree = useMemo(() => buildProjectEntryTree(listing.entries), [listing.entries]);
+  const hasDirectoryNodes = useMemo(() => tree.some((node) => node.kind === "directory"), [tree]);
 
   const toggleDirectory = useCallback((path: string) => {
     setExpandedDirectories((current) => ({
@@ -307,18 +313,19 @@ export function FilesPanel() {
                 <text className="files-panel__error-copy">{listing.error}</text>
               </view>
             ) : tree.length > 0 ? (
-              <view className="files-panel__tree">
+              <FileTreeChildrenSurface>
                 {tree.map((node) =>
                   renderTreeNode(
                     node,
                     0,
+                    hasDirectoryNodes,
                     expandedDirectories,
                     preview.path,
                     toggleDirectory,
                     selectFile,
                   ),
                 )}
-              </view>
+              </FileTreeChildrenSurface>
             ) : listing.pending ? null : (
               <view className="files-panel__empty">
                 <text className="files-panel__empty-title">Workspace is empty</text>

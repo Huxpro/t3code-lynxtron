@@ -2702,11 +2702,6 @@
   color: var(--sidebar-foreground);
 }
 
-.diff-panel__files {
-  display: flex;
-  flex-direction: column;
-}
-
 .diff-panel__summary {
   display: flex;
   flex-direction: row;
@@ -2737,59 +2732,14 @@
   margin-top: 2px;
 }
 
-.diff-panel__tree-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.diff-panel__tree-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  min-height: 30px;
-  padding-right: 8px;
-  border-radius: 6px;
-  margin-bottom: 2px;
-}
-
-.diff-panel__tree-marker {
+/* Diff/files tree rows compile from the shared FileTreeSurface (AR5.3); only
+   the chevron glyph leaf remains. */
+/* surface: diff/files trees (chevron glyph leaf); gap: R1 (raster icon set
+   does not cover chevron glyphs); remove-when: glyphs move to the raster icon
+   island. */
+.file-tree__chevron-glyph {
+  font-size: 9px;
   color: var(--sidebar-muted-foreground);
-  font-size: 11px;
-  width: 16px;
-  font-family: var(--font-mono);
-}
-
-.diff-panel__tree-directory {
-  color: var(--sidebar-muted-foreground);
-  font-size: 12px;
-  font-family: var(--font-mono);
-  flex-grow: 1;
-}
-
-.diff-panel__file-path {
-  color: var(--sidebar-foreground);
-  font-size: 13px;
-  font-family: var(--font-mono);
-  flex-grow: 1;
-}
-
-.diff-panel__file-stats {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.diff-panel__file-additions {
-  color: #22c55e;
-  font-size: 12px;
-  font-family: var(--font-mono);
-  margin-right: 8px;
-}
-
-.diff-panel__file-deletions {
-  color: #ef4444;
-  font-size: 12px;
-  font-family: var(--font-mono);
 }
 
 .diff-panel__runtime-note {
@@ -2911,51 +2861,6 @@
   font-size: 11px;
   font-weight: 500;
   font-family: var(--font-sans);
-}
-
-.files-panel__tree {
-  display: flex;
-  flex-direction: column;
-}
-
-.files-panel__tree-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.files-panel__tree-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  min-height: 29px;
-  padding-right: 8px;
-  border-radius: 6px;
-  margin-bottom: 1px;
-}
-
-.files-panel__tree-row--selected {
-  background-color: var(--sidebar-row-active);
-}
-
-.files-panel__tree-marker {
-  color: var(--sidebar-muted-foreground);
-  font-size: 11px;
-  width: 16px;
-  font-family: var(--font-mono);
-}
-
-.files-panel__tree-directory {
-  color: var(--sidebar-muted-foreground);
-  font-size: 12px;
-  font-family: var(--font-mono);
-  flex-grow: 1;
-}
-
-.files-panel__tree-file {
-  color: var(--sidebar-foreground);
-  font-size: 12px;
-  font-family: var(--font-mono);
-  flex-grow: 1;
 }
 
 .files-panel__preview {

@@ -15546,7 +15546,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3282,
+              "lines": 3187,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -15684,6 +15684,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -15691,6 +15701,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -16266,6 +16281,31 @@
                 "from": "apps/web/src/components/chat/ComposerSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
@@ -17428,8 +17468,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 34949,
-            "eligibleModules": 156,
+            "eligibleLines": 35080,
+            "eligibleModules": 158,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17448,12 +17488,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -17543,7 +17583,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3282,
+                "lines": 3187,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -17645,6 +17685,16 @@
                 "classification": "EXCLUSIVE",
                 "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 54,
+                "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -25675,15 +25725,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 431,
+            "EXCLUSIVE": 430,
             "PATCHED": 0,
-            "SHARED": 38,
+            "SHARED": 40,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 104090,
-            "modules": 470
+            "lines": 104230,
+            "modules": 471
           },
           "largestNonShared": [
             {
@@ -25836,6 +25886,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -25843,6 +25903,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -26103,6 +26168,31 @@
                 "from": "apps/web/src/components/chat/ComposerSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -26530,8 +26620,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14009,
-            "eligibleModules": 85,
+            "eligibleLines": 14235,
+            "eligibleModules": 87,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -26550,12 +26640,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -26776,12 +26866,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8298,
-            "modules": 38
+            "lines": 8489,
+            "modules": 40
           },
           "reusePercent": {
-            "lines": 8,
-            "modules": 8.1
+            "lines": 8.1,
+            "modules": 8.5
           },
           "web": {
             "edges": [
@@ -27139,6 +27229,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -27697,8 +27792,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -27774,6 +27874,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -34734,7 +34844,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -34858,8 +34968,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -34891,6 +35001,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -37008,15 +37123,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 413,
+            "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 23,
+            "SHARED": 25,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93575,
-            "modules": 436
+            "lines": 93715,
+            "modules": 437
           },
           "largestNonShared": [
             {
@@ -37169,6 +37284,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -37176,6 +37301,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -37403,6 +37533,31 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
                 "request": "@t3tools/client-runtime/presentation/paths",
                 "to": "packages/client-runtime/src/presentation/paths.ts"
@@ -37493,8 +37648,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 10215,
-            "eligibleModules": 46,
+            "eligibleLines": 10441,
+            "eligibleModules": 48,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -37513,12 +37668,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -37616,12 +37771,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 6097,
-            "modules": 23
+            "lines": 6288,
+            "modules": 25
           },
           "reusePercent": {
-            "lines": 6.5,
-            "modules": 5.3
+            "lines": 6.7,
+            "modules": 5.7
           },
           "web": {
             "edges": [
@@ -37914,6 +38069,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -38472,8 +38632,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -38549,6 +38714,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -44544,7 +44719,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -44668,8 +44843,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -44701,6 +44876,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -46654,15 +46834,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 481,
+            "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 39,
+            "SHARED": 41,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114417,
-            "modules": 521
+            "lines": 114557,
+            "modules": 522
           },
           "largestNonShared": [
             {
@@ -46815,6 +46995,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -46822,6 +47012,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -47092,6 +47287,31 @@
                 "from": "apps/web/src/components/chat/ComposerSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -47519,8 +47739,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14050,
-            "eligibleModules": 88,
+            "eligibleLines": 14276,
+            "eligibleModules": 90,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -47539,12 +47759,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -47776,12 +47996,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8561,
-            "modules": 39
+            "lines": 8752,
+            "modules": 41
           },
           "reusePercent": {
-            "lines": 7.5,
-            "modules": 7.5
+            "lines": 7.6,
+            "modules": 7.9
           },
           "web": {
             "edges": [
@@ -48259,6 +48479,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -48817,8 +49042,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -48894,6 +49124,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -57149,7 +57389,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -57273,8 +57513,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -57306,6 +57546,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -59654,15 +59899,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 431,
+            "EXCLUSIVE": 430,
             "PATCHED": 0,
-            "SHARED": 38,
+            "SHARED": 40,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 104090,
-            "modules": 470
+            "lines": 104230,
+            "modules": 471
           },
           "largestNonShared": [
             {
@@ -59815,6 +60060,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -59822,6 +60077,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -60082,6 +60342,31 @@
                 "from": "apps/web/src/components/chat/ComposerSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -60509,8 +60794,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14009,
-            "eligibleModules": 85,
+            "eligibleLines": 14235,
+            "eligibleModules": 87,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -60529,12 +60814,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -60755,12 +61040,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8298,
-            "modules": 38
+            "lines": 8489,
+            "modules": 40
           },
           "reusePercent": {
-            "lines": 8,
-            "modules": 8.1
+            "lines": 8.1,
+            "modules": 8.5
           },
           "web": {
             "edges": [
@@ -61118,6 +61403,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -61676,8 +61966,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -61753,6 +62048,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -68713,7 +69018,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -68837,8 +69142,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -68870,6 +69175,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -70987,15 +71297,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 413,
+            "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 23,
+            "SHARED": 25,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93575,
-            "modules": 436
+            "lines": 93715,
+            "modules": 437
           },
           "largestNonShared": [
             {
@@ -71148,6 +71458,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -71155,6 +71475,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -71382,6 +71707,31 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
                 "request": "@t3tools/client-runtime/presentation/paths",
                 "to": "packages/client-runtime/src/presentation/paths.ts"
@@ -71472,8 +71822,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 10215,
-            "eligibleModules": 46,
+            "eligibleLines": 10441,
+            "eligibleModules": 48,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -71492,12 +71842,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -71598,12 +71948,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 6097,
-            "modules": 23
+            "lines": 6288,
+            "modules": 25
           },
           "reusePercent": {
-            "lines": 6.5,
-            "modules": 5.3
+            "lines": 6.7,
+            "modules": 5.7
           },
           "web": {
             "edges": [
@@ -71896,6 +72246,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -72454,8 +72809,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -72531,6 +72891,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -78526,7 +78896,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -78650,8 +79020,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -78683,6 +79053,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -80639,15 +81014,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 481,
+            "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 39,
+            "SHARED": 41,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114426,
-            "modules": 521
+            "lines": 114566,
+            "modules": 522
           },
           "largestNonShared": [
             {
@@ -80800,6 +81175,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -80807,6 +81192,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -81077,6 +81467,31 @@
                 "from": "apps/web/src/components/chat/ComposerSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -81504,8 +81919,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14050,
-            "eligibleModules": 88,
+            "eligibleLines": 14276,
+            "eligibleModules": 90,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -81524,12 +81939,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -81761,12 +82176,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8561,
-            "modules": 39
+            "lines": 8752,
+            "modules": 41
           },
           "reusePercent": {
-            "lines": 7.5,
-            "modules": 7.5
+            "lines": 7.6,
+            "modules": 7.9
           },
           "web": {
             "edges": [
@@ -82244,6 +82659,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -82802,8 +83222,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -82879,6 +83304,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -91144,7 +91579,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -91268,8 +91703,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -91301,6 +91736,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -93649,15 +94089,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 413,
+            "EXCLUSIVE": 412,
             "PATCHED": 0,
-            "SHARED": 23,
+            "SHARED": 25,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93575,
-            "modules": 436
+            "lines": 93715,
+            "modules": 437
           },
           "largestNonShared": [
             {
@@ -93810,6 +94250,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -93817,6 +94267,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -94044,6 +94499,31 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
                 "request": "@t3tools/client-runtime/presentation/paths",
                 "to": "packages/client-runtime/src/presentation/paths.ts"
@@ -94134,8 +94614,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 10215,
-            "eligibleModules": 46,
+            "eligibleLines": 10441,
+            "eligibleModules": 48,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -94154,12 +94634,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -94260,12 +94740,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 6097,
-            "modules": 23
+            "lines": 6288,
+            "modules": 25
           },
           "reusePercent": {
-            "lines": 6.5,
-            "modules": 5.3
+            "lines": 6.7,
+            "modules": 5.7
           },
           "web": {
             "edges": [
@@ -94558,6 +95038,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -95116,8 +95601,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -95193,6 +95683,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -101188,7 +101688,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -101312,8 +101812,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -101345,6 +101845,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -108502,15 +109007,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 481,
+            "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 39,
+            "SHARED": 41,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114417,
-            "modules": 521
+            "lines": 114557,
+            "modules": 522
           },
           "largestNonShared": [
             {
@@ -108663,6 +109168,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -108670,6 +109185,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -108940,6 +109460,31 @@
                 "from": "apps/web/src/components/chat/ComposerSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -109367,8 +109912,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14050,
-            "eligibleModules": 88,
+            "eligibleLines": 14276,
+            "eligibleModules": 90,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -109387,12 +109932,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -109624,12 +110169,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8561,
-            "modules": 39
+            "lines": 8752,
+            "modules": 41
           },
           "reusePercent": {
-            "lines": 7.5,
-            "modules": 7.5
+            "lines": 7.6,
+            "modules": 7.9
           },
           "web": {
             "edges": [
@@ -110107,6 +110652,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -110665,8 +111215,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -110742,6 +111297,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -118997,7 +119562,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -119121,8 +119686,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -119154,6 +119719,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -130615,15 +131185,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 481,
+            "EXCLUSIVE": 480,
             "PATCHED": 0,
-            "SHARED": 39,
+            "SHARED": 41,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114417,
-            "modules": 521
+            "lines": 114557,
+            "modules": 522
           },
           "largestNonShared": [
             {
@@ -130776,6 +131346,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/DiffStatLabel",
+                "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -130783,6 +131363,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
+                "request": "../../../../web/src/components/chat/FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -131053,6 +131638,31 @@
                 "from": "apps/web/src/components/chat/ComposerSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "react",
+                "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
@@ -131480,8 +132090,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 14050,
-            "eligibleModules": 88,
+            "eligibleLines": 14276,
+            "eligibleModules": 90,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -131500,12 +132110,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 137,
+                "lines": 165,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 358,
+                "lines": 365,
                 "path": "apps/lynxtron/src/app/components/FilesPanel.tsx"
               },
               {
@@ -131737,12 +132347,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8561,
-            "modules": 39
+            "lines": 8752,
+            "modules": 41
           },
           "reusePercent": {
-            "lines": 7.5,
-            "modules": 7.5
+            "lines": 7.6,
+            "modules": 7.9
           },
           "web": {
             "edges": [
@@ -132220,6 +132830,11 @@
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
                 "request": "./DiffStatLabel",
                 "to": "apps/web/src/components/chat/DiffStatLabel.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
+                "request": "./FileTreeSurface",
+                "to": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ChangedFilesTree.tsx",
@@ -132778,8 +133393,13 @@
               },
               {
                 "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
-                "request": "~/lib/utils",
-                "to": "apps/web/src/lib/utils.ts"
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/DiffStatLabel.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/DraftHeroHeadline.tsx",
@@ -132855,6 +133475,16 @@
                 "from": "apps/web/src/components/chat/FileTagChip.tsx",
                 "request": "./PierreEntryIcon",
                 "to": "apps/web/src/components/chat/PierreEntryIcon.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/FileTreeSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/MessageCopyButton.tsx",
@@ -141110,7 +141740,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 328,
+                "lines": 330,
                 "path": "apps/web/src/components/chat/ChangedFilesTree.tsx"
               },
               {
@@ -141234,8 +141864,8 @@
                 "path": "apps/web/src/components/chat/ContextWindowMeter.tsx"
               },
               {
-                "classification": "EXCLUSIVE",
-                "lines": 53,
+                "classification": "SHARED",
+                "lines": 54,
                 "path": "apps/web/src/components/chat/DiffStatLabel.tsx"
               },
               {
@@ -141267,6 +141897,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 39,
                 "path": "apps/web/src/components/chat/FileTagChip.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 137,
+                "path": "apps/web/src/components/chat/FileTreeSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
