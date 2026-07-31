@@ -7,6 +7,11 @@ import {
   type CommandPaletteSubmenuItem,
 } from "./CommandPalette.logic";
 import {
+  PaletteEmptySurface,
+  PaletteRowContent,
+  PaletteSectionSurface,
+} from "./CommandPaletteSurface";
+import {
   CommandCollection,
   CommandGroup,
   CommandGroupLabel,
@@ -91,12 +96,14 @@ interface CommandPaletteResultsProps {
 export function CommandPaletteResults(props: CommandPaletteResultsProps) {
   if (props.groups.length === 0) {
     return (
-      <div className="py-10 text-center text-sm text-muted-foreground">
-        {props.emptyStateMessage ??
+      <PaletteEmptySurface
+        message={
+          props.emptyStateMessage ??
           (props.isActionsOnly
             ? "No matching actions."
-            : "No matching commands, projects, or threads.")}
-      </div>
+            : "No matching commands, projects, or threads.")
+        }
+      />
     );
   }
 
@@ -104,7 +111,9 @@ export function CommandPaletteResults(props: CommandPaletteResultsProps) {
     <CommandList>
       {props.groups.map((group) => (
         <CommandGroup items={group.items} key={group.value}>
-          <CommandGroupLabel className="ps-[9px]">{group.label}</CommandGroupLabel>
+          <CommandGroupLabel className="ps-[9px]">
+            <PaletteSectionSurface label={group.label} />
+          </CommandGroupLabel>
           <CommandCollection>
             {(item) =>
               item.disabled ? (
@@ -131,29 +140,17 @@ function DisabledCommandPaletteResultRow(props: {
 }) {
   return (
     <div className="flex min-h-8 select-none items-center gap-2 rounded-sm px-2 py-1.5 text-base opacity-64 sm:min-h-7 sm:text-sm">
-      {props.item.icon}
-      {props.item.description || props.item.threadContentMatch ? (
-        <span className="flex min-w-0 flex-1 flex-col">
-          <span className="flex min-w-0 items-center gap-1.5 text-sm text-foreground">
-            {props.item.titleLeadingContent}
-            <span className="truncate">{props.item.title}</span>
-          </span>
-          {props.item.threadContentMatch ? (
-            <ThreadContentMatch match={props.item.threadContentMatch} />
-          ) : null}
-          {props.item.description ? (
-            <span className="truncate text-muted-foreground/70 text-xs">
-              {props.item.description}
-            </span>
-          ) : null}
-        </span>
-      ) : (
-        <span className="flex min-w-0 flex-1 items-center gap-1.5 text-sm text-foreground">
-          {props.item.titleLeadingContent}
-          <span className="truncate">{props.item.title}</span>
-        </span>
-      )}
-      {props.item.titleTrailingContent}
+      <PaletteRowContent
+        icon={props.item.icon}
+        title={props.item.title}
+        titleLeading={props.item.titleLeadingContent}
+        {...(props.item.threadContentMatch
+          ? { description: <ThreadContentMatch match={props.item.threadContentMatch} /> }
+          : props.item.description
+            ? { description: props.item.description }
+            : {})}
+        titleTrailing={props.item.titleTrailingContent}
+      />
     </div>
   );
 }
@@ -182,38 +179,26 @@ function CommandPaletteResultRow(props: {
         props.onExecuteItem(props.item);
       }}
     >
-      {props.item.icon}
-      {props.item.description || props.item.threadContentMatch ? (
-        <span className="flex min-w-0 flex-1 flex-col">
-          <span className="flex min-w-0 items-center gap-1.5 text-sm text-foreground">
-            {props.item.titleLeadingContent}
-            <span className="truncate">{props.item.title}</span>
-          </span>
-          {props.item.threadContentMatch ? (
-            <ThreadContentMatch match={props.item.threadContentMatch} />
-          ) : null}
-          {props.item.description ? (
-            <span className="truncate text-muted-foreground/70 text-xs">
-              {props.item.description}
-            </span>
-          ) : null}
-        </span>
-      ) : (
-        <span className="flex min-w-0 flex-1 items-center gap-1.5 text-sm text-foreground">
-          {props.item.titleLeadingContent}
-          <span className="truncate">{props.item.title}</span>
-        </span>
-      )}
-      {props.item.titleTrailingContent}
-      {props.item.timestamp ? (
-        <span className="min-w-12 shrink-0 text-right text-xs tabular-nums text-muted-foreground/70">
-          {props.item.timestamp}
-        </span>
-      ) : null}
-      {shortcutLabel ? <CommandShortcut>{shortcutLabel}</CommandShortcut> : null}
-      {props.item.kind === "submenu" ? (
-        <ChevronRightIcon className="-me-0.5 ms-auto size-4 shrink-0 text-muted-foreground/70" />
-      ) : null}
+      <PaletteRowContent
+        icon={props.item.icon}
+        title={props.item.title}
+        titleLeading={props.item.titleLeadingContent}
+        {...(props.item.threadContentMatch
+          ? { description: <ThreadContentMatch match={props.item.threadContentMatch} /> }
+          : props.item.description
+            ? { description: props.item.description }
+            : {})}
+        titleTrailing={props.item.titleTrailingContent}
+        {...(props.item.timestamp ? { timestamp: props.item.timestamp } : {})}
+        {...(shortcutLabel ? { shortcut: <CommandShortcut>{shortcutLabel}</CommandShortcut> } : {})}
+        {...(props.item.kind === "submenu"
+          ? {
+              chevron: (
+                <ChevronRightIcon className="-me-0.5 ms-auto size-4 shrink-0 text-muted-foreground/70" />
+              ),
+            }
+          : {})}
+      />
     </CommandItem>
   );
 }

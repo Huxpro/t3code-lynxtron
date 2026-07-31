@@ -749,6 +749,41 @@ unsupported CSS utilities. Renderer bundle is 2,258.2 kB (+5.9 kB). Physical
 key acceptance stays `pending-user-session`; no Tab/Escape/arrow emulation
 was added.
 
+### AR5.1 Model Picker and Quick Switch composition (2026-07-31, complete)
+
+Both overlays now consume shared physical compositions.
+`apps/web/src/components/chat/ModelPickerSurface.tsx` owns the model row,
+provider rail item/column, search row, new-badge, and empty anatomy; Web's
+`ModelListRow` and `ModelPickerContent` render the same row content and empty
+state inside their combobox/popover behavior hosts.
+`apps/web/src/components/CommandPaletteSurface.tsx` owns palette section
+labels, result rows (icon → title → description → trailing → timestamp →
+shortcut → chevron), and the empty state; Web's `CommandPaletteResults`
+renders them inside its autocomplete items. The Lynx `ModelPicker.tsx` and
+`QuickSwitch.tsx` are now behavior hosts (search/favorites/query state plus
+shared projections) feeding the same surfaces.
+
+Two product fixes ride with the slice: the Lynx model picker overlay is now
+mounted in `RootOverlays` — the Composer model pill's `openModelPicker` atom
+previously had no renderer, a pre-existing dead path — and the picker's
+⌘1–⌘9 row hints are removed because keyboard acceptance is still
+`pending-user-session` (fixed constraint; R5). Deletions: 203 lines of
+clean-room picker/palette CSS (`overrides.css` 3,734 → 3,531); new rules are
+glyph-leaf passthroughs with surface/R1/remove-when comments.
+
+Runtime evidence (tap-driven DevTool, real app, isolated seeded state): Quick
+Switch opens from the sidebar search, lists Actions with the shared rows, and
+backdrop-closes; the model picker opens from the Composer pill, paints the
+provider rail, search, and selectable model rows (Claude Fable 5 selected),
+and a row tap dispatches canonical `setModelSelection` through the main
+bridge and closes. Captures at 1280 × 820 report zero renderer errors
+(`reports/screenshots/ar51-quick-switch-1280x820.jpg`,
+`ar51-model-picker-1280x820.jpg`). Nine focused surface tests plus existing
+palette logic tests pass; strict reuse on the model-picker route reports
+8/275 modules (2.9%) and 1,774/57,714 lines (3.1%), up from 5/272 and
+1,394/57,300, boundary hash unchanged; zero new unsupported CSS utilities.
+Renderer bundle is 2,256.3 kB (-2.0 kB).
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

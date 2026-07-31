@@ -110,6 +110,8 @@ export default {
     "../web/src/components/chat/TranscriptRowSurface.tsx",
     "../web/src/components/chat/transcriptRowPresentation.ts",
     "../web/src/components/chat/ComposerSurface.tsx",
+    "../web/src/components/chat/ModelPickerSurface.tsx",
+    "../web/src/components/CommandPaletteSurface.tsx",
     "../web/src/components/AppSidebarLayout.lynx.tsx",
     "../web/src/components/Sidebar.tsx",
     "../web/src/components/Sidebar.logic.ts",

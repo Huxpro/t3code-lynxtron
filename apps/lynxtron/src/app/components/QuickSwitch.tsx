@@ -4,14 +4,20 @@ import {
   parseCommandPaletteSearchQuery,
   rankCommandPaletteSearchItems,
 } from "@t3tools/client-runtime/presentation/command-palette";
+import {
+  PaletteEmptySurface,
+  PaletteRowSurface,
+  PaletteSectionSurface,
+} from "../../../../web/src/components/CommandPaletteSurface";
 import type { ProjectSummary, ThreadSummary } from "../bridge";
 import { navigate } from "../router";
 import { t3ClientActions } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
 import { Icon, type IconName } from "./Icon";
 
-// Quick switch palette — mirrors apps/web CommandPalette. It can be opened
-// through the sidebar or the host's certified discrete menu command.
+// Quick switch palette — consumes the same physical palette composition as
+// apps/web CommandPalette. It can be opened through the sidebar or the host's
+// certified discrete menu command.
 
 interface QuickSwitchProps {
   projects: ReadonlyArray<ProjectSummary>;
@@ -124,14 +130,16 @@ export function QuickSwitch({ projects, threads, activeThreadId }: QuickSwitchPr
           {/* Actions */}
           {filteredActions.length > 0 ? (
             <view className="qs-section">
-              <text className="qs-section__label">Actions</text>
+              <PaletteSectionSurface label="Actions" />
               {filteredActions.map((a) => (
-                <view key={a.id} className="qs-row" bindtap={a.run}>
-                  <Icon name={a.icon} size={16} color="#a1a1aa" className="qs-row__icon-img" />
-                  <text className="qs-row__label" text-maxline="1">
-                    {a.label}
-                  </text>
-                </view>
+                <PaletteRowSurface
+                  key={a.id}
+                  icon={
+                    <Icon name={a.icon} size={16} color="#a1a1aa" className="qs-row__icon-img" />
+                  }
+                  title={a.label}
+                  onSelect={a.run}
+                />
               ))}
             </view>
           ) : null}
@@ -139,40 +147,33 @@ export function QuickSwitch({ projects, threads, activeThreadId }: QuickSwitchPr
           {/* Recent threads */}
           {filteredThreads.length > 0 ? (
             <view className="qs-section">
-              <text className="qs-section__label">Recent Threads</text>
+              <PaletteSectionSurface label="Recent Threads" />
               {filteredThreads.map((t) => {
                 const isCurrent = t.id === activeThreadId;
                 const threadProjectName = projectTitleById.get(t.projectId) ?? projectName;
                 return (
-                  <view key={t.id} className="qs-row" bindtap={() => handleThreadTap(t.id)}>
-                    <Icon
-                      name="message-square"
-                      size={16}
-                      color="#a1a1aa"
-                      className="qs-row__icon-img"
-                    />
-                    <view className="qs-row__text">
-                      <text className="qs-row__label" text-maxline="1">
-                        {t.title || "Untitled thread"}
-                      </text>
-                      <text className="qs-row__sub" text-maxline="1">
-                        {threadProjectName} · {t.branch ? `#${t.branch}` : "No branch"}
-                        {isCurrent ? " · Current thread" : ""}
-                      </text>
-                    </view>
-                    <text className="qs-row__hint">
-                      {formatRelativeTimeLabel(t.updatedAt, Date.now())}
-                    </text>
-                  </view>
+                  <PaletteRowSurface
+                    key={t.id}
+                    icon={
+                      <Icon
+                        name="message-square"
+                        size={16}
+                        color="#a1a1aa"
+                        className="qs-row__icon-img"
+                      />
+                    }
+                    title={t.title || "Untitled thread"}
+                    description={`${threadProjectName} · ${t.branch ? `#${t.branch}` : "No branch"}${isCurrent ? " · Current thread" : ""}`}
+                    timestamp={formatRelativeTimeLabel(t.updatedAt, Date.now())}
+                    onSelect={() => handleThreadTap(t.id)}
+                  />
                 );
               })}
             </view>
           ) : null}
 
           {filteredActions.length === 0 && filteredThreads.length === 0 ? (
-            <view className="qs-empty">
-              <text className="qs-empty__text">No results for “{query}”</text>
-            </view>
+            <PaletteEmptySurface message={`No results for “${query}”`} />
           ) : null}
         </scroll-view>
       </view>

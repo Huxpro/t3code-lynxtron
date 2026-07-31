@@ -1,19 +1,11 @@
 {
   "source": "apps/web/src/index.css",
-  "sourceHash": "4d73315d28c9b12140571607831533dcad33162dfbfbbcb982df8a0cc13b3d2c",
+  "sourceHash": "6ba494fb55c372e7e3b96f5185c5b950f9ac2a57d047c74684b236def20fc6d2",
   "generated": "apps/lynxtron/src/app/generated/lynx.css",
   "upstreamThemeTokenCount": 48,
   "effectiveSidebarTokenCount": 19,
   "settingsPrimitiveTokenCount": 37,
-  "transformedSyntax": [
-    "oklch",
-    "color-mix",
-    "@variant",
-    "--alpha"
-  ],
+  "transformedSyntax": ["oklch", "color-mix", "@variant", "--alpha"],
   "opacitySemanticTokenCount": 34,
-  "retainedRuntimeWorkarounds": [
-    "R2",
-    "R9"
-  ]
+  "retainedRuntimeWorkarounds": ["R2", "R9"]
 }

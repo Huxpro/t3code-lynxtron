@@ -10,6 +10,7 @@ import { GeneralSettings } from "./components/GeneralSettings";
 import { GeneralSettingsSync } from "./components/GeneralSettingsSync";
 import { ProviderSettings } from "./components/ProviderSettings";
 import { KeybindingsSettings } from "./components/KeybindingsSettings";
+import { ModelPicker } from "./components/ModelPicker";
 import { QuickSwitch } from "./components/QuickSwitch";
 import {
   ArchiveSettings,
@@ -21,8 +22,8 @@ import { usePathname } from "./router";
 import { appAtomRegistry } from "./state/atomRegistry";
 import { registerCapabilityProbe } from "./state/capabilityProbe";
 import { registerKeyboardCommands } from "./state/keyboardCommands";
-import { useT3ClientState } from "./state/t3Client";
-import { useQuickSwitchOpen } from "./state/uiState";
+import { t3ClientActions, useT3ClientState } from "./state/t3Client";
+import { uiActions, useModelPickerOpen, useQuickSwitchOpen } from "./state/uiState";
 import "./generated/lynx.css";
 import "./tailwind.css";
 import "./overrides.css";
@@ -58,10 +59,26 @@ function RootSwitch() {
 
 function RootOverlays() {
   const quickSwitchOpen = useQuickSwitchOpen();
-  const { projects, threads, activeThreadId } = useT3ClientState();
-  return quickSwitchOpen ? (
-    <QuickSwitch projects={projects} threads={threads} activeThreadId={activeThreadId} />
-  ) : null;
+  const modelPickerOpen = useModelPickerOpen();
+  const { projects, threads, activeThreadId, models, selectedModel } = useT3ClientState();
+  return (
+    <>
+      {quickSwitchOpen ? (
+        <QuickSwitch projects={projects} threads={threads} activeThreadId={activeThreadId} />
+      ) : null}
+      {modelPickerOpen ? (
+        <ModelPicker
+          models={models}
+          selectedModel={selectedModel}
+          onSelect={(model) => {
+            t3ClientActions.setModelSelection(model);
+            uiActions.closeModelPicker();
+          }}
+          onClose={uiActions.closeModelPicker}
+        />
+      ) : null}
+    </>
+  );
 }
 
 registerCapabilityProbe();

@@ -4,6 +4,13 @@ import {
   rankModelPickerSearchResults,
   sortModelPickerItems,
 } from "@t3tools/client-runtime/presentation/model-picker";
+import {
+  ModelPickerEmptySurface,
+  ModelPickerRailItemSurface,
+  ModelPickerRailSurface,
+  ModelPickerRowSurface,
+  ModelPickerSearchSurface,
+} from "../../../../web/src/components/chat/ModelPickerSurface";
 import type { ModelInfo } from "../bridge";
 import { Icon } from "./Icon";
 
@@ -139,96 +146,74 @@ export function ModelPicker({ models, selectedModel, onSelect, onClose }: ModelP
     <view className="picker-overlay" bindtap={handleOverlayTap}>
       <view className="picker-panel" bindtap={handlePanelTap}>
         <view className="picker-body">
-          {/* Left provider rail */}
-          <view className="picker-rail">
+          <ModelPickerRailSurface>
             {hasFavorites ? (
-              <view
-                className={
-                  showFavorites
-                    ? "picker-rail__item picker-rail__item--active"
-                    : "picker-rail__item"
-                }
-                bindtap={() => {
+              <ModelPickerRailItemSurface
+                icon={<text className="picker-rail__glyph">★</text>}
+                label="Favorites"
+                active={showFavorites}
+                onSelect={() => {
                   setShowFavorites(!showFavorites);
                   setActiveProvider(null);
                 }}
-              >
-                <text className="picker-rail__icon">★</text>
-              </view>
+              />
             ) : null}
             {providers.map((p) => (
-              <view
+              <ModelPickerRailItemSurface
                 key={p.instanceId}
-                className={
-                  !showFavorites && activeProvider === p.instanceId
-                    ? "picker-rail__item picker-rail__item--active"
-                    : "picker-rail__item"
-                }
-                bindtap={() => {
+                icon={<text className="picker-rail__glyph">{p.icon}</text>}
+                label={p.name}
+                active={!showFavorites && activeProvider === p.instanceId}
+                onSelect={() => {
                   setActiveProvider(p.instanceId);
                   setShowFavorites(false);
                 }}
-              >
-                <text className="picker-rail__icon">{p.icon}</text>
-              </view>
-            ))}
-          </view>
-
-          {/* Right content: search + model list */}
-          <view className="picker-content">
-            <view className="picker-search">
-              <Icon name="search" size={16} color="#71717a" />
-              <input
-                className="picker-search__input"
-                {...({ value: search } as object)}
-                placeholder="Search models..."
-                bindinput={handleSearch}
               />
-            </view>
+            ))}
+          </ModelPickerRailSurface>
+
+          <view className="picker-content flex h-full min-w-0 flex-1 flex-col">
+            <ModelPickerSearchSurface
+              icon={<Icon name="search" size={16} color="#71717a" />}
+              input={
+                <input
+                  className="picker-search__input"
+                  {...({ value: search } as object)}
+                  placeholder="Search models..."
+                  bindinput={handleSearch}
+                />
+              }
+            />
 
             <scroll-view scroll-orientation="vertical" className="picker-list">
               {filteredModels.length === 0 ? (
-                <view className="picker-empty">
-                  <text className="picker-empty__text">No models found</text>
-                </view>
+                <ModelPickerEmptySurface message="No models found" />
               ) : (
-                filteredModels.map((m, i) => {
+                filteredModels.map((m) => {
                   const isSelected =
                     selectedModel?.instanceId === m.instanceId && selectedModel?.slug === m.slug;
                   const isFav = favorites.has(modelKey(m));
                   const isNew = isNewModel(m);
                   const isFavResult = showFavorites && !search.trim();
                   return (
-                    <view
+                    <ModelPickerRowSurface
                       key={`${m.instanceId}-${m.slug}`}
-                      className={isSelected ? "picker-row picker-row--selected" : "picker-row"}
-                      bindtap={() => handleSelect(m)}
-                    >
-                      <view className="picker-row__info">
-                        <view className="picker-row__name-row">
-                          {isFav && !isFavResult ? (
-                            <text className="picker-row__fav-star">★</text>
-                          ) : null}
-                          <text className="picker-row__name">{m.name}</text>
-                          {isNew ? (
-                            <view className="picker-row__badge">
-                              <text className="picker-row__badge-text">New</text>
-                            </view>
-                          ) : null}
-                        </view>
-                        <view className="picker-row__sub">
-                          <text className="picker-row__provider-icon">
-                            {getProviderIcon(m.driverKind)}
-                          </text>
-                          <text className="picker-row__provider">{m.providerDisplayName}</text>
-                        </view>
-                      </view>
-                      <view className="picker-row__right">
-                        {i < 9 ? (
-                          <view className="picker-row__kbd">
-                            <text className="picker-row__kbd-text">⌘{i + 1}</text>
-                          </view>
-                        ) : null}
+                      selected={isSelected}
+                      onSelect={() => handleSelect(m)}
+                      name={m.name}
+                      showNewBadge={isNew}
+                      favoriteMarker={
+                        isFav && !isFavResult ? (
+                          <text className="picker-row__fav-star">★</text>
+                        ) : undefined
+                      }
+                      providerIcon={
+                        <text className="picker-row__provider-glyph">
+                          {getProviderIcon(m.driverKind)}
+                        </text>
+                      }
+                      providerLabel={m.providerDisplayName}
+                      trailing={
                         <view
                           className="picker-row__star-btn"
                           bindtap={(e: any) => {
@@ -246,8 +231,8 @@ export function ModelPicker({ models, selectedModel, onSelect, onClose }: ModelP
                             {isFav ? "★" : "☆"}
                           </text>
                         </view>
-                      </view>
-                    </view>
+                      }
+                    />
                   );
                 })
               )}

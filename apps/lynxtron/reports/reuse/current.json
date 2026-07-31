@@ -743,7 +743,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 7264,
+            "eligibleLines": 7261,
             "eligibleModules": 62,
             "modulesOnlyInLynx": [
               {
@@ -878,7 +878,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -9086,7 +9086,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 28470,
+            "eligibleLines": 28467,
             "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
@@ -9231,7 +9231,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -15525,13 +15525,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 298,
             "PATCHED": 0,
-            "SHARED": 68,
+            "SHARED": 69,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 77638,
-            "modules": 369
+            "lines": 77743,
+            "modules": 370
           },
           "largestNonShared": [
             {
@@ -15541,13 +15541,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3734,
-              "path": "apps/lynxtron/src/app/overrides.css"
+              "lines": 3603,
+              "path": "apps/web/src/composerDraftStore.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3603,
-              "path": "apps/web/src/composerDraftStore.ts"
+              "lines": 3531,
+              "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
               "classification": "EXCLUSIVE",
@@ -15793,6 +15793,21 @@
                 "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
+                "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
+                "request": "../../../../web/src/components/chat/ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
+                "request": "./Icon",
+                "to": "apps/lynxtron/src/app/components/Icon.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
+              },
+              {
                 "from": "apps/lynxtron/src/app/components/OtherSettings.tsx",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
@@ -15851,6 +15866,11 @@
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/QuickSwitch.tsx",
+                "request": "../../../../web/src/components/CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/QuickSwitch.tsx",
@@ -15961,6 +15981,11 @@
                 "from": "apps/lynxtron/src/app/index.tsx",
                 "request": "./components/KeybindingsSettings",
                 "to": "apps/lynxtron/src/app/components/KeybindingsSettings.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/index.tsx",
+                "request": "./components/ModelPicker",
+                "to": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/index.tsx",
@@ -16213,6 +16238,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "apps/web/src/components/chat/transcriptRowPresentation.ts",
                 "request": "@t3tools/client-runtime/presentation/paths",
                 "to": "packages/client-runtime/src/presentation/paths.ts"
@@ -16246,6 +16281,16 @@
                 "from": "apps/web/src/components/chat/TranscriptRowSurface.tsx",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/settings/GeneralSettingsContent.tsx",
@@ -17313,8 +17358,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 34147,
-            "eligibleModules": 150,
+            "eligibleLines": 34497,
+            "eligibleModules": 153,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17373,6 +17418,11 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 245,
+                "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 356,
                 "path": "apps/lynxtron/src/app/components/OtherSettings.tsx"
               },
@@ -17388,7 +17438,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 181,
+                "lines": 180,
                 "path": "apps/lynxtron/src/app/components/QuickSwitch.tsx"
               },
               {
@@ -17413,7 +17463,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 75,
+                "lines": 92,
                 "path": "apps/lynxtron/src/app/index.tsx"
               },
               {
@@ -17423,7 +17473,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3734,
+                "lines": 3531,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -17523,8 +17573,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -17628,7 +17683,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -17731,12 +17786,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 19707,
-            "modules": 68
+            "lines": 19831,
+            "modules": 69
           },
           "reusePercent": {
-            "lines": 25.4,
-            "modules": 18.4
+            "lines": 25.5,
+            "modules": 18.6
           },
           "web": {
             "edges": [
@@ -18567,6 +18622,11 @@
               },
               {
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
+                "request": "./CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "./ui/command",
                 "to": "apps/web/src/components/ui/command.tsx"
               },
@@ -18574,6 +18634,16 @@
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ConnectionStatusDot.tsx",
@@ -23809,8 +23879,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 219,
+                "lines": 200,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 124,
+                "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -25515,15 +25590,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 430,
+            "EXCLUSIVE": 431,
             "PATCHED": 0,
             "SHARED": 36,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 103717,
-            "modules": 467
+            "lines": 103891,
+            "modules": 468
           },
           "largestNonShared": [
             {
@@ -25543,7 +25618,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -26330,7 +26405,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13685,
+            "eligibleLines": 13679,
             "eligibleModules": 83,
             "modulesOnlyInLynx": [
               {
@@ -26505,7 +26580,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -26576,7 +26651,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8013,
+            "lines": 8010,
             "modules": 36
           },
           "reusePercent": {
@@ -27752,6 +27827,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -27789,6 +27869,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -27839,6 +27924,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -34489,7 +34584,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -34599,7 +34694,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -34614,7 +34709,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -34659,12 +34754,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -34676,6 +34771,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -36743,15 +36843,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 412,
+            "EXCLUSIVE": 413,
             "PATCHED": 0,
             "SHARED": 21,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93202,
-            "modules": 433
+            "lines": 93376,
+            "modules": 434
           },
           "largestNonShared": [
             {
@@ -36766,7 +36866,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -37188,7 +37288,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9891,
+            "eligibleLines": 9885,
             "eligibleModules": 44,
             "modulesOnlyInLynx": [
               {
@@ -37298,7 +37398,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -37311,7 +37411,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5812,
+            "lines": 5809,
             "modules": 21
           },
           "reusePercent": {
@@ -38422,6 +38522,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -38459,6 +38564,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -38509,6 +38619,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -44194,7 +44314,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -44304,7 +44424,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -44319,7 +44439,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -44364,12 +44484,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -44381,6 +44501,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -46284,15 +46409,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 479,
+            "EXCLUSIVE": 481,
             "PATCHED": 0,
             "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113937,
-            "modules": 517
+            "lines": 114216,
+            "modules": 519
           },
           "largestNonShared": [
             {
@@ -46312,7 +46437,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -47109,7 +47234,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13726,
+            "eligibleLines": 13720,
             "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
@@ -47299,7 +47424,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -47366,12 +47491,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8276,
+            "lines": 8273,
             "modules": 37
           },
           "reusePercent": {
-            "lines": 7.3,
-            "modules": 7.2
+            "lines": 7.2,
+            "modules": 7.1
           },
           "web": {
             "edges": [
@@ -48662,6 +48787,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -48699,6 +48829,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -48749,6 +48884,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -50237,6 +50382,11 @@
               },
               {
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
+                "request": "./CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "./ui/command",
                 "to": "apps/web/src/components/ui/command.tsx"
               },
@@ -50244,6 +50394,16 @@
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ConnectionStatusDot.tsx",
@@ -56679,7 +56839,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -56789,7 +56949,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -56804,7 +56964,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -56849,12 +57009,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -56866,6 +57026,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -57004,8 +57169,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 219,
+                "lines": 200,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 124,
+                "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -59159,15 +59329,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 430,
+            "EXCLUSIVE": 431,
             "PATCHED": 0,
             "SHARED": 36,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 103717,
-            "modules": 467
+            "lines": 103891,
+            "modules": 468
           },
           "largestNonShared": [
             {
@@ -59187,7 +59357,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -59974,7 +60144,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13685,
+            "eligibleLines": 13679,
             "eligibleModules": 83,
             "modulesOnlyInLynx": [
               {
@@ -60149,7 +60319,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -60220,7 +60390,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8013,
+            "lines": 8010,
             "modules": 36
           },
           "reusePercent": {
@@ -61396,6 +61566,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -61433,6 +61608,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -61483,6 +61663,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -68133,7 +68323,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -68243,7 +68433,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -68258,7 +68448,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -68303,12 +68493,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -68320,6 +68510,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -70387,15 +70582,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 412,
+            "EXCLUSIVE": 413,
             "PATCHED": 0,
             "SHARED": 21,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93202,
-            "modules": 433
+            "lines": 93376,
+            "modules": 434
           },
           "largestNonShared": [
             {
@@ -70410,7 +70605,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -70832,7 +71027,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9891,
+            "eligibleLines": 9885,
             "eligibleModules": 44,
             "modulesOnlyInLynx": [
               {
@@ -70942,7 +71137,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -70958,7 +71153,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5812,
+            "lines": 5809,
             "modules": 21
           },
           "reusePercent": {
@@ -72069,6 +72264,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -72106,6 +72306,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -72156,6 +72361,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -77841,7 +78056,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -77951,7 +78166,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -77966,7 +78181,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -78011,12 +78226,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -78028,6 +78243,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -79934,15 +80154,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 479,
+            "EXCLUSIVE": 481,
             "PATCHED": 0,
             "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113946,
-            "modules": 517
+            "lines": 114225,
+            "modules": 519
           },
           "largestNonShared": [
             {
@@ -79962,7 +80182,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -80759,7 +80979,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13726,
+            "eligibleLines": 13720,
             "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
@@ -80949,7 +81169,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -81016,12 +81236,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8276,
+            "lines": 8273,
             "modules": 37
           },
           "reusePercent": {
-            "lines": 7.3,
-            "modules": 7.2
+            "lines": 7.2,
+            "modules": 7.1
           },
           "web": {
             "edges": [
@@ -82312,6 +82532,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -82349,6 +82574,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -82399,6 +82629,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -83887,6 +84127,11 @@
               },
               {
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
+                "request": "./CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "./ui/command",
                 "to": "apps/web/src/components/ui/command.tsx"
               },
@@ -83894,6 +84139,16 @@
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ConnectionStatusDot.tsx",
@@ -90339,7 +90594,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -90449,7 +90704,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -90464,7 +90719,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -90509,12 +90764,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -90526,6 +90781,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -90664,8 +90924,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 219,
+                "lines": 200,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 124,
+                "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -92819,15 +93084,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 412,
+            "EXCLUSIVE": 413,
             "PATCHED": 0,
             "SHARED": 21,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 93202,
-            "modules": 433
+            "lines": 93376,
+            "modules": 434
           },
           "largestNonShared": [
             {
@@ -92842,7 +93107,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -93264,7 +93529,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 9891,
+            "eligibleLines": 9885,
             "eligibleModules": 44,
             "modulesOnlyInLynx": [
               {
@@ -93374,7 +93639,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -93390,7 +93655,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 5812,
+            "lines": 5809,
             "modules": 21
           },
           "reusePercent": {
@@ -94501,6 +94766,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -94538,6 +94808,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -94588,6 +94863,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -100273,7 +100558,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -100383,7 +100668,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -100398,7 +100683,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -100443,12 +100728,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -100460,6 +100745,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -102366,15 +102656,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 270,
+            "EXCLUSIVE": 271,
             "PATCHED": 0,
             "SHARED": 4,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 57535,
-            "modules": 274
+            "lines": 57714,
+            "modules": 275
           },
           "largestNonShared": [
             {
@@ -102384,7 +102674,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -102491,7 +102781,7 @@
                 "to": "packages/shared/src/providerOptions.ts"
               }
             ],
-            "eligibleLines": 1106,
+            "eligibleLines": 1100,
             "eligibleModules": 8,
             "modulesOnlyInLynx": [
               {
@@ -102511,7 +102801,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               }
             ],
@@ -102519,7 +102809,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 584,
+            "lines": 581,
             "modules": 4
           },
           "reusePercent": {
@@ -103070,6 +103360,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -103107,6 +103402,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -103157,6 +103457,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/PierreEntryIcon.tsx",
@@ -106202,7 +106512,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -106292,7 +106602,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -106307,12 +106617,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -106324,6 +106634,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -107542,15 +107857,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 479,
+            "EXCLUSIVE": 481,
             "PATCHED": 0,
             "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113937,
-            "modules": 517
+            "lines": 114216,
+            "modules": 519
           },
           "largestNonShared": [
             {
@@ -107570,7 +107885,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -108367,7 +108682,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13726,
+            "eligibleLines": 13720,
             "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
@@ -108557,7 +108872,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -108624,12 +108939,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8276,
+            "lines": 8273,
             "modules": 37
           },
           "reusePercent": {
-            "lines": 7.3,
-            "modules": 7.2
+            "lines": 7.2,
+            "modules": 7.1
           },
           "web": {
             "edges": [
@@ -109920,6 +110235,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -109957,6 +110277,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -110007,6 +110332,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -111495,6 +111830,11 @@
               },
               {
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
+                "request": "./CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "./ui/command",
                 "to": "apps/web/src/components/ui/command.tsx"
               },
@@ -111502,6 +111842,16 @@
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ConnectionStatusDot.tsx",
@@ -117937,7 +118287,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -118047,7 +118397,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -118062,7 +118412,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -118107,12 +118457,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -118124,6 +118474,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -118262,8 +118617,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 219,
+                "lines": 200,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 124,
+                "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -120419,13 +120779,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 267,
             "PATCHED": 0,
-            "SHARED": 7,
+            "SHARED": 8,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 57535,
-            "modules": 274
+            "lines": 57714,
+            "modules": 275
           },
           "largestNonShared": [
             {
@@ -120435,7 +120795,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -120523,6 +120883,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
+                "request": "../../../../web/src/components/chat/ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
               },
@@ -120547,6 +120912,16 @@
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
               },
               {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/composer.ts",
                 "request": "@t3tools/shared/providerOptions",
                 "to": "packages/shared/src/providerOptions.ts"
@@ -120562,8 +120937,8 @@
                 "to": "packages/shared/src/searchRanking.ts"
               }
             ],
-            "eligibleLines": 2385,
-            "eligibleModules": 12,
+            "eligibleLines": 2538,
+            "eligibleModules": 13,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -120577,7 +120952,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 260,
+                "lines": 245,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -120587,7 +120962,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               }
             ],
@@ -120598,12 +120973,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 1603,
-            "modules": 7
+            "lines": 1774,
+            "modules": 8
           },
           "reusePercent": {
-            "lines": 2.8,
-            "modules": 2.6
+            "lines": 3.1,
+            "modules": 2.9
           },
           "web": {
             "edges": [
@@ -121149,6 +121524,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -121186,6 +121566,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -121236,6 +121621,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/PierreEntryIcon.tsx",
@@ -124281,7 +124676,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -124371,7 +124766,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -124386,12 +124781,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -124403,6 +124798,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -125626,13 +126026,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 193,
             "PATCHED": 0,
-            "SHARED": 3,
+            "SHARED": 5,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 43553,
-            "modules": 196
+            "lines": 43748,
+            "modules": 198
           },
           "largestNonShared": [
             {
@@ -125715,6 +126115,11 @@
             "edges": [
               {
                 "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
+                "request": "../../../../web/src/components/chat/ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
                 "request": "./Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
               },
@@ -125722,6 +126127,16 @@
                 "from": "apps/lynxtron/src/app/components/ModelPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/model-picker",
                 "to": "packages/client-runtime/src/presentation/modelPicker.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
                 "from": "packages/client-runtime/src/presentation/modelPicker.ts",
@@ -125734,8 +126149,8 @@
                 "to": "packages/shared/src/searchRanking.ts"
               }
             ],
-            "eligibleLines": 1395,
-            "eligibleModules": 5,
+            "eligibleLines": 1679,
+            "eligibleModules": 8,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -125744,20 +126159,25 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 260,
+                "lines": 245,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 119,
+                "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               }
             ],
             "roots": ["apps/lynxtron/src/app/components/ModelPicker.tsx"],
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 1019,
-            "modules": 3
+            "lines": 1199,
+            "modules": 5
           },
           "reusePercent": {
-            "lines": 2.3,
-            "modules": 1.5
+            "lines": 2.7,
+            "modules": 2.5
           },
           "web": {
             "edges": [
@@ -125858,6 +126278,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -125895,6 +126320,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -125945,6 +126375,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -128495,12 +128935,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -128512,6 +128952,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -128552,6 +128997,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 403,
                 "path": "apps/web/src/components/ui/combobox.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 33,
+                "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -128669,7 +129119,7 @@
                 "path": "apps/web/src/lib/backgroundActivityReporter.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 6,
                 "path": "apps/web/src/lib/cn.ts"
               },
@@ -129440,15 +129890,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 479,
+            "EXCLUSIVE": 481,
             "PATCHED": 0,
             "SHARED": 37,
             "SPLIT": 1
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 113937,
-            "modules": 517
+            "lines": 114216,
+            "modules": 519
           },
           "largestNonShared": [
             {
@@ -129468,7 +129918,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3217,
+              "lines": 3237,
               "path": "apps/web/src/components/chat/ChatComposer.tsx"
             },
             {
@@ -130265,7 +130715,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 13726,
+            "eligibleLines": 13720,
             "eligibleModules": 86,
             "modulesOnlyInLynx": [
               {
@@ -130455,7 +130905,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -130522,12 +130972,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 8276,
+            "lines": 8273,
             "modules": 37
           },
           "reusePercent": {
-            "lines": 7.3,
-            "modules": 7.2
+            "lines": 7.2,
+            "modules": 7.1
           },
           "web": {
             "edges": [
@@ -131818,6 +132268,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -131855,6 +132310,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -131905,6 +132365,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/OpenInPicker.tsx",
@@ -133393,6 +133863,11 @@
               },
               {
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
+                "request": "./CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "./ui/command",
                 "to": "apps/web/src/components/ui/command.tsx"
               },
@@ -133400,6 +133875,16 @@
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ConnectionStatusDot.tsx",
@@ -139835,7 +140320,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3217,
+                "lines": 3237,
                 "path": "apps/web/src/components/chat/ChatComposer.tsx"
               },
               {
@@ -139945,7 +140430,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 203,
+                "lines": 200,
                 "path": "apps/web/src/components/chat/ComposerSurface.tsx"
               },
               {
@@ -139960,7 +140445,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 154,
+                "lines": 149,
                 "path": "apps/web/src/components/chat/DraftHeroHeadline.tsx"
               },
               {
@@ -140005,12 +140490,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -140022,6 +140507,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -140160,8 +140650,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 219,
+                "lines": 200,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 124,
+                "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -144725,15 +145220,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 344,
+            "EXCLUSIVE": 345,
             "PATCHED": 0,
             "SHARED": 28,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 78182,
-            "modules": 375
+            "lines": 78287,
+            "modules": 376
           },
           "largestNonShared": [
             {
@@ -145410,7 +145905,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8478,
+            "eligibleLines": 8475,
             "eligibleModules": 73,
             "modulesOnlyInLynx": [
               {
@@ -145580,7 +146075,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -145652,7 +146147,7 @@
           },
           "reusePercent": {
             "lines": 5.9,
-            "modules": 7.5
+            "modules": 7.4
           },
           "web": {
             "edges": [
@@ -146483,6 +146978,11 @@
               },
               {
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
+                "request": "./CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "./ui/command",
                 "to": "apps/web/src/components/ui/command.tsx"
               },
@@ -146490,6 +146990,16 @@
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ConnectionStatusDot.tsx",
@@ -151685,8 +152195,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 219,
+                "lines": 200,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 124,
+                "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -153425,15 +153940,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 275,
+            "EXCLUSIVE": 277,
             "PATCHED": 0,
             "SHARED": 11,
             "SPLIT": 5
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 61500,
-            "modules": 291
+            "lines": 61695,
+            "modules": 293
           },
           "largestNonShared": [
             {
@@ -153977,6 +154492,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -154014,6 +154534,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -154064,6 +154589,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -158004,12 +158539,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -158021,6 +158556,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -158216,6 +158756,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 21,
                 "path": "apps/web/src/components/ui/draft-input.web.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 33,
+                "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -159418,15 +159963,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 274,
+            "EXCLUSIVE": 276,
             "PATCHED": 0,
             "SHARED": 5,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60825,
-            "modules": 282
+            "lines": 61020,
+            "modules": 284
           },
           "largestNonShared": [
             {
@@ -159865,6 +160410,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -159902,6 +160452,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -159952,6 +160507,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -163847,12 +164412,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -163864,6 +164429,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -164019,6 +164589,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 21,
                 "path": "apps/web/src/components/ui/draft-input.web.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 33,
+                "path": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -165215,15 +165790,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 367,
+            "EXCLUSIVE": 369,
             "PATCHED": 0,
             "SHARED": 26,
             "SPLIT": 5
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 84580,
-            "modules": 398
+            "lines": 84847,
+            "modules": 400
           },
           "largestNonShared": [
             {
@@ -165915,7 +166490,7 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8152,
+            "eligibleLines": 8149,
             "eligibleModules": 74,
             "modulesOnlyInLynx": [
               {
@@ -166095,7 +166670,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 122,
+                "lines": 119,
                 "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
               },
               {
@@ -166483,6 +167058,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/ModelListRow.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelListRow.tsx",
                 "request": "./providerIconUtils",
                 "to": "apps/web/src/components/chat/providerIconUtils.ts"
               },
@@ -166520,6 +167100,11 @@
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
                 "request": "./ModelPickerSidebar",
                 "to": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
+                "request": "./ModelPickerSurface",
+                "to": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/ModelPickerContent.tsx",
@@ -166570,6 +167155,16 @@
                 "from": "apps/web/src/components/chat/ModelPickerSidebar.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/ModelPickerSurface.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/chat/PierreEntryIcon.tsx",
@@ -167158,6 +167753,11 @@
               },
               {
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
+                "request": "./CommandPaletteSurface",
+                "to": "apps/web/src/components/CommandPaletteSurface.tsx"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "./ui/command",
                 "to": "apps/web/src/components/ui/command.tsx"
               },
@@ -167165,6 +167765,16 @@
                 "from": "apps/web/src/components/CommandPaletteResults.tsx",
                 "request": "~/lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/CommandPaletteSurface.tsx",
+                "request": "./ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
               },
               {
                 "from": "apps/web/src/components/ConnectionStatusDot.tsx",
@@ -172870,12 +173480,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 141,
+                "lines": 128,
                 "path": "apps/web/src/components/chat/ModelListRow.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 633,
+                "lines": 634,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -172887,6 +173497,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 242,
                 "path": "apps/web/src/components/chat/ModelPickerSidebar.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 174,
+                "path": "apps/web/src/components/chat/ModelPickerSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -172955,8 +173570,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 219,
+                "lines": 200,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 124,
+                "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
