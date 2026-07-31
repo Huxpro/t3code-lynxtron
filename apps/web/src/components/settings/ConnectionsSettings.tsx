@@ -137,6 +137,7 @@ import { ConnectionStatusDot } from "../ConnectionStatusDot";
 import { ServerUpdateAction, ServerUpdateProgress } from "../ServerUpdateAction";
 import { CloudEnvironmentConnectRows } from "../cloud/CloudEnvironmentConnectList";
 import { ITEM_ROW_CLASSNAME, ITEM_ROW_INNER_CLASSNAME } from "./itemRows";
+import { AccessListRowSurface } from "./SettingsSurfaces";
 
 const DEFAULT_TAILSCALE_SERVE_PORT = 443;
 const EMPTY_ADVERTISED_ENDPOINTS: ReadonlyArray<AdvertisedEndpoint> = [];
@@ -472,7 +473,6 @@ type PairingLinkListRowProps = {
   endpointUrl: string | null | undefined;
   endpoints: ReadonlyArray<AdvertisedEndpoint>;
   defaultEndpointKey: string | null;
-  presentation?: AccessSectionPresentation;
   revokingPairingLinkId: string | null;
   onRevoke: (id: string) => void;
 };
@@ -482,7 +482,6 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
   endpointUrl,
   endpoints,
   defaultEndpointKey,
-  presentation = "current",
   revokingPairingLinkId,
   onRevoke,
 }: PairingLinkListRowProps) {
@@ -692,57 +691,61 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
   }
 
   return (
-    <div className={accessRowClassName(presentation)}>
-      <div className={ITEM_ROW_INNER_CLASSNAME}>
-        <div className="min-w-0 flex-1 space-y-1">
-          <div className="flex min-h-5 items-center gap-1.5">
-            <ConnectionStatusDot
-              tooltipText={`Link created at ${formatAccessTimestamp(pairingLink.createdAt)}`}
-              dotClassName="bg-amber-400"
-            />
-            <h3 className="text-sm font-medium text-foreground">{primaryLabel}</h3>
-            <Popover>
-              {shareablePairingUrl ? (
-                <>
-                  <PopoverTrigger
-                    openOnHover
-                    delay={250}
-                    closeDelay={100}
-                    render={
-                      <button
-                        type="button"
-                        className="inline-flex size-4 shrink-0 items-center justify-center rounded-sm text-muted-foreground/50 outline-none hover:text-foreground"
-                        aria-label="Show QR code"
-                      />
-                    }
-                  >
-                    <QrCodeIcon aria-hidden className="size-3" />
-                  </PopoverTrigger>
-                  <PopoverPopup side="top" align="start" tooltipStyle className="w-max">
-                    <QRCodeSvg
-                      value={shareablePairingUrl}
-                      size={88}
-                      level="M"
-                      marginSize={2}
-                      title="Pairing link — scan to open on another device"
-                    />
-                  </PopoverPopup>
-                </>
-              ) : null}
-            </Popover>
-          </div>
-          <p className="text-xs text-muted-foreground" title={expiresAbsolute}>
+    <AccessListRowSurface
+      statusDot={
+        <ConnectionStatusDot
+          tooltipText={`Link created at ${formatAccessTimestamp(pairingLink.createdAt)}`}
+          dotClassName="bg-amber-400"
+        />
+      }
+      primaryLabel={primaryLabel}
+      primaryTrailing={
+        <Popover>
+          {shareablePairingUrl ? (
+            <>
+              <PopoverTrigger
+                openOnHover
+                delay={250}
+                closeDelay={100}
+                render={
+                  <button
+                    type="button"
+                    className="inline-flex size-4 shrink-0 items-center justify-center rounded-sm text-muted-foreground/50 outline-none hover:text-foreground"
+                    aria-label="Show QR code"
+                  />
+                }
+              >
+                <QrCodeIcon aria-hidden className="size-3" />
+              </PopoverTrigger>
+              <PopoverPopup side="top" align="start" tooltipStyle className="w-max">
+                <QRCodeSvg
+                  value={shareablePairingUrl}
+                  size={88}
+                  level="M"
+                  marginSize={2}
+                  title="Pairing link — scan to open on another device"
+                />
+              </PopoverPopup>
+            </>
+          ) : null}
+        </Popover>
+      }
+      description={
+        <>
+          <span title={expiresAbsolute}>
             {formatExpiresInLabel(pairingLink.expiresAt, nowMs)}
             <span aria-hidden> · </span>
             <AccessScopeSummary scopes={pairingLink.scopes} label="Pairing link scopes" />
-          </p>
+          </span>
           {shareablePairingUrl === null ? (
-            <p className="text-[11px] text-muted-foreground/70">
+            <span className="block text-[11px] text-muted-foreground/70">
               Copy the token and pair from another client using this backend&apos;s reachable host.
-            </p>
+            </span>
           ) : null}
-        </div>
-        <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+        </>
+      }
+      control={
+        <>
           <Dialog open={isRevealDialogOpen} onOpenChange={setIsRevealDialogOpen}>
             {canCopyToClipboard ? (
               <>
@@ -846,22 +849,20 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
           >
             {revokingPairingLinkId === pairingLink.id ? "Revoking…" : "Revoke"}
           </Button>
-        </div>
-      </div>
-    </div>
+        </>
+      }
+    />
   );
 });
 
 type ConnectedClientListRowProps = {
   clientSession: AuthClientSessionPresentation;
-  presentation?: AccessSectionPresentation;
   revokingClientSessionId: string | null;
   onRevokeSession: (sessionId: AuthClientSessionPresentation["sessionId"]) => void;
 };
 
 const ConnectedClientListRow = memo(function ConnectedClientListRow({
   clientSession,
-  presentation = "current",
   revokingClientSessionId,
   onRevokeSession,
 }: ConnectedClientListRowProps) {
@@ -875,46 +876,46 @@ const ConnectedClientListRow = memo(function ConnectedClientListRow({
       : "Not connected yet.";
 
   return (
-    <div className={accessRowClassName(presentation)}>
-      <div className={ITEM_ROW_INNER_CLASSNAME}>
-        <div className="min-w-0 flex-1 space-y-1">
-          <div className="flex min-h-5 items-center gap-1.5">
-            <ConnectionStatusDot
-              tooltipText={statusTooltip}
-              dotClassName={clientSession.isLive ? "bg-success" : "bg-muted-foreground/30"}
-              pingClassName={clientSession.isLive ? "bg-success/60 duration-2000" : null}
-            />
-            <h3 className="text-sm font-medium text-foreground">{clientSession.primaryLabel}</h3>
-            {clientSession.current ? (
-              <span className="text-[10px] text-muted-foreground/80 rounded-md border border-border/50 bg-muted/50 px-1 py-0.5">
-                This device
-              </span>
-            ) : null}
-          </div>
-          <p className="text-xs text-muted-foreground">
-            {clientSession.deviceInfoBits.length > 0 ? (
-              <>
-                {clientSession.deviceInfoBits.join(" · ")}
-                <span aria-hidden> · </span>
-              </>
-            ) : null}
-            <AccessScopeSummary scopes={clientSession.scopes} label="Client scopes" />
-          </p>
-        </div>
-        <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
-          {!clientSession.current ? (
-            <Button
-              size="xs"
-              variant="destructive-outline"
-              disabled={revokingClientSessionId === clientSession.sessionId}
-              onClick={() => void onRevokeSession(clientSession.sessionId)}
-            >
-              {revokingClientSessionId === clientSession.sessionId ? "Revoking…" : "Revoke"}
-            </Button>
+    <AccessListRowSurface
+      statusDot={
+        <ConnectionStatusDot
+          tooltipText={statusTooltip}
+          dotClassName={clientSession.isLive ? "bg-success" : "bg-muted-foreground/30"}
+          pingClassName={clientSession.isLive ? "bg-success/60 duration-2000" : null}
+        />
+      }
+      primaryLabel={clientSession.primaryLabel}
+      primaryTrailing={
+        clientSession.current ? (
+          <span className="text-[10px] text-muted-foreground/80 rounded-md border border-border/50 bg-muted/50 px-1 py-0.5">
+            This device
+          </span>
+        ) : null
+      }
+      description={
+        <>
+          {clientSession.deviceInfoBits.length > 0 ? (
+            <>
+              {clientSession.deviceInfoBits.join(" · ")}
+              <span aria-hidden> · </span>
+            </>
           ) : null}
-        </div>
-      </div>
-    </div>
+          <AccessScopeSummary scopes={clientSession.scopes} label="Client scopes" />
+        </>
+      }
+      control={
+        !clientSession.current ? (
+          <Button
+            size="xs"
+            variant="destructive-outline"
+            disabled={revokingClientSessionId === clientSession.sessionId}
+            onClick={() => void onRevokeSession(clientSession.sessionId)}
+          >
+            {revokingClientSessionId === clientSession.sessionId ? "Revoking…" : "Revoke"}
+          </Button>
+        ) : null
+      }
+    />
   );
 });
 
@@ -1128,7 +1129,6 @@ const PairingClientsList = memo(function PairingClientsList({
           endpointUrl={endpointUrl}
           endpoints={endpoints}
           defaultEndpointKey={defaultEndpointKey}
-          presentation={presentation}
           revokingPairingLinkId={revokingPairingLinkId}
           onRevoke={onRevokePairingLink}
         />
@@ -1138,7 +1138,6 @@ const PairingClientsList = memo(function PairingClientsList({
         <ConnectedClientListRow
           key={clientSession.sessionId}
           clientSession={clientSession}
-          presentation={presentation}
           revokingClientSessionId={revokingClientSessionId}
           onRevokeSession={onRevokeClientSession}
         />

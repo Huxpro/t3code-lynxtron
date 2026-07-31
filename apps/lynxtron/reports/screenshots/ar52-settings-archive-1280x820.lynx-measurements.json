@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "settings-archive",
+  "anchors": {
+    "sidebar": {
+      "selector": ".settings-nav",
+      "nodeId": 170,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "box": {
+        "width": 255,
+        "height": 820
+      },
+      "text": "Code General Appearance Keybindings Providers Source Control Connections Beta Archive Back",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "topbar": {
+      "selector": ".settings-topbar",
+      "nodeId": 172,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "box": {
+        "width": 984,
+        "height": 52
+      },
+      "text": "Settings",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "panel": {
+      "selector": ".settings-scroll",
+      "nodeId": 176,
+      "rect": {
+        "x": 256,
+        "y": 52,
+        "width": 1024,
+        "height": 768
+      },
+      "box": {
+        "width": 1024,
+        "height": 768
+      },
+      "text": "This environment Network access Local only. Lynxtron launches this backend on the loopback interface. Access inventory 7 authorized clients · 0 active pairing links Authorized clients New pairing link Create a one-time code with standard client permissions. Create T3 Code Lynxtron This device Connected · Desktop · 127.0.0.1 · 8 scopes T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke Other clients Revoke every authorized client except this device. Revoke all Remote environments No saved remote environments Remote environment catalog actions have not moved into the Lynx host yet.",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sectionHeading": {
+      "selector": ".settings-section__title",
+      "nodeId": 631,
+      "rect": {
+        "x": 336,
+        "y": 102,
+        "width": 143,
+        "height": 28
+      },
+      "box": {
+        "width": 143,
+        "height": 28
+      },
+      "text": "This environment",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      }
+    }
+  },
+  "typography": {
+    "sectionHeading": {
+      "selector": ".settings-section__title",
+      "nodeId": 631,
+      "rect": {
+        "x": 336,
+        "y": 102,
+        "width": 143,
+        "height": 28
+      },
+      "box": {
+        "width": 143,
+        "height": 28
+      },
+      "text": "This environment",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      }
+    },
+    "rowTitle": {
+      "selector": ".settings-row__title",
+      "nodeId": 638,
+      "rect": {
+        "x": 336,
+        "y": 156,
+        "width": 106,
+        "height": 20
+      },
+      "box": {
+        "width": 106,
+        "height": 20
+      },
+      "text": "Network access",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "rowDescription": {
+      "selector": ".settings-row__desc",
+      "nodeId": 640,
+      "rect": {
+        "x": 336,
+        "y": 178,
+        "width": 832,
+        "height": 19
+      },
+      "box": {
+        "width": 832,
+        "height": 19
+      },
+      "text": "Local only. Lynxtron launches this backend on the loopback interface.",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(129,129,129,0.8)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "normal",
+        "lineHeight": "19px"
+      }
+    }
+  },
+  "colors": {
+    "mainBackground": {
+      "selector": ".settings-main",
+      "nodeId": 171,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 820
+      },
+      "box": {
+        "width": 1024,
+        "height": 820
+      },
+      "text": "Settings This environment Network access Local only. Lynxtron launches this backend on the loopback interface. Access inventory 7 authorized clients · 0 active pairing links Authorized clients New pairing link Create a one-time code with standard client permissions. Create T3 Code Lynxtron This device Connected · Desktop · 127.0.0.1 · 8 scopes T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke T3 Code Lynxtron Offline · Desktop · 127.0.0.1 · 8 scopes Revoke Other clients Revoke every authorized client except this device. Revoke all Remote environments No saved remote environments Remote environment catalog actions have not moved into the Lynx host yet.",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  }
+}

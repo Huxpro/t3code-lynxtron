@@ -264,6 +264,16 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
   background-color: color-mix(in oklab, var(--accent) 20%, transparent);
 }
 
+/* AR5.2 settings surfaces: hover affordances stay in the Web layer (R6). */
+.source-control-item:hover,
+.provider-instance-card:hover {
+  background-color: color-mix(in oklab, var(--muted) 20%, transparent);
+}
+
+.provider-instance-card__chevron:hover {
+  color: var(--foreground);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

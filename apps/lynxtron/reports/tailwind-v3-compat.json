@@ -5,12 +5,8 @@
     "postcss": true,
     "preset": "@lynx-js/tailwind-preset"
   },
-  "compatibilityItems": [
-    "R6",
-    "R7",
-    "R9"
-  ],
-  "removedSelectorCount": 44,
+  "compatibilityItems": ["R6", "R7", "R9"],
+  "removedSelectorCount": 46,
   "removedDeclarationCount": 7,
   "removedSelectors": [
     ".\\[\\&\\>span\\:last-child\\]\\:truncate>span:last-child",
@@ -26,6 +22,8 @@
     ".after\\:left-1\\/2::after",
     ".after\\:w-\\[2px\\]::after",
     ".dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]:is(.dark *)",
+    ".dark\\:border-amber-400\\/30:is(.dark *)",
+    ".dark\\:text-amber-200:is(.dark *)",
     ".dark\\:text-emerald-400:is(.dark *)",
     ".data-\\[state\\=open\\]\\:hover\\:bg-sidebar-row-hover:hover[data-state=\"open\"]",
     ".data-\\[state\\=open\\]\\:hover\\:text-sidebar-foreground:hover[data-state=\"open\"]",

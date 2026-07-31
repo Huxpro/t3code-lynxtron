@@ -7,7 +7,8 @@ import {
 } from "../../hooks/useSettings";
 import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
-import { SettingsPageContainer, SettingsRow, SettingsSection } from "./settingsLayout";
+import { SettingsPageContainer, SettingsRow } from "./settingsLayout";
+import { BetaSettingsSurface } from "./SettingsSurfaces";
 
 const AUTO_SETTLE_MIN_DAYS = 1;
 const AUTO_SETTLE_MAX_DAYS = 90;
@@ -63,57 +64,55 @@ export function BetaSettingsPanel() {
 
   return (
     <SettingsPageContainer>
-      <SettingsSection title="Beta features">
-        <SettingsRow
-          title="Sidebar v2"
-          description="One flat thread list in creation order. Active work renders as rich cards; settled threads collapse to compact rows. Settling requires an up-to-date server — on older servers threads simply stay active. Switch back any time."
-          control={
-            <Switch
-              checked={sidebarV2Enabled}
-              // Touching the switch pins the choice, so a nightly build that
-              // defaults v2 on does not flip it back after the user opts out.
-              onCheckedChange={(checked) =>
-                updateSettings({
-                  sidebarV2Enabled: Boolean(checked),
-                  sidebarV2ConfiguredByUser: true,
-                })
-              }
-              aria-label="Enable the sidebar v2 beta"
-            />
-          }
-        />
-        {sidebarV2Enabled ? (
-          <>
-            <SettingsRow
-              title="Auto-settle inactive threads"
-              description="Threads with no activity for this long settle automatically. Threads on merged or closed PRs always settle."
-              control={
-                <Switch
-                  checked={sidebarAutoSettleAfterDays !== null}
-                  onCheckedChange={(checked) =>
-                    updateSettings({
-                      sidebarAutoSettleAfterDays: checked ? AUTO_SETTLE_DEFAULT_DAYS : null,
-                    })
-                  }
-                  aria-label="Auto-settle inactive threads"
-                />
-              }
-            />
-            {sidebarAutoSettleAfterDays !== null ? (
+      <BetaSettingsSurface
+        sidebarV2Control={
+          <Switch
+            checked={sidebarV2Enabled}
+            // Touching the switch pins the choice, so a nightly build that
+            // defaults v2 on does not flip it back after the user opts out.
+            onCheckedChange={(checked) =>
+              updateSettings({
+                sidebarV2Enabled: Boolean(checked),
+                sidebarV2ConfiguredByUser: true,
+              })
+            }
+            aria-label="Enable the sidebar v2 beta"
+          />
+        }
+        autoSettleControls={
+          sidebarV2Enabled ? (
+            <>
               <SettingsRow
-                title="Days of inactivity before auto-settle"
-                description="Any new activity un-settles a thread automatically."
+                title="Auto-settle inactive threads"
+                description="Threads with no activity for this long settle automatically. Threads on merged or closed PRs always settle."
                 control={
-                  <AutoSettleDaysInput
-                    value={sidebarAutoSettleAfterDays}
-                    onCommit={(days) => updateSettings({ sidebarAutoSettleAfterDays: days })}
+                  <Switch
+                    checked={sidebarAutoSettleAfterDays !== null}
+                    onCheckedChange={(checked) =>
+                      updateSettings({
+                        sidebarAutoSettleAfterDays: checked ? AUTO_SETTLE_DEFAULT_DAYS : null,
+                      })
+                    }
+                    aria-label="Auto-settle inactive threads"
                   />
                 }
               />
-            ) : null}
-          </>
-        ) : null}
-      </SettingsSection>
+              {sidebarAutoSettleAfterDays !== null ? (
+                <SettingsRow
+                  title="Days of inactivity before auto-settle"
+                  description="Any new activity un-settles a thread automatically."
+                  control={
+                    <AutoSettleDaysInput
+                      value={sidebarAutoSettleAfterDays}
+                      onCommit={(days) => updateSettings({ sidebarAutoSettleAfterDays: days })}
+                    />
+                  }
+                />
+              ) : null}
+            </>
+          ) : undefined
+        }
+      />
     </SettingsPageContainer>
   );
 }

@@ -15530,7 +15530,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 77743,
+            "lines": 77745,
             "modules": 370
           },
           "largestNonShared": [
@@ -15546,7 +15546,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3531,
+              "lines": 3455,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -15809,6 +15809,16 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/OtherSettings.tsx",
+                "request": "../../../../web/src/components/settings/SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/OtherSettings.tsx",
+                "request": "../../../../web/src/components/ui/badge",
+                "to": "apps/web/src/components/ui/badge.lynx.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/OtherSettings.tsx",
                 "request": "../platform/clientCapabilities",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
               },
@@ -15841,6 +15851,11 @@
                 "from": "apps/lynxtron/src/app/components/PlanPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/proposed-plan",
                 "to": "packages/client-runtime/src/presentation/proposedPlan.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
@@ -16406,6 +16421,21 @@
                 "from": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
                 "request": "./SettingsNavigationContent",
                 "to": "apps/web/src/components/settings/SettingsNavigationContent.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "./settingsLayout",
+                "to": "apps/web/src/components/settings/settingsLayout.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -17358,8 +17388,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 34497,
-            "eligibleModules": 153,
+            "eligibleLines": 34792,
+            "eligibleModules": 154,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17423,7 +17453,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 356,
+                "lines": 399,
                 "path": "apps/lynxtron/src/app/components/OtherSettings.tsx"
               },
               {
@@ -17433,12 +17463,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 184,
+                "lines": 171,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 180,
+                "lines": 182,
                 "path": "apps/lynxtron/src/app/components/QuickSwitch.tsx"
               },
               {
@@ -17473,7 +17503,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3531,
+                "lines": 3455,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -17638,6 +17668,11 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 341,
+                "path": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 24,
                 "path": "apps/web/src/components/Sidebar.lynx.tsx"
               },
@@ -17786,7 +17821,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 19831,
+            "lines": 19829,
             "modules": 69
           },
           "reusePercent": {
@@ -23879,12 +23914,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 200,
+                "lines": 204,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
               },
               {
                 "classification": "SHARED",
-                "lines": 124,
+                "lines": 122,
                 "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
@@ -46416,7 +46451,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114216,
+            "lines": 114218,
             "modules": 519
           },
           "largestNonShared": [
@@ -57169,12 +57204,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 200,
+                "lines": 204,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 124,
+                "lines": 122,
                 "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
@@ -80161,7 +80196,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114225,
+            "lines": 114227,
             "modules": 519
           },
           "largestNonShared": [
@@ -90924,12 +90959,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 200,
+                "lines": 204,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 124,
+                "lines": 122,
                 "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
@@ -107864,7 +107899,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114216,
+            "lines": 114218,
             "modules": 519
           },
           "largestNonShared": [
@@ -118617,12 +118652,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 200,
+                "lines": 204,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 124,
+                "lines": 122,
                 "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
@@ -129897,7 +129932,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 114216,
+            "lines": 114218,
             "modules": 519
           },
           "largestNonShared": [
@@ -140650,12 +140685,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 200,
+                "lines": 204,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 124,
+                "lines": 122,
                 "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
@@ -145227,7 +145262,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 78287,
+            "lines": 78289,
             "modules": 376
           },
           "largestNonShared": [
@@ -152195,12 +152230,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 200,
+                "lines": 204,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 124,
+                "lines": 122,
                 "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
@@ -153940,15 +153975,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 277,
+            "EXCLUSIVE": 276,
             "PATCHED": 0,
-            "SHARED": 11,
+            "SHARED": 13,
             "SPLIT": 5
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 61695,
-            "modules": 293
+            "lines": 62015,
+            "modules": 294
           },
           "largestNonShared": [
             {
@@ -153958,7 +153993,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2349,
+              "lines": 2340,
               "path": "apps/web/src/components/settings/SettingsPanels.tsx"
             },
             {
@@ -154008,13 +154043,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 812,
-              "path": "apps/web/src/components/settings/ProviderInstanceCard.tsx"
+              "lines": 811,
+              "path": "apps/web/src/components/ui/toast.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 811,
-              "path": "apps/web/src/components/ui/toast.tsx"
+              "lines": 800,
+              "path": "apps/web/src/components/settings/ProviderInstanceCard.tsx"
             },
             {
               "classification": "EXCLUSIVE",
@@ -154029,6 +154064,11 @@
           ],
           "lynx": {
             "edges": [
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "../state/t3Client",
@@ -154245,6 +154285,21 @@
                 "to": "apps/web/src/components/settings/SettingsNavigationContent.tsx"
               },
               {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "./settingsLayout",
+                "to": "apps/web/src/components/settings/settingsLayout.lynx.tsx"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/modelPicker.ts",
                 "request": "./provider.ts",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
@@ -154260,8 +154315,8 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 4013,
-            "eligibleModules": 31,
+            "eligibleLines": 4466,
+            "eligibleModules": 34,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -154270,7 +154325,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 184,
+                "lines": 171,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
@@ -154359,6 +154414,11 @@
                 "path": "apps/web/src/components/ui/button.lynx.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 119,
+                "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "classification": "SPLIT",
                 "lines": 38,
                 "path": "apps/web/src/components/ui/switch.lynx.tsx"
@@ -154371,12 +154431,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 1730,
-            "modules": 11
+            "lines": 2077,
+            "modules": 13
           },
           "reusePercent": {
-            "lines": 2.8,
-            "modules": 3.8
+            "lines": 3.3,
+            "modules": 4.4
           },
           "web": {
             "edges": [
@@ -154972,6 +155032,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderInstanceCard.tsx",
+                "request": "./SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderInstanceCard.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
               },
@@ -155262,6 +155327,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/SettingsPanels.tsx",
+                "request": "./SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsPanels.tsx",
                 "request": "@t3tools/client-runtime/environment",
                 "to": "packages/client-runtime/src/environment/index.ts"
               },
@@ -155329,6 +155399,21 @@
                 "from": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
                 "request": "./SettingsNavigationContent",
                 "to": "apps/web/src/components/settings/SettingsNavigationContent.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "./settingsLayout",
+                "to": "apps/web/src/components/settings/settingsLayout.web.tsx"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -158644,7 +158729,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 812,
+                "lines": 800,
                 "path": "apps/web/src/components/settings/ProviderInstanceCard.tsx"
               },
               {
@@ -158684,7 +158769,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2349,
+                "lines": 2340,
                 "path": "apps/web/src/components/settings/SettingsPanels.tsx"
               },
               {
@@ -158706,6 +158791,11 @@
                 "classification": "SHARED",
                 "lines": 15,
                 "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 341,
+                "path": "apps/web/src/components/settings/SettingsSurfaces.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -158963,7 +159053,7 @@
                 "path": "apps/web/src/lib/chatThreadActions.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 6,
                 "path": "apps/web/src/lib/cn.ts"
               },
@@ -159963,15 +160053,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 276,
+            "EXCLUSIVE": 275,
             "PATCHED": 0,
-            "SHARED": 5,
+            "SHARED": 7,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 61020,
-            "modules": 284
+            "lines": 61340,
+            "modules": 285
           },
           "largestNonShared": [
             {
@@ -159981,7 +160071,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2349,
+              "lines": 2340,
               "path": "apps/web/src/components/settings/SettingsPanels.tsx"
             },
             {
@@ -160031,13 +160121,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 812,
-              "path": "apps/web/src/components/settings/ProviderInstanceCard.tsx"
+              "lines": 811,
+              "path": "apps/web/src/components/ui/toast.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 811,
-              "path": "apps/web/src/components/ui/toast.tsx"
+              "lines": 800,
+              "path": "apps/web/src/components/settings/ProviderInstanceCard.tsx"
             },
             {
               "classification": "EXCLUSIVE",
@@ -160052,6 +160142,11 @@
           ],
           "lynx": {
             "edges": [
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "../state/t3Client",
@@ -160188,6 +160283,21 @@
                 "to": "apps/web/src/components/ui/button.lynx.tsx"
               },
               {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "./settingsLayout",
+                "to": "apps/web/src/components/settings/settingsLayout.lynx.tsx"
+              },
+              {
                 "from": "packages/client-runtime/src/presentation/modelPicker.ts",
                 "request": "./provider.ts",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
@@ -160203,8 +160313,8 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 3297,
-            "eligibleModules": 20,
+            "eligibleLines": 3750,
+            "eligibleModules": 23,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -160213,7 +160323,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 184,
+                "lines": 171,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
@@ -160277,6 +160387,11 @@
                 "path": "apps/web/src/components/ui/button.lynx.tsx"
               },
               {
+                "classification": "EXCLUSIVE",
+                "lines": 119,
+                "path": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
                 "classification": "SPLIT",
                 "lines": 38,
                 "path": "apps/web/src/components/ui/switch.lynx.tsx"
@@ -160289,12 +160404,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 1312,
-            "modules": 5
+            "lines": 1659,
+            "modules": 7
           },
           "reusePercent": {
-            "lines": 2.2,
-            "modules": 1.8
+            "lines": 2.7,
+            "modules": 2.5
           },
           "web": {
             "edges": [
@@ -160880,6 +160995,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderInstanceCard.tsx",
+                "request": "./SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderInstanceCard.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
               },
@@ -161165,6 +161285,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/SettingsPanels.tsx",
+                "request": "./SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsPanels.tsx",
                 "request": "@t3tools/client-runtime/environment",
                 "to": "packages/client-runtime/src/environment/index.ts"
               },
@@ -161212,6 +161337,21 @@
                 "from": "apps/web/src/components/settings/SettingsPanels.tsx",
                 "request": "@t3tools/shared/model",
                 "to": "packages/shared/src/model.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "./settingsLayout",
+                "to": "apps/web/src/components/settings/settingsLayout.web.tsx"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -164507,7 +164647,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 812,
+                "lines": 800,
                 "path": "apps/web/src/components/settings/ProviderInstanceCard.tsx"
               },
               {
@@ -164537,8 +164677,13 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2349,
+                "lines": 2340,
                 "path": "apps/web/src/components/settings/SettingsPanels.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 341,
+                "path": "apps/web/src/components/settings/SettingsSurfaces.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -164796,7 +164941,7 @@
                 "path": "apps/web/src/lib/chatThreadActions.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 6,
                 "path": "apps/web/src/lib/cn.ts"
               },
@@ -165790,15 +165935,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 369,
+            "EXCLUSIVE": 368,
             "PATCHED": 0,
-            "SHARED": 26,
+            "SHARED": 28,
             "SPLIT": 5
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 84847,
-            "modules": 400
+            "lines": 85169,
+            "modules": 401
           },
           "largestNonShared": [
             {
@@ -165818,7 +165963,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2349,
+              "lines": 2340,
               "path": "apps/web/src/components/settings/SettingsPanels.tsx"
             },
             {
@@ -165879,6 +166024,11 @@
           ],
           "lynx": {
             "edges": [
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "../state/t3Client",
@@ -166153,6 +166303,21 @@
                 "from": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
                 "request": "./SettingsNavigationContent",
                 "to": "apps/web/src/components/settings/SettingsNavigationContent.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.lynx.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "./settingsLayout",
+                "to": "apps/web/src/components/settings/settingsLayout.lynx.tsx"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -166490,8 +166655,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8149,
-            "eligibleModules": 74,
+            "eligibleLines": 8483,
+            "eligibleModules": 76,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -166500,7 +166665,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 184,
+                "lines": 171,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
@@ -166742,12 +166907,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 4033,
-            "modules": 26
+            "lines": 4380,
+            "modules": 28
           },
           "reusePercent": {
-            "lines": 4.8,
-            "modules": 6.5
+            "lines": 5.1,
+            "modules": 7
           },
           "web": {
             "edges": [
@@ -168363,6 +168528,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderInstanceCard.tsx",
+                "request": "./SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderInstanceCard.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
               },
@@ -168653,6 +168823,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/SettingsPanels.tsx",
+                "request": "./SettingsSurfaces",
+                "to": "apps/web/src/components/settings/SettingsSurfaces.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsPanels.tsx",
                 "request": "@t3tools/client-runtime/environment",
                 "to": "packages/client-runtime/src/environment/index.ts"
               },
@@ -168720,6 +168895,21 @@
                 "from": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
                 "request": "./SettingsNavigationContent",
                 "to": "apps/web/src/components/settings/SettingsNavigationContent.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../../lib/cn",
+                "to": "apps/web/src/lib/cn.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "../ui/hostElements",
+                "to": "apps/web/src/components/ui/hostElements.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/SettingsSurfaces.tsx",
+                "request": "./settingsLayout",
+                "to": "apps/web/src/components/settings/settingsLayout.web.tsx"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -173570,12 +173760,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 200,
+                "lines": 204,
                 "path": "apps/web/src/components/CommandPaletteResults.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 124,
+                "lines": 122,
                 "path": "apps/web/src/components/CommandPaletteSurface.tsx"
               },
               {
@@ -173710,7 +173900,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 812,
+                "lines": 800,
                 "path": "apps/web/src/components/settings/ProviderInstanceCard.tsx"
               },
               {
@@ -173750,7 +173940,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2349,
+                "lines": 2340,
                 "path": "apps/web/src/components/settings/SettingsPanels.tsx"
               },
               {
@@ -173772,6 +173962,11 @@
                 "classification": "SHARED",
                 "lines": 15,
                 "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx"
+              },
+              {
+                "classification": "SHARED",
+                "lines": 341,
+                "path": "apps/web/src/components/settings/SettingsSurfaces.tsx"
               },
               {
                 "classification": "SHARED",
@@ -174214,7 +174409,7 @@
                 "path": "apps/web/src/lib/chatThreadActions.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 6,
                 "path": "apps/web/src/lib/cn.ts"
               },

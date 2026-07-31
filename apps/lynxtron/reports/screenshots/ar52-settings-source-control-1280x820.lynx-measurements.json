@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "settings-source-control",
+  "anchors": {
+    "sidebar": {
+      "selector": ".settings-nav",
+      "nodeId": 170,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "box": {
+        "width": 255,
+        "height": 820
+      },
+      "text": "Code General Appearance Keybindings Providers Source Control Connections Beta Archive Back",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "topbar": {
+      "selector": ".settings-topbar",
+      "nodeId": 172,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "box": {
+        "width": 984,
+        "height": 52
+      },
+      "text": "Settings",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "panel": {
+      "selector": ".settings-scroll",
+      "nodeId": 176,
+      "rect": {
+        "x": 256,
+        "y": 52,
+        "width": 1024,
+        "height": 768
+      },
+      "box": {
+        "width": 1024,
+        "height": 768
+      },
+      "text": "Version Control Rescan Git Available Jujutsu Coming Soon Support for Jujutsu is coming soon. Source Control Providers Rescan GitHub Authenticated GitLab Not available on this server: Install the GitLab command-line tool (`glab`) from https://gitlab.com/gitlab-org/cli or your package manager (for example `brew install glab`). Azure DevOps Not available on this server: Install the Azure command-line tools (`az`), then enable Azure DevOps support with `az extension add --name azure-devops`. Bitbucket Not authenticated Available. Set T3CODE_BITBUCKET_EMAIL and T3CODE_BITBUCKET_API_TOKEN on the server (use a Bitbucket API token with pull request and repository scopes).",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sectionHeading": {
+      "selector": ".settings-section__title",
+      "nodeId": 810,
+      "rect": {
+        "x": 336,
+        "y": 102,
+        "width": 127,
+        "height": 28
+      },
+      "box": {
+        "width": 127,
+        "height": 28
+      },
+      "text": "Version Control",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      }
+    },
+    "sourceControlRow": {
+      "selector": ".source-control-item",
+      "nodeId": 818,
+      "rect": {
+        "x": 320,
+        "y": 144,
+        "width": 896,
+        "height": 60
+      },
+      "box": {
+        "width": 875,
+        "height": 38.5
+      },
+      "text": "Git Available",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {
+    "sectionHeading": {
+      "selector": ".settings-section__title",
+      "nodeId": 810,
+      "rect": {
+        "x": 336,
+        "y": 102,
+        "width": 127,
+        "height": 28
+      },
+      "box": {
+        "width": 127,
+        "height": 28
+      },
+      "text": "Version Control",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      }
+    }
+  },
+  "colors": {
+    "mainBackground": {
+      "selector": ".settings-main",
+      "nodeId": 171,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 820
+      },
+      "box": {
+        "width": 1024,
+        "height": 820
+      },
+      "text": "Settings Version Control Rescan Git Available Jujutsu Coming Soon Support for Jujutsu is coming soon. Source Control Providers Rescan GitHub Authenticated GitLab Not available on this server: Install the GitLab command-line tool (`glab`) from https://gitlab.com/gitlab-org/cli or your package manager (for example `brew install glab`). Azure DevOps Not available on this server: Install the Azure command-line tools (`az`), then enable Azure DevOps support with `az extension add --name azure-devops`. Bitbucket Not authenticated Available. Set T3CODE_BITBUCKET_EMAIL and T3CODE_BITBUCKET_API_TOKEN on the server (use a Bitbucket API token with pull request and repository scopes).",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ import {
   type ProviderStatusKey,
 } from "@t3tools/client-runtime/presentation/provider";
 import type { ProviderInstanceId } from "@t3tools/contracts";
+import { ProviderInstanceCardSurface } from "../../../../web/src/components/settings/SettingsSurfaces";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import type { ModelInfo } from "../bridge";
 import { Icon } from "./Icon";
@@ -42,20 +43,12 @@ function ProviderCard({
     () => deriveModelPickerModels([entry], { includeDisabled: true }),
     [entry],
   );
-  const isActive = selectedModel?.instanceId === entry.instanceId;
   const statusKey: ProviderStatusKey = entry.enabled ? entry.status : "disabled";
   const summary = getProviderSummary({
     ...entry.snapshot,
     enabled: entry.enabled,
   });
   const versionLabel = getProviderVersionLabel(entry.snapshot.version);
-  const statusLine = [
-    updating ? "Updating…" : summary.headline,
-    versionLabel,
-    `${models.length} model${models.length === 1 ? "" : "s"}`,
-  ]
-    .filter((value): value is string => Boolean(value))
-    .join(" · ");
 
   const toggleExpand = useCallback(() => setExpanded((previous) => !previous), []);
   const handleSelect = useCallback(
@@ -70,11 +63,11 @@ function ProviderCard({
   );
 
   return (
-    <view className={expanded ? "provider-card provider-card--expanded" : "provider-card"}>
-      <view className="provider-card__header">
+    <ProviderInstanceCardSurface
+      icon={
         <view className="provider-card__logo-wrap">
           {entry.driverKind === "claudeAgent" ? (
-            <Icon name="claude" size={16} className="provider-card__logo-img" />
+            <Icon name="claude" size={16} />
           ) : (
             <view className="provider-card__logo-fallback">
               <text className="provider-card__logo-fallback-text">
@@ -84,57 +77,51 @@ function ProviderCard({
           )}
           <view className={`provider-card__status-dot ${PROVIDER_STATUS_DOT_CLASSES[statusKey]}`} />
         </view>
-        <view className="provider-card__info">
-          <view className="provider-card__name-row">
-            <text className="provider-card__name">{entry.displayName}</text>
-            {isActive ? (
-              <view className="provider-card__badge">
-                <text className="provider-card__badge-text">Active</text>
-              </view>
-            ) : null}
-          </view>
-          <text className="provider-card__status">{statusLine}</text>
-          {summary.detail ? <text className="provider-card__status">{summary.detail}</text> : null}
-        </view>
-        <view className="provider-card__right">
-          <view className="provider-card__chevron-btn" bindtap={toggleExpand}>
-            <Icon
-              name={expanded ? "chevron-down" : "chevron-right"}
-              size={16}
-              color="#a1a1aa"
-              className="provider-card__chevron-img"
-            />
-          </view>
-          <Toggle value={entry.enabled} onChange={handleEnabledChange} />
-        </view>
-      </view>
-
-      {expanded ? (
-        <view className="provider-card__body">
-          {models.map((model) => {
-            const isSelected =
-              selectedModel?.instanceId === model.instanceId && selectedModel?.slug === model.slug;
-            return (
-              <view
-                key={`${model.instanceId}-${model.slug}`}
-                className={
-                  isSelected
-                    ? "provider-card__model provider-card__model--selected"
-                    : "provider-card__model"
-                }
-                bindtap={() => handleSelect(model)}
-              >
-                <view className="provider-card__model-info">
-                  <text className="provider-card__model-name">{model.name}</text>
-                  <text className="provider-card__model-slug">{model.slug}</text>
+      }
+      title={entry.displayName}
+      version={
+        versionLabel ? (
+          <text className="text-xs text-muted-foreground">{versionLabel}</text>
+        ) : undefined
+      }
+      summaryHeadline={updating ? "Updating…" : summary.headline}
+      summaryDetail={summary.detail ?? undefined}
+      expanded={expanded}
+      onToggleExpanded={toggleExpand}
+      toggleAriaLabel={`Toggle ${entry.displayName} details`}
+      expandChevron={
+        <Icon name={expanded ? "chevron-down" : "chevron-right"} size={16} color="#a1a1aa" />
+      }
+      toggle={<Toggle value={entry.enabled} onChange={handleEnabledChange} />}
+      body={
+        expanded ? (
+          <view className="provider-card__body">
+            {models.map((model) => {
+              const isSelected =
+                selectedModel?.instanceId === model.instanceId &&
+                selectedModel?.slug === model.slug;
+              return (
+                <view
+                  key={`${model.instanceId}-${model.slug}`}
+                  className={
+                    isSelected
+                      ? "provider-card__model provider-card__model--selected"
+                      : "provider-card__model"
+                  }
+                  bindtap={() => handleSelect(model)}
+                >
+                  <view className="provider-card__model-info">
+                    <text className="provider-card__model-name">{model.name}</text>
+                    <text className="provider-card__model-slug">{model.slug}</text>
+                  </view>
+                  {isSelected ? <text className="provider-card__model-check-text">✓</text> : null}
                 </view>
-                {isSelected ? <text className="provider-card__model-check-text">✓</text> : null}
-              </view>
-            );
-          })}
-        </view>
-      ) : null}
-    </view>
+              );
+            })}
+          </view>
+        ) : undefined
+      }
+    />
   );
 }
 

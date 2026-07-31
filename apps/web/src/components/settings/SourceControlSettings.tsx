@@ -56,6 +56,7 @@ import {
 } from "../Icons";
 import { RedactedSensitiveText } from "./RedactedSensitiveText";
 import { SourceControlWritingSettingsSection } from "./SourceControlWritingSettings";
+import { SourceControlItemRowSurface, SourceControlMarkSurface } from "./SettingsSurfaces";
 import { SettingResetButton, SettingsPageContainer, SettingsSection } from "./settingsLayout";
 
 const EMPTY_DISCOVERY_RESULT: SourceControlDiscoveryResult = {
@@ -154,32 +155,16 @@ function SourceControlItemMark({
 }: {
   readonly presentation: SourceControlItemPresentation;
 }) {
-  const dotClassName =
-    presentation.statusTone === "success"
-      ? "bg-success"
-      : presentation.statusTone === "warning"
-        ? "bg-warning"
-        : "bg-muted-foreground/35";
   const Icon =
     presentation.section === "provider"
       ? SOURCE_CONTROL_PROVIDER_ICONS[presentation.kind]
       : VCS_ICONS[presentation.kind];
 
-  if (!Icon) {
-    return <span className={cn("size-2 shrink-0 rounded-full", dotClassName)} aria-hidden />;
-  }
-
   return (
-    <span className="relative inline-flex size-5 shrink-0 items-center justify-center">
-      <Icon className="size-4.5 text-foreground/80" aria-hidden />
-      <span
-        className={cn(
-          "pointer-events-none absolute -left-0.5 -top-0.5 size-2 rounded-full ring-2 ring-background",
-          dotClassName,
-        )}
-        aria-hidden
-      />
-    </span>
+    <SourceControlMarkSurface
+      tone={presentation.statusTone}
+      {...(Icon ? { icon: <Icon className="size-4.5 text-foreground/80" aria-hidden /> } : {})}
+    />
   );
 }
 
@@ -222,36 +207,32 @@ function DiscoveryItemRow({
   const hasDetails = children !== undefined;
 
   return (
-    <div
-      className={cn("rounded-xl transition-colors hover:bg-muted/20", isNotReady && "opacity-80")}
-    >
-      <div className="px-3 py-3 sm:px-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0 flex-1 space-y-1">
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
-              <SourceControlItemMark presentation={presentation} />
-              <span className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
-                {item.label}
-              </span>
-              {presentation.version ? (
-                <code className="text-xs text-muted-foreground">{presentation.version}</code>
-              ) : null}
-              {presentation.badgeLabel === "Coming Soon" ? (
+    <>
+      <SourceControlItemRowSurface
+        mark={<SourceControlItemMark presentation={presentation} />}
+        label={item.label}
+        {...(presentation.version ? { version: presentation.version } : {})}
+        {...(presentation.badgeLabel === "Coming Soon"
+          ? {
+              badge: (
                 <Badge variant="warning" size="sm">
                   Coming Soon
                 </Badge>
-              ) : null}
-              {presentation.badgeLabel === "Not authenticated" ? (
-                <Badge variant="warning" size="sm">
-                  {presentation.badgeLabel}
-                </Badge>
-              ) : null}
-            </div>
-            <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
-              <SourceControlItemSummary presentation={presentation} />
-            </p>
-          </div>
-          <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+              ),
+            }
+          : presentation.badgeLabel === "Not authenticated"
+            ? {
+                badge: (
+                  <Badge variant="warning" size="sm">
+                    {presentation.badgeLabel}
+                  </Badge>
+                ),
+              }
+            : {})}
+        summary={<SourceControlItemSummary presentation={presentation} />}
+        muted={isNotReady}
+        control={
+          <>
             {hasDetails ? (
               <Button
                 size="sm"
@@ -273,10 +254,9 @@ function DiscoveryItemRow({
                 aria-label={`${item.label} availability`}
               />
             ) : null}
-          </div>
-        </div>
-      </div>
-
+          </>
+        }
+      />
       {hasDetails ? (
         <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
           <CollapsibleContent>
@@ -284,7 +264,7 @@ function DiscoveryItemRow({
           </CollapsibleContent>
         </Collapsible>
       ) : null}
-    </div>
+    </>
   );
 }
 

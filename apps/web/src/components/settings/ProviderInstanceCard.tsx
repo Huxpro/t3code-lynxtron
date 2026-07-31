@@ -44,6 +44,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import type { DriverOption } from "./providerDriverMeta";
+import { ProviderInstanceCardSurface } from "./SettingsSurfaces";
 import { ProviderSettingsForm } from "./ProviderSettingsForm";
 import { ProviderModelsSection } from "./ProviderModelsSection";
 import { ProviderInstanceIcon } from "../chat/ProviderInstanceIcon";
@@ -534,24 +535,18 @@ export function ProviderInstanceCard({
     <span className={cn("size-2 shrink-0 rounded-full", statusStyle.dot)} />
   );
 
-  const titleHeadNode = (
-    <>
-      {titleIconNode}
-      <h3 className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
-        {displayName}
-      </h3>
-      {String(instanceId) !== String(instance.driver) ? (
-        <code className="truncate rounded bg-muted/60 px-1 py-0.5 text-[10px] text-muted-foreground">
-          {instanceId}
-        </code>
-      ) : null}
-      {driverOption?.badgeLabel ? (
-        <Badge variant="warning" size="sm" className="shrink-0">
-          {driverOption.badgeLabel}
-        </Badge>
-      ) : null}
-    </>
-  );
+  const instanceIdChipNode =
+    String(instanceId) !== String(instance.driver) ? (
+      <code className="truncate rounded bg-muted/60 px-1 py-0.5 text-[10px] text-muted-foreground">
+        {instanceId}
+      </code>
+    ) : null;
+
+  const driverBadgeNode = driverOption?.badgeLabel ? (
+    <Badge variant="warning" size="sm" className="shrink-0">
+      {driverOption.badgeLabel}
+    </Badge>
+  ) : null;
 
   const titleTailNode = (
     <>
@@ -583,22 +578,17 @@ export function ProviderInstanceCard({
     </>
   );
 
-  const authRowNode = (
-    <p className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
-      {hasAuthenticatedEmail ? (
-        <>
-          <span>Authenticated as</span>
-          <ProviderAuthEmail email={authEmail} />
-          {authenticatedDetail ? <span>· {authenticatedDetail}</span> : null}
-        </>
-      ) : (
-        <>
-          <span>{summary.headline}</span>
-          <ProviderAuthEmail email={authEmail} separator prefix="Email" />
-        </>
-      )}
-      {summary.detail ? <span>- {summary.detail}</span> : null}
-    </p>
+  const summaryHeadlineNode = hasAuthenticatedEmail ? (
+    <>
+      <span>Authenticated as</span>
+      <ProviderAuthEmail email={authEmail} />
+      {authenticatedDetail ? <span>· {authenticatedDetail}</span> : null}
+    </>
+  ) : (
+    <>
+      <span>{summary.headline}</span>
+      <ProviderAuthEmail email={authEmail} separator prefix="Email" />
+    </>
   );
 
   const versionCodeNode = versionLabel ? (
@@ -606,207 +596,205 @@ export function ProviderInstanceCard({
   ) : null;
 
   return (
-    <div className="rounded-xl transition-colors hover:bg-muted/20">
-      <div className="px-3 py-3 sm:px-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0 flex-1 space-y-1">
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
-              {titleHeadNode}
-              {versionCodeNode}
-              {versionAdvisory ? (
-                <Popover>
-                  <PopoverTrigger
-                    render={
-                      <Button
-                        type="button"
-                        size="icon-xs"
-                        variant="ghost"
-                        className={cn(
-                          "size-5 rounded-sm p-0",
-                          versionAdvisory.emphasis === "strong"
-                            ? "text-warning hover:text-warning"
-                            : "text-primary hover:text-primary",
-                        )}
-                        aria-label="Update available — view details"
-                      >
-                        <ArrowUpCircleIcon className="size-3.5 [animation:bounce_2.4s_ease-in-out_infinite] motion-reduce:animate-none" />
-                      </Button>
-                    }
-                  />
-                  <PopoverPopup
-                    side="bottom"
-                    align="start"
-                    className="w-[min(21rem,calc(100vw-1.5rem))] [--popup-width:min(21rem,calc(100vw-1.5rem))]"
+    <ProviderInstanceCardSurface
+      icon={titleIconNode}
+      title={displayName}
+      instanceIdChip={instanceIdChipNode}
+      badge={driverBadgeNode}
+      version={
+        <>
+          {versionCodeNode}
+          {versionAdvisory ? (
+            <Popover>
+              <PopoverTrigger
+                render={
+                  <Button
+                    type="button"
+                    size="icon-xs"
+                    variant="ghost"
+                    className={cn(
+                      "size-5 rounded-sm p-0",
+                      versionAdvisory.emphasis === "strong"
+                        ? "text-warning hover:text-warning"
+                        : "text-primary hover:text-primary",
+                    )}
+                    aria-label="Update available — view details"
                   >
-                    <div className="grid min-w-0 gap-3">
-                      <div className="grid gap-0.5">
-                        <p className="text-[13px] font-semibold leading-tight text-foreground">
-                          Update available
-                        </p>
-                        <p
-                          className={cn(
-                            "text-xs leading-snug",
-                            versionAdvisory.emphasis === "strong"
-                              ? "text-warning"
-                              : "text-muted-foreground",
-                          )}
-                        >
-                          {versionAdvisory.detail}
-                        </p>
-                      </div>
-                      {onRunUpdate ? (
-                        <Button
-                          type="button"
-                          size="xs"
-                          variant="default"
-                          className="w-full"
-                          disabled={isUpdating}
-                          onClick={onRunUpdate}
-                        >
-                          {isUpdating ? <LoaderIcon className="animate-spin" /> : <DownloadIcon />}
-                          {isUpdating ? "Updating" : "Update now"}
-                        </Button>
-                      ) : null}
-                      {onRunUpdate && updateCommand ? (
-                        <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                          <span aria-hidden className="h-px flex-1 bg-border" />
-                          or, update manually using
-                          <span aria-hidden className="h-px flex-1 bg-border" />
-                        </div>
-                      ) : null}
-                      {updateCommand ? (
-                        <div className="flex min-w-0 items-center gap-1 rounded-md border border-border/70 bg-muted/40 py-0.5 pr-0.5 pl-2">
-                          <ScrollArea scrollFade className="h-8 min-w-0 flex-1 rounded-none">
-                            <code className="flex h-full w-max items-center whitespace-nowrap pr-3 font-mono text-[11px] text-foreground">
-                              {updateCommand}
-                            </code>
-                          </ScrollArea>
-                          <Tooltip>
-                            <TooltipTrigger
-                              render={
-                                <Button
-                                  type="button"
-                                  size="icon-xs"
-                                  variant="ghost"
-                                  className="size-6 shrink-0 rounded-sm p-0 text-muted-foreground hover:text-foreground"
-                                  onClick={() =>
-                                    copyToClipboard(updateCommand, {
-                                      providerName: displayName,
-                                    })
-                                  }
-                                  aria-label="Copy update command"
-                                >
-                                  <CopyIcon className="size-3" />
-                                </Button>
-                              }
-                            />
-                            <TooltipPopup side="top">Copy command</TooltipPopup>
-                          </Tooltip>
-                        </div>
-                      ) : null}
+                    <ArrowUpCircleIcon className="size-3.5 [animation:bounce_2.4s_ease-in-out_infinite] motion-reduce:animate-none" />
+                  </Button>
+                }
+              />
+              <PopoverPopup
+                side="bottom"
+                align="start"
+                className="w-[min(21rem,calc(100vw-1.5rem))] [--popup-width:min(21rem,calc(100vw-1.5rem))]"
+              >
+                <div className="grid min-w-0 gap-3">
+                  <div className="grid gap-0.5">
+                    <p className="text-[13px] font-semibold leading-tight text-foreground">
+                      Update available
+                    </p>
+                    <p
+                      className={cn(
+                        "text-xs leading-snug",
+                        versionAdvisory.emphasis === "strong"
+                          ? "text-warning"
+                          : "text-muted-foreground",
+                      )}
+                    >
+                      {versionAdvisory.detail}
+                    </p>
+                  </div>
+                  {onRunUpdate ? (
+                    <Button
+                      type="button"
+                      size="xs"
+                      variant="default"
+                      className="w-full"
+                      disabled={isUpdating}
+                      onClick={onRunUpdate}
+                    >
+                      {isUpdating ? <LoaderIcon className="animate-spin" /> : <DownloadIcon />}
+                      {isUpdating ? "Updating" : "Update now"}
+                    </Button>
+                  ) : null}
+                  {onRunUpdate && updateCommand ? (
+                    <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                      <span aria-hidden className="h-px flex-1 bg-border" />
+                      or, update manually using
+                      <span aria-hidden className="h-px flex-1 bg-border" />
                     </div>
-                  </PopoverPopup>
-                </Popover>
-              ) : null}
-              {titleTailNode}
-            </div>
-            {authRowNode}
-          </div>
-          <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
-              onClick={() => onExpandedChange(!isExpanded)}
-              aria-label={`Toggle ${displayName} details`}
-            >
-              <ChevronDownIcon
-                className={cn("size-3.5 transition-transform", isExpanded && "rotate-180")}
-              />
-            </Button>
-            <Switch
-              checked={enabled}
-              onCheckedChange={(checked) => updateEnabled(Boolean(checked))}
-              aria-label={`Enable ${displayName}`}
-            />
-          </div>
-        </div>
-      </div>
-
-      <Collapsible open={isExpanded} onOpenChange={onExpandedChange}>
-        <CollapsibleContent>
-          <div className="space-y-5 px-3 pb-4 pt-2 sm:px-4">
-            <div>
-              <label htmlFor={`provider-instance-${instanceId}-display-name`} className="block">
-                <span className="text-xs font-medium text-foreground">Display name</span>
-                <DraftInput
-                  id={`provider-instance-${instanceId}-display-name`}
-                  className="mt-1.5"
-                  value={instance.displayName ?? ""}
-                  onCommit={updateDisplayName}
-                  placeholder={driverOption?.label ?? "Instance label"}
-                  spellCheck={false}
-                />
-                <span className="mt-1 block text-xs text-muted-foreground">
-                  Optional label shown in the provider list.
-                </span>
-              </label>
-            </div>
-
-            <div>
-              <ProviderAccentColorPicker
-                displayName={displayName}
-                value={accentColor}
-                onCommit={updateAccentColor}
-                commitDelayMs={120}
-                description="Used to distinguish this instance in picker rails and model lists."
-              />
-            </div>
-
-            <div>
-              <ProviderEnvironmentSection
-                environment={instance.environment ?? []}
-                onChange={updateEnvironment}
-              />
-            </div>
-
-            {driverOption ? (
-              <ProviderSettingsForm
-                definition={driverOption}
-                value={instance.config}
-                idPrefix={`provider-instance-${instanceId}`}
-                variant="card"
-                onChange={updateConfig}
-              />
-            ) : null}
-
-            {driverOption !== undefined ? (
-              <ProviderModelsSection
-                instanceId={instanceId}
-                driverKind={driverKind}
-                models={modelsForDisplay}
-                customModels={customModels}
-                hiddenModels={hiddenModels}
-                favoriteModels={favoriteModels}
-                modelOrder={modelOrder}
-                onChange={updateCustomModels}
-                onHiddenModelsChange={onHiddenModelsChange}
-                onFavoriteModelsChange={onFavoriteModelsChange}
-                onModelOrderChange={onModelOrderChange}
-              />
-            ) : (
+                  ) : null}
+                  {updateCommand ? (
+                    <div className="flex min-w-0 items-center gap-1 rounded-md border border-border/70 bg-muted/40 py-0.5 pr-0.5 pl-2">
+                      <ScrollArea scrollFade className="h-8 min-w-0 flex-1 rounded-none">
+                        <code className="flex h-full w-max items-center whitespace-nowrap pr-3 font-mono text-[11px] text-foreground">
+                          {updateCommand}
+                        </code>
+                      </ScrollArea>
+                      <Tooltip>
+                        <TooltipTrigger
+                          render={
+                            <Button
+                              type="button"
+                              size="icon-xs"
+                              variant="ghost"
+                              className="size-6 shrink-0 rounded-sm p-0 text-muted-foreground hover:text-foreground"
+                              onClick={() =>
+                                copyToClipboard(updateCommand, {
+                                  providerName: displayName,
+                                })
+                              }
+                              aria-label="Copy update command"
+                            >
+                              <CopyIcon className="size-3" />
+                            </Button>
+                          }
+                        />
+                        <TooltipPopup side="top">Copy command</TooltipPopup>
+                      </Tooltip>
+                    </div>
+                  ) : null}
+                </div>
+              </PopoverPopup>
+            </Popover>
+          ) : null}
+        </>
+      }
+      titleTrailing={titleTailNode}
+      summaryHeadline={summaryHeadlineNode}
+      summaryDetail={summary.detail}
+      expanded={isExpanded}
+      onToggleExpanded={() => onExpandedChange(!isExpanded)}
+      toggleAriaLabel={`Toggle ${displayName} details`}
+      expandChevron={
+        <ChevronDownIcon
+          className={cn("size-3.5 transition-transform", isExpanded && "rotate-180")}
+        />
+      }
+      toggle={
+        <Switch
+          checked={enabled}
+          onCheckedChange={(checked) => updateEnabled(Boolean(checked))}
+          aria-label={`Enable ${displayName}`}
+        />
+      }
+      body={
+        <Collapsible open={isExpanded} onOpenChange={onExpandedChange}>
+          <CollapsibleContent>
+            <div className="space-y-5 px-3 pb-4 pt-2 sm:px-4">
               <div>
-                <p className="text-xs text-muted-foreground">
-                  This instance uses a driver (
-                  <code className="text-foreground">{String(instance.driver)}</code>) that is not
-                  shipped with the current build. Configuration values are preserved but cannot be
-                  edited from this surface.
-                </p>
+                <label htmlFor={`provider-instance-${instanceId}-display-name`} className="block">
+                  <span className="text-xs font-medium text-foreground">Display name</span>
+                  <DraftInput
+                    id={`provider-instance-${instanceId}-display-name`}
+                    className="mt-1.5"
+                    value={instance.displayName ?? ""}
+                    onCommit={updateDisplayName}
+                    placeholder={driverOption?.label ?? "Instance label"}
+                    spellCheck={false}
+                  />
+                  <span className="mt-1 block text-xs text-muted-foreground">
+                    Optional label shown in the provider list.
+                  </span>
+                </label>
               </div>
-            )}
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
+
+              <div>
+                <ProviderAccentColorPicker
+                  displayName={displayName}
+                  value={accentColor}
+                  onCommit={updateAccentColor}
+                  commitDelayMs={120}
+                  description="Used to distinguish this instance in picker rails and model lists."
+                />
+              </div>
+
+              <div>
+                <ProviderEnvironmentSection
+                  environment={instance.environment ?? []}
+                  onChange={updateEnvironment}
+                />
+              </div>
+
+              {driverOption ? (
+                <ProviderSettingsForm
+                  definition={driverOption}
+                  value={instance.config}
+                  idPrefix={`provider-instance-${instanceId}`}
+                  variant="card"
+                  onChange={updateConfig}
+                />
+              ) : null}
+
+              {driverOption !== undefined ? (
+                <ProviderModelsSection
+                  instanceId={instanceId}
+                  driverKind={driverKind}
+                  models={modelsForDisplay}
+                  customModels={customModels}
+                  hiddenModels={hiddenModels}
+                  favoriteModels={favoriteModels}
+                  modelOrder={modelOrder}
+                  onChange={updateCustomModels}
+                  onHiddenModelsChange={onHiddenModelsChange}
+                  onFavoriteModelsChange={onFavoriteModelsChange}
+                  onModelOrderChange={onModelOrderChange}
+                />
+              ) : (
+                <div>
+                  <p className="text-xs text-muted-foreground">
+                    This instance uses a driver (
+                    <code className="text-foreground">{String(instance.driver)}</code>) that is not
+                    shipped with the current build. Configuration values are preserved but cannot be
+                    edited from this surface.
+                  </p>
+                </div>
+              )}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      }
+    />
   );
 }

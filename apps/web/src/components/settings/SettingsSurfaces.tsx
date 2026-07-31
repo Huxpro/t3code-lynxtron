@@ -1,0 +1,341 @@
+/**
+ * Renderer-neutral Settings feature compositions (AR5.2).
+ *
+ * One physical module owns the Settings panels' shared anatomy for Web and
+ * Lynx: archived-thread groups and rows, the Beta feature rows, source
+ * control discovery rows and marks, access-inventory rows, and the provider
+ * instance card header. Behavior hosts keep their authority (unarchive,
+ * settings writes, rescan, revoke, enable toggles); platform controls and
+ * icons enter as nodes.
+ */
+import type { ReactNode } from "react";
+
+import { cn } from "../../lib/cn";
+import { HostButton, HostText, HostView } from "../ui/hostElements";
+import { SettingsRow, SettingsSection } from "./settingsLayout";
+
+// ---------------------------------------------------------------------------
+// Archived threads
+// ---------------------------------------------------------------------------
+
+export interface ArchivedThreadRowItem {
+  readonly id: string;
+  readonly title: string;
+  /** "Archived 2h · Created 5h" */
+  readonly description: ReactNode;
+  /** Unarchive(/delete) control node. */
+  readonly action: ReactNode;
+  /** Web-only context menu hook; undefined on Lynx. */
+  readonly onContextMenu?: ((event: unknown) => void) | undefined;
+}
+
+export interface ArchivedThreadGroupItem {
+  readonly key: string;
+  readonly title: string;
+  readonly icon?: ReactNode;
+  readonly threads: ReadonlyArray<ArchivedThreadRowItem>;
+}
+
+/** Archived threads panel: project groups with archived rows, or one empty section. */
+export function ArchivedThreadsSurface({
+  groups,
+  emptyTitle,
+  emptyDescription,
+}: {
+  readonly groups: ReadonlyArray<ArchivedThreadGroupItem>;
+  /** Loading/error/empty content for the zero-group state. */
+  readonly emptyTitle: ReactNode;
+  readonly emptyDescription: ReactNode;
+}) {
+  if (groups.length === 0) {
+    return (
+      <SettingsSection title="Archived threads">
+        <SettingsRow title={emptyTitle} description={emptyDescription} />
+      </SettingsSection>
+    );
+  }
+  return (
+    <>
+      {groups.map((group) => (
+        <SettingsSection
+          key={group.key}
+          title={group.title}
+          {...(group.icon ? { icon: group.icon } : {})}
+        >
+          {group.threads.map((thread) => (
+            <SettingsRow
+              key={thread.id}
+              {...(thread.onContextMenu ? { onContextMenu: thread.onContextMenu } : {})}
+              title={thread.title}
+              description={thread.description}
+              control={thread.action}
+            />
+          ))}
+        </SettingsSection>
+      ))}
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Beta features
+// ---------------------------------------------------------------------------
+
+/** Beta panel: Sidebar v2 toggle row plus optional auto-settle controls. */
+export function BetaSettingsSurface({
+  sidebarV2Control,
+  sidebarV2Status,
+  autoSettleControls,
+}: {
+  /** Switch for the canonical Sidebar v2 preference. */
+  readonly sidebarV2Control: ReactNode;
+  /** Honest-gap note rendered under the row (for example an unmoved renderer). */
+  readonly sidebarV2Status?: ReactNode;
+  /** Auto-settle toggle + days input (Web; omitted where unsupported). */
+  readonly autoSettleControls?: ReactNode;
+}) {
+  return (
+    <SettingsSection title="Beta features">
+      <SettingsRow
+        title="Sidebar v2"
+        description="One flat thread list in creation order. Active work renders as rich cards; settled threads collapse to compact rows. Settling requires an up-to-date server — on older servers threads simply stay active. Switch back any time."
+        {...(sidebarV2Status ? { status: sidebarV2Status } : {})}
+        control={sidebarV2Control}
+      />
+      {autoSettleControls}
+    </SettingsSection>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Source control discovery
+// ---------------------------------------------------------------------------
+
+export type SourceControlStatusTone = "success" | "warning" | "muted";
+
+const STATUS_DOT_TONE_CLASSES: Record<SourceControlStatusTone, string> = {
+  success: "bg-success",
+  warning: "bg-warning",
+  muted: "bg-muted-foreground/35",
+};
+
+/** Bare status dot (no icon). Shared by source-control marks and access rows. */
+export function StatusDotSurface({ tone }: { readonly tone: SourceControlStatusTone }) {
+  return (
+    <HostView
+      className={cn("size-2 shrink-0 rounded-full", STATUS_DOT_TONE_CLASSES[tone])}
+      aria-hidden
+    />
+  );
+}
+
+/** Item mark: provider/VCS icon with an overlaid status dot. */
+export function SourceControlMarkSurface({
+  icon,
+  tone,
+}: {
+  readonly icon?: ReactNode;
+  readonly tone: SourceControlStatusTone;
+}) {
+  if (!icon) {
+    return <StatusDotSurface tone={tone} />;
+  }
+  return (
+    <HostView className="relative inline-flex size-5 shrink-0 items-center justify-center">
+      {icon}
+      <HostView
+        className={cn(
+          "pointer-events-none absolute -left-0.5 -top-0.5 size-2 rounded-full ring-2 ring-background",
+          STATUS_DOT_TONE_CLASSES[tone],
+        )}
+        aria-hidden
+      />
+    </HostView>
+  );
+}
+
+export interface SourceControlItemRowSurfaceProps {
+  readonly mark: ReactNode;
+  readonly label: string;
+  readonly version?: string | undefined;
+  readonly badge?: ReactNode;
+  readonly summary: ReactNode;
+  readonly control?: ReactNode;
+  readonly muted?: boolean;
+}
+
+/** One source-control discovery row (VCS or provider). */
+export function SourceControlItemRowSurface({
+  mark,
+  label,
+  version,
+  badge,
+  summary,
+  control,
+  muted = false,
+}: SourceControlItemRowSurfaceProps) {
+  return (
+    <HostView
+      className={cn(
+        "source-control-item rounded-xl px-3 py-3 transition-colors sm:px-4",
+        muted && "opacity-80",
+      )}
+    >
+      <HostView className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <HostView className="flex min-w-0 flex-1 flex-col gap-1">
+          <HostView className="flex min-w-0 flex-wrap items-center gap-2">
+            {mark}
+            <HostText className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
+              {label}
+            </HostText>
+            {version ? (
+              <HostText className="font-mono text-xs text-muted-foreground">{version}</HostText>
+            ) : null}
+            {badge}
+          </HostView>
+          <HostText className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
+            {summary}
+          </HostText>
+        </HostView>
+        {control ? (
+          <HostView className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+            {control}
+          </HostView>
+        ) : null}
+      </HostView>
+    </HostView>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Access inventory (pairing links and client sessions)
+// ---------------------------------------------------------------------------
+
+export interface AccessListRowSurfaceProps {
+  /** Status dot node (platform color/tooltip leaf). */
+  readonly statusDot?: ReactNode;
+  readonly primaryLabel: ReactNode;
+  /** Trailing affordance next to the primary label (QR, "This device" chip). */
+  readonly primaryTrailing?: ReactNode;
+  readonly description: ReactNode;
+  readonly control?: ReactNode;
+}
+
+/** One access-inventory row (pairing link or authorized client). */
+export function AccessListRowSurface({
+  statusDot,
+  primaryLabel,
+  primaryTrailing,
+  description,
+  control,
+}: AccessListRowSurfaceProps) {
+  return (
+    <HostView className="access-list-row rounded-xl px-3 py-3 sm:px-4">
+      <HostView className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <HostView className="flex min-w-0 flex-1 flex-col gap-1">
+          <HostView className="flex min-h-5 items-center gap-1.5">
+            {statusDot}
+            <HostText className="text-sm font-medium text-foreground">{primaryLabel}</HostText>
+            {primaryTrailing}
+          </HostView>
+          <HostText className="block text-xs text-muted-foreground">{description}</HostText>
+        </HostView>
+        {control ? (
+          <HostView className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+            {control}
+          </HostView>
+        ) : null}
+      </HostView>
+    </HostView>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Provider instance card
+// ---------------------------------------------------------------------------
+
+export interface ProviderInstanceCardSurfaceProps {
+  /** Leading provider mark (icon + status overlay; platform leaf). */
+  readonly icon?: ReactNode;
+  /** Instance display name. */
+  readonly title: ReactNode;
+  /** Instance-id code chip (only for custom instances). */
+  readonly instanceIdChip?: ReactNode;
+  /** Driver badge (for example "Coming Soon"). */
+  readonly badge?: ReactNode;
+  /** Version label code plus update affordance, composed by the host. */
+  readonly version?: ReactNode;
+  /** Trailing title-row actions (header action, delete). */
+  readonly titleTrailing?: ReactNode;
+  /** "headline · detail" status summary. */
+  readonly summaryHeadline: ReactNode;
+  readonly summaryDetail?: ReactNode;
+  readonly expanded: boolean;
+  readonly onToggleExpanded: () => void;
+  /** Accessible label for the expand chevron button. */
+  readonly toggleAriaLabel: string;
+  readonly expandChevron: ReactNode;
+  /** Enable/disable switch node. */
+  readonly toggle: ReactNode;
+  /**
+   * Expandable body (Web: details form in its Collapsible; Lynx: model list).
+   * The host owns expansion rendering so collapse animation stays platform-local.
+   */
+  readonly body?: ReactNode;
+}
+
+/** Provider instance card: title row + summary + expand chevron + enable switch. */
+export function ProviderInstanceCardSurface({
+  icon,
+  title,
+  instanceIdChip,
+  badge,
+  version,
+  titleTrailing,
+  summaryHeadline,
+  summaryDetail,
+  expanded,
+  onToggleExpanded,
+  toggleAriaLabel,
+  expandChevron,
+  toggle,
+  body,
+}: ProviderInstanceCardSurfaceProps) {
+  return (
+    <HostView className="provider-instance-card rounded-xl transition-colors">
+      <HostView className="px-3 py-3 sm:px-4">
+        <HostView className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <HostView className="flex min-w-0 flex-1 flex-col gap-1">
+            <HostView className="flex min-w-0 flex-wrap items-center gap-2">
+              {icon}
+              <HostText className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
+                {title}
+              </HostText>
+              {instanceIdChip}
+              {badge}
+              {version}
+              {titleTrailing}
+            </HostView>
+            <HostText className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
+              {summaryHeadline}
+              {summaryDetail ? <HostText>- {summaryDetail}</HostText> : null}
+            </HostText>
+          </HostView>
+          <HostView className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+            <HostButton
+              type="button"
+              className="provider-instance-card__chevron inline-flex h-7 cursor-pointer items-center rounded-md px-2 text-xs text-muted-foreground"
+              onClick={onToggleExpanded}
+              aria-expanded={expanded}
+              aria-label={toggleAriaLabel}
+            >
+              {expandChevron}
+            </HostButton>
+            {toggle}
+          </HostView>
+        </HostView>
+      </HostView>
+      {body}
+    </HostView>
+  );
+}

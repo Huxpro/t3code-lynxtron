@@ -5,11 +5,19 @@ import {
 import {
   projectSourceControlDiscovery,
   sourceControlSummaryText,
-  type SourceControlItemPresentation,
 } from "@t3tools/client-runtime/presentation/source-control";
 import type { SourceControlDiscoveryResult } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
 
+import {
+  ArchivedThreadsSurface,
+  BetaSettingsSurface,
+  AccessListRowSurface,
+  SourceControlItemRowSurface,
+  SourceControlMarkSurface,
+  StatusDotSurface,
+} from "../../../../web/src/components/settings/SettingsSurfaces";
+import { Badge } from "../../../../web/src/components/ui/badge";
 import { SettingsRow, SettingsSection, Toggle } from "./SettingsControls";
 import { SmallButton } from "./SettingsControls";
 import { clientCapabilities } from "../platform/clientCapabilities";
@@ -27,26 +35,6 @@ const EMPTY_SOURCE_CONTROL_DISCOVERY: SourceControlDiscoveryState = {
   pending: true,
   error: null,
 };
-
-function sourceControlStatusLabel(item: SourceControlItemPresentation): string {
-  if (item.badgeLabel) return item.badgeLabel;
-  return item.enabled ? "Ready" : "Unavailable";
-}
-
-function SourceControlRow({ item }: { readonly item: SourceControlItemPresentation }) {
-  const version = item.version ? ` · ${item.version}` : "";
-  return (
-    <SettingsRow
-      title={item.label}
-      description={`${sourceControlSummaryText(item)}${version}`}
-      control={
-        <text className={`source-control-status source-control-status--${item.statusTone}`}>
-          {sourceControlStatusLabel(item)}
-        </text>
-      }
-    />
-  );
-}
 
 export function SourceControlSettings() {
   const [discovery, setDiscovery] = useState<SourceControlDiscoveryState>(
@@ -83,10 +71,17 @@ export function SourceControlSettings() {
     [discovery.result],
   );
 
+  const scanButton = (
+    <SmallButton
+      label={discovery.pending ? "Scanning…" : "Rescan"}
+      onTap={() => setRefreshVersion((version) => version + 1)}
+    />
+  );
+
   if (discovery.pending && !discovery.result) {
     return (
       <view className="settings-panel">
-        <SettingsSection title="Source Control">
+        <SettingsSection title="Source Control" headerAction={scanButton}>
           <view className="settings-empty-card">
             <text className="settings-empty__text">Scanning server integrations…</text>
           </view>
@@ -98,7 +93,7 @@ export function SourceControlSettings() {
   if (discovery.error || !presentation.hasItems) {
     return (
       <view className="settings-panel">
-        <SettingsSection title="Source Control">
+        <SettingsSection title="Source Control" headerAction={scanButton}>
           <view className="settings-empty-card settings-empty-card--action">
             <text className="settings-empty__text">
               {discovery.error ?? "No source-control integrations detected."}
@@ -116,25 +111,47 @@ export function SourceControlSettings() {
   return (
     <view className="settings-panel">
       {presentation.versionControlSystems.length > 0 ? (
-        <SettingsSection title="Version Control">
+        <SettingsSection title="Version Control" headerAction={scanButton}>
           {presentation.versionControlSystems.map((item) => (
-            <SourceControlRow key={item.id} item={item} />
+            <SourceControlItemRowSurface
+              key={item.id}
+              mark={<SourceControlMarkSurface tone={item.statusTone} />}
+              label={item.label}
+              version={item.version ?? undefined}
+              badge={
+                item.badgeLabel ? (
+                  <Badge variant="warning" size="sm">
+                    {item.badgeLabel}
+                  </Badge>
+                ) : undefined
+              }
+              summary={sourceControlSummaryText(item)}
+              muted={!item.enabled}
+            />
           ))}
         </SettingsSection>
       ) : null}
       {presentation.sourceControlProviders.length > 0 ? (
-        <SettingsSection title="Source Control Providers">
+        <SettingsSection title="Source Control Providers" headerAction={scanButton}>
           {presentation.sourceControlProviders.map((item) => (
-            <SourceControlRow key={item.id} item={item} />
+            <SourceControlItemRowSurface
+              key={item.id}
+              mark={<SourceControlMarkSurface tone={item.statusTone} />}
+              label={item.label}
+              version={item.version ?? undefined}
+              badge={
+                item.badgeLabel ? (
+                  <Badge variant="warning" size="sm">
+                    {item.badgeLabel}
+                  </Badge>
+                ) : undefined
+              }
+              summary={sourceControlSummaryText(item)}
+              muted={!item.enabled}
+            />
           ))}
         </SettingsSection>
       ) : null}
-      <view className="settings-rescan-row">
-        <SmallButton
-          label={discovery.pending ? "Scanning…" : "Rescan"}
-          onTap={() => setRefreshVersion((version) => version + 1)}
-        />
-      </view>
     </view>
   );
 }
@@ -245,9 +262,10 @@ export function ConnectionsSettings() {
           }
         />
         {authAccess.pairingLinks.map((pairingLink) => (
-          <SettingsRow
+          <AccessListRowSurface
             key={pairingLink.id}
-            title={pairingLink.label}
+            statusDot={<StatusDotSurface tone="warning" />}
+            primaryLabel={pairingLink.label}
             description={`${formatRelativeTimeUntilLabel(pairingLink.expiresAt, Date.now())} · ${scopeLabel(pairingLink.scopeCount)}`}
             control={
               <SmallButton
@@ -258,16 +276,18 @@ export function ConnectionsSettings() {
           />
         ))}
         {authAccess.clientSessions.map((clientSession) => (
-          <SettingsRow
+          <AccessListRowSurface
             key={clientSession.sessionId}
-            title={clientSession.primaryLabel}
+            statusDot={<StatusDotSurface tone={clientSession.isLive ? "success" : "muted"} />}
+            primaryLabel={clientSession.primaryLabel}
+            primaryTrailing={
+              clientSession.current ? (
+                <text className="access-list-row__device-chip">This device</text>
+              ) : undefined
+            }
             description={`${clientSession.isLive ? "Connected" : "Offline"} · ${clientSession.deviceInfoBits.join(" · ") || clientSession.subject} · ${scopeLabel(clientSession.scopeCount)}`}
             control={
-              clientSession.current ? (
-                <text className="source-control-status source-control-status--success">
-                  This device
-                </text>
-              ) : (
+              clientSession.current ? undefined : (
                 <SmallButton
                   label={
                     accessMutation === `client:${clientSession.sessionId}` ? "Revoking…" : "Revoke"
@@ -312,18 +332,15 @@ export function BetaSettings() {
   const [clientSettings, updateClientSettings] = useClientSettingsState();
   return (
     <view className="settings-panel">
-      <SettingsSection title="Beta features">
-        <SettingsRow
-          title="Sidebar v2"
-          description="Persist the canonical beta preference. The Lynx Sidebar v2 renderer has not moved yet."
-          control={
-            <Toggle
-              value={clientSettings.sidebarV2Enabled}
-              onChange={(sidebarV2Enabled) => updateClientSettings({ sidebarV2Enabled })}
-            />
-          }
-        />
-      </SettingsSection>
+      <BetaSettingsSurface
+        sidebarV2Control={
+          <Toggle
+            value={clientSettings.sidebarV2Enabled}
+            onChange={(sidebarV2Enabled) => updateClientSettings({ sidebarV2Enabled })}
+          />
+        }
+        sidebarV2Status="The Lynx Sidebar v2 renderer has not moved yet; the preference syncs to other clients."
+      />
     </view>
   );
 }
@@ -331,26 +348,52 @@ export function BetaSettings() {
 export function ArchiveSettings() {
   const { archivedThreads, projects } = useT3ClientState();
   const { archiveThread } = t3ClientActions;
-  const projectName = projects.length > 0 ? projects[0].title : "workspace";
+
+  const groups = useMemo(() => {
+    const result: Array<{
+      readonly key: string;
+      readonly title: string;
+      readonly threads: Array<{
+        readonly id: string;
+        readonly title: string;
+        readonly description: string;
+      }>;
+    }> = [];
+    for (const project of projects) {
+      const projectThreads = archivedThreads
+        .filter((thread) => thread.projectId === project.id)
+        .toSorted((left, right) => {
+          const leftKey = left.archivedAt ?? left.createdAt;
+          const rightKey = right.archivedAt ?? right.createdAt;
+          return rightKey.localeCompare(leftKey) || right.id.localeCompare(left.id);
+        });
+      if (projectThreads.length === 0) continue;
+      result.push({
+        key: project.id,
+        title: project.title,
+        threads: projectThreads.map((thread) => ({
+          id: thread.id,
+          title: thread.title || "Untitled thread",
+          description: `Archived ${formatRelativeTimeLabel(thread.archivedAt ?? thread.createdAt, Date.now())} · Created ${formatRelativeTimeLabel(thread.createdAt, Date.now())}`,
+        })),
+      });
+    }
+    return result;
+  }, [archivedThreads, projects]);
 
   return (
     <view className="settings-panel">
-      <SettingsSection title={projectName}>
-        {archivedThreads.length === 0 ? (
-          <view className="settings-empty-card">
-            <text className="settings-empty__text">No archived threads</text>
-          </view>
-        ) : (
-          archivedThreads.map((t) => (
-            <SettingsRow
-              key={t.id}
-              title={t.title || "Untitled thread"}
-              description={`Archived ${formatRelativeTimeLabel(t.archivedAt ?? "", Date.now())} · Created ${formatRelativeTimeLabel(t.updatedAt, Date.now())}`}
-              control={<SmallButton label="Unarchive" onTap={() => archiveThread(t.id, true)} />}
-            />
-          ))
-        )}
-      </SettingsSection>
+      <ArchivedThreadsSurface
+        groups={groups.map((group) => ({
+          ...group,
+          threads: group.threads.map((thread) => ({
+            ...thread,
+            action: <SmallButton label="Unarchive" onTap={() => archiveThread(thread.id, true)} />,
+          })),
+        }))}
+        emptyTitle="No archived threads"
+        emptyDescription="Archived threads will appear here."
+      />
     </view>
   );
 }

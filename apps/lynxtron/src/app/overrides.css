@@ -1675,31 +1675,6 @@
   align-self: center;
 }
 
-.source-control-status {
-  font-size: 11px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-}
-
-.source-control-status--success {
-  color: var(--success);
-}
-
-.source-control-status--warning {
-  color: var(--warning);
-}
-
-.source-control-status--muted {
-  color: var(--muted-foreground);
-}
-
-.settings-rescan-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  padding: 0 16px 32px 16px;
-}
-
 .settings-section {
   display: flex;
   flex-direction: column;
@@ -2235,6 +2210,21 @@
   overflow: hidden;
 }
 
+/* surface: settings access rows ("This device" chip); gap: none (token
+   passthrough); remove-when: the shared AccessListRowSurface trailing chip
+   compiles from shared anatomy. */
+.access-list-row__device-chip {
+  color: var(--muted-foreground-80);
+  font-size: 10px;
+  font-family: var(--font-sans);
+  border-radius: 6px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  background-color: var(--muted);
+  padding: 1px 4px;
+}
+
 /* Empty states */
 .settings-empty {
   padding: 24px 16px;
@@ -2281,27 +2271,13 @@
 }
 
 /* ============= Provider cards ============= */
-.provider-card {
-  display: flex;
-  flex-direction: column;
-  border-radius: 14px;
-  margin-bottom: 4px;
-  overflow: hidden;
-}
-.provider-card--expanded {
-  background-color: rgba(255, 255, 255, 0.008);
-}
-.provider-card__header {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 12px 18px;
-}
+/* Provider card chrome compiles from the shared ProviderInstanceCardSurface
+   (AR5.2). The rules below are the remaining Lynx leaves: the provider mark
+   (raster icon + status dot, R1) and the expanded model-list island. */
 .provider-card__logo-wrap {
   position: relative;
   width: 16px;
   height: 16px;
-  margin-right: 12px;
 }
 .provider-card__logo-fallback {
   width: 16px;
@@ -2337,58 +2313,6 @@
 }
 .provider-card__status-dot--error {
   background-color: #fb414a;
-}
-.provider-card__info {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  width: 0;
-}
-.provider-card__name-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-.provider-card__name {
-  color: var(--foreground);
-  font-size: 14px;
-  font-weight: 500;
-  font-family: var(--font-sans);
-}
-.provider-card__badge {
-  border-radius: 4px;
-  height: 16px;
-  padding: 0 3px;
-  margin-left: 6px;
-  background-color: rgba(255, 185, 0, 0.16);
-  display: flex;
-  align-items: center;
-}
-.provider-card__badge-text {
-  color: #ffb900;
-  font-size: 10px;
-  font-weight: 500;
-  font-family: var(--font-sans);
-}
-.provider-card__status {
-  color: var(--muted-foreground-80);
-  font-size: 13px;
-  font-family: var(--font-sans);
-  margin-top: 2px;
-}
-.provider-card__right {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-.provider-card__chevron-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 8px;
 }
 .provider-card__body {
   display: flex;

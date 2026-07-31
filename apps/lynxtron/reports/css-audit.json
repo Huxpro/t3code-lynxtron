@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1491,
+  "uniqueStaticUtilities": 1494,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -8,7 +8,7 @@
     },
     "color-mix(": {
       "status": "build-transform",
-      "occurrences": 54
+      "occurrences": 55
     },
     "@custom-variant": {
       "status": "drop",
@@ -20,7 +20,7 @@
     },
     ":hover": {
       "status": "state-adapter",
-      "occurrences": 9
+      "occurrences": 12
     },
     ":focus-visible": {
       "status": "state-adapter",
@@ -50,7 +50,7 @@
     },
     {
       "utility": "hover:text-foreground",
-      "occurrences": 52
+      "occurrences": 51
     },
     {
       "utility": "focus-visible:ring-ring",
@@ -93,15 +93,15 @@
       "occurrences": 6
     },
     {
-      "utility": "hover:bg-muted/20",
-      "occurrences": 6
-    },
-    {
       "utility": "fixed",
       "occurrences": 5
     },
     {
       "utility": "hover:bg-muted",
+      "occurrences": 5
+    },
+    {
+      "utility": "hover:bg-muted/20",
       "occurrences": 5
     },
     {

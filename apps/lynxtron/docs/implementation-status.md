@@ -784,6 +784,56 @@ palette logic tests pass; strict reuse on the model-picker route reports
 1,394/57,300, boundary hash unchanged; zero new unsupported CSS utilities.
 Renderer bundle is 2,256.3 kB (-2.0 kB).
 
+### AR5.2 Settings surfaces (2026-08-01, complete)
+
+Providers, Connections, Source Control, Beta, and Archive settings now compile
+one physical composition per panel from
+`apps/web/src/components/settings/SettingsSurfaces.tsx`. The module owns the
+archived-thread group/row anatomy (`ArchivedThreadsSurface`), the Beta feature
+row (`BetaSettingsSurface`), the source-control mark and discovery row
+(`StatusDotSurface`, `SourceControlMarkSurface`,
+`SourceControlItemRowSurface`), the access-inventory row
+(`AccessListRowSurface`), and the provider instance card header
+(`ProviderInstanceCardSurface`). Web's `ArchivedThreadsPanel`,
+`BetaSettingsPanel`, `SourceControlSettings`, `ProviderInstanceCard`, and
+`ConnectionsSettings` (pairing-link and client-session rows) render the same
+surfaces as the Lynx `ProviderSettings` and `OtherSettings` panels; behavior
+hosts keep their authority (unarchive, settings writes, rescan, revoke,
+enable toggles, provider config forms) and platform controls enter as nodes.
+The Lynx provider card's expanded model list stays a registered island; the
+Web card keeps its Collapsible, version-advisory popover, and settings form in
+the body slot. Keybindings stays an honest Lynx placeholder under R5 — no
+keyboard hints without runtime acceptance.
+
+Converged Lynx divergences, all toward the Web product: the provider card
+drops its Lynx-only "Active" badge and header model count (selection lives in
+the Composer pill), the source-control rows drop the Lynx-only status text
+control and move Rescan into the section `headerAction` (Web anatomy), the
+archive row description now reads `archivedAt ?? createdAt`/`createdAt` (was
+`updatedAt`), and the Beta row shows the canonical copy with an honest-gap
+status note ("The Lynx Sidebar v2 renderer has not moved yet…") in the shared
+`status` slot instead of divergent description text.
+
+Deletions: the clean-room provider-card header CSS and the source-control
+status/rescan rules (`overrides.css` 3,531 → 3,455 lines). New rules are the
+access-row device chip token passthrough with surface/gap/remove-when
+comments; Web hover affordances for the two card classes and the chevron live
+in `apps/web/src/index.css` (R6). Eleven focused `SettingsSurfaces` tests
+cover the empty/group archive fixtures, Beta status and auto-settle slots,
+mark tones, item-row ordering and muted state, access-row anatomy, and the
+provider card header with its accessible expand button; 64 Web settings tests
+and 65 Lynxtron tests pass. Strict reuse on the settings-providers product
+surface reports 13/294 modules (4.4%) and 2,077/62,015 lines (3.3%), up from
+11/293 and 1,730/61,695, boundary hash unchanged (`67f5a53f…`); three new
+`:hover` occurrences are the Web-layer rules above. Renderer bundle is
+2,280.1 kB (+23.8 kB: shared badge/switch/button leaves and the settings
+surfaces). Runtime evidence: fresh 1280 × 820 captures of all five panels
+against isolated seeded state report zero renderer errors
+(`reports/screenshots/ar52-settings-{providers,connections,source-control,beta,archive}-1280x820.jpg`);
+the providers card renders the real Claude instance summary, the connections
+row renders the live "This device" session, and the source-control row renders
+the detected Git integration through the shared surfaces.
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation
