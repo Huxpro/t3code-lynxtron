@@ -427,15 +427,10 @@
   line-height: 18px;
 }
 
-/* R1 host replacement for the Web SVG blueprint art (256x80, fades down). */
-.sidebar__brand {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 52px;
-  padding: 0 12px 0 68px;
-}
+/* R1 host replacement for the Web SVG blueprint art (256x80, fades down).
+   The rules below serve the shared StageBackdropArt leaf
+   (SidebarStageBackdrop.lynx); the prototype SidebarBrand header was removed
+   in AR5.4 to match the Web settings nav. */
 .sidebar__brand-bg {
   position: absolute;
   left: 0;

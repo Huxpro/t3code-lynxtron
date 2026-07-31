@@ -907,6 +907,26 @@ the Files tab through the converged empty-state grid and renders the real
 16,340-file workspace tree through the shared rows with zero renderer errors
 (`reports/screenshots/ar53-files-panel-1280x820.jpg`).
 
+### AR5.4 Sidebar state and behavior hosts (2026-08-01, complete)
+
+The Sidebar composition was already physically shared before this slice:
+`apps/web/src/components/AppSidebarLayout.lynx.tsx` is a 44-line host shell
+that renders the full Web `Sidebar`/`SidebarV2` compositions, the
+`ui/sidebar.lynx.tsx` and `sidebarPersistence.lynx.ts` leaves cover the
+platform primitives, the Lynx `ChatHeader` consumes `ChatHeaderSurface`, and
+both panel stacks run the same
+`packages/client-runtime/src/state/panelSurfaces.ts` state machine
+(`createEmptyPanelSurfaceState`) with its open/activate/close/fallback/hidden
+tests. What remained duplicated was the prototype `SidebarBrand` header: the
+Lynx settings nav rendered a Lynx-only brand backdrop that has no counterpart
+in the Web settings nav. The settings route host now matches Web (no brand
+header) and `SidebarBrand.tsx` (79 lines) plus its root CSS rule are deleted;
+the converged `SidebarStageBackdrop` art still renders through the shared
+`SidebarChrome` in the main shell. Renderer bundle is 2,277.3 kB (-4.8 kB).
+Runtime evidence: a fresh 1280 × 820 capture of the settings route reports
+zero renderer errors with the nav reading the canonical section list
+(`reports/screenshots/ar54-settings-nav-1280x820.jpg`).
+
 ## UI-first execution decision
 
 The Electron/Web monorepo is the only fidelity target. The next implementation

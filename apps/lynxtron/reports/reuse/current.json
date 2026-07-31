@@ -15546,7 +15546,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 3187,
+              "lines": 3182,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -15996,11 +15996,6 @@
                 "from": "apps/lynxtron/src/app/components/SettingsPage.tsx",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
-              },
-              {
-                "from": "apps/lynxtron/src/app/components/SidebarBrand.tsx",
-                "request": "./Icon",
-                "to": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/index.tsx",
@@ -16466,11 +16461,6 @@
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
                 "request": "../../../../lynxtron/src/app/components/Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
-              },
-              {
-                "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
-                "request": "../../../../lynxtron/src/app/components/SidebarBrand",
-                "to": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
               },
               {
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
@@ -17468,8 +17458,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 35080,
-            "eligibleModules": 158,
+            "eligibleLines": 34994,
+            "eligibleModules": 157,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -17568,11 +17558,6 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 79,
-                "path": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
-              },
-              {
-                "classification": "EXCLUSIVE",
                 "lines": 92,
                 "path": "apps/lynxtron/src/app/index.tsx"
               },
@@ -17583,7 +17568,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 3187,
+                "lines": 3182,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -17753,7 +17738,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 95,
+                "lines": 93,
                 "path": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx"
               },
               {
@@ -144612,18 +144597,13 @@
             },
             {
               "classification": "SPLIT",
-              "lines": 95,
+              "lines": 93,
               "path": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx"
             },
             {
               "classification": "SPLIT",
               "lines": 80,
               "path": "apps/web/src/components/settings/settingsNavigationHost.web.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
-              "lines": 79,
-              "path": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
             },
             {
               "classification": "EXCLUSIVE",
@@ -144677,11 +144657,6 @@
                 "from": "apps/lynxtron/src/app/components/SettingsPage.tsx",
                 "request": "../router",
                 "to": "apps/lynxtron/src/app/router.ts"
-              },
-              {
-                "from": "apps/lynxtron/src/app/components/SidebarBrand.tsx",
-                "request": "./Icon",
-                "to": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
                 "from": "apps/lynxtron/src/app/router.ts",
@@ -144750,11 +144725,6 @@
               },
               {
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
-                "request": "../../../../lynxtron/src/app/components/SidebarBrand",
-                "to": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
-              },
-              {
-                "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
                 "request": "./SettingsSidebarNav",
                 "to": "apps/web/src/components/settings/SettingsSidebarNav.tsx"
               },
@@ -144789,8 +144759,8 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 2023,
-            "eligibleModules": 20,
+            "eligibleLines": 1942,
+            "eligibleModules": 19,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -144806,11 +144776,6 @@
                 "classification": "EXCLUSIVE",
                 "lines": 18,
                 "path": "apps/lynxtron/src/app/components/SettingsPage.tsx"
-              },
-              {
-                "classification": "EXCLUSIVE",
-                "lines": 79,
-                "path": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -144839,7 +144804,7 @@
               },
               {
                 "classification": "SPLIT",
-                "lines": 95,
+                "lines": 93,
                 "path": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx"
               }
             ],
@@ -146765,11 +146730,6 @@
                 "to": "apps/lynxtron/src/app/router.ts"
               },
               {
-                "from": "apps/lynxtron/src/app/components/SidebarBrand.tsx",
-                "request": "./Icon",
-                "to": "apps/lynxtron/src/app/components/Icon.tsx"
-              },
-              {
                 "from": "apps/lynxtron/src/app/lucide-react-shim.tsx",
                 "request": "./components/Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
@@ -146973,11 +146933,6 @@
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
                 "request": "../../../../lynxtron/src/app/components/Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
-              },
-              {
-                "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
-                "request": "../../../../lynxtron/src/app/components/SidebarBrand",
-                "to": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
               },
               {
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
@@ -147345,8 +147300,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8475,
-            "eligibleModules": 73,
+            "eligibleLines": 8394,
+            "eligibleModules": 72,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -147362,11 +147317,6 @@
                 "classification": "EXCLUSIVE",
                 "lines": 18,
                 "path": "apps/lynxtron/src/app/components/SettingsPage.tsx"
-              },
-              {
-                "classification": "EXCLUSIVE",
-                "lines": 79,
-                "path": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -147470,7 +147420,7 @@
               },
               {
                 "classification": "SPLIT",
-                "lines": 95,
+                "lines": 93,
                 "path": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx"
               },
               {
@@ -155530,11 +155480,6 @@
                 "to": "apps/lynxtron/src/app/router.ts"
               },
               {
-                "from": "apps/lynxtron/src/app/components/SidebarBrand.tsx",
-                "request": "./Icon",
-                "to": "apps/lynxtron/src/app/components/Icon.tsx"
-              },
-              {
                 "from": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts",
                 "request": "../state/atomRegistry",
                 "to": "apps/lynxtron/src/app/state/atomRegistry.ts"
@@ -155656,11 +155601,6 @@
               },
               {
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
-                "request": "../../../../lynxtron/src/app/components/SidebarBrand",
-                "to": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
-              },
-              {
-                "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
                 "request": "./SettingsSidebarNav",
                 "to": "apps/web/src/components/settings/SettingsSidebarNav.tsx"
               },
@@ -155720,8 +155660,8 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               }
             ],
-            "eligibleLines": 4466,
-            "eligibleModules": 34,
+            "eligibleLines": 4385,
+            "eligibleModules": 33,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -155742,11 +155682,6 @@
                 "classification": "EXCLUSIVE",
                 "lines": 18,
                 "path": "apps/lynxtron/src/app/components/SettingsPage.tsx"
-              },
-              {
-                "classification": "EXCLUSIVE",
-                "lines": 79,
-                "path": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -155810,7 +155745,7 @@
               },
               {
                 "classification": "SPLIT",
-                "lines": 95,
+                "lines": 93,
                 "path": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx"
               },
               {
@@ -167490,11 +167425,6 @@
                 "to": "apps/lynxtron/src/app/router.ts"
               },
               {
-                "from": "apps/lynxtron/src/app/components/SidebarBrand.tsx",
-                "request": "./Icon",
-                "to": "apps/lynxtron/src/app/components/Icon.tsx"
-              },
-              {
                 "from": "apps/lynxtron/src/app/lucide-react-shim.tsx",
                 "request": "./components/Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
@@ -167673,11 +167603,6 @@
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
                 "request": "../../../../lynxtron/src/app/components/Icon",
                 "to": "apps/lynxtron/src/app/components/Icon.tsx"
-              },
-              {
-                "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
-                "request": "../../../../lynxtron/src/app/components/SidebarBrand",
-                "to": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
               },
               {
                 "from": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx",
@@ -168060,8 +167985,8 @@
                 "to": "packages/client-runtime/src/presentation/session.ts"
               }
             ],
-            "eligibleLines": 8483,
-            "eligibleModules": 76,
+            "eligibleLines": 8402,
+            "eligibleModules": 75,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -168082,11 +168007,6 @@
                 "classification": "EXCLUSIVE",
                 "lines": 18,
                 "path": "apps/lynxtron/src/app/components/SettingsPage.tsx"
-              },
-              {
-                "classification": "EXCLUSIVE",
-                "lines": 79,
-                "path": "apps/lynxtron/src/app/components/SidebarBrand.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
@@ -168190,7 +168110,7 @@
               },
               {
                 "classification": "SPLIT",
-                "lines": 95,
+                "lines": 93,
                 "path": "apps/web/src/components/settings/settingsRouteHost.lynx.tsx"
               },
               {

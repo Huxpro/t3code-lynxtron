@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "settings-providers",
+  "anchors": {
+    "sidebar": {
+      "selector": ".settings-nav",
+      "nodeId": 150,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "box": {
+        "width": 255,
+        "height": 820
+      },
+      "text": "General Appearance Keybindings Providers Source Control Connections Beta Archive Back",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "topbar": {
+      "selector": ".settings-topbar",
+      "nodeId": 152,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "box": {
+        "width": 984,
+        "height": 52
+      },
+      "text": "Settings",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "panel": {
+      "selector": ".settings-scroll",
+      "nodeId": 156,
+      "rect": {
+        "x": 256,
+        "y": 52,
+        "width": 1024,
+        "height": 768
+      },
+      "box": {
+        "width": 1024,
+        "height": 768
+      },
+      "text": "Providers Claude v2.1.212 Authenticated · Claude Max Subscription -  Claude Code v2.1.212 is too old for Claude Opus 5. Upgrade to v2.1.219 or newer to access it. C Codex v0.146.0 Authenticated · ChatGPT Pro 20x Subscription C Cursor Disabled -  Cursor is disabled in T3 Code settings. G Grok Not found -  Grok CLI (`grok`) is not installed or not on PATH. O OpenCode v1.18.10 Authenticated · opencode -  1 upstream provider connected through OpenCode.",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sectionHeading": {
+      "selector": ".settings-section__title",
+      "nodeId": 210,
+      "rect": {
+        "x": 336,
+        "y": 102,
+        "width": 79,
+        "height": 28
+      },
+      "box": {
+        "width": 79,
+        "height": 28
+      },
+      "text": "Providers",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      }
+    },
+    "providerCard": {
+      "selector": ".provider-instance-card",
+      "nodeId": 216,
+      "rect": {
+        "x": 320,
+        "y": 144,
+        "width": 896,
+        "height": 111
+      },
+      "box": {
+        "width": 896,
+        "height": 110.5
+      },
+      "text": "Claude v2.1.212 Authenticated · Claude Max Subscription -  Claude Code v2.1.212 is too old for Claude Opus 5. Upgrade to v2.1.219 or newer to access it.",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {
+    "sectionHeading": {
+      "selector": ".settings-section__title",
+      "nodeId": 210,
+      "rect": {
+        "x": 336,
+        "y": 102,
+        "width": 79,
+        "height": 28
+      },
+      "box": {
+        "width": 79,
+        "height": 28
+      },
+      "text": "Providers",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "lineHeight": "28px"
+      }
+    }
+  },
+  "colors": {
+    "mainBackground": {
+      "selector": ".settings-main",
+      "nodeId": 151,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 820
+      },
+      "box": {
+        "width": 1024,
+        "height": 820
+      },
+      "text": "Settings Providers Claude v2.1.212 Authenticated · Claude Max Subscription -  Claude Code v2.1.212 is too old for Claude Opus 5. Upgrade to v2.1.219 or newer to access it. C Codex v0.146.0 Authenticated · ChatGPT Pro 20x Subscription C Cursor Disabled -  Cursor is disabled in T3 Code settings. G Grok Not found -  Grok CLI (`grok`) is not installed or not on PATH. O OpenCode v1.18.10 Authenticated · opencode -  1 upstream provider connected through OpenCode.",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import type { ReactNode } from "@lynx-js/react";
 
 import { Icon } from "../../../../lynxtron/src/app/components/Icon";
-import { SidebarBrand } from "../../../../lynxtron/src/app/components/SidebarBrand";
 import type { SettingsSectionPath } from "./SettingsNavigationContent";
 import { SettingsSidebarNav } from "./SettingsSidebarNav";
 import type { SettingsRestoreConfirmationModel } from "./settingsRouteState";
@@ -35,7 +34,6 @@ export function SettingsRouteHost({
   return (
     <view className="settings-root">
       <view className="settings-nav">
-        <SidebarBrand />
         <SettingsSidebarNav pathname={pathname} onBack={onBack} onNavigate={onNavigate} />
       </view>
       <view className="settings-main">
