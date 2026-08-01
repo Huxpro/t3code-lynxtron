@@ -163,7 +163,7 @@ or user session sends real OS input and records the visible result.
 | ID | Task | Depends on | Status | Exit result |
 | --- | --- | --- | --- | --- |
 | BW0 | Prove current-stack Lynx Web compatibility | current Plan 11 boundary | `completed` | Existing ReactLynx entry renders in a browser without a product fork |
-| BW1 | Add the typed browser preview host | BW0 | `pending` | Semantic state and commands cross the existing connector boundary |
+| BW1 | Add the typed browser preview host | BW0 | `completed` | Semantic state and commands cross the existing connector boundary |
 | BW2 | Build the dual-renderer workbench | BW1 | `pending` | Web and Lynx Web render one identified scenario at matched dimensions |
 | BW3 | Calibrate detection and iteration cost | BW2 | `pending` | Known geometry/style faults fail reliably and steady-state feedback is measured |
 | BW4 | Converge the main-shell validation slice | BW3 | `pending` | Four deterministic product states meet the browser comparison gates |
@@ -217,6 +217,19 @@ in BW1.
   publish a blocker report instead of continuing to BW1.
 
 ## BW1: Add the typed browser preview host
+
+Completed on 2026-08-02. The development-only host loads deterministic typed
+`ConnectorSnapshot` scenarios through Lynx Web's `nativeModulesMap` and the
+existing renderer-facing ready/resync/command protocol. The populated scenario
+reached sequence 8, rendered the known project/thread/model, detected an
+intentional sequence gap, and requested resync. A normal refresh returned to
+the same ready scenario at sequence 0 after the Native module and connector
+readiness signals completed. Safe commands are recorded in memory while
+filesystem, shell, keyboard, clipboard, and native navigation stay explicitly
+unavailable. Production main/preload/connector files are unchanged. Detailed
+hashes and checks are in `reports/bw1-typed-browser-preview.json`; retained
+diagnostic evidence is under `evidence/2026-08-02/BW1/typed-host/` and
+`evidence/2026-08-02/BW1/refresh/`.
 
 ### Required work
 

@@ -63,7 +63,9 @@ async function evaluate(client, expression) {
     returnByValue: true,
   });
   if (response.exceptionDetails) {
-    throw new Error(response.exceptionDetails.exception?.description ?? response.exceptionDetails.text);
+    throw new Error(
+      response.exceptionDetails.exception?.description ?? response.exceptionDetails.text,
+    );
   }
   return response.result?.value;
 }
@@ -94,6 +96,11 @@ const outputDirectory = path.resolve(
   argumentValue("--output", "evidence/2026-08-02/BW0/current-stack"),
 );
 const timeoutMs = Number(argumentValue("--timeout-ms", "15000"));
+const task = argumentValue("--task", "BW0");
+const source = argumentValue("--source", "current-stack-browser-preview");
+const shouldReload = !process.argv.includes("--no-reload");
+const exerciseTypedHost = process.argv.includes("--exercise-typed-host");
+const requireTypedHost = exerciseTypedHost || process.argv.includes("--require-typed-host");
 
 const [versionResponse, targetsResponse] = await Promise.all([
   fetch(new URL("/json/version", endpoint)),
@@ -101,7 +108,9 @@ const [versionResponse, targetsResponse] = await Promise.all([
 ]);
 const browser = await versionResponse.json();
 const targets = await targetsResponse.json();
-const target = targets.find((candidate) => candidate.type === "page" && candidate.url === expectedUrl);
+const target = targets.find(
+  (candidate) => candidate.type === "page" && candidate.url === expectedUrl,
+);
 if (!target) throw new Error(`No page target matched ${expectedUrl}`);
 
 const client = new CdpClient(target.webSocketDebuggerUrl);
@@ -124,7 +133,9 @@ client.onEvent((message) => {
     consoleEvents.push({
       source: "exception",
       level: "error",
-      text: message.params.exceptionDetails.exception?.description ?? message.params.exceptionDetails.text,
+      text:
+        message.params.exceptionDetails.exception?.description ??
+        message.params.exceptionDetails.text,
     });
   } else if (message.method === "Log.entryAdded") {
     consoleEvents.push({
@@ -134,7 +145,7 @@ client.onEvent((message) => {
     });
   }
 });
-await client.send("Page.reload", { ignoreCache: true });
+if (shouldReload) await client.send("Page.reload", { ignoreCache: true });
 
 const deadline = Date.now() + timeoutMs;
 let semanticState;
@@ -143,13 +154,125 @@ while (Date.now() < deadline) {
     client,
     `(() => {
       const diagnostics = globalThis.__T3_LYNX_WEB_PREVIEW__;
-      return diagnostics?.rendered || diagnostics?.rendererErrors?.length
+      if (diagnostics?.rendererErrors?.length) return diagnostics;
+      if (!diagnostics?.rendered) return null;
+      if (!${requireTypedHost}) return diagnostics;
+      const text = document.querySelector("lynx-view")?.shadowRoot?.querySelector('[part="page"]')?.textContent ?? "";
+      const known = diagnostics.known;
+      const knownVisible = known
+        ? [known.project, known.thread, known.model].every((value) => text.includes(value))
+        : false;
+      return diagnostics.connector?.nativeModuleReady === true &&
+        diagnostics.connector?.readyCalls > 0 &&
+        knownVisible
         ? diagnostics
         : null;
     })()`,
   ).catch(() => null);
   if (semanticState) break;
   await delay(100);
+}
+
+async function waitForPageState(expression, predicate) {
+  const stateDeadline = Date.now() + timeoutMs;
+  while (Date.now() < stateDeadline) {
+    const value = await evaluate(client, expression).catch(() => null);
+    if (predicate(value)) return value;
+    await delay(100);
+  }
+  return null;
+}
+
+let typedHostExercise = null;
+if (exerciseTypedHost && semanticState?.rendered) {
+  const productTextExpression = `(() => {
+    const view = document.querySelector("lynx-view");
+    const root = view?.shadowRoot?.querySelector('[part="page"]');
+    return root?.textContent ?? "";
+  })()`;
+  const initialText = await evaluate(client, productTextExpression);
+  const initial = await evaluate(
+    client,
+    `(() => {
+      const diagnostics = globalThis.__T3_LYNX_WEB_PREVIEW__;
+      return {
+        moduleReady: diagnostics?.connector?.nativeModuleReady === true,
+        readyCalls: diagnostics?.connector?.readyCalls ?? 0,
+        lastSequence: diagnostics?.connector?.lastSequence ?? -1,
+      };
+    })()`,
+  );
+
+  await evaluate(client, `globalThis.__T3_LYNX_WEB_PREVIEW__.advanceToReady()`);
+  const afterReadyText = await waitForPageState(
+    productTextExpression,
+    (text) => typeof text === "string" && !text.includes("T3 Code: Connecting..."),
+  );
+  const afterReady = await evaluate(
+    client,
+    `(() => ({ ...globalThis.__T3_LYNX_WEB_PREVIEW__.connector }))()`,
+  );
+
+  await evaluate(client, `globalThis.__T3_LYNX_WEB_PREVIEW__.emitSequenceGapForDiagnostic()`);
+  const afterGap = await evaluate(
+    client,
+    `(() => ({ ...globalThis.__T3_LYNX_WEB_PREVIEW__.connector }))()`,
+  );
+  const resynced = await waitForPageState(
+    `(() => {
+      const diagnostics = globalThis.__T3_LYNX_WEB_PREVIEW__;
+      const text = document.querySelector("lynx-view")?.shadowRoot?.querySelector('[part="page"]')?.textContent ?? "";
+      return {
+        resyncCalls: diagnostics?.connector?.resyncCalls ?? 0,
+        lastSequence: diagnostics?.connector?.lastSequence ?? -1,
+        connectingVisible: text.includes("T3 Code: Connecting..."),
+      };
+    })()`,
+    (value) => Boolean(value?.resyncCalls > 0 && value?.connectingVisible),
+  );
+
+  await evaluate(client, `globalThis.__T3_LYNX_WEB_PREVIEW__.switchScenario("populated-ready")`);
+  const finalState = await waitForPageState(
+    `(() => {
+      const diagnostics = globalThis.__T3_LYNX_WEB_PREVIEW__;
+      const text = document.querySelector("lynx-view")?.shadowRoot?.querySelector('[part="page"]')?.textContent ?? "";
+      const known = diagnostics?.known;
+      const knownVisible = known
+        ? [known.project, known.thread, known.model].every((value) => text.includes(value))
+        : false;
+      return {
+        scenarioId: diagnostics?.connector?.scenarioId ?? null,
+        lastSequence: diagnostics?.connector?.lastSequence ?? -1,
+        resyncCalls: diagnostics?.connector?.resyncCalls ?? 0,
+        knownVisible,
+        connectingVisible: text.includes("T3 Code: Connecting..."),
+      };
+    })()`,
+    (value) =>
+      Boolean(
+        value?.scenarioId === "populated-ready" &&
+        value?.lastSequence >= 8 &&
+        value?.resyncCalls > 0 &&
+        value?.knownVisible &&
+        !value?.connectingVisible,
+      ),
+  );
+  if (finalState) {
+    await evaluate(client, `globalThis.__T3_LYNX_WEB_PREVIEW__.semanticReady = true`);
+  }
+  typedHostExercise = {
+    initial,
+    initialKnownVisible:
+      typeof initialText === "string" &&
+      ["T3 Code Browser Lab", "Validate the dual renderer workbench", "GPT-5.6 Sol"].every(
+        (value) => initialText.includes(value),
+      ),
+    afterReady,
+    afterReadyVisible: Boolean(afterReadyText),
+    afterGap,
+    resynced,
+    finalState,
+  };
 }
 
 const pageState = await evaluate(
@@ -231,8 +354,8 @@ const unexplainedErrors = consoleEvents.filter(
 );
 const report = {
   schemaVersion: 1,
-  task: "BW0",
-  source: "current-stack-browser-preview",
+  task,
+  source,
   endpoint,
   expectedUrl,
   browser: {
@@ -243,9 +366,16 @@ const report = {
   },
   versions: packageVersions,
   readiness: {
-    reached: Boolean(semanticState?.rendered),
+    reached: exerciseTypedHost
+      ? Boolean(typedHostExercise?.finalState)
+      : requireTypedHost
+        ? Boolean(
+            semanticState?.connector?.nativeModuleReady && semanticState?.connector?.readyCalls > 0,
+          )
+        : Boolean(semanticState?.rendered),
     timeoutMs,
   },
+  typedHostExercise,
   page: pageState,
   console: consoleEvents,
   expectedRuntimeErrors,

@@ -1,0 +1,214 @@
+import {
+  DEFAULT_SERVER_SETTINGS,
+  EnvironmentId,
+  MessageId,
+  ProjectId,
+  ProviderDriverKind,
+  ProviderInstanceId,
+  ThreadId,
+  TurnId,
+  type DesktopAppBranding,
+  type OrchestrationProjectShell,
+  type OrchestrationThreadShell,
+  type ServerConfig,
+  type ServerProvider,
+} from "@t3tools/contracts";
+
+import type { ConnectorSnapshot } from "../shared/connectorProtocol.ts";
+
+const NOW = "2026-08-02T09:00:00.000Z";
+const EARLIER = "2026-08-02T08:30:00.000Z";
+const PROJECT_ID = ProjectId.make("browser-preview-project");
+const THREAD_ID = ThreadId.make("browser-preview-thread");
+const TURN_ID = TurnId.make("browser-preview-turn");
+const PROVIDER_ID = ProviderInstanceId.make("codex");
+const MODEL = "gpt-5.6-sol";
+
+const provider: ServerProvider = {
+  instanceId: PROVIDER_ID,
+  driver: ProviderDriverKind.make("codex"),
+  displayName: "Codex",
+  enabled: true,
+  installed: true,
+  version: "0.70.0-preview",
+  status: "ready",
+  auth: { status: "authenticated" },
+  checkedAt: NOW,
+  models: [
+    {
+      slug: MODEL,
+      name: "GPT-5.6 Sol",
+      isCustom: false,
+      isDefault: true,
+      capabilities: {},
+    },
+  ],
+  slashCommands: [],
+  skills: [],
+};
+
+const config: ServerConfig = {
+  environment: {
+    environmentId: EnvironmentId.make("browser-preview"),
+    label: "Browser Preview",
+    platform: { os: "darwin", arch: "arm64" },
+    serverVersion: "0.0.0-nightly.20260802.1",
+    capabilities: { repositoryIdentity: true, connectionProbe: true },
+  },
+  auth: {
+    policy: "loopback-browser",
+    bootstrapMethods: ["one-time-token"],
+    sessionMethods: ["browser-session-cookie", "bearer-access-token"],
+    sessionCookieName: "t3_preview_session",
+  },
+  cwd: "/preview/t3code",
+  keybindingsConfigPath: "/preview/t3code/keybindings.json",
+  keybindings: [],
+  issues: [],
+  providers: [provider],
+  availableEditors: [],
+  observability: {
+    logsDirectoryPath: "/preview/logs",
+    localTracingEnabled: false,
+    otlpTracesEnabled: false,
+    otlpMetricsEnabled: false,
+  },
+  settings: DEFAULT_SERVER_SETTINGS,
+};
+
+const project: OrchestrationProjectShell = {
+  id: PROJECT_ID,
+  title: "T3 Code Browser Lab",
+  workspaceRoot: "/preview/t3code",
+  repositoryIdentity: null,
+  defaultModelSelection: { instanceId: PROVIDER_ID, model: MODEL },
+  scripts: [],
+  createdAt: EARLIER,
+  updatedAt: NOW,
+};
+
+const thread: OrchestrationThreadShell = {
+  id: THREAD_ID,
+  projectId: PROJECT_ID,
+  title: "Validate the dual renderer workbench",
+  modelSelection: { instanceId: PROVIDER_ID, model: MODEL },
+  runtimeMode: "full-access",
+  interactionMode: "default",
+  branch: "lynxtron-port",
+  worktreePath: "/preview/t3code",
+  latestTurn: {
+    turnId: TURN_ID,
+    state: "completed",
+    requestedAt: EARLIER,
+    startedAt: EARLIER,
+    completedAt: NOW,
+    assistantMessageId: null,
+  },
+  createdAt: EARLIER,
+  updatedAt: NOW,
+  archivedAt: null,
+  settledOverride: null,
+  settledAt: null,
+  session: null,
+  latestUserMessageAt: EARLIER,
+  hasPendingApprovals: false,
+  hasPendingUserInput: false,
+  hasActionableProposedPlan: false,
+};
+
+const threadPayload: ConnectorSnapshot["threads"][string] = {
+  threadId: THREAD_ID,
+  messages: [
+    {
+      id: MessageId.make("browser-preview-user-message"),
+      role: "user",
+      text: "Keep the Web and Native Lynx renderers on one shared composition.",
+      turnId: TURN_ID,
+      streaming: false,
+      createdAt: EARLIER,
+      updatedAt: EARLIER,
+    },
+    {
+      id: MessageId.make("browser-preview-assistant-message"),
+      role: "assistant",
+      text: "The typed preview host is serving deterministic connector state.",
+      turnId: TURN_ID,
+      streaming: false,
+      createdAt: NOW,
+      updatedAt: NOW,
+    },
+  ],
+  checkpoints: [],
+  sessionStatus: "idle",
+  activities: [],
+  latestTurn: thread.latestTurn,
+  proposedPlans: [],
+  activeTurnId: null,
+};
+
+const access: ConnectorSnapshot["access"] = {
+  pairingLinks: [],
+  clientSessions: [],
+  pairingLinkCount: 0,
+  clientSessionCount: 0,
+  hasEntries: false,
+};
+
+export type BrowserPreviewScenarioId = "populated-ready" | "populated-connecting";
+
+export interface BrowserPreviewScenario {
+  readonly id: BrowserPreviewScenarioId;
+  readonly route: string;
+  readonly theme: "dark";
+  readonly known: {
+    readonly project: string;
+    readonly thread: string;
+    readonly model: string;
+  };
+  readonly branding: DesktopAppBranding;
+  readonly preferences: Readonly<Record<string, unknown>>;
+  readonly snapshot: ConnectorSnapshot;
+}
+
+function scenario(
+  id: BrowserPreviewScenarioId,
+  status: ConnectorSnapshot["status"],
+): BrowserPreviewScenario {
+  return {
+    id,
+    route: `/local/${THREAD_ID}`,
+    theme: "dark",
+    known: { project: project.title, thread: thread.title, model: "GPT-5.6 Sol" },
+    branding: { baseName: "T3 Code", stageLabel: "Nightly", displayName: "T3 Code (Nightly)" },
+    preferences: {
+      themePreference: "dark",
+      clientSettings: {
+        sidebarV2Enabled: true,
+        sidebarV2ConfiguredByUser: true,
+      },
+    },
+    snapshot: {
+      status,
+      config,
+      access,
+      shell: { projects: [project], threads: [thread], archivedThreads: [] },
+      threads: { [THREAD_ID]: threadPayload },
+    },
+  };
+}
+
+export const BROWSER_PREVIEW_SCENARIOS: Readonly<
+  Record<BrowserPreviewScenarioId, BrowserPreviewScenario>
+> = {
+  "populated-ready": scenario("populated-ready", { status: "ready" }),
+  "populated-connecting": scenario("populated-connecting", {
+    status: "connecting",
+    detail: "Attaching the deterministic preview connector",
+  }),
+};
+
+export const DEFAULT_BROWSER_PREVIEW_SCENARIO_ID: BrowserPreviewScenarioId = "populated-connecting";
+
+export function isBrowserPreviewScenarioId(value: string): value is BrowserPreviewScenarioId {
+  return value in BROWSER_PREVIEW_SCENARIOS;
+}
