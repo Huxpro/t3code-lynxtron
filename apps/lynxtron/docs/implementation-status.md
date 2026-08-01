@@ -3,6 +3,18 @@
 This app is the monorepo-native successor to the standalone
 `t3code-lynxtron` prototype.
 
+## Active follow-up plan (2026-08-01)
+
+[Plan 11](./plans/11-outcome-driven-convergence.md) is the active execution
+order after the Plan 10 AR6 review. A real packaged handoff found that the
+child server could become ready while the renderer's one-shot bridge probe had
+already failed; Page reload then connected with transport `kind: "main"` and
+`lastSeq: 22`. The same session found four result regressions: broken Sidebar
+V2/project-scope layout, Settings flashing back to chat, weak Composer
+adaptation, and missing Dev stage artwork. Plan 11 keeps the main-owned and
+shared-composition architecture, fixes semantic cold-start readiness first,
+and requires those four observable outcomes to pass before it can complete.
+
 ## Completed foundation
 
 - Workspace app with `.lynx.ts(x)` and `.web.ts(x)` resolution.

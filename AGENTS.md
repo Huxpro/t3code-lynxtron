@@ -109,6 +109,20 @@ An empty database is a bad test. Seed your worktree's `.t3` with a copy of real 
 - The server is event-sourced and its async flows emit typed receipts. Wait on receipts and worker drains, never on sleeps or polling. A test that needs a timeout to pass is wrong.
 - Upon request, user-visible frontend changes should get one integrated pass in a real client: `test-t3-app` for web, `test-t3-mobile` for mobile. The primary agent does this once after integrating. Subagents do not launch their own dev servers. Ask permission before doing computer use or spinning up browsers.
 
+## Lynxtron harnessing
+
+Lynxtron verification has three distinct questions: did the code compile, did the product connect, and did the rendered interaction work? Evidence for one is not evidence for the others.
+
+- **Use tiered acceptance.** For an implementation slice, run focused tests, the affected Web and Lynx typechecks, renderer scanner/audits, affected builds, and one fresh 1280 x 820 zero-error capture. Reserve paired viewports, themes, lifecycle states, and the complete visual matrix for phase exit. Repeating the full certification battery after every small change is waste, not confidence.
+- **Use isolated realistic state.** Launch with a fresh `T3_LYNXTRON_BASE_DIR`, an explicit `T3_LYNXTRON_PROJECT_CWD`, and explicit `T3_LYNXTRON_VIEWPORT_WIDTH` / `T3_LYNXTRON_VIEWPORT_HEIGHT`. Seed a useful project or a safe database snapshot; do not point the app at live `~/.t3/userdata` and do not accept an accidental empty-state-only test as product coverage.
+- **Build the artifact under test.** Confirm `dist/desktop` was built from the current source before a packaged smoke. A DevTool session attached to a stale bundle proves only that some bundle loaded.
+- **Gate on semantic readiness.** Server output saying `T3 Code server is ready`, the existence of a DevTool client/session, a visible window, and an empty error console are each insufficient. Before handing the app to a user or taking product evidence, require the renderer diagnostic `globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__` to report `kind === "main"`, require a nonnegative advancing `lastSeq()`, and assert a known project/model or another canonical state in the UI. A window that still says Connecting is a failed smoke even if the child server is listening.
+- **Exercise the real startup order.** Connector tests that instantiate the host directly do not cover the `LynxWindow` lifecycle. The packaged launch harness must catch bridge-registration races between `loadFile`, `lynxBridge.handle`, renderer bootstrap, and server readiness. Do not hide a failed one-shot bridge probe with a sleep, reload, fixture injection, or screenshot; fix the ordering or readiness protocol.
+- **Wait on signals, not elapsed time.** Capture the spawned process and its logs, then wait for the server-ready line and renderer-ready diagnostic/state. A bounded timeout may fail the harness, but a fixed sleep must not decide success.
+- **Capture after readiness and interaction.** A fresh Lynxtron process has one reliable screencast frame. Establish the target state first, perform the supported real tap interaction, then capture. Screenshots certify the rendered state only; they do not certify connector lifecycle, keyboard, scrolling, focus, drag, or selection.
+- **Stop at real-input boundaries.** DevTool currently injects taps, not trustworthy physical keyboard, wheel, drag, focus, or selection behavior. Mark those checks `pending-user-session` and ask once for an authorized interactive pass instead of accumulating headless screenshots that cannot prove them.
+- **Handoff only a working window.** When asked to open the app, keep the process started by the agent alive, bring that exact process to the foreground, and verify product readiness before saying it is ready. Report whether the state is isolated or copied and retain the PID/session needed to stop only that process later.
+
 ## Pull requests
 
 - Never make a PR unless the developer explicitly asks you to do so.
