@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "cross-env TARGET_ENV=desktop NODE_ENV=development concurrently -k --raw \"rspeedy dev\" \"dev-ready-rspeedy && rspack dev\"",
     "build": "pnpm run generate:css && pnpm run build:icons && pnpm run format:generated && rspeedy build && rspack build && pnpm run build:connector",
+    "build:browser-preview": "cross-env T3_LYNXTRON_WEB_PREVIEW=1 rspeedy build && rspack build --config rspack.browser-preview.config.ts",
     "build:icons": "node scripts/build-icons.mjs",
     "build:connector": "node scripts/build-connector.mjs",
     "capture:web": "node scripts/capture-electron-cdp.mjs",
@@ -22,6 +23,7 @@
     "smoke:composer-controls": "pnpm run build:connector && node scripts/composer-controls-smoke.mjs",
     "start": "pnpm run build && pnpm run launch",
     "typecheck": "tsc --noEmit -p src/app/tsconfig.json && tsc --noEmit -p src/main/desktop/tsconfig.json",
+    "typecheck:browser-preview": "tsc --noEmit -p src/browser-preview/tsconfig.json",
     "test": "vp test run --passWithNoTests",
     "visual:diff": "node scripts/visual-diff.mjs",
     "visual:metrics": "node scripts/compare-visual-measurements.mjs",
@@ -40,6 +42,7 @@
   },
   "devDependencies": {
     "@lynx-js/config-rsbuild-plugin": "0.0.2",
+    "@lynx-js/lynx-core": "0.1.3",
     "@lynx-js/lynxtron-dev-plugins": "0.0.8",
     "@lynx-js/react": "0.120.0",
     "@lynx-js/react-rsbuild-plugin": "^0.16.1",
@@ -47,6 +50,8 @@
     "@lynx-js/tailwind-preset": "^0.5.0",
     "@lynx-js/type-config": "3.6.0",
     "@lynx-js/types": "3.8.0",
+    "@lynx-js/web-core": "0.21.0",
+    "@lynx-js/web-elements": "0.12.3",
     "@rspack/cli": "^1.7.5",
     "@rspack/core": "^1.7.5",
     "@tanstack/router-plugin": "^1.168.23",

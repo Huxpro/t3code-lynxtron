@@ -8,6 +8,7 @@ import path from "node:path";
 const require = createRequire(import.meta.url);
 const probeEntry = process.env.T3_LYNXTRON_PROBE_ENTRY?.trim();
 const probeOutput = process.env.T3_LYNXTRON_PROBE_OUTPUT?.trim();
+const webPreview = process.env.T3_LYNXTRON_WEB_PREVIEW === "1";
 
 if ((probeEntry === undefined) !== (probeOutput === undefined)) {
   throw new Error(
@@ -180,7 +181,7 @@ const GLOBAL_POLYFILL = `
 export default defineConfig({
   output: {
     filename: "[name].[platform].bundle",
-    distPath: { root: probeOutput ?? "./output/bundle/lynx" },
+    distPath: { root: probeOutput ?? (webPreview ? "./output/bundle/web" : "./output/bundle/lynx") },
   },
   resolve: {
     alias: {
@@ -189,23 +190,34 @@ export default defineConfig({
       "lucide-react$": require.resolve("./src/app/lucide-react-shim.tsx"),
       react$: require.resolve("./src/app/react-tanstack-shim.ts"),
       "react-dom$": require.resolve("./src/app/react-dom-stub.ts"),
+      ...(webPreview ? { "url-search-params-polyfill$": false } : {}),
     },
   },
-  environments: {
-    lynx: {
-      source: { entry: { main: probeEntry ?? "./src/app/index.tsx" } },
-    },
-  },
+  environments: webPreview
+    ? {
+        web: {
+          source: { entry: { main: probeEntry ?? "./src/app/index.tsx" } },
+        },
+      }
+    : {
+        lynx: {
+          source: { entry: { main: probeEntry ?? "./src/app/index.tsx" } },
+        },
+      },
   tools: {
     rspack: [
       {
         plugins: [
-          new rspack.BannerPlugin({
-            banner: GLOBAL_POLYFILL,
-            raw: true,
-            entryOnly: true,
-            include: /\.(js|ts|tsx|jsx|mjs)$/,
-          }),
+          ...(!webPreview
+            ? [
+                new rspack.BannerPlugin({
+                  banner: GLOBAL_POLYFILL,
+                  raw: true,
+                  entryOnly: true,
+                  include: /\.(js|ts|tsx|jsx|mjs)$/,
+                }),
+              ]
+            : []),
           tanstackRouter({
             target: "react",
             routesDirectory: "./src/app/routes",
