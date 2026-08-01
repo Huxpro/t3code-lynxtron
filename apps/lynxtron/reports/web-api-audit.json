@@ -1,7 +1,7 @@
 {
   "scannedRoot": "apps/web/src",
-  "generatedAt": "2026-07-31T20:53:24.006Z",
-  "totalCallSites": 709,
+  "generatedAt": "2026-08-01T10:22:34.977Z",
+  "totalCallSites": 754,
   "entries": [
     {
       "api": "window",
@@ -50,8 +50,8 @@
     },
     {
       "api": "window.addEventListener",
-      "calls": 57,
-      "fileCount": 31,
+      "calls": 58,
+      "fileCount": 32,
       "files": [
         "apps/web/src/browser/BrowserSurfaceSlot.tsx",
         "apps/web/src/browser/useBrowserViewportResize.ts",
@@ -73,6 +73,7 @@
         "apps/web/src/components/preview/PreviewPanelShell.tsx",
         "apps/web/src/components/preview/previewActionBus.ts",
         "apps/web/src/components/settings/KeybindingsSettings.tsx",
+        "apps/web/src/components/settings/SettingsSidebarNav.tsx",
         "apps/web/src/components/ui/toast.tsx",
         "apps/web/src/composerDraftStore.ts",
         "apps/web/src/connection/platform.ts",
@@ -84,6 +85,43 @@
         "apps/web/src/routes/settings.tsx",
         "apps/web/src/shortcutModifierState.ts",
         "apps/web/src/uiStateStore.ts"
+      ]
+    },
+    {
+      "api": "window.removeEventListener",
+      "calls": 52,
+      "fileCount": 30,
+      "files": [
+        "apps/web/src/browser/BrowserSurfaceSlot.tsx",
+        "apps/web/src/browser/useBrowserViewportResize.ts",
+        "apps/web/src/commandPaletteBus.ts",
+        "apps/web/src/components/AppSidebarLayout.tsx",
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/CommandPalette.tsx",
+        "apps/web/src/components/GitActionsControl.tsx",
+        "apps/web/src/components/Sidebar.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/web/src/components/chat/ComposerStashMenu.tsx",
+        "apps/web/src/components/chat/ExpandedImageDialog.tsx",
+        "apps/web/src/components/chat/ModelPickerContent.tsx",
+        "apps/web/src/components/chat/OpenInPicker.tsx",
+        "apps/web/src/components/files/FilePreviewPanel.tsx",
+        "apps/web/src/components/preview/PreviewAutomationHosts.tsx",
+        "apps/web/src/components/preview/PreviewPanelShell.tsx",
+        "apps/web/src/components/preview/previewActionBus.ts",
+        "apps/web/src/components/settings/KeybindingsSettings.tsx",
+        "apps/web/src/components/settings/SettingsSidebarNav.tsx",
+        "apps/web/src/components/ui/toast.tsx",
+        "apps/web/src/connection/platform.ts",
+        "apps/web/src/hooks/useLocalStorage.ts",
+        "apps/web/src/hooks/useTheme.ts",
+        "apps/web/src/lib/backgroundActivityReporter.ts",
+        "apps/web/src/platform/clientCapabilities.web.ts",
+        "apps/web/src/routes/_chat.tsx",
+        "apps/web/src/routes/settings.tsx",
+        "apps/web/src/shortcutModifierState.ts"
       ]
     },
     {
@@ -122,48 +160,13 @@
       ]
     },
     {
-      "api": "window.removeEventListener",
-      "calls": 51,
-      "fileCount": 29,
-      "files": [
-        "apps/web/src/browser/BrowserSurfaceSlot.tsx",
-        "apps/web/src/browser/useBrowserViewportResize.ts",
-        "apps/web/src/commandPaletteBus.ts",
-        "apps/web/src/components/AppSidebarLayout.tsx",
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/CommandPalette.tsx",
-        "apps/web/src/components/GitActionsControl.tsx",
-        "apps/web/src/components/Sidebar.tsx",
-        "apps/web/src/components/SidebarV2.tsx",
-        "apps/web/src/components/ThreadTerminalDrawer.tsx",
-        "apps/web/src/components/chat/ChatComposer.tsx",
-        "apps/web/src/components/chat/ComposerStashMenu.tsx",
-        "apps/web/src/components/chat/ExpandedImageDialog.tsx",
-        "apps/web/src/components/chat/ModelPickerContent.tsx",
-        "apps/web/src/components/chat/OpenInPicker.tsx",
-        "apps/web/src/components/files/FilePreviewPanel.tsx",
-        "apps/web/src/components/preview/PreviewAutomationHosts.tsx",
-        "apps/web/src/components/preview/PreviewPanelShell.tsx",
-        "apps/web/src/components/preview/previewActionBus.ts",
-        "apps/web/src/components/settings/KeybindingsSettings.tsx",
-        "apps/web/src/components/ui/toast.tsx",
-        "apps/web/src/connection/platform.ts",
-        "apps/web/src/hooks/useLocalStorage.ts",
-        "apps/web/src/hooks/useTheme.ts",
-        "apps/web/src/lib/backgroundActivityReporter.ts",
-        "apps/web/src/platform/clientCapabilities.web.ts",
-        "apps/web/src/routes/_chat.tsx",
-        "apps/web/src/routes/settings.tsx",
-        "apps/web/src/shortcutModifierState.ts"
-      ]
-    },
-    {
       "api": "document",
-      "calls": 45,
-      "fileCount": 16,
+      "calls": 46,
+      "fileCount": 17,
       "files": [
         "apps/web/src/commandPaletteBus.ts",
         "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
         "apps/web/src/components/chat/ProviderModelPicker.tsx",
         "apps/web/src/components/chat/draftHeroTransition.ts",
         "apps/web/src/components/preview/PreviewView.tsx",
@@ -182,8 +185,8 @@
     },
     {
       "api": "window.setTimeout",
-      "calls": 29,
-      "fileCount": 21,
+      "calls": 32,
+      "fileCount": 22,
       "files": [
         "apps/web/src/browser/desktopTabLifetime.ts",
         "apps/web/src/components/AnimatedHeight.tsx",
@@ -205,7 +208,73 @@
         "apps/web/src/components/ui/toast.tsx",
         "apps/web/src/hooks/useNowMinute.ts",
         "apps/web/src/proposedPlan.ts",
-        "apps/web/src/state/queries.ts"
+        "apps/web/src/state/queries.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
+      "api": "window.requestAnimationFrame",
+      "calls": 30,
+      "fileCount": 14,
+      "files": [
+        "apps/web/src/browser/ElectronBrowserHost.tsx",
+        "apps/web/src/browser/HostedBrowserWebview.tsx",
+        "apps/web/src/components/AnimatedHeight.tsx",
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/PullRequestThreadDialog.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/web/src/components/chat/ModelPickerContent.tsx",
+        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
+        "apps/web/src/components/preview/PreviewPanelShell.tsx",
+        "apps/web/src/components/ui/sidebar.tsx",
+        "apps/web/src/routes/__root.tsx",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
+      "api": "window.clearTimeout",
+      "calls": 29,
+      "fileCount": 17,
+      "files": [
+        "apps/web/src/browser/desktopTabLifetime.ts",
+        "apps/web/src/components/AnimatedHeight.tsx",
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/GitActionsControl.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/web/src/components/chat/ComposerPendingUserInputPanel.tsx",
+        "apps/web/src/components/chat/ModelPickerContent.tsx",
+        "apps/web/src/components/preview/AgentBrowserCursor.tsx",
+        "apps/web/src/components/preview/ZoomIndicator.tsx",
+        "apps/web/src/components/preview/useLoadingProgress.ts",
+        "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
+        "apps/web/src/components/ui/toast.tsx",
+        "apps/web/src/hooks/useNowMinute.ts",
+        "apps/web/src/state/queries.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
+      "api": "window.cancelAnimationFrame",
+      "calls": 28,
+      "fileCount": 13,
+      "files": [
+        "apps/web/src/browser/ElectronBrowserHost.tsx",
+        "apps/web/src/browser/HostedBrowserWebview.tsx",
+        "apps/web/src/components/AnimatedHeight.tsx",
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/PullRequestThreadDialog.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/web/src/components/chat/ModelPickerContent.tsx",
+        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
+        "apps/web/src/components/preview/PreviewPanelShell.tsx",
+        "apps/web/src/components/ui/sidebar.tsx",
+        "apps/web/src/routes/__root.tsx",
+        "apps/web/src/terminal/ghostty/surface.ts"
       ]
     },
     {
@@ -229,48 +298,9 @@
       ]
     },
     {
-      "api": "window.requestAnimationFrame",
-      "calls": 28,
-      "fileCount": 13,
-      "files": [
-        "apps/web/src/browser/ElectronBrowserHost.tsx",
-        "apps/web/src/browser/HostedBrowserWebview.tsx",
-        "apps/web/src/components/AnimatedHeight.tsx",
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/PullRequestThreadDialog.tsx",
-        "apps/web/src/components/SidebarV2.tsx",
-        "apps/web/src/components/ThreadTerminalDrawer.tsx",
-        "apps/web/src/components/chat/ChatComposer.tsx",
-        "apps/web/src/components/chat/ModelPickerContent.tsx",
-        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
-        "apps/web/src/components/preview/PreviewPanelShell.tsx",
-        "apps/web/src/components/ui/sidebar.tsx",
-        "apps/web/src/routes/__root.tsx"
-      ]
-    },
-    {
-      "api": "window.cancelAnimationFrame",
-      "calls": 26,
-      "fileCount": 12,
-      "files": [
-        "apps/web/src/browser/ElectronBrowserHost.tsx",
-        "apps/web/src/browser/HostedBrowserWebview.tsx",
-        "apps/web/src/components/AnimatedHeight.tsx",
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/PullRequestThreadDialog.tsx",
-        "apps/web/src/components/ThreadTerminalDrawer.tsx",
-        "apps/web/src/components/chat/ChatComposer.tsx",
-        "apps/web/src/components/chat/ModelPickerContent.tsx",
-        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
-        "apps/web/src/components/preview/PreviewPanelShell.tsx",
-        "apps/web/src/components/ui/sidebar.tsx",
-        "apps/web/src/routes/__root.tsx"
-      ]
-    },
-    {
       "api": "navigator.platform",
-      "calls": 24,
-      "fileCount": 14,
+      "calls": 27,
+      "fileCount": 15,
       "files": [
         "apps/web/src/components/AppSidebarLayout.tsx",
         "apps/web/src/components/CommandPalette.tsx",
@@ -285,30 +315,25 @@
         "apps/web/src/connection/platform.ts",
         "apps/web/src/lib/platformDetection.ts",
         "apps/web/src/main.tsx",
-        "apps/web/src/terminal-links.ts"
+        "apps/web/src/terminal-links.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
       ]
     },
     {
-      "api": "window.clearTimeout",
-      "calls": 24,
-      "fileCount": 16,
+      "api": "document.createElement",
+      "calls": 20,
+      "fileCount": 10,
       "files": [
-        "apps/web/src/browser/desktopTabLifetime.ts",
-        "apps/web/src/components/AnimatedHeight.tsx",
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/GitActionsControl.tsx",
-        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/browser/browserRecording.ts",
+        "apps/web/src/components/ComposerPromptEditor.tsx",
         "apps/web/src/components/ThreadTerminalDrawer.tsx",
-        "apps/web/src/components/chat/ChatComposer.tsx",
-        "apps/web/src/components/chat/ComposerPendingUserInputPanel.tsx",
-        "apps/web/src/components/chat/ModelPickerContent.tsx",
-        "apps/web/src/components/preview/AgentBrowserCursor.tsx",
-        "apps/web/src/components/preview/ZoomIndicator.tsx",
-        "apps/web/src/components/preview/useLoadingProgress.ts",
-        "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
-        "apps/web/src/components/ui/toast.tsx",
-        "apps/web/src/hooks/useNowMinute.ts",
-        "apps/web/src/state/queries.ts"
+        "apps/web/src/contextMenuFallback.ts",
+        "apps/web/src/hooks/useTheme.ts",
+        "apps/web/src/lib/imageCompression.ts",
+        "apps/web/src/markdown-clipboard.ts",
+        "apps/web/src/pierre-icons.ts",
+        "apps/web/src/proposedPlan.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
       ]
     },
     {
@@ -344,8 +369,8 @@
     },
     {
       "api": "navigator.clipboard",
-      "calls": 16,
-      "fileCount": 7,
+      "calls": 17,
+      "fileCount": 8,
       "files": [
         "apps/web/src/cloud/useCloudLinkController.ts",
         "apps/web/src/components/ChatMarkdown.tsx",
@@ -353,22 +378,8 @@
         "apps/web/src/components/cloud/CloudEnvironmentConnectList.tsx",
         "apps/web/src/components/preview/PreviewView.tsx",
         "apps/web/src/components/settings/ConnectionsSettings.tsx",
-        "apps/web/src/platform/clientCapabilities.web.ts"
-      ]
-    },
-    {
-      "api": "document.createElement",
-      "calls": 15,
-      "fileCount": 8,
-      "files": [
-        "apps/web/src/browser/browserRecording.ts",
-        "apps/web/src/components/ComposerPromptEditor.tsx",
-        "apps/web/src/contextMenuFallback.ts",
-        "apps/web/src/hooks/useTheme.ts",
-        "apps/web/src/lib/imageCompression.ts",
-        "apps/web/src/markdown-clipboard.ts",
-        "apps/web/src/pierre-icons.ts",
-        "apps/web/src/proposedPlan.ts"
+        "apps/web/src/platform/clientCapabilities.web.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
       ]
     },
     {
@@ -419,6 +430,36 @@
       ]
     },
     {
+      "api": "navigator",
+      "calls": 13,
+      "fileCount": 9,
+      "files": [
+        "apps/web/src/components/ChatMarkdown.tsx",
+        "apps/web/src/components/CommandPalette.tsx",
+        "apps/web/src/components/DiffWorkerPoolProvider.tsx",
+        "apps/web/src/connection/platform.ts",
+        "apps/web/src/lib/platformDetection.ts",
+        "apps/web/src/lib/windowControlsOverlay.ts",
+        "apps/web/src/platform/clientCapabilities.web.ts",
+        "apps/web/src/terminal-links.ts",
+        "apps/web/src/terminal/ghostty/keyCodes.ts"
+      ]
+    },
+    {
+      "api": "ResizeObserver",
+      "calls": 13,
+      "fileCount": 7,
+      "files": [
+        "apps/web/src/browser/BrowserSurfaceSlot.tsx",
+        "apps/web/src/components/AnimatedHeight.tsx",
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/web/src/components/chat/MessagesTimeline.tsx",
+        "apps/web/src/components/preview/ThreadPreviewMiniPlayer.tsx",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
       "api": "window.localStorage",
       "calls": 13,
       "fileCount": 8,
@@ -434,43 +475,30 @@
       ]
     },
     {
-      "api": "navigator",
-      "calls": 12,
-      "fileCount": 8,
-      "files": [
-        "apps/web/src/components/ChatMarkdown.tsx",
-        "apps/web/src/components/CommandPalette.tsx",
-        "apps/web/src/components/DiffWorkerPoolProvider.tsx",
-        "apps/web/src/connection/platform.ts",
-        "apps/web/src/lib/platformDetection.ts",
-        "apps/web/src/lib/windowControlsOverlay.ts",
-        "apps/web/src/platform/clientCapabilities.web.ts",
-        "apps/web/src/terminal-links.ts"
-      ]
-    },
-    {
-      "api": "ResizeObserver",
-      "calls": 11,
-      "fileCount": 6,
-      "files": [
-        "apps/web/src/browser/BrowserSurfaceSlot.tsx",
-        "apps/web/src/components/AnimatedHeight.tsx",
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/chat/ChatComposer.tsx",
-        "apps/web/src/components/chat/MessagesTimeline.tsx",
-        "apps/web/src/components/preview/ThreadPreviewMiniPlayer.tsx"
-      ]
-    },
-    {
       "api": "matchMedia",
-      "calls": 10,
-      "fileCount": 5,
+      "calls": 12,
+      "fileCount": 7,
       "files": [
         "apps/web/src/components/ChatView.tsx",
         "apps/web/src/components/chat/draftHeroTransition.ts",
+        "apps/web/src/components/settings/settingsLayout.web.tsx",
         "apps/web/src/hooks/useMediaQuery.ts",
         "apps/web/src/hooks/useTheme.ts",
-        "apps/web/src/platform/clientCapabilities.web.ts"
+        "apps/web/src/platform/clientCapabilities.web.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
+      "api": "window.matchMedia",
+      "calls": 11,
+      "fileCount": 6,
+      "files": [
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/chat/draftHeroTransition.ts",
+        "apps/web/src/components/settings/settingsLayout.web.tsx",
+        "apps/web/src/hooks/useMediaQuery.ts",
+        "apps/web/src/hooks/useTheme.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
       ]
     },
     {
@@ -500,17 +528,6 @@
       ]
     },
     {
-      "api": "window.matchMedia",
-      "calls": 9,
-      "fileCount": 4,
-      "files": [
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/chat/draftHeroTransition.ts",
-        "apps/web/src/hooks/useMediaQuery.ts",
-        "apps/web/src/hooks/useTheme.ts"
-      ]
-    },
-    {
       "api": "document.querySelector",
       "calls": 8,
       "fileCount": 6,
@@ -536,6 +553,32 @@
       ]
     },
     {
+      "api": "window.clearInterval",
+      "calls": 7,
+      "fileCount": 6,
+      "files": [
+        "apps/web/src/components/GitActionsControl.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
+        "apps/web/src/components/preview/useLoadingProgress.ts",
+        "apps/web/src/hooks/useNowMinute.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
+      "api": "document.getElementById",
+      "calls": 6,
+      "fileCount": 6,
+      "files": [
+        "apps/web/src/components/ChatMarkdown.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/settings/SettingsSidebarNav.tsx",
+        "apps/web/src/components/settings/settingsLayout.web.tsx",
+        "apps/web/src/main.tsx",
+        "apps/web/src/pierre-icons.ts"
+      ]
+    },
+    {
       "api": "window.confirm",
       "calls": 6,
       "fileCount": 6,
@@ -549,15 +592,23 @@
       ]
     },
     {
-      "api": "window.history",
+      "api": "window.setInterval",
       "calls": 6,
-      "fileCount": 4,
+      "fileCount": 6,
       "files": [
-        "apps/web/src/components/ChatMarkdown.tsx",
-        "apps/web/src/components/Sidebar.tsx",
-        "apps/web/src/environments/primary/auth.ts",
-        "apps/web/src/routes/settings.tsx"
+        "apps/web/src/components/GitActionsControl.tsx",
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
+        "apps/web/src/components/preview/useLoadingProgress.ts",
+        "apps/web/src/hooks/useNowMinute.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
       ]
+    },
+    {
+      "api": "document.fonts",
+      "calls": 5,
+      "fileCount": 1,
+      "files": ["apps/web/src/terminal/ghostty/surface.ts"]
     },
     {
       "api": "document.visibilityState",
@@ -571,27 +622,36 @@
       ]
     },
     {
-      "api": "window.clearInterval",
+      "api": "fetch",
       "calls": 5,
-      "fileCount": 5,
+      "fileCount": 4,
       "files": [
-        "apps/web/src/components/GitActionsControl.tsx",
-        "apps/web/src/components/SidebarV2.tsx",
-        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
-        "apps/web/src/components/preview/useLoadingProgress.ts",
-        "apps/web/src/hooks/useNowMinute.ts"
+        "apps/web/src/environments/primary/httpLayer.ts",
+        "apps/web/src/lib/previewAnnotation.ts",
+        "apps/web/src/lib/runtime.ts",
+        "apps/web/src/terminal/ghostty/runtime.ts"
       ]
     },
     {
-      "api": "window.setInterval",
+      "api": "getSelection",
       "calls": 5,
-      "fileCount": 5,
+      "fileCount": 4,
       "files": [
-        "apps/web/src/components/GitActionsControl.tsx",
-        "apps/web/src/components/SidebarV2.tsx",
-        "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
-        "apps/web/src/components/preview/useLoadingProgress.ts",
-        "apps/web/src/hooks/useNowMinute.ts"
+        "apps/web/src/components/ChatMarkdown.tsx",
+        "apps/web/src/components/ComposerPromptEditor.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
+      "api": "window.history",
+      "calls": 5,
+      "fileCount": 4,
+      "files": [
+        "apps/web/src/components/ChatMarkdown.tsx",
+        "apps/web/src/components/settings/SettingsSidebarNav.tsx",
+        "apps/web/src/environments/primary/auth.ts",
+        "apps/web/src/routes/settings.tsx"
       ]
     },
     {
@@ -599,16 +659,6 @@
       "calls": 4,
       "fileCount": 2,
       "files": ["apps/web/src/providerUpdateDismissal.ts", "apps/web/src/versionSkew.ts"]
-    },
-    {
-      "api": "getSelection",
-      "calls": 4,
-      "fileCount": 3,
-      "files": [
-        "apps/web/src/components/ChatMarkdown.tsx",
-        "apps/web/src/components/ComposerPromptEditor.tsx",
-        "apps/web/src/components/ThreadTerminalDrawer.tsx"
-      ]
     },
     {
       "api": "MutationObserver",
@@ -637,16 +687,6 @@
       "files": ["apps/web/src/connection/storage.ts"]
     },
     {
-      "api": "document.getElementById",
-      "calls": 3,
-      "fileCount": 3,
-      "files": [
-        "apps/web/src/components/ChatMarkdown.tsx",
-        "apps/web/src/main.tsx",
-        "apps/web/src/pierre-icons.ts"
-      ]
-    },
-    {
       "api": "document.hasFocus",
       "calls": 3,
       "fileCount": 3,
@@ -669,16 +709,6 @@
       "files": ["apps/web/src/connection/storage.ts"]
     },
     {
-      "api": "fetch",
-      "calls": 3,
-      "fileCount": 3,
-      "files": [
-        "apps/web/src/environments/primary/httpLayer.ts",
-        "apps/web/src/lib/previewAnnotation.ts",
-        "apps/web/src/lib/runtime.ts"
-      ]
-    },
-    {
       "api": "window.dispatchEvent",
       "calls": 3,
       "fileCount": 3,
@@ -686,16 +716,6 @@
         "apps/web/src/commandPaletteBus.ts",
         "apps/web/src/components/preview/previewActionBus.ts",
         "apps/web/src/hooks/useLocalStorage.ts"
-      ]
-    },
-    {
-      "api": "window.getSelection",
-      "calls": 3,
-      "fileCount": 3,
-      "files": [
-        "apps/web/src/components/ChatMarkdown.tsx",
-        "apps/web/src/components/ComposerPromptEditor.tsx",
-        "apps/web/src/components/ThreadTerminalDrawer.tsx"
       ]
     },
     {
@@ -736,6 +756,21 @@
       "calls": 2,
       "fileCount": 1,
       "files": ["apps/web/src/cloud/connectCliAuth.ts"]
+    },
+    {
+      "api": "window.devicePixelRatio",
+      "calls": 2,
+      "fileCount": 1,
+      "files": ["apps/web/src/terminal/ghostty/surface.ts"]
+    },
+    {
+      "api": "window.getSelection",
+      "calls": 2,
+      "fileCount": 2,
+      "files": [
+        "apps/web/src/components/ChatMarkdown.tsx",
+        "apps/web/src/components/ComposerPromptEditor.tsx"
+      ]
     },
     {
       "api": "window.open",

@@ -11,19 +11,21 @@ function joinClassNames(...values: ReadonlyArray<string | undefined>): string {
 }
 
 export function SettingsSection({
+  id,
   title,
   icon,
   headerAction,
   children,
   className,
 }: LynxClassNameProps & {
+  readonly id?: string;
   readonly title: string;
   readonly icon?: ReactNode;
   readonly headerAction?: ReactNode;
   readonly children: ReactNode;
 }) {
   return (
-    <view className={joinClassNames("settings-section", className)}>
+    <view id={id} className={joinClassNames("settings-section", className)}>
       <view
         className={
           headerAction
@@ -45,6 +47,7 @@ export function SettingsSection({
 }
 
 export function SettingsRow({
+  id,
   title,
   description,
   status,
@@ -53,6 +56,7 @@ export function SettingsRow({
   children,
   className,
 }: LynxClassNameProps & {
+  readonly id?: string;
   readonly title: ReactNode;
   readonly description: ReactNode;
   readonly status?: ReactNode;
@@ -61,7 +65,7 @@ export function SettingsRow({
   readonly children?: ReactNode;
 }) {
   return (
-    <view className={joinClassNames("settings-row", className)}>
+    <view id={id} className={joinClassNames("settings-row", className)}>
       <view className="settings-row__text">
         <view className="settings-row__title-line">
           <text className="settings-row__title">{title}</text>

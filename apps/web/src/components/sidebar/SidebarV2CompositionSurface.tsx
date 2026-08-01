@@ -18,6 +18,10 @@ export interface SidebarV2CompositionSurfaceProps {
   readonly controls: SidebarV2ControlsSurfaceProps;
   readonly rows: ReactNode;
   readonly rowCount: number;
+  readonly listId?: string | undefined;
+  readonly listRole?: "list" | "listbox" | undefined;
+  readonly listAriaLabel?: string | undefined;
+  readonly emptyState?: ReactNode | undefined;
   readonly hasProjects: boolean;
   readonly scopedDisplayName: string | null;
   readonly onAddProjectClick: SidebarV2ControlsSurfaceProps["onNewProjectClick"];
@@ -50,20 +54,24 @@ export function SidebarV2CompositionSurface(props: SidebarV2CompositionSurfacePr
           >
             <HostList
               ref={props.listRef}
-              role="list"
+              id={props.listId}
+              role={props.listRole ?? "list"}
+              aria-label={props.listAriaLabel}
               className="flex flex-col gap-px"
               data-testid="sidebar-v2-thread-list"
             >
               {props.rows}
             </HostList>
           </TooltipProvider>
-          {props.rowCount === 0 ? (
-            <SidebarV2EmptyStateSurface
-              hasProjects={props.hasProjects}
-              scopedDisplayName={props.scopedDisplayName}
-              onAddProjectClick={props.onAddProjectClick}
-            />
-          ) : null}
+          {props.rowCount === 0
+            ? (props.emptyState ?? (
+                <SidebarV2EmptyStateSurface
+                  hasProjects={props.hasProjects}
+                  scopedDisplayName={props.scopedDisplayName}
+                  onAddProjectClick={props.onAddProjectClick}
+                />
+              ))
+            : null}
         </SidebarGroup>
       </SidebarContent>
       {props.afterContent}

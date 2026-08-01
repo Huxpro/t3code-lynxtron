@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
 import { SettingsPageContainer, SettingsRow } from "./settingsLayout";
 import { BetaSettingsSurface } from "./SettingsSurfaces";
+import { searchableSetting } from "./settingsSearch";
 
 const AUTO_SETTLE_MIN_DAYS = 1;
 const AUTO_SETTLE_MAX_DAYS = 90;
@@ -65,6 +66,7 @@ export function BetaSettingsPanel() {
   return (
     <SettingsPageContainer>
       <BetaSettingsSurface
+        sidebarV2Setting={searchableSetting("sidebar-v2")}
         sidebarV2Control={
           <Switch
             checked={sidebarV2Enabled}
@@ -83,7 +85,7 @@ export function BetaSettingsPanel() {
           sidebarV2Enabled ? (
             <>
               <SettingsRow
-                title="Auto-settle inactive threads"
+                title={searchableSetting("auto-settle-inactive-threads").title}
                 description="Threads with no activity for this long settle automatically. Threads on merged or closed PRs always settle."
                 control={
                   <Switch

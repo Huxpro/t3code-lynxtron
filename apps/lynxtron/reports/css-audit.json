@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1489,
+  "uniqueStaticUtilities": 1514,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -8,7 +8,7 @@
     },
     "color-mix(": {
       "status": "build-transform",
-      "occurrences": 55
+      "occurrences": 57
     },
     "@custom-variant": {
       "status": "drop",
@@ -20,11 +20,11 @@
     },
     ":hover": {
       "status": "state-adapter",
-      "occurrences": 12
+      "occurrences": 13
     },
     ":focus-visible": {
       "status": "state-adapter",
-      "occurrences": 9
+      "occurrences": 10
     },
     "position: fixed": {
       "status": "probe",
@@ -50,7 +50,7 @@
     },
     {
       "utility": "hover:text-foreground",
-      "occurrences": 51
+      "occurrences": 52
     },
     {
       "utility": "focus-visible:ring-ring",
@@ -61,16 +61,16 @@
       "occurrences": 17
     },
     {
-      "utility": "hover:bg-accent",
-      "occurrences": 12
+      "utility": "hover:text-sidebar-foreground",
+      "occurrences": 16
     },
     {
       "utility": "hover:bg-sidebar-row-hover",
-      "occurrences": 11
+      "occurrences": 14
     },
     {
-      "utility": "hover:text-sidebar-foreground",
-      "occurrences": 11
+      "utility": "hover:bg-accent",
+      "occurrences": 12
     },
     {
       "utility": "grid-cols-2",
@@ -186,6 +186,10 @@
     },
     {
       "utility": "focus-visible:text-foreground",
+      "occurrences": 2
+    },
+    {
+      "utility": "hover:bg-sidebar-control-surface",
       "occurrences": 2
     },
     {

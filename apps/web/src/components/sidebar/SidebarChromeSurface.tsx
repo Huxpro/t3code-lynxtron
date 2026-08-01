@@ -38,7 +38,7 @@ export function SidebarChromeHeaderSurface({
 export function SidebarChromeFooterSurface({ children }: { readonly children: ReactNode }) {
   return (
     <HostView
-      className="sidebar-footer flex flex-col gap-2 p-2"
+      className="sidebar-footer flex flex-col gap-2 p-[var(--sidebar-content-inset)]"
       data-sidebar="footer"
       data-slot="sidebar-footer"
     >

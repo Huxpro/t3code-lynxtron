@@ -38,10 +38,13 @@ export interface ArchivedThreadGroupItem {
 
 /** Archived threads panel: project groups with archived rows, or one empty section. */
 export function ArchivedThreadsSurface({
+  anchorId,
   groups,
   emptyTitle,
   emptyDescription,
 }: {
+  /** Settings-search target on the empty section or first populated group. */
+  readonly anchorId?: string | undefined;
   readonly groups: ReadonlyArray<ArchivedThreadGroupItem>;
   /** Loading/error/empty content for the zero-group state. */
   readonly emptyTitle: ReactNode;
@@ -49,16 +52,17 @@ export function ArchivedThreadsSurface({
 }) {
   if (groups.length === 0) {
     return (
-      <SettingsSection title="Archived threads">
+      <SettingsSection id={anchorId} title="Archived threads">
         <SettingsRow title={emptyTitle} description={emptyDescription} />
       </SettingsSection>
     );
   }
   return (
     <>
-      {groups.map((group) => (
+      {groups.map((group, index) => (
         <SettingsSection
           key={group.key}
+          id={index === 0 ? anchorId : undefined}
           title={group.title}
           {...(group.icon ? { icon: group.icon } : {})}
         >
@@ -84,11 +88,14 @@ export function ArchivedThreadsSurface({
 /** Beta panel: Sidebar v2 toggle row plus optional auto-settle controls. */
 export function BetaSettingsSurface({
   sidebarV2Control,
+  sidebarV2Setting,
   sidebarV2Status,
   autoSettleControls,
 }: {
   /** Switch for the canonical Sidebar v2 preference. */
   readonly sidebarV2Control: ReactNode;
+  /** Canonical Settings-search anchor and title. */
+  readonly sidebarV2Setting?: { readonly id: string; readonly title: string };
   /** Honest-gap note rendered under the row (for example an unmoved renderer). */
   readonly sidebarV2Status?: ReactNode;
   /** Auto-settle toggle + days input (Web; omitted where unsupported). */
@@ -97,7 +104,8 @@ export function BetaSettingsSurface({
   return (
     <SettingsSection title="Beta features">
       <SettingsRow
-        title="Sidebar v2"
+        {...sidebarV2Setting}
+        title={sidebarV2Setting?.title ?? "Sidebar v2"}
         description="One flat thread list in creation order. Active work renders as rich cards; settled threads collapse to compact rows. Settling requires an up-to-date server — on older servers threads simply stay active. Switch back any time."
         {...(sidebarV2Status ? { status: sidebarV2Status } : {})}
         control={sidebarV2Control}

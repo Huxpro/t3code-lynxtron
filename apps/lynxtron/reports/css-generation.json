@@ -1,6 +1,6 @@
 {
   "source": "apps/web/src/index.css",
-  "sourceHash": "43630dff3b7c2b3a2ecff9a3665ab9c1248daa932b30f7d5f59cfd161a1a16fc",
+  "sourceHash": "4ea1fff916c61ce5ce93d9bee6dadbeb74673ca83896d91503904cfefb495030",
   "generated": "apps/lynxtron/src/app/generated/lynx.css",
   "upstreamThemeTokenCount": 48,
   "effectiveSidebarTokenCount": 19,
