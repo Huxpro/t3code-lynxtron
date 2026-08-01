@@ -12,7 +12,9 @@ This index turns the current `apps/lynxtron` worktree into four bounded phases. 
 
 ## Active execution override
 
-Use [Prove the Lynxtron architecture through product outcomes](./11-outcome-driven-convergence.md) for work started after the 2026-08-01 AR6 review. Plan 11 keeps Plan 10's main-owned connector and shared-composition direction, but requires that architecture to close four regressions observed in a real packaged session: Sidebar V2 layout, Settings route stability, Composer adaptation, and stage branding. It also adds semantic cold-start readiness so a listening server or clean screenshot cannot be mistaken for a connected product.
+Use [Prove the Lynxtron architecture through product outcomes](./11-outcome-driven-convergence.md) for work started after the 2026-08-01 AR6 review. Plan 11 keeps Plan 10's main-owned connector and shared-composition direction, but requires that architecture to close five trust failures observed in a real packaged session: Sidebar V2 layout, Settings route stability, visible lifecycle state, Composer adaptation, and stage branding. It also adds semantic cold-start readiness so a listening server or clean screenshot cannot be mistaken for a connected product.
+
+[Complete Lynxtron feature parity by product value](./12-feature-parity-by-product-value.md) is the queued successor. Start it only after Plan 11 OC7 passes. Plan 12 orders the remaining product gap by user value: complete agent intervention and Composer context, transcript interaction, remote/multi-environment operation, change review, secondary terminal/browser surfaces, and finally platform performance and polish.
 
 Plan 11 supersedes Plan 10's completed task table and the task order in plans 06 and 09. Keep Plan 10 as architectural history. Keep the certification tiers, compatibility ledger, strict reuse calculation, fidelity thresholds, and existing evidence defined in this index.
 
@@ -68,7 +70,7 @@ by the phase-exit battery.
 | T7    | [Converge desktop interactions and system states](./07-desktop-interaction-convergence.md) | Pointer, keyboard, overlay, resize, theme, and failure states have evidence |
 | T8    | [Certify and hand off the port](./08-certification-and-handoff.md)                         | Final matrix, packaged smoke, and completion report exist                   |
 
-Use [Prove the Lynxtron architecture through product outcomes](./11-outcome-driven-convergence.md) when one goal should continue across the current result-oriented tasks. Keep [Reset the Lynxtron port around the Web product source](./10-source-first-architecture-reset.md) and [Run the previous long-range port goal](./09-long-range-goal.md) as historical context for the superseded sequences.
+Use [Prove the Lynxtron architecture through product outcomes](./11-outcome-driven-convergence.md) for the active trust-recovery work, then [Complete Lynxtron feature parity by product value](./12-feature-parity-by-product-value.md) for the remaining product journey. Keep [Reset the Lynxtron port around the Web product source](./10-source-first-architecture-reset.md) and [Run the previous long-range port goal](./09-long-range-goal.md) as historical context for the superseded sequences.
 
 ## Task state
 

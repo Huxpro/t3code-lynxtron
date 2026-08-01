@@ -9,11 +9,18 @@ This app is the monorepo-native successor to the standalone
 order after the Plan 10 AR6 review. A real packaged handoff found that the
 child server could become ready while the renderer's one-shot bridge probe had
 already failed; Page reload then connected with transport `kind: "main"` and
-`lastSeq: 22`. The same session found four result regressions: broken Sidebar
-V2/project-scope layout, Settings flashing back to chat, weak Composer
-adaptation, and missing Dev stage artwork. Plan 11 keeps the main-owned and
-shared-composition architecture, fixes semantic cold-start readiness first,
-and requires those four observable outcomes to pass before it can complete.
+`lastSeq: 22`. The same session found five trust regressions: broken Sidebar
+V2/project-scope layout, Settings flashing back to chat, lifecycle failure or
+reconnect state not being consistently visible, weak Composer adaptation, and
+missing Dev stage artwork. Plan 11 keeps the main-owned and shared-composition
+architecture, fixes semantic cold-start readiness first, and requires those
+five observable outcomes to pass before it can complete.
+
+[Plan 12](./plans/12-feature-parity-by-product-value.md) is queued after Plan 11. It closes the remaining Web/Electron feature gap by product value: the
+complete agent intervention and input loop, transcript interaction, remote and
+multi-environment operation, change review, secondary work surfaces, and then
+platform performance, theme, and polish. It must not start by bypassing an
+unfinished Plan 11 outcome.
 
 ## Completed foundation
 

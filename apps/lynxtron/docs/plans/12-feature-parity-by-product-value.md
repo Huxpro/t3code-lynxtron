@@ -1,0 +1,377 @@
+# Complete Lynxtron feature parity by product value
+
+Plan 11 makes the existing Lynxtron shell trustworthy. This plan starts only after that proof passes and closes the remaining gap to the current Web/Electron product in the order users experience value: finish an agent turn, intervene safely, work remotely, review the result, and only then expand secondary work surfaces and platform polish.
+
+Execute tasks in order unless a task explicitly allows independent runtime work. Keep one task in progress, commit and push each completed task separately, and preserve an explicit fallback for every open Lynxtron capability gap.
+
+## Plan metadata
+
+- Content type: How-to
+- Status: Queued after Plan 11
+- Audience: Agents continuing the T3 Code Electron-to-Lynxtron port
+- Goal: Let a user complete and review a real local or remote coding-agent turn in Lynxtron without returning to Web for any required step
+- Scope: `apps/lynxtron`, physically shared Web compositions, `packages/client-runtime`, `packages/contracts`, and the minimum desktop/server boundaries needed by a cross-surface feature
+- Product source of truth: Current Web/Electron behavior in the same checkout
+- Entry condition: Plan 11 OC7 is complete with O1–O5 passing
+- Release target: Advance beyond `chat-first-preview` only when the required product journey and phase-exit gates in this plan pass
+- Branch: `lynxtron-port` in `/Users/bytedance/github/t3code`
+- Push target: `lynxtron/lynxtron-port` over SSH
+- Created: 2026-08-01
+
+## Product decision
+
+Feature parity is not a count of visible controls. A feature counts only when the user can enter it, understand its state, complete or reverse its action, and see the result through canonical server state.
+
+Use this value order:
+
+1. **Complete the agent loop.** A user can send context, answer the agent, approve or reject work, recover from failure, and finish the turn.
+2. **Preserve remote readiness.** The same essential loop works across local, LAN, relay, tunnel, and multiple environments where Web supports them.
+3. **Review what changed.** A user can understand checkpoints, diffs, files, and source-control state before trusting the result.
+4. **Expand desktop work surfaces.** Terminal and browser follow the complete chat-and-review journey; they do not delay it.
+5. **Close platform quality gaps.** Performance, theme, input, fonts, SVG, and selection are certified after they support the higher-value flows.
+
+This order intentionally puts agent intervention and remote use above editor, terminal, browser, and decorative fidelity. Those later surfaces remain honest product-quality placeholders until their own task closes.
+
+## Entry baseline from Plan 11
+
+Do not start PF work by reopening Plan 11 outcomes. Treat these as required invariants:
+
+- three fresh packaged starts reach semantic readiness without reload;
+- one navigation authority keeps Settings stable;
+- lifecycle status is visible and truthful;
+- Sidebar V2, Composer shell, and stage branding pass their product checks;
+- shared product compositions remain the owners and Lynx files remain bounded platform leaves;
+- slice verification follows the tiered harness and does not substitute screenshots for connector or input evidence.
+
+If an invariant regresses, fix it inside the active PF task and add a focused regression test. Do not create a parallel cleanup phase.
+
+## Priority and task sequence
+
+| Priority | ID  | Product capability                                    | Depends on | Status    | User-visible exit                                                                       |
+| -------- | --- | ----------------------------------------------------- | ---------- | --------- | --------------------------------------------------------------------------------------- |
+| P0       | PF0 | Rebaseline the complete Web feature journey           | Plan 11    | `pending` | One fixed parity ledger identifies required, deferred, unsupported, and blocked paths   |
+| P1       | PF1 | Complete agent intervention and recovery              | PF0        | `pending` | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
+| P1       | PF2 | Complete Composer input and context                   | PF1        | `pending` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
+| P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `pending` | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
+| P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `pending` | A user can find, connect to, diagnose, and operate supported remote environments        |
+| P2       | PF5 | Complete change review, checkpoints, and files        | PF4        | `pending` | A user can inspect the result and its source-control implications without Web           |
+| P2       | PF6 | Expand terminal and browser work surfaces             | PF5        | `pending` | Approved placeholder surfaces are replaced only where the runtime can support them      |
+| P2       | PF7 | Close performance, theme, and remaining platform gaps | PF6        | `pending` | Long sessions remain fast and required theme/input/runtime gates have evidence          |
+| P3       | PF8 | Certify the end-to-end Lynxtron product journey       | PF7        | `pending` | Local and remote journeys pass the complete phase-exit evidence matrix                  |
+
+Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `skipped(reason)`. Only one task may be `in_progress`.
+
+## PF0: Rebaseline the complete Web feature journey
+
+Freeze the actual product boundary before implementing more controls. Use a populated, realistic snapshot and trace one current Web/Electron journey from project selection through completed work and review.
+
+### Required work
+
+1. Inventory every user-reachable state in the selected journey across chat, Settings, command palette, and keybindings.
+2. Record decisions for Web, desktop, mobile, each provider adapter, contracts, and local/remote connection modes where the feature applies.
+3. Classify each Web capability as:
+   - `required(this-plan)`;
+   - `deferred(reason)`;
+   - `unsupported(runtime-gap-R#)`;
+   - `not-applicable(product-reason)`.
+4. Map each required capability to its canonical state, shared composition owner, Lynx primitive or island, reverse action, and smallest acceptance proof.
+5. Update the compatibility ledger for every previously implicit difference. Do not change reuse exclusions or screenshot masks.
+
+### Exit criteria
+
+- The ledger covers the whole selected user journey rather than only currently rendered Lynx controls.
+- Every visible Lynx affordance maps to working behavior or an explicit unavailable presentation.
+- No task below depends on an unnamed product or runtime decision.
+- This task changes documentation and fixtures only; production behavior remains unchanged.
+
+## PF1: Complete agent intervention and recovery
+
+The primary product is directing an agent, not merely reading its transcript. Close all server-driven moments that require a user decision before adding secondary desktop surfaces.
+
+### Required capability set
+
+- approval requests, including approve, reject, and policy choices supported by the provider;
+- pending user input and follow-up questions;
+- proposed-plan review, acceptance, revision/follow-up, and implementation handoff;
+- stop/interrupt, resume, retry, and actionable turn failure;
+- provider-authentication or unavailable-provider states that block the turn;
+- visible pending and settled receipts so an action cannot appear successful before canonical confirmation.
+
+### Architecture rules
+
+1. Consume the existing contracts and shared projections; change `packages/contracts` only when the wire truly lacks required state.
+2. Complexity belongs in provider and platform adapters. Shared orchestration and presentation must not branch on renderer identity.
+3. Each action needs entry, cancellation or reverse behavior where valid, disabled/pending feedback, failure feedback, and canonical completion.
+4. Do not model an intervention as transcript text when Web treats it as structured state.
+5. Decide support explicitly for Codex, Claude, Cursor, Grok, and OpenCode.
+
+### Exit criteria
+
+- A fixture and at least one real supported provider path cover every required intervention state.
+- A user can complete a turn that pauses for input or approval without opening Web.
+- Duplicate taps cannot submit the same decision twice.
+- Failure and retry preserve the thread and explain the recovery path.
+
+## PF2: Complete Composer input and context
+
+Plan 11 certifies the Composer shell. This task makes it a complete input surface.
+
+### Required capability set
+
+- image and file attachments, including preview, removal, upload failure, and resend behavior;
+- file, terminal, and other supported context chips from canonical context state;
+- persisted draft and restoration across route changes or reconnects where Web preserves it;
+- pending, sending, disabled, interruptible, failed, and retry states;
+- model, reasoning, access/runtime, interaction mode, checkout, and branch behavior equivalent to Web;
+- paste/drop/select entry points only where the Lynxtron runtime can prove them.
+
+### Architecture rules
+
+1. Keep shared control order, labels, layout variants, validation, and context projection in the shared Composer composition.
+2. Keep native input, picker, clipboard, focus, and selection mechanics in capability leaves.
+3. Do not display a shortcut, drop hint, or attachment affordance whose real input path has not passed acceptance.
+4. Remote file references must identify their owning environment and must not be resolved against the local host accidentally.
+
+### Exit criteria
+
+- The same draft with text, image, file, and context fixtures projects equivalently in Web and Lynx.
+- Add/remove/fail/retry/send behavior is proven through canonical receipts.
+- Draft and context survive the scoped navigation and reconnect paths defined by Web.
+- R5-dependent typing, focus, paste, or selection checks remain `pending-user-session` until one authorized real-input pass is recorded.
+
+## PF3: Complete transcript navigation and interaction
+
+A working agent loop must remain usable across long output, structured Markdown, and new content arriving while the user reads history.
+
+### Required capability set
+
+- anchoring-new-turn, follow-tail, detached-reading, and explicit re-stick scroll modes;
+- Markdown tables, nested lists/blocks, code blocks, links, images, and registered fallbacks;
+- checkpoint, turn-diff, tool, reasoning, plan, question, approval, error, and retry cards in canonical order;
+- selection/copy fallback, link opening, collapsed/expanded state, and supported card actions;
+- renderer-neutral discrete keyboard packets and commands for new thread, quick switch, Settings, and other proven accelerators;
+- physical Tab, Escape, arrows, focus traversal, wheel, drag, and selection only after a real user-session acceptance.
+
+### Architecture rules
+
+1. Preserve one transcript projection and one scroll-mode state machine. Do not create Lynx-only meanings for canonical events.
+2. Use `sendGlobalEvent` and the shared keybinding resolver for discrete Menu accelerators; do not claim full keyboard injection.
+3. Keep R5 and R12 boundaries explicit. Headless taps and screenshots cannot certify keyboard, focus, wheel, drag, or selection.
+4. Long transcripts must use bounded rendering and must not re-render the whole timeline for an unrelated connector update.
+
+### Exit criteria
+
+- Long-turn fixtures preserve order, card anatomy, and Markdown meaning without clipped or inaccessible content.
+- Incoming content follows only in the correct scroll mode; reading history is not stolen.
+- Discrete accelerators reach the shared resolver with exact packet semantics.
+- Real-input checks are either passed in one authorized user session or remain visibly blocked by their runtime gap.
+
+## PF4: Complete remote and multi-environment operation
+
+Remote readiness is a core product property. A Lynxtron desktop shell that works only against its bundled local server is not feature-parity.
+
+### Required capability set
+
+- discover and select local and remote environments;
+- connect through supported LAN, relay, tunnel, and T3 Connect paths;
+- pair/authenticate where required and present actionable expiry or permission errors;
+- show environment ownership for projects, threads, files, attachments, terminal context, and commands;
+- reconnect without changing route, draft, selected environment, or presenting stale local state as remote state;
+- handle multiple environments and devices without cross-environment cache or command leakage;
+- complete the Connections Settings catalog and status surface required by these flows.
+
+### Architecture rules
+
+1. Reuse the Web connection contracts and `packages/client-runtime` state. Lynxtron main may adapt transport but must not own a second product catalog.
+2. Never bake localhost origins into the renderer bundle.
+3. Connection state must identify the target environment and distinguish transport readiness from product snapshot readiness.
+4. Test against isolated copied state, never live `~/.t3/userdata`.
+
+### Exit criteria
+
+- One local and one supported remote journey can select a project, complete a turn, reconnect, and retain canonical state.
+- Wrong-environment file or command execution is covered by focused tests.
+- Failure states explain whether the problem is pairing, authentication, transport, server readiness, or product synchronization.
+- Relay/tunnel behavior remains compatible with Web and mobile clients.
+
+## PF5: Complete change review, checkpoints, and files
+
+After the agent finishes, the user must be able to understand the result before trusting or continuing it.
+
+### Required capability set
+
+- checkpoint and turn-diff summaries in the timeline;
+- full diff/patch presentation when R10 is available, with an explicit bounded fallback while blocked;
+- changed-file list, file preview, navigation to relevant changes, and source-control state;
+- restore/revert/reopen flows supported by the product, including confirmation and receipt states;
+- files/editor chrome and commands around the approved editor placeholder until a capable native or shared editor path exists.
+
+### Architecture rules
+
+1. Share diff models, file projections, command intents, and surrounding product anatomy.
+2. Keep DOM/Worker patch rendering registered as a hard island; do not introduce a broad DOM shim to erase R10 on paper.
+3. Destructive source-control actions require exact targets, confirmation where Web requires it, and canonical completion receipts.
+4. A summary card does not count as full review parity when the underlying changes cannot be inspected.
+
+### Exit criteria
+
+- A completed real turn exposes its changed files, checkpoint, and inspectable diff or explicit R10 fallback.
+- The user can navigate from transcript result to affected file state and back without losing the thread.
+- Reverse actions update both source-control state and the projected timeline correctly.
+- No placeholder claims editing or patch capabilities it cannot perform.
+
+## PF6: Expand terminal and browser work surfaces
+
+Replace approved placeholders only after chat, remote operation, and review are complete. Treat terminal emulation and embedded browsing as separate runtime products, not visual components.
+
+### Required work
+
+1. Re-evaluate Lynxtron runtime capabilities for terminal transport/input/rendering and embedded browser isolation/navigation.
+2. For each surface, choose one bounded outcome:
+   - implement the shared product chrome with a capable native runtime leaf;
+   - launch an explicit external/system surface with honest handoff state;
+   - remain `blocked(runtime-gap-R#)` with a product-quality placeholder and removal condition.
+3. Preserve remote environment ownership, command permissions, lifecycle, close/reopen behavior, and resource cleanup.
+4. Do not ship a decorative terminal or browser that cannot safely execute its primary workflow.
+
+### Exit criteria
+
+- Each surface has a documented capability decision and acceptance evidence.
+- Implemented surfaces support open, active, failure, reconnect, close, and reopen states.
+- Remote commands and URLs cannot silently execute against the wrong host.
+- Blocked surfaces remain explicit and do not block the already complete agent journey.
+
+## PF7: Close performance, theme, and remaining platform gaps
+
+Close platform quality only against the now-complete journey so optimization and polish measure real workloads.
+
+### Required capability set
+
+- R11 asynchronous code splitting and lazy loading where the Lynxtron runtime supports it;
+- bundle and startup budgets, long-transcript rendering cost, connector payload/update frequency, and memory stability;
+- R13 light, dark, and system theme behavior across required surfaces;
+- R8 selection/copy, R1 SVG, R2 custom fonts, and remaining compatibility entries when their probes pass;
+- keyboard/focus/scroll gaps still open after PF3;
+- removal of obsolete overrides, fallbacks, and local islands whose runtime gaps have closed.
+
+### Performance rules
+
+1. Capture a baseline before changing loading or rendering boundaries.
+2. Do not trade repeated connector payloads or full-list rerenders for a smaller authored file.
+3. Avoid continuously repainting animations and unbounded retained transcript state.
+4. Report bundle and runtime deltas; do not improve a metric by changing exclusions, masks, or feature reachability.
+
+### Exit criteria
+
+- Startup, ready-to-interact, long-transcript update, memory, and bundle results meet recorded budgets or have an explicit approved exception.
+- Required surfaces pass light, dark, and system-theme matrices.
+- Closed R# entries have removal evidence; open entries retain honest fallbacks and owners.
+- Route, product-surface, and renderer-local reuse reports improve or explain every regression.
+
+## PF8: Certify the end-to-end Lynxtron product journey
+
+Run the complete phase-exit evidence once. Do not repeat this battery after each earlier slice.
+
+### Required journeys
+
+1. Fresh local packaged start to semantic readiness.
+2. Select a populated project and start a new thread.
+3. Compose text plus supported attachments/context and send.
+4. Complete a structured intervention such as approval, user input, or proposed-plan response.
+5. Read a long/structured transcript without losing the chosen scroll mode.
+6. Finish the turn and inspect its checkpoint, changed files, and diff/fallback.
+7. Interrupt/reconnect and confirm route, environment, draft, and thread state remain canonical.
+8. Repeat the supported essential journey against a remote environment.
+9. Verify Settings, command palette, and accepted keybinding entry points for applicable features.
+
+### Complete evidence matrix
+
+- Web/Electron and Lynx at 1280 x 820 and 1440 x 900;
+- light, dark, and system theme where R13 is closed;
+- ready, pending, intervention, failure, reconnecting, recovered, and completed states;
+- focused provider decisions and at least one real supported-provider execution;
+- local and supported remote connection modes;
+- physical keyboard/focus/wheel/drag/selection from an authorized user session where required;
+- reuse, bundle, long-list performance, compatibility, and renderer-error reports.
+
+### Plan exit criteria
+
+- The complete local journey requires no return to Web.
+- The supported remote journey preserves environment identity and canonical state.
+- Every required feature has entry, state, completion, failure, and reverse behavior where applicable.
+- No visual affordance claims an unavailable capability.
+- Web, desktop, mobile, provider, contract, and connection-mode decisions are recorded for every changed cross-surface feature.
+- Open runtime gaps are product-approved blockers with honest fallbacks, not hidden implementation omissions.
+- `implementation-status.md`, `compat-matrix.md`, `port-ledger.md`, and the task table match the final evidence.
+
+## Per-task acceptance
+
+Use the smallest proof for PF0–PF7:
+
+1. Focused tests for changed behavior and contracts.
+2. Affected Web and Lynx TypeScript programs.
+3. ReactLynx scanner for changed renderer files.
+4. Lynx API/CSS audits only when that surface changed.
+5. Affected production builds.
+6. `report:reuse` only for a shared-boundary change.
+7. One fresh 1280 x 820 semantic-ready packaged smoke and one affected state after supported real interaction.
+8. `git diff --check`.
+
+Run paired viewports, themes, lifecycle matrices, remote journeys, and the real-input session only at the relevant task exit or PF8. A screenshot proves rendering only. It does not prove connection, routing, keyboard, scrolling, focus, selection, drag, command execution, or receipts.
+
+## Stop conditions
+
+Stop and report when:
+
+- Plan 11 OC7 or one of its five invariants is not complete;
+- an upstream conflict extends outside the active PF surface;
+- a required capability needs a new product decision across Web, desktop, mobile, or providers;
+- the runtime lacks a required primitive and the fallback would change the product promise;
+- completion depends on physical input evidence and no user session is authorized;
+- a remote test would require writing to live user state or using unknown credentials;
+- a feature can be made to look complete only through copied Web JSX, a broad DOM shim, fixture injection, or a false-ready harness;
+- LFS, signing, notarization, external account action, or another user decision is required.
+
+Do not stop merely because a secondary surface remains an approved placeholder. Record its runtime gap and continue with the higher-value journey.
+
+## Session handoff requirements
+
+Before ending a session, record:
+
+- current commit, branch, and remote relation;
+- active PF task and its remaining product exit criteria;
+- dirty files owned by the task and unrelated user work preserved;
+- exact focused commands, semantic results, and evidence paths;
+- local versus remote state identity and any credentials or actions intentionally not used;
+- process PIDs, ports, DevTool session, and isolated state that remain active;
+- compatibility and provider decisions added;
+- commit and push status.
+
+## Prompt for the first Plan 12 session
+
+```text
+Continue the T3 Code Electron-to-Lynxtron feature-parity plan in
+/Users/bytedance/github/t3code on branch lynxtron-port.
+
+Read these files in order:
+1. AGENTS.md
+2. .impeccable.md
+3. apps/lynxtron/docs/plans/11-outcome-driven-convergence.md
+4. apps/lynxtron/docs/plans/12-feature-parity-by-product-value.md
+5. apps/lynxtron/docs/implementation-status.md
+6. apps/lynxtron/docs/compat-matrix.md
+7. apps/lynxtron/docs/port-ledger.md
+8. apps/lynxtron/docs/plans/00-execution-index.md
+
+Plan 12 starts only if Plan 11 OC7 is complete and O1–O5 pass. Preserve all
+user work. Resume the first non-completed PF task, keep only one task in
+progress, and commit and push every completed task separately.
+
+Prioritize the complete coding-agent journey: intervention and recovery,
+Composer input/context, transcript interaction, remote environments, then
+change review. Terminal/browser and platform polish follow that journey.
+Current Web/Electron is the product source of truth. A visible control is not
+feature parity unless its entry, state, failure, completion, and reverse path
+work through canonical state. Use slice-level harnessing during implementation
+and reserve the complete evidence matrix for PF8.
+```

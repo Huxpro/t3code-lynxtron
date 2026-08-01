@@ -1,15 +1,15 @@
 # Prove the Lynxtron architecture through product outcomes
 
-Plan 10 changed the direction of the port: connector ownership moved to main and ordinary product anatomy started moving back into shared Web compositions. This plan makes that architecture earn its keep. It closes four user-visible regressions found in a real packaged session and adds the semantic launch harness that should have caught them before screenshots were accepted.
+Plan 10 changed the direction of the port: connector ownership moved to main and ordinary product anatomy started moving back into shared Web compositions. This plan makes that architecture earn its keep. It closes five trust-breaking product regressions found in a real packaged session and adds the semantic launch harness that should have caught them before screenshots were accepted.
 
-Execute tasks in order. Keep one task in progress, commit and push every completed task separately, and do not mark this plan complete while any of the four outcome checks still fails.
+Execute tasks in order. Keep one task in progress, commit and push every completed task separately, and do not mark this plan complete while any of the five outcome checks still fails.
 
 ## Plan metadata
 
 - Content type: How-to
 - Status: Ready
 - Audience: Agents continuing the T3 Code Electron-to-Lynxtron port
-- Goal: Produce a packaged Lynxtron build whose cold start, Sidebar V2, Settings navigation, Composer, and stage branding visibly and behaviorally match the current Web product boundary
+- Goal: Produce a trustworthy packaged Lynxtron build whose cold start, lifecycle status, Sidebar V2, Settings navigation, Composer, and stage branding visibly and behaviorally match the current Web product boundary
 - Scope: `apps/lynxtron`, the physically shared compositions and Lynx leaves under `apps/web`, and renderer-neutral state only where both renderers consume it
 - Product source of truth: Current Web/Electron in this checkout, not the standalone Lynx prototype
 - Runtime source of truth: Packaged `dist/desktop` cold starts using an isolated realistic T3 state
@@ -25,7 +25,7 @@ The AR6 report classified the port as a `chat-first-preview`, but a real handoff
 2. The renderer diagnostic still reported connector transport `kind: "unavailable"` and remained on Connecting.
 3. Reloading after main was ready made the renderer connect, proving a packaged cold-start race rather than a server failure.
 
-The same session exposed four product regressions:
+The same session and AR6 reconnect evidence exposed five product regressions:
 
 | ID  | User-visible failure                                                                                                                      | Required end result                                                                                                                                                          |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -33,8 +33,9 @@ The same session exposed four product regressions:
 | O2  | Clicking the lower-left Settings row flashes Settings and returns to chat                                                                 | One real tap enters `/settings/general`, stays there through connector/router updates, supports section navigation, and returns to chat only through an explicit Back action |
 | O3  | The primary Composer is weakly adapted: density, contrast, spacing, controls, and context strip do not read as the Web product            | Shared Composer geometry and tokens match Web within fidelity thresholds; the native editor remains the only substantial Lynx island                                         |
 | O4  | The stage artwork behind the upper-left T3 Code brand disappeared                                                                         | The local packaged preview resolves the intended Dev stage and renders the shared Dev backdrop; Nightly and non-artwork modes retain their documented behavior               |
+| O5  | Connecting, failed, and reconnecting are not consistently visible; disabled Composer state is expected to carry too much meaning          | The chat shell renders canonical lifecycle status and recovery guidance, and never presents an unavailable transport as an inert ready-looking screen                        |
 
-These outcomes are independent gates. A clean screenshot does not prove O2. A unit test does not prove O1, O3, or O4. A listening server does not prove a usable product.
+These outcomes are independent gates. A clean screenshot does not prove O2 or O5. A unit test does not prove O1, O3, or O4. A listening server does not prove a usable product.
 
 ## Current architectural findings
 
@@ -76,7 +77,7 @@ The architecture is successful only when the shared layer determines product beh
 - Do not use reload, fixture injection, a fixed sleep, or a screenshot to hide a failed cold start.
 - Do not make broad DOM shims. Keep Lynx differences in typed leaves or registered runtime gaps.
 - Keep Tailwind v3 on the Lynx build and Tailwind v4 on Web.
-- Every new `overrides.css` rule needs `surface`, `R#`, and `remove-when`; target a net reduction across OC3–OC5.
+- Every new `overrides.css` rule needs `surface`, `R#`, and `remove-when`; target a net reduction across OC4–OC6.
 - Do not change reuse exclusions, screenshot masks, or fidelity thresholds.
 - Keep editor, terminal, browser, full patch rendering, custom fonts, SVG, and Selection outside this plan except where existing registered fallbacks are rendered by the affected shared chrome.
 - Do not claim physical keyboard, focus, wheel, drag, or selection acceptance from DevTool; keep R5/R12 `pending-user-session`.
@@ -96,13 +97,14 @@ At the start of every task:
 
 | ID  | Task                                                 | Depends on     | Status    | Result                                                                            |
 | --- | ---------------------------------------------------- | -------------- | --------- | --------------------------------------------------------------------------------- |
-| OC0 | Freeze the four failures and current Web baselines   | Current branch | `pending` | Durable outcome fixtures, measurements, and exact failure signatures              |
+| OC0 | Freeze the five failures and current Web baselines   | Current branch | `pending` | Durable outcome fixtures, measurements, and exact failure signatures              |
 | OC1 | Make packaged cold start semantically ready          | OC0            | `pending` | Three fresh starts connect without reload and the harness rejects false readiness |
 | OC2 | Give Lynx navigation one authority                   | OC1            | `pending` | Settings tap, section changes, and Back remain stable                             |
-| OC3 | Converge Sidebar layout and anchored overlays        | OC2            | `pending` | Sidebar V2 and project-scope popup match Web without reflow or duplication        |
-| OC4 | Converge Composer layout and token contracts         | OC3            | `pending` | Composer geometry, density, contrast, and context strip meet the matched baseline |
-| OC5 | Restore stage branding from canonical build metadata | OC4            | `pending` | Dev artwork is visible in the local packaged preview without prototype branding   |
-| OC6 | Run the four-outcome product proof                   | OC5            | `pending` | One report proves O1–O4 on a real packaged cold start                             |
+| OC3 | Make lifecycle state visible and actionable          | OC2            | `pending` | Starting, ready, failed, and reconnecting are truthful in the chat shell          |
+| OC4 | Converge Sidebar layout and anchored overlays        | OC3            | `pending` | Sidebar V2 and project-scope popup match Web without reflow or duplication        |
+| OC5 | Converge Composer layout and token contracts         | OC4            | `pending` | Composer geometry, density, contrast, and context strip meet the matched baseline |
+| OC6 | Restore stage branding from canonical build metadata | OC5            | `pending` | Dev artwork is visible in the local packaged preview without prototype branding   |
+| OC7 | Run the five-outcome product proof                   | OC6            | `pending` | One report proves O1–O5 on a real packaged cold start                             |
 
 Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `skipped(reason)`. Only one task may be `in_progress`.
 
@@ -127,7 +129,7 @@ The screenshots attached to the planning session live in temporary macOS paths a
 
 ### Exit criteria
 
-- Each O1–O4 failure has a deterministic state and a machine-readable or measured assertion.
+- Each O1–O5 failure has a deterministic state and a machine-readable or measured assertion.
 - Web baselines use the current Sidebar V2 and current Composer, not historical Sidebar V1 captures.
 - The report distinguishes compile, connection, route, visual, and interaction evidence.
 - No production behavior changes in this task.
@@ -195,7 +197,33 @@ The Lynx renderer cannot use `RouterProvider`, but it also must not maintain a l
 - Settings route and restore-state tests pass for both Web and Lynx hosts.
 - No sleep or screenshot is used as the route-stability assertion.
 
-## OC3: Converge Sidebar layout and anchored overlays
+## OC3: Make lifecycle state visible and actionable
+
+Connection lifecycle is product state, not a styling side effect of disabled controls. Reuse the connector's canonical state and make it legible in the shell without adding another lifecycle authority.
+
+### Required design
+
+1. Project the existing `idle`, `starting-server`, `connecting`, `ready`, and `error` states, plus reconnecting when it is canonically distinguishable, into one renderer-neutral presentation contract.
+2. Reuse the presentation contract in Web and Lynx where both surfaces expose the same state; keep only the rendered primitive in a platform leaf.
+3. Show concise starting/connecting copy, actionable error detail, and recovery guidance in the chat shell. Clear transient status when the canonical state returns to ready.
+4. Keep Composer availability derived from the same lifecycle state, but do not rely on a disabled Composer as the only indication that the product is unavailable.
+5. Do not add a timer, polling loop, continuously repainting animation, or optimistic ready state. A failed transport must remain visibly failed and must fail the packaged readiness harness.
+
+### Required behavior proof
+
+- A fresh cold start visibly progresses through the applicable starting/connecting state and removes it only after semantic readiness.
+- Interrupting the isolated child server produces a visible reconnecting or error state with useful recovery guidance.
+- Recovery returns the shell to ready and clears stale failure copy without duplicating subscriptions or banners.
+- Web and Lynx presentation tests cover every canonical lifecycle state even when a runtime cannot deterministically hold every transition for a screenshot.
+
+### Exit criteria
+
+- O5 passes in a fresh isolated packaged session.
+- One shared projection owns lifecycle copy, severity, and available recovery action.
+- The lifecycle indication is accessible in the normal chat shell and does not shift or obscure the primary controls.
+- Focused state/projection tests pass, and the implementation adds no continuous animation.
+
+## OC4: Converge Sidebar layout and anchored overlays
 
 Keep the maximum shared Sidebar composition. Repair the platform primitive and layout contract instead of forking a Lynx Sidebar.
 
@@ -229,7 +257,7 @@ Keep the maximum shared Sidebar composition. Repair the platform primitive and l
 - Lynx-only Sidebar code is a state/capability host plus primitives, not a second anatomy.
 - Sidebar-related `overrides.css` has no unowned rule and records a net line delta.
 
-## OC4: Converge Composer layout and token contracts
+## OC5: Converge Composer layout and token contracts
 
 The shared Composer boundary must determine more than child order. Move geometry, density, and semantic color decisions into the shared contract; keep native text entry in Lynx.
 
@@ -264,7 +292,7 @@ The shared Composer boundary must determine more than child order. Move geometry
 - Composer override rules have explicit owners and a net line delta; no copied Web product rule is introduced.
 - Focused surface, projection, input-adapter, and tap tests pass.
 
-## OC5: Restore stage branding from canonical build metadata
+## OC6: Restore stage branding from canonical build metadata
 
 Do not hard-code a blue rectangle into the Sidebar. Restore the product's stage-identification semantics.
 
@@ -287,7 +315,7 @@ Do not hard-code a blue rectangle into the Sidebar. Restore the product's stage-
 - Artwork/pill/none preference tests pass.
 - No duplicate branding component or unregistered color region is added.
 
-## OC6: Four-outcome product proof
+## OC7: Five-outcome product proof
 
 This is a bounded outcome certification, not a rerun of every historical AR6 screenshot.
 
@@ -296,18 +324,20 @@ This is a bounded outcome certification, not a rerun of every historical AR6 scr
 1. Build Web, server bundle, and Lynxtron once from the final commit.
 2. Run three fresh packaged cold starts; all must pass the OC1 semantic harness without reload.
 3. From the third ready process, use one isolated populated snapshot and real supported taps to exercise:
+   - starting/connecting, ready, interrupted, and recovered lifecycle states;
    - Sidebar closed and project-scope-open states;
    - Settings entry, two section changes, route retention after a connector event, and Back;
    - new-thread and existing-thread Composer states plus model/mode activation;
    - Dev branded header.
 4. Capture matched Web/Lynx evidence for only the affected visual states at 1280 x 820 and 1440 x 900, dark theme. R13 remains the owner of light-theme certification.
 5. Run final route/product/renderer-local reuse, bundle, Lynx-owned-line, and `overrides.css` reports without changing classifications.
-6. Record the four outcomes in a pass/fail table. Link the semantic logs and interaction assertions as well as images.
+6. Record the five outcomes in a pass/fail table. Link the semantic logs and interaction assertions as well as images.
 
 ### Plan exit criteria
 
-- O1–O4 are all `pass`; no result is inferred from another gate.
+- O1–O5 are all `pass`; no result is inferred from another gate.
 - Cold start succeeds 3/3 with `kind === "main"`, advancing sequence, canonical UI state, and zero renderer errors.
+- Starting, failure/reconnecting, and recovery states remain visible and truthful throughout the lifecycle proof.
 - Settings never returns to chat without explicit Back.
 - Sidebar popup does not alter normal-flow anchors.
 - Composer meets the defined anchor, typography, order, and content checks.
@@ -330,19 +360,19 @@ Use the smallest proof that matches the task:
 7. One fresh 1280 x 820 semantic-ready packaged smoke; for visual tasks, capture one affected state after the real tap.
 8. `git diff --check`.
 
-Do not run the full dual-viewport outcome proof until OC6. Do not call a zero-error capture a connected-product smoke unless the readiness assertions also pass.
+Do not run the full dual-viewport outcome proof until OC7. Do not call a zero-error capture a connected-product smoke unless the readiness assertions also pass.
 
 ## Measures of architectural improvement
 
 Report these without turning them into vanity gates:
 
-- Four observed regressions: target 4 → 0.
+- Five observed regressions: target 5 → 0.
 - Fresh packaged cold-start success: target 3/3 without reload.
 - Writable Lynx route authorities: target 2 → 1.
 - Sidebar popup normal-flow anchor delta when opened: target 0 px.
 - Shared Sidebar/Composer compositions reachable from both builds: must remain one physical source.
 - Lynx-owned Sidebar/Composer product lines: target decrease; any increase needs an explicit primitive/island owner.
-- Sidebar/Composer prototype CSS: target net decrease across OC3–OC5.
+- Sidebar/Composer prototype CSS: target net decrease across OC4–OC6.
 - Renderer bundle delta: report and explain; do not add a second icon/art asset set.
 - Event payload/update frequency: unchanged except for deliberate readiness diagnostics.
 
@@ -392,10 +422,10 @@ Plan 11 is the active execution order after Plan 10. Preserve all existing
 user work. Resume the first non-completed OC task and keep only one task in
 progress. Commit and push each completed task separately.
 
-This is not a generic polish pass. Make the shared architecture prove four
-product outcomes: correct Sidebar V2, stable Settings navigation, adapted
-Composer, and restored Dev stage artwork. Fix cold-start semantic readiness
-before accepting any UI evidence. A server-ready line, visible window,
+This is not a generic polish pass. Make the shared architecture prove five
+product outcomes: correct Sidebar V2, stable Settings navigation, truthful
+lifecycle status, adapted Composer, and restored Dev stage artwork. Fix
+cold-start semantic readiness before accepting any UI evidence. A server-ready line, visible window,
 DevTool session, zero-error console, reload, or screenshot alone is not a
 passing product smoke.
 
