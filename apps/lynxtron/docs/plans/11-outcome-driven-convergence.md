@@ -97,7 +97,7 @@ At the start of every task:
 
 | ID  | Task                                                 | Depends on     | Status    | Result                                                                            |
 | --- | ---------------------------------------------------- | -------------- | --------- | --------------------------------------------------------------------------------- |
-| OC0 | Freeze the five failures and current Web baselines   | Current branch | `pending` | Durable outcome fixtures, measurements, and exact failure signatures              |
+| OC0 | Freeze the five failures and current Web baselines   | Current branch | `completed` | Durable outcome fixtures, measurements, and exact failure signatures              |
 | OC1 | Make packaged cold start semantically ready          | OC0            | `pending` | Three fresh starts connect without reload and the harness rejects false readiness |
 | OC2 | Give Lynx navigation one authority                   | OC1            | `pending` | Settings tap, section changes, and Back remain stable                             |
 | OC3 | Make lifecycle state visible and actionable          | OC2            | `pending` | Starting, ready, failed, and reconnecting are truthful in the chat shell          |
@@ -111,6 +111,16 @@ Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `s
 ## OC0: Freeze failures and baselines
 
 The screenshots attached to the planning session live in temporary macOS paths and are not durable evidence. Reproduce their states from a fresh isolated base directory and record stable failure signatures before changing code.
+
+The completed baseline is recorded in `reports/oc0-outcome-baseline.json`.
+Native Sidebar/Composer and deterministic lifecycle-error failures are
+durable. An owned isolated Electron process now supplies the current 1280 x
+820 Sidebar V2 and Composer reference with zero unexpected renderer errors.
+Computer Use exercised the real Settings/Beta/Back path to enable Sidebar V2
+in the copied client state and opened the project-scope popup; CDP recorded the
+closed/open trigger, popup, thread-list, and Composer geometry. The report
+explicitly classifies this as historical-failure freezing against the current
+Web product reference, not OC7 same-snapshot certification.
 
 ### Steps
 

@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "lifecycle-error-fixture",
+  "anchors": {
+    "sidebar": {
+      "selector": ".sidebar",
+      "nodeId": 14,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "box": {
+        "width": 255,
+        "height": 820
+      },
+      "text": "T3 Code Search All projects No threads yet Settings",
+      "attributes": {
+        "side": "left",
+        "collapsible": "offcanvas",
+        "data-app-sidebar": "",
+        "data-sidebar": "sidebar",
+        "data-sidebar-version": "v2",
+        "data-slot": "sidebar",
+        "class": "flex h-full w-[var(--sidebar-width)] shrink-0 flex-col sidebar border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
+      },
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "workspaceHeader": {
+      "selector": "[data-chat-header]",
+      "nodeId": 77,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "box": {
+        "width": 984,
+        "height": 52
+      },
+      "text": "T3 t3code / New thread Add action Open Commit",
+      "attributes": {
+        "data-chat-header": "true",
+        "class": "chat-header-reference topbar"
+      },
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "composer": {
+      "selector": ".composer-shell",
+      "nodeId": 124,
+      "rect": {
+        "x": 432,
+        "y": 360,
+        "width": 672,
+        "height": 152
+      },
+      "box": {
+        "width": 672,
+        "height": 152
+      },
+      "text": "Select model Full access Build Local checkout No branch",
+      "attributes": {
+        "class": "composer-shell mx-auto w-full min-w-0 max-w-3xl"
+      },
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  },
+  "typography": {
+    "composerPlaceholder": {
+      "selector": ".composer__input",
+      "nodeId": 128,
+      "rect": {
+        "x": 444,
+        "y": 374,
+        "width": 649,
+        "height": 70
+      },
+      "box": {
+        "width": 649,
+        "height": 70
+      },
+      "text": "",
+      "attributes": {
+        "value": "",
+        "placeholder": "Connecting to T3 Code…",
+        "confirm-type": "send",
+        "bindinput": "-109:0:bindinput",
+        "bindconfirm": "-109:0:bindconfirm",
+        "class": "composer__input"
+      },
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": "23px"
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "selector": ".app-root",
+      "nodeId": 13,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 820
+      },
+      "box": {
+        "width": 1280,
+        "height": 820
+      },
+      "text": "T3 Code Search All projects No threads yet Settings T3 t3code / New thread Add action Open Commit What should we build in  t3code ? Select model Full access Build Local checkout No branch",
+      "attributes": {
+        "data-sidebar-state": "expanded",
+        "data-slot": "sidebar-wrapper",
+        "class": "group/sidebar-wrapper flex w-full app-root h-full min-h-0"
+      },
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    }
+  }
+}

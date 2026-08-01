@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "status": "complete",
+  "recordedAt": "2026-08-01T17:38:13.000Z",
+  "productHead": "73a4ba4bf7de4145117c1fedf9477040de572a95",
+  "bundle": {
+    "builtFromProductHead": "73a4ba4bf7de4145117c1fedf9477040de572a95",
+    "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "bytes": 2110300,
+    "sha256": "36a63ad23ec517b63c9391e3c7efec3529ecf8a645dbb41c6343203d254efd80"
+  },
+  "fixture": {
+    "snapshotId": "572115522f3dddcb5de14e6cf8c761d0511741138ad66dd28df71eb2dd9189b4",
+    "projectTitle": "t3code",
+    "projectCwd": "/Users/bytedance/github/t3code",
+    "threadCount": 2,
+    "viewport": { "width": 1280, "height": 820 },
+    "theme": "dark",
+    "containsRealTranscript": true,
+    "preparation": "read-only VACUUM INTO isolated fixture; copied once for the Electron run"
+  },
+  "webElectron": {
+    "evidence": "apps/lynxtron/evidence/2026-08-01/OC0/web-electron/1280x820",
+    "processId": 85010,
+    "baseDir": "/tmp/t3code-oc0-electron.UDl8f2",
+    "executable": "apps/desktop/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron",
+    "debugEndpoint": "http://127.0.0.1:9347",
+    "serverPort": 3773,
+    "targetTitle": "T3 Code (Alpha)",
+    "targetUrl": "t3code://app/#/draft/45446774-b620-4099-8237-bb5545b4136a",
+    "sidebarVersion": "v2",
+    "sidebarV2EnabledThrough": "real Computer Use Settings -> Beta switch interaction in the isolated client state",
+    "rendererErrors": 0,
+    "image": { "width": 2560, "height": 1640, "devicePixelRatio": 2 },
+    "interactionChannel": "Computer Use for Settings and popup; Electron CDP for exact capture and geometry",
+    "processDisposition": "retained for user inspection"
+  },
+  "native": {
+    "evidence": "apps/lynxtron/evidence/2026-08-01/OC0/native/sidebar-populated/1280x820",
+    "processId": 47112,
+    "interactionProcessId": 25344,
+    "serverPort": 49215,
+    "interactionServerPort": 57021,
+    "serverReady": true,
+    "clientId": "localhost:8903",
+    "clientPort": 8903,
+    "sessionId": 1,
+    "bundleUrl": "file:///Users/bytedance/github/t3code/apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "transport": { "kind": "main", "captureSeq": 16, "postSettingsSeq": 22 },
+    "rendererErrors": 0,
+    "rendererWarnings": 0,
+    "image": { "width": 2560, "height": 1640, "devicePixelRatio": 2 },
+    "cleanup": { "processExited": true, "portsReleased": [8903, 49215, 57021] }
+  },
+  "outcomes": {
+    "O1": {
+      "status": "fail",
+      "fixture": "sidebar-populated / project-scope menu open",
+      "assertion": "popup.x == trigger.x && popup.width == trigger.width",
+      "observed": {
+        "trigger": { "x": 7, "y": 101, "width": 210, "height": 28 },
+        "popup": { "x": 139, "y": 101, "width": 78, "height": 56 }
+      },
+      "webReference": {
+        "trigger": { "x": 8, "y": 104, "width": 203, "height": 32 },
+        "popup": { "x": 8, "y": 140, "width": 203, "height": 106 },
+        "threadListClosed": { "x": 8, "y": 148, "width": 233, "height": 106 },
+        "threadListOpen": { "x": 8, "y": 148, "width": 233, "height": 106 },
+        "popupAlignedToTrigger": true,
+        "popupMatchesTriggerWidth": true,
+        "threadListDoesNotReflow": true,
+        "evidence": "apps/lynxtron/evidence/2026-08-01/OC0/web-electron/1280x820/project-scope-open/geometry.json"
+      }
+    },
+    "O2": {
+      "status": "fail",
+      "fixture": "sidebar-populated / real Settings tap",
+      "assertion": "settings title remains mounted after the next connector sequence",
+      "observed": { "beforeSeq": 16, "afterSeq": 22, "settingsTitlePresent": false }
+    },
+    "O3": {
+      "status": "fail",
+      "fixture": "sidebar-populated / empty hero Composer",
+      "nativeAnchors": {
+        "shell": { "x": 432, "y": 360, "width": 672, "height": 152 },
+        "input": { "x": 444, "y": 374, "width": 649, "height": 70 },
+        "contextStrip": { "x": 444, "y": 476, "width": 648, "height": 36 }
+      },
+      "webReference": {
+        "shell": { "x": 384, "y": 340, "width": 768, "height": 172 },
+        "input": { "x": 401, "y": 357, "width": 734, "height": 70 },
+        "contextStrip": { "x": 406, "y": 464, "width": 724, "height": 48 },
+        "evidence": "apps/lynxtron/evidence/2026-08-01/OC0/web-electron/1280x820/new-thread/electron.web-measurements.json"
+      },
+      "absoluteAnchorDeltas": {
+        "shell": { "x": 48, "y": 20, "width": 96, "height": 20 },
+        "input": { "x": 43, "y": 17, "width": 85, "height": 0 },
+        "contextStrip": { "x": 38, "y": 12, "width": 76, "height": 12 }
+      },
+      "threshold": "at most 8 px per corresponding anchor dimension",
+      "thresholdPassed": false
+    },
+    "O4": {
+      "status": "fail",
+      "fixture": "unconfigured production launch",
+      "assertion": "resolved stage is Dev and .sidebar__brand-bg is present",
+      "observed": { "resolvedStage": "Alpha", "backdropPresent": false }
+    },
+    "O5": {
+      "status": "fail",
+      "fixture": "chat shell lifecycle states",
+      "assertion": "starting, failed, and reconnecting render status plus recovery guidance",
+      "observed": {
+        "coldStartConnected": true,
+        "headerConsumesConnectionStatus": false,
+        "headerConsumesStatusDetail": false,
+        "composerDisabledStateIsOnlyShellSignal": true,
+        "errorDetailVisible": false,
+        "composerPlaceholder": "Connecting to T3 Code…"
+      },
+      "evidence": "apps/lynxtron/evidence/2026-08-01/OC0/native/lifecycle-error/1280x820"
+    }
+  },
+  "sourceMetrics": {
+    "overridesCssLines": 3100,
+    "composerLines": 241,
+    "sidebarV2LynxLines": 222,
+    "reuse": {
+      "appShellSidebar": { "modules": "20/337", "lines": "3329/72258" },
+      "composer": { "modules": "27/438", "lines": "6665/94145" },
+      "settingsGeneralFeaturePanel": { "modules": "4/5", "lines": "911/1187" }
+    }
+  },
+  "evidenceBoundaries": {
+    "compile": "focused tests, affected Web/Lynx typechecks, scanner, audits, and both affected builds passed before this capture",
+    "connection": "Native baseline records server-ready plus main transport and advancing sequence; Electron reference records its isolated backend and product renderer identity",
+    "route": "Computer Use opened Settings through the real OS accelerator and reached /settings/general, then /settings/beta",
+    "visual": "Electron CDP produced the exact 1280 x 820 logical / 2560 x 1640 physical zero-error frame and measurements",
+    "interaction": "Computer Use supplied the real Settings, Beta switch, Back, popup-open, and Escape inputs; CDP only measured their postconditions",
+    "comparison": "OC0 freezes a historical Native failure against the current Web product reference; it is not phase-exit same-snapshot certification"
+  },
+  "pending": []
+}

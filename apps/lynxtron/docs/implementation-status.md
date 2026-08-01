@@ -16,6 +16,13 @@ missing Dev stage artwork. Plan 11 keeps the main-owned and shared-composition
 architecture, fixes semantic cold-start readiness first, and requires those
 five observable outcomes to pass before it can complete.
 
+OC0 is complete. An owned isolated Electron run recorded the current Sidebar
+V2 and Composer at 1280 × 820 with zero unexpected renderer errors. Computer
+Use exercised Settings → Beta → Back and the project-scope popup; exact CDP
+geometry pairs the Web reference with the durable Native failure measurements
+in `reports/oc0-outcome-baseline.json`. The report keeps this historical
+failure freeze distinct from OC7 same-snapshot certification.
+
 [Plan 12](./plans/12-feature-parity-by-product-value.md) is queued after Plan 11. It closes the remaining Web/Electron feature gap by product value: the
 complete agent intervention and input loop, transcript interaction, remote and
 multi-environment operation, change review, secondary work surfaces, and then
