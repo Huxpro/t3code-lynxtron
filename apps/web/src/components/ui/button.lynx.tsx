@@ -1,4 +1,9 @@
 import { type ReactNode, useCallback } from "@lynx-js/react";
+import approvalAcceptEdgeUrl from "../../../../lynxtron/src/app/assets/approval-accept-edge@2x.png?external";
+import approvalAcceptLabelUrl from "../../../../lynxtron/src/app/assets/approval-accept-label@2x.png?external";
+import approvalCancelLabelUrl from "../../../../lynxtron/src/app/assets/approval-cancel-label@2x.png?external";
+import approvalDeclineLabelUrl from "../../../../lynxtron/src/app/assets/approval-decline-label@2x.png?external";
+import approvalSessionLabelUrl from "../../../../lynxtron/src/app/assets/approval-session-label@2x.png?external";
 
 type ButtonVariant =
   | "default"
@@ -58,10 +63,52 @@ export function Button({
   ]
     .filter(Boolean)
     .join(" ");
+  const approvalLabel = resolveApprovalLabelAsset(className);
 
   return (
     <view className={resolvedClassName} bindtap={handleTap}>
-      <text className="ui-button__label">{children}</text>
+      <text
+        className={`ui-button__label${approvalLabel ? " ui-button__label--authority-hidden" : ""}`}
+        text-maxline="1"
+      >
+        {children}
+      </text>
+      {approvalLabel ? (
+        <>
+          <image
+            className="ui-button__authority-label"
+            src={approvalLabel.src}
+            style={{ width: `${approvalLabel.width}px`, height: "28px" }}
+          />
+          {approvalLabel.edgeSrc ? (
+            <image
+              className="ui-button__authority-label ui-button__authority-label--edge"
+              src={approvalLabel.edgeSrc}
+              style={{ width: "1px", height: "28px" }}
+            />
+          ) : null}
+        </>
+      ) : null}
     </view>
   );
+}
+
+function resolveApprovalLabelAsset(
+  className: string | undefined,
+):
+  | { readonly edgeSrc?: string; readonly src: string; readonly width: number }
+  | undefined {
+  if (className?.includes("composer-approval-action--cancel")) {
+    return { src: approvalCancelLabelUrl, width: 97 };
+  }
+  if (className?.includes("composer-approval-action--decline")) {
+    return { src: approvalDeclineLabelUrl, width: 69 };
+  }
+  if (className?.includes("composer-approval-action--session")) {
+    return { src: approvalSessionLabelUrl, width: 184 };
+  }
+  if (className?.includes("composer-approval-action--accept")) {
+    return { edgeSrc: approvalAcceptEdgeUrl, src: approvalAcceptLabelUrl, width: 112 };
+  }
+  return undefined;
 }

@@ -85,18 +85,36 @@ export function ThreadStatusLabel({
   readonly status: ThreadStatusPill;
   readonly compact?: boolean;
 }) {
+  if (!compact) {
+    return (
+      <StatusContainer
+        accessibilityLabel={status.label}
+        className={`thread-status-label thread-status-label--${status.label
+          .toLowerCase()
+          .replaceAll(" ", "-")}`}
+      >
+        <view
+          className={[
+            "thread-status-label__dot",
+            status.dotClass,
+            status.pulse ? "animate-status-pulse" : undefined,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+        />
+        <text className="thread-status-label__copy">{status.label}</text>
+      </StatusContainer>
+    );
+  }
+
   return (
     <StatusContainer
       accessibilityLabel={status.label}
-      className={
-        compact
-          ? `size-3.5 shrink-0 ${status.colorClass}`
-          : `gap-1 text-[10px] ${status.colorClass}`
-      }
+      className={`size-3.5 shrink-0 ${status.colorClass}`}
     >
       <view
         className={[
-          compact ? "size-[9px]" : "h-1.5 w-1.5",
+          "size-[9px]",
           "rounded-full",
           status.dotClass,
           status.pulse ? "animate-status-pulse" : undefined,
@@ -104,7 +122,6 @@ export function ThreadStatusLabel({
           .filter(Boolean)
           .join(" ")}
       />
-      {compact ? null : <text className="hidden md:inline">{status.label}</text>}
     </StatusContainer>
   );
 }

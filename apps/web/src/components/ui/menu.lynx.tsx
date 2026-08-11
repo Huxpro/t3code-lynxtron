@@ -16,6 +16,10 @@ type ElementProps = Record<string, unknown> & {
   readonly render?: ReactElement<Record<string, unknown>>;
 };
 
+function classes(...values: ReadonlyArray<string | undefined>): string {
+  return values.filter(Boolean).join(" ");
+}
+
 interface MenuContextValue {
   readonly open: boolean;
   readonly setOpen: (open: boolean) => void;
@@ -67,14 +71,50 @@ export function MenuTrigger({ children, render, ...props }: ElementProps) {
   );
 }
 
-export function MenuPopup({ children, ...props }: ElementProps) {
+export function MenuPopup({
+  align = "center",
+  children,
+  className,
+  side = "bottom",
+  sideOffset: _sideOffset,
+  ...props
+}: ElementProps & {
+  readonly align?: "center" | "end" | "start";
+  readonly side?: "bottom" | "left" | "right" | "top";
+  readonly sideOffset?: number;
+}) {
   const context = useContext(MenuContext);
   if (!context?.open) return null;
-  return <view {...props}>{children}</view>;
+  const isSidebarScopePopup = className?.includes("sidebar-v2-scope-popup") ?? false;
+  const sideClass = side === "top" ? "bottom-full mb-1" : "top-full mt-1";
+  const alignClass = align === "end" ? "right-0" : align === "start" ? "left-0" : "left-0";
+  return (
+    <>
+      {!isSidebarScopePopup ? (
+        <view
+          aria-hidden="true"
+          className="lynx-menu-dismiss-layer fixed bottom-0 left-[var(--sidebar-width)] right-0 top-0 z-40"
+          bindtap={() => context.setOpen(false)}
+        />
+      ) : null}
+      <view
+        {...props}
+        className={classes(
+          "lynx-menu-popup absolute z-50 flex max-h-64 w-full flex-col overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
+          sideClass,
+          alignClass,
+          className,
+        )}
+      >
+        {children}
+      </view>
+    </>
+  );
 }
 
 export function MenuRadioGroup({
   children,
+  className,
   onValueChange,
   value,
   ...props
@@ -84,13 +124,16 @@ export function MenuRadioGroup({
 }) {
   return (
     <RadioContext.Provider value={{ onValueChange, value }}>
-      <view {...props}>{children}</view>
+      <view {...props} className={classes("flex w-full flex-col", className)}>
+        {children}
+      </view>
     </RadioContext.Provider>
   );
 }
 
 export function MenuRadioItem({
   children,
+  className,
   disabled = false,
   value,
   ...props
@@ -103,7 +146,17 @@ export function MenuRadioItem({
     menu?.setOpen(false);
   }, [disabled, menu, radio, value]);
   return (
-    <view {...props} data-checked={radio.value === value} bindtap={handleTap}>
+    <view
+      {...props}
+      className={classes(
+        "lynx-menu-radio-item flex h-8 min-h-8 w-full flex-row items-center gap-2 rounded-sm px-2 py-0 text-sm text-popover-foreground",
+        radio.value === value ? "bg-accent" : undefined,
+        disabled ? "opacity-50" : undefined,
+        className,
+      )}
+      data-checked={radio.value === value}
+      bindtap={handleTap}
+    >
       {children}
     </view>
   );

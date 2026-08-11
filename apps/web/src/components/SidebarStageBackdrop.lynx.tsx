@@ -7,10 +7,7 @@ import { primaryServerConfigAtom } from "../state/server";
 export type SidebarStageBackdropVariant = "nightly" | "dev";
 export type EnvironmentIdentificationPillLabel = "Dev" | "Nightly";
 
-const GRID_COLUMNS = [
-  0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168,
-  176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256,
-] as const;
+const GRID_COLUMNS = Array.from({ length: 65 }, (_, index) => index * 8);
 const GRID_ROWS = [0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80] as const;
 const BLUEPRINT_MARKS = [
   { x: 46, y: 38 },
@@ -84,6 +81,7 @@ export function StageBackdropArt({
       ]
         .filter(Boolean)
         .join(" ")}
+      data-stage-backdrop-variant={variant}
     >
       <view className="sidebar__brand-glow" />
       {variant === "dev"

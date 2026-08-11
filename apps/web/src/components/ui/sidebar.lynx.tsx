@@ -6,11 +6,28 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "@lynx-js/react";
+import {
+  THREAD_SIDEBAR_DEFAULT_WIDTH,
+  THREAD_SIDEBAR_MIN_WIDTH,
+  THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
+  isThreadMobileSidebarViewport,
+  resolveInitialThreadSidebarWidth,
+  resolveResponsiveThreadSidebarWidth,
+  resolveResponsiveThreadSidebarMaximumWidth,
+  resolveThreadMobileSidebarWidth,
+} from "@t3tools/client-runtime/presentation/sidebar-width";
 
+import { useIsMobile } from "../../hooks/useMediaQuery";
+import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
+import { clientCapabilities } from "../../platform/clientCapabilities";
+import { useResizableWidth } from "../../../../lynxtron/src/app/hooks/useResizableWidth";
 import { cn } from "../../lib/utils";
+import { onSidebarToggleRequest } from "./sidebarCommandBus.lynx";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -21,8 +38,10 @@ interface SidebarContextValue {
   readonly isMobile: boolean;
   readonly open: boolean;
   readonly openMobile: boolean;
+  readonly sidebarWidth: number;
   readonly setOpen: (open: boolean) => void;
   readonly setOpenMobile: (open: boolean) => void;
+  readonly setSidebarWidth: (width: number) => void;
   readonly state: "expanded" | "collapsed";
   readonly toggleSidebar: () => void;
 }
@@ -36,7 +55,8 @@ export function useSidebar(): SidebarContextValue {
 }
 
 export function useSidebarVisibility(): boolean {
-  return useSidebar().open;
+  const { isMobile, open, openMobile } = useSidebar();
+  return isMobile ? openMobile : open;
 }
 
 export function SidebarProvider({
@@ -51,7 +71,18 @@ export function SidebarProvider({
   readonly open?: boolean;
   readonly onOpenChange?: (open: boolean) => void;
 }) {
+  const isMobile = useIsMobile();
+  const viewport = useViewportSnapshot();
   const [localOpen, setLocalOpen] = useState(defaultOpen);
+  const [openMobile, setOpenMobile] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(() => {
+    const stored = clientCapabilities.storage.getItem(THREAD_SIDEBAR_WIDTH_STORAGE_KEY);
+    const parsed = stored === null ? null : Number(JSON.parse(stored));
+    return resolveResponsiveThreadSidebarWidth(
+      Number.isFinite(parsed) ? parsed : null,
+      viewport.width,
+    );
+  });
   const open = controlledOpen ?? localOpen;
   const setOpen = useCallback(
     (next: boolean) => {
@@ -60,26 +91,69 @@ export function SidebarProvider({
     },
     [controlledOpen, onOpenChange],
   );
-  const toggleSidebar = useCallback(() => setOpen(!open), [open, setOpen]);
+  const toggleSidebar = useCallback(() => {
+    if (isMobile) {
+      setOpenMobile((current) => !current);
+      return;
+    }
+    setOpen(!open);
+  }, [isMobile, open, setOpen]);
+  const state = (isMobile ? openMobile : open) ? "expanded" : "collapsed";
+  useEffect(() => onSidebarToggleRequest(toggleSidebar), [toggleSidebar]);
+  useEffect(() => {
+    if (isMobile || isThreadMobileSidebarViewport(viewport.width)) return;
+    setSidebarWidth((current) => resolveInitialThreadSidebarWidth(current, viewport.width));
+  }, [isMobile, viewport.width]);
+  useEffect(() => {
+    if (!viewport.testResize) return;
+    (
+      globalThis as {
+        __T3_LYNXTRON_SIDEBAR_PROBE__?: (open: boolean) => void;
+      }
+    ).__T3_LYNXTRON_SIDEBAR_PROBE__ = setOpenMobile;
+    (
+      globalThis as {
+        __T3_LYNXTRON_SIDEBAR_WIDTH_PROBE__?: (width: number) => void;
+      }
+    ).__T3_LYNXTRON_SIDEBAR_WIDTH_PROBE__ = (width) => {
+      setSidebarWidth(resolveInitialThreadSidebarWidth(width, viewport.width));
+    };
+  }, [setOpenMobile, viewport.testResize]);
   const value = useMemo<SidebarContextValue>(
     () => ({
-      isMobile: false,
+      isMobile,
       open,
-      openMobile: false,
+      openMobile,
+      sidebarWidth,
       setOpen,
-      setOpenMobile: setOpen,
-      state: open ? "expanded" : "collapsed",
+      setOpenMobile,
+      setSidebarWidth,
+      state,
       toggleSidebar,
     }),
-    [open, setOpen, toggleSidebar],
+    [isMobile, open, openMobile, setOpen, sidebarWidth, state, toggleSidebar],
   );
 
   return (
     <SidebarContext.Provider value={value}>
       <view
         {...props}
-        className={cn("group/sidebar-wrapper flex min-h-0 w-full", className)}
+        className={cn(
+          "group/sidebar-wrapper flex min-h-0 w-full",
+          `sidebar-wrapper--${state}`,
+          sidebarWidth === THREAD_SIDEBAR_DEFAULT_WIDTH
+            ? "sidebar-width-authority"
+            : "sidebar-width-responsive",
+          className,
+        )}
+        style={
+          {
+            ...(typeof props.style === "object" && props.style !== null ? props.style : {}),
+            "--sidebar-width": `${sidebarWidth}px`,
+          } as object
+        }
         data-sidebar-state={value.state}
+        data-sidebar-width={String(sidebarWidth)}
         data-slot="sidebar-wrapper"
       >
         {children}
@@ -97,19 +171,68 @@ export function Sidebar({
   readonly variant?: "sidebar" | "floating" | "inset";
   readonly collapsible?: "offcanvas" | "icon" | "none";
 }) {
-  const { open } = useSidebar();
+  const { isMobile, open, openMobile, setOpenMobile, sidebarWidth } = useSidebar();
+  const viewport = useViewportSnapshot();
+  const mobileWidth = resolveThreadMobileSidebarWidth(viewport.width);
+  const style = {
+    ...(typeof props.style === "object" && props.style !== null ? props.style : {}),
+    width: `${isMobile ? mobileWidth : sidebarWidth}px`,
+  };
+  if (isMobile) {
+    if (!openMobile) return null;
+    return (
+      <>
+        <view className="sidebar-mobile-scrim" bindtap={() => setOpenMobile(false)} />
+        <view
+          {...props}
+          className={cn(
+            "sidebar-mobile-drawer flex h-full w-[var(--sidebar-width)] shrink-0 flex-col bg-sidebar text-sidebar-foreground",
+            className,
+          )}
+          style={style}
+          data-mobile="true"
+          data-sidebar="sidebar"
+          data-slot="sidebar"
+        >
+          {children}
+        </view>
+      </>
+    );
+  }
   return (
     <view
-      {...props}
-      className={cn(
-        "flex h-full w-[var(--sidebar-width)] shrink-0 flex-col bg-sidebar text-sidebar-foreground",
-        !open && "hidden",
-        className,
-      )}
-      data-sidebar="sidebar"
+      className={`sidebar-shell sidebar-shell--${open ? "expanded" : "collapsed"}`}
+      data-collapsible={open ? "" : "offcanvas"}
+      data-side="left"
       data-slot="sidebar"
+      data-state={open ? "expanded" : "collapsed"}
     >
-      {children}
+      <view
+        className={`sidebar-gap sidebar-gap--${open ? "expanded" : "collapsed"}`}
+        style={{ width: open ? `${sidebarWidth}px` : "0px" }}
+        data-slot="sidebar-gap"
+      />
+      <view
+        className={`sidebar-container sidebar-container--${open ? "expanded" : "collapsed"}`}
+        style={{
+          left: open ? "0px" : `-${sidebarWidth}px`,
+          width: `${sidebarWidth}px`,
+        }}
+        data-slot="sidebar-container"
+      >
+        <view
+          {...props}
+          className={cn(
+            "sidebar-inner flex h-full w-full flex-col bg-sidebar text-sidebar-foreground",
+            className,
+          )}
+          style={style}
+          data-sidebar="sidebar"
+          data-slot="sidebar-inner"
+        >
+          {children}
+        </view>
+      </view>
     </view>
   );
 }
@@ -163,6 +286,37 @@ function Container({ children, className, ...props }: ElementProps) {
     <view {...props} className={className}>
       {children}
     </view>
+  );
+}
+
+export function SidebarRail({ className, ...props }: ElementProps) {
+  const { isMobile, open, sidebarWidth, setSidebarWidth } = useSidebar();
+  const viewport = useViewportSnapshot();
+  const resize = useResizableWidth({
+    storageKey: THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
+    defaultWidth: sidebarWidth,
+    minWidth: THREAD_SIDEBAR_MIN_WIDTH,
+    maxWidth: resolveResponsiveThreadSidebarMaximumWidth(sidebarWidth, viewport.width),
+    edge: "right",
+    target: "sidebar",
+    value: sidebarWidth,
+    onResize: setSidebarWidth,
+  });
+
+  if (isMobile || !open) return null;
+  return (
+    <>
+      <view
+        {...props}
+        {...resize.handlers}
+        className={cn(
+          "sidebar-resize-rail",
+          className,
+        )}
+        data-sidebar="rail"
+        data-slot="sidebar-rail"
+      />
+    </>
   );
 }
 
@@ -226,5 +380,4 @@ export const SidebarMenuSkeleton = Container;
 export const SidebarMenuSub = Container;
 export const SidebarMenuSubButton = Container;
 export const SidebarMenuSubItem = Container;
-export const SidebarRail = Container;
 export const SidebarSeparator = Container;
