@@ -1,5 +1,5 @@
 {
   "schemaVersion": 1,
-  "boundarySha256": "67f5a53ff5a6cd0742d0c15e57d38b526237e6d09be6b752558eb6208e4e1fde",
-  "reviewedFor": "T6-C1 reachable index entry plus physical shared AppSidebarLayout, Sidebar, and current Header roots"
+  "boundarySha256": "40adb6b14ccb9d29e17e09acfd58c1a02214176f037bc29942aa43da1331661a",
+  "reviewedFor": "Plan 11C H7 correction: Connections, Source Control, Beta, and Archive Lynx graphs now start at their real OtherSettings implementation owner"
 }

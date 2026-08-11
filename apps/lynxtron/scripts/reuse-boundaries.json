@@ -317,6 +317,190 @@
           ]
         }
       }
+    },
+    {
+      "id": "quick-switch",
+      "label": "Quick Switch",
+      "graphs": {
+        "route": {
+          "web": [
+            "apps/web/src/routes/__root.tsx",
+            "apps/web/src/routes/_chat.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/routes/__root.tsx",
+            "apps/lynxtron/src/app/routes/_chat.tsx"
+          ]
+        },
+        "productSurface": {
+          "web": [
+            "apps/web/src/components/CommandPalette.tsx",
+            "apps/web/src/components/CommandPaletteSurface.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/QuickSwitch.tsx"
+          ]
+        },
+        "rendererLocal": {
+          "web": [
+            "apps/web/src/components/CommandPalette.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/QuickSwitch.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "id": "settings-appearance",
+      "label": "Settings Appearance",
+      "graphs": {
+        "route": {
+          "web": ["apps/web/src/routes/settings.appearance.tsx"],
+          "lynx": ["apps/lynxtron/src/app/routes/settings.appearance.tsx"]
+        },
+        "productSurface": {
+          "web": [
+            "apps/web/src/components/settings/SettingsPanels.tsx",
+            "apps/web/src/components/settings/SettingsSurfaces.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/AppearanceSettings.tsx"
+          ]
+        },
+        "rendererLocal": {
+          "web": ["apps/web/src/components/settings/SettingsPanels.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/AppearanceSettings.tsx"]
+        }
+      }
+    },
+    {
+      "id": "settings-connections",
+      "label": "Settings Connections",
+      "graphs": {
+        "route": {
+          "web": ["apps/web/src/routes/settings.connections.tsx"],
+          "lynx": ["apps/lynxtron/src/app/routes/settings.connections.tsx"]
+        },
+        "productSurface": {
+          "web": [
+            "apps/web/src/components/settings/ConnectionsSettings.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/OtherSettings.tsx"
+          ]
+        },
+        "rendererLocal": {
+          "web": [
+            "apps/web/src/components/settings/ConnectionsSettings.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/OtherSettings.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "id": "settings-source-control",
+      "label": "Settings Source Control",
+      "graphs": {
+        "route": {
+          "web": ["apps/web/src/routes/settings.source-control.tsx"],
+          "lynx": ["apps/lynxtron/src/app/routes/settings.source-control.tsx"]
+        },
+        "productSurface": {
+          "web": [
+            "apps/web/src/components/settings/SourceControlSettings.tsx",
+            "apps/web/src/components/settings/SourceControlWritingSettings.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/OtherSettings.tsx"
+          ]
+        },
+        "rendererLocal": {
+          "web": [
+            "apps/web/src/components/settings/SourceControlSettings.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/OtherSettings.tsx"
+          ]
+        }
+      }
+    },
+    {
+      "id": "settings-beta",
+      "label": "Settings Beta",
+      "graphs": {
+        "route": {
+          "web": ["apps/web/src/routes/settings.beta.tsx"],
+          "lynx": ["apps/lynxtron/src/app/routes/settings.beta.tsx"]
+        },
+        "productSurface": {
+          "web": ["apps/web/src/components/settings/BetaSettingsPanel.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
+        },
+        "rendererLocal": {
+          "web": ["apps/web/src/components/settings/BetaSettingsPanel.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
+        }
+      }
+    },
+    {
+      "id": "settings-archive",
+      "label": "Settings Archive",
+      "graphs": {
+        "route": {
+          "web": ["apps/web/src/routes/settings.archived.tsx"],
+          "lynx": ["apps/lynxtron/src/app/routes/settings.archive.tsx"]
+        },
+        "productSurface": {
+          "web": [
+            "apps/web/src/components/settings/SettingsPanels.tsx",
+            "apps/web/src/components/settings/SettingsSurfaces.tsx"
+          ],
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
+        },
+        "rendererLocal": {
+          "web": ["apps/web/src/components/settings/SettingsPanels.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
+        }
+      }
+    },
+    {
+      "id": "review-changed-files",
+      "label": "Review and Changed Files",
+      "graphs": {
+        "route": {
+          "web": [
+            "apps/web/src/routes/__root.tsx",
+            "apps/web/src/routes/_chat.$environmentId.$threadId.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/routes/__root.tsx",
+            "apps/lynxtron/src/app/routes/_chat.$environmentId.$threadId.tsx"
+          ]
+        },
+        "productSurface": {
+          "web": [
+            "apps/web/src/components/DiffPanel.tsx",
+            "apps/web/src/components/chat/ChangedFilesTree.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/DiffPanel.tsx",
+            "apps/lynxtron/src/app/components/FilesPanel.tsx"
+          ]
+        },
+        "rendererLocal": {
+          "web": [
+            "apps/web/src/components/DiffPanel.tsx",
+            "apps/web/src/components/chat/ChangedFilesTree.tsx"
+          ],
+          "lynx": [
+            "apps/lynxtron/src/app/components/DiffPanel.tsx",
+            "apps/lynxtron/src/app/components/FilesPanel.tsx"
+          ]
+        }
+      }
     }
   ]
 }

@@ -83,27 +83,25 @@ describe("Settings primitive contract", () => {
 
     assert.match(webAdapter, /from ["'].\/GeneralSettingsContent["']/u);
     assert.match(lynxAdapter, /web\/src\/components\/settings\/GeneralSettingsPanel["']/u);
-    assert.equal([...composition.matchAll(/<SettingsRow\b/gu)].length, 17);
-    for (const title of [
-      "Theme",
-      "Glass opacity",
-      "Project Grouping",
-      "Time format",
-      "Word wrap",
-      "Hide whitespace changes",
-      "Assistant output",
-      "Provider update checks",
-      "Auto-open task panel",
-      "New threads",
-      "Start from origin",
-      "Add project starts in",
-      "Archive confirmation",
-      "Delete confirmation",
-      "Text generation model",
-      "Diagnostics",
+    assert.equal([...composition.matchAll(/<SettingsRow\b/gu)].length, 14);
+    for (const id of [
+      "project-grouping",
+      "time-format",
+      "hide-whitespace-changes",
+      "assistant-output",
+      "provider-update-checks",
+      "auto-open-task-panel",
+      "new-threads",
+      "start-from-origin",
+      "add-project-starts-in",
+      "archive-confirmation",
+      "delete-confirmation",
+      "text-generation-model",
+      "diagnostics",
     ]) {
-      assert.match(composition, new RegExp(`title=[{\"']${title}`, "u"), title);
+      assert.include(composition, `searchableSetting("${id}")`, id);
     }
+    assert.match(composition, /title=\{`Version \$\{versionLabel\}`\}/u);
   });
 
   it("links Lynx-only styling to registered compatibility items", () => {
