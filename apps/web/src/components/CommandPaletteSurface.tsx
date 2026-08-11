@@ -16,6 +16,72 @@ import type { ReactNode } from "react";
 import { cn } from "../lib/cn";
 import { HostButton, HostText, HostView } from "./ui/hostElements";
 
+export function PaletteOverlaySurface({
+  children,
+  onBackdropClick,
+  onPanelClick,
+}: {
+  readonly children: ReactNode;
+  readonly onBackdropClick?: (() => void) | undefined;
+  readonly onPanelClick?: ((event: unknown) => void) | undefined;
+}) {
+  return (
+    <HostView
+      className="palette-overlay fixed inset-0 z-50 flex items-start justify-center bg-black/55 pt-16"
+      onClick={onBackdropClick}
+    >
+      <HostView
+        className="palette-panel w-full max-w-[36rem] overflow-hidden rounded-xl border border-border bg-popover shadow-2xl"
+        onClick={onPanelClick}
+      >
+        {children}
+      </HostView>
+    </HostView>
+  );
+}
+
+export function PaletteSearchSurface({
+  icon,
+  input,
+}: {
+  readonly icon: ReactNode;
+  readonly input: ReactNode;
+}) {
+  return (
+    <HostView className="palette-search flex h-11 items-center gap-2 border-b border-border px-3">
+      {icon}
+      {input}
+    </HostView>
+  );
+}
+
+export function PaletteResultsSurface({
+  children,
+  empty = false,
+}: {
+  readonly children?: ReactNode;
+  readonly empty?: boolean;
+}) {
+  return (
+    <HostView
+      className={cn(
+        "palette-results max-h-96 overflow-y-auto",
+        empty ? "palette-results--empty" : "p-1.5",
+      )}
+    >
+      {children}
+    </HostView>
+  );
+}
+
+export function PaletteFooterSurface({ children }: { readonly children?: ReactNode }) {
+  return (
+    <HostView className="palette-footer flex h-8 items-center gap-4 border-t border-border px-3 text-xs text-muted-foreground">
+      {children}
+    </HostView>
+  );
+}
+
 /** Group label above a section of palette results. */
 export function PaletteSectionSurface({ label }: { readonly label: string }) {
   return (
@@ -35,6 +101,8 @@ export function PaletteEmptySurface({ message }: { readonly message: string }) {
 }
 
 export interface PaletteRowSurfaceProps {
+  /** Host-specific semantic selector; product anatomy remains shared. */
+  readonly semanticClassName?: string | undefined;
   readonly icon?: ReactNode | undefined;
   readonly title: ReactNode;
   /** Inline content leading the title (badges, status dots). */
@@ -99,23 +167,25 @@ export function PaletteRowSurface({
   active = false,
   disabled = false,
   onSelect,
+  semanticClassName,
   ...contentProps
 }: PaletteRowSurfaceProps) {
-  const className = cn(
+  const rowClassName = cn(
     "palette-row flex min-h-8 select-none items-center gap-2 rounded-sm px-2 py-1.5 text-base sm:min-h-7 sm:text-sm",
     active && "bg-accent text-accent-foreground",
     disabled ? "opacity-64" : "cursor-pointer",
+    semanticClassName,
   );
 
   if (disabled || !onSelect) {
     return (
-      <HostView className={className}>
+      <HostView className={rowClassName}>
         <PaletteRowContent {...contentProps} />
       </HostView>
     );
   }
   return (
-    <HostButton type="button" className={className} onClick={onSelect}>
+    <HostButton type="button" className={rowClassName} onClick={onSelect}>
       <PaletteRowContent {...contentProps} />
     </HostButton>
   );

@@ -12,12 +12,14 @@ describe("CommandPaletteSurface", () => {
   it("renders a simple action row with icon and title", () => {
     const markup = renderToStaticMarkup(
       <PaletteRowSurface
+        semanticClassName="quick-switch-action-row"
         icon={<span data-icon>+</span>}
         title="New thread in t3code"
         onSelect={vi.fn()}
       />,
     );
     expect(markup).toContain("palette-row");
+    expect(markup).toContain("quick-switch-action-row");
     expect(markup).toContain("data-icon");
     expect(markup).toContain("New thread in t3code");
   });
