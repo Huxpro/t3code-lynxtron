@@ -1342,6 +1342,7 @@ const make = Effect.gen(function* () {
             return true;
           case "turn.started":
             return !conflictsWithActiveTurn || conflictingTurnStartIsPendingTurnStart;
+          case "turn.aborted":
           case "turn.completed":
             if (conflictsWithActiveTurn || missingTurnForActiveTurn) {
               return false;
@@ -1367,6 +1368,7 @@ const make = Effect.gen(function* () {
         event.type === "session.exited" ||
         event.type === "thread.started" ||
         event.type === "turn.started" ||
+        event.type === "turn.aborted" ||
         event.type === "turn.completed"
       ) {
         const status = (() => {
@@ -1379,6 +1381,8 @@ const make = Effect.gen(function* () {
               return "running";
             case "session.exited":
               return "stopped";
+            case "turn.aborted":
+              return "ready";
             case "turn.completed":
               return normalizeRuntimeTurnState(event.payload.state) === "failed"
                 ? "error"
@@ -1393,7 +1397,9 @@ const make = Effect.gen(function* () {
         const nextActiveTurnId =
           event.type === "turn.started"
             ? (eventTurnId ?? null)
-            : event.type === "turn.completed" || event.type === "session.exited"
+            : event.type === "turn.aborted" ||
+                event.type === "turn.completed" ||
+                event.type === "session.exited"
               ? null
               : event.type === "session.state.changed" &&
                   !sessionStatusAllowsActiveTurn(
