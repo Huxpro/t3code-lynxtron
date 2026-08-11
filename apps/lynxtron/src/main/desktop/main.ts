@@ -1,4 +1,4 @@
-import { app, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
+import { app, clipboard, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
 import path from "path";
 
 import {
@@ -7,8 +7,14 @@ import {
   createDiscreteKeyboardPacket,
   type DiscreteKeyboardAccelerator,
 } from "./keyboardMenu.ts";
-import { MainConnectorHost } from "./mainConnectorHost.ts";
+import { MainConnectorHost, settleMainConnectorHandler } from "./mainConnectorHost.ts";
 import { resolveLynxtronViewport } from "./windowViewport.ts";
+import { startLynxtronViewportHost } from "./viewportHost.ts";
+import { startLynxtronThemeHost } from "./themeHost.ts";
+import { createSystemThemeSource } from "./systemThemeSource.ts";
+import { createReloadMenuItem, reloadApplication } from "./reloadWindow.ts";
+import { T3_RELOAD_FOR_TEST_METHOD } from "../../shared/viewportProtocol.ts";
+import { startClipboardCapabilityHost } from "./capabilityHost.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
@@ -19,9 +25,13 @@ import { resolveLynxtronViewport } from "./windowViewport.ts";
 // prebuilt connector bundle is loaded at runtime from dist/desktop.
 declare const __non_webpack_require__: (id: string) => any;
 
-const LYNX_BUNDLE_PATH = process.env.T3_LYNXTRON_BUNDLE_PATH
-  ? path.resolve(process.env.T3_LYNXTRON_BUNDLE_PATH)
-  : path.join(__dirname, "main.lynx.bundle");
+const configuredBundle = process.env.T3_LYNXTRON_BUNDLE_PATH?.trim();
+const LYNX_BUNDLE_SOURCE =
+  configuredBundle?.startsWith("http://") || configuredBundle?.startsWith("https://")
+    ? configuredBundle
+    : configuredBundle
+      ? path.resolve(configuredBundle)
+      : path.join(__dirname, "main.lynx.bundle");
 
 interface ResizableWindow {
   getContentSize(): number[];
@@ -29,6 +39,8 @@ interface ResizableWindow {
 }
 
 interface GlobalEventWindow extends ResizableWindow {
+  loadFile(filePath: string): boolean;
+  loadURL(url: string): boolean;
   sendGlobalEvent(eventName: string, ...args: unknown[]): boolean;
   on(event: "closed", listener: () => void): unknown;
 }
@@ -69,7 +81,11 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
       },
       {
         label: "View",
-        submenu: itemsFor("view"),
+        submenu: [
+          createReloadMenuItem(app),
+          { type: "separator" },
+          ...itemsFor("view"),
+        ],
       },
       {
         label: "Edit",
@@ -114,7 +130,7 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
   const host = new MainConnectorHost({
     window: win,
     registerHandler: (method, handler) => {
-      lynxBridge.handle(method, (_event, params) => handler(params));
+      lynxBridge.handle(method, (_event, params) => settleMainConnectorHandler(handler, params));
     },
     removeHandler: (method) => lynxBridge.removeHandler(method),
     createConnector: (events) => new T3Connector(events),
@@ -150,16 +166,81 @@ app.whenReady().then(() => {
     height: viewport.height,
     useContentSize: true,
     title: "T3 Code",
+    ...(process.platform === "darwin"
+      ? {
+          titleBarStyle: "hiddenInset" as const,
+          trafficLightPosition: { x: 16, y: 18 },
+          disableAutoHideCursor: true,
+        }
+      : {
+          titleBarStyle: "hidden" as const,
+          autoHideMenuBar: true,
+        }),
     lynxPreference: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
   win.show();
-  win.loadFile(LYNX_BUNDLE_PATH);
+  const viewportHost = startLynxtronViewportHost(
+    win,
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, (_event, params) => handler(params));
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    {
+      allowTestResize: process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1",
+    },
+  );
+  app.on("will-quit", () => {
+    viewportHost.dispose();
+  });
+  const themeHost = startLynxtronThemeHost(
+    win,
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, () => handler());
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    createSystemThemeSource(),
+  );
+  app.on("will-quit", () => {
+    themeHost.dispose();
+  });
+  // The renderer probes the typed bridge during its first background-thread
+  // bootstrap. Register handlers and start snapshot accumulation before
+  // loadFile can execute that probe; events emitted before the renderer
+  // listener exists remain represented by MainConnectorHost.syncReply().
+  startMainConnectorHost(win);
+  const clipboardCapabilityHost = startClipboardCapabilityHost(
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, (_event, params) => handler(params));
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    (value) => clipboard.writeText(value),
+  );
+  win.on("closed", () => {
+    clipboardCapabilityHost.dispose();
+  });
+  if (process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1") {
+    lynxBridge.handle(T3_RELOAD_FOR_TEST_METHOD, () => reloadApplication(app));
+    win.on("closed", () => {
+      lynxBridge.removeHandler(T3_RELOAD_FOR_TEST_METHOD);
+    });
+  }
+  console.log(`[main] loading Lynx bundle from ${LYNX_BUNDLE_SOURCE}`);
+  if (LYNX_BUNDLE_SOURCE.startsWith("http://") || LYNX_BUNDLE_SOURCE.startsWith("https://")) {
+    win.loadURL(LYNX_BUNDLE_SOURCE);
+  } else {
+    win.loadFile(LYNX_BUNDLE_SOURCE);
+  }
   nudgeFramedWindowViewport(win);
   installDiscreteKeyboardMenu(win);
-  startMainConnectorHost(win);
 
   // P3-S1 capability probe (R3/R5): prove at runtime whether the declared
   // LynxWindow.sendGlobalEvent delivers from main to the renderer. Only runs
