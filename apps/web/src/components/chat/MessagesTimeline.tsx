@@ -82,6 +82,7 @@ import {
   type TimelineLatestTurn,
 } from "./MessagesTimeline.logic";
 import { TranscriptRowSurface, type TranscriptRowElements } from "./TranscriptRowSurface";
+import { HostText } from "../ui/hostElements";
 import { TerminalContextInlineChip } from "./TerminalContextInlineChip";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import {
@@ -946,14 +947,17 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
             aria-hidden
           />
         ),
-      renderWorkingLabel: ({ createdAt }) =>
-        createdAt ? (
-          <>
-            Working for <WorkingTimer createdAt={createdAt} />
-          </>
-        ) : (
-          "Working..."
-        ),
+      renderWorkingLabel: ({ createdAt }) => (
+        <HostText>
+          {createdAt ? (
+            <>
+              Working for <WorkingTimer createdAt={createdAt} />
+            </>
+          ) : (
+            "Working..."
+          )}
+        </HostText>
+      ),
     }),
     [ctx, activity],
   );

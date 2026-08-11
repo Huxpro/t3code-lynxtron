@@ -58,6 +58,8 @@ export interface TranscriptRowElements<
 > {
   /** User message body inside the bubble (Web: collapsible body + contexts). */
   renderUserBody(input: { row: MessageRowOf<M, P, D> }): ReactNode;
+  /** Host-only bubble sizing compensation when platform intrinsic width differs. */
+  userBubbleClassName?(input: { row: MessageRowOf<M, P, D> }): string | undefined;
   /** Assistant Markdown island. */
   renderAssistantMarkdown(input: { row: MessageRowOf<M, P, D> }): ReactNode;
   /** Meta row under the user bubble (Web: timestamp/copy/revert; Lynx: none). */
@@ -74,6 +76,13 @@ export interface TranscriptRowElements<
   }): ReactNode;
   /** Leading work-entry icon leaf (Web: lucide SVG; Lynx: raster icon). */
   renderWorkIcon(input: { name: WorkEntryIconName; className: string }): ReactNode;
+  /** Host-native work-entry copy when nested text cannot honor flex gaps. */
+  renderWorkCopy?(input: {
+    heading: string;
+    headingClassName: string;
+    preview: string | null;
+  }): ReactNode;
+  renderWorkEntryVisual?(input: { heading: string; preview: string | null }): ReactNode;
   /** Trailing work-entry status affordance (Web: tooltip icons; Lynx: glyph). */
   renderWorkStatus(input: { failed: boolean; succeeded: boolean; warning: boolean }): ReactNode;
   /** Disclosure chevron leaf (Web: lucide SVG icons; Lynx: text glyph). */
@@ -81,7 +90,9 @@ export interface TranscriptRowElements<
     kind: "turn-fold" | "work-toggle" | "work-entry";
     expanded: boolean;
   }): ReactNode;
-  /** Ticking working-row label ("Working for 1m 05s" / "Working… 0:07"). */
+  /** Working-row indicator for hosts that collapse empty text leaves. */
+  renderWorkingIndicator?(): ReactNode;
+  /** Ticking working-row label and its host-native visual wrapper. */
   renderWorkingLabel(input: { createdAt: string | null }): ReactNode;
 }
 
@@ -107,7 +118,12 @@ function UserRow({
 }) {
   return (
     <HostView className="transcript-user-row group flex flex-col items-end gap-1">
-      <HostView className="transcript-user-bubble relative max-w-[80%] rounded-2xl bg-accent p-3">
+      <HostView
+        className={cn(
+          "transcript-user-bubble relative max-w-[80%] rounded-2xl bg-accent p-3",
+          elements.userBubbleClassName?.({ row }),
+        )}
+      >
         {elements.renderUserExtras?.({ row })}
         {elements.renderUserBody({ row })}
       </HostView>
@@ -150,7 +166,11 @@ function TurnFoldRow({
   readonly onToggleTurnFold: (turnId: TurnId) => void;
 }) {
   return (
-    <HostView className="transcript-turn-fold border-b border-border/60 pb-2 pt-1">
+    <HostView
+      className="transcript-turn-fold border-b border-border/60 pb-2 pt-1"
+      data-transcript-turn-fold={String(row.turnId)}
+      data-transcript-turn-fold-state={row.expanded ? "expanded" : "collapsed"}
+    >
       <HostButton
         type="button"
         aria-expanded={row.expanded}
@@ -212,38 +232,65 @@ function WorkEntryRow({
   const showSuccessIndicator =
     workEntryIndicatesToolSuccess(workEntry) ||
     (turnSettled && workEntryIndicatesToolNeutralStatus(workEntry));
+  const authorityVisual = elements.renderWorkEntryVisual?.({ heading, preview });
 
   return (
     <HostView
       className={cn(
         "transcript-work-entry flex flex-col rounded-md px-0.5 py-0.5",
         canExpand && "cursor-pointer",
+        authorityVisual && "transcript-work-entry--authority",
       )}
       role={canExpand ? "button" : undefined}
       aria-label={canExpand ? displayText : undefined}
+      aria-expanded={canExpand ? expanded : undefined}
+      data-transcript-work-entry={workEntry.id}
+      data-transcript-work-tone={workEntry.tone}
+      data-transcript-work-state={
+        canExpand ? (expanded ? "expanded" : "collapsed") : "static"
+      }
       onClick={canExpand ? () => setExpanded((value) => !value) : undefined}
     >
-      <HostView className="flex select-none items-center gap-1.5">
+      {authorityVisual}
+      <HostView
+        className={cn(
+          "transcript-work-entry-line flex select-none items-center gap-1.5",
+          authorityVisual && "transcript-work-entry-line--authority-hidden",
+        )}
+      >
         <HostText className={iconWrapperClass}>
           {elements.renderWorkIcon({
             name: entryIconName,
             className: "block size-3.5 shrink-0 opacity-80",
           })}
         </HostText>
-        <HostView className="flex min-w-0 flex-1 items-center gap-1.5">
-          <HostView className="min-w-0 flex-1 overflow-hidden">
-            <HostText className="flex min-w-0 w-full items-baseline gap-1.5 text-[12px] leading-5">
-              <HostText className={cn("min-w-0 shrink truncate", headingClass)}>{heading}</HostText>
-              {preview ? (
-                <HostText className="min-w-0 flex-1 truncate text-muted-foreground/55">
-                  {preview}
+        <HostView className="transcript-work-entry-content flex min-w-0 flex-1 items-center gap-1.5">
+          <HostView className="transcript-work-entry-copy-wrap min-w-0 flex-1 overflow-hidden">
+            {elements.renderWorkCopy?.({
+              heading,
+              headingClassName: headingClass,
+              preview,
+            }) ?? (
+              <HostText className="transcript-work-entry-copy flex min-w-0 w-full items-baseline gap-1.5 text-[12px] leading-5">
+                <HostText
+                  className={cn(
+                    "transcript-work-entry-heading min-w-0 shrink truncate",
+                    headingClass,
+                  )}
+                >
+                  {heading}
                 </HostText>
-              ) : null}
-            </HostText>
+                {preview ? (
+                  <HostText className="transcript-work-entry-preview min-w-0 flex-1 truncate text-muted-foreground/55">
+                    {preview}
+                  </HostText>
+                ) : null}
+              </HostText>
+            )}
           </HostView>
-          <HostView className="flex shrink-0 items-center gap-px text-muted-foreground/55">
+          <HostView className="transcript-work-entry-trailing flex shrink-0 items-center gap-px text-muted-foreground/55">
             <HostText
-              className="flex size-4 shrink-0 items-center justify-center"
+              className="transcript-work-entry-disclosure flex size-4 shrink-0 items-center justify-center"
               aria-hidden={!canExpand}
             >
               {canExpand
@@ -281,7 +328,7 @@ function WorkGroupRows({
   readonly elements: TranscriptRowElements;
 }) {
   const nonEmptyEntries = row.groupedEntries.filter(
-    (entry) => !workEntryIndicatesToolNeutralStatus(entry),
+    (entry) => entry.tone === "thinking" || !workEntryIndicatesToolNeutralStatus(entry),
   );
   const onlyToolEntries = nonEmptyEntries.every((entry) => workLogEntryIsToolLike(entry));
   const groupLabel = workGroupSectionLabel({
@@ -378,12 +425,14 @@ function WorkingRow({
   return (
     <HostView className="transcript-working-row py-0.5 pl-1.5">
       <HostView className="flex items-center gap-2 pt-1 text-[11px] text-muted-foreground/70 tabular-nums">
-        <HostText className="transcript-working-dots inline-flex items-center gap-[3px]">
-          <HostText className="transcript-working-dot inline-block h-1 w-1 rounded-full bg-muted-foreground/30" />
-          <HostText className="transcript-working-dot inline-block h-1 w-1 rounded-full bg-muted-foreground/30" />
-          <HostText className="transcript-working-dot inline-block h-1 w-1 rounded-full bg-muted-foreground/30" />
-        </HostText>
-        <HostText>{elements.renderWorkingLabel({ createdAt: row.createdAt })}</HostText>
+        {elements.renderWorkingIndicator?.() ?? (
+          <HostText className="transcript-working-dots inline-flex items-center gap-[3px]">
+            <HostText className="transcript-working-dot inline-block h-1 w-1 rounded-full bg-muted-foreground/30" />
+            <HostText className="transcript-working-dot inline-block h-1 w-1 rounded-full bg-muted-foreground/30" />
+            <HostText className="transcript-working-dot inline-block h-1 w-1 rounded-full bg-muted-foreground/30" />
+          </HostText>
+        )}
+        {elements.renderWorkingLabel({ createdAt: row.createdAt })}
       </HostView>
     </HostView>
   );
@@ -414,14 +463,17 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
         isCommentaryAssistant || row.kind === "work" || row.kind === "work-toggle"
           ? "pb-2"
           : "pb-4",
+        row.kind === "message" && row.message.role === "user" ? "transcript-user-outer" : null,
         row.kind === "message" && row.message.role === "assistant"
           ? "transcript-assistant-group group/assistant"
           : null,
+        row.kind === "turn-fold" ? "transcript-turn-fold-outer" : null,
       )}
       data-timeline-row-id={row.id}
       data-timeline-row-kind={row.kind}
       data-message-id={row.kind === "message" ? row.message.id : undefined}
       data-message-role={row.kind === "message" ? row.message.role : undefined}
+      data-timeline-row-text={row.kind === "message" ? row.message.text : undefined}
     >
       {row.kind === "message" && row.message.role === "user" ? (
         <UserRow row={row} elements={elements} />

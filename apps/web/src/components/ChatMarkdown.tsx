@@ -572,6 +572,9 @@ function MarkdownCodeBlock({
     <div
       className="chat-markdown-codeblock leading-snug"
       data-language={language}
+      data-markdown-code-block="true"
+      data-markdown-code-language={language}
+      data-markdown-code-title={fenceTitle ?? ""}
       data-wrap={wrapped ? "true" : "false"}
     >
       <div className="chat-markdown-codeblock-header select-none">

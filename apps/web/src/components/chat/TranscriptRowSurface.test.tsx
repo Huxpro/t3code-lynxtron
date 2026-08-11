@@ -120,6 +120,10 @@ describe("TranscriptRowSurface", () => {
     expect(markup).toContain("Run tests");
     expect(markup).toContain("vp test");
     expect(markup).toContain('data-work-icon="terminal"');
+    expect(markup).toContain('data-transcript-work-entry="e1"');
+    expect(markup).toContain('data-transcript-work-tone="tool"');
+    expect(markup).toContain('data-transcript-work-state="collapsed"');
+    expect(markup).toContain('aria-expanded="false"');
   });
 
   it("marks failed tool entries with the destructive heading and ✗ affordance", () => {
@@ -181,6 +185,8 @@ describe("TranscriptRowSurface", () => {
     });
     expect(markup).toContain("2 earlier turns");
     expect(markup).toContain('aria-expanded="false"');
+    expect(markup).toContain('data-transcript-turn-fold="turn-1"');
+    expect(markup).toContain('data-transcript-turn-fold-state="collapsed"');
   });
 
   it("renders the proposed-plan row through the plan island slot", () => {
