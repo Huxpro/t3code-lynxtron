@@ -15,21 +15,29 @@
  */
 import type {
   DesktopAppBranding,
+  EditorId,
   OrchestrationLatestTurn,
   OrchestrationMessage,
   OrchestrationMessageRole,
   OrchestrationCheckpointSummary,
+  OrchestrationGetTurnDiffInput,
+  OrchestrationGetTurnDiffResult,
   OrchestrationProjectShell,
   OrchestrationProposedPlan,
   OrchestrationSessionStatus,
   OrchestrationThreadActivity,
   OrchestrationThreadActivityTone,
   OrchestrationThreadShell,
+  ApprovalRequestId,
+  ProviderApprovalDecision,
   TurnId,
   ProviderInteractionMode,
   ProviderInstanceId,
   ProjectListEntriesInput,
   ProjectListEntriesResult,
+  ProjectSearchEntriesInput,
+  ProjectSearchEntriesResult,
+  ProjectScript,
   ProjectReadFileInput,
   ProjectReadFileResult,
   ProjectWriteFileInput,
@@ -39,6 +47,7 @@ import type {
   SourceControlDiscoveryResult,
   RuntimeMode,
   ModelSelection,
+  ThreadTurnStartBootstrap,
 } from "@t3tools/contracts";
 import type { ModelPickerModel } from "@t3tools/client-runtime/presentation/model-picker";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
@@ -47,7 +56,13 @@ import type {
   LatestProposedPlanState,
 } from "@t3tools/client-runtime/presentation/thread";
 
-export type ConnectionStatus = "idle" | "starting-server" | "connecting" | "ready" | "error";
+export type ConnectionStatus =
+  | "idle"
+  | "starting-server"
+  | "connecting"
+  | "reconnecting"
+  | "ready"
+  | "error";
 
 export type SessionStatus = OrchestrationSessionStatus;
 
@@ -110,10 +125,20 @@ export interface PairingCredentialResult {
  * `state/mainConnectorTransport.ts`.
  */
 export interface T3ConnectorCommandBridge {
+  reconnect(): Promise<void>;
   createThread(input: { projectId?: string; title?: string }): Promise<{ threadId: string }>;
   selectThread(threadId: string): Promise<void>;
-  sendPrompt(input: { threadId: string; text: string }): Promise<void>;
-  interrupt(input: { threadId: string }): Promise<void>;
+  sendPrompt(input: {
+    threadId: string;
+    text: string;
+    bootstrap?: ThreadTurnStartBootstrap;
+  }): Promise<void>;
+  interrupt(input: { threadId: string; turnId?: TurnId }): Promise<void>;
+  respondToApproval(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    decision: ProviderApprovalDecision;
+  }): Promise<void>;
   setModelSelection(input: { threadId?: string; selection: ModelSelection }): Promise<void>;
   setThreadRuntimeMode(input: { threadId: string; runtimeMode: RuntimeMode }): Promise<void>;
   setThreadInteractionMode(input: {
@@ -127,10 +152,20 @@ export interface T3ConnectorCommandBridge {
   updateServerSettings(input: { patch: ServerSettingsPatch }): Promise<ServerConfig>;
   deleteThread(input: { threadId: string }): Promise<void>;
   archiveThread(input: { threadId: string; unarchive?: boolean }): Promise<void>;
+  settleThread(input: { threadId: string }): Promise<void>;
+  unsettleThread(input: { threadId: string }): Promise<void>;
   renameThread(input: { threadId: string; title: string }): Promise<void>;
+  updateProjectScripts(input: {
+    projectId: string;
+    scripts: ReadonlyArray<ProjectScript>;
+  }): Promise<void>;
+  openInEditor(input: { cwd: string; editor: EditorId }): Promise<void>;
   listProjectEntries(input: ProjectListEntriesInput): Promise<ProjectListEntriesResult>;
+  searchProjectEntries(input: ProjectSearchEntriesInput): Promise<ProjectSearchEntriesResult>;
   readProjectFile(input: ProjectReadFileInput): Promise<ProjectReadFileResult>;
   writeProjectFile(input: ProjectWriteFileInput): Promise<ProjectWriteFileResult>;
+  getTurnDiff(input: OrchestrationGetTurnDiffInput): Promise<OrchestrationGetTurnDiffResult>;
+  readProjectBranch(input: { cwd: string }): Promise<string | null>;
   discoverSourceControl(): Promise<SourceControlDiscoveryResult>;
   createPairingCredential(input?: { readonly label?: string }): Promise<PairingCredentialResult>;
   revokePairingLink(input: { readonly id: string }): Promise<boolean>;

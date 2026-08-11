@@ -1,7 +1,10 @@
 import { useAtomValue } from "@effect/atom-react";
 import { useEffect } from "@lynx-js/react";
 import { Atom } from "effect/unstable/reactivity";
-import { deriveProviderModelSelectionProjection } from "@t3tools/client-runtime/presentation/model-picker";
+import {
+  deriveModelPickerModels,
+  deriveProviderModelSelectionProjection,
+} from "@t3tools/client-runtime/presentation/model-picker";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
 import {
@@ -9,12 +12,19 @@ import {
   projectPortableGeneralSettingsRestore,
 } from "@t3tools/client-runtime/presentation/settings";
 import type {
+  ApprovalRequestId,
+  EditorId,
   ModelSelection,
   OrchestrationCheckpointSummary,
+  OrchestrationGetTurnDiffInput,
+  OrchestrationGetTurnDiffResult,
   OrchestrationLatestTurn,
   OrchestrationProposedPlan,
   ProviderInteractionMode,
+  ProviderApprovalDecision,
   ProjectListEntriesResult,
+  ProjectSearchEntriesResult,
+  ProjectScript,
   ProjectReadFileResult,
   ProjectWriteFileResult,
   ProviderInstanceId,
@@ -24,6 +34,7 @@ import type {
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
   RuntimeMode,
+  ThreadTurnStartBootstrap,
   TurnId,
 } from "@t3tools/contracts";
 
@@ -43,18 +54,23 @@ import type {
   ThreadEventPayload,
   ThreadSummary,
 } from "../bridge";
-import { navigate } from "../router";
+import { navigate, getPathname } from "../router";
 import { appAtomRegistry } from "./atomRegistry";
 import { reportConnectionStatus } from "./connectionStatus";
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "./environment";
 import { getClientSettingsState, getPref, setPref, updateClientSettingsState } from "./prefsStore";
 import {
+  callBridge,
   startMainConnectorTransport,
   type BridgeCallModule,
   type GlobalEventListenerRegistry,
   type MainConnectorTransport,
 } from "./mainConnectorTransport";
 import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
+import {
+  findExactModelForSelection,
+  projectModelSelectionCandidates,
+} from "./modelSelection.logic";
 import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
@@ -77,10 +93,12 @@ declare const lynx:
 export interface T3ClientState {
   readonly status: ConnectionStatus;
   readonly statusDetail?: string;
+  readonly connectorCommandsReady: boolean;
   readonly projects: ReadonlyArray<ProjectSummary>;
   readonly threads: ReadonlyArray<ThreadSummary>;
   readonly archivedThreads: ReadonlyArray<ThreadSummary>;
   readonly activeThreadId?: string;
+  readonly draftHeroThreadId?: string;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -106,6 +124,7 @@ export interface T3ClientState {
 
 const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   status: "idle",
+  connectorCommandsReady: false,
   projects: [],
   threads: [],
   archivedThreads: [],
@@ -175,7 +194,10 @@ export function installT3ClientFixtureForDevTool(partial: Partial<T3ClientState>
   patchState(partial);
 }
 
-function resetActiveThreadState(activeThreadId?: string): void {
+function resetActiveThreadState(
+  activeThreadId?: string,
+  options?: { readonly draftHero?: boolean },
+): void {
   threadFingerprint = "";
   const current = appAtomRegistry.get(t3ClientStateAtom);
   const thread = current.threads.find((candidate) => candidate.id === activeThreadId);
@@ -188,6 +210,7 @@ function resetActiveThreadState(activeThreadId?: string): void {
     : current.selectedModel;
   patchState({
     activeThreadId,
+    draftHeroThreadId: options?.draftHero ? activeThreadId : undefined,
     messages: [],
     checkpoints: [],
     sessionStatus: "idle",
@@ -200,7 +223,7 @@ function resetActiveThreadState(activeThreadId?: string): void {
     ...(thread
       ? {
           modelSelection: thread.modelSelection,
-          ...(selectedModel ? { selectedModel } : {}),
+          selectedModel,
         }
       : {}),
   });
@@ -208,17 +231,40 @@ function resetActiveThreadState(activeThreadId?: string): void {
 
 function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelection | null): void {
   const current = appAtomRegistry.get(t3ClientStateAtom);
+  const activeThread = current.threads.find(
+    (thread) => thread.id === current.activeThreadId,
+  );
+  const newThreadSelectionCandidates = projectModelSelectionCandidates({
+    currentSelection: preferredSelection ?? current.modelSelection,
+    projects: current.projects,
+  });
   const projection = deriveProviderModelSelectionProjection(config, [
-    preferredSelection,
-    current.modelSelection,
-    current.selectedModel
-      ? {
-          instanceId: current.selectedModel.instanceId,
-          model: current.selectedModel.slug,
-        }
-      : null,
+    activeThread?.modelSelection,
+    ...(activeThread
+      ? []
+      : [
+          ...newThreadSelectionCandidates,
+          current.selectedModel
+            ? {
+                instanceId: current.selectedModel.instanceId,
+                model: current.selectedModel.slug,
+              }
+            : null,
+        ]),
   ]);
-  const selectedModel = projection.selectedModel;
+  const displayModels = deriveModelPickerModels(projection.entries, { includeDisabled: true });
+  const selectedModel = activeThread
+    ? findExactModelForSelection(displayModels, activeThread.modelSelection)
+    : projection.selectedModel;
+  const selection = activeThread
+    ? activeThread.modelSelection
+    : projection.selection ??
+      (selectedModel
+        ? {
+            instanceId: selectedModel.instanceId,
+            model: selectedModel.slug,
+          }
+        : undefined);
 
   patchState({
     serverConfig: config,
@@ -227,16 +273,11 @@ function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelec
     providerEntries: projection.entries,
     models: projection.models,
     selectedModel,
-    modelSelection: projection.selection,
+    modelSelection: selection,
   });
 
-  if (selectedModel) {
-    const selection = projection.selection ?? {
-      instanceId: selectedModel.instanceId,
-      model: selectedModel.slug,
-    };
+  if (selection) {
     setPref("modelSelection", selection);
-    void getBridge()?.setModelSelection?.({ selection });
   }
 }
 
@@ -272,27 +313,59 @@ function applyShellPayload(shell: ShellEventPayload): void {
   const threads = shell.threads ?? [];
   const stateBeforeShell = appAtomRegistry.get(t3ClientStateAtom);
   const activeThread = threads.find((thread) => thread.id === stateBeforeShell.activeThreadId);
+  const projects = shell.projects ?? [];
+  const modelProjection = !activeThread && stateBeforeShell.serverConfig
+    ? deriveProviderModelSelectionProjection(
+        stateBeforeShell.serverConfig,
+        projectModelSelectionCandidates({
+          currentSelection: stateBeforeShell.modelSelection,
+          projects,
+        }),
+      )
+    : null;
   const activeModel = activeThread
-    ? stateBeforeShell.models.find(
-        (model) =>
-          model.instanceId === activeThread.modelSelection.instanceId &&
-          model.slug === activeThread.modelSelection.model,
+    ? findExactModelForSelection(
+        stateBeforeShell.providerEntries.length > 0
+          ? deriveModelPickerModels(stateBeforeShell.providerEntries, { includeDisabled: true })
+          : stateBeforeShell.models,
+        activeThread.modelSelection,
       )
     : undefined;
   patchState({
-    projects: shell.projects ?? [],
+    projects,
     threads,
     archivedThreads: shell.archivedThreads ?? [],
     ...(activeThread
       ? {
           modelSelection: activeThread.modelSelection,
-          ...(activeModel ? { selectedModel: activeModel } : {}),
+          selectedModel: activeModel,
         }
-      : {}),
+      : modelProjection?.selection
+      ? {
+          modelSelection: modelProjection.selection,
+          ...(modelProjection.selectedModel
+            ? { selectedModel: modelProjection.selectedModel }
+            : {}),
+        }
+        : {}),
   });
+  if (
+    !activeThread &&
+    modelProjection?.selection &&
+    (stateBeforeShell.modelSelection?.instanceId !== modelProjection.selection.instanceId ||
+      stateBeforeShell.modelSelection?.model !== modelProjection.selection.model ||
+      JSON.stringify(stateBeforeShell.modelSelection?.options ?? null) !==
+        JSON.stringify(modelProjection.selection.options ?? null))
+  ) {
+    setPref("modelSelection", modelProjection.selection);
+  }
   const latest = appAtomRegistry.get(t3ClientStateAtom);
   if (!latest.activeThreadId && threads.length > 0) {
-    selectThread(threads[0].id);
+    // Auto-select the first thread as the active thread, but do not yank the
+    // renderer off a non-chat route (e.g. Settings) to do it. Force-navigating
+    // here caused Settings to flash back to chat when the shell snapshot
+    // arrived. On the chat route this still navigates to the selected thread.
+    selectThread(threads[0].id, { navigate: getPathname().startsWith("/settings") === false });
   }
 }
 
@@ -363,21 +436,65 @@ function buildMainCommandBridge(transport: MainConnectorTransport): Partial<Poll
 }
 
 function installTransportDevToolHook(): void {
-  (
-    globalThis as {
-      __T3_LYNXTRON_CONNECTOR_TRANSPORT__?: {
+  const diagnosticsGlobal = globalThis as {
+    __T3_LYNXTRON_CONNECTOR_TRANSPORT__?: {
         kind: "main" | "unavailable";
         lastSeq: () => number;
         invoke: (method: string, params?: unknown) => Promise<unknown>;
       };
-    }
-  ).__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
+    __T3_LYNXTRON_CLIENT_STATE__?: () => {
+      activeThreadId?: string;
+      sessionStatus: SessionStatus;
+      activeTurnId: TurnId | null;
+      latestTurn: OrchestrationLatestTurn | null;
+      activeProject?: ProjectSummary;
+      activeThread?: ThreadSummary;
+      selectedProvider?: {
+        instanceId: string;
+        showInteractionModeToggle: boolean | undefined;
+      };
+    };
+    __T3_LYNXTRON_SELECT_THREAD__?: (threadId: string) => void;
+  };
+  diagnosticsGlobal.__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
     kind: mainTransport ? ("main" as const) : ("unavailable" as const),
     lastSeq: () => mainTransport?.lastSeq ?? -1,
     invoke: (method, params) => {
       if (!mainTransport) return Promise.reject(new Error("main transport is not active"));
       return mainTransport.invoke(method as ConnectorCommandName, params);
     },
+  };
+  diagnosticsGlobal.__T3_LYNXTRON_CLIENT_STATE__ = () => {
+    const state = appAtomRegistry.get(t3ClientStateAtom);
+    const activeThread = state.threads.find((thread) => thread.id === state.activeThreadId);
+    const activeProject = state.projects.find(
+      (project) => project.id === activeThread?.projectId,
+    );
+    const selectedProvider = state.providerEntries.find(
+      (entry) =>
+        entry.instanceId ===
+        (state.selectedModel?.instanceId ?? state.modelSelection?.instanceId),
+    );
+    return {
+      activeThreadId: state.activeThreadId,
+      sessionStatus: state.sessionStatus,
+      activeTurnId: state.activeTurnId,
+      latestTurn: state.latestTurn,
+      ...(activeProject ? { activeProject } : {}),
+      ...(activeThread ? { activeThread } : {}),
+      ...(selectedProvider
+        ? {
+            selectedProvider: {
+              instanceId: selectedProvider.instanceId,
+              showInteractionModeToggle:
+                selectedProvider.snapshot.showInteractionModeToggle,
+            },
+          }
+        : {}),
+    };
+  };
+  diagnosticsGlobal.__T3_LYNXTRON_SELECT_THREAD__ = (threadId) => {
+    selectThread(threadId);
   };
 }
 
@@ -416,8 +533,10 @@ async function bootstrapT3Client(): Promise<void> {
   });
   if (!transport) {
     installTransportDevToolHook();
+    reportConnectionStatus("error");
     patchState({
       status: "error",
+      connectorCommandsReady: false,
       statusDetail:
         "Main-owned connector transport unavailable (typed bridge probe failed). The renderer cannot reach the backend.",
     });
@@ -425,6 +544,11 @@ async function bootstrapT3Client(): Promise<void> {
   }
   mainTransport = transport;
   mainCommandBridge = buildMainCommandBridge(transport);
+  patchState({ connectorCommandsReady: true });
+  const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  if (activeThreadId) {
+    void mainCommandBridge.selectThread?.(activeThreadId);
+  }
   installTransportDevToolHook();
 }
 
@@ -440,32 +564,91 @@ export function getT3ClientSnapshot(): T3ClientState {
   return appAtomRegistry.get(t3ClientStateAtom);
 }
 
-function selectThread(threadId: string): void {
-  resetActiveThreadState(threadId);
+export async function readPreviewInitialState(): Promise<{
+  readonly route?: string;
+  readonly overlay?: string | null;
+  readonly theme?: "light" | "dark";
+} | null> {
+  "background only";
+  try {
+    if (!NativeModules?.bridge?.call) return null;
+    const value = await callBridge(
+      NativeModules.bridge,
+      "t3:preview.initial-state",
+      {},
+    );
+    return value && typeof value === "object"
+      ? (value as {
+          readonly route?: string;
+          readonly overlay?: string | null;
+          readonly theme?: "light" | "dark";
+        })
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function selectThread(
+  threadId: string,
+  options?: { navigate?: boolean; draftHero?: boolean },
+): void {
+  resetActiveThreadState(threadId, { draftHero: options?.draftHero });
   getBridge()?.selectThread?.(threadId);
-  navigate(`/${LYNX_PRIMARY_ENVIRONMENT_ID}/${threadId}`);
+  if (options?.navigate !== false) {
+    navigate(`/${LYNX_PRIMARY_ENVIRONMENT_ID}/${threadId}`);
+  }
 }
 
 async function createThread(projectId?: string): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.createThread) return;
   const result = await bridge.createThread(projectId ? { projectId } : {});
-  if (result?.threadId) selectThread(result.threadId);
+  if (result?.threadId) selectThread(result.threadId, { draftHero: true });
 }
 
-function sendPrompt(text: string): void {
+function reconnect(): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.reconnect) {
+    return Promise.reject(new Error("Backend reconnection is unavailable."));
+  }
+  return bridge.reconnect();
+}
+
+function sendPrompt(text: string, bootstrap?: ThreadTurnStartBootstrap): void {
   const trimmed = text.trim();
   const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const bridge = getBridge();
   if (!trimmed || !threadId || !bridge?.sendPrompt) return;
-  void bridge.sendPrompt({ threadId, text: trimmed });
+  patchState({ draftHeroThreadId: undefined });
+  void bridge.sendPrompt({
+    threadId,
+    text: trimmed,
+    ...(bootstrap ? { bootstrap } : {}),
+  });
 }
 
 function interrupt(): void {
-  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const threadId = state.activeThreadId;
   const bridge = getBridge();
   if (!threadId || !bridge?.interrupt) return;
-  void bridge.interrupt({ threadId });
+  void bridge.interrupt({
+    threadId,
+    ...(state.activeTurnId ? { turnId: state.activeTurnId } : {}),
+  });
+}
+
+function respondToApproval(
+  requestId: ApprovalRequestId,
+  decision: ProviderApprovalDecision,
+): Promise<void> {
+  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const bridge = getBridge();
+  if (!threadId || !bridge?.respondToApproval) {
+    return Promise.reject(new Error("Approval response is unavailable."));
+  }
+  return bridge.respondToApproval({ threadId, requestId, decision });
 }
 
 async function deleteThread(threadId: string): Promise<void> {
@@ -486,10 +669,41 @@ async function archiveThread(threadId: string, unarchive = false): Promise<void>
   await bridge.archiveThread({ threadId, unarchive });
 }
 
+async function settleThread(threadId: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.settleThread) return;
+  await bridge.settleThread({ threadId });
+}
+
+async function unsettleThread(threadId: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.unsettleThread) return;
+  await bridge.unsettleThread({ threadId });
+}
+
 async function renameThread(threadId: string, title: string): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.renameThread) return;
   await bridge.renameThread({ threadId, title });
+}
+
+async function updateProjectScripts(
+  projectId: string,
+  scripts: ReadonlyArray<ProjectScript>,
+): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.updateProjectScripts) {
+    return Promise.reject(new Error("Project action saving is unavailable."));
+  }
+  await bridge.updateProjectScripts({ projectId, scripts });
+}
+
+async function openInEditor(cwd: string, editor: EditorId): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.openInEditor) {
+    return Promise.reject(new Error("Opening the project in an editor is unavailable."));
+  }
+  await bridge.openInEditor({ cwd, editor });
 }
 
 function listProjectEntries(cwd: string): Promise<ProjectListEntriesResult> {
@@ -498,6 +712,18 @@ function listProjectEntries(cwd: string): Promise<ProjectListEntriesResult> {
     return Promise.reject(new Error("Project file listing is unavailable."));
   }
   return bridge.listProjectEntries({ cwd });
+}
+
+function searchProjectEntries(
+  cwd: string,
+  query: string,
+  limit: number,
+): Promise<ProjectSearchEntriesResult> {
+  const bridge = getBridge();
+  if (!bridge?.searchProjectEntries) {
+    return Promise.reject(new Error("Project file search is unavailable."));
+  }
+  return bridge.searchProjectEntries({ cwd, query, limit, kind: "file" });
 }
 
 function readProjectFile(cwd: string, relativePath: string): Promise<ProjectReadFileResult> {
@@ -518,6 +744,24 @@ function writeProjectFile(
     return Promise.reject(new Error("Project file writing is unavailable."));
   }
   return bridge.writeProjectFile({ cwd, relativePath, contents });
+}
+
+function getTurnDiff(
+  input: OrchestrationGetTurnDiffInput,
+): Promise<OrchestrationGetTurnDiffResult> {
+  const bridge = getBridge();
+  if (!bridge?.getTurnDiff) {
+    return Promise.reject(new Error("Turn diff loading is unavailable."));
+  }
+  return bridge.getTurnDiff(input);
+}
+
+function readProjectBranch(cwd: string): Promise<string | null> {
+  const bridge = getBridge();
+  if (!bridge?.readProjectBranch) {
+    return Promise.resolve(null);
+  }
+  return bridge.readProjectBranch({ cwd });
 }
 
 function discoverSourceControl(): Promise<SourceControlDiscoveryResult> {
@@ -670,21 +914,30 @@ export const t3ClientActions = {
   createThread,
   deleteThread,
   discoverSourceControl,
+  getTurnDiff,
   interrupt,
   listProjectEntries,
+  openInEditor,
   readProjectFile,
+  readProjectBranch,
+  reconnect,
   renameThread,
+  respondToApproval,
   revokeClientSession,
   revokeOtherClientSessions,
   revokePairingLink,
   restoreGeneralSettingsDefaults,
   selectThread,
   sendPrompt,
+  searchProjectEntries,
+  settleThread,
+  unsettleThread,
   setModelSelection,
   setModelOptions,
   setProviderEnabled,
   setThreadInteractionMode,
   setThreadRuntimeMode,
   updateServerSettings,
+  updateProjectScripts,
   writeProjectFile,
 } as const;

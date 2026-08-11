@@ -3,9 +3,8 @@
  *
  * Probes the typed `lynxBridge` request path once at startup; when main
  * answers, connector state flows as pushed sequenced events fed into the same
- * Effect Atom application functions the polling path uses. When the probe
- * fails the caller falls back to the established preload polling path, which
- * remains the default transport.
+ * Effect Atom application functions. When the probe fails, the caller exposes
+ * an honest unavailable state; there is no polling fallback.
  *
  * The only timer here is a one-shot guard around the readiness probe so a
  * missing main handler cannot hang startup; there is no polling loop.
@@ -50,6 +49,7 @@ export interface MainConnectorTransport {
 }
 
 const DEFAULT_READY_TIMEOUT_MS = 3_000;
+const BRIDGE_ERROR_KEY = "__t3BridgeError";
 
 export function callBridge(
   bridge: BridgeCallModule,
@@ -61,6 +61,14 @@ export function callBridge(
     const settle = (value: unknown) => {
       if (settled) return;
       settled = true;
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        typeof (value as Record<string, unknown>)[BRIDGE_ERROR_KEY] === "string"
+      ) {
+        reject(new Error((value as Record<string, string>)[BRIDGE_ERROR_KEY]));
+        return;
+      }
       resolve(value);
     };
     try {
@@ -150,8 +158,14 @@ export async function startMainConnectorTransport(
     options.applyEvent(envelope);
   };
 
+  // Subscribe before requesting the snapshot so an event cannot land between
+  // the ready reply and listener registration. Sequence classification makes
+  // an event racing the reply safe: an older reply is ignored, while an event
+  // beyond the reply is applied or forces a full resync.
+  registry.addListener(T3_CONNECTOR_EVENT, listener);
+
   // Readiness probe: one current snapshot exchange. A timer guards only this
-  // probe so a missing main handler degrades to the polling path instead of
+  // probe so a missing main handler exposes an unavailable state instead of
   // hanging the renderer.
   const readyTimeoutMs = options.readyTimeoutMs ?? DEFAULT_READY_TIMEOUT_MS;
   let timeout: ReturnType<typeof setTimeout> | undefined;
@@ -162,9 +176,12 @@ export async function startMainConnectorTransport(
     }),
   ]);
   clearTimeout(timeout);
-  if (!ready) return null;
+  if (!ready) {
+    disposed = true;
+    registry.removeListener?.(T3_CONNECTOR_EVENT, listener);
+    return null;
+  }
 
-  registry.addListener(T3_CONNECTOR_EVENT, listener);
   log(`[main-transport] push transport active at seq=${lastSeq}`);
 
   return {

@@ -53,17 +53,25 @@ import {
   ORCHESTRATION_WS_METHODS,
   DEFAULT_PROVIDER_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
+  type EditorId,
   type AuthAccessSnapshot,
+  type ApprovalRequestId,
   type AuthAccessStreamEvent,
   type ModelSelection,
   type OrchestrationShellSnapshot,
   type OrchestrationShellStreamItem,
+  type OrchestrationGetTurnDiffInput,
+  type OrchestrationGetTurnDiffResult,
   type OrchestrationThread,
   type OrchestrationThreadShell,
   type ProviderInteractionMode,
+  type ProviderApprovalDecision,
   type OrchestrationThreadStreamItem,
   type ProviderInstanceId,
   type ProjectListEntriesResult,
+  type ProjectSearchEntriesInput,
+  type ProjectSearchEntriesResult,
+  type ProjectScript,
   type ProjectReadFileResult,
   type ProjectWriteFileResult,
   type ServerConfig,
@@ -71,8 +79,11 @@ import {
   type ServerSettings,
   type ServerSettingsPatch,
   type SourceControlDiscoveryResult,
+  type TurnId,
   type RuntimeMode,
 } from "@t3tools/contracts";
+import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
+import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -101,6 +112,22 @@ export interface ConnectorConnectResult {
   detail?: string;
   config?: ServerConfig;
   cwd?: string;
+}
+
+export function materializeTurnBootstrap(
+  bootstrap: ThreadTurnStartBootstrap | undefined,
+  randomId: () => string = crypto.randomUUID,
+): ThreadTurnStartBootstrap | undefined {
+  if (!bootstrap?.prepareWorktree) return bootstrap;
+  return {
+    ...bootstrap,
+    prepareWorktree: {
+      ...bootstrap.prepareWorktree,
+      branch:
+        bootstrap.prepareWorktree.branch ??
+        buildTemporaryWorktreeBranchName(randomId),
+    },
+  };
 }
 
 /** Ask the OS for a free loopback TCP port so the server never collides with a
@@ -156,6 +183,7 @@ export class T3Connector {
   private defaultProjectId: string | undefined;
   private ready = false;
   private serverExited = false;
+  private disposed = false;
 
   constructor(events: ConnectorEvents) {
     this.events = events;
@@ -206,7 +234,8 @@ export class T3Connector {
     this.child.on("exit", (code, signal) => {
       this.log(`[srv] exited code=${code} signal=${signal}`);
       this.serverExited = true;
-      if (!this.ready) {
+      this.ready = false;
+      if (!this.disposed) {
         this.events.onStatus("error", `Server exited (code=${code} signal=${signal}).`);
       }
     });
@@ -651,7 +680,11 @@ export class T3Connector {
     return { threadId };
   }
 
-  async sendPrompt(input: { threadId: string; text: string }): Promise<void> {
+  async sendPrompt(input: {
+    threadId: string;
+    text: string;
+    bootstrap?: ThreadTurnStartBootstrap;
+  }): Promise<void> {
     if (!this.client) throw new Error("not connected");
     const thread =
       this.shellSnapshot?.threads.find((candidate) => candidate.id === input.threadId) ??
@@ -663,6 +696,7 @@ export class T3Connector {
       thread,
       this.pendingThreadModelSelections.get(input.threadId),
     );
+    const bootstrap = materializeTurnBootstrap(input.bootstrap);
     const command = {
       type: "thread.turn.start",
       commandId: crypto.randomUUID(),
@@ -674,21 +708,54 @@ export class T3Connector {
         attachments: [],
       },
       ...dispatchState,
+      ...(bootstrap ? { bootstrap } : {}),
       createdAt: new Date().toISOString(),
     };
     await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command));
   }
 
-  async interrupt(input: { threadId: string }): Promise<void> {
+  async interrupt(input: { threadId: string; turnId?: TurnId }): Promise<void> {
     if (!this.client) return;
     const command = {
       type: "thread.turn.interrupt",
       commandId: crypto.randomUUID(),
       threadId: input.threadId,
+      ...(input.turnId ? { turnId: input.turnId } : {}),
       createdAt: new Date().toISOString(),
     };
-    await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command)).catch(
-      () => {},
+    this.log(
+      `[connector] interrupt dispatch thread=${input.threadId} turn=${input.turnId ?? "active"}`,
+    );
+    try {
+      await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command));
+      this.log(
+        `[connector] interrupt acknowledged thread=${input.threadId} turn=${input.turnId ?? "active"}`,
+      );
+    } catch (error) {
+      this.log(
+        `[connector] interrupt failed thread=${input.threadId} turn=${input.turnId ?? "active"}: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+      throw error;
+    }
+  }
+
+  async respondToApproval(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    decision: ProviderApprovalDecision;
+  }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.approval.respond",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+        requestId: input.requestId,
+        decision: input.decision,
+        createdAt: new Date().toISOString(),
+      }),
     );
   }
 
@@ -720,6 +787,29 @@ export class T3Connector {
     );
   }
 
+  async settleThread(input: { threadId: string }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.settle",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+      }),
+    );
+  }
+
+  async unsettleThread(input: { threadId: string }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.unsettle",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+        reason: "user",
+      }),
+    );
+  }
+
   async renameThread(input: { threadId: string; title: string }): Promise<void> {
     if (!this.client) throw new Error("not connected");
     const title = input.title.trim();
@@ -734,10 +824,39 @@ export class T3Connector {
     );
   }
 
+  async updateProjectScripts(input: {
+    projectId: string;
+    scripts: ReadonlyArray<ProjectScript>;
+  }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "project.meta.update",
+        commandId: crypto.randomUUID(),
+        projectId: input.projectId,
+        scripts: input.scripts,
+      }),
+    );
+  }
+
+  async openInEditor(input: { cwd: string; editor: EditorId }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(this.client[WS_METHODS.shellOpenInEditor](input));
+  }
+
   async listProjectEntries(input: { cwd: string }): Promise<ProjectListEntriesResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<ProjectListEntriesResult>(
       this.client[WS_METHODS.projectsListEntries]({ cwd: input.cwd }),
+    );
+  }
+
+  async searchProjectEntries(
+    input: ProjectSearchEntriesInput,
+  ): Promise<ProjectSearchEntriesResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<ProjectSearchEntriesResult>(
+      this.client[WS_METHODS.projectsSearchEntries](input),
     );
   }
 
@@ -761,6 +880,32 @@ export class T3Connector {
   }): Promise<ProjectWriteFileResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<ProjectWriteFileResult>(this.client[WS_METHODS.projectsWriteFile](input));
+  }
+
+  async getTurnDiff(
+    input: OrchestrationGetTurnDiffInput,
+  ): Promise<OrchestrationGetTurnDiffResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<OrchestrationGetTurnDiffResult>(
+      this.client[ORCHESTRATION_WS_METHODS.getTurnDiff](input),
+    );
+  }
+
+  async readProjectBranch(input: { cwd: string }): Promise<string | null> {
+    return new Promise((resolve) => {
+      const child = spawn("git", ["-C", input.cwd, "branch", "--show-current"], {
+        stdio: ["ignore", "pipe", "ignore"],
+      });
+      let output = "";
+      child.stdout?.on("data", (chunk) => {
+        output += String(chunk);
+      });
+      child.on("error", () => resolve(null));
+      child.on("exit", (code) => {
+        const branch = output.trim();
+        resolve(code === 0 && branch.length > 0 ? branch : null);
+      });
+    });
   }
 
   async discoverSourceControl(): Promise<SourceControlDiscoveryResult> {
@@ -935,6 +1080,8 @@ export class T3Connector {
   }
 
   dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
     for (const fiber of this.threadFibers.values()) {
       Effect.runFork(Fiber.interrupt(fiber));
     }

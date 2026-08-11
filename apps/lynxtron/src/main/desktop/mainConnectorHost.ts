@@ -37,6 +37,19 @@ export interface MainConnectorWindow {
 
 export type MainConnectorHandler = (params: unknown) => unknown | Promise<unknown>;
 
+export async function settleMainConnectorHandler(
+  handler: MainConnectorHandler,
+  params: unknown,
+): Promise<unknown> {
+  try {
+    return await handler(params);
+  } catch (error) {
+    return {
+      __t3BridgeError: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 export interface ConnectorLike {
   connect(): Promise<unknown>;
   dispose(): void;
@@ -108,6 +121,8 @@ export class MainConnectorHost {
   private readonly options: MainConnectorHostOptions;
   private connector: ConnectorLike | undefined;
   private connectPromise: Promise<unknown> | undefined;
+  private reconnectPromise: Promise<unknown> | undefined;
+  private connectorGeneration = 0;
   private disposed = false;
   private seq = 0;
   private status: ConnectorStatusPayload = { status: "idle" };
@@ -132,26 +147,7 @@ export class MainConnectorHost {
   connect(): Promise<unknown> {
     if (this.disposed) return Promise.reject(new Error("connector host is disposed"));
     if (this.connectPromise) return this.connectPromise;
-    this.connector = this.options.createConnector({
-      onStatus: (status, detail) =>
-        this.emit({
-          kind: "status",
-          payload:
-            detail === undefined
-              ? { status: status as ConnectorStatusPayload["status"] }
-              : { status: status as ConnectorStatusPayload["status"], detail },
-        }),
-      onConfig: (config) => this.emit({ kind: "config", payload: config }),
-      onAccess: (access) => this.emit({ kind: "access", payload: access }),
-      onShell: (payload) => this.emit({ kind: "shell", payload }),
-      onThread: (threadId, payload) => this.emit({ kind: "thread", threadId, payload }),
-      onLog: (line) => {
-        this.options.onLog?.(line);
-        this.emit({ kind: "log", payload: line });
-      },
-    });
-    this.connectPromise = this.connector.connect();
-    return this.connectPromise;
+    return this.startConnector(false);
   }
 
   /** Current sequence, exposed for diagnostics and tests. */
@@ -184,6 +180,9 @@ export class MainConnectorHost {
         ),
       );
     }
+    if (request.method === "reconnect") {
+      return this.reconnect();
+    }
     const connector = this.connector;
     if (!connector) {
       return Promise.reject(new Error("connector is not started"));
@@ -193,6 +192,72 @@ export class MainConnectorHost {
     } catch (error) {
       return Promise.reject(error instanceof Error ? error : new Error(String(error)));
     }
+  }
+
+  /** Replace the owned connector while keeping the renderer protocol stable. */
+  private reconnect(): Promise<unknown> {
+    if (this.reconnectPromise) return this.reconnectPromise;
+    const reconnect = this.startConnector(true);
+    const tracked = reconnect.finally(() => {
+      if (this.reconnectPromise === tracked) this.reconnectPromise = undefined;
+    });
+    this.reconnectPromise = tracked;
+    return tracked;
+  }
+
+  private startConnector(reconnecting: boolean): Promise<unknown> {
+    const generation = ++this.connectorGeneration;
+    const previous = this.connector;
+    this.connector = undefined;
+    this.connectPromise = undefined;
+    // Invalidate the old generation before disposal: its process exit callback
+    // is expected and must not overwrite the new lifecycle state.
+    previous?.dispose();
+
+    if (reconnecting) {
+      this.emit({ kind: "status", payload: { status: "reconnecting" } });
+    }
+
+    const isCurrent = () => !this.disposed && generation === this.connectorGeneration;
+    const emitCurrent = (event: ConnectorEventPayload) => {
+      if (isCurrent()) this.emit(event);
+    };
+    const connector = this.options.createConnector({
+      onStatus: (status, detail) => {
+        const nextStatus =
+          reconnecting && (status === "starting-server" || status === "connecting")
+            ? "reconnecting"
+            : (status as ConnectorStatusPayload["status"]);
+        emitCurrent({
+          kind: "status",
+          payload: detail === undefined ? { status: nextStatus } : { status: nextStatus, detail },
+        });
+      },
+      onConfig: (config) => emitCurrent({ kind: "config", payload: config }),
+      onAccess: (access) => emitCurrent({ kind: "access", payload: access }),
+      onShell: (payload) => emitCurrent({ kind: "shell", payload }),
+      onThread: (threadId, payload) => emitCurrent({ kind: "thread", threadId, payload }),
+      onLog: (line) => {
+        if (!isCurrent()) return;
+        this.options.onLog?.(line);
+        this.emit({ kind: "log", payload: line });
+      },
+    });
+    this.connector = connector;
+    const connect = connector.connect().catch((error: unknown) => {
+      if (isCurrent() && this.status.status !== "error") {
+        this.emit({
+          kind: "status",
+          payload: {
+            status: "error",
+            detail: error instanceof Error ? error.message : String(error),
+          },
+        });
+      }
+      throw error;
+    });
+    this.connectPromise = connect;
+    return connect;
   }
 
   private emit(event: ConnectorEventPayload): void {
@@ -230,6 +295,7 @@ export class MainConnectorHost {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.connectorGeneration += 1;
     for (const method of Object.values(T3_CONNECTOR_METHODS)) {
       this.options.removeHandler?.(method);
     }

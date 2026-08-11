@@ -3,6 +3,8 @@ import { assert, describe, it } from "vite-plus/test";
 import {
   MainConnectorHost,
   dispatchConnectorCommand,
+  settleMainConnectorHandler,
+  type ConnectorEventCallbacks,
   type ConnectorLike,
   type MainConnectorHostOptions,
 } from "./mainConnectorHost.ts";
@@ -46,6 +48,26 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
       calls.push({ method: "sendPrompt", input });
       return Promise.resolve();
     },
+    interrupt: (input: unknown) => {
+      calls.push({ method: "interrupt", input });
+      return Promise.resolve();
+    },
+    respondToApproval: (input: unknown) => {
+      calls.push({ method: "respondToApproval", input });
+      return Promise.resolve();
+    },
+    settleThread: (input: unknown) => {
+      calls.push({ method: "settleThread", input });
+      return Promise.resolve();
+    },
+    unsettleThread: (input: unknown) => {
+      calls.push({ method: "unsettleThread", input });
+      return Promise.resolve();
+    },
+    readProjectBranch: (input: unknown) => {
+      calls.push({ method: "readProjectBranch", input });
+      return Promise.resolve("main");
+    },
     selectThread: (input: unknown) => {
       calls.push({ method: "selectThread", input });
     },
@@ -72,6 +94,22 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
 }
 
 describe("main connector host", () => {
+  it("settles rejected commands into the renderer bridge error envelope", async () => {
+    assert.deepEqual(
+      await settleMainConnectorHandler(
+        () => Promise.reject(new Error("Failed to load turn diff")),
+        {},
+      ),
+      { __t3BridgeError: "Failed to load turn diff" },
+    );
+    assert.deepEqual(
+      await settleMainConnectorHandler(() => {
+        throw new Error("Malformed command");
+      }, {}),
+      { __t3BridgeError: "Malformed command" },
+    );
+  });
+
   it("registers ready, resync, and command handlers on attach", () => {
     const { host, handlers } = createHarness();
     host.attach();
@@ -158,12 +196,106 @@ describe("main connector host", () => {
     await command({ method: "selectThread", params: "t1" });
     assert.deepEqual(connector.calls[1], { method: "selectThread", input: "t1" });
 
+    await command({ method: "interrupt", params: { threadId: "t1", turnId: "turn-1" } });
+    assert.deepEqual(connector.calls[2], {
+      method: "interrupt",
+      input: { threadId: "t1", turnId: "turn-1" },
+    });
+
+    await command({
+      method: "respondToApproval",
+      params: { threadId: "t1", requestId: "approval-1", decision: "accept" },
+    });
+    assert.deepEqual(connector.calls[3], {
+      method: "respondToApproval",
+      input: { threadId: "t1", requestId: "approval-1", decision: "accept" },
+    });
+
+    await command({ method: "readProjectBranch", params: { cwd: "/repo" } });
+    assert.deepEqual(connector.calls[4], {
+      method: "readProjectBranch",
+      input: { cwd: "/repo" },
+    });
+
+    await command({ method: "settleThread", params: { threadId: "t1" } });
+    assert.deepEqual(connector.calls[5], {
+      method: "settleThread",
+      input: { threadId: "t1" },
+    });
+
+    await command({ method: "unsettleThread", params: { threadId: "t1" } });
+    assert.deepEqual(connector.calls[6], {
+      method: "unsettleThread",
+      input: { threadId: "t1" },
+    });
+
     await command({ method: "revokePairingLink", params: { id: "link-1" } });
-    assert.deepEqual(connector.calls[2], { method: "revokePairingLink", input: "link-1" });
+    assert.deepEqual(connector.calls[7], { method: "revokePairingLink", input: "link-1" });
 
     await assertRejects(command({ method: "dispose" }), /Rejected connector command/);
     await assertRejects(command({ method: "connect" }), /Rejected connector command/);
     await assertRejects(command({}), /Rejected connector command/);
+  });
+
+  it("replaces the connector, projects restart phases, and ignores stale events", async () => {
+    const pushed: ConnectorEventEnvelope[] = [];
+    const handlers = new Map<string, (params: unknown) => unknown>();
+    const connectors: Array<
+      ConnectorLike &
+        ConnectorEventCallbacks & {
+          disposeCount: number;
+        }
+    > = [];
+    const host = new MainConnectorHost({
+      window: {
+        sendGlobalEvent: (_name, envelope) => {
+          pushed.push(envelope as ConnectorEventEnvelope);
+          return true;
+        },
+      },
+      registerHandler: (method, handler) => {
+        handlers.set(method, handler as (params: unknown) => unknown);
+      },
+      createConnector: (events) => {
+        const connector = {
+          ...events,
+          disposeCount: 0,
+          connect: () => Promise.resolve({ status: "ready" }),
+          dispose() {
+            connector.disposeCount += 1;
+          },
+        };
+        connectors.push(connector);
+        return connector;
+      },
+    });
+    host.attach();
+    await host.connect();
+    connectors[0]!.onStatus("ready");
+    pushed.length = 0;
+
+    const command = handlers.get(T3_CONNECTOR_METHODS.command)!;
+    await command({ method: "reconnect" });
+    assert.equal(connectors.length, 2);
+    assert.equal(connectors[0]!.disposeCount, 1);
+
+    connectors[0]!.onStatus("error", "stale process exit");
+    connectors[1]!.onStatus("starting-server", "Launching replacement");
+    connectors[1]!.onStatus("connecting", "Waiting for replacement");
+    connectors[1]!.onStatus("ready");
+
+    assert.deepEqual(
+      pushed.filter((event) => event.kind === "status").map((event) => event.payload.status),
+      ["reconnecting", "reconnecting", "reconnecting", "ready"],
+    );
+    assert.isFalse(
+      pushed.some(
+        (event) =>
+          event.kind === "status" &&
+          event.payload.status === "error" &&
+          event.payload.detail === "stale process exit",
+      ),
+    );
   });
 
   it("forwards undelivered push failures to the log without throwing", async () => {
@@ -197,6 +329,77 @@ describe("main connector host", () => {
 });
 
 describe("dispatchConnectorCommand", () => {
+  it("forwards canonical file search inputs without reshaping the payload", async () => {
+    const calls: unknown[] = [];
+    const connector = {
+      connect: () => Promise.resolve(),
+      dispose: () => {},
+      searchProjectEntries: (input: unknown) => {
+        calls.push(input);
+        return Promise.resolve({ entries: [], truncated: false });
+      },
+    } as ConnectorLike;
+    const params = { cwd: "/tmp/project", query: "", limit: 200, kind: "file" };
+
+    await dispatchConnectorCommand(connector, {
+      method: "searchProjectEntries",
+      params,
+    });
+
+    assert.deepEqual(calls, [params]);
+  });
+
+  it("forwards canonical editor launch inputs without reshaping the payload", async () => {
+    const calls: unknown[] = [];
+    const connector = {
+      connect: () => Promise.resolve(),
+      dispose: () => {},
+      openInEditor: (input: unknown) => {
+        calls.push(input);
+        return Promise.resolve();
+      },
+    } as ConnectorLike;
+    const params = { cwd: "/tmp/project", editor: "cursor" };
+
+    await dispatchConnectorCommand(connector, {
+      method: "openInEditor",
+      params,
+    });
+
+    assert.deepEqual(calls, [params]);
+  });
+
+  it("forwards canonical project script updates without reshaping the payload", async () => {
+    const calls: unknown[] = [];
+    const connector = {
+      connect: () => Promise.resolve(),
+      dispose: () => {},
+      updateProjectScripts: (input: unknown) => {
+        calls.push(input);
+        return Promise.resolve();
+      },
+    } as ConnectorLike;
+    const params = {
+      projectId: "project-1",
+      scripts: [
+        {
+          id: "test",
+          name: "Test",
+          command: "pnpm test",
+          icon: "play",
+          runOnWorktreeCreate: false,
+        },
+      ],
+    };
+
+    await dispatchConnectorCommand(connector, {
+      method: "updateProjectScripts",
+      params,
+    });
+
+    assert.deepEqual(calls, [params]);
+  });
+
   it("throws a clear error for missing connector methods", () => {
     const connector = { connect: () => Promise.resolve(), dispose: () => {} } as ConnectorLike;
     assert.throws(

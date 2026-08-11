@@ -12,6 +12,16 @@ import {
   type ConnectorSnapshot,
 } from "../../shared/connectorProtocol.ts";
 
+async function assertRejects(promise: Promise<unknown>, pattern: RegExp): Promise<void> {
+  try {
+    await promise;
+  } catch (error) {
+    assert.match(error instanceof Error ? error.message : String(error), pattern);
+    return;
+  }
+  assert.fail(`Expected rejection matching ${pattern}, but the promise resolved`);
+}
+
 function makeSnapshot(seqTag: string): ConnectorSnapshot {
   return {
     status: { status: "ready" },
@@ -55,7 +65,10 @@ function createHarness(): Harness {
       const reply = replies.get(name);
       if (reply instanceof Error) throw reply;
       if (typeof reply === "function") {
-        (reply as (params: Record<string, unknown>) => unknown)(params);
+        (reply as (params: Record<string, unknown>, cb: (...args: unknown[]) => void) => unknown)(
+          params,
+          cb,
+        );
         return;
       }
       if (replies.has(name)) cb(reply);
@@ -116,7 +129,7 @@ describe("main connector transport", () => {
     const harness = createHarness(); // no ready reply registered
     const result = await startHarness(harness, 20);
     assert.isNull(result);
-    assert.isFalse(harness.registry.listeners.has(T3_CONNECTOR_EVENT));
+    assert.equal(harness.registry.listeners.get(T3_CONNECTOR_EVENT)?.length ?? 0, 0);
   });
 
   it("applies the ready snapshot once and processes sequenced events", async () => {
@@ -134,6 +147,26 @@ describe("main connector transport", () => {
       [4, 5],
     );
     assert.equal(transport!.lastSeq, 5);
+  });
+
+  it("registers the event listener before the ready snapshot exchange", async () => {
+    const harness = createHarness();
+    harness.replyWith(
+      T3_CONNECTOR_METHODS.ready,
+      (_params: Record<string, unknown>, reply: (value: unknown) => void) => {
+        assert.equal(harness.registry.listeners.get(T3_CONNECTOR_EVENT)?.length, 1);
+        harness.emit({ seq: 1, kind: "status", payload: { status: "connecting" } });
+        reply({ seq: 1, snapshot: makeSnapshot("t1") });
+      },
+    );
+
+    const transport = await startHarness(harness);
+    assert.isNotNull(transport);
+    assert.equal(transport!.lastSeq, 1);
+    assert.deepEqual(
+      harness.applied.map((event) => event.seq),
+      [1],
+    );
   });
 
   it("drops duplicates and out-of-band junk", async () => {
@@ -179,6 +212,20 @@ describe("main connector transport", () => {
       (entry) => entry.method === T3_CONNECTOR_METHODS.command,
     );
     assert.deepEqual(commandCall?.params, { method: "createThread", params: { projectId: "p1" } });
+  });
+
+  it("restores Browser Preview bridge error envelopes as rejected commands", async () => {
+    const harness = createHarness();
+    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 0, snapshot: makeSnapshot("t1") });
+    harness.replyWith(T3_CONNECTOR_METHODS.command, {
+      __t3BridgeError: "Source-control discovery is unavailable.",
+    });
+    const transport = await startHarness(harness);
+
+    await assertRejects(
+      transport!.invoke("discoverSourceControl"),
+      /Source-control discovery is unavailable/,
+    );
   });
 
   it("stops listening after dispose", async () => {

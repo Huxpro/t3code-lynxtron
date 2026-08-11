@@ -30,6 +30,12 @@ describe("connector protocol sequence classification", () => {
 describe("connector protocol guards", () => {
   it("accepts only allowlisted command names", () => {
     assert.isTrue(isConnectorCommandName("sendPrompt"));
+    assert.isTrue(isConnectorCommandName("reconnect"));
+    assert.isTrue(isConnectorCommandName("respondToApproval"));
+    assert.isTrue(isConnectorCommandName("readProjectBranch"));
+    assert.isTrue(isConnectorCommandName("updateProjectScripts"));
+    assert.isTrue(isConnectorCommandName("openInEditor"));
+    assert.isTrue(isConnectorCommandName("searchProjectEntries"));
     assert.isTrue(isConnectorCommandName("revokeOtherClientSessions"));
     assert.isFalse(isConnectorCommandName("dispose"));
     assert.isFalse(isConnectorCommandName("connect"));

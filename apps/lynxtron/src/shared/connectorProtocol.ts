@@ -48,6 +48,7 @@ export type ConnectorConnectionStatus =
   | "idle"
   | "starting-server"
   | "connecting"
+  | "reconnecting"
   | "ready"
   | "error";
 
@@ -109,10 +110,12 @@ export interface ConnectorSyncReply {
 
 /** Allowlisted connector commands the renderer may invoke through main. */
 export const CONNECTOR_COMMAND_NAMES = [
+  "reconnect",
   "createThread",
   "selectThread",
   "sendPrompt",
   "interrupt",
+  "respondToApproval",
   "setModelSelection",
   "setThreadRuntimeMode",
   "setThreadInteractionMode",
@@ -120,10 +123,17 @@ export const CONNECTOR_COMMAND_NAMES = [
   "updateServerSettings",
   "deleteThread",
   "archiveThread",
+  "settleThread",
+  "unsettleThread",
   "renameThread",
+  "updateProjectScripts",
+  "openInEditor",
   "listProjectEntries",
+  "searchProjectEntries",
   "readProjectFile",
   "writeProjectFile",
+  "getTurnDiff",
+  "readProjectBranch",
   "discoverSourceControl",
   "createPairingCredential",
   "revokePairingLink",
