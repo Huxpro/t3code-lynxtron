@@ -1,4 +1,12 @@
 import { useCallback, useState } from "@lynx-js/react";
+import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
+import {
+  RIGHT_PANEL_DEFAULT_WIDTH,
+  RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY,
+  RIGHT_PANEL_MIN_WIDTH,
+  RIGHT_PANEL_WIDTH_STORAGE_KEY,
+  resolveRightPanelMaximumWidth,
+} from "../../../../web/src/rightPanelLayout";
 import {
   RightPanelEmptySurface,
   RightPanelTabSurface,
@@ -14,24 +22,32 @@ import {
 import { PlanPanel } from "./PlanPanel";
 import { DiffPanel } from "./DiffPanel";
 import { FilesPanel } from "./FilesPanel";
+import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
+import { useResizableWidth } from "../hooks/useResizableWidth";
+import { Icon, type IconName } from "./Icon";
 
-interface RightPanelProps {
+interface RightPanelContentProps {
   activePlan: ActivePlanState | null;
   activeProposedPlan: LatestProposedPlanState | null;
 }
 
+interface RightPanelProps extends RightPanelContentProps {
+  maximized?: boolean;
+  onMaximizedChange?: (maximized: boolean) => void;
+}
+
 type AddableKind = RightPanelKind | "browser" | "terminal";
 
-const SURFACE_ICONS: Record<RightPanelKind, string> = {
-  plan: "📋",
-  diff: "Δ",
-  files: "📁",
+const SURFACE_ICONS: Record<RightPanelKind, IconName> = {
+  plan: "clipboard-list",
+  diff: "file-diff",
+  files: "files",
 };
 
-const ADDABLE_ICONS: Record<AddableKind, string> = {
+const ADDABLE_ICONS: Record<AddableKind, IconName> = {
   ...SURFACE_ICONS,
-  browser: "🌐",
-  terminal: ">_",
+  browser: "globe",
+  terminal: "terminal-square",
 };
 
 /**
@@ -76,22 +92,37 @@ const ADDABLE_SURFACES: ReadonlyArray<{
   },
 ];
 
-function renderSurface(surface: RightPanelSurface, props: RightPanelProps) {
+function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps) {
   switch (surface.kind) {
     case "plan":
       return (
         <PlanPanel activePlan={props.activePlan} activeProposedPlan={props.activeProposedPlan} />
       );
     case "diff":
-      return <DiffPanel />;
+      return <DiffPanel turnId={surface.turnId} filePath={surface.filePath} />;
     case "files":
       return <FilesPanel />;
   }
 }
 
-export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) {
+export function RightPanel({
+  activePlan,
+  activeProposedPlan,
+  maximized = false,
+  onMaximizedChange = () => undefined,
+}: RightPanelProps) {
   const state = useRightPanelState();
+  const sheet = useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY);
+  const viewport = useViewportSnapshot();
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const resize = useResizableWidth({
+    storageKey: RIGHT_PANEL_WIDTH_STORAGE_KEY,
+    defaultWidth: RIGHT_PANEL_DEFAULT_WIDTH,
+    minWidth: RIGHT_PANEL_MIN_WIDTH,
+    maxWidth: resolveRightPanelMaximumWidth(viewport.width),
+    edge: "left",
+    target: "right-panel",
+  });
 
   const handleTabClick = useCallback((surface: RightPanelSurface) => {
     uiActions.activateRightPanelSurface(surface.id);
@@ -121,7 +152,7 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
 
   const emptyActions: ReadonlyArray<RightPanelActionItem> = ADDABLE_SURFACES.map((item) => ({
     key: item.kind,
-    icon: <text className="right-panel__empty-card-icon">{ADDABLE_ICONS[item.kind]}</text>,
+    icon: <Icon name={ADDABLE_ICONS[item.kind]} size={20} color="#818181" />,
     label: item.label,
     description: item.disabled && item.disabledReason ? item.disabledReason : item.description,
     disabled: item.disabled,
@@ -132,21 +163,48 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
     },
   }));
 
-  return (
-    <view className="right-panel">
+  const panel = (
+    <view
+      main-thread:ref={resize.targetRef}
+      className={`right-panel${sheet ? " right-panel--sheet" : ""}${
+        maximized ? " right-panel--maximized" : ""
+      }`}
+      style={sheet || maximized ? undefined : { width: `${resize.width}px` }}
+      data-right-panel-open="true"
+      data-right-panel-mode={sheet ? "sheet" : "inline"}
+      data-right-panel-active-kind={activeSurface?.kind ?? "empty"}
+      data-right-panel-width={String(resize.width)}
+      data-right-panel-maximized={maximized ? "true" : "false"}
+    >
+      {!sheet ? (
+        <>
+          <view
+            {...resize.handlers}
+            className="right-panel__resize-handle"
+            aria-label="Resize right panel"
+          />
+        </>
+      ) : null}
       {/* Tab bar */}
-      <view className="right-panel__tabs">
+      <view className="right-panel__tabs lynx-titlebar-drag-region">
         <scroll-view className="right-panel__tab-scroll" scroll-orientation="horizontal">
           <view className="right-panel__tab-list">
             {state.surfaces.map((surface) => (
               <RightPanelTabSurface
                 key={surface.id}
-                icon={<text className="right-panel__tab-icon">{SURFACE_ICONS[surface.kind]}</text>}
+                icon={
+                  <Icon
+                    name={SURFACE_ICONS[surface.kind]}
+                    size={14}
+                    color="#818181"
+                    className="right-panel__tab-icon"
+                  />
+                }
                 title={surface.label}
                 active={surface.id === state.activeSurfaceId}
                 onActivate={() => handleTabClick(surface)}
                 onClose={() => handleCloseTab(surface)}
-                closeIcon={<text className="right-panel__tab-close-glyph">×</text>}
+                closeIcon={<Icon name="x" size={14} color="#818181" />}
                 closeVisible
               />
             ))}
@@ -155,10 +213,12 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
         {/* Add surface button */}
         <view className="right-panel__add-btn-wrapper">
           <view
-            className={`right-panel__add-btn${showAddMenu ? " right-panel__add-btn--active" : ""}`}
+            className={`right-panel__add-btn lynx-titlebar-no-drag${
+              showAddMenu ? " right-panel__add-btn--active" : ""
+            }`}
             bindtap={handleToggleAddMenu}
           >
-            <text className="right-panel__add-btn-text">+</text>
+            <Icon name="plus" size={16} color="#818181" />
           </view>
           {showAddMenu ? (
             <view className="right-panel__add-menu">
@@ -180,15 +240,47 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
                         },
                       })}
                 >
-                  <text className="right-panel__add-item-icon">{ADDABLE_ICONS[item.kind]}</text>
+                  <Icon
+                    name={ADDABLE_ICONS[item.kind]}
+                    size={14}
+                    color="#818181"
+                    className="right-panel__add-item-icon"
+                  />
                   <text className="right-panel__add-item-label">{item.label}</text>
                 </view>
               ))}
             </view>
           ) : null}
         </view>
-        <view className="right-panel__close" bindtap={handleClose}>
-          <text className="right-panel__close-text">×</text>
+        <view className="right-panel__layout-controls lynx-titlebar-no-drag">
+          <view
+            className={`right-panel__layout-control${
+              sheet ? " right-panel__layout-control--disabled" : ""
+            }`}
+            aria-label={maximized ? "Restore panel size" : "Maximize panel"}
+            aria-disabled={sheet ? "true" : "false"}
+            bindtap={sheet ? undefined : () => onMaximizedChange(!maximized)}
+          >
+            <Icon
+              name={maximized ? "minimize-2" : "maximize-2"}
+              size={14}
+              color="#818181"
+            />
+          </view>
+          <view
+            className="right-panel__layout-control right-panel__layout-control--disabled"
+            aria-label="Terminal drawer unavailable"
+            aria-disabled="true"
+          >
+            <Icon name="panel-bottom" size={14} color="#818181" />
+          </view>
+          <view
+            className="right-panel__layout-control"
+            aria-label="Toggle right panel"
+            bindtap={handleClose}
+          >
+            <Icon name="panel-right" size={14} color="#818181" />
+          </view>
         </view>
       </view>
 
@@ -201,5 +293,14 @@ export function RightPanel({ activePlan, activeProposedPlan }: RightPanelProps) 
         )}
       </view>
     </view>
+  );
+
+  return sheet ? (
+    <>
+      <view className="right-panel-sheet-scrim" bindtap={handleClose} />
+      {panel}
+    </>
+  ) : (
+    panel
   );
 }
