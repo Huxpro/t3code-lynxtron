@@ -5,8 +5,10 @@ import { DEFAULT_SERVER_SETTINGS } from "@t3tools/contracts/settings";
 
 import {
   buildModelPickerSearchText,
+  describeUnavailableProviderInstance,
   deriveModelPickerModels,
   deriveProviderModelSelectionProjection,
+  providerInstanceLockedReason,
   providerModelKey,
   rankModelPickerSearchResults,
   scoreModelPickerSearch,
@@ -53,6 +55,32 @@ function provider(input: {
 }
 
 describe("shared model picker presentation", () => {
+  it("describes unavailable and locked providers with distinct reasons", () => {
+    const [entry] = deriveProviderInstanceEntries([
+      {
+        ...provider({
+          instanceId: "grok",
+          driverKind: "grok",
+          status: "error",
+        }),
+        displayName: "Grok",
+        availability: "unavailable",
+        message: "Sign in to continue.",
+      },
+    ]);
+
+    expect(entry && describeUnavailableProviderInstance(entry)).toBe(
+      "Grok — Unavailable. Sign in to continue.",
+    );
+    expect(
+      entry &&
+        providerInstanceLockedReason(entry, {
+          driverKind: ProviderDriverKind.make("codex"),
+          continuationGroupKey: null,
+        }),
+    ).toBe("Grok is unavailable in this thread. Start a new thread to switch providers.");
+  });
+
   it("derives rows from canonical provider entries and excludes disabled instances", () => {
     const entries = applyProviderInstanceSettings(
       deriveProviderInstanceEntries([
@@ -83,6 +111,49 @@ describe("shared model picker presentation", () => {
         instanceId: "codex",
         providerDisplayName: "codex",
         slug: "gpt-5.6",
+      }),
+    ]);
+  });
+
+  it("excludes not-ready provider models from the interactive picker catalog", () => {
+    const entries = deriveProviderInstanceEntries([
+      provider({
+        instanceId: "claudeAgent",
+        driverKind: "claudeAgent",
+        status: "warning",
+        models: [{ slug: "claude-fable-5" }],
+      }),
+      provider({
+        instanceId: "opencode",
+        driverKind: "opencode",
+        status: "ready",
+        models: [{ slug: "opencode/big-pickle" }],
+      }),
+    ]);
+
+    expect(
+      deriveModelPickerModels(entries).map((model) =>
+        providerModelKey(model.instanceId, model.slug),
+      ),
+    ).toEqual(["opencode:opencode/big-pickle"]);
+  });
+
+  it("retains not-ready provider models for non-picker display lookup", () => {
+    const entries = deriveProviderInstanceEntries([
+      provider({
+        instanceId: "grok",
+        driverKind: "grok",
+        status: "error",
+        models: [{ slug: "grok-build" }],
+      }),
+    ]);
+
+    expect(deriveModelPickerModels(entries)).toEqual([]);
+    expect(deriveModelPickerModels(entries, { includeDisabled: true })).toEqual([
+      expect.objectContaining({
+        instanceId: "grok",
+        providerDisplayName: "grok",
+        slug: "grok-build",
       }),
     ]);
   });

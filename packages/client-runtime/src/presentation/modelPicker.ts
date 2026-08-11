@@ -10,6 +10,7 @@ import { normalizeSearchQuery, scoreQueryMatch } from "@t3tools/shared/searchRan
 import {
   applyProviderInstanceSettings,
   deriveProviderInstanceEntries,
+  isProviderInstancePickerReady,
   isProviderInstancePickerVisible,
   resolveSelectableProviderInstanceEntry,
   sortProviderInstanceEntries,
@@ -67,7 +68,10 @@ export function deriveModelPickerModels(
   options?: { readonly includeDisabled?: boolean },
 ): ReadonlyArray<ModelPickerModel> {
   return entries.flatMap((entry) => {
-    if (options?.includeDisabled !== true && !isProviderInstancePickerVisible(entry)) {
+    if (
+      options?.includeDisabled !== true &&
+      (!isProviderInstancePickerVisible(entry) || !isProviderInstancePickerReady(entry))
+    ) {
       return [];
     }
     return entry.models.map(
@@ -175,6 +179,83 @@ const MODEL_PICKER_FAVORITE_SCORE_BOOST = 24;
 
 export function providerModelKey(instanceId: string, slug: string): string {
   return `${instanceId}:${slug}`;
+}
+
+export function describeUnavailableProviderInstance(entry: ProviderInstanceEntry): string | null {
+  if (!entry.enabled || entry.status === "disabled") {
+    return `${entry.displayName} — Disabled in settings.`;
+  }
+  if (entry.status === "ready" && entry.isAvailable) {
+    return null;
+  }
+  const kind =
+    entry.status === "error"
+      ? "Unavailable"
+      : entry.status === "warning"
+        ? "Limited"
+        : "Not ready";
+  const message = entry.snapshot.message?.trim();
+  return message
+    ? `${entry.displayName} — ${kind}. ${message}`
+    : `${entry.displayName} — ${kind}.`;
+}
+
+export function providerInstanceLockedReason(
+  entry: Pick<ProviderInstanceEntry, "displayName" | "driverKind" | "continuationGroupKey">,
+  lock: {
+    readonly driverKind: ProviderDriverKind | null;
+    readonly continuationGroupKey?: string | null | undefined;
+  },
+): string | null {
+  if (lock.driverKind === null) return null;
+  if (
+    entry.driverKind === lock.driverKind &&
+    (!lock.continuationGroupKey ||
+      entry.continuationGroupKey === lock.continuationGroupKey)
+  ) {
+    return null;
+  }
+  return `${entry.displayName} is unavailable in this thread. Start a new thread to switch providers.`;
+}
+
+export function startedThreadModelChangeReason(input: {
+  readonly providers: ReadonlyArray<
+    Pick<ServerProvider, "instanceId" | "requiresNewThreadForModelChange">
+  >;
+  readonly hasStartedSession: boolean;
+  readonly currentModelSelection: ModelSelection;
+  readonly currentProviderInstanceId?: ModelSelection["instanceId"] | null | undefined;
+  readonly nextModelSelection: ModelSelection;
+}): { readonly title: string; readonly description: string } | null {
+  if (!input.hasStartedSession) {
+    return null;
+  }
+  const currentModelSelection = {
+    ...input.currentModelSelection,
+    instanceId: input.currentProviderInstanceId ?? input.currentModelSelection.instanceId,
+  };
+  if (
+    currentModelSelection.instanceId === input.nextModelSelection.instanceId &&
+    currentModelSelection.model === input.nextModelSelection.model
+  ) {
+    return null;
+  }
+  const currentProvider = input.providers.find(
+    (snapshot) => snapshot.instanceId === currentModelSelection.instanceId,
+  );
+  const nextProvider = input.providers.find(
+    (snapshot) => snapshot.instanceId === input.nextModelSelection.instanceId,
+  );
+  if (
+    currentProvider?.requiresNewThreadForModelChange !== true &&
+    nextProvider?.requiresNewThreadForModelChange !== true
+  ) {
+    return null;
+  }
+  return {
+    title: "Start a new chat to change models",
+    description: "This provider does not allow switching models after a conversation has started.",
+  };
 }
 
 function rankByValue(values: ReadonlyArray<string>): ReadonlyMap<string, number> {
