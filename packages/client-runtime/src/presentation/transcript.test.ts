@@ -171,6 +171,39 @@ describe("deriveTimelineEntries", () => {
 });
 
 describe("deriveMessagesTimelineRows", () => {
+  it("keeps expandable thinking entries visible even while their lifecycle is neutral", () => {
+    const thinking = deriveWorkLogEntries([
+      activity({
+        id: "thinking-1",
+        kind: "task.progress",
+        tone: "info",
+        summary: "Thinking through the change",
+        payload: {
+          summary: "Thinking through the change",
+          detail: "Compare the existing call sites.",
+        },
+        createdAt: "2026-01-01T00:00:01.000Z",
+      }),
+    ]);
+    const rows = deriveMessagesTimelineRows({
+      timelineEntries: thinking.map((entry) => ({
+        kind: "work" as const,
+        id: entry.id,
+        createdAt: entry.createdAt,
+        entry,
+      })),
+      expandedTurnIds: new Set([TurnId.make("turn-1")]),
+      isWorking: false,
+      activeTurnStartedAt: null,
+    });
+
+    expect(rows).toHaveLength(2);
+    expect(rows.find((row) => row.kind === "work")).toMatchObject({
+      kind: "work",
+      groupedEntries: [{ tone: "thinking", detail: "Compare the existing call sites." }],
+    });
+  });
+
   const settledLatestTurn = {
     turnId: TurnId.make("turn-1"),
     state: "completed" as const,
@@ -423,5 +456,7 @@ describe("formatDuration", () => {
     expect(formatDuration(59_000)).toBe("59s");
     expect(formatDuration(60_000)).toBe("1m");
     expect(formatDuration(90_000)).toBe("1m 30s");
+    expect(formatDuration(3_600_000)).toBe("1h");
+    expect(formatDuration(8_100_000)).toBe("2h 15m");
   });
 });

@@ -248,7 +248,12 @@ export function formatDuration(durationMs: number): string {
     return tenths >= 10 ? "10s" : `${tenths.toFixed(1)}s`;
   }
   if (durationMs < 60_000) return `${Math.round(durationMs / 1_000)}s`;
+  const hours = Math.floor(durationMs / 3_600_000);
   const minutes = Math.floor(durationMs / 60_000);
+  if (hours > 0) {
+    const remainingMinutes = minutes % 60;
+    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+  }
   const seconds = Math.round((durationMs % 60_000) / 1_000);
   if (seconds === 0) return `${minutes}m`;
   if (seconds === 60) return `${minutes + 1}m`;
@@ -1506,7 +1511,7 @@ export function deriveMessagesTimelineRows<
         cursor += 1;
       }
       const visibleGroupedEntries = groupedEntries.filter(
-        (entry) => !workEntryIndicatesToolNeutralStatus(entry),
+        (entry) => entry.tone === "thinking" || !workEntryIndicatesToolNeutralStatus(entry),
       );
       if (visibleGroupedEntries.length > 0) {
         if (visibleGroupedEntries.length <= MAX_VISIBLE_WORK_LOG_ENTRIES) {
