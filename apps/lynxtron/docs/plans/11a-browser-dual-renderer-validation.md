@@ -1,5 +1,11 @@
 # Establish a browser-first Web / Lynx UI loop
 
+> **Historical / superseded execution context.** Keep this file as the record
+> of the original browser-loop experiment. Do not execute its task table or
+> inherit its `PASS` labels as visual certification. The current Harness,
+> evidence, context-cleanup, and gap-prioritization authority is
+> [Plan 11C](./11c-synara-harness-reset-and-gap-prioritization.md).
+
 Plan 11A is a bounded harness experiment inserted between the active Plan 11
 work and Plan 12 feature-parity execution. It does not replace either plan and
 does not change their product ordering. Finish the current atomic Plan 11 task
@@ -134,6 +140,20 @@ or user session sends real OS input and records the visible result.
 
 ## Fixed architecture constraints
 
+> **Superseded in part by Plan 11B (2026-08-03).** The hand-built Web reference
+> host (`apps/web/src/browser-workbench-reference/`) that these constraints
+> describe has been **deleted**. The workbench now compares the two shipping
+> frontends — the real Web app and Lynx-for-Web — against one seeded, isolated
+> shared server (`apps/lynxtron/scripts/capture-shared-workbench.mjs`), so the
+> "comparison host owns rendering of the Web pane" model below no longer
+> applies. Constraint 4's "no renderer-side WebSocket" is narrowed for the
+> **preview pane only** by Plan 11B SB1's dev-only browser transport; the
+> production Lynx renderer still owns no socket. Everything about not copying
+> product JSX, isolated deterministic state, honest capability adapters, and
+> browser evidence being Tier-1 diagnostic still holds. See
+> `docs/plans/11b-single-server-dual-frontend-workbench.md` and
+> `evidence/2026-08-03/SB5/findings.md`.
+
 1. Build Lynx for Web from the existing ReactLynx entry and production module
    graph. Preserve `.lynx.tsx`, `.lynx.ts`, then ordinary extension priority.
 2. Do not copy product JSX, product state machines, routes, or CSS into the
@@ -164,9 +184,9 @@ or user session sends real OS input and records the visible result.
 | --- | --- | --- | --- | --- |
 | BW0 | Prove current-stack Lynx Web compatibility | current Plan 11 boundary | `completed` | Existing ReactLynx entry renders in a browser without a product fork |
 | BW1 | Add the typed browser preview host | BW0 | `completed` | Semantic state and commands cross the existing connector boundary |
-| BW2 | Build the dual-renderer workbench | BW1 | `pending` | Web and Lynx Web render one identified scenario at matched dimensions |
-| BW3 | Calibrate detection and iteration cost | BW2 | `pending` | Known geometry/style faults fail reliably and steady-state feedback is measured |
-| BW4 | Converge the main-shell validation slice | BW3 | `pending` | Four deterministic product states meet the browser comparison gates |
+| BW2 | Build the dual-renderer workbench | BW1 | `completed` | Web and Lynx Web render one identified scenario at matched dimensions |
+| BW3 | Calibrate detection and iteration cost | BW2 | `completed` | Known geometry/style faults fail reliably and steady-state feedback is measured |
+| BW4 | Converge the main-shell validation slice | BW3 | `completed` | Four deterministic product states meet the browser comparison gates |
 | BW5 | Correlate once with Native Lynxtron | BW4 | `pending` | One real Native run confirms or rejects the browser proxy |
 | BW6 | Adopt narrowly or remove the experiment | BW5 | `pending` | Plan 11/12 harness policy records a go/no-go decision |
 
@@ -345,6 +365,38 @@ changes merely because another unfinished surface is visible.
 - The evidence records how many Native rebuilds and launches were avoided.
 - Browser rendering is not used to claim cold-start, real tap, keyboard,
   scrolling, focus, selection, or connector recovery acceptance.
+
+## BW2-BW4 status (2026-08-03, completed)
+
+BW2 built the dual-renderer workbench: one browser page serves a left Web
+reference pane (React DOM over the shared surfaces) and a right Lynx-for-Web
+pane (the compiled ReactLynx bundle + typed preview host), both driven by one
+web-owned scenario catalog (`apps/web/src/browser-workbench-reference/
+workbenchScenarios.ts`) so scenario identity is literal. The Web pane composes
+the same `ChatRouteSurface`, `SidebarV2CompositionSurface`, `ComposerSurface`,
+and lifecycle-banner surfaces the product uses; it does not boot the connection
+stack and is not a second product UI. `scripts/capture-workbench.mjs` serves
+both builds from one origin, launches an isolated headless Chrome, and per
+scenario x viewport records commit, both bundle hashes, scenario hash, both
+panes' readiness, console, geometry, and single-pane/side-by-side/diff images.
+
+BW3 turned the harness into a gate: per-pane geometry baseline
+(`scripts/workbench-geometry-baseline.json`, 6px tolerance), stage-backdrop
+presence, hero parity, scenario identity, and zero-error console. Three
+calibration faults (sidebar width, composer row, backdrop) were injected,
+detected, and reverted without masks. Steady-state edit-to-both-panes-ready
+median is 5.2s (target 10s); the dominant cost was a headless-Chrome SIGTERM
+shutdown hang, fixed by owning the PID and SIGKILL + prompt exit. Evidence:
+`evidence/2026-08-03/BW3/findings.md` and `iteration-timing.json`.
+
+BW4 used the loop to fix one real defect: New Thread rendered the wrong active
+thread (hence no hero) on Lynx because the Lynx connector auto-selects
+`shell.threads[0]` while the Web host selects `activeThreadId`. Ordering the
+active thread first in the scenario snapshot fixed it; a hero-parity gate now
+guards the class. All four states pass at both viewports. Evidence:
+`evidence/2026-08-03/BW4/findings.md` and `evidence/2026-08-03/BW2/
+workbench-report.json`. Native launches avoided: ~8 build-and-capture cycles;
+the one required Native correlation is deferred to BW5.
 
 ## BW5: Correlate once with Native Lynxtron
 

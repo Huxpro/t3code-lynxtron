@@ -95,16 +95,16 @@ At the start of every task:
 
 ## Task sequence
 
-| ID  | Task                                                 | Depends on     | Status    | Result                                                                            |
-| --- | ---------------------------------------------------- | -------------- | --------- | --------------------------------------------------------------------------------- |
-| OC0 | Freeze the five failures and current Web baselines   | Current branch | `completed` | Durable outcome fixtures, measurements, and exact failure signatures              |
-| OC1 | Make packaged cold start semantically ready          | OC0            | `pending` | Three fresh starts connect without reload and the harness rejects false readiness |
-| OC2 | Give Lynx navigation one authority                   | OC1            | `pending` | Settings tap, section changes, and Back remain stable                             |
-| OC3 | Make lifecycle state visible and actionable          | OC2            | `pending` | Starting, ready, failed, and reconnecting are truthful in the chat shell          |
-| OC4 | Converge Sidebar layout and anchored overlays        | OC3            | `pending` | Sidebar V2 and project-scope popup match Web without reflow or duplication        |
-| OC5 | Converge Composer layout and token contracts         | OC4            | `pending` | Composer geometry, density, contrast, and context strip meet the matched baseline |
-| OC6 | Restore stage branding from canonical build metadata | OC5            | `pending` | Dev artwork is visible in the local packaged preview without prototype branding   |
-| OC7 | Run the five-outcome product proof                   | OC6            | `pending` | One report proves O1–O5 on a real packaged cold start                             |
+| ID  | Task                                                 | Depends on     | Status        | Result                                                                            |
+| --- | ---------------------------------------------------- | -------------- | ------------- | --------------------------------------------------------------------------------- |
+| OC0 | Freeze the five failures and current Web baselines   | Current branch | `completed`   | Durable outcome fixtures, measurements, and exact failure signatures              |
+| OC1 | Make packaged cold start semantically ready          | OC0            | `pending`     | Three fresh starts connect without reload and the harness rejects false readiness |
+| OC2 | Give Lynx navigation one authority                   | OC1            | `pending`     | Settings tap, section changes, and Back remain stable                             |
+| OC3 | Make lifecycle state visible and actionable          | OC2            | `pending`     | Starting, ready, failed, and reconnecting are truthful in the chat shell          |
+| OC4 | Converge Sidebar layout and anchored overlays        | OC3            | `pending`     | Sidebar V2 and project-scope popup match Web without reflow or duplication        |
+| OC5 | Converge Composer layout and token contracts         | OC4            | `pending`     | Composer geometry, density, contrast, and context strip meet the matched baseline |
+| OC6 | Restore stage branding from canonical build metadata | OC5            | `pending`     | Dev artwork is visible in the local packaged preview without prototype branding   |
+| OC7 | Run the five-outcome product proof                   | OC6            | `pending`     | One report proves O1–O5 on a real packaged cold start                             |
 
 Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `skipped(reason)`. Only one task may be `in_progress`.
 
@@ -121,6 +121,92 @@ in the copied client state and opened the project-scope popup; CDP recorded the
 closed/open trigger, popup, thread-list, and Composer geometry. The report
 explicitly classifies this as historical-failure freezing against the current
 Web product reference, not OC7 same-snapshot certification.
+
+OC1 implementation has proceeded as allowed by the harness time-box while
+that authorization is pending. Bridge handlers now attach before renderer
+load, the renderer subscribes before the ready snapshot, and
+`verify-packaged-readiness.mjs` passed three consecutive isolated starts. The
+durable preparatory report is under `evidence/2026-08-01/OC1/readiness`; OC1
+remains `pending` until OC0 closes in task order.
+
+OC2 implementation and preparatory runtime proof have also proceeded within
+the same harness time-box. Lynx now has one synchronous pathname authority,
+shared Settings intents feed an explicit panel projection, and
+`verify-packaged-readiness.mjs --verify-settings-navigation` passed a real-tap
+packaged smoke for General, Providers, Connections, Source Control, Beta,
+Archive, connector-update stability, and two Back cycles. A later source audit
+found that the shared navigation also exposed Appearance and Keybindings while
+the retained proof did not exercise either; worse, Appearance paired its URL
+with General content. Appearance now has its own Lynx panel, Web and Lynx render
+one shared `AppearanceSettingsSurface`, unsupported Lynx controls remain
+explicit, and the verifier covers all eight visible Settings sections. The
+same audit found that the first General extraction had simplified Web's
+Background activity, text-generation model, Diagnostics, and About/update
+controls. Shared General now owns the full canonical row hierarchy while
+`.web` host slots retain the existing picker, live observability copy,
+router Link, desktop update state, and update-track selector. The Lynx host
+labels update/model/background gaps instead of presenting no-op controls.
+The unreachable legacy General panel and restore hook were deleted, and the
+Web slots no longer import the monolithic Provider/Archive/Appearance settings
+module. The measured General product graph fell from the intermediate 312 to
+243 eligible modules without changing exclusions or the resolver boundary.
+The
+durable earlier report remains preparatory rather than full-nav certification
+under `evidence/2026-08-01/OC2/settings-navigation`; the expanded runtime proof
+is pending the already time-boxed DevTool session recovery. OC2 remains
+`pending` until OC0 and OC1 close in order.
+
+OC3 implementation and preparatory fault/recovery proof have proceeded under
+the same harness time-box. One shared lifecycle projection now feeds Web's
+environment banner and Lynx's chat-shell banner. The main host reports a server
+exit after ready and owns generation-gated connector replacement through an
+allowlisted Reconnect command. The packaged verifier killed only the server
+whose parent, port, and isolated base-directory identity matched its owned app,
+then observed visible error and reconnecting phases, used a measured real tap,
+advanced sequence `12→18`, returned to ready with the banner cleared, and found
+zero renderer errors. Evidence is under
+`evidence/2026-08-01/OC3/lifecycle-recovery`; OC3 remains `pending` until OC0,
+OC1, and OC2 close in order.
+
+OC4 source convergence has proceeded under the same harness time-box. The
+project-scope popup is anchored to the shared Sidebar wrapper and no longer
+participates in thread-list layout. One valid packaged attempt proved its rail,
+anchor, and no-reflow geometry, then exposed selection being intercepted by the
+dismiss layer; the layer now begins beyond the canonical Sidebar width. Two
+subsequent PID-owned DevTool attempts produced no session, so the post-fix tap
+proof remains pending. Evidence and the harness/product-failure distinction are
+under `evidence/2026-08-01/OC4/sidebar-scope`; OC4 remains `pending`.
+
+OC5 source convergence moves toolbar-control geometry, action state, and the
+context strip out of the Lynx Composer island and into the shared Composer
+composition. Lynx retains only the native editor and icon/tap leaves. Disabled
+transport also prevents editor and action dispatch. Focused tests, Web/Lynx
+typechecks, the scanner, and both builds pass; matched packaged measurements
+remain pending a stable DevTool session. Evidence notes are under
+`evidence/2026-08-01/OC5/composer-convergence`; OC5 remains `pending`.
+
+OC6 source convergence replaces the `NODE_ENV` branding guess with one pure
+resolver: local monorepo builds default to Dev, and explicit validated metadata
+can select Dev, Nightly, Alpha, or Latest. The shared backdrop exposes the selected
+variant as a semantic assertion target. Focused tests, Web/Lynx typechecks, the
+scanner, and both builds pass; visible packaged artwork proof remains pending a
+stable DevTool session. Evidence notes are under
+`evidence/2026-08-01/OC6/stage-branding`; OC6 remains `pending`.
+
+OC7's semantic runner is now prepared as `verify:plan11-semantics`. It performs
+three fresh readiness starts, runs the independent Sidebar, Settings, Composer,
+Dev-branding, and lifecycle checks on the third owned process, and retains a
+separate result for every outcome even when another check fails. Its report
+sets `certification.complete: false` until the required matched Web/Lynx visual
+evidence is supplied. The runner is statically verified but has not been
+launched after the repeated PID-owned DevTool no-session condition. The OC0
+generated fixture contains only empty threads, so OC7 additionally requires an
+isolated real-state snapshot whose selected thread has transcript content; the
+runner now proves both existing-thread and newly-created-thread Composer states
+instead of treating one empty view as both. It also covers Sidebar Search and
+thread selection, rejects overlapping/detached Composer geometry, and requires
+separate canonical sequence advances for model option, model, runtime, and
+interaction commands. OC7 remains `pending`.
 
 ### Steps
 
@@ -185,7 +271,7 @@ The Lynx renderer cannot use `RouterProvider`, but it also must not maintain a l
 
 1. Keep Web on TanStack Router unchanged.
 2. Make the Lynx pathname store the single writable authority for the supported Lynx routes.
-3. Reuse `SettingsSectionPath` and the shared Settings navigation content for valid section intents.
+3. Reuse `SettingsSectionPath` and the shared Settings navigation content for valid section intents; every visible item must pair its exact route with its own canonical content rather than a fallback panel.
 4. Normalize `/settings` to `/settings/general` synchronously in the Lynx authority; do not depend on an asynchronous redirect to stabilize the screen.
 5. Map shared `Link`, `useNavigate`, `useLocation`, and `useParams` Lynx leaves onto that authority.
 6. Remove the reachable TanStack memory-router writeback when it no longer owns rendering. Do not replace it with another timer.
@@ -196,7 +282,7 @@ The Lynx renderer cannot use `RouterProvider`, but it also must not maintain a l
 - Tap the actual lower-left Settings row once.
 - Assert `/settings/general` and its canonical heading/content.
 - Trigger a connector resync or wait for a subsequent sequenced connector update; assert the route is unchanged.
-- Tap Providers, Connections, Source Control, Beta, and Archive in turn; assert exact route/content pairing.
+- Tap Appearance, Keybindings, Providers, Connections, Source Control, Beta, and Archive in turn; assert exact route/content pairing.
 - Tap Back; assert the route returns to chat once.
 - Repeat Settings → section → Back twice to catch stale subscriptions and remount behavior.
 
