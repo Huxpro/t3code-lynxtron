@@ -24,6 +24,124 @@ export interface EnvironmentPresentation {
   readonly serverConfig: ServerConfig | null;
 }
 
+export type ConnectionLifecycleSourcePhase =
+  | EnvironmentConnectionPhase
+  | "idle"
+  | "starting-server"
+  | "ready";
+
+export interface ConnectionLifecycleRecovery {
+  readonly primaryLabel: "Reconnect" | "Reconnecting...";
+  readonly primaryDisabled: boolean;
+  readonly secondaryLabel: "Connections";
+}
+
+export interface ConnectionLifecyclePresentation {
+  readonly phase: "idle" | "starting" | "connecting" | "reconnecting" | "ready" | "error";
+  readonly visible: boolean;
+  readonly tone: "default" | "error" | "warning";
+  readonly title: string;
+  readonly description: string | null;
+  readonly recovery: ConnectionLifecycleRecovery | null;
+}
+
+/**
+ * Renderer-neutral lifecycle copy and recovery contract shared by Web's
+ * environment banner and the Lynxtron local-connector banner.
+ */
+export function projectConnectionLifecycle(input: {
+  readonly phase: ConnectionLifecycleSourcePhase;
+  readonly targetLabel: string;
+  readonly detail?: string | null;
+  readonly recoverySubject: string;
+}): ConnectionLifecyclePresentation {
+  const detail = input.detail?.trim() || null;
+  const recoveryDescription = `Reconnect ${input.recoverySubject} before sending messages or running actions.`;
+  const recovery = (disabled: boolean): ConnectionLifecycleRecovery => ({
+    primaryLabel: disabled ? "Reconnecting..." : "Reconnect",
+    primaryDisabled: disabled,
+    secondaryLabel: "Connections",
+  });
+
+  switch (input.phase) {
+    case "connected":
+    case "ready":
+      return {
+        phase: "ready",
+        visible: false,
+        tone: "default",
+        title: `${input.targetLabel}: Connected`,
+        description: null,
+        recovery: null,
+      };
+    case "idle":
+      return {
+        phase: "idle",
+        visible: true,
+        tone: "default",
+        title: `Preparing ${input.targetLabel}`,
+        description: detail ?? "Waiting for the connection to start.",
+        recovery: null,
+      };
+    case "starting-server":
+      return {
+        phase: "starting",
+        visible: true,
+        tone: "default",
+        title: `Starting ${input.targetLabel}`,
+        description: detail ?? "Launching the local backend.",
+        recovery: null,
+      };
+    case "connecting":
+      return {
+        phase: "connecting",
+        visible: true,
+        tone: "warning",
+        title: `${input.targetLabel}: Connecting...`,
+        description: detail ?? recoveryDescription,
+        recovery: recovery(true),
+      };
+    case "reconnecting":
+      return {
+        phase: "reconnecting",
+        visible: true,
+        tone: "warning",
+        title: detail
+          ? `${input.targetLabel}: Failed to connect. Reconnecting...`
+          : `${input.targetLabel}: Reconnecting...`,
+        description: detail ?? recoveryDescription,
+        recovery: recovery(true),
+      };
+    case "available":
+      return {
+        phase: "idle",
+        visible: true,
+        tone: "warning",
+        title: `${input.targetLabel}: Available`,
+        description: detail ?? recoveryDescription,
+        recovery: recovery(false),
+      };
+    case "offline":
+      return {
+        phase: "error",
+        visible: true,
+        tone: "warning",
+        title: `${input.targetLabel}: Offline`,
+        description: detail ?? recoveryDescription,
+        recovery: recovery(false),
+      };
+    case "error":
+      return {
+        phase: "error",
+        visible: true,
+        tone: "error",
+        title: `${input.targetLabel}: Connection failed`,
+        description: detail ?? recoveryDescription,
+        recovery: recovery(false),
+      };
+  }
+}
+
 export function presentConnectionState(
   state: SupervisorConnectionState,
 ): EnvironmentConnectionPresentation {

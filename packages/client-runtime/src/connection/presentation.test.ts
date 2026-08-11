@@ -15,6 +15,7 @@ import {
   connectionStatusTitle,
   presentEnvironmentConnection,
   presentConnectionState,
+  projectConnectionLifecycle,
 } from "./presentation.ts";
 
 const TARGET = new BearerConnectionTarget({
@@ -183,5 +184,68 @@ describe("connection presentation", () => {
       error: null,
       traceId: null,
     });
+  });
+});
+
+describe("connection lifecycle presentation", () => {
+  it.each([
+    ["idle", "idle", "Preparing T3 Code", true],
+    ["starting-server", "starting", "Starting T3 Code", true],
+    ["connecting", "connecting", "T3 Code: Connecting...", true],
+    ["reconnecting", "reconnecting", "T3 Code: Reconnecting...", true],
+    ["ready", "ready", "T3 Code: Connected", false],
+    ["error", "error", "T3 Code: Connection failed", true],
+    ["available", "idle", "T3 Code: Available", true],
+    ["offline", "error", "T3 Code: Offline", true],
+    ["connected", "ready", "T3 Code: Connected", false],
+  ] as const)("projects %s without inventing another state", (source, phase, title, visible) => {
+    expect(
+      projectConnectionLifecycle({
+        phase: source,
+        targetLabel: "T3 Code",
+        recoverySubject: "the local backend",
+      }),
+    ).toMatchObject({ phase, title, visible });
+  });
+
+  it("preserves reconnect detail and disables duplicate retry", () => {
+    expect(
+      projectConnectionLifecycle({
+        phase: "reconnecting",
+        targetLabel: "Remote environment",
+        detail: "Socket closed.",
+        recoverySubject: "this environment",
+      }),
+    ).toEqual({
+      phase: "reconnecting",
+      visible: true,
+      tone: "warning",
+      title: "Remote environment: Failed to connect. Reconnecting...",
+      description: "Socket closed.",
+      recovery: {
+        primaryLabel: "Reconnecting...",
+        primaryDisabled: true,
+        secondaryLabel: "Connections",
+      },
+    });
+  });
+
+  it("keeps an actionable failure visible until canonical ready state arrives", () => {
+    const failed = projectConnectionLifecycle({
+      phase: "error",
+      targetLabel: "T3 Code",
+      detail: "Server exited unexpectedly.",
+      recoverySubject: "the local backend",
+    });
+    const ready = projectConnectionLifecycle({
+      phase: "ready",
+      targetLabel: "T3 Code",
+      recoverySubject: "the local backend",
+    });
+
+    expect(failed.recovery).toMatchObject({ primaryLabel: "Reconnect", primaryDisabled: false });
+    expect(failed.description).toBe("Server exited unexpectedly.");
+    expect(ready.visible).toBe(false);
+    expect(ready.recovery).toBeNull();
   });
 });
