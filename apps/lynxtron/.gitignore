@@ -1,0 +1,10 @@
+# SB2 isolated shared-server workbench state (seeded dataset; never committed).
+# Sourced read-only from a real DB via VACUUM INTO; regenerate with
+# scripts/sb2-seed-shared-state.mjs.
+.t3-workbench/
+
+# Disposable isolated verification state. Durable outputs belong in evidence/.
+.t3-*/
+
+# Rspeedy's dev-ready marker.
+.tmp/
