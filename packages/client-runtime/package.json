@@ -71,6 +71,14 @@
       "types": "./src/presentation/sidebar.ts",
       "default": "./src/presentation/sidebar.ts"
     },
+    "./presentation/sidebar-width": {
+      "types": "./src/presentation/sidebarWidth.ts",
+      "default": "./src/presentation/sidebarWidth.ts"
+    },
+    "./presentation/resizable-width": {
+      "types": "./src/presentation/resizableWidth.ts",
+      "default": "./src/presentation/resizableWidth.ts"
+    },
     "./presentation/model-picker": {
       "types": "./src/presentation/modelPicker.ts",
       "default": "./src/presentation/modelPicker.ts"
