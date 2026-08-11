@@ -1,6 +1,13 @@
 import { useAtomValue } from "@effect/atom-react";
 import { Atom } from "effect/unstable/reactivity";
 import {
+  INITIAL_SEARCH_OVERLAY_STATE,
+  reduceSearchOverlayState,
+  type SearchOverlayAction,
+  type SearchOverlayMode,
+  type SearchOverlayState,
+} from "@t3tools/client-runtime/presentation/search-overlay";
+import {
   activatePanelSurface,
   clearPanelSurfaces,
   closePanelSurface,
@@ -10,18 +17,67 @@ import {
   togglePanelSurfaceVisibility,
   type PanelSurfaceState,
 } from "@t3tools/client-runtime/state/panel-surfaces";
+import type { ProviderInstanceId, TurnId } from "@t3tools/contracts";
 
 import { appAtomRegistry } from "./atomRegistry";
+import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
 
 export type RightPanelKind = "plan" | "diff" | "files";
 
-export interface RightPanelSurface {
-  readonly id: string;
-  readonly kind: RightPanelKind;
-  readonly label: string;
-}
+export type RightPanelSurface =
+  | {
+      readonly id: string;
+      readonly kind: "plan" | "files";
+      readonly label: string;
+    }
+  | {
+      readonly id: string;
+      readonly kind: "diff";
+      readonly label: string;
+      readonly turnId: TurnId | null;
+      readonly filePath: string | null;
+    };
 
 export type RightPanelState = PanelSurfaceState<RightPanelSurface>;
+
+export interface ModelPickerNavigationState {
+  readonly scopeKey: string | null;
+  readonly provider: ProviderInstanceId | "favorites";
+  readonly touched: boolean;
+}
+
+export const INITIAL_MODEL_PICKER_NAVIGATION_STATE: ModelPickerNavigationState = {
+  scopeKey: null,
+  provider: "favorites",
+  touched: false,
+};
+
+export function selectModelPickerProvider(
+  state: ModelPickerNavigationState,
+  provider: ProviderInstanceId | "favorites",
+): ModelPickerNavigationState {
+  return {
+    ...state,
+    provider,
+    touched: true,
+  };
+}
+
+export function syncModelPickerProvider(
+  state: ModelPickerNavigationState,
+  scopeKey: string,
+  provider: ProviderInstanceId | "favorites",
+): ModelPickerNavigationState {
+  if (state.scopeKey === scopeKey && state.touched) return state;
+  if (state.scopeKey === scopeKey && state.provider === provider && state.touched === false) {
+    return state;
+  }
+  return {
+    scopeKey,
+    provider,
+    touched: false,
+  };
+}
 
 export type RightPanelAction =
   | { readonly type: "open"; readonly surface: RightPanelSurface }
@@ -40,6 +96,18 @@ export function applyRightPanelAction(
   switch (action.type) {
     case "open": {
       const existing = state.surfaces.find((surface) => surface.kind === action.surface.kind);
+      if (existing && action.surface.kind === "diff" && existing.kind === "diff") {
+        const next = {
+          ...existing,
+          turnId: action.surface.turnId,
+          filePath: action.surface.filePath,
+        };
+        return {
+          isOpen: true,
+          activeSurfaceId: existing.id,
+          surfaces: state.surfaces.map((surface) => (surface.id === existing.id ? next : surface)),
+        };
+      }
       return openPanelSurface(state, existing ?? action.surface);
     }
     case "close-surface":
@@ -56,7 +124,15 @@ export function applyRightPanelAction(
 }
 
 const modelPickerOpenAtom = Atom.make(false).pipe(Atom.withLabel("lynx-model-picker-open"));
-const quickSwitchOpenAtom = Atom.make(false).pipe(Atom.withLabel("lynx-quick-switch-open"));
+const modelPickerNavigationAtom = Atom.make<ModelPickerNavigationState>(
+  INITIAL_MODEL_PICKER_NAVIGATION_STATE,
+).pipe(Atom.withLabel("lynx-model-picker-navigation"));
+const projectActionDialogOpenAtom = Atom.make(false).pipe(
+  Atom.withLabel("lynx-project-action-dialog-open"),
+);
+const searchOverlayStateAtom = Atom.make<SearchOverlayState>(INITIAL_SEARCH_OVERLAY_STATE).pipe(
+  Atom.withLabel("lynx-search-overlay-state"),
+);
 const rightPanelStateAtom = Atom.make<RightPanelState>(INITIAL_RIGHT_PANEL_STATE).pipe(
   Atom.withLabel("lynx-right-panel-state"),
 );
@@ -81,12 +157,39 @@ function updateRightPanel(action: RightPanelAction): void {
   );
 }
 
+function updateSearchOverlay(action: SearchOverlayAction): void {
+  appAtomRegistry.set(
+    searchOverlayStateAtom,
+    reduceSearchOverlayState(appAtomRegistry.get(searchOverlayStateAtom), action),
+  );
+}
+
 export function useModelPickerOpen(): boolean {
   return useAtomValue(modelPickerOpenAtom);
 }
 
+export function useModelPickerNavigation(): ModelPickerNavigationState {
+  return useAtomValue(modelPickerNavigationAtom);
+}
+
+export function useProjectActionDialogOpen(): boolean {
+  return useAtomValue(projectActionDialogOpenAtom);
+}
+
 export function useQuickSwitchOpen(): boolean {
-  return useAtomValue(quickSwitchOpenAtom);
+  return useAtomValue(searchOverlayStateAtom).open;
+}
+
+export function useSearchOverlayState(): SearchOverlayState {
+  return useAtomValue(searchOverlayStateAtom);
+}
+
+export function isSearchOverlayOpen(): boolean {
+  return appAtomRegistry.get(searchOverlayStateAtom).open;
+}
+
+export function readModelPickerNavigation(): ModelPickerNavigationState {
+  return appAtomRegistry.get(modelPickerNavigationAtom);
 }
 
 export function useRightPanelState(): RightPanelState {
@@ -103,8 +206,23 @@ export const uiActions = {
   closeModelPicker(): void {
     appAtomRegistry.set(modelPickerOpenAtom, false);
   },
+  selectModelPickerProvider(provider: ProviderInstanceId | "favorites"): void {
+    appAtomRegistry.set(
+      modelPickerNavigationAtom,
+      selectModelPickerProvider(appAtomRegistry.get(modelPickerNavigationAtom), provider),
+    );
+  },
+  syncModelPickerProvider(scopeKey: string, provider: ProviderInstanceId | "favorites"): void {
+    appAtomRegistry.set(
+      modelPickerNavigationAtom,
+      syncModelPickerProvider(appAtomRegistry.get(modelPickerNavigationAtom), scopeKey, provider),
+    );
+  },
+  closeProjectActionDialog(): void {
+    appAtomRegistry.set(projectActionDialogOpenAtom, false);
+  },
   closeQuickSwitch(): void {
-    appAtomRegistry.set(quickSwitchOpenAtom, false);
+    updateSearchOverlay({ _tag: "SetOpen", open: false });
   },
   closeRightPanel(): void {
     updateRightPanel({ type: "close-panel" });
@@ -115,23 +233,111 @@ export const uiActions = {
   openModelPicker(): void {
     appAtomRegistry.set(modelPickerOpenAtom, true);
   },
-  openQuickSwitch(): void {
-    appAtomRegistry.set(quickSwitchOpenAtom, true);
+  toggleModelPicker(): void {
+    appAtomRegistry.set(modelPickerOpenAtom, !appAtomRegistry.get(modelPickerOpenAtom));
   },
-  openRightPanelSurface(kind: RightPanelKind): void {
+  openProjectActionDialog(): void {
+    appAtomRegistry.set(projectActionDialogOpenAtom, true);
+  },
+  openQuickSwitch(input?: SearchOverlayMode | unknown): void {
+    const mode: SearchOverlayMode =
+      input === "files" || input === "content" ? input : "command";
+    const state = appAtomRegistry.get(searchOverlayStateAtom);
+    if (state.open && state.mode === mode) return;
+    updateSearchOverlay({ _tag: "ToggleMode", mode });
+  },
+  openAddProject(): void {
+    updateSearchOverlay({ _tag: "OpenAddProject" });
+  },
+  openNewThreadIn(): void {
+    updateSearchOverlay({ _tag: "OpenNewThreadIn" });
+  },
+  openRightPanelSurface(
+    kind: RightPanelKind,
+    selection?: { readonly turnId: TurnId; readonly filePath?: string },
+  ): void {
     updateRightPanel({
       type: "open",
-      surface: {
-        id: `${kind}:${nextSurfaceId++}`,
-        kind,
-        label: kindLabel(kind),
-      },
+      surface:
+        kind === "diff"
+          ? {
+              id: `${kind}:${nextSurfaceId++}`,
+              kind,
+              label: kindLabel(kind),
+              turnId: selection?.turnId ?? null,
+              filePath: selection?.filePath?.trim() || null,
+            }
+          : {
+              id: `${kind}:${nextSurfaceId++}`,
+              kind,
+              label: kindLabel(kind),
+            },
     });
   },
   toggleRightPanel(): void {
     updateRightPanel({ type: "toggle-panel" });
   },
-  toggleQuickSwitch(): void {
-    appAtomRegistry.set(quickSwitchOpenAtom, !appAtomRegistry.get(quickSwitchOpenAtom));
+  toggleQuickSwitch(input?: SearchOverlayMode | unknown): void {
+    const mode: SearchOverlayMode =
+      input === "files" || input === "content" ? input : "command";
+    updateSearchOverlay({ _tag: "ToggleMode", mode });
   },
 } as const;
+
+export function installResponsiveUiProbe(enabled: boolean): void {
+  if (!enabled) return;
+  (
+    globalThis as {
+      __T3_LYNXTRON_RESPONSIVE_UI_PROBE__?: (
+        action:
+          | "close-overlays"
+          | "close-right-panel"
+          | "open-action-dialog"
+          | "open-command-search"
+          | "open-diff"
+          | "open-file-search"
+          | "open-files"
+          | "toggle-sidebar",
+      ) => void;
+      __T3_LYNXTRON_OPEN_DIFF_PROBE__?: (turnId: TurnId, filePath?: string) => void;
+    }
+  ).__T3_LYNXTRON_RESPONSIVE_UI_PROBE__ = (action) => {
+    if (action === "close-overlays") {
+      uiActions.closeProjectActionDialog();
+      uiActions.closeQuickSwitch();
+      return;
+    }
+    if (action === "close-right-panel") {
+      uiActions.closeRightPanel();
+      return;
+    }
+    if (action === "open-action-dialog") {
+      uiActions.openProjectActionDialog();
+      return;
+    }
+    if (action === "open-command-search") {
+      uiActions.openQuickSwitch("command");
+      return;
+    }
+    if (action === "open-file-search") {
+      uiActions.openQuickSwitch("files");
+      return;
+    }
+    if (action === "open-diff") {
+      uiActions.openRightPanelSurface("diff");
+      return;
+    }
+    if (action === "open-files") {
+      uiActions.openRightPanelSurface("files");
+      return;
+    }
+    requestSidebarToggle();
+  };
+  (
+    globalThis as {
+      __T3_LYNXTRON_OPEN_DIFF_PROBE__?: (turnId: TurnId, filePath?: string) => void;
+    }
+  ).__T3_LYNXTRON_OPEN_DIFF_PROBE__ = (turnId, filePath) => {
+    uiActions.openRightPanelSurface("diff", { turnId, filePath });
+  };
+}
