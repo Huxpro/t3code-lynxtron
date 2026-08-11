@@ -101,6 +101,12 @@ const source = argumentValue("--source", "current-stack-browser-preview");
 const shouldReload = !process.argv.includes("--no-reload");
 const exerciseTypedHost = process.argv.includes("--exercise-typed-host");
 const requireTypedHost = exerciseTypedHost || process.argv.includes("--require-typed-host");
+const requireCanonicalReady = process.argv.includes("--require-canonical-ready");
+const requireGeometry = process.argv.includes("--require-geometry");
+const emulateViewport = process.argv.includes("--emulate-viewport");
+const viewportWidth = Number(argumentValue("--viewport-width", "1280"));
+const viewportHeight = Number(argumentValue("--viewport-height", "820"));
+const deviceScaleFactor = Number(argumentValue("--device-scale-factor", "1"));
 
 const [versionResponse, targetsResponse] = await Promise.all([
   fetch(new URL("/json/version", endpoint)),
@@ -121,6 +127,14 @@ await Promise.all([
   client.send("Log.enable"),
   client.send("Page.enable"),
 ]);
+if (emulateViewport) {
+  await client.send("Emulation.setDeviceMetricsOverride", {
+    width: viewportWidth,
+    height: viewportHeight,
+    deviceScaleFactor,
+    mobile: false,
+  });
+}
 await Promise.all([client.send("Runtime.discardConsoleEntries"), client.send("Log.clear")]);
 client.onEvent((message) => {
   if (message.method === "Runtime.consoleAPICalled") {
@@ -231,7 +245,7 @@ if (exerciseTypedHost && semanticState?.rendered) {
     (value) => Boolean(value?.resyncCalls > 0 && value?.connectingVisible),
   );
 
-  await evaluate(client, `globalThis.__T3_LYNX_WEB_PREVIEW__.switchScenario("populated-ready")`);
+  await evaluate(client, `globalThis.__T3_LYNX_WEB_PREVIEW__.switchScenario("new-thread")`);
   const finalState = await waitForPageState(
     `(() => {
       const diagnostics = globalThis.__T3_LYNX_WEB_PREVIEW__;
@@ -250,7 +264,7 @@ if (exerciseTypedHost && semanticState?.rendered) {
     })()`,
     (value) =>
       Boolean(
-        value?.scenarioId === "populated-ready" &&
+        value?.scenarioId === "new-thread" &&
         value?.lastSequence >= 8 &&
         value?.resyncCalls > 0 &&
         value?.knownVisible &&
@@ -298,6 +312,7 @@ const pageState = await evaluate(
         devicePixelRatio,
       },
       viewRect: rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : null,
+      geometry: globalThis.__T3_LYNX_WEB_PREVIEW__?.measureGeometry?.() ?? null,
       shadow: shadow
         ? {
             childElementCount: shadow.childElementCount,
@@ -320,6 +335,63 @@ const screenshot = await client.send("Page.captureScreenshot", {
   captureBeyondViewport: false,
 });
 client.close();
+
+const screenshotBuffer = Buffer.from(screenshot.data, "base64");
+const screenshotDimensions = {
+  width: screenshotBuffer.readUInt32BE(16),
+  height: screenshotBuffer.readUInt32BE(20),
+};
+
+const approximately = (actual, expected, tolerance = 0.5) =>
+  typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
+const geometryAssertions = {
+  browserViewport:
+    pageState.dimensions.innerWidth === 1280 && pageState.dimensions.innerHeight === 820,
+  lynxView:
+    approximately(pageState.viewRect?.x, 0) &&
+    approximately(pageState.viewRect?.y, 0) &&
+    approximately(pageState.viewRect?.width, 1280) &&
+    approximately(pageState.viewRect?.height, 820),
+  physicalPixelContract:
+    pageState.diagnostics?.viewportContract?.pixelWidth ===
+      Math.round(
+        pageState.diagnostics?.viewportContract?.cssWidth *
+          pageState.diagnostics?.viewportContract?.pixelRatio,
+      ) &&
+    pageState.diagnostics?.viewportContract?.pixelHeight ===
+      Math.round(
+        pageState.diagnostics?.viewportContract?.cssHeight *
+          pageState.diagnostics?.viewportContract?.pixelRatio,
+      ),
+  root:
+    approximately(pageState.geometry?.root?.x, 0) &&
+    approximately(pageState.geometry?.root?.y, 0) &&
+    approximately(pageState.geometry?.root?.width, 1280) &&
+    approximately(pageState.geometry?.root?.height, 820),
+  sidebar:
+    approximately(pageState.geometry?.sidebar?.x, 0) &&
+    approximately(pageState.geometry?.sidebar?.y, 0) &&
+    approximately(pageState.geometry?.sidebar?.width, 256) &&
+    approximately(pageState.geometry?.sidebar?.height, 820),
+  toolbar:
+    approximately(pageState.geometry?.toolbar?.x, 256) &&
+    approximately(pageState.geometry?.toolbar?.y, 0) &&
+    approximately(pageState.geometry?.toolbar?.width, 1024) &&
+    approximately(pageState.geometry?.toolbar?.height, 52),
+  icons16:
+    pageState.geometry?.icons16?.length === 4 &&
+    pageState.geometry.icons16.every(
+      ({ rect }) => approximately(rect?.width, 16) && approximately(rect?.height, 16),
+    ),
+  composer:
+    typeof pageState.geometry?.composer?.width === "number" &&
+    pageState.geometry.composer.width >= 480 &&
+    pageState.geometry.composer.width <= 768 &&
+    pageState.geometry.composer.x >= 256 &&
+    pageState.geometry.composer.x + pageState.geometry.composer.width <= 1280 &&
+    pageState.geometry.composer.y >= 52 &&
+    pageState.geometry.composer.y + pageState.geometry.composer.height <= 820,
+};
 
 await mkdir(outputDirectory, { recursive: true });
 const browserOutput = path.resolve("output/browser-preview");
@@ -364,6 +436,9 @@ const report = {
     userAgent: browser["User-Agent"],
     targetId: target.id,
   },
+  requestedViewport: emulateViewport
+    ? { width: viewportWidth, height: viewportHeight, deviceScaleFactor }
+    : null,
   versions: packageVersions,
   readiness: {
     reached: exerciseTypedHost
@@ -375,12 +450,21 @@ const report = {
         : Boolean(semanticState?.rendered),
     timeoutMs,
   },
+  acceptance: {
+    canonicalReady:
+      pageState.diagnostics?.semanticReady === true &&
+      pageState.status === "ready" &&
+      !pageState.shadow?.productText?.includes("T3 Code: Connecting..."),
+    geometryAssertions,
+    geometryPassed: Object.values(geometryAssertions).every(Boolean),
+  },
   typedHostExercise,
   page: pageState,
   console: consoleEvents,
   expectedRuntimeErrors,
   unexplainedErrors,
   artifacts: {
+    screenshot: screenshotDimensions,
     productionBundle: await hashFile(path.resolve("output/bundle/lynx/main.lynx.bundle")),
     webBundle: await hashFile(path.resolve("output/bundle/web/main.web.bundle")),
     browserBundle: await hashFile(path.resolve(browserOutput, "lynx/main.web.bundle")),
@@ -390,12 +474,14 @@ const report = {
 
 await Promise.all([
   writeFile(path.join(outputDirectory, "probe.json"), `${JSON.stringify(report, null, 2)}\n`),
-  writeFile(path.join(outputDirectory, "browser.png"), Buffer.from(screenshot.data, "base64")),
+  writeFile(path.join(outputDirectory, "browser.png"), screenshotBuffer),
 ]);
 
 console.log(JSON.stringify(report, null, 2));
 if (
   !report.readiness.reached ||
+  (requireCanonicalReady && !report.acceptance.canonicalReady) ||
+  (requireGeometry && !report.acceptance.geometryPassed) ||
   report.page.diagnostics?.rendererErrors?.length > 0 ||
   report.unexplainedErrors.length > 0
 ) {

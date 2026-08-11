@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
+    <title>T3 Code single-server dual-frontend workbench</title>
+    <style>
+      :root { color-scheme: dark; }
+      html, body {
+        margin: 0;
+        background: #0b0b0c;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #d4d4d8;
+      }
+      #workbench { display: flex; flex-direction: row; align-items: flex-start; gap: 0; width: max-content; }
+      .pane { display: flex; flex-direction: column; background: #0b0b0c; }
+      .pane-label {
+        height: 24px; display: flex; align-items: center; padding: 0 8px;
+        font-size: 11px; letter-spacing: 0.04em; color: #8a8a92;
+        background: #141416; border-bottom: 1px solid #232326;
+      }
+      .pane-frame { display: block; border: 0; background: #161616; }
+      .pane--divider { width: 1px; align-self: stretch; background: #232326; }
+    </style>
+  </head>
+  <body>
+    <div id="workbench">
+      <div class="pane" data-pane="web">
+        <div class="pane-label">Real Web app (React DOM · shared server)</div>
+        <iframe id="web-pane" class="pane-frame" title="Real Web app pane" scrolling="no"></iframe>
+      </div>
+      <div class="pane--divider"></div>
+      <div class="pane" data-pane="lynx">
+        <div class="pane-label">Lynx-for-Web (ReactLynx bundle · same server)</div>
+        <iframe id="lynx-pane" class="pane-frame" title="Lynx-for-Web pane" scrolling="no"></iframe>
+      </div>
+    </div>
+    <script type="module" src="/__workbench.js"></script>
+  </body>
+</html>
