@@ -1,7 +1,23 @@
 import * as Schema from "effect/Schema";
 import { describe, expect, it } from "vite-plus/test";
 
-import { DesktopEnvironmentBootstrapSchema } from "./ipc.ts";
+import { DesktopAppBrandingSchema, DesktopEnvironmentBootstrapSchema } from "./ipc.ts";
+
+describe("DesktopAppBrandingSchema", () => {
+  it("preserves the Latest channel without mislabeling it as Dev", () => {
+    expect(
+      Schema.decodeUnknownSync(DesktopAppBrandingSchema)({
+        baseName: "T3 Code",
+        stageLabel: "Latest",
+        displayName: "T3 Code",
+      }),
+    ).toEqual({
+      baseName: "T3 Code",
+      stageLabel: "Latest",
+      displayName: "T3 Code",
+    });
+  });
+});
 
 describe("DesktopEnvironmentBootstrapSchema", () => {
   const decode = Schema.decodeUnknownSync(DesktopEnvironmentBootstrapSchema);
