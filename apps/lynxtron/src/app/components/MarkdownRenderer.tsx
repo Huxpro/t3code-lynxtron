@@ -1,30 +1,15 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 import {
-  parseMarkdownFenceInfo,
   parseMarkdownInline,
-  parseMarkdownListItem,
-  parseMarkdownTable,
   resolveMarkdownFileLinkMeta,
   type MarkdownInlinePresentation,
-  type MarkdownListItemPresentation,
-  type MarkdownTablePresentation,
 } from "@t3tools/client-runtime/presentation/markdown";
 import { clientCapabilities } from "../platform/clientCapabilities";
+import { parseMarkdownBlocks, type ParsedMarkdownBlock } from "./markdownBlocks";
+import { copyMarkdownCode } from "./markdownClipboard";
 
 // Simple markdown-to-Lynx-views renderer. Handles the most common
 // formatting used in AI assistant responses.
-
-interface ParsedBlock {
-  type: "heading" | "paragraph" | "code" | "list" | "blockquote" | "table" | "hr" | "empty";
-  level?: number; // heading level
-  items?: MarkdownListItemPresentation[]; // list items
-  text?: string; // paragraph or blockquote text
-  code?: string; // code block content
-  language?: string; // code block language
-  title?: string; // code block filename/title
-  quoteDepth?: number;
-  table?: MarkdownTablePresentation;
-}
 
 function activateMarkdownLink(href: string, cwd: string | undefined): void {
   "background only";
@@ -47,8 +32,8 @@ function renderInline(
   key: string,
   cwd: string | undefined,
 ): ReactNode[] {
-  return spans.map((span, i) => {
-    const spanKey = `${key}-${i}`;
+  return spans.map((span, index) => {
+    const spanKey = `${key}-${index}`;
     const handleTap = span.href
       ? () => {
           "background only";
@@ -66,13 +51,18 @@ function renderInline(
         </text>
       );
     }
-    const fontWeight = span.bold ? "700" : "400";
-    const fontStyle = span.italic ? "italic" : "normal";
     return (
       <text
         key={spanKey}
-        className={`md-inline ${span.href ? "md-link" : ""}`}
-        style={{ fontWeight, fontStyle } as any}
+        className={`md-inline${span.href ? " md-link" : ""}${
+          span.strikethrough ? " md-strikethrough" : ""
+        }`}
+        style={
+          {
+            fontWeight: span.bold ? "700" : "400",
+            fontStyle: span.italic ? "italic" : "normal",
+          } as object
+        }
         bindtap={handleTap}
       >
         {span.text}
@@ -81,146 +71,86 @@ function renderInline(
   });
 }
 
-function parseBlocks(text: string): ParsedBlock[] {
-  const lines = text.split("\n");
-  const blocks: ParsedBlock[] = [];
-  let i = 0;
-
-  while (i < lines.length) {
-    const line = lines[i]!;
-
-    // Empty line
-    if (line.trim() === "") {
-      blocks.push({ type: "empty" });
-      i++;
-      continue;
-    }
-
-    // Code block
-    if (line.trim().startsWith("```")) {
-      const fence = parseMarkdownFenceInfo(line.trim().slice(3));
-      const codeLines: string[] = [];
-      i++;
-      while (i < lines.length && !lines[i]!.trim().startsWith("```")) {
-        codeLines.push(lines[i]!);
-        i++;
-      }
-      i++; // skip closing ```
-      blocks.push({
-        type: "code",
-        language: fence.rawLanguage ? fence.language : undefined,
-        title: fence.title ?? undefined,
-        code: codeLines.join("\n"),
-      });
-      continue;
-    }
-
-    // Heading
-    const headingMatch = line.match(/^(#{1,6})\s+(.+)/);
-    if (headingMatch) {
-      blocks.push({
-        type: "heading",
-        level: headingMatch[1]!.length,
-        text: headingMatch[2]!,
-      });
-      i++;
-      continue;
-    }
-
-    // Horizontal rule
-    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) {
-      blocks.push({ type: "hr" });
-      i++;
-      continue;
-    }
-
-    // Blockquote, including nested quote markers.
-    const quoteMatch = line.match(/^((?:>\s*)+)(.*)$/);
-    if (quoteMatch) {
-      const quoteDepth = quoteMatch[1]!.match(/>/g)?.length ?? 1;
-      const quoteLines: string[] = [];
-      while (i < lines.length) {
-        const nestedMatch = lines[i]!.match(/^((?:>\s*)+)(.*)$/);
-        const nestedDepth = nestedMatch?.[1]?.match(/>/g)?.length ?? 0;
-        if (!nestedMatch || nestedDepth !== quoteDepth) break;
-        quoteLines.push(nestedMatch[2] ?? "");
-        i++;
-      }
-      blocks.push({ type: "blockquote", text: quoteLines.join("\n"), quoteDepth });
-      continue;
-    }
-
-    // GFM table
-    const table = parseMarkdownTable(lines.slice(i));
-    if (table) {
-      blocks.push({ type: "table", table });
-      i += table.rows.length + 2;
-      continue;
-    }
-
-    // List
-    if (parseMarkdownListItem(line)) {
-      const items: MarkdownListItemPresentation[] = [];
-      while (i < lines.length) {
-        const item = parseMarkdownListItem(lines[i]!);
-        if (!item) break;
-        items.push(item);
-        i++;
-      }
-      blocks.push({ type: "list", items });
-      continue;
-    }
-
-    // Paragraph (collect consecutive non-empty, non-special lines)
-    const paraLines: string[] = [];
-    while (
-      i < lines.length &&
-      lines[i]!.trim() !== "" &&
-      !lines[i]!.trim().startsWith("```") &&
-      !lines[i]!.match(/^(#{1,6})\s/) &&
-      !lines[i]!.match(/^((?:>\s*)+)(.*)$/) &&
-      !parseMarkdownTable(lines.slice(i)) &&
-      !parseMarkdownListItem(lines[i]!) &&
-      !/^(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[i]!.trim())
-    ) {
-      paraLines.push(lines[i]!);
-      i++;
-    }
-    blocks.push({ type: "paragraph", text: paraLines.join("\n") });
-  }
-
-  return blocks;
-}
-
-function MarkdownCodeBlock({ block, blockKey }: { block: ParsedBlock; blockKey: string }) {
+function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; blockKey: string }) {
   const [copied, setCopied] = useState(false);
   useEffect(() => setCopied(false), [block.code]);
   const handleCopy = useCallback(() => {
     "background only";
-    if (!clientCapabilities.clipboard.available()) return;
-    void clientCapabilities.clipboard
-      .writeText(block.code ?? "")
-      .then(() => setCopied(true))
+    void copyMarkdownCode(block.code ?? "", clientCapabilities.clipboard)
+      .then((didCopy) => {
+        if (didCopy) setCopied(true);
+      })
       .catch((cause) => {
         console.error("[lynx-markdown] failed to copy code block", { cause });
       });
   }, [block.code]);
 
   return (
-    <view key={blockKey} className="md-code-block">
-      <view className="md-code-header">
+    <view
+      key={blockKey}
+      className="md-code-block"
+      data-markdown-code-block="true"
+      data-markdown-code-language={block.language ?? ""}
+      data-markdown-code-title={block.title ?? ""}
+    >
+      <view className="md-code-header" data-markdown-code-header="true">
         <text className="md-code-lang">{block.title ?? block.language ?? "Code"}</text>
-        <text className="md-code-copy" bindtap={handleCopy}>
-          {copied ? "Copied" : "Copy"}
-        </text>
+        <view
+          className="md-code-copy"
+          data-markdown-code-copy-state={copied ? "copied" : "idle"}
+          aria-label={copied ? "Code copied" : "Copy code"}
+          bindtap={handleCopy}
+        >
+          <text className="md-code-copy-label">{copied ? "Copied" : "Copy"}</text>
+        </view>
       </view>
-      <text className="md-code-text">{block.code}</text>
+      <text className="md-code-text whitespace-pre" data-markdown-code-content="true">
+        {block.code}
+      </text>
     </view>
   );
 }
 
-function renderBlock(block: ParsedBlock, idx: number, cwd: string | undefined): ReactNode {
-  const key = `b${idx}`;
+function MarkdownDetailsBlock({
+  block,
+  blockKey,
+  cwd,
+}: {
+  readonly block: ParsedMarkdownBlock;
+  readonly blockKey: string;
+  readonly cwd: string | undefined;
+}) {
+  const [open, setOpen] = useState(block.open ?? false);
+  return (
+    <view
+      className="md-details"
+      data-markdown-details="true"
+      data-markdown-details-open={open ? "true" : "false"}
+    >
+      <view className="md-details-summary" bindtap={() => setOpen((value) => !value)}>
+        <text className={`md-details-chevron${open ? " md-details-chevron--open" : ""}`}>›</text>
+        <text className="md-details-label">
+          {renderInline(parseMarkdownInline(block.summary ?? "Details"), `${blockKey}-summary`, cwd)}
+        </text>
+      </view>
+      {open ? (
+        <view className="md-details-content">
+          {(block.children ?? []).map((child, index) =>
+            renderBlock(child, index, cwd, `${blockKey}-detail`),
+          )}
+        </view>
+      ) : null}
+    </view>
+  );
+}
+
+function renderBlock(
+  block: ParsedMarkdownBlock,
+  idx: number,
+  cwd: string | undefined,
+  keyPrefix = "b",
+): ReactNode {
+  const key = `${keyPrefix}${idx}`;
   switch (block.type) {
     case "empty":
       return <view key={key} className="md-spacer" />;
@@ -323,6 +253,25 @@ function renderBlock(block: ParsedBlock, idx: number, cwd: string | undefined): 
       );
     }
 
+    case "image": {
+      const href = block.href ?? "";
+      const supportedSource = /^(?:https?:|data:image\/)/i.test(href);
+      return supportedSource ? (
+        <view key={key} className="md-image-frame" data-markdown-image="true">
+          <image className="md-image" src={href} mode="aspectFit" />
+          {block.alt ? <text className="md-image-caption">{block.alt}</text> : null}
+        </view>
+      ) : (
+        <view key={key} className="md-media-fallback" data-markdown-image-fallback="true">
+          <text className="md-media-fallback-label">{block.alt || "Image"}</text>
+          <text className="md-media-fallback-path">{href}</text>
+        </view>
+      );
+    }
+
+    case "details":
+      return <MarkdownDetailsBlock key={key} block={block} blockKey={key} cwd={cwd} />;
+
     case "hr":
       return <view key={key} className="md-hr" />;
 
@@ -337,8 +286,64 @@ interface MarkdownRendererProps {
   cwd?: string | undefined;
 }
 
+export function InlineMarkdownRenderer({
+  text,
+  cwd,
+  className,
+  wrapCodeWords = false,
+}: {
+  text: string;
+  cwd?: string | undefined;
+  className?: string | undefined;
+  wrapCodeWords?: boolean;
+}) {
+  const spans = useMemo(() => parseMarkdownInline(text), [text]);
+  return (
+    <view className={["inline-markdown-row", className].filter(Boolean).join(" ")}>
+      {spans.flatMap((span, index) =>
+        span.code ? (
+          wrapCodeWords && span.text.includes(" ") ? (
+            span.text.split(/(?=\s+\S+$)/u).map((part, partIndex) => (
+              <view
+                key={`inline-${index}-${partIndex}`}
+                className={[
+                  "inline-markdown-code",
+                  partIndex > 0 ? "inline-markdown-code--continuation" : undefined,
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              >
+                <text className="inline-markdown-code-label">{part.trim()}</text>
+              </view>
+            ))
+          ) : (
+            <view key={`inline-${index}`} className="inline-markdown-code">
+              <text className="inline-markdown-code-label">{span.text}</text>
+            </view>
+          )
+        ) : (
+          <text
+            key={`inline-${index}`}
+            className={`inline-markdown-text${
+              span.strikethrough ? " md-strikethrough" : ""
+            }`}
+            style={
+              {
+                fontWeight: span.bold ? "700" : "400",
+                fontStyle: span.italic ? "italic" : "normal",
+              } as any
+            }
+          >
+            {span.text}
+          </text>
+        ),
+      )}
+    </view>
+  );
+}
+
 export function MarkdownRenderer({ text, streaming, cwd }: MarkdownRendererProps) {
-  const blocks = useMemo(() => parseBlocks(text), [text]);
+  const blocks = useMemo(() => parseMarkdownBlocks(text), [text]);
 
   return (
     <view className="markdown-body">
