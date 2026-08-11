@@ -5,7 +5,9 @@ import {
   COMPOSER_SHELL_CLASS,
   ComposerContextStrip,
   ComposerHeroHeadline,
+  ComposerPrimaryAction,
   ComposerSurface,
+  ComposerToolbarControl,
   ComposerToolbarRow,
   type ComposerSurfaceElements,
 } from "./ComposerSurface";
@@ -115,6 +117,38 @@ describe("ComposerSurface", () => {
     );
   });
 
+  it("owns native toolbar-control density and truncation", () => {
+    const markup = renderToStaticMarkup(
+      <ComposerToolbarControl
+        label="Claude Fable 5"
+        leading={<span data-leading />}
+        trailing={<span data-trailing />}
+        onClick={() => {}}
+      />,
+    );
+    expect(markup).toContain("composer-toolbar-control");
+    expect(markup).toContain("composer-toolbar-control-label");
+    expect(markup).toContain("gap-1.5");
+    expect(markup.indexOf("data-leading")).toBeLessThan(markup.indexOf("Claude Fable 5"));
+    expect(markup.indexOf("Claude Fable 5")).toBeLessThan(markup.indexOf("data-trailing"));
+  });
+
+  it("projects send, disabled, and stop actions through semantic tokens", () => {
+    const send = renderToStaticMarkup(
+      <ComposerPrimaryAction state="send" icon={<span />} onClick={() => {}} />,
+    );
+    const disabled = renderToStaticMarkup(
+      <ComposerPrimaryAction state="disabled" icon={<span />} onClick={() => {}} />,
+    );
+    const stop = renderToStaticMarkup(
+      <ComposerPrimaryAction state="stop" icon={<span />} onClick={() => {}} />,
+    );
+    expect(send).toContain("bg-primary");
+    expect(disabled).toContain("opacity-30");
+    expect(stop).toContain("bg-destructive");
+    expect(stop).toContain('aria-label="Stop response"');
+  });
+
   it("keeps checkout before branch in the context strip", () => {
     const markup = renderToStaticMarkup(
       <ComposerContextStrip
@@ -123,6 +157,8 @@ describe("ComposerSurface", () => {
       />,
     );
     expect(markup.indexOf("data-checkout")).toBeLessThan(markup.indexOf("data-branch"));
+    expect(markup).toContain("-mt-4");
+    expect(markup).toContain("rounded-b-2xl");
   });
 
   it("renders the hero headline copy with a project slot", () => {

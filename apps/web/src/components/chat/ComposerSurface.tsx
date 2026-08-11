@@ -16,7 +16,7 @@
 import { Fragment, type ReactNode } from "react";
 
 import { cn } from "../../lib/cn";
-import { HostHeadline, HostText, HostView } from "../ui/hostElements";
+import { HostButton, HostHeadline, HostText, HostView } from "../ui/hostElements";
 
 /** Shared Composer shell width/centering (Web applies it to its <form>). */
 export const COMPOSER_SHELL_CLASS = "composer-shell mx-auto w-full min-w-0 max-w-3xl";
@@ -54,6 +54,10 @@ export interface ComposerSurfaceProps {
   readonly footerCompact?: boolean;
   /** Marks the compact primary-actions variant for measurements (Web). */
   readonly primaryActionsCompact?: boolean;
+  /** Primary action semantic independent of the host button implementation. */
+  readonly primaryActionState?: "disabled" | "send" | "stop" | undefined;
+  /** Stable state identifier consumed by the dual-renderer Harness. */
+  readonly semanticState?: string | undefined;
 }
 
 /**
@@ -84,6 +88,70 @@ export function ComposerToolbarRow({
   );
 }
 
+/**
+ * Shared toolbar-control geometry for platform-native control islands. Hosts
+ * provide only the icon primitives and tap behavior; density, truncation, and
+ * semantic foreground stay with the Composer product composition.
+ */
+export function ComposerToolbarControl({
+  className,
+  controlId,
+  label,
+  leading,
+  onClick,
+  trailing,
+}: {
+  readonly className?: string;
+  readonly controlId?: string | undefined;
+  readonly label: string;
+  readonly leading?: ReactNode;
+  readonly onClick?: () => void;
+  readonly trailing?: ReactNode;
+}) {
+  return (
+    <HostButton
+      type="button"
+      className={cn(
+        "composer-toolbar-control flex h-7 min-w-0 shrink-0 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-foreground",
+        className,
+      )}
+      data-composer-control={controlId}
+      onClick={onClick}
+    >
+      {leading}
+      <HostText className="composer-toolbar-control-label min-w-0 truncate">{label}</HostText>
+      {trailing}
+    </HostButton>
+  );
+}
+
+export function ComposerPrimaryAction({
+  icon,
+  onClick,
+  state,
+}: {
+  readonly icon: ReactNode;
+  readonly onClick: () => void;
+  readonly state: "disabled" | "send" | "stop";
+}) {
+  return (
+    <HostButton
+      type="button"
+      aria-label={state === "stop" ? "Stop response" : "Send message"}
+      aria-disabled={state === "disabled"}
+      data-composer-primary-state={state}
+      className={cn(
+        "composer-primary-action flex size-8 shrink-0 items-center justify-center rounded-full",
+        state === "stop" ? "bg-destructive" : "bg-primary",
+        state === "disabled" && "opacity-30",
+      )}
+      onClick={state === "disabled" ? undefined : onClick}
+    >
+      {icon}
+    </HostButton>
+  );
+}
+
 /** Framed Composer chrome: surface → banners → attachments → editor → footer. */
 export function ComposerSurface({
   elements,
@@ -97,6 +165,8 @@ export function ComposerSurface({
   renderCollapsedBody,
   footerCompact = false,
   primaryActionsCompact = false,
+  primaryActionState,
+  semanticState,
 }: ComposerSurfaceProps) {
   return (
     <HostView
@@ -104,6 +174,7 @@ export function ComposerSurface({
         "composer-frame group rounded-[22px] p-px transition-colors duration-200",
         frameClassName,
       )}
+      data-composer-state={semanticState}
       {...frameProps}
     >
       <HostView
@@ -143,6 +214,7 @@ export function ComposerSurface({
                 data-chat-composer-primary-actions-compact={
                   primaryActionsCompact ? "true" : "false"
                 }
+                data-composer-primary-state={primaryActionState}
               >
                 {elements.renderFooterRightActions()}
               </HostView>
@@ -161,16 +233,28 @@ export function ComposerSurface({
  * BranchToolbar chrome; Lynx uses its token-backed tucked strip).
  */
 export function ComposerContextStrip({
+  backdrop,
+  authorityVisual,
   checkout,
   branch,
   className,
 }: {
+  readonly backdrop?: ReactNode;
+  readonly authorityVisual?: ReactNode;
   readonly checkout: ReactNode;
   readonly branch: ReactNode;
   readonly className?: string | undefined;
 }) {
   return (
-    <HostView className={cn("composer-context-strip flex items-center gap-2", className)}>
+    <HostView
+      className={cn(
+        "composer-context-strip -mt-4 mx-3 flex items-center gap-2 rounded-b-2xl bg-muted px-1 pb-1 pt-5",
+        authorityVisual && "composer-context-strip--authority",
+        className,
+      )}
+    >
+      {backdrop}
+      {authorityVisual}
       <HostView className="composer-context-item flex min-w-0 flex-1 items-center gap-1">
         {checkout}
       </HostView>
