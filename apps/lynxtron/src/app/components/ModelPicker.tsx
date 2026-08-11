@@ -1,138 +1,164 @@
-import { useState, useCallback, useMemo } from "@lynx-js/react";
-import {
-  providerModelKey,
-  rankModelPickerSearchResults,
-  sortModelPickerItems,
-} from "@t3tools/client-runtime/presentation/model-picker";
+import { useState, useCallback, useEffect, useMainThreadRef, useMemo } from "@lynx-js/react";
+import type { MainThread } from "@lynx-js/types";
+import type {
+  ModelSelection,
+  ProviderDriverKind,
+  ProviderInstanceId,
+  ServerProvider,
+} from "@t3tools/contracts";
+import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
+import { providerModelKey } from "@t3tools/client-runtime/presentation/model-picker";
 import {
   ModelPickerEmptySurface,
+  ModelPickerBodySurface,
+  ModelPickerContentSurface,
   ModelPickerRailItemSurface,
+  ModelPickerRailSeparatorSurface,
   ModelPickerRailSurface,
   ModelPickerRowSurface,
   ModelPickerSearchSurface,
 } from "../../../../web/src/components/chat/ModelPickerSurface";
+import { isModelPickerNewModel } from "../../../../web/src/components/chat/modelPickerModelHighlights";
 import type { ModelInfo } from "../bridge";
+import { useClientSettingsState } from "../state/prefsStore";
+import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
+import { readModelPickerNavigation } from "../state/uiState";
 import { Icon } from "./Icon";
+import { ProviderBrandIcon } from "./ProviderBrandIcon";
+import { projectModelPickerProviders, projectModelPickerRows } from "./modelPickerPresentation";
 
 interface ModelPickerProps {
   models: ReadonlyArray<ModelInfo>;
+  providers?: ReadonlyArray<ProviderInstanceEntry>;
+  providerSnapshots?: ReadonlyArray<ServerProvider>;
   selectedModel: ModelInfo | undefined;
+  currentModelSelection?: ModelSelection | undefined;
+  currentProviderInstanceId?: ProviderInstanceId | null;
+  hasStartedSession?: boolean;
+  lockedProvider?: ProviderDriverKind | null;
+  lockedContinuationGroupKey?: string | null;
+  activeProvider?: ProviderInstanceId | "favorites";
+  onActiveProviderChange?: (provider: ProviderInstanceId | "favorites") => void;
   onSelect: (model: ModelInfo) => void;
   onClose: () => void;
-}
-
-const PROVIDER_ICONS: Record<string, string> = {
-  claudeAgent: "✳",
-  codex: "⊛",
-  openai: "⊙",
-  cursor: "◎",
-  grok: "⊘",
-  opencode: "▣",
-};
-
-function getProviderIcon(driverKind: string): string {
-  return PROVIDER_ICONS[driverKind] ?? "⊡";
 }
 
 function modelKey(model: ModelInfo): string {
   return providerModelKey(model.instanceId, model.slug);
 }
 
-// --- "New" badge ---
-
-const NEW_MODEL_KEYS = new Set<string>([
-  // Example: "claudeAgent:claude-sonnet-4-5"
-]);
-
-function isNewModel(model: ModelInfo): boolean {
-  return NEW_MODEL_KEYS.has(`${model.instanceId}:${model.slug}`);
-}
-
-export function ModelPicker({ models, selectedModel, onSelect, onClose }: ModelPickerProps) {
+export function ModelPicker({
+  models,
+  providers = [],
+  providerSnapshots = [],
+  selectedModel,
+  currentModelSelection,
+  currentProviderInstanceId = null,
+  hasStartedSession = false,
+  lockedProvider = null,
+  lockedContinuationGroupKey = null,
+  activeProvider = selectedModel?.instanceId ?? "favorites",
+  onActiveProviderChange = () => undefined,
+  onSelect,
+  onClose,
+}: ModelPickerProps) {
+  const viewport = useViewportSnapshot();
+  const navigation = readModelPickerNavigation();
+  const listScrollRef = useMainThreadRef<MainThread.Element>(null);
+  const wheelStateRef = useMainThreadRef({ key: "", offset: 0 });
+  const [clientSettings, updateClientSettings] = useClientSettingsState();
+  const favoriteModelKeys = useMemo(
+    () =>
+      new Set(
+        clientSettings.favorites.map((favorite) =>
+          providerModelKey(favorite.provider, favorite.model),
+        ),
+      ),
+    [clientSettings.favorites],
+  );
   const [search, setSearch] = useState("");
-  const [activeProvider, setActiveProvider] = useState<string | null>(null);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [showFavorites, setShowFavorites] = useState(false);
+  const [notice, setNotice] = useState<{
+    readonly title: string;
+    readonly message: string;
+  } | null>(null);
+  const [showTopFade, setShowTopFade] = useState(false);
+  const [showBottomFade, setShowBottomFade] = useState(false);
+  const selectProvider = useCallback(
+    (provider: ProviderInstanceId | "favorites") => {
+      onActiveProviderChange(provider);
+    },
+    [onActiveProviderChange],
+  );
 
-  const toggleFavorite = useCallback((m: ModelInfo) => {
-    setFavorites((prev) => {
-      const next = new Set(prev);
-      const key = modelKey(m);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }, []);
+  const toggleFavorite = useCallback(
+    (m: ModelInfo) => {
+      const favorites = [...clientSettings.favorites];
+      const index = favorites.findIndex(
+        (favorite) => favorite.provider === m.instanceId && favorite.model === m.slug,
+      );
+      if (index >= 0) {
+        favorites.splice(index, 1);
+      } else {
+        favorites.push({ provider: m.instanceId, model: m.slug });
+      }
+      updateClientSettings({ favorites });
+    },
+    [clientSettings.favorites, updateClientSettings],
+  );
 
   const handleSearch = useCallback((e: { detail: { value: string } }) => {
     setSearch(e.detail.value);
+    setNotice(null);
   }, []);
-
-  const handleOverlayTap = useCallback(() => {
-    onClose();
-  }, [onClose]);
 
   const handlePanelTap = useCallback((e: any) => {
     e?.stopPropagation?.();
   }, []);
 
-  // Group models by provider
-  const providers = useMemo(() => {
-    const map = new Map<
-      string,
-      { instanceId: string; name: string; icon: string; models: ModelInfo[] }
-    >();
-    for (const m of models) {
-      if (!map.has(m.instanceId)) {
-        map.set(m.instanceId, {
-          instanceId: m.instanceId,
-          name: m.providerDisplayName,
-          icon: getProviderIcon(m.driverKind),
-          models: [],
-        });
-      }
-      map.get(m.instanceId)!.models.push(m);
-    }
-    return [...map.values()];
-  }, [models]);
+  const context = useMemo(
+    () => ({
+      providers: providerSnapshots,
+      providerEntries: providers,
+      currentModelSelection,
+      currentProviderInstanceId,
+      hasStartedSession,
+      lockedProvider,
+      lockedContinuationGroupKey,
+    }),
+    [
+      currentModelSelection,
+      currentProviderInstanceId,
+      hasStartedSession,
+      lockedContinuationGroupKey,
+      lockedProvider,
+      providerSnapshots,
+      providers,
+    ],
+  );
 
-  // Filter and score models
-  const filteredModels = useMemo(() => {
-    let list = [...models];
-
-    // Filter by provider / favorites
-    if (showFavorites) {
-      list = list.filter((m) => favorites.has(modelKey(m)));
-    } else if (activeProvider) {
-      list = list.filter((m) => m.instanceId === activeProvider);
-    }
-
-    // Search
-    if (search.trim()) {
-      list = rankModelPickerSearchResults(list, search, (model) => ({
-        name: model.name,
-        ...(model.shortName ? { shortName: model.shortName } : {}),
-        ...(model.subProvider ? { subProvider: model.subProvider } : {}),
-        driverKind: model.driverKind,
-        providerDisplayName: model.providerDisplayName,
-        isFavorite: favorites.has(modelKey(model)),
-      }));
-    } else {
-      list = sortModelPickerItems(list, {
-        getInstanceId: (model) => model.instanceId,
-        getModelSlug: (model) => model.slug,
-        favoriteModelKeys: favorites,
-        groupFavorites: true,
+  const providerPresentations = useMemo(
+    () =>
+      projectModelPickerProviders(providers, {
+        lockedProvider,
+        lockedContinuationGroupKey,
+      }),
+    [lockedContinuationGroupKey, lockedProvider, providers],
+  );
+  const rows = useMemo(
+    () =>
+      projectModelPickerRows({
+        models,
+        selectedProviderId: activeProvider,
+        search,
+        favoriteModelKeys,
         instanceOrder: providers.map((provider) => provider.instanceId),
-      });
-    }
-
-    return list;
-  }, [models, activeProvider, search, favorites, showFavorites, providers]);
-
-  const hasFavorites = useMemo(() => {
-    return models.some((m) => favorites.has(modelKey(m)));
-  }, [models, favorites]);
+        context,
+      }),
+    [activeProvider, context, favoriteModelKeys, models, providers, search],
+  );
+  const scrollStateKey = `${activeProvider}:${search}:${rows
+    .map((row) => modelKey(row.model))
+    .join("|")}`;
 
   const handleSelect = useCallback(
     (m: ModelInfo) => {
@@ -141,38 +167,151 @@ export function ModelPicker({ models, selectedModel, onSelect, onClose }: ModelP
     },
     [onSelect, onClose],
   );
+  const showNotice = useCallback((title: string, message: string) => {
+    setNotice({ title, message });
+  }, []);
+  const clearNotice = useCallback(() => setNotice(null), []);
+  const handleListScroll = useCallback(
+    (event: { detail?: { scrollTop?: number; scrollHeight?: number; listHeight?: number } }) => {
+      const scrollTop = event.detail?.scrollTop ?? 0;
+      const scrollHeight = event.detail?.scrollHeight ?? rows.length * 55;
+      const listHeight = event.detail?.listHeight ?? 255;
+      setShowTopFade(scrollTop > 1);
+      setShowBottomFade(scrollHeight - scrollTop - listHeight > 1);
+    },
+    [rows.length],
+  );
+  const handleListWheel = (event: MainThread.WheelEvent) => {
+    "main thread";
+    const state =
+      wheelStateRef.current.key === scrollStateKey
+        ? wheelStateRef.current
+        : { key: scrollStateKey, offset: 0 };
+    const nextOffset = Math.max(0, state.offset + event.deltaY);
+    wheelStateRef.current = { key: scrollStateKey, offset: nextOffset };
+    const target = listScrollRef.current ?? event.currentTarget;
+    target.setAttribute("data-wheel-offset", String(nextOffset));
+    target.invoke("scrollTo", {
+      offset: nextOffset,
+      smooth: false,
+    });
+    event.preventDefault();
+    event.stopPropagation();
+  };
+  useEffect(() => {
+    if (!viewport.testResize) return;
+    const target = globalThis as {
+      __T3_LYNXTRON_MODEL_PICKER_SEARCH__?: (value: string) => void;
+      __T3_LYNXTRON_MODEL_PICKER_PROVIDER__?: (value: string) => void;
+      __T3_LYNXTRON_MODEL_PICKER_STATE__?: () => string;
+    };
+    target.__T3_LYNXTRON_MODEL_PICKER_SEARCH__ = setSearch;
+    target.__T3_LYNXTRON_MODEL_PICKER_PROVIDER__ = (value) => {
+      if (value === "favorites") {
+        selectProvider("favorites");
+        return;
+      }
+      const entry = providerPresentations.find((provider) => provider.entry.instanceId === value);
+      if (entry && entry.disabledReason === null) {
+        selectProvider(entry.entry.instanceId);
+      }
+    };
+    target.__T3_LYNXTRON_MODEL_PICKER_STATE__ = () =>
+      JSON.stringify({
+        activeProvider,
+        favoriteModelKeys: [...favoriteModelKeys],
+        filteredModelKeys: rows.map((row) => modelKey(row.model)),
+        navigation: readModelPickerNavigation(),
+        notice,
+        search,
+      });
+    return () => {
+      delete target.__T3_LYNXTRON_MODEL_PICKER_SEARCH__;
+      delete target.__T3_LYNXTRON_MODEL_PICKER_PROVIDER__;
+      delete target.__T3_LYNXTRON_MODEL_PICKER_STATE__;
+    };
+  }, [
+    activeProvider,
+    favoriteModelKeys,
+    notice,
+    providerPresentations,
+    rows,
+    search,
+    selectProvider,
+    viewport.testResize,
+  ]);
 
   return (
-    <view className="picker-overlay" bindtap={handleOverlayTap}>
-      <view className="picker-panel" bindtap={handlePanelTap}>
-        <view className="picker-body">
-          <ModelPickerRailSurface>
-            {hasFavorites ? (
-              <ModelPickerRailItemSurface
-                icon={<text className="picker-rail__glyph">★</text>}
-                label="Favorites"
-                active={showFavorites}
-                onSelect={() => {
-                  setShowFavorites(!showFavorites);
-                  setActiveProvider(null);
-                }}
-              />
-            ) : null}
-            {providers.map((p) => (
-              <ModelPickerRailItemSurface
-                key={p.instanceId}
-                icon={<text className="picker-rail__glyph">{p.icon}</text>}
-                label={p.name}
-                active={!showFavorites && activeProvider === p.instanceId}
-                onSelect={() => {
-                  setActiveProvider(p.instanceId);
-                  setShowFavorites(false);
-                }}
-              />
-            ))}
-          </ModelPickerRailSurface>
+    <>
+      <view
+        className="model-picker-panel"
+        {...(viewport.testResize
+          ? {
+              "data-model-picker-navigation-provider": navigation.provider,
+              "data-model-picker-navigation-scope": navigation.scopeKey ?? "",
+              "data-model-picker-navigation-touched": navigation.touched ? "true" : "false",
+            }
+          : {})}
+        style={{ width: "360px", height: "346px", bottom: "30px" }}
+        catchtap={handlePanelTap}
+      >
+        <ModelPickerBodySurface>
+          {!search.trim() ? (
+            <scroll-view
+              className="model-picker-rail-scroll"
+              scroll-y
+              scroll-orientation="vertical"
+              scroll-event-throttle={16}
+            >
+              <ModelPickerRailSurface>
+                <ModelPickerRailItemSurface
+                  icon={<text className="picker-rail__glyph">★</text>}
+                  label="Favorites"
+                  semanticId="favorites"
+                  active={activeProvider === "favorites"}
+                  onSelect={() => {
+                    selectProvider("favorites");
+                    clearNotice();
+                  }}
+                />
+                <ModelPickerRailSeparatorSurface />
+                {providerPresentations.map(({ entry, disabledReason }) => (
+                  <ModelPickerRailItemSurface
+                    key={entry.instanceId}
+                    icon={
+                      <ProviderBrandIcon
+                        driverKind={entry.driverKind}
+                        size={20}
+                        className="picker-rail__glyph"
+                      />
+                    }
+                    label={entry.displayName}
+                    semanticId={entry.instanceId}
+                    active={activeProvider === entry.instanceId}
+                    disabled={disabledReason !== null}
+                    disabledReason={disabledReason}
+                    onSelect={() => {
+                      selectProvider(entry.instanceId);
+                      clearNotice();
+                    }}
+                    onDisabledSelect={() =>
+                      showNotice("Unavailable", disabledReason ?? entry.displayName)
+                    }
+                    onHoverStart={
+                      disabledReason ? () => showNotice("Unavailable", disabledReason) : clearNotice
+                    }
+                  />
+                ))}
+              </ModelPickerRailSurface>
+            </scroll-view>
+          ) : null}
 
-          <view className="picker-content flex h-full min-w-0 flex-1 flex-col">
+          <ModelPickerContentSurface
+            filteredModelKeys={rows.map((row) => modelKey(row.model))}
+            hasRail={!search.trim()}
+            selectedModelKey={selectedModel ? modelKey(selectedModel) : undefined}
+            selectedProviderId={activeProvider}
+          >
             <ModelPickerSearchSurface
               icon={<Icon name="search" size={16} color="#71717a" />}
               input={
@@ -184,62 +323,134 @@ export function ModelPicker({ models, selectedModel, onSelect, onClose }: ModelP
                 />
               }
             />
+            <view className="model-picker-search-actions">
+              <view
+                className="model-picker-close"
+                aria-label="Close model picker"
+                catchtap={onClose}
+              >
+                <Icon name="x" size={14} color="#818181" />
+              </view>
+            </view>
 
-            <scroll-view scroll-orientation="vertical" className="picker-list">
-              {filteredModels.length === 0 ? (
-                <ModelPickerEmptySurface message="No models found" />
-              ) : (
-                filteredModels.map((m) => {
-                  const isSelected =
-                    selectedModel?.instanceId === m.instanceId && selectedModel?.slug === m.slug;
-                  const isFav = favorites.has(modelKey(m));
-                  const isNew = isNewModel(m);
-                  const isFavResult = showFavorites && !search.trim();
-                  return (
-                    <ModelPickerRowSurface
-                      key={`${m.instanceId}-${m.slug}`}
-                      selected={isSelected}
-                      onSelect={() => handleSelect(m)}
-                      name={m.name}
-                      showNewBadge={isNew}
-                      favoriteMarker={
-                        isFav && !isFavResult ? (
-                          <text className="picker-row__fav-star">★</text>
-                        ) : undefined
-                      }
-                      providerIcon={
-                        <text className="picker-row__provider-glyph">
-                          {getProviderIcon(m.driverKind)}
-                        </text>
-                      }
-                      providerLabel={m.providerDisplayName}
-                      trailing={
-                        <view
-                          className="picker-row__star-btn"
-                          bindtap={(e: any) => {
-                            e?.stopPropagation?.();
-                            toggleFavorite(m);
-                          }}
-                        >
-                          <text
-                            className={
-                              isFav
-                                ? "picker-row__star picker-row__star--active"
-                                : "picker-row__star"
-                            }
-                          >
-                            {isFav ? "★" : "☆"}
-                          </text>
-                        </view>
-                      }
-                    />
-                  );
-                })
-              )}
-            </scroll-view>
-          </view>
-        </view>
+            {rows.length === 0 ? (
+              <view className="picker-empty-layout">
+                <ModelPickerEmptySurface
+                  message={
+                    activeProvider === "favorites" && !search.trim()
+                      ? "No favorite models yet"
+                      : "No models found"
+                  }
+                />
+              </view>
+            ) : (
+              <view className="picker-list-shell">
+                <scroll-view
+                  key={scrollStateKey}
+                  main-thread:ref={listScrollRef}
+                  main-thread:global-bindwheel={handleListWheel}
+                  className="picker-list"
+                  scroll-y
+                  scroll-orientation="vertical"
+                  scroll-event-throttle={16}
+                  bindscroll={handleListScroll}
+                >
+                  <view className="picker-list-inner">
+                    {rows.map(({ model, favorite, disabledReason }) => {
+                      const isSelected =
+                        selectedModel?.instanceId === model.instanceId &&
+                        selectedModel?.slug === model.slug;
+                      return (
+                        <ModelPickerRowSurface
+                          key={modelKey(model)}
+                          semanticKey={modelKey(model)}
+                          selected={isSelected}
+                          disabled={disabledReason !== null}
+                          disabledReason={disabledReason}
+                          onSelect={() => handleSelect(model)}
+                          onDisabledSelect={() =>
+                            showNotice("Model unavailable", disabledReason ?? model.name)
+                          }
+                          onHoverStart={
+                            disabledReason
+                              ? () => showNotice("Model unavailable", disabledReason)
+                              : clearNotice
+                          }
+                          name={model.shortName ?? model.name}
+                          showNewBadge={isModelPickerNewModel(model.driverKind, model.slug)}
+                          favoriteMarker={
+                            favorite && activeProvider !== "favorites" ? (
+                              <text className="picker-row__fav-star">★</text>
+                            ) : undefined
+                          }
+                          providerIcon={
+                            <ProviderBrandIcon
+                              driverKind={model.driverKind}
+                              size={12}
+                              className="picker-row__provider-icon"
+                            />
+                          }
+                          providerLabel={
+                            model.subProvider
+                              ? `${model.providerDisplayName} · ${model.subProvider}`
+                              : model.providerDisplayName
+                          }
+                          trailing={
+                            <view
+                              aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+                              className={
+                                disabledReason
+                                  ? "picker-row__star-btn picker-row__star-btn--disabled"
+                                  : "picker-row__star-btn"
+                              }
+                              data-model-picker-favorite-key={modelKey(model)}
+                              data-model-picker-favorite={favorite ? "true" : "false"}
+                              catchtap={
+                                disabledReason
+                                  ? undefined
+                                  : (e: any) => {
+                                      e?.stopPropagation?.();
+                                      toggleFavorite(model);
+                                    }
+                              }
+                            >
+                              <text
+                                className={
+                                  favorite
+                                    ? "picker-row__star picker-row__star--active"
+                                    : "picker-row__star"
+                                }
+                              >
+                                {favorite ? "★" : "☆"}
+                              </text>
+                            </view>
+                          }
+                        />
+                      );
+                    })}
+                  </view>
+                </scroll-view>
+                {showTopFade ? <view className="picker-list-fade picker-list-fade--top" /> : null}
+                {showBottomFade || rows.length > 5 ? (
+                  <view className="picker-list-fade picker-list-fade--bottom" />
+                ) : null}
+              </view>
+            )}
+            {notice ? (
+              <view className="model-picker-notice" data-model-picker-notice="true">
+                <Icon name="circle-alert" size={14} color="#f87171" />
+                <view className="model-picker-notice__copy">
+                  <text className="model-picker-notice__title">{notice.title}</text>
+                  <text className="model-picker-notice__message">{notice.message}</text>
+                </view>
+                <view className="model-picker-notice__close" bindtap={clearNotice}>
+                  <Icon name="x" size={14} color="#818181" />
+                </view>
+              </view>
+            ) : null}
+          </ModelPickerContentSurface>
+        </ModelPickerBodySurface>
       </view>
-    </view>
+    </>
   );
 }
