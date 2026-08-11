@@ -21,8 +21,8 @@ App: T3 Code Lynxtron port (t3code monorepo, apps/lynxtron, branch lynxtron-port
 | 2        | R5  | No renderer-reachable keyboard event API (global shortcuts impossible)        | T7 keyboard/focus matrix, P3                  | [#149](https://github.com/lynx-family/lynxtron/issues/149) |
 | 3        | R3  | No preload→UI push channel; `sendGlobalEvent` is main-process only            | streaming UX (400 ms polling)                 | [#150](https://github.com/lynx-family/lynxtron/issues/150) |
 | 4        | R4  | TanStack `RouterProvider` async transition remount crashes BackgroundSnapshot | router architecture parity                    | —                                                          |
-| 5        | R1  | SVG content and SVG data-URIs rasterize blank                                 | all icons (lucide ecosystem)                  | —                                                          |
-| 6        | R2  | Custom font loading silently fails (`@font-face` and `lynx.addFont`)          | pixel-level typography parity                 | —                                                          |
+| 5        | R1  | Inline SVG content and SVG data-URIs rasterize blank                          | unconverted icons (lucide ecosystem)          | —                                                          |
+| 6        | R2  | External custom-font URLs do not reach the Lynxtron resource loader           | pixel-level typography parity                 | —                                                          |
 | 7        | R6  | `:hover` / `:focus-visible` selectors unsupported                             | hover/focus visual parity                     | —                                                          |
 | 8        | R7  | `position: fixed` / `sticky` / overflow semantics diverge                     | overlay/menu geometry                         | —                                                          |
 | 9        | R8  | Selection API absent (no text selection/copy)                                 | transcript copy UX                            | —                                                          |
@@ -96,20 +96,38 @@ it as "what is the supported path for worker-backed rendering islands?".
 - **Impact**: routing architecture cannot converge with Web; the switch
   renderer is permanent carried divergence until fixed.
 
-### R1 — SVG rasterizes blank
+### R1 — Inline SVG and SVG data-URIs rasterize blank
 
 - **Repro**: inline `<svg>` content and SVG data-URIs paint nothing on
-  Lynxtron 0.0.5. Adapter: `scripts/build-icons.mjs` pre-rasterizes the
-  lucide icon set to PNG at build time.
-- **Impact**: every icon in the product; PNG pipeline adds build cost and
-  loses vector fidelity on scale/theme changes.
+  Lynxtron desktop. The original 0.0.5 evidence covered only those two paths.
+- **0.0.8 re-probe (2026-08-06)**: a bundle-emitted, relative
+  `<svg src="/static/svg/chevron-down.…svg">` loaded and painted after the
+  leaf received explicit `width` and `height`. Without explicit dimensions the
+  resource parsed, but the element correctly occupied `0 × 0`. The retained
+  1280 × 820 production capture reports `kind: "main"`, `lastSeq: 18`, zero
+  renderer errors, a measured `12 × 12` SVG box, and a better Web-aligned
+  chevron SSIM than the PNG (`0.498901` versus `0.484356`). Evidence:
+  `evidence/2026-08-06/pixel-calibration/native-final-v225-external-svg-sized/`.
+- **Current adapter**: use bundle-relative external SVG assets with explicit
+  dimensions for measured leaves. `scripts/build-icons.mjs` remains the
+  fallback for the unconverted inventory because Lynx still lacks a drop-in
+  inline/current-color equivalent for Lucide components.
+- **Remaining impact**: the PNG pipeline adds build cost and loses vector
+  fidelity on scale/theme changes, but external SVG migration can now proceed
+  incrementally rather than being treated as runtime-blocked.
 
-### R2 — Custom fonts silently fail
+### R2 — External custom-font URLs do not reach the resource loader
 
-- **Repro**: both CSS `@font-face` and the `lynx.addFont` API accept the
-  bundled DM Sans without error, but text metrics show the system font is
-  used. Remove-when: bundled DM Sans measurably affects glyph metrics.
-- **Impact**: typography cannot reach pixel parity with the Electron client.
+- **Repro**: CSS `@font-face` and `lynx.addFont` accept relative, `file://`,
+  and custom-scheme font URLs without error, but Lynxtron's `protocol` handler
+  receives no font request and glyph metrics remain unchanged.
+- **Validated seam**: `lynx.addFont` does apply Base64-encoded WOFF2 data URLs.
+  Calibrated Lynx leaves use the Web authority's bundled DM Sans through that
+  path; retained system-font leaves stay on the calibrated fallback where DM
+  Sans regresses their pixel match.
+- **Impact**: externally loaded custom fonts still require an inline data-URL
+  adapter, increasing the renderer bundle and preventing normal cacheable font
+  resources.
 
 ### R6 — `:hover` / `:focus-visible` unsupported
 

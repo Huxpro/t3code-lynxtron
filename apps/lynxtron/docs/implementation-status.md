@@ -1,5 +1,14 @@
 # Implementation status
 
+> **Final5 authority notice (2026-08-12).** This document is a detailed
+> implementation history, not the current Harness or fidelity authority.
+> Read [`harness/current-state.md`](./harness/current-state.md) and
+> [`harness/completion-audit.md`](./harness/completion-audit.md)
+> first. Historical `complete`, `functional`, screenshot and `PASS` statements
+> remain provenance only until admitted by the current strict manifest.
+> Plan 11C is historical. Final5 keeps 18 required evidence cells pending and
+> records the current verification boundary in the completion audit.
+
 This app is the monorepo-native successor to the standalone
 `t3code-lynxtron` prototype.
 
@@ -22,6 +31,108 @@ Use exercised Settings → Beta → Back and the project-scope popup; exact CDP
 geometry pairs the Web reference with the durable Native failure measurements
 in `reports/oc0-outcome-baseline.json`. The report keeps this historical
 failure freeze distinct from OC7 same-snapshot certification.
+
+Preparatory OC1 work fixes the cold-start ordering at both race boundaries:
+main attaches the typed handlers before `loadFile`, and the renderer subscribes
+to pushed events before its ready/snapshot request. A reusable packaged
+readiness verifier now owns the exact child PID, isolated state, logs, bundle,
+and DevTool session. Its three-run evidence advanced the renderer sequence
+`2→3`, `2→3`, and `26→27` through a same-value bridge command, rendered the
+known fixture thread and model, reported zero renderer errors, and stopped all
+three owned processes. OC1 remains pending while the bounded Plan 11A
+experiment runs at the newly reached atomic boundary.
+
+Preparatory OC2 work removes the reachable TanStack memory-router writeback
+from the Lynx renderer. One synchronous pathname Atom now owns Lynx navigation,
+normalizes `/settings` to `/settings/general`, and projects the shared Settings
+section intents onto explicit Lynx panels. The packaged verifier's optional
+Settings proof uses measured semantic selectors and real DevTool taps: it
+entered General, remained there across connector sequence `12→13`, verified
+Providers, Connections, Source Control, Beta, and Archive route/content pairs,
+then passed two Settings → Providers → Back cycles with zero renderer errors.
+Evidence is under `evidence/2026-08-01/OC2/settings-navigation`; OC2 remains
+pending to preserve the OC0 → OC1 → OC2 task order. A subsequent source audit
+corrected the proof boundary: the visible Appearance and Keybindings entries
+were not covered by that report, and Appearance incorrectly rendered General
+content under `/settings/appearance`. The route projection now owns a distinct
+Appearance panel, Web and Lynx compile the same `AppearanceSettingsSurface`
+composition and search anchors, General no longer duplicates Appearance-owned
+rows, and unsupported Lynx Appearance controls are labeled rather than made to
+look functional. The same source audit restored Web's exact Background activity control,
+text-generation provider/model/traits picker, live Diagnostics summary and
+Link, and Electron/hosted About update state plus update-track selector through
+platform host slots. Lynx keeps the shared General hierarchy and core controls
+but now labels unsupported background, model-selection, and automatic-update
+behavior instead of exposing no-op buttons. Web's source-of-truth information
+architecture is therefore preserved without pulling DOM/Electron controls into
+the Lynx graph. The now-unreachable second General panel and restore hook were
+deleted, and the dedicated `.web` host stops General from pulling the complete
+Provider/Archive/Appearance module. With the strict denominator unchanged, its
+intermediate product graph drops from 312 to 243 eligible modules. The semantic
+verifier now walks all eight visible sections;
+the expanded packaged run remains pending the time-boxed DevTool `no-session`
+blocker, so the earlier report is not treated as full-nav certification.
+
+Preparatory OC3 work now gives Web and Lynx one renderer-neutral lifecycle
+presentation for copy, severity, visibility, and recovery actions. The
+main-owned connector reports an unexpected post-ready server exit, exposes an
+allowlisted reconnect command, replaces the connector by generation, and
+ignores stale exit events from the disposed generation. In the packaged proof,
+the harness resolved server PID 16909 from owned app PID 16812 and port 59517,
+sent `SIGKILL` only after verifying the parent and isolated base directory,
+observed a visible error with Reconnect/Connections, tapped the measured
+Reconnect control, observed reconnecting, advanced the renderer sequence
+`12→18`, resolved replacement PID 17174 on port 59929, and ended ready with no
+banner or renderer errors. Evidence is under
+`evidence/2026-08-01/OC3/lifecycle-recovery`; OC3 remains pending until the
+earlier tasks close in order.
+
+Preparatory OC4 work moves project-scope overlay geometry into the Lynx menu
+leaf while preserving the shared Sidebar V2 composition. A valid packaged
+attempt proved that the popup stayed inside the 256 px rail, opened below its
+trigger, and shifted the thread list by at most 1 px. That attempt also exposed
+the dismiss layer intercepting selection, so the layer now begins outside the
+canonical `--sidebar-width`. Two later PID-owned DevTool attempts published no
+session, so the post-fix real-tap proof remains pending rather than being
+reported as a product failure. Focused Sidebar tests, Web/Lynx typechecks, and
+the ReactLynx scanner pass; details are under
+`evidence/2026-08-01/OC4/sidebar-scope`.
+
+Preparatory OC5 work removes the Lynx-only Composer pill anatomy and moves
+toolbar-control density, truncation, primary-action states, and context-strip
+geometry into the shared Composer composition. The Lynx textarea remains the
+bounded native editor leaf. Disabled transport now disables both input and
+send/stop dispatch. Focused Composer tests, Web/Lynx typechecks, the scanner,
+and both production builds pass; packaged visual measurement remains pending a
+stable DevTool session. Details are under
+`evidence/2026-08-01/OC5/composer-convergence`.
+
+Preparatory OC6 work gives packaged Lynxtron one testable branding resolver.
+Local monorepo builds now resolve the Dev stage independently of `NODE_ENV`,
+while an explicit `T3_LYNXTRON_APP_STAGE_LABEL` still selects Dev, Nightly,
+Alpha, or Latest. The shared backdrop exposes its resolved variant for semantic runtime
+measurement. Focused branding/backdrop tests, Web/Lynx typechecks, the scanner,
+and both production builds pass; visible packaged artwork proof remains
+pending a stable DevTool session. Details are under
+`evidence/2026-08-01/OC6/stage-branding`.
+
+OC7 now has a reusable semantic aggregation mode rather than another bespoke
+launch sequence. `verify:plan11-semantics` requires three fresh readiness runs
+and exercises the five independent semantic outcomes only on the third owned
+process. Sidebar Search and deterministic thread rows plus Composer controls
+have stable semantic selectors, and the report keeps Sidebar, Settings,
+Composer, Dev branding, and lifecycle results separate. It
+explicitly records matched Web/Lynx visual comparison as pending and therefore
+cannot mark OC7 certification complete by itself. The mode has passed syntax,
+focused tests, Web/Lynx typechecks, the scanner, the Lynx build, and audits, but
+has not been launched after the repeated DevTool no-session condition. Its
+Composer proof now requires an isolated real-transcript fixture, verifies the
+existing-thread overlay first, creates a new thread through the product UI, and
+then verifies the hero state. It measures footer/control/context geometry and
+requires independent sequence advances for reasoning/model option, model,
+runtime, and interaction commands. Bounded product-affordance cleanup between
+outcomes prevents a failed overlay/route from contaminating the next result.
+The generated OC0 empty-thread fixture cannot stand in for both outcomes.
 
 [Plan 12](./plans/12-feature-parity-by-product-value.md) is queued after Plan 11. It closes the remaining Web/Electron feature gap by product value: the
 complete agent intervention and input loop, transcript interaction, remote and
