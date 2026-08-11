@@ -15,7 +15,7 @@ import { cn } from "../../lib/cn";
 import { HostButton, HostText, HostView } from "../ui/hostElements";
 
 const ROW_CLASS =
-  "group flex w-full items-center gap-1.5 rounded-xl py-1 pr-3 text-left transition-colors hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background";
+  "file-tree-row group flex w-full items-center gap-1.5 rounded-xl py-1 pr-3 text-left transition-colors hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background";
 
 function rowPaddingLeft(depth: number): string {
   return `${8 + depth * 14}px`;
@@ -53,7 +53,7 @@ export function FileTreeDirectoryRowSurface({
     <HostButton
       type="button"
       {...(scrollAnchorIgnore ? { "data-scroll-anchor-ignore": true } : {})}
-      className={ROW_CLASS}
+      className={cn(ROW_CLASS, "file-tree-row--directory")}
       style={{ paddingLeft: rowPaddingLeft(depth) }}
       onClick={onToggle}
       aria-expanded={expanded}
@@ -61,14 +61,15 @@ export function FileTreeDirectoryRowSurface({
       <HostText
         aria-hidden
         className={cn(
+          "file-tree-row__chevron",
           "inline-flex size-3.5 shrink-0 items-center text-muted-foreground/70 transition-transform group-hover:text-foreground/80",
-          expanded && "rotate-90",
+          expanded && "file-tree-row__chevron--expanded rotate-90",
         )}
       >
         {chevron}
       </HostText>
       {folderIcon}
-      <HostText className="truncate font-mono text-[11px] text-muted-foreground/90 group-hover:text-foreground/90">
+      <HostText className="file-tree-row__name truncate font-mono text-[11px] text-muted-foreground/90 group-hover:text-foreground/90">
         {name}
       </HostText>
       {trailing ? (
@@ -101,7 +102,7 @@ export function FileTreeFileRowSurface({
     <>
       {showLeadingSpacer ? <HostText aria-hidden className="size-3.5 shrink-0" /> : null}
       {fileIcon}
-      <HostText className="truncate font-mono text-[11px] text-muted-foreground/80 group-hover:text-foreground/90">
+      <HostText className="file-tree-row__name truncate font-mono text-[11px] text-muted-foreground/80 group-hover:text-foreground/90">
         {name}
       </HostText>
       {trailing ? (
@@ -114,7 +115,7 @@ export function FileTreeFileRowSurface({
   const style = { paddingLeft: rowPaddingLeft(depth) };
   if (!onSelect) {
     return (
-      <HostView className={ROW_CLASS} style={style}>
+      <HostView className={cn(ROW_CLASS, "file-tree-row--file")} style={style}>
         {content}
       </HostView>
     );
@@ -122,7 +123,11 @@ export function FileTreeFileRowSurface({
   return (
     <HostButton
       type="button"
-      className={cn(ROW_CLASS, selected && "bg-accent")}
+      className={cn(
+        ROW_CLASS,
+        "file-tree-row--file",
+        selected && "file-tree-row--selected bg-accent",
+      )}
       style={style}
       onClick={onSelect}
     >

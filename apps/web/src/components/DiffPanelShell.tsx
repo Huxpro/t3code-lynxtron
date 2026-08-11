@@ -1,47 +1,45 @@
 import type { ReactNode } from "react";
 
 import { isElectron } from "~/env";
-import { cn } from "~/lib/utils";
 
 import { Skeleton } from "./ui/skeleton";
+import { DiffPanelSurface } from "./DiffPanelSurface";
 
 export type DiffPanelMode = "inline" | "sheet" | "sidebar" | "embedded";
-
-function getDiffPanelHeaderRowClassName(mode: DiffPanelMode) {
-  const shouldUseDragRegion = isElectron && mode !== "sheet" && mode !== "embedded";
-  return cn(
-    "flex items-center justify-between gap-2 px-4",
-    shouldUseDragRegion
-      ? "drag-region h-[52px] border-b border-border wco:h-[env(titlebar-area-height)] wco:pr-[calc(100vw-env(titlebar-area-width)-env(titlebar-area-x)+1em)]"
-      : "surface-subheader",
-  );
-}
 
 export function DiffPanelShell(props: {
   mode: DiffPanelMode;
   header: ReactNode;
   children: ReactNode;
+  reviewCheckpointCount?: number;
+  reviewSelectedTurn?: string;
+  reviewFileCount?: number;
 }) {
   const shouldUseDragRegion = isElectron && props.mode !== "sheet" && props.mode !== "embedded";
 
   return (
-    <div
-      className={cn(
-        "flex h-full min-w-0 flex-col bg-background",
-        props.mode === "inline"
-          ? "w-[42vw] min-w-[360px] max-w-[560px] shrink-0 border-l border-border"
-          : "w-full",
-      )}
+    <DiffPanelSurface
+      mode={props.mode}
+      useDragRegion={shouldUseDragRegion}
+      {...(shouldUseDragRegion
+        ? {
+            headerClassName:
+              "wco:h-[env(titlebar-area-height)] wco:pr-[calc(100vw-env(titlebar-area-width)-env(titlebar-area-x)+1em)]",
+          }
+        : {})}
+      header={props.header}
+      {...(props.reviewCheckpointCount !== undefined
+        ? { reviewCheckpointCount: props.reviewCheckpointCount }
+        : {})}
+      {...(props.reviewSelectedTurn !== undefined
+        ? { reviewSelectedTurn: props.reviewSelectedTurn }
+        : {})}
+      {...(props.reviewFileCount !== undefined
+        ? { reviewFileCount: props.reviewFileCount }
+        : {})}
     >
-      {shouldUseDragRegion ? (
-        <div className={getDiffPanelHeaderRowClassName(props.mode)}>{props.header}</div>
-      ) : (
-        <div className={getDiffPanelHeaderRowClassName(props.mode)} data-surface-subheader>
-          {props.header}
-        </div>
-      )}
       {props.children}
-    </div>
+    </DiffPanelSurface>
   );
 }
 

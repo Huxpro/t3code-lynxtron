@@ -72,7 +72,7 @@ export function RightPanelTabSurface({
       {...(onAuxClick ? { onAuxClick } : {})}
       {...(onContextMenu ? { onContextMenu } : {})}
       className={cn(
-        "group flex h-7 min-w-25 max-w-44 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm",
+        "group lynx-titlebar-no-drag flex h-7 min-w-25 max-w-44 shrink-0 items-center gap-1.5 rounded-md px-2 text-sm",
         active
           ? "bg-accent text-foreground"
           : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
@@ -125,7 +125,10 @@ export function RightPanelEmptySurface({
 }) {
   const wrap = renderDisabledWrapper ?? ((_action, card) => card);
   return (
-    <HostView className="flex min-h-0 flex-1 items-center justify-center p-6">
+    <HostView
+      data-right-panel-empty-state
+      className="flex min-h-0 flex-1 items-center justify-center p-6"
+    >
       <HostView className="w-full max-w-xl">
         <HostView className="mb-5 flex flex-col items-center">
           <HostText className="text-sm font-medium text-foreground">Open a surface</HostText>
@@ -138,6 +141,7 @@ export function RightPanelEmptySurface({
             const card = (
               <HostButton
                 type="button"
+                data-right-panel-action={action.key}
                 {...(action.disabled ? { "aria-disabled": true } : { onClick: action.onSelect })}
                 className={cn(
                   "flex min-h-28 w-full flex-col items-start rounded-lg border border-border/80 bg-card p-4 text-left",
