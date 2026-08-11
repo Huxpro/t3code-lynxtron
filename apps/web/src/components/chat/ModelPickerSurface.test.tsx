@@ -43,6 +43,7 @@ describe("ModelPickerSurface", () => {
     expect(markup).toContain("data-fav-marker");
     expect(markup.indexOf("data-fav-marker")).toBeLessThan(markup.indexOf("GPT-5.6"));
     expect(markup).not.toContain("model-picker-new-badge");
+    expect(markup).toContain("model-picker-row--unselected");
   });
 
   it("renders rail items with active state and aria labels", () => {
@@ -64,7 +65,46 @@ describe("ModelPickerSurface", () => {
     expect(markup).toContain("model-picker-rail");
     expect(markup).toContain('aria-label="Favorites"');
     expect(markup).toContain("model-picker-rail-item--active");
+    expect(markup).toContain("model-picker-rail-icon pointer-events-none");
     expect(markup.indexOf("data-icon-star")).toBeLessThan(markup.indexOf("data-icon-claude"));
+  });
+
+  it("keeps disabled model rows inspectable with their exact reason", () => {
+    const markup = renderToStaticMarkup(
+      <ModelPickerRowSurface
+        name="Grok Build"
+        disabled
+        disabledReason="This provider does not allow switching models."
+        onDisabledSelect={vi.fn()}
+      />,
+    );
+
+    expect(markup).toContain('aria-disabled="true"');
+    expect(markup).toContain('data-model-picker-disabled="true"');
+    expect(markup).toContain(
+      'data-model-picker-disabled-reason="This provider does not allow switching models."',
+    );
+    expect(markup).toContain("<button");
+  });
+
+  it("keeps unavailable providers visible and exposes their reason", () => {
+    const markup = renderToStaticMarkup(
+      <ModelPickerRailItemSurface
+        icon={<span data-icon-grok />}
+        label="Grok"
+        semanticId="grok"
+        disabled
+        disabledReason="Grok — Unavailable. Sign in to continue."
+        onSelect={vi.fn()}
+        onDisabledSelect={vi.fn()}
+      />,
+    );
+
+    expect(markup).toContain('data-model-picker-provider="grok"');
+    expect(markup).toContain('data-model-picker-provider-disabled="true"');
+    expect(markup).toContain(
+      'data-model-picker-provider-disabled-reason="Grok — Unavailable. Sign in to continue."',
+    );
   });
 
   it("renders the search row with icon and input slots", () => {

@@ -2,20 +2,32 @@ import type { ReactNode } from "@lynx-js/react";
 
 export function HostView({
   children,
+  eventThrough,
   onClick,
   onDoubleClick: _onDoubleClick,
   onContextMenu,
   onKeyDown: _onKeyDown,
+  onMouseEnter: _onMouseEnter,
+  onMouseLeave: _onMouseLeave,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
+  readonly eventThrough?: boolean;
   readonly onClick?: (event: unknown) => void;
   readonly onDoubleClick?: (event: unknown) => void;
   readonly onContextMenu?: (event: unknown) => void;
   readonly onKeyDown?: (event: unknown) => void;
+  readonly onMouseEnter?: (event: unknown) => void;
+  readonly onMouseLeave?: (event: unknown) => void;
 }) {
   return (
-    <view {...props} bindtap={onClick} bindlongpress={onContextMenu}>
+    <view
+      {...props}
+      event-through={eventThrough}
+      {...(onContextMenu ? ({ bindcontextmenu: onContextMenu } as object) : {})}
+      bindtap={onClick}
+      bindlongpress={onContextMenu}
+    >
       {children}
     </view>
   );
@@ -91,10 +103,14 @@ export function HostHeadline({
 export function HostButton({
   children,
   onClick,
+  onMouseEnter: _onMouseEnter,
+  onMouseLeave: _onMouseLeave,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly onClick?: (event: unknown) => void;
+  readonly onMouseEnter?: (event: unknown) => void;
+  readonly onMouseLeave?: (event: unknown) => void;
 }) {
   return (
     <view {...props} bindtap={onClick}>

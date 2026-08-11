@@ -1,6 +1,10 @@
 import type * as React from "react";
 
-export function HostView({ children, ...props }: React.ComponentProps<"div">) {
+export function HostView({
+  children,
+  eventThrough: _eventThrough,
+  ...props
+}: React.ComponentProps<"div"> & { readonly eventThrough?: boolean }) {
   return <div {...props}>{children}</div>;
 }
 
