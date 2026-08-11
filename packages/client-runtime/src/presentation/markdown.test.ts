@@ -209,6 +209,37 @@ describe("parseMarkdownInline", () => {
       },
     ]);
   });
+
+  it("projects GFM strikethrough without losing nested inline styles", () => {
+    expect(parseMarkdownInline("Keep ~~old **bold** text~~ now")).toEqual([
+      { text: "Keep ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "old ",
+        bold: false,
+        italic: false,
+        code: false,
+        href: null,
+        strikethrough: true,
+      },
+      {
+        text: "bold",
+        bold: true,
+        italic: false,
+        code: false,
+        href: null,
+        strikethrough: true,
+      },
+      {
+        text: " text",
+        bold: false,
+        italic: false,
+        code: false,
+        href: null,
+        strikethrough: true,
+      },
+      { text: " now", bold: false, italic: false, code: false, href: null },
+    ]);
+  });
 });
 
 describe("Markdown link projection", () => {

@@ -72,6 +72,7 @@ export interface MarkdownInlinePresentation {
   readonly italic: boolean;
   readonly code: boolean;
   readonly href: string | null;
+  readonly strikethrough?: boolean;
 }
 
 export interface MarkdownFileLinkMeta {
@@ -249,6 +250,7 @@ interface MarkdownInlineStyle {
   readonly bold: boolean;
   readonly italic: boolean;
   readonly href: string | null;
+  readonly strikethrough?: boolean;
 }
 
 const PLAIN_INLINE_STYLE: MarkdownInlineStyle = {
@@ -268,7 +270,8 @@ function appendInlinePresentation(
     previous.bold === presentation.bold &&
     previous.italic === presentation.italic &&
     previous.code === presentation.code &&
-    previous.href === presentation.href
+    previous.href === presentation.href &&
+    previous.strikethrough === presentation.strikethrough
   ) {
     output[output.length - 1] = {
       ...previous,
@@ -314,6 +317,9 @@ function parseMarkdownInlineWithStyle(
       italic: override?.italic ?? style.italic,
       code,
       href: override?.href ?? style.href,
+      ...(override?.strikethrough ?? style.strikethrough
+        ? { strikethrough: true }
+        : {}),
     });
   };
 
@@ -385,6 +391,19 @@ function parseMarkdownInlineWithStyle(
         const parts = parseMarkdownInlineWithStyle(text.slice(cursor + 2, end), {
           ...style,
           bold: true,
+        });
+        for (const part of parts) appendInlinePresentation(output, part);
+        cursor = end + 2;
+        continue;
+      }
+    }
+
+    if (text.startsWith("~~", cursor)) {
+      const end = findClosingDelimiter(text, "~~", cursor + 2);
+      if (end !== -1) {
+        const parts = parseMarkdownInlineWithStyle(text.slice(cursor + 2, end), {
+          ...style,
+          strikethrough: true,
         });
         for (const part of parts) appendInlinePresentation(output, part);
         cursor = end + 2;
