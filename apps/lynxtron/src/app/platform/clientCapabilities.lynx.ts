@@ -1,7 +1,11 @@
-import type { ClientUiCapabilities } from "@t3tools/client-runtime/platform";
+import {
+  matchesViewportMediaQuery,
+  type ClientUiCapabilities,
+} from "@t3tools/client-runtime/platform";
 
 import { appAtomRegistry } from "../state/atomRegistry";
 import { connectionStatusAtom } from "../state/connectionStatus";
+import { getViewportSnapshot, subscribeViewport } from "../state/viewportStore";
 
 interface PlatformBridge {
   getPrefs?: () => Record<string, unknown>;
@@ -68,8 +72,10 @@ export const clientCapabilities: ClientUiCapabilities = {
     subscribe: () => () => {},
   },
   mediaQuery: {
-    // Lynxtron currently targets a fixed desktop window.
-    matches: (query) => !query.includes("max-width"),
+    matches: (query) => matchesViewportMediaQuery(getViewportSnapshot(), query),
+    getViewport: getViewportSnapshot,
+    subscribe: (_query, listener) => subscribeViewport(listener),
+    subscribeViewport,
   },
   navigation: {
     canOpenExternal: () => {
