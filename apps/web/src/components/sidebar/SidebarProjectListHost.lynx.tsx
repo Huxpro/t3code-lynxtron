@@ -2,6 +2,8 @@ import { useCallback, useState } from "@lynx-js/react";
 import type { ScopedThreadRef } from "@t3tools/contracts";
 
 import { t3ClientActions, useT3ClientState } from "../../../../lynxtron/src/app/state/t3Client";
+import { Icon } from "../../../../lynxtron/src/app/components/Icon";
+import { ThreadStatusLabel } from "../ThreadStatusIndicators";
 import type {
   SidebarProjectHostRow,
   SidebarProjectListHostProps,
@@ -60,9 +62,21 @@ export function SidebarProjectListHost({
               onToggleProject(row);
             }}
           >
-            <text className="lynx-sidebar-project-chevron">{row.expanded ? "⌄" : "›"}</text>
+            <view className="lynx-sidebar-project-chevron">
+              <Icon
+                name={row.expanded ? "chevron-down" : "chevron-right"}
+                size={14}
+                color="#71717a"
+                className="lynx-sidebar-project-chevron-icon"
+              />
+            </view>
             <view className="lynx-sidebar-project-favicon">
-              <text className="lynx-sidebar-project-favicon-label">T3</text>
+              <Icon
+                name="folder"
+                size={14}
+                color="#818181"
+                className="lynx-sidebar-project-favicon-icon"
+              />
             </view>
             <text
               className="sidebar-project-title-reference lynx-sidebar-project-title"
@@ -136,6 +150,11 @@ export function SidebarProjectListHost({
                           onSelectThread(thread.ref);
                         }}
                       >
+                        {thread.status ? (
+                          <view className="lynx-sidebar-thread-status">
+                            <ThreadStatusLabel status={thread.status} />
+                          </view>
+                        ) : null}
                         <text
                           className="sidebar-thread-title-reference lynx-sidebar-thread-title"
                           text-maxline="1"
@@ -145,7 +164,7 @@ export function SidebarProjectListHost({
                         <text
                           className={
                             thread.statusLabel
-                              ? "lynx-sidebar-thread-meta lynx-sidebar-thread-meta--status"
+                              ? "lynx-sidebar-thread-meta lynx-sidebar-thread-meta--time"
                               : "lynx-sidebar-thread-meta"
                           }
                           text-maxline="1"
@@ -159,7 +178,7 @@ export function SidebarProjectListHost({
                             });
                           }}
                         >
-                          {thread.statusLabel ?? thread.metadataLabel}
+                          {thread.metadataLabel.replaceAll(" ", "\u00a0")}
                         </text>
                       </view>
                     )}
