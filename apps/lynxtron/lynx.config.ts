@@ -1,4 +1,5 @@
 import { defineConfig } from "@lynx-js/rspeedy";
+import { pluginRspeedyDevReady } from "@lynx-js/lynxtron-dev-plugins/rspeedy";
 import { pluginReactLynx } from "@lynx-js/react-rsbuild-plugin";
 import { tanstackRouter } from "@tanstack/router-plugin/rspack";
 import { rspack } from "@rspack/core";
@@ -181,7 +182,10 @@ const GLOBAL_POLYFILL = `
 export default defineConfig({
   output: {
     filename: "[name].[platform].bundle",
-    distPath: { root: probeOutput ?? (webPreview ? "./output/bundle/web" : "./output/bundle/lynx") },
+    distPath: {
+      root: probeOutput ?? (webPreview ? "./output/bundle/web" : "./output/bundle/lynx"),
+    },
+    sourceMap: false,
   },
   resolve: {
     alias: {
@@ -210,20 +214,32 @@ export default defineConfig({
         module: {
           rules: [
             {
+              test: /\.woff2$/u,
+              resourceQuery: /inline/u,
+              type: "asset/inline",
+            },
+            {
               test: /\.svg$/u,
               resourceQuery: /external/u,
               type: "asset/resource",
-              generator: { filename: "static/svg/[name].[contenthash:8][ext]" },
+              generator: {
+                filename: "static/svg/[name].[contenthash:8][ext]",
+              },
             },
             {
               test: /\.png$/u,
               resourceQuery: /external/u,
               type: "asset/resource",
-              generator: { filename: "static/image/[name].[contenthash:8][ext]" },
+              generator: {
+                filename: "static/image/[name].[contenthash:8][ext]",
+              },
             },
           ],
         },
         plugins: [
+          new rspack.DefinePlugin({
+            __T3_LYNXTRON_WEB_PREVIEW__: JSON.stringify(webPreview),
+          }),
           ...(!webPreview
             ? [
                 new rspack.BannerPlugin({
@@ -264,5 +280,6 @@ export default defineConfig({
     pluginReactLynx({
       enableCSSInheritance: true,
     }),
+    pluginRspeedyDevReady(),
   ],
 });

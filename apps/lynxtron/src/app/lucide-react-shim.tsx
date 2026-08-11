@@ -10,12 +10,14 @@ type LucideProps = {
 
 function createIcon(name: IconName): ComponentType<LucideProps> {
   return function LynxLucideIcon({ className, color, size }: LucideProps) {
+    const sidebarSettings = name === "settings" && className?.includes("sidebar-settings-icon");
+    const resolvedSize = typeof size === "number" ? size : sidebarSettings ? 18 : 16;
     return (
       <Icon
         className={className}
-        color={color}
+        color={sidebarSettings ? "#818181" : color}
         name={name}
-        size={typeof size === "number" ? size : 16}
+        size={resolvedSize}
       />
     );
   };
