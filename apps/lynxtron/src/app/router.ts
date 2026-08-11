@@ -1,73 +1,33 @@
-// Lynx-safe navigation layer on top of TanStack Router core.
+// Lynx-safe navigation authority.
 //
-// Why not <RouterProvider>? On ReactLynx, RouterProvider's async load
-// transition remounts the matched tree right after the initial commit, which
-// crashes the BTS→main snapshot pipeline ("BackgroundSnapshot not found") and
-// leaves the main thread painting a stale frame forever (verified 2026-07-26:
-// components unmounted, never re-mounted, screen frozen at initial state).
-//
-// We still reuse TanStack Router core for what it's good at: memory history,
-// path matching, navigation semantics, redirects (e.g. /settings ->
-// /settings/general). Rendering is done by a plain pathname switch in
-// index.tsx, which ReactLynx updates reliably.
+// ReactLynx cannot mount TanStack RouterProvider without triggering the R4
+// background-snapshot crash. The renderer therefore owns one synchronous
+// pathname Atom and renders it through the plain switch in index.tsx. Web
+// continues to use TanStack Router unchanged through lib/router.ts.
 import { useAtomValue } from "@effect/atom-react";
-import { createMemoryHistory, createRouter } from "@tanstack/react-router";
 import { Atom } from "effect/unstable/reactivity";
 
-import { routeTree } from "./routeTree.gen";
+import type { SettingsSectionPath } from "../../../web/src/components/settings/SettingsNavigationContent.logic";
 import { appAtomRegistry } from "./state/atomRegistry";
 
-const memoryHistory = createMemoryHistory({
-  initialEntries: ["/"],
-});
+export type LynxSettingsPath = "/settings" | SettingsSectionPath;
 
-export const router = createRouter({
-  routeTree,
-  history: memoryHistory,
-  isServer: false,
-});
+export function normalizeLynxPathname(to: string): string {
+  if (to === "/settings" || to === "/settings/") return "/settings/general";
+  // Older Lynx captures used the singular path. Keep it as an input alias,
+  // while the shared Settings navigation owns the canonical plural route.
+  if (to === "/settings/archive") return "/settings/archived";
+  return to;
+}
 
-// Load the router core once so router.navigate() resolves (without a
-// RouterProvider, nothing else triggers the initial load; a navigate() call
-// on an unloaded router never settles — observed as "tap does nothing").
-void router.load().catch(() => {});
-
-// --- pathname subscription (temporary R4 module-level host adapter) ---
-
-const pathnameAtom = Atom.make(memoryHistory.location?.pathname ?? "/").pipe(
+const pathnameAtom = Atom.make(normalizeLynxPathname("/")).pipe(
   Atom.withLabel("lynx-router-pathname"),
 );
 
-function syncPathname() {
-  const next = router.state.location.pathname;
-  if (next !== appAtomRegistry.get(pathnameAtom)) {
+export function navigate(to: string, _opts?: { replace?: boolean }): void {
+  const next = normalizeLynxPathname(to);
+  if (appAtomRegistry.get(pathnameAtom) !== next) {
     appAtomRegistry.set(pathnameAtom, next);
-  }
-}
-
-// history.subscribe covers push/replace; router.subscribe('onResolved')
-// covers redirects resolved by route loaders.
-memoryHistory.subscribe(() => {
-  // Defer to let router.state catch up with the history change.
-  setTimeout(syncPathname, 0);
-});
-router.subscribe("onResolved", syncPathname);
-
-export function navigate(to: string, opts?: { replace?: boolean }): void {
-  // Drive the UI switch synchronously — router core navigation can hang or
-  // throw (observed for "/" with a pathless layout route), and taps must
-  // never be lost. The router core is still notified best-effort afterwards
-  // to keep history/redirect semantics in sync.
-  if (appAtomRegistry.get(pathnameAtom) !== to) {
-    appAtomRegistry.set(pathnameAtom, to);
-  }
-  try {
-    void router
-      .navigate({ to, replace: opts?.replace ?? false })
-      .then(syncPathname)
-      .catch(() => {});
-  } catch {
-    /* router core rejected the location — the local switch already happened */
   }
 }
 
@@ -76,17 +36,22 @@ function installDevToolNavigation(): void {
   (
     globalThis as typeof globalThis & {
       __T3_LYNXTRON_NAVIGATE__?: (to: string) => void;
+      __T3_LYNXTRON_ROUTE__?: () => string;
     }
   ).__T3_LYNXTRON_NAVIGATE__ = (to) => {
     if (to === "/" || to === "/settings" || to.indexOf("/settings/") === 0) {
-      appAtomRegistry.set(pathnameAtom, to);
+      navigate(to);
     }
   };
+  (
+    globalThis as typeof globalThis & {
+      __T3_LYNXTRON_ROUTE__?: () => string;
+    }
+  ).__T3_LYNXTRON_ROUTE__ = getPathname;
 }
 
-// Deterministic DevTool capture navigation. This does not alter normal startup
-// or expose host capabilities; it only drives the same in-renderer router used
-// by sidebar taps.
+// Deterministic DevTool capture navigation writes through the same authority
+// as product taps. The companion route hook is read-only.
 installDevToolNavigation();
 
 export function getPathname(): string {
