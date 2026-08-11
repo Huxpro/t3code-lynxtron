@@ -10,6 +10,11 @@ import { Atom } from "effect/unstable/reactivity";
 
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { appAtomRegistry } from "./atomRegistry";
+export {
+  resolveLynxTheme,
+  type LynxThemePreference,
+} from "./themePreference.logic";
+import type { LynxThemePreference } from "./themePreference.logic";
 
 const cache = new Map<string, unknown>();
 const preferencesRevisionAtom = Atom.make(0).pipe(Atom.withLabel("lynx-preferences-revision"));
@@ -25,6 +30,15 @@ export function getPref<T>(key: string, fallback: T): T {
     return value;
   } catch {
     return fallback;
+  }
+}
+
+export function hasPref(key: string): boolean {
+  if (cache.has(key)) return true;
+  try {
+    return clientCapabilities.storage.getItem(key) !== null;
+  } catch {
+    return false;
   }
 }
 
@@ -92,6 +106,18 @@ export function useClientSettingsState(): [
   }, []);
   return [getClientSettingsState(), update];
 }
+
+export function useThemePreferenceState(): [
+  LynxThemePreference,
+  (theme: LynxThemePreference) => void,
+] {
+  useAtomValue(preferencesRevisionAtom);
+  const update = useCallback((theme: LynxThemePreference) => {
+    setPref("themePreference", theme);
+  }, []);
+  return [getPref<LynxThemePreference>("themePreference", "system"), update];
+}
+
 
 function installDevToolSettingsHarness(): void {
   "background only";
