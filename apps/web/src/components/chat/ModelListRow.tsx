@@ -48,6 +48,8 @@ export const ModelListRow = memo(function ModelListRow(props: {
       hideIndicator
       index={props.index}
       value={`${props.instanceId}:${props.model.slug}`}
+      data-model-picker-key={`${props.instanceId}:${props.model.slug}`}
+      data-model-picker-selected={props.isSelected ? "true" : "false"}
       disabled={Boolean(props.disabledReason)}
       contentClassName="flex w-full items-center gap-3"
       className={cn(

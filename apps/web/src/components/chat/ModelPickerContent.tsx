@@ -478,6 +478,9 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
       <div
         className="dropdown-glass model-picker-surface relative flex h-screen max-h-86.5 w-screen max-w-90 flex-row overflow-hidden rounded-lg text-popover-foreground [clip-path:inset(0_round_var(--radius-lg))]"
         data-model-picker-content="true"
+        data-model-picker-filtered-keys={JSON.stringify(filteredModelKeys)}
+        data-model-picker-selected-model={`${props.activeInstanceId}:${props.model}`}
+        data-model-picker-selected-provider={selectedInstanceId}
       >
         {/* Sidebar */}
         {showSidebar && (
