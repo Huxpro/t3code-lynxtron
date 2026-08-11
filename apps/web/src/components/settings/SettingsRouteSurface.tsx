@@ -14,12 +14,14 @@ import {
 
 export function SettingsRouteSurface({
   children,
+  contentId,
   electron,
   onBack,
   onNavigate,
   pathname,
 }: {
   readonly children: ReactNode;
+  readonly contentId?: string | undefined;
   readonly electron: boolean;
   readonly onBack: () => void;
   readonly onNavigate: (to: SettingsSectionPath) => void;
@@ -53,6 +55,7 @@ export function SettingsRouteSurface({
 
   return (
     <SettingsRouteHost
+      contentId={contentId}
       electron={electron}
       confirmation={restore.confirmation}
       onBack={onBack}

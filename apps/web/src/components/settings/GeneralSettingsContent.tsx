@@ -1,14 +1,11 @@
 import type { ReactNode } from "react";
 
 import {
-  MAX_GLASS_OPACITY,
-  MIN_GLASS_OPACITY,
   isProjectGroupingEnabled,
   projectGroupingModeFromToggle,
 } from "@t3tools/client-runtime/presentation/settings";
 
 import {
-  GeneralSettingsGlassOpacity,
   GeneralSettingsSelect,
   GeneralSettingsSwitch,
   GeneralSettingsTextInput,
@@ -18,8 +15,8 @@ import {
   SettingsRow,
   SettingsSection,
 } from "./generalSettingsHost";
+import { searchableSetting } from "./settingsSearch";
 
-export type GeneralThemePreference = "system" | "light" | "dark";
 export type GeneralTimestampFormat = "locale" | "12-hour" | "24-hour";
 export type GeneralThreadMode = "local" | "worktree";
 export type GeneralProjectGroupingMode = "repository" | "repository_path" | "separate";
@@ -33,39 +30,31 @@ export interface GeneralSettingsValues {
   readonly diffIgnoreWhitespace: boolean;
   readonly enableAssistantStreaming: boolean;
   readonly enableProviderUpdateChecks: boolean;
-  readonly glassOpacity: number;
   readonly newWorktreesStartFromOrigin: boolean;
   readonly sidebarProjectGroupingMode: GeneralProjectGroupingMode;
   readonly timestampFormat: GeneralTimestampFormat;
-  readonly wordWrap: boolean;
 }
 
 export type GeneralSettingsPatch = Partial<GeneralSettingsValues>;
 
 export interface GeneralSettingsContentProps {
-  readonly aboutVersionControl?: ReactNode;
+  readonly aboutContent?: ReactNode;
+  readonly backgroundActivityContent?: ReactNode;
   readonly defaults: GeneralSettingsValues;
   readonly diagnosticsControl?: ReactNode;
   readonly diagnosticsDescription: string;
   readonly errorContent?: ReactNode;
   readonly onProjectGroupingChange?: (enabled: boolean) => void;
   readonly onResetTextGenerationModel?: () => void;
-  readonly onThemeChange: (value: GeneralThemePreference) => void;
   readonly onUpdate: (patch: GeneralSettingsPatch) => void;
   readonly serverControlsDisabled?: boolean;
   readonly textGenerationModelControl: ReactNode;
   readonly textGenerationModelDirty: boolean;
-  readonly theme: GeneralThemePreference;
+  readonly textGenerationModelStatus?: ReactNode;
   readonly values: GeneralSettingsValues;
   readonly versionDescription?: string;
   readonly versionLabel: string;
 }
-
-const THEME_OPTIONS = [
-  { value: "system", label: "System" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-] as const;
 
 const TIMESTAMP_OPTIONS = [
   { value: "locale", label: "System default" },
@@ -79,19 +68,19 @@ const THREAD_MODE_OPTIONS = [
 ] as const;
 
 export function GeneralSettingsContent({
-  aboutVersionControl,
+  aboutContent,
+  backgroundActivityContent,
   defaults,
   diagnosticsControl,
   diagnosticsDescription,
   errorContent,
   onProjectGroupingChange,
   onResetTextGenerationModel,
-  onThemeChange,
   onUpdate,
   serverControlsDisabled = false,
   textGenerationModelControl,
   textGenerationModelDirty,
-  theme,
+  textGenerationModelStatus,
   values,
   versionDescription = "Current version of the application.",
   versionLabel,
@@ -114,46 +103,7 @@ export function GeneralSettingsContent({
       {errorContent}
       <SettingsSection title="General">
         <SettingsRow
-          title="Theme"
-          description="Choose how T3 Code looks across the app."
-          resetAction={
-            theme !== "system" ? (
-              <SettingResetButton label="theme" onClick={() => onThemeChange("system")} />
-            ) : null
-          }
-          control={
-            <GeneralSettingsSelect
-              ariaLabel="Theme preference"
-              onValueChange={onThemeChange}
-              options={THEME_OPTIONS}
-              value={theme}
-            />
-          }
-        />
-
-        <SettingsRow
-          title="Glass opacity"
-          description="Control how transparent glass surfaces are. Higher values make menus, dialogs, and the composer more solid."
-          resetAction={
-            values.glassOpacity !== defaults.glassOpacity ? (
-              <SettingResetButton
-                label="glass opacity"
-                onClick={() => onUpdate({ glassOpacity: defaults.glassOpacity })}
-              />
-            ) : null
-          }
-          control={
-            <GeneralSettingsGlassOpacity
-              max={MAX_GLASS_OPACITY}
-              min={MIN_GLASS_OPACITY}
-              onValueChange={(glassOpacity) => onUpdate({ glassOpacity })}
-              value={values.glassOpacity}
-            />
-          }
-        />
-
-        <SettingsRow
-          title="Project Grouping"
+          {...searchableSetting("project-grouping")}
           description="Combine matching repositories across environments."
           resetAction={
             values.sidebarProjectGroupingMode !== defaults.sidebarProjectGroupingMode ? (
@@ -177,7 +127,7 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="Time format"
+          {...searchableSetting("time-format")}
           description="System default follows your browser or OS clock preference."
           resetAction={
             values.timestampFormat !== defaults.timestampFormat ? (
@@ -198,27 +148,7 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="Word wrap"
-          description="Wrap long lines in code blocks, tables, diffs, and file previews by default."
-          resetAction={
-            values.wordWrap !== defaults.wordWrap ? (
-              <SettingResetButton
-                label="word wrapping"
-                onClick={() => onUpdate({ wordWrap: defaults.wordWrap })}
-              />
-            ) : null
-          }
-          control={
-            <GeneralSettingsSwitch
-              checked={values.wordWrap}
-              onCheckedChange={(wordWrap) => onUpdate({ wordWrap })}
-              aria-label="Wrap code, tables, diffs, and file previews by default"
-            />
-          }
-        />
-
-        <SettingsRow
-          title="Hide whitespace changes"
+          {...searchableSetting("hide-whitespace-changes")}
           description="Set whether the diff panel ignores whitespace-only edits by default."
           resetAction={
             values.diffIgnoreWhitespace !== defaults.diffIgnoreWhitespace ? (
@@ -242,7 +172,7 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="Assistant output"
+          {...searchableSetting("assistant-output")}
           description="Show token-by-token output while a response is in progress."
           resetAction={
             values.enableAssistantStreaming !== defaults.enableAssistantStreaming ? (
@@ -267,7 +197,7 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="Provider update checks"
+          {...searchableSetting("provider-update-checks")}
           description="Check installed provider CLIs for newer available versions."
           resetAction={
             values.enableProviderUpdateChecks !== defaults.enableProviderUpdateChecks ? (
@@ -293,8 +223,10 @@ export function GeneralSettingsContent({
           }
         />
 
+        {backgroundActivityContent}
+
         <SettingsRow
-          title="Auto-open task panel"
+          {...searchableSetting("auto-open-task-panel")}
           description="Open the right-side plan and task panel automatically when steps appear."
           resetAction={
             values.autoOpenPlanSidebar !== defaults.autoOpenPlanSidebar ? (
@@ -318,7 +250,7 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="New threads"
+          {...searchableSetting("new-threads")}
           description="Pick the default workspace mode for newly created draft threads."
           resetAction={
             values.defaultThreadEnvMode !== defaults.defaultThreadEnvMode ||
@@ -348,7 +280,7 @@ export function GeneralSettingsContent({
         {values.defaultThreadEnvMode === "worktree" ? (
           <SettingsRow
             className="general-settings-row--nested"
-            title="Start from origin"
+            title={searchableSetting("start-from-origin").title}
             description="Creates the worktree from the latest matching branch on origin instead of your local branch."
             resetAction={
               values.newWorktreesStartFromOrigin !== defaults.newWorktreesStartFromOrigin ? (
@@ -376,7 +308,7 @@ export function GeneralSettingsContent({
         ) : null}
 
         <SettingsRow
-          title="Add project starts in"
+          {...searchableSetting("add-project-starts-in")}
           description={'Leave empty to use "~/" when the Add Project browser opens.'}
           resetAction={
             values.addProjectBaseDirectory !== defaults.addProjectBaseDirectory ? (
@@ -401,7 +333,7 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="Archive confirmation"
+          {...searchableSetting("archive-confirmation")}
           description="Require a second click on the inline archive action before a thread is archived."
           resetAction={
             values.confirmThreadArchive !== defaults.confirmThreadArchive ? (
@@ -425,7 +357,7 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="Delete confirmation"
+          {...searchableSetting("delete-confirmation")}
           description="Ask before deleting a thread and its chat history."
           resetAction={
             values.confirmThreadDelete !== defaults.confirmThreadDelete ? (
@@ -449,8 +381,8 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          title="Text generation model"
-          description="Configure the model used for generated commit messages, PR titles, and similar Git text."
+          {...searchableSetting("text-generation-model")}
+          description="Default model for generated text like thread titles and source control content. Source control settings can override it with a dedicated source control writer model."
           resetAction={
             textGenerationModelDirty && onResetTextGenerationModel ? (
               <SettingResetButton
@@ -459,18 +391,17 @@ export function GeneralSettingsContent({
               />
             ) : null
           }
+          status={textGenerationModelStatus}
           control={textGenerationModelControl}
         />
       </SettingsSection>
 
       <SettingsSection title="About">
+        {aboutContent ?? (
+          <SettingsRow title={`Version ${versionLabel}`} description={versionDescription} />
+        )}
         <SettingsRow
-          title={`Version ${versionLabel}`}
-          description={versionDescription}
-          control={aboutVersionControl}
-        />
-        <SettingsRow
-          title="Diagnostics"
+          {...searchableSetting("diagnostics")}
           description={diagnosticsDescription}
           control={
             diagnosticsControl ?? (

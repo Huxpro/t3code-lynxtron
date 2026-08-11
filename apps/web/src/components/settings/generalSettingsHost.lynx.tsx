@@ -17,15 +17,17 @@ export function SettingsSection({
   headerAction,
   children,
   className,
+  id,
 }: {
   readonly title: string;
   readonly icon?: ReactNode;
   readonly headerAction?: ReactNode;
   readonly children: ReactNode;
   readonly className?: string;
+  readonly id?: string;
 }) {
   return (
-    <view className={joinClassNames("settings-section", className)}>
+    <view id={id} className={joinClassNames("settings-section", className)}>
       <view
         className={
           headerAction
@@ -54,6 +56,7 @@ export function SettingsRow({
   control,
   children,
   className,
+  id,
 }: {
   readonly title: ReactNode;
   readonly description: ReactNode;
@@ -62,9 +65,10 @@ export function SettingsRow({
   readonly control?: ReactNode;
   readonly children?: ReactNode;
   readonly className?: string;
+  readonly id?: string;
 }) {
   return (
-    <view className={joinClassNames("settings-row", className)}>
+    <view id={id} className={joinClassNames("settings-row", className)}>
       <view className="settings-row__text">
         <view className="settings-row__title-line">
           <text className="settings-row__title">{title}</text>

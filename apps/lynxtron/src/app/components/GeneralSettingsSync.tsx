@@ -6,10 +6,7 @@ import {
   type PortableServerSettingsPatch,
 } from "@t3tools/client-runtime/presentation/settings";
 
-import type {
-  GeneralSettingsPatch,
-  GeneralThemePreference,
-} from "../../../../web/src/components/settings/GeneralSettingsContent";
+import type { GeneralSettingsPatch } from "../../../../web/src/components/settings/GeneralSettingsContent";
 import {
   GENERAL_SETTINGS_DEFAULT_VALUES,
   projectGeneralSettingsValues,
@@ -21,10 +18,9 @@ import {
   type GeneralSettingsSurfaceSnapshot,
 } from "../../../../web/src/components/settings/generalSettingsStore";
 import { navigate } from "../router";
-import { getPref, setPref, useClientSettingsState } from "../state/prefsStore";
+import { useClientSettingsState } from "../state/prefsStore";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 
-const THEME_PREFERENCE_KEY = "themePreference";
 const DEFAULT_DIAGNOSTICS_DESCRIPTION = formatDiagnosticsDescription({
   localTracingEnabled: false,
   otlpTracesEnabled: false,
@@ -35,7 +31,6 @@ export function GeneralSettingsSync() {
   const { settings, settingsUpdatePending, settingsError } = useT3ClientState();
   const serverSettings = settings ?? PORTABLE_SERVER_SETTINGS_DEFAULTS;
   const [clientSettings, updateClientSettings] = useClientSettingsState();
-  const theme = getPref<GeneralThemePreference>(THEME_PREFERENCE_KEY, "system");
   const values = projectGeneralSettingsValues(clientSettings, serverSettings);
   const restoreProjection = projectPortableGeneralSettingsRestore({
     clientSettings,
@@ -60,12 +55,10 @@ export function GeneralSettingsSync() {
         ...(patch.diffIgnoreWhitespace === undefined
           ? {}
           : { diffIgnoreWhitespace: patch.diffIgnoreWhitespace }),
-        ...(patch.glassOpacity === undefined ? {} : { glassOpacity: patch.glassOpacity }),
         ...(patch.sidebarProjectGroupingMode === undefined
           ? {}
           : { sidebarProjectGroupingMode: patch.sidebarProjectGroupingMode }),
         ...(patch.timestampFormat === undefined ? {} : { timestampFormat: patch.timestampFormat }),
-        ...(patch.wordWrap === undefined ? {} : { wordWrap: patch.wordWrap }),
       };
       const serverPatch: PortableServerSettingsPatch = {
         ...(patch.addProjectBaseDirectory === undefined
@@ -95,12 +88,10 @@ export function GeneralSettingsSync() {
       serverControlsDisabled: !settings || settingsUpdatePending,
       settingsError,
       textGenerationModelDirty: false,
-      theme,
       values,
       versionLabel: "0.0.28",
     };
     const actions: GeneralSettingsSurfaceActions = {
-      checkForUpdates: () => {},
       openDiagnostics: () => navigate("/settings/diagnostics", { replace: true }),
       resetTextGenerationModel: () => {},
       restoreDefaults: async () => {
@@ -110,7 +101,6 @@ export function GeneralSettingsSync() {
         update({
           sidebarProjectGroupingMode: enabled ? "repository" : "separate",
         }),
-      setTheme: (nextTheme) => setPref(THEME_PREFERENCE_KEY, nextTheme),
       update,
     };
     publishGeneralSettingsSurface(snapshot, actions);
@@ -120,7 +110,6 @@ export function GeneralSettingsSync() {
     settings,
     settingsError,
     settingsUpdatePending,
-    theme,
     updateClientSettings,
     values,
   ]);

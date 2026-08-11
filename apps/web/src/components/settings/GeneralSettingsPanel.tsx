@@ -1,43 +1,28 @@
-import { useCallback } from "react";
-
 import { GeneralSettingsContent } from "./GeneralSettingsContent";
-import { GeneralSettingsNotice, GeneralSettingsValueButton } from "./generalSettingsHost";
+import { GeneralSettingsNotice } from "./generalSettingsHost";
+import {
+  GeneralSettingsAboutContent,
+  GeneralSettingsBackgroundActivityContent,
+  GeneralSettingsDiagnosticsControl,
+  GeneralSettingsTextGenerationModelControl,
+  GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS,
+} from "./generalSettingsPanelHost";
 import {
   getGeneralSettingsSurfaceActions,
   useGeneralSettingsSurface,
 } from "./generalSettingsStore";
-
-export function useSettingsRestore(onRestored?: () => void) {
-  const { changedSettingLabels } = useGeneralSettingsSurface();
-  const restoreDefaults = useCallback(async () => {
-    await getGeneralSettingsSurfaceActions().restoreDefaults();
-    onRestored?.();
-  }, [onRestored]);
-
-  return {
-    changedSettingLabels,
-    restoreDefaults,
-  };
-}
 
 export function GeneralSettingsPanel() {
   const surface = useGeneralSettingsSurface();
 
   return (
     <GeneralSettingsContent
-      aboutVersionControl={
-        <GeneralSettingsValueButton
-          ariaLabel="Check for Updates"
-          label="Check for Updates"
-          onPress={() => getGeneralSettingsSurfaceActions().checkForUpdates()}
-        />
-      }
+      aboutContent={<GeneralSettingsAboutContent versionLabel={surface.versionLabel} />}
+      backgroundActivityContent={<GeneralSettingsBackgroundActivityContent />}
       defaults={surface.defaults}
       diagnosticsControl={
-        <GeneralSettingsValueButton
-          ariaLabel="View diagnostics"
-          label="View diagnostics"
-          onPress={() => getGeneralSettingsSurfaceActions().openDiagnostics()}
+        <GeneralSettingsDiagnosticsControl
+          onOpen={() => getGeneralSettingsSurfaceActions().openDiagnostics()}
         />
       }
       diagnosticsDescription={surface.diagnosticsDescription}
@@ -50,14 +35,13 @@ export function GeneralSettingsPanel() {
       onResetTextGenerationModel={() =>
         getGeneralSettingsSurfaceActions().resetTextGenerationModel()
       }
-      onThemeChange={(theme) => getGeneralSettingsSurfaceActions().setTheme(theme)}
       onUpdate={(patch) => getGeneralSettingsSurfaceActions().update(patch)}
       serverControlsDisabled={surface.serverControlsDisabled}
       textGenerationModelControl={
-        <GeneralSettingsValueButton ariaLabel="Text generation model" label={surface.modelLabel} />
+        <GeneralSettingsTextGenerationModelControl label={surface.modelLabel} />
       }
       textGenerationModelDirty={surface.textGenerationModelDirty}
-      theme={surface.theme}
+      textGenerationModelStatus={GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS}
       values={surface.values}
       versionLabel={surface.versionLabel}
     />

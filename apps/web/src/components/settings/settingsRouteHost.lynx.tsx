@@ -2,11 +2,11 @@ import type { ReactNode } from "@lynx-js/react";
 
 import { Icon } from "../../../../lynxtron/src/app/components/Icon";
 import type { SettingsSectionPath } from "./SettingsNavigationContent";
-import { SettingsSidebarNav } from "./SettingsSidebarNav";
 import type { SettingsRestoreConfirmationModel } from "./settingsRouteState";
 
 export function SettingsRouteHost({
   children,
+  contentId,
   confirmation,
   onCancelRestore,
   onConfirmRestore,
@@ -19,6 +19,7 @@ export function SettingsRouteHost({
   showRestore,
 }: {
   readonly children: ReactNode;
+  readonly contentId?: string | undefined;
   readonly confirmation: SettingsRestoreConfirmationModel | null;
   readonly electron: boolean;
   readonly onBack: () => void;
@@ -33,9 +34,6 @@ export function SettingsRouteHost({
 }) {
   return (
     <view className="settings-root">
-      <view className="settings-nav">
-        <SettingsSidebarNav pathname={pathname} onBack={onBack} onNavigate={onNavigate} />
-      </view>
       <view className="settings-main">
         <view className="settings-topbar">
           <text className="settings-topbar__title">Settings</text>
@@ -60,7 +58,13 @@ export function SettingsRouteHost({
           ) : null}
         </view>
         <scroll-view scroll-orientation="vertical" className="settings-scroll">
-          <view className="settings-content">{children}</view>
+          <view
+            className={
+              contentId ? `settings-content settings-content--${contentId}` : "settings-content"
+            }
+          >
+            {children}
+          </view>
         </scroll-view>
         {confirmation ? (
           <view className="settings-restore-overlay">

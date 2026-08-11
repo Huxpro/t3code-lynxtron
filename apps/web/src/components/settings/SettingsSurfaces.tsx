@@ -13,6 +13,82 @@ import type { ReactNode } from "react";
 import { cn } from "../../lib/cn";
 import { HostButton, HostText, HostView } from "../ui/hostElements";
 import { SettingsRow, SettingsSection } from "./settingsLayout";
+import { searchableSetting } from "./settingsSearch";
+
+// ---------------------------------------------------------------------------
+// Appearance
+// ---------------------------------------------------------------------------
+
+/**
+ * Appearance panel composition shared by Web and Lynx. Hosts own the actual
+ * controls because Web has DOM select/range semantics while Lynx must keep
+ * unsupported theme/input behavior explicit until the corresponding runtime
+ * capability is certified.
+ */
+export function AppearanceSettingsSurface({
+  themeControl,
+  themeResetAction,
+  themeStatus,
+  glassOpacityControl,
+  glassOpacityResetAction,
+  glassOpacityStatus,
+  environmentIdentificationControl,
+  environmentIdentificationResetAction,
+  environmentIdentificationStatus,
+  showEnvironmentIdentification,
+  wordWrapControl,
+  wordWrapResetAction,
+  wordWrapStatus,
+}: {
+  readonly themeControl?: ReactNode | undefined;
+  readonly themeResetAction?: ReactNode | undefined;
+  readonly themeStatus?: ReactNode | undefined;
+  readonly glassOpacityControl?: ReactNode | undefined;
+  readonly glassOpacityResetAction?: ReactNode | undefined;
+  readonly glassOpacityStatus?: ReactNode | undefined;
+  readonly environmentIdentificationControl?: ReactNode | undefined;
+  readonly environmentIdentificationResetAction?: ReactNode | undefined;
+  readonly environmentIdentificationStatus?: ReactNode | undefined;
+  readonly showEnvironmentIdentification: boolean;
+  readonly wordWrapControl?: ReactNode | undefined;
+  readonly wordWrapResetAction?: ReactNode | undefined;
+  readonly wordWrapStatus?: ReactNode | undefined;
+}) {
+  return (
+    <SettingsSection id="appearance" title="Appearance">
+      <SettingsRow
+        {...searchableSetting("theme")}
+        description="Choose how T3 Code looks across the app."
+        resetAction={themeResetAction}
+        status={themeStatus}
+        control={themeControl}
+      />
+      <SettingsRow
+        {...searchableSetting("setting-glass-opacity")}
+        description="Control how transparent glass surfaces are. Higher values make menus, dialogs, and the composer more solid."
+        resetAction={glassOpacityResetAction}
+        status={glassOpacityStatus}
+        control={glassOpacityControl}
+      />
+      {showEnvironmentIdentification ? (
+        <SettingsRow
+          {...searchableSetting("environment-identification")}
+          description="Choose how Dev and Nightly environments are identified."
+          resetAction={environmentIdentificationResetAction}
+          status={environmentIdentificationStatus}
+          control={environmentIdentificationControl}
+        />
+      ) : null}
+      <SettingsRow
+        {...searchableSetting("word-wrap")}
+        description="Wrap long lines in code blocks, tables, diffs, and file previews by default."
+        resetAction={wordWrapResetAction}
+        status={wordWrapStatus}
+        control={wordWrapControl}
+      />
+    </SettingsSection>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Archived threads

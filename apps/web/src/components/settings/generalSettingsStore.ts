@@ -1,10 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-import type {
-  GeneralSettingsPatch,
-  GeneralSettingsValues,
-  GeneralThemePreference,
-} from "./GeneralSettingsContent";
+import type { GeneralSettingsPatch, GeneralSettingsValues } from "./GeneralSettingsContent";
 import { GENERAL_SETTINGS_DEFAULT_VALUES } from "./generalSettingsProjection";
 
 export interface GeneralSettingsSurfaceSnapshot {
@@ -15,18 +11,15 @@ export interface GeneralSettingsSurfaceSnapshot {
   readonly serverControlsDisabled: boolean;
   readonly settingsError: string | null;
   readonly textGenerationModelDirty: boolean;
-  readonly theme: GeneralThemePreference;
   readonly values: GeneralSettingsValues;
   readonly versionLabel: string;
 }
 
 export interface GeneralSettingsSurfaceActions {
-  readonly checkForUpdates: () => void;
   readonly openDiagnostics: () => void;
   readonly resetTextGenerationModel: () => void;
   readonly restoreDefaults: () => Promise<void>;
   readonly setProjectGrouping: (enabled: boolean) => void;
-  readonly setTheme: (theme: GeneralThemePreference) => void;
   readonly update: (patch: GeneralSettingsPatch) => void;
 }
 
@@ -39,17 +32,14 @@ const INITIAL_SNAPSHOT: GeneralSettingsSurfaceSnapshot = {
   serverControlsDisabled: true,
   settingsError: null,
   textGenerationModelDirty: false,
-  theme: "system",
   values: GENERAL_SETTINGS_DEFAULT_VALUES,
   versionLabel: "0.0.28",
 };
 const INITIAL_ACTIONS: GeneralSettingsSurfaceActions = {
-  checkForUpdates: NOOP,
   openDiagnostics: NOOP,
   resetTextGenerationModel: NOOP,
   restoreDefaults: async () => {},
   setProjectGrouping: NOOP,
-  setTheme: NOOP,
   update: NOOP,
 };
 

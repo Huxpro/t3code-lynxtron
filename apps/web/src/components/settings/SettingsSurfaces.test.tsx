@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vite-plus/test";
 
 import {
   AccessListRowSurface,
+  AppearanceSettingsSurface,
   ArchivedThreadsSurface,
   BetaSettingsSurface,
   ProviderInstanceCardSurface,
@@ -10,6 +11,54 @@ import {
   SourceControlMarkSurface,
   StatusDotSurface,
 } from "./SettingsSurfaces";
+
+describe("AppearanceSettingsSurface", () => {
+  it("owns the canonical Appearance hierarchy and accepts host controls", () => {
+    const markup = renderToStaticMarkup(
+      <AppearanceSettingsSurface
+        themeControl={<button data-theme-control />}
+        glassOpacityControl={<input data-glass-control />}
+        environmentIdentificationControl={<button data-environment-control />}
+        showEnvironmentIdentification
+        wordWrapControl={<button data-word-wrap-control />}
+      />,
+    );
+
+    for (const part of [
+      "Appearance",
+      "Theme",
+      "Glass opacity",
+      "Environment identification",
+      "Word wrap",
+      "data-theme-control",
+      "data-glass-control",
+      "data-environment-control",
+      "data-word-wrap-control",
+    ]) {
+      expect(markup).toContain(part);
+    }
+    expect(markup).toContain('id="appearance"');
+    expect(markup).toContain('id="theme"');
+    expect(markup).toContain('id="setting-glass-opacity"');
+    expect(markup).toContain('id="environment-identification"');
+    expect(markup).toContain('id="word-wrap"');
+  });
+
+  it("keeps unsupported behavior honest and omits stage-only content", () => {
+    const markup = renderToStaticMarkup(
+      <AppearanceSettingsSurface
+        themeStatus="Not yet available in Lynxtron."
+        glassOpacityStatus="Not yet available in Lynxtron."
+        showEnvironmentIdentification={false}
+        wordWrapStatus="Not yet available in Lynxtron."
+      />,
+    );
+
+    expect(markup).toContain("Not yet available in Lynxtron.");
+    expect(markup).not.toContain("Environment identification");
+    expect(markup).not.toContain("data-theme-control");
+  });
+});
 
 describe("ArchivedThreadsSurface", () => {
   it("renders the empty section when no groups exist", () => {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import * as Duration from "effect/Duration";
+import { useAtomValue } from "@effect/atom-react";
 import * as Equal from "effect/Equal";
 
 import { projectGeneralSettingsRestore } from "@t3tools/client-runtime/presentation/settings";
@@ -9,6 +9,7 @@ import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
 import { APP_VERSION } from "../../branding";
 import { useTheme } from "../../hooks/useTheme";
 import { usePrimarySettings, useUpdatePrimarySettings } from "../../hooks/useSettings";
+import { primaryServerObservabilityAtom } from "../../state/server";
 import type { GeneralSettingsPatch } from "./GeneralSettingsContent";
 import { projectGeneralSettingsValues } from "./generalSettingsProjection";
 import {
@@ -29,16 +30,12 @@ const GENERAL_DEFAULTS = projectGeneralSettingsValues(
   DEFAULT_UNIFIED_SETTINGS,
   DEFAULT_UNIFIED_SETTINGS,
 );
-const DEFAULT_DIAGNOSTICS_DESCRIPTION = formatDiagnosticsDescription({
-  localTracingEnabled: false,
-  otlpTracesEnabled: false,
-  otlpMetricsEnabled: false,
-});
 
 export function GeneralSettingsSync() {
   const { theme, setTheme } = useTheme();
   const settings = usePrimarySettings();
   const updateSettings = useUpdatePrimarySettings();
+  const observability = useAtomValue(primaryServerObservabilityAtom);
   const lastEnabledProjectGroupingMode = useRef<SidebarProjectGroupingMode>(
     readLastEnabledProjectGroupingMode(),
   );
@@ -88,7 +85,13 @@ export function GeneralSettingsSync() {
     const snapshot: GeneralSettingsSurfaceSnapshot = {
       changedSettingLabels: restoreProjection.changedSettingLabels,
       defaults: GENERAL_DEFAULTS,
-      diagnosticsDescription: DEFAULT_DIAGNOSTICS_DESCRIPTION,
+      diagnosticsDescription: formatDiagnosticsDescription({
+        localTracingEnabled: observability?.localTracingEnabled ?? false,
+        otlpTracesEnabled: observability?.otlpTracesEnabled ?? false,
+        otlpTracesUrl: observability?.otlpTracesUrl,
+        otlpMetricsEnabled: observability?.otlpMetricsEnabled ?? false,
+        otlpMetricsUrl: observability?.otlpMetricsUrl,
+      }),
       modelLabel: settings.textGenerationModelSelection?.model || "Default",
       serverControlsDisabled: false,
       settingsError: null,
@@ -96,12 +99,10 @@ export function GeneralSettingsSync() {
         settings.textGenerationModelSelection ?? null,
         DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection ?? null,
       ),
-      theme,
       values: projectGeneralSettingsValues(settings, settings),
       versionLabel: APP_VERSION,
     };
     const actions: GeneralSettingsSurfaceActions = {
-      checkForUpdates: () => {},
       openDiagnostics: () => {
         window.location.assign("/settings/diagnostics");
       },
@@ -111,13 +112,13 @@ export function GeneralSettingsSync() {
         }),
       restoreDefaults,
       setProjectGrouping,
-      setTheme,
       update,
     };
     publishGeneralSettingsSurface(snapshot, actions);
   }, [
     restoreDefaults,
     restoreProjection.changedSettingLabels,
+    observability,
     setProjectGrouping,
     setTheme,
     settings,

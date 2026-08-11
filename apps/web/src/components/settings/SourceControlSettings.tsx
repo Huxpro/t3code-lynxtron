@@ -407,7 +407,7 @@ function EmptySourceControlDiscovery({
           <EmptyTitle>
             {hasError ? "Could not scan the server environment" : "Nothing detected yet"}
           </EmptyTitle>
-          <EmptyDescription>
+          <EmptyDescription {...(hasError ? { "data-source-control-error": true } : {})}>
             {hasError
               ? error
               : "Install Git on the server, add optional hosting integrations or credentials your workspace needs, then rescan."}
@@ -415,6 +415,7 @@ function EmptySourceControlDiscovery({
         </EmptyHeader>
         <EmptyContent>
           <Button
+            data-source-control-retry
             size="sm"
             variant="outline"
             className="h-8 gap-1.5 px-3 text-xs"

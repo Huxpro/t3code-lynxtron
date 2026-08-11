@@ -25,8 +25,8 @@ describe("General Settings surface projection", () => {
       projectGeneralSettingsValues(
         {
           ...PORTABLE_CLIENT_SETTINGS_DEFAULTS,
-          glassOpacity: 55,
-          wordWrap: false,
+          diffIgnoreWhitespace: true,
+          sidebarProjectGroupingMode: "separate",
         },
         {
           ...PORTABLE_SERVER_SETTINGS_DEFAULTS,
@@ -35,8 +35,8 @@ describe("General Settings surface projection", () => {
       ),
     ).toMatchObject({
       addProjectBaseDirectory: "~/Projects",
-      glassOpacity: 55,
-      wordWrap: false,
+      diffIgnoreWhitespace: true,
+      sidebarProjectGroupingMode: "separate",
     });
   });
 });

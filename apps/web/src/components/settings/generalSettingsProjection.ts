@@ -16,11 +16,9 @@ export const GENERAL_SETTINGS_DEFAULT_VALUES: GeneralSettingsValues = {
   diffIgnoreWhitespace: PORTABLE_CLIENT_SETTINGS_DEFAULTS.diffIgnoreWhitespace,
   enableAssistantStreaming: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableAssistantStreaming,
   enableProviderUpdateChecks: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableProviderUpdateChecks,
-  glassOpacity: PORTABLE_CLIENT_SETTINGS_DEFAULTS.glassOpacity,
   newWorktreesStartFromOrigin: PORTABLE_SERVER_SETTINGS_DEFAULTS.newWorktreesStartFromOrigin,
   sidebarProjectGroupingMode: PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarProjectGroupingMode,
   timestampFormat: PORTABLE_CLIENT_SETTINGS_DEFAULTS.timestampFormat,
-  wordWrap: PORTABLE_CLIENT_SETTINGS_DEFAULTS.wordWrap,
 };
 
 type GeneralClientSource = Pick<
@@ -29,10 +27,8 @@ type GeneralClientSource = Pick<
   | "confirmThreadArchive"
   | "confirmThreadDelete"
   | "diffIgnoreWhitespace"
-  | "glassOpacity"
   | "sidebarProjectGroupingMode"
   | "timestampFormat"
-  | "wordWrap"
 >;
 
 type GeneralServerSource = Pick<
@@ -61,10 +57,8 @@ export function projectGeneralSettingsValues(
     diffIgnoreWhitespace: client.diffIgnoreWhitespace,
     enableAssistantStreaming: server.enableAssistantStreaming,
     enableProviderUpdateChecks: server.enableProviderUpdateChecks,
-    glassOpacity: client.glassOpacity,
     newWorktreesStartFromOrigin: server.newWorktreesStartFromOrigin,
     sidebarProjectGroupingMode: client.sidebarProjectGroupingMode,
     timestampFormat: client.timestampFormat,
-    wordWrap: client.wordWrap,
   };
 }

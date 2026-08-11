@@ -9,6 +9,7 @@ const COLLAPSED_SIDEBAR_TITLEBAR_INSET_CLASS =
 
 export function SettingsRouteHost({
   children,
+  contentId,
   confirmation,
   electron,
   onCancelRestore,
@@ -19,6 +20,7 @@ export function SettingsRouteHost({
   showRestore,
 }: {
   readonly children: ReactNode;
+  readonly contentId?: string | undefined;
   readonly confirmation: SettingsRestoreConfirmationModel | null;
   readonly electron: boolean;
   readonly onBack: () => void;
