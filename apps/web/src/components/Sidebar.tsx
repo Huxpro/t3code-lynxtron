@@ -3382,6 +3382,7 @@ export default function Sidebar() {
                   metadataLabel: formatRelativeTimeLabel(
                     thread.latestUserMessageAt ?? thread.updatedAt ?? thread.createdAt,
                   ),
+                  status,
                   statusLabel: status?.label ?? null,
                   active: key === routeThreadKey,
                 };

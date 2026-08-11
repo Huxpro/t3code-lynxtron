@@ -207,6 +207,22 @@ export default defineConfig({
   tools: {
     rspack: [
       {
+        module: {
+          rules: [
+            {
+              test: /\.svg$/u,
+              resourceQuery: /external/u,
+              type: "asset/resource",
+              generator: { filename: "static/svg/[name].[contenthash:8][ext]" },
+            },
+            {
+              test: /\.png$/u,
+              resourceQuery: /external/u,
+              type: "asset/resource",
+              generator: { filename: "static/image/[name].[contenthash:8][ext]" },
+            },
+          ],
+        },
         plugins: [
           ...(!webPreview
             ? [

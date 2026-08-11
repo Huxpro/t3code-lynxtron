@@ -1,4 +1,4 @@
-export function T3Wordmark() {
+export function T3Wordmark({ onBackdrop: _onBackdrop = false }: { readonly onBackdrop?: boolean }) {
   return (
     <svg
       aria-label="T3"

@@ -27,6 +27,8 @@ export interface SidebarV2CompositionSurfaceProps {
   readonly onAddProjectClick: SidebarV2ControlsSurfaceProps["onNewProjectClick"];
   readonly listRef?: HostListRef;
   readonly afterContent?: ReactNode;
+  readonly headerAuthorityVisual?: ReactNode;
+  readonly footerAuthorityVisual?: ReactNode;
 }
 
 /**
@@ -40,7 +42,10 @@ export interface SidebarV2CompositionSurfaceProps {
 export function SidebarV2CompositionSurface(props: SidebarV2CompositionSurfaceProps) {
   return (
     <>
-      <SidebarChromeHeader isElectron={props.isElectron} />
+      <SidebarChromeHeader
+        isElectron={props.isElectron}
+        authorityVisual={props.headerAuthorityVisual}
+      />
       <SidebarContent
         className="gap-0"
         fixedHeader={<SidebarV2ControlsSurface {...props.controls} />}
@@ -57,7 +62,7 @@ export function SidebarV2CompositionSurface(props: SidebarV2CompositionSurfacePr
               id={props.listId}
               role={props.listRole ?? "list"}
               aria-label={props.listAriaLabel}
-              className="flex flex-col gap-px"
+              className="sidebar-v2-thread-list flex flex-col gap-px"
               data-testid="sidebar-v2-thread-list"
             >
               {props.rows}
@@ -75,7 +80,7 @@ export function SidebarV2CompositionSurface(props: SidebarV2CompositionSurfacePr
         </SidebarGroup>
       </SidebarContent>
       {props.afterContent}
-      <SidebarChromeFooter />
+      <SidebarChromeFooter authorityVisual={props.footerAuthorityVisual} />
     </>
   );
 }

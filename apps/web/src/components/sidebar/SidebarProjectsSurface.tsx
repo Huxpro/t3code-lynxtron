@@ -40,7 +40,7 @@ export function SidebarProjectsSurface({
   return (
     <>
       <HostView
-        className="relative flex w-full min-w-0 shrink-0 flex-col px-2 pt-2 pb-1"
+        className="sidebar-search-group relative flex w-full min-w-0 shrink-0 flex-col px-2 pt-2 pb-1"
         data-sidebar="group"
         data-slot="sidebar-group"
       >
@@ -58,7 +58,7 @@ export function SidebarProjectsSurface({
             data-sidebar="group"
             data-slot="sidebar-group"
           >
-            <HostView className="mb-1 flex items-center justify-between pl-2 pr-1.5">
+            <HostView className="sidebar-projects-header mb-1 flex items-center justify-between pl-2 pr-1.5">
               <HostText className="sidebar-projects-label text-xs font-medium text-sidebar-muted-foreground/80">
                 Projects
               </HostText>

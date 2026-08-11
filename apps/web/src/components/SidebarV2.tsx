@@ -770,6 +770,7 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
 
   return (
     <SidebarV2RowSurface
+      threadId={thread.id}
       variant={variant}
       variantAction={variantAction}
       isActive={props.isActive}

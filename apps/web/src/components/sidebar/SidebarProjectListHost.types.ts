@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { ThreadStatusPill } from "@t3tools/client-runtime/presentation/sidebar";
 import type { ScopedProjectRef, ScopedThreadRef } from "@t3tools/contracts";
 
 export interface SidebarProjectHostThread {
@@ -6,6 +7,7 @@ export interface SidebarProjectHostThread {
   readonly ref: ScopedThreadRef;
   readonly title: string;
   readonly metadataLabel: string;
+  readonly status: ThreadStatusPill | null;
   readonly statusLabel: string | null;
   readonly active: boolean;
 }

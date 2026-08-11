@@ -15,6 +15,7 @@ export interface SidebarV2RowStatus {
 }
 
 export interface SidebarV2RowSurfaceProps {
+  readonly threadId?: string;
   readonly variant: "card" | "slim";
   readonly variantAction: "settle" | "unsettle" | "unsnooze";
   readonly isActive: boolean;
@@ -26,6 +27,7 @@ export interface SidebarV2RowSurfaceProps {
   readonly settlementSupported: boolean;
   readonly snoozeSupported: boolean;
   readonly showSnoozeButton: boolean;
+  readonly cardActionsPersistent?: boolean;
   readonly snoozeMenuOpen: boolean;
   readonly snoozeWakeLabelText: string | null;
   readonly projectTitle: string | null;
@@ -44,6 +46,7 @@ export interface SidebarV2RowSurfaceProps {
   readonly remoteIndicator: ReactNode;
   readonly providerIndicator: ReactNode;
   readonly detailsTooltip: ReactNode;
+  readonly detailsOverlay?: ReactNode;
   readonly snoozeControl: ReactNode;
   readonly settleIcon: ReactNode;
   readonly unsettleIcon: ReactNode;
@@ -94,6 +97,8 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
     return (
       <HostListItem
         data-thread-item
+        data-thread-id={props.threadId}
+        data-thread-active={props.isActive ? "true" : "false"}
         className="list-none [content-visibility:auto] [contain-intrinsic-size:auto_34px]"
       >
         <Tooltip>
@@ -197,7 +202,9 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
   return (
     <HostListItem
       data-thread-item
-      className="list-none py-0.5 [content-visibility:auto] [contain-intrinsic-size:auto_96px]"
+      data-thread-id={props.threadId}
+      data-thread-active={props.isActive ? "true" : "false"}
+      className="sidebar-v2-row-item relative list-none py-0.5 [content-visibility:auto] [contain-intrinsic-size:auto_96px]"
     >
       <Tooltip>
         <TooltipTrigger
@@ -207,7 +214,12 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               tabIndex={0}
               data-testid="sidebar-v2-row-card"
               aria-busy={props.isRegeneratingTitle || undefined}
-              className={cn(rowSurfaceClassName, "sidebar-v2-row-card")}
+              className={cn(
+                rowSurfaceClassName,
+                "sidebar-v2-row-card",
+                props.isActive && "sidebar-v2-row-card--active",
+                props.isSelected && "sidebar-v2-row-card--selected",
+              )}
               onClick={props.onClick}
               onDoubleClick={props.onDoubleClick}
               onKeyDown={props.onKeyDown}
@@ -230,11 +242,12 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               ) : (
                 <HostText className="flex-1" />
               )}
-              <HostText className="relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
+              <HostView className="relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
                 <HostText
                   className={cn(
                     "pointer-events-none tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
                     props.snoozeMenuOpen && "opacity-0",
+                    props.cardActionsPersistent && "opacity-0",
                   )}
                 >
                   {props.topStatus ? (
@@ -255,8 +268,9 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 {props.settlementSupported || props.showSnoozeButton ? (
                   <HostText
                     className={cn(
-                      "absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/v2-row:opacity-100",
+                      "sidebar-v2-row-actions absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/v2-row:opacity-100",
                       props.snoozeMenuOpen && "opacity-100",
+                      props.cardActionsPersistent && "opacity-100",
                     )}
                   >
                     {props.snoozeControl}
@@ -268,12 +282,12 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                         className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-transparent px-2 text-xs text-muted-foreground hover:text-foreground"
                       >
                         {props.settleIcon}
-                        Settle
+                        {props.cardActionsPersistent ? null : "Settle"}
                       </HostButton>
                     ) : null}
                   </HostText>
                 ) : null}
-              </HostText>
+              </HostView>
             </HostView>
             <HostView className="mt-1 flex min-w-0">
               {props.title}
@@ -294,7 +308,12 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               {props.terminalStatusIcon}
               {props.prBadge}
               {props.diff ? (
-                <HostText className="shrink-0 font-mono">
+                <HostText
+                  className="shrink-0 font-mono"
+                  data-sidebar-diff="true"
+                  data-sidebar-diff-insertions={String(props.diff.insertions)}
+                  data-sidebar-diff-deletions={String(props.diff.deletions)}
+                >
                   <HostText className="text-emerald-600 dark:text-emerald-400">
                     +{props.diff.insertions}
                   </HostText>{" "}
@@ -303,19 +322,17 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   </HostText>
                 </HostText>
               ) : null}
-              <HostText
-                aria-hidden
-                className="pointer-events-none ml-auto inline-flex shrink-0 items-center gap-1"
-              >
+              <HostView className="ml-auto inline-flex shrink-0 items-center gap-1">
                 {props.remoteIndicator}
                 {props.providerIndicator}
-              </HostText>
+              </HostView>
             </HostView>
           </HostView>
           {props.jumpLabel ? <JumpHintBadge label={props.jumpLabel} /> : null}
         </TooltipTrigger>
         {props.detailsTooltip}
       </Tooltip>
+      {props.detailsOverlay}
     </HostListItem>
   );
 }

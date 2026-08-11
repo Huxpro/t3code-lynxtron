@@ -18,6 +18,7 @@ vi.mock("../ui/tooltip", () => ({
 const noop = vi.fn();
 
 const baseProps: SidebarV2RowSurfaceProps = {
+  threadId: "thread-1",
   variant: "card",
   variantAction: "settle",
   isActive: false,
@@ -66,6 +67,8 @@ describe("SidebarV2RowSurface", () => {
     const markup = renderToStaticMarkup(<SidebarV2RowSurface {...baseProps} />);
 
     expect(markup).toContain('data-testid="sidebar-v2-row-card"');
+    expect(markup).toContain('data-thread-id="thread-1"');
+    expect(markup).toContain('data-thread-active="false"');
     expect(markup.indexOf("t3code")).toBeLessThan(markup.indexOf("Port Lynxtron"));
     expect(markup.indexOf("Port Lynxtron")).toBeLessThan(markup.indexOf("feature/lynx"));
     expect(markup.indexOf("feature/lynx")).toBeLessThan(markup.indexOf("#42"));
@@ -90,5 +93,47 @@ describe("SidebarV2RowSurface", () => {
     expect(markup).toContain("2h");
     expect(markup).toContain('aria-label="Wake thread now"');
     expect(markup).not.toContain('aria-label="Settle thread"');
+  });
+
+  it("projects active project-card status and diff metadata without changing its hierarchy", () => {
+    const markup = renderToStaticMarkup(
+      <SidebarV2RowSurface
+        {...baseProps}
+        isActive
+        topStatus={{
+          label: "Working",
+          className: "text-blue-500",
+          icon: <span data-working-icon>Working icon</span>,
+          workingDuration: <span data-working-duration>12s</span>,
+        }}
+      />,
+    );
+
+    expect(markup).toContain('data-thread-active="true"');
+    expect(markup).toContain("sidebar-v2-row-card--active");
+    expect(markup).toContain('data-sidebar-diff="true"');
+    expect(markup).toContain('data-sidebar-diff-insertions="12"');
+    expect(markup).toContain('data-sidebar-diff-deletions="3"');
+    expect(markup.indexOf("t3code")).toBeLessThan(markup.indexOf("Working"));
+    expect(markup.indexOf("Working")).toBeLessThan(markup.indexOf("Port Lynxtron"));
+    expect(markup.indexOf("Port Lynxtron")).toBeLessThan(markup.indexOf("feature/lynx"));
+  });
+
+  it("keeps the project-card branch row stable when optional metadata is absent", () => {
+    const markup = renderToStaticMarkup(
+      <SidebarV2RowSurface
+        {...baseProps}
+        branch={null}
+        diff={null}
+        prBadge={null}
+        remoteIndicator={null}
+        providerIndicator={null}
+      />,
+    );
+
+    expect(markup).toContain('data-testid="sidebar-v2-row-card"');
+    expect(markup).toContain("sidebar-v2-row-card");
+    expect(markup).not.toContain("feature/lynx");
+    expect(markup).not.toContain('data-sidebar-diff="true"');
   });
 });

@@ -15,9 +15,7 @@ import { resolveShortcutCommand, shortcutLabelForCommand } from "../keybindings"
 import { cn, isMacPlatform } from "../lib/utils";
 import { primaryServerKeybindingsAtom } from "../state/server";
 import { useEnvironmentIdentificationMode, useSidebarV2Enabled } from "../hooks/useSettings";
-import ThreadSidebar from "./Sidebar";
-import ThreadSidebarV2 from "./SidebarV2";
-import { AppShellSurface } from "./AppShellSurface";
+import { AppSidebarComposition } from "./AppSidebarComposition";
 import { useSidebarStageBackdropVariant } from "./SidebarStageBackdrop";
 import {
   resolveInitialThreadSidebarWidth,
@@ -28,8 +26,6 @@ import {
 } from "./threadSidebarWidth";
 import {
   Sidebar,
-  SidebarProvider,
-  SidebarRail,
   SidebarTrigger,
   useSidebar,
   useSidebarVisibility,
@@ -192,32 +188,32 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
   }, [navigate, pathname]);
 
   return (
-    <SidebarProvider className="h-dvh! min-h-0!" defaultOpen style={sidebarProviderStyle}>
-      <AppShellSurface
-        sidebar={
-          <Sidebar
-            side="left"
-            collapsible="offcanvas"
-            data-app-sidebar=""
-            data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}
-            className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
-            resizable={{
-              maxWidth: sidebarMaximumWidth,
-              minWidth: THREAD_SIDEBAR_MIN_WIDTH,
-              shouldAcceptWidth: ({ currentWidth, nextWidth, wrapper }) =>
-                nextWidth <= currentWidth ||
-                wrapper.clientWidth - nextWidth >= THREAD_MAIN_CONTENT_MIN_WIDTH,
-              storageKey: THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
-              onResize: setSidebarWidth,
-            }}
-          >
-            {useSidebarV2 ? <ThreadSidebarV2 /> : <ThreadSidebar />}
-            <SidebarRail />
-          </Sidebar>
-        }
-        main={children}
-        globalControl={<SidebarControl />}
-      />
-    </SidebarProvider>
+    <AppSidebarComposition
+      providerClassName="h-dvh! min-h-0!"
+      providerStyle={sidebarProviderStyle}
+      useSidebarV2={useSidebarV2}
+      renderSidebar={(content) => (
+        <Sidebar
+          side="left"
+          collapsible="offcanvas"
+          data-app-sidebar=""
+          data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}
+          className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
+          resizable={{
+            maxWidth: sidebarMaximumWidth,
+            minWidth: THREAD_SIDEBAR_MIN_WIDTH,
+            shouldAcceptWidth: ({ currentWidth, nextWidth, wrapper }) =>
+              nextWidth <= currentWidth ||
+              wrapper.clientWidth - nextWidth >= THREAD_MAIN_CONTENT_MIN_WIDTH,
+            storageKey: THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
+            onResize: setSidebarWidth,
+          }}
+        >
+          {content}
+        </Sidebar>
+      )}
+      main={children}
+      globalControl={<SidebarControl />}
+    />
   );
 }
