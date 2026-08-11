@@ -138,10 +138,33 @@ export interface SourceControlDiscoveryPresentation {
   readonly hasItems: boolean;
 }
 
+const REDACTED_TEXT_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
+
+export function redactSourceControlAccount(value: string): string {
+  let state = 0x811c9dc5;
+  for (let index = 0; index < value.length; index += 1) {
+    state ^= value.charCodeAt(index);
+    state = Math.imul(state, 0x01000193);
+  }
+  const nextChar = () => {
+    state = Math.imul(state ^ (state >>> 13), 0x85ebca6b);
+    state = Math.imul(state ^ (state >>> 16), 0xc2b2ae35);
+    return REDACTED_TEXT_ALPHABET[Math.abs(state) % REDACTED_TEXT_ALPHABET.length] ?? "x";
+  };
+  return Array.from(value, (character) =>
+    character === "@" || character === "." || character === "-" || character === "_"
+      ? character
+      : nextChar(),
+  ).join("");
+}
+
 function optionGetOrNull<A>(
-  option: { readonly _tag: "None" } | { readonly _tag: "Some"; readonly value: A },
+  option:
+    | { readonly _tag: "None" }
+    | { readonly _tag: "Some"; readonly value: A }
+    | { readonly value?: A },
 ): A | null {
-  return option._tag === "Some" ? option.value : null;
+  return "value" in option && option.value !== undefined ? option.value : null;
 }
 
 function summaryForVcs(item: VcsDiscoveryItem): ReadonlyArray<SourceControlSummaryPart> {

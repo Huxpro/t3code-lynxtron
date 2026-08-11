@@ -4,10 +4,15 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   projectSourceControlDiscovery,
   projectSourceControlDiscoveryItem,
+  redactSourceControlAccount,
   sourceControlSummaryText,
 } from "./sourceControl.ts";
 
 describe("source-control discovery presentation", () => {
+  it("redacts account copy deterministically across renderers", () => {
+    expect(redactSourceControlAccount("Huxpro")).toBe("nhxjrr");
+  });
+
   it("projects ready and unimplemented VCS rows", () => {
     const ready = projectSourceControlDiscoveryItem({
       kind: "git",
@@ -72,6 +77,55 @@ describe("source-control discovery presentation", () => {
       badgeLabel: null,
     });
     expect(sourceControlSummaryText(presentation)).toBe("Authenticated");
+    expect(sourceControlSummaryText(presentation, { includeSensitive: true })).toBe(
+      "Authenticated as octocat",
+    );
+  });
+
+  it("preserves versions and accounts after a JSON transport round trip", () => {
+    const wireItem = JSON.parse(
+      JSON.stringify({
+        kind: "github",
+        label: "GitHub",
+        executable: "gh",
+        status: "available",
+        version: Option.some("2.96.0"),
+        installHint: "Install GitHub CLI.",
+        detail: Option.none(),
+        auth: {
+          status: "authenticated",
+          account: Option.some("octocat"),
+          host: Option.some("github.com"),
+          detail: Option.none(),
+        },
+      }),
+    );
+    const presentation = projectSourceControlDiscoveryItem(wireItem);
+
+    expect(presentation.version).toBe("2.96.0");
+    expect(sourceControlSummaryText(presentation, { includeSensitive: true })).toBe(
+      "Authenticated as octocat",
+    );
+  });
+
+  it("preserves Effect RPC option wire values without runtime tags", () => {
+    const presentation = projectSourceControlDiscoveryItem({
+      kind: "github",
+      label: "GitHub",
+      executable: "gh",
+      status: "available",
+      version: { value: "2.96.0" },
+      installHint: "Install GitHub CLI.",
+      detail: {},
+      auth: {
+        status: "authenticated",
+        account: { value: "octocat" },
+        host: { value: "github.com" },
+        detail: {},
+      },
+    } as never);
+
+    expect(presentation.version).toBe("2.96.0");
     expect(sourceControlSummaryText(presentation, { includeSensitive: true })).toBe(
       "Authenticated as octocat",
     );
