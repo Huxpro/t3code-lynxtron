@@ -6,6 +6,10 @@ import {
 import { appAtomRegistry } from "../state/atomRegistry";
 import { connectionStatusAtom } from "../state/connectionStatus";
 import { getViewportSnapshot, subscribeViewport } from "../state/viewportStore";
+import {
+  T3_CLIPBOARD_WRITE_TEXT_METHOD,
+} from "../../shared/capabilityProtocol.ts";
+import { callBridge, type BridgeCallModule } from "../state/mainConnectorTransport";
 
 interface PlatformBridge {
   getPrefs?: () => Record<string, unknown>;
@@ -16,6 +20,7 @@ interface PlatformBridge {
 }
 
 declare const NativeModules: {
+  bridge?: BridgeCallModule;
   nodejs?: { exposed?: PlatformBridge };
 } & Record<string, unknown>;
 
@@ -49,10 +54,14 @@ export const clientCapabilities: ClientUiCapabilities = {
   clipboard: {
     available: () => {
       "background only";
-      return Boolean(bridge()?.writeClipboardText);
+      return Boolean(NativeModules?.bridge?.call || bridge()?.writeClipboardText);
     },
     writeText: async (value) => {
       "background only";
+      if (NativeModules?.bridge?.call) {
+        await callBridge(NativeModules.bridge, T3_CLIPBOARD_WRITE_TEXT_METHOD, { value });
+        return;
+      }
       const target = bridge();
       if (!target?.writeClipboardText) throw new Error("Clipboard is unavailable");
       target.writeClipboardText(value);
