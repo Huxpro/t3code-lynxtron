@@ -81,6 +81,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
       confirmThreadDelete: DEFAULT_CLIENT_SETTINGS.confirmThreadDelete,
       diffIgnoreWhitespace: DEFAULT_CLIENT_SETTINGS.diffIgnoreWhitespace,
       environmentIdentificationMode: DEFAULT_CLIENT_SETTINGS.environmentIdentificationMode,
+      favorites: DEFAULT_CLIENT_SETTINGS.favorites,
       glassOpacity: DEFAULT_CLIENT_SETTINGS.glassOpacity,
       sidebarProjectGroupingMode: DEFAULT_CLIENT_SETTINGS.sidebarProjectGroupingMode,
       sidebarV2Enabled: DEFAULT_CLIENT_SETTINGS.sidebarV2Enabled,

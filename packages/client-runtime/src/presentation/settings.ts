@@ -23,6 +23,7 @@ export type PortableClientSettings = Pick<
   | "confirmThreadDelete"
   | "diffIgnoreWhitespace"
   | "environmentIdentificationMode"
+  | "favorites"
   | "glassOpacity"
   | "sidebarProjectGroupingMode"
   | "sidebarV2Enabled"
