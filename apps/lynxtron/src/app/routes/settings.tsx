@@ -10,7 +10,7 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsRouteLayout() {
   return (
-    <SettingsPage>
+    <SettingsPage panelId="general">
       <Outlet />
     </SettingsPage>
   );

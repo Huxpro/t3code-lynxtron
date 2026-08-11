@@ -4,7 +4,8 @@ import {
 } from "@t3tools/client-runtime/presentation/time";
 import {
   projectSourceControlDiscovery,
-  sourceControlSummaryText,
+  redactSourceControlAccount,
+  type SourceControlSummaryPart,
 } from "@t3tools/client-runtime/presentation/source-control";
 import type { SourceControlDiscoveryResult } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
@@ -17,6 +18,7 @@ import {
   SourceControlMarkSurface,
   StatusDotSurface,
 } from "../../../../web/src/components/settings/SettingsSurfaces";
+import { searchableSetting } from "../../../../web/src/components/settings/settingsSearch";
 import { Badge } from "../../../../web/src/components/ui/badge";
 import { SettingsRow, SettingsSection, Toggle } from "./SettingsControls";
 import { SmallButton } from "./SettingsControls";
@@ -35,6 +37,18 @@ const EMPTY_SOURCE_CONTROL_DISCOVERY: SourceControlDiscoveryState = {
   pending: true,
   error: null,
 };
+
+function sourceControlSummaryForLynx(
+  parts: ReadonlyArray<SourceControlSummaryPart>,
+): string {
+  return parts
+    .map((part) =>
+      part.kind === "sensitive"
+        ? `${part.prefix}${redactSourceControlAccount(part.text)}`
+        : part.text,
+    )
+    .join("");
+}
 
 export function SourceControlSettings() {
   const [discovery, setDiscovery] = useState<SourceControlDiscoveryState>(
@@ -81,7 +95,11 @@ export function SourceControlSettings() {
   if (discovery.pending && !discovery.result) {
     return (
       <view className="settings-panel">
-        <SettingsSection title="Source Control" headerAction={scanButton}>
+        <SettingsSection
+          id={searchableSetting("source-control").id}
+          title="Source Control"
+          headerAction={scanButton}
+        >
           <view className="settings-empty-card">
             <text className="settings-empty__text">Scanning server integrations…</text>
           </view>
@@ -93,15 +111,24 @@ export function SourceControlSettings() {
   if (discovery.error || !presentation.hasItems) {
     return (
       <view className="settings-panel">
-        <SettingsSection title="Source Control" headerAction={scanButton}>
+        <SettingsSection
+          id={searchableSetting("source-control").id}
+          title="Source Control"
+          headerAction={scanButton}
+        >
           <view className="settings-empty-card settings-empty-card--action">
-            <text className="settings-empty__text">
+            <text
+              className="settings-empty__text"
+              data-source-control-error={discovery.error ? "true" : undefined}
+            >
               {discovery.error ?? "No source-control integrations detected."}
             </text>
-            <SmallButton
-              label={discovery.pending ? "Scanning…" : "Scan"}
-              onTap={() => setRefreshVersion((version) => version + 1)}
-            />
+            <view data-source-control-retry>
+              <SmallButton
+                label={discovery.pending ? "Scanning…" : "Scan"}
+                onTap={() => setRefreshVersion((version) => version + 1)}
+              />
+            </view>
           </view>
         </SettingsSection>
       </view>
@@ -111,7 +138,11 @@ export function SourceControlSettings() {
   return (
     <view className="settings-panel">
       {presentation.versionControlSystems.length > 0 ? (
-        <SettingsSection title="Version Control" headerAction={scanButton}>
+        <SettingsSection
+          id={searchableSetting("source-control").id}
+          title="Version Control"
+          headerAction={scanButton}
+        >
           {presentation.versionControlSystems.map((item) => (
             <SourceControlItemRowSurface
               key={item.id}
@@ -125,7 +156,7 @@ export function SourceControlSettings() {
                   </Badge>
                 ) : undefined
               }
-              summary={sourceControlSummaryText(item)}
+              summary={sourceControlSummaryForLynx(item.summaryParts)}
               muted={!item.enabled}
             />
           ))}
@@ -146,7 +177,7 @@ export function SourceControlSettings() {
                   </Badge>
                 ) : undefined
               }
-              summary={sourceControlSummaryText(item)}
+              summary={sourceControlSummaryForLynx(item.summaryParts)}
               muted={!item.enabled}
             />
           ))}
@@ -316,7 +347,10 @@ export function ConnectionsSettings() {
           </view>
         ) : null}
       </SettingsSection>
-      <SettingsSection title="Remote environments">
+      <SettingsSection
+        id={searchableSetting("remote-environments").id}
+        title="Remote environments"
+      >
         <view className="settings-empty-card">
           <text className="settings-empty__text">No saved remote environments</text>
           <text className="settings-empty__hint">
@@ -333,6 +367,7 @@ export function BetaSettings() {
   return (
     <view className="settings-panel">
       <BetaSettingsSurface
+        sidebarV2Setting={searchableSetting("sidebar-v2")}
         sidebarV2Control={
           <Toggle
             value={clientSettings.sidebarV2Enabled}
@@ -384,6 +419,7 @@ export function ArchiveSettings() {
   return (
     <view className="settings-panel">
       <ArchivedThreadsSurface
+        anchorId={searchableSetting("archive").id}
         groups={groups.map((group) => ({
           ...group,
           threads: group.threads.map((thread) => ({

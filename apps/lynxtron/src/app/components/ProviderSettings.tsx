@@ -14,6 +14,7 @@ import { ProviderInstanceCardSurface } from "../../../../web/src/components/sett
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import type { ModelInfo } from "../bridge";
 import { Icon } from "./Icon";
+import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { SettingsSection, Toggle } from "./SettingsControls";
 
 interface ProviderCardProps {
@@ -66,15 +67,7 @@ function ProviderCard({
     <ProviderInstanceCardSurface
       icon={
         <view className="provider-card__logo-wrap">
-          {entry.driverKind === "claudeAgent" ? (
-            <Icon name="claude" size={16} />
-          ) : (
-            <view className="provider-card__logo-fallback">
-              <text className="provider-card__logo-fallback-text">
-                {entry.displayName.slice(0, 1)}
-              </text>
-            </view>
-          )}
+          <ProviderBrandIcon driverKind={entry.driverKind} size={16} />
           <view className={`provider-card__status-dot ${PROVIDER_STATUS_DOT_CLASSES[statusKey]}`} />
         </view>
       }

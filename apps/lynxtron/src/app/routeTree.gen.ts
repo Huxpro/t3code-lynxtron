@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ChatRouteImport } from './routes/_chat'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ChatIndexRouteImport } from './routes/_chat.index'
+import { Route as SettingsAppearanceRouteImport } from './routes/settings.appearance'
 import { Route as SettingsArchiveRouteImport } from './routes/settings.archive'
 import { Route as SettingsBetaRouteImport } from './routes/settings.beta'
 import { Route as SettingsConnectionsRouteImport } from './routes/settings.connections'
@@ -35,6 +36,11 @@ const ChatIndexRoute = ChatIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => ChatRoute,
+} as any)
+const SettingsAppearanceRoute = SettingsAppearanceRouteImport.update({
+  id: '/appearance',
+  path: '/appearance',
+  getParentRoute: () => SettingsRoute,
 } as any)
 const SettingsArchiveRoute = SettingsArchiveRouteImport.update({
   id: '/archive',
@@ -86,6 +92,7 @@ const ChatDraftDraftIdRoute = ChatDraftDraftIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof ChatIndexRoute
   '/settings': typeof SettingsRouteWithChildren
+  '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/archive': typeof SettingsArchiveRoute
   '/settings/beta': typeof SettingsBetaRoute
   '/settings/connections': typeof SettingsConnectionsRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/settings': typeof SettingsRouteWithChildren
+  '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/archive': typeof SettingsArchiveRoute
   '/settings/beta': typeof SettingsBetaRoute
   '/settings/connections': typeof SettingsConnectionsRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_chat': typeof ChatRouteWithChildren
   '/settings': typeof SettingsRouteWithChildren
+  '/settings/appearance': typeof SettingsAppearanceRoute
   '/settings/archive': typeof SettingsArchiveRoute
   '/settings/beta': typeof SettingsBetaRoute
   '/settings/connections': typeof SettingsConnectionsRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/settings'
+    | '/settings/appearance'
     | '/settings/archive'
     | '/settings/beta'
     | '/settings/connections'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/settings'
+    | '/settings/appearance'
     | '/settings/archive'
     | '/settings/beta'
     | '/settings/connections'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_chat'
     | '/settings'
+    | '/settings/appearance'
     | '/settings/archive'
     | '/settings/beta'
     | '/settings/connections'
@@ -194,6 +206,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof ChatIndexRouteImport
       parentRoute: typeof ChatRoute
+    }
+    '/settings/appearance': {
+      id: '/settings/appearance'
+      path: '/appearance'
+      fullPath: '/settings/appearance'
+      preLoaderRoute: typeof SettingsAppearanceRouteImport
+      parentRoute: typeof SettingsRoute
     }
     '/settings/archive': {
       id: '/settings/archive'
@@ -276,6 +295,7 @@ const ChatRouteChildren: ChatRouteChildren = {
 const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
 
 interface SettingsRouteChildren {
+  SettingsAppearanceRoute: typeof SettingsAppearanceRoute
   SettingsArchiveRoute: typeof SettingsArchiveRoute
   SettingsBetaRoute: typeof SettingsBetaRoute
   SettingsConnectionsRoute: typeof SettingsConnectionsRoute
@@ -286,6 +306,7 @@ interface SettingsRouteChildren {
 }
 
 const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsAppearanceRoute: SettingsAppearanceRoute,
   SettingsArchiveRoute: SettingsArchiveRoute,
   SettingsBetaRoute: SettingsBetaRoute,
   SettingsConnectionsRoute: SettingsConnectionsRoute,
