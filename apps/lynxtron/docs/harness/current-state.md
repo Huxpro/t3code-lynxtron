@@ -1,0 +1,98 @@
+# Current Lynxtron Harness state
+
+Updated: 2026-08-12
+Authority: archaeology branch `archaeology/final5-20260812`
+
+This file is the concise authority for what the current checkout can prove.
+Source, focused test output, and the current evidence manifest override older
+Plan 11 prose and screenshots.
+
+## Proven on the current stack
+
+- The accumulated product work was split into 76 dependency-ordered commits
+  after base `4604dd443`.
+- Client-runtime verification passed 13 files / 122 tests plus its focused
+  typecheck.
+- Provider runtime ingestion passed 48 focused tests.
+- Browser Preview passed 15 focused tests and its Web/Lynx builds.
+- The complete Lynxtron harness suite passed 13 files / 48 tests.
+- The final product Browser Preview build passed. Its known warnings are the
+  existing Effect `import.meta` and bundle-size warnings.
+- Browser Preview compiles the real ReactLynx entry. Its live WebSocket
+  transport is development-only; production Native keeps transport ownership
+  in the main process.
+- Evidence provenance, strict-manifest validation, exact-owned Native readiness,
+  shared-workbench capture, and disposable-state ignores are committed.
+- No Electron or Lynxtron app was launched, restarted, focused, or stopped
+  during final archaeology verification.
+
+## Current evidence state
+
+- `evidence/manifests/main-shell.json` is a small planning matrix, not a
+  certification archive.
+- It contains 6 high-value states and 18 required Web/Lynx/Native cells.
+- Planning verification passes with `0 errors / 18 incomplete`.
+- Strict verification intentionally exits 2 because all 18 required cells are
+  pending fresh final5 evidence.
+- The archaeology commits add no screenshot or video evidence.
+- `evidence/2026-08-04/H8/runtime-boundaries.json` preserves the R5/R10 runtime
+  probe as structured historical negative evidence. Its source head and bundle
+  predate final5, so it does not certify the current product.
+- The previous 39-state, 78-entry Plan 11C matrix and H8 comparison remain
+  historical working-tree artifacts. They are not committed as current
+  authority because their pixels were captured from older bundles and one
+  manifest-linked log was missing.
+
+## Not currently proven
+
+- No current Web/Lynx/Native visual certification matrix exists.
+- No final5 packaged Native launch has been performed.
+- Native physical keyboard/focus, transcript wheel/drag/follow, light/system
+  theme persistence, and full patch rendering are not certified.
+- Browser/CDP evidence cannot satisfy Native-only input, list, window, or
+  persistence requirements.
+- Historical `PASS`, `functional`, and `completed` labels do not independently
+  certify the current stack.
+- Historical reuse and style percentages remain prioritization inputs only.
+  Their large generated reports are intentionally not committed.
+
+## Evidence policy
+
+- Legacy structured reports remain readable history. Legacy pixels are not
+  promoted without fresh manifest admission.
+- `capture-valid`, `visual-certified`, and `native-certified` are independent.
+- A harness mismatch is `invalid-harness`, not a product regression.
+- Required cells remain `pending` until the current bundle, snapshot, route,
+  viewport, state echo, console, and provenance all pass.
+- Runtime blockers must include the exact tested build and structured
+  assertions. A blocker never masquerades as a screenshot or product
+  completion.
+
+## Runtime policy
+
+1. Use an isolated server and canonical snapshot. Never point a run at live
+   `~/.t3/userdata`.
+2. Keep real Web as product authority and Lynx-for-Web as the fast renderer
+   loop.
+3. Resolve Native DevTool identity from an exact owned PID and listening port.
+4. Reuse one verified process for ordinary route/state interaction.
+5. Restart only for a new bundle, explicit cold start, viewport change,
+   exhausted screencast, or process exit.
+6. After two identical startup failures, stop reopening the app and diagnose
+   the runtime.
+7. Use authorized Computer Use only for real keyboard, focus, wheel, drag, and
+   selection evidence.
+
+## Current execution order
+
+1. `plans/00-execution-index.md`
+2. this file
+3. `harness/completion-audit.md`
+4. `evidence/manifests/main-shell.json`
+5. `gap-atlas.md`
+6. `next-port-priorities.md`
+7. `compat-matrix.md`
+
+The archaeology and harness-source cleanup are complete. Product certification
+is not. The next evidence run must start from the 18 pending cells without
+reusing old pixels or repeatedly restarting a visible Electron app.
