@@ -20,6 +20,9 @@ export interface KeyboardCapability {
 
 export interface MediaQueryCapability {
   readonly matches: (query: string) => boolean;
+  readonly getViewport: () => ViewportSnapshot;
+  readonly subscribe: (query: string, listener: () => void) => () => void;
+  readonly subscribeViewport: (listener: () => void) => () => void;
 }
 
 export interface NavigationCapability {
@@ -37,3 +40,4 @@ export interface ClientUiCapabilities {
   readonly mediaQuery: MediaQueryCapability;
   readonly navigation: NavigationCapability;
 }
+import type { ViewportSnapshot } from "./mediaQuery.ts";
