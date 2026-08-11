@@ -1,27 +1,35 @@
 {
   "schemaVersion": 1,
   "generatedAt": "2026-08-04T11:42:06.131Z",
+  "reconciledAt": "2026-08-12",
+  "evidenceDisposition": "Historical gap ordering reconciled with the final5 planning manifest. Reuse/style metrics remain historical inputs; required evidence cells are current.",
   "sources": {
     "manifest": "apps/lynxtron/evidence/manifests/main-shell.json",
     "reuse": "apps/lynxtron/reports/reuse/plan11c.json",
     "style": "apps/lynxtron/reports/style/plan11c.json",
     "compatibility": "apps/lynxtron/docs/compat-matrix.md"
   },
-  "incompleteRequiredCells": [],
-  "blockedRequiredCells": [
-    {
-      "cell": "composer-hero.native",
-      "blockerId": "R5"
-    },
-    {
-      "cell": "composer-sendable.native",
-      "blockerId": "R5"
-    },
-    {
-      "cell": "review-diff.native",
-      "blockerId": "R10"
-    }
+  "incompleteRequiredCells": [
+    "new-thread-hero.web",
+    "new-thread-hero.lynx",
+    "new-thread-hero.native",
+    "existing-thread-idle.web",
+    "existing-thread-idle.lynx",
+    "existing-thread-idle.native",
+    "composer-hero.web",
+    "composer-hero.lynx",
+    "composer-hero.native",
+    "model-picker-default.web",
+    "model-picker-default.lynx",
+    "model-picker-default.native",
+    "quick-switch-default.web",
+    "quick-switch-default.lynx",
+    "quick-switch-default.native",
+    "review-diff.web",
+    "review-diff.lynx",
+    "review-diff.native"
   ],
+  "blockedRequiredCells": [],
   "gaps": [
     {
       "id": "GAP-002",
