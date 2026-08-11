@@ -28,6 +28,13 @@ export default defineConfig({
         type: "css/auto",
       },
       {
+        test: /\.(?:woff2|ttf)$/,
+        type: "asset/resource",
+        generator: {
+          filename: "assets/[name].[contenthash:8][ext]",
+        },
+      },
+      {
         test: /\.ts$/,
         exclude: [/node_modules/],
         loader: "builtin:swc-loader",
@@ -49,6 +56,10 @@ export default defineConfig({
         {
           from: "./output/bundle/web/main.web.bundle",
           to: "lynx/main.web.bundle",
+        },
+        {
+          from: "./output/bundle/web/static",
+          to: "static",
         },
       ],
     }),

@@ -14,5 +14,10 @@
     "esModuleInterop": true,
     "types": []
   },
-  "include": ["./**/*.ts", "./**/*.d.ts", "../shared/connectorProtocol.ts"]
+  "include": [
+    "./**/*.ts",
+    "./**/*.d.ts",
+    "../shared/connectorProtocol.ts"
+  ],
+  "exclude": ["./**/*.test.ts"]
 }

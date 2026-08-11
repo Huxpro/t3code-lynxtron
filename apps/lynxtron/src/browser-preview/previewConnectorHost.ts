@@ -30,6 +30,7 @@ export interface BrowserPreviewConnectorDiagnostics {
   nativeModuleReady: boolean;
   readyCalls: number;
   resyncCalls: number;
+  initialStateCalls: number;
   readonly commands: BrowserPreviewCommandRecord[];
   readonly unsupportedCapabilities: readonly [
     "keyboard",
@@ -67,6 +68,7 @@ export class BrowserPreviewConnectorHost {
       nativeModuleReady: false,
       readyCalls: 0,
       resyncCalls: 0,
+      initialStateCalls: 0,
       commands: [],
       unsupportedCapabilities: [
         "keyboard",
@@ -89,6 +91,16 @@ export class BrowserPreviewConnectorHost {
     if (method === "t3:preview.module-ready") {
       this.diagnostics.nativeModuleReady = true;
       return { ok: true };
+    }
+    if (method === "t3:preview.initial-state") {
+      this.diagnostics.initialStateCalls += 1;
+      return {
+        route: this.#scenario.route,
+        overlay:
+          (this.#scenario.preferences as { initialOverlay?: string }).initialOverlay ?? null,
+        theme:
+          (this.#scenario.preferences as { themePreference?: string }).themePreference ?? "dark",
+      };
     }
     if (method === T3_CONNECTOR_METHODS.ready) {
       this.diagnostics.readyCalls += 1;

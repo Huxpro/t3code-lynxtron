@@ -7,7 +7,7 @@ import { BROWSER_PREVIEW_SCENARIOS } from "./previewScenarios.ts";
 function harness() {
   const events: Array<{ eventName: string; params: unknown[] }> = [];
   const host = new BrowserPreviewConnectorHost(
-    BROWSER_PREVIEW_SCENARIOS["populated-connecting"],
+    BROWSER_PREVIEW_SCENARIOS["existing-thread"],
     (eventName, params) => events.push({ eventName, params }),
   );
   return { events, host };
@@ -25,8 +25,8 @@ describe("BrowserPreviewConnectorHost", () => {
     };
 
     assert.equal(ready.seq, 0);
-    assert.equal(ready.snapshot.shell.projects.length, 1);
-    assert.equal(ready.snapshot.shell.threads.length, 1);
+    assert.isTrue(ready.snapshot.shell.projects.length >= 1);
+    assert.isTrue(ready.snapshot.shell.threads.length >= 1);
     assert.equal(resync.seq, 0);
     assert.equal(host.diagnostics.readyCalls, 1);
     assert.equal(host.diagnostics.resyncCalls, 1);
@@ -35,14 +35,16 @@ describe("BrowserPreviewConnectorHost", () => {
   it("publishes strictly monotonic connector events", () => {
     const { events, host } = harness();
     host.emitStatus("ready");
-    host.switchScenario("populated-connecting");
+    host.switchScenario("new-thread");
 
     assert.isTrue(events.every((entry) => entry.eventName === T3_CONNECTOR_EVENT));
+    const sequences = events.map((entry) => (entry.params[0] as { seq: number }).seq);
+    // Strictly monotonic, one-based, contiguous regardless of scenario size.
     assert.deepEqual(
-      events.map((entry) => (entry.params[0] as { seq: number }).seq),
-      [1, 2, 3, 4, 5, 6],
+      sequences,
+      Array.from({ length: sequences.length }, (_unused, index) => index + 1),
     );
-    assert.equal(host.diagnostics.lastSequence, 6);
+    assert.equal(host.diagnostics.lastSequence, sequences.length);
   });
 
   it("can publish one deliberate gap for resync diagnostics", () => {

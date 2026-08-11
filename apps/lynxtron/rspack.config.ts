@@ -12,6 +12,11 @@ const isDev = process.env.NODE_ENV === "development";
 // Lynxtron host is an Electron-like runtime.
 export default defineConfig({
   target: "electron-main",
+  devServer: {
+    devMiddleware: {
+      writeToDisk: true,
+    },
+  },
   entry: {
     main: "./src/main/desktop/main.ts",
     preload: "./src/main/desktop/preload.ts",
@@ -50,7 +55,19 @@ export default defineConfig({
         { from: "./output/bundle/lynx/", to: "." },
       ],
     }),
-    ...(isDev ? [pluginLynxtron({ isDev, entry: path.resolve(__dirname, "./dist/desktop") })] : []),
+    ...(isDev
+      ? [
+          pluginLynxtron({
+            isDev,
+            entry: path.resolve(__dirname, "./dist/desktop"),
+            env: {
+              T3_LYNXTRON_BUNDLE_PATH:
+                process.env.T3_LYNXTRON_DEV_BUNDLE_URL ??
+                "http://127.0.0.1:3000/main.lynx.bundle",
+            },
+          }),
+        ]
+      : []),
   ],
   resolve: { extensions: [".ts", ".js"] },
 });
