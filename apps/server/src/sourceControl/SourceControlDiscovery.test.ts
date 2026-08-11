@@ -3,8 +3,9 @@ import * as NodeServices from "@effect/platform-node/NodeServices";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
+import * as Schema from "effect/Schema";
 import { ChildProcessSpawner } from "effect/unstable/process";
-import { VcsProcessSpawnError } from "@t3tools/contracts";
+import { SourceControlDiscoveryError, VcsProcessSpawnError } from "@t3tools/contracts";
 
 import * as ServerConfig from "../config.ts";
 import * as VcsDriverRegistry from "../vcs/VcsDriverRegistry.ts";
@@ -280,4 +281,54 @@ Logged in to gitlab.com as gitlab-user
       ],
     );
   }).pipe(Effect.provide(testLayer));
+});
+
+it.effect("returns a typed error for the harness failure scenario", () => {
+  const environmentKey = "T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR";
+  const previousValue = process.env[environmentKey];
+  const processMock = {
+    run: () => Effect.die("the injected failure must not run discovery probes"),
+  } satisfies Partial<VcsProcess.VcsProcess["Service"]>;
+  const testLayer = SourceControlDiscovery.layer.pipe(
+    Layer.provide(
+      ServerConfig.layerTest(process.cwd(), {
+        prefix: "t3-source-control-discovery-error-",
+      }),
+    ),
+    Layer.provide(Layer.mock(VcsProcess.VcsProcess)(processMock)),
+    Layer.provide(
+      sourceControlProviderRegistryTestLayer({
+        process: processMock,
+        bitbucket: {},
+      }),
+    ),
+    Layer.provideMerge(NodeServices.layer),
+  );
+
+  return Effect.acquireUseRelease(
+    Effect.sync(() => {
+      process.env[environmentKey] = "1";
+    }),
+    () =>
+      Effect.gen(function* () {
+        const discovery = yield* SourceControlDiscovery.SourceControlDiscovery;
+        const error = yield* Effect.flip(discovery.discover);
+
+        assert.ok(Schema.is(SourceControlDiscoveryError)(error));
+        assert.strictEqual(error._tag, "SourceControlDiscoveryError");
+        assert.strictEqual(
+          error.detail,
+          "Source-control discovery is unavailable in this test environment.",
+        );
+        assert.strictEqual(error.message, error.detail);
+      }).pipe(Effect.provide(testLayer)),
+    () =>
+      Effect.sync(() => {
+        if (previousValue === undefined) {
+          delete process.env[environmentKey];
+        } else {
+          process.env[environmentKey] = previousValue;
+        }
+      }),
+  );
 });

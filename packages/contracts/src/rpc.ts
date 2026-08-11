@@ -153,6 +153,7 @@ import { ServerSettings, ServerSettingsError, ServerSettingsPatch } from "./sett
 import {
   SourceControlCloneRepositoryInput,
   SourceControlCloneRepositoryResult,
+  SourceControlDiscoveryError,
   SourceControlDiscoveryResult,
   SourceControlPublishRepositoryInput,
   SourceControlPublishRepositoryResult,
@@ -338,7 +339,7 @@ export const WsServerUpdateSettingsRpc = Rpc.make(WS_METHODS.serverUpdateSetting
 export const WsServerDiscoverSourceControlRpc = Rpc.make(WS_METHODS.serverDiscoverSourceControl, {
   payload: Schema.Struct({}),
   success: SourceControlDiscoveryResult,
-  error: EnvironmentAuthorizationError,
+  error: Schema.Union([SourceControlDiscoveryError, EnvironmentAuthorizationError]),
 });
 
 export const WsServerGetTraceDiagnosticsRpc = Rpc.make(WS_METHODS.serverGetTraceDiagnostics, {

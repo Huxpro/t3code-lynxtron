@@ -150,6 +150,17 @@ export const SourceControlDiscoveryResult = Schema.Struct({
 });
 export type SourceControlDiscoveryResult = typeof SourceControlDiscoveryResult.Type;
 
+export class SourceControlDiscoveryError extends Schema.TaggedErrorClass<SourceControlDiscoveryError>()(
+  "SourceControlDiscoveryError",
+  {
+    detail: TrimmedNonEmptyString,
+  },
+) {
+  override get message(): string {
+    return this.detail;
+  }
+}
+
 export class SourceControlProviderError extends Schema.TaggedErrorClass<SourceControlProviderError>()(
   "SourceControlProviderError",
   {

@@ -1,4 +1,5 @@
 import {
+  SourceControlDiscoveryError,
   type SourceControlDiscoveryResult,
   type VcsDiscoveryItem,
   type VcsDriverKind,
@@ -60,13 +61,13 @@ const VCS_PROBES: ReadonlyArray<VcsProbe> = [
 export class SourceControlDiscovery extends Context.Service<
   SourceControlDiscovery,
   {
-    readonly discover: Effect.Effect<SourceControlDiscoveryResult>;
+    readonly discover: Effect.Effect<SourceControlDiscoveryResult, SourceControlDiscoveryError>;
   }
 >()("t3/sourceControl/SourceControlDiscovery") {}
 
 export const make = Effect.gen(function* () {
   const config = yield* ServerConfig;
-  const process = yield* VcsProcess.VcsProcess;
+  const vcsProcess = yield* VcsProcess.VcsProcess;
   const sourceControlProviders = yield* SourceControlProviderRegistry.SourceControlProviderRegistry;
 
   const probe = <Kind extends VcsDriverKind>(
@@ -87,7 +88,7 @@ export const make = Effect.gen(function* () {
       } satisfies DiscoveryProbeResult<Kind>);
     }
 
-    return process
+    return vcsProcess
       .run({
         operation: "source-control.discovery.probe",
         command: executable,
@@ -129,13 +130,22 @@ export const make = Effect.gen(function* () {
   };
 
   return SourceControlDiscovery.of({
-    discover: Effect.all({
-      versionControlSystems: Effect.all(
-        VCS_PROBES.map((entry) => probe(entry)) as ReadonlyArray<Effect.Effect<VcsDiscoveryItem>>,
-        { concurrency: "unbounded" },
-      ),
-      sourceControlProviders: sourceControlProviders.discover,
-    }),
+    discover:
+      globalThis.process.env.T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR === "1"
+        ? Effect.fail(
+            new SourceControlDiscoveryError({
+              detail: "Source-control discovery is unavailable in this test environment.",
+            }),
+          )
+        : Effect.all({
+            versionControlSystems: Effect.all(
+              VCS_PROBES.map((entry) => probe(entry)) as ReadonlyArray<
+                Effect.Effect<VcsDiscoveryItem>
+              >,
+              { concurrency: "unbounded" },
+            ),
+            sourceControlProviders: sourceControlProviders.discover,
+          }),
   });
 });
 
