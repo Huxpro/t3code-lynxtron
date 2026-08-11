@@ -1,7 +1,9 @@
 import type {
   ModelCapabilities,
   ProviderOptionSelection,
+  ProviderOptionDescriptor,
   ProviderInteractionMode,
+  ProviderDriverKind,
   RuntimeMode,
 } from "@t3tools/contracts";
 import {
@@ -94,8 +96,31 @@ export function toggleComposerInteractionMode(
   return mode === "plan" ? "default" : "plan";
 }
 
+export function shouldUseComposerHeroLayout(options: {
+  readonly isLocalDraftThread: boolean;
+  readonly timelineEntryCount: number;
+  readonly isWorking: boolean;
+  readonly dockRequested: boolean;
+}): boolean {
+  return (
+    options.isLocalDraftThread &&
+    options.timelineEntryCount === 0 &&
+    !options.isWorking &&
+    !options.dockRequested
+  );
+}
+
+export function isComposerDraftThread(options: {
+  readonly activeThreadId: string | undefined;
+  readonly draftHeroThreadId: string | undefined;
+}): boolean {
+  return (
+    options.activeThreadId === undefined || options.activeThreadId === options.draftHeroThreadId
+  );
+}
+
 export interface ComposerContextPresentation {
-  readonly checkoutLabel: "Local checkout" | "Worktree";
+  readonly checkoutLabel: "Current checkout" | "Current worktree";
   readonly branchLabel: string;
 }
 
@@ -104,7 +129,7 @@ export function projectComposerContext(options: {
   readonly worktreePath: string | null | undefined;
 }): ComposerContextPresentation {
   return {
-    checkoutLabel: options.worktreePath ? "Worktree" : "Local checkout",
+    checkoutLabel: options.worktreePath ? "Current worktree" : "Current checkout",
     branchLabel: options.branch?.trim() || "No branch",
   };
 }
@@ -119,6 +144,75 @@ export interface ComposerPrimaryOptionPresentation {
 export interface ComposerPrimaryOptionProjection {
   readonly presentation: ComposerPrimaryOptionPresentation;
   readonly nextSelections: ReadonlyArray<ProviderOptionSelection>;
+}
+
+export function buildComposerTraitsTriggerDisplay(input: {
+  readonly provider: ProviderDriverKind;
+  readonly descriptors: ReadonlyArray<ProviderOptionDescriptor>;
+  readonly primarySelectDescriptorId: string | null;
+  readonly ultrathinkPromptControlled: boolean;
+}): { readonly label: string; readonly showFastModeIcon: boolean } {
+  let hasFastMode = false;
+  let fastModeEnabled = false;
+  const labels: Array<string> = [];
+  for (const descriptor of input.descriptors) {
+    if (descriptor.id === "fastMode" && descriptor.type === "boolean") {
+      hasFastMode = true;
+      fastModeEnabled = descriptor.currentValue === true;
+      continue;
+    }
+    if (
+      input.provider === "codex" &&
+      descriptor.id === "serviceTier" &&
+      descriptor.type === "select"
+    ) {
+      const currentValue = getProviderOptionCurrentValue(descriptor);
+      const fastTier = descriptor.options.find(({ label }) => label === "Fast");
+      if (fastTier && (currentValue === "default" || currentValue === fastTier.id)) {
+        hasFastMode = true;
+        fastModeEnabled = currentValue === fastTier.id;
+        continue;
+      }
+    }
+    const label =
+      input.ultrathinkPromptControlled && descriptor.id === input.primarySelectDescriptorId
+        ? "Ultrathink"
+        : descriptor.type === "boolean"
+          ? `${descriptor.label} ${descriptor.currentValue === true ? "On" : "Off"}`
+          : getProviderOptionCurrentLabel(descriptor);
+    if (typeof label === "string" && label.length > 0) {
+      labels.push(label);
+    }
+  }
+
+  if (labels.length === 0 && hasFastMode) {
+    return { label: fastModeEnabled ? "Fast" : "Normal", showFastModeIcon: false };
+  }
+  return { label: labels.join(" · "), showFastModeIcon: fastModeEnabled };
+}
+
+export function projectComposerTraitsTrigger(options: {
+  readonly provider: ProviderDriverKind;
+  readonly capabilities: ModelCapabilities | null | undefined;
+  readonly selections: ReadonlyArray<ProviderOptionSelection> | null | undefined;
+}): { readonly label: string; readonly showFastModeIcon: boolean } | null {
+  if (!options.capabilities) return null;
+  const descriptors = getProviderOptionDescriptors({
+    caps: options.capabilities,
+    selections: options.selections,
+  });
+  if (descriptors.length === 0) return null;
+  const primarySelectDescriptor =
+    descriptors.find(
+      (descriptor): descriptor is Extract<ProviderOptionDescriptor, { type: "select" }> =>
+        descriptor.type === "select",
+    ) ?? null;
+  return buildComposerTraitsTriggerDisplay({
+    provider: options.provider,
+    descriptors,
+    primarySelectDescriptorId: primarySelectDescriptor?.id ?? null,
+    ultrathinkPromptControlled: false,
+  });
 }
 
 /**
@@ -188,6 +282,27 @@ export interface ComposerSendState<TerminalContext> {
   readonly sendableTerminalContexts: ReadonlyArray<TerminalContext>;
   readonly expiredTerminalContextCount: number;
   readonly hasSendableContent: boolean;
+}
+
+export interface ComposerControlState {
+  readonly semanticState: "disabled" | "idle" | "sendable" | "working";
+  readonly primaryActionState: "disabled" | "send" | "stop";
+}
+
+export function deriveComposerControlState(options: {
+  readonly working: boolean;
+  readonly blocked: boolean;
+  readonly hasSendableContent: boolean;
+}): ComposerControlState {
+  if (options.working) {
+    return { semanticState: "working", primaryActionState: "stop" };
+  }
+  if (options.blocked) {
+    return { semanticState: "disabled", primaryActionState: "disabled" };
+  }
+  return options.hasSendableContent
+    ? { semanticState: "sendable", primaryActionState: "send" }
+    : { semanticState: "idle", primaryActionState: "disabled" };
 }
 
 /**

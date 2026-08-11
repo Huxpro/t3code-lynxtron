@@ -1,13 +1,18 @@
 import { describe, expect, it } from "vite-plus/test";
+import { ProviderDriverKind } from "@t3tools/contracts";
 
 import {
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
+  buildComposerTraitsTriggerDisplay,
+  deriveComposerControlState,
   deriveComposerSendState,
   getComposerInteractionModePresentation,
   getComposerRuntimeModePresentation,
   getNextComposerRuntimeMode,
+  isComposerDraftThread,
   projectComposerContext,
   projectComposerPrimaryOption,
+  shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
 } from "./composer.ts";
 
@@ -37,9 +42,73 @@ describe("composer controls presentation", () => {
     expect(toggleComposerInteractionMode("plan")).toBe("default");
   });
 
+  it("reserves the hero layout for an empty idle local draft", () => {
+    expect(
+      shouldUseComposerHeroLayout({
+        isLocalDraftThread: true,
+        timelineEntryCount: 0,
+        isWorking: false,
+        dockRequested: false,
+      }),
+    ).toBe(true);
+    expect(
+      shouldUseComposerHeroLayout({
+        isLocalDraftThread: false,
+        timelineEntryCount: 0,
+        isWorking: false,
+        dockRequested: false,
+      }),
+    ).toBe(false);
+    expect(
+      shouldUseComposerHeroLayout({
+        isLocalDraftThread: true,
+        timelineEntryCount: 1,
+        isWorking: false,
+        dockRequested: false,
+      }),
+    ).toBe(false);
+    expect(
+      shouldUseComposerHeroLayout({
+        isLocalDraftThread: true,
+        timelineEntryCount: 0,
+        isWorking: true,
+        dockRequested: false,
+      }),
+    ).toBe(false);
+    expect(
+      shouldUseComposerHeroLayout({
+        isLocalDraftThread: true,
+        timelineEntryCount: 0,
+        isWorking: false,
+        dockRequested: true,
+      }),
+    ).toBe(false);
+  });
+
+  it("distinguishes a newly-created draft thread from historical empty threads", () => {
+    expect(
+      isComposerDraftThread({
+        activeThreadId: undefined,
+        draftHeroThreadId: undefined,
+      }),
+    ).toBe(true);
+    expect(
+      isComposerDraftThread({
+        activeThreadId: "new-thread",
+        draftHeroThreadId: "new-thread",
+      }),
+    ).toBe(true);
+    expect(
+      isComposerDraftThread({
+        activeThreadId: "historical-empty-thread",
+        draftHeroThreadId: undefined,
+      }),
+    ).toBe(false);
+  });
+
   it("shows only context facts present in the canonical thread shell", () => {
     expect(projectComposerContext({ branch: null, worktreePath: null })).toEqual({
-      checkoutLabel: "Local checkout",
+      checkoutLabel: "Current checkout",
       branchLabel: "No branch",
     });
     expect(
@@ -48,7 +117,7 @@ describe("composer controls presentation", () => {
         worktreePath: "/repo/.worktrees/composer",
       }),
     ).toEqual({
-      checkoutLabel: "Worktree",
+      checkoutLabel: "Current worktree",
       branchLabel: "feature/composer",
     });
   });
@@ -80,6 +149,38 @@ describe("composer controls presentation", () => {
       },
       nextSelections: [{ id: "effort", value: "high" }],
     });
+  });
+
+  it("summarizes every visible provider trait in the shared trigger label", () => {
+    expect(
+      buildComposerTraitsTriggerDisplay({
+        provider: ProviderDriverKind.make("claudeAgent"),
+        descriptors: [
+          {
+            id: "reasoningEffort",
+            label: "Reasoning",
+            type: "select",
+            options: [
+              { id: "low", label: "Low" },
+              { id: "high", label: "High" },
+            ],
+            currentValue: "high",
+          },
+          {
+            id: "contextWindow",
+            label: "Context window",
+            type: "select",
+            options: [
+              { id: "200k", label: "200k" },
+              { id: "1m", label: "1M" },
+            ],
+            currentValue: "1m",
+          },
+        ],
+        primarySelectDescriptorId: "reasoningEffort",
+        ultrathinkPromptControlled: false,
+      }),
+    ).toEqual({ label: "High · 1M", showFastModeIcon: false });
   });
 
   it("omits the compact option control when the provider declares none", () => {
@@ -145,5 +246,38 @@ describe("deriveComposerSendState", () => {
         elementContextCount: 1,
       }).hasSendableContent,
     ).toBe(true);
+  });
+});
+
+describe("deriveComposerControlState", () => {
+  it("keeps semantic and primary action states aligned", () => {
+    expect(
+      deriveComposerControlState({
+        working: true,
+        blocked: true,
+        hasSendableContent: false,
+      }),
+    ).toEqual({ semanticState: "working", primaryActionState: "stop" });
+    expect(
+      deriveComposerControlState({
+        working: false,
+        blocked: true,
+        hasSendableContent: true,
+      }),
+    ).toEqual({ semanticState: "disabled", primaryActionState: "disabled" });
+    expect(
+      deriveComposerControlState({
+        working: false,
+        blocked: false,
+        hasSendableContent: true,
+      }),
+    ).toEqual({ semanticState: "sendable", primaryActionState: "send" });
+    expect(
+      deriveComposerControlState({
+        working: false,
+        blocked: false,
+        hasSendableContent: false,
+      }),
+    ).toEqual({ semanticState: "idle", primaryActionState: "disabled" });
   });
 });
