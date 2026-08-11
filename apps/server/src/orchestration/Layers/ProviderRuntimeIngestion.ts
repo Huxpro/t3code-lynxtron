@@ -2,6 +2,7 @@ import {
   ApprovalRequestId,
   type AssistantDeliveryMode,
   CommandId,
+  EventId,
   MessageId,
   type OrchestrationEvent,
   type OrchestrationMessage,
@@ -87,6 +88,9 @@ const TURN_MESSAGE_IDS_BY_TURN_CACHE_CAPACITY = 10_000;
 const TURN_MESSAGE_IDS_BY_TURN_TTL = Duration.minutes(120);
 const BUFFERED_MESSAGE_TEXT_BY_MESSAGE_ID_CACHE_CAPACITY = 20_000;
 const BUFFERED_MESSAGE_TEXT_BY_MESSAGE_ID_TTL = Duration.minutes(120);
+const BUFFERED_REASONING_BY_TURN_CACHE_CAPACITY = 10_000;
+const BUFFERED_REASONING_BY_TURN_TTL = Duration.minutes(120);
+const MAX_BUFFERED_REASONING_CHARS = 16_000;
 const BUFFERED_PROPOSED_PLAN_BY_ID_CACHE_CAPACITY = 10_000;
 const BUFFERED_PROPOSED_PLAN_BY_ID_TTL = Duration.minutes(120);
 const TASK_DESCRIPTION_BY_TASK_CACHE_CAPACITY = 10_000;
@@ -710,6 +714,14 @@ const make = Effect.gen(function* () {
     lookup: () => Effect.succeed(""),
   });
 
+  const bufferedReasoningByTurnKey = yield* Cache.make<string, { text: string; createdAt: string }>(
+    {
+      capacity: BUFFERED_REASONING_BY_TURN_CACHE_CAPACITY,
+      timeToLive: BUFFERED_REASONING_BY_TURN_TTL,
+      lookup: () => Effect.succeed({ text: "", createdAt: "" }),
+    },
+  );
+
   const assistantSegmentStateByTurnKey = yield* Cache.make<string, AssistantSegmentState>({
     capacity: TURN_MESSAGE_IDS_BY_TURN_CACHE_CAPACITY,
     timeToLive: TURN_MESSAGE_IDS_BY_TURN_TTL,
@@ -937,6 +949,68 @@ const make = Effect.gen(function* () {
 
   const clearAssistantMessageState = (messageId: MessageId) =>
     clearBufferedAssistantText(messageId);
+
+  const appendBufferedReasoning = (
+    threadId: ThreadId,
+    turnId: TurnId,
+    delta: string,
+    createdAt: string,
+  ) =>
+    Cache.getOption(bufferedReasoningByTurnKey, providerTurnKey(threadId, turnId)).pipe(
+      Effect.flatMap((existingEntry) => {
+        const existing = Option.getOrUndefined(existingEntry);
+        const nextText = `${existing?.text ?? ""}${delta}`.slice(0, MAX_BUFFERED_REASONING_CHARS);
+        return Cache.set(bufferedReasoningByTurnKey, providerTurnKey(threadId, turnId), {
+          text: nextText,
+          createdAt: existing?.createdAt || createdAt,
+        });
+      }),
+    );
+
+  const flushBufferedReasoning = (input: {
+    event: ProviderRuntimeEvent;
+    threadId: ThreadId;
+    turnId: TurnId;
+    createdAt: string;
+  }) =>
+    Cache.getOption(bufferedReasoningByTurnKey, providerTurnKey(input.threadId, input.turnId)).pipe(
+      Effect.flatMap((entryOption) =>
+        Cache.invalidate(
+          bufferedReasoningByTurnKey,
+          providerTurnKey(input.threadId, input.turnId),
+        ).pipe(Effect.as(Option.getOrUndefined(entryOption))),
+      ),
+      Effect.flatMap((entry) => {
+        const detail = entry?.text.trim();
+        if (!detail) {
+          return Effect.void;
+        }
+        const summary = truncateDetail(detail.replace(/\s+/g, " "), 120);
+        return Effect.gen(function* () {
+          const activityId = EventId.make(yield* crypto.randomUUIDv4);
+          yield* orchestrationEngine.dispatch({
+            type: "thread.activity.append",
+            commandId: yield* providerCommandId(input.event, "reasoning-progress"),
+            threadId: input.threadId,
+            activity: {
+              id: activityId,
+              tone: "info",
+              kind: "task.progress",
+              summary,
+              payload: {
+                taskId: `reasoning:${input.turnId}`,
+                title: "Thinking",
+                summary,
+                detail,
+              },
+              turnId: input.turnId,
+              createdAt: entry?.createdAt || input.createdAt,
+            },
+            createdAt: input.createdAt,
+          });
+        });
+      }),
+    );
 
   const flushBufferedAssistantMessage = (input: {
     event: ProviderRuntimeEvent;
@@ -1170,6 +1244,7 @@ const make = Effect.gen(function* () {
       const turnKeys = Array.from(yield* Cache.keys(turnMessageIdsByTurnKey));
       const assistantSegmentKeys = Array.from(yield* Cache.keys(assistantSegmentStateByTurnKey));
       const proposedPlanKeys = Array.from(yield* Cache.keys(bufferedProposedPlanById));
+      const reasoningKeys = Array.from(yield* Cache.keys(bufferedReasoningByTurnKey));
       const taskDescriptionKeys = Array.from(yield* Cache.keys(taskDescriptionByTaskKey));
       yield* Effect.forEach(
         turnKeys,
@@ -1196,6 +1271,12 @@ const make = Effect.gen(function* () {
           key.startsWith(prefix)
             ? Cache.invalidate(assistantSegmentStateByTurnKey, key)
             : Effect.void,
+        { concurrency: 1 },
+      ).pipe(Effect.asVoid);
+      yield* Effect.forEach(
+        reasoningKeys,
+        (key) =>
+          key.startsWith(prefix) ? Cache.invalidate(bufferedReasoningByTurnKey, key) : Effect.void,
         { concurrency: 1 },
       ).pipe(Effect.asVoid);
       yield* Effect.forEach(
@@ -1463,11 +1544,32 @@ const make = Effect.gen(function* () {
         event.type === "content.delta" && event.payload.streamKind === "assistant_text"
           ? event.payload.delta
           : undefined;
+      const reasoningDelta =
+        event.type === "content.delta" &&
+        (event.payload.streamKind === "reasoning_text" ||
+          event.payload.streamKind === "reasoning_summary_text")
+          ? event.payload.delta
+          : undefined;
       const proposedPlanDelta =
         event.type === "turn.proposed.delta" ? event.payload.delta : undefined;
 
+      if (reasoningDelta && reasoningDelta.length > 0) {
+        const turnId = toTurnId(event.turnId);
+        if (turnId) {
+          yield* appendBufferedReasoning(thread.id, turnId, reasoningDelta, now);
+        }
+      }
+
       if (assistantDelta && assistantDelta.length > 0) {
         const turnId = toTurnId(event.turnId);
+        if (turnId) {
+          yield* flushBufferedReasoning({
+            event,
+            threadId: thread.id,
+            turnId,
+            createdAt: now,
+          });
+        }
         const assistantMessageId = yield* getOrCreateAssistantMessageId({
           threadId: thread.id,
           event,
@@ -1646,6 +1748,12 @@ const make = Effect.gen(function* () {
         const proposedPlans = detailedThread?.proposedPlans ?? [];
         const turnId = toTurnId(event.turnId);
         if (turnId) {
+          yield* flushBufferedReasoning({
+            event,
+            threadId: thread.id,
+            turnId,
+            createdAt: now,
+          });
           const assistantMessageIds = yield* getAssistantMessageIdsForTurn(thread.id, turnId);
           yield* Effect.forEach(
             assistantMessageIds,

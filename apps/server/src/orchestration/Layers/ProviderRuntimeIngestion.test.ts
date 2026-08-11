@@ -984,6 +984,130 @@ describe("ProviderRuntimeIngestion", () => {
     expect(message?.streaming).toBe(false);
   });
 
+  it("projects reasoning deltas as one expandable thinking activity", async () => {
+    const harness = await createHarness();
+    const now = "2026-01-01T00:00:00.000Z";
+
+    harness.emit({
+      type: "content.delta",
+      eventId: asEventId("evt-reasoning-delta-1"),
+      provider: ProviderDriverKind.make("claudeAgent"),
+      createdAt: now,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-reasoning"),
+      payload: {
+        streamKind: "reasoning_text",
+        delta: "Compare the fixed-width option. ",
+      },
+    });
+    harness.emit({
+      type: "content.delta",
+      eventId: asEventId("evt-reasoning-delta-2"),
+      provider: ProviderDriverKind.make("claudeAgent"),
+      createdAt: now,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-reasoning"),
+      payload: {
+        streamKind: "reasoning_text",
+        delta: "Then check the drawer tradeoffs.",
+      },
+    });
+    harness.emit({
+      type: "content.delta",
+      eventId: asEventId("evt-reasoning-assistant-delta"),
+      provider: ProviderDriverKind.make("claudeAgent"),
+      createdAt: now,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-reasoning"),
+      itemId: asItemId("item-reasoning-answer"),
+      payload: {
+        streamKind: "assistant_text",
+        delta: "Use a bounded responsive sidebar.",
+      },
+    });
+    harness.emit({
+      type: "item.completed",
+      eventId: asEventId("evt-reasoning-assistant-completed"),
+      provider: ProviderDriverKind.make("claudeAgent"),
+      createdAt: now,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-reasoning"),
+      itemId: asItemId("item-reasoning-answer"),
+      payload: {
+        itemType: "assistant_message",
+        status: "completed",
+      },
+    });
+
+    const thread = await waitForThread(
+      harness.readModel,
+      (entry) =>
+        entry.activities.some(
+          (activity: ProviderRuntimeTestActivity) => activity.kind === "task.progress",
+        ) &&
+        entry.messages.some(
+          (message: ProviderRuntimeTestMessage) =>
+            message.id === "assistant:item-reasoning-answer" && !message.streaming,
+        ),
+    );
+    const thinkingActivities = thread.activities.filter(
+      (activity: ProviderRuntimeTestActivity) => activity.kind === "task.progress",
+    );
+    expect(thinkingActivities).toHaveLength(1);
+    expect(thinkingActivities[0]?.summary).toBe(
+      "Compare the fixed-width option. Then check the drawer tradeoffs.",
+    );
+    expect(thinkingActivities[0]?.payload).toMatchObject({
+      taskId: "reasoning:turn-reasoning",
+      title: "Thinking",
+      detail: "Compare the fixed-width option. Then check the drawer tradeoffs.",
+    });
+  });
+
+  it("flushes buffered reasoning when a turn completes without assistant text", async () => {
+    const harness = await createHarness();
+    const now = "2026-01-01T00:00:00.000Z";
+
+    harness.emit({
+      type: "content.delta",
+      eventId: asEventId("evt-reasoning-only-delta"),
+      provider: ProviderDriverKind.make("opencode"),
+      createdAt: now,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-reasoning-only"),
+      payload: {
+        streamKind: "reasoning_text",
+        delta: "Reasoning completed before the provider returned no visible answer.",
+      },
+    });
+    harness.emit({
+      type: "turn.completed",
+      eventId: asEventId("evt-reasoning-only-completed"),
+      provider: ProviderDriverKind.make("opencode"),
+      createdAt: now,
+      threadId: asThreadId("thread-1"),
+      turnId: asTurnId("turn-reasoning-only"),
+      status: "completed",
+    });
+
+    const thread = await waitForThread(harness.readModel, (entry) =>
+      entry.activities.some(
+        (activity: ProviderRuntimeTestActivity) =>
+          activity.kind === "task.progress" &&
+          activity.turnId === TurnId.make("turn-reasoning-only"),
+      ),
+    );
+    const thinking = thread.activities.find(
+      (activity: ProviderRuntimeTestActivity) =>
+        activity.kind === "task.progress" && activity.turnId === TurnId.make("turn-reasoning-only"),
+    );
+    expect(thinking?.payload).toMatchObject({
+      taskId: "reasoning:turn-reasoning-only",
+      title: "Thinking",
+      detail: "Reasoning completed before the provider returned no visible answer.",
+    });
+  });
+
   it("uses assistant item completion detail when no assistant deltas were streamed", async () => {
     const harness = await createHarness();
     const now = "2026-01-01T00:00:00.000Z";
