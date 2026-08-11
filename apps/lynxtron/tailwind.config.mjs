@@ -1,4 +1,5 @@
 import { createLynxPreset } from "@lynx-js/tailwind-preset";
+import plugin from "tailwindcss/plugin.js";
 
 const semanticColorNames = [
   "background",
@@ -111,20 +112,50 @@ export default {
     "../web/src/components/chat/transcriptRowPresentation.ts",
     "../web/src/components/chat/ComposerSurface.tsx",
     "../web/src/components/chat/ModelPickerSurface.tsx",
+    "../web/src/components/chat/ChatHeaderSurface.tsx",
+    "../web/src/components/chat/ConnectionLifecycleBannerSurface.tsx",
+    "../web/src/components/chat/DiffStatLabel.tsx",
+    "../web/src/components/chat/FileTreeSurface.tsx",
     "../web/src/components/CommandPaletteSurface.tsx",
+    // Root app-shell / chat-route / right-panel / plan compositions. These own
+    // the vertical-stacking (`flex-col`) and layout utilities for the shell;
+    // omitting them dropped `flex-direction:column` from the Lynx CSS and made
+    // the renderer lay the shell out horizontally (gap-log G1).
+    "../web/src/components/ChatRouteSurface.tsx",
+    "../web/src/components/AppShellSurface.tsx",
+    "../web/src/components/PlanSurface.tsx",
+    "../web/src/components/RightPanelSurface.tsx",
     "../web/src/components/AppSidebarLayout.lynx.tsx",
     "../web/src/components/Sidebar.tsx",
     "../web/src/components/Sidebar.logic.ts",
+    "../web/src/components/SidebarV2.lynx.tsx",
     "../web/src/components/ProjectFavicon.lynx.tsx",
     "../web/src/components/SidebarStageBackdrop.lynx.tsx",
     "../web/src/components/ThreadStatusIndicators.lynx.tsx",
     "../web/src/components/sidebar/SidebarChrome.tsx",
+    "../web/src/components/sidebar/SidebarChromeSurface.tsx",
+    "../web/src/components/sidebar/SidebarV2CompositionSurface.tsx",
+    "../web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+    "../web/src/components/sidebar/SidebarV2RowSurface.tsx",
     "../web/src/components/sidebar/SidebarProjectListHost.lynx.tsx",
     "../web/src/components/sidebar/SidebarProjectListHost.types.ts",
     "../web/src/components/sidebar/T3Wordmark.lynx.tsx",
     "../web/src/components/sidebar/SidebarProviderUpdatePill.lynx.tsx",
     "../web/src/components/sidebar/SidebarUpdatePill.tsx",
+    // Settings surfaces (route shell, nav, General panel, other panels).
+    "../web/src/components/settings/SettingsRouteSurface.tsx",
+    "../web/src/components/settings/settingsRouteHost.lynx.tsx",
+    "../web/src/components/settings/settingsNavigationHost.lynx.tsx",
+    "../web/src/components/settings/SettingsSidebarNav.lynx.tsx",
+    "../web/src/components/settings/SettingsNavigationContent.tsx",
+    "../web/src/components/settings/GeneralSettingsContent.tsx",
+    "../web/src/components/settings/GeneralSettingsPanel.tsx",
+    "../web/src/components/settings/generalSettingsHost.lynx.tsx",
+    "../web/src/components/settings/generalSettingsPanelHost.lynx.tsx",
+    "../web/src/components/settings/SettingsSurfaces.tsx",
+    "../web/src/components/settings/settingsLayout.tsx",
     "../web/src/components/ui/alert.tsx",
+    "../web/src/components/ui/badge.lynx.tsx",
     "../web/src/components/ui/button.lynx.tsx",
     "../web/src/components/ui/command.lynx.tsx",
     "../web/src/components/ui/dialog.lynx.tsx",
@@ -139,6 +170,7 @@ export default {
     "../web/src/components/ui/sheet.lynx.tsx",
     "../web/src/components/ui/sidebar.tsx",
     "../web/src/components/ui/skeleton.tsx",
+    "../web/src/components/ui/switch.lynx.tsx",
     "../web/src/components/ui/toast.lynx.tsx",
     "../web/src/components/ui/tooltip.lynx.tsx",
   ],
@@ -148,6 +180,45 @@ export default {
       lynxPlugins: {
         boxShadow: false,
       },
+    }),
+  ],
+  plugins: [
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".inline-flex": {
+          display: "flex",
+        },
+        ".block": {
+          display: "block",
+        },
+        ".pointer-events-none": {
+          "pointer-events": "none",
+        },
+        ".pointer-events-auto": {
+          "pointer-events": "auto",
+        },
+        ".outline-none": {
+          "outline-width": "0px",
+        },
+        ".tabular-nums": {
+          "font-variant-numeric": "tabular-nums",
+        },
+        ".select-none": {
+          "user-select": "none",
+        },
+        ".overflow-y-auto": {
+          "overflow-y": "auto",
+        },
+        ".overflow-x-auto": {
+          "overflow-x": "auto",
+        },
+        ".uppercase": {
+          "text-transform": "uppercase",
+        },
+        ".ring-1": {
+          "box-shadow": "0 0 0 1px var(--ring)",
+        },
+      });
     }),
   ],
   theme: {

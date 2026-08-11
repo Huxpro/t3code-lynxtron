@@ -5,7 +5,18 @@
   "upstreamThemeTokenCount": 48,
   "effectiveSidebarTokenCount": 19,
   "settingsPrimitiveTokenCount": 37,
-  "transformedSyntax": ["oklch", "color-mix", "@variant", "--alpha"],
-  "opacitySemanticTokenCount": 34,
-  "retainedRuntimeWorkarounds": ["R2", "R9"]
+  "transformedSyntax": [
+    "oklch",
+    "color-mix",
+    "@variant",
+    "--alpha"
+  ],
+  "opacitySemanticTokenCount": 68,
+  "retainedRuntimeWorkarounds": [
+    "R9"
+  ],
+  "emittedThemes": [
+    "dark",
+    "light"
+  ]
 }
