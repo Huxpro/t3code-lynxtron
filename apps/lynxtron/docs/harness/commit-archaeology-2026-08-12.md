@@ -385,6 +385,8 @@ Co-authored-by: TRAE CLI <noreply@bytedance.com>
 | C15 runtime docs | `4fd817a49` | implementation, compatibility, upstream boundary, and exact-owned capture docs reconciled |
 | C15 residual roadmap | `63de8900b` | historical gap ordering retained; current evidence counts reconciled |
 | C15 final authority | this document's commit | current-state, completion audit, inventory, registry, and this ledger |
+| C16 generated icon idempotency | `a7aec9f74` | 752 decoded key/value pairs unchanged; two consecutive production builds clean |
+| C17 final completion audit | this document's final commit | 76 historical commits checked individually; all 66 build-relevant commits compiled at their historical revisions; final focused suites and builds passed |
 
 The complete ordered stack is reproducible with:
 
@@ -404,3 +406,18 @@ pre-final5 bundles, and one manifest-linked Native log was absent from every
 preserved worktree and backup archive. The current six-state manifest therefore
 contains no retained pixels and requires fresh evidence for all 18 client
 cells.
+
+Final completion audit:
+
+- all 70 changed test files passed under their package-specific runners;
+- contracts, server, client-runtime, Web, and Lynxtron typechecks passed;
+- a detached audit worktree checked all 76 pre-audit commits in order;
+- a second detached audit worktree compiled all 66 commits that changed a
+  server, Web, Lynx, or Browser Preview compiler boundary;
+- the remaining 12 script/evidence/ignore/docs-only commits had no package
+  compile target and passed their focused verifier/diff gates;
+- server bundle, Web production, Lynxtron production, and Browser Preview
+  builds passed;
+- the generated icon atlas is build-idempotent after `a7aec9f74`;
+- the active archaeology worktree remains clean after two consecutive
+  production builds.

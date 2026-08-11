@@ -9,15 +9,27 @@ Plan 11 prose and screenshots.
 
 ## Proven on the current stack
 
-- The accumulated product work was split into 76 dependency-ordered commits
+- The accumulated product work was split into 78 dependency-ordered commits
   after base `4604dd443`.
 - Client-runtime verification passed 13 files / 122 tests plus its focused
   typecheck.
 - Provider runtime ingestion passed 48 focused tests.
 - Browser Preview passed 15 focused tests and its Web/Lynx builds.
 - The complete Lynxtron harness suite passed 13 files / 48 tests.
-- The final product Browser Preview build passed. Its known warnings are the
-  existing Effect `import.meta` and bundle-size warnings.
+- A detached audit worktree checked out all 76 original archaeology commits in
+  order. Every commit passed its changed tests, affected package typechecks,
+  `git diff --check`, and clean-worktree gate.
+- A second detached worktree built all 66 commits that changed a package
+  compiler boundary at their historical revisions: server bundle, Web
+  production, Lynx production, and Browser Preview as applicable. The 12
+  script/evidence/ignore/docs-only commits have no package compile target and
+  are covered by focused tests, verifiers, and diff gates.
+- Final server bundle, Web production, Lynxtron production, and Browser Preview
+  builds passed. Two consecutive Lynxtron production builds left the worktree
+  clean.
+- The final product and Browser Preview builds passed. Their known warnings are
+  unsupported Lynx CSS properties, Effect `import.meta`, and bundle-size
+  warnings.
 - Browser Preview compiles the real ReactLynx entry. Its live WebSocket
   transport is development-only; production Native keeps transport ownership
   in the main process.
