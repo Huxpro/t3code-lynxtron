@@ -22,9 +22,10 @@ import {
   TerminalOpenInput,
 } from "@t3tools/contracts";
 import {
-  connectionStatusTitle,
+  projectConnectionLifecycle,
   type EnvironmentConnectionPresentation,
-} from "@t3tools/client-runtime/connection";
+} from "@t3tools/client-runtime/connection/presentation";
+import { shouldUseComposerHeroLayout } from "@t3tools/client-runtime/presentation/composer";
 import { effectiveSettled, effectiveSnoozed } from "@t3tools/client-runtime/state/thread-settled";
 import {
   parseScopedThreadKey,
@@ -1934,26 +1935,30 @@ function ChatViewContent(props: ChatViewProps) {
           description: "It may be finishing an update. One moment.",
         });
       } else {
+        const lifecycle = projectConnectionLifecycle({
+          phase: unavailableConnection.phase,
+          targetLabel: activeEnvironmentUnavailableState.label,
+          detail: unavailableConnection.error,
+          recoverySubject: "this environment",
+        });
         items.push({
           id: `environment-unavailable:${activeEnvironmentUnavailableState.environmentId}`,
-          variant: unavailableConnection.phase === "error" ? "error" : "warning",
+          variant: lifecycle.tone,
           icon: <WifiOffIcon />,
-          title: `${activeEnvironmentUnavailableState.label}: ${connectionStatusTitle(unavailableConnection)}`,
-          description:
-            unavailableConnection.error ??
-            "Reconnect this environment before sending messages or running actions.",
-          actions: (
+          title: lifecycle.title,
+          description: lifecycle.description,
+          actions: lifecycle.recovery ? (
             <>
               <Button
                 size="xs"
-                disabled={environmentReconnecting}
+                disabled={lifecycle.recovery.primaryDisabled}
                 onClick={() =>
                   void handleReconnectActiveEnvironment(
                     activeEnvironmentUnavailableState.environmentId,
                   )
                 }
               >
-                {environmentReconnecting ? "Reconnecting..." : "Reconnect"}
+                {lifecycle.recovery.primaryLabel}
               </Button>
               <Button
                 size="xs"
@@ -1963,7 +1968,7 @@ function ChatViewContent(props: ChatViewProps) {
                 Connections
               </Button>
             </>
-          ),
+          ) : null,
         });
       }
     }
@@ -2390,8 +2395,12 @@ function ChatViewContent(props: ChatViewProps) {
   const [dockedDraftHeroThreadKey, setDockedDraftHeroThreadKey] = useState<string | null>(null);
   const draftHeroDockRequested =
     activeThreadKey !== null && dockedDraftHeroThreadKey === activeThreadKey;
-  const isDraftHeroState =
-    isLocalDraftThread && timelineEntries.length === 0 && !isWorking && !draftHeroDockRequested;
+  const isDraftHeroState = shouldUseComposerHeroLayout({
+    isLocalDraftThread,
+    timelineEntryCount: timelineEntries.length,
+    isWorking,
+    dockRequested: draftHeroDockRequested,
+  });
   const [
     attachDraftHeroTransitionGroupRef,
     attachDraftHeroComposerAnchorRef,

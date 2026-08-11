@@ -10,6 +10,7 @@ export interface ChatHeaderSurfaceProps {
   readonly onNewThreadInProject?: (() => void) | undefined;
   readonly actions?: ReactNode;
   readonly rightPanelOpen: boolean;
+  readonly contentProps?: Record<string, unknown>;
 }
 
 /**
@@ -24,9 +25,13 @@ export function ChatHeaderSurface({
   onNewThreadInProject,
   actions,
   rightPanelOpen,
+  contentProps,
 }: ChatHeaderSurfaceProps) {
   return (
-    <HostView className="@container/header-actions topbar__content flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+    <HostView
+      className="@container/header-actions topbar__content flex min-w-0 flex-1 items-center gap-2 sm:gap-3"
+      {...contentProps}
+    >
       <HostView className="topbar__crumb flex min-w-0 flex-1 items-center gap-2 overflow-hidden sm:gap-3">
         {activeProjectName ? (
           <HostView className="chat-header-project-group inline-flex shrink-0 items-center gap-2">

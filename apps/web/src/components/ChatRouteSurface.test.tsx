@@ -53,4 +53,21 @@ describe("ChatRouteSurface", () => {
     expect(markup).toContain('data-chat-column-maximized-away="true"');
     expect(markup).toContain("w-0 flex-none");
   });
+
+  it("keeps the maximized right panel outside the collapsed chat column", () => {
+    const markup = renderToStaticMarkup(
+      <ChatRouteSurface
+        header={<div data-header />}
+        chatColumnHidden
+        rightPanel={<div data-right-panel data-maximized="true" />}
+      >
+        <div data-chat-content />
+      </ChatRouteSurface>,
+    );
+
+    expect(markup.indexOf('data-chat-column-maximized-away="true"')).toBeLessThan(
+      markup.indexOf('data-right-panel="true"'),
+    );
+    expect(markup).toContain('data-maximized="true"');
+  });
 });

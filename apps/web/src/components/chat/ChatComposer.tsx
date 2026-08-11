@@ -38,6 +38,7 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { deriveComposerControlState } from "@t3tools/client-runtime/presentation/composer";
 import {
   clampCollapsedComposerCursor,
   type ComposerTrigger,
@@ -295,6 +296,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
                   : "text-muted-foreground/70 hover:text-foreground/80",
               )}
               type="button"
+              data-composer-control="interaction"
               onClick={props.onToggleInteractionMode}
               aria-label={interactionModeTooltip}
             />
@@ -322,7 +324,13 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
           onValueChange={(value) => props.onRuntimeModeChange(value!)}
         >
           <TooltipTrigger
-            render={<ComposerSelectControl className="font-medium" aria-label="Runtime mode" />}
+            render={
+              <ComposerSelectControl
+                className="font-medium"
+                aria-label="Runtime mode"
+                data-composer-control="runtime"
+              />
+            }
           >
             <ComposerControlIcon icon={RuntimeModeIcon} />
             <SelectValue>{runtimeModeOption.label}</SelectValue>
@@ -368,6 +376,7 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
                       : "text-muted-foreground/70 hover:text-foreground/80",
                   )}
                   type="button"
+                  data-composer-control="plan"
                   onClick={props.onTogglePlanSidebar}
                   aria-label={planSidebarTooltip}
                 />
@@ -1241,6 +1250,18 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     environmentUnavailable !== null ||
     !composerSendState.hasSendableContent;
   const collapsedComposerPrimaryActionLabel = "Send message";
+  const { semanticState: composerSemanticState, primaryActionState: composerPrimaryActionState } =
+    deriveComposerControlState({
+      working: phase === "running",
+      blocked:
+        isSendBusy ||
+        isSendDisabled ||
+        isConnecting ||
+        noProviderAvailable ||
+        projectSelectionRequired ||
+        environmentUnavailable !== null,
+      hasSendableContent: composerSendState.hasSendableContent,
+    });
   const showMobilePendingAnswerActions =
     isMobileViewport && !isComposerCollapsedMobile && pendingPrimaryAction !== null;
 
@@ -2655,6 +2676,8 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       data-chat-composer-form="true"
     >
       <ComposerSurface
+        primaryActionState={composerPrimaryActionState}
+        semanticState={composerSemanticState}
         frameClassName={composerProviderState.composerFrameClassName}
         surfaceClassName={cn(
           isDragOverComposer ? "bg-accent/45 ring-1 ring-primary/70" : null,
@@ -3178,7 +3201,9 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                             orientation="vertical"
                             className="mx-0.5 hidden h-4 sm:block"
                           />
-                          {providerTraitsPicker}
+                          <span data-composer-control="model-option">
+                            {providerTraitsPicker}
+                          </span>
                         </>
                       ) : null}
                       <ComposerFooterModeControls
