@@ -7,12 +7,12 @@
 // clipboard, and native/external navigation. It owns no product state.
 import { contextBridge } from "@lynx-js/lynxtron/context-bridge";
 import { clipboard, shell } from "@lynx-js/lynxtron";
-import type { DesktopAppBranding, DesktopAppStageLabel } from "@t3tools/contracts";
 import * as path from "node:path";
 import * as fs from "node:fs";
 import * as os from "node:os";
 
 import { resolveLynxtronPrefsPath } from "./prefsPath";
+import { resolveLynxtronAppBranding } from "./appBranding";
 
 // P3-S1 capability probe (R3/R5): report whether preload shares main's JS
 // realm (main plants a pid marker when T3_LYNXTRON_CAPABILITY_PROBE=1). A
@@ -66,23 +66,8 @@ function writePrefs(patch: Record<string, unknown>): Record<string, unknown> {
   return next;
 }
 
-function resolveAppBranding(): DesktopAppBranding {
-  const configuredStage = process.env.T3_LYNXTRON_APP_STAGE_LABEL?.trim();
-  const stageLabel: DesktopAppStageLabel =
-    configuredStage === "Dev" || configuredStage === "Nightly" || configuredStage === "Alpha"
-      ? configuredStage
-      : process.env.NODE_ENV === "development"
-        ? "Dev"
-        : "Alpha";
-  return {
-    baseName: "T3 Code",
-    stageLabel,
-    displayName: `T3 Code (${stageLabel})`,
-  };
-}
-
 contextBridge.exposeInLynxBTS({
-  getAppBranding: resolveAppBranding,
+  getAppBranding: () => resolveLynxtronAppBranding(process.env.T3_LYNXTRON_APP_STAGE_LABEL),
   // Preference persistence (sync; small JSON file).
   getPrefs: () => readPrefs(),
   setPrefs: (patch: Record<string, unknown>) => writePrefs(patch ?? {}),
