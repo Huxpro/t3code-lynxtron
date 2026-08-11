@@ -45,6 +45,9 @@ describe("Lynx DevTool visual measurements", () => {
       if (method === "DOM.getOuterHTML") {
         return { result: { outerHTML: '<text text="Fallback"></text>' } };
       }
+      if (method === "DOM.getAttributes") {
+        return { result: { attributes: ["aria-label", "Measured item", "data-state", "ready"] } };
+      }
       throw new Error(`Unexpected method ${method}`);
     };
     const entry = { id: "sample", web: ".web", lynx: ".lynx" };
@@ -67,6 +70,10 @@ describe("Lynx DevTool visual measurements", () => {
     assert.equal(measurements.typography.sample.style.fontSize, "14px");
     assert.equal(measurements.colors.sample.style.backgroundColor, "rgb(4, 5, 6)");
     assert.equal(measurements.anchors.sample.text, "Measured");
+    assert.deepEqual(measurements.anchors.sample.attributes, {
+      "aria-label": "Measured item",
+      "data-state": "ready",
+    });
     assert.equal(selectorIds.get(".lynx") > 0, true);
     assert.equal(calls[0].method, "DOM.enable");
     assert.deepEqual(calls[0].params, { useCompression: false });
@@ -121,6 +128,7 @@ describe("Lynx DevTool visual measurements", () => {
           },
         };
       }
+      if (method === "DOM.getAttributes") return { result: { attributes: [] } };
       throw new Error(`Unexpected ${method}`);
     };
     const entry = { id: "sample", lynx: ".lynx" };

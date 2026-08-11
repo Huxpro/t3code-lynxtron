@@ -1,10 +1,12 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 
+import { openOwnedDevToolSession, readOwnedListeningTcpPorts } from "./devtool-client-identity.mjs";
 import { collectLynxMeasurements } from "./devtool-measurements.mjs";
 
 const appRoot = path.resolve(import.meta.dirname, "..");
@@ -73,65 +75,13 @@ function readImageDimensions(filePath) {
   throw new Error(`Unsupported screenshot format: ${filePath}`);
 }
 
-function hasNamedClient(serializedClients, name) {
-  try {
-    return JSON.parse(serializedClients).some((client) => client.info?.App === name);
-  } catch {
-    return false;
-  }
-}
-
-async function ensureDaemonClient(name) {
-  const daemonClients = runDevTool(["list-clients"]);
-  if (hasNamedClient(daemonClients, name)) return;
-
-  const directClients = runDevTool(["list-clients"], { noDaemon: true });
-  if (!hasNamedClient(directClients, name)) {
-    throw new Error(`No running Lynx DevTool client has app name "${name}".`);
-  }
-
-  // The long-lived connector can retain a stale desktop port after a client
-  // restart. Shut down only that helper; the next command recreates it and
-  // discovers the already-running app.
-  await fetch("http://127.0.0.1:21783/devtool/connector/shutdown", {
-    method: "POST",
-  }).catch(() => undefined);
-  const refreshedClients = runDevTool(["list-clients"]);
-  if (!hasNamedClient(refreshedClients, name)) {
-    throw new Error(`Lynx DevTool daemon did not discover app name "${name}".`);
-  }
-}
-
-async function createMeasurementCdpClient(name) {
-  const connectorModuleUrl = pathToFileURL(
-    path.join(path.dirname(devToolCli), "connector.mjs"),
-  ).href;
-  const { Connector, DaemonTransport } = await import(connectorModuleUrl);
-  const transport = new DaemonTransport();
-  const connector = new Connector([transport]);
-  const clients = await connector.listClients();
-  const matches = clients.filter((client) => client.info?.App === name);
-  if (matches.length !== 1) {
-    throw new Error(
-      `Expected one Lynx DevTool client named "${name}" for measurements; found ${matches.length}.`,
-    );
-  }
-  const clientId = matches[0].id;
-  const sessions = await connector.sendListSessionMessage(clientId);
-  const session = sessions.reduce(
-    (latest, candidate) =>
-      latest === null || Number(candidate.session_id) > Number(latest.session_id)
-        ? candidate
-        : latest,
-    null,
-  );
-  if (!session) {
-    throw new Error(`No Lynx DevTool session found for measurement client "${name}".`);
-  }
+function readBundleIdentity(filePath) {
+  const bytes = readFileSync(filePath);
   return {
-    close: () => transport.close(),
-    runCdp: (method, params) =>
-      connector.sendCDPMessage(clientId, Number(session.session_id), method, params),
+    path: filePath,
+    url: pathToFileURL(filePath).href,
+    bytes: statSync(filePath).size,
+    sha256: createHash("sha256").update(bytes).digest("hex"),
   };
 }
 
@@ -151,13 +101,17 @@ function quadCenter(quad) {
   };
 }
 
-async function prepareInteractionState(name, interactionState) {
+async function prepareInteractionState(clientOptions, interactionState) {
   if (interactionState === "none") return;
   if (interactionState !== "sidebar-collapsed") {
     throw new Error(`Unsupported Lynx interaction state: ${interactionState}`);
   }
 
-  const client = await createMeasurementCdpClient(name);
+  const client = await openOwnedDevToolSession({
+    ...clientOptions,
+    appName: clientOptions.name,
+    devToolCli,
+  });
   try {
     await client.runCdp("DOM.enable", { useCompression: false });
     const documentResponse = await client.runCdp("DOM.getDocument", {});
@@ -236,6 +190,9 @@ async function prepareInteractionState(name, interactionState) {
 }
 
 const clientName = readArgument("--client-name", "@t3tools/lynxtron");
+const clientId = readArgument("--client", undefined);
+const processIdArgument = readArgument("--process-id", undefined);
+const processId = processIdArgument === undefined ? undefined : Number(processIdArgument);
 const output = path.resolve(
   appRoot,
   readArgument("--output", "reports/screenshots/lynx-devtool.jpg"),
@@ -249,6 +206,15 @@ const measurementSpecPath = path.resolve(
   appRoot,
   readArgument("--measurement-spec", "scripts/visual-measurement-spec.json"),
 );
+const expectedBundle = readBundleIdentity(
+  path.resolve(
+    appRoot,
+    readArgument(
+      "--expected-bundle",
+      process.env.T3_LYNXTRON_BUNDLE_PATH ?? "dist/desktop/main.lynx.bundle",
+    ),
+  ),
+);
 const devToolCli = process.env.LYNX_DEVTOOL_CLI ?? defaultCli;
 
 if (!existsSync(devToolCli)) {
@@ -258,8 +224,21 @@ if (!existsSync(devToolCli)) {
 }
 
 mkdirSync(path.dirname(output), { recursive: true });
-await ensureDaemonClient(clientName);
-await prepareInteractionState(clientName, interactionState);
+const ownedPorts = processId === undefined ? undefined : readOwnedListeningTcpPorts(processId);
+const clientOptions = { clientId, name: clientName, ownedPorts };
+const captureClient = await openOwnedDevToolSession({
+  ...clientOptions,
+  appName: clientOptions.name,
+  devToolCli,
+});
+const identity = captureClient.identity;
+await captureClient.close();
+if (identity.bundleUrl !== expectedBundle.url) {
+  throw new Error(
+    `Owned Lynx DevTool session loaded ${String(identity.bundleUrl)}; expected ${expectedBundle.url}.`,
+  );
+}
+await prepareInteractionState(clientOptions, interactionState);
 
 // Capture first: Lynx DevTool exposes a single screencast frame per fresh
 // desktop session, and another inspection request can consume or wedge it.
@@ -268,14 +247,24 @@ if (reuseScreenshot) {
     throw new Error(`--reuse-screenshot requires an existing DevTool screenshot: ${output}`);
   }
 } else {
-  runDevTool(["take-screenshot", "--client-name", clientName, "--output", output]);
+  runDevTool([
+    "take-screenshot",
+    "--client",
+    identity.clientId,
+    "--session",
+    String(identity.sessionId),
+    "--output",
+    output,
+  ]);
 }
 
 const errorOutput = runDevTool(
   [
     "get-console",
-    "--client-name",
-    clientName,
+    "--client",
+    identity.clientId,
+    "--session",
+    String(identity.sessionId),
     "--level",
     "error",
     "--limit",
@@ -305,13 +294,26 @@ if (!extensionMatchesFormat) {
 const metadataPath = path.join(parsedOutput.dir, `${parsedOutput.name}.capture.json`);
 const measurementsPath = path.join(parsedOutput.dir, `${parsedOutput.name}.lynx-measurements.json`);
 const measurementSpec = JSON.parse(readFileSync(measurementSpecPath, "utf8"));
-const measurementClient = await createMeasurementCdpClient(clientName);
+const measurementClient = await openOwnedDevToolSession({
+  ...clientOptions,
+  appName: clientOptions.name,
+  devToolCli,
+});
 let measurements;
+let semanticReadiness;
 try {
   measurements = await collectLynxMeasurements({
     spec: measurementSpec,
     runCdp: measurementClient.runCdp,
   });
+  const readinessResponse = await measurementClient.runCdp("Runtime.evaluate", {
+    expression:
+      "JSON.stringify({kind:globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__?.kind ?? null,lastSeq:globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__?.lastSeq?.() ?? null})",
+    returnByValue: true,
+  });
+  const readinessValue = commandResult(readinessResponse)?.value;
+  semanticReadiness =
+    typeof readinessValue === "string" ? JSON.parse(readinessValue) : { kind: null, lastSeq: null };
 } finally {
   await measurementClient.close();
 }
@@ -322,6 +324,9 @@ writeFileSync(
     {
       baseline: "electron-web",
       clientName,
+      client: identity,
+      expectedBundle,
+      processId: processId ?? null,
       route,
       theme,
       snapshot,
@@ -331,6 +336,7 @@ writeFileSync(
       capturedAt: new Date().toISOString(),
       reusedScreenshot: reuseScreenshot,
       devToolConsoleErrors: 0,
+      semanticReadiness,
       measurements: path.relative(appRoot, measurementsPath),
     },
     null,

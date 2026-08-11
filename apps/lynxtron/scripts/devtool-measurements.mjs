@@ -24,6 +24,15 @@ function styleRecord(response) {
   return Object.fromEntries(properties.map((property) => [property.name, property.value]));
 }
 
+function attributeRecord(response) {
+  const attributes = commandResult(response)?.attributes ?? [];
+  const pairs = [];
+  for (let index = 0; index + 1 < attributes.length; index += 2) {
+    pairs.push([attributes[index], attributes[index + 1]]);
+  }
+  return Object.fromEntries(pairs);
+}
+
 async function queryNode(runCdp, rootNodeId, selector) {
   const response = await runCdp("DOM.querySelector", {
     nodeId: rootNodeId,
@@ -77,12 +86,14 @@ function textRecord(response, outerHtmlResponse) {
 
 async function nodeMeasurement(runCdp, rootNodeId, selector) {
   const nodeId = await queryNode(runCdp, rootNodeId, selector);
-  const [boxResponse, styleResponse, textResponse, outerHtmlResponse] = await Promise.all([
-    runCdp("DOM.getBoxModel", { nodeId }),
-    runCdp("CSS.getComputedStyleForNode", { nodeId }),
-    runCdp("DOM.innerText", { nodeId }),
-    runCdp("DOM.getOuterHTML", { nodeId }),
-  ]);
+  const [boxResponse, styleResponse, textResponse, outerHtmlResponse, attributesResponse] =
+    await Promise.all([
+      runCdp("DOM.getBoxModel", { nodeId }),
+      runCdp("CSS.getComputedStyleForNode", { nodeId }),
+      runCdp("DOM.innerText", { nodeId }),
+      runCdp("DOM.getOuterHTML", { nodeId }),
+      runCdp("DOM.getAttributes", { nodeId }),
+    ]);
   const box = commandResult(boxResponse)?.model;
   const styles = styleRecord(styleResponse);
   const text = textRecord(textResponse, outerHtmlResponse);
@@ -97,6 +108,7 @@ async function nodeMeasurement(runCdp, rootNodeId, selector) {
         }
       : null,
     text,
+    attributes: attributeRecord(attributesResponse),
     style: {
       backgroundColor: styles["background-color"] ?? null,
       color: styles.color ?? null,

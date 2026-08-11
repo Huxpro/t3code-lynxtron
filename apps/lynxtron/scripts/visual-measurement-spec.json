@@ -23,12 +23,12 @@
     {
       "id": "composer",
       "web": ".chat-composer-glass-shell",
-      "lynx": ".composer-card"
+      "lynx": ".composer-shell"
     },
     {
       "id": "checkoutBar",
       "web": ".chat-composer-context-strip",
-      "lynx": ".context-strip"
+      "lynx": ".composer-context-strip"
     }
   ],
   "typography": [
@@ -50,7 +50,7 @@
     {
       "id": "composerControl",
       "web": "[data-chat-provider-model-picker=\"true\"]",
-      "lynx": ".pill__label"
+      "lynx": ".composer-toolbar-control--model"
     },
     {
       "id": "sidebarRow",
@@ -72,7 +72,7 @@
     {
       "id": "composerBackground",
       "web": "[data-chat-composer-form=\"true\"]",
-      "lynx": ".composer"
+      "lynx": ".composer-surface"
     }
   ]
 }
