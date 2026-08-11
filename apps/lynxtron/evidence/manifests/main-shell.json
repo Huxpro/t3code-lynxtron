@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "id": "archaeology-final5-main-shell",
+  "label": "Final5 main-shell planning matrix",
+  "note": "../../docs/harness/current-state.md",
+  "defaults": {
+    "route": "/",
+    "semanticRoute": "new-thread",
+    "theme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "devicePixelRatio": 1
+    },
+    "density": "comfortable",
+    "snapshotSha256": "pending-final5-canonical-snapshot",
+    "selectedProject": null,
+    "selectedThread": null,
+    "selectedModel": null,
+    "lifecycle": "ready",
+    "overlay": null
+  },
+  "states": [
+    {
+      "id": "new-thread-hero",
+      "label": "New Thread · Hero",
+      "requiredClients": ["web", "lynx", "native"],
+      "state": {
+        "semanticRoute": "new-thread"
+      },
+      "verdict": "incomplete",
+      "evidence": {
+        "web": {
+          "status": "pending",
+          "reason": "Final5 Web evidence has not been captured from an isolated canonical snapshot."
+        },
+        "lynx": {
+          "status": "pending",
+          "reason": "Final5 Lynx-for-Web evidence has not been captured from the same isolated canonical snapshot."
+        },
+        "native": {
+          "status": "pending",
+          "reason": "Final5 exact-owned Native semantic evidence has not been captured."
+        }
+      }
+    },
+    {
+      "id": "existing-thread-idle",
+      "label": "Existing Thread · Idle",
+      "requiredClients": ["web", "lynx", "native"],
+      "state": {
+        "semanticRoute": "existing-thread",
+        "selectedProject": "pending-final5-project",
+        "selectedThread": "pending-final5-thread"
+      },
+      "verdict": "incomplete",
+      "evidence": {
+        "web": {
+          "status": "pending",
+          "reason": "Final5 Web thread identity and transcript content have not been captured."
+        },
+        "lynx": {
+          "status": "pending",
+          "reason": "Final5 Lynx-for-Web thread identity and transcript content have not been captured."
+        },
+        "native": {
+          "status": "pending",
+          "reason": "Final5 Native thread identity, list behavior, and semantic readiness have not been captured."
+        }
+      }
+    },
+    {
+      "id": "composer-hero",
+      "label": "Composer · Hero",
+      "requiredClients": ["web", "lynx", "native"],
+      "state": {
+        "semanticRoute": "new-thread"
+      },
+      "verdict": "incomplete",
+      "evidence": {
+        "web": {
+          "status": "pending",
+          "reason": "Final5 Web Composer geometry and controls have not been captured."
+        },
+        "lynx": {
+          "status": "pending",
+          "reason": "Final5 Lynx-for-Web Composer geometry and controls have not been captured."
+        },
+        "native": {
+          "status": "pending",
+          "reason": "Final5 Native focus, input, send, and Stop interactions require fresh evidence."
+        }
+      }
+    },
+    {
+      "id": "model-picker-default",
+      "label": "Model Picker · Default",
+      "requiredClients": ["web", "lynx", "native"],
+      "state": {
+        "semanticRoute": "new-thread",
+        "overlay": "model-picker"
+      },
+      "verdict": "incomplete",
+      "evidence": {
+        "web": {
+          "status": "pending",
+          "reason": "Final5 Web provider rail, model ordering, and selected state have not been captured."
+        },
+        "lynx": {
+          "status": "pending",
+          "reason": "Final5 Lynx-for-Web provider rail, model ordering, and selected state have not been captured."
+        },
+        "native": {
+          "status": "pending",
+          "reason": "Final5 Native open, select, and dismiss behavior has not been captured."
+        }
+      }
+    },
+    {
+      "id": "quick-switch-default",
+      "label": "Quick Switch · Default",
+      "requiredClients": ["web", "lynx", "native"],
+      "state": {
+        "semanticRoute": "new-thread",
+        "overlay": "quick-switch"
+      },
+      "verdict": "incomplete",
+      "evidence": {
+        "web": {
+          "status": "pending",
+          "reason": "Final5 Web command ordering and overlay geometry have not been captured."
+        },
+        "lynx": {
+          "status": "pending",
+          "reason": "Final5 Lynx-for-Web command ordering and overlay geometry have not been captured."
+        },
+        "native": {
+          "status": "pending",
+          "reason": "Final5 Native visible-control behavior has not been captured; keyboard remains pending an authorized session."
+        }
+      }
+    },
+    {
+      "id": "review-diff",
+      "label": "Review · Diff",
+      "requiredClients": ["web", "lynx", "native"],
+      "state": {
+        "semanticRoute": "existing-thread",
+        "selectedProject": "pending-final5-project",
+        "selectedThread": "pending-final5-thread",
+        "overlay": "review"
+      },
+      "verdict": "incomplete",
+      "evidence": {
+        "web": {
+          "status": "pending",
+          "reason": "Final5 Web checkpoint, changed-file tree, and patch content have not been captured."
+        },
+        "lynx": {
+          "status": "pending",
+          "reason": "Final5 Lynx-for-Web checkpoint, changed-file tree, and fallback content have not been captured."
+        },
+        "native": {
+          "status": "pending",
+          "reason": "Final5 Native review behavior has not been captured; the 2026-08-04 R10 report is historical runtime evidence only."
+        }
+      }
+    }
+  ]
+}
