@@ -6,7 +6,7 @@ describe("Lynxtron discrete keyboard menu", () => {
   it("covers only the certified discrete command set", () => {
     assert.deepEqual(
       DISCRETE_KEYBOARD_ACCELERATORS.map((entry) => entry.id),
-      ["open-settings", "new-thread", "quick-switch"],
+      ["open-settings", "new-thread", "quick-switch", "file-picker", "toggle-sidebar"],
     );
   });
 

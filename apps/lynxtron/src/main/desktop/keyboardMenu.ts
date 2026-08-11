@@ -6,7 +6,12 @@ import type {
 export const T3_KEYBOARD_EVENT = "t3:keyboard";
 
 export interface DiscreteKeyboardAccelerator {
-  readonly id: "new-thread" | "quick-switch" | "open-settings";
+  readonly id:
+    | "file-picker"
+    | "new-thread"
+    | "quick-switch"
+    | "open-settings"
+    | "toggle-sidebar";
   readonly label: string;
   readonly accelerator: string;
   readonly key: string;
@@ -40,6 +45,24 @@ export const DISCRETE_KEYBOARD_ACCELERATORS: ReadonlyArray<DiscreteKeyboardAccel
     accelerator: "CommandOrControl+K",
     key: "k",
     code: "KeyK",
+    shift: false,
+    menu: "view",
+  },
+  {
+    id: "file-picker",
+    label: "Go to File",
+    accelerator: "CommandOrControl+P",
+    key: "p",
+    code: "KeyP",
+    shift: false,
+    menu: "view",
+  },
+  {
+    id: "toggle-sidebar",
+    label: "Toggle Sidebar",
+    accelerator: "CommandOrControl+B",
+    key: "b",
+    code: "KeyB",
     shift: false,
     menu: "view",
   },

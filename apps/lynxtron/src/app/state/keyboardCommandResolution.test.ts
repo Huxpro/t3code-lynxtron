@@ -10,9 +10,11 @@ import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution.ts";
 describe("Lynxtron keyboard command resolution", () => {
   it("feeds each native menu packet through the canonical resolver", () => {
     const expected = {
+      "file-picker": "filePicker.toggle",
       "new-thread": "chat.new",
       "quick-switch": "commandPalette.toggle",
       "open-settings": "settings.open",
+      "toggle-sidebar": "sidebar.toggle",
     } as const;
 
     for (const [index, accelerator] of DISCRETE_KEYBOARD_ACCELERATORS.entries()) {

@@ -4,6 +4,7 @@ import { navigate } from "../router";
 import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";
 import { uiActions } from "./uiState";
 import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution";
+import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
 
 interface GlobalEventEmitterLike {
   addListener?: (eventName: string, listener: (...args: unknown[]) => void) => void;
@@ -26,12 +27,18 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
   const command = resolveKeyboardPacketCommand(input, state.serverConfig?.keybindings ?? []);
 
   switch (command) {
+    case "sidebar.toggle":
+      requestSidebarToggle();
+      return true;
     case "chat.new":
     case "chat.newLocal":
       void t3ClientActions.createThread();
       return true;
     case "commandPalette.toggle":
-      uiActions.toggleQuickSwitch();
+      uiActions.toggleQuickSwitch("command");
+      return true;
+    case "filePicker.toggle":
+      uiActions.toggleQuickSwitch("files");
       return true;
     case "settings.open":
       uiActions.closeQuickSwitch();
