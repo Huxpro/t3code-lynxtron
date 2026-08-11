@@ -2,6 +2,7 @@ import { describe, expect, it } from "vite-plus/test";
 import * as Schema from "effect/Schema";
 
 import { ProviderInstanceId } from "./providerInstance.ts";
+import { PORTABLE_CLIENT_SETTINGS_DEFAULTS } from "./settingsDefaults.ts";
 import {
   ClientSettingsSchema,
   ClientSettingsPatch,
@@ -15,6 +16,13 @@ const decodeClientSettingsPatch = Schema.decodeUnknownSync(ClientSettingsPatch);
 const decodeServerSettings = Schema.decodeUnknownSync(ServerSettings);
 const decodeServerSettingsPatch = Schema.decodeUnknownSync(ServerSettingsPatch);
 const encodeServerSettings = Schema.encodeSync(ServerSettings);
+
+describe("portable client settings defaults", () => {
+  it("exposes the canonical empty model favorites collection", () => {
+    expect(PORTABLE_CLIENT_SETTINGS_DEFAULTS.favorites).toEqual([]);
+    expect(decodeClientSettings({}).favorites).toEqual(PORTABLE_CLIENT_SETTINGS_DEFAULTS.favorites);
+  });
+});
 
 describe("ClientSettings word wrap", () => {
   it("defaults word wrap on", () => {

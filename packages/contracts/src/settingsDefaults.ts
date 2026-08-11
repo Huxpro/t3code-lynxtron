@@ -14,6 +14,7 @@ export const PORTABLE_CLIENT_SETTINGS_DEFAULTS = {
   confirmThreadDelete: true,
   diffIgnoreWhitespace: true,
   environmentIdentificationMode: "artwork",
+  favorites: [],
   glassOpacity: 80,
   sidebarProjectGroupingMode: "repository",
   sidebarV2Enabled: false,
