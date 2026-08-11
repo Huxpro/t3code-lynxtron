@@ -21,6 +21,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="sm"
         variant="ghost"
+        className="composer-approval-action composer-approval-action--cancel"
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "cancel")}
       >
@@ -29,6 +30,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="sm"
         variant="destructive-outline"
+        className="composer-approval-action composer-approval-action--decline"
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "decline")}
       >
@@ -37,6 +39,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="sm"
         variant="outline"
+        className="composer-approval-action composer-approval-action--session"
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "acceptForSession")}
       >
@@ -45,6 +48,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="sm"
         variant="default"
+        className="composer-approval-action composer-approval-action--accept"
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "accept")}
       >
