@@ -7,6 +7,10 @@
       "types": "./src/connection/index.ts",
       "default": "./src/connection/index.ts"
     },
+    "./connection/presentation": {
+      "types": "./src/connection/presentation.ts",
+      "default": "./src/connection/presentation.ts"
+    },
     "./authorization": {
       "types": "./src/authorization/index.ts",
       "default": "./src/authorization/index.ts"
@@ -50,6 +54,10 @@
     "./presentation/command-palette": {
       "types": "./src/presentation/commandPalette.ts",
       "default": "./src/presentation/commandPalette.ts"
+    },
+    "./presentation/search-overlay": {
+      "types": "./src/presentation/searchOverlay.ts",
+      "default": "./src/presentation/searchOverlay.ts"
     },
     "./presentation/transcript": {
       "types": "./src/presentation/transcript.ts",
@@ -99,6 +107,10 @@
       "types": "./src/presentation/files.ts",
       "default": "./src/presentation/files.ts"
     },
+    "./presentation/file-picker": {
+      "types": "./src/presentation/filePicker.ts",
+      "default": "./src/presentation/filePicker.ts"
+    },
     "./presentation/source-control": {
       "types": "./src/presentation/sourceControl.ts",
       "default": "./src/presentation/sourceControl.ts"
@@ -126,6 +138,10 @@
     "./presentation/composer": {
       "types": "./src/presentation/composer.ts",
       "default": "./src/presentation/composer.ts"
+    },
+    "./presentation/pending-requests": {
+      "types": "./src/presentation/pendingRequests.ts",
+      "default": "./src/presentation/pendingRequests.ts"
     },
     "./relay": {
       "types": "./src/relay/index.ts",
