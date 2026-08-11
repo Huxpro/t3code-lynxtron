@@ -1,18 +1,17 @@
-import {
-  buildChangedFilesTree,
-  summarizeChangedFiles,
-  type ChangedFilesTreeNode,
-} from "@t3tools/client-runtime/presentation/diff";
+import { summarizeChangedFiles } from "@t3tools/client-runtime/presentation/diff";
 import type { OrchestrationCheckpointSummary } from "@t3tools/contracts";
-import { useMemo, useState, type ReactNode } from "@lynx-js/react";
+import type { ThreadId, TurnId } from "@t3tools/contracts";
+import { useEffect, useMemo, useState } from "@lynx-js/react";
 
-import { DiffStatLabel, hasNonZeroStat } from "../../../../web/src/components/chat/DiffStatLabel";
-import {
-  FileTreeChildrenSurface,
-  FileTreeDirectoryRowSurface,
-  FileTreeFileRowSurface,
-} from "../../../../web/src/components/chat/FileTreeSurface";
+import { DiffPanelSurface } from "../../../../web/src/components/DiffPanelSurface";
+import { DiffStatLabel } from "../../../../web/src/components/chat/DiffStatLabel";
 import { useT3ClientState } from "../state/t3Client";
+import { t3ClientActions } from "../state/t3Client";
+import { Icon } from "./Icon";
+import { LynxChangedFilesTree } from "./LynxChangedFilesTree";
+import { parseUnifiedDiff, type UnifiedDiffFile } from "./unifiedDiff";
+
+type DiffRenderMode = "stacked" | "split";
 
 function latestFirst(
   checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>,
@@ -26,129 +25,268 @@ function latestFirst(
     );
 }
 
-export function DiffPanel() {
-  const { checkpoints, sessionStatus } = useT3ClientState();
+export function DiffPanel({
+  turnId,
+  filePath,
+}: {
+  readonly turnId?: TurnId | null;
+  readonly filePath?: string | null;
+}) {
+  const { activeThreadId, checkpoints, sessionStatus } = useT3ClientState();
   const orderedCheckpoints = useMemo(() => latestFirst(checkpoints), [checkpoints]);
-  const [selectedTurnId, setSelectedTurnId] = useState<string | null>(null);
-  const [collapsedDirectories, setCollapsedDirectories] = useState<Record<string, boolean>>({});
+  const [selectedTurnId, setSelectedTurnId] = useState<TurnId | null>(turnId ?? null);
+  const [scopeMenuOpen, setScopeMenuOpen] = useState(false);
+  const [diffRenderMode, setDiffRenderMode] = useState<DiffRenderMode>("stacked");
+  const [wordWrap, setWordWrap] = useState(false);
+  const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
+  const [collapsedFiles, setCollapsedFiles] = useState<ReadonlySet<string>>(new Set());
+  const [patch, setPatch] = useState("");
+  const [patchStatus, setPatchStatus] = useState<"idle" | "loading" | "ready" | "error">(
+    "idle",
+  );
+  const [patchError, setPatchError] = useState<string | null>(null);
+  useEffect(() => {
+    if (turnId !== null && turnId !== undefined) setSelectedTurnId(turnId);
+  }, [turnId]);
   const selectedCheckpoint =
     orderedCheckpoints.find((checkpoint) => checkpoint.turnId === selectedTurnId) ??
     orderedCheckpoints[0];
-  const tree = useMemo(
-    () => buildChangedFilesTree(selectedCheckpoint?.files ?? []),
-    [selectedCheckpoint],
-  );
   const total = useMemo(
     () => summarizeChangedFiles(selectedCheckpoint?.files ?? []),
     [selectedCheckpoint],
   );
-  const hasDirectoryNodes = useMemo(() => tree.some((node) => node.kind === "directory"), [tree]);
+  const parsedFiles = useMemo(() => parseUnifiedDiff(patch), [patch]);
+  const orderedFiles = useMemo(() => {
+    if (!filePath) return parsedFiles;
+    return [...parsedFiles].sort((left, right) => {
+      if (left.path === filePath) return -1;
+      if (right.path === filePath) return 1;
+      return 0;
+    });
+  }, [filePath, parsedFiles]);
 
-  const toggleDirectory = (path: string) => {
-    setCollapsedDirectories((current) => ({
-      ...current,
-      [path]: !(current[path] ?? false),
-    }));
-  };
-
-  const renderTreeNode = (node: ChangedFilesTreeNode, depth: number): ReactNode => {
-    if (node.kind === "directory") {
-      const expanded = !(collapsedDirectories[node.path] ?? false);
-      return (
-        <view key={`directory:${node.path}`}>
-          <FileTreeDirectoryRowSurface
-            name={node.name}
-            depth={depth}
-            expanded={expanded}
-            chevron={<text className="file-tree__chevron-glyph">▸</text>}
-            onToggle={() => toggleDirectory(node.path)}
-            {...(hasNonZeroStat(node.stat)
-              ? {
-                  trailing: (
-                    <DiffStatLabel
-                      additions={node.stat.additions}
-                      deletions={node.stat.deletions}
-                    />
-                  ),
-                }
-              : {})}
-          />
-          {expanded ? (
-            <FileTreeChildrenSurface>
-              {node.children.map((child) => renderTreeNode(child, depth + 1))}
-            </FileTreeChildrenSurface>
-          ) : null}
-        </view>
-      );
+  useEffect(() => {
+    if (!activeThreadId || !selectedCheckpoint) {
+      setPatch("");
+      setPatchStatus("idle");
+      setPatchError(null);
+      return;
     }
+    let cancelled = false;
+    setPatchStatus("loading");
+    setPatchError(null);
+    void t3ClientActions
+      .getTurnDiff({
+        threadId: activeThreadId as ThreadId,
+        fromTurnCount: Math.max(0, selectedCheckpoint.checkpointTurnCount - 1),
+        toTurnCount: selectedCheckpoint.checkpointTurnCount,
+        ignoreWhitespace,
+      })
+      .then(
+        (result) => {
+          if (cancelled) return;
+          setPatch(result.diff);
+          setPatchStatus("ready");
+        },
+        (error) => {
+          if (cancelled) return;
+          setPatch("");
+          setPatchStatus("error");
+          setPatchError(error instanceof Error ? error.message : String(error));
+        },
+      );
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    activeThreadId,
+    ignoreWhitespace,
+    selectedCheckpoint?.checkpointTurnCount,
+    selectedCheckpoint?.turnId,
+  ]);
 
-    return (
-      <FileTreeFileRowSurface
-        key={`file:${node.path}`}
-        name={node.name}
-        depth={depth}
-        showLeadingSpacer={hasDirectoryNodes || depth > 0}
-        {...(node.stat
-          ? {
-              trailing: (
-                <DiffStatLabel additions={node.stat.additions} deletions={node.stat.deletions} />
-              ),
-            }
-          : {})}
-      />
+  const allFilesCollapsed =
+    orderedFiles.length > 0 && orderedFiles.every((file) => collapsedFiles.has(file.path));
+  const toggleAllFiles = () => {
+    setCollapsedFiles(
+      allFilesCollapsed ? new Set() : new Set(orderedFiles.map((file) => file.path)),
     );
   };
+  const toggleFile = (path: string) => {
+    setCollapsedFiles((current) => {
+      const next = new Set(current);
+      if (next.has(path)) next.delete(path);
+      else next.add(path);
+      return next;
+    });
+  };
+  const selectedScopeLabel =
+    selectedCheckpoint === orderedCheckpoints[0]
+      ? "Latest turn"
+      : selectedCheckpoint
+        ? `Turn ${selectedCheckpoint.checkpointTurnCount}`
+        : "Latest turn";
+
+  const header = (
+    <>
+      <view className="diff-panel-header__scope-wrap lynx-titlebar-no-drag">
+        <view
+          className="diff-panel-header__scope"
+          aria-label={`Diff scope: ${selectedScopeLabel}`}
+          bindtap={() => setScopeMenuOpen((open) => !open)}
+        >
+          <text className="diff-panel-header__scope-label" text-maxline="1">
+            {selectedScopeLabel}
+          </text>
+          <Icon name="chevron-down" size={14} color="#818181" />
+        </view>
+        {scopeMenuOpen ? (
+          <view className="diff-panel-header__scope-menu">
+            {orderedCheckpoints.map((checkpoint, index) => {
+              const active = checkpoint.turnId === selectedCheckpoint?.turnId;
+              return (
+                <view
+                  key={checkpoint.turnId}
+                  className={`diff-panel-header__scope-item${
+                    active ? " diff-panel-header__scope-item--active" : ""
+                  }`}
+                  bindtap={() => {
+                    setSelectedTurnId(checkpoint.turnId);
+                    setScopeMenuOpen(false);
+                  }}
+                >
+                  <text className="diff-panel-header__scope-item-label">
+                    {index === 0 ? "Latest turn" : `Turn ${checkpoint.checkpointTurnCount}`}
+                  </text>
+                </view>
+              );
+            })}
+          </view>
+        ) : null}
+      </view>
+      <view className="diff-panel-header__controls lynx-titlebar-no-drag">
+        {orderedFiles.length > 0 || selectedCheckpoint ? (
+          <DiffStatLabel additions={total.additions} deletions={total.deletions} />
+        ) : null}
+        {orderedFiles.length > 0 ? (
+          <view
+            className="diff-panel-header__icon-button diff-panel-header__collapse"
+            aria-label={allFilesCollapsed ? "Expand all files" : "Collapse all files"}
+            bindtap={toggleAllFiles}
+          >
+            <Icon
+              name={allFilesCollapsed ? "chevrons-up-down" : "chevrons-down-up"}
+              size={14}
+              color="#818181"
+            />
+          </view>
+        ) : null}
+        <view className="diff-panel-header__segmented">
+          <view
+            className={`diff-panel-header__segment${
+              diffRenderMode === "stacked" ? " diff-panel-header__segment--active" : ""
+            }`}
+            aria-label="Stacked diff view"
+            bindtap={() => setDiffRenderMode("stacked")}
+          >
+            <Icon name="rows-3" size={14} color="#818181" />
+          </view>
+          <view
+            className={`diff-panel-header__segment${
+              diffRenderMode === "split" ? " diff-panel-header__segment--active" : ""
+            }`}
+            aria-label="Split diff view"
+            bindtap={() => setDiffRenderMode("split")}
+          >
+            <Icon name="columns-2" size={14} color="#818181" />
+          </view>
+        </view>
+        <view
+          className={`diff-panel-header__icon-button${
+            wordWrap ? " diff-panel-header__icon-button--active" : ""
+          }`}
+          aria-label={wordWrap ? "Disable diff line wrapping" : "Enable diff line wrapping"}
+          bindtap={() => setWordWrap((enabled) => !enabled)}
+        >
+          <Icon name="text-wrap" size={14} color="#818181" />
+        </view>
+        <view
+          className={`diff-panel-header__icon-button${
+            ignoreWhitespace ? " diff-panel-header__icon-button--active" : ""
+          }`}
+          aria-label={ignoreWhitespace ? "Show whitespace changes" : "Hide whitespace changes"}
+          bindtap={() => setIgnoreWhitespace((enabled) => !enabled)}
+        >
+          <Icon name="pilcrow" size={14} color="#818181" />
+        </view>
+      </view>
+    </>
+  );
 
   return (
-    <scroll-view className="diff-panel" scroll-orientation="vertical">
-      <view className="diff-panel__inner">
+    <DiffPanelSurface
+      mode="embedded"
+      header={header}
+      reviewCheckpointCount={orderedCheckpoints.length}
+      reviewSelectedTurn={selectedCheckpoint?.turnId ?? ""}
+      reviewFileCount={selectedCheckpoint?.files.length ?? 0}
+    >
+      <scroll-view
+        className="diff-panel"
+        scroll-orientation="vertical"
+        data-review-selected-file={filePath ?? ""}
+      >
+        <view className="diff-panel__inner">
         {orderedCheckpoints.length > 0 ? (
           <>
-            <scroll-view className="diff-panel__scopes" scroll-orientation="horizontal">
-              {orderedCheckpoints.map((checkpoint, index) => {
-                const active = checkpoint.turnId === selectedCheckpoint?.turnId;
-                return (
-                  <view
-                    key={checkpoint.turnId}
-                    className={`diff-panel__scope ${active ? "diff-panel__scope--active" : ""}`}
-                    bindtap={() => setSelectedTurnId(checkpoint.turnId)}
-                  >
-                    <text
-                      className={`diff-panel__scope-label ${active ? "diff-panel__scope-label--active" : ""}`}
-                    >
-                      {index === 0 ? "Latest turn" : `Turn ${checkpoint.checkpointTurnCount}`}
-                    </text>
-                  </view>
-                );
-              })}
-            </scroll-view>
-
-            <view className="diff-panel__summary">
-              <view className="diff-panel__summary-copy">
-                <text className="diff-panel__summary-title">
-                  {selectedCheckpoint?.files.length ?? 0} changed{" "}
-                  {selectedCheckpoint?.files.length === 1 ? "file" : "files"}
-                </text>
-                <text className="diff-panel__summary-note">
-                  Checkpoint for turn {selectedCheckpoint?.checkpointTurnCount}
+            {patchStatus === "loading" ? (
+              <view className="diff-code-state" data-review-patch-loading>
+                <text className="diff-code-state__text">Loading code diff…</text>
+              </view>
+            ) : patchStatus === "error" ? (
+              <view className="diff-code-state diff-code-state--error" data-review-patch-error>
+                <text className="diff-code-state__text">
+                  {patchError ?? "Failed to load code diff."}
                 </text>
               </view>
-              <DiffStatLabel additions={total.additions} deletions={total.deletions} />
-            </view>
-
-            <FileTreeChildrenSurface>
-              {tree.map((node) => renderTreeNode(node, 0))}
-            </FileTreeChildrenSurface>
-
-            <view className="diff-panel__runtime-note">
-              <text className="diff-panel__runtime-note-text">
-                Full patch rendering is unavailable in the current Lynx runtime; this view uses the
-                canonical checkpoint file summary.
-              </text>
-            </view>
+            ) : orderedFiles.length > 0 ? (
+              <view className="diff-code-files" data-review-code-diff>
+                {orderedFiles.map((file) => (
+                  <LynxCodeDiffFile
+                    key={file.path}
+                    file={file}
+                    selected={file.path === filePath}
+                    collapsed={collapsedFiles.has(file.path)}
+                    mode={diffRenderMode}
+                    wordWrap={wordWrap}
+                    onToggle={() => toggleFile(file.path)}
+                  />
+                ))}
+              </view>
+            ) : patchStatus === "ready" ? (
+              <view className="diff-panel__summary-fallback" data-review-patch-empty>
+                <view className="diff-panel__summary">
+                  <view className="diff-panel__summary-copy">
+                    <text className="diff-panel__summary-title">
+                      {selectedCheckpoint?.files.length ?? 0} changed{" "}
+                      {selectedCheckpoint?.files.length === 1 ? "file" : "files"}
+                    </text>
+                    <text className="diff-panel__summary-note">
+                      Checkpoint for turn {selectedCheckpoint?.checkpointTurnCount}
+                    </text>
+                  </view>
+                  <DiffStatLabel additions={total.additions} deletions={total.deletions} />
+                </view>
+                <LynxChangedFilesTree
+                  files={selectedCheckpoint?.files ?? []}
+                  allDirectoriesExpanded
+                  selectedPath={filePath}
+                />
+              </view>
+            ) : null}
           </>
         ) : (
-          <view className="diff-panel__empty">
+          <view className="diff-panel__empty" data-review-empty-state>
             <text className="diff-panel__empty-title">
               {sessionStatus === "running" ? "Waiting for checkpoint" : "No turn changes"}
             </text>
@@ -159,7 +297,153 @@ export function DiffPanel() {
             </text>
           </view>
         )}
-      </view>
-    </scroll-view>
+        </view>
+      </scroll-view>
+    </DiffPanelSurface>
   );
+}
+
+function LynxCodeDiffFile({
+  file,
+  selected,
+  collapsed,
+  mode,
+  wordWrap,
+  onToggle,
+}: {
+  readonly file: UnifiedDiffFile;
+  readonly selected: boolean;
+  readonly collapsed: boolean;
+  readonly mode: DiffRenderMode;
+  readonly wordWrap: boolean;
+  readonly onToggle: () => void;
+}) {
+  return (
+    <view
+      className={`diff-code-file${selected ? " diff-code-file--selected" : ""}`}
+      data-review-code-file={file.path}
+    >
+      <view className="diff-code-file__header" bindtap={onToggle}>
+        <view className="diff-code-file__title">
+          <Icon
+            name="chevron-right"
+            size={14}
+            color="#818181"
+            className={collapsed ? undefined : "rotate-90"}
+          />
+          <text className="diff-code-file__path">{file.path}</text>
+        </view>
+        <view className="diff-code-file__stat">
+          <text className="diff-code-file__additions">+{file.additions}</text>
+          <text className="diff-code-file__deletions">−{file.deletions}</text>
+        </view>
+      </view>
+      {!collapsed ? (
+        mode === "split" ? (
+          <LynxSplitDiffBody file={file} wordWrap={wordWrap} />
+        ) : (
+          <view className="diff-code-file__body">
+            {file.lines.map((line, index) => (
+              <view
+                key={`${file.path}:${index}`}
+                className={`diff-code-line diff-code-line--${line.kind}${
+                  wordWrap ? " diff-code-line--wrap" : ""
+                }`}
+                data-review-code-line={line.kind}
+              >
+                <text className="diff-code-line__number">
+                  {line.newLine ?? line.oldLine ?? ""}
+                </text>
+                <text className="diff-code-line__marker">
+                  {line.kind === "addition" ? "+" : line.kind === "deletion" ? "−" : " "}
+                </text>
+                <text className="diff-code-line__content">{line.content || " "}</text>
+              </view>
+            ))}
+          </view>
+        )
+      ) : null}
+    </view>
+  );
+}
+
+function LynxSplitDiffBody({
+  file,
+  wordWrap,
+}: {
+  readonly file: UnifiedDiffFile;
+  readonly wordWrap: boolean;
+}) {
+  return (
+    <view className="diff-code-file__body diff-code-file__body--split">
+      {pairSplitLines(file).map((pair, index) => (
+        <view key={`${file.path}:split:${index}`} className="diff-code-split-row">
+          <LynxSplitDiffCell line={pair.left} side="left" wordWrap={wordWrap} />
+          <LynxSplitDiffCell line={pair.right} side="right" wordWrap={wordWrap} />
+        </view>
+      ))}
+    </view>
+  );
+}
+
+function LynxSplitDiffCell({
+  line,
+  side,
+  wordWrap,
+}: {
+  readonly line: UnifiedDiffFile["lines"][number] | null;
+  readonly side: "left" | "right";
+  readonly wordWrap: boolean;
+}) {
+  const kind = line?.kind ?? "empty";
+  return (
+    <view
+      className={`diff-code-split-cell diff-code-split-cell--${side} diff-code-line--${kind}${
+        wordWrap ? " diff-code-line--wrap" : ""
+      }`}
+    >
+      <text className="diff-code-line__number">
+        {line ? (side === "left" ? line.oldLine : line.newLine) ?? "" : ""}
+      </text>
+      <text className="diff-code-line__marker">
+        {line?.kind === "addition" ? "+" : line?.kind === "deletion" ? "−" : " "}
+      </text>
+      <text className="diff-code-line__content">{line?.content || " "}</text>
+    </view>
+  );
+}
+
+function pairSplitLines(file: UnifiedDiffFile) {
+  const rows: Array<{
+    left: UnifiedDiffFile["lines"][number] | null;
+    right: UnifiedDiffFile["lines"][number] | null;
+  }> = [];
+  let index = 0;
+  while (index < file.lines.length) {
+    const line = file.lines[index];
+    if (!line) break;
+    if (line.kind === "context") {
+      rows.push({ left: line, right: line });
+      index += 1;
+      continue;
+    }
+    const deletions = [];
+    const additions = [];
+    while (file.lines[index]?.kind === "deletion") {
+      deletions.push(file.lines[index]!);
+      index += 1;
+    }
+    while (file.lines[index]?.kind === "addition") {
+      additions.push(file.lines[index]!);
+      index += 1;
+    }
+    const rowCount = Math.max(deletions.length, additions.length);
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+      rows.push({
+        left: deletions[rowIndex] ?? null,
+        right: additions[rowIndex] ?? null,
+      });
+    }
+  }
+  return rows;
 }
