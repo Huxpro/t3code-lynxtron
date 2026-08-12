@@ -218,6 +218,7 @@ describe("fidelity loss", () => {
     const historyPath = path.join(root, "history.json");
     const outputPath = path.join(root, "history.json.out");
     const csvPath = path.join(root, "history.csv");
+    const attributionCsvPath = path.join(root, "commit-attribution.csv");
     const htmlPath = path.join(root, "index.html");
     writeFileSync(modelPath, JSON.stringify(model()));
     writeFileSync(
@@ -251,6 +252,56 @@ describe("fidelity loss", () => {
     const direct = buildArtifacts(model(), JSON.parse(readFileSync(historyPath, "utf8")));
     assert.equal(readFileSync(outputPath, "utf8"), direct.json);
     assert.match(readFileSync(csvPath, "utf8"), /improvementFromBaseline/u);
+    assert.match(readFileSync(attributionCsvPath, "utf8"), /allocation/u);
     assert.match(readFileSync(htmlPath, "utf8"), /Loss falls only when evidence earns it/u);
   });
+
+  it("keeps attribution deltas equal to measured checkpoint deltas", () => {
+    const inputModel = model();
+    const data = computeTimeline(
+      inputModel,
+      history([
+        {
+          id: "baseline",
+          observedAt: "2026-08-01T00:00:00Z",
+          label: "Baseline",
+          commit: "25db04b687d3473a3b807a6e674c71fecc534b2d",
+          updates: [
+            {
+              states: ["hero"],
+              clients: "*",
+              dimensions: {
+                content: { residual: 0.1, confidence: 1 },
+                material: { residual: 0.2, confidence: 1 },
+              },
+            },
+          ],
+        },
+        {
+          id: "policy",
+          observedAt: "2026-08-02T00:00:00Z",
+          label: "Policy",
+          commit: "a5352f06f872d5f256a970804a9c4b5116e84c87",
+          confidenceEvents: [
+            {
+              states: "*",
+              clients: "*",
+              dimensions: "*",
+              factor: 0.5,
+              reason: "Evidence is stale.",
+            },
+          ],
+        },
+      ]),
+    );
+    const rows = data.attribution.filter((row) => typeof row.delta === "number");
+    const delta = rows.reduce((sum, row) => sum + row.delta, 0);
+    assert.equal(roundForTest(delta), roundForTest(data.points[1].loss - data.points[0].loss));
+    assert.isTrue(data.attribution.some((row) => row.allocation === "unmeasured-product-commit"));
+    assert.isTrue(data.attribution.some((row) => row.allocation === "evidence-policy"));
+  });
 });
+
+function roundForTest(value) {
+  return Number(value.toFixed(6));
+}

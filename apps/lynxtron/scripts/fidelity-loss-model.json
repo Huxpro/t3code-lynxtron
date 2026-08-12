@@ -6,6 +6,7 @@
   "expectedCellCount": 444,
   "expectedTotalWeight": 147.4,
   "formula": {
+    "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
     "unknownConfidence": 0,
     "supersededEvidenceConfidenceFactor": 0.25,

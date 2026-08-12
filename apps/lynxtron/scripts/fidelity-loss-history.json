@@ -23,9 +23,36 @@
       "id": "baseline-geometry",
       "observedAt": "2026-07-29T04:00:19+08:00",
       "commit": "8d2f45d9c2efacec7eea66b59435161f1f5849d9",
+      "codeCommit": "f8fd18452526bb5256b178ddd849df4925238115",
       "codeState": "archive",
       "label": "First archived matched geometry",
       "narrative": "New Thread exposed a 216px focal geometry miss and complete content drift; Settings and the populated Sidebar were already structurally close.",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/baseline-web.png",
+          "sha256": "b91e3db4ef8e1a21487713a866894e415bc1f315bfd122db7b599e8a4e495087",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynxtron candidate",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/baseline-lynx.jpg",
+          "sha256": "fe20a5bbca0831a63ece5f5cfd2eae298ca1e3ed32e1b428b635e9394f2b3627",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        }
+      ],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-07-27/T5-F3/new-thread/1280x820/metrics.json",
@@ -227,6 +254,32 @@
       "codeState": "working-tree",
       "label": "39-state strict evidence matrix",
       "narrative": "Plan 11C expanded the denominator to 39 product states. Browser content coverage became broad, while Native evidence remained intentionally sparse and R5/R10 blockers stayed explicit.",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/strict-web.png",
+          "sha256": "e734543fc83ae47b238266c14be090331b1493551feadbdf513d468e22114cca",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/strict-lynx.png",
+          "sha256": "3c005094adc377f1e67dd2d78a3d190581d26b6f9801f357777694791db4a51d",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        }
+      ],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/manifests/main-shell.json",
@@ -553,6 +606,44 @@
       "codeState": "working-tree",
       "label": "Model Picker fidelity closeout",
       "narrative": "Browser geometry reached zero panel delta; Native proved main transport, exact 360×346 panel geometry, real-tap dismissal, scrolling, search, favorites, and provider/model selection. Selected-state pixels remained explicitly pending.",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-lynx.png",
+          "sha256": "8fe0105f287ed8b699a9f335413d25df590cdaaf6c2e2a6b2256ff2eb0a4c48a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Lynxtron Native",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-native.png",
+          "sha256": "4805038d548494871bae7ef60545f798f5eeb278f7717aa755c0f99ef47344b2",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        }
+      ],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-11/fidelity/outcome.json",

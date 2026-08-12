@@ -254,6 +254,15 @@ export function validateHistory(model, history, options = {}) {
       });
       if (commit.status !== 0) errors.push(`${point.id}: commit does not exist ${point.commit}`);
     }
+    if (point.codeCommit) {
+      const codeCommit = spawnSync("git", ["cat-file", "-e", `${point.codeCommit}^{commit}`], {
+        cwd: repoRoot,
+        stdio: "ignore",
+      });
+      if (codeCommit.status !== 0) {
+        errors.push(`${point.id}: codeCommit does not exist ${point.codeCommit}`);
+      }
+    }
     for (const source of point.sources ?? []) {
       if (!source.path || !source.classification) {
         errors.push(`${point.id}: every source requires path and classification`);
@@ -281,6 +290,33 @@ export function validateHistory(model, history, options = {}) {
           }
         } else {
           warnings.push(`${point.id}: backup source is unavailable at ${backupPath}`);
+        }
+      }
+    }
+    for (const screenshot of point.screenshots ?? []) {
+      if (
+        !screenshot.path ||
+        !screenshot.label ||
+        !["web", "lynx", "native", "diff", "evidence"].includes(screenshot.client) ||
+        !["direct", "representative"].includes(screenshot.relationship)
+      ) {
+        errors.push(`${point.id}: invalid screenshot entry`);
+        continue;
+      }
+      if (/^https:\/\//u.test(screenshot.path)) {
+        if (
+          screenshot.hosting?.provider !== "github-pages" ||
+          !screenshot.hosting.repository ||
+          !/^[a-f0-9]{40}$/u.test(screenshot.hosting.commit ?? "")
+        ) {
+          errors.push(`${point.id}: remote screenshot requires immutable GitHub hosting metadata`);
+        }
+      } else {
+        const absolutePath = path.resolve(appRoot, screenshot.path);
+        if (!existsSync(absolutePath)) {
+          errors.push(`${point.id}: missing screenshot ${screenshot.path}`);
+        } else if (sha256(absolutePath) !== screenshot.sha256) {
+          errors.push(`${point.id}: screenshot hash drift ${screenshot.path}`);
         }
       }
     }
@@ -449,6 +485,255 @@ function computeSnapshot(model, observations) {
   };
 }
 
+const pathSurfaceRules = [
+  ["composer", /composer|modelSelection|pendingRequest/iu],
+  ["transcript", /transcript|timeline|markdown|message|scroll/iu],
+  ["overlays", /modelPicker|commandPalette|quickSwitch|searchOverlay|filePicker/iu],
+  ["settings", /settings|sourceControl|connection/iu],
+  ["review", /diff|changedFiles|rightPanel|fileTree|checkpoint|editor/iu],
+  ["shell", /sidebar|appShell|chatRoute|chatHeader|viewport|theme|keyboard|connector|branding/iu],
+];
+
+function surfaceForPath(filePath) {
+  for (const [surface, expression] of pathSurfaceRules) {
+    if (expression.test(filePath)) return surface;
+  }
+  if (
+    filePath.startsWith("apps/lynxtron/") ||
+    filePath.startsWith("apps/web/") ||
+    filePath.startsWith("packages/client-runtime/")
+  ) {
+    return "shell";
+  }
+  return null;
+}
+
+function gitLines(args) {
+  const result = spawnSync("git", args, {
+    cwd: repoRoot,
+    encoding: "utf8",
+  });
+  if (result.status !== 0) return [];
+  return result.stdout.trim() ? result.stdout.trim().split("\n") : [];
+}
+
+function commitsBetween(previousCommit, nextCommit) {
+  if (!previousCommit || !nextCommit || previousCommit === nextCommit) return [];
+  const ancestor = spawnSync("git", ["merge-base", "--is-ancestor", previousCommit, nextCommit], {
+    cwd: repoRoot,
+    stdio: "ignore",
+  });
+  if (ancestor.status !== 0) return [];
+  return gitLines([
+    "log",
+    "--first-parent",
+    "--reverse",
+    "--format=%H%x09%aI%x09%s",
+    `${previousCommit}..${nextCommit}`,
+    "--",
+    "apps/lynxtron",
+    "apps/web",
+    "packages/client-runtime",
+    "packages/contracts",
+    "apps/server",
+  ]).map((line) => {
+    const [commit, committedAt, ...subject] = line.split("\t");
+    const paths = gitLines(["diff-tree", "--no-commit-id", "--name-only", "-r", commit]);
+    const surfaces = [...new Set(paths.map(surfaceForPath).filter(Boolean))];
+    const lineStats = gitLines(["show", "--format=", "--numstat", commit]);
+    let changedLines = 0;
+    for (const stat of lineStats) {
+      const [added, deleted] = stat.split("\t");
+      if (/^\d+$/u.test(added) && /^\d+$/u.test(deleted)) {
+        changedLines += Number(added) + Number(deleted);
+      }
+    }
+    return {
+      changedLines,
+      commit,
+      committedAt,
+      paths,
+      subject: subject.join("\t"),
+      surfaces,
+    };
+  });
+}
+
+function allocateCommitAttribution(previous, current) {
+  const surfaceDeltas = Object.fromEntries(
+    Object.keys(current.byGroup).map((surface) => [
+      surface,
+      round(current.byGroup[surface].loss - previous.byGroup[surface].loss),
+    ]),
+  );
+  const totalDelta = round(current.loss - previous.loss);
+  const commits = commitsBetween(previous.codeCommit, current.codeCommit);
+  const confidenceOnlyChange =
+    current.observedResidual === previous.observedResidual &&
+    current.evidenceDebt > previous.evidenceDebt;
+  if (confidenceOnlyChange) {
+    return [
+      ...commits.map((commit) => ({
+        allocation: "unmeasured-product-commit",
+        changedLines: commit.changedLines,
+        commit: commit.commit,
+        committedAt: commit.committedAt,
+        confidence: 0,
+        delta: null,
+        reason:
+          "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+        subject: commit.subject,
+        surfaces: commit.surfaces,
+      })),
+      {
+        allocation: "evidence-policy",
+        changedLines: 0,
+        commit: current.codeCommit,
+        committedAt: current.observedAt,
+        confidence: 1,
+        delta: totalDelta,
+        reason:
+          "Conservative loss rose because stale pre-final5 evidence was demoted. Observed product residual did not change.",
+        subject: current.label,
+        surfaces: [],
+      },
+    ];
+  }
+  if (commits.length === 0) {
+    const raised = totalDelta > 0;
+    return [
+      {
+        allocation:
+          current.codeState === "working-tree"
+            ? raised
+              ? "measurement-refinement"
+              : "evidence-session"
+            : "evidence-session",
+        changedLines: 0,
+        commit: current.codeCommit,
+        committedAt: current.observedAt,
+        confidence: current.codeState === "working-tree" ? 0.55 : 0.7,
+        delta: totalDelta,
+        reason:
+          current.codeState === "working-tree"
+            ? raised
+              ? "A stricter measurement replaced a coarse gate inside an uncommitted evidence session; this is not attributable to a product commit."
+              : "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible."
+            : "No product commit lies between these measured checkpoints.",
+        subject: current.label,
+        surfaces: Object.keys(surfaceDeltas).filter(
+          (surface) => Math.abs(surfaceDeltas[surface]) > 1e-9,
+        ),
+      },
+    ];
+  }
+
+  const absoluteSurfaceDeltas = Object.fromEntries(
+    Object.entries(surfaceDeltas).map(([surface, delta]) => [surface, Math.abs(delta)]),
+  );
+  const rows = commits.map((commit) => {
+    const relevantSurfaces =
+      commit.surfaces.length > 0
+        ? commit.surfaces
+        : Object.keys(surfaceDeltas).filter((surface) => Math.abs(surfaceDeltas[surface]) > 1e-9);
+    const surfaceMass = relevantSurfaces.reduce(
+      (sum, surface) => sum + (absoluteSurfaceDeltas[surface] ?? 0),
+      0,
+    );
+    return {
+      ...commit,
+      allocation: "estimated-from-checkpoint-delta",
+      confidence: 0.35,
+      rawWeight:
+        Math.max(1, Math.sqrt(Math.max(1, commit.changedLines))) * Math.max(0.001, surfaceMass),
+    };
+  });
+  const weightTotal = rows.reduce((sum, row) => sum + row.rawWeight, 0);
+  let assigned = 0;
+  return rows.map((row, index) => {
+    const delta =
+      index === rows.length - 1
+        ? round(totalDelta - assigned)
+        : round((totalDelta * row.rawWeight) / weightTotal);
+    assigned = round(assigned + delta);
+    const direction = delta > 0 ? "raised" : delta < 0 ? "lowered" : "did not move";
+    return {
+      allocation: row.allocation,
+      changedLines: row.changedLines,
+      commit: row.commit,
+      committedAt: row.committedAt,
+      confidence: row.confidence,
+      delta,
+      reason: `${direction} checkpoint loss through ${row.surfaces.join(", ") || "cross-cutting"} changes; attribution is proportional to touched-surface loss and change size.`,
+      subject: row.subject,
+      surfaces: row.surfaces,
+    };
+  });
+}
+
+function buildAttribution(points) {
+  const rows = [];
+  for (let index = 1; index < points.length; index += 1) {
+    const previous = points[index - 1];
+    const current = points[index];
+    const interval = allocateCommitAttribution(previous, current);
+    for (const row of interval) {
+      rows.push({
+        ...row,
+        fromPoint: previous.id,
+        toPoint: current.id,
+      });
+    }
+  }
+  return rows;
+}
+
+function buildCommitSeries(model, points, attribution) {
+  const alpha = Number(model.formula.commitSmoothingAlpha);
+  const series = [
+    {
+      allocation: "measured-checkpoint",
+      commit: points[0].codeCommit,
+      committedAt: points[0].observedAt,
+      confidence: points[0].confidence,
+      delta: null,
+      measuredCheckpoint: points[0].id,
+      rawLoss: points[0].loss,
+      smoothedLoss: points[0].loss,
+      subject: points[0].label,
+    },
+  ];
+  let rawLoss = points[0].loss;
+  let smoothedLoss = rawLoss;
+  for (const row of attribution) {
+    if (typeof row.delta === "number") rawLoss = clamp(rawLoss + row.delta);
+    smoothedLoss = alpha * rawLoss + (1 - alpha) * smoothedLoss;
+    series.push({
+      allocation: row.allocation,
+      commit: row.commit,
+      committedAt: row.committedAt,
+      confidence: row.confidence,
+      delta: row.delta,
+      measuredCheckpoint: null,
+      rawLoss: round(rawLoss),
+      smoothedLoss: round(smoothedLoss),
+      subject: row.subject,
+    });
+  }
+  const checkpointById = new Map(points.map((point) => [point.id, point]));
+  for (let index = 0; index < attribution.length; index += 1) {
+    const current = attribution[index];
+    const next = attribution[index + 1];
+    if (next?.toPoint === current.toPoint) continue;
+    const point = checkpointById.get(current.toPoint);
+    if (!point) continue;
+    const target = series[index + 1];
+    target.measuredCheckpoint = point.id;
+    target.rawLoss = point.loss;
+  }
+  return series;
+}
+
 export function pixelResidual(model, metrics) {
   const formula = model.formula.pixelResidual;
   const mae = clamp(Number(metrics.mae ?? 0) / formula.maeScale);
@@ -504,11 +789,13 @@ export function computeTimeline(model, history) {
     }
     points.push({
       commit: point.commit ?? null,
+      codeCommit: point.codeCommit ?? point.commit ?? null,
       codeState: point.codeState ?? "commit",
       id: point.id,
       label: point.label,
       narrative: point.narrative ?? "",
       observedAt: point.observedAt,
+      screenshots: point.screenshots ?? [],
       sources: point.sources ?? [],
       ...computeSnapshot(model, observations),
     });
@@ -521,7 +808,11 @@ export function computeTimeline(model, history) {
     point.bestLoss = round(bestLoss);
     point.improvementFromBaseline = round(firstLoss - point.loss);
   }
+  const attribution = buildAttribution(points);
+  const commitSeries = buildCommitSeries(model, points, attribution);
   return {
+    attribution,
+    commitSeries,
     generatedAt: history.updatedAt,
     historyId: history.id,
     model: {
@@ -577,6 +868,36 @@ function renderCsv(data) {
   return `${rows.map((row) => row.map(csvCell).join(",")).join("\n")}\n`;
 }
 
+function renderAttributionCsv(data) {
+  const rows = [
+    [
+      "committedAt",
+      "commit",
+      "allocation",
+      "delta",
+      "confidence",
+      "subject",
+      "surfaces",
+      "fromPoint",
+      "toPoint",
+      "reason",
+    ],
+    ...data.attribution.map((row) => [
+      row.committedAt,
+      row.commit,
+      row.allocation,
+      row.delta,
+      row.confidence,
+      row.subject,
+      row.surfaces.join("+"),
+      row.fromPoint,
+      row.toPoint,
+      row.reason,
+    ]),
+  ];
+  return `${rows.map((row) => row.map(csvCell).join(",")).join("\n")}\n`;
+}
+
 function renderHtml(data) {
   const payload = JSON.stringify(data).replaceAll("<", "\\u003c");
   return `<!doctype html>
@@ -597,10 +918,13 @@ button,select{font:inherit}.page{width:min(1540px,calc(100% - 40px));margin:0 au
 .tooltip{position:absolute;display:none;z-index:2;min-width:250px;max-width:340px;padding:13px 14px;background:var(--ink);color:var(--white);pointer-events:none;box-shadow:8px 8px 0 #aeb8b2}.tooltip strong{display:block;font-size:14px}.tooltip small{display:block;margin-top:5px;color:#bdc6c1;line-height:1.45}.tooltip-grid{display:grid;grid-template-columns:1fr auto;gap:4px 16px;margin-top:10px;font:12px/1.4 "JetBrains Mono","SFMono-Regular",monospace}
 .split{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:28px}.bars{display:grid;gap:12px}.bar-row{display:grid;grid-template-columns:190px 1fr 56px;align-items:center;gap:12px;font-size:12px}.bar-track{height:11px;background:var(--soft);position:relative}.bar-fill{height:100%;background:var(--red)}.bar-row output{font:600 11px/1 "JetBrains Mono","SFMono-Regular",monospace;text-align:right}
 .timeline{border-left:1px solid var(--ink);padding-left:24px}.event{position:relative;padding:0 0 24px 18px}.event::before{content:"";position:absolute;left:-30px;top:4px;width:10px;height:10px;border:2px solid var(--paper);background:var(--event-color,var(--ink));outline:1px solid var(--ink)}.event time{font:600 10px/1.2 "JetBrains Mono","SFMono-Regular",monospace;color:var(--muted)}.event h3{margin:4px 0;font-size:15px}.event p{margin:0;color:#4c5752;font-size:12px;line-height:1.5}.event code{font-size:10px}
+.review{display:grid;grid-template-columns:minmax(280px,.62fr) minmax(0,1.38fr);gap:26px}.checkpoint-list{display:grid;align-content:start;border-top:1px solid var(--ink)}.checkpoint{display:grid;grid-template-columns:78px 1fr auto;gap:10px;padding:12px 0;border:0;border-bottom:1px solid var(--line);background:transparent;text-align:left;cursor:pointer}.checkpoint[aria-current="true"]{background:var(--ink);color:var(--white);padding-left:10px;padding-right:10px}.checkpoint time{font:600 10px/1.2 "JetBrains Mono","SFMono-Regular",monospace}.checkpoint strong{font-size:13px}.checkpoint output{font:700 11px/1 "JetBrains Mono","SFMono-Regular",monospace}.review-stage{min-width:0}.review-head{display:flex;justify-content:space-between;gap:20px;align-items:start;border-bottom:1px solid var(--ink);padding-bottom:12px}.review-head h3{margin:0;font-size:22px}.review-head p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.review-score{font:700 22px/1 "JetBrains Mono","SFMono-Regular",monospace;color:var(--red)}.screens{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}.screen{margin:0;border:1px solid var(--line);background:#111}.screen figcaption{display:flex;justify-content:space-between;gap:8px;padding:8px 9px;background:var(--white);font-size:10px}.screen img{display:block;width:100%;aspect-ratio:1280/820;object-fit:cover;object-position:top}.screen--empty{display:grid;place-items:center;min-height:220px;background:repeating-linear-gradient(135deg,var(--soft),var(--soft) 8px,var(--paper) 8px,var(--paper) 16px);color:var(--muted);font:600 11px/1.5 "JetBrains Mono","SFMono-Regular",monospace;text-align:center;padding:30px}.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);margin-top:12px;border:1px solid var(--line)}.calc div{background:var(--white);padding:10px}.calc span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase}.calc b{display:block;margin-top:4px;font:700 14px/1 "JetBrains Mono","SFMono-Regular",monospace}
+.attribution-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.attribution-controls label{font:600 10px/1 "JetBrains Mono","SFMono-Regular",monospace;text-transform:uppercase}.attribution-controls select{margin-left:6px;border:1px solid var(--ink);border-radius:0;background:var(--white);padding:6px 28px 6px 8px}.attribution-summary{color:var(--muted);font-size:11px}.delta-up{color:var(--red)}.delta-down{color:var(--green)}.delta-none{color:var(--muted)}.allocation{font:600 9px/1 "JetBrains Mono","SFMono-Regular",monospace;text-transform:uppercase}.commit-subject{max-width:520px;white-space:normal;line-height:1.35}.confidence{display:inline-block;width:44px;height:6px;background:var(--soft);vertical-align:middle}.confidence i{display:block;height:100%;background:var(--blue)}
+.commit-chart-shell{border:1px solid var(--ink);background:var(--white);margin-bottom:18px}.commit-chart-shell svg{display:block;width:100%;height:auto}.commit-chart-legend{display:flex;gap:18px;padding:10px 14px;border-top:1px solid var(--line);font:600 10px/1 "JetBrains Mono","SFMono-Regular",monospace;text-transform:uppercase}.commit-chart-legend span{display:inline-flex;align-items:center;gap:7px}.commit-chart-legend i{width:18px;height:3px;background:var(--color)}
 .table-wrap{overflow:auto;border:1px solid var(--ink);background:var(--white)}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{position:sticky;top:0;background:var(--ink);color:var(--white);font:600 10px/1.2 "JetBrains Mono","SFMono-Regular",monospace;text-transform:uppercase;letter-spacing:.06em}td.num{font:600 11px/1 "JetBrains Mono","SFMono-Regular",monospace;text-align:right}.status-dot{display:inline-block;width:8px;height:8px;margin-right:7px;background:var(--dot)}
 .controls{display:flex;gap:10px;align-items:center}.controls label{font:600 10px/1 "JetBrains Mono","SFMono-Regular",monospace;text-transform:uppercase}.controls select{margin-left:7px;border:1px solid var(--ink);background:var(--white);padding:7px 28px 7px 8px;border-radius:0}
 .foot{margin:28px 0 0 96px;display:grid;grid-template-columns:1fr 1fr;gap:40px;color:var(--muted);font-size:12px;line-height:1.55}.foot code{color:var(--ink)}
-@media(max-width:900px){body{background:var(--paper)}.page{width:min(100% - 24px,760px);padding-top:24px}.mast,.metrics,.section,.foot{margin-left:0;padding-left:0}.mast{grid-template-columns:1fr;gap:28px}.metrics{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.section-note{text-align:left}.bar-row{grid-template-columns:130px 1fr 48px}.foot{grid-template-columns:1fr}.metric:nth-child(2){border-right:0}.metric:nth-child(3){padding-left:0}.metric:last-child{padding-left:18px}}
+@media(max-width:900px){body{background:var(--paper)}.page{width:min(100% - 24px,760px);padding-top:24px}.mast,.metrics,.section,.foot{margin-left:0;padding-left:0}.mast{grid-template-columns:1fr;gap:28px}.metrics{grid-template-columns:1fr 1fr}.split,.review{grid-template-columns:1fr}.screens{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.section-note{text-align:left}.bar-row{grid-template-columns:130px 1fr 48px}.foot{grid-template-columns:1fr}.metric:nth-child(2){border-right:0}.metric:nth-child(3){padding-left:0}.metric:last-child{padding-left:18px}}
 </style>
 </head>
 <body>
@@ -628,6 +952,28 @@ button,select{font:inherit}.page{width:min(1540px,calc(100% - 40px));margin:0 au
       <div class="tooltip" id="tooltip"></div>
       <div class="legend" id="legend"></div>
     </div>
+  </section>
+  <section class="section">
+    <div class="section-head">
+      <div><p class="kicker">Loss ↔ pixels</p><h2>Checkpoint comparison review</h2></div>
+      <p class="section-note">Select a measured checkpoint to inspect the exact screenshots behind it. Empty slots mean the checkpoint is metrics-only; no image is invented.</p>
+    </div>
+    <div class="review">
+      <div class="checkpoint-list" id="checkpointList"></div>
+      <div class="review-stage" id="reviewStage"></div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="section-head">
+      <div><p class="kicker">Commit observability</p><h2>Estimated contribution between measured checkpoints</h2></div>
+      <div class="attribution-controls">
+        <label>Day<select id="dayFilter"><option value="all">All</option></select></label>
+        <label>Direction<select id="directionFilter"><option value="all">All</option><option value="down">Lowered loss</option><option value="up">Raised loss</option><option value="unmeasured">Unmeasured</option></select></label>
+        <span class="attribution-summary" id="attributionSummary"></span>
+      </div>
+    </div>
+    <div class="commit-chart-shell"><svg id="commitChart" viewBox="0 0 1200 360" role="img" aria-label="Commit-level raw and smoothed fidelity loss"></svg><div class="commit-chart-legend"><span style="--color:#8d9892"><i></i>Raw attributed loss</span><span style="--color:#315f8b"><i></i>EMA α=${data.model.formula.commitSmoothingAlpha}</span><span style="--color:#b93b32"><i></i>Measured checkpoint</span></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Day / revision</th><th>Contribution</th><th>Confidence</th><th>Cause</th><th>Surface</th><th>Allocation</th></tr></thead><tbody id="attributionRows"></tbody></table></div>
   </section>
   <section class="section split">
     <div>
@@ -657,6 +1003,7 @@ const points=data.points;
 const latest=points.at(-1);
 const first=points[0];
 const best=points.reduce((a,b)=>a.loss<b.loss?a:b);
+let selectedPoint=7;
 const pct=(v)=>\`\${(v*100).toFixed(1)}%\`;
 const esc=(v)=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 document.querySelector("#metrics").innerHTML=[
@@ -699,6 +1046,43 @@ const filter=document.querySelector("#groupFilter");
 for(const [id,label] of Object.entries(data.model.groups))filter.insertAdjacentHTML("beforeend",\`<option value="\${id}">\${esc(label)}</option>\`);
 function renderStates(){const group=filter.value;document.querySelector("#stateRows").innerHTML=latest.states.filter(s=>group==="all"||s.group===group).map(s=>\`<tr><td><span class="status-dot" style="--dot:\${s.loss>.75?"#b93b32":s.loss>.45?"#a26a12":"#176b45"}"></span>\${esc(s.label)}</td><td>\${esc(data.model.groups[s.group])}</td><td class="num">\${s.weight}</td><td class="num">\${pct(s.loss)}</td><td class="num">\${s.observedResidual==null?"—":pct(s.observedResidual)}</td><td class="num">\${pct(s.evidenceDebt)}</td></tr>\`).join("")}
 filter.addEventListener("change",renderStates);renderStates();
+
+const checkpointList=document.querySelector("#checkpointList");
+const reviewStage=document.querySelector("#reviewStage");
+function renderReview(){
+  checkpointList.innerHTML=points.map((point,index)=>\`<button class="checkpoint" data-index="\${index}" aria-current="\${index===selectedPoint}"><time>\${esc(point.observedAt.slice(5,10))}</time><strong>\${esc(point.label)}</strong><output>\${pct(point.loss)}</output></button>\`).join("");
+  const point=points[selectedPoint];
+  const frames=point.screenshots.length?point.screenshots.map(screen=>\`<figure class="screen"><figcaption><b>\${esc(screen.label)}</b><span>\${esc(screen.relationship)}</span></figcaption><img src="\${esc(screen.path.startsWith("https://")?screen.path:screen.path.replace("reports/fidelity-loss/",""))}" alt="\${esc(point.label+" · "+screen.label)}" loading="lazy"></figure>\`).join(""):\`<div class="screen--empty">Metrics-only checkpoint<br>No retained screenshot is attached.</div>\`;
+  reviewStage.innerHTML=\`<div class="review-head"><div><h3>\${esc(point.label)}</h3><p>\${esc(point.observedAt)} · \${esc(point.commit?.slice(0,10)??"evidence")}\${point.codeState==="working-tree"?" + WIP":""}<br>\${esc(point.narrative)}</p></div><div class="review-score">\${pct(point.loss)}</div></div><div class="screens">\${frames}</div><div class="calc"><div><span>Observed</span><b>\${pct(point.observedResidual??1)}</b></div><div><span>Evidence debt</span><b>\${pct(point.evidenceDebt)}</b></div><div><span>Coverage</span><b>\${pct(point.confidence)}</b></div><div><span>Historical best</span><b>\${pct(point.bestLoss)}</b></div></div>\`;
+}
+checkpointList.addEventListener("click",event=>{const button=event.target.closest(".checkpoint");if(!button)return;selectedPoint=Number(button.dataset.index);renderReview()});renderReview();
+
+const dayFilter=document.querySelector("#dayFilter");
+const directionFilter=document.querySelector("#directionFilter");
+const commitChart=document.querySelector("#commitChart");
+function renderCommitChart(){
+  const rows=data.commitSeries,width=1200,height=360,pad={l:70,r:28,t:26,b:48};
+  const x=index=>pad.l+(index/Math.max(1,rows.length-1))*(width-pad.l-pad.r);
+  const y=value=>pad.t+(1-value)*(height-pad.t-pad.b);
+  const grid=[0,.25,.5,.75,1].map(value=>\`<g><line x1="\${pad.l}" y1="\${y(value)}" x2="\${width-pad.r}" y2="\${y(value)}" stroke="#d7ddda"/><text x="\${pad.l-10}" y="\${y(value)+4}" text-anchor="end" font-size="10" fill="#65706b">\${Math.round(value*100)}</text></g>\`).join("");
+  const raw=rows.map((row,index)=>\`\${index?"L":"M"}\${x(index).toFixed(1)},\${y(row.rawLoss).toFixed(1)}\`).join(" ");
+  const smooth=rows.map((row,index)=>\`\${index?"L":"M"}\${x(index).toFixed(1)},\${y(row.smoothedLoss).toFixed(1)}\`).join(" ");
+  const checkpoints=rows.map((row,index)=>row.measuredCheckpoint?\`<circle cx="\${x(index)}" cy="\${y(row.rawLoss)}" r="4.5" fill="#fbfcfb" stroke="#b93b32" stroke-width="2"><title>\${esc(row.measuredCheckpoint)} · \${pct(row.rawLoss)}</title></circle>\`:"").join("");
+  const dayTicks=[];let previousDay="";
+  rows.forEach((row,index)=>{const day=row.committedAt.slice(5,10);if(day!==previousDay){dayTicks.push(\`<text x="\${x(index)}" y="\${height-18}" font-size="9" fill="#65706b" transform="rotate(-35 \${x(index)} \${height-18})" text-anchor="end">\${day}</text>\`);previousDay=day}});
+  commitChart.innerHTML=\`<rect width="\${width}" height="\${height}" fill="#fbfcfb"/>\${grid}<path d="\${raw}" fill="none" stroke="#8d9892" stroke-width="1.2"/><path d="\${smooth}" fill="none" stroke="#315f8b" stroke-width="3"/>\${checkpoints}\${dayTicks.join("")}\`;
+}
+renderCommitChart();
+for(const day of [...new Set(data.attribution.map(row=>row.committedAt.slice(0,10)))])dayFilter.insertAdjacentHTML("beforeend",\`<option value="\${day}">\${day}</option>\`);
+function renderAttribution(){
+  const day=dayFilter.value,direction=directionFilter.value;
+  const rows=data.attribution.filter(row=>(day==="all"||row.committedAt.startsWith(day))&&(direction==="all"||(direction==="down"&&row.delta<0)||(direction==="up"&&row.delta>0)||(direction==="unmeasured"&&row.delta==null)));
+  const measured=rows.filter(row=>typeof row.delta==="number");
+  const total=measured.reduce((sum,row)=>sum+row.delta,0);
+  attributionSummary.textContent=\`\${rows.length} rows · \${measured.length} attributed · net \${total>=0?"+":""}\${(total*100).toFixed(2)} pts\`;
+  attributionRows.innerHTML=rows.map(row=>{const delta=row.delta==null?"unmeasured":\`\${row.delta>0?"+":""}\${(row.delta*100).toFixed(3)} pts\`;const tone=row.delta==null?"delta-none":row.delta>0?"delta-up":"delta-down";return \`<tr><td><code>\${esc(row.committedAt.slice(0,10))}</code><br><code>\${esc(row.commit?.slice(0,10)??"session")}</code></td><td class="num \${tone}">\${delta}</td><td><span class="confidence"><i style="width:\${row.confidence*100}%"></i></span> \${(row.confidence*100).toFixed(0)}%</td><td class="commit-subject"><b>\${esc(row.subject)}</b><br><small>\${esc(row.reason)}</small></td><td>\${esc(row.surfaces.join(", ")||"—")}</td><td><span class="allocation">\${esc(row.allocation)}</span></td></tr>\`}).join("");
+}
+dayFilter.addEventListener("change",renderAttribution);directionFilter.addEventListener("change",renderAttribution);renderAttribution();
 </script>
 </body>
 </html>
@@ -719,6 +1103,7 @@ function writeOrCheck(filePath, content, check) {
 export function buildArtifacts(model, history) {
   const timeline = computeTimeline(model, history);
   return {
+    attributionCsv: renderAttributionCsv(timeline),
     csv: renderCsv(timeline),
     html: renderHtml(timeline),
     json: `${JSON.stringify(timeline, null, 2)}\n`,
@@ -741,6 +1126,11 @@ function main() {
   const artifacts = buildArtifacts(model, history);
   writeOrCheck(options.outputPath, artifacts.json, options.check);
   writeOrCheck(options.csvPath, artifacts.csv, options.check);
+  writeOrCheck(
+    path.join(path.dirname(options.csvPath), "commit-attribution.csv"),
+    artifacts.attributionCsv,
+    options.check,
+  );
   writeOrCheck(options.htmlPath, artifacts.html, options.check);
   const latest = artifacts.timeline.points.at(-1);
   console.log(
