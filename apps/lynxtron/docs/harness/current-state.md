@@ -54,6 +54,15 @@ Plan 11 prose and screenshots.
   historical working-tree artifacts. They are not committed as current
   authority because their pixels were captured from older bundles and one
   manifest-linked log was missing.
+- `reports/fidelity-loss/index.html` reconstructs the historical port against a
+  fixed 39-state denominator. Its conservative loss, observed product residual,
+  evidence debt, and historical-best lines are generated from
+  `scripts/fidelity-loss-{model,history}.json`.
+- The reconstructed conservative loss fell from 98.30% at the first archived
+  geometry milestone to a historical best of 67.89% after the Model Picker
+  closeout. The final5 archaeology reset raises current conservative loss to
+  91.97% because stale evidence was demoted; it does not claim that the product
+  regressed.
 
 ## Not currently proven
 

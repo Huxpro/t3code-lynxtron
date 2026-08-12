@@ -28,6 +28,8 @@
     "report:reuse": "node scripts/reuse-report.mjs",
     "report:style-coverage": "node scripts/style-coverage-report.mjs",
     "report:gap-atlas": "node scripts/generate-gap-atlas.mjs",
+    "report:fidelity-loss": "node scripts/fidelity-loss.mjs",
+    "report:fidelity-loss:check": "node scripts/fidelity-loss.mjs --check",
     "smoke:settings": "pnpm run build:connector && node scripts/settings-smoke.mjs",
     "smoke:composer-controls": "pnpm run build:connector && node scripts/composer-controls-smoke.mjs",
     "start": "pnpm run build && pnpm run launch",
