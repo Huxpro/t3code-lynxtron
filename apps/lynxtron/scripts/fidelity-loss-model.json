@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "id": "t3-lynxtron-fidelity-loss-v1",
+  "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
+  "expectedStateCount": 39,
+  "expectedCellCount": 444,
+  "expectedTotalWeight": 147.4,
+  "formula": {
+    "unknownResidual": 1,
+    "unknownConfidence": 0,
+    "supersededEvidenceConfidenceFactor": 0.25,
+    "gateResiduals": {
+      "contentPass": 0,
+      "interactionPass": 0,
+      "runtimePass": 0,
+      "visualPass": 0.08,
+      "visualGap": 0.75,
+      "runtimeBlocked": 1
+    },
+    "pixelResidual": {
+      "maeWeight": 0.55,
+      "maeScale": 16,
+      "significantShareWeight": 0.45,
+      "significantShareScale": 0.15
+    }
+  },
+  "clients": {
+    "lynx": {
+      "label": "Lynx-for-Web",
+      "weight": 0.4
+    },
+    "native": {
+      "label": "Lynxtron Native",
+      "weight": 0.6
+    }
+  },
+  "dimensions": {
+    "content": {
+      "label": "Content identity",
+      "weight": 0.18
+    },
+    "geometry": {
+      "label": "Geometry",
+      "weight": 0.2
+    },
+    "typography": {
+      "label": "Typography",
+      "weight": 0.12
+    },
+    "material": {
+      "label": "Material and pixels",
+      "weight": 0.14
+    },
+    "interaction": {
+      "label": "Interaction",
+      "weight": 0.2
+    },
+    "runtime": {
+      "label": "Runtime readiness",
+      "weight": 0.16
+    }
+  },
+  "groups": {
+    "shell": "Shell and lifecycle",
+    "composer": "Composer",
+    "transcript": "Transcript",
+    "overlays": "Overlays",
+    "settings": "Settings",
+    "review": "Review"
+  },
+  "states": [
+    {
+      "id": "new-thread-hero",
+      "label": "New Thread · Hero",
+      "group": "shell",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "existing-thread-idle",
+      "label": "Existing Thread · Idle",
+      "group": "transcript",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "new-thread-hero-light",
+      "label": "New Thread · Hero · Light",
+      "group": "shell",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "project-scope-open",
+      "label": "Sidebar · Project Scope Open",
+      "group": "shell",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "lifecycle-error",
+      "label": "Lifecycle · Reconnecting",
+      "group": "shell",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "lifecycle-native-recovery",
+      "label": "Lifecycle · Native Recovery",
+      "group": "shell",
+      "weight": 3,
+      "clients": ["native"]
+    },
+    {
+      "id": "quick-switch-default",
+      "label": "Quick Switch · Default",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "model-picker-default",
+      "label": "Model Picker · Default",
+      "group": "overlays",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "model-picker-provider-rail",
+      "label": "Model Picker · Provider Rail",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "model-picker-selected",
+      "label": "Model Picker · Selected Model",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "quick-switch-query",
+      "label": "Quick Switch · Query",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "quick-switch-actions-only",
+      "label": "Quick Switch · Actions Only",
+      "group": "overlays",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "quick-switch-empty",
+      "label": "Quick Switch · Empty",
+      "group": "overlays",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "model-picker-query",
+      "label": "Model Picker · Query",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "model-picker-empty",
+      "label": "Model Picker · Empty",
+      "group": "overlays",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "composer-hero",
+      "label": "Composer · Hero Idle",
+      "group": "composer",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "composer-sendable",
+      "label": "Composer · Sendable",
+      "group": "composer",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "composer-docked",
+      "label": "Composer · Docked Idle",
+      "group": "composer",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "composer-working",
+      "label": "Composer · Working",
+      "group": "composer",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "composer-disabled",
+      "label": "Composer · Environment Unavailable",
+      "group": "composer",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-general",
+      "label": "Settings · General",
+      "group": "settings",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-connections",
+      "label": "Settings · Connections",
+      "group": "settings",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-source-control",
+      "label": "Settings · Source Control",
+      "group": "settings",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-beta",
+      "label": "Settings · Beta",
+      "group": "settings",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-archive",
+      "label": "Settings · Archive",
+      "group": "settings",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "existing-thread-working",
+      "label": "Existing Thread · Working",
+      "group": "transcript",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "existing-thread-completed",
+      "label": "Existing Thread · Completed",
+      "group": "transcript",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "existing-thread-failed",
+      "label": "Existing Thread · Failed",
+      "group": "transcript",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "existing-thread-approval",
+      "label": "Existing Thread · Approval",
+      "group": "transcript",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "existing-thread-question",
+      "label": "Existing Thread · Question",
+      "group": "transcript",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-source-control-loading",
+      "label": "Settings · Source Control · Loading",
+      "group": "settings",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-source-control-error",
+      "label": "Settings · Source Control · Error",
+      "group": "settings",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-beta-mutation",
+      "label": "Settings · Beta · Mutation",
+      "group": "settings",
+      "weight": 2,
+      "clients": ["native"]
+    },
+    {
+      "id": "settings-archive-mutation",
+      "label": "Settings · Archive · Mutation",
+      "group": "settings",
+      "weight": 2,
+      "clients": ["native"]
+    },
+    {
+      "id": "settings-connections-mutation",
+      "label": "Settings · Connections · Mutation",
+      "group": "settings",
+      "weight": 2,
+      "clients": ["native"]
+    },
+    {
+      "id": "review-checkpoint",
+      "label": "Review · Checkpoint",
+      "group": "review",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "review-tree",
+      "label": "Review · Changed Files Tree",
+      "group": "review",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "review-diff",
+      "label": "Review · Full Diff",
+      "group": "review",
+      "weight": 5,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "review-empty",
+      "label": "Review · Empty",
+      "group": "review",
+      "weight": 3,
+      "clients": ["lynx", "native"]
+    }
+  ]
+}

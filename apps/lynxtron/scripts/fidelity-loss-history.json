@@ -1,0 +1,650 @@
+{
+  "version": 1,
+  "id": "t3-lynxtron-fidelity-history",
+  "modelId": "t3-lynxtron-fidelity-loss-v1",
+  "updatedAt": "2026-08-13T00:00:00+08:00",
+  "provenance": {
+    "referenceSystem": {
+      "repository": "/Users/bytedance/github/synara",
+      "commit": "835327940",
+      "artifact": "apps/lynx/scripts/perceptual-evidence.mjs",
+      "adaptation": "T3 adds a fixed denominator, explicit evidence confidence, and a time/commit loss ledger."
+    },
+    "backupRoot": "/Users/bytedance/github/t3code-archaeology-verify2",
+    "policy": [
+      "Evidence dates and code commits are separate fields.",
+      "Unknown cells retain maximum conservative loss.",
+      "Browser evidence never satisfies Native-only interaction or runtime cells.",
+      "Superseding stale pixels reduces confidence without rewriting historical product residual."
+    ]
+  },
+  "points": [
+    {
+      "id": "baseline-geometry",
+      "observedAt": "2026-07-29T04:00:19+08:00",
+      "commit": "8d2f45d9c2efacec7eea66b59435161f1f5849d9",
+      "codeState": "archive",
+      "label": "First archived matched geometry",
+      "narrative": "New Thread exposed a 216px focal geometry miss and complete content drift; Settings and the populated Sidebar were already structurally close.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-07-27/T5-F3/new-thread/1280x820/metrics.json",
+          "classification": "backup",
+          "sha256": "d75cd70bb0a77be45677c358917029528281f09e3be6dab782399d30bf086a9b"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-07-28/T5-F5/settings-general/1280x820/default/metrics.json",
+          "classification": "backup",
+          "sha256": "0972fa8616495cfbd0b424cb23145623fe29d3621d768c33ae8520bb706d87fc"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-07-28/T6-C1/sidebar/1280x820/populated/metrics-certified-final.json",
+          "classification": "backup",
+          "sha256": "e3cd23bb46eb1b223a8f6d652a8d194f70c67bb0eb44aaea39844ccbc8394b60"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [1, 0, 216, 11, 20],
+              "anchorScale": 32,
+              "confidence": 0.9,
+              "source": "T5-F3 new-thread 1280x820 anchors"
+            },
+            "content": {
+              "residual": 1,
+              "confidence": 0.9,
+              "method": "exact-anchor-content",
+              "source": "0/5 exact content anchors"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.75,
+              "method": "font-size-contract",
+              "source": "5/5 measured typography rows passed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.75,
+              "method": "capture-readiness",
+              "source": "zero renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [1, 0, 0, 0.99, 0.42, 3.95],
+              "anchorScale": 32,
+              "confidence": 0.9,
+              "source": "T5-F5 Settings default anchors"
+            },
+            "content": {
+              "residual": 0.666667,
+              "confidence": 0.9,
+              "method": "exact-anchor-content",
+              "source": "2/6 exact content anchors"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.85,
+              "method": "font-size-contract",
+              "source": "4/4 measured typography rows passed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.75,
+              "method": "capture-readiness",
+              "source": "zero renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [1, 0, 0.43, 4.43, 2, 2, 2, 5],
+              "anchorScale": 32,
+              "confidence": 0.9,
+              "source": "T6-C1 populated Sidebar anchors"
+            },
+            "content": {
+              "residual": 0.375,
+              "confidence": 0.85,
+              "method": "exact-anchor-content",
+              "source": "5/8 exact content anchors"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.85,
+              "method": "font-size-contract",
+              "source": "6/6 measured typography rows passed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.75,
+              "method": "capture-readiness",
+              "source": "zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "native-readiness",
+      "observedAt": "2026-08-01T11:30:22.110Z",
+      "commit": "73a4ba4bf7de4145117c1fedf9477040de572a95",
+      "codeState": "commit",
+      "label": "Exact-owned Native readiness",
+      "narrative": "Three isolated starts proved the main-owned transport, advancing sequence, canonical thread/model identity, and zero renderer errors.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-01/OC1/readiness/report.json",
+          "classification": "backup",
+          "sha256": "0540402560a9741d0510b5ffccc2521a06aecc68d460fcf4adaac96fc5294d17"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero", "existing-thread-idle"],
+          "clients": ["native"],
+          "dimensions": {
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "exact-owned-native-readiness",
+              "source": "OC1 readiness report"
+            },
+            "content": {
+              "residual": 0.12,
+              "confidence": 0.75,
+              "method": "canonical-state-assertion",
+              "source": "known fixture thread and model visible"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "browser-matrix",
+      "observedAt": "2026-08-03T06:27:51.539Z",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeState": "commit",
+      "label": "Seven-state Browser matrix",
+      "narrative": "The first dual-renderer matrix proved identity and readiness across 14 cells. It also exposed that green harness geometry baselines were not visual parity.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-03/BW2/workbench-report.json",
+          "classification": "backup",
+          "sha256": "483c3cc39e10ae78a4f804df5616116d34f29fff52f9433509e6bc31ac3268a6"
+        }
+      ],
+      "updates": [
+        {
+          "states": [
+            "new-thread-hero",
+            "existing-thread-idle",
+            "project-scope-open",
+            "lifecycle-error",
+            "settings-general",
+            "quick-switch-default",
+            "model-picker-default"
+          ],
+          "clients": ["lynx"],
+          "dimensions": {
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "browser-workbench-readiness",
+              "source": "14/14 cells identity/readiness/console clean"
+            },
+            "content": {
+              "residual": 0.16,
+              "confidence": 0.85,
+              "method": "scenario-state-identity",
+              "source": "literal scenario identity and hero checks"
+            },
+            "geometry": {
+              "residual": 0.68,
+              "confidence": 0.8,
+              "method": "visible-workbench-delta",
+              "source": "large shell/composer differences remained despite green change baselines"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "strict-matrix",
+      "observedAt": "2026-08-04T11:42:06.131Z",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeState": "working-tree",
+      "label": "39-state strict evidence matrix",
+      "narrative": "Plan 11C expanded the denominator to 39 product states. Browser content coverage became broad, while Native evidence remained intentionally sparse and R5/R10 blockers stayed explicit.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/manifests/main-shell.json",
+          "classification": "backup",
+          "sha256": "2db60787d99a4980b9444656aa32d3159ffa1f734350cb9561061490689853b1"
+        }
+      ],
+      "updates": [
+        {
+          "states": [
+            "new-thread-hero",
+            "existing-thread-idle",
+            "new-thread-hero-light",
+            "project-scope-open",
+            "lifecycle-error",
+            "quick-switch-default",
+            "model-picker-default",
+            "quick-switch-query",
+            "quick-switch-actions-only",
+            "quick-switch-empty",
+            "model-picker-query",
+            "composer-hero",
+            "composer-sendable",
+            "composer-docked",
+            "composer-working",
+            "composer-disabled",
+            "settings-general",
+            "settings-connections",
+            "settings-beta",
+            "settings-archive",
+            "existing-thread-working",
+            "existing-thread-completed",
+            "existing-thread-failed",
+            "existing-thread-question",
+            "settings-source-control-loading",
+            "settings-source-control-error",
+            "review-checkpoint",
+            "review-tree",
+            "review-empty"
+          ],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "gate": "contentPass",
+              "confidence": 0.9,
+              "method": "strict-content-gate",
+              "source": "Plan 11C manifest content=pass"
+            },
+            "runtime": {
+              "gate": "runtimePass",
+              "confidence": 0.9,
+              "method": "strict-harness-gate",
+              "source": "retained Browser evidence"
+            }
+          }
+        },
+        {
+          "states": [
+            "project-scope-open",
+            "quick-switch-default",
+            "model-picker-default",
+            "quick-switch-query",
+            "quick-switch-actions-only",
+            "quick-switch-empty",
+            "model-picker-query"
+          ],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "gate": "visualPass",
+              "confidence": 0.85,
+              "method": "strict-visual-gate",
+              "source": "Plan 11C manifest visual=pass"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.85,
+              "method": "strict-visual-gate",
+              "source": "Plan 11C manifest visual=pass"
+            }
+          }
+        },
+        {
+          "states": [
+            "new-thread-hero",
+            "new-thread-hero-light",
+            "lifecycle-native-recovery",
+            "composer-working",
+            "settings-general",
+            "settings-beta-mutation",
+            "settings-archive-mutation",
+            "settings-connections-mutation"
+          ],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "gate": "contentPass",
+              "confidence": 0.9,
+              "method": "strict-content-gate",
+              "source": "Plan 11C Native content=pass"
+            },
+            "geometry": {
+              "gate": "visualPass",
+              "confidence": 0.85,
+              "method": "strict-visual-gate",
+              "source": "Plan 11C Native visual=pass"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.85,
+              "method": "strict-visual-gate",
+              "source": "Plan 11C Native visual=pass"
+            },
+            "runtime": {
+              "gate": "runtimePass",
+              "confidence": 0.95,
+              "method": "strict-native-gate",
+              "source": "exact-owned Native retained evidence"
+            }
+          }
+        },
+        {
+          "states": [
+            "lifecycle-native-recovery",
+            "composer-working",
+            "settings-general",
+            "settings-beta-mutation",
+            "settings-archive-mutation",
+            "settings-connections-mutation"
+          ],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "gate": "interactionPass",
+              "confidence": 0.9,
+              "method": "strict-interaction-gate",
+              "source": "Plan 11C Native interaction=pass"
+            }
+          }
+        },
+        {
+          "states": ["composer-hero", "composer-sendable", "review-diff"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "gate": "runtimeBlocked",
+              "confidence": 0.95,
+              "method": "runtime-blocker",
+              "source": "R5/R10 structured blockers"
+            },
+            "runtime": {
+              "gate": "runtimeBlocked",
+              "confidence": 0.95,
+              "method": "runtime-blocker",
+              "source": "R5/R10 structured blockers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "pixel-baseline",
+      "observedAt": "2026-08-05T23:00:00+08:00",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeState": "working-tree",
+      "label": "First Native pixel baseline",
+      "narrative": "A real Web/Native comparison measured 4.467 MAE and 5.86% significant-pixel share across the full 1280×820 frame.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-05/pixel-calibration/web-native-final/region-pixel-metrics.json",
+          "classification": "backup",
+          "sha256": "74aaf42370a0f97b3221409463014b63811fdf60ebfe3eb157146d0a652878f6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["native"],
+          "dimensions": {
+            "material": {
+              "pixel": {
+                "mae": 4.467,
+                "significantShare": 0.0586
+              },
+              "confidence": 0.95,
+              "method": "full-frame-pixel",
+              "source": "web-native-final Full region"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "masked-pixel-convergence",
+      "observedAt": "2026-08-07T00:00:00+08:00",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeState": "working-tree",
+      "label": "Masked pixel residual convergence",
+      "narrative": "After deterministic timer masking, full-frame residual fell to 1.1009 MAE and 1.2763% significant pixels; Composer, Sidebar, Header, and Transcript regions became independently measurable.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-07/pixel-calibration/final-current-v300-synced/masked-region-pixel-metrics.json",
+          "classification": "backup",
+          "sha256": "3b86829877b40ac3dfec91b6f7ba759af020b4f64f0ca43a7eb85e267b9513b0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["native"],
+          "dimensions": {
+            "material": {
+              "pixel": {
+                "mae": 1.1009,
+                "significantShare": 0.012763
+              },
+              "confidence": 0.98,
+              "method": "masked-full-frame-pixel",
+              "source": "v300-synced Full region"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["native"],
+          "dimensions": {
+            "geometry": {
+              "pixel": {
+                "mae": 1.5129,
+                "significantShare": 0.013708
+              },
+              "confidence": 0.9,
+              "method": "masked-transcript-pixel",
+              "source": "v300-synced Transcript region"
+            },
+            "material": {
+              "pixel": {
+                "mae": 1.5129,
+                "significantShare": 0.013708
+              },
+              "confidence": 0.9,
+              "method": "masked-transcript-pixel",
+              "source": "v300-synced Transcript region"
+            }
+          }
+        },
+        {
+          "states": ["new-thread-hero", "existing-thread-idle"],
+          "clients": ["native"],
+          "dimensions": {
+            "geometry": {
+              "pixel": {
+                "mae": 1.5324,
+                "significantShare": 0.010788
+              },
+              "confidence": 0.9,
+              "method": "masked-sidebar-pixel",
+              "source": "v300-synced Sidebar region"
+            },
+            "material": {
+              "pixel": {
+                "mae": 1.5324,
+                "significantShare": 0.010788
+              },
+              "confidence": 0.9,
+              "method": "masked-sidebar-pixel",
+              "source": "v300-synced Sidebar region"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-interaction-matrix",
+      "observedAt": "2026-08-08T01:10:12.108Z",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeState": "working-tree",
+      "label": "Four-state review interaction matrix",
+      "narrative": "Four combinations of Sidebar and changed-files state passed exact-owned Native interaction and geometry checks; card-region SSIM improved from 0.7492 to 0.8758.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-08/pixel-matrix-final4/pixel-metrics.json",
+          "classification": "backup",
+          "sha256": "87ccb729aeaba6eb9403175819de3f83a1ea63142fa9e1140425907712ad8917"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-checkpoint", "review-tree", "review-empty"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.05,
+              "confidence": 0.9,
+              "method": "four-state-native-matrix",
+              "source": "allConsoleClean and state-specific DOM metrics"
+            },
+            "geometry": {
+              "residual": 0.12421,
+              "confidence": 0.9,
+              "method": "ssim",
+              "source": "1 - average card-region SSIM 0.87579"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.9,
+              "method": "real-devtool-taps",
+              "source": "four expanded/collapsed combinations"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "exact-owned-native-matrix",
+              "source": "bundle identity and clean console"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-closeout",
+      "observedAt": "2026-08-11T17:10:26.391Z",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeState": "working-tree",
+      "label": "Model Picker fidelity closeout",
+      "narrative": "Browser geometry reached zero panel delta; Native proved main transport, exact 360×346 panel geometry, real-tap dismissal, scrolling, search, favorites, and provider/model selection. Selected-state pixels remained explicitly pending.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-11/fidelity/outcome.json",
+          "classification": "backup",
+          "sha256": "e087b02b954eb73dec0ec02bb1612b5c857cd958fd5772ca682b882080cb334c"
+        }
+      ],
+      "updates": [
+        {
+          "states": [
+            "model-picker-default",
+            "model-picker-provider-rail",
+            "model-picker-query",
+            "model-picker-empty"
+          ],
+          "clients": ["lynx", "native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.9,
+              "method": "model-picker-outcome",
+              "source": "matching provider/model projections"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 2],
+              "anchorScale": 32,
+              "confidence": 0.95,
+              "method": "model-picker-panel-geometry",
+              "source": "before/after outcome delta"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.9,
+              "method": "browser-and-native-controls",
+              "source": "open, provider select, model select, scroll, search, favorite, dismiss"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "exact-owned-native-correlation",
+              "source": "main transport sequence advanced; zero renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["model-picker-selected"],
+          "clients": ["lynx", "native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.75,
+              "method": "functional-selection-proof",
+              "source": "selection and reopen-selected evidence"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.8,
+              "method": "native-selection",
+              "source": "one connector selection change and selected state reopened"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "evidence-archaeology-reset",
+      "observedAt": "2026-08-12T05:40:56+08:00",
+      "commit": "25db04b687d3473a3b807a6e674c71fecc534b2d",
+      "codeState": "commit",
+      "label": "Evidence archaeology reset",
+      "narrative": "The product did not regress. Archaeology removed stale pixels and demoted pre-final5 claims, so current-head evidence confidence falls while historical observed residual remains intact.",
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-04/H8/runtime-boundaries.json",
+          "classification": "tracked-current",
+          "sha256": "cd67a43aef83167736b95feac2eec3b302103fbdeb469fe08bf03d7d80342d86"
+        },
+        {
+          "path": "apps/lynxtron/docs/harness/completion-audit.md",
+          "classification": "tracked-current",
+          "sha256": "f0385fc0362989c2d77aadb72545bbd56ce57a61cad2a214e9ff7d178b6c27ca"
+        }
+      ],
+      "confidenceEvents": [
+        {
+          "states": "*",
+          "clients": "*",
+          "dimensions": "*",
+          "factor": "supersededEvidenceConfidenceFactor",
+          "reason": "Pre-final5 visual and interaction evidence is historical, not current-head certification."
+        }
+      ]
+    }
+  ]
+}
