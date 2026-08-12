@@ -58,6 +58,9 @@ Plan 11 prose and screenshots.
   fixed 39-state denominator. Its conservative loss, observed product residual,
   evidence debt, and historical-best lines are generated from
   `scripts/fidelity-loss-{model,history}.json`.
+- The same page links measured checkpoints to seven representative comparison
+  frames hosted by the public `Huxpro/t3code-fidelity-assets` GitHub Pages site.
+  No screenshot binary remains in the T3 fidelity-loss report directory.
 - The reconstructed conservative loss fell from 98.30% at the first archived
   geometry milestone to a historical best of 67.89% after the Model Picker
   closeout. The final5 archaeology reset raises current conservative loss to

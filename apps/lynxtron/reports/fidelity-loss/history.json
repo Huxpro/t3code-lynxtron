@@ -1,4 +1,3219 @@
 {
+  "attribution": [
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 203717,
+      "commit": "8a9a7a61ad2a271133401f27cabba6b95ed764d7",
+      "committedAt": "2026-07-29T04:14:26+08:00",
+      "confidence": 0.35,
+      "delta": -0.001214,
+      "reason": "lowered checkpoint loss through shell, settings, composer changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "chore(lynxtron): bring certification evidence and reports under version control",
+      "surfaces": [
+        "shell",
+        "settings",
+        "composer"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 9,
+      "commit": "7146bf1605df53ce4e5303e4bd39630eea735dcf",
+      "committedAt": "2026-07-29T04:16:59+08:00",
+      "confidence": 0.35,
+      "delta": -0.000008,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): evidence inventory — backup ref push is a pending manual step",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 402,
+      "commit": "a56a3872dc0f2e5fafbd3af6d0ea456d4ceeed8f",
+      "committedAt": "2026-07-29T04:21:34+08:00",
+      "confidence": 0.35,
+      "delta": -0.000054,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "ci: add minimal Lynxtron CI for the lynxtron-port branch",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 23,
+      "commit": "4cd9296e5a3f0f87481ea3815f94c07537f19ad3",
+      "committedAt": "2026-07-29T04:21:51+08:00",
+      "confidence": 0.35,
+      "delta": -0.000013,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): tier certification into slice-level and phase-exit batteries",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 145,
+      "commit": "46d60e7016b67fd5729330e3f1ee5104ba7a39bd",
+      "committedAt": "2026-07-29T04:27:07+08:00",
+      "confidence": 0.35,
+      "delta": -0.000032,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): draft ready-to-file upstream issues for R1-R11",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 4785,
+      "commit": "ab771d0ca81a9534a89bd9321bb1dcbd60090c16",
+      "committedAt": "2026-07-29T05:20:53+08:00",
+      "confidence": 0.35,
+      "delta": -0.000316,
+      "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): native <list> chat transcript on a shared projection",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 1780,
+      "commit": "cd7656fa4c14f962e6bfcd96f0298c8d140c13f7",
+      "committedAt": "2026-07-29T05:22:10+08:00",
+      "confidence": 0.35,
+      "delta": -0.000113,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "chore(lynxtron): refresh reuse report after shared transcript extraction",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 851,
+      "commit": "59367f2c460f08de17b26dc2f1addd8d4390ae43",
+      "committedAt": "2026-07-29T09:25:51+08:00",
+      "confidence": 0.35,
+      "delta": -0.000133,
+      "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): shared transcript follow/detach state machine (P2-S3)",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 232,
+      "commit": "3ce151b7c561e70ecd5e8ae1770e555d2468fe4c",
+      "committedAt": "2026-07-29T11:27:13+08:00",
+      "confidence": 0.35,
+      "delta": -0.000041,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): P3-S1 keyboard/push capability probe (R3/R5 runtime facts)",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 343,
+      "commit": "2de725900b235335fcfa8a11b1935a7ac124d8ec",
+      "committedAt": "2026-07-29T11:39:12+08:00",
+      "confidence": 0.35,
+      "delta": -0.000035,
+      "reason": "lowered checkpoint loss through transcript changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "fix(lynxtron): correct transcript evidence viewports; add 1440x900 capture",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 8,
+      "commit": "ab690e9c710250e7744fcd118a0cc89efa8e07ee",
+      "committedAt": "2026-07-29T11:40:17+08:00",
+      "confidence": 0.35,
+      "delta": -0.000008,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): note transcript evidence viewport correction in status",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 441,
+      "commit": "0aa7a7c3ad201baa44519b138ac2f670a27452b7",
+      "committedAt": "2026-07-29T14:06:28+08:00",
+      "confidence": 0.35,
+      "delta": -0.000096,
+      "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "chore(lynxtron): upgrade lynxtron 0.0.5 -> 0.0.7; re-probe gaps; file upstream issues",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 1316879,
+      "commit": "556765d6cc0b19b538967e40b87b64ff81588d9d",
+      "committedAt": "2026-07-30T04:41:46+08:00",
+      "confidence": 0.35,
+      "delta": -0.005236,
+      "reason": "lowered checkpoint loss through cross-cutting changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "Merge origin/main into lynxtron-port",
+      "surfaces": [],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 32781,
+      "commit": "f12a447d3895d779788259fb66db6f8edaba71a4",
+      "committedAt": "2026-07-30T05:25:14+08:00",
+      "confidence": 0.35,
+      "delta": -0.000487,
+      "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): converge Sidebar V2 composition",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 791,
+      "commit": "8ded01ddc26d9714a6cff72c63b71738545f833e",
+      "committedAt": "2026-07-30T05:49:07+08:00",
+      "confidence": 0.35,
+      "delta": -0.000076,
+      "reason": "lowered checkpoint loss through shell, settings, overlays changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): bridge discrete keyboard commands",
+      "surfaces": [
+        "shell",
+        "settings",
+        "overlays"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 552,
+      "commit": "2f809b7a927c7cbb92f5d4a53e2862291f58a844",
+      "committedAt": "2026-07-30T06:06:38+08:00",
+      "confidence": 0.35,
+      "delta": -0.000107,
+      "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): finish P2 transcript presentation",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 191,
+      "commit": "2c22c87938487ae438064dc53fcacae1664a2cda",
+      "committedAt": "2026-07-30T06:20:30+08:00",
+      "confidence": 0.35,
+      "delta": -0.000037,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "chore(lynxtron): upgrade to 0.0.8 and repro runtime gaps",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 470,
+      "commit": "1921abd6e4e626ce4e7a972f4426e2c689b2f30a",
+      "committedAt": "2026-07-31T04:01:47+08:00",
+      "confidence": 0.35,
+      "delta": -0.000058,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): reset port around shared product source",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 15093,
+      "commit": "1c8205d73c17d9705a336147064915f509832ff8",
+      "committedAt": "2026-07-31T06:09:10+08:00",
+      "confidence": 0.35,
+      "delta": -0.000561,
+      "reason": "lowered checkpoint loss through cross-cutting changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "Merge remote-tracking branch 'origin/main' into lynxtron-port",
+      "surfaces": [],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 5770,
+      "commit": "87a872a4bbe87f9eed05778755907c912adb9c89",
+      "committedAt": "2026-07-31T06:22:54+08:00",
+      "confidence": 0.35,
+      "delta": -0.000204,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "chore(lynxtron): record AR0 baseline after upstream merge",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 2462,
+      "commit": "1c05fbd913b0196607083fea0be966a01f077b8e",
+      "committedAt": "2026-07-31T07:27:58+08:00",
+      "confidence": 0.35,
+      "delta": -0.000133,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): prove main-owned connector behind flag",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 872,
+      "commit": "c90ecd99125ee792b67c7c404457327e9f263352",
+      "committedAt": "2026-07-31T07:53:01+08:00",
+      "confidence": 0.35,
+      "delta": -0.000079,
+      "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): cut over to the main-owned connector transport",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 4368,
+      "commit": "9f22f5aa304171c2063c8ebdb967a0d52c45cdd9",
+      "committedAt": "2026-07-31T09:20:29+08:00",
+      "confidence": 0.35,
+      "delta": -0.000302,
+      "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron,web): converge transcript composition on one shared surface",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 2672,
+      "commit": "1dcca89fc8ba70bd388a92b79254cc7b71d124fa",
+      "committedAt": "2026-07-31T11:35:30+08:00",
+      "confidence": 0.35,
+      "delta": -0.000236,
+      "reason": "lowered checkpoint loss through shell, composer, transcript changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron,web): converge Composer chrome on one shared surface",
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 2221,
+      "commit": "984c5a121409baf28d5faeac2d445235a5edc96c",
+      "committedAt": "2026-07-31T20:45:33+08:00",
+      "confidence": 0.35,
+      "delta": -0.000127,
+      "reason": "lowered checkpoint loss through shell, overlays changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron,web): share model picker and palette compositions",
+      "surfaces": [
+        "shell",
+        "overlays"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 3712,
+      "commit": "6cd7b0fe76505f47648f5321689420ba141692b2",
+      "committedAt": "2026-08-01T03:25:47+08:00",
+      "confidence": 0.35,
+      "delta": -0.000164,
+      "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron,web): converge settings panels on shared surfaces",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 2664,
+      "commit": "07356b977a7d265413c35e9ec8c24208061aaf75",
+      "committedAt": "2026-08-01T04:05:52+08:00",
+      "confidence": 0.35,
+      "delta": -0.000139,
+      "reason": "lowered checkpoint loss through shell, review changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron,web): share plan and right-panel chrome compositions",
+      "surfaces": [
+        "shell",
+        "review"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 1819,
+      "commit": "26103dc9c14c765e2946e984f6aa94f8545482df",
+      "committedAt": "2026-08-01T04:23:14+08:00",
+      "confidence": 0.35,
+      "delta": -0.000115,
+      "reason": "lowered checkpoint loss through shell, review changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron,web): share file-tree rows and diff stat labels",
+      "surfaces": [
+        "shell",
+        "review"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 422,
+      "commit": "6cf72ad399943da54362c7f910c4f3c136389023",
+      "committedAt": "2026-08-01T04:35:55+08:00",
+      "confidence": 0.35,
+      "delta": -0.000055,
+      "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "refactor(lynxtron,web): retire the prototype settings brand header",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 28,
+      "commit": "c9bad338f3c056fbd46d5e6a418023ca3187701f",
+      "committedAt": "2026-08-01T04:38:18+08:00",
+      "confidence": 0.35,
+      "delta": -0.000014,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): record AR5.4 handoff for the next session",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 1777,
+      "commit": "66946da903c1904e472259ac094eb823f5f4ede9",
+      "committedAt": "2026-08-01T04:58:22+08:00",
+      "confidence": 0.35,
+      "delta": -0.000113,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron,web): share the chat route composition",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 895,
+      "commit": "d047345c019eef4bb756f26a3b612405a97a8535",
+      "committedAt": "2026-08-01T05:15:24+08:00",
+      "confidence": 0.35,
+      "delta": -0.00008,
+      "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): certify the port as chat-first-preview (AR6)",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 460,
+      "commit": "ec47818ea39ce654fc41a8aa27e315795b796ed6",
+      "committedAt": "2026-08-01T17:28:00+08:00",
+      "confidence": 0.35,
+      "delta": -0.000058,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): plan outcome-driven convergence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 480,
+      "commit": "3549a685acfcdeaaf8765bd8250ed78a7525bf4c",
+      "committedAt": "2026-08-01T17:58:48+08:00",
+      "confidence": 0.35,
+      "delta": -0.000059,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): plan feature parity by product value",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 13014,
+      "commit": "8c5d5873f8c8868cfadcab37a637a08b4f28cedb",
+      "committedAt": "2026-08-01T18:23:38+08:00",
+      "confidence": 0.35,
+      "delta": -0.00052,
+      "reason": "lowered checkpoint loss through cross-cutting changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "Merge remote-tracking branch 'origin/main' into lynxtron-port",
+      "surfaces": [],
+      "fromPoint": "baseline-geometry",
+      "toPoint": "native-readiness"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 1115,
+      "commit": "f3a2be1e47153779042f7eac3712424f207c3582",
+      "committedAt": "2026-08-02T01:43:44+08:00",
+      "confidence": 0.35,
+      "delta": -0.004552,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "docs(lynxtron): freeze Plan 11 outcome baseline",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "native-readiness",
+      "toPoint": "browser-matrix"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 1555,
+      "commit": "76597ace6b3bd2aab54f4fac1b60e416fe877688",
+      "committedAt": "2026-08-02T02:12:25+08:00",
+      "confidence": 0.35,
+      "delta": -0.005376,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): prove current-stack Lynx Web build",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "native-readiness",
+      "toPoint": "browser-matrix"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "changedLines": 1845,
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-02T02:50:53+08:00",
+      "confidence": 0.35,
+      "delta": -0.005855,
+      "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
+      "subject": "feat(lynxtron): add typed browser preview host",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "native-readiness",
+      "toPoint": "browser-matrix"
+    },
+    {
+      "allocation": "evidence-session",
+      "changedLines": 0,
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-04T11:42:06.131Z",
+      "confidence": 0.55,
+      "delta": -0.165803,
+      "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
+      "subject": "39-state strict evidence matrix",
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript",
+        "overlays",
+        "settings",
+        "review"
+      ],
+      "fromPoint": "browser-matrix",
+      "toPoint": "strict-matrix"
+    },
+    {
+      "allocation": "measurement-refinement",
+      "changedLines": 0,
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-05T23:00:00+08:00",
+      "confidence": 0.55,
+      "delta": 0.000412,
+      "reason": "A stricter measurement replaced a coarse gate inside an uncommitted evidence session; this is not attributable to a product commit.",
+      "subject": "First Native pixel baseline",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "strict-matrix",
+      "toPoint": "pixel-baseline"
+    },
+    {
+      "allocation": "evidence-session",
+      "changedLines": 0,
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-07T00:00:00+08:00",
+      "confidence": 0.55,
+      "delta": -0.012397,
+      "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
+      "subject": "Masked pixel residual convergence",
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript"
+      ],
+      "fromPoint": "pixel-baseline",
+      "toPoint": "masked-pixel-convergence"
+    },
+    {
+      "allocation": "evidence-session",
+      "changedLines": 0,
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-08T01:10:12.108Z",
+      "confidence": 0.55,
+      "delta": -0.028816,
+      "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
+      "subject": "Four-state review interaction matrix",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "masked-pixel-convergence",
+      "toPoint": "review-interaction-matrix"
+    },
+    {
+      "allocation": "evidence-session",
+      "changedLines": 0,
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-11T17:10:26.391Z",
+      "confidence": 0.55,
+      "delta": -0.070701,
+      "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
+      "subject": "Model Picker fidelity closeout",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "review-interaction-matrix",
+      "toPoint": "model-picker-closeout"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 107,
+      "commit": "ec4395cf4ff550ba6a8fb9203a15d34e87f020ff",
+      "committedAt": "2026-08-12T02:17:39+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(server): interrupt the active turn by default",
+      "surfaces": [],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 97,
+      "commit": "0724b3be70df39f979f0f17eb06b94c9858b19f1",
+      "committedAt": "2026-08-12T02:25:04+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(server): type source-control discovery failures",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 22,
+      "commit": "1d3854c9ed0b2d998b47321b630dcbf4365edd3f",
+      "committedAt": "2026-08-12T02:26:57+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(contracts): add the latest app channel",
+      "surfaces": [],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 9,
+      "commit": "919f2aa6839d6672544a6d27c702ef36fb84a1cd",
+      "committedAt": "2026-08-12T02:29:03+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(contracts): expose portable model favorites defaults",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 46,
+      "commit": "bb17948ff3092e44a6bce235052ef9045d358422",
+      "committedAt": "2026-08-12T02:32:40+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(server): settle aborted provider turns",
+      "surfaces": [],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 232,
+      "commit": "0aab7c8f54412d8450c60545fe27cd6ffa8e3788",
+      "committedAt": "2026-08-12T02:34:43+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(server): retain provider reasoning progress",
+      "surfaces": [],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 136,
+      "commit": "0f07e979c3944f761f88e0cc25eda38d7ab5b276",
+      "committedAt": "2026-08-12T02:58:20+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): share viewport media queries",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 230,
+      "commit": "9b06d31b04060ae3e26943e0b327389b6ee4d3c0",
+      "committedAt": "2026-08-12T02:41:01+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): share resizable panel widths",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 93,
+      "commit": "3bd09188e3bc32df717d4e4de20659781c2b264f",
+      "committedAt": "2026-08-12T02:43:22+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): share search overlay state",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 267,
+      "commit": "8b8b6320835afdcb1006ad2448baf90e4a31d819",
+      "committedAt": "2026-08-12T02:47:12+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): project pending requests",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 94,
+      "commit": "8b1e343379f78e9b1bc7bedea58de1399ae631db",
+      "committedAt": "2026-08-12T02:48:21+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(client-runtime): share file picker matching",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 2,
+      "commit": "2b2167476e19f2d055b033eeabe49227b3ba6e3b",
+      "committedAt": "2026-08-12T02:50:02+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(client-runtime): restore portable model favorites",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 52,
+      "commit": "0b8e359f76cf2a39128439ee2c1d24c994416219",
+      "committedAt": "2026-08-12T02:50:18+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): parse markdown strikethrough",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 42,
+      "commit": "3a440f95461a67aefb150a046de434c706148375",
+      "committedAt": "2026-08-12T02:51:09+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): retain thinking timeline rows",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 81,
+      "commit": "26fd3fee759aa8f03f56fa756215555004dbb867",
+      "committedAt": "2026-08-12T02:51:30+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(client-runtime): decode source-control wire options",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 154,
+      "commit": "54cb7506c0b02256bcb897137dc92370dde45d97",
+      "committedAt": "2026-08-12T02:51:59+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(client-runtime): filter unavailable picker models",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 257,
+      "commit": "673fdc371b2fdb01782408de68c559b63d48e535",
+      "committedAt": "2026-08-12T02:52:25+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): share composer control state",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 182,
+      "commit": "6b6ccb0cc004fdf2b43a925ab8bc1b6ce39aae45",
+      "committedAt": "2026-08-12T02:52:51+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(client-runtime): share connection lifecycle copy",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 16,
+      "commit": "53476eed4af16f68ff270bdad1d4a83a0080b4ae",
+      "committedAt": "2026-08-12T02:53:25+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "chore(client-runtime): export shared presentation modules",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 78,
+      "commit": "0ae7ec9f0624043ab62e3c38740e3732fc829eb3",
+      "committedAt": "2026-08-12T02:56:08+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): reuse shared file picker matching",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 280,
+      "commit": "5ce703ec53af1196f6dbc5ac81f71941785dac30",
+      "committedAt": "2026-08-12T03:05:33+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(platform): share live viewport capabilities",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 148,
+      "commit": "54f53a62839b727be3362bb1b8a0022ecf79b52c",
+      "committedAt": "2026-08-12T03:08:27+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): consume shared responsive capabilities",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 31,
+      "commit": "7b66c09fec8608b36b6b71f52c7fe9e165a7aa26",
+      "committedAt": "2026-08-12T03:09:01+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): reuse shared sidebar sizing",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 28,
+      "commit": "78a9479d8c36727f9cc23b71818291c0f4fef8ca",
+      "committedAt": "2026-08-12T03:09:23+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(web): define responsive right panel bounds",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 117,
+      "commit": "5fec56b29058703b0c178f13c3583af7a4ae8b3b",
+      "committedAt": "2026-08-12T03:10:13+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(web): add shared connection lifecycle banner",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 224,
+      "commit": "3f2da10148d696e0bc58731a28156251220435ab",
+      "committedAt": "2026-08-12T03:10:36+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(web): add shared changed-files card",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 227,
+      "commit": "4f8b38dca33147f8286a0a9a78502d16d3ef231f",
+      "committedAt": "2026-08-12T03:12:08+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): compose changed files through shared card",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 226,
+      "commit": "7baa1873dfbfc4a563cdf6e89b2c57ce98e22716",
+      "committedAt": "2026-08-12T03:13:33+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(web): expand shared model picker surface",
+      "surfaces": [
+        "overlays",
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6,
+      "commit": "76e65adda00a4de2b5e411ed64a4d49c62411c6b",
+      "committedAt": "2026-08-12T03:13:53+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "chore(web): expose model picker semantic state",
+      "surfaces": [
+        "shell",
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 353,
+      "commit": "48ce4e9b20450c3cd9105bd97955bdb27769c031",
+      "committedAt": "2026-08-12T03:14:54+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): project model picker availability",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 345,
+      "commit": "cbf8a896a8c5a1fc26275bdb50374cc58ff161e3",
+      "committedAt": "2026-08-12T03:59:38+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): unify shell navigation state",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1519,
+      "commit": "f857205c646409efe2f999f9e67003a8eb818e67",
+      "committedAt": "2026-08-12T03:20:33+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): add theme-aware provider icons",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 124,
+      "commit": "4ddc81541b9c2061096e34a8f3c3f99d23ed3a42",
+      "committedAt": "2026-08-12T03:21:50+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(web): expand shared composer controls",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1069,
+      "commit": "32d1247fb14fd12469f34764a740627e6762d71f",
+      "committedAt": "2026-08-12T03:23:40+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete typed connector commands",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 69,
+      "commit": "b8a8483ac84fb596079d9d11c6aa7ad5705d1c56",
+      "committedAt": "2026-08-12T03:24:03+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): persist theme preference state",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 371,
+      "commit": "bb55e9803a1502e46247892fb2cb8a95552b4893",
+      "committedAt": "2026-08-12T03:25:08+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): bridge live system theme",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 287,
+      "commit": "99d0846f4d57456e6a6c707a678feb6f218785fd",
+      "committedAt": "2026-08-12T03:25:54+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): share pending composer surfaces",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 3035,
+      "commit": "94df3cedcf596db4fbecaa21ffa3234be079f02b",
+      "committedAt": "2026-08-12T04:01:05+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): converge shared settings surfaces",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 447,
+      "commit": "9a9023afef754b1f02511e4872cddaa00653491d",
+      "committedAt": "2026-08-12T04:01:17+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): converge sidebar composition",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 27,
+      "commit": "85851663e373483d9e4fe22b78b6be1142791a13",
+      "committedAt": "2026-08-12T04:01:53+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): adapt shared sidebar leaves",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 152,
+      "commit": "c871cef1b6750068f47478859e1c08da5ef0219c",
+      "committedAt": "2026-08-12T03:33:24+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): share command palette state and surface",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 125,
+      "commit": "fc9d53ef6baf1f2ed647849d07ff91431b1280a4",
+      "committedAt": "2026-08-12T03:34:11+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(web): expand shared transcript rows",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 362,
+      "commit": "8738f64691afbf8e29389e7048c5ff5346d6f380",
+      "committedAt": "2026-08-12T03:35:59+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(web): consume shared chat projections",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 221,
+      "commit": "a8ed16ccbd593470a82a61b385a8a76245886d1f",
+      "committedAt": "2026-08-12T03:37:05+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(web): share diff and right-panel anatomy",
+      "surfaces": [
+        "review",
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1417,
+      "commit": "7ec7b6491ab77864ef3a307bd8c90c6f4cb14f08",
+      "committedAt": "2026-08-12T04:02:48+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete shared Web host leaves",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 75,
+      "commit": "cf6c949f0ffaebee3138d4ab9929f9a3387c71d7",
+      "committedAt": "2026-08-12T03:39:26+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "fix(lynxtron): resolve release-channel branding",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 92,
+      "commit": "0c4ce738898673e69ba01e75243dbf3fcf5f5445",
+      "committedAt": "2026-08-12T03:39:50+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): route clipboard through typed host",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 236,
+      "commit": "4bf1098679203f9be651cef3935350c5d9378d21",
+      "committedAt": "2026-08-12T03:40:18+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): host viewport and reload controls",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 38,
+      "commit": "73cf0cf8cda9c871f5fa5e3bd3d00dfc851b86fb",
+      "committedAt": "2026-08-12T03:40:45+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete native keyboard menu",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 99,
+      "commit": "9213f5e1d198178821598f57461daac0747f102a",
+      "committedAt": "2026-08-12T03:41:18+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): wire native host lifecycle",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 177,
+      "commit": "ec4dca5d5b0d8cef2bc2af1b80d875929b70c6e2",
+      "committedAt": "2026-08-12T03:42:52+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "refactor(lynxtron): make route state synchronous",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 737,
+      "commit": "6162ae01e1b653fd9c4a08b96995fa2a03334210",
+      "committedAt": "2026-08-12T03:43:21+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): render complete markdown blocks",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 179,
+      "commit": "6f4a9add96725616104bb5593f03f92ebe72fafa",
+      "committedAt": "2026-08-12T03:43:50+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): parse diffs and editor actions",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 463,
+      "commit": "0adb9c11a3b9e2f3105ff9aeae94ab3bee5eae91",
+      "committedAt": "2026-08-12T03:44:19+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): stabilize transcript row reuse",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 663,
+      "commit": "035f547b6d98089be20bdc22984f227a998e9a3f",
+      "committedAt": "2026-08-12T03:44:55+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): render canonical diff surfaces",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 145,
+      "commit": "4c7eb0cc5c78c70380705baf6cf2463185891dae",
+      "committedAt": "2026-08-12T03:45:31+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): add responsive right panel",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 494,
+      "commit": "ef7fa4f5c170b451c35ddfa062ad51030af41a77",
+      "committedAt": "2026-08-12T03:45:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete native transcript composition",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 287,
+      "commit": "0eaf1b25f5b1aeaa206cf93637ce9684f611f4f9",
+      "committedAt": "2026-08-12T04:25:29+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete responsive chat header",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 159,
+      "commit": "48bc277232fdbd79e7f20c52dd67dcc1540598b9",
+      "committedAt": "2026-08-12T04:27:41+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete shared Settings routes",
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 465,
+      "commit": "a11b22df6de373617759b5459f73cb6d2d92ffcc",
+      "committedAt": "2026-08-12T04:27:48+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete search and project actions",
+      "surfaces": [
+        "shell",
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1551,
+      "commit": "825a1d9a683af27d690167590445905a9c65be1e",
+      "committedAt": "2026-08-12T04:27:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete chat and model picker composition",
+      "surfaces": [
+        "shell",
+        "review",
+        "composer",
+        "overlays"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 269,
+      "commit": "001730fec38c2becbfe53897dc4a0c0e44b2b27e",
+      "committedAt": "2026-08-12T04:28:31+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): bootstrap themed responsive app shell",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 7807,
+      "commit": "e5c81acecd51aff4589d1b843f8cd03ff5dc18d0",
+      "committedAt": "2026-08-12T04:31:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete responsive theme styles",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 2365,
+      "commit": "579a1e48b7f7414d5361d3797489d4a2d524772e",
+      "committedAt": "2026-08-12T04:36:30+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): complete Browser Preview runtime",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1432,
+      "commit": "2e2f5c80e4d03005a2d7868d576666aca072970f",
+      "committedAt": "2026-08-12T04:44:45+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): add static convergence audits",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1097,
+      "commit": "885f6b0b395e1f35e822ae799b89ffc0ccd4120a",
+      "committedAt": "2026-08-12T04:47:27+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): enforce evidence provenance",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 4110,
+      "commit": "c480375c80e5dc5a0fc6710774cdfc57f565c890",
+      "committedAt": "2026-08-12T04:48:31+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): verify exact-owned Native readiness",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6572,
+      "commit": "d17a526f8facd5f63e2807cc267acdd0eb7c18cd",
+      "committedAt": "2026-08-12T04:49:03+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "feat(lynxtron): add shared dual-renderer workbench",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 249,
+      "commit": "88d64de315b9e41b5a4f60b86f50e4c5170fd8c0",
+      "committedAt": "2026-08-12T04:50:09+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "chore(lynxtron): retain focused diagnostic probes",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 13,
+      "commit": "df563cd4014deffdbf0e670ac15c000f7073d533",
+      "committedAt": "2026-08-12T04:51:06+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "chore(lynxtron): ignore disposable harness state",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 0,
+      "commit": "49b805f3d0d9efaedb2238ec9aabe605992edc50",
+      "committedAt": "2026-08-12T04:57:59+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "chore(lynxtron): remove superseded visual artifacts",
+      "surfaces": [
+        "shell",
+        "settings",
+        "transcript"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 265,
+      "commit": "9479f08fdc6a40af2e1832b2c75983d4990ec478",
+      "committedAt": "2026-08-12T05:02:44+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "test(lynxtron): establish honest evidence baseline",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1575,
+      "commit": "a65114d87bbea91861d8e0796c92cb599b4c85d0",
+      "committedAt": "2026-08-12T05:06:14+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "docs(lynxtron): archive superseded harness plans",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 383,
+      "commit": "4fd817a49cc55689124a4d441a5e814a7eb32446",
+      "committedAt": "2026-08-12T05:06:22+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "docs(lynxtron): document current runtime adapters",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 644,
+      "commit": "63de8900b91f0b4ad2ef8c3dee177bcd1ce62d6b",
+      "committedAt": "2026-08-12T05:07:01+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "docs(lynxtron): reconcile the residual roadmap",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 847,
+      "commit": "54a3241bad8adef0cd7195b6d558f2a23d5c480a",
+      "committedAt": "2026-08-12T05:07:40+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "docs(lynxtron): publish final5 archaeology authority",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 2256,
+      "commit": "a7aec9f74a1f8cc765f39a96cbf2161fc8fac8d9",
+      "committedAt": "2026-08-12T05:35:00+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "chore(lynxtron): format the generated icon atlas",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 71,
+      "commit": "25db04b687d3473a3b807a6e674c71fecc534b2d",
+      "committedAt": "2026-08-12T05:40:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
+      "subject": "docs(lynxtron): complete the archaeology audit",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    },
+    {
+      "allocation": "evidence-policy",
+      "changedLines": 0,
+      "commit": "25db04b687d3473a3b807a6e674c71fecc534b2d",
+      "committedAt": "2026-08-12T05:40:56+08:00",
+      "confidence": 1,
+      "delta": 0.240842,
+      "reason": "Conservative loss rose because stale pre-final5 evidence was demoted. Observed product residual did not change.",
+      "subject": "Evidence archaeology reset",
+      "surfaces": [],
+      "fromPoint": "model-picker-closeout",
+      "toPoint": "evidence-archaeology-reset"
+    }
+  ],
+  "commitSeries": [
+    {
+      "allocation": "measured-checkpoint",
+      "commit": "f8fd18452526bb5256b178ddd849df4925238115",
+      "committedAt": "2026-07-29T04:00:19+08:00",
+      "confidence": 0.022673,
+      "delta": null,
+      "measuredCheckpoint": "baseline-geometry",
+      "rawLoss": 0.982988,
+      "smoothedLoss": 0.982988,
+      "subject": "First archived matched geometry"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "8a9a7a61ad2a271133401f27cabba6b95ed764d7",
+      "committedAt": "2026-07-29T04:14:26+08:00",
+      "confidence": 0.35,
+      "delta": -0.001214,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981774,
+      "smoothedLoss": 0.982721,
+      "subject": "chore(lynxtron): bring certification evidence and reports under version control"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "7146bf1605df53ce4e5303e4bd39630eea735dcf",
+      "committedAt": "2026-07-29T04:16:59+08:00",
+      "confidence": 0.35,
+      "delta": -0.000008,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981766,
+      "smoothedLoss": 0.982511,
+      "subject": "docs(lynxtron): evidence inventory — backup ref push is a pending manual step"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "a56a3872dc0f2e5fafbd3af6d0ea456d4ceeed8f",
+      "committedAt": "2026-07-29T04:21:34+08:00",
+      "confidence": 0.35,
+      "delta": -0.000054,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981712,
+      "smoothedLoss": 0.982335,
+      "subject": "ci: add minimal Lynxtron CI for the lynxtron-port branch"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "4cd9296e5a3f0f87481ea3815f94c07537f19ad3",
+      "committedAt": "2026-07-29T04:21:51+08:00",
+      "confidence": 0.35,
+      "delta": -0.000013,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981699,
+      "smoothedLoss": 0.982195,
+      "subject": "docs(lynxtron): tier certification into slice-level and phase-exit batteries"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "46d60e7016b67fd5729330e3f1ee5104ba7a39bd",
+      "committedAt": "2026-07-29T04:27:07+08:00",
+      "confidence": 0.35,
+      "delta": -0.000032,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981667,
+      "smoothedLoss": 0.982079,
+      "subject": "docs(lynxtron): draft ready-to-file upstream issues for R1-R11"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "ab771d0ca81a9534a89bd9321bb1dcbd60090c16",
+      "committedAt": "2026-07-29T05:20:53+08:00",
+      "confidence": 0.35,
+      "delta": -0.000316,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981351,
+      "smoothedLoss": 0.981919,
+      "subject": "feat(lynxtron): native <list> chat transcript on a shared projection"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "cd7656fa4c14f962e6bfcd96f0298c8d140c13f7",
+      "committedAt": "2026-07-29T05:22:10+08:00",
+      "confidence": 0.35,
+      "delta": -0.000113,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981238,
+      "smoothedLoss": 0.981769,
+      "subject": "chore(lynxtron): refresh reuse report after shared transcript extraction"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "59367f2c460f08de17b26dc2f1addd8d4390ae43",
+      "committedAt": "2026-07-29T09:25:51+08:00",
+      "confidence": 0.35,
+      "delta": -0.000133,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981105,
+      "smoothedLoss": 0.981623,
+      "subject": "feat(lynxtron): shared transcript follow/detach state machine (P2-S3)"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "3ce151b7c561e70ecd5e8ae1770e555d2468fe4c",
+      "committedAt": "2026-07-29T11:27:13+08:00",
+      "confidence": 0.35,
+      "delta": -0.000041,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981064,
+      "smoothedLoss": 0.9815,
+      "subject": "feat(lynxtron): P3-S1 keyboard/push capability probe (R3/R5 runtime facts)"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "2de725900b235335fcfa8a11b1935a7ac124d8ec",
+      "committedAt": "2026-07-29T11:39:12+08:00",
+      "confidence": 0.35,
+      "delta": -0.000035,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981029,
+      "smoothedLoss": 0.981396,
+      "subject": "fix(lynxtron): correct transcript evidence viewports; add 1440x900 capture"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "ab690e9c710250e7744fcd118a0cc89efa8e07ee",
+      "committedAt": "2026-07-29T11:40:17+08:00",
+      "confidence": 0.35,
+      "delta": -0.000008,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.981021,
+      "smoothedLoss": 0.981314,
+      "subject": "docs(lynxtron): note transcript evidence viewport correction in status"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "0aa7a7c3ad201baa44519b138ac2f670a27452b7",
+      "committedAt": "2026-07-29T14:06:28+08:00",
+      "confidence": 0.35,
+      "delta": -0.000096,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.980925,
+      "smoothedLoss": 0.981228,
+      "subject": "chore(lynxtron): upgrade lynxtron 0.0.5 -> 0.0.7; re-probe gaps; file upstream issues"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "556765d6cc0b19b538967e40b87b64ff81588d9d",
+      "committedAt": "2026-07-30T04:41:46+08:00",
+      "confidence": 0.35,
+      "delta": -0.005236,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.975689,
+      "smoothedLoss": 0.98001,
+      "subject": "Merge origin/main into lynxtron-port"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "f12a447d3895d779788259fb66db6f8edaba71a4",
+      "committedAt": "2026-07-30T05:25:14+08:00",
+      "confidence": 0.35,
+      "delta": -0.000487,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.975202,
+      "smoothedLoss": 0.978952,
+      "subject": "feat(lynxtron): converge Sidebar V2 composition"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "8ded01ddc26d9714a6cff72c63b71738545f833e",
+      "committedAt": "2026-07-30T05:49:07+08:00",
+      "confidence": 0.35,
+      "delta": -0.000076,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.975126,
+      "smoothedLoss": 0.97811,
+      "subject": "feat(lynxtron): bridge discrete keyboard commands"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "2f809b7a927c7cbb92f5d4a53e2862291f58a844",
+      "committedAt": "2026-07-30T06:06:38+08:00",
+      "confidence": 0.35,
+      "delta": -0.000107,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.975019,
+      "smoothedLoss": 0.97743,
+      "subject": "feat(lynxtron): finish P2 transcript presentation"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "2c22c87938487ae438064dc53fcacae1664a2cda",
+      "committedAt": "2026-07-30T06:20:30+08:00",
+      "confidence": 0.35,
+      "delta": -0.000037,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.974982,
+      "smoothedLoss": 0.976892,
+      "subject": "chore(lynxtron): upgrade to 0.0.8 and repro runtime gaps"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "1921abd6e4e626ce4e7a972f4426e2c689b2f30a",
+      "committedAt": "2026-07-31T04:01:47+08:00",
+      "confidence": 0.35,
+      "delta": -0.000058,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.974924,
+      "smoothedLoss": 0.976459,
+      "subject": "docs(lynxtron): reset port around shared product source"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "1c8205d73c17d9705a336147064915f509832ff8",
+      "committedAt": "2026-07-31T06:09:10+08:00",
+      "confidence": 0.35,
+      "delta": -0.000561,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.974363,
+      "smoothedLoss": 0.975998,
+      "subject": "Merge remote-tracking branch 'origin/main' into lynxtron-port"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "87a872a4bbe87f9eed05778755907c912adb9c89",
+      "committedAt": "2026-07-31T06:22:54+08:00",
+      "confidence": 0.35,
+      "delta": -0.000204,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.974159,
+      "smoothedLoss": 0.975593,
+      "subject": "chore(lynxtron): record AR0 baseline after upstream merge"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "1c05fbd913b0196607083fea0be966a01f077b8e",
+      "committedAt": "2026-07-31T07:27:58+08:00",
+      "confidence": 0.35,
+      "delta": -0.000133,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.974026,
+      "smoothedLoss": 0.975248,
+      "subject": "feat(lynxtron): prove main-owned connector behind flag"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "c90ecd99125ee792b67c7c404457327e9f263352",
+      "committedAt": "2026-07-31T07:53:01+08:00",
+      "confidence": 0.35,
+      "delta": -0.000079,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.973947,
+      "smoothedLoss": 0.974962,
+      "subject": "feat(lynxtron): cut over to the main-owned connector transport"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "9f22f5aa304171c2063c8ebdb967a0d52c45cdd9",
+      "committedAt": "2026-07-31T09:20:29+08:00",
+      "confidence": 0.35,
+      "delta": -0.000302,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.973645,
+      "smoothedLoss": 0.974672,
+      "subject": "feat(lynxtron,web): converge transcript composition on one shared surface"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "1dcca89fc8ba70bd388a92b79254cc7b71d124fa",
+      "committedAt": "2026-07-31T11:35:30+08:00",
+      "confidence": 0.35,
+      "delta": -0.000236,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.973409,
+      "smoothedLoss": 0.974394,
+      "subject": "feat(lynxtron,web): converge Composer chrome on one shared surface"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "984c5a121409baf28d5faeac2d445235a5edc96c",
+      "committedAt": "2026-07-31T20:45:33+08:00",
+      "confidence": 0.35,
+      "delta": -0.000127,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.973282,
+      "smoothedLoss": 0.97415,
+      "subject": "feat(lynxtron,web): share model picker and palette compositions"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "6cd7b0fe76505f47648f5321689420ba141692b2",
+      "committedAt": "2026-08-01T03:25:47+08:00",
+      "confidence": 0.35,
+      "delta": -0.000164,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.973118,
+      "smoothedLoss": 0.973923,
+      "subject": "feat(lynxtron,web): converge settings panels on shared surfaces"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "07356b977a7d265413c35e9ec8c24208061aaf75",
+      "committedAt": "2026-08-01T04:05:52+08:00",
+      "confidence": 0.35,
+      "delta": -0.000139,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972979,
+      "smoothedLoss": 0.973715,
+      "subject": "feat(lynxtron,web): share plan and right-panel chrome compositions"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "26103dc9c14c765e2946e984f6aa94f8545482df",
+      "committedAt": "2026-08-01T04:23:14+08:00",
+      "confidence": 0.35,
+      "delta": -0.000115,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972864,
+      "smoothedLoss": 0.973528,
+      "subject": "feat(lynxtron,web): share file-tree rows and diff stat labels"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "6cf72ad399943da54362c7f910c4f3c136389023",
+      "committedAt": "2026-08-01T04:35:55+08:00",
+      "confidence": 0.35,
+      "delta": -0.000055,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972809,
+      "smoothedLoss": 0.97337,
+      "subject": "refactor(lynxtron,web): retire the prototype settings brand header"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "c9bad338f3c056fbd46d5e6a418023ca3187701f",
+      "committedAt": "2026-08-01T04:38:18+08:00",
+      "confidence": 0.35,
+      "delta": -0.000014,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972795,
+      "smoothedLoss": 0.973243,
+      "subject": "docs(lynxtron): record AR5.4 handoff for the next session"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "66946da903c1904e472259ac094eb823f5f4ede9",
+      "committedAt": "2026-08-01T04:58:22+08:00",
+      "confidence": 0.35,
+      "delta": -0.000113,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972682,
+      "smoothedLoss": 0.97312,
+      "subject": "feat(lynxtron,web): share the chat route composition"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "d047345c019eef4bb756f26a3b612405a97a8535",
+      "committedAt": "2026-08-01T05:15:24+08:00",
+      "confidence": 0.35,
+      "delta": -0.00008,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972602,
+      "smoothedLoss": 0.973006,
+      "subject": "docs(lynxtron): certify the port as chat-first-preview (AR6)"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "ec47818ea39ce654fc41a8aa27e315795b796ed6",
+      "committedAt": "2026-08-01T17:28:00+08:00",
+      "confidence": 0.35,
+      "delta": -0.000058,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972544,
+      "smoothedLoss": 0.972904,
+      "subject": "docs(lynxtron): plan outcome-driven convergence"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "3549a685acfcdeaaf8765bd8250ed78a7525bf4c",
+      "committedAt": "2026-08-01T17:58:48+08:00",
+      "confidence": 0.35,
+      "delta": -0.000059,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.972485,
+      "smoothedLoss": 0.972812,
+      "subject": "docs(lynxtron): plan feature parity by product value"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "8c5d5873f8c8868cfadcab37a637a08b4f28cedb",
+      "committedAt": "2026-08-01T18:23:38+08:00",
+      "confidence": 0.35,
+      "delta": -0.00052,
+      "measuredCheckpoint": "native-readiness",
+      "rawLoss": 0.971965,
+      "smoothedLoss": 0.972626,
+      "subject": "Merge remote-tracking branch 'origin/main' into lynxtron-port"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "f3a2be1e47153779042f7eac3712424f207c3582",
+      "committedAt": "2026-08-02T01:43:44+08:00",
+      "confidence": 0.35,
+      "delta": -0.004552,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.967413,
+      "smoothedLoss": 0.971479,
+      "subject": "docs(lynxtron): freeze Plan 11 outcome baseline"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "76597ace6b3bd2aab54f4fac1b60e416fe877688",
+      "committedAt": "2026-08-02T02:12:25+08:00",
+      "confidence": 0.35,
+      "delta": -0.005376,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.962037,
+      "smoothedLoss": 0.969402,
+      "subject": "feat(lynxtron): prove current-stack Lynx Web build"
+    },
+    {
+      "allocation": "estimated-from-checkpoint-delta",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-02T02:50:53+08:00",
+      "confidence": 0.35,
+      "delta": -0.005855,
+      "measuredCheckpoint": "browser-matrix",
+      "rawLoss": 0.956182,
+      "smoothedLoss": 0.966493,
+      "subject": "feat(lynxtron): add typed browser preview host"
+    },
+    {
+      "allocation": "evidence-session",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-04T11:42:06.131Z",
+      "confidence": 0.55,
+      "delta": -0.165803,
+      "measuredCheckpoint": "strict-matrix",
+      "rawLoss": 0.790379,
+      "smoothedLoss": 0.927748,
+      "subject": "39-state strict evidence matrix"
+    },
+    {
+      "allocation": "measurement-refinement",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-05T23:00:00+08:00",
+      "confidence": 0.55,
+      "delta": 0.000412,
+      "measuredCheckpoint": "pixel-baseline",
+      "rawLoss": 0.790791,
+      "smoothedLoss": 0.897618,
+      "subject": "First Native pixel baseline"
+    },
+    {
+      "allocation": "evidence-session",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-07T00:00:00+08:00",
+      "confidence": 0.55,
+      "delta": -0.012397,
+      "measuredCheckpoint": "masked-pixel-convergence",
+      "rawLoss": 0.778394,
+      "smoothedLoss": 0.871388,
+      "subject": "Masked pixel residual convergence"
+    },
+    {
+      "allocation": "evidence-session",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-08T01:10:12.108Z",
+      "confidence": 0.55,
+      "delta": -0.028816,
+      "measuredCheckpoint": "review-interaction-matrix",
+      "rawLoss": 0.749578,
+      "smoothedLoss": 0.84459,
+      "subject": "Four-state review interaction matrix"
+    },
+    {
+      "allocation": "evidence-session",
+      "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "committedAt": "2026-08-11T17:10:26.391Z",
+      "confidence": 0.55,
+      "delta": -0.070701,
+      "measuredCheckpoint": "model-picker-closeout",
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.808133,
+      "subject": "Model Picker fidelity closeout"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ec4395cf4ff550ba6a8fb9203a15d34e87f020ff",
+      "committedAt": "2026-08-12T02:17:39+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.779697,
+      "subject": "fix(server): interrupt the active turn by default"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0724b3be70df39f979f0f17eb06b94c9858b19f1",
+      "committedAt": "2026-08-12T02:25:04+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.757516,
+      "subject": "fix(server): type source-control discovery failures"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1d3854c9ed0b2d998b47321b630dcbf4365edd3f",
+      "committedAt": "2026-08-12T02:26:57+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.740216,
+      "subject": "feat(contracts): add the latest app channel"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "919f2aa6839d6672544a6d27c702ef36fb84a1cd",
+      "committedAt": "2026-08-12T02:29:03+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.726721,
+      "subject": "fix(contracts): expose portable model favorites defaults"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "bb17948ff3092e44a6bce235052ef9045d358422",
+      "committedAt": "2026-08-12T02:32:40+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.716196,
+      "subject": "fix(server): settle aborted provider turns"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0aab7c8f54412d8450c60545fe27cd6ffa8e3788",
+      "committedAt": "2026-08-12T02:34:43+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.707985,
+      "subject": "feat(server): retain provider reasoning progress"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0f07e979c3944f761f88e0cc25eda38d7ab5b276",
+      "committedAt": "2026-08-12T02:58:20+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.701582,
+      "subject": "feat(client-runtime): share viewport media queries"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9b06d31b04060ae3e26943e0b327389b6ee4d3c0",
+      "committedAt": "2026-08-12T02:41:01+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.696587,
+      "subject": "feat(client-runtime): share resizable panel widths"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3bd09188e3bc32df717d4e4de20659781c2b264f",
+      "committedAt": "2026-08-12T02:43:22+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.69269,
+      "subject": "feat(client-runtime): share search overlay state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8b8b6320835afdcb1006ad2448baf90e4a31d819",
+      "committedAt": "2026-08-12T02:47:12+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.689652,
+      "subject": "feat(client-runtime): project pending requests"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8b1e343379f78e9b1bc7bedea58de1399ae631db",
+      "committedAt": "2026-08-12T02:48:21+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.687281,
+      "subject": "refactor(client-runtime): share file picker matching"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2b2167476e19f2d055b033eeabe49227b3ba6e3b",
+      "committedAt": "2026-08-12T02:50:02+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.685432,
+      "subject": "fix(client-runtime): restore portable model favorites"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0b8e359f76cf2a39128439ee2c1d24c994416219",
+      "committedAt": "2026-08-12T02:50:18+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.68399,
+      "subject": "feat(client-runtime): parse markdown strikethrough"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3a440f95461a67aefb150a046de434c706148375",
+      "committedAt": "2026-08-12T02:51:09+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.682865,
+      "subject": "feat(client-runtime): retain thinking timeline rows"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "26fd3fee759aa8f03f56fa756215555004dbb867",
+      "committedAt": "2026-08-12T02:51:30+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.681988,
+      "subject": "fix(client-runtime): decode source-control wire options"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "54cb7506c0b02256bcb897137dc92370dde45d97",
+      "committedAt": "2026-08-12T02:51:59+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.681303,
+      "subject": "fix(client-runtime): filter unavailable picker models"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "673fdc371b2fdb01782408de68c559b63d48e535",
+      "committedAt": "2026-08-12T02:52:25+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.68077,
+      "subject": "feat(client-runtime): share composer control state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "6b6ccb0cc004fdf2b43a925ab8bc1b6ce39aae45",
+      "committedAt": "2026-08-12T02:52:51+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.680353,
+      "subject": "feat(client-runtime): share connection lifecycle copy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "53476eed4af16f68ff270bdad1d4a83a0080b4ae",
+      "committedAt": "2026-08-12T02:53:25+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.680028,
+      "subject": "chore(client-runtime): export shared presentation modules"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0ae7ec9f0624043ab62e3c38740e3732fc829eb3",
+      "committedAt": "2026-08-12T02:56:08+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679775,
+      "subject": "refactor(web): reuse shared file picker matching"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5ce703ec53af1196f6dbc5ac81f71941785dac30",
+      "committedAt": "2026-08-12T03:05:33+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679578,
+      "subject": "feat(platform): share live viewport capabilities"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "54f53a62839b727be3362bb1b8a0022ecf79b52c",
+      "committedAt": "2026-08-12T03:08:27+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679423,
+      "subject": "refactor(web): consume shared responsive capabilities"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7b66c09fec8608b36b6b71f52c7fe9e165a7aa26",
+      "committedAt": "2026-08-12T03:09:01+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679303,
+      "subject": "refactor(web): reuse shared sidebar sizing"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "78a9479d8c36727f9cc23b71818291c0f4fef8ca",
+      "committedAt": "2026-08-12T03:09:23+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679209,
+      "subject": "feat(web): define responsive right panel bounds"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5fec56b29058703b0c178f13c3583af7a4ae8b3b",
+      "committedAt": "2026-08-12T03:10:13+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679136,
+      "subject": "feat(web): add shared connection lifecycle banner"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3f2da10148d696e0bc58731a28156251220435ab",
+      "committedAt": "2026-08-12T03:10:36+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679079,
+      "subject": "feat(web): add shared changed-files card"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4f8b38dca33147f8286a0a9a78502d16d3ef231f",
+      "committedAt": "2026-08-12T03:12:08+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679035,
+      "subject": "refactor(web): compose changed files through shared card"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7baa1873dfbfc4a563cdf6e89b2c57ce98e22716",
+      "committedAt": "2026-08-12T03:13:33+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.679,
+      "subject": "feat(web): expand shared model picker surface"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "76e65adda00a4de2b5e411ed64a4d49c62411c6b",
+      "committedAt": "2026-08-12T03:13:53+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678973,
+      "subject": "chore(web): expose model picker semantic state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "48ce4e9b20450c3cd9105bd97955bdb27769c031",
+      "committedAt": "2026-08-12T03:14:54+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678952,
+      "subject": "feat(lynxtron): project model picker availability"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "cbf8a896a8c5a1fc26275bdb50374cc58ff161e3",
+      "committedAt": "2026-08-12T03:59:38+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678935,
+      "subject": "feat(lynxtron): unify shell navigation state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "f857205c646409efe2f999f9e67003a8eb818e67",
+      "committedAt": "2026-08-12T03:20:33+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678923,
+      "subject": "feat(lynxtron): add theme-aware provider icons"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4ddc81541b9c2061096e34a8f3c3f99d23ed3a42",
+      "committedAt": "2026-08-12T03:21:50+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678913,
+      "subject": "feat(web): expand shared composer controls"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "32d1247fb14fd12469f34764a740627e6762d71f",
+      "committedAt": "2026-08-12T03:23:40+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678905,
+      "subject": "feat(lynxtron): complete typed connector commands"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b8a8483ac84fb596079d9d11c6aa7ad5705d1c56",
+      "committedAt": "2026-08-12T03:24:03+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678899,
+      "subject": "feat(lynxtron): persist theme preference state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "bb55e9803a1502e46247892fb2cb8a95552b4893",
+      "committedAt": "2026-08-12T03:25:08+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678894,
+      "subject": "feat(lynxtron): bridge live system theme"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "99d0846f4d57456e6a6c707a678feb6f218785fd",
+      "committedAt": "2026-08-12T03:25:54+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.67889,
+      "subject": "refactor(web): share pending composer surfaces"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "94df3cedcf596db4fbecaa21ffa3234be079f02b",
+      "committedAt": "2026-08-12T04:01:05+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678887,
+      "subject": "refactor(web): converge shared settings surfaces"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9a9023afef754b1f02511e4872cddaa00653491d",
+      "committedAt": "2026-08-12T04:01:17+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678885,
+      "subject": "refactor(web): converge sidebar composition"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "85851663e373483d9e4fe22b78b6be1142791a13",
+      "committedAt": "2026-08-12T04:01:53+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678883,
+      "subject": "feat(lynxtron): adapt shared sidebar leaves"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c871cef1b6750068f47478859e1c08da5ef0219c",
+      "committedAt": "2026-08-12T03:33:24+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678882,
+      "subject": "refactor(web): share command palette state and surface"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fc9d53ef6baf1f2ed647849d07ff91431b1280a4",
+      "committedAt": "2026-08-12T03:34:11+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678881,
+      "subject": "feat(web): expand shared transcript rows"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8738f64691afbf8e29389e7048c5ff5346d6f380",
+      "committedAt": "2026-08-12T03:35:59+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.67888,
+      "subject": "refactor(web): consume shared chat projections"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a8ed16ccbd593470a82a61b385a8a76245886d1f",
+      "committedAt": "2026-08-12T03:37:05+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678879,
+      "subject": "feat(web): share diff and right-panel anatomy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7ec7b6491ab77864ef3a307bd8c90c6f4cb14f08",
+      "committedAt": "2026-08-12T04:02:48+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678879,
+      "subject": "feat(lynxtron): complete shared Web host leaves"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "cf6c949f0ffaebee3138d4ab9929f9a3387c71d7",
+      "committedAt": "2026-08-12T03:39:26+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678878,
+      "subject": "fix(lynxtron): resolve release-channel branding"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0c4ce738898673e69ba01e75243dbf3fcf5f5445",
+      "committedAt": "2026-08-12T03:39:50+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678878,
+      "subject": "feat(lynxtron): route clipboard through typed host"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4bf1098679203f9be651cef3935350c5d9378d21",
+      "committedAt": "2026-08-12T03:40:18+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678878,
+      "subject": "feat(lynxtron): host viewport and reload controls"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "73cf0cf8cda9c871f5fa5e3bd3d00dfc851b86fb",
+      "committedAt": "2026-08-12T03:40:45+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678878,
+      "subject": "feat(lynxtron): complete native keyboard menu"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9213f5e1d198178821598f57461daac0747f102a",
+      "committedAt": "2026-08-12T03:41:18+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678878,
+      "subject": "feat(lynxtron): wire native host lifecycle"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ec4dca5d5b0d8cef2bc2af1b80d875929b70c6e2",
+      "committedAt": "2026-08-12T03:42:52+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "refactor(lynxtron): make route state synchronous"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "6162ae01e1b653fd9c4a08b96995fa2a03334210",
+      "committedAt": "2026-08-12T03:43:21+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): render complete markdown blocks"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "6f4a9add96725616104bb5593f03f92ebe72fafa",
+      "committedAt": "2026-08-12T03:43:50+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): parse diffs and editor actions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0adb9c11a3b9e2f3105ff9aeae94ab3bee5eae91",
+      "committedAt": "2026-08-12T03:44:19+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): stabilize transcript row reuse"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "035f547b6d98089be20bdc22984f227a998e9a3f",
+      "committedAt": "2026-08-12T03:44:55+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): render canonical diff surfaces"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4c7eb0cc5c78c70380705baf6cf2463185891dae",
+      "committedAt": "2026-08-12T03:45:31+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): add responsive right panel"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ef7fa4f5c170b451c35ddfa062ad51030af41a77",
+      "committedAt": "2026-08-12T03:45:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): complete native transcript composition"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0eaf1b25f5b1aeaa206cf93637ce9684f611f4f9",
+      "committedAt": "2026-08-12T04:25:29+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): complete responsive chat header"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "48bc277232fdbd79e7f20c52dd67dcc1540598b9",
+      "committedAt": "2026-08-12T04:27:41+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): complete shared Settings routes"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a11b22df6de373617759b5459f73cb6d2d92ffcc",
+      "committedAt": "2026-08-12T04:27:48+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): complete search and project actions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "825a1d9a683af27d690167590445905a9c65be1e",
+      "committedAt": "2026-08-12T04:27:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): complete chat and model picker composition"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "001730fec38c2becbfe53897dc4a0c0e44b2b27e",
+      "committedAt": "2026-08-12T04:28:31+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): bootstrap themed responsive app shell"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "e5c81acecd51aff4589d1b843f8cd03ff5dc18d0",
+      "committedAt": "2026-08-12T04:31:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): complete responsive theme styles"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "579a1e48b7f7414d5361d3797489d4a2d524772e",
+      "committedAt": "2026-08-12T04:36:30+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): complete Browser Preview runtime"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2e2f5c80e4d03005a2d7868d576666aca072970f",
+      "committedAt": "2026-08-12T04:44:45+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): add static convergence audits"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "885f6b0b395e1f35e822ae799b89ffc0ccd4120a",
+      "committedAt": "2026-08-12T04:47:27+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): enforce evidence provenance"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c480375c80e5dc5a0fc6710774cdfc57f565c890",
+      "committedAt": "2026-08-12T04:48:31+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): verify exact-owned Native readiness"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "d17a526f8facd5f63e2807cc267acdd0eb7c18cd",
+      "committedAt": "2026-08-12T04:49:03+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "feat(lynxtron): add shared dual-renderer workbench"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "88d64de315b9e41b5a4f60b86f50e4c5170fd8c0",
+      "committedAt": "2026-08-12T04:50:09+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "chore(lynxtron): retain focused diagnostic probes"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "df563cd4014deffdbf0e670ac15c000f7073d533",
+      "committedAt": "2026-08-12T04:51:06+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "chore(lynxtron): ignore disposable harness state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "49b805f3d0d9efaedb2238ec9aabe605992edc50",
+      "committedAt": "2026-08-12T04:57:59+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "chore(lynxtron): remove superseded visual artifacts"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9479f08fdc6a40af2e1832b2c75983d4990ec478",
+      "committedAt": "2026-08-12T05:02:44+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "test(lynxtron): establish honest evidence baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a65114d87bbea91861d8e0796c92cb599b4c85d0",
+      "committedAt": "2026-08-12T05:06:14+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "docs(lynxtron): archive superseded harness plans"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4fd817a49cc55689124a4d441a5e814a7eb32446",
+      "committedAt": "2026-08-12T05:06:22+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "docs(lynxtron): document current runtime adapters"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "63de8900b91f0b4ad2ef8c3dee177bcd1ce62d6b",
+      "committedAt": "2026-08-12T05:07:01+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "docs(lynxtron): reconcile the residual roadmap"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "54a3241bad8adef0cd7195b6d558f2a23d5c480a",
+      "committedAt": "2026-08-12T05:07:40+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "docs(lynxtron): publish final5 archaeology authority"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a7aec9f74a1f8cc765f39a96cbf2161fc8fac8d9",
+      "committedAt": "2026-08-12T05:35:00+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "chore(lynxtron): format the generated icon atlas"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "25db04b687d3473a3b807a6e674c71fecc534b2d",
+      "committedAt": "2026-08-12T05:40:56+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.678877,
+      "smoothedLoss": 0.678877,
+      "subject": "docs(lynxtron): complete the archaeology audit"
+    },
+    {
+      "allocation": "evidence-policy",
+      "commit": "25db04b687d3473a3b807a6e674c71fecc534b2d",
+      "committedAt": "2026-08-12T05:40:56+08:00",
+      "confidence": 1,
+      "delta": 0.240842,
+      "measuredCheckpoint": "evidence-archaeology-reset",
+      "rawLoss": 0.919719,
+      "smoothedLoss": 0.731862,
+      "subject": "Evidence archaeology reset"
+    }
+  ],
   "generatedAt": "2026-08-13T00:00:00+08:00",
   "historyId": "t3-lynxtron-fidelity-history",
   "model": {
@@ -40,6 +3255,7 @@
       }
     },
     "formula": {
+      "commitSmoothingAlpha": 0.22,
       "unknownResidual": 1,
       "unknownConfidence": 0,
       "supersededEvidenceConfidenceFactor": 0.25,
@@ -73,11 +3289,38 @@
   "points": [
     {
       "commit": "8d2f45d9c2efacec7eea66b59435161f1f5849d9",
+      "codeCommit": "f8fd18452526bb5256b178ddd849df4925238115",
       "codeState": "archive",
       "id": "baseline-geometry",
       "label": "First archived matched geometry",
       "narrative": "New Thread exposed a 216px focal geometry miss and complete content drift; Settings and the populated Sidebar were already structurally close.",
       "observedAt": "2026-07-29T04:00:19+08:00",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/baseline-web.png",
+          "sha256": "b91e3db4ef8e1a21487713a866894e415bc1f315bfd122db7b599e8a4e495087",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynxtron candidate",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/baseline-lynx.jpg",
+          "sha256": "fe20a5bbca0831a63ece5f5cfd2eae298ca1e3ed32e1b428b635e9394f2b3627",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        }
+      ],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-07-27/T5-F3/new-thread/1280x820/metrics.json",
@@ -572,11 +3815,13 @@
     },
     {
       "commit": "73a4ba4bf7de4145117c1fedf9477040de572a95",
+      "codeCommit": "73a4ba4bf7de4145117c1fedf9477040de572a95",
       "codeState": "commit",
       "id": "native-readiness",
       "label": "Exact-owned Native readiness",
       "narrative": "Three isolated starts proved the main-owned transport, advancing sequence, canonical thread/model identity, and zero renderer errors.",
       "observedAt": "2026-08-01T11:30:22.110Z",
+      "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-01/OC1/readiness/report.json",
@@ -1061,11 +4306,13 @@
     },
     {
       "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeCommit": "4604dd443f8f351402eb33bc7fefa3f548194545",
       "codeState": "commit",
       "id": "browser-matrix",
       "label": "Seven-state Browser matrix",
       "narrative": "The first dual-renderer matrix proved identity and readiness across 14 cells. It also exposed that green harness geometry baselines were not visual parity.",
       "observedAt": "2026-08-03T06:27:51.539Z",
+      "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-03/BW2/workbench-report.json",
@@ -1550,11 +4797,38 @@
     },
     {
       "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeCommit": "4604dd443f8f351402eb33bc7fefa3f548194545",
       "codeState": "working-tree",
       "id": "strict-matrix",
       "label": "39-state strict evidence matrix",
       "narrative": "Plan 11C expanded the denominator to 39 product states. Browser content coverage became broad, while Native evidence remained intentionally sparse and R5/R10 blockers stayed explicit.",
       "observedAt": "2026-08-04T11:42:06.131Z",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/strict-web.png",
+          "sha256": "e734543fc83ae47b238266c14be090331b1493551feadbdf513d468e22114cca",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/strict-lynx.png",
+          "sha256": "3c005094adc377f1e67dd2d78a3d190581d26b6f9801f357777694791db4a51d",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        }
+      ],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/manifests/main-shell.json",
@@ -2039,11 +5313,13 @@
     },
     {
       "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeCommit": "4604dd443f8f351402eb33bc7fefa3f548194545",
       "codeState": "working-tree",
       "id": "pixel-baseline",
       "label": "First Native pixel baseline",
       "narrative": "A real Web/Native comparison measured 4.467 MAE and 5.86% significant-pixel share across the full 1280×820 frame.",
       "observedAt": "2026-08-05T23:00:00+08:00",
+      "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-05/pixel-calibration/web-native-final/region-pixel-metrics.json",
@@ -2528,11 +5804,13 @@
     },
     {
       "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeCommit": "4604dd443f8f351402eb33bc7fefa3f548194545",
       "codeState": "working-tree",
       "id": "masked-pixel-convergence",
       "label": "Masked pixel residual convergence",
       "narrative": "After deterministic timer masking, full-frame residual fell to 1.1009 MAE and 1.2763% significant pixels; Composer, Sidebar, Header, and Transcript regions became independently measurable.",
       "observedAt": "2026-08-07T00:00:00+08:00",
+      "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-07/pixel-calibration/final-current-v300-synced/masked-region-pixel-metrics.json",
@@ -3017,11 +6295,13 @@
     },
     {
       "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeCommit": "4604dd443f8f351402eb33bc7fefa3f548194545",
       "codeState": "working-tree",
       "id": "review-interaction-matrix",
       "label": "Four-state review interaction matrix",
       "narrative": "Four combinations of Sidebar and changed-files state passed exact-owned Native interaction and geometry checks; card-region SSIM improved from 0.7492 to 0.8758.",
       "observedAt": "2026-08-08T01:10:12.108Z",
+      "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-08/pixel-matrix-final4/pixel-metrics.json",
@@ -3506,11 +6786,50 @@
     },
     {
       "commit": "4604dd443f8f351402eb33bc7fefa3f548194545",
+      "codeCommit": "4604dd443f8f351402eb33bc7fefa3f548194545",
       "codeState": "working-tree",
       "id": "model-picker-closeout",
       "label": "Model Picker fidelity closeout",
       "narrative": "Browser geometry reached zero panel delta; Native proved main transport, exact 360×346 panel geometry, real-tap dismissal, scrolling, search, favorites, and provider/model selection. Selected-state pixels remained explicitly pending.",
       "observedAt": "2026-08-11T17:10:26.391Z",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-lynx.png",
+          "sha256": "8fe0105f287ed8b699a9f335413d25df590cdaaf6c2e2a6b2256ff2eb0a4c48a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Lynxtron Native",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-native.png",
+          "sha256": "4805038d548494871bae7ef60545f798f5eeb278f7717aa755c0f99ef47344b2",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "38566a04c1141a0c6c1b0b3eb951304c44dacca4"
+          }
+        }
+      ],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-11/fidelity/outcome.json",
@@ -3995,11 +7314,13 @@
     },
     {
       "commit": "25db04b687d3473a3b807a6e674c71fecc534b2d",
+      "codeCommit": "25db04b687d3473a3b807a6e674c71fecc534b2d",
       "codeState": "commit",
       "id": "evidence-archaeology-reset",
       "label": "Evidence archaeology reset",
       "narrative": "The product did not regress. Archaeology removed stale pixels and demoted pre-final5 claims, so current-head evidence confidence falls while historical observed residual remains intact.",
       "observedAt": "2026-08-12T05:40:56+08:00",
+      "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-04/H8/runtime-boundaries.json",
