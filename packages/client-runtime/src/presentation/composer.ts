@@ -12,6 +12,7 @@ import {
   getProviderOptionCurrentValue,
   getProviderOptionDescriptors,
 } from "@t3tools/shared/providerOptions";
+import type { SessionPresentationPhase } from "./session";
 
 const INLINE_TERMINAL_CONTEXT_PLACEHOLDER = "\uFFFC";
 
@@ -94,6 +95,12 @@ export function toggleComposerInteractionMode(
   mode: ProviderInteractionMode,
 ): ProviderInteractionMode {
   return mode === "plan" ? "default" : "plan";
+}
+
+export function resolveDefaultComposerPlaceholder(phase: SessionPresentationPhase): string {
+  return phase === "disconnected"
+    ? "Ask for follow-up changes or attach images"
+    : "Ask anything, @tag files/folders, $use skills, or / for commands";
 }
 
 export function shouldUseComposerHeroLayout(options: {

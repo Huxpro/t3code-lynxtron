@@ -23,6 +23,7 @@ import {
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
   getComposerInteractionModePresentation,
   getComposerRuntimeModePresentation,
+  resolveDefaultComposerPlaceholder,
 } from "@t3tools/client-runtime/presentation/composer";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
 import { createModelSelection, normalizeModelSlug } from "@t3tools/shared/model";
@@ -3101,9 +3102,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                           ? "Choose a project above to start a thread"
                           : noProviderAvailable
                             ? "Enable a provider in Settings to send a message"
-                            : phase === "disconnected"
-                              ? "Ask for follow-up changes or attach images"
-                              : "Ask anything, @tag files/folders, $use skills, or / for commands"
+                            : resolveDefaultComposerPlaceholder(phase)
                 }
                 disabled={isConnecting || isComposerApprovalState || projectSelectionRequired}
               />
@@ -3201,9 +3200,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                             orientation="vertical"
                             className="mx-0.5 hidden h-4 sm:block"
                           />
-                          <span data-composer-control="model-option">
-                            {providerTraitsPicker}
-                          </span>
+                          <span data-composer-control="model-option">{providerTraitsPicker}</span>
                         </>
                       ) : null}
                       <ComposerFooterModeControls

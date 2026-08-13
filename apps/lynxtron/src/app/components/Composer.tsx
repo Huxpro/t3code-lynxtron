@@ -34,6 +34,7 @@ interface ComposerProps {
   disabled: boolean;
   busy: boolean;
   hero: boolean;
+  placeholder: string;
   projectName?: string;
   modelLabel?: string;
   modelInstanceId?: string;
@@ -73,6 +74,7 @@ export function Composer({
   disabled,
   busy,
   hero,
+  placeholder,
   projectName,
   modelLabel,
   modelInstanceId,
@@ -252,9 +254,7 @@ export function Composer({
             renderEditor: () => (
               <>
                 {value.length === 0 ? (
-                  <text className="composer__placeholder">
-                    Ask anything, @tag files/folders, $use skills, or / for commands
-                  </text>
+                  <text className="composer__placeholder">{placeholder}</text>
                 ) : null}
                 <textarea
                   className="composer__input"
@@ -363,9 +363,7 @@ export function Composer({
                                 />
                               </view>
                               <view className="composer-runtime-menu__copy">
-                                <text className="composer-runtime-menu__label">
-                                  {option.label}
-                                </text>
+                                <text className="composer-runtime-menu__label">{option.label}</text>
                                 <text className="composer-runtime-menu__description">
                                   {option.description}
                                 </text>
@@ -422,9 +420,7 @@ export function Composer({
               aria-label="Workspace"
               aria-disabled={workspaceModeLocked ? "true" : "false"}
               bindtap={
-                workspaceModeLocked
-                  ? undefined
-                  : () => setWorkspaceMenuOpen((open) => !open)
+                workspaceModeLocked ? undefined : () => setWorkspaceMenuOpen((open) => !open)
               }
             >
               <Icon
@@ -436,9 +432,7 @@ export function Composer({
               <text className="composer-context-label composer-context-label--checkout">
                 {context.checkoutLabel}
               </text>
-              {!workspaceModeLocked ? (
-                <Icon name="chevron-down" size={12} color="#818181" />
-              ) : null}
+              {!workspaceModeLocked ? <Icon name="chevron-down" size={12} color="#818181" /> : null}
             </view>
             {workspaceMenuOpen ? (
               <>
@@ -448,9 +442,7 @@ export function Composer({
                 />
                 <view
                   className={`composer-workspace-menu${
-                    workspaceMode === "worktree"
-                      ? " composer-workspace-menu--worktree"
-                      : ""
+                    workspaceMode === "worktree" ? " composer-workspace-menu--worktree" : ""
                   }`}
                   aria-label="Workspace"
                   data-composer-workspace-menu
@@ -458,9 +450,7 @@ export function Composer({
                   <text className="composer-workspace-menu__eyebrow">Workspace</text>
                   <view
                     className={`composer-workspace-menu__item${
-                      workspaceMode === "local"
-                        ? " composer-workspace-menu__item--active"
-                        : ""
+                      workspaceMode === "local" ? " composer-workspace-menu__item--active" : ""
                     }`}
                     bindtap={() => {
                       onWorkspaceModeChange("local");
@@ -477,9 +467,7 @@ export function Composer({
                   </view>
                   <view
                     className={`composer-workspace-menu__item${
-                      workspaceMode === "worktree"
-                        ? " composer-workspace-menu__item--active"
-                        : ""
+                      workspaceMode === "worktree" ? " composer-workspace-menu__item--active" : ""
                     }`}
                     bindtap={() => onWorkspaceModeChange("worktree")}
                   >
@@ -506,9 +494,7 @@ export function Composer({
                       </view>
                       <view
                         className={`composer-workspace-menu__switch${
-                          startFromOrigin
-                            ? " composer-workspace-menu__switch--active"
-                            : ""
+                          startFromOrigin ? " composer-workspace-menu__switch--active" : ""
                         }`}
                         aria-checked={startFromOrigin ? "true" : "false"}
                       >

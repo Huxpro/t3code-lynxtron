@@ -1,9 +1,13 @@
 import { useMemo, useCallback, useEffect, useRef, useState } from "@lynx-js/react";
-import { isSessionBusy } from "@t3tools/client-runtime/presentation/session";
+import {
+  deriveSessionPresentationPhase,
+  isSessionBusy,
+} from "@t3tools/client-runtime/presentation/session";
 import {
   isComposerDraftThread,
   projectComposerPrimaryOption,
   projectComposerTraitsTrigger,
+  resolveDefaultComposerPlaceholder,
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
 } from "@t3tools/client-runtime/presentation/composer";
@@ -123,6 +127,9 @@ export function ChatView({ threadId }: ChatViewProps) {
     isWorking: isSessionBusy(sessionStatus),
     dockRequested: false,
   });
+  const composerPlaceholder = resolveDefaultComposerPlaceholder(
+    deriveSessionPresentationPhase(activeThread?.session?.status),
+  );
   const modelPickerScopeKey = hero
     ? `new-thread:${activeProject?.id ?? "unselected"}`
     : (activeThreadId ?? "no-thread");
@@ -338,6 +345,7 @@ export function ChatView({ threadId }: ChatViewProps) {
       ) : null}
       <Composer
         hero={hero}
+        placeholder={composerPlaceholder}
         projectName={projectName}
         modelLabel={modelLabel}
         modelInstanceId={modelInstanceId}

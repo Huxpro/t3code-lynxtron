@@ -12,6 +12,7 @@ import {
   isComposerDraftThread,
   projectComposerContext,
   projectComposerPrimaryOption,
+  resolveDefaultComposerPlaceholder,
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
 } from "./composer.ts";
@@ -40,6 +41,17 @@ describe("composer controls presentation", () => {
     });
     expect(toggleComposerInteractionMode("default")).toBe("plan");
     expect(toggleComposerInteractionMode("plan")).toBe("default");
+  });
+
+  it("keeps default placeholder copy aligned across session phases", () => {
+    expect(resolveDefaultComposerPlaceholder("disconnected")).toBe(
+      "Ask for follow-up changes or attach images",
+    );
+    for (const phase of ["connecting", "ready", "running"] as const) {
+      expect(resolveDefaultComposerPlaceholder(phase)).toBe(
+        "Ask anything, @tag files/folders, $use skills, or / for commands",
+      );
+    }
   });
 
   it("reserves the hero layout for an empty idle local draft", () => {
