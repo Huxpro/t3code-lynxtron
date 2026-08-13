@@ -77,6 +77,17 @@
 .sidebar-v2-row-card {
   width: 100%;
   height: 78px;
+  min-height: 78px;
+  max-height: 78px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.sidebar-v2-row-card > view {
+  width: 100%;
+  height: 78px;
+  min-height: 78px;
+  max-height: 78px;
+  padding: 8px 10px;
   box-sizing: border-box;
 }
 .sidebar-v2-row-card--active {
@@ -1071,8 +1082,9 @@
   max-height: 256px;
 }
 .sidebar-v2-thread-list {
-  width: 100%;
-  transform: translate(1px, 3px);
+  width: calc(100% - 16px);
+  min-width: 0;
+  box-sizing: border-box;
 }
 .sidebar-v2-settled-shelf-toggle {
   display: flex;
@@ -4510,9 +4522,11 @@
   opacity: 1;
 }
 .sidebar-width-responsive .sidebar-settings-row,
-.sidebar-width-responsive .sidebar-v2-control-row--authority,
-.sidebar-width-responsive .sidebar-v2-thread-list {
+.sidebar-width-responsive .sidebar-v2-control-row--authority {
   width: 100%;
+}
+.sidebar-width-responsive .sidebar-v2-thread-list {
+  width: calc(100% - 16px);
 }
 .sidebar-width-responsive .sidebar-grain {
   display: none;
