@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-14T06:13:00+08:00",
+  "stateId": "composer-hero",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "selectedProject": "background-only",
+    "lifecycle": "ready"
+  },
+  "identity": {
+    "sameServer": true,
+    "sameSnapshot": true,
+    "sameRoute": true,
+    "sameTheme": true,
+    "sameDensity": true,
+    "sameViewport": true,
+    "capturePassBefore": true,
+    "capturePassAfter": true
+  },
+  "rootCause": {
+    "component": "Composer footer controls",
+    "before": "Lynx shifted the toolbar and primary action 2px upward and imposed fixed control widths with 8px horizontal padding.",
+    "after": "Lynx uses the authority vertical position, intrinsic control widths, 10px horizontal padding, and transparent 1px border box sizing."
+  },
+  "productChange": {
+    "file": "apps/lynxtron/src/app/overrides.css",
+    "changes": [
+      "remove toolbar translateY(-2px)",
+      "replace fixed model/model-option/runtime widths with intrinsic width",
+      "align toolbar padding and transparent border box sizing with Web"
+    ]
+  },
+  "metrics": {
+    "footerSsim": {
+      "before": 0.746677,
+      "after": 0.843791,
+      "residualBefore": 0.253323,
+      "residualAfter": 0.156209
+    },
+    "composerRegionSsim": {
+      "before": 0.901043,
+      "after": 0.923045,
+      "residualBefore": 0.098957,
+      "residualAfter": 0.076955
+    },
+    "fullFrameSsim": {
+      "before": 0.937661,
+      "after": 0.940374,
+      "residualBefore": 0.062339,
+      "residualAfter": 0.059626
+    }
+  },
+  "evidence": {
+    "before": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-current",
+    "after": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-footer-fix"
+  },
+  "remainingRisk": [
+    "Context-strip material remains the next largest Composer-region difference.",
+    "Native Composer material is not claimed by this Browser-only measurement."
+  ]
+}

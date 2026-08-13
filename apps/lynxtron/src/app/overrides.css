@@ -2140,20 +2140,25 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  transform: translateY(-2px);
 }
 .composer-toolbar-control {
   height: 28px;
   min-height: 28px;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  box-sizing: border-box;
 }
 .composer-toolbar-control--model {
-  width: 122px;
+  width: auto;
 }
 .composer-toolbar-control--model-option {
-  width: 71px;
+  width: auto;
 }
 .composer-toolbar-control--runtime {
-  width: 133px;
+  width: auto;
 }
 .composer-runtime-control-wrap {
   position: relative;
