@@ -87,6 +87,7 @@ if (changedFilesTargetState && !["expanded", "collapsed"].includes(changedFilesT
   throw new Error(`Unsupported --changed-files-state: ${changedFilesTargetState}`);
 }
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
+const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const composerExpectationByStateId = {
   "composer-hero": {
     layout: "hero",
@@ -2315,8 +2316,12 @@ async function captureCell({
     const lynxTimelineRows = state?.lynx?.timelineMetrics?.rows ?? [];
     const transcriptReady =
       !stateId.startsWith("existing-thread-") ||
-      (webTimelineRows.length > 0 &&
-        JSON.stringify(webTimelineRows) === JSON.stringify(lynxTimelineRows));
+      (isEmptyTranscriptState
+        ? state?.web?.timelineMetrics?.threadSyncLabel === null &&
+          webTimelineRows.length === 0 &&
+          lynxTimelineRows.length === 0
+        : webTimelineRows.length > 0 &&
+          JSON.stringify(webTimelineRows) === JSON.stringify(lynxTimelineRows));
     transcriptReadyPolls = transcriptReady ? transcriptReadyPolls + 1 : 0;
     const expectedPendingKind =
       stateId === "existing-thread-approval"
@@ -2593,33 +2598,38 @@ async function captureCell({
         : stateId !== "settings-source-control" ||
           ((state?.web?.settingsMetrics?.rowIds ?? []).includes("source-control") &&
             (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
+  const finalEmptyTranscriptReady =
+    state?.web?.timelineMetrics?.threadSyncLabel === null &&
+    (state?.web?.timelineMetrics?.rows?.length ?? 0) === 0 &&
+    (state?.lynx?.timelineMetrics?.rows?.length ?? 0) === 0;
+  const finalPopulatedTranscriptReady =
+    (state?.web?.timelineMetrics?.rows?.length ?? 0) > 0 &&
+    JSON.stringify(state?.web?.timelineMetrics?.rows ?? []) ===
+      JSON.stringify(state?.lynx?.timelineMetrics?.rows ?? []) &&
+    JSON.stringify(state?.web?.timelineMetrics?.codeBlocks ?? []) ===
+      JSON.stringify(state?.lynx?.timelineMetrics?.codeBlocks ?? []) &&
+    JSON.stringify(state?.web?.timelineMetrics?.turnFolds ?? []) ===
+      JSON.stringify(state?.lynx?.timelineMetrics?.turnFolds ?? []) &&
+    state?.web?.timelineMetrics?.workGroupCount === state?.lynx?.timelineMetrics?.workGroupCount &&
+    JSON.stringify(state?.web?.timelineMetrics?.workEntries ?? []) ===
+      JSON.stringify(state?.lynx?.timelineMetrics?.workEntries ?? []) &&
+    webTurnFoldInputSent &&
+    lynxTurnFoldInputSent &&
+    webThinkingInputSent &&
+    lynxThinkingInputSent &&
+    (!expandTurnId ||
+      ((state?.web?.timelineMetrics?.workGroupCount ?? 0) > 0 &&
+        (state?.lynx?.timelineMetrics?.workGroupCount ?? 0) > 0)) &&
+    (!expandThinking ||
+      ((state?.web?.timelineMetrics?.workEntries ?? []).some(
+        (entry) => entry.tone === "thinking" && entry.state === "expanded" && entry.detail,
+      ) &&
+        (state?.lynx?.timelineMetrics?.workEntries ?? []).some(
+          (entry) => entry.tone === "thinking" && entry.state === "expanded" && entry.detail,
+        )));
   const finalTranscriptReady =
     !stateId.startsWith("existing-thread-") ||
-    ((state?.web?.timelineMetrics?.rows?.length ?? 0) > 0 &&
-      JSON.stringify(state?.web?.timelineMetrics?.rows ?? []) ===
-        JSON.stringify(state?.lynx?.timelineMetrics?.rows ?? []) &&
-      JSON.stringify(state?.web?.timelineMetrics?.codeBlocks ?? []) ===
-        JSON.stringify(state?.lynx?.timelineMetrics?.codeBlocks ?? []) &&
-      JSON.stringify(state?.web?.timelineMetrics?.turnFolds ?? []) ===
-        JSON.stringify(state?.lynx?.timelineMetrics?.turnFolds ?? []) &&
-      state?.web?.timelineMetrics?.workGroupCount ===
-        state?.lynx?.timelineMetrics?.workGroupCount &&
-      JSON.stringify(state?.web?.timelineMetrics?.workEntries ?? []) ===
-        JSON.stringify(state?.lynx?.timelineMetrics?.workEntries ?? []) &&
-      webTurnFoldInputSent &&
-      lynxTurnFoldInputSent &&
-      webThinkingInputSent &&
-      lynxThinkingInputSent &&
-      (!expandTurnId ||
-        ((state?.web?.timelineMetrics?.workGroupCount ?? 0) > 0 &&
-          (state?.lynx?.timelineMetrics?.workGroupCount ?? 0) > 0)) &&
-      (!expandThinking ||
-        ((state?.web?.timelineMetrics?.workEntries ?? []).some(
-          (entry) => entry.tone === "thinking" && entry.state === "expanded" && entry.detail,
-        ) &&
-          (state?.lynx?.timelineMetrics?.workEntries ?? []).some(
-            (entry) => entry.tone === "thinking" && entry.state === "expanded" && entry.detail,
-          ))));
+    (isEmptyTranscriptState ? finalEmptyTranscriptReady : finalPopulatedTranscriptReady);
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" && stateId !== "existing-thread-question"
       ? true

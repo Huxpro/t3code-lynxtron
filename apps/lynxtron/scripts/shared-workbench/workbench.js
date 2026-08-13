@@ -679,6 +679,7 @@ function readLynxPane() {
         host: readElementBox(root?.querySelector(".timeline-host")),
         list: readElementBox(root?.querySelector(".timeline-list")),
         empty: readElementBox(root?.querySelector(".transcript-empty")),
+        threadSyncLabel: null,
         composerOverlay: readElementBox(root?.querySelector(".composer-overlay")),
         inlineRuns: [
           ...(root?.querySelectorAll(
@@ -1237,6 +1238,11 @@ function readWebPane() {
         host: readElementBox(doc.querySelector("[data-chat-messages]")),
         list: readElementBox(doc.querySelector("[data-chat-messages]")),
         empty: readElementBox(doc.querySelector(".transcript-empty")),
+        threadSyncLabel:
+          [...doc.querySelectorAll('[role="status"]')]
+            .map((item) => item.textContent?.trim() ?? "")
+            .find((label) => label === "Loading messages..." || label === "Syncing messages...") ??
+          null,
         composerOverlay: readElementBox(doc.querySelector("[data-chat-composer-overlay]")),
         inlineRuns: [
           ...doc.querySelectorAll(

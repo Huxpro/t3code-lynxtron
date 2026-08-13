@@ -24,4 +24,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "const semanticStateReady = isLifecycleFaultState");
     assert.include(source, "? lifecycleReady");
   });
+
+  it("treats the seeded idle thread as an empty transcript after Web sync completes", () => {
+    assert.include(source, 'const isEmptyTranscriptState = stateId === "existing-thread-idle"');
+    assert.include(source, "state?.web?.timelineMetrics?.threadSyncLabel === null");
+    assert.include(source, "webTimelineRows.length === 0");
+    assert.include(source, "lynxTimelineRows.length === 0");
+  });
 });
