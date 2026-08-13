@@ -171,6 +171,7 @@ function composerAnatomyMatches(webMetrics, lynxMetrics) {
   const webControls = (webMetrics.controls ?? []).map(({ id, label }) => ({ id, label }));
   const lynxControls = (lynxMetrics.controls ?? []).map(({ id, label }) => ({ id, label }));
   if (JSON.stringify(webControls) !== JSON.stringify(lynxControls)) return false;
+  if ((webMetrics.placeholder ?? null) !== (lynxMetrics.placeholder ?? null)) return false;
   if (
     JSON.stringify(webMetrics.contextLabels ?? []) !==
     JSON.stringify(lynxMetrics.contextLabels ?? [])
@@ -1302,6 +1303,10 @@ async function captureCell({
       state?.lynx?.semanticReady === true &&
       state?.web?.productState?.selectedProject === expectProject &&
       state?.lynx?.productState?.selectedProject === expectProject &&
+      (!state?.lynx?.connectorDiagnostics?.commands?.some(
+        ({ method }) => method === "readProjectBranch",
+      ) ||
+        state?.lynx?.connectorDiagnostics?.lastCommandResult?.method === "readProjectBranch") &&
       (!expectThread ||
         (state?.web?.productState?.selectedThread === expectThread &&
           state?.lynx?.productState?.selectedThread === expectThread))
@@ -2384,10 +2389,12 @@ async function captureCell({
         state?.lynx?.connected === false &&
         state?.web?.productState?.lifecycle === "connecting" &&
         state?.lynx?.productState?.lifecycle === "connecting");
+    const semanticStateReady = isLifecycleFaultState
+      ? lifecycleReady
+      : state?.web?.semanticReady === true && state?.lynx?.semanticReady === true;
     if (
       state &&
-      state.web?.semanticReady &&
-      state.lynx?.semanticReady &&
+      semanticStateReady &&
       overlayReady &&
       providerReadyPolls >= 3 &&
       modelPickerSemanticReadyPolls >= 3 &&
@@ -2892,7 +2899,11 @@ async function captureCell({
       !/allow-scripts and allow-same-origin/.test(e.text) &&
       !/Failed to load resource.*404/.test(e.text) &&
       !/favicon\.ico/.test(e.text) &&
-      !(isLifecycleFaultState && /WebSocket connection .* failed:/.test(e.text)),
+      !(
+        isLifecycleFaultState &&
+        (/WebSocket connection .* failed:/.test(e.text) ||
+          /SocketReadError: An error occurred during Read/.test(e.text))
+      ),
   );
 
   const pass =

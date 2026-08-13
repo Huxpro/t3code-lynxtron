@@ -32,6 +32,10 @@ import { Composer } from "./Composer";
 import { ModelPicker } from "./ModelPicker";
 import { RightPanel } from "./RightPanel";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import {
+  resolveConnectionScopedValue,
+  shouldRenderConnectionLifecycleBanner,
+} from "../state/connectionPresentation.logic";
 import { navigate } from "../router";
 import { useClientSettingsState } from "../state/prefsStore";
 import {
@@ -79,6 +83,8 @@ export function ChatView({ threadId }: ChatViewProps) {
   const modelPickerOpen = useModelPickerOpen();
   const modelPickerNavigation = useModelPickerNavigation();
   const lastAutoOpenedPlanKey = useRef<string | null>(null);
+  const lastKnownSelectedModel = useRef(selectedModel);
+  const lastKnownModelSelection = useRef(modelSelection);
   const [respondingApprovalId, setRespondingApprovalId] = useState<string | null>(null);
   const [checkoutBranch, setCheckoutBranch] = useState<string | null>(null);
   const [centerPanelWidth, setCenterPanelWidth] = useState(1024);
@@ -106,9 +112,19 @@ export function ChatView({ threadId }: ChatViewProps) {
   );
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;
 
+  const presentedSelectedModel = resolveConnectionScopedValue({
+    status,
+    current: selectedModel,
+    lastKnown: lastKnownSelectedModel.current,
+  });
+  const presentedModelSelection = resolveConnectionScopedValue({
+    status,
+    current: modelSelection,
+    lastKnown: lastKnownModelSelection.current,
+  });
   const projectName = activeProject?.title ?? "your project";
-  const modelLabel = selectedModel?.name ?? modelSelection?.model;
-  const modelInstanceId = selectedModel?.instanceId ?? modelSelection?.instanceId;
+  const modelLabel = presentedSelectedModel?.name ?? presentedModelSelection?.model;
+  const modelInstanceId = presentedSelectedModel?.instanceId ?? presentedModelSelection?.instanceId;
   const activeProviderInstanceId =
     activeThread?.session?.providerInstanceId ?? activeThread?.modelSelection.instanceId ?? null;
   const activeProviderEntry = providerEntries.find(
@@ -140,14 +156,14 @@ export function ChatView({ threadId }: ChatViewProps) {
   const activePendingQuestion = pendingUserInputs[0]?.questions[0] ?? null;
   const modelTraitsTrigger = useMemo(
     () =>
-      selectedModel
+      presentedSelectedModel
         ? projectComposerTraitsTrigger({
-            provider: selectedModel.driverKind,
-            capabilities: selectedModel.capabilities,
-            selections: modelSelection?.options,
+            provider: presentedSelectedModel.driverKind,
+            capabilities: presentedSelectedModel.capabilities,
+            selections: presentedModelSelection?.options,
           })
         : null,
-    [modelSelection?.options, selectedModel],
+    [presentedModelSelection?.options, presentedSelectedModel],
   );
   const primaryModelOption = useMemo(
     () =>
@@ -184,6 +200,11 @@ export function ChatView({ threadId }: ChatViewProps) {
         ? "local"
         : draftWorkspaceMode;
   const workspaceModeLocked = messages.length > 0 || activeThread?.worktreePath != null;
+
+  useEffect(() => {
+    if (selectedModel) lastKnownSelectedModel.current = selectedModel;
+    if (modelSelection) lastKnownModelSelection.current = modelSelection;
+  }, [modelSelection, selectedModel]);
 
   useEffect(() => {
     setDraftWorkspaceMode(activeThread?.worktreePath ? "worktree" : "local");
@@ -312,13 +333,15 @@ export function ChatView({ threadId }: ChatViewProps) {
         />
       }
       banner={
-        <ConnectionLifecycleBannerSurface
-          presentation={connectionLifecycle}
-          onReconnect={() => {
-            void reconnect().catch(() => undefined);
-          }}
-          onOpenConnections={() => navigate("/settings/connections")}
-        />
+        shouldRenderConnectionLifecycleBanner({ hero }) ? (
+          <ConnectionLifecycleBannerSurface
+            presentation={connectionLifecycle}
+            onReconnect={() => {
+              void reconnect().catch(() => undefined);
+            }}
+            onOpenConnections={() => navigate("/settings/connections")}
+          />
+        ) : null
       }
       chatColumnHidden={rightPanel.isOpen && rightPanelMaximized}
       rightPanel={
@@ -349,7 +372,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         projectName={projectName}
         modelLabel={modelLabel}
         modelInstanceId={modelInstanceId}
-        modelDriverKind={selectedModel?.driverKind}
+        modelDriverKind={presentedSelectedModel?.driverKind}
         modelOptionLabel={modelTraitsTrigger?.label}
         branch={activeThread?.branch ?? checkoutBranch ?? undefined}
         worktreePath={activeThread?.worktreePath ?? undefined}
