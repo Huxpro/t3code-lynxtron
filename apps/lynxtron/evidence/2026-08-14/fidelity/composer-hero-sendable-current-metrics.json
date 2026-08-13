@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-14T06:05:00+08:00",
+  "commit": "1a4fc90c5",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "selectedProject": "background-only",
+    "lifecycle": "ready"
+  },
+  "identity": {
+    "sameServer": true,
+    "sameSnapshot": true,
+    "sameRoute": true,
+    "sameTheme": true,
+    "sameDensity": true,
+    "sameViewport": true
+  },
+  "states": {
+    "composer-hero": {
+      "capturePass": true,
+      "layout": ["hero", "hero"],
+      "state": ["idle", "idle"],
+      "primaryState": ["disabled", "disabled"],
+      "editorValue": ["", ""],
+      "placeholder": [
+        "Ask for follow-up changes or attach images",
+        "Ask for follow-up changes or attach images"
+      ],
+      "controlsMatch": true,
+      "contextLabelsMatch": true,
+      "geometryAnchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+      "fullFrameSsim": 0.937661,
+      "composerRegionSsim": 0.901043,
+      "materialResidual": 0.098957,
+      "rendererErrors": []
+    },
+    "composer-sendable": {
+      "capturePass": true,
+      "layout": ["hero", "hero"],
+      "state": ["sendable", "sendable"],
+      "primaryState": ["send", "send"],
+      "editorValue": ["Explain the current changes", "Explain the current changes"],
+      "placeholder": [null, null],
+      "controlsMatch": true,
+      "contextLabelsMatch": true,
+      "geometryAnchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+      "fullFrameSsim": 0.938095,
+      "composerRegionSsim": 0.904561,
+      "materialResidual": 0.095439,
+      "rendererErrors": []
+    }
+  },
+  "classification": {
+    "historicalResidual": "superseded-by-current-head-browser-evidence",
+    "harnessMismatch": "Web aria-placeholder was previously compared with Lynx visible placeholder while the editor had content.",
+    "highestCurrentProductResidual": "Composer material pixels"
+  },
+  "evidence": {
+    "hero": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-current",
+    "sendableFailedHarness": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-sendable-current",
+    "sendable": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-sendable-current-fixed-harness"
+  }
+}

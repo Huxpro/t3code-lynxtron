@@ -12,3 +12,5 @@ composer-docked-current-browser,2026-08-12T19:47:57.286Z,43d1855adbc05922364c5ff
 composer-docked-placeholder-fix,2026-08-12T20:19:51.229Z,43d1855adbc05922364c5ff312d954282cb7b361,working-tree,Docked Composer placeholder parity,0.913006,0.687361,0.087534,0.904661,0.095339,0.070431
 sidebar-resize-native-interaction-fix,2026-08-14T05:32:00+08:00,c26ae5afbc5f8290a765879bb04275a38935a4f6,commit,Native Sidebar resize cursor tracking,0.901533,0.687361,0.078131,0.893187,0.106813,0.081904
 review-diff-current-head-evidence-blocker,2026-08-14T05:34:00+08:00,c26ae5afbc5f8290a765879bb04275a38935a4f6,commit,Review diff current-head evidence blocker,0.901533,0.687361,0.078131,0.893187,0.106813,0.081904
+composer-hero-sendable-current-browser,2026-08-14T06:05:00+08:00,1a4fc90c5e092ac2b9fd16fe93fbe600609565a8,commit,Current-head Hero and Sendable Composer pair,0.883689,0.687361,0.069577,0.874992,0.125008,0.099748
+composer-hero-footer-material-fix,2026-08-14T06:13:00+08:00,633dca6512d09cf47ce4d61393e63507988a4839,commit,Hero Composer footer material parity,0.883649,0.687361,0.069258,0.874992,0.125008,0.099788

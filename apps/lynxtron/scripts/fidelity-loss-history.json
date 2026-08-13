@@ -978,6 +978,206 @@
           "sha256": "2e4d1a31681d95084c034e29848b4dbd8ef49af33c65fba666668775ad776d18"
         }
       ]
+    },
+    {
+      "id": "composer-hero-sendable-current-browser",
+      "observedAt": "2026-08-14T06:05:00+08:00",
+      "commit": "1a4fc90c5e092ac2b9fd16fe93fbe600609565a8",
+      "codeState": "commit",
+      "label": "Current-head Hero and Sendable Composer pair",
+      "narrative": "Canonical Web and Lynx-for-Web captures share one server, snapshot, new-thread route, dark theme, density, project, and 1280x820 viewport. Hero and Sendable content, geometry, controls, context labels, input, and primary action match. The old 62.64% residual was historical runtime-blocker evidence plus a placeholder extractor mismatch; current measurable product loss is material pixels.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Current-head canonical captures supersede stale runtime-blocker evidence without attributing the evidence correction to a product code change."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Hero Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Hero Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-lynx.png",
+          "sha256": "58cf6684082d43b2b1596fc1df2b2cc402f4c7591b94b54f35a4c863df60513b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Sendable Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+          "sha256": "57937fe1dbe8aa43767ae4509d09877bbf62c9c8abf8294129b73b2bcd78917a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-lynx.png",
+          "sha256": "924b24b689e8ded79cf6dbe11711514cc34c1d4404f27cdf92fc03932b2560ea",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-sendable-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4975fc5a6ec92bdccd6c8b55ad23e66f239be208450f9fd3cee9699b9527ea76"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-composer-state-content",
+              "source": "layout, state, primary action, empty value, visible placeholder, controls, and context labels match"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "canonical-composer-frame-editor",
+              "source": "frame and editor x/y/width/height match exactly"
+            },
+            "material": {
+              "residual": 0.098957,
+              "confidence": 0.98,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.901043 over 768x172 Composer/context region"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "shared-server-readiness",
+              "source": "both semantic-ready with clean renderer consoles"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-composer-state-content",
+              "source": "layout, sendable state, send action, identical input, controls, and context labels match"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "canonical-composer-frame-editor",
+              "source": "frame and editor x/y/width/height match exactly"
+            },
+            "material": {
+              "residual": 0.095439,
+              "confidence": 0.98,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.904561 over 768x172 Composer/context region"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "dual-renderer-input-postcondition",
+              "source": "real key-character input produced the same value and send action in both panes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "shared-server-readiness",
+              "source": "both semantic-ready with clean renderer consoles"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-hero-footer-material-fix",
+      "observedAt": "2026-08-14T06:13:00+08:00",
+      "commit": "633dca6512d09cf47ce4d61393e63507988a4839",
+      "codeState": "commit",
+      "label": "Hero Composer footer material parity",
+      "narrative": "Lynx removed its footer-only vertical offset and fixed control widths, then aligned horizontal padding and transparent border box sizing with Web. Footer SSIM improves from 0.746677 to 0.843791 and Composer-region SSIM improves from 0.901043 to 0.923045.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.98,
+        "reason": "One CSS-only product change was measured against the same canonical Hero snapshot and viewport before and after."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Hero Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Hero Lynx-for-Web after footer fix",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-fix-lynx.png",
+          "sha256": "2b9e60f396fb64da2f3ed1255d1f90fc6e836fe7dd510322018f70329ce2f6c3",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-footer-fix-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "bb1fc4ea9499833c13881037c40f9e5aa62ceeb60f10976e9345a30ae9fa57ba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.076955,
+              "confidence": 0.98,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.923045 over the same 768x172 Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }

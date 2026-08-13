@@ -1702,6 +1702,84 @@
       "surfaces": [],
       "fromPoint": "sidebar-resize-native-interaction-fix",
       "toPoint": "review-diff-current-head-evidence-blocker"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 15798,
+      "commit": "f07c2832f17b658c2e583ce2844bf7a7aa466609",
+      "committedAt": "2026-08-14T05:48:55+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record sidebar interaction loss",
+      "surfaces": ["composer", "shell"],
+      "fromPoint": "review-diff-current-head-evidence-blocker",
+      "toPoint": "composer-hero-sendable-current-browser"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 72,
+      "commit": "8da2c8ae0e822470adf8fe199ad7fef282cbbb29",
+      "committedAt": "2026-08-14T05:51:20+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(composer): share session placeholder copy",
+      "surfaces": ["shell", "composer"],
+      "fromPoint": "review-diff-current-head-evidence-blocker",
+      "toPoint": "composer-hero-sendable-current-browser"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 25,
+      "commit": "1a4fc90c5e092ac2b9fd16fe93fbe600609565a8",
+      "committedAt": "2026-08-14T06:03:47+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): compare visible Composer placeholders",
+      "surfaces": ["shell"],
+      "fromPoint": "review-diff-current-head-evidence-blocker",
+      "toPoint": "composer-hero-sendable-current-browser"
+    },
+    {
+      "allocation": "measurement-refinement",
+      "changedLines": 0,
+      "commit": "1a4fc90c5e092ac2b9fd16fe93fbe600609565a8",
+      "committedAt": "2026-08-14T06:05:00+08:00",
+      "confidence": 0.99,
+      "delta": -0.017844,
+      "reason": "Current-head canonical captures supersede stale runtime-blocker evidence without attributing the evidence correction to a product code change.",
+      "subject": "Current-head Hero and Sendable Composer pair",
+      "surfaces": ["composer"],
+      "fromPoint": "review-diff-current-head-evidence-blocker",
+      "toPoint": "composer-hero-sendable-current-browser"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 78,
+      "commit": "633dca6512d09cf47ce4d61393e63507988a4839",
+      "committedAt": "2026-08-14T06:18:12+08:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align Composer footer controls",
+      "surfaces": ["composer", "shell"],
+      "fromPoint": "composer-hero-sendable-current-browser",
+      "toPoint": "composer-hero-footer-material-fix"
+    },
+    {
+      "allocation": "working-tree-product-change",
+      "changedLines": 0,
+      "commit": "633dca6512d09cf47ce4d61393e63507988a4839",
+      "committedAt": "2026-08-14T06:13:00+08:00",
+      "confidence": 0.98,
+      "delta": -0.00004,
+      "reason": "One CSS-only product change was measured against the same canonical Hero snapshot and viewport before and after.",
+      "subject": "Hero Composer footer material parity",
+      "surfaces": ["composer"],
+      "fromPoint": "composer-hero-sendable-current-browser",
+      "toPoint": "composer-hero-footer-material-fix"
     }
   ],
   "commitSeries": [
@@ -3156,6 +3234,72 @@
       "rawLoss": 0.901533,
       "smoothedLoss": 0.891547,
       "subject": "Review diff current-head evidence blocker"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "f07c2832f17b658c2e583ce2844bf7a7aa466609",
+      "committedAt": "2026-08-14T05:48:55+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.901533,
+      "smoothedLoss": 0.893744,
+      "subject": "docs(lynxtron): record sidebar interaction loss"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8da2c8ae0e822470adf8fe199ad7fef282cbbb29",
+      "committedAt": "2026-08-14T05:51:20+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.901533,
+      "smoothedLoss": 0.895458,
+      "subject": "fix(composer): share session placeholder copy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1a4fc90c5e092ac2b9fd16fe93fbe600609565a8",
+      "committedAt": "2026-08-14T06:03:47+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.901533,
+      "smoothedLoss": 0.896794,
+      "subject": "fix(lynxtron): compare visible Composer placeholders"
+    },
+    {
+      "allocation": "measurement-refinement",
+      "commit": "1a4fc90c5e092ac2b9fd16fe93fbe600609565a8",
+      "committedAt": "2026-08-14T06:05:00+08:00",
+      "confidence": 0.99,
+      "delta": -0.017844,
+      "measuredCheckpoint": "composer-hero-sendable-current-browser",
+      "rawLoss": 0.883689,
+      "smoothedLoss": 0.893911,
+      "subject": "Current-head Hero and Sendable Composer pair"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "633dca6512d09cf47ce4d61393e63507988a4839",
+      "committedAt": "2026-08-14T06:18:12+08:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.883689,
+      "smoothedLoss": 0.891662,
+      "subject": "fix(lynxtron): align Composer footer controls"
+    },
+    {
+      "allocation": "working-tree-product-change",
+      "commit": "633dca6512d09cf47ce4d61393e63507988a4839",
+      "committedAt": "2026-08-14T06:13:00+08:00",
+      "confidence": 0.98,
+      "delta": -0.00004,
+      "measuredCheckpoint": "composer-hero-footer-material-fix",
+      "rawLoss": 0.883649,
+      "smoothedLoss": 0.889899,
+      "subject": "Hero Composer footer material parity"
     }
   ],
   "generatedAt": "2026-08-13T04:19:51.229+08:00",
@@ -9924,6 +10068,1092 @@
       ],
       "bestLoss": 0.687361,
       "improvementFromBaseline": 0.081904
+    },
+    {
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Current-head canonical captures supersede stale runtime-blocker evidence without attributing the evidence correction to a product code change."
+      },
+      "commit": "1a4fc90c5e092ac2b9fd16fe93fbe600609565a8",
+      "codeCommit": "1a4fc90c5e092ac2b9fd16fe93fbe600609565a8",
+      "codeState": "commit",
+      "id": "composer-hero-sendable-current-browser",
+      "label": "Current-head Hero and Sendable Composer pair",
+      "narrative": "Canonical Web and Lynx-for-Web captures share one server, snapshot, new-thread route, dark theme, density, project, and 1280x820 viewport. Hero and Sendable content, geometry, controls, context labels, input, and primary action match. The old 62.64% residual was historical runtime-blocker evidence plus a placeholder extractor mismatch; current measurable product loss is material pixels.",
+      "observedAt": "2026-08-14T06:05:00+08:00",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Hero Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Hero Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-lynx.png",
+          "sha256": "58cf6684082d43b2b1596fc1df2b2cc402f4c7591b94b54f35a4c863df60513b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Sendable Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+          "sha256": "57937fe1dbe8aa43767ae4509d09877bbf62c9c8abf8294129b73b2bcd78917a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-lynx.png",
+          "sha256": "924b24b689e8ded79cf6dbe11711514cc34c1d4404f27cdf92fc03932b2560ea",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-sendable-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4975fc5a6ec92bdccd6c8b55ad23e66f239be208450f9fd3cee9699b9527ea76"
+        }
+      ],
+      "confidence": 0.125008,
+      "evidenceDebt": 0.874992,
+      "loss": 0.883689,
+      "observedResidual": 0.069577,
+      "byDimension": {
+        "content": {
+          "confidence": 0.177262,
+          "evidenceDebt": 0.822738,
+          "loss": 0.823674,
+          "observedResidual": 0.005282
+        },
+        "geometry": {
+          "confidence": 0.142592,
+          "evidenceDebt": 0.857408,
+          "loss": 0.869298,
+          "observedResidual": 0.083388
+        },
+        "typography": {
+          "confidence": 0.01998,
+          "evidenceDebt": 0.98002,
+          "loss": 0.980113,
+          "observedResidual": 0.004649
+        },
+        "material": {
+          "confidence": 0.086988,
+          "evidenceDebt": 0.913012,
+          "loss": 0.920565,
+          "observedResidual": 0.086827
+        },
+        "interaction": {
+          "confidence": 0.098174,
+          "evidenceDebt": 0.901826,
+          "loss": 0.915945,
+          "observedResidual": 0.143809
+        },
+        "runtime": {
+          "confidence": 0.189825,
+          "evidenceDebt": 0.810175,
+          "loss": 0.824293,
+          "observedResidual": 0.074375
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.164082,
+          "evidenceDebt": 0.835918,
+          "loss": 0.842539,
+          "observedResidual": 0.040352
+        },
+        "composer": {
+          "confidence": 0.248537,
+          "evidenceDebt": 0.751463,
+          "loss": 0.776825,
+          "observedResidual": 0.102047
+        },
+        "transcript": {
+          "confidence": 0.055891,
+          "evidenceDebt": 0.944109,
+          "loss": 0.948089,
+          "observedResidual": 0.071197
+        },
+        "overlays": {
+          "confidence": 0.116797,
+          "evidenceDebt": 0.883203,
+          "loss": 0.884686,
+          "observedResidual": 0.012701
+        },
+        "settings": {
+          "confidence": 0.07373,
+          "evidenceDebt": 0.92627,
+          "loss": 0.929623,
+          "observedResidual": 0.045479
+        },
+        "review": {
+          "confidence": 0.106575,
+          "evidenceDebt": 0.893425,
+          "loss": 0.912597,
+          "observedResidual": 0.179894
+        }
+      },
+      "states": [
+        {
+          "confidence": 0,
+          "evidenceDebt": 1,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 1,
+          "observedResidual": null,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0513,
+          "evidenceDebt": 0.9487,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 1,
+          "observedResidual": 1,
+          "weight": 5
+        },
+        {
+          "confidence": 0,
+          "evidenceDebt": 1,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 1,
+          "observedResidual": null,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 5
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0466,
+          "evidenceDebt": 0.9534,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.96428,
+          "observedResidual": 0.233476,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0765,
+          "evidenceDebt": 0.9235,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.927775,
+          "observedResidual": 0.055878,
+          "weight": 5
+        },
+        {
+          "confidence": 0.07375,
+          "evidenceDebt": 0.92625,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.92625,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.12105,
+          "evidenceDebt": 0.87895,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.882418,
+          "observedResidual": 0.028649,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 3
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 4
+        },
+        {
+          "confidence": 0.14575,
+          "evidenceDebt": 0.85425,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.871463,
+          "observedResidual": 0.118102,
+          "weight": 5
+        },
+        {
+          "confidence": 0.1486,
+          "evidenceDebt": 0.8514,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.866183,
+          "observedResidual": 0.099484,
+          "weight": 5
+        },
+        {
+          "confidence": 0.15078,
+          "evidenceDebt": 0.84922,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.852827,
+          "observedResidual": 0.023921,
+          "weight": 5
+        },
+        {
+          "confidence": 0.17425,
+          "evidenceDebt": 0.82575,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.840098,
+          "observedResidual": 0.082341,
+          "weight": 5
+        },
+        {
+          "confidence": 0.171,
+          "evidenceDebt": 0.829,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.829594,
+          "observedResidual": 0.003472,
+          "weight": 3
+        },
+        {
+          "confidence": 0.171,
+          "evidenceDebt": 0.829,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.829594,
+          "observedResidual": 0.003472,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1829,
+          "evidenceDebt": 0.8171,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.818646,
+          "observedResidual": 0.008451,
+          "weight": 5
+        },
+        {
+          "confidence": 0.1829,
+          "evidenceDebt": 0.8171,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.818646,
+          "observedResidual": 0.008451,
+          "weight": 4
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 3
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.31938,
+          "evidenceDebt": 0.68062,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.737351,
+          "observedResidual": 0.177628,
+          "weight": 5
+        },
+        {
+          "confidence": 0.30296,
+          "evidenceDebt": 0.69704,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.701904,
+          "observedResidual": 0.016056,
+          "weight": 5
+        },
+        {
+          "confidence": 0.39538,
+          "evidenceDebt": 0.60462,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.661158,
+          "observedResidual": 0.142996,
+          "weight": 5
+        },
+        {
+          "confidence": 0.43428,
+          "evidenceDebt": 0.56572,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.56572,
+          "observedResidual": 0,
+          "weight": 4
+        }
+      ],
+      "bestLoss": 0.687361,
+      "improvementFromBaseline": 0.099748
+    },
+    {
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.98,
+        "reason": "One CSS-only product change was measured against the same canonical Hero snapshot and viewport before and after."
+      },
+      "commit": "633dca6512d09cf47ce4d61393e63507988a4839",
+      "codeCommit": "633dca6512d09cf47ce4d61393e63507988a4839",
+      "codeState": "commit",
+      "id": "composer-hero-footer-material-fix",
+      "label": "Hero Composer footer material parity",
+      "narrative": "Lynx removed its footer-only vertical offset and fixed control widths, then aligned horizontal padding and transparent border box sizing with Web. Footer SSIM improves from 0.746677 to 0.843791 and Composer-region SSIM improves from 0.901043 to 0.923045.",
+      "observedAt": "2026-08-14T06:13:00+08:00",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Hero Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Hero Lynx-for-Web after footer fix",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-fix-lynx.png",
+          "sha256": "2b9e60f396fb64da2f3ed1255d1f90fc6e836fe7dd510322018f70329ce2f6c3",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-footer-fix-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "bb1fc4ea9499833c13881037c40f9e5aa62ceeb60f10976e9345a30ae9fa57ba"
+        }
+      ],
+      "confidence": 0.125008,
+      "evidenceDebt": 0.874992,
+      "loss": 0.883649,
+      "observedResidual": 0.069258,
+      "byDimension": {
+        "content": {
+          "confidence": 0.177262,
+          "evidenceDebt": 0.822738,
+          "loss": 0.823674,
+          "observedResidual": 0.005282
+        },
+        "geometry": {
+          "confidence": 0.142592,
+          "evidenceDebt": 0.857408,
+          "loss": 0.869298,
+          "observedResidual": 0.083388
+        },
+        "typography": {
+          "confidence": 0.01998,
+          "evidenceDebt": 0.98002,
+          "loss": 0.980113,
+          "observedResidual": 0.004649
+        },
+        "material": {
+          "confidence": 0.086988,
+          "evidenceDebt": 0.913012,
+          "loss": 0.92028,
+          "observedResidual": 0.083552
+        },
+        "interaction": {
+          "confidence": 0.098174,
+          "evidenceDebt": 0.901826,
+          "loss": 0.915945,
+          "observedResidual": 0.143809
+        },
+        "runtime": {
+          "confidence": 0.189825,
+          "evidenceDebt": 0.810175,
+          "loss": 0.824293,
+          "observedResidual": 0.074375
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.164082,
+          "evidenceDebt": 0.835918,
+          "loss": 0.842539,
+          "observedResidual": 0.040352
+        },
+        "composer": {
+          "confidence": 0.248537,
+          "evidenceDebt": 0.751463,
+          "loss": 0.776573,
+          "observedResidual": 0.101034
+        },
+        "transcript": {
+          "confidence": 0.055891,
+          "evidenceDebt": 0.944109,
+          "loss": 0.948089,
+          "observedResidual": 0.071197
+        },
+        "overlays": {
+          "confidence": 0.116797,
+          "evidenceDebt": 0.883203,
+          "loss": 0.884686,
+          "observedResidual": 0.012701
+        },
+        "settings": {
+          "confidence": 0.07373,
+          "evidenceDebt": 0.92627,
+          "loss": 0.929623,
+          "observedResidual": 0.045479
+        },
+        "review": {
+          "confidence": 0.106575,
+          "evidenceDebt": 0.893425,
+          "loss": 0.912597,
+          "observedResidual": 0.179894
+        }
+      },
+      "states": [
+        {
+          "confidence": 0,
+          "evidenceDebt": 1,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 1,
+          "observedResidual": null,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0513,
+          "evidenceDebt": 0.9487,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 1,
+          "observedResidual": 1,
+          "weight": 5
+        },
+        {
+          "confidence": 0,
+          "evidenceDebt": 1,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 1,
+          "observedResidual": null,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 5
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0466,
+          "evidenceDebt": 0.9534,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.96428,
+          "observedResidual": 0.233476,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0765,
+          "evidenceDebt": 0.9235,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.927775,
+          "observedResidual": 0.055878,
+          "weight": 5
+        },
+        {
+          "confidence": 0.07375,
+          "evidenceDebt": 0.92625,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.92625,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.12105,
+          "evidenceDebt": 0.87895,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.882418,
+          "observedResidual": 0.028649,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 3
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 4
+        },
+        {
+          "confidence": 0.14575,
+          "evidenceDebt": 0.85425,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.871463,
+          "observedResidual": 0.118102,
+          "weight": 5
+        },
+        {
+          "confidence": 0.1486,
+          "evidenceDebt": 0.8514,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.866183,
+          "observedResidual": 0.099484,
+          "weight": 5
+        },
+        {
+          "confidence": 0.15078,
+          "evidenceDebt": 0.84922,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.852827,
+          "observedResidual": 0.023921,
+          "weight": 5
+        },
+        {
+          "confidence": 0.17425,
+          "evidenceDebt": 0.82575,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.840098,
+          "observedResidual": 0.082341,
+          "weight": 5
+        },
+        {
+          "confidence": 0.171,
+          "evidenceDebt": 0.829,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.829594,
+          "observedResidual": 0.003472,
+          "weight": 3
+        },
+        {
+          "confidence": 0.171,
+          "evidenceDebt": 0.829,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.829594,
+          "observedResidual": 0.003472,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1829,
+          "evidenceDebt": 0.8171,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.818646,
+          "observedResidual": 0.008451,
+          "weight": 5
+        },
+        {
+          "confidence": 0.1829,
+          "evidenceDebt": 0.8171,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.818646,
+          "observedResidual": 0.008451,
+          "weight": 4
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 3
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.31938,
+          "evidenceDebt": 0.68062,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.736143,
+          "observedResidual": 0.173847,
+          "weight": 5
+        },
+        {
+          "confidence": 0.30296,
+          "evidenceDebt": 0.69704,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.701904,
+          "observedResidual": 0.016056,
+          "weight": 5
+        },
+        {
+          "confidence": 0.39538,
+          "evidenceDebt": 0.60462,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.661158,
+          "observedResidual": 0.142996,
+          "weight": 5
+        },
+        {
+          "confidence": 0.43428,
+          "evidenceDebt": 0.56572,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.56572,
+          "observedResidual": 0,
+          "weight": 4
+        }
+      ],
+      "bestLoss": 0.687361,
+      "improvementFromBaseline": 0.099788
     }
   ],
   "provenance": {
