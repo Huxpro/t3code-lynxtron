@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "scope": {
+    "screen": "existing-thread",
+    "state": "sidebar-resize",
+    "theme": "dark",
+    "viewport": "1280x820",
+    "interaction": "mouse-drag"
+  },
+  "identity": {
+    "nativeBundleSha256": "9b1cd15cad20cc9af58e5b41a1397292f50675405584f315f20c6686e7d774bb",
+    "lynxForWebBundleSha256": "34722796461ba853ac2726a282819262838e2c7e1e212abc512232345f7cc911",
+    "connector": "main",
+    "lynxSdkVersion": "4.1"
+  },
+  "classification": "working-tree-product-change",
+  "rootCause": {
+    "component": "sidebar-gap/sidebar-container",
+    "before": {
+      "transitionProperty": ["width", "left, width"],
+      "transitionDuration": "200ms",
+      "effect": "Each pointer sample redirected a 200ms width transition, so the visible edge trailed the cursor."
+    },
+    "after": {
+      "dragTransitionDuration": "0ms",
+      "settledTransitionDuration": "200ms",
+      "effect": "Drag samples update geometry synchronously while the existing open/close transition remains available after release."
+    }
+  },
+  "nativeEvidence": {
+    "moveSamplesPerDirection": 120,
+    "geometryReadsPerDirection": 10,
+    "sidebarWidenMaxAbsoluteErrorPx": 0,
+    "sidebarNarrowMaxAbsoluteErrorPx": 0,
+    "rightPanelWidenMaxAbsoluteErrorPx": 0,
+    "rightPanelNarrowMaxAbsoluteErrorPx": 0,
+    "hostFrequencyWarning": false,
+    "rendererErrors": []
+  },
+  "componentContribution": {
+    "group": "shell",
+    "state": "sidebar-resize",
+    "dimension": "interaction",
+    "before": "P1 visible cursor lag in both directions",
+    "after": "Measured pointer-derived width and Native geometry match at every retained sample"
+  },
+  "harnessClassification": {
+    "mismatch": false,
+    "notes": "Native and Lynx-for-Web use the same 1280x820 dark existing-thread scope. The Native verifier gates on the staged bundle identity and measured rail geometry."
+  },
+  "remainingRisk": [
+    "The automated path samples deterministic linear pointer motion; irregular human acceleration remains a manual observation.",
+    "Lynx-for-Web is retained for manual comparison but does not substitute for Native interaction evidence."
+  ]
+}

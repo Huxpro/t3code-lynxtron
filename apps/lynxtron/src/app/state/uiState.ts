@@ -240,8 +240,7 @@ export const uiActions = {
     appAtomRegistry.set(projectActionDialogOpenAtom, true);
   },
   openQuickSwitch(input?: SearchOverlayMode | unknown): void {
-    const mode: SearchOverlayMode =
-      input === "files" || input === "content" ? input : "command";
+    const mode: SearchOverlayMode = input === "files" || input === "content" ? input : "command";
     const state = appAtomRegistry.get(searchOverlayStateAtom);
     if (state.open && state.mode === mode) return;
     updateSearchOverlay({ _tag: "ToggleMode", mode });
@@ -278,8 +277,7 @@ export const uiActions = {
     updateRightPanel({ type: "toggle-panel" });
   },
   toggleQuickSwitch(input?: SearchOverlayMode | unknown): void {
-    const mode: SearchOverlayMode =
-      input === "files" || input === "content" ? input : "command";
+    const mode: SearchOverlayMode = input === "files" || input === "content" ? input : "command";
     updateSearchOverlay({ _tag: "ToggleMode", mode });
   },
 } as const;
@@ -297,6 +295,7 @@ export function installResponsiveUiProbe(enabled: boolean): void {
           | "open-diff"
           | "open-file-search"
           | "open-files"
+          | "open-model-picker"
           | "toggle-sidebar",
       ) => void;
       __T3_LYNXTRON_OPEN_DIFF_PROBE__?: (turnId: TurnId, filePath?: string) => void;
@@ -329,6 +328,10 @@ export function installResponsiveUiProbe(enabled: boolean): void {
     }
     if (action === "open-files") {
       uiActions.openRightPanelSurface("files");
+      return;
+    }
+    if (action === "open-model-picker") {
+      uiActions.openModelPicker();
       return;
     }
     requestSidebarToggle();

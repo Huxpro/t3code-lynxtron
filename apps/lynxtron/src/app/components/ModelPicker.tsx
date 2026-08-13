@@ -1,4 +1,11 @@
-import { useState, useCallback, useEffect, useMainThreadRef, useMemo } from "@lynx-js/react";
+import {
+  runOnMainThread,
+  useState,
+  useCallback,
+  useEffect,
+  useMainThreadRef,
+  useMemo,
+} from "@lynx-js/react";
 import type { MainThread } from "@lynx-js/types";
 import type {
   ModelSelection,
@@ -189,14 +196,16 @@ export function ModelPicker({
         : { key: scrollStateKey, offset: 0 };
     const nextOffset = Math.max(0, state.offset + event.deltaY);
     wheelStateRef.current = { key: scrollStateKey, offset: nextOffset };
-    const target = listScrollRef.current ?? event.currentTarget;
-    target.setAttribute("data-wheel-offset", String(nextOffset));
+    const target =
+      listScrollRef.current ?? event.currentTarget ?? lynx.querySelector(".picker-list");
+    if (!target) return;
+    target.setAttribute("data-wheel-offset", `${nextOffset}`);
     target.invoke("scrollTo", {
       offset: nextOffset,
       smooth: false,
     });
-    event.preventDefault();
-    event.stopPropagation();
+    event.preventDefault?.();
+    event.stopPropagation?.();
   };
   useEffect(() => {
     if (!viewport.testResize) return;
@@ -225,10 +234,21 @@ export function ModelPicker({
         notice,
         search,
       });
+    (
+      target as typeof target & {
+        __T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
+      }
+    ).__T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__ = (deltaY) =>
+      runOnMainThread(handleListWheel)({ deltaY } as MainThread.WheelEvent);
     return () => {
       delete target.__T3_LYNXTRON_MODEL_PICKER_SEARCH__;
       delete target.__T3_LYNXTRON_MODEL_PICKER_PROVIDER__;
       delete target.__T3_LYNXTRON_MODEL_PICKER_STATE__;
+      delete (
+        target as typeof target & {
+          __T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
+        }
+      ).__T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__;
     };
   }, [
     activeProvider,

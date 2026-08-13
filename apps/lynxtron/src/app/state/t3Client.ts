@@ -162,6 +162,7 @@ let shellFingerprint = "";
 let threadFingerprint = "";
 let mainTransport: MainConnectorTransport | null = null;
 let mainCommandBridge: Partial<PollBridge> | null = null;
+let mtsProviderFixture: ServerProvider | undefined;
 
 function getPreloadBridge(): Partial<PollBridge> | undefined {
   "background only";
@@ -230,15 +231,16 @@ function resetActiveThreadState(
 }
 
 function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelection | null): void {
+  const effectiveConfig = mtsProviderFixture
+    ? { ...config, providers: [mtsProviderFixture] }
+    : config;
   const current = appAtomRegistry.get(t3ClientStateAtom);
-  const activeThread = current.threads.find(
-    (thread) => thread.id === current.activeThreadId,
-  );
+  const activeThread = current.threads.find((thread) => thread.id === current.activeThreadId);
   const newThreadSelectionCandidates = projectModelSelectionCandidates({
     currentSelection: preferredSelection ?? current.modelSelection,
     projects: current.projects,
   });
-  const projection = deriveProviderModelSelectionProjection(config, [
+  const projection = deriveProviderModelSelectionProjection(effectiveConfig, [
     activeThread?.modelSelection,
     ...(activeThread
       ? []
@@ -258,18 +260,18 @@ function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelec
     : projection.selectedModel;
   const selection = activeThread
     ? activeThread.modelSelection
-    : projection.selection ??
+    : (projection.selection ??
       (selectedModel
         ? {
             instanceId: selectedModel.instanceId,
             model: selectedModel.slug,
           }
-        : undefined);
+        : undefined));
 
   patchState({
-    serverConfig: config,
-    providers: config.providers,
-    settings: config.settings,
+    serverConfig: effectiveConfig,
+    providers: effectiveConfig.providers,
+    settings: effectiveConfig.settings,
     providerEntries: projection.entries,
     models: projection.models,
     selectedModel,
@@ -314,15 +316,16 @@ function applyShellPayload(shell: ShellEventPayload): void {
   const stateBeforeShell = appAtomRegistry.get(t3ClientStateAtom);
   const activeThread = threads.find((thread) => thread.id === stateBeforeShell.activeThreadId);
   const projects = shell.projects ?? [];
-  const modelProjection = !activeThread && stateBeforeShell.serverConfig
-    ? deriveProviderModelSelectionProjection(
-        stateBeforeShell.serverConfig,
-        projectModelSelectionCandidates({
-          currentSelection: stateBeforeShell.modelSelection,
-          projects,
-        }),
-      )
-    : null;
+  const modelProjection =
+    !activeThread && stateBeforeShell.serverConfig
+      ? deriveProviderModelSelectionProjection(
+          stateBeforeShell.serverConfig,
+          projectModelSelectionCandidates({
+            currentSelection: stateBeforeShell.modelSelection,
+            projects,
+          }),
+        )
+      : null;
   const activeModel = activeThread
     ? findExactModelForSelection(
         stateBeforeShell.providerEntries.length > 0
@@ -341,12 +344,12 @@ function applyShellPayload(shell: ShellEventPayload): void {
           selectedModel: activeModel,
         }
       : modelProjection?.selection
-      ? {
-          modelSelection: modelProjection.selection,
-          ...(modelProjection.selectedModel
-            ? { selectedModel: modelProjection.selectedModel }
-            : {}),
-        }
+        ? {
+            modelSelection: modelProjection.selection,
+            ...(modelProjection.selectedModel
+              ? { selectedModel: modelProjection.selectedModel }
+              : {}),
+          }
         : {}),
   });
   if (
@@ -438,10 +441,10 @@ function buildMainCommandBridge(transport: MainConnectorTransport): Partial<Poll
 function installTransportDevToolHook(): void {
   const diagnosticsGlobal = globalThis as {
     __T3_LYNXTRON_CONNECTOR_TRANSPORT__?: {
-        kind: "main" | "unavailable";
-        lastSeq: () => number;
-        invoke: (method: string, params?: unknown) => Promise<unknown>;
-      };
+      kind: "main" | "unavailable";
+      lastSeq: () => number;
+      invoke: (method: string, params?: unknown) => Promise<unknown>;
+    };
     __T3_LYNXTRON_CLIENT_STATE__?: () => {
       activeThreadId?: string;
       sessionStatus: SessionStatus;
@@ -453,8 +456,12 @@ function installTransportDevToolHook(): void {
         instanceId: string;
         showInteractionModeToggle: boolean | undefined;
       };
+      modelCount: number;
+      providerCount: number;
+      providerEntryCount: number;
     };
     __T3_LYNXTRON_SELECT_THREAD__?: (threadId: string) => void;
+    __T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?: (provider: ServerProvider) => boolean;
   };
   diagnosticsGlobal.__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
     kind: mainTransport ? ("main" as const) : ("unavailable" as const),
@@ -467,27 +474,26 @@ function installTransportDevToolHook(): void {
   diagnosticsGlobal.__T3_LYNXTRON_CLIENT_STATE__ = () => {
     const state = appAtomRegistry.get(t3ClientStateAtom);
     const activeThread = state.threads.find((thread) => thread.id === state.activeThreadId);
-    const activeProject = state.projects.find(
-      (project) => project.id === activeThread?.projectId,
-    );
+    const activeProject = state.projects.find((project) => project.id === activeThread?.projectId);
     const selectedProvider = state.providerEntries.find(
       (entry) =>
-        entry.instanceId ===
-        (state.selectedModel?.instanceId ?? state.modelSelection?.instanceId),
+        entry.instanceId === (state.selectedModel?.instanceId ?? state.modelSelection?.instanceId),
     );
     return {
       activeThreadId: state.activeThreadId,
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
+      modelCount: state.models.length,
+      providerCount: state.providers.length,
+      providerEntryCount: state.providerEntries.length,
       ...(activeProject ? { activeProject } : {}),
       ...(activeThread ? { activeThread } : {}),
       ...(selectedProvider
         ? {
             selectedProvider: {
               instanceId: selectedProvider.instanceId,
-              showInteractionModeToggle:
-                selectedProvider.snapshot.showInteractionModeToggle,
+              showInteractionModeToggle: selectedProvider.snapshot.showInteractionModeToggle,
             },
           }
         : {}),
@@ -496,6 +502,21 @@ function installTransportDevToolHook(): void {
   diagnosticsGlobal.__T3_LYNXTRON_SELECT_THREAD__ = (threadId) => {
     selectThread(threadId);
   };
+  if (
+    typeof (
+      globalThis as {
+        __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
+      }
+    ).__T3_LYNXTRON_VIEWPORT_PROBE__ === "function"
+  ) {
+    diagnosticsGlobal.__T3_LYNXTRON_MTS_PROVIDER_FIXTURE__ = (provider) => {
+      const state = appAtomRegistry.get(t3ClientStateAtom);
+      if (!state.serverConfig) return false;
+      mtsProviderFixture = provider;
+      applyServerConfig(state.serverConfig);
+      return true;
+    };
+  }
 }
 
 function startT3Client(): void {
@@ -572,11 +593,7 @@ export async function readPreviewInitialState(): Promise<{
   "background only";
   try {
     if (!NativeModules?.bridge?.call) return null;
-    const value = await callBridge(
-      NativeModules.bridge,
-      "t3:preview.initial-state",
-      {},
-    );
+    const value = await callBridge(NativeModules.bridge, "t3:preview.initial-state", {});
     return value && typeof value === "object"
       ? (value as {
           readonly route?: string;

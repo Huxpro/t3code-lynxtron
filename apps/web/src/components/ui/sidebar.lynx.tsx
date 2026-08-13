@@ -176,7 +176,7 @@ export function Sidebar({
   const mobileWidth = resolveThreadMobileSidebarWidth(viewport.width);
   const style = {
     ...(typeof props.style === "object" && props.style !== null ? props.style : {}),
-    width: `${isMobile ? mobileWidth : sidebarWidth}px`,
+    width: isMobile ? `${mobileWidth}px` : "100%",
   };
   if (isMobile) {
     if (!openMobile) return null;
@@ -301,6 +301,7 @@ export function SidebarRail({ className, ...props }: ElementProps) {
     target: "sidebar",
     value: sidebarWidth,
     onResize: setSidebarWidth,
+    testProbe: viewport.testResize,
   });
 
   if (isMobile || !open) return null;
@@ -309,10 +310,9 @@ export function SidebarRail({ className, ...props }: ElementProps) {
       <view
         {...props}
         {...resize.handlers}
-        className={cn(
-          "sidebar-resize-rail",
-          className,
-        )}
+        {...resize.dragHandlers}
+        main-thread:ref={resize.handleRef}
+        className={cn("sidebar-resize-rail", className)}
         data-sidebar="rail"
         data-slot="sidebar-rail"
       />

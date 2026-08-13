@@ -2,11 +2,19 @@ import {
   clampResizableWidth,
   type ResizableWidthEdge,
 } from "@t3tools/client-runtime/presentation/resizable-width";
-import { runOnBackground, useCallback, useEffect, useMainThreadRef, useState } from "@lynx-js/react";
+import {
+  runOnBackground,
+  runOnMainThread,
+  useCallback,
+  useEffect,
+  useMainThreadRef,
+  useState,
+} from "@lynx-js/react";
 import type { MainThread } from "@lynx-js/types";
 
 import { clientCapabilities } from "../platform/clientCapabilities";
-import { resolveMainThreadResizeWidth } from "./resizeFrame";
+import { resolveMainThreadResizeWidth } from "./resizeFrame" with { runtime: "shared" };
+import { pointerClientX } from "./resizePointer" with { runtime: "shared" };
 
 interface UseResizableWidthOptions {
   readonly storageKey: string;
@@ -17,6 +25,7 @@ interface UseResizableWidthOptions {
   readonly value?: number;
   readonly onResize?: (width: number) => void;
   readonly target: "sidebar" | "right-panel";
+  readonly testProbe?: boolean;
 }
 
 interface MainThreadResizeState {
@@ -26,44 +35,10 @@ interface MainThreadResizeState {
   readonly width: number;
 }
 
-function mainThreadPointerX(event: MainThread.MouseEvent | MainThread.TouchEvent): number | null {
-  "main thread";
-  const touch =
-    "touches" in event ? (event.touches[0] ?? event.changedTouches[0]) : undefined;
-  const detailX =
-    event.detail &&
-    typeof event.detail === "object" &&
-    "x" in event.detail
-      ? event.detail.x
-      : undefined;
-  const value =
-    touch?.clientX ??
-    touch?.pageX ??
-    ("clientX" in event ? event.clientX : undefined) ??
-    ("pageX" in event ? event.pageX : undefined) ??
-    ("x" in event ? event.x : undefined) ??
-    detailX;
-  return typeof value === "number" && Number.isFinite(value) ? value : null;
-}
-
-function setMainThreadResizeWidth(
-  target: "sidebar" | "right-panel",
-  width: number,
-  targetRef: { current: MainThread.Element | null },
-): void {
-  "main thread";
-  const value = `${width}px`;
-  if (target === "right-panel") {
-    targetRef.current?.setStyleProperty("width", value);
-    targetRef.current?.setAttribute("data-right-panel-width", String(width));
-    return;
-  }
-  const wrapper = lynx.querySelector('[data-slot="sidebar-wrapper"]');
-  wrapper?.setStyleProperty("--sidebar-width", value);
-  wrapper?.setAttribute("data-sidebar-width", String(width));
-  wrapper?.querySelector(".sidebar-gap")?.setStyleProperty("width", value);
-  wrapper?.querySelector(".sidebar-container")?.setStyleProperty("width", value);
-  wrapper?.querySelector(".sidebar-inner")?.setStyleProperty("width", value);
+interface MainThreadSidebarTargets {
+  readonly wrapper: MainThread.Element | null;
+  readonly gap: MainThread.Element | null;
+  readonly container: MainThread.Element | null;
 }
 
 export function useResizableWidth(options: UseResizableWidthOptions) {
@@ -72,6 +47,10 @@ export function useResizableWidth(options: UseResizableWidthOptions) {
     minWidth: options.minWidth,
     maxWidth: options.maxWidth,
   };
+  const edge = options.edge;
+  const minWidth = options.minWidth;
+  const maxWidth = options.maxWidth;
+  const target = options.target;
   const [internalWidth, setInternalWidth] = useState(() => {
     const raw = clientCapabilities.storage.getItem(options.storageKey);
     const parsed = raw === null ? null : Number(JSON.parse(raw));
@@ -79,6 +58,12 @@ export function useResizableWidth(options: UseResizableWidthOptions) {
   });
   const width = options.value ?? internalWidth;
   const targetRef = useMainThreadRef<MainThread.Element>(null);
+  const handleRef = useMainThreadRef<MainThread.Element>(null);
+  const sidebarTargetsRef = useMainThreadRef<MainThreadSidebarTargets>({
+    wrapper: null,
+    gap: null,
+    container: null,
+  });
   const dragRef = useMainThreadRef<MainThreadResizeState>({
     active: false,
     startX: 0,
@@ -104,7 +89,7 @@ export function useResizableWidth(options: UseResizableWidthOptions) {
 
   const start = (event: MainThread.MouseEvent | MainThread.TouchEvent) => {
     "main thread";
-    const clientX = mainThreadPointerX(event);
+    const clientX = pointerClientX(event);
     if (clientX === null) return;
     dragRef.current = {
       active: true,
@@ -112,32 +97,52 @@ export function useResizableWidth(options: UseResizableWidthOptions) {
       startWidth: width,
       width,
     };
-    event.stopPropagation();
+    if (target === "sidebar") {
+      sidebarTargetsRef.current = {
+        wrapper: lynx.querySelector('[data-slot="sidebar-wrapper"]'),
+        gap: lynx.querySelector(".sidebar-gap"),
+        container: lynx.querySelector(".sidebar-container"),
+      };
+      sidebarTargetsRef.current.gap?.setStyleProperty("transition-duration", "0ms");
+      sidebarTargetsRef.current.container?.setStyleProperty("transition-duration", "0ms");
+    }
+    handleRef.current?.setAttribute("hit-slop", "2000px");
+    event.stopPropagation?.();
   };
 
   const finish = (event: MainThread.MouseEvent | MainThread.TouchEvent) => {
     "main thread";
     const current = dragRef.current;
     if (!current.active) return;
-    const clientX = mainThreadPointerX(event);
+    const clientX = pointerClientX(event);
     const nextWidth =
       clientX === null
         ? current.width
-        : resolveMainThreadResizeWidth(
-            current.startX,
-            current.startWidth,
-            clientX,
-            options.edge,
-            options,
-          );
-    setMainThreadResizeWidth(options.target, nextWidth, targetRef);
+        : resolveMainThreadResizeWidth(current.startX, current.startWidth, clientX, edge, {
+            minWidth,
+            maxWidth,
+          });
+    const value = `${nextWidth}px`;
+    if (target === "right-panel") {
+      targetRef.current?.setStyleProperty("width", value);
+      targetRef.current?.setAttribute("data-right-panel-width", `${nextWidth}`);
+    } else {
+      const targets = sidebarTargetsRef.current;
+      targets.wrapper?.setStyleProperty("--sidebar-width", value);
+      targets.wrapper?.setAttribute("data-sidebar-width", `${nextWidth}`);
+      targets.gap?.setStyleProperty("width", value);
+      targets.container?.setStyleProperty("width", value);
+      targets.gap?.setStyleProperty("transition-duration", "200ms");
+      targets.container?.setStyleProperty("transition-duration", "200ms");
+    }
+    handleRef.current?.setAttribute("hit-slop", "0px");
     dragRef.current = {
       active: false,
       startX: current.startX,
       startWidth: current.startWidth,
       width: nextWidth,
     };
-    event.stopPropagation();
+    event.stopPropagation?.();
     runOnBackground(commitWidth)(nextWidth);
   };
 
@@ -145,50 +150,93 @@ export function useResizableWidth(options: UseResizableWidthOptions) {
     "main thread";
     const current = dragRef.current;
     if (!current.active) return;
-    if ("buttons" in event && event.buttons === 0) {
-      finish(event);
-      return;
-    }
-    const clientX = mainThreadPointerX(event);
+    const clientX = pointerClientX(event);
     if (clientX === null) return;
     const nextWidth = resolveMainThreadResizeWidth(
       current.startX,
       current.startWidth,
       clientX,
-      options.edge,
-      options,
+      edge,
+      { minWidth, maxWidth },
     );
     if (nextWidth === current.width) return;
     dragRef.current = { ...current, width: nextWidth };
-    setMainThreadResizeWidth(options.target, nextWidth, targetRef);
-    event.stopPropagation();
+    const value = `${nextWidth}px`;
+    if (target === "right-panel") {
+      targetRef.current?.setStyleProperty("width", value);
+    } else {
+      const targets = sidebarTargetsRef.current;
+      targets.wrapper?.setStyleProperty("--sidebar-width", value);
+      targets.gap?.setStyleProperty("width", value);
+      targets.container?.setStyleProperty("width", value);
+    }
+    event.stopPropagation?.();
   };
 
   const cancel = (event: MainThread.MouseEvent | MainThread.TouchEvent) => {
     "main thread";
     const current = dragRef.current;
     if (!current.active) return;
-    setMainThreadResizeWidth(options.target, current.startWidth, targetRef);
+    const value = `${current.startWidth}px`;
+    if (target === "right-panel") {
+      targetRef.current?.setStyleProperty("width", value);
+      targetRef.current?.setAttribute("data-right-panel-width", `${current.startWidth}`);
+    } else {
+      const targets = sidebarTargetsRef.current;
+      targets.wrapper?.setStyleProperty("--sidebar-width", value);
+      targets.wrapper?.setAttribute("data-sidebar-width", `${current.startWidth}`);
+      targets.gap?.setStyleProperty("width", value);
+      targets.container?.setStyleProperty("width", value);
+      targets.gap?.setStyleProperty("transition-duration", "200ms");
+      targets.container?.setStyleProperty("transition-duration", "200ms");
+    }
+    handleRef.current?.setAttribute("hit-slop", "0px");
     dragRef.current = {
       active: false,
       startX: current.startX,
       startWidth: current.startWidth,
       width: current.startWidth,
     };
-    event.stopPropagation();
+    event.stopPropagation?.();
   };
+
+  useEffect(() => {
+    if (!options.testProbe) return;
+    const targetGlobal = globalThis as {
+      __T3_LYNXTRON_MTS_RESIZE_PROBE__?: Partial<
+        Record<"sidebar" | "right-panel", (startX: number, endX: number) => Promise<void>>
+      >;
+    };
+    const probes = targetGlobal.__T3_LYNXTRON_MTS_RESIZE_PROBE__ ?? {};
+    const probe = async (startX: number, endX: number) => {
+      await runOnMainThread(start)({ buttons: 1, clientX: startX } as MainThread.MouseEvent);
+      await runOnMainThread(move)({ buttons: 1, clientX: endX } as MainThread.MouseEvent);
+      await runOnMainThread(finish)({ buttons: 0, clientX: endX } as MainThread.MouseEvent);
+    };
+    probes[options.target] = probe;
+    targetGlobal.__T3_LYNXTRON_MTS_RESIZE_PROBE__ = probes;
+    return () => {
+      if (probes[options.target] === probe) delete probes[options.target];
+      if (Object.keys(probes).length === 0) {
+        delete targetGlobal.__T3_LYNXTRON_MTS_RESIZE_PROBE__;
+      }
+    };
+  }, [options.target, options.testProbe, start, move, finish]);
 
   return {
     width: clampResizableWidth(width, bounds),
     targetRef,
+    handleRef,
     handlers: {
       "main-thread:bindmousedown": start,
       "main-thread:bindtouchstart": start,
-      "main-thread:global-bindmousemove": move,
-      "main-thread:global-bindtouchmove": move,
-      "main-thread:global-bindmouseup": finish,
-      "main-thread:global-bindtouchend": finish,
-      "main-thread:global-bindtouchcancel": cancel,
+    },
+    dragHandlers: {
+      "main-thread:bindmousemove": move,
+      "main-thread:bindtouchmove": move,
+      "main-thread:bindmouseup": finish,
+      "main-thread:bindtouchend": finish,
+      "main-thread:bindtouchcancel": cancel,
     },
   };
 }

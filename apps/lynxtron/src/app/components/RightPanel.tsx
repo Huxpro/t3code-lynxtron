@@ -122,6 +122,7 @@ export function RightPanel({
     maxWidth: resolveRightPanelMaximumWidth(viewport.width),
     edge: "left",
     target: "right-panel",
+    testProbe: viewport.testResize,
   });
 
   const handleTabClick = useCallback((surface: RightPanelSurface) => {
@@ -180,6 +181,8 @@ export function RightPanel({
         <>
           <view
             {...resize.handlers}
+            {...resize.dragHandlers}
+            main-thread:ref={resize.handleRef}
             className="right-panel__resize-handle"
             aria-label="Resize right panel"
           />
@@ -261,11 +264,7 @@ export function RightPanel({
             aria-disabled={sheet ? "true" : "false"}
             bindtap={sheet ? undefined : () => onMaximizedChange(!maximized)}
           >
-            <Icon
-              name={maximized ? "minimize-2" : "maximize-2"}
-              size={14}
-              color="#818181"
-            />
+            <Icon name={maximized ? "minimize-2" : "maximize-2"} size={14} color="#818181" />
           </view>
           <view
             className="right-panel__layout-control right-panel__layout-control--disabled"
