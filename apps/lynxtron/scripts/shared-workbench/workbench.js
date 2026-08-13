@@ -588,6 +588,7 @@ function readLynxPane() {
         ? {
             layout: heroPresent ? "hero" : "docked",
             state: composerFrame.getAttribute("data-composer-state"),
+            placeholder: root?.querySelector(".composer__placeholder")?.textContent?.trim() ?? null,
             rect: readElementBox(composerFrame),
             editor: {
               value:
@@ -1152,6 +1153,10 @@ function readWebPane() {
         ? {
             layout: heroPresent ? "hero" : "docked",
             state: composerFrame.getAttribute("data-composer-state"),
+            placeholder:
+              (composerEditor?.value ?? composerEditor?.textContent ?? "").length === 0
+                ? (composerEditor?.getAttribute("aria-placeholder") ?? null)
+                : null,
             rect: readElementBox(composerFrame),
             editor: {
               value: composerEditor?.value ?? composerEditor?.textContent ?? "",
