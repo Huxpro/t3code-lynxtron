@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "stateId": "composer-docked",
+  "observedAt": "2026-08-12T19:47:57.286Z",
+  "commit": "43d1855adbc05922364c5ff312d954282cb7b361",
+  "scope": {
+    "client": "lynx",
+    "authority": "web",
+    "viewport": "1280x820",
+    "interactionTested": false,
+    "nativeTested": false
+  },
+  "identity": {
+    "stateIdentityMatch": true,
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "density": "comfortable",
+    "selectedProject": "t3code-lynxtron",
+    "lifecycle": "ready"
+  },
+  "sources": {
+    "webScreenshot": {
+      "sha256": "08d18f74c913087b5efd49a8026693260ad4799cf0478ffae96a7aaa5e499185"
+    },
+    "lynxScreenshot": {
+      "sha256": "7eff3e8e1b3fa0f596e481374eae33fe22efef95f716ded790b17bc68c06d8ae"
+    },
+    "webAssertions": {
+      "sha256": "cfcef3ab7d5e186e0ab38cdae3decd0ffa5157b1b9bc1f709e6379e0c94f06d3"
+    },
+    "lynxAssertions": {
+      "sha256": "b39bd2f94c5c128b0d50c52793cd717ec81175488df36ed394690c8651e432be"
+    },
+    "workbenchReport": {
+      "sha256": "4d6b96e8e61b83189bf680beb38e679f1556c21511562c62003aa4895f7f664b"
+    }
+  },
+  "geometry": {
+    "anchorScale": 32,
+    "anchors": ["composer", "editor", "surface", "editorArea", "footer", "context"],
+    "anchorDeltas": [0, 0, 0, 0, 0, 0],
+    "residual": 0
+  },
+  "content": {
+    "matchedAnchors": [
+      "layout",
+      "state",
+      "primaryState",
+      "modelControl",
+      "runtimeControl",
+      "interactionControl",
+      "contextLabel",
+      "branchLabel"
+    ],
+    "mismatchedAnchors": [
+      {
+        "anchor": "placeholder",
+        "web": "Ask for follow-up changes or attach images",
+        "lynx": "Ask anything, @tag files/folders, $use skills, or / for commands"
+      }
+    ],
+    "residual": 0.111111
+  },
+  "typography": {
+    "fontSizeDeltaPx": 0,
+    "editorLineHeightDeltaPx": 0.25,
+    "scalePx": 32,
+    "residual": 0.007813
+  },
+  "material": {
+    "metric": "1 - SSIM",
+    "region": {
+      "x": 384,
+      "y": 628,
+      "width": 768,
+      "height": 172,
+      "description": "composer and visible context strip"
+    },
+    "ssim": 0.894106,
+    "psnrDb": 25.916273,
+    "residual": 0.105894,
+    "command": "ffmpeg -i web.png -i lynx.png -lavfi '[0:v]crop=768:172:384:628[a];[1:v]crop=768:172:384:628[b];[a][b]ssim' -f null -"
+  },
+  "runtime": {
+    "bothReady": true,
+    "semanticReady": true,
+    "rendererErrorCount": 0,
+    "residual": 0
+  }
+}

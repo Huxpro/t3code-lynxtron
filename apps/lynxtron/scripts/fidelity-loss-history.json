@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-13T00:00:00+08:00",
+  "updatedAt": "2026-08-13T04:19:51.229+08:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -734,6 +734,248 @@
           "dimensions": "*",
           "factor": "supersededEvidenceConfidenceFactor",
           "reason": "Pre-final5 visual and interaction evidence is historical, not current-head certification."
+        }
+      ]
+    },
+    {
+      "id": "composer-docked-current-browser",
+      "observedAt": "2026-08-12T19:47:57.286Z",
+      "commit": "43d1855adbc05922364c5ff312d954282cb7b361",
+      "codeState": "commit",
+      "label": "Current-head docked Composer browser pair",
+      "narrative": "The isolated Web/Lynx pair matched six Composer geometry anchors, controls, context labels, semantic state, and clean readiness. Placeholder copy and material pixels remain visibly different; interaction and Native claims remain unmeasured.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.95,
+        "reason": "This loss decrease comes from the first current-head Browser measurement after the archaeology reset, not from a measured product change between commits."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-docked-web.png",
+          "sha256": "08d18f74c913087b5efd49a8026693260ad4799cf0478ffae96a7aaa5e499185",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "5f3c592bd2920b96e90799341524001a7df6407e"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-docked-lynx.png",
+          "sha256": "7eff3e8e1b3fa0f596e481374eae33fe22efef95f716ded790b17bc68c06d8ae",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "5f3c592bd2920b96e90799341524001a7df6407e"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-13/fidelity/composer-docked-browser-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b951b1d780d618ddbb1c1858dcb38e99c687c0d881982d3aecd6798751c4160b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-docked"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.111111,
+              "confidence": 0.95,
+              "method": "exact-composer-content",
+              "source": "8/9 anchors match; placeholder copy differs"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.98,
+              "method": "composer-anatomy-geometry",
+              "source": "composer, editor, surface, editor area, footer, and context"
+            },
+            "typography": {
+              "residual": 0.007813,
+              "confidence": 0.9,
+              "method": "resolved-composer-typography",
+              "source": "font sizes match; editor line-height differs by 0.25px"
+            },
+            "material": {
+              "residual": 0.105894,
+              "confidence": 0.95,
+              "method": "composer-context-ssim",
+              "source": "1 - SSIM 0.894106 over 768x172 composer/context region"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.9,
+              "method": "isolated-browser-readiness",
+              "source": "same semantic state; both ready; zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-docked-placeholder-fix",
+      "observedAt": "2026-08-12T20:19:51.229Z",
+      "commit": "43d1855adbc05922364c5ff312d954282cb7b361",
+      "codeState": "working-tree",
+      "label": "Docked Composer placeholder parity",
+      "narrative": "A shared session-phase placeholder projection removed the only measured Composer content mismatch. All nine content anchors now match, geometry remains exact, and Composer/context SSIM improves from 0.894106 to 0.914911. Native and interaction claims remain unmeasured.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.95,
+        "reason": "A before/after Browser pair measures one working-tree product change: Web and Lynx now consume the same session-phase placeholder projection."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Web authority after shared placeholder",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-docked-placeholder-fix-web.png",
+          "sha256": "671779d0bbd9fe1f4623b2c3b17baf4acc1647bd0270392dadc4572765ca6949",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "2e94dd81b34393decebf096e82fbb1bfb0691ae2"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lynx-for-Web after shared placeholder",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-docked-placeholder-fix-lynx.png",
+          "sha256": "3a92d8a14bbe41633437cd577e59ef77f0d42e372c6ee696b706c44900dffc17",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "2e94dd81b34393decebf096e82fbb1bfb0691ae2"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-13/fidelity/composer-docked-placeholder-fix-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a8c478a9f4839b88f19cbe4a3fd03b7564147aef09e6c30182134526d279b87f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-docked"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "rendered-composer-content",
+              "source": "9/9 anchors match; Web and Lynx aria/text placeholders are identical"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.98,
+              "method": "composer-anatomy-geometry",
+              "source": "composer, editor, surface, editor area, footer, and context"
+            },
+            "typography": {
+              "residual": 0.007813,
+              "confidence": 0.9,
+              "method": "resolved-composer-typography",
+              "source": "font sizes match; editor line-height differs by 0.25px"
+            },
+            "material": {
+              "residual": 0.085089,
+              "confidence": 0.95,
+              "method": "composer-context-ssim",
+              "source": "1 - SSIM 0.914911 over 768x172 composer/context region"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.9,
+              "method": "isolated-browser-readiness",
+              "source": "same semantic state; both ready; zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-resize-native-interaction-fix",
+      "observedAt": "2026-08-14T05:32:00+08:00",
+      "commit": "c26ae5afbc5f8290a765879bb04275a38935a4f6",
+      "codeState": "commit",
+      "label": "Native Sidebar resize cursor tracking",
+      "narrative": "A new interaction scope records the Native Sidebar resize. The product previously applied every pointer sample through a 200ms width transition, visibly trailing the cursor. During drag the transition is now disabled, and ten retained geometry samples in each direction match cursor-derived width with 0px maximum error. Lynx-for-Web remains unmeasured for interaction and retains unknown loss.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.98,
+        "reason": "A before/after Native interaction investigation isolated and removed the Sidebar-only width transition while retaining the same scope, weights, and pointer sample sequence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/sidebar-resize-interaction-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ab95bea2566674b8a13388911a7172551a35b2c3276432f22c3f2cf41c5de888"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-resize"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "same-sidebar-content",
+              "source": "The resize changes geometry only; the same Sidebar content and state remain mounted."
+            },
+            "geometry": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-pointer-geometry-samples",
+              "source": "Ten retained samples in each direction; maximum absolute width error 0px."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-physical-drag-gate",
+              "source": "120 Native mouse move samples per direction; widen and narrow both return exact measured widths."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "native-runtime-and-host-log",
+              "source": "Main connector ready, renderer error console empty, and no __SendPageEvent frequency warning."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-diff-current-head-evidence-blocker",
+      "observedAt": "2026-08-14T05:34:00+08:00",
+      "commit": "c26ae5afbc5f8290a765879bb04275a38935a4f6",
+      "codeState": "commit",
+      "label": "Review diff current-head evidence blocker",
+      "narrative": "No product loss is recorded. The apparent review-diff residual of 1.0 comes from a historical R10 runtimeBlocked gate while the final5 manifest still marks Web, Lynx-for-Web, and Native review evidence pending. This is a capture/evidence mismatch and remains outside product-loss attribution until one canonical snapshot is captured on all required clients.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 1,
+        "reason": "Classification only: historical runtime evidence cannot be promoted to a current-head product residual without matching final5 captures."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/manifests/main-shell.json",
+          "classification": "tracked-current",
+          "sha256": "2e4d1a31681d95084c034e29848b4dbd8ef49af33c65fba666668775ad776d18"
         }
       ]
     }

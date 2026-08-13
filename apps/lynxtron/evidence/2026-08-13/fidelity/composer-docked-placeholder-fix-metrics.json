@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "stateId": "composer-docked",
+  "observedAt": "2026-08-12T20:19:51.229Z",
+  "commit": "43d1855adbc05922364c5ff312d954282cb7b361",
+  "codeState": "working-tree",
+  "scope": {
+    "client": "lynx",
+    "authority": "web",
+    "viewport": "1280x820",
+    "interactionTested": false,
+    "nativeTested": false
+  },
+  "productChange": {
+    "summary": "Project the default Composer placeholder from one shared session-phase helper.",
+    "files": [
+      "packages/client-runtime/src/presentation/composer.ts",
+      "apps/web/src/components/chat/ChatComposer.tsx",
+      "apps/lynxtron/src/app/components/ChatView.tsx",
+      "apps/lynxtron/src/app/components/Composer.tsx"
+    ],
+    "baselineCheckpoint": "composer-docked-current-browser"
+  },
+  "identity": {
+    "stateIdentityMatch": true,
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "density": "comfortable",
+    "selectedProject": "t3code-lynxtron",
+    "lifecycle": "ready"
+  },
+  "sources": {
+    "webScreenshot": {
+      "sha256": "671779d0bbd9fe1f4623b2c3b17baf4acc1647bd0270392dadc4572765ca6949"
+    },
+    "lynxScreenshot": {
+      "sha256": "3a92d8a14bbe41633437cd577e59ef77f0d42e372c6ee696b706c44900dffc17"
+    },
+    "webAssertions": {
+      "sha256": "042f7f853cac1dc4c885e10c4aa30841167873d6bc80ece702ff52f1d618403f"
+    },
+    "lynxAssertions": {
+      "sha256": "3a305892b8c157bb61ac9c4d711cfac29780152f393475b4b4ee1bab158b4262"
+    },
+    "workbenchReport": {
+      "sha256": "f4389fa5328c21352f20fe7134bc081f459019241c85f5a6b137f70c88f96782"
+    },
+    "webBundle": {
+      "path": "apps/web/dist/assets/DiffPanel-BJEti0b4.js",
+      "bytes": 86134,
+      "sha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d"
+    },
+    "lynxBundle": {
+      "path": "apps/lynxtron/output/browser-preview/lynx/main.web.bundle",
+      "bytes": 4139872,
+      "sha256": "3cfd00b2ffdfc0df57a57541569ab7856bf7dabb0a56c713fa727535f1beb692"
+    }
+  },
+  "geometry": {
+    "anchorScale": 32,
+    "anchors": ["composer", "editor", "surface", "editorArea", "footer", "context"],
+    "anchorDeltas": [0, 0, 0, 0, 0, 0],
+    "residual": 0
+  },
+  "content": {
+    "before": {
+      "matchedAnchorCount": 8,
+      "totalAnchorCount": 9,
+      "residual": 0.111111
+    },
+    "after": {
+      "matchedAnchorCount": 9,
+      "totalAnchorCount": 9,
+      "webPlaceholder": "Ask for follow-up changes or attach images",
+      "lynxPlaceholder": "Ask for follow-up changes or attach images",
+      "residual": 0
+    }
+  },
+  "typography": {
+    "fontSizeDeltaPx": 0,
+    "editorLineHeightDeltaPx": 0.25,
+    "scalePx": 32,
+    "residual": 0.007813
+  },
+  "material": {
+    "metric": "1 - SSIM",
+    "region": {
+      "x": 384,
+      "y": 628,
+      "width": 768,
+      "height": 172,
+      "description": "composer and visible context strip"
+    },
+    "before": {
+      "ssim": 0.894106,
+      "residual": 0.105894
+    },
+    "after": {
+      "ssim": 0.914911,
+      "psnrDb": 26.117312,
+      "residual": 0.085089
+    },
+    "command": "ffmpeg -i web.png -i lynx.png -lavfi '[0:v]crop=768:172:384:628[a];[1:v]crop=768:172:384:628[b];[a][b]ssim' -f null -"
+  },
+  "runtime": {
+    "bothReady": true,
+    "semanticReady": true,
+    "rendererErrorCount": 0,
+    "residual": 0
+  }
+}
