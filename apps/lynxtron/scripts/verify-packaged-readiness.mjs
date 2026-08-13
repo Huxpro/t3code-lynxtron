@@ -500,6 +500,81 @@ async function readSidebarScopeLayout(client, includePopup) {
   return measurements.anchors;
 }
 
+function quadRect(quad) {
+  if (!Array.isArray(quad) || quad.length < 8) return null;
+  const xs = [quad[0], quad[2], quad[4], quad[6]];
+  const ys = [quad[1], quad[3], quad[5], quad[7]];
+  return {
+    x: Math.min(...xs),
+    y: Math.min(...ys),
+    width: Math.max(...xs) - Math.min(...xs),
+    height: Math.max(...ys) - Math.min(...ys),
+  };
+}
+
+async function readSelectorRects(client, selector) {
+  await client.runCdp("DOM.enable", { useCompression: false });
+  const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
+  const root = commandResult(documentResponse)?.root;
+  const rootNodeId = root?.children?.[0]?.nodeId ?? root?.nodeId;
+  if (!Number.isInteger(rootNodeId) || rootNodeId <= 0) {
+    throw new Error("Lynx DevTool did not return a DOM root node.");
+  }
+  const nodesResponse = await client.runCdp("DOM.querySelectorAll", {
+    nodeId: rootNodeId,
+    selector,
+  });
+  const nodeIds = commandResult(nodesResponse)?.nodeIds ?? [];
+  const rects = [];
+  for (const nodeId of nodeIds) {
+    const boxResponse = await client.runCdp("DOM.getBoxModel", { nodeId });
+    const model = commandResult(boxResponse)?.model;
+    const rect = quadRect(model?.border ?? model?.content);
+    if (rect) rects.push(rect);
+  }
+  return rects;
+}
+
+async function verifySidebarGeometry(client) {
+  const [sidebar] = await readSelectorRects(client, ".sidebar");
+  const [threadList] = await readSelectorRects(client, ".sidebar-v2-thread-list");
+  const rows = await readSelectorRects(client, ".sidebar-v2-row-item");
+  const cards = await readSelectorRects(client, ".sidebar-v2-row-card");
+  if (!sidebar || !threadList || rows.length === 0 || rows.length !== cards.length) {
+    throw new Error(
+      `Sidebar geometry is incomplete: ${JSON.stringify({ sidebar, threadList, rows, cards })}`,
+    );
+  }
+  const sidebarRight = sidebar.x + sidebar.width;
+  const listRight = threadList.x + threadList.width;
+  const invalid = rows.flatMap((row, index) => {
+    const card = cards[index];
+    const rowRight = row.x + row.width;
+    const cardRight = card.x + card.width;
+    return row.x < sidebar.x - 1 ||
+      card.x < sidebar.x - 1 ||
+      rowRight > sidebarRight + 1 ||
+      cardRight > sidebarRight + 1 ||
+      rowRight > listRight + 1 ||
+      cardRight > listRight + 1
+      ? [{ index, row, card }]
+      : [];
+  });
+  if (invalid.length > 0) {
+    throw new Error(
+      `Sidebar rows escaped the rail: ${JSON.stringify({ sidebar, threadList, invalid })}`,
+    );
+  }
+  return {
+    status: "pass",
+    input: "read-only Lynx DevTool DOM box models",
+    sidebar,
+    threadList,
+    rows,
+    cards,
+  };
+}
+
 async function waitForSidebarPopup({ child, client, open, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
@@ -1685,6 +1760,7 @@ async function runOnce({
   requireCanonicalThread,
   timeoutMs,
   verifySettingsNavigation,
+  verifySidebarGeometry: shouldVerifySidebarGeometry,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
   verifyComposerBranding,
@@ -1765,6 +1841,9 @@ async function runOnce({
       : verifySidebarScope
         ? await verifySidebarScopeBehavior({ child, client, timeoutMs })
         : undefined;
+    const sidebarGeometry = shouldVerifySidebarGeometry
+      ? await verifySidebarGeometry(client)
+      : undefined;
     const settingsNavigation = runPlan11Outcomes
       ? await captureOutcome(
           () => verifySettingsRouteBehavior({ child, client, modelSelection, timeoutMs }),
@@ -1833,6 +1912,7 @@ async function runOnce({
     if (rendererErrors) throw new Error(`Renderer errors:\n${rendererErrors}`);
     const outcomeChecks = [
       sidebarScope,
+      sidebarGeometry,
       settingsNavigation,
       composer,
       modelPickerFidelity,
@@ -1854,6 +1934,7 @@ async function runOnce({
       canonicalState,
       lifecycleRecovery,
       sidebarScope,
+      sidebarGeometry,
       settingsNavigation,
       composer,
       modelPickerFidelity,
@@ -1892,6 +1973,7 @@ const width = Number(argumentValue("--width") ?? 1280);
 const height = Number(argumentValue("--height") ?? 820);
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? DEFAULT_TIMEOUT_MS);
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
+const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
 const verifyComposerBranding = process.argv.includes("--verify-composer-branding");
@@ -1982,6 +2064,7 @@ for (let index = 1; index <= runs; index += 1) {
       requireCanonicalThread: !lifecycleOnlyEmptyFixture,
       timeoutMs,
       verifySettingsNavigation,
+      verifySidebarGeometry: shouldVerifySidebarGeometry,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
       verifyComposerBranding,
