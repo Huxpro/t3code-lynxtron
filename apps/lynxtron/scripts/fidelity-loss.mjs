@@ -216,6 +216,11 @@ function expandSelection(selection, allValues, label, errors) {
 export function validateHistory(model, history, options = {}) {
   const errors = [];
   const warnings = [];
+  const attributionAllocations = new Set([
+    "evidence-session",
+    "measurement-refinement",
+    "working-tree-product-change",
+  ]);
   if (history.version !== 1) errors.push("history.version must be 1");
   if (history.modelId !== model.id) {
     errors.push(`history.modelId must equal ${model.id}`);
@@ -367,6 +372,15 @@ export function validateHistory(model, history, options = {}) {
         errors,
       );
       if (!event.reason) errors.push(`${point.id}: confidenceEvent.reason is required`);
+    }
+    if (point.attribution) {
+      if (!attributionAllocations.has(point.attribution.allocation)) {
+        errors.push(`${point.id}: invalid attribution allocation`);
+      }
+      assertUnit(point.attribution.confidence, `${point.id}.attribution.confidence`, errors);
+      if (!point.attribution.reason) {
+        errors.push(`${point.id}: attribution.reason is required`);
+      }
     }
   }
   if ((history.points ?? []).length === 0) errors.push("history.points must not be empty");
@@ -571,6 +585,35 @@ function allocateCommitAttribution(previous, current) {
   const confidenceOnlyChange =
     current.observedResidual === previous.observedResidual &&
     current.evidenceDebt > previous.evidenceDebt;
+  if (current.attribution) {
+    return [
+      ...commits.map((commit) => ({
+        allocation: "unmeasured-product-commit",
+        changedLines: commit.changedLines,
+        commit: commit.commit,
+        committedAt: commit.committedAt,
+        confidence: 0,
+        delta: null,
+        reason:
+          "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+        subject: commit.subject,
+        surfaces: commit.surfaces,
+      })),
+      {
+        allocation: current.attribution.allocation,
+        changedLines: 0,
+        commit: current.codeCommit,
+        committedAt: current.observedAt,
+        confidence: current.attribution.confidence,
+        delta: totalDelta,
+        reason: current.attribution.reason,
+        subject: current.label,
+        surfaces: Object.keys(surfaceDeltas).filter(
+          (surface) => Math.abs(surfaceDeltas[surface]) > 1e-9,
+        ),
+      },
+    ];
+  }
   if (confidenceOnlyChange) {
     return [
       ...commits.map((commit) => ({
@@ -788,6 +831,7 @@ export function computeTimeline(model, history) {
       }
     }
     points.push({
+      attribution: point.attribution ?? null,
       commit: point.commit ?? null,
       codeCommit: point.codeCommit ?? point.commit ?? null,
       codeState: point.codeState ?? "commit",

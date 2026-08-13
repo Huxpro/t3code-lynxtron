@@ -300,6 +300,88 @@ describe("fidelity loss", () => {
     assert.isTrue(data.attribution.some((row) => row.allocation === "unmeasured-product-commit"));
     assert.isTrue(data.attribution.some((row) => row.allocation === "evidence-policy"));
   });
+
+  it("keeps explicit evidence-session deltas off intervening product commits", () => {
+    const data = computeTimeline(
+      model(),
+      history([
+        {
+          id: "baseline",
+          observedAt: "2026-08-12T05:40:56+08:00",
+          label: "Baseline",
+          commit: "25db04b687d3473a3b807a6e674c71fecc534b2d",
+          updates: [],
+        },
+        {
+          id: "current-measurement",
+          observedAt: "2026-08-12T19:47:57.286Z",
+          label: "Current measurement",
+          commit: "43d1855adbc05922364c5ff312d954282cb7b361",
+          attribution: {
+            allocation: "evidence-session",
+            confidence: 0.95,
+            reason: "First current-head measurement.",
+          },
+          updates: [
+            {
+              states: ["hero"],
+              clients: ["lynx"],
+              dimensions: {
+                content: { residual: 0.1, confidence: 1 },
+              },
+            },
+          ],
+        },
+      ]),
+    );
+    const session = data.attribution.find((row) => row.allocation === "evidence-session");
+    assert.equal(
+      roundForTest(session.delta),
+      roundForTest(data.points[1].loss - data.points[0].loss),
+    );
+    assert.isTrue(data.attribution.some((row) => row.allocation === "unmeasured-product-commit"));
+    assert.isFalse(
+      data.attribution.some((row) => row.allocation === "estimated-from-checkpoint-delta"),
+    );
+  });
+
+  it("accepts an explicit working-tree product-change attribution", () => {
+    const inputHistory = history([
+      {
+        id: "baseline",
+        observedAt: "2026-08-12T19:00:00Z",
+        label: "Baseline",
+        updates: [],
+      },
+      {
+        id: "working-tree-fix",
+        observedAt: "2026-08-12T20:00:00Z",
+        label: "Working tree fix",
+        codeState: "working-tree",
+        attribution: {
+          allocation: "working-tree-product-change",
+          confidence: 0.95,
+          reason: "Measured before and after one working-tree product fix.",
+        },
+        updates: [
+          {
+            states: ["hero"],
+            clients: ["lynx"],
+            dimensions: {
+              content: { residual: 0, confidence: 1 },
+            },
+          },
+        ],
+      },
+    ]);
+    assert.deepEqual(validateHistory(model(), inputHistory).errors, []);
+    const data = computeTimeline(model(), inputHistory);
+    assert.equal(data.attribution.at(-1)?.allocation, "working-tree-product-change");
+    assert.equal(
+      roundForTest(data.attribution.at(-1)?.delta ?? 0),
+      roundForTest(data.points[1].loss - data.points[0].loss),
+    );
+  });
 });
 
 function roundForTest(value) {

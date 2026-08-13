@@ -55,17 +55,29 @@ Plan 11 prose and screenshots.
   authority because their pixels were captured from older bundles and one
   manifest-linked log was missing.
 - `reports/fidelity-loss/index.html` reconstructs the historical port against a
-  fixed 39-state denominator. Its conservative loss, observed product residual,
+  fixed 40-state denominator. Its conservative loss, observed product residual,
   evidence debt, and historical-best lines are generated from
   `scripts/fidelity-loss-{model,history}.json`.
-- The same page links measured checkpoints to seven representative comparison
+- The same page links measured checkpoints to fourteen representative comparison
   frames hosted by the public `Huxpro/t3code-fidelity-assets` GitHub Pages site.
   No screenshot binary remains in the T3 fidelity-loss report directory.
 - The reconstructed conservative loss fell from 98.30% at the first archived
-  geometry milestone to a historical best of 67.89% after the Model Picker
-  closeout. The final5 archaeology reset raises current conservative loss to
-  91.97% because stale evidence was demoted; it does not claim that the product
+  geometry milestone to a historical best of 68.74% after the Model Picker
+  closeout. The final5 archaeology reset raised conservative loss to 91.97%
+  because stale evidence was demoted; it does not claim that the product
   regressed.
+- A fresh current-head Browser pair reduced conservative loss to 91.10% by
+  measuring the docked Composer's Lynx-for-Web cells. A follow-up shared-source
+  fix projects placeholder copy from the same session phase in Web and Lynx,
+  closes the measured content residual, improves Composer/context SSIM from
+  89.41% to 91.49%, and reduces current conservative loss again to 91.06%.
+  Native and interaction cells remain unmeasured.
+- Subsequent Sidebar interaction, Composer material, and lifecycle-reconnecting
+  evidence reduce current conservative loss to 87.64%, observed residual to
+  6.44%, and evidence debt to 86.79%. The corrected lifecycle harness waits for
+  branch discovery before fault injection; the product fix removes a real 31px
+  Lynx-only Hero offset while leaving Native recovery and reconnect interaction
+  unmeasured.
 
 ## Not currently proven
 

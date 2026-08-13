@@ -1045,7 +1045,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-sendable-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "4975fc5a6ec92bdccd6c8b55ad23e66f239be208450f9fd3cee9699b9527ea76"
+          "sha256": "533c85f98abfa20ce7a797b7134ccd6a895cf5730852ca2f7998cdfea7c935e2"
         }
       ],
       "updates": [
@@ -1174,6 +1174,100 @@
               "confidence": 0.98,
               "method": "composer-region-ssim",
               "source": "1 - SSIM 0.923045 over the same 768x172 Composer/context region"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "lifecycle-error-current-browser",
+      "observedAt": "2026-08-14T07:11:00+08:00",
+      "commit": "8fb8d7f4d10d65d2235d1fad7dbef3b6873108e3",
+      "codeState": "commit",
+      "label": "Lifecycle reconnecting parity",
+      "narrative": "A corrected fault harness waits for Lynx branch discovery before terminating the owned server, separating early-fault noise from product loss. On the stable parent commit, content and semantic Composer pixels already match, but Lynx alone renders the lifecycle banner above the draft hero and shifts the Composer 31px downward. The product fix suppresses that separate hero banner and retains the last known model presentation while unavailable. The after capture passes every gate with 24 zero-delta geometry anchors and improves full-frame SSIM from 0.866145 to 0.914674. Native recovery and reconnect interaction remain unmeasured.",
+      "screenshots": [
+        {
+          "client": "lynx",
+          "label": "Lifecycle reconnecting before",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/lifecycle-error-before-lynx.png",
+          "sha256": "cb915a3fd2cf656ac4793e33d1df4bdced2591e2beaaae543a0f60709dabeb58",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ecd0b9c5c5044f9682a3a7ef9b30f6c29d901467"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Lifecycle reconnecting Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/lifecycle-error-after-web.png",
+          "sha256": "7862e7efbfd64497499cd588759c1731ad3560c3a4cb749f15871224992e2d82",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ecd0b9c5c5044f9682a3a7ef9b30f6c29d901467"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Lifecycle reconnecting Lynx-for-Web",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/lifecycle-error-after-lynx.png",
+          "sha256": "4a60ac3ffd947486441cd80ed07358e80c688a5777bba1d6e0c835c69a886f84",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ecd0b9c5c5044f9682a3a7ef9b30f6c29d901467"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/lifecycle-error-parity-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d5d3f36367718402f6e0a85b711aa7d6cd5b21f0e9f2d3164d0992036ff72097"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "stable-lifecycle-content",
+              "source": "lifecycle, model, model option, placeholder, controls, and checkout context match after the owned server disconnects"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "lifecycle-composer-anatomy",
+              "source": "Composer, editor, surface, editor area, footer, and context x/y/width/height match exactly"
+            },
+            "typography": {
+              "residual": 0.007813,
+              "confidence": 0.98,
+              "method": "composer-editor-line-height",
+              "source": "14px font sizes match; 22.75px versus 23px line height on a 32px scale"
+            },
+            "material": {
+              "residual": 0.085326,
+              "confidence": 0.98,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.914674 at the matched 1280x820 reconnecting frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "owned-server-fault-readiness",
+              "source": "both clients disconnect into connecting lifecycle, identity matches, renderer errors are empty, and only expected transport errors are filtered"
             }
           }
         }
