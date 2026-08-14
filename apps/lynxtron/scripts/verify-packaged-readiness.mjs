@@ -903,6 +903,49 @@ async function readComposerOutcome(client, options = {}) {
   return measurements;
 }
 
+async function verifyHeroComposerState({ child, client, expectedModelLabel, timeoutMs }) {
+  const hero = await readOptionalMeasurement(client, ".hero");
+  const overlay = await readOptionalMeasurement(client, ".composer-overlay");
+  assertComposerRouteState({ hero, overlay }, "new-thread");
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === expectedModelLabel,
+  });
+  const composer = await readComposerOutcome(client);
+  assertComposerGeometry(composer);
+  const model = composer.anchors.model.text.trim();
+  if (model !== expectedModelLabel) {
+    throw new Error(
+      `Hero Composer model drifted: ${JSON.stringify({ expectedModelLabel, model })}`,
+    );
+  }
+  return {
+    status: "pass",
+    route: "new-thread",
+    hero: hero.rect,
+    model,
+    composer: {
+      frame: composer.anchors.shell.rect,
+      surface: composer.anchors.surface.rect,
+      editor: composer.anchors.editor.rect,
+      footer: composer.anchors.footer.rect,
+      controls: [
+        composer.anchors.model.text.trim(),
+        composer.anchors.modelOption?.text.trim(),
+        composer.anchors.runtime.text.trim(),
+        composer.anchors.interaction.text.trim(),
+      ].filter(Boolean),
+      context: [
+        composer.typography.contextCheckout.text.trim(),
+        composer.typography.contextBranch.text.trim(),
+      ],
+    },
+  };
+}
+
 async function verifyComposerBehavior({ child, client, timeoutMs }) {
   const existingOverlay = await readOptionalMeasurement(client, ".composer-overlay");
   const existingHero = await readOptionalMeasurement(client, ".hero");
@@ -2841,12 +2884,14 @@ async function runOnce({
   isFinalRun,
   modelSelection,
   expectedTheme,
+  expectedModelLabel,
   outputDirectory,
   projectCwd,
   requireCanonicalThread,
   timeoutMs,
   verifySettingsNavigation,
   verifyComposerGeometry: shouldVerifyComposerGeometry,
+  verifyHeroComposerState: shouldVerifyHeroComposerState,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
@@ -2982,6 +3027,14 @@ async function runOnce({
     const composerGeometry = shouldVerifyComposerGeometry
       ? await verifyComposerGeometry(client, expectedTheme)
       : undefined;
+    const heroComposerState = shouldVerifyHeroComposerState
+      ? await verifyHeroComposerState({
+          child,
+          client,
+          expectedModelLabel,
+          timeoutMs,
+        })
+      : undefined;
     const composerThemeScreenshot =
       shouldVerifyComposerGeometry && expectedTheme
         ? captureNativeScreenshot({
@@ -3111,6 +3164,7 @@ async function runOnce({
       sidebarScope,
       sidebarGeometry,
       composerGeometry,
+      heroComposerState,
       settingsNavigation,
       composer,
       modelPickerFidelity,
@@ -3140,6 +3194,7 @@ async function runOnce({
       sidebarScope,
       sidebarGeometry,
       composerGeometry,
+      heroComposerState,
       composerThemeScreenshot,
       settingsNavigation,
       composer,
@@ -3185,8 +3240,10 @@ const width = Number(argumentValue("--width") ?? 1280);
 const height = Number(argumentValue("--height") ?? 820);
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? DEFAULT_TIMEOUT_MS);
 const expectedTheme = argumentValue("--expected-theme");
+const expectedModelLabel = argumentValue("--expected-model-label");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
+const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
@@ -3231,6 +3288,9 @@ if (!Number.isInteger(width) || !Number.isInteger(height)) {
 }
 if (expectedTheme && expectedTheme !== "light" && expectedTheme !== "dark") {
   throw new Error("--expected-theme must be light or dark.");
+}
+if (shouldVerifyHeroComposerState && !expectedModelLabel) {
+  throw new Error("--verify-hero-composer-state requires --expected-model-label.");
 }
 if (verifyPlan11SemanticOutcomes && runs !== 3) {
   throw new Error("--verify-plan11-semantic-outcomes requires exactly three fresh runs.");
@@ -3309,8 +3369,16 @@ const lifecycleOnlyEmptyFixture =
   !verifyComposerBranding &&
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
+const heroOnlyEmptyFixture =
+  shouldVerifyHeroComposerState &&
+  !verifySettingsNavigation &&
+  !verifySidebarScope &&
+  !verifyComposerBranding &&
+  !shouldVerifyModelPickerFidelity &&
+  !verifyPlan11SemanticOutcomes;
 if (
   !lifecycleOnlyEmptyFixture &&
+  !heroOnlyEmptyFixture &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
@@ -3343,12 +3411,14 @@ for (let index = 1; index <= runs; index += 1) {
       isFinalRun: index === runs,
       modelSelection,
       expectedTheme,
+      expectedModelLabel,
       outputDirectory,
       projectCwd,
-      requireCanonicalThread: !lifecycleOnlyEmptyFixture,
+      requireCanonicalThread: !lifecycleOnlyEmptyFixture && !heroOnlyEmptyFixture,
       timeoutMs,
       verifySettingsNavigation,
       verifyComposerGeometry: shouldVerifyComposerGeometry,
+      verifyHeroComposerState: shouldVerifyHeroComposerState,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,

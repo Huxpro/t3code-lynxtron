@@ -114,6 +114,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'measurement.text.includes("updated by T3 review fixture")');
   });
 
+  it("verifies an empty new-thread Hero without borrowing lifecycle recovery", () => {
+    assert.include(source, "async function verifyHeroComposerState");
+    assert.include(source, '"--verify-hero-composer-state"');
+    assert.include(source, '"--expected-model-label"');
+    assert.include(source, 'assertComposerRouteState({ hero, overlay }, "new-thread")');
+    assert.include(source, "assertComposerGeometry(composer)");
+    assert.include(source, "heroOnlyEmptyFixture");
+  });
+
   it("verifies the Native working transcript layout and locked workspace copy", () => {
     assert.include(source, 'readSelectorRects(client, ".timeline-list")');
     assert.include(source, 'readSelectorRects(client, ".timeline-row-root--working")');
