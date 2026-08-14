@@ -71,4 +71,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'editorValue: pendingRequestMetrics.detail ?? ""');
     assert.include(workbench, 'primaryState: "stop"');
   });
+
+  it("compares clipped pending-question work rows by their visible outer box", () => {
+    const capture = readFileSync(
+      path.join(import.meta.dirname, "capture-shared-workbench.mjs"),
+      "utf8",
+    );
+    assert.include(capture, "compareClippedOuterHeight");
+    assert.include(capture, "timeline-row-root--user-input");
+  });
 });

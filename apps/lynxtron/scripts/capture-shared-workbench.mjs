@@ -266,12 +266,18 @@ function coreGeometryMatches(webState, lynxState) {
         (webRow.text.includes("\n") || webRow.text.includes("```"));
       if (blockUserMessage) continue;
       const compareOuterHeight = webRow.kind === "message" && webRow.role === "user";
+      const compareClippedOuterHeight =
+        webRow.kind === "work" && lynxRow?.className?.includes("timeline-row-root--user-input");
       const webHeight = compareOuterHeight
         ? webRow.height
-        : (webRow.contentHeight ?? webRow.height);
+        : compareClippedOuterHeight
+          ? webRow.height
+          : (webRow.contentHeight ?? webRow.height);
       const lynxHeight = compareOuterHeight
         ? lynxRow?.height
-        : (lynxRow?.contentHeight ?? lynxRow?.height);
+        : compareClippedOuterHeight
+          ? lynxRow?.height
+          : (lynxRow?.contentHeight ?? lynxRow?.height);
       if (!lynxRow || Math.abs(webHeight - lynxHeight) > 8) return false;
     }
   }
