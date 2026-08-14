@@ -28,4 +28,12 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'querySelectorAll("x-image, image, img, svg")');
     assert.include(source, "primaryAction: readElementBox");
   });
+
+  it("records matching Context strip semantic leaves", () => {
+    assert.include(source, 'querySelectorAll(".composer-context-item")');
+    assert.include(source, 'querySelectorAll(".composer-context-label")');
+    assert.include(source, 'querySelectorAll(".composer-context-icon")');
+    assert.include(source, "contextBackdrop: null");
+    assert.include(source, "contextBands: []");
+  });
 });

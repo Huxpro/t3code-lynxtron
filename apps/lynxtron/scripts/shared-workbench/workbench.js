@@ -690,6 +690,18 @@ function readLynxPane() {
                 (item) => readElementBox(item),
               ),
               context: readElementBox(root?.querySelector(".composer-context-strip")),
+              contextItems: [...(root?.querySelectorAll(".composer-context-item") ?? [])].map(
+                (item) => readElementBox(item),
+              ),
+              contextLabels: [...(root?.querySelectorAll(".composer-context-label") ?? [])].map(
+                (item) => ({
+                  text: item.textContent?.trim() ?? "",
+                  box: readElementBox(item),
+                }),
+              ),
+              contextIcons: [...(root?.querySelectorAll(".composer-context-icon") ?? [])].map(
+                (item) => readElementBox(item),
+              ),
               contextBackdrop: readElementBox(root?.querySelector(".composer-context-backdrop")),
               contextAuthority: (() => {
                 const image = root?.querySelector(".composer-context-authority-surface");
@@ -1294,6 +1306,18 @@ function readWebPane() {
                 doc.querySelector(".composer-context-strip") ??
                   doc.querySelector(".chat-composer-context-strip"),
               ),
+              contextItems: [...doc.querySelectorAll(".composer-context-item")].map((item) =>
+                readElementBox(item),
+              ),
+              contextLabels: [...doc.querySelectorAll(".composer-context-label")].map((item) => ({
+                text: item.textContent?.trim() ?? "",
+                box: readElementBox(item),
+              })),
+              contextIcons: [...doc.querySelectorAll(".composer-context-icon")].map((item) =>
+                readElementBox(item),
+              ),
+              contextBackdrop: null,
+              contextBands: [],
             },
           }
         : null,
