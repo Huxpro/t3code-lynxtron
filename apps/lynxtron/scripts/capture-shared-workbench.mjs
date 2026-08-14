@@ -371,9 +371,12 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
     lynxMetrics.diff !== null;
   return (
     diffPairReady &&
+    webMetrics.diff.selectedTurn === lynxMetrics.diff.selectedTurn &&
     webFilePaths.length > 0 &&
     JSON.stringify(webFilePaths) === JSON.stringify(lynxFilePaths) &&
-    lynxMetrics.diff?.runtimeBlocker === "R10"
+    lynxMetrics.diff.codeDiff === true &&
+    lynxMetrics.diff.loading === false &&
+    lynxMetrics.diff.error === false
   );
 }
 

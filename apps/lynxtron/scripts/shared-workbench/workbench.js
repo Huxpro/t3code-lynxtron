@@ -189,6 +189,9 @@ function readReviewMetrics(root) {
           selectedTurn: diffSurface.getAttribute("data-review-selected-turn") ?? null,
           fileCount: Number(diffSurface.getAttribute("data-review-file-count") ?? "0"),
           empty: Boolean(diffSurface.querySelector("[data-review-empty-state]")),
+          loading: Boolean(diffSurface.querySelector("[data-review-patch-loading]")),
+          error: Boolean(diffSurface.querySelector("[data-review-patch-error]")),
+          codeDiff: Boolean(diffSurface.querySelector("[data-review-code-diff]")),
           runtimeBlocker:
             diffSurface
               .querySelector("[data-review-runtime-blocker]")
