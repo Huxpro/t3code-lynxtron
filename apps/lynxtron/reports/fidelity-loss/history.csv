@@ -37,3 +37,5 @@ review-diff-rendering-fix,2026-08-15T06:06:00+09:00,bae3768289d7d8e234a40a774b70
 review-diff-native-certification,2026-08-15T06:20:28+09:00,9e2c6770e7fa6a7ab88cc1c3a422e43554194ffe,commit,Review diff Native certification,0.786059,0.687361,0.038592,0.777471,0.222529,0.197378
 new-thread-hero-browser-certification,2026-08-15T06:36:00+09:00,52b94146f27cbca14ef27bc42ac1889fbd64478e,commit,New Thread Hero Browser certification,0.778458,0.687361,0.036284,0.770117,0.229883,0.204979
 new-thread-hero-native-certification,2026-08-15T06:45:03+09:00,c7d056fb7f349f77b2e567ed4493cb523eb17ada,commit,New Thread Hero Native certification,0.770237,0.687361,0.034724,0.761971,0.238029,0.2132
+composer-working-browser-certification,2026-08-15T07:10:00+09:00,1ca68b58353bd0b8e682f7ab39b666a96e7d3d44,commit,Composer working Browser certification,0.762485,0.687361,0.034142,0.754089,0.245911,0.220952
+composer-working-native-certification,2026-08-15T07:19:45+09:00,3c61c2d287cf894f917e795b32c12feae5f43f9f,commit,Composer working Native certification,0.754339,0.687361,0.033048,0.745943,0.254057,0.229098

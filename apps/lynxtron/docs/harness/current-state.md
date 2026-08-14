@@ -228,6 +228,16 @@ Plan 11 prose and screenshots.
   provider hydration before verifying the same model, controls, 768x140
   Composer, dark theme, zero errors, and isolated cleanup. Conservative loss is
   now 77.0237%, observed residual is 3.4724%, and evidence debt is 76.1971%.
+- The stale `composer-working` cell is then measured separately from the
+  already-scored working transcript viewport. A real OpenCode turn is
+  snapshotted read-only while running; Web and Lynx match the docked 768x140
+  Composer, Stop state, Big Pickle/Build/Full access controls, placeholder,
+  Local checkout/main, and all retained boxes. Full-frame SSIM is 0.928664.
+  Frozen provider state is not promoted to Native causality: a fresh
+  exact-bundle run creates a new thread, sends a real `sleep 120` turn, reaches
+  Stop, taps it, advances sequence `16 → 20 → 25 → 37`, and returns to
+  disabled with zero errors and isolated cleanup. Conservative loss is now
+  75.4339%, observed residual is 3.3048%, and evidence debt is 74.5943%.
 
 ## Not currently proven
 

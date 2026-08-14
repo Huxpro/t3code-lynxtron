@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T06:45:03+09:00",
+  "updatedAt": "2026-08-15T07:19:45+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -3322,6 +3322,147 @@
               "confidence": 0.99,
               "method": "exact-bundle-main-transport",
               "source": "PID-owned exact bundle, main transport 2 to 3, zero renderer errors, and isolated cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-working-browser-certification",
+      "observedAt": "2026-08-15T07:10:00+09:00",
+      "commit": "1ca68b58353bd0b8e682f7ab39b666a96e7d3d44",
+      "codeState": "commit",
+      "label": "Composer working Browser certification",
+      "narrative": "A real OpenCode turn is snapshotted read-only while its session and latest turn are running. The matched Browser pair verifies a docked working Composer with Stop, Big Pickle, Build, Full access, Local checkout/main, identical 768x140 geometry, and zero errors. Full-frame SSIM is 0.928664. This state scores the whole working Composer and does not duplicate the separately measured transcript viewport.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh matched Browser evidence replaces stale Composer-working cells without a product change. The frozen snapshot is used only for renderer state, not Native provider-process causality."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Working Composer authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-working-web.png",
+          "sha256": "6b9e8472f75172340f053dd4e708f0d0ab7ca5e57678f9a3258d02d9ef1c0e1d",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "bb144eedbf599450a7112b5ed7297f192962a7ea"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Working Composer Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-working-lynx.png",
+          "sha256": "e648fad901665f925321cec37c0ed89df902977cae5685ebdb96974487d48038",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "bb144eedbf599450a7112b5ed7297f192962a7ea"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-working-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "bb3e6b8a68a544a12c60b344737b60dec756ca04613cb9a5a59fbd24e3c0708a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-working-composer-content",
+              "source": "working state, Stop, Big Pickle, Build, Full access, placeholder, and Local checkout/main match"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "working-composer-geometry",
+              "source": "Composer, surface, editor, footer, and primary action boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.071336,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.928664 at the matched working Composer frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-running-state",
+              "source": "same real running turn snapshot, selected thread/model, working/Stop projection, and zero Browser renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-working-native-certification",
+      "observedAt": "2026-08-15T07:19:45+09:00",
+      "commit": "3c61c2d287cf894f917e795b32c12feae5f43f9f",
+      "codeState": "commit",
+      "label": "Composer working Native certification",
+      "narrative": "A fresh PID-owned exact-bundle turn switches to OpenCode, creates and selects a thread, sends a real sleep command, reaches the Native Stop control, captures the working frame, taps Stop, advances connector sequence 16 to 20 to 25 to 37, and returns the primary action to disabled. The gate allows OpenCode to omit its interaction toggle while retaining Stop, geometry, checkout, zero-error, and cleanup requirements.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle causal evidence fills Native working interaction/runtime without claiming a second product delta or Native pixel parity."
+      },
+      "screenshots": [
+        {
+          "client": "native",
+          "label": "Native working Composer",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-working-native.png",
+          "sha256": "650fe1fc524491436d589890f17292503a5dc6a3296d99c1a2ff45fe6540088f",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "bb144eedbf599450a7112b5ed7297f192962a7ea"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-working-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "bb3e6b8a68a544a12c60b344737b60dec756ca04613cb9a5a59fbd24e3c0708a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-working-stop-content",
+              "source": "real OpenCode turn reaches Stop and returns to disabled after the tap"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-stop-causal-chain",
+              "source": "send reaches Stop; DevTool tap invokes the handler and sequence advances 16 to 20 to 25 to 37"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "fresh provider subprocess, PID-owned exact bundle, zero renderer errors, and isolated cleanup"
             }
           }
         }
