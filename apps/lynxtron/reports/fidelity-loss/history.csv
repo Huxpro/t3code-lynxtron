@@ -17,3 +17,4 @@ composer-hero-footer-material-fix,2026-08-14T06:13:00+08:00,633dca6512d09cf47ce4
 lifecycle-error-current-browser,2026-08-14T07:11:00+08:00,8fb8d7f4d10d65d2235d1fad7dbef3b6873108e3,commit,Lifecycle reconnecting parity,0.876384,0.687361,0.064365,0.86788,0.13212,0.107053
 existing-thread-idle-current-browser,2026-08-14T07:35:10+08:00,d283dda05af714927db481073ec3c4a2ca185ed8,commit,Current idle-thread Sidebar baseline,0.871236,0.687361,0.064462,0.862364,0.137636,0.112201
 existing-thread-idle-sidebar-geometry-fix,2026-08-14T07:53:51+08:00,d9d2444e544dcb8dde33fcc81ae7b9f3f963221a,commit,Idle-thread Sidebar row containment,0.870826,0.687361,0.061484,0.862364,0.137636,0.112611
+composer-footer-icon-geometry-fix,2026-08-14T08:32:12+08:00,2c3cd543da2416bd186ef351f31be5fd66888c64,commit,Composer Footer icon geometry,0.870749,0.687361,0.061178,0.862327,0.137673,0.112688

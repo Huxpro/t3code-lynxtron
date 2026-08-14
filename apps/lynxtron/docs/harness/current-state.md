@@ -84,6 +84,13 @@ Plan 11 prose and screenshots.
   read-only Native DevTool gate independently proves all rows/cards stay inside
   the staged 256px rail. Current conservative loss is 87.08%, observed residual
   is 6.15%, and evidence debt is 86.24%.
+- The next Composer pass measures actual Footer control leaves instead of
+  semantic wrappers. Matching chevron, runtime, and interaction icon geometry
+  improves both Hero and Sendable Footer SSIM while leaving text metrics and the
+  context strip as the next open material contributors. Native verifies the
+  staged icon boxes directly without claiming pixel parity. Current
+  conservative loss is 87.07%, observed residual is 6.12%, and evidence debt is
+  86.23%.
 
 ## Not currently proven
 

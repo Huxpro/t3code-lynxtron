@@ -1399,6 +1399,90 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-footer-icon-geometry-fix",
+      "observedAt": "2026-08-14T08:32:12+08:00",
+      "commit": "2c3cd543da2416bd186ef351f31be5fd66888c64",
+      "codeState": "commit",
+      "label": "Composer Footer icon geometry",
+      "narrative": "Direct parent-commit before/after captures show that Web uses 14px chevrons, a 16px runtime icon, and an 18px Build icon while Lynx used 12px, 14px, and 14px respectively. The committed fix aligns those semantic icon boxes and chevron optical margins. Hero Footer SSIM improves from 0.843611 to 0.845620 and Sendable Footer SSIM improves from 0.840541 to 0.842550. Composer-region residual improves by 0.000185 in each state. A fresh exact-bundle Native run independently proves three 14px chevrons, one 16px runtime icon, and one 18px Build icon with main transport sequence advancement and zero renderer errors; it is geometry/readiness evidence, not a Native pixel-residual update.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Hero and Sendable use the same snapshots and viewports on the direct parent and product commit, with a fresh exact-bundle Native icon geometry gate."
+      },
+      "screenshots": [
+        {
+          "client": "lynx",
+          "label": "Hero Footer icons after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-icons-after-lynx.png",
+          "sha256": "704f8acb06f6d7b4dd91acd9adf481733771038b9fda8c1e8b390e408a90236d",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "c4f72d874270b6730c320fce501c9e912096f818"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Footer icons before",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-footer-icons-before-lynx.png",
+          "sha256": "4d4d7d3f2f8b387ccaf3fda2fd6483d8790cf418fb2115bec7a8ce8305857679",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "c4f72d874270b6730c320fce501c9e912096f818"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Footer icons after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-footer-icons-after-lynx.png",
+          "sha256": "57691589ce6dc869242411b4e415d5953186effb124371e1ff22f85350a8d218",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "c4f72d874270b6730c320fce501c9e912096f818"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-footer-icon-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "e95e89cbb2154afd3d589dbd2447e596c5a49c9f854d457db1ceb9100c390047"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.07677,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.923230 over the matched 768x172 Hero Composer/context region"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.072124,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.927876 over the matched 768x172 Sendable Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }

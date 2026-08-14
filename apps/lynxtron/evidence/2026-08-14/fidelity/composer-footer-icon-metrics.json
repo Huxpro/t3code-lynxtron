@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-14T08:38:43+08:00",
+  "beforeCommit": "d51e32a7fe9f46f515522ca5d2c8a17105240ac9",
+  "afterCommit": "2c3cd543da2416bd186ef351f31be5fd66888c64",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "selectedProject": "background-only",
+    "lifecycle": "ready"
+  },
+  "identity": {
+    "sameServer": true,
+    "sameSnapshot": true,
+    "sameRoute": true,
+    "sameTheme": true,
+    "sameDensity": true,
+    "sameViewport": true,
+    "heroPassBefore": true,
+    "heroPassAfter": true,
+    "sendablePassBefore": true,
+    "sendablePassAfter": true
+  },
+  "rootCause": {
+    "component": "Composer Footer control icons",
+    "before": "Lynx rendered 12px chevrons, a 14px runtime icon, and a 14px Build icon while Web rendered 14px chevrons, 16px runtime, and 18px Build. Missing chevron optical margins accumulated horizontal control drift.",
+    "after": "Shared semantic controls use Web-equivalent icon boxes and negative two-pixel chevron optical margins."
+  },
+  "browser": {
+    "hero": {
+      "fullFrameSsim": {
+        "before": 0.940374,
+        "after": 0.940396
+      },
+      "composerRegionSsim": {
+        "before": 0.923045,
+        "after": 0.92323,
+        "residualBefore": 0.076955,
+        "residualAfter": 0.07677
+      },
+      "footerSsim": {
+        "before": 0.843611,
+        "after": 0.84562,
+        "residualBefore": 0.156389,
+        "residualAfter": 0.15438
+      }
+    },
+    "sendable": {
+      "fullFrameSsim": {
+        "before": 0.940946,
+        "after": 0.940969
+      },
+      "composerRegionSsim": {
+        "before": 0.927691,
+        "after": 0.927876,
+        "residualBefore": 0.072309,
+        "residualAfter": 0.072124
+      },
+      "footerSsim": {
+        "before": 0.840541,
+        "after": 0.84255,
+        "residualBefore": 0.159459,
+        "residualAfter": 0.15745
+      }
+    },
+    "afterIconGeometry": {
+      "chevrons": [
+        { "width": 14, "height": 14 },
+        { "width": 14, "height": 14 },
+        { "width": 14, "height": 14 }
+      ],
+      "runtime": { "width": 16, "height": 16 },
+      "interactionBuild": { "width": 18, "height": 18 }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "2c3cd543da2416bd186ef351f31be5fd66888c64",
+    "bundleSha256": "9b4189d364097b234da733775819e52021f5dc3c0a58a7bbb4078e14e15a4091",
+    "snapshotId": "b18d23ad97969fdca80c49797d2d9174a8cb379144e86dc5542cd896e72f5b54",
+    "viewport": { "width": 1280, "height": 820 },
+    "transportSequence": { "before": 2, "after": 3 },
+    "chevrons": [
+      { "x": 526, "y": 732, "width": 14, "height": 14 },
+      { "x": 635, "y": 732, "width": 14, "height": 14 },
+      { "x": 775, "y": 732, "width": 14, "height": 14 }
+    ],
+    "runtimeIcon": { "x": 680, "y": 731, "width": 16, "height": 16 },
+    "interactionIcon": { "x": 820, "y": 730, "width": 18, "height": 18 },
+    "rendererErrors": 0,
+    "ledgerUpdate": "none: this proves the staged Native bundle renders the intended icon geometry, not a matched Native-to-Web pixel residual"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "c4f72d874270b6730c320fce501c9e912096f818"
+    },
+    "heroBeforeLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-fix-lynx.png",
+      "sha256": "2b9e60f396fb64da2f3ed1255d1f90fc6e836fe7dd510322018f70329ce2f6c3",
+      "hostingCommit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+    },
+    "heroAfterLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-icons-after-lynx.png",
+      "sha256": "704f8acb06f6d7b4dd91acd9adf481733771038b9fda8c1e8b390e408a90236d"
+    },
+    "sendableBeforeLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-footer-icons-before-lynx.png",
+      "sha256": "4d4d7d3f2f8b387ccaf3fda2fd6483d8790cf418fb2115bec7a8ce8305857679"
+    },
+    "sendableAfterLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-footer-icons-after-lynx.png",
+      "sha256": "57691589ce6dc869242411b4e415d5953186effb124371e1ff22f85350a8d218"
+    }
+  },
+  "remainingRisk": [
+    "Footer text metrics and cumulative control positions still differ between Web and Lynx-for-Web.",
+    "Context-strip material remains open.",
+    "Native pixel parity is not claimed by the read-only icon geometry gate."
+  ]
+}
