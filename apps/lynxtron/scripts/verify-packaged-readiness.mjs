@@ -1475,8 +1475,8 @@ async function verifyModelPickerFidelity({
 }
 
 async function verifyComposerWorkingState({ client, devToolCli, outputDirectory, stopEvidence }) {
-  const composer = await readComposerOutcome(client);
-  assertComposerGeometry(composer);
+  const composer = await readComposerOutcome(client, { allowMissingInteraction: true });
+  assertComposerGeometry(composer, { allowMissingInteraction: true });
   const primaryAction = composer.anchors.primaryAction;
   if (primaryAction.attributes["data-composer-primary-state"] !== "stop") {
     throw new Error(

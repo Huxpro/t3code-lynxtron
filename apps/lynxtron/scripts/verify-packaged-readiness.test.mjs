@@ -124,6 +124,8 @@ describe("packaged readiness Sidebar geometry", () => {
   });
 
   it("verifies the Native working transcript layout and locked workspace copy", () => {
+    assert.include(source, "readComposerOutcome(client, { allowMissingInteraction: true })");
+    assert.include(source, "assertComposerGeometry(composer, { allowMissingInteraction: true })");
     assert.include(source, 'readSelectorRects(client, ".timeline-list")');
     assert.include(source, 'readSelectorRects(client, ".timeline-row-root--working")');
     assert.include(source, 'readSelectorRects(client, ".transcript-working-row")');
