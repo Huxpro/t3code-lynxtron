@@ -127,10 +127,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".settings-content--general"');
     assert.include(source, 'measurement.text.includes("Project grouping")');
     assert.include(source, 'measurement.text.includes("Diagnostics")');
-    assert.include(
-      source,
-      'readSelectorRects(client, ".settings-content--general .settings-section")',
-    );
+    assert.include(source, "const generalSections = await readSelectorRects(");
+    assert.include(source, '".settings-content--general .settings-section"');
     assert.include(source, 'readSelectorRects(client, ".settings-content--general .settings-row")');
     assert.include(source, 'name: "native-settings-general.png"');
   });
