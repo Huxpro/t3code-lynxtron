@@ -149,13 +149,15 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className }: IconProp
       const source = ICON_PNGS[`${name}@fill`] ?? "";
       return { dark: source, light: ICON_PNGS[`${name}@fill-light`] ?? source };
     }
-    const s = nearest(SIZES, size);
     const darkColor = pickColor(color);
     const resolvedLightColor = pickColor(lightColor(color));
     const fallback = ICON_PNGS[`${name}@18@#f5f5f5`] ?? "";
+    const exactDark = ICON_PNGS[`${name}@${size}@${darkColor}`];
+    const exactLight = ICON_PNGS[`${name}@${size}@${resolvedLightColor}`];
+    const s = nearest(SIZES, size);
     return {
-      dark: ICON_PNGS[`${name}@${s}@${darkColor}`] ?? fallback,
-      light: ICON_PNGS[`${name}@${s}@${resolvedLightColor}`] ?? fallback,
+      dark: exactDark ?? ICON_PNGS[`${name}@${s}@${darkColor}`] ?? fallback,
+      light: exactLight ?? ICON_PNGS[`${name}@${s}@${resolvedLightColor}`] ?? fallback,
     };
   }, [name, size, color]);
 
