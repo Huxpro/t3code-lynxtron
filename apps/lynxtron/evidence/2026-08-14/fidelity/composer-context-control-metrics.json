@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-14T10:21:05+08:00",
+  "beforeCommit": "cf94d0ae3",
+  "productCommit": "f19b0427ad039beeb2ca337374f65fad16b09b41",
+  "verificationHead": "ff531cdbe3bad85dffffc477daa814f169a76866",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "selectedProject": "background-only",
+    "lifecycle": "ready"
+  },
+  "rootCause": {
+    "component": "Composer Context controls",
+    "before": "Lynx applied stale 2-2.5px optical translations, wider checkout padding, and omitted Web's transparent border and SVG margins.",
+    "after": "Both controls use the Web box model and intrinsic flow geometry without fixed widths; Context icon alpha also matches the authority."
+  },
+  "browser": {
+    "hero": {
+      "capturePass": true,
+      "rendererErrors": 0,
+      "contextSsim": {
+        "before": 0.91827,
+        "after": 0.94275,
+        "residualBefore": 0.08173,
+        "residualAfter": 0.05725
+      },
+      "composerRegionSsim": {
+        "before": 0.929476,
+        "after": 0.935606,
+        "residualBefore": 0.070524,
+        "residualAfter": 0.064394
+      },
+      "fullFrameSsimAfter": 0.941922
+    },
+    "sendable": {
+      "capturePass": true,
+      "rendererErrors": 0,
+      "contextSsim": {
+        "before": 0.918089,
+        "after": 0.942568,
+        "residualBefore": 0.081911,
+        "residualAfter": 0.057432
+      },
+      "composerRegionSsim": {
+        "before": 0.934122,
+        "after": 0.940306,
+        "residualBefore": 0.065878,
+        "residualAfter": 0.059694
+      },
+      "fullFrameSsimAfter": 0.942501
+    },
+    "controlGeometry": [
+      {
+        "text": "Current checkout",
+        "web": { "x": 410, "y": 484, "width": 147.59375, "height": 24 },
+        "lynx": { "x": 410, "y": 484, "width": 147.609375, "height": 24 },
+        "absoluteDelta": { "x": 0, "y": 0, "width": 0.015625, "height": 0 }
+      },
+      {
+        "text": "main",
+        "web": { "x": 1058.375, "y": 484, "width": 67.625, "height": 24 },
+        "lynx": { "x": 1058.234375, "y": 484, "width": 67.765625, "height": 24 },
+        "absoluteDelta": { "x": 0.140625, "y": 0, "width": 0.140625, "height": 0 }
+      }
+    ],
+    "remainingTextMetricResidual": {
+      "checkoutWidth": {
+        "web": 99.59375,
+        "lynx": 102.62158203125,
+        "delta": 3.02783203125
+      },
+      "branchWidth": {
+        "web": 27.625,
+        "lynx": 27.765625,
+        "delta": 0.140625
+      },
+      "note": "The renderers use the same DM Sans variable WOFF2 bytes; no fixed or negative control width was introduced to hide text measurement differences."
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "ff531cdbe3bad85dffffc477daa814f169a76866",
+    "bundleSha256": "7d318503b0f1fae1dba3863ead78aaf15db891ef7f7103a9c972caea387ec66d",
+    "snapshotId": "017f0cf18bebbc065c98bf755abe64e38638500e1f177d6dc76c716b005f9cbe",
+    "viewport": { "width": 1280, "height": 820 },
+    "transportSequence": { "before": 2, "after": 3 },
+    "contextStrip": { "x": 406, "y": 752, "width": 724, "height": 48 },
+    "contextControls": [
+      { "x": 410, "y": 771, "width": 145, "height": 24 },
+      { "x": 924, "y": 771, "width": 203, "height": 24 }
+    ],
+    "contextIcons": [
+      { "x": 422, "y": 777, "width": 12, "height": 12 },
+      { "x": 539, "y": 777, "width": 12, "height": 12 },
+      { "x": 930, "y": 777, "width": 12, "height": 12 },
+      { "x": 1109, "y": 777, "width": 12, "height": 12 }
+    ],
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "dc36b1313665aa97b3e1f1ce21b1d97b5468e5dd52aae7a97d73f43dc1c8d65d",
+    "ledgerUpdate": "none: this proves exact-bundle Native containment and readiness, not Native-to-Web pixel parity"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "71a473f4faa5a36b4858fbb890ff78556199ad0f"
+    },
+    "heroWeb": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+      "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b"
+    },
+    "heroLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-context-controls-after-lynx.png",
+      "sha256": "f1c83d8ff5722460839d0f8623e029fa8d070dee52d8d98165c9b5be44005f38"
+    },
+    "sendableWeb": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+      "sha256": "19d61e1c7add294c354a6ebe6742ab3eecb1f5942b6914b4e98c02a13bb78cde"
+    },
+    "sendableLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-context-controls-after-lynx.png",
+      "sha256": "01814828ce1a5d742ba5dfaeb64ab9ff3c1d19778cfa8d3587ddeef9113528e3"
+    }
+  },
+  "remainingRisk": [
+    "Context text rasterization and label height still differ despite identical font bytes.",
+    "Context background material remains a smaller open contributor.",
+    "Native pixel parity and physical-input behavior are not claimed."
+  ]
+}

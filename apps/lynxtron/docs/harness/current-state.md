@@ -99,11 +99,19 @@ Plan 11 prose and screenshots.
   primitive raises Context SSIM from 89.87% to about 91.82% and improves both
   Hero and Sendable Composer-region residuals. Native independently verifies
   the staged Context icon boxes without claiming pixel parity.
+- Replacing stale Context-control translations and padding with the Web box
+  model then raises Hero/Sendable Context SSIM to about 94.26%. Browser control
+  width deltas fall below 0.15px without fixed widths. An exact-bundle Native
+  run at `ff531cdbe` independently verifies four 12px icons, two 24px controls,
+  main transport advancement, zero renderer errors, and isolated-state cleanup.
+  Current conservative loss is 87.07%, observed residual is 6.08%, and evidence
+  debt remains 86.23%.
 
 ## Not currently proven
 
 - No current Web/Lynx/Native visual certification matrix exists.
-- No final5 packaged Native launch has been performed.
+- No current Web/Lynx/Native pixel certification matrix exists; the final5
+  packaged Native Context geometry/readiness gate is not pixel parity.
 - Native physical keyboard/focus, transcript wheel/drag/follow, light/system
   theme persistence, and full patch rendering are not certified.
 - Browser/CDP evidence cannot satisfy Native-only input, list, window, or

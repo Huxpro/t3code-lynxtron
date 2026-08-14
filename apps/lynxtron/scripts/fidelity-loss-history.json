@@ -1627,6 +1627,102 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-context-control-geometry-fix",
+      "observedAt": "2026-08-14T10:21:05+08:00",
+      "commit": "f19b0427ad039beeb2ca337374f65fad16b09b41",
+      "codeState": "commit",
+      "label": "Composer Context control geometry",
+      "narrative": "Matched control-leaf measurements showed that stale Lynx translations, padding, and missing Web border/SVG margin rules—not the strip bounds—caused the remaining Context control displacement. Replacing those optical offsets with the authority box model reduces checkout control width delta from 7.016px to 0.016px and branch width delta from 6.141px to 0.141px without fixed widths. Hero Context SSIM rises from 0.918270 to 0.942750 and Sendable Context SSIM rises from 0.918089 to 0.942568. A fresh exact-bundle Native run proves four 12px icons, two 24px controls, main transport advancement, and zero renderer errors; Native pixel parity is not claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Hero and Sendable use matched current snapshots around the control-flow product change, with leaf-level Browser geometry and an exact-bundle read-only Native gate."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Hero Context control authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "71a473f4faa5a36b4858fbb890ff78556199ad0f"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Hero Context controls after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-context-controls-after-lynx.png",
+          "sha256": "f1c83d8ff5722460839d0f8623e029fa8d070dee52d8d98165c9b5be44005f38",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "71a473f4faa5a36b4858fbb890ff78556199ad0f"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Sendable Context control authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+          "sha256": "19d61e1c7add294c354a6ebe6742ab3eecb1f5942b6914b4e98c02a13bb78cde",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "71a473f4faa5a36b4858fbb890ff78556199ad0f"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Context controls after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-context-controls-after-lynx.png",
+          "sha256": "01814828ce1a5d742ba5dfaeb64ab9ff3c1d19778cfa8d3587ddeef9113528e3",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "71a473f4faa5a36b4858fbb890ff78556199ad0f"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-context-control-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "8d2b103305eb97411db6f67739d6cce787c0e0591974f2eefefa9821c0ab0207"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.064394,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.935606 over the matched 768x172 Hero Composer/context region"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.059694,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.940306 over the matched 768x172 Sendable Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }
