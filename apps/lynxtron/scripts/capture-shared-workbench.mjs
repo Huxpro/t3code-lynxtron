@@ -741,9 +741,9 @@ async function main() {
     : stateId === "composer-working" || stateId === "existing-thread-working"
       ? seed?.dataset?.workingThread
       : stateId === "existing-thread-completed"
-        ? seed?.dataset?.canonicalThread
+        ? seed?.dataset?.completedThread
         : stateId === "existing-thread-failed"
-          ? seed?.dataset?.canonicalThread
+          ? seed?.dataset?.failedThread
           : threadStateIds.has(stateId)
             ? (seed?.dataset?.idleThread ?? seed?.dataset?.canonicalThread)
             : null;
@@ -755,6 +755,19 @@ async function main() {
   if (stateId === "composer-working" && expectedThreadFixture?.sessionStatus !== "running") {
     throw new Error(
       `State ${stateId} requires a running thread fixture, but ${seedSource} has none`,
+    );
+  }
+  if (
+    stateId === "existing-thread-completed" &&
+    expectedThreadFixture?.latestTurnState !== "completed"
+  ) {
+    throw new Error(
+      `State ${stateId} requires a populated completed-turn fixture, but ${seedSource} has none`,
+    );
+  }
+  if (stateId === "existing-thread-failed" && expectedThreadFixture?.latestTurnState !== "error") {
+    throw new Error(
+      `State ${stateId} requires a populated failed-turn fixture, but ${seedSource} has none`,
     );
   }
   const expectProject = semanticRoute.startsWith("settings-")
@@ -2451,14 +2464,15 @@ async function captureCell({
           if (!sr) return false;
           const imgs = [...sr.querySelectorAll('x-image, X-IMAGE, image, img')];
           if (imgs.length === 0) return false;
-          // The wordmark is legitimately wider than tall; exclude it. Every
-          // other icon image must be within an icon-sized box.
+          // Product imagery may intentionally be larger than an icon. Only
+          // apply this readiness gate to icon-like image leaves.
           const oversized = imgs.filter((el) => {
             const r = el.getBoundingClientRect();
             const className = el.getAttribute('class') || '';
             if (
               className.includes('authority') ||
-              className.includes('sidebar-grain__tile')
+              className.includes('sidebar-grain__tile') ||
+              className.includes('-atlas__image')
             ) {
               return false;
             }
@@ -2489,7 +2503,14 @@ async function captureCell({
         const sr = lynx && lynx.shadowRoot;
         if (!sr) return { error: 'no shadow root' };
         const imgs = [...sr.querySelectorAll('x-image, X-IMAGE, image, img')];
-        const big = imgs.map((el) => {
+        const big = imgs.filter((el) => {
+          const className = el.getAttribute('class') || '';
+          return !(
+            className.includes('authority') ||
+            className.includes('sidebar-grain__tile') ||
+            className.includes('-atlas__image')
+          );
+        }).map((el) => {
           const r = el.getBoundingClientRect();
           const cs = getComputedStyle(el);
           return { cls: (el.getAttribute('class')||'').slice(0,60), style: el.getAttribute('style')||'', w: Math.round(r.width), h: Math.round(r.height), cssW: cs.width, cssH: cs.height, objectFit: cs.objectFit };

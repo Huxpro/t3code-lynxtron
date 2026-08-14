@@ -31,4 +31,17 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "webTimelineRows.length === 0");
     assert.include(source, "lynxTimelineRows.length === 0");
   });
+
+  it("does not classify intentional large visual assets as unsettled icons", () => {
+    assert.include(source, "className.includes('authority')");
+    assert.include(source, "className.includes('sidebar-grain__tile')");
+    assert.include(source, "className.includes('-atlas__image')");
+  });
+
+  it("does not relabel a running canonical thread as completed or failed", () => {
+    assert.include(source, "seed?.dataset?.completedThread");
+    assert.include(source, "seed?.dataset?.failedThread");
+    assert.include(source, 'expectedThreadFixture?.latestTurnState !== "completed"');
+    assert.include(source, 'expectedThreadFixture?.latestTurnState !== "error"');
+  });
 });

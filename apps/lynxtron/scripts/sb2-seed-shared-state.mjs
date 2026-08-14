@@ -52,7 +52,9 @@ const explicitSource = argValue("--source", null);
 const source = explicitSource
   ? expandHome(explicitSource)
   : DEFAULT_SOURCES.find((candidate) => existsSync(candidate));
-const baseDir = path.resolve(expandHome(argValue("--base-dir", path.join(lynxAppDir, ".t3-workbench"))));
+const baseDir = path.resolve(
+  expandHome(argValue("--base-dir", path.join(lynxAppDir, ".t3-workbench"))),
+);
 const outputPath = path.resolve(argValue("--output", "reports/sb2-seed.json"));
 
 function sha256(buffer) {
@@ -81,6 +83,13 @@ function summarize(dbPath) {
         p.title as projectTitle,
         t.updated_at as updatedAt,
         s.status as sessionStatus,
+        (
+          select state
+          from projection_turns latest_turn
+          where latest_turn.thread_id = t.thread_id
+          order by latest_turn.row_id desc
+          limit 1
+        ) as latestTurnState,
         count(m.message_id) as messageCount
       from projection_threads t
       join projection_projects p on p.project_id = t.project_id
@@ -93,6 +102,14 @@ function summarize(dbPath) {
     const messages = db.query('select count(*) c from projection_thread_messages').get();
     const workingThread =
       threads.find((thread) => thread.sessionStatus === 'running') ?? null;
+    const completedThread =
+      threads.find(
+        (thread) => thread.latestTurnState === 'completed' && thread.messageCount > 0,
+      ) ?? null;
+    const failedThread =
+      threads.find(
+        (thread) => thread.latestTurnState === 'error' && thread.messageCount > 0,
+      ) ?? null;
     const idleThread =
       threads.find((thread) => thread.sessionStatus !== 'running') ?? null;
     process.stdout.write(JSON.stringify({
@@ -100,6 +117,8 @@ function summarize(dbPath) {
       threads,
       canonicalThread: threads[0] ?? null,
       workingThread,
+      completedThread,
+      failedThread,
       idleThread,
       messageCount: messages.c,
     }));
@@ -155,7 +174,12 @@ async function main() {
   console.log(`[sb2] report -> ${path.relative(repoRoot, outputPath)}`);
   console.log(
     JSON.stringify(
-      { snapshotSha256: report.snapshotSha256, projects: summary.projects.length, threads: summary.threads.length, messageCount: summary.messageCount },
+      {
+        snapshotSha256: report.snapshotSha256,
+        projects: summary.projects.length,
+        threads: summary.threads.length,
+        messageCount: summary.messageCount,
+      },
       null,
       2,
     ),
