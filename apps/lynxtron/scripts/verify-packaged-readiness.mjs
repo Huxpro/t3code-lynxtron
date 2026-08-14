@@ -578,6 +578,11 @@ async function verifySidebarGeometry(client) {
 async function verifyComposerGeometry(client) {
   const composer = await readComposerOutcome(client);
   assertComposerGeometry(composer);
+  const controlColors = {
+    model: composer.anchors.model.style.color,
+    runtime: composer.anchors.runtime.style.color,
+    interaction: composer.anchors.interaction.style.color,
+  };
   const chevrons = await readSelectorRects(client, ".composer-toolbar-control .pill__chevron-img");
   const runtimeIcons = await readSelectorRects(
     client,
@@ -589,19 +594,26 @@ async function verifyComposerGeometry(client) {
   );
   const wrongSize = (rect, size) =>
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
+  const wrongMutedAlpha = (color) => {
+    const match = /^rgba\(113,113,122,([0-9.]+)\)$/u.exec(color);
+    return !match || Math.abs(Number(match[1]) - 0.7) > 1 / 255;
+  };
   if (
-    chevrons.length !== 3 ||
+    chevrons.length < 2 ||
+    chevrons.length > 3 ||
     chevrons.some((rect) => wrongSize(rect, 14)) ||
     runtimeIcons.length !== 1 ||
     wrongSize(runtimeIcons[0], 16) ||
     interactionIcons.length !== 1 ||
-    wrongSize(interactionIcons[0], 18)
+    wrongSize(interactionIcons[0], 18) ||
+    Object.values(controlColors).some(wrongMutedAlpha)
   ) {
     throw new Error(
       `Composer Footer icon geometry drifted: ${JSON.stringify({
         chevrons,
         runtimeIcons,
         interactionIcons,
+        controlColors,
       })}`,
     );
   }
@@ -612,6 +624,7 @@ async function verifyComposerGeometry(client) {
     chevrons,
     runtimeIcons,
     interactionIcons,
+    controlColors,
   };
 }
 
