@@ -132,6 +132,26 @@ describe("composer controls presentation", () => {
       checkoutLabel: "Current worktree",
       branchLabel: "feature/composer",
     });
+    expect(
+      projectComposerContext({
+        branch: "main",
+        worktreePath: null,
+        workspaceModeLocked: true,
+      }),
+    ).toEqual({
+      checkoutLabel: "Local checkout",
+      branchLabel: "main",
+    });
+    expect(
+      projectComposerContext({
+        branch: "feature/composer",
+        worktreePath: "/repo/.worktrees/composer",
+        workspaceModeLocked: true,
+      }),
+    ).toEqual({
+      checkoutLabel: "Worktree",
+      branchLabel: "feature/composer",
+    });
   });
 
   it("cycles a real server-declared provider option", () => {

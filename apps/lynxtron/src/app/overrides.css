@@ -2784,7 +2784,7 @@
   overflow-y: hidden;
   box-sizing: border-box;
   /* Web reserves 12px for its transcript scrollbar at constrained widths. */
-  padding: 48px 26px 20px;
+  padding: 16px 26px 20px;
 }
 .timeline-row-root {
   display: block;
@@ -2792,6 +2792,13 @@
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
+  box-sizing: border-box;
+}
+.timeline-row-root--working {
+  height: 40px;
+}
+.transcript-working-outer {
+  padding-bottom: 16px;
   box-sizing: border-box;
 }
 .transcript-user-outer {

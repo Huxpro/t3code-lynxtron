@@ -52,9 +52,7 @@ import {
   WORKING_LABEL_ATLAS,
   WORKING_LABEL_FULL_ATLAS,
 } from "./workingLabelAtlas";
-import {
-  timelineRowReuseIdentifier,
-} from "./timelineRowSize";
+import { timelineRowReuseIdentifier } from "./timelineRowSize";
 
 interface MessagesTimelineProps {
   messages: ReadonlyArray<ChatMessage>;
@@ -97,9 +95,7 @@ function LynxTurnDiffCard({
   isLatestTurn: boolean;
 }) {
   const [expandedOverride, setExpandedOverride] = useState<boolean | null>(null);
-  const [autoExpanded] = useState(() =>
-    shouldAutoExpandChangedFiles(summary.files, isLatestTurn),
-  );
+  const [autoExpanded] = useState(() => shouldAutoExpandChangedFiles(summary.files, isLatestTurn));
   const [allDirectoriesExpanded, setAllDirectoriesExpanded] = useState(autoExpanded);
   const expanded = expandedOverride ?? (isLatestTurn && autoExpanded);
   const stat = summarizeChangedFiles(summary.files);
@@ -137,9 +133,7 @@ function LynxTurnDiffCard({
       foldersControl={
         <view
           className="inline-flex size-[22px] flex-col items-center justify-center rounded-md border border-border"
-          aria-label={
-            allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"
-          }
+          aria-label={allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"}
           data-review-toggle-directories
           bindtap={() => setAllDirectoriesExpanded((current) => !current)}
         >
@@ -165,9 +159,7 @@ function LynxTurnDiffCard({
           bindtap={() => openDiff(summary.files[0]?.path)}
         >
           <Icon name="file-json" size={12} color="#818181" />
-          <text className="lynx-host-text text-[11px] font-medium text-foreground">
-            Open diff
-          </text>
+          <text className="lynx-host-text text-[11px] font-medium text-foreground">Open diff</text>
         </view>
       }
       previewScopes={scopeSummary.map((scope) => ({
@@ -341,7 +333,8 @@ function buildLynxTranscriptRowElements(
                       {attachment.name}
                     </text>
                     <text className="transcript-attachment-meta">
-                      {attachment.mimeType} · {Math.max(1, Math.ceil(attachment.sizeBytes / 1024))} KB
+                      {attachment.mimeType} · {Math.max(1, Math.ceil(attachment.sizeBytes / 1024))}{" "}
+                      KB
                     </text>
                   </view>
                 </view>
@@ -390,9 +383,7 @@ function buildLynxTranscriptRowElements(
       row.showAssistantMeta ? (
         <view
           className={`transcript-assistant-meta-spacer${
-            row.message.text.includes("```")
-              ? " transcript-assistant-meta-spacer--code"
-              : ""
+            row.message.text.includes("```") ? " transcript-assistant-meta-spacer--code" : ""
           }${
             row.assistantTurnDiffSummary?.files.length &&
             row.assistantTurnDiffSummary.turnId === latestTurnId
@@ -637,10 +628,7 @@ export function MessagesTimeline({
       __T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__?: (
         action: "user-scroll-away" | "user-scroll-end",
       ) => void;
-      __T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?: (
-        index: number,
-        alignTo: "bottom" | "top",
-      ) => void;
+      __T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?: (index: number, alignTo: "bottom" | "top") => void;
       __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
     };
     if (typeof diagnosticsGlobal.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
@@ -725,12 +713,14 @@ export function MessagesTimeline({
         bindscroll={handleScroll}
       >
         {rows.map((row) => (
-          <list-item
-            item-key={row.id}
-            key={row.id}
-            reuse-identifier={reuseIdentifierForRow(row)}
-          >
-            <view className="timeline-row-root">
+          <list-item item-key={row.id} key={row.id} reuse-identifier={reuseIdentifierForRow(row)}>
+            <view
+              className={
+                row.kind === "working"
+                  ? "timeline-row-root timeline-row-root--working"
+                  : "timeline-row-root"
+              }
+            >
               <TranscriptRowSurface
                 row={row}
                 workspaceRoot={cwd}

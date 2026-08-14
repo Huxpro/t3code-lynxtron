@@ -127,16 +127,23 @@ export function isComposerDraftThread(options: {
 }
 
 export interface ComposerContextPresentation {
-  readonly checkoutLabel: "Current checkout" | "Current worktree";
+  readonly checkoutLabel: "Current checkout" | "Current worktree" | "Local checkout" | "Worktree";
   readonly branchLabel: string;
 }
 
 export function projectComposerContext(options: {
   readonly branch: string | null | undefined;
   readonly worktreePath: string | null | undefined;
+  readonly workspaceModeLocked?: boolean;
 }): ComposerContextPresentation {
   return {
-    checkoutLabel: options.worktreePath ? "Current worktree" : "Current checkout",
+    checkoutLabel: options.workspaceModeLocked
+      ? options.worktreePath
+        ? "Worktree"
+        : "Local checkout"
+      : options.worktreePath
+        ? "Current worktree"
+        : "Current checkout",
     branchLabel: options.branch?.trim() || "No branch",
   };
 }

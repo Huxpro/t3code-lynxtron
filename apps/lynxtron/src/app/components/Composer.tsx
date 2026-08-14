@@ -179,6 +179,7 @@ export function Composer({
   const context = projectComposerContext({
     branch,
     worktreePath: workspaceMode === "worktree" ? (worktreePath ?? "pending") : null,
+    workspaceModeLocked,
   });
 
   const card = (

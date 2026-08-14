@@ -246,9 +246,7 @@ function WorkEntryRow({
       aria-expanded={canExpand ? expanded : undefined}
       data-transcript-work-entry={workEntry.id}
       data-transcript-work-tone={workEntry.tone}
-      data-transcript-work-state={
-        canExpand ? (expanded ? "expanded" : "collapsed") : "static"
-      }
+      data-transcript-work-state={canExpand ? (expanded ? "expanded" : "collapsed") : "static"}
       onClick={canExpand ? () => setExpanded((value) => !value) : undefined}
     >
       {authorityVisual}
@@ -468,6 +466,7 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
           ? "transcript-assistant-group group/assistant"
           : null,
         row.kind === "turn-fold" ? "transcript-turn-fold-outer" : null,
+        row.kind === "working" ? "transcript-working-outer" : null,
       )}
       data-timeline-row-id={row.id}
       data-timeline-row-kind={row.kind}
