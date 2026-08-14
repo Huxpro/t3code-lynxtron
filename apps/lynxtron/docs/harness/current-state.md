@@ -113,6 +113,14 @@ Plan 11 prose and screenshots.
   by 41.8%. Exact-bundle Native independently verifies both label geometries
   and typography without claiming pixel parity. Current conservative loss is
   87.07%, observed residual is 6.06%, and evidence debt remains 86.23%.
+- The next Context hotspot was a real icon-pipeline fallback: stale GitBranch
+  path data plus no matching muted raster caused a white 18px PNG to be scaled
+  to 12px. Exact dark/light 12px rasters raise dark branch-icon SSIM to 97.41%
+  and reduce Context absolute error another 10.3%; Native verifies the exact
+  bundle's four 12px icons. A matched light Hero diagnostic now validates the
+  muted icon path but also exposes broader light Context material as a separate
+  open scope. Current conservative loss is 87.07%, observed residual is 6.06%,
+  and evidence debt remains 86.23%.
 
 ## Not currently proven
 

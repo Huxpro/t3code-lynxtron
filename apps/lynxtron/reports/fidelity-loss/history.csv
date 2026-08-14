@@ -22,3 +22,4 @@ composer-footer-label-alpha-fix,2026-08-14T09:08:24+08:00,0359ee006da99ba7705173
 composer-context-icon-geometry-fix,2026-08-14T09:41:11+08:00,594e7ad34c8d2607e60b473ec4ceb153121ebbd8,commit,Composer Context icon geometry,0.870727,0.687361,0.061012,0.862327,0.137673,0.11271
 composer-context-control-geometry-fix,2026-08-14T10:21:05+08:00,f19b0427ad039beeb2ca337374f65fad16b09b41,commit,Composer Context control geometry,0.870704,0.687361,0.060848,0.862327,0.137673,0.112733
 composer-context-label-typography-fix,2026-08-14T10:48:39+08:00,f7cf8c2f9976252a1b093c568064e74a01133ece,commit,Composer Context label typography,0.87067,0.687361,0.060603,0.862327,0.137673,0.112767
+composer-context-exact-icon-raster-fix,2026-08-14T11:16:44+08:00,6c96d45e857d561d60c5387913e2d1d2ca59ade1,commit,Composer Context exact icon rasters,0.870668,0.687361,0.060587,0.862327,0.137673,0.112769

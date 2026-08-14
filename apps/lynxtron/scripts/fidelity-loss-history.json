@@ -1819,6 +1819,102 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-context-exact-icon-raster-fix",
+      "observedAt": "2026-08-14T11:16:44+08:00",
+      "commit": "6c96d45e857d561d60c5387913e2d1d2ca59ade1",
+      "codeState": "commit",
+      "label": "Composer Context exact icon rasters",
+      "narrative": "The branch icon still used stale Lucide path data and had no #818181 raster at any selectable size, causing Icon to fall back to an 18px white PNG and downscale it to 12px. Syncing GitBranch to Lucide 0.564, generating exact 12px dark/light Context variants, and preferring exact-size assets raises branch-icon SSIM from 0.684822 to 0.974066. Hero Context SSIM rises from 0.980469 to 0.983169 and Sendable Context SSIM rises from 0.980288 to 0.982988 without geometry changes. A fresh exact-bundle Native run verifies four 12px icons, preserved controls/labels, main transport advancement, and zero renderer errors. A matched light Hero diagnostic also passes and confirms muted rather than white fallback; its broader Context material remains a separately registered scope and does not overwrite whole-state light evidence.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Matched dark Hero and Sendable snapshots isolate the exact-raster product change; source-contract tests prevent stale path/fallback regression, and exact-bundle Native plus matched light diagnostic evidence cover both rendering targets."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Hero Context icon authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ed23be6df73d700766ab57f0e1cd7e5a5ea20ee2"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Hero exact Context icons",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-context-icons-exact-lynx.png",
+          "sha256": "280af956fc0ff957880f577c1f7c6d21394c568fb77158915f1e8a0472c5654b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ed23be6df73d700766ab57f0e1cd7e5a5ea20ee2"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Sendable Context icon authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+          "sha256": "19d61e1c7add294c354a6ebe6742ab3eecb1f5942b6914b4e98c02a13bb78cde",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ed23be6df73d700766ab57f0e1cd7e5a5ea20ee2"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable exact Context icons",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-context-icons-exact-lynx.png",
+          "sha256": "72b04408de30bae0a5b5c29b108e9547e947cd1a37734521042af4cc913ad661",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ed23be6df73d700766ab57f0e1cd7e5a5ea20ee2"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-context-exact-icon-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c317e72168b4c13367c6661e472b1e1d2d0bed9c28f95ce0577ed14cc392da90"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.054551,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.945449 over the matched 768x172 Hero Composer/context region"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.049851,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.950149 over the matched 768x172 Sendable Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }
