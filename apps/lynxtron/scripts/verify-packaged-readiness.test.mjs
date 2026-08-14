@@ -22,6 +22,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, ".composer-toolbar-control .pill__chevron-img");
     assert.include(source, ".composer-toolbar-control--runtime .pill__icon-img");
     assert.include(source, ".composer-toolbar-control--interaction .pill__icon-img");
+    assert.include(source, ".composer-context-icon");
+    assert.include(source, "contextIcons.length !== 3");
+    assert.include(source, "Math.abs(rect.width - 12) > 0.75");
     assert.include(source, "Math.abs(Number(match[1]) - 0.7) > 1 / 255");
     assert.include(source, "chevrons.length < 2");
     assert.include(source, "chevrons.length > 3");
