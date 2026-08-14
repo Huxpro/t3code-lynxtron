@@ -37,6 +37,9 @@ describe("Lynx DevTool visual measurements", () => {
               { name: "font-weight", value: "500" },
               { name: "color", value: "rgb(1, 2, 3)" },
               { name: "background-color", value: "rgb(4, 5, 6)" },
+              { name: "background-image", value: "linear-gradient(rgb(1, 1, 1), rgb(2, 2, 2))" },
+              { name: "border-bottom-color", value: "rgb(7, 8, 9)" },
+              { name: "display", value: "flex" },
             ],
           },
         };
@@ -69,6 +72,12 @@ describe("Lynx DevTool visual measurements", () => {
     });
     assert.equal(measurements.typography.sample.style.fontSize, "14px");
     assert.equal(measurements.colors.sample.style.backgroundColor, "rgb(4, 5, 6)");
+    assert.equal(
+      measurements.colors.sample.style.backgroundImage,
+      "linear-gradient(rgb(1, 1, 1), rgb(2, 2, 2))",
+    );
+    assert.equal(measurements.colors.sample.style.borderBottomColor, "rgb(7, 8, 9)");
+    assert.equal(measurements.colors.sample.style.display, "flex");
     assert.equal(measurements.anchors.sample.text, "Measured");
     assert.deepEqual(measurements.anchors.sample.attributes, {
       "aria-label": "Measured item",

@@ -111,7 +111,10 @@ async function nodeMeasurement(runCdp, rootNodeId, selector) {
     attributes: attributeRecord(attributesResponse),
     style: {
       backgroundColor: styles["background-color"] ?? null,
+      backgroundImage: styles["background-image"] ?? null,
+      borderBottomColor: styles["border-bottom-color"] ?? null,
       color: styles.color ?? null,
+      display: styles.display ?? null,
       fontFamily: styles["font-family"] ?? null,
       fontSize: styles["font-size"] ?? null,
       fontWeight: styles["font-weight"] ?? null,

@@ -575,7 +575,7 @@ async function verifySidebarGeometry(client) {
   };
 }
 
-async function verifyComposerGeometry(client) {
+async function verifyComposerGeometry(client, expectedTheme) {
   const composer = await readComposerOutcome(client);
   assertComposerGeometry(composer);
   const controlColors = {
@@ -596,6 +596,9 @@ async function verifyComposerGeometry(client) {
   const contextControls = await readSelectorRects(client, ".composer-context-control");
   const contextIcons = await readSelectorRects(client, ".composer-context-icon");
   const contextLabels = [composer.typography.contextCheckout, composer.typography.contextBranch];
+  const themeRoot = composer.colors.themeRoot;
+  const contextBackdrop = composer.colors.contextBackdrop;
+  const contextBand = composer.colors.contextBand;
   const wrongSize = (rect, size) =>
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
@@ -624,6 +627,14 @@ async function verifyComposerGeometry(client) {
       label.style.lineHeight === "16px" &&
       !wrongMutedAlpha(label.style.color),
   );
+  const expectedThemeMatches =
+    !expectedTheme ||
+    (themeRoot.attributes["data-theme"] === expectedTheme &&
+      (expectedTheme !== "light" ||
+        (contextBackdrop.style.backgroundImage?.startsWith("linear-gradient(") &&
+          contextBackdrop.style.backgroundColor === "rgb(254,254,254)" &&
+          contextBackdrop.style.borderBottomColor === "rgb(234,234,234)" &&
+          contextBand.style.display === "none")));
   if (
     chevrons.length < 2 ||
     chevrons.length > 3 ||
@@ -634,6 +645,7 @@ async function verifyComposerGeometry(client) {
     wrongSize(interactionIcons[0], 18) ||
     !contextControlsAligned ||
     !contextLabelsAligned ||
+    !expectedThemeMatches ||
     contextIcons.length !== 4 ||
     contextIcons.some(wrongContextSize) ||
     Object.values(controlColors).some(wrongMutedAlpha)
@@ -646,6 +658,9 @@ async function verifyComposerGeometry(client) {
         contextStrip,
         contextControls,
         contextLabels,
+        themeRoot,
+        contextBackdrop,
+        contextBand,
         contextIcons,
         controlColors,
       })}`,
@@ -661,6 +676,9 @@ async function verifyComposerGeometry(client) {
     contextStrip,
     contextControls,
     contextLabels,
+    themeRoot,
+    contextBackdrop,
+    contextBand,
     contextIcons,
     controlColors,
   };
@@ -749,9 +767,12 @@ async function readComposerOutcome(client) {
         { id: "contextBranch", lynx: ".composer-context-label--branch" },
       ],
       colors: [
+        { id: "themeRoot", lynx: ".app-theme-root" },
         { id: "surface", lynx: ".composer-surface" },
         { id: "primaryAction", lynx: ".composer-primary-action" },
         { id: "context", lynx: ".composer-context-strip" },
+        { id: "contextBackdrop", lynx: ".composer-context-backdrop" },
+        { id: "contextBand", lynx: ".composer-context-backdrop-band" },
       ],
     },
   });
@@ -1848,6 +1869,7 @@ async function runOnce({
   index,
   isFinalRun,
   modelSelection,
+  expectedTheme,
   outputDirectory,
   projectCwd,
   requireCanonicalThread,
@@ -1939,7 +1961,7 @@ async function runOnce({
       ? await verifySidebarGeometry(client)
       : undefined;
     const composerGeometry = shouldVerifyComposerGeometry
-      ? await verifyComposerGeometry(client)
+      ? await verifyComposerGeometry(client, expectedTheme)
       : undefined;
     const settingsNavigation = runPlan11Outcomes
       ? await captureOutcome(
@@ -2071,6 +2093,7 @@ const runs = Number(argumentValue("--runs") ?? 3);
 const width = Number(argumentValue("--width") ?? 1280);
 const height = Number(argumentValue("--height") ?? 820);
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? DEFAULT_TIMEOUT_MS);
+const expectedTheme = argumentValue("--expected-theme");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
@@ -2102,6 +2125,9 @@ if (
 if (!Number.isInteger(runs) || runs < 1 || runs > 10) throw new Error("--runs must be 1..10.");
 if (!Number.isInteger(width) || !Number.isInteger(height)) {
   throw new Error("Readiness viewport must use integer dimensions.");
+}
+if (expectedTheme && expectedTheme !== "light" && expectedTheme !== "dark") {
+  throw new Error("--expected-theme must be light or dark.");
 }
 if (verifyPlan11SemanticOutcomes && runs !== 3) {
   throw new Error("--verify-plan11-semantic-outcomes requires exactly three fresh runs.");
@@ -2159,6 +2185,7 @@ for (let index = 1; index <= runs; index += 1) {
       index,
       isFinalRun: index === runs,
       modelSelection,
+      expectedTheme,
       outputDirectory,
       projectCwd,
       requireCanonicalThread: !lifecycleOnlyEmptyFixture,
@@ -2196,6 +2223,7 @@ const report = {
     modelSelection,
   },
   viewport: { width, height },
+  expectedTheme: expectedTheme ?? null,
   results,
   semanticOutcomes: verifyPlan11SemanticOutcomes
     ? buildPlan11SemanticOutcomes(results.at(-1))
