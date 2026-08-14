@@ -2689,6 +2689,142 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-question-interaction-fix",
+      "observedAt": "2026-08-15T04:55:57+09:00",
+      "commit": "686456d8f51ad3c030ac650e0b82de4cd907010e",
+      "codeState": "commit",
+      "label": "Existing Thread question interaction",
+      "narrative": "A real OpenCode user-input request with Safe and Fast options was admitted by thread ID, activity, active turn, running session, route, theme, viewport, and immutable snapshot. The valid baseline exposed a generic 255px Lynx Composer beneath the shared question panel, missing custom-answer and Submit semantics, no response command, and an 82px user-input work-row contract that displaced the working row by 22px. Pending-answer projection now lives in client-runtime, both connector hosts dispatch thread.user-input.respond, and Lynx matches Web's 343.5px question Composer, placeholder, model-only footer, option rows, Submit state, and 60px request row. Full-frame SSIM improves from 0.859553 to 0.884487. Exact-bundle Native selects Safe, renders Submit, advances sequence 14 to 16, resolves the pending state through the real provider command, records zero renderer errors, and cleans isolated state.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share one real pending-question database, selected thread, route, theme, density, and viewport. Clipped Native list content measurement and omitted dynamic option attributes are recorded as harness mismatches. Native interaction is scored only for interaction/runtime, not material pixels."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Question before authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-question-before-web.png",
+          "sha256": "bed24cebdbdb7e6fe137d376b31832434b2ff8870cb854c3d21d245d18be14d9",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "6b103e6c61199079a4faa264d8acc8e60ad21969"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Question before Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-question-before-lynx.png",
+          "sha256": "142a8bf03b421708880f09c67aa4f776ca3a685e9b7230e92c656a23d5e23b74",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "6b103e6c61199079a4faa264d8acc8e60ad21969"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Question authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-question-web.png",
+          "sha256": "150258d1762f3a8d2a2c8a721147a36dada4e8d16d90a97289ebcfa9574fb3a3",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "6b103e6c61199079a4faa264d8acc8e60ad21969"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Question Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-question-lynx.png",
+          "sha256": "c0a870a475b4500d7e735becef7f86014341c5561e0c8b8908fc7d4fd4835a64",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "6b103e6c61199079a4faa264d8acc8e60ad21969"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native question selected state",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-question-native.png",
+          "sha256": "b4e25f801eb1bd891f6c517d228ccce6b5a99cbbb89253fe8ebcc061eda815",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "6b103e6c61199079a4faa264d8acc8e60ad21969"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/existing-thread-question-interaction-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "75a7f3e9337c2768dea8109bf071e49155933dc37aa882878b7f8eca4186bce8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-question"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-question-content",
+              "source": "header, prompt, Safe/Fast options, custom-answer placeholder, model-only controls, Submit semantics, selected thread, and working state match"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.75, 0, 0.75, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, -0.5
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "question-composer-and-row-geometry",
+              "source": "Composer, surface, editor, footer, primary actions, user message, request work row, and working row boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.115513,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.884487 at the matched 1280x820 question frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same real pending question with matching semantic projection and zero Browser renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-question"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-option-submit-resolution",
+              "source": "DevTool tap selects Safe, enables Submit, dispatches the real response, advances sequence 14 to 16, and removes pending user input"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle uses main transport, zero renderer errors, and isolated state cleanup"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -190,6 +190,14 @@ Plan 11 prose and screenshots.
   semantics, detail copy, four actions, geometry, transport, zero errors, and
   isolated cleanup. Conservative loss is now 84.0613%, observed residual is
   5.3087%, and evidence debt is 83.1677%.
+- A real OpenCode pending question then exercises the complete user-input
+  response path. Shared answer projection, Browser/Native connector dispatch,
+  and Lynx option/custom-answer/Submit composition replace the generic working
+  Composer. The visible request row also matches Web's 60px contract. Full-frame
+  SSIM rises `0.859553 → 0.884487`. Exact-bundle Native selects Safe, submits
+  through the provider command, advances sequence `14 → 16`, and observes the
+  pending state clear. Conservative loss is now 82.8830%, observed residual is
+  5.0526%, and evidence debt is 81.9721%.
 
 ## Not currently proven
 
@@ -197,9 +205,9 @@ Plan 11 prose and screenshots.
 - No current Web/Lynx/Native pixel certification matrix exists; the final5
   packaged Native Context geometry/readiness gate is not pixel parity.
 - Native physical keyboard/focus, transcript wheel/drag/follow, light/system
-  theme persistence, approval response interactions, populated question
-  transcripts, file-approval variants, other failure classes, and full patch
-  rendering are not certified.
+  theme persistence, approval response interactions, multi-question and
+  multi-select input, typed custom answers, file-approval variants, other
+  failure classes, and full patch rendering are not certified.
 - Browser/CDP evidence cannot satisfy Native-only input, list, window, or
   persistence requirements.
 - Historical `PASS`, `functional`, and `completed` labels do not independently

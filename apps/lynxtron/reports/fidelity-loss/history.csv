@@ -30,3 +30,4 @@ existing-thread-working-layout-fix,2026-08-14T14:22:02+08:00,9e4e1187ad3eed3a177
 existing-thread-completed-layout-fix,2026-08-14T15:23:56+08:00,65300ce8a08db8c5901ad2b8e890d5cf01bce402,commit,Existing Thread completed layout,0.853655,0.687361,0.055244,0.845097,0.154903,0.129782
 existing-thread-failed-presentation-fix,2026-08-14T19:09:09+08:00,13d2cebdbfabca6a7ef523a5abc5104016e6b584,commit,Existing Thread failed presentation,0.847596,0.687361,0.054614,0.838791,0.161209,0.135841
 existing-thread-approval-layout-fix,2026-08-15T01:43:31+08:00,547ebe3dbe6438d0952b94968f3b0e19be0f6589,commit,Existing Thread approval layout,0.840613,0.687361,0.053087,0.831677,0.168323,0.142824
+existing-thread-question-interaction-fix,2026-08-15T04:55:57+09:00,686456d8f51ad3c030ac650e0b82de4cd907010e,commit,Existing Thread question interaction,0.82883,0.687361,0.050526,0.819721,0.180279,0.154607
