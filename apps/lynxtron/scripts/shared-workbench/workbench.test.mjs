@@ -17,4 +17,11 @@ describe("shared workbench Composer metrics", () => {
       'root?.querySelector(".composer__placeholder")?.textContent?.trim() ?? null',
     );
   });
+
+  it("records matching Footer control geometry for both renderers", () => {
+    assert.include(source, 'toolbar: readElementBox(root?.querySelector(".composer-toolbar-row"))');
+    assert.include(source, 'toolbar: readElementBox(doc.querySelector(".composer-toolbar-row"))');
+    assert.include(source, "controlBoxes: composerControlElements.map");
+    assert.include(source, "primaryAction: readElementBox");
+  });
 });

@@ -651,6 +651,13 @@ function readLynxPane() {
               detail: readElementBox(root?.querySelector(".composer-pending-approval__detail")),
               editorArea: readElementBox(root?.querySelector(".composer-editor-area")),
               footer: readElementBox(root?.querySelector(".composer-footer")),
+              toolbar: readElementBox(root?.querySelector(".composer-toolbar-row")),
+              primaryActions: readElementBox(root?.querySelector(".composer-primary-actions")),
+              primaryAction: readElementBox(root?.querySelector(".composer-primary-action")),
+              controlBoxes: composerControlElements.map((item) => ({
+                id: item.getAttribute("data-composer-control"),
+                box: readElementBox(item),
+              })),
               actions: [...(root?.querySelectorAll(".composer-approval-action") ?? [])].map(
                 (item) => readElementBox(item),
               ),
@@ -1224,6 +1231,13 @@ function readWebPane() {
               detail: readElementBox(doc.querySelector(".composer-pending-approval__detail")),
               editorArea: readElementBox(doc.querySelector(".composer-editor-area")),
               footer: readElementBox(doc.querySelector(".composer-footer")),
+              toolbar: readElementBox(doc.querySelector(".composer-toolbar-row")),
+              primaryActions: readElementBox(doc.querySelector(".composer-primary-actions")),
+              primaryAction: readElementBox(doc.querySelector(".composer-primary-action")),
+              controlBoxes: composerControlElements.map((item) => ({
+                id: item.getAttribute("data-composer-control"),
+                box: readElementBox(item),
+              })),
               actions: [...doc.querySelectorAll(".composer-approval-action")].map((item) =>
                 readElementBox(item),
               ),
