@@ -12,6 +12,7 @@ const sharedRowSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/chat/TranscriptRowSurface.tsx"),
   "utf8",
 );
+const appSource = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
 
 describe("transcript layout contract", () => {
   it("matches the Web timeline top inset and working-row spacing", () => {
@@ -21,6 +22,11 @@ describe("transcript layout contract", () => {
     );
     expect(timelineSource).toContain('item-key="timeline-settled-header-space"');
     expect(timelineSource).toContain("estimated-main-axis-size-px={32}");
+    expect(appSource).toContain('__T3_LYNXTRON_WEB_PREVIEW__ ? " lynx-web-preview"');
+    expect(overrides).toContain(".lynx-web-preview .timeline-list {\n  padding-top: 48px;");
+    expect(overrides).toContain(
+      ".lynx-web-preview .timeline-settled-header-space {\n  display: none;",
+    );
     expect(overrides).toContain(".timeline-row-root--working {\n  height: 40px;");
     expect(overrides).toContain(".transcript-working-outer {\n  padding-bottom: 16px;");
     expect(sharedRowSource).toContain('row.kind === "working" ? "transcript-working-outer" : null');

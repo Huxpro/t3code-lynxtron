@@ -222,10 +222,7 @@ function ThemedApp() {
   const monoFontReady = useJetBrainsMonoReady();
   const [viewport, setViewport] = useState(getViewportSnapshot);
   useEffect(() => subscribeViewport(() => setViewport(getViewportSnapshot())), []);
-  useEffect(
-    () => subscribeSystemTheme(() => setSystemTheme(getSystemThemeSnapshot())),
-    [],
-  );
+  useEffect(() => subscribeSystemTheme(() => setSystemTheme(getSystemThemeSnapshot())), []);
   const tier = viewportTier(viewport.width);
   const authorityViewport = viewport.width === 1280 && viewport.height === 820;
   useEffect(() => {
@@ -236,7 +233,9 @@ function ThemedApp() {
       <view
         className={`app-theme-root theme-${theme} viewport-${tier} ${
           authorityViewport ? "viewport-authority" : "viewport-responsive"
-        }${fontReady ? " t3-dm-sans-ready" : ""}${monoFontReady ? " t3-jetbrains-mono-ready" : ""}`}
+        }${__T3_LYNXTRON_WEB_PREVIEW__ ? " lynx-web-preview" : ""}${
+          fontReady ? " t3-dm-sans-ready" : ""
+        }${monoFontReady ? " t3-jetbrains-mono-ready" : ""}`}
         data-theme={theme}
         data-viewport-height={String(viewport.height)}
         data-viewport-tier={tier}

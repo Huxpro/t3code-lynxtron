@@ -2790,6 +2790,12 @@
   width: 100%;
   height: 32px;
 }
+.lynx-web-preview .timeline-list {
+  padding-top: 48px;
+}
+.lynx-web-preview .timeline-settled-header-space {
+  display: none;
+}
 .timeline-row-root {
   display: block;
   width: 100%;
