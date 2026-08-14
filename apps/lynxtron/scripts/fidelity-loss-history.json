@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-13T04:19:51.229+08:00",
+  "updatedAt": "2026-08-15T05:27:13+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -2821,6 +2821,119 @@
               "confidence": 0.99,
               "method": "exact-bundle-main-transport",
               "source": "PID-owned exact bundle uses main transport, zero renderer errors, and isolated state cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-disabled-recovery-certification",
+      "observedAt": "2026-08-15T05:27:13+09:00",
+      "commit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+      "codeState": "commit",
+      "label": "Composer disabled recovery certification",
+      "narrative": "A fresh 1280x820 dark Browser pair shows the disabled Composer already matches Web in content, geometry, controls, context, disabled semantics, and full-frame material with SSIM 0.858996, so no product layout fix is claimed. The first Native attempt exposed a harness race: the server was interrupted after its ready log but before the main connector reached ready. The verifier now gates on a cleared lifecycle banner and idle Composer, then proves the exact owned server transition idle to error/disabled to reconnecting to idle, sequence 14 to 19, zero renderer errors, and isolated cleanup. This evidence-session checkpoint fills previously unknown Composer disabled cells without attributing movement to a product change.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Matched Browser evidence measures the existing disabled state without a before/after product change. Exact-bundle Native proves real failure and recovery semantics after removing a startup-race harness mismatch; Native material pixels remain unscored."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Disabled Composer authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-disabled-web.png",
+          "sha256": "ef9a3a73d7e65f89ae94011268d692c68be9e65ab4941c44def10aacb0b87c9b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "9deed76b7e50f03cbf97ffde90ad6c7a43c7ce08"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Disabled Composer Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-disabled-lynx.png",
+          "sha256": "1e3c7619a30554c5aaabbeb9d7d4beb340e21efc65bb938646db07d1d752ff36",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "9deed76b7e50f03cbf97ffde90ad6c7a43c7ce08"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-disabled-recovery-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "714c265cc5578afbcd0a26e031b0017c3c2cd15a9676093b8c6478f2840289ae"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-disabled"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "matched-disabled-composer-content",
+              "source": "disabled frame and primary action, placeholder, Claude Fable 5, High · 1M, Full access, Build, Current checkout, and main match"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "disabled-composer-box-geometry",
+              "source": "Composer, surface, editor, and footer x/y/width/height boxes match at 1280x820"
+            },
+            "material": {
+              "residual": 0.141004,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.858996 at the matched 1280x820 disabled frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-disabled-state",
+              "source": "same isolated snapshot, selected thread, connecting lifecycle, matching disabled projection, and zero Browser renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["composer-disabled"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-disabled-composer",
+              "source": "error phase renders disabled Composer and disabled primary action, then returns to idle after recovery"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-lifecycle-composer-geometry",
+              "source": "Composer remains x384 y628 768x140 before failure, while disabled, and after recovery"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-reconnect-action",
+              "source": "DevTool tap invokes Reconnect, renders reconnecting, restarts the owned server, and clears the lifecycle banner"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport-recovery",
+              "source": "PID-owned server failure and replacement advance sequence 14 to 19 with zero renderer errors and isolated cleanup"
             }
           }
         }

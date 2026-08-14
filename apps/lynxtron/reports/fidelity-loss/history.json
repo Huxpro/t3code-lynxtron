@@ -9,11 +9,7 @@
       "delta": -0.001115,
       "reason": "lowered checkpoint loss through shell, settings, composer changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): bring certification evidence and reports under version control",
-      "surfaces": [
-        "shell",
-        "settings",
-        "composer"
-      ],
+      "surfaces": ["shell", "settings", "composer"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -26,9 +22,7 @@
       "delta": -0.000007,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): evidence inventory — backup ref push is a pending manual step",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -41,9 +35,7 @@
       "delta": -0.00005,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "ci: add minimal Lynxtron CI for the lynxtron-port branch",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -56,9 +48,7 @@
       "delta": -0.000012,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): tier certification into slice-level and phase-exit batteries",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -71,9 +61,7 @@
       "delta": -0.00003,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): draft ready-to-file upstream issues for R1-R11",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -86,10 +74,7 @@
       "delta": -0.000315,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): native <list> chat transcript on a shared projection",
-      "surfaces": [
-        "shell",
-        "transcript"
-      ],
+      "surfaces": ["shell", "transcript"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -102,9 +87,7 @@
       "delta": -0.000104,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): refresh reuse report after shared transcript extraction",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -117,10 +100,7 @@
       "delta": -0.000133,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): shared transcript follow/detach state machine (P2-S3)",
-      "surfaces": [
-        "shell",
-        "transcript"
-      ],
+      "surfaces": ["shell", "transcript"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -133,9 +113,7 @@
       "delta": -0.000038,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): P3-S1 keyboard/push capability probe (R3/R5 runtime facts)",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -148,9 +126,7 @@
       "delta": -0.000039,
       "reason": "lowered checkpoint loss through transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "fix(lynxtron): correct transcript evidence viewports; add 1440x900 capture",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -163,9 +139,7 @@
       "delta": -0.000007,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): note transcript evidence viewport correction in status",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -178,10 +152,7 @@
       "delta": -0.000096,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): upgrade lynxtron 0.0.5 -> 0.0.7; re-probe gaps; file upstream issues",
-      "surfaces": [
-        "shell",
-        "transcript"
-      ],
+      "surfaces": ["shell", "transcript"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -207,10 +178,7 @@
       "delta": -0.000447,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): converge Sidebar V2 composition",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -223,11 +191,7 @@
       "delta": -0.000069,
       "reason": "lowered checkpoint loss through shell, settings, overlays changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): bridge discrete keyboard commands",
-      "surfaces": [
-        "shell",
-        "settings",
-        "overlays"
-      ],
+      "surfaces": ["shell", "settings", "overlays"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -240,10 +204,7 @@
       "delta": -0.000107,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): finish P2 transcript presentation",
-      "surfaces": [
-        "shell",
-        "transcript"
-      ],
+      "surfaces": ["shell", "transcript"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -256,9 +217,7 @@
       "delta": -0.000034,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): upgrade to 0.0.8 and repro runtime gaps",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -271,9 +230,7 @@
       "delta": -0.000054,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): reset port around shared product source",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -299,9 +256,7 @@
       "delta": -0.000188,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): record AR0 baseline after upstream merge",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -314,9 +269,7 @@
       "delta": -0.000123,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): prove main-owned connector behind flag",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -329,10 +282,7 @@
       "delta": -0.000073,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): cut over to the main-owned connector transport",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -345,10 +295,7 @@
       "delta": -0.000301,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): converge transcript composition on one shared surface",
-      "surfaces": [
-        "shell",
-        "transcript"
-      ],
+      "surfaces": ["shell", "transcript"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -361,11 +308,7 @@
       "delta": -0.000236,
       "reason": "lowered checkpoint loss through shell, composer, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): converge Composer chrome on one shared surface",
-      "surfaces": [
-        "shell",
-        "composer",
-        "transcript"
-      ],
+      "surfaces": ["shell", "composer", "transcript"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -378,10 +321,7 @@
       "delta": -0.000116,
       "reason": "lowered checkpoint loss through shell, overlays changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share model picker and palette compositions",
-      "surfaces": [
-        "shell",
-        "overlays"
-      ],
+      "surfaces": ["shell", "overlays"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -394,10 +334,7 @@
       "delta": -0.00015,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): converge settings panels on shared surfaces",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -410,10 +347,7 @@
       "delta": -0.000127,
       "reason": "lowered checkpoint loss through shell, review changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share plan and right-panel chrome compositions",
-      "surfaces": [
-        "shell",
-        "review"
-      ],
+      "surfaces": ["shell", "review"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -426,10 +360,7 @@
       "delta": -0.000105,
       "reason": "lowered checkpoint loss through shell, review changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share file-tree rows and diff stat labels",
-      "surfaces": [
-        "shell",
-        "review"
-      ],
+      "surfaces": ["shell", "review"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -442,10 +373,7 @@
       "delta": -0.000051,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "refactor(lynxtron,web): retire the prototype settings brand header",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -458,9 +386,7 @@
       "delta": -0.000013,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): record AR5.4 handoff for the next session",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -473,9 +399,7 @@
       "delta": -0.000104,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share the chat route composition",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -488,10 +412,7 @@
       "delta": -0.000074,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): certify the port as chat-first-preview (AR6)",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -504,9 +425,7 @@
       "delta": -0.000053,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): plan outcome-driven convergence",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -519,9 +438,7 @@
       "delta": -0.000054,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): plan feature parity by product value",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -547,9 +464,7 @@
       "delta": -0.004432,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): freeze Plan 11 outcome baseline",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "native-readiness",
       "toPoint": "browser-matrix"
     },
@@ -562,9 +477,7 @@
       "delta": -0.005234,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): prove current-stack Lynx Web build",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "native-readiness",
       "toPoint": "browser-matrix"
     },
@@ -577,9 +490,7 @@
       "delta": -0.0057,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): add typed browser preview host",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "native-readiness",
       "toPoint": "browser-matrix"
     },
@@ -592,14 +503,7 @@
       "delta": -0.161422,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "39-state strict evidence matrix",
-      "surfaces": [
-        "shell",
-        "composer",
-        "transcript",
-        "overlays",
-        "settings",
-        "review"
-      ],
+      "surfaces": ["shell", "composer", "transcript", "overlays", "settings", "review"],
       "fromPoint": "browser-matrix",
       "toPoint": "strict-matrix"
     },
@@ -612,9 +516,7 @@
       "delta": 0.000402,
       "reason": "A stricter measurement replaced a coarse gate inside an uncommitted evidence session; this is not attributable to a product commit.",
       "subject": "First Native pixel baseline",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "strict-matrix",
       "toPoint": "pixel-baseline"
     },
@@ -627,11 +529,7 @@
       "delta": -0.01207,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "Masked pixel residual convergence",
-      "surfaces": [
-        "shell",
-        "composer",
-        "transcript"
-      ],
+      "surfaces": ["shell", "composer", "transcript"],
       "fromPoint": "pixel-baseline",
       "toPoint": "masked-pixel-convergence"
     },
@@ -644,9 +542,7 @@
       "delta": -0.028054,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "Four-state review interaction matrix",
-      "surfaces": [
-        "review"
-      ],
+      "surfaces": ["review"],
       "fromPoint": "masked-pixel-convergence",
       "toPoint": "review-interaction-matrix"
     },
@@ -659,9 +555,7 @@
       "delta": -0.068834,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "Model Picker fidelity closeout",
-      "surfaces": [
-        "overlays"
-      ],
+      "surfaces": ["overlays"],
       "fromPoint": "review-interaction-matrix",
       "toPoint": "model-picker-closeout"
     },
@@ -687,9 +581,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(server): type source-control discovery failures",
-      "surfaces": [
-        "settings"
-      ],
+      "surfaces": ["settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -715,9 +607,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(contracts): expose portable model favorites defaults",
-      "surfaces": [
-        "settings"
-      ],
+      "surfaces": ["settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -756,9 +646,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share viewport media queries",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -771,9 +659,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share resizable panel widths",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -786,9 +672,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share search overlay state",
-      "surfaces": [
-        "overlays"
-      ],
+      "surfaces": ["overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -801,9 +685,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): project pending requests",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -816,9 +698,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(client-runtime): share file picker matching",
-      "surfaces": [
-        "overlays"
-      ],
+      "surfaces": ["overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -831,9 +711,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(client-runtime): restore portable model favorites",
-      "surfaces": [
-        "settings"
-      ],
+      "surfaces": ["settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -846,9 +724,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): parse markdown strikethrough",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -861,9 +737,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): retain thinking timeline rows",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -876,9 +750,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(client-runtime): decode source-control wire options",
-      "surfaces": [
-        "settings"
-      ],
+      "surfaces": ["settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -891,9 +763,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(client-runtime): filter unavailable picker models",
-      "surfaces": [
-        "overlays"
-      ],
+      "surfaces": ["overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -906,9 +776,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share composer control state",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -921,9 +789,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share connection lifecycle copy",
-      "surfaces": [
-        "settings"
-      ],
+      "surfaces": ["settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -936,9 +802,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(client-runtime): export shared presentation modules",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -951,9 +815,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): reuse shared file picker matching",
-      "surfaces": [
-        "overlays"
-      ],
+      "surfaces": ["overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -966,9 +828,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(platform): share live viewport capabilities",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -981,9 +841,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): consume shared responsive capabilities",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -996,9 +854,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): reuse shared sidebar sizing",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1011,9 +867,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): define responsive right panel bounds",
-      "surfaces": [
-        "review"
-      ],
+      "surfaces": ["review"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1026,9 +880,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): add shared connection lifecycle banner",
-      "surfaces": [
-        "settings"
-      ],
+      "surfaces": ["settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1041,9 +893,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): add shared changed-files card",
-      "surfaces": [
-        "review"
-      ],
+      "surfaces": ["review"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1056,9 +906,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): compose changed files through shared card",
-      "surfaces": [
-        "review"
-      ],
+      "surfaces": ["review"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1071,10 +919,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): expand shared model picker surface",
-      "surfaces": [
-        "overlays",
-        "shell"
-      ],
+      "surfaces": ["overlays", "shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1087,10 +932,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(web): expose model picker semantic state",
-      "surfaces": [
-        "shell",
-        "overlays"
-      ],
+      "surfaces": ["shell", "overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1103,9 +945,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): project model picker availability",
-      "surfaces": [
-        "overlays"
-      ],
+      "surfaces": ["overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1118,9 +958,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): unify shell navigation state",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1133,9 +971,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add theme-aware provider icons",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1148,9 +984,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): expand shared composer controls",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1163,10 +997,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete typed connector commands",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1179,9 +1010,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): persist theme preference state",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1194,9 +1023,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): bridge live system theme",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1209,9 +1036,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): share pending composer surfaces",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1224,9 +1049,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): converge shared settings surfaces",
-      "surfaces": [
-        "settings"
-      ],
+      "surfaces": ["settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1239,9 +1062,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): converge sidebar composition",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1254,9 +1075,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): adapt shared sidebar leaves",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1269,9 +1088,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): share command palette state and surface",
-      "surfaces": [
-        "overlays"
-      ],
+      "surfaces": ["overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1284,9 +1101,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): expand shared transcript rows",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1299,10 +1114,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): consume shared chat projections",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1315,10 +1127,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): share diff and right-panel anatomy",
-      "surfaces": [
-        "review",
-        "shell"
-      ],
+      "surfaces": ["review", "shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1331,10 +1140,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete shared Web host leaves",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1347,9 +1153,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(lynxtron): resolve release-channel branding",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1362,9 +1166,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): route clipboard through typed host",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1377,9 +1179,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): host viewport and reload controls",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1392,9 +1192,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete native keyboard menu",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1407,9 +1205,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): wire native host lifecycle",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1422,10 +1218,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(lynxtron): make route state synchronous",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1438,9 +1231,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): render complete markdown blocks",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1453,9 +1244,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): parse diffs and editor actions",
-      "surfaces": [
-        "review"
-      ],
+      "surfaces": ["review"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1468,10 +1257,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): stabilize transcript row reuse",
-      "surfaces": [
-        "shell",
-        "transcript"
-      ],
+      "surfaces": ["shell", "transcript"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1484,9 +1270,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): render canonical diff surfaces",
-      "surfaces": [
-        "review"
-      ],
+      "surfaces": ["review"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1499,9 +1283,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add responsive right panel",
-      "surfaces": [
-        "review"
-      ],
+      "surfaces": ["review"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1514,10 +1296,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete native transcript composition",
-      "surfaces": [
-        "shell",
-        "transcript"
-      ],
+      "surfaces": ["shell", "transcript"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1530,9 +1309,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete responsive chat header",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1545,10 +1322,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete shared Settings routes",
-      "surfaces": [
-        "settings",
-        "shell"
-      ],
+      "surfaces": ["settings", "shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1561,10 +1335,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete search and project actions",
-      "surfaces": [
-        "shell",
-        "overlays"
-      ],
+      "surfaces": ["shell", "overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1577,12 +1348,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete chat and model picker composition",
-      "surfaces": [
-        "shell",
-        "review",
-        "composer",
-        "overlays"
-      ],
+      "surfaces": ["shell", "review", "composer", "overlays"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1595,9 +1361,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): bootstrap themed responsive app shell",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1610,9 +1374,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete responsive theme styles",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1625,9 +1387,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete Browser Preview runtime",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1640,10 +1400,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add static convergence audits",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1656,9 +1413,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): enforce evidence provenance",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1671,9 +1426,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): verify exact-owned Native readiness",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1686,10 +1439,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add shared dual-renderer workbench",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1702,9 +1452,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): retain focused diagnostic probes",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1717,9 +1465,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): ignore disposable harness state",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1732,11 +1478,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): remove superseded visual artifacts",
-      "surfaces": [
-        "shell",
-        "settings",
-        "transcript"
-      ],
+      "surfaces": ["shell", "settings", "transcript"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1749,9 +1491,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "test(lynxtron): establish honest evidence baseline",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1764,9 +1504,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): archive superseded harness plans",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1779,9 +1517,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): document current runtime adapters",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1794,9 +1530,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): reconcile the residual roadmap",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1809,9 +1543,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): publish final5 archaeology authority",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1824,9 +1556,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): format the generated icon atlas",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1839,9 +1569,7 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): complete the archaeology audit",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1867,9 +1595,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): account for fidelity loss over time",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1882,9 +1608,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): publish the fidelity loss atlas",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1897,9 +1621,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): attribute fidelity loss to commits",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1912,9 +1634,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): unify loss and screenshot review",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1927,9 +1647,7 @@
       "delta": -0.008475,
       "reason": "This loss decrease comes from the first current-head Browser measurement after the archaeology reset, not from a measured product change between commits.",
       "subject": "Current-head docked Composer browser pair",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1942,9 +1660,7 @@
       "delta": -0.000359,
       "reason": "A before/after Browser pair measures one working-tree product change: Web and Lynx now consume the same session-phase placeholder projection.",
       "subject": "Docked Composer placeholder parity",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-docked-current-browser",
       "toPoint": "composer-docked-placeholder-fix"
     },
@@ -1957,11 +1673,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): make sidebar resize track the cursor",
-      "surfaces": [
-        "shell",
-        "overlays",
-        "review"
-      ],
+      "surfaces": ["shell", "overlays", "review"],
       "fromPoint": "composer-docked-placeholder-fix",
       "toPoint": "sidebar-resize-native-interaction-fix"
     },
@@ -1974,9 +1686,7 @@
       "delta": -0.011473,
       "reason": "A before/after Native interaction investigation isolated and removed the Sidebar-only width transition while retaining the same scope, weights, and pointer sample sequence.",
       "subject": "Native Sidebar resize cursor tracking",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-docked-placeholder-fix",
       "toPoint": "sidebar-resize-native-interaction-fix"
     },
@@ -2002,10 +1712,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record sidebar interaction loss",
-      "surfaces": [
-        "composer",
-        "shell"
-      ],
+      "surfaces": ["composer", "shell"],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -2018,10 +1725,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(composer): share session placeholder copy",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -2034,9 +1738,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): compare visible Composer placeholders",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -2049,9 +1751,7 @@
       "delta": -0.017844,
       "reason": "Current-head canonical captures supersede stale runtime-blocker evidence without attributing the evidence correction to a product code change.",
       "subject": "Current-head Hero and Sendable Composer pair",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -2064,10 +1764,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): align Composer footer controls",
-      "surfaces": [
-        "composer",
-        "shell"
-      ],
+      "surfaces": ["composer", "shell"],
       "fromPoint": "composer-hero-sendable-current-browser",
       "toPoint": "composer-hero-footer-material-fix"
     },
@@ -2080,9 +1777,7 @@
       "delta": -0.00004,
       "reason": "One CSS-only product change was measured against the same canonical Hero snapshot and viewport before and after.",
       "subject": "Hero Composer footer material parity",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-hero-sendable-current-browser",
       "toPoint": "composer-hero-footer-material-fix"
     },
@@ -2095,10 +1790,7 @@
       "delta": -0.005885,
       "reason": "lowered checkpoint loss through composer, shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): refresh Composer fidelity loss",
-      "surfaces": [
-        "composer",
-        "shell"
-      ],
+      "surfaces": ["composer", "shell"],
       "fromPoint": "composer-hero-footer-material-fix",
       "toPoint": "lifecycle-error-current-browser"
     },
@@ -2111,10 +1803,7 @@
       "delta": -0.00138,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "fix(lynxtron): preserve lifecycle error parity",
-      "surfaces": [
-        "shell",
-        "settings"
-      ],
+      "surfaces": ["shell", "settings"],
       "fromPoint": "composer-hero-footer-material-fix",
       "toPoint": "lifecycle-error-current-browser"
     },
@@ -2127,9 +1816,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record lifecycle fidelity loss",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -2142,9 +1829,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical fidelity report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -2157,9 +1842,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): admit empty idle transcript evidence",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -2172,9 +1855,7 @@
       "delta": -0.005148,
       "reason": "A corrected empty-transcript readiness gate established the current-head product baseline without assigning the evidence correction to product code.",
       "subject": "Current idle-thread Sidebar baseline",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -2187,9 +1868,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Sidebar bounds",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-idle-current-browser",
       "toPoint": "existing-thread-idle-sidebar-geometry-fix"
     },
@@ -2202,9 +1881,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): constrain Sidebar rows to the rail",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-idle-current-browser",
       "toPoint": "existing-thread-idle-sidebar-geometry-fix"
     },
@@ -2217,9 +1894,7 @@
       "delta": -0.00041,
       "reason": "The same Browser snapshot and viewport were captured before and after commit d9d2444e5, and a fresh exact-bundle Native geometry gate independently verified rail containment.",
       "subject": "Idle-thread Sidebar row containment",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-idle-current-browser",
       "toPoint": "existing-thread-idle-sidebar-geometry-fix"
     },
@@ -2232,9 +1907,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record idle Sidebar fidelity loss",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-idle-sidebar-geometry-fix",
       "toPoint": "composer-footer-icon-geometry-fix"
     },
@@ -2247,9 +1920,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical idle Sidebar report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-idle-sidebar-geometry-fix",
       "toPoint": "composer-footer-icon-geometry-fix"
     },
@@ -2262,9 +1933,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): measure Composer footer controls",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-idle-sidebar-geometry-fix",
       "toPoint": "composer-footer-icon-geometry-fix"
     },
@@ -2277,9 +1946,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): compare actual Composer controls",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-idle-sidebar-geometry-fix",
       "toPoint": "composer-footer-icon-geometry-fix"
     },
@@ -2292,9 +1959,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): inspect Composer control leaves",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-idle-sidebar-geometry-fix",
       "toPoint": "composer-footer-icon-geometry-fix"
     },
@@ -2307,10 +1972,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): align Composer Footer icons",
-      "surfaces": [
-        "composer",
-        "shell"
-      ],
+      "surfaces": ["composer", "shell"],
       "fromPoint": "existing-thread-idle-sidebar-geometry-fix",
       "toPoint": "composer-footer-icon-geometry-fix"
     },
@@ -2323,9 +1985,7 @@
       "delta": -0.000077,
       "reason": "Hero and Sendable use the same snapshots and viewports on the direct parent and product commit, with a fresh exact-bundle Native icon geometry gate.",
       "subject": "Composer Footer icon geometry",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "existing-thread-idle-sidebar-geometry-fix",
       "toPoint": "composer-footer-icon-geometry-fix"
     },
@@ -2338,9 +1998,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Composer icons",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-icon-geometry-fix",
       "toPoint": "composer-footer-label-alpha-fix"
     },
@@ -2353,10 +2011,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record Composer Footer icon loss",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-footer-icon-geometry-fix",
       "toPoint": "composer-footer-label-alpha-fix"
     },
@@ -2369,9 +2024,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical Footer report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-icon-geometry-fix",
       "toPoint": "composer-footer-label-alpha-fix"
     },
@@ -2384,9 +2037,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Footer label alpha",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-icon-geometry-fix",
       "toPoint": "composer-footer-label-alpha-fix"
     },
@@ -2399,9 +2050,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): match Composer Footer label alpha",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-icon-geometry-fix",
       "toPoint": "composer-footer-label-alpha-fix"
     },
@@ -2414,9 +2063,7 @@
       "delta": -0.000005,
       "reason": "Hero and Sendable use the same snapshots and viewports before and after the single-token product commit, with a fresh staged Native token gate.",
       "subject": "Composer Footer label alpha",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-footer-icon-geometry-fix",
       "toPoint": "composer-footer-label-alpha-fix"
     },
@@ -2429,10 +2076,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record Composer Footer label loss",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-footer-label-alpha-fix",
       "toPoint": "composer-context-icon-geometry-fix"
     },
@@ -2445,9 +2089,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical Footer alpha report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-label-alpha-fix",
       "toPoint": "composer-context-icon-geometry-fix"
     },
@@ -2460,9 +2102,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): measure Composer Context leaves",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-label-alpha-fix",
       "toPoint": "composer-context-icon-geometry-fix"
     },
@@ -2475,9 +2115,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Context icons",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-label-alpha-fix",
       "toPoint": "composer-context-icon-geometry-fix"
     },
@@ -2490,9 +2128,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): use sized Context icons",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-footer-label-alpha-fix",
       "toPoint": "composer-context-icon-geometry-fix"
     },
@@ -2505,9 +2141,7 @@
       "delta": -0.000017,
       "reason": "Hero and Sendable use matched current snapshots around the icon-only product change, with an exact-bundle Native Context icon gate.",
       "subject": "Composer Context icon geometry",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-footer-label-alpha-fix",
       "toPoint": "composer-context-icon-geometry-fix"
     },
@@ -2520,10 +2154,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record Composer Context icon loss",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-context-icon-geometry-fix",
       "toPoint": "composer-context-control-geometry-fix"
     },
@@ -2536,9 +2167,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical Context report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-icon-geometry-fix",
       "toPoint": "composer-context-control-geometry-fix"
     },
@@ -2551,9 +2180,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): measure context controls consistently",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-icon-geometry-fix",
       "toPoint": "composer-context-control-geometry-fix"
     },
@@ -2566,9 +2193,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): inspect context control leaves",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-icon-geometry-fix",
       "toPoint": "composer-context-control-geometry-fix"
     },
@@ -2581,10 +2206,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): align Context controls with Web",
-      "surfaces": [
-        "composer",
-        "shell"
-      ],
+      "surfaces": ["composer", "shell"],
       "fromPoint": "composer-context-icon-geometry-fix",
       "toPoint": "composer-context-control-geometry-fix"
     },
@@ -2597,9 +2219,7 @@
       "delta": -0.000023,
       "reason": "Hero and Sendable use matched current snapshots around the control-flow product change, with leaf-level Browser geometry and an exact-bundle read-only Native gate.",
       "subject": "Composer Context control geometry",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-context-icon-geometry-fix",
       "toPoint": "composer-context-control-geometry-fix"
     },
@@ -2612,9 +2232,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Context controls",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-control-geometry-fix",
       "toPoint": "composer-context-label-typography-fix"
     },
@@ -2627,9 +2245,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): admit Native Context quantization",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-control-geometry-fix",
       "toPoint": "composer-context-label-typography-fix"
     },
@@ -2642,10 +2258,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record Context control loss",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-context-control-geometry-fix",
       "toPoint": "composer-context-label-typography-fix"
     },
@@ -2658,9 +2271,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical Context control report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-control-geometry-fix",
       "toPoint": "composer-context-label-typography-fix"
     },
@@ -2673,9 +2284,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): match Context label typography",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-control-geometry-fix",
       "toPoint": "composer-context-label-typography-fix"
     },
@@ -2688,9 +2297,7 @@
       "delta": -0.000034,
       "reason": "Matched Hero and Sendable snapshots isolate the label-only product change; localized absolute-error accounting identifies its component contribution and the exact-bundle Native gate covers the changed typography.",
       "subject": "Composer Context label typography",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-context-control-geometry-fix",
       "toPoint": "composer-context-label-typography-fix"
     },
@@ -2703,9 +2310,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Context labels",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-label-typography-fix",
       "toPoint": "composer-context-exact-icon-raster-fix"
     },
@@ -2718,10 +2323,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record Context label loss",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-context-label-typography-fix",
       "toPoint": "composer-context-exact-icon-raster-fix"
     },
@@ -2734,9 +2336,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical Context label report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-label-typography-fix",
       "toPoint": "composer-context-exact-icon-raster-fix"
     },
@@ -2749,9 +2349,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): rasterize exact Context icons",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-label-typography-fix",
       "toPoint": "composer-context-exact-icon-raster-fix"
     },
@@ -2764,9 +2362,7 @@
       "delta": -0.000002,
       "reason": "Matched dark Hero and Sendable snapshots isolate the exact-raster product change; source-contract tests prevent stale path/fallback regression, and exact-bundle Native plus matched light diagnostic evidence cover both rendering targets.",
       "subject": "Composer Context exact icon rasters",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-context-label-typography-fix",
       "toPoint": "composer-context-exact-icon-raster-fix"
     },
@@ -2779,10 +2375,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record exact Context icon loss",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2795,9 +2388,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical exact-icon report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2810,9 +2401,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): match light Context material",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2825,9 +2414,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native light Context material",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2840,9 +2427,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): retain Native theme evidence",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2855,9 +2440,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): separate screenshot metadata from outcomes",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2870,10 +2453,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): share light Context ramp",
-      "surfaces": [
-        "composer",
-        "shell"
-      ],
+      "surfaces": ["composer", "shell"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2886,9 +2466,7 @@
       "delta": -0.001354,
       "reason": "Matched light Browser evidence supplies the whole-Composer residual; dark byte identity rules out regression, while exact-theme Native DOM and pixel evidence prove the shared ramp rather than the rejected Browser-only gradient.",
       "subject": "Composer light Context shared material",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-context-exact-icon-raster-fix",
       "toPoint": "composer-light-context-shared-ramp-fix"
     },
@@ -2901,9 +2479,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native light Context bands",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-light-context-shared-ramp-fix",
       "toPoint": "composer-hero-1440-responsive-certification"
     },
@@ -2916,10 +2492,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record light Context material loss",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-light-context-shared-ramp-fix",
       "toPoint": "composer-hero-1440-responsive-certification"
     },
@@ -2932,9 +2505,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical light Context report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-light-context-shared-ramp-fix",
       "toPoint": "composer-hero-1440-responsive-certification"
     },
@@ -2947,9 +2518,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): measure Native Composer wrappers",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-light-context-shared-ramp-fix",
       "toPoint": "composer-hero-1440-responsive-certification"
     },
@@ -2962,9 +2531,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): report Composer wrapper overlap",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-light-context-shared-ramp-fix",
       "toPoint": "composer-hero-1440-responsive-certification"
     },
@@ -2977,9 +2544,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify theme-aware muted controls",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-light-context-shared-ramp-fix",
       "toPoint": "composer-hero-1440-responsive-certification"
     },
@@ -2992,9 +2557,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): key Composer control islands",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-light-context-shared-ramp-fix",
       "toPoint": "composer-hero-1440-responsive-certification"
     },
@@ -3020,10 +2583,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): certify 1440 Composer scope",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-hero-1440-responsive-certification",
       "toPoint": "composer-footer-icon-material-fix"
     },
@@ -3036,9 +2596,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical 1440 report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-hero-1440-responsive-certification",
       "toPoint": "composer-footer-icon-material-fix"
     },
@@ -3051,10 +2609,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): match Footer icon material",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-hero-1440-responsive-certification",
       "toPoint": "composer-footer-icon-material-fix"
     },
@@ -3067,9 +2622,7 @@
       "delta": -0.000002,
       "reason": "Direct matched dark Hero and Sendable before/after pairs isolate the icon-material change with unchanged geometry; light Browser and exact-theme Native independently cover the shared theme mapping and opacity contract.",
       "subject": "Composer Footer icon material",
-      "surfaces": [
-        "composer"
-      ],
+      "surfaces": ["composer"],
       "fromPoint": "composer-hero-1440-responsive-certification",
       "toPoint": "composer-footer-icon-material-fix"
     },
@@ -3082,9 +2635,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Footer icon alpha",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-icon-material-fix",
       "toPoint": "existing-thread-working-layout-fix"
     },
@@ -3097,10 +2648,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record Footer icon material checkpoint",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "composer-footer-icon-material-fix",
       "toPoint": "existing-thread-working-layout-fix"
     },
@@ -3113,9 +2661,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical Footer material report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-icon-material-fix",
       "toPoint": "existing-thread-working-layout-fix"
     },
@@ -3128,9 +2674,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): reject mislabeled transcript fixtures",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "composer-footer-icon-material-fix",
       "toPoint": "existing-thread-working-layout-fix"
     },
@@ -3143,11 +2687,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): align working transcript layout",
-      "surfaces": [
-        "composer",
-        "transcript",
-        "shell"
-      ],
+      "surfaces": ["composer", "transcript", "shell"],
       "fromPoint": "composer-footer-icon-material-fix",
       "toPoint": "existing-thread-working-layout-fix"
     },
@@ -3160,9 +2700,7 @@
       "delta": -0.007822,
       "reason": "Direct matched Browser captures share one copied snapshot, route, thread, model, theme, density, and viewport around the product commit. Harness mismatches are recorded separately, and exact-bundle Native is used only for geometry/readiness corroboration.",
       "subject": "Existing Thread working layout",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "composer-footer-icon-material-fix",
       "toPoint": "existing-thread-working-layout-fix"
     },
@@ -3175,9 +2713,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): measure recycled transcript rows symmetrically",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3190,9 +2726,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native working transcript layout",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3205,9 +2739,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record working transcript checkpoint",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3220,9 +2752,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical working transcript report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3235,9 +2765,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): seed real completed transcript fixtures",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3250,9 +2778,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): capture explicit transcript fixtures",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3265,9 +2791,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): reject invalid completed transcripts",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3280,10 +2804,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): align settled transcript spacing",
-      "surfaces": [
-        "transcript",
-        "shell"
-      ],
+      "surfaces": ["transcript", "shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3296,9 +2817,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native completed transcripts",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3311,10 +2830,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): stabilize completed transcript spacing",
-      "surfaces": [
-        "transcript",
-        "shell"
-      ],
+      "surfaces": ["transcript", "shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3327,9 +2843,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): verify provider-shaped Composer controls",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3342,10 +2856,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): split transcript inset by renderer",
-      "surfaces": [
-        "transcript",
-        "shell"
-      ],
+      "surfaces": ["transcript", "shell"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3358,9 +2869,7 @@
       "delta": -0.007835,
       "reason": "Direct before/after Browser captures share the same immutable completed-turn database, route, thread, model, theme, density, and viewport. Provider and geometry harness mismatches are recorded separately, and Native remains corroborating rather than replacing a pixel residual.",
       "subject": "Existing Thread completed layout",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-working-layout-fix",
       "toPoint": "existing-thread-completed-layout-fix"
     },
@@ -3373,9 +2882,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record completed transcript checkpoint",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-completed-layout-fix",
       "toPoint": "existing-thread-failed-presentation-fix"
     },
@@ -3388,9 +2895,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical completed transcript report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-completed-layout-fix",
       "toPoint": "existing-thread-failed-presentation-fix"
     },
@@ -3403,9 +2908,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): seed real failed transcript fixtures",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-completed-layout-fix",
       "toPoint": "existing-thread-failed-presentation-fix"
     },
@@ -3418,9 +2921,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): verify shared-state snapshots exist",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-completed-layout-fix",
       "toPoint": "existing-thread-failed-presentation-fix"
     },
@@ -3433,11 +2934,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): match failed thread presentation",
-      "surfaces": [
-        "shell",
-        "transcript",
-        "composer"
-      ],
+      "surfaces": ["shell", "transcript", "composer"],
       "fromPoint": "existing-thread-completed-layout-fix",
       "toPoint": "existing-thread-failed-presentation-fix"
     },
@@ -3450,10 +2947,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): preserve failed-thread model fallback",
-      "surfaces": [
-        "shell",
-        "composer"
-      ],
+      "surfaces": ["shell", "composer"],
       "fromPoint": "existing-thread-completed-layout-fix",
       "toPoint": "existing-thread-failed-presentation-fix"
     },
@@ -3466,9 +2960,7 @@
       "delta": -0.006059,
       "reason": "Direct before/after Browser captures share one immutable failed-turn database, route, thread, theme, density, and viewport. Snapshot and connector transport mismatches are recorded separately, while Native remains corroborating rather than replacing the Browser pixel residual.",
       "subject": "Existing Thread failed presentation",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-completed-layout-fix",
       "toPoint": "existing-thread-failed-presentation-fix"
     },
@@ -3481,9 +2973,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native failed transcripts",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-failed-presentation-fix",
       "toPoint": "existing-thread-approval-layout-fix"
     },
@@ -3496,9 +2986,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record failed transcript checkpoint",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-failed-presentation-fix",
       "toPoint": "existing-thread-approval-layout-fix"
     },
@@ -3511,9 +2999,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical failed transcript report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-failed-presentation-fix",
       "toPoint": "existing-thread-approval-layout-fix"
     },
@@ -3526,10 +3012,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): stack approval composer content",
-      "surfaces": [
-        "composer",
-        "shell"
-      ],
+      "surfaces": ["composer", "shell"],
       "fromPoint": "existing-thread-failed-presentation-fix",
       "toPoint": "existing-thread-approval-layout-fix"
     },
@@ -3542,9 +3025,7 @@
       "delta": -0.006983,
       "reason": "Direct before/after Browser captures share one immutable approval database, selected thread, route, theme, density, and viewport. The initial stale semantic projection, regenerated thread title, and Browser-versus-Native box-model semantics are recorded as harness mismatches, while Native remains corroborating rather than replacing the Browser pixel residual.",
       "subject": "Existing Thread approval layout",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-failed-presentation-fix",
       "toPoint": "existing-thread-approval-layout-fix"
     },
@@ -3557,9 +3038,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): project approval capture semantics",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
     },
@@ -3572,9 +3051,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify native approval state",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
     },
@@ -3587,9 +3064,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record approval checkpoint",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
     },
@@ -3602,9 +3077,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical approval report",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
     },
@@ -3617,11 +3090,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): restore shell interaction feedback",
-      "surfaces": [
-        "shell",
-        "overlays",
-        "review"
-      ],
+      "surfaces": ["shell", "overlays", "review"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
     },
@@ -3634,9 +3103,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify shell interaction states",
-      "surfaces": [
-        "shell"
-      ],
+      "surfaces": ["shell"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
     },
@@ -3649,11 +3116,7 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): answer pending questions",
-      "surfaces": [
-        "shell",
-        "composer",
-        "transcript"
-      ],
+      "surfaces": ["shell", "composer", "transcript"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
     },
@@ -3666,11 +3129,87 @@
       "delta": -0.011783,
       "reason": "Direct before/after Browser captures share one real pending-question database, selected thread, route, theme, density, and viewport. Clipped Native list content measurement and omitted dynamic option attributes are recorded as harness mismatches. Native interaction is scored only for interaction/runtime, not material pixels.",
       "subject": "Existing Thread question interaction",
-      "surfaces": [
-        "transcript"
-      ],
+      "surfaces": ["transcript"],
       "fromPoint": "existing-thread-approval-layout-fix",
       "toPoint": "existing-thread-question-interaction-fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 19,
+      "commit": "ca2a1acbda8b062c3a4f299e1921890fec4f92d5",
+      "committedAt": "2026-08-15T04:42:32+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): compare clipped question rows",
+      "surfaces": ["shell"],
+      "fromPoint": "existing-thread-question-interaction-fix",
+      "toPoint": "composer-disabled-recovery-certification"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 287,
+      "commit": "b6efc22303a125b6f70adf2c56efdb9548fdd5f6",
+      "committedAt": "2026-08-15T04:50:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify native question responses",
+      "surfaces": ["shell"],
+      "fromPoint": "existing-thread-question-interaction-fix",
+      "toPoint": "composer-disabled-recovery-certification"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 26682,
+      "commit": "ef97e650b6285478ad3f64b238ee156d287debc1",
+      "committedAt": "2026-08-15T05:03:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record question checkpoint",
+      "surfaces": ["shell"],
+      "fromPoint": "existing-thread-question-interaction-fix",
+      "toPoint": "composer-disabled-recovery-certification"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 25533,
+      "commit": "952e01a9193dcc1520c2101021ba86795dceef11",
+      "committedAt": "2026-08-15T05:05:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "chore(lynxtron): restore canonical question report",
+      "surfaces": ["shell"],
+      "fromPoint": "existing-thread-question-interaction-fix",
+      "toPoint": "composer-disabled-recovery-certification"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 52,
+      "commit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+      "committedAt": "2026-08-15T05:18:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify disabled composer recovery",
+      "surfaces": ["shell"],
+      "fromPoint": "existing-thread-question-interaction-fix",
+      "toPoint": "composer-disabled-recovery-certification"
+    },
+    {
+      "allocation": "evidence-session",
+      "changedLines": 0,
+      "commit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+      "committedAt": "2026-08-15T05:27:13+09:00",
+      "confidence": 0.99,
+      "delta": -0.017713,
+      "reason": "Matched Browser evidence measures the existing disabled state without a before/after product change. Exact-bundle Native proves real failure and recovery semantics after removing a startup-race harness mismatch; Native material pixels remain unscored.",
+      "subject": "Composer disabled recovery certification",
+      "surfaces": ["composer"],
+      "fromPoint": "existing-thread-question-interaction-fix",
+      "toPoint": "composer-disabled-recovery-certification"
     }
   ],
   "commitSeries": [
@@ -6335,9 +5874,75 @@
       "rawLoss": 0.82883,
       "smoothedLoss": 0.838998,
       "subject": "Existing Thread question interaction"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ca2a1acbda8b062c3a4f299e1921890fec4f92d5",
+      "committedAt": "2026-08-15T04:42:32+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.82883,
+      "smoothedLoss": 0.836761,
+      "subject": "test(lynxtron): compare clipped question rows"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b6efc22303a125b6f70adf2c56efdb9548fdd5f6",
+      "committedAt": "2026-08-15T04:50:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.82883,
+      "smoothedLoss": 0.835016,
+      "subject": "test(lynxtron): verify native question responses"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ef97e650b6285478ad3f64b238ee156d287debc1",
+      "committedAt": "2026-08-15T05:03:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.82883,
+      "smoothedLoss": 0.833655,
+      "subject": "docs(lynxtron): record question checkpoint"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "952e01a9193dcc1520c2101021ba86795dceef11",
+      "committedAt": "2026-08-15T05:05:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.82883,
+      "smoothedLoss": 0.832594,
+      "subject": "chore(lynxtron): restore canonical question report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+      "committedAt": "2026-08-15T05:18:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.82883,
+      "smoothedLoss": 0.831766,
+      "subject": "test(lynxtron): verify disabled composer recovery"
+    },
+    {
+      "allocation": "evidence-session",
+      "commit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+      "committedAt": "2026-08-15T05:27:13+09:00",
+      "confidence": 0.99,
+      "delta": -0.017713,
+      "measuredCheckpoint": "composer-disabled-recovery-certification",
+      "rawLoss": 0.811117,
+      "smoothedLoss": 0.827223,
+      "subject": "Composer disabled recovery certification"
     }
   ],
-  "generatedAt": "2026-08-13T04:19:51.229+08:00",
+  "generatedAt": "2026-08-15T05:27:13+09:00",
   "historyId": "t3-lynxtron-fidelity-history",
   "model": {
     "clients": {
@@ -23608,6 +23213,537 @@
       ],
       "bestLoss": 0.687361,
       "improvementFromBaseline": 0.154607
+    },
+    {
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Matched Browser evidence measures the existing disabled state without a before/after product change. Exact-bundle Native proves real failure and recovery semantics after removing a startup-race harness mismatch; Native material pixels remain unscored."
+      },
+      "commit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+      "codeCommit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+      "codeState": "commit",
+      "id": "composer-disabled-recovery-certification",
+      "label": "Composer disabled recovery certification",
+      "narrative": "A fresh 1280x820 dark Browser pair shows the disabled Composer already matches Web in content, geometry, controls, context, disabled semantics, and full-frame material with SSIM 0.858996, so no product layout fix is claimed. The first Native attempt exposed a harness race: the server was interrupted after its ready log but before the main connector reached ready. The verifier now gates on a cleared lifecycle banner and idle Composer, then proves the exact owned server transition idle to error/disabled to reconnecting to idle, sequence 14 to 19, zero renderer errors, and isolated cleanup. This evidence-session checkpoint fills previously unknown Composer disabled cells without attributing movement to a product change.",
+      "observedAt": "2026-08-15T05:27:13+09:00",
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Disabled Composer authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-disabled-web.png",
+          "sha256": "ef9a3a73d7e65f89ae94011268d692c68be9e65ab4941c44def10aacb0b87c9b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "9deed76b7e50f03cbf97ffde90ad6c7a43c7ce08"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Disabled Composer Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-disabled-lynx.png",
+          "sha256": "1e3c7619a30554c5aaabbeb9d7d4beb340e21efc65bb938646db07d1d752ff36",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "9deed76b7e50f03cbf97ffde90ad6c7a43c7ce08"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-disabled-recovery-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "714c265cc5578afbcd0a26e031b0017c3c2cd15a9676093b8c6478f2840289ae"
+        }
+      ],
+      "confidence": 0.198198,
+      "evidenceDebt": 0.801802,
+      "loss": 0.811117,
+      "observedResidual": 0.047,
+      "byDimension": {
+        "content": {
+          "confidence": 0.255968,
+          "evidenceDebt": 0.744032,
+          "loss": 0.744969,
+          "observedResidual": 0.003658
+        },
+        "geometry": {
+          "confidence": 0.245076,
+          "evidenceDebt": 0.754924,
+          "loss": 0.765202,
+          "observedResidual": 0.041937
+        },
+        "typography": {
+          "confidence": 0.030337,
+          "evidenceDebt": 0.969663,
+          "loss": 0.969837,
+          "observedResidual": 0.005729
+        },
+        "material": {
+          "confidence": 0.189022,
+          "evidenceDebt": 0.810978,
+          "loss": 0.825176,
+          "observedResidual": 0.075114
+        },
+        "interaction": {
+          "confidence": 0.129561,
+          "evidenceDebt": 0.870439,
+          "loss": 0.884557,
+          "observedResidual": 0.10897
+        },
+        "runtime": {
+          "confidence": 0.29433,
+          "evidenceDebt": 0.70567,
+          "loss": 0.719789,
+          "observedResidual": 0.047967
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.221029,
+          "evidenceDebt": 0.778971,
+          "loss": 0.785302,
+          "observedResidual": 0.028645
+        },
+        "composer": {
+          "confidence": 0.361811,
+          "evidenceDebt": 0.638189,
+          "loss": 0.663824,
+          "observedResidual": 0.070853
+        },
+        "transcript": {
+          "confidence": 0.317517,
+          "evidenceDebt": 0.682483,
+          "loss": 0.689926,
+          "observedResidual": 0.023444
+        },
+        "overlays": {
+          "confidence": 0.116797,
+          "evidenceDebt": 0.883203,
+          "loss": 0.884686,
+          "observedResidual": 0.012701
+        },
+        "settings": {
+          "confidence": 0.07373,
+          "evidenceDebt": 0.92627,
+          "loss": 0.929623,
+          "observedResidual": 0.045479
+        },
+        "review": {
+          "confidence": 0.106575,
+          "evidenceDebt": 0.893425,
+          "loss": 0.912597,
+          "observedResidual": 0.179894
+        }
+      },
+      "states": [
+        {
+          "confidence": 0.0513,
+          "evidenceDebt": 0.9487,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 1,
+          "observedResidual": 1,
+          "weight": 5
+        },
+        {
+          "confidence": 0,
+          "evidenceDebt": 1,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 1,
+          "observedResidual": null,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0306,
+          "evidenceDebt": 0.9694,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.9694,
+          "observedResidual": 0,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 3
+        },
+        {
+          "confidence": 0.0595,
+          "evidenceDebt": 0.9405,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.942812,
+          "observedResidual": 0.038857,
+          "weight": 4
+        },
+        {
+          "confidence": 0.07375,
+          "evidenceDebt": 0.92625,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.92625,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 3
+        },
+        {
+          "confidence": 0.1317,
+          "evidenceDebt": 0.8683,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.872869,
+          "observedResidual": 0.03469,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1486,
+          "evidenceDebt": 0.8514,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.866183,
+          "observedResidual": 0.099484,
+          "weight": 5
+        },
+        {
+          "confidence": 0.15078,
+          "evidenceDebt": 0.84922,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.852827,
+          "observedResidual": 0.023921,
+          "weight": 5
+        },
+        {
+          "confidence": 0.17425,
+          "evidenceDebt": 0.82575,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.840098,
+          "observedResidual": 0.082341,
+          "weight": 5
+        },
+        {
+          "confidence": 0.17649,
+          "evidenceDebt": 0.82351,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.831157,
+          "observedResidual": 0.043326,
+          "weight": 4
+        },
+        {
+          "confidence": 0.171,
+          "evidenceDebt": 0.829,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.829594,
+          "observedResidual": 0.003472,
+          "weight": 3
+        },
+        {
+          "confidence": 0.171,
+          "evidenceDebt": 0.829,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.829594,
+          "observedResidual": 0.003472,
+          "weight": 4
+        },
+        {
+          "confidence": 0.1829,
+          "evidenceDebt": 0.8171,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.818646,
+          "observedResidual": 0.008451,
+          "weight": 5
+        },
+        {
+          "confidence": 0.1829,
+          "evidenceDebt": 0.8171,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.818646,
+          "observedResidual": 0.008451,
+          "weight": 4
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 3
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.740062,
+          "observedResidual": 0.034693,
+          "weight": 4
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 0.735696,
+          "observedResidual": 0.018478,
+          "weight": 4
+        },
+        {
+          "confidence": 0.31994,
+          "evidenceDebt": 0.68006,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.734353,
+          "observedResidual": 0.169696,
+          "weight": 5
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.732163,
+          "observedResidual": 0.00536,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31279,
+          "evidenceDebt": 0.68721,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.70317,
+          "observedResidual": 0.051023,
+          "weight": 5
+        },
+        {
+          "confidence": 0.30296,
+          "evidenceDebt": 0.69704,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.701904,
+          "observedResidual": 0.016056,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31518,
+          "evidenceDebt": 0.68482,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.690923,
+          "observedResidual": 0.019365,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31576,
+          "evidenceDebt": 0.68424,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.68929,
+          "observedResidual": 0.015994,
+          "weight": 4
+        },
+        {
+          "confidence": 0.39594,
+          "evidenceDebt": 0.60406,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.658092,
+          "observedResidual": 0.136465,
+          "weight": 5
+        },
+        {
+          "confidence": 0.43428,
+          "evidenceDebt": 0.56572,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.56572,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.48312,
+          "evidenceDebt": 0.51688,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.523425,
+          "observedResidual": 0.013547,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.298977,
+          "observedResidual": 0.011028,
+          "weight": 4
+        }
+      ],
+      "bestLoss": 0.687361,
+      "improvementFromBaseline": 0.17232
     }
   ],
   "provenance": {

@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T05:18:19+09:00",
+  "productCommit": "952e01a9193dcc1520c2101021ba86795dceef11",
+  "verificationHead": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+  "stateId": "composer-disabled",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "selectedProject": "t3code-lynxtron",
+    "selectedThread": "ee586f2a-5b0b-46fe-8206-e51308f93a2b",
+    "browserLifecycle": "connecting",
+    "nativeLifecycle": ["ready", "error", "reconnecting", "ready"]
+  },
+  "fixture": {
+    "snapshotSha256": "f19d7d9fdc8a449112a79ca102a9b6bf6db58f260575810b19637965375bef82",
+    "browserSeedHash": "2b7873154b847c325f1c78945d05170ad50d1a41777cac4303f01708855b81ef",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5",
+      "options": {
+        "effort": "high",
+        "contextWindow": "1m"
+      }
+    }
+  },
+  "classification": {
+    "harnessMismatch": [
+      "The first Native attempt interrupted the owned server after its ready log but before the main connector reached ready, exercising startup failure instead of connected lifecycle recovery.",
+      "The verifier now waits for a cleared lifecycle banner and an idle Composer before interrupting the exact owned server."
+    ],
+    "productLoss": [],
+    "ledgerScope": "This is an evidence-session checkpoint. Browser measures Lynx content, geometry, material, and runtime for the disabled Composer. Native measures disabled content and geometry, real Reconnect interaction, and main-transport runtime without claiming Native pixel parity."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "952e01a9193dcc1520c2101021ba86795dceef11",
+    "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+    "lynxBundleSha256": "03bdefcb3420dcdea64df8550a83bb6233a81920385c63f9fd97be22dd8d87d9",
+    "fullFrameSsim": 0.858996,
+    "fullFrameResidual": 0.141004,
+    "composer": {
+      "web": { "x": 384, "y": 628, "width": 768, "height": 140 },
+      "lynx": { "x": 384, "y": 628, "width": 768, "height": 140 }
+    },
+    "surface": {
+      "web": { "x": 385, "y": 629, "width": 766, "height": 138 },
+      "lynx": { "x": 385, "y": 629, "width": 766, "height": 138 }
+    },
+    "editor": {
+      "web": { "x": 401, "y": 645, "width": 734, "height": 70 },
+      "lynx": { "x": 401, "y": 645, "width": 734, "height": 70 }
+    },
+    "footer": {
+      "web": { "x": 385, "y": 723, "width": 766, "height": 44 },
+      "lynx": { "x": 385, "y": 723, "width": 766, "height": 44 }
+    },
+    "state": {
+      "web": "disabled",
+      "lynx": "disabled",
+      "webPrimary": "disabled",
+      "lynxPrimary": "disabled"
+    },
+    "placeholder": "Ask for follow-up changes or attach images",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "context": ["Current checkout", "main"],
+    "capturePass": true,
+    "rendererErrors": 0,
+    "readyMs": 1967,
+    "reportSha256": "b29dd10c69ef5a54a819e7a5f00a191b664fc9a6da618a141fcb1d5768c6d3f2"
+  },
+  "native": {
+    "status": "pass",
+    "head": "952e01a9193dcc1520c2101021ba86795dceef11",
+    "verifierCommit": "f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141",
+    "bundleSha256": "d8869daeb2fc12cb85a847f2a59c7204d586d453a2b2cda11f561b7e4c34e187",
+    "snapshotId": "f19d7d9fdc8a449112a79ca102a9b6bf6db58f260575810b19637965375bef82",
+    "viewport": { "width": 1280, "height": 820 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "recoverySequence": { "beforeInterrupt": 14, "afterRecovery": 19 },
+    "connectedComposer": {
+      "state": "idle",
+      "rect": { "x": 384, "y": 628, "width": 768, "height": 140 }
+    },
+    "failure": {
+      "phase": "error",
+      "text": "T3 Code: Connection failed Server exited (code=null signal=SIGKILL). Reconnect Connections"
+    },
+    "disabledComposer": {
+      "state": "disabled",
+      "primaryState": "disabled",
+      "rect": { "x": 384, "y": 628, "width": 768, "height": 140 }
+    },
+    "reconnecting": {
+      "phase": "reconnecting",
+      "text": "T3 Code: Failed to connect. Reconnecting... Waiting for server… Reconnecting... Connections"
+    },
+    "recoveredComposer": {
+      "state": "idle",
+      "rect": { "x": 384, "y": 628, "width": 768, "height": 140 }
+    },
+    "finalBanner": null,
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "bcb6dc62a3480362de3323aab3882ca241d537255e3ac6798f74d9904315a633"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "9deed76b7e50f03cbf97ffde90ad6c7a43c7ce08"
+    },
+    "web": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-disabled-web.png",
+      "sha256": "ef9a3a73d7e65f89ae94011268d692c68be9e65ab4941c44def10aacb0b87c9b"
+    },
+    "lynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-disabled-lynx.png",
+      "sha256": "1e3c7619a30554c5aaabbeb9d7d4beb340e21efc65bb938646db07d1d752ff36"
+    }
+  },
+  "remainingRisk": [
+    "Native material pixels are not scored because this lifecycle verifier records semantic and geometry state rather than a retained screenshot.",
+    "The Browser pair covers the connecting disabled state while Native covers connected server failure and recovery; the separate lifecycle-error state remains independently scoped.",
+    "Physical keyboard focus and typing while disabled remain outside this DevTool interaction proof."
+  ]
+}

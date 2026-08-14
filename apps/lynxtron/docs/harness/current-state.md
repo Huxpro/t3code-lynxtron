@@ -198,6 +198,15 @@ Plan 11 prose and screenshots.
   through the provider command, advances sequence `14 → 16`, and observes the
   pending state clear. Conservative loss is now 82.8830%, observed residual is
   5.0526%, and evidence debt is 81.9721%.
+- The disabled Composer checkpoint finds no new Browser product loss: Web and
+  Lynx match the 768x140 frame, surface, editor, footer, placeholder, controls,
+  context, and disabled semantics; full-frame SSIM is 0.858996. The first
+  Native attempt is rejected as a harness race because it interrupted the
+  server before the main connector reached ready. The corrected exact-bundle
+  gate proves `idle → error/disabled → reconnecting → idle`, sequence
+  `14 → 19`, zero renderer errors, and isolated cleanup. This is an
+  evidence-session update, not a product-fix attribution. Conservative loss is
+  now 81.1117%, observed residual is 4.7000%, and evidence debt is 80.1802%.
 
 ## Not currently proven
 
