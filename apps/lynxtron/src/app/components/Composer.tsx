@@ -265,7 +265,7 @@ export function Composer({
               approvalActions ? null : (
                 <ComposerToolbarRow
                   items={[
-                    <view className="model-picker-anchor">
+                    <view key="model" className="model-picker-anchor">
                       <ComposerToolbarControl
                         className="composer-toolbar-control--model max-w-48"
                         controlId="model"
@@ -293,6 +293,7 @@ export function Composer({
                     </view>,
                     modelOptionLabel && onModelOptionTap ? (
                       <ComposerToolbarControl
+                        key="model-option"
                         className="composer-toolbar-control--model-option"
                         controlId="model-option"
                         label={modelOptionLabel}
@@ -307,7 +308,7 @@ export function Composer({
                         onClick={onModelOptionTap}
                       />
                     ) : null,
-                    <view className="composer-runtime-control-wrap">
+                    <view key="runtime" className="composer-runtime-control-wrap">
                       <ComposerToolbarControl
                         className="composer-toolbar-control--runtime"
                         controlId="runtime"
@@ -370,6 +371,7 @@ export function Composer({
                     </view>,
                     showInteractionModeToggle ? (
                       <ComposerToolbarControl
+                        key="interaction"
                         className="composer-toolbar-control--interaction"
                         controlId="interaction"
                         label={interactionModePresentation.label}
