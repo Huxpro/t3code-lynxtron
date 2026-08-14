@@ -575,6 +575,46 @@ async function verifySidebarGeometry(client) {
   };
 }
 
+async function verifyComposerGeometry(client) {
+  const composer = await readComposerOutcome(client);
+  assertComposerGeometry(composer);
+  const chevrons = await readSelectorRects(client, ".composer-toolbar-control .pill__chevron-img");
+  const runtimeIcons = await readSelectorRects(
+    client,
+    ".composer-toolbar-control--runtime .pill__icon-img",
+  );
+  const interactionIcons = await readSelectorRects(
+    client,
+    ".composer-toolbar-control--interaction .pill__icon-img",
+  );
+  const wrongSize = (rect, size) =>
+    Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
+  if (
+    chevrons.length !== 3 ||
+    chevrons.some((rect) => wrongSize(rect, 14)) ||
+    runtimeIcons.length !== 1 ||
+    wrongSize(runtimeIcons[0], 16) ||
+    interactionIcons.length !== 1 ||
+    wrongSize(interactionIcons[0], 18)
+  ) {
+    throw new Error(
+      `Composer Footer icon geometry drifted: ${JSON.stringify({
+        chevrons,
+        runtimeIcons,
+        interactionIcons,
+      })}`,
+    );
+  }
+  return {
+    status: "pass",
+    input: "read-only Lynx DevTool DOM box models",
+    composer,
+    chevrons,
+    runtimeIcons,
+    interactionIcons,
+  };
+}
+
 async function waitForSidebarPopup({ child, client, open, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
@@ -1760,6 +1800,7 @@ async function runOnce({
   requireCanonicalThread,
   timeoutMs,
   verifySettingsNavigation,
+  verifyComposerGeometry: shouldVerifyComposerGeometry,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
@@ -1844,6 +1885,9 @@ async function runOnce({
     const sidebarGeometry = shouldVerifySidebarGeometry
       ? await verifySidebarGeometry(client)
       : undefined;
+    const composerGeometry = shouldVerifyComposerGeometry
+      ? await verifyComposerGeometry(client)
+      : undefined;
     const settingsNavigation = runPlan11Outcomes
       ? await captureOutcome(
           () => verifySettingsRouteBehavior({ child, client, modelSelection, timeoutMs }),
@@ -1913,6 +1957,7 @@ async function runOnce({
     const outcomeChecks = [
       sidebarScope,
       sidebarGeometry,
+      composerGeometry,
       settingsNavigation,
       composer,
       modelPickerFidelity,
@@ -1935,6 +1980,7 @@ async function runOnce({
       lifecycleRecovery,
       sidebarScope,
       sidebarGeometry,
+      composerGeometry,
       settingsNavigation,
       composer,
       modelPickerFidelity,
@@ -1973,6 +2019,7 @@ const width = Number(argumentValue("--width") ?? 1280);
 const height = Number(argumentValue("--height") ?? 820);
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? DEFAULT_TIMEOUT_MS);
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
+const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
@@ -2064,6 +2111,7 @@ for (let index = 1; index <= runs; index += 1) {
       requireCanonicalThread: !lifecycleOnlyEmptyFixture,
       timeoutMs,
       verifySettingsNavigation,
+      verifyComposerGeometry: shouldVerifyComposerGeometry,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,

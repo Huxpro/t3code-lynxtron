@@ -16,4 +16,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "read-only Lynx DevTool DOM box models");
     assert.include(source, "Sidebar rows escaped the rail");
   });
+
+  it("verifies current Composer Footer icon geometry without driving menus", () => {
+    assert.include(source, "--verify-composer-geometry");
+    assert.include(source, ".composer-toolbar-control .pill__chevron-img");
+    assert.include(source, ".composer-toolbar-control--runtime .pill__icon-img");
+    assert.include(source, ".composer-toolbar-control--interaction .pill__icon-img");
+    assert.include(source, "Composer Footer icon geometry drifted");
+  });
 });
