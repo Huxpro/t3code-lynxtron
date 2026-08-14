@@ -30,4 +30,16 @@ describe("Lynx icon raster contracts", () => {
       }
     }
   });
+
+  it("generates exact dark Composer mode icons", () => {
+    for (const [name, size] of [
+      ["lock", 16],
+      ["lock-open", 16],
+      ["pencil-line", 16],
+      ["bot", 16],
+      ["bot", 18],
+    ]) {
+      assert.include(generatedSource, `"${name}@${size}@#818181"`);
+    }
+  });
 });

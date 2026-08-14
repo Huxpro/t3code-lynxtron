@@ -230,6 +230,15 @@ for (const name of ["folder", "git-branch", "chevron-down"]) {
     entries.push([`${name}@12@${color}`, raster(body, 12, color, 2)]);
   }
 }
+for (const [name, size] of [
+  ["lock", 16],
+  ["lock-open", 16],
+  ["pencil-line", 16],
+  ["bot", 16],
+  ["bot", 18],
+]) {
+  entries.push([`${name}@${size}@#818181`, raster(ICON_BODIES[name], size, "#818181", 2)]);
+}
 for (const [name, size, color] of [
   ["search", 16, "#818181"],
   ["panel-left-close", 18, "#818181"],

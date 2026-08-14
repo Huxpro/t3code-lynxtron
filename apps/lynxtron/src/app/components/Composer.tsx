@@ -283,7 +283,7 @@ export function Composer({
                           <Icon
                             name="chevron-down"
                             size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
-                            color="#71717a"
+                            color="#818181"
                             className="pill__chevron-img"
                           />
                         }
@@ -301,7 +301,7 @@ export function Composer({
                           <Icon
                             name="chevron-down"
                             size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
-                            color="#71717a"
+                            color="#818181"
                             className="pill__chevron-img"
                           />
                         }
@@ -317,7 +317,7 @@ export function Composer({
                           <Icon
                             name={RUNTIME_MODE_ICONS[runtimeMode]}
                             size={COMPOSER_FOOTER_ICON_GEOMETRY.runtime}
-                            color="#a1a1aa"
+                            color="#818181"
                             className="pill__icon-img"
                           />
                         }
@@ -325,7 +325,7 @@ export function Composer({
                           <Icon
                             name="chevron-down"
                             size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
-                            color="#71717a"
+                            color="#818181"
                             className="pill__chevron-img"
                           />
                         }
@@ -383,7 +383,7 @@ export function Composer({
                                 ? COMPOSER_FOOTER_ICON_GEOMETRY.interaction.plan
                                 : COMPOSER_FOOTER_ICON_GEOMETRY.interaction.default
                             }
-                            color="#a1a1aa"
+                            color="#818181"
                             className="pill__icon-img"
                           />
                         }
