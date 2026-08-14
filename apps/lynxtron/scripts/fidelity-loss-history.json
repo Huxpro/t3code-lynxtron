@@ -1723,6 +1723,102 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-context-label-typography-fix",
+      "observedAt": "2026-08-14T10:48:39+08:00",
+      "commit": "f7cf8c2f9976252a1b093c568064e74a01133ece",
+      "codeState": "commit",
+      "label": "Composer Context label typography",
+      "narrative": "Localized pixel accounting showed that the checkout label alone contributed 68.8% of the remaining Context-strip absolute error, while the central background contributed only 6.7%. Removing stale synthetic stroke/scaling and half-pixel offsets, then matching Web's 70% muted color and 16px line height, reduces total Context absolute error by 41.8%. Hero Context SSIM rises from 0.942750 to 0.980469 and Sendable Context SSIM rises from 0.942568 to 0.980288. A fresh exact-bundle Native run proves both labels at 12px/500, 16px height and line height, 70% muted alpha, main transport advancement, and zero renderer errors; Native pixel parity is not claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Matched Hero and Sendable snapshots isolate the label-only product change; localized absolute-error accounting identifies its component contribution and the exact-bundle Native gate covers the changed typography."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Hero Context label authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "5c97e2d6f2f35d3a685032df91182b21d3a143fe"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Hero Context labels after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-context-labels-after-lynx.png",
+          "sha256": "4ba0a46df2833726bb5240f0c16d0f423b51a0495dc1494fa93240054bcd8bb2",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "5c97e2d6f2f35d3a685032df91182b21d3a143fe"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Sendable Context label authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+          "sha256": "19d61e1c7add294c354a6ebe6742ab3eecb1f5942b6914b4e98c02a13bb78cde",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "5c97e2d6f2f35d3a685032df91182b21d3a143fe"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Context labels after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-context-labels-after-lynx.png",
+          "sha256": "acf1b10dd5bbb19b65d4ed191135464b84251f70d166846cb38a1821d6f651d9",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "5c97e2d6f2f35d3a685032df91182b21d3a143fe"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-context-label-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "df496df44c82a7851e72d012acf9d968730f5f7ce1e17ec9bbeb6e5fe61f789e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.055186,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.944814 over the matched 768x172 Hero Composer/context region"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.050486,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.949514 over the matched 768x172 Sendable Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }

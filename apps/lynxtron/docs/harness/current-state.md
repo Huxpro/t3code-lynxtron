@@ -106,6 +106,13 @@ Plan 11 prose and screenshots.
   main transport advancement, zero renderer errors, and isolated-state cleanup.
   Current conservative loss is 87.07%, observed residual is 6.08%, and evidence
   debt remains 86.23%.
+- Localized Context accounting then identifies checkout-label rendering as
+  68.8% of remaining strip absolute error. Removing stale synthetic
+  stroke/scaling and matching Web's 70% color plus 16px line height raises
+  Hero/Sendable Context SSIM to about 98.04% and reduces Context absolute error
+  by 41.8%. Exact-bundle Native independently verifies both label geometries
+  and typography without claiming pixel parity. Current conservative loss is
+  87.07%, observed residual is 6.06%, and evidence debt remains 86.23%.
 
 ## Not currently proven
 
