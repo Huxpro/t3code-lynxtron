@@ -690,6 +690,12 @@ function readLynxPane() {
                 (item) => readElementBox(item),
               ),
               context: readElementBox(root?.querySelector(".composer-context-strip")),
+              contextControls: [...(root?.querySelectorAll(".composer-context-control") ?? [])].map(
+                (item) => ({
+                  text: item.textContent?.trim() ?? "",
+                  box: readElementBox(item),
+                }),
+              ),
               contextItems: [...(root?.querySelectorAll(".composer-context-item") ?? [])].map(
                 (item) => readElementBox(item),
               ),
@@ -1306,6 +1312,15 @@ function readWebPane() {
                 doc.querySelector(".composer-context-strip") ??
                   doc.querySelector(".chat-composer-context-strip"),
               ),
+              contextControls: (() => {
+                const contextStrip =
+                  doc.querySelector(".composer-context-strip") ??
+                  doc.querySelector(".chat-composer-context-strip");
+                return [...(contextStrip?.querySelectorAll("button") ?? [])].map((item) => ({
+                  text: item.textContent?.trim() ?? "",
+                  box: readElementBox(item),
+                }));
+              })(),
               contextItems: [...doc.querySelectorAll(".composer-context-item")].map((item) =>
                 readElementBox(item),
               ),

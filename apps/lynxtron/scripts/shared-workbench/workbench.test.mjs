@@ -30,6 +30,9 @@ describe("shared workbench Composer metrics", () => {
   });
 
   it("records matching Context strip semantic leaves", () => {
+    assert.include(source, 'querySelectorAll(".composer-context-control")');
+    assert.include(source, 'contextStrip?.querySelectorAll("button")');
+    assert.include(source, "contextControls:");
     assert.include(source, 'querySelectorAll(".composer-context-item")');
     assert.include(source, 'querySelectorAll(".composer-context-label")');
     assert.include(source, 'querySelectorAll(".composer-context-icon")');
