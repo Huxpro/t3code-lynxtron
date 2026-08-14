@@ -22,9 +22,6 @@ import {
 import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
-import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
-import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
-
 interface ComposerProps {
   disabled: boolean;
   busy: boolean;
@@ -43,6 +40,7 @@ interface ComposerProps {
   runtimeMode: RuntimeMode;
   interactionMode: ProviderInteractionMode;
   showInteractionModeToggle: boolean;
+  availableWidth: number;
   statusBanner?: ReactNode;
   pendingBanner?: ReactNode;
   approvalActions?: ReactNode;
@@ -86,6 +84,7 @@ export function Composer({
   runtimeMode,
   interactionMode,
   showInteractionModeToggle,
+  availableWidth,
   statusBanner,
   pendingBanner,
   approvalActions,
@@ -105,14 +104,12 @@ export function Composer({
 }: ComposerProps) {
   const [value, setValue] = useState("");
   const [runtimeModeMenuOpen, setRuntimeModeMenuOpen] = useState(false);
+  const [compactControlsMenuOpen, setCompactControlsMenuOpen] = useState(false);
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
-  const mobileViewport = useMediaQuery("max-md");
-  const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
-  const compactFooter = shouldUseCompactComposerFooter(
-    viewport.width - (mobileViewport ? 48 : 256 + 48),
-    { hasWideActions: Boolean(approvalActions || questionActions) },
-  );
+  const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
+    hasWideActions: Boolean(approvalActions || questionActions),
+  });
   const sendState = deriveComposerSendState({
     prompt: value,
     imageCount: 0,
@@ -321,7 +318,91 @@ export function Composer({
                       />
                       {modelPicker}
                     </view>,
-                    !questionMode && modelOptionLabel && onModelOptionTap ? (
+                    compactFooter && !questionMode ? (
+                      <view key="compact-controls" className="composer-compact-controls-wrap">
+                        <view
+                          className="composer-compact-controls-trigger"
+                          aria-label="More composer controls"
+                          bindtap={() => setCompactControlsMenuOpen((open) => !open)}
+                        >
+                          <Icon name="ellipsis" size={16} color="#818181" />
+                        </view>
+                        {compactControlsMenuOpen ? (
+                          <view
+                            className="composer-compact-controls-menu"
+                            aria-label="More composer controls"
+                            data-composer-compact-controls-menu
+                          >
+                            {modelOptionLabel && onModelOptionTap ? (
+                              <view
+                                className="composer-compact-controls-menu__item"
+                                bindtap={() => {
+                                  onModelOptionTap();
+                                  setCompactControlsMenuOpen(false);
+                                }}
+                              >
+                                <text className="composer-compact-controls-menu__eyebrow">
+                                  Model option
+                                </text>
+                                <text className="composer-compact-controls-menu__label">
+                                  {modelOptionLabel}
+                                </text>
+                              </view>
+                            ) : null}
+                            <view className="composer-compact-controls-menu__section-label">
+                              Access
+                            </view>
+                            {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
+                              <view
+                                key={option.mode}
+                                className={`composer-compact-controls-menu__item${
+                                  option.mode === runtimeMode
+                                    ? " composer-compact-controls-menu__item--active"
+                                    : ""
+                                }`}
+                                aria-checked={option.mode === runtimeMode ? "true" : "false"}
+                                bindtap={() => {
+                                  onRuntimeModeChange(option.mode);
+                                  setCompactControlsMenuOpen(false);
+                                }}
+                              >
+                                <Icon
+                                  name={RUNTIME_MODE_ICONS[option.mode]}
+                                  size={14}
+                                  color="#818181"
+                                />
+                                <text className="composer-compact-controls-menu__label">
+                                  {option.label}
+                                </text>
+                              </view>
+                            ))}
+                            {showInteractionModeToggle ? (
+                              <>
+                                <view className="composer-compact-controls-menu__section-label">
+                                  Mode
+                                </view>
+                                <view
+                                  className="composer-compact-controls-menu__item"
+                                  bindtap={() => {
+                                    onInteractionModeTap();
+                                    setCompactControlsMenuOpen(false);
+                                  }}
+                                >
+                                  <Icon
+                                    name={interactionMode === "plan" ? "pencil-line" : "bot"}
+                                    size={14}
+                                    color="#818181"
+                                  />
+                                  <text className="composer-compact-controls-menu__label">
+                                    {interactionModePresentation.label}
+                                  </text>
+                                </view>
+                              </>
+                            ) : null}
+                          </view>
+                        ) : null}
+                      </view>
+                    ) : !questionMode && modelOptionLabel && onModelOptionTap ? (
                       <ComposerToolbarControl
                         key="model-option"
                         className="composer-toolbar-control--model-option"
@@ -338,7 +419,7 @@ export function Composer({
                         onClick={onModelOptionTap}
                       />
                     ) : null,
-                    !questionMode ? (
+                    !compactFooter && !questionMode ? (
                       <view key="runtime" className="composer-runtime-control-wrap">
                         <ComposerToolbarControl
                           className="composer-toolbar-control--runtime"
@@ -403,7 +484,7 @@ export function Composer({
                         ) : null}
                       </view>
                     ) : null,
-                    !questionMode && showInteractionModeToggle ? (
+                    !compactFooter && !questionMode && showInteractionModeToggle ? (
                       <ComposerToolbarControl
                         key="interaction"
                         className="composer-toolbar-control--interaction"

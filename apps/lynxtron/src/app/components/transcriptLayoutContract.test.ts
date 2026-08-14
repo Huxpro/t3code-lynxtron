@@ -8,6 +8,7 @@ const timelineSource = readFileSync(
   path.resolve(import.meta.dirname, "MessagesTimeline.tsx"),
   "utf8",
 );
+const composerSource = readFileSync(path.resolve(import.meta.dirname, "Composer.tsx"), "utf8");
 const sharedRowSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/chat/TranscriptRowSurface.tsx"),
   "utf8",
@@ -38,9 +39,17 @@ describe("transcript layout contract", () => {
       'row.kind === "working"\n                  ? "timeline-row-root timeline-row-root--working"',
     );
     expect(timelineSource).toContain('row.kind === "message" && row.message.role === "assistant"');
+    expect(timelineSource).not.toContain("wrapCodeWords");
     expect(overrides).toContain(".timeline-row-root--assistant {\n  padding-bottom: 16px;");
     expect(overrides).toContain(
       ".timeline-row-root--assistant > .transcript-assistant-group {\n  padding-bottom: 0;",
     );
+    expect(overrides).toContain(".inline-markdown-code {\n  display: flex;\n  flex-shrink: 0;");
+    expect(overrides).toContain(".turn-diff-card .lynx-changed-files-tree {\n  margin-top: 0;");
+    expect(composerSource).toContain("compactFooter && !questionMode");
+    expect(composerSource).toContain("shouldUseCompactComposerFooter(availableWidth");
+    expect(composerSource).toContain('aria-label="More composer controls"');
+    expect(composerSource).toContain("data-composer-compact-controls-menu");
+    expect(composerSource).toContain("!compactFooter && !questionMode");
   });
 });

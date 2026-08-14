@@ -41,9 +41,7 @@ export function DiffPanel({
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
   const [collapsedFiles, setCollapsedFiles] = useState<ReadonlySet<string>>(new Set());
   const [patch, setPatch] = useState("");
-  const [patchStatus, setPatchStatus] = useState<"idle" | "loading" | "ready" | "error">(
-    "idle",
-  );
+  const [patchStatus, setPatchStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [patchError, setPatchError] = useState<string | null>(null);
   useEffect(() => {
     if (turnId !== null && turnId !== undefined) setSelectedTurnId(turnId);
@@ -237,66 +235,66 @@ export function DiffPanel({
         data-review-selected-file={filePath ?? ""}
       >
         <view className="diff-panel__inner">
-        {orderedCheckpoints.length > 0 ? (
-          <>
-            {patchStatus === "loading" ? (
-              <view className="diff-code-state" data-review-patch-loading>
-                <text className="diff-code-state__text">Loading code diff…</text>
-              </view>
-            ) : patchStatus === "error" ? (
-              <view className="diff-code-state diff-code-state--error" data-review-patch-error>
-                <text className="diff-code-state__text">
-                  {patchError ?? "Failed to load code diff."}
-                </text>
-              </view>
-            ) : orderedFiles.length > 0 ? (
-              <view className="diff-code-files" data-review-code-diff>
-                {orderedFiles.map((file) => (
-                  <LynxCodeDiffFile
-                    key={file.path}
-                    file={file}
-                    selected={file.path === filePath}
-                    collapsed={collapsedFiles.has(file.path)}
-                    mode={diffRenderMode}
-                    wordWrap={wordWrap}
-                    onToggle={() => toggleFile(file.path)}
-                  />
-                ))}
-              </view>
-            ) : patchStatus === "ready" ? (
-              <view className="diff-panel__summary-fallback" data-review-patch-empty>
-                <view className="diff-panel__summary">
-                  <view className="diff-panel__summary-copy">
-                    <text className="diff-panel__summary-title">
-                      {selectedCheckpoint?.files.length ?? 0} changed{" "}
-                      {selectedCheckpoint?.files.length === 1 ? "file" : "files"}
-                    </text>
-                    <text className="diff-panel__summary-note">
-                      Checkpoint for turn {selectedCheckpoint?.checkpointTurnCount}
-                    </text>
-                  </view>
-                  <DiffStatLabel additions={total.additions} deletions={total.deletions} />
+          {orderedCheckpoints.length > 0 ? (
+            <>
+              {patchStatus === "loading" ? (
+                <view className="diff-code-state" data-review-patch-loading>
+                  <text className="diff-code-state__text">Loading code diff…</text>
                 </view>
-                <LynxChangedFilesTree
-                  files={selectedCheckpoint?.files ?? []}
-                  allDirectoriesExpanded
-                  selectedPath={filePath}
-                />
-              </view>
-            ) : null}
-          </>
-        ) : (
-          <view className="diff-panel__empty" data-review-empty-state>
-            <text className="diff-panel__empty-title">
-              {sessionStatus === "running" ? "Waiting for checkpoint" : "No turn changes"}
-            </text>
-            <text className="diff-panel__empty-desc">
-              {sessionStatus === "running"
-                ? "Changed files appear after the current turn captures its checkpoint."
-                : "This thread has no completed checkpoint with changed files."}
-            </text>
-          </view>
-        )}
+              ) : patchStatus === "error" ? (
+                <view className="diff-code-state diff-code-state--error" data-review-patch-error>
+                  <text className="diff-code-state__text">
+                    {patchError ?? "Failed to load code diff."}
+                  </text>
+                </view>
+              ) : orderedFiles.length > 0 ? (
+                <view className="diff-code-files" data-review-code-diff>
+                  {orderedFiles.map((file) => (
+                    <LynxCodeDiffFile
+                      key={file.path}
+                      file={file}
+                      selected={file.path === filePath}
+                      collapsed={collapsedFiles.has(file.path)}
+                      mode={diffRenderMode}
+                      wordWrap={wordWrap}
+                      onToggle={() => toggleFile(file.path)}
+                    />
+                  ))}
+                </view>
+              ) : patchStatus === "ready" ? (
+                <view className="diff-panel__summary-fallback" data-review-patch-empty>
+                  <view className="diff-panel__summary">
+                    <view className="diff-panel__summary-copy">
+                      <text className="diff-panel__summary-title">
+                        {selectedCheckpoint?.files.length ?? 0} changed{" "}
+                        {selectedCheckpoint?.files.length === 1 ? "file" : "files"}
+                      </text>
+                      <text className="diff-panel__summary-note">
+                        Checkpoint for turn {selectedCheckpoint?.checkpointTurnCount}
+                      </text>
+                    </view>
+                    <DiffStatLabel additions={total.additions} deletions={total.deletions} />
+                  </view>
+                  <LynxChangedFilesTree
+                    files={selectedCheckpoint?.files ?? []}
+                    allDirectoriesExpanded
+                    selectedPath={filePath}
+                  />
+                </view>
+              ) : null}
+            </>
+          ) : (
+            <view className="diff-panel__empty" data-review-empty-state>
+              <text className="diff-panel__empty-title">
+                {sessionStatus === "running" ? "Waiting for checkpoint" : "No turn changes"}
+              </text>
+              <text className="diff-panel__empty-desc">
+                {sessionStatus === "running"
+                  ? "Changed files appear after the current turn captures its checkpoint."
+                  : "This thread has no completed checkpoint with changed files."}
+              </text>
+            </view>
+          )}
         </view>
       </scroll-view>
     </DiffPanelSurface>
@@ -322,6 +320,7 @@ function LynxCodeDiffFile({
     <view
       className={`diff-code-file${selected ? " diff-code-file--selected" : ""}`}
       data-review-code-file={file.path}
+      data-review-file-path={file.path}
     >
       <view className="diff-code-file__header" bindtap={onToggle}>
         <view className="diff-code-file__title">
@@ -351,9 +350,7 @@ function LynxCodeDiffFile({
                 }`}
                 data-review-code-line={line.kind}
               >
-                <text className="diff-code-line__number">
-                  {line.newLine ?? line.oldLine ?? ""}
-                </text>
+                <text className="diff-code-line__number">{line.newLine ?? line.oldLine ?? ""}</text>
                 <text className="diff-code-line__marker">
                   {line.kind === "addition" ? "+" : line.kind === "deletion" ? "−" : " "}
                 </text>
@@ -403,7 +400,7 @@ function LynxSplitDiffCell({
       }`}
     >
       <text className="diff-code-line__number">
-        {line ? (side === "left" ? line.oldLine : line.newLine) ?? "" : ""}
+        {line ? ((side === "left" ? line.oldLine : line.newLine) ?? "") : ""}
       </text>
       <text className="diff-code-line__marker">
         {line?.kind === "addition" ? "+" : line?.kind === "deletion" ? "−" : " "}

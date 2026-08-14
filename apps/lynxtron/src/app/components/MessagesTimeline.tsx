@@ -362,7 +362,6 @@ function buildLynxTranscriptRowElements(
             <InlineMarkdownRenderer
               text={row.message.text}
               cwd={cwd}
-              wrapCodeWords
               className="inline-markdown-row--user"
             />
           )}

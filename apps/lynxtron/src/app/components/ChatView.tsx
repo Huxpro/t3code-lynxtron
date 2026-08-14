@@ -465,6 +465,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         runtimeMode={activeThread?.runtimeMode ?? "full-access"}
         interactionMode={activeThread?.interactionMode ?? "default"}
         showInteractionModeToggle={showInteractionModeToggle}
+        availableWidth={centerPanelWidth}
         statusBanner={
           activeThreadSettled ? (
             <view className="composer-settled-banner" data-composer-settled-banner>
