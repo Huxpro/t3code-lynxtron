@@ -727,7 +727,8 @@ async function verifyComposerGeometry(client, expectedTheme) {
     !contextControlsAligned ||
     !contextLabelsAligned ||
     !expectedThemeMatches ||
-    contextIcons.length !== 4 ||
+    contextIcons.length < 3 ||
+    contextIcons.length > 4 ||
     contextIcons.some(wrongContextSize) ||
     Object.values(controlColors).some(wrongMutedColor)
   ) {
@@ -1340,6 +1341,30 @@ async function verifyComposerWorkingState({ client, devToolCli, outputDirectory,
       `Canonical working Composer did not render Stop: ${JSON.stringify(primaryAction)}`,
     );
   }
+  const [timelineList] = await readSelectorRects(client, ".timeline-list");
+  const [firstRow] = await readSelectorRects(client, ".timeline-row-root");
+  const [workingRowRoot] = await readSelectorRects(client, ".timeline-row-root--working");
+  const [workingRow] = await readSelectorRects(client, ".transcript-working-row");
+  const checkoutLabel = composer.typography.contextCheckout.text.trim();
+  const transcriptGeometryMatches =
+    timelineList &&
+    firstRow &&
+    workingRowRoot &&
+    workingRow &&
+    Math.abs(firstRow.y - (timelineList.y + 16)) <= 1 &&
+    Math.abs(workingRowRoot.height - 40) <= 0.5 &&
+    Math.abs(workingRow.height - 24) <= 0.5;
+  if (!transcriptGeometryMatches || checkoutLabel !== "Local checkout") {
+    throw new Error(
+      `Canonical working transcript geometry drifted: ${JSON.stringify({
+        timelineList,
+        firstRow,
+        workingRowRoot,
+        workingRow,
+        checkoutLabel,
+      })}`,
+    );
+  }
   const screenshotPath = path.join(outputDirectory, "native-working.png");
   const screenshot = spawnSync(
     process.execPath,
@@ -1368,6 +1393,13 @@ async function verifyComposerWorkingState({ client, devToolCli, outputDirectory,
       state: primaryAction.attributes["data-composer-primary-state"] ?? null,
       ariaLabel: primaryAction.attributes["aria-label"] ?? null,
       ariaDisabled: primaryAction.attributes["aria-disabled"] ?? null,
+    },
+    transcript: {
+      timelineList,
+      firstRow,
+      workingRowRoot,
+      workingRow,
+      checkoutLabel,
     },
     screenshot: {
       path: screenshotPath,

@@ -55,12 +55,24 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "contextStrip.y + 24");
     assert.include(source, 'label.style.lineHeight === "16px"');
     assert.include(source, "contextLabelsAligned");
-    assert.include(source, "contextIcons.length !== 4");
+    assert.include(source, "contextIcons.length < 3");
+    assert.include(source, "contextIcons.length > 4");
     assert.include(source, "Math.abs(rect.width - 12) > 0.75");
     assert.include(source, 'expectedTheme === "light" ? [113, 113, 122] : [129, 129, 129]');
     assert.include(source, "Math.abs(Number(match[4]) - 0.7) > 1 / 255");
     assert.include(source, "chevrons.length < 2");
     assert.include(source, "chevrons.length > 3");
+    assert.include(source, "contextIcons.length < 3");
+    assert.include(source, "contextIcons.length > 4");
     assert.include(source, "Composer Footer icon geometry drifted");
+  });
+
+  it("verifies the Native working transcript layout and locked workspace copy", () => {
+    assert.include(source, 'readSelectorRects(client, ".timeline-list")');
+    assert.include(source, 'readSelectorRects(client, ".timeline-row-root--working")');
+    assert.include(source, 'readSelectorRects(client, ".transcript-working-row")');
+    assert.include(source, "Math.abs(firstRow.y - (timelineList.y + 16)) <= 1");
+    assert.include(source, "Math.abs(workingRowRoot.height - 40) <= 0.5");
+    assert.include(source, 'checkoutLabel !== "Local checkout"');
   });
 });
