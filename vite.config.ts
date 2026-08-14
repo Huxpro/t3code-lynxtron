@@ -41,6 +41,7 @@ export default defineConfig({
       "apps/web/public/mockServiceWorker.js",
       "apps/web/src/lib/vendor/qrcodegen.ts",
       "apps/mobile/uniwind-types.d.ts",
+      "apps/lynxtron/reports/fidelity-loss/**",
       "*.icon/**",
     ],
     sortPackageJson: {},
