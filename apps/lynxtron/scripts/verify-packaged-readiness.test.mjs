@@ -123,6 +123,18 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "heroOnlyEmptyFixture");
   });
 
+  it("captures Native General Settings content and geometry before route cycling", () => {
+    assert.include(source, 'selector: ".settings-content--general"');
+    assert.include(source, 'measurement.text.includes("Project grouping")');
+    assert.include(source, 'measurement.text.includes("Diagnostics")');
+    assert.include(
+      source,
+      'readSelectorRects(client, ".settings-content--general .settings-section")',
+    );
+    assert.include(source, 'readSelectorRects(client, ".settings-content--general .settings-row")');
+    assert.include(source, 'name: "native-settings-general.png"');
+  });
+
   it("verifies the Native working transcript layout and locked workspace copy", () => {
     assert.include(source, "readComposerOutcome(client, { allowMissingInteraction: true })");
     assert.include(source, "assertComposerGeometry(composer, { allowMissingInteraction: true })");

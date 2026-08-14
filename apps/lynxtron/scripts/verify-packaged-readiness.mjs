@@ -2521,7 +2521,14 @@ async function waitForRouteChange({ child, client, initialRoute, timeoutMs }) {
   );
 }
 
-async function verifySettingsRouteBehavior({ child, client, modelSelection, timeoutMs }) {
+async function verifySettingsRouteBehavior({
+  child,
+  client,
+  devToolCli,
+  modelSelection,
+  outputDirectory,
+  timeoutMs,
+}) {
   const observed = [];
   await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
   observed.push(
@@ -2533,6 +2540,27 @@ async function verifySettingsRouteBehavior({ child, client, modelSelection, time
       timeoutMs,
     }),
   );
+  const generalPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-content--general",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("General") === true &&
+      measurement.text.includes("Project grouping") &&
+      measurement.text.includes("Diagnostics"),
+  });
+  const generalSections = await readSelectorRects(
+    client,
+    ".settings-content--general .settings-section",
+  );
+  const generalRows = await readSelectorRects(client, ".settings-content--general .settings-row");
+  const generalScreenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-settings-general.png",
+  });
 
   const beforeResync = await readRendererReadiness(client);
   await invokeSemanticAdvance(client, modelSelection);
@@ -2599,6 +2627,13 @@ async function verifySettingsRouteBehavior({ child, client, modelSelection, time
   return {
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selectors",
+    general: {
+      panel: generalPanel.rect,
+      text: generalPanel.text,
+      sections: generalSections,
+      rows: generalRows,
+      screenshot: generalScreenshot,
+    },
     resync: { beforeSeq: beforeResync.lastSeq, afterSeq: afterResync.lastSeq },
     observed,
     repeatedCycles: 2,
@@ -3046,11 +3081,26 @@ async function runOnce({
         : undefined;
     const settingsNavigation = runPlan11Outcomes
       ? await captureOutcome(
-          () => verifySettingsRouteBehavior({ child, client, modelSelection, timeoutMs }),
+          () =>
+            verifySettingsRouteBehavior({
+              child,
+              client,
+              devToolCli,
+              modelSelection,
+              outputDirectory,
+              timeoutMs,
+            }),
           cleanupOutcome,
         )
       : verifySettingsNavigation
-        ? await verifySettingsRouteBehavior({ child, client, modelSelection, timeoutMs })
+        ? await verifySettingsRouteBehavior({
+            child,
+            client,
+            devToolCli,
+            modelSelection,
+            outputDirectory,
+            timeoutMs,
+          })
         : undefined;
     const composer = runPlan11Outcomes
       ? await captureOutcome(
