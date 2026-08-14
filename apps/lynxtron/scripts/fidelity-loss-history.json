@@ -2456,6 +2456,121 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-failed-presentation-fix",
+      "observedAt": "2026-08-14T19:09:09+08:00",
+      "commit": "13d2cebdbfabca6a7ef523a5abc5104016e6b584",
+      "codeState": "commit",
+      "label": "Existing Thread failed presentation",
+      "narrative": "A real failed turn was created through the connector by selecting an invalid OpenCode model; admission required matching turn and session error states plus a persisted failure reason. The first valid pair exposed three product gaps: Lynx omitted the canonical thread-error banner, rendered the invalid raw model slug instead of the valid Big Pickle fallback, and applied settled spacing despite the visible top banner. Session errors now cross both connector transports into one shared banner anatomy, active-thread model fallback is event-order independent, and top-banner timelines use the 16px header. Full-frame SSIM improves from 0.915270 to 0.922175. Exact-bundle Native verifies the canonical error text, Big Pickle fallback, failed work status, idle Composer, Local checkout, top-banner inset, main transport 2 to 3, zero renderer errors, and isolated cleanup.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share one immutable failed-turn database, route, thread, theme, density, and viewport. Snapshot and connector transport mismatches are recorded separately, while Native remains corroborating rather than replacing the Browser pixel residual."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Failed thread before authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-failed-before-web.png",
+          "sha256": "2fd3c307a5141308582ebc48e31f04615424a475a7cae3e0d474e2b66fe65f42",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "7396d0d6fd172e803b1acc1b275f78bf133e1e7e"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Failed thread before Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-failed-before-lynx.png",
+          "sha256": "c984a33c19c787c38f008081cf7414c94cc1b94ccfc4cebedbbf46609ac896a0",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "7396d0d6fd172e803b1acc1b275f78bf133e1e7e"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Failed thread authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-failed-web.png",
+          "sha256": "2fd3c307a5141308582ebc48e31f04615424a475a7cae3e0d474e2b66fe65f42",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "7396d0d6fd172e803b1acc1b275f78bf133e1e7e"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Failed thread Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-failed-lynx.png",
+          "sha256": "a219ed0a53c429d1514c93076092d7cbeb204035c52afe312481f9ccefe2e1de",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "7396d0d6fd172e803b1acc1b275f78bf133e1e7e"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native failed transcript",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-failed-native.png",
+          "sha256": "d3e50fb2865cf14a94f30b650d8129f22e524cdb81cb5b74c98191f7b11a3645",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "7396d0d6fd172e803b1acc1b275f78bf133e1e7e"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/existing-thread-failed-presentation-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "acf31af72c8ba6009db5f7606cc5633c02a6bbff87fffa01c3c59264c9b74961"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-failed-thread-content",
+              "source": "prompt, error work row, fallback model, controls, error text, Local checkout, and branch labels match"
+            },
+            "geometry": {
+              "anchorDeltas": [0, -4, 0, -0.25, 0, -4, 0, -8],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "failed-transcript-row-geometry",
+              "source": "both row x/y/width and outer heights at 1280x820"
+            },
+            "material": {
+              "residual": 0.077825,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.922175 at the matched 1280x820 failed-thread frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same selected failed thread with matching error projection and zero Browser renderer errors; Native exact-bundle transport/readiness is corroborating"
+            }
+          }
+        }
+      ]
     }
   ]
 }

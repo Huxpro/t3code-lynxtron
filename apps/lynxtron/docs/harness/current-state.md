@@ -170,6 +170,17 @@ Plan 11 prose and screenshots.
   48px relative inset, 75px assistant wrapper, idle Composer, provider-shaped
   controls, and transport. Conservative loss is now 85.3655%, observed
   residual is 5.5244%, and evidence debt is 84.5097%.
+- A real failed transcript follows from an invalid OpenCode model and is
+  admitted only when both turn and session projections report error and the
+  database retains `Model not found`. The first pair exposes missing Lynx
+  thread-error presentation, a raw invalid model slug instead of Web's valid
+  `Big Pickle` fallback, and a top-banner spacing mismatch. Session errors now
+  cross both connector transports into one shared banner anatomy, model
+  fallback is event-order independent, and top-banner timelines use the 16px
+  header. Full-frame SSIM rises `0.915270 → 0.922175`. Exact-bundle Native
+  verifies the canonical error text, fallback model, failed work status, idle
+  Composer, and transport. Conservative loss is now 84.7596%, observed
+  residual is 5.4614%, and evidence debt is 83.8791%.
 
 ## Not currently proven
 
@@ -177,8 +188,8 @@ Plan 11 prose and screenshots.
 - No current Web/Lynx/Native pixel certification matrix exists; the final5
   packaged Native Context geometry/readiness gate is not pixel parity.
 - Native physical keyboard/focus, transcript wheel/drag/follow, light/system
-  theme persistence, failed/approval/question populated transcripts, and full
-  patch rendering are not certified.
+  theme persistence, approval/question populated transcripts, other failure
+  classes, and full patch rendering are not certified.
 - Browser/CDP evidence cannot satisfy Native-only input, list, window, or
   persistence requirements.
 - Historical `PASS`, `functional`, and `completed` labels do not independently

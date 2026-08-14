@@ -28,3 +28,4 @@ composer-hero-1440-responsive-certification,2026-08-14T12:43:57+08:00,a58e3272a8
 composer-footer-icon-material-fix,2026-08-14T13:22:36+08:00,6a013a418b639734d723d6791451ec63b22bc270,commit,Composer Footer icon material,0.869312,0.687361,0.060727,0.860862,0.139138,0.114125
 existing-thread-working-layout-fix,2026-08-14T14:22:02+08:00,9e4e1187ad3eed3a177a638f6390648a906a267d,commit,Existing Thread working layout,0.86149,0.687361,0.057882,0.85298,0.14702,0.121947
 existing-thread-completed-layout-fix,2026-08-14T15:23:56+08:00,65300ce8a08db8c5901ad2b8e890d5cf01bce402,commit,Existing Thread completed layout,0.853655,0.687361,0.055244,0.845097,0.154903,0.129782
+existing-thread-failed-presentation-fix,2026-08-14T19:09:09+08:00,13d2cebdbfabca6a7ef523a5abc5104016e6b584,commit,Existing Thread failed presentation,0.847596,0.687361,0.054614,0.838791,0.161209,0.135841
