@@ -2158,6 +2158,7 @@
   min-height: 28px;
   padding-right: 10px;
   padding-left: 10px;
+  color: var(--muted-foreground-70);
   border-width: 1px;
   border-style: solid;
   border-color: transparent;
