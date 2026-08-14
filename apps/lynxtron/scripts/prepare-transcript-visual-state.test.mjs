@@ -10,7 +10,8 @@ const source = readFileSync(
 
 describe("transcript visual-state preparation", () => {
   it("waits for a real completed turn and assistant message", () => {
-    assert.include(source, 'settleMode !== "interrupted" && settleMode !== "completed"');
+    assert.include(source, 'settleMode !== "completed" &&');
+    assert.include(source, 'settleMode !== "failed"');
     assert.include(source, 'state === "completed"');
     assert.include(source, 'message.role === "assistant"');
     assert.include(source, "message.text.trim().length > 0");
@@ -32,5 +33,13 @@ describe("transcript visual-state preparation", () => {
     assert.include(source, "await connector.setModelSelection({ selection: modelSelection })");
     assert.include(source, 'argumentValue("--instance-id")');
     assert.include(source, 'argumentValue("--model")');
+  });
+
+  it("admits failed fixtures only with matching turn, session, and persisted error state", () => {
+    assert.include(source, 'settleMode === "failed"');
+    assert.include(source, 'payload?.sessionStatus === "error"');
+    assert.include(source, 'state === "error"');
+    assert.include(source, "SELECT last_error AS lastError");
+    assert.include(source, "Failed transcript fixture has no persisted session error.");
   });
 });

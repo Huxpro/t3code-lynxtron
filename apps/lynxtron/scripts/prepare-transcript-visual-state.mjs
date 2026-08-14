@@ -50,7 +50,7 @@ function waitForSignal(register, label, timeoutMs) {
 export async function prepareTranscriptVisualState(baseDirectory, options = {}) {
   const promptCount = Math.max(1, options.promptCount ?? 1);
   const settleMode = options.settleMode ?? "interrupted";
-  if (settleMode !== "interrupted" && settleMode !== "completed") {
+  if (settleMode !== "interrupted" && settleMode !== "completed" && settleMode !== "failed") {
     throw new Error(`Unsupported transcript settle mode: ${settleMode}`);
   }
   const baseDir = resolve(baseDirectory);
@@ -146,10 +146,13 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
     const settledPayloadPromise = waitForThread(
       threadId,
       (payload) => {
+        const state = payload?.latestTurn?.state;
+        if (settleMode === "failed" && payload?.sessionStatus === "error" && state === "error") {
+          return payload;
+        }
         if (payload?.sessionStatus === "error") {
           return { errorState: "session-error", payload };
         }
-        const state = payload?.latestTurn?.state;
         if (settleMode === "completed") {
           return state === "completed" &&
             payload.messages.some(
@@ -197,12 +200,24 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
         })}`,
       );
     }
+    const failureReason =
+      settleMode === "failed"
+        ? (new DatabaseSync(databasePath)
+            .prepare(
+              "SELECT last_error AS lastError FROM projection_thread_sessions WHERE thread_id = ?",
+            )
+            .get(threadId)?.lastError ?? null)
+        : null;
+    if (settleMode === "failed" && !failureReason) {
+      throw new Error("Failed transcript fixture has no persisted session error.");
+    }
     fixture = {
       threadId,
       title,
       promptText,
       expectedAssistantText,
       assistantText,
+      failureReason,
       settleMode,
       modelSelection,
       messageCount: payload?.messages?.length ?? 0,
