@@ -2248,22 +2248,18 @@
 /* surface: composer context strip labels; gap: none (token passthrough);
    remove-when: label typography compiles from the shared composition. */
 .composer-context-label {
-  color: rgba(var(--muted-foreground-rgb), 0.68);
+  color: rgba(var(--muted-foreground-rgb), 0.7);
   font-size: 12px;
   font-weight: 500;
   font-family: var(--font-sans);
-  transform: translateY(-0.5px);
+  line-height: 16px;
 }
 .composer-context-label--checkout {
   font-family: "T3 DM Sans", var(--font-sans);
-  text-stroke-color: rgba(var(--muted-foreground-rgb), 0.68);
-  text-stroke-width: 0.15px;
-  transform: translate(1px, -0.5px) scaleX(1.02);
-  transform-origin: left center;
+  transform: translateX(1px);
 }
 .composer-context-label--branch {
   color: rgba(var(--muted-foreground-rgb), 0.7);
-  transform: translateY(-0.5px);
 }
 .composer-context-icon {
   opacity: 0.7;
