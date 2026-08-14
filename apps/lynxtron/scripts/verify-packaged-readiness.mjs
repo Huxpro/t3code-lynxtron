@@ -1792,6 +1792,156 @@ async function verifyApprovalTranscriptState({
   };
 }
 
+async function verifyQuestionTranscriptState({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  questionFixture,
+  timeoutMs,
+}) {
+  const question = questionFixture.activity.payload.questions[0];
+  const clientState = await readClientState(client);
+  const frame = await readOptionalMeasurement(client, ".composer-frame");
+  const surface = await readOptionalMeasurement(client, ".composer-surface--question");
+  const pending = await readOptionalMeasurement(client, ".composer-pending-question");
+  const editor = await readOptionalMeasurement(client, ".composer-editor-area--question");
+  const footer = await readOptionalMeasurement(client, ".composer-footer--question");
+  const optionRects = await readSelectorRects(client, ".composer-pending-question__option");
+  const firstOption = await readOptionalMeasurement(client, ".composer-pending-question__option");
+  const approximately = (actual, expected, tolerance = 1) =>
+    typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
+  const stateMatches =
+    clientState?.activeThreadId === questionFixture.threadId &&
+    clientState?.activeThread?.id === questionFixture.threadId &&
+    clientState?.activeThread?.hasPendingUserInput === true &&
+    clientState?.sessionStatus === "running" &&
+    clientState?.activeTurnId === questionFixture.activeTurnId &&
+    frame?.attributes["data-composer-state"] === "working";
+  const contentMatches =
+    pending?.text.includes(question.header) &&
+    pending.text.includes(question.question) &&
+    question.options.every((option) => pending.text.includes(option.label)) &&
+    optionRects.length === question.options.length &&
+    firstOption?.text.includes(question.options[0].label) === true;
+  const geometryMatches =
+    approximately(frame?.rect?.width, 768) &&
+    approximately(frame?.rect?.height, 343.5) &&
+    approximately(surface?.rect?.width, 766) &&
+    approximately(surface?.rect?.height, 341.5) &&
+    approximately(editor?.rect?.width, 766) &&
+    approximately(editor?.rect?.height, 90) &&
+    approximately(footer?.rect?.width, 766) &&
+    approximately(footer?.rect?.height, 48) &&
+    approximately(footer?.rect?.y, (editor?.rect?.y ?? 0) + (editor?.rect?.height ?? 0));
+  if (!stateMatches || !contentMatches || !geometryMatches) {
+    throw new Error(
+      `Canonical question transcript drifted: ${JSON.stringify({
+        clientState,
+        frame,
+        surface,
+        pending,
+        editor,
+        footer,
+        optionRects,
+        firstOption,
+        stateMatches,
+        contentMatches,
+        geometryMatches,
+      })}`,
+    );
+  }
+
+  const selectedLabel = question.options[0].label;
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-pending-question__option",
+    timeoutMs,
+  });
+  const selectedOption = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-pending-question__option",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-question-option-selected"] === "true",
+  });
+  const submit = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-question-submit",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["aria-disabled"] === "false" && measurement.text.trim() === "Submit",
+  });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-question.png",
+  });
+  const beforeSubmit = await readRendererReadiness(client);
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-question-submit",
+    timeoutMs,
+  });
+  const afterSubmit = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeSubmit,
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-pending-question",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const resolvedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === questionFixture.threadId &&
+      state?.activeThread?.hasPendingUserInput === false,
+  });
+
+  return {
+    status: "pass",
+    fixture: {
+      threadId: questionFixture.threadId,
+      requestId: questionFixture.activity.payload.requestId,
+      activeTurnId: questionFixture.activeTurnId,
+      questionId: question.id,
+    },
+    content: {
+      header: question.header,
+      question: question.question,
+      options: question.options.map((option) => option.label),
+      selectedLabel,
+      submitLabel: submit.text.trim(),
+    },
+    geometry: {
+      frame: frame.rect,
+      surface: surface.rect,
+      editor: editor.rect,
+      footer: footer.rect,
+      options: optionRects,
+      selectedOption: selectedOption.rect,
+      submit: submit.rect,
+    },
+    sequence: {
+      beforeSubmit: beforeSubmit.lastSeq,
+      afterSubmit: afterSubmit.lastSeq,
+    },
+    resolvedState,
+    screenshot,
+  };
+}
+
 async function verifyRuntimeCapabilities(client) {
   let keyDispatchError = null;
   try {
@@ -2552,6 +2702,8 @@ async function runOnce({
   verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
   verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
   approvalFixture,
+  verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
+  questionFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
@@ -2604,33 +2756,47 @@ async function runOnce({
       beforeProbe,
       afterProbe,
     };
-    const canonicalState = shouldVerifyApprovalTranscriptState
-      ? await waitForClientState({
-          child,
-          client,
-          timeoutMs,
-          predicate: (state) =>
-            state?.activeThreadId === approvalFixture.threadId &&
-            state?.activeThread?.hasPendingApprovals === true &&
-            state?.activeThread?.modelSelection?.instanceId ===
-              approvalFixture.modelSelection?.instanceId &&
-            state?.activeThread?.modelSelection?.model === approvalFixture.modelSelection?.model &&
-            state?.sessionStatus === "running" &&
-            state?.activeTurnId === approvalFixture.activeTurnId,
-        })
-      : requireCanonicalThread
-        ? await waitForCanonicalState({
-            canonicalThreadTitle,
+    const canonicalState =
+      shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+        ? await waitForClientState({
             child,
             client,
             timeoutMs,
+            predicate: (state) =>
+              state?.activeThreadId ===
+                (shouldVerifyApprovalTranscriptState
+                  ? approvalFixture.threadId
+                  : questionFixture.threadId) &&
+              (shouldVerifyApprovalTranscriptState
+                ? state?.activeThread?.hasPendingApprovals === true
+                : state?.activeThread?.hasPendingUserInput === true) &&
+              state?.activeThread?.modelSelection?.instanceId ===
+                (shouldVerifyApprovalTranscriptState
+                  ? approvalFixture.modelSelection?.instanceId
+                  : questionFixture.modelSelection?.instanceId) &&
+              state?.activeThread?.modelSelection?.model ===
+                (shouldVerifyApprovalTranscriptState
+                  ? approvalFixture.modelSelection?.model
+                  : questionFixture.modelSelection?.model) &&
+              state?.sessionStatus === "running" &&
+              state?.activeTurnId ===
+                (shouldVerifyApprovalTranscriptState
+                  ? approvalFixture.activeTurnId
+                  : questionFixture.activeTurnId),
           })
-        : {
-            canonicalThreadTitle: null,
-            threadText: null,
-            modelText: null,
-            skipped: "Lifecycle-only empty fixture.",
-          };
+        : requireCanonicalThread
+          ? await waitForCanonicalState({
+              canonicalThreadTitle,
+              child,
+              client,
+              timeoutMs,
+            })
+          : {
+              canonicalThreadTitle: null,
+              threadText: null,
+              modelText: null,
+              skipped: "Lifecycle-only empty fixture.",
+            };
     const runPlan11Outcomes = verifyPlan11SemanticOutcomes && isFinalRun;
     const cleanupOutcome = () => restoreOutcomeSurface({ child, client, timeoutMs });
     const sidebarScope = runPlan11Outcomes
@@ -2722,6 +2888,16 @@ async function runOnce({
           outputDirectory,
         })
       : undefined;
+    const questionTranscriptState = shouldVerifyQuestionTranscriptState
+      ? await verifyQuestionTranscriptState({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          questionFixture,
+          timeoutMs,
+        })
+      : undefined;
     const shellInteractions = shouldVerifyShellInteractions
       ? await verifyShellInteractions({
           child,
@@ -2764,6 +2940,7 @@ async function runOnce({
       completedTranscriptState,
       failedTranscriptState,
       approvalTranscriptState,
+      questionTranscriptState,
       shellInteractions,
       runtimeCapabilities,
       branding,
@@ -2792,6 +2969,7 @@ async function runOnce({
       completedTranscriptState,
       failedTranscriptState,
       approvalTranscriptState,
+      questionTranscriptState,
       shellInteractions,
       runtimeCapabilities,
       branding,
@@ -2841,6 +3019,9 @@ const shouldVerifyCompletedTranscriptState = process.argv.includes(
 const shouldVerifyFailedTranscriptState = process.argv.includes("--verify-failed-transcript-state");
 const shouldVerifyApprovalTranscriptState = process.argv.includes(
   "--verify-approval-transcript-state",
+);
+const shouldVerifyQuestionTranscriptState = process.argv.includes(
+  "--verify-question-transcript-state",
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
@@ -2895,6 +3076,22 @@ if (
     "--verify-approval-transcript-state requires a real pendingRequestFixture approval.",
   );
 }
+const questionFixture = fixtureManifest.pendingRequestFixture;
+if (
+  shouldVerifyQuestionTranscriptState &&
+  (questionFixture?.mode !== "question" ||
+    typeof questionFixture.threadId !== "string" ||
+    questionFixture.sessionStatus !== "running" ||
+    typeof questionFixture.activeTurnId !== "string" ||
+    questionFixture.activity?.kind !== "user-input.requested" ||
+    typeof questionFixture.activity?.payload?.requestId !== "string" ||
+    !Array.isArray(questionFixture.activity?.payload?.questions) ||
+    questionFixture.activity.payload.questions.length === 0)
+) {
+  throw new Error(
+    "--verify-question-transcript-state requires a real pendingRequestFixture question.",
+  );
+}
 const fixtureManifestProjectId = fixtureManifest.project?.projectId;
 if (
   verifyComposerStop &&
@@ -2902,9 +3099,10 @@ if (
 ) {
   throw new Error("--verify-composer-stop requires visual-state.json project.projectId.");
 }
-const canonicalThreadTitle = shouldVerifyApprovalTranscriptState
-  ? approvalFixture.title
-  : fixtureManifest.sidebarFixture?.titles?.[0];
+const canonicalThreadTitle =
+  shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+    ? fixtureManifest.pendingRequestFixture.title
+    : fixtureManifest.sidebarFixture?.titles?.[0];
 const lifecycleOnlyEmptyFixture =
   shouldVerifyLifecycleRecovery &&
   !verifySettingsNavigation &&
@@ -2918,9 +3116,10 @@ if (
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
 }
-const modelSelection = shouldVerifyApprovalTranscriptState
-  ? approvalFixture.modelSelection
-  : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8")).modelSelection;
+const modelSelection =
+  shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+    ? fixtureManifest.pendingRequestFixture.modelSelection
+    : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8")).modelSelection;
 if (typeof modelSelection?.instanceId !== "string" || typeof modelSelection?.model !== "string") {
   throw new Error("The readiness fixture must declare a saved modelSelection.");
 }
@@ -2959,6 +3158,8 @@ for (let index = 1; index <= runs; index += 1) {
       verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
       verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
       approvalFixture,
+      verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
+      questionFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
@@ -2982,14 +3183,15 @@ const report = {
     projectTitle: fixtureManifest.project.title,
     canonicalThreadTitle,
     modelSelection,
-    pendingRequest: shouldVerifyApprovalTranscriptState
-      ? {
-          mode: approvalFixture.mode,
-          threadId: approvalFixture.threadId,
-          requestId: approvalFixture.activity.payload.requestId,
-          activeTurnId: approvalFixture.activeTurnId,
-        }
-      : undefined,
+    pendingRequest:
+      shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+        ? {
+            mode: fixtureManifest.pendingRequestFixture.mode,
+            threadId: fixtureManifest.pendingRequestFixture.threadId,
+            requestId: fixtureManifest.pendingRequestFixture.activity.payload.requestId,
+            activeTurnId: fixtureManifest.pendingRequestFixture.activeTurnId,
+          }
+        : undefined,
   },
   viewport: { width, height },
   expectedTheme: expectedTheme ?? null,

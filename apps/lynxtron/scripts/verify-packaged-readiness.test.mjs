@@ -140,4 +140,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"--verify-approval-transcript-state"');
     assert.include(source, "fixtureManifest.pendingRequestFixture");
   });
+
+  it("selects and submits a real Native pending question", () => {
+    assert.include(source, "async function verifyQuestionTranscriptState");
+    assert.include(source, '"--verify-question-transcript-state"');
+    assert.include(source, '".composer-pending-question"');
+    assert.include(source, '".composer-surface--question"');
+    assert.include(source, '".composer-question-submit"');
+    assert.include(source, "data-question-option-selected");
+    assert.include(source, "hasPendingUserInput === false");
+    assert.include(source, '"native-question.png"');
+  });
 });
