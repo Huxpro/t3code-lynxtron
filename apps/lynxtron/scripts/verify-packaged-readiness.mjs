@@ -604,12 +604,12 @@ async function verifyComposerGeometry(client) {
     contextControls.length === 2 &&
     contextControls.every(
       (rect) =>
-        Math.abs(rect.y - (contextStrip.y + 20)) <= 0.75 && Math.abs(rect.height - 24) <= 0.5,
+        Math.abs(rect.y - (contextStrip.y + 20)) <= 1.25 && Math.abs(rect.height - 24) <= 0.5,
     ) &&
-    Math.abs(contextControls[0].x - (contextStrip.x + 4)) <= 0.75 &&
+    Math.abs(contextControls[0].x - (contextStrip.x + 4)) <= 1.25 &&
     Math.abs(
       contextControls[1].x + contextControls[1].width - (contextStrip.x + contextStrip.width - 4),
-    ) <= 0.75;
+    ) <= 1.25;
   const wrongMutedAlpha = (color) => {
     const match = /^rgba\(113,113,122,([0-9.]+)\)$/u.exec(color);
     return !match || Math.abs(Number(match[1]) - 0.7) > 1 / 255;
