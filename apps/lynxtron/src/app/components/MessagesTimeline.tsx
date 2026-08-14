@@ -705,7 +705,7 @@ export function MessagesTimeline({
     >
       <list
         ref={listRef}
-        className="timeline-list"
+        className={isWorking ? "timeline-list timeline-list--working" : "timeline-list"}
         scroll-orientation="vertical"
         list-type="single"
         span-count={1}
@@ -718,7 +718,9 @@ export function MessagesTimeline({
               className={
                 row.kind === "working"
                   ? "timeline-row-root timeline-row-root--working"
-                  : "timeline-row-root"
+                  : row.kind === "message" && row.message.role === "assistant"
+                    ? "timeline-row-root timeline-row-root--assistant"
+                    : "timeline-row-root"
               }
             >
               <TranscriptRowSurface

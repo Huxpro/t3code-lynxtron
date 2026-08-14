@@ -15,12 +15,15 @@ const sharedRowSource = readFileSync(
 
 describe("transcript layout contract", () => {
   it("matches the Web timeline top inset and working-row spacing", () => {
-    expect(overrides).toContain("padding: 16px 26px 20px;");
+    expect(overrides).toContain("padding: 48px 26px 20px;");
+    expect(overrides).toContain(".timeline-list--working {\n  padding-top: 16px;");
     expect(overrides).toContain(".timeline-row-root--working {\n  height: 40px;");
     expect(overrides).toContain(".transcript-working-outer {\n  padding-bottom: 16px;");
     expect(sharedRowSource).toContain('row.kind === "working" ? "transcript-working-outer" : null');
     expect(timelineSource).toContain(
       'row.kind === "working"\n                  ? "timeline-row-root timeline-row-root--working"',
     );
+    expect(timelineSource).toContain('row.kind === "message" && row.message.role === "assistant"');
+    expect(overrides).toContain(".timeline-row-root--assistant {\n  padding-bottom: 16px;");
   });
 });

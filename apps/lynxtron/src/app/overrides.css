@@ -2784,7 +2784,10 @@
   overflow-y: hidden;
   box-sizing: border-box;
   /* Web reserves 12px for its transcript scrollbar at constrained widths. */
-  padding: 16px 26px 20px;
+  padding: 48px 26px 20px;
+}
+.timeline-list--working {
+  padding-top: 16px;
 }
 .timeline-row-root {
   display: block;
@@ -2797,6 +2800,9 @@
 .timeline-row-root--working {
   height: 40px;
 }
+.timeline-row-root--assistant {
+  padding-bottom: 16px;
+}
 .transcript-working-outer {
   padding-bottom: 16px;
   box-sizing: border-box;
@@ -2806,7 +2812,6 @@
   padding-bottom: 16px;
   box-sizing: border-box;
 }
-.transcript-assistant-group,
 [data-timeline-row-kind="work"] {
   width: 100%;
   padding-bottom: 8px;
