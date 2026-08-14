@@ -9,7 +9,11 @@
       "delta": -0.001115,
       "reason": "lowered checkpoint loss through shell, settings, composer changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): bring certification evidence and reports under version control",
-      "surfaces": ["shell", "settings", "composer"],
+      "surfaces": [
+        "shell",
+        "settings",
+        "composer"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -22,7 +26,9 @@
       "delta": -0.000007,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): evidence inventory — backup ref push is a pending manual step",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -35,7 +41,9 @@
       "delta": -0.00005,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "ci: add minimal Lynxtron CI for the lynxtron-port branch",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -48,7 +56,9 @@
       "delta": -0.000012,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): tier certification into slice-level and phase-exit batteries",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -61,7 +71,9 @@
       "delta": -0.00003,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): draft ready-to-file upstream issues for R1-R11",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -74,7 +86,10 @@
       "delta": -0.000315,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): native <list> chat transcript on a shared projection",
-      "surfaces": ["shell", "transcript"],
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -87,7 +102,9 @@
       "delta": -0.000104,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): refresh reuse report after shared transcript extraction",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -100,7 +117,10 @@
       "delta": -0.000133,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): shared transcript follow/detach state machine (P2-S3)",
-      "surfaces": ["shell", "transcript"],
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -113,7 +133,9 @@
       "delta": -0.000038,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): P3-S1 keyboard/push capability probe (R3/R5 runtime facts)",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -126,7 +148,9 @@
       "delta": -0.000039,
       "reason": "lowered checkpoint loss through transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "fix(lynxtron): correct transcript evidence viewports; add 1440x900 capture",
-      "surfaces": ["transcript"],
+      "surfaces": [
+        "transcript"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -139,7 +163,9 @@
       "delta": -0.000007,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): note transcript evidence viewport correction in status",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -152,7 +178,10 @@
       "delta": -0.000096,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): upgrade lynxtron 0.0.5 -> 0.0.7; re-probe gaps; file upstream issues",
-      "surfaces": ["shell", "transcript"],
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -178,7 +207,10 @@
       "delta": -0.000447,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): converge Sidebar V2 composition",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -191,7 +223,11 @@
       "delta": -0.000069,
       "reason": "lowered checkpoint loss through shell, settings, overlays changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): bridge discrete keyboard commands",
-      "surfaces": ["shell", "settings", "overlays"],
+      "surfaces": [
+        "shell",
+        "settings",
+        "overlays"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -204,7 +240,10 @@
       "delta": -0.000107,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): finish P2 transcript presentation",
-      "surfaces": ["shell", "transcript"],
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -217,7 +256,9 @@
       "delta": -0.000034,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): upgrade to 0.0.8 and repro runtime gaps",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -230,7 +271,9 @@
       "delta": -0.000054,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): reset port around shared product source",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -256,7 +299,9 @@
       "delta": -0.000188,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "chore(lynxtron): record AR0 baseline after upstream merge",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -269,7 +314,9 @@
       "delta": -0.000123,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): prove main-owned connector behind flag",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -282,7 +329,10 @@
       "delta": -0.000073,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): cut over to the main-owned connector transport",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -295,7 +345,10 @@
       "delta": -0.000301,
       "reason": "lowered checkpoint loss through shell, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): converge transcript composition on one shared surface",
-      "surfaces": ["shell", "transcript"],
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -308,7 +361,11 @@
       "delta": -0.000236,
       "reason": "lowered checkpoint loss through shell, composer, transcript changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): converge Composer chrome on one shared surface",
-      "surfaces": ["shell", "composer", "transcript"],
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -321,7 +378,10 @@
       "delta": -0.000116,
       "reason": "lowered checkpoint loss through shell, overlays changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share model picker and palette compositions",
-      "surfaces": ["shell", "overlays"],
+      "surfaces": [
+        "shell",
+        "overlays"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -334,7 +394,10 @@
       "delta": -0.00015,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): converge settings panels on shared surfaces",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -347,7 +410,10 @@
       "delta": -0.000127,
       "reason": "lowered checkpoint loss through shell, review changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share plan and right-panel chrome compositions",
-      "surfaces": ["shell", "review"],
+      "surfaces": [
+        "shell",
+        "review"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -360,7 +426,10 @@
       "delta": -0.000105,
       "reason": "lowered checkpoint loss through shell, review changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share file-tree rows and diff stat labels",
-      "surfaces": ["shell", "review"],
+      "surfaces": [
+        "shell",
+        "review"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -373,7 +442,10 @@
       "delta": -0.000051,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "refactor(lynxtron,web): retire the prototype settings brand header",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -386,7 +458,9 @@
       "delta": -0.000013,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): record AR5.4 handoff for the next session",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -399,7 +473,9 @@
       "delta": -0.000104,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron,web): share the chat route composition",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -412,7 +488,10 @@
       "delta": -0.000074,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): certify the port as chat-first-preview (AR6)",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -425,7 +504,9 @@
       "delta": -0.000053,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): plan outcome-driven convergence",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -438,7 +519,9 @@
       "delta": -0.000054,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): plan feature parity by product value",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "baseline-geometry",
       "toPoint": "native-readiness"
     },
@@ -464,7 +547,9 @@
       "delta": -0.004432,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): freeze Plan 11 outcome baseline",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "native-readiness",
       "toPoint": "browser-matrix"
     },
@@ -477,7 +562,9 @@
       "delta": -0.005234,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): prove current-stack Lynx Web build",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "native-readiness",
       "toPoint": "browser-matrix"
     },
@@ -490,7 +577,9 @@
       "delta": -0.0057,
       "reason": "lowered checkpoint loss through shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "feat(lynxtron): add typed browser preview host",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "native-readiness",
       "toPoint": "browser-matrix"
     },
@@ -503,7 +592,14 @@
       "delta": -0.161422,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "39-state strict evidence matrix",
-      "surfaces": ["shell", "composer", "transcript", "overlays", "settings", "review"],
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript",
+        "overlays",
+        "settings",
+        "review"
+      ],
       "fromPoint": "browser-matrix",
       "toPoint": "strict-matrix"
     },
@@ -516,7 +612,9 @@
       "delta": 0.000402,
       "reason": "A stricter measurement replaced a coarse gate inside an uncommitted evidence session; this is not attributable to a product commit.",
       "subject": "First Native pixel baseline",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "strict-matrix",
       "toPoint": "pixel-baseline"
     },
@@ -529,7 +627,11 @@
       "delta": -0.01207,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "Masked pixel residual convergence",
-      "surfaces": ["shell", "composer", "transcript"],
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript"
+      ],
       "fromPoint": "pixel-baseline",
       "toPoint": "masked-pixel-convergence"
     },
@@ -542,7 +644,9 @@
       "delta": -0.028054,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "Four-state review interaction matrix",
-      "surfaces": ["review"],
+      "surfaces": [
+        "review"
+      ],
       "fromPoint": "masked-pixel-convergence",
       "toPoint": "review-interaction-matrix"
     },
@@ -555,7 +659,9 @@
       "delta": -0.068834,
       "reason": "Evidence changed inside an uncommitted working-tree session; no per-commit split is defensible.",
       "subject": "Model Picker fidelity closeout",
-      "surfaces": ["overlays"],
+      "surfaces": [
+        "overlays"
+      ],
       "fromPoint": "review-interaction-matrix",
       "toPoint": "model-picker-closeout"
     },
@@ -581,7 +687,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(server): type source-control discovery failures",
-      "surfaces": ["settings"],
+      "surfaces": [
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -607,7 +715,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(contracts): expose portable model favorites defaults",
-      "surfaces": ["settings"],
+      "surfaces": [
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -646,7 +756,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share viewport media queries",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -659,7 +771,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share resizable panel widths",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -672,7 +786,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share search overlay state",
-      "surfaces": ["overlays"],
+      "surfaces": [
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -685,7 +801,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): project pending requests",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -698,7 +816,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(client-runtime): share file picker matching",
-      "surfaces": ["overlays"],
+      "surfaces": [
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -711,7 +831,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(client-runtime): restore portable model favorites",
-      "surfaces": ["settings"],
+      "surfaces": [
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -724,7 +846,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): parse markdown strikethrough",
-      "surfaces": ["transcript"],
+      "surfaces": [
+        "transcript"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -737,7 +861,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): retain thinking timeline rows",
-      "surfaces": ["transcript"],
+      "surfaces": [
+        "transcript"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -750,7 +876,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(client-runtime): decode source-control wire options",
-      "surfaces": ["settings"],
+      "surfaces": [
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -763,7 +891,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(client-runtime): filter unavailable picker models",
-      "surfaces": ["overlays"],
+      "surfaces": [
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -776,7 +906,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share composer control state",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -789,7 +921,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(client-runtime): share connection lifecycle copy",
-      "surfaces": ["settings"],
+      "surfaces": [
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -802,7 +936,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(client-runtime): export shared presentation modules",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -815,7 +951,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): reuse shared file picker matching",
-      "surfaces": ["overlays"],
+      "surfaces": [
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -828,7 +966,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(platform): share live viewport capabilities",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -841,7 +981,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): consume shared responsive capabilities",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -854,7 +996,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): reuse shared sidebar sizing",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -867,7 +1011,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): define responsive right panel bounds",
-      "surfaces": ["review"],
+      "surfaces": [
+        "review"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -880,7 +1026,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): add shared connection lifecycle banner",
-      "surfaces": ["settings"],
+      "surfaces": [
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -893,7 +1041,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): add shared changed-files card",
-      "surfaces": ["review"],
+      "surfaces": [
+        "review"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -906,7 +1056,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): compose changed files through shared card",
-      "surfaces": ["review"],
+      "surfaces": [
+        "review"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -919,7 +1071,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): expand shared model picker surface",
-      "surfaces": ["overlays", "shell"],
+      "surfaces": [
+        "overlays",
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -932,7 +1087,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(web): expose model picker semantic state",
-      "surfaces": ["shell", "overlays"],
+      "surfaces": [
+        "shell",
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -945,7 +1103,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): project model picker availability",
-      "surfaces": ["overlays"],
+      "surfaces": [
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -958,7 +1118,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): unify shell navigation state",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -971,7 +1133,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add theme-aware provider icons",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -984,7 +1148,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): expand shared composer controls",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -997,7 +1163,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete typed connector commands",
-      "surfaces": ["shell", "composer"],
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1010,7 +1179,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): persist theme preference state",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1023,7 +1194,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): bridge live system theme",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1036,7 +1209,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): share pending composer surfaces",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1049,7 +1224,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): converge shared settings surfaces",
-      "surfaces": ["settings"],
+      "surfaces": [
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1062,7 +1239,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): converge sidebar composition",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1075,7 +1254,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): adapt shared sidebar leaves",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1088,7 +1269,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): share command palette state and surface",
-      "surfaces": ["overlays"],
+      "surfaces": [
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1101,7 +1284,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): expand shared transcript rows",
-      "surfaces": ["transcript"],
+      "surfaces": [
+        "transcript"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1114,7 +1299,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(web): consume shared chat projections",
-      "surfaces": ["shell", "composer"],
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1127,7 +1315,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(web): share diff and right-panel anatomy",
-      "surfaces": ["review", "shell"],
+      "surfaces": [
+        "review",
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1140,7 +1331,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete shared Web host leaves",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1153,7 +1347,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "fix(lynxtron): resolve release-channel branding",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1166,7 +1362,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): route clipboard through typed host",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1179,7 +1377,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): host viewport and reload controls",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1192,7 +1392,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete native keyboard menu",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1205,7 +1407,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): wire native host lifecycle",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1218,7 +1422,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "refactor(lynxtron): make route state synchronous",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1231,7 +1438,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): render complete markdown blocks",
-      "surfaces": ["transcript"],
+      "surfaces": [
+        "transcript"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1244,7 +1453,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): parse diffs and editor actions",
-      "surfaces": ["review"],
+      "surfaces": [
+        "review"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1257,7 +1468,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): stabilize transcript row reuse",
-      "surfaces": ["shell", "transcript"],
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1270,7 +1484,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): render canonical diff surfaces",
-      "surfaces": ["review"],
+      "surfaces": [
+        "review"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1283,7 +1499,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add responsive right panel",
-      "surfaces": ["review"],
+      "surfaces": [
+        "review"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1296,7 +1514,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete native transcript composition",
-      "surfaces": ["shell", "transcript"],
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1309,7 +1530,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete responsive chat header",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1322,7 +1545,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete shared Settings routes",
-      "surfaces": ["settings", "shell"],
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1335,7 +1561,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete search and project actions",
-      "surfaces": ["shell", "overlays"],
+      "surfaces": [
+        "shell",
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1348,7 +1577,12 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete chat and model picker composition",
-      "surfaces": ["shell", "review", "composer", "overlays"],
+      "surfaces": [
+        "shell",
+        "review",
+        "composer",
+        "overlays"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1361,7 +1595,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): bootstrap themed responsive app shell",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1374,7 +1610,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete responsive theme styles",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1387,7 +1625,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): complete Browser Preview runtime",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1400,7 +1640,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add static convergence audits",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1413,7 +1656,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): enforce evidence provenance",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1426,7 +1671,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): verify exact-owned Native readiness",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1439,7 +1686,10 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "feat(lynxtron): add shared dual-renderer workbench",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1452,7 +1702,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): retain focused diagnostic probes",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1465,7 +1717,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): ignore disposable harness state",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1478,7 +1732,11 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): remove superseded visual artifacts",
-      "surfaces": ["shell", "settings", "transcript"],
+      "surfaces": [
+        "shell",
+        "settings",
+        "transcript"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1491,7 +1749,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "test(lynxtron): establish honest evidence baseline",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1504,7 +1764,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): archive superseded harness plans",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1517,7 +1779,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): document current runtime adapters",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1530,7 +1794,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): reconcile the residual roadmap",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1543,7 +1809,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): publish final5 archaeology authority",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1556,7 +1824,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "chore(lynxtron): format the generated icon atlas",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1569,7 +1839,9 @@
       "delta": null,
       "reason": "No independent current-head fidelity measurement follows this commit; do not infer product loss from the later evidence reset.",
       "subject": "docs(lynxtron): complete the archaeology audit",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "model-picker-closeout",
       "toPoint": "evidence-archaeology-reset"
     },
@@ -1595,7 +1867,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): account for fidelity loss over time",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1608,7 +1882,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): publish the fidelity loss atlas",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1621,7 +1897,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "feat(lynxtron): attribute fidelity loss to commits",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1634,7 +1912,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): unify loss and screenshot review",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1647,7 +1927,9 @@
       "delta": -0.008475,
       "reason": "This loss decrease comes from the first current-head Browser measurement after the archaeology reset, not from a measured product change between commits.",
       "subject": "Current-head docked Composer browser pair",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "evidence-archaeology-reset",
       "toPoint": "composer-docked-current-browser"
     },
@@ -1660,7 +1942,9 @@
       "delta": -0.000359,
       "reason": "A before/after Browser pair measures one working-tree product change: Web and Lynx now consume the same session-phase placeholder projection.",
       "subject": "Docked Composer placeholder parity",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "composer-docked-current-browser",
       "toPoint": "composer-docked-placeholder-fix"
     },
@@ -1673,7 +1957,11 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): make sidebar resize track the cursor",
-      "surfaces": ["shell", "overlays", "review"],
+      "surfaces": [
+        "shell",
+        "overlays",
+        "review"
+      ],
       "fromPoint": "composer-docked-placeholder-fix",
       "toPoint": "sidebar-resize-native-interaction-fix"
     },
@@ -1686,7 +1974,9 @@
       "delta": -0.011473,
       "reason": "A before/after Native interaction investigation isolated and removed the Sidebar-only width transition while retaining the same scope, weights, and pointer sample sequence.",
       "subject": "Native Sidebar resize cursor tracking",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "composer-docked-placeholder-fix",
       "toPoint": "sidebar-resize-native-interaction-fix"
     },
@@ -1712,7 +2002,10 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record sidebar interaction loss",
-      "surfaces": ["composer", "shell"],
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -1725,7 +2018,10 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(composer): share session placeholder copy",
-      "surfaces": ["shell", "composer"],
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -1738,7 +2034,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): compare visible Composer placeholders",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -1751,7 +2049,9 @@
       "delta": -0.017844,
       "reason": "Current-head canonical captures supersede stale runtime-blocker evidence without attributing the evidence correction to a product code change.",
       "subject": "Current-head Hero and Sendable Composer pair",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "review-diff-current-head-evidence-blocker",
       "toPoint": "composer-hero-sendable-current-browser"
     },
@@ -1764,7 +2064,10 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): align Composer footer controls",
-      "surfaces": ["composer", "shell"],
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
       "fromPoint": "composer-hero-sendable-current-browser",
       "toPoint": "composer-hero-footer-material-fix"
     },
@@ -1777,7 +2080,9 @@
       "delta": -0.00004,
       "reason": "One CSS-only product change was measured against the same canonical Hero snapshot and viewport before and after.",
       "subject": "Hero Composer footer material parity",
-      "surfaces": ["composer"],
+      "surfaces": [
+        "composer"
+      ],
       "fromPoint": "composer-hero-sendable-current-browser",
       "toPoint": "composer-hero-footer-material-fix"
     },
@@ -1790,7 +2095,10 @@
       "delta": -0.005885,
       "reason": "lowered checkpoint loss through composer, shell changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "docs(lynxtron): refresh Composer fidelity loss",
-      "surfaces": ["composer", "shell"],
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
       "fromPoint": "composer-hero-footer-material-fix",
       "toPoint": "lifecycle-error-current-browser"
     },
@@ -1803,7 +2111,10 @@
       "delta": -0.00138,
       "reason": "lowered checkpoint loss through shell, settings changes; attribution is proportional to touched-surface loss and change size.",
       "subject": "fix(lynxtron): preserve lifecycle error parity",
-      "surfaces": ["shell", "settings"],
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
       "fromPoint": "composer-hero-footer-material-fix",
       "toPoint": "lifecycle-error-current-browser"
     },
@@ -1816,7 +2127,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "docs(lynxtron): record lifecycle fidelity loss",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -1829,7 +2142,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "chore(lynxtron): restore canonical fidelity report",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -1842,7 +2157,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): admit empty idle transcript evidence",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -1855,7 +2172,9 @@
       "delta": -0.005148,
       "reason": "A corrected empty-transcript readiness gate established the current-head product baseline without assigning the evidence correction to product code.",
       "subject": "Current idle-thread Sidebar baseline",
-      "surfaces": ["transcript"],
+      "surfaces": [
+        "transcript"
+      ],
       "fromPoint": "lifecycle-error-current-browser",
       "toPoint": "existing-thread-idle-current-browser"
     },
@@ -1868,7 +2187,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "test(lynxtron): verify Native Sidebar bounds",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "existing-thread-idle-current-browser",
       "toPoint": "existing-thread-idle-sidebar-geometry-fix"
     },
@@ -1881,7 +2202,9 @@
       "delta": null,
       "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
       "subject": "fix(lynxtron): constrain Sidebar rows to the rail",
-      "surfaces": ["shell"],
+      "surfaces": [
+        "shell"
+      ],
       "fromPoint": "existing-thread-idle-current-browser",
       "toPoint": "existing-thread-idle-sidebar-geometry-fix"
     },
@@ -1894,7 +2217,9 @@
       "delta": -0.00041,
       "reason": "The same Browser snapshot and viewport were captured before and after commit d9d2444e5, and a fresh exact-bundle Native geometry gate independently verified rail containment.",
       "subject": "Idle-thread Sidebar row containment",
-      "surfaces": ["transcript"],
+      "surfaces": [
+        "transcript"
+      ],
       "fromPoint": "existing-thread-idle-current-browser",
       "toPoint": "existing-thread-idle-sidebar-geometry-fix"
     }
