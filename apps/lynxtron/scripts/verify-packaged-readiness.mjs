@@ -636,9 +636,15 @@ async function verifyComposerGeometry(client, expectedTheme) {
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
     Math.abs(rect.width - 12) > 0.75 || Math.abs(rect.height - 12) > 0.75;
-  const wrongMutedAlpha = (color) => {
-    const match = /^rgba\(113,113,122,([0-9.]+)\)$/u.exec(color);
-    return !match || Math.abs(Number(match[1]) - 0.7) > 1 / 255;
+  const wrongMutedColor = (color) => {
+    const match = /^rgba\((\d+),(\d+),(\d+),([0-9.]+)\)$/u.exec(color);
+    if (!match) return true;
+    const channels = match.slice(1, 4).map(Number);
+    const expectedChannels = expectedTheme === "light" ? [113, 113, 122] : [129, 129, 129];
+    return (
+      channels.some((channel, index) => channel !== expectedChannels[index]) ||
+      Math.abs(Number(match[4]) - 0.7) > 1 / 255
+    );
   };
   const contextControlsAligned =
     contextStrip &&
@@ -658,7 +664,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
       label.style.fontSize === "12px" &&
       label.style.fontWeight === "500" &&
       label.style.lineHeight === "16px" &&
-      !wrongMutedAlpha(label.style.color),
+      !wrongMutedColor(label.style.color),
   );
   const contextLightBandsAligned =
     contextLightBands.length === 16 &&
@@ -692,7 +698,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
     !expectedThemeMatches ||
     contextIcons.length !== 4 ||
     contextIcons.some(wrongContextSize) ||
-    Object.values(controlColors).some(wrongMutedAlpha)
+    Object.values(controlColors).some(wrongMutedColor)
   ) {
     throw new Error(
       `Composer Footer icon geometry drifted: ${JSON.stringify({
@@ -702,6 +708,8 @@ async function verifyComposerGeometry(client, expectedTheme) {
         contextStrip,
         contextControls,
         contextLabels,
+        modelAnchor: composer.anchors.modelAnchor,
+        runtimeWrap: composer.anchors.runtimeWrap,
         themeRoot,
         contextBackdrop,
         contextLegacyBand,

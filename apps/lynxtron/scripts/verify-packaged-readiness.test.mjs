@@ -51,7 +51,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "contextLabelsAligned");
     assert.include(source, "contextIcons.length !== 4");
     assert.include(source, "Math.abs(rect.width - 12) > 0.75");
-    assert.include(source, "Math.abs(Number(match[1]) - 0.7) > 1 / 255");
+    assert.include(source, 'expectedTheme === "light" ? [113, 113, 122] : [129, 129, 129]');
+    assert.include(source, "Math.abs(Number(match[4]) - 0.7) > 1 / 255");
     assert.include(source, "chevrons.length < 2");
     assert.include(source, "chevrons.length > 3");
     assert.include(source, "Composer Footer icon geometry drifted");
