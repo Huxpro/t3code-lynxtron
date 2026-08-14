@@ -76,4 +76,29 @@ describe("project model selection candidates", () => {
       },
     );
   });
+
+  it("falls back within the active provider before cached projection state exists", () => {
+    const model = {
+      instanceId: ProviderInstanceId.make("opencode"),
+      slug: "opencode/big-pickle",
+    };
+
+    assert.deepEqual(
+      resolveActiveThreadModelSelection(
+        [model],
+        {
+          instanceId: model.instanceId,
+          model: "opencode/not-a-real-model",
+        },
+        { selectedModel: undefined, selection: undefined },
+      ),
+      {
+        selectedModel: model,
+        selection: {
+          instanceId: model.instanceId,
+          model: model.slug,
+        },
+      },
+    );
+  });
 });

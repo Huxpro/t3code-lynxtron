@@ -36,6 +36,18 @@ export function resolveActiveThreadModelSelection<
   if (exact) {
     return { selectedModel: exact, selection: threadSelection };
   }
+  const sameInstanceFallback = models.find(
+    (model) => model.instanceId === threadSelection.instanceId,
+  );
+  if (sameInstanceFallback) {
+    return {
+      selectedModel: sameInstanceFallback,
+      selection: {
+        instanceId: threadSelection.instanceId,
+        model: sameInstanceFallback.slug,
+      },
+    };
+  }
   if (fallback.selectedModel && fallback.selection) {
     return {
       selectedModel: fallback.selectedModel,

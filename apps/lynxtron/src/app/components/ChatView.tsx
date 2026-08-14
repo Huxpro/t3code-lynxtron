@@ -18,6 +18,7 @@ import {
   derivePendingApprovals,
   derivePendingUserInputs,
 } from "@t3tools/client-runtime/presentation/pending-requests";
+import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
 import { ChatRouteSurface } from "../../../../web/src/components/ChatRouteSurface";
 import { ConnectionLifecycleBannerSurface } from "../../../../web/src/components/chat/ConnectionLifecycleBannerSurface";
 import { ThreadErrorBannerSurface } from "../../../../web/src/components/chat/ThreadErrorBannerSurface";
@@ -45,6 +46,7 @@ import {
   useModelPickerOpen,
   useRightPanelState,
 } from "../state/uiState";
+import { resolveActiveThreadModelSelection } from "../state/modelSelection.logic";
 import approvalDetailLabelUrl from "../assets/approval-detail-label@2x.png?external";
 import approvalDetailValuePendingUrl from "../assets/approval-detail-value-pending@2x.png?external";
 import approvalEyebrowUrl from "../assets/approval-eyebrow@2x.png?external";
@@ -114,14 +116,31 @@ export function ChatView({ threadId }: ChatViewProps) {
   );
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;
 
+  const presentationModels = useMemo(
+    () =>
+      models.length > 0
+        ? models
+        : deriveModelPickerModels(providerEntries, { includeDisabled: true }),
+    [models, providerEntries],
+  );
+  const activeThreadModelProjection = useMemo(
+    () =>
+      activeThread
+        ? resolveActiveThreadModelSelection(presentationModels, activeThread.modelSelection, {
+            selectedModel,
+            selection: modelSelection,
+          })
+        : { selectedModel, selection: modelSelection },
+    [activeThread, modelSelection, presentationModels, selectedModel],
+  );
   const presentedSelectedModel = resolveConnectionScopedValue({
     status,
-    current: selectedModel,
+    current: activeThreadModelProjection.selectedModel,
     lastKnown: lastKnownSelectedModel.current,
   });
   const presentedModelSelection = resolveConnectionScopedValue({
     status,
-    current: modelSelection,
+    current: activeThreadModelProjection.selection,
     lastKnown: lastKnownModelSelection.current,
   });
   const projectName = activeProject?.title ?? "your project";
@@ -503,7 +522,9 @@ export function ChatView({ threadId }: ChatViewProps) {
               providers={providerEntries}
               providerSnapshots={providers}
               selectedModel={selectedModel}
-              currentModelSelection={activeThread?.modelSelection ?? modelSelection}
+              currentModelSelection={
+                presentedModelSelection ?? activeThread?.modelSelection ?? modelSelection
+              }
               currentProviderInstanceId={activeThread?.session?.providerInstanceId ?? null}
               hasStartedSession={
                 activeThread?.session !== null && activeThread?.session !== undefined

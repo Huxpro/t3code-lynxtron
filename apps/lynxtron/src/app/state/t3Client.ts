@@ -205,13 +205,12 @@ function resetActiveThreadState(
   threadFingerprint = "";
   const current = appAtomRegistry.get(t3ClientStateAtom);
   const thread = current.threads.find((candidate) => candidate.id === activeThreadId);
-  const selectedModel = thread
-    ? current.models.find(
-        (model) =>
-          model.instanceId === thread.modelSelection.instanceId &&
-          model.slug === thread.modelSelection.model,
-      )
-    : current.selectedModel;
+  const activeProjection = thread
+    ? resolveActiveThreadModelSelection(current.models, thread.modelSelection, {
+        selectedModel: current.selectedModel,
+        selection: current.modelSelection,
+      })
+    : null;
   patchState({
     activeThreadId,
     draftHeroThreadId: options?.draftHero ? activeThreadId : undefined,
@@ -227,8 +226,8 @@ function resetActiveThreadState(
     activeTurnId: null,
     ...(thread
       ? {
-          modelSelection: thread.modelSelection,
-          selectedModel,
+          modelSelection: activeProjection?.selection ?? thread.modelSelection,
+          selectedModel: activeProjection?.selectedModel,
         }
       : {}),
   });
