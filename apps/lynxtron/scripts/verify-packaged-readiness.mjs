@@ -565,6 +565,28 @@ async function readSelectorRects(client, selector) {
   return rects;
 }
 
+async function readSelectorStyleValues(client, selector, property) {
+  await client.runCdp("DOM.enable", { useCompression: false });
+  const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
+  const root = commandResult(documentResponse)?.root;
+  const rootNodeId = root?.children?.[0]?.nodeId ?? root?.nodeId;
+  if (!Number.isInteger(rootNodeId) || rootNodeId <= 0) {
+    throw new Error("Lynx DevTool did not return a DOM root node.");
+  }
+  const nodesResponse = await client.runCdp("DOM.querySelectorAll", {
+    nodeId: rootNodeId,
+    selector,
+  });
+  const nodeIds = commandResult(nodesResponse)?.nodeIds ?? [];
+  return Promise.all(
+    nodeIds.map(async (nodeId) => {
+      const styleResponse = await client.runCdp("CSS.getComputedStyleForNode", { nodeId });
+      const computedStyle = commandResult(styleResponse)?.computedStyle ?? [];
+      return computedStyle.find((entry) => entry.name === property)?.value ?? null;
+    }),
+  );
+}
+
 async function verifySidebarGeometry(client) {
   const [sidebar] = await readSelectorRects(client, ".sidebar");
   const [threadList] = await readSelectorRects(client, ".sidebar-v2-thread-list");
@@ -622,6 +644,11 @@ async function verifyComposerGeometry(client, expectedTheme) {
     client,
     ".composer-toolbar-control--interaction .pill__icon-img",
   );
+  const footerIconOpacities = await readSelectorStyleValues(
+    client,
+    ".composer-toolbar-control .pill__icon-img, .composer-toolbar-control .pill__chevron-img",
+    "opacity",
+  );
   const [contextStrip] = await readSelectorRects(client, ".composer-context-strip");
   const contextControls = await readSelectorRects(client, ".composer-context-control");
   const contextIcons = await readSelectorRects(client, ".composer-context-icon");
@@ -636,6 +663,8 @@ async function verifyComposerGeometry(client, expectedTheme) {
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
     Math.abs(rect.width - 12) > 0.75 || Math.abs(rect.height - 12) > 0.75;
+  const wrongFooterIconOpacity = (opacity) =>
+    opacity === null || Math.abs(Number(opacity) - 0.7) > 1 / 255;
   const wrongMutedColor = (color) => {
     const match = /^rgba\((\d+),(\d+),(\d+),([0-9.]+)\)$/u.exec(color);
     if (!match) return true;
@@ -693,6 +722,8 @@ async function verifyComposerGeometry(client, expectedTheme) {
     wrongSize(runtimeIcons[0], 16) ||
     interactionIcons.length !== 1 ||
     wrongSize(interactionIcons[0], 18) ||
+    footerIconOpacities.length < 3 ||
+    footerIconOpacities.some(wrongFooterIconOpacity) ||
     !contextControlsAligned ||
     !contextLabelsAligned ||
     !expectedThemeMatches ||
@@ -705,6 +736,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
         chevrons,
         runtimeIcons,
         interactionIcons,
+        footerIconOpacities,
         contextStrip,
         contextControls,
         contextLabels,
@@ -728,6 +760,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
     chevrons,
     runtimeIcons,
     interactionIcons,
+    footerIconOpacities,
     contextStrip,
     contextControls,
     contextLabels,

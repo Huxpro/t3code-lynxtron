@@ -37,6 +37,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, ".composer-toolbar-control .pill__chevron-img");
     assert.include(source, ".composer-toolbar-control--runtime .pill__icon-img");
     assert.include(source, ".composer-toolbar-control--interaction .pill__icon-img");
+    assert.include(source, "readSelectorStyleValues");
+    assert.include(
+      source,
+      '".composer-toolbar-control .pill__icon-img, .composer-toolbar-control .pill__chevron-img"',
+    );
+    assert.include(source, "footerIconOpacities.some(wrongFooterIconOpacity)");
     assert.include(source, '".model-picker-anchor"');
     assert.include(source, '".composer-runtime-control-wrap"');
     assert.include(source, '".composer-context-control"');
