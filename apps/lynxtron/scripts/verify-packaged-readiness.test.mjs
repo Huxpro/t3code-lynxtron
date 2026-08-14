@@ -67,6 +67,30 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Composer Footer icon geometry drifted");
   });
 
+  it("verifies Model Picker theme colors and both dismissal paths", () => {
+    assert.include(source, "async function verifyModelPickerFidelity");
+    assert.include(source, 'selector: ".model-picker-content"');
+    assert.include(source, 'selector: ".model-picker-rail-scroll"');
+    assert.include(source, 'panel: "rgb(25,25,25)"');
+    assert.include(source, 'panel: "rgb(255,255,255)"');
+    assert.include(source, 'selector: ".model-picker-close"');
+    assert.include(source, 'selector: ".model-picker-dismiss-layer"');
+    assert.include(source, 'point: "bottom-right"');
+    assert.include(source, "outsideTap: true");
+  });
+
+  it("drives titlebar panels and verifies Sidebar menu rows do not collapse", () => {
+    assert.include(source, "async function verifyShellInteractions");
+    assert.include(source, '"--verify-shell-interactions"');
+    assert.include(source, 'selector: ".topbar__toggle--terminal"');
+    assert.include(source, 'selector: ".terminal-placeholder"');
+    assert.include(source, 'selector: ".topbar__toggle--right-panel"');
+    assert.include(source, 'selector: "[data-sidebar-thread-action-trigger]"');
+    assert.include(source, 'readSelectorRects(client, ".sidebar-v2-action-menu__item")');
+    assert.include(source, "Math.abs(rect.height - 30) <= 0.5");
+    assert.include(source, "Sidebar action menu rows collapsed");
+  });
+
   it("verifies the Native working transcript layout and locked workspace copy", () => {
     assert.include(source, 'readSelectorRects(client, ".timeline-list")');
     assert.include(source, 'readSelectorRects(client, ".timeline-row-root--working")');

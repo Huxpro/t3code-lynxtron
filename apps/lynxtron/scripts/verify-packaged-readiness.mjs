@@ -121,6 +121,11 @@ function quadPoint(quad, position = "center") {
     const ys = [quad[1], quad[3], quad[5], quad[7]];
     return { x: Math.min(...xs) + 4, y: Math.min(...ys) + 4 };
   }
+  if (position === "bottom-right") {
+    const xs = [quad[0], quad[2], quad[4], quad[6]];
+    const ys = [quad[1], quad[3], quad[5], quad[7]];
+    return { x: Math.max(...xs) - 16, y: Math.max(...ys) - 16 };
+  }
   return {
     x: (quad[0] + quad[2] + quad[4] + quad[6]) / 4,
     y: (quad[1] + quad[3] + quad[5] + quad[7]) / 4,
@@ -1271,6 +1276,7 @@ async function verifyModelPickerFidelity({
   child,
   client,
   devToolCli,
+  expectedTheme,
   outputDirectory,
   timeoutMs,
 }) {
@@ -1290,6 +1296,50 @@ async function verifyModelPickerFidelity({
       Math.abs((measurement.rect?.width ?? 0) - 360) <= 1 &&
       Math.abs((measurement.rect?.height ?? 0) - 346) <= 1,
   });
+  const content = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-content",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const rail = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-rail-scroll",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const expectedColors =
+    expectedTheme === "light"
+      ? {
+          panel: "rgb(255,255,255)",
+          content: "rgb(255,255,255)",
+          rail: "rgb(250,250,250)",
+        }
+      : {
+          panel: "rgb(25,25,25)",
+          content: "rgb(25,25,25)",
+          rail: "rgba(255,255,255,0.0392157)",
+        };
+  const resolvedColors = {
+    panel: panel.style.backgroundColor,
+    content: content.style.backgroundColor,
+    rail: rail.style.backgroundColor,
+  };
+  if (
+    resolvedColors.panel !== expectedColors.panel ||
+    resolvedColors.content !== expectedColors.content ||
+    resolvedColors.rail !== expectedColors.rail
+  ) {
+    throw new Error(
+      `Native model-picker theme drifted: ${JSON.stringify({
+        expectedTheme,
+        expectedColors,
+        resolvedColors,
+      })}`,
+    );
+  }
   const checkout = await waitForMeasurement({
     child,
     client,
@@ -1332,16 +1382,47 @@ async function verifyModelPickerFidelity({
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".model-picker-dismiss-layer",
+    point: "bottom-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
   return {
     status: "pass",
     input:
-      "DevTool Input.emulateTouchFromMouseEvent on measured Native model-picker trigger and Close control",
+      "DevTool Input.emulateTouchFromMouseEvent on measured Native trigger, Close control, and outside dismiss layer",
     panel: {
       rect: panel.rect,
       attributes: panel.attributes,
     },
+    colors: resolvedColors,
     checkoutLabel: checkout.text.trim(),
-    dismissed: true,
+    dismissed: {
+      closeButton: true,
+      outsideTap: true,
+    },
     screenshot: {
       path: screenshotPath,
       bytes: statSync(screenshotPath).size,
@@ -1750,6 +1831,162 @@ async function verifyRuntimeCapabilities(client) {
       error: keyDispatchError,
     },
     R10: runtime,
+  };
+}
+
+async function verifyShellInteractions({ child, client, timeoutMs }) {
+  const initialRightPanel = await readOptionalMeasurement(client, ".right-panel");
+  if (initialRightPanel) {
+    await tapSelector({
+      child,
+      client,
+      selector: ".right-panel__layout-control--close",
+      timeoutMs,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+  }
+  const terminalControl = await waitForMeasurement({
+    child,
+    client,
+    selector: ".topbar__toggle--terminal",
+    timeoutMs,
+    predicate: (measurement) => typeof measurement?.attributes.bindtap === "string",
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".topbar__toggle--terminal",
+    timeoutMs,
+  });
+  const terminalPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-right-panel-active-kind"] === "terminal",
+  });
+  const terminal = await waitForMeasurement({
+    child,
+    client,
+    selector: ".terminal-placeholder",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Terminal sessions are not connected yet") === true,
+  });
+  const rightPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-right-panel-open"] === "true",
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".right-panel__layout-control--close",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".topbar__toggle--right-panel",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".right-panel__layout-control--close",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  await tapSelector({
+    child,
+    client,
+    selector: "[data-sidebar-thread-action-trigger]",
+    timeoutMs,
+  });
+  const menu = await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-action-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const items = await readSelectorRects(client, ".sidebar-v2-action-menu__item");
+  const rowsValid =
+    items.length >= 5 &&
+    items.every((rect) => Math.abs(rect.height - 30) <= 0.5) &&
+    items.every(
+      (rect, index) =>
+        index === 0 || Math.abs(rect.y - (items[index - 1].y + items[index - 1].height)) <= 0.5,
+    );
+  if (!rowsValid || (menu.rect?.height ?? 0) < items.length * 30 + 8) {
+    throw new Error(
+      `Sidebar action menu rows collapsed: ${JSON.stringify({ menu: menu.rect, items })}`,
+    );
+  }
+  await tapSelector({
+    child,
+    client,
+    selector: ".sidebar-v2-action-menu-dismiss",
+    point: "bottom-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-action-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    terminal: {
+      control: terminalControl.rect,
+      panel: terminalPanel.rect,
+      rect: terminal.rect,
+      placeholder: true,
+    },
+    rightPanel: {
+      rect: rightPanel.rect,
+      terminalOpen: true,
+      titlebarToggleOpen: true,
+      closeControl: true,
+    },
+    sidebarMenu: {
+      rect: menu.rect,
+      items,
+      dismissed: true,
+    },
   };
 }
 
@@ -2315,6 +2552,7 @@ async function runOnce({
   verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
   verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
   approvalFixture,
+  verifyShellInteractions: shouldVerifyShellInteractions,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -2439,6 +2677,7 @@ async function runOnce({
           child,
           client,
           devToolCli,
+          expectedTheme,
           outputDirectory,
           timeoutMs,
         })
@@ -2483,6 +2722,13 @@ async function runOnce({
           outputDirectory,
         })
       : undefined;
+    const shellInteractions = shouldVerifyShellInteractions
+      ? await verifyShellInteractions({
+          child,
+          client,
+          timeoutMs,
+        })
+      : undefined;
     const runtimeCapabilities = shouldVerifyRuntimeCapabilities
       ? await verifyRuntimeCapabilities(client)
       : undefined;
@@ -2518,6 +2764,7 @@ async function runOnce({
       completedTranscriptState,
       failedTranscriptState,
       approvalTranscriptState,
+      shellInteractions,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -2545,6 +2792,7 @@ async function runOnce({
       completedTranscriptState,
       failedTranscriptState,
       approvalTranscriptState,
+      shellInteractions,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -2594,6 +2842,7 @@ const shouldVerifyFailedTranscriptState = process.argv.includes("--verify-failed
 const shouldVerifyApprovalTranscriptState = process.argv.includes(
   "--verify-approval-transcript-state",
 );
+const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -2710,6 +2959,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
       verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
       approvalFixture,
+      verifyShellInteractions: shouldVerifyShellInteractions,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,
