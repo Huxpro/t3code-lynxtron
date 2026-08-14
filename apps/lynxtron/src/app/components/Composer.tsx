@@ -410,6 +410,22 @@ export function Composer({
             <view className="composer-context-backdrop-band composer-context-backdrop-band--2" />
             <view className="composer-context-backdrop-band composer-context-backdrop-band--3" />
             <view className="composer-context-backdrop-band composer-context-backdrop-band--4" />
+            <view className="composer-context-light-band composer-context-light-band--0" />
+            <view className="composer-context-light-band composer-context-light-band--1" />
+            <view className="composer-context-light-band composer-context-light-band--2" />
+            <view className="composer-context-light-band composer-context-light-band--3" />
+            <view className="composer-context-light-band composer-context-light-band--4" />
+            <view className="composer-context-light-band composer-context-light-band--5" />
+            <view className="composer-context-light-band composer-context-light-band--6" />
+            <view className="composer-context-light-band composer-context-light-band--7" />
+            <view className="composer-context-light-band composer-context-light-band--8" />
+            <view className="composer-context-light-band composer-context-light-band--9" />
+            <view className="composer-context-light-band composer-context-light-band--10" />
+            <view className="composer-context-light-band composer-context-light-band--11" />
+            <view className="composer-context-light-band composer-context-light-band--12" />
+            <view className="composer-context-light-band composer-context-light-band--13" />
+            <view className="composer-context-light-band composer-context-light-band--14" />
+            <view className="composer-context-light-band composer-context-light-band--15" />
           </view>
         }
         checkout={
