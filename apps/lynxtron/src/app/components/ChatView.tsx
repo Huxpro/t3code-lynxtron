@@ -18,6 +18,13 @@ import {
   derivePendingApprovals,
   derivePendingUserInputs,
 } from "@t3tools/client-runtime/presentation/pending-requests";
+import {
+  buildPendingUserInputAnswers,
+  formatPendingPrimaryActionLabel,
+  setPendingUserInputCustomAnswer,
+  togglePendingUserInputOptionSelection,
+  type PendingUserInputDraftAnswer,
+} from "@t3tools/client-runtime/presentation/pending-user-input";
 import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
 import { ChatRouteSurface } from "../../../../web/src/components/ChatRouteSurface";
 import { ConnectionLifecycleBannerSurface } from "../../../../web/src/components/chat/ConnectionLifecycleBannerSurface";
@@ -90,6 +97,10 @@ export function ChatView({ threadId }: ChatViewProps) {
   const lastKnownSelectedModel = useRef(selectedModel);
   const lastKnownModelSelection = useRef(modelSelection);
   const [respondingApprovalId, setRespondingApprovalId] = useState<string | null>(null);
+  const [respondingUserInputId, setRespondingUserInputId] = useState<string | null>(null);
+  const [pendingUserInputDrafts, setPendingUserInputDrafts] = useState<
+    Record<string, PendingUserInputDraftAnswer>
+  >({});
   const [checkoutBranch, setCheckoutBranch] = useState<string | null>(null);
   const [centerPanelWidth, setCenterPanelWidth] = useState(1024);
   const [rightPanelMaximized, setRightPanelMaximized] = useState(false);
@@ -100,6 +111,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     readProjectBranch,
     reconnect,
     respondToApproval,
+    respondToUserInput,
     sendPrompt,
     setModelOptions,
     setThreadInteractionMode,
@@ -174,7 +186,14 @@ export function ChatView({ threadId }: ChatViewProps) {
   const pendingApprovals = useMemo(() => derivePendingApprovals(activities), [activities]);
   const pendingUserInputs = useMemo(() => derivePendingUserInputs(activities), [activities]);
   const activePendingApproval = pendingApprovals[0] ?? null;
+  const activePendingUserInput = pendingUserInputs[0] ?? null;
   const activePendingQuestion = pendingUserInputs[0]?.questions[0] ?? null;
+  const activePendingDraft = activePendingQuestion
+    ? pendingUserInputDrafts[activePendingQuestion.id]
+    : undefined;
+  const pendingAnswers = activePendingUserInput
+    ? buildPendingUserInputAnswers(activePendingUserInput.questions, pendingUserInputDrafts)
+    : null;
   const modelTraitsTrigger = useMemo(
     () =>
       presentedSelectedModel
@@ -334,6 +353,43 @@ export function ChatView({ threadId }: ChatViewProps) {
     },
     [respondToApproval],
   );
+  const handleQuestionOptionSelect = useCallback(
+    (optionLabel: string) => {
+      if (!activePendingQuestion) return;
+      setPendingUserInputDrafts((drafts) => ({
+        ...drafts,
+        [activePendingQuestion.id]: togglePendingUserInputOptionSelection(
+          activePendingQuestion,
+          drafts[activePendingQuestion.id],
+          optionLabel,
+        ),
+      }));
+    },
+    [activePendingQuestion],
+  );
+  const handleQuestionCustomAnswerChange = useCallback(
+    (value: string) => {
+      if (!activePendingQuestion) return;
+      setPendingUserInputDrafts((drafts) => ({
+        ...drafts,
+        [activePendingQuestion.id]: setPendingUserInputCustomAnswer(
+          drafts[activePendingQuestion.id],
+          value,
+        ),
+      }));
+    },
+    [activePendingQuestion],
+  );
+  const handleQuestionSubmit = useCallback(async () => {
+    if (!activePendingUserInput || !pendingAnswers) return;
+    setRespondingUserInputId(activePendingUserInput.requestId);
+    try {
+      await respondToUserInput(activePendingUserInput.requestId, pendingAnswers);
+      setPendingUserInputDrafts({});
+    } finally {
+      setRespondingUserInputId(null);
+    }
+  }, [activePendingUserInput, pendingAnswers, respondToUserInput]);
 
   return (
     <ChatRouteSurface
@@ -391,7 +447,11 @@ export function ChatView({ threadId }: ChatViewProps) {
       ) : null}
       <Composer
         hero={hero}
-        placeholder={composerPlaceholder}
+        placeholder={
+          activePendingQuestion
+            ? "Type your own answer, or leave this blank to use the selected option"
+            : composerPlaceholder
+        }
         projectName={projectName}
         modelLabel={modelLabel}
         modelInstanceId={modelInstanceId}
@@ -481,7 +541,7 @@ export function ChatView({ threadId }: ChatViewProps) {
               />
             </view>
           ) : activePendingQuestion ? (
-            <view className="composer-pending-wrapper rounded-t-[19px] border-b border-border/65 bg-muted/20">
+            <view className="composer-pending-wrapper composer-pending-wrapper--question rounded-t-[19px] border-b border-border/65 bg-muted/20">
               <ComposerPendingQuestionSurface
                 header={activePendingQuestion.header}
                 question={activePendingQuestion.question}
@@ -489,9 +549,10 @@ export function ChatView({ threadId }: ChatViewProps) {
                 questionCount={pendingUserInputs[0]?.questions.length ?? 1}
                 multiSelect={activePendingQuestion.multiSelect === true}
                 options={activePendingQuestion.options}
-                selectedOptionLabels={[]}
-                responding
-                onSelect={() => {}}
+                selectedOptionLabels={activePendingDraft?.selectedOptionLabels ?? []}
+                responding={respondingUserInputId === activePendingUserInput?.requestId}
+                selectedIcon={<Icon name="check" size={14} color="#366ffb" />}
+                onSelect={handleQuestionOptionSelect}
               />
             </view>
           ) : null
@@ -506,6 +567,29 @@ export function ChatView({ threadId }: ChatViewProps) {
           ) : undefined
         }
         approvalDetail={activePendingApproval?.detail}
+        questionActions={
+          activePendingQuestion ? (
+            <view
+              className={`composer-question-submit${
+                pendingAnswers ? "" : " composer-question-submit--disabled"
+              }`}
+              data-composer-primary-state="stop"
+              aria-disabled={pendingAnswers ? "false" : "true"}
+              bindtap={pendingAnswers ? handleQuestionSubmit : undefined}
+            >
+              <text className="composer-question-submit__label">
+                {formatPendingPrimaryActionLabel({
+                  compact: true,
+                  isLastQuestion: true,
+                  isResponding: respondingUserInputId === activePendingUserInput?.requestId,
+                  questionIndex: 0,
+                })}
+              </text>
+            </view>
+          ) : undefined
+        }
+        questionCustomAnswer={activePendingDraft?.customAnswer ?? ""}
+        onQuestionCustomAnswerChange={handleQuestionCustomAnswerChange}
         disabled={status !== "ready"}
         busy={isSessionBusy(sessionStatus)}
         onSend={handleSend}

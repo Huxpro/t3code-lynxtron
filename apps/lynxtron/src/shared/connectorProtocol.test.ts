@@ -32,6 +32,7 @@ describe("connector protocol guards", () => {
     assert.isTrue(isConnectorCommandName("sendPrompt"));
     assert.isTrue(isConnectorCommandName("reconnect"));
     assert.isTrue(isConnectorCommandName("respondToApproval"));
+    assert.isTrue(isConnectorCommandName("respondToUserInput"));
     assert.isTrue(isConnectorCommandName("readProjectBranch"));
     assert.isTrue(isConnectorCommandName("updateProjectScripts"));
     assert.isTrue(isConnectorCommandName("openInEditor"));

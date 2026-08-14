@@ -572,6 +572,26 @@ export class LiveConnectorHost {
         return { ...config, settings };
       });
     }
+    if (request.method === "respondToUserInput") {
+      const params = request.params as {
+        threadId: string;
+        requestId: string;
+        answers: Record<string, unknown>;
+      };
+      return this.#runClient(
+        this.#client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+          type: "thread.user-input.respond",
+          commandId: globalThis.crypto.randomUUID(),
+          threadId: params.threadId,
+          requestId: params.requestId,
+          answers: params.answers,
+          createdAt: new Date().toISOString(),
+        }),
+      ).then((value) => {
+        this.diagnostics.lastCommandResult = { method: request.method, value };
+        return value;
+      });
+    }
     if (request.method === "archiveThread" || request.method === "deleteThread") {
       const params = request.params as { threadId: string; unarchive?: boolean };
       const command =

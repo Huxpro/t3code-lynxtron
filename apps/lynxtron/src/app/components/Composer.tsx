@@ -47,6 +47,9 @@ interface ComposerProps {
   pendingBanner?: ReactNode;
   approvalActions?: ReactNode;
   approvalDetail?: string;
+  questionActions?: ReactNode;
+  questionCustomAnswer?: string;
+  onQuestionCustomAnswerChange?: (value: string) => void;
   onSend: (text: string) => void;
   onStop: () => void;
   onModelTap?: () => void;
@@ -87,6 +90,9 @@ export function Composer({
   pendingBanner,
   approvalActions,
   approvalDetail,
+  questionActions,
+  questionCustomAnswer,
+  onQuestionCustomAnswerChange,
   onSend,
   onStop,
   onModelTap,
@@ -102,9 +108,10 @@ export function Composer({
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
   const mobileViewport = useMediaQuery("max-md");
   const viewport = useViewportSnapshot();
+  const questionMode = questionActions !== undefined;
   const compactFooter = shouldUseCompactComposerFooter(
     viewport.width - (mobileViewport ? 48 : 256 + 48),
-    { hasWideActions: Boolean(approvalActions) },
+    { hasWideActions: Boolean(approvalActions || questionActions) },
   );
   const sendState = deriveComposerSendState({
     prompt: value,
@@ -126,21 +133,25 @@ export function Composer({
     onStop,
   };
 
-  const handleInput = useCallback((event: unknown) => {
-    const inputEvent =
-      typeof event === "object" && event !== null
-        ? (event as {
-            detail?: { value?: unknown };
-            target?: { value?: unknown };
-            currentTarget?: { value?: unknown };
-          })
-        : {};
-    const nextValue =
-      inputEvent.detail?.value ?? inputEvent.target?.value ?? inputEvent.currentTarget?.value;
-    if (typeof nextValue === "string") {
-      setValue(nextValue);
-    }
-  }, []);
+  const handleInput = useCallback(
+    (event: unknown) => {
+      const inputEvent =
+        typeof event === "object" && event !== null
+          ? (event as {
+              detail?: { value?: unknown };
+              target?: { value?: unknown };
+              currentTarget?: { value?: unknown };
+            })
+          : {};
+      const nextValue =
+        inputEvent.detail?.value ?? inputEvent.target?.value ?? inputEvent.currentTarget?.value;
+      if (typeof nextValue === "string") {
+        if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
+        else setValue(nextValue);
+      }
+    },
+    [onQuestionCustomAnswerChange, questionMode],
+  );
 
   const handleSend = useCallback(() => {
     const current = primaryActionRef.current;
@@ -168,10 +179,11 @@ export function Composer({
     setValue("");
   }, []);
 
+  const editorValue = questionMode ? (questionCustomAnswer ?? "") : value;
   const controlState = deriveComposerControlState({
     working: busy,
     blocked: disabled,
-    hasSendableContent: sendState.hasSendableContent,
+    hasSendableContent: questionMode ? false : sendState.hasSendableContent,
   });
   const model = modelLabel ?? "Select model";
   const runtimeModePresentation = getComposerRuntimeModePresentation(runtimeMode);
@@ -185,7 +197,11 @@ export function Composer({
   const card = (
     <view className="composer-stack">
       <view
-        className={[COMPOSER_SHELL_CLASS, approvalActions ? "composer-shell--approval" : undefined]
+        className={[
+          COMPOSER_SHELL_CLASS,
+          approvalActions ? "composer-shell--approval" : undefined,
+          questionMode ? "composer-shell--question" : undefined,
+        ]
           .filter(Boolean)
           .join(" ")}
       >
@@ -194,13 +210,26 @@ export function Composer({
           surfaceClassName={[
             disabled ? "opacity-70" : undefined,
             approvalActions ? "composer-surface--approval" : undefined,
+            questionMode ? "composer-surface--question" : undefined,
           ]
             .filter(Boolean)
             .join(" ")}
-          footerClassName={approvalActions ? "composer-footer--approval" : undefined}
+          footerClassName={
+            approvalActions
+              ? "composer-footer--approval"
+              : questionMode
+                ? "composer-footer--question"
+                : undefined
+          }
           footerCompact={compactFooter}
           primaryActionsCompact={compactFooter}
-          editorAreaClassName={approvalActions ? "composer-editor-area--approval" : undefined}
+          editorAreaClassName={
+            approvalActions
+              ? "composer-editor-area--approval"
+              : questionMode
+                ? "composer-editor-area--question"
+                : undefined
+          }
           renderCollapsedBody={
             approvalActions
               ? () => (
@@ -249,13 +278,13 @@ export function Composer({
             renderBanners: () => pendingBanner,
             renderEditor: () => (
               <>
-                {value.length === 0 ? (
+                {editorValue.length === 0 ? (
                   <text className="composer__placeholder">{placeholder}</text>
                 ) : null}
                 <textarea
                   className="composer__input"
                   data-composer-editor="true"
-                  {...({ value } as object)}
+                  {...({ value: editorValue } as object)}
                   bindinput={handleInput}
                   confirm-type="send"
                   bindconfirm={handleSend}
@@ -292,7 +321,7 @@ export function Composer({
                       />
                       {modelPicker}
                     </view>,
-                    modelOptionLabel && onModelOptionTap ? (
+                    !questionMode && modelOptionLabel && onModelOptionTap ? (
                       <ComposerToolbarControl
                         key="model-option"
                         className="composer-toolbar-control--model-option"
@@ -309,68 +338,72 @@ export function Composer({
                         onClick={onModelOptionTap}
                       />
                     ) : null,
-                    <view key="runtime" className="composer-runtime-control-wrap">
-                      <ComposerToolbarControl
-                        className="composer-toolbar-control--runtime"
-                        controlId="runtime"
-                        label={runtimeModePresentation.label}
-                        leading={
-                          <Icon
-                            name={RUNTIME_MODE_ICONS[runtimeMode]}
-                            size={COMPOSER_FOOTER_ICON_GEOMETRY.runtime}
-                            color="#818181"
-                            className="pill__icon-img"
-                          />
-                        }
-                        trailing={
-                          <Icon
-                            name="chevron-down"
-                            size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
-                            color="#818181"
-                            className="pill__chevron-img"
-                          />
-                        }
-                        onClick={() => setRuntimeModeMenuOpen((open) => !open)}
-                      />
-                      {runtimeModeMenuOpen ? (
-                        <view
-                          className="composer-runtime-menu"
-                          aria-label="Runtime mode"
-                          data-composer-runtime-menu
-                        >
-                          {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
-                            <view
-                              key={option.mode}
-                              className={`composer-runtime-menu__item${
-                                option.mode === runtimeMode
-                                  ? " composer-runtime-menu__item--active"
-                                  : ""
-                              }`}
-                              aria-checked={option.mode === runtimeMode ? "true" : "false"}
-                              bindtap={() => {
-                                onRuntimeModeChange(option.mode);
-                                setRuntimeModeMenuOpen(false);
-                              }}
-                            >
-                              <view className="composer-runtime-menu__icon">
-                                <Icon
-                                  name={RUNTIME_MODE_ICONS[option.mode]}
-                                  size={14}
-                                  color="#818181"
-                                />
+                    !questionMode ? (
+                      <view key="runtime" className="composer-runtime-control-wrap">
+                        <ComposerToolbarControl
+                          className="composer-toolbar-control--runtime"
+                          controlId="runtime"
+                          label={runtimeModePresentation.label}
+                          leading={
+                            <Icon
+                              name={RUNTIME_MODE_ICONS[runtimeMode]}
+                              size={COMPOSER_FOOTER_ICON_GEOMETRY.runtime}
+                              color="#818181"
+                              className="pill__icon-img"
+                            />
+                          }
+                          trailing={
+                            <Icon
+                              name="chevron-down"
+                              size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
+                              color="#818181"
+                              className="pill__chevron-img"
+                            />
+                          }
+                          onClick={() => setRuntimeModeMenuOpen((open) => !open)}
+                        />
+                        {runtimeModeMenuOpen ? (
+                          <view
+                            className="composer-runtime-menu"
+                            aria-label="Runtime mode"
+                            data-composer-runtime-menu
+                          >
+                            {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
+                              <view
+                                key={option.mode}
+                                className={`composer-runtime-menu__item${
+                                  option.mode === runtimeMode
+                                    ? " composer-runtime-menu__item--active"
+                                    : ""
+                                }`}
+                                aria-checked={option.mode === runtimeMode ? "true" : "false"}
+                                bindtap={() => {
+                                  onRuntimeModeChange(option.mode);
+                                  setRuntimeModeMenuOpen(false);
+                                }}
+                              >
+                                <view className="composer-runtime-menu__icon">
+                                  <Icon
+                                    name={RUNTIME_MODE_ICONS[option.mode]}
+                                    size={14}
+                                    color="#818181"
+                                  />
+                                </view>
+                                <view className="composer-runtime-menu__copy">
+                                  <text className="composer-runtime-menu__label">
+                                    {option.label}
+                                  </text>
+                                  <text className="composer-runtime-menu__description">
+                                    {option.description}
+                                  </text>
+                                </view>
                               </view>
-                              <view className="composer-runtime-menu__copy">
-                                <text className="composer-runtime-menu__label">{option.label}</text>
-                                <text className="composer-runtime-menu__description">
-                                  {option.description}
-                                </text>
-                              </view>
-                            </view>
-                          ))}
-                        </view>
-                      ) : null}
-                    </view>,
-                    showInteractionModeToggle ? (
+                            ))}
+                          </view>
+                        ) : null}
+                      </view>
+                    ) : null,
+                    !questionMode && showInteractionModeToggle ? (
                       <ComposerToolbarControl
                         key="interaction"
                         className="composer-toolbar-control--interaction"
@@ -395,7 +428,8 @@ export function Composer({
                 />
               ),
             renderFooterRightActions: () =>
-              approvalActions ?? (
+              approvalActions ??
+              questionActions ?? (
                 <ComposerPrimaryAction
                   state={controlState.primaryActionState}
                   icon={<Icon name={busy ? "square" : "arrow-up"} size={14} color="#ffffff" />}

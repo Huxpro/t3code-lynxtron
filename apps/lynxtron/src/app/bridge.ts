@@ -30,6 +30,7 @@ import type {
   OrchestrationThreadShell,
   ApprovalRequestId,
   ProviderApprovalDecision,
+  ProviderUserInputAnswers,
   TurnId,
   ProviderInteractionMode,
   ProviderInstanceId,
@@ -139,6 +140,11 @@ export interface T3ConnectorCommandBridge {
     threadId: string;
     requestId: ApprovalRequestId;
     decision: ProviderApprovalDecision;
+  }): Promise<void>;
+  respondToUserInput(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    answers: ProviderUserInputAnswers;
   }): Promise<void>;
   setModelSelection(input: { threadId?: string; selection: ModelSelection }): Promise<void>;
   setThreadRuntimeMode(input: { threadId: string; runtimeMode: RuntimeMode }): Promise<void>;

@@ -22,6 +22,7 @@ import type {
   OrchestrationProposedPlan,
   ProviderInteractionMode,
   ProviderApprovalDecision,
+  ProviderUserInputAnswers,
   ProjectListEntriesResult,
   ProjectSearchEntriesResult,
   ProjectScript,
@@ -678,6 +679,18 @@ function respondToApproval(
   return bridge.respondToApproval({ threadId, requestId, decision });
 }
 
+function respondToUserInput(
+  requestId: ApprovalRequestId,
+  answers: ProviderUserInputAnswers,
+): Promise<void> {
+  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const bridge = getBridge();
+  if (!threadId || !bridge?.respondToUserInput) {
+    return Promise.reject(new Error("User-input response is unavailable."));
+  }
+  return bridge.respondToUserInput({ threadId, requestId, answers });
+}
+
 async function deleteThread(threadId: string): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.deleteThread) return;
@@ -950,6 +963,7 @@ export const t3ClientActions = {
   reconnect,
   renameThread,
   respondToApproval,
+  respondToUserInput,
   revokeClientSession,
   revokeOtherClientSessions,
   revokePairingLink,

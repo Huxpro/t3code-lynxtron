@@ -143,6 +143,10 @@
       "types": "./src/presentation/pendingRequests.ts",
       "default": "./src/presentation/pendingRequests.ts"
     },
+    "./presentation/pending-user-input": {
+      "types": "./src/presentation/pendingUserInput.ts",
+      "default": "./src/presentation/pendingUserInput.ts"
+    },
     "./relay": {
       "types": "./src/relay/index.ts",
       "default": "./src/relay/index.ts"

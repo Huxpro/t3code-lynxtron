@@ -103,9 +103,12 @@ export function ComposerPendingQuestionSurface({
   readonly onSelect: (optionLabel: string) => void;
 }) {
   return (
-    <HostView data-composer-pending-kind="question" className="px-4 py-3 sm:px-5">
-      <HostView className="mb-2 flex items-center gap-3">
-        <HostText className="text-[11px] font-semibold tracking-widest text-muted-foreground/55 uppercase">
+    <HostView
+      data-composer-pending-kind="question"
+      className="composer-pending-question px-4 py-3 sm:px-5"
+    >
+      <HostView className="composer-pending-question__heading mb-2 flex items-center gap-3">
+        <HostText className="composer-pending-question__header text-[11px] font-semibold tracking-widest text-muted-foreground/55 uppercase">
           {header}
         </HostText>
         {questionCount > 1 ? (
@@ -114,13 +117,15 @@ export function ComposerPendingQuestionSurface({
           </HostText>
         ) : null}
       </HostView>
-      <HostText className="text-sm text-foreground/90">{question}</HostText>
+      <HostText className="composer-pending-question__prompt text-sm text-foreground/90">
+        {question}
+      </HostText>
       {multiSelect ? (
         <HostText className="mt-1 text-xs text-muted-foreground/65">
           Select one or more options.
         </HostText>
       ) : null}
-      <HostView className="mt-3 flex flex-col gap-1.5">
+      <HostView className="composer-pending-question__options mt-3 flex flex-col gap-1.5">
         {options.map((option, index) => {
           const selected = selectedOptionLabels.includes(option.label);
           return (
@@ -132,17 +137,19 @@ export function ComposerPendingQuestionSurface({
               data-question-option-selected={selected ? "true" : "false"}
               onClick={() => onSelect(option.label)}
               className={cn(
-                "group flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left outline-none",
+                "composer-pending-question__option group flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-left outline-none",
                 selected
                   ? "border-primary/30 bg-primary/8 text-foreground"
                   : "border-transparent bg-muted/22 text-foreground/85",
                 responding && "opacity-50",
               )}
             >
-              <HostView className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <HostText className="text-sm font-medium">{option.label}</HostText>
+              <HostView className="composer-pending-question__option-copy flex min-w-0 flex-1 flex-col gap-0.5">
+                <HostText className="composer-pending-question__option-label text-sm font-medium">
+                  {option.label}
+                </HostText>
                 {option.description && option.description !== option.label ? (
-                  <HostText className="text-xs text-muted-foreground">
+                  <HostText className="composer-pending-question__option-description text-xs text-muted-foreground">
                     {option.description}
                   </HostText>
                 ) : null}
@@ -150,7 +157,7 @@ export function ComposerPendingQuestionSurface({
               {selected ? (
                 selectedIcon
               ) : index < 9 ? (
-                <HostText className="flex size-5 shrink-0 items-center justify-center rounded border border-border/50 text-[11px] font-medium tabular-nums text-muted-foreground/70">
+                <HostText className="composer-pending-question__option-index flex size-5 shrink-0 items-center justify-center rounded border border-border/50 text-[11px] font-medium tabular-nums text-muted-foreground/70">
                   {index + 1}
                 </HostText>
               ) : null}

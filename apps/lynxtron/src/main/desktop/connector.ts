@@ -66,6 +66,7 @@ import {
   type OrchestrationThreadShell,
   type ProviderInteractionMode,
   type ProviderApprovalDecision,
+  type ProviderUserInputAnswers,
   type OrchestrationThreadStreamItem,
   type ProviderInstanceId,
   type ProjectListEntriesResult,
@@ -753,6 +754,24 @@ export class T3Connector {
         threadId: input.threadId,
         requestId: input.requestId,
         decision: input.decision,
+        createdAt: new Date().toISOString(),
+      }),
+    );
+  }
+
+  async respondToUserInput(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    answers: ProviderUserInputAnswers;
+  }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.user-input.respond",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+        requestId: input.requestId,
+        answers: input.answers,
         createdAt: new Date().toISOString(),
       }),
     );
