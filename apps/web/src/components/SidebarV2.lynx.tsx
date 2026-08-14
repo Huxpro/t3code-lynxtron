@@ -166,6 +166,9 @@ function LynxThreadActionMenu({
   const [renameDraft, setRenameDraft] = useState(thread.title);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const workspacePath = thread.worktreePath ?? projectPath;
+  const actionCount =
+    (settlementSupported ? 1 : 0) + 1 + (workspacePath ? 1 : 0) + (thread.branch ? 1 : 0) + 2;
+  const menuHeight = actionCount * 30 + 10;
 
   const run = (action: () => Promise<void>) => {
     void action()
@@ -179,6 +182,7 @@ function LynxThreadActionMenu({
       <view
         className="sidebar-v2-action-menu"
         data-sidebar-thread-menu={thread.id}
+        style={{ height: `${menuHeight}px`, minHeight: `${menuHeight}px` }}
         bindtap={stopPropagation}
       >
         {renaming ? (
@@ -383,8 +387,7 @@ export default function SidebarV2() {
       ? null
       : (orderedProjects.find((project) => project.id === projectScopeKey) ?? null);
   const newThreadProject = scopedProject ?? orderedProjects[0] ?? null;
-  const settlementSupported =
-    serverConfig?.environment.capabilities.threadSettlement === true;
+  const settlementSupported = serverConfig?.environment.capabilities.threadSettlement === true;
   const projectScopeOptions = orderedProjects.map((project) => ({
     scopeKey: project.id,
     displayName: project.title,
@@ -403,12 +406,7 @@ export default function SidebarV2() {
         commandPaletteShortcutLabel: null,
         searchControl: (
           <view className="sidebar-inline-search">
-            <Icon
-              name="search"
-              size={16}
-              color="#a1a1aa"
-              className="sidebar-inline-search__icon"
-            />
+            <Icon name="search" size={16} color="#a1a1aa" className="sidebar-inline-search__icon" />
             <input
               className="sidebar-inline-search__input"
               aria-label="Search threads"
@@ -454,137 +452,136 @@ export default function SidebarV2() {
       }}
       rows={[
         ...visibleActiveThreads.map((thread) => {
-        const status = resolveSidebarV2Status(thread);
-        const isActive = thread.id === activeThreadId;
-        const project = projectById.get(thread.projectId) ?? null;
-        const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
-        const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
-        const detailsOpen = detailsThreadId === thread.id;
-        const actionMenuOpen = actionMenuThreadId === thread.id;
-        return (
-          <SidebarV2RowSurface
-            key={thread.id}
-            threadId={thread.id}
-            variant="card"
-            variantAction="settle"
-            isActive={isActive}
-            isSelected={false}
-            shouldRecede={status === "ready" && !isActive}
-            isInFlight={status === "working" || status === "approval" || status === "input"}
-            isUnread={false}
-            isWoke={false}
-            settlementSupported={settlementSupported}
-            snoozeSupported={false}
-            showSnoozeButton={false}
-            cardActionsPersistent
-            snoozeMenuOpen={false}
-            snoozeWakeLabelText={null}
-            projectTitle={project?.title ?? null}
-            threadTitle={thread.title}
-            branch={thread.branch ?? null}
-            threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
-            settledTimeLabel=""
-            topStatus={statusPresentation(status)}
-            jumpLabel={null}
-            favicon={
-              <ProjectFavicon
-                environmentId={thread.environmentId}
-                cwd={project?.workspaceRoot ?? ""}
-                className="size-4 shrink-0"
-              />
-            }
-            title={
-              <HostText
-                className={
-                  isActive
-                    ? "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
-                    : "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-normal text-foreground/90"
-                }
-              >
-                {thread.title}
-              </HostText>
-            }
-            prBadge={null}
-            isRegeneratingTitle={thread.titleRegeneration != null}
-            terminalStatusIcon={null}
-            diff={null}
-            remoteIndicator={null}
-            providerIndicator={
-              <view
-                className="sidebar-v2-provider-summary"
-                aria-label={`Show details for ${thread.title}`}
-                bindtap={(event: unknown) => {
-                  stopPropagation(event);
-                  setDetailsThreadId(detailsOpen ? null : thread.id);
-                }}
-              >
-                <ProviderBrandIcon
-                  driverKind={providerProjection.provider?.driverKind ?? null}
-                  size={12}
+          const status = resolveSidebarV2Status(thread);
+          const isActive = thread.id === activeThreadId;
+          const project = projectById.get(thread.projectId) ?? null;
+          const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
+          const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
+          const detailsOpen = detailsThreadId === thread.id;
+          const actionMenuOpen = actionMenuThreadId === thread.id;
+          return (
+            <SidebarV2RowSurface
+              key={thread.id}
+              threadId={thread.id}
+              variant="card"
+              variantAction="settle"
+              isActive={isActive}
+              isSelected={false}
+              shouldRecede={status === "ready" && !isActive}
+              isInFlight={status === "working" || status === "approval" || status === "input"}
+              isUnread={false}
+              isWoke={false}
+              settlementSupported={settlementSupported}
+              snoozeSupported={false}
+              showSnoozeButton={false}
+              cardActionsPersistent
+              snoozeMenuOpen={false}
+              snoozeWakeLabelText={null}
+              projectTitle={project?.title ?? null}
+              threadTitle={thread.title}
+              branch={thread.branch ?? null}
+              threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
+              settledTimeLabel=""
+              topStatus={statusPresentation(status)}
+              jumpLabel={null}
+              favicon={
+                <ProjectFavicon
+                  environmentId={thread.environmentId}
+                  cwd={project?.workspaceRoot ?? ""}
+                  className="size-4 shrink-0"
                 />
-                <text className="sidebar-v2-provider-model" text-maxline="1">
-                  {providerProjection.modelLabel}
-                </text>
-              </view>
-            }
-            detailsTooltip={null}
-            detailsOverlay={
-              actionMenuOpen ? (
-                <LynxThreadActionMenu
-                  thread={thread}
-                  projectPath={project?.workspaceRoot ?? null}
-                  settled={false}
-                  settlementSupported={settlementSupported}
-                  onClose={() => setActionMenuThreadId(null)}
-                />
-              ) : detailsOpen ? (
-                <LynxThreadDetails
-                  thread={thread}
-                  projectTitle={project?.title ?? null}
-                  provider={providerProjection.provider}
-                  instanceId={providerProjection.instanceId}
-                  modelLabel={providerProjection.modelLabel}
-                  onClose={() => setDetailsThreadId(null)}
-                />
-              ) : undefined
-            }
-            snoozeControl={
-              <view
-                className="sidebar-v2-card-action-icon"
-                aria-label={`Thread actions for ${thread.title}`}
-                bindtap={(event: unknown) => {
-                  stopPropagation(event);
-                  setDetailsThreadId(null);
-                  setActionMenuThreadId(actionMenuOpen ? null : thread.id);
-                }}
-              >
-                <Icon name="ellipsis" size={12} color="#a1a1aa" />
-              </view>
-            }
-            settleIcon={
-              <Icon name="check" size={12} color="#a1a1aa" className="size-3" />
-            }
-            unsettleIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
-            unsnoozeIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
-            wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
-            onClick={() => {
-              t3ClientActions.selectThread(thread.id);
-            }}
-            onDoubleClick={() => {}}
-            onKeyDown={() => {}}
-            onContextMenu={(event) => {
-              stopPropagation(event);
-              setDetailsThreadId(null);
-              setActionMenuThreadId(thread.id);
-            }}
-            onSettleClick={(event) => {
-              stopPropagation(event);
-              void t3ClientActions.settleThread(thread.id).catch(() => undefined);
-            }}
-            onUnsettleClick={stopPropagation}
-            onUnsnoozeClick={stopPropagation}
-          />
-        );
+              }
+              title={
+                <HostText
+                  className={
+                    isActive
+                      ? "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
+                      : "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-normal text-foreground/90"
+                  }
+                >
+                  {thread.title}
+                </HostText>
+              }
+              prBadge={null}
+              isRegeneratingTitle={thread.titleRegeneration != null}
+              terminalStatusIcon={null}
+              diff={null}
+              remoteIndicator={null}
+              providerIndicator={
+                <view
+                  className="sidebar-v2-provider-summary"
+                  aria-label={`Show details for ${thread.title}`}
+                  bindtap={(event: unknown) => {
+                    stopPropagation(event);
+                    setDetailsThreadId(detailsOpen ? null : thread.id);
+                  }}
+                >
+                  <ProviderBrandIcon
+                    driverKind={providerProjection.provider?.driverKind ?? null}
+                    size={12}
+                  />
+                  <text className="sidebar-v2-provider-model" text-maxline="1">
+                    {providerProjection.modelLabel}
+                  </text>
+                </view>
+              }
+              detailsTooltip={null}
+              detailsOverlay={
+                actionMenuOpen ? (
+                  <LynxThreadActionMenu
+                    thread={thread}
+                    projectPath={project?.workspaceRoot ?? null}
+                    settled={false}
+                    settlementSupported={settlementSupported}
+                    onClose={() => setActionMenuThreadId(null)}
+                  />
+                ) : detailsOpen ? (
+                  <LynxThreadDetails
+                    thread={thread}
+                    projectTitle={project?.title ?? null}
+                    provider={providerProjection.provider}
+                    instanceId={providerProjection.instanceId}
+                    modelLabel={providerProjection.modelLabel}
+                    onClose={() => setDetailsThreadId(null)}
+                  />
+                ) : undefined
+              }
+              snoozeControl={
+                <view
+                  className="sidebar-v2-card-action-icon"
+                  data-sidebar-thread-action-trigger={thread.id}
+                  aria-label={`Thread actions for ${thread.title}`}
+                  bindtap={(event: unknown) => {
+                    stopPropagation(event);
+                    setDetailsThreadId(null);
+                    setActionMenuThreadId(actionMenuOpen ? null : thread.id);
+                  }}
+                >
+                  <Icon name="ellipsis" size={12} color="#a1a1aa" />
+                </view>
+              }
+              settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
+              unsettleIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
+              unsnoozeIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
+              wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
+              onClick={() => {
+                t3ClientActions.selectThread(thread.id);
+              }}
+              onDoubleClick={() => {}}
+              onKeyDown={() => {}}
+              onContextMenu={(event) => {
+                stopPropagation(event);
+                setDetailsThreadId(null);
+                setActionMenuThreadId(thread.id);
+              }}
+              onSettleClick={(event) => {
+                stopPropagation(event);
+                void t3ClientActions.settleThread(thread.id).catch(() => undefined);
+              }}
+              onUnsettleClick={stopPropagation}
+              onUnsnoozeClick={stopPropagation}
+            />
+          );
         }),
         ...(settledThreads.length > 0 && threadSearchQuery.trim().length === 0
           ? [
@@ -639,9 +636,7 @@ export default function SidebarV2() {
               settledTimeLabel={settledTimeLabel(thread)}
               topStatus={null}
               jumpLabel={null}
-              favicon={
-                <Icon name="message-square" size={16} color="#818181" className="size-4" />
-              }
+              favicon={<Icon name="message-square" size={16} color="#818181" className="size-4" />}
               title={
                 <HostText className="sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground">
                   {thread.title}
@@ -667,12 +662,8 @@ export default function SidebarV2() {
               }
               snoozeControl={null}
               settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
-              unsettleIcon={
-                <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
-              }
-              unsnoozeIcon={
-                <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
-              }
+              unsettleIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
+              unsnoozeIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
               wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
               onClick={() => t3ClientActions.selectThread(thread.id)}
               onDoubleClick={() => {}}
@@ -703,9 +694,7 @@ export default function SidebarV2() {
       hasProjects={projects.length > 0}
       scopedDisplayName={scopedProject?.title ?? null}
       onAddProjectClick={() => uiActions.openQuickSwitch("command")}
-      footerAuthorityVisual={
-        <image className="sidebar-settings-authority" src={settingsRowUrl} />
-      }
+      footerAuthorityVisual={<image className="sidebar-settings-authority" src={settingsRowUrl} />}
     />
   );
 }

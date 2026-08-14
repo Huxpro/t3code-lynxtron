@@ -36,12 +36,13 @@ interface RightPanelProps extends RightPanelContentProps {
   onMaximizedChange?: (maximized: boolean) => void;
 }
 
-type AddableKind = RightPanelKind | "browser" | "terminal";
+type AddableKind = RightPanelKind | "browser";
 
 const SURFACE_ICONS: Record<RightPanelKind, IconName> = {
   plan: "clipboard-list",
   diff: "file-diff",
   files: "files",
+  terminal: "terminal-square",
 };
 
 const ADDABLE_ICONS: Record<AddableKind, IconName> = {
@@ -73,8 +74,8 @@ const ADDABLE_SURFACES: ReadonlyArray<{
     kind: "terminal",
     label: "Terminal",
     description: "Start a shell in this workspace.",
-    disabled: true,
-    disabledReason: "Terminal emulation is a registered placeholder on Lynxtron.",
+    disabled: false,
+    disabledReason: null,
   },
   {
     kind: "files",
@@ -102,6 +103,19 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
       return <DiffPanel turnId={surface.turnId} filePath={surface.filePath} />;
     case "files":
       return <FilesPanel />;
+    case "terminal":
+      return (
+        <view className="terminal-placeholder" data-terminal-placeholder="true">
+          <view className="terminal-placeholder__icon">
+            <Icon name="terminal-square" size={24} color="#818181" />
+          </view>
+          <text className="terminal-placeholder__title">Terminal</text>
+          <text className="terminal-placeholder__copy">
+            Terminal sessions are not connected yet. This panel reserves the workspace surface
+            without pretending a shell is running.
+          </text>
+        </view>
+      );
   }
 }
 
@@ -158,7 +172,12 @@ export function RightPanel({
     description: item.disabled && item.disabledReason ? item.disabledReason : item.description,
     disabled: item.disabled,
     onSelect: () => {
-      if (item.kind === "files" || item.kind === "diff" || item.kind === "plan") {
+      if (
+        item.kind === "files" ||
+        item.kind === "diff" ||
+        item.kind === "plan" ||
+        item.kind === "terminal"
+      ) {
         handleAddSurface(item.kind);
       }
     },
@@ -236,7 +255,8 @@ export function RightPanel({
                           if (
                             item.kind === "files" ||
                             item.kind === "diff" ||
-                            item.kind === "plan"
+                            item.kind === "plan" ||
+                            item.kind === "terminal"
                           ) {
                             handleAddSurface(item.kind);
                           }
@@ -267,14 +287,17 @@ export function RightPanel({
             <Icon name={maximized ? "minimize-2" : "maximize-2"} size={14} color="#818181" />
           </view>
           <view
-            className="right-panel__layout-control right-panel__layout-control--disabled"
-            aria-label="Terminal drawer unavailable"
-            aria-disabled="true"
+            className={`right-panel__layout-control${
+              activeSurface?.kind === "terminal" ? " right-panel__layout-control--active" : ""
+            }`}
+            aria-label="Open terminal panel"
+            aria-pressed={activeSurface?.kind === "terminal" ? "true" : "false"}
+            bindtap={() => handleAddSurface("terminal")}
           >
             <Icon name="panel-bottom" size={14} color="#818181" />
           </view>
           <view
-            className="right-panel__layout-control"
+            className="right-panel__layout-control right-panel__layout-control--close"
             aria-label="Toggle right panel"
             bindtap={handleClose}
           >

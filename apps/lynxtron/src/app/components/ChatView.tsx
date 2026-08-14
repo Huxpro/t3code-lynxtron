@@ -27,7 +27,7 @@ import {
   ComposerPendingQuestionSurface,
 } from "../../../../web/src/components/chat/ComposerPendingSurface";
 import { ComposerPendingApprovalActions } from "../../../../web/src/components/chat/ComposerPendingApprovalActions";
-import { ChatHeader } from "./ChatHeader";
+import { ChatHeader, ChatLayoutControls } from "./ChatHeader";
 import { Icon } from "./Icon";
 import { MessagesTimeline } from "./MessagesTimeline";
 import { Composer } from "./Composer";
@@ -280,10 +280,6 @@ export function ChatView({ threadId }: ChatViewProps) {
     };
   }, [activeThread?.branch, connectorCommandsReady, cwd, readProjectBranch]);
 
-  const handleToggleRightPanel = useCallback(() => {
-    uiActions.toggleRightPanel();
-  }, []);
-
   const handleInteractionModeTap = useCallback(() => {
     setThreadInteractionMode(
       toggleComposerInteractionMode(activeThread?.interactionMode ?? "default"),
@@ -341,6 +337,7 @@ export function ChatView({ threadId }: ChatViewProps) {
 
   return (
     <ChatRouteSurface
+      layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}
       header={
         <ChatHeader
           projectName={activeProject?.title ?? "t3code"}
@@ -348,7 +345,6 @@ export function ChatView({ threadId }: ChatViewProps) {
           cwd={cwd}
           availableEditors={serverConfig?.availableEditors ?? []}
           rightPanelOpen={rightPanel.isOpen}
-          onToggleRightPanel={handleToggleRightPanel}
           centerPanelWidth={centerPanelWidth}
           onCenterPanelWidthChange={setCenterPanelWidth}
         />

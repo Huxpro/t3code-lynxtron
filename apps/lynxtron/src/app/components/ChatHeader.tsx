@@ -19,9 +19,34 @@ interface ChatHeaderProps {
   connectionStatus?: unknown;
   statusDetail?: string;
   rightPanelOpen?: boolean;
-  onToggleRightPanel?: () => void;
   centerPanelWidth?: number;
   onCenterPanelWidthChange?: (width: number) => void;
+}
+
+export function ChatLayoutControls({ rightPanelOpen = false }: { rightPanelOpen?: boolean }) {
+  return (
+    <view className="workspace-titlebar-controls topbar__layout-controls lynx-titlebar-no-drag">
+      <view
+        className="topbar__toggle topbar__toggle--terminal"
+        data-titlebar-control="terminal"
+        aria-label="Open terminal panel"
+        bindtap={() => uiActions.openRightPanelSurface("terminal")}
+      >
+        <Icon name="panel-bottom" size={14} color="#f5f5f5" className="topbar__toggle-icon-img" />
+      </view>
+      <view
+        className={`topbar__toggle topbar__toggle--right-panel${
+          rightPanelOpen ? " topbar__toggle--active" : ""
+        }`}
+        data-titlebar-control="right-panel"
+        aria-label="Toggle right panel"
+        aria-pressed={rightPanelOpen ? "true" : "false"}
+        bindtap={uiActions.toggleRightPanel}
+      >
+        <Icon name="panel-right" size={14} color="#f5f5f5" className="topbar__toggle-icon-img" />
+      </view>
+    </view>
+  );
 }
 
 // An outline action button with optional split chevron (matches the original
@@ -110,7 +135,6 @@ export function ChatHeader({
   cwd,
   availableEditors = [],
   rightPanelOpen,
-  onToggleRightPanel,
   centerPanelWidth = 1024,
   onCenterPanelWidthChange = () => undefined,
 }: ChatHeaderProps) {
@@ -145,30 +169,6 @@ export function ChatHeader({
     >
       {useAuthoritySurface ? (
         <image className="topbar-authority-surface" src={headerPendingUrl} />
-      ) : null}
-      {!rightPanelOpen ? (
-        <view className="workspace-titlebar-controls topbar__layout-controls">
-          <view className="topbar__toggle">
-            <Icon
-              name="panel-bottom"
-              size={14}
-              color="#f5f5f5"
-              className="topbar__toggle-icon-img"
-            />
-          </view>
-          <view
-            className="topbar__toggle"
-            aria-label="Toggle right panel"
-            bindtap={onToggleRightPanel}
-          >
-            <Icon
-              name="panel-right"
-              size={14}
-              color="#f5f5f5"
-              className="topbar__toggle-icon-img"
-            />
-          </view>
-        </view>
       ) : null}
       <ChatHeaderSurface
         activeProjectName={projectName}

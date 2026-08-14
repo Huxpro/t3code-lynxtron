@@ -264,6 +264,11 @@ export function ModelPicker({
   return (
     <>
       <view
+        className="model-picker-dismiss-layer"
+        aria-label="Dismiss model picker"
+        bindtap={onClose}
+      />
+      <view
         className="model-picker-panel"
         {...(viewport.testResize
           ? {
@@ -347,7 +352,7 @@ export function ModelPicker({
               <view
                 className="model-picker-close"
                 aria-label="Close model picker"
-                catchtap={onClose}
+                bindtap={onClose}
               >
                 <Icon name="x" size={14} color="#818181" />
               </view>
