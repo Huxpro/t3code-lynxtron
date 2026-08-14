@@ -22,6 +22,8 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'toolbar: readElementBox(root?.querySelector(".composer-toolbar-row"))');
     assert.include(source, 'toolbar: readElementBox(doc.querySelector(".composer-toolbar-row"))');
     assert.include(source, "controlBoxes: composerControlElements.map");
+    assert.include(source, "composerControlBoxElement(item)");
+    assert.include(source, "button, [role='button'], [data-slot='button']");
     assert.include(source, "primaryAction: readElementBox");
   });
 });

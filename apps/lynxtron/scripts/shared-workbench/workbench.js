@@ -320,6 +320,10 @@ function readLynxPane() {
     const composerEditorHost = root?.querySelector('[data-composer-editor="true"]') ?? null;
     const composerPrimaryAction = root?.querySelector("[data-composer-primary-state]") ?? null;
     const composerControlElements = [...(root?.querySelectorAll("[data-composer-control]") ?? [])];
+    const composerControlBoxElement = (item) =>
+      item.matches("button, [role='button']")
+        ? item
+        : (item.querySelector("button, [role='button'], [data-slot='button']") ?? item);
     const lynxInputValue = (element) => element?.shadowRoot?.querySelector("input")?.value ?? "";
     const lynxInputDiagnostics = (element) => {
       const input =
@@ -656,7 +660,7 @@ function readLynxPane() {
               primaryAction: readElementBox(root?.querySelector(".composer-primary-action")),
               controlBoxes: composerControlElements.map((item) => ({
                 id: item.getAttribute("data-composer-control"),
-                box: readElementBox(item),
+                box: readElementBox(composerControlBoxElement(item)),
               })),
               actions: [...(root?.querySelectorAll(".composer-approval-action") ?? [])].map(
                 (item) => readElementBox(item),
@@ -955,6 +959,10 @@ function readWebPane() {
     const composerEditor = doc.querySelector('[data-composer-editor="true"]');
     const composerPrimaryAction = doc.querySelector("[data-composer-primary-state]");
     const composerControlElements = [...doc.querySelectorAll("[data-composer-control]")];
+    const composerControlBoxElement = (item) =>
+      item.matches("button, [role='button']")
+        ? item
+        : (item.querySelector("button, [role='button'], [data-slot='button']") ?? item);
     return {
       reachable: true,
       present: true,
@@ -1236,7 +1244,7 @@ function readWebPane() {
               primaryAction: readElementBox(doc.querySelector(".composer-primary-action")),
               controlBoxes: composerControlElements.map((item) => ({
                 id: item.getAttribute("data-composer-control"),
-                box: readElementBox(item),
+                box: readElementBox(composerControlBoxElement(item)),
               })),
               actions: [...doc.querySelectorAll(".composer-approval-action")].map((item) =>
                 readElementBox(item),
