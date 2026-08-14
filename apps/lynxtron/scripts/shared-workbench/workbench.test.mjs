@@ -24,6 +24,8 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "controlBoxes: composerControlElements.map");
     assert.include(source, "composerControlBoxElement(item)");
     assert.include(source, "button, [role='button'], [data-slot='button']");
+    assert.include(source, 'querySelectorAll("x-text, text, span")');
+    assert.include(source, 'querySelectorAll("x-image, image, img, svg")');
     assert.include(source, "primaryAction: readElementBox");
   });
 });

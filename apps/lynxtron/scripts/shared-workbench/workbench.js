@@ -99,6 +99,13 @@ function readElementBox(element) {
       fontFamily: style.fontFamily,
       rowGap: style.rowGap,
       columnGap: style.columnGap,
+      marginTop: style.marginTop,
+      marginRight: style.marginRight,
+      marginBottom: style.marginBottom,
+      marginLeft: style.marginLeft,
+      flexGrow: style.flexGrow,
+      flexShrink: style.flexShrink,
+      flexBasis: style.flexBasis,
       fontSize: style.fontSize,
       fontWeight: style.fontWeight,
       lineHeight: style.lineHeight,
@@ -324,6 +331,23 @@ function readLynxPane() {
       item.matches("button, [role='button']")
         ? item
         : (item.querySelector("button, [role='button'], [data-slot='button']") ?? item);
+    const composerControlDetails = (item) => {
+      const control = composerControlBoxElement(item);
+      return {
+        box: readElementBox(control),
+        textLeaves: [...control.querySelectorAll("x-text, text, span")]
+          .filter(
+            (leaf) => leaf.querySelector("x-text, text, span") === null && leaf.textContent?.trim(),
+          )
+          .map((leaf) => ({
+            text: leaf.textContent?.trim() ?? "",
+            box: readElementBox(leaf),
+          })),
+        icons: [...control.querySelectorAll("x-image, image, img, svg")].map((icon) =>
+          readElementBox(icon),
+        ),
+      };
+    };
     const lynxInputValue = (element) => element?.shadowRoot?.querySelector("input")?.value ?? "";
     const lynxInputDiagnostics = (element) => {
       const input =
@@ -660,7 +684,7 @@ function readLynxPane() {
               primaryAction: readElementBox(root?.querySelector(".composer-primary-action")),
               controlBoxes: composerControlElements.map((item) => ({
                 id: item.getAttribute("data-composer-control"),
-                box: readElementBox(composerControlBoxElement(item)),
+                ...composerControlDetails(item),
               })),
               actions: [...(root?.querySelectorAll(".composer-approval-action") ?? [])].map(
                 (item) => readElementBox(item),
@@ -963,6 +987,23 @@ function readWebPane() {
       item.matches("button, [role='button']")
         ? item
         : (item.querySelector("button, [role='button'], [data-slot='button']") ?? item);
+    const composerControlDetails = (item) => {
+      const control = composerControlBoxElement(item);
+      return {
+        box: readElementBox(control),
+        textLeaves: [...control.querySelectorAll("x-text, text, span")]
+          .filter(
+            (leaf) => leaf.querySelector("x-text, text, span") === null && leaf.textContent?.trim(),
+          )
+          .map((leaf) => ({
+            text: leaf.textContent?.trim() ?? "",
+            box: readElementBox(leaf),
+          })),
+        icons: [...control.querySelectorAll("x-image, image, img, svg")].map((icon) =>
+          readElementBox(icon),
+        ),
+      };
+    };
     return {
       reachable: true,
       present: true,
@@ -1244,7 +1285,7 @@ function readWebPane() {
               primaryAction: readElementBox(doc.querySelector(".composer-primary-action")),
               controlBoxes: composerControlElements.map((item) => ({
                 id: item.getAttribute("data-composer-control"),
-                box: readElementBox(composerControlBoxElement(item)),
+                ...composerControlDetails(item),
               })),
               actions: [...doc.querySelectorAll(".composer-approval-action")].map((item) =>
                 readElementBox(item),
