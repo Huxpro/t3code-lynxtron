@@ -1942,6 +1942,119 @@ async function verifyQuestionTranscriptState({
   };
 }
 
+async function verifyReviewDiffState({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  reviewFixture,
+  timeoutMs,
+}) {
+  const checkpoint = reviewFixture.checkpoint;
+  const expectedFile = checkpoint.files[0];
+  const clientState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === reviewFixture.threadId && state?.latestTurn?.state === "completed",
+  });
+  const checkpointCard = await waitForMeasurement({
+    child,
+    client,
+    selector: ".turn-diff-card",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-review-checkpoint-status"] === "ready" &&
+      measurement?.attributes["data-review-turn-id"] === checkpoint.turnId &&
+      measurement.text.includes(expectedFile.path),
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: "[data-review-open-diff]",
+    timeoutMs,
+  });
+  const rightPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-right-panel-open"] === "true" &&
+      measurement?.attributes["data-right-panel-active-kind"] === "diff",
+  });
+  const diffSurface = await waitForMeasurement({
+    child,
+    client,
+    selector: ".diff-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const diffFile = await waitForMeasurement({
+    child,
+    client,
+    selector: ".diff-code-file",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-review-file-path"] === expectedFile.path &&
+      measurement.text.includes("original review fixture") &&
+      measurement.text.includes("updated by T3 review fixture"),
+  });
+  const loading = await readOptionalMeasurement(client, "[data-review-patch-loading]");
+  const error = await readOptionalMeasurement(client, "[data-review-patch-error]");
+  if (loading || error) {
+    throw new Error(
+      `Native review diff retained a transient/error state: ${JSON.stringify({ loading, error })}`,
+    );
+  }
+  const composer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-frame",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
+  });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-review-diff.png",
+  });
+
+  return {
+    status: "pass",
+    fixture: {
+      threadId: reviewFixture.threadId,
+      turnId: checkpoint.turnId,
+      file: expectedFile,
+    },
+    clientState,
+    checkpointCard: {
+      rect: checkpointCard.rect,
+      text: checkpointCard.text,
+    },
+    rightPanel: {
+      rect: rightPanel.rect,
+      activeKind: rightPanel.attributes["data-right-panel-active-kind"],
+    },
+    diffSurface: {
+      rect: diffSurface.rect,
+      selectedTurn: checkpoint.turnId,
+    },
+    diffFile: {
+      rect: diffFile.rect,
+      path: diffFile.attributes["data-review-file-path"],
+      text: diffFile.text,
+    },
+    composer: {
+      rect: composer.rect,
+      state: composer.attributes["data-composer-state"],
+    },
+    screenshot,
+  };
+}
+
 async function verifyRuntimeCapabilities(client) {
   let keyDispatchError = null;
   try {
@@ -2747,6 +2860,8 @@ async function runOnce({
   approvalFixture,
   verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
   questionFixture,
+  verifyReviewDiffState: shouldVerifyReviewDiffState,
+  reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
@@ -2800,7 +2915,9 @@ async function runOnce({
       afterProbe,
     };
     const canonicalState =
-      shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+      shouldVerifyApprovalTranscriptState ||
+      shouldVerifyQuestionTranscriptState ||
+      shouldVerifyReviewDiffState
         ? await waitForClientState({
             child,
             client,
@@ -2809,23 +2926,32 @@ async function runOnce({
               state?.activeThreadId ===
                 (shouldVerifyApprovalTranscriptState
                   ? approvalFixture.threadId
-                  : questionFixture.threadId) &&
+                  : shouldVerifyQuestionTranscriptState
+                    ? questionFixture.threadId
+                    : reviewFixture.threadId) &&
               (shouldVerifyApprovalTranscriptState
                 ? state?.activeThread?.hasPendingApprovals === true
-                : state?.activeThread?.hasPendingUserInput === true) &&
+                : shouldVerifyQuestionTranscriptState
+                  ? state?.activeThread?.hasPendingUserInput === true
+                  : state?.latestTurn?.state === "completed") &&
               state?.activeThread?.modelSelection?.instanceId ===
                 (shouldVerifyApprovalTranscriptState
                   ? approvalFixture.modelSelection?.instanceId
-                  : questionFixture.modelSelection?.instanceId) &&
+                  : shouldVerifyQuestionTranscriptState
+                    ? questionFixture.modelSelection?.instanceId
+                    : reviewFixture.modelSelection?.instanceId) &&
               state?.activeThread?.modelSelection?.model ===
                 (shouldVerifyApprovalTranscriptState
                   ? approvalFixture.modelSelection?.model
-                  : questionFixture.modelSelection?.model) &&
-              state?.sessionStatus === "running" &&
-              state?.activeTurnId ===
-                (shouldVerifyApprovalTranscriptState
-                  ? approvalFixture.activeTurnId
-                  : questionFixture.activeTurnId),
+                  : shouldVerifyQuestionTranscriptState
+                    ? questionFixture.modelSelection?.model
+                    : reviewFixture.modelSelection?.model) &&
+              (shouldVerifyReviewDiffState ||
+                (state?.sessionStatus === "running" &&
+                  state?.activeTurnId ===
+                    (shouldVerifyApprovalTranscriptState
+                      ? approvalFixture.activeTurnId
+                      : questionFixture.activeTurnId))),
           })
         : requireCanonicalThread
           ? await waitForCanonicalState({
@@ -2941,6 +3067,16 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const reviewDiffState = shouldVerifyReviewDiffState
+      ? await verifyReviewDiffState({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          reviewFixture,
+          timeoutMs,
+        })
+      : undefined;
     const shellInteractions = shouldVerifyShellInteractions
       ? await verifyShellInteractions({
           child,
@@ -2984,6 +3120,7 @@ async function runOnce({
       failedTranscriptState,
       approvalTranscriptState,
       questionTranscriptState,
+      reviewDiffState,
       shellInteractions,
       runtimeCapabilities,
       branding,
@@ -3013,6 +3150,7 @@ async function runOnce({
       failedTranscriptState,
       approvalTranscriptState,
       questionTranscriptState,
+      reviewDiffState,
       shellInteractions,
       runtimeCapabilities,
       branding,
@@ -3066,6 +3204,7 @@ const shouldVerifyApprovalTranscriptState = process.argv.includes(
 const shouldVerifyQuestionTranscriptState = process.argv.includes(
   "--verify-question-transcript-state",
 );
+const shouldVerifyReviewDiffState = process.argv.includes("--verify-review-diff-state");
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
@@ -3135,6 +3274,21 @@ if (
     "--verify-question-transcript-state requires a real pendingRequestFixture question.",
   );
 }
+const reviewFixture = fixtureManifest.reviewFixture;
+if (
+  shouldVerifyReviewDiffState &&
+  (typeof reviewFixture?.threadId !== "string" ||
+    typeof reviewFixture?.title !== "string" ||
+    reviewFixture.latestTurnState !== "completed" ||
+    typeof reviewFixture?.modelSelection?.instanceId !== "string" ||
+    typeof reviewFixture?.modelSelection?.model !== "string" ||
+    typeof reviewFixture?.checkpoint?.turnId !== "string" ||
+    reviewFixture?.checkpoint?.status !== "ready" ||
+    !Array.isArray(reviewFixture?.checkpoint?.files) ||
+    reviewFixture.checkpoint.files.length === 0)
+) {
+  throw new Error("--verify-review-diff-state requires a real completed reviewFixture checkpoint.");
+}
 const fixtureManifestProjectId = fixtureManifest.project?.projectId;
 if (
   verifyComposerStop &&
@@ -3145,7 +3299,9 @@ if (
 const canonicalThreadTitle =
   shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
     ? fixtureManifest.pendingRequestFixture.title
-    : fixtureManifest.sidebarFixture?.titles?.[0];
+    : shouldVerifyReviewDiffState
+      ? reviewFixture.title
+      : fixtureManifest.sidebarFixture?.titles?.[0];
 const lifecycleOnlyEmptyFixture =
   shouldVerifyLifecycleRecovery &&
   !verifySettingsNavigation &&
@@ -3162,7 +3318,10 @@ if (
 const modelSelection =
   shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
     ? fixtureManifest.pendingRequestFixture.modelSelection
-    : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8")).modelSelection;
+    : shouldVerifyReviewDiffState
+      ? reviewFixture.modelSelection
+      : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8"))
+          .modelSelection;
 if (typeof modelSelection?.instanceId !== "string" || typeof modelSelection?.model !== "string") {
   throw new Error("The readiness fixture must declare a saved modelSelection.");
 }
@@ -3203,6 +3362,8 @@ for (let index = 1; index <= runs; index += 1) {
       approvalFixture,
       verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
       questionFixture,
+      verifyReviewDiffState: shouldVerifyReviewDiffState,
+      reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,

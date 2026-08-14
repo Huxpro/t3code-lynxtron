@@ -100,6 +100,20 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "recoveredComposer");
   });
 
+  it("verifies exact-bundle review patches from a real checkpoint fixture", () => {
+    assert.include(source, "async function verifyReviewDiffState");
+    assert.include(source, '"--verify-review-diff-state"');
+    assert.include(source, 'selector: "[data-review-open-diff]"');
+    assert.include(source, 'selector: ".diff-panel"');
+    assert.include(source, 'selector: ".diff-code-file"');
+    assert.include(
+      source,
+      'measurement?.attributes["data-review-file-path"] === expectedFile.path',
+    );
+    assert.include(source, 'measurement.text.includes("original review fixture")');
+    assert.include(source, 'measurement.text.includes("updated by T3 review fixture")');
+  });
+
   it("verifies the Native working transcript layout and locked workspace copy", () => {
     assert.include(source, 'readSelectorRects(client, ".timeline-list")');
     assert.include(source, 'readSelectorRects(client, ".timeline-row-root--working")');
