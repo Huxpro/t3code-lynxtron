@@ -35,3 +35,5 @@ composer-disabled-recovery-certification,2026-08-15T05:27:13+09:00,f7b9aaeb7eafb
 review-diff-browser-baseline,2026-08-15T05:40:00+09:00,c8f0355f4107455c58907eb3e699dd556c4da18e,commit,Review diff Browser baseline,0.808239,0.687361,0.085576,0.790294,0.209706,0.175198
 review-diff-rendering-fix,2026-08-15T06:06:00+09:00,bae3768289d7d8e234a40a774b708aafdb99a7ab,commit,Review diff rendering,0.800576,0.687361,0.04903,0.790294,0.209706,0.182861
 review-diff-native-certification,2026-08-15T06:20:28+09:00,9e2c6770e7fa6a7ab88cc1c3a422e43554194ffe,commit,Review diff Native certification,0.786059,0.687361,0.038592,0.777471,0.222529,0.197378
+new-thread-hero-browser-certification,2026-08-15T06:36:00+09:00,52b94146f27cbca14ef27bc42ac1889fbd64478e,commit,New Thread Hero Browser certification,0.778458,0.687361,0.036284,0.770117,0.229883,0.204979
+new-thread-hero-native-certification,2026-08-15T06:45:03+09:00,c7d056fb7f349f77b2e567ed4493cb523eb17ada,commit,New Thread Hero Native certification,0.770237,0.687361,0.034724,0.761971,0.238029,0.2132

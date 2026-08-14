@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T06:20:28+09:00",
+  "updatedAt": "2026-08-15T06:45:03+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -2981,7 +2981,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-15/fidelity/review-diff-rendering-metrics.json",
           "classification": "tracked-current",
-          "sha256": "fea2d901b97278c976225d30a0dc1a283c3cc3317d6eed1551e3992234daa3a4"
+          "sha256": "08a9b78d2b5ae997a712e4ab040de0c90b0f4d05ba10b84b236ea0d9af962833"
         }
       ],
       "updates": [
@@ -3069,7 +3069,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-15/fidelity/review-diff-rendering-metrics.json",
           "classification": "tracked-current",
-          "sha256": "fea2d901b97278c976225d30a0dc1a283c3cc3317d6eed1551e3992234daa3a4"
+          "sha256": "08a9b78d2b5ae997a712e4ab040de0c90b0f4d05ba10b84b236ea0d9af962833"
         }
       ],
       "updates": [
@@ -3145,7 +3145,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-15/fidelity/review-diff-rendering-metrics.json",
           "classification": "tracked-current",
-          "sha256": "fea2d901b97278c976225d30a0dc1a283c3cc3317d6eed1551e3992234daa3a4"
+          "sha256": "08a9b78d2b5ae997a712e4ab040de0c90b0f4d05ba10b84b236ea0d9af962833"
         }
       ],
       "updates": [
@@ -3177,6 +3177,151 @@
               "confidence": 0.99,
               "method": "exact-bundle-main-transport",
               "source": "PID-owned exact bundle uses main transport 2 to 3, zero renderer errors, and isolated cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "new-thread-hero-browser-certification",
+      "observedAt": "2026-08-15T06:36:00+09:00",
+      "commit": "52b94146f27cbca14ef27bc42ac1889fbd64478e",
+      "codeState": "commit",
+      "label": "New Thread Hero Browser certification",
+      "narrative": "A connector-created empty project with an available Claude default replaces a rejected offline fixture whose Codex default was unavailable. The matched 1280x820 dark Browser pair has identical project, no thread, Claude Fable 5 selection, High · 1M, Full access, Build, placeholder, Current checkout/main context, and Composer/surface/editor/footer/action geometry. Full-frame SSIM is 0.938457 with zero errors. No product fix is claimed.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point replaces stale and invalid Hero evidence with one current immutable matched Browser measurement. The unavailable-Codex pair is classified as a fixture mismatch rather than scored."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Current Hero authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/new-thread-hero-web.png",
+          "sha256": "e379dc20a3323f97c44cf52d1e439bcdc4155c587974bfeae1bad9c49ad567e3",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "163d0f1736e7f540c957151d91ebf9857bdc9786"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Current Hero Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/new-thread-hero-lynx.png",
+          "sha256": "07e84df5db221d55639d06b99e1ad13b5390cf9f9ddbfcfc2da345eebd598ae1",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "163d0f1736e7f540c957151d91ebf9857bdc9786"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/new-thread-hero-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "452827fe4f8580d202a61c5b5370bf2531fcff562710021c35a6c5b8eecc8146"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-empty-hero-content",
+              "source": "same project, no thread, Claude Fable 5, High · 1M, Full access, Build, placeholder, and Current checkout/main context"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "hero-composer-geometry",
+              "source": "Composer, surface, editor, footer, and primary action boxes match exactly at 1280x820"
+            },
+            "material": {
+              "residual": 0.061543,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.938457 at the current matched Hero frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same empty connector-created project, available project default, ready lifecycle, and zero Browser renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "new-thread-hero-native-certification",
+      "observedAt": "2026-08-15T06:45:03+09:00",
+      "commit": "c7d056fb7f349f77b2e567ed4493cb523eb17ada",
+      "codeState": "commit",
+      "label": "New Thread Hero Native certification",
+      "narrative": "A PID-owned exact production bundle waits for the real project-default model before certifying the empty New Thread Hero. It verifies Claude Fable 5, High · 1M, Full access, Build, Current checkout/main, 768x140 Composer geometry, dark theme, main transport, zero errors, and isolated cleanup. The Native frame is representative and does not replace a matched material residual.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The verifier adds current exact-bundle Native content, geometry, and runtime evidence for an already matching state. No product delta or Native pixel parity is claimed."
+      },
+      "screenshots": [
+        {
+          "client": "native",
+          "label": "Current Native Hero",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/new-thread-hero-native.png",
+          "sha256": "7001495fedc7f397a737b7f00c3299912690825dc1123a184b0894ee6b3f75cd",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "163d0f1736e7f540c957151d91ebf9857bdc9786"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/new-thread-hero-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "452827fe4f8580d202a61c5b5370bf2531fcff562710021c35a6c5b8eecc8146"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-empty-hero-content",
+              "source": "project-default Claude Fable 5, High · 1M, Full access, Build, Current checkout/main, and no thread"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-hero-composer-geometry",
+              "source": "Hero, Composer, surface, editor, and footer measured at 1280x820"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle, main transport 2 to 3, zero renderer errors, and isolated cleanup"
             }
           }
         }

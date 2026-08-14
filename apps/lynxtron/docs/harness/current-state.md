@@ -218,6 +218,16 @@ Plan 11 prose and screenshots.
   SSIM improves `0.462162 → 0.499074`. Exact-bundle Native opens the same
   turn/file patch with zero errors and isolated cleanup. Conservative loss is
   now 78.6059%, observed residual is 3.8592%, and evidence debt is 77.7471%.
+- The highest remaining stale shell cell, New Thread Hero, then gets a fresh
+  evidence-only pass. An offline fixture whose Codex default was unavailable is
+  rejected because Web retained the invalid default while Lynx selected a ready
+  fallback. A replacement project created through the real connector uses an
+  available Claude default; Web and Lynx then match project/thread identity,
+  all four Composer controls, placeholder, context, and every retained Composer
+  box at 1280x820. Full-frame SSIM is 0.938457. Exact-bundle Native waits for
+  provider hydration before verifying the same model, controls, 768x140
+  Composer, dark theme, zero errors, and isolated cleanup. Conservative loss is
+  now 77.0237%, observed residual is 3.4724%, and evidence debt is 76.1971%.
 
 ## Not currently proven
 

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T06:45:03+09:00",
+  "productCommit": "52b94146f27cbca14ef27bc42ac1889fbd64478e",
+  "nativeVerifierCommit": "c7d056fb7f349f77b2e567ed4493cb523eb17ada",
+  "stateId": "new-thread-hero",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "selectedProject": "t3-hero-workspace",
+    "selectedThread": null,
+    "lifecycle": "ready"
+  },
+  "fixture": {
+    "createdThroughRealConnector": true,
+    "workspace": "/tmp/t3-hero-workspace",
+    "projectId": "3713c9e8-5cf7-48d3-8bc1-697420208232",
+    "projectTitle": "t3-hero-workspace",
+    "threadCount": 0,
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "snapshotSha256": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977"
+  },
+  "classification": {
+    "harnessMismatch": [
+      "The first empty fixture was created by the offline project CLI with codex/gpt-5.6-sol, but the isolated runtime reported Codex installed=false, status=error, and zero models. Web retained the unavailable project default while Lynx selected the ready Claude fallback, so that pair was rejected instead of scored.",
+      "The first Native attempt borrowed lifecycle recovery to bypass the canonical-thread guard, but Hero intentionally hides the lifecycle banner. A dedicated empty-fixture Hero gate now verifies the ready state directly.",
+      "The Native Hero gate initially read the first Select model frame before provider hydration; it now waits for the explicit project-default label signal."
+    ],
+    "productLoss": [],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime. Exact-bundle Native updates content, geometry, and runtime; its screenshot is representative rather than a Native-to-Web material residual."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "52b94146f27cbca14ef27bc42ac1889fbd64478e",
+    "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+    "lynxBundleSha256": "771f9c98bb4b3d5b85e2e772b4f7a3689dd07e84aff2d0fd974eabb115e19ba5",
+    "fullFrameSsim": 0.938457,
+    "fullFrameResidual": 0.061543,
+    "capturePass": true,
+    "rendererErrors": 0,
+    "readyMs": 2420,
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "placeholder": "Ask for follow-up changes or attach images",
+    "context": ["Current checkout", "main"],
+    "geometry": {
+      "web": {
+        "composer": { "x": 384, "y": 340, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 341, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 357, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 435, "width": 766, "height": 44 },
+        "primaryAction": { "x": 1107, "y": 435, "width": 32, "height": 32 }
+      },
+      "lynx": {
+        "composer": { "x": 384, "y": 340, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 341, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 357, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 435, "width": 766, "height": 44 },
+        "primaryAction": { "x": 1107, "y": 435, "width": 32, "height": 32 }
+      }
+    },
+    "reportSha256": "e8cbf67e105c2e07d2257e4d0b62b5ab9b4202cd8dff7dcb470b1e90c0b803ec"
+  },
+  "native": {
+    "status": "pass",
+    "head": "c7d056fb7f349f77b2e567ed4493cb523eb17ada",
+    "bundleSha256": "e0ecb4c589f0635f7ffa2f51bdc00c30db5bafc0f7c39459b389a7dc05500ced",
+    "snapshotId": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "context": ["Current checkout", "main"],
+    "geometry": {
+      "hero": { "x": 256, "y": 52, "width": 1024, "height": 768 },
+      "composer": { "x": 384, "y": 340, "width": 768, "height": 140 },
+      "surface": { "x": 385, "y": 341, "width": 766, "height": 138 },
+      "editor": { "x": 401, "y": 357, "width": 734, "height": 70 },
+      "footer": { "x": 385, "y": 435, "width": 766, "height": 44 }
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "bcec63fa8dff5f40f4577e2c36f4d976cea8c94d7edace587780e4b1cf3443eb",
+    "screenshotSha256": "7001495fedc7f397a737b7f00c3299912690825dc1123a184b0894ee6b3f75cd"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "163d0f1736e7f540c957151d91ebf9857bdc9786"
+    },
+    "web": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/new-thread-hero-web.png",
+      "sha256": "e379dc20a3323f97c44cf52d1e439bcdc4155c587974bfeae1bad9c49ad567e3"
+    },
+    "lynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/new-thread-hero-lynx.png",
+      "sha256": "07e84df5db221d55639d06b99e1ad13b5390cf9f9ddbfcfc2da345eebd598ae1"
+    },
+    "native": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/new-thread-hero-native.png",
+      "sha256": "7001495fedc7f397a737b7f00c3299912690825dc1123a184b0894ee6b3f75cd"
+    }
+  },
+  "remainingRisk": [
+    "Hero keyboard focus, typing, send, and file attachment input require authorized real OS input and remain outside this evidence.",
+    "Light-theme Hero and 1440x900 responsive evidence remain separate cells.",
+    "Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web pixel residual."
+  ]
+}
