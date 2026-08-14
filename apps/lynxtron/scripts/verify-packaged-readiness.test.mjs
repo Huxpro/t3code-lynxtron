@@ -25,7 +25,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "--verify-composer-geometry");
     assert.include(source, "--expected-theme");
     assert.include(source, 'themeRoot.attributes["data-theme"] === expectedTheme');
-    assert.include(source, 'contextBand.style.display === "none"');
+    assert.include(source, 'contextLegacyBand.style.display === "none"');
+    assert.include(source, 'readSelectorRects(client, ".composer-context-light-band")');
+    assert.include(source, "contextLightBands.length === 16");
+    assert.include(source, "contextBackdrop.rect.y + index * 2");
+    assert.include(source, 'contextLightBandFirst.style.backgroundColor === "rgb(222,222,222)"');
+    assert.include(source, 'contextLightBandLast.style.backgroundColor === "rgb(254,254,254)"');
     assert.include(source, "composerThemeScreenshot");
     assert.include(source, "native-composer-${expectedTheme}.png");
     assert.notInclude(outcomeChecksSource, "composerThemeScreenshot");

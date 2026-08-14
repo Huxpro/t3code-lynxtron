@@ -625,10 +625,13 @@ async function verifyComposerGeometry(client, expectedTheme) {
   const [contextStrip] = await readSelectorRects(client, ".composer-context-strip");
   const contextControls = await readSelectorRects(client, ".composer-context-control");
   const contextIcons = await readSelectorRects(client, ".composer-context-icon");
+  const contextLightBands = await readSelectorRects(client, ".composer-context-light-band");
   const contextLabels = [composer.typography.contextCheckout, composer.typography.contextBranch];
   const themeRoot = composer.colors.themeRoot;
   const contextBackdrop = composer.colors.contextBackdrop;
-  const contextBand = composer.colors.contextBand;
+  const contextLegacyBand = composer.colors.contextLegacyBand;
+  const contextLightBandFirst = composer.colors.contextLightBandFirst;
+  const contextLightBandLast = composer.colors.contextLightBandLast;
   const wrongSize = (rect, size) =>
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
@@ -657,13 +660,25 @@ async function verifyComposerGeometry(client, expectedTheme) {
       label.style.lineHeight === "16px" &&
       !wrongMutedAlpha(label.style.color),
   );
+  const contextLightBandsAligned =
+    contextLightBands.length === 16 &&
+    contextLightBands.every(
+      (rect, index) =>
+        Math.abs(rect.x - (contextBackdrop.rect.x + 1)) <= 0.75 &&
+        Math.abs(rect.y - (contextBackdrop.rect.y + index * 2)) <= 0.75 &&
+        Math.abs(rect.width - (contextBackdrop.rect.width - 2)) <= 0.75 &&
+        Math.abs(rect.height - (index === 15 ? 1 : 2)) <= 0.5,
+    );
   const expectedThemeMatches =
     !expectedTheme ||
     (themeRoot.attributes["data-theme"] === expectedTheme &&
       (expectedTheme !== "light" ||
         (contextBackdrop.style.backgroundColor === "rgb(254,254,254)" &&
           contextBackdrop.style.borderBottomColor === "rgb(234,234,234)" &&
-          contextBand.style.display === "none")));
+          contextLegacyBand.style.display === "none" &&
+          contextLightBandsAligned &&
+          contextLightBandFirst.style.backgroundColor === "rgb(222,222,222)" &&
+          contextLightBandLast.style.backgroundColor === "rgb(254,254,254)")));
   if (
     chevrons.length < 2 ||
     chevrons.length > 3 ||
@@ -689,7 +704,10 @@ async function verifyComposerGeometry(client, expectedTheme) {
         contextLabels,
         themeRoot,
         contextBackdrop,
-        contextBand,
+        contextLegacyBand,
+        contextLightBands,
+        contextLightBandFirst,
+        contextLightBandLast,
         contextIcons,
         controlColors,
       })}`,
@@ -707,7 +725,10 @@ async function verifyComposerGeometry(client, expectedTheme) {
     contextLabels,
     themeRoot,
     contextBackdrop,
-    contextBand,
+    contextLegacyBand,
+    contextLightBands,
+    contextLightBandFirst,
+    contextLightBandLast,
     contextIcons,
     controlColors,
   };
@@ -801,7 +822,9 @@ async function readComposerOutcome(client) {
         { id: "primaryAction", lynx: ".composer-primary-action" },
         { id: "context", lynx: ".composer-context-strip" },
         { id: "contextBackdrop", lynx: ".composer-context-backdrop" },
-        { id: "contextBand", lynx: ".composer-context-backdrop-band" },
+        { id: "contextLegacyBand", lynx: ".composer-context-backdrop-band" },
+        { id: "contextLightBandFirst", lynx: ".composer-context-light-band--0" },
+        { id: "contextLightBandLast", lynx: ".composer-context-light-band--15" },
       ],
     },
   });
