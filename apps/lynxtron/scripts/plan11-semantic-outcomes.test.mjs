@@ -19,6 +19,7 @@ function measurements(overrides = {}) {
       toolbar: { rect: rect(20, 520, 32, 104) },
       model: { rect: rect(20, 100, 28, 106) },
       runtime: { rect: rect(140, 100, 28, 106) },
+      runtimeWrap: { rect: rect(140, 100, 28, 106) },
       interaction: { rect: rect(260, 100, 28, 106) },
       primaryAction: { rect: rect(570, 32, 32, 104) },
       context: { rect: rect(20, 580, 40, 150) },
@@ -39,7 +40,7 @@ describe("Plan 11 semantic outcome assertions", () => {
     );
     assert.throws(
       () => assertComposerGeometry(measurements({ runtime: { rect: rect(15) } })),
-      /overlap or lost canonical order/u,
+      /"runtimeWrap":/u,
     );
     assert.throws(
       () => assertComposerGeometry(measurements({ context: { rect: rect(0, 620, 40, 150) } })),

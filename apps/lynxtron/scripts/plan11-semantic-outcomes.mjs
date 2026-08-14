@@ -31,7 +31,12 @@ export function assertComposerGeometry(measurements) {
     const previousRight = controls[index - 1].x + controls[index - 1].width;
     if (controls[index].x < previousRight - 1) {
       throw new Error(
-        `Composer controls overlap or lost canonical order: ${JSON.stringify({ controlIds, controls })}`,
+        `Composer controls overlap or lost canonical order: ${JSON.stringify({
+          controlIds,
+          controls,
+          modelAnchor: measurements.anchors.modelAnchor?.rect ?? null,
+          runtimeWrap: measurements.anchors.runtimeWrap?.rect ?? null,
+        })}`,
       );
     }
   }
