@@ -774,7 +774,8 @@ function readLynxPane() {
           .map(({ y: _y, ...row }) => row),
         rowGeometry: [...(root?.querySelectorAll("[data-timeline-row-id]") ?? [])]
           .map((item) => {
-            const rect = item.getBoundingClientRect();
+            const geometryOwner = item.closest(".timeline-row-root") ?? item;
+            const rect = geometryOwner.getBoundingClientRect();
             const kind = item.getAttribute("data-timeline-row-kind");
             const role = item.getAttribute("data-message-role");
             const content =
@@ -784,14 +785,16 @@ function readLynxPane() {
                   ? item.querySelector(".transcript-assistant-row")
                   : kind === "work"
                     ? item.querySelector(".transcript-work-group")
-                    : item;
+                    : kind === "working"
+                      ? item.querySelector(".transcript-working-row")
+                      : item;
             const contentRect = content.getBoundingClientRect();
             return {
               id: item.getAttribute("data-timeline-row-id"),
               kind,
               role,
               text: item.getAttribute("data-timeline-row-text") ?? "",
-              className: item.getAttribute("class"),
+              className: geometryOwner.getAttribute("class"),
               x: rect.x,
               y: rect.y,
               width: rect.width,
@@ -1396,7 +1399,9 @@ function readWebPane() {
                   ? item.querySelector(".transcript-assistant-row")
                   : kind === "work"
                     ? item.querySelector(".transcript-work-group")
-                    : item;
+                    : kind === "working"
+                      ? item.querySelector(".transcript-working-row")
+                      : item;
             const contentRect = content.getBoundingClientRect();
             return {
               id: item.getAttribute("data-timeline-row-id"),

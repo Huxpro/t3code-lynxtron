@@ -44,4 +44,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'expectedThreadFixture?.latestTurnState !== "completed"');
     assert.include(source, 'expectedThreadFixture?.latestTurnState !== "error"');
   });
+
+  it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, 'item.closest(".timeline-row-root") ?? item');
+    assert.include(workbench, "const rect = geometryOwner.getBoundingClientRect()");
+    assert.include(workbench, 'kind === "working"');
+    assert.include(workbench, 'item.querySelector(".transcript-working-row")');
+  });
 });
