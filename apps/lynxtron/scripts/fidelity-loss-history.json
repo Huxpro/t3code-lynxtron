@@ -1555,6 +1555,78 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-context-icon-geometry-fix",
+      "observedAt": "2026-08-14T09:41:11+08:00",
+      "commit": "594e7ad34c8d2607e60b473ec4ceb153121ebbd8",
+      "codeState": "commit",
+      "label": "Composer Context icon geometry",
+      "narrative": "The branch control used external SVG wrappers that ignored their requested 12px dimensions and rendered as 24x18 leaves in Lynx-for-Web. Replacing them with the shared Icon primitive raises Hero Context SSIM from 0.898714 to 0.918270 and Sendable Context SSIM to 0.918089. Composer-region residual improves by about 0.004838 in each state. A fresh exact-bundle Native run proves three approximately 12px Context icons, main transport advancement, and zero renderer errors; Native pixel parity is not claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Hero and Sendable use matched current snapshots around the icon-only product change, with an exact-bundle Native Context icon gate."
+      },
+      "screenshots": [
+        {
+          "client": "lynx",
+          "label": "Hero Context icons after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-context-icons-after-lynx.png",
+          "sha256": "a35e1e09664e70ff98a5eed3cddb77b874c0dd82c05e02f6893453996bd0f0d0",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ff9a9f79e16b327449a6105d3d1819cd7f6f71d3"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Context icons after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-context-icons-after-lynx.png",
+          "sha256": "66d9935fdaed5a302b75dca6b7dd3a82cace4cbe68a848b7d211c9284624cd2c",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ff9a9f79e16b327449a6105d3d1819cd7f6f71d3"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-context-icon-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "974a173b3a04b85f726bc71bd94b5cbe41826cf9c8b0936c4d9b14a6d9d7b4a7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.070524,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.929476 over the matched 768x172 Hero Composer/context region"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.065878,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.934122 over the matched 768x172 Sendable Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -89,12 +89,16 @@ Plan 11 prose and screenshots.
   improves both Hero and Sendable Footer SSIM while leaving text metrics and the
   context strip as the next open material contributors. Native verifies the
   staged icon boxes directly without claiming pixel parity. Current
-  conservative loss is 87.07%, observed residual is 6.11%, and evidence debt is
+  conservative loss is 87.07%, observed residual is 6.10%, and evidence debt is
   86.23%.
 - Matching the shared 70% muted-label token then improves Hero and Sendable
   Footer SSIM by roughly 0.0082 each. Native resolves that token to the expected
   8-bit alpha and remains renderer-error free; Footer text widths and the
   context strip remain open.
+- Replacing oversized external Context SVG wrappers with the shared 12px Icon
+  primitive raises Context SSIM from 89.87% to about 91.82% and improves both
+  Hero and Sendable Composer-region residuals. Native independently verifies
+  the staged Context icon boxes without claiming pixel parity.
 
 ## Not currently proven
 
