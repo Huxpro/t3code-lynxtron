@@ -37,6 +37,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, ".composer-toolbar-control .pill__chevron-img");
     assert.include(source, ".composer-toolbar-control--runtime .pill__icon-img");
     assert.include(source, ".composer-toolbar-control--interaction .pill__icon-img");
+    assert.include(source, '".model-picker-anchor"');
+    assert.include(source, '".composer-runtime-control-wrap"');
     assert.include(source, '".composer-context-control"');
     assert.include(source, ".composer-context-label--checkout");
     assert.include(source, ".composer-context-label--branch");
