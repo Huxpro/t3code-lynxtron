@@ -1500,6 +1500,69 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
   };
 }
 
+async function verifyFailedTranscriptState({ client, devToolCli, outputDirectory }) {
+  const composer = await readComposerOutcome(client, { allowMissingInteraction: true });
+  assertComposerGeometry(composer, { allowMissingInteraction: true });
+  const primaryAction = composer.anchors.primaryAction;
+  const modelText = composer.anchors.model.text.trim();
+  const [errorBanner] = await readSelectorRects(client, ".thread-error-banner");
+  const errorDescription = await readOptionalMeasurement(client, ".thread-error-description");
+  const [timelineHost] = await readSelectorRects(client, ".timeline-host");
+  const rowRoots = await readSelectorRects(client, ".timeline-row-root");
+  const errorWorkEntry = await readOptionalMeasurement(client, ".transcript-work-status--failed");
+  const checkoutLabel = composer.typography.contextCheckout.text.trim();
+  const matches =
+    primaryAction.attributes["data-composer-primary-state"] === "disabled" &&
+    modelText === "Big Pickle" &&
+    errorBanner &&
+    errorDescription?.text.includes("Model not found: opencode/not-a-real-model.") &&
+    timelineHost &&
+    rowRoots.length === 2 &&
+    Math.abs(rowRoots[0].y - (timelineHost.y + 16)) <= 1 &&
+    errorWorkEntry !== null &&
+    checkoutLabel === "Local checkout";
+  if (!matches) {
+    throw new Error(
+      `Canonical failed transcript drifted: ${JSON.stringify({
+        primaryAction,
+        modelText,
+        errorBanner,
+        errorDescription,
+        timelineHost,
+        rowRoots,
+        errorWorkEntry,
+        checkoutLabel,
+      })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-failed.png",
+  });
+  return {
+    status: "pass",
+    primaryAction: {
+      state: primaryAction.attributes["data-composer-primary-state"] ?? null,
+      ariaLabel: primaryAction.attributes["aria-label"] ?? null,
+      ariaDisabled: primaryAction.attributes["aria-disabled"] ?? null,
+    },
+    modelText,
+    errorBanner,
+    errorDescription: errorDescription.text.trim(),
+    timelineHost,
+    rowRoots,
+    errorWorkEntry: {
+      rect: errorWorkEntry.rect,
+      text: errorWorkEntry.text.trim(),
+      attributes: errorWorkEntry.attributes,
+    },
+    checkoutLabel,
+    screenshot,
+  };
+}
+
 async function verifyRuntimeCapabilities(client) {
   let keyDispatchError = null;
   try {
@@ -2101,6 +2164,7 @@ async function runOnce({
   verifyComposerStop,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
+  verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -2240,6 +2304,13 @@ async function runOnce({
           outputDirectory,
         })
       : undefined;
+    const failedTranscriptState = shouldVerifyFailedTranscriptState
+      ? await verifyFailedTranscriptState({
+          client,
+          devToolCli,
+          outputDirectory,
+        })
+      : undefined;
     const runtimeCapabilities = shouldVerifyRuntimeCapabilities
       ? await verifyRuntimeCapabilities(client)
       : undefined;
@@ -2273,6 +2344,7 @@ async function runOnce({
       composerStop,
       composerWorkingState,
       completedTranscriptState,
+      failedTranscriptState,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -2298,6 +2370,7 @@ async function runOnce({
       composerStop,
       composerWorkingState,
       completedTranscriptState,
+      failedTranscriptState,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -2343,6 +2416,7 @@ const shouldVerifyComposerWorkingState = process.argv.includes("--verify-compose
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
   "--verify-completed-transcript-state",
 );
+const shouldVerifyFailedTranscriptState = process.argv.includes("--verify-failed-transcript-state");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -2440,6 +2514,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyComposerStop,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
+      verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,

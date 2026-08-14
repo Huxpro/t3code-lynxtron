@@ -88,4 +88,17 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "allowMissingInteraction: true");
     assert.include(source, '".model-picker-anchor > .composer-toolbar-control--model"');
   });
+
+  it("verifies the Native failed transcript banner, fallback model, and error row", () => {
+    assert.include(source, "async function verifyFailedTranscriptState");
+    assert.include(source, '".thread-error-banner"');
+    assert.include(source, '".thread-error-description"');
+    assert.include(source, 'modelText === "Big Pickle"');
+    assert.include(
+      source,
+      'errorDescription?.text.includes("Model not found: opencode/not-a-real-model.")',
+    );
+    assert.include(source, '".transcript-work-status--failed"');
+    assert.include(source, '"--verify-failed-transcript-state"');
+  });
 });
