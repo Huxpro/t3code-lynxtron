@@ -7,6 +7,10 @@ const source = readFileSync(
   path.join(import.meta.dirname, "verify-packaged-readiness.mjs"),
   "utf8",
 );
+const outcomeChecksSource = source.slice(
+  source.indexOf("const outcomeChecks = ["),
+  source.indexOf("].filter(Boolean);", source.indexOf("const outcomeChecks = [")),
+);
 
 describe("packaged readiness Sidebar geometry", () => {
   it("verifies every row and card with read-only DevTool box models", () => {
@@ -24,6 +28,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'contextBand.style.display === "none"');
     assert.include(source, "composerThemeScreenshot");
     assert.include(source, "native-composer-${expectedTheme}.png");
+    assert.notInclude(outcomeChecksSource, "composerThemeScreenshot");
     assert.include(source, ".composer-toolbar-control .pill__chevron-img");
     assert.include(source, ".composer-toolbar-control--runtime .pill__icon-img");
     assert.include(source, ".composer-toolbar-control--interaction .pill__icon-img");
