@@ -145,6 +145,18 @@ Plan 11 prose and screenshots.
   evidence and exact-theme dark/light Native runs corroborate the shared
   mapping; only the direct dark pairs update the ledger. Conservative loss is
   now 86.9312%, observed residual is 6.0727%, and evidence debt remains 86.0862%.
+- The next high-weight transcript cell separates four capture mismatches before
+  admitting product evidence: intentional atlases are not icons, a running
+  thread cannot stand in for a missing completed fixture, Lynx recycled-row
+  spacing belongs to the list-item wrapper, and Native theme identity uses the
+  persisted `themePreference` key. The valid working-thread pair then exposes a
+  32px transcript inset drift, a collapsed 24px working row, and
+  `Current checkout` versus Web's locked `Local checkout`. Shared copy plus
+  16px/40px list contracts raise transcript-viewport SSIM
+  `0.957407 → 0.969803` and full-frame SSIM `0.912880 → 0.920077`.
+  Exact-bundle Native verifies the same inset, row boxes, Stop state, dark
+  theme, and main transport. Conservative loss is now 86.1490%, observed
+  residual is 5.7882%, and evidence debt is 85.2980%.
 
 ## Not currently proven
 
@@ -152,7 +164,8 @@ Plan 11 prose and screenshots.
 - No current Web/Lynx/Native pixel certification matrix exists; the final5
   packaged Native Context geometry/readiness gate is not pixel parity.
 - Native physical keyboard/focus, transcript wheel/drag/follow, light/system
-  theme persistence, and full patch rendering are not certified.
+  theme persistence, completed/failed populated transcripts, and full patch
+  rendering are not certified.
 - Browser/CDP evidence cannot satisfy Native-only input, list, window, or
   persistence requirements.
 - Historical `PASS`, `functional`, and `completed` labels do not independently

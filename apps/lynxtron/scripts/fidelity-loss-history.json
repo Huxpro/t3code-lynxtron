@@ -2226,6 +2226,121 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-working-layout-fix",
+      "observedAt": "2026-08-14T14:22:02+08:00",
+      "commit": "9e4e1187ad3eed3a177a638f6390648a906a267d",
+      "codeState": "commit",
+      "label": "Existing Thread working layout",
+      "narrative": "A fresh same-server working-thread cell first exposed two harness mismatches: intentional transcript atlases were treated as unsettled icons, and the completed-state selector reused a running canonical thread when no completed fixture existed. After rejecting those invalid paths, the valid working state showed real product loss: Lynx started the transcript 32px too low, collapsed the 40px working outer row to its 24px visual content, and rendered Current checkout where Web's locked existing-thread Composer rendered Local checkout. The product fix moves the list inset from 48px to 16px, gives the Native recycling wrapper an explicit 40px working-row contract, and projects locked workspace copy through shared client-runtime state. Full-frame SSIM improves from 0.912880 to 0.920077, transcript-viewport SSIM improves from 0.957407 to 0.969803, and transcript-column SSIM improves from 0.943311 to 0.959686. Exact-bundle Native independently verifies dark identity, main transport 2 to 3, Stop state, the 16px inset, 40px wrapper, 24px visual row, Local checkout copy, zero renderer errors, and isolated cleanup.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct matched Browser captures share one copied snapshot, route, thread, model, theme, density, and viewport around the product commit. Harness mismatches are recorded separately, and exact-bundle Native is used only for geometry/readiness corroboration."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Working thread before authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-working-before-web.png",
+          "sha256": "d0911a83745ab196cd7d324639e57daec03f15322a6187e20abb6821328cdece",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "907eef98dd2e4ad42aa9933be65662b59bdc8a15"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Working thread before Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-working-before-lynx.png",
+          "sha256": "1c318f971bc97437e7f410a4256fadefbb932dd8c467e5f917a08872dbd9a9ac",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "907eef98dd2e4ad42aa9933be65662b59bdc8a15"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Working thread authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-working-web.png",
+          "sha256": "5166d330c00850d4fee94a03234bb92bc10654f267971f6e50deb93034929131",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "907eef98dd2e4ad42aa9933be65662b59bdc8a15"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Working thread Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-working-lynx.png",
+          "sha256": "be4ba2365a57ab46fef4277108cf240ff4c07e1bfa43bae8398c945599ebf789",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "907eef98dd2e4ad42aa9933be65662b59bdc8a15"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native working transcript",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-working-native.png",
+          "sha256": "000a43f7973630f59aec083d9f45b92c917c4d5e20e8fefbc057bdee79543f70",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "907eef98dd2e4ad42aa9933be65662b59bdc8a15"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/existing-thread-working-layout-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "5aa632875d7a1ccecc3c3d42354ad50e088100dd54e6c6acfd8a0fc12cba90dc"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-working-thread-content",
+              "source": "timeline rows, model, Composer controls, Local checkout, and branch labels match on one server snapshot"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, -0.25, 0, 0, 0, 0, 0, 0, 0, 0.5],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "working-transcript-row-geometry",
+              "source": "first row x/y/width plus both outer heights and working visual height at 1280x820"
+            },
+            "material": {
+              "residual": 0.030197,
+              "confidence": 0.99,
+              "method": "transcript-viewport-ssim",
+              "source": "1 - SSIM 0.969803 over the matched 1024x568 transcript viewport"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same selected running thread with zero Browser renderer errors; Native exact-bundle transport/readiness is corroborating"
+            }
+          }
+        }
+      ]
     }
   ]
 }
