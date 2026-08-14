@@ -44,6 +44,23 @@
 .theme-light .ui-button__label--authority-hidden {
   opacity: 1;
 }
+.theme-light .composer-context-backdrop {
+  border-right-color: #eaeaea;
+  border-bottom-color: #eaeaea;
+  border-left-color: #eaeaea;
+  background-color: #fefefe;
+  background-image: linear-gradient(
+    to bottom,
+    #dddddd 0,
+    #f0f0f0 8px,
+    #fafafa 16px,
+    #fefefe 25px,
+    #fefefe 100%
+  );
+}
+.theme-light .composer-context-backdrop-band {
+  display: none;
+}
 
 /* ReactLynx generic Web snapshots resolve inherited text properties to their
  * host defaults. The native HostText leaf makes inheritance explicit. */
