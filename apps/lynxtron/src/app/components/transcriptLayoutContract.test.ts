@@ -15,8 +15,12 @@ const sharedRowSource = readFileSync(
 
 describe("transcript layout contract", () => {
   it("matches the Web timeline top inset and working-row spacing", () => {
-    expect(overrides).toContain("padding: 48px 26px 20px;");
-    expect(overrides).toContain(".timeline-list--working {\n  padding-top: 16px;");
+    expect(overrides).toContain("padding: 16px 26px 20px;");
+    expect(overrides).toContain(
+      ".timeline-settled-header-space {\n  width: 100%;\n  height: 32px;",
+    );
+    expect(timelineSource).toContain('item-key="timeline-settled-header-space"');
+    expect(timelineSource).toContain("estimated-main-axis-size-px={32}");
     expect(overrides).toContain(".timeline-row-root--working {\n  height: 40px;");
     expect(overrides).toContain(".transcript-working-outer {\n  padding-bottom: 16px;");
     expect(sharedRowSource).toContain('row.kind === "working" ? "transcript-working-outer" : null');
@@ -25,5 +29,8 @@ describe("transcript layout contract", () => {
     );
     expect(timelineSource).toContain('row.kind === "message" && row.message.role === "assistant"');
     expect(overrides).toContain(".timeline-row-root--assistant {\n  padding-bottom: 16px;");
+    expect(overrides).toContain(
+      ".timeline-row-root--assistant > .transcript-assistant-group {\n  padding-bottom: 0;",
+    );
   });
 });

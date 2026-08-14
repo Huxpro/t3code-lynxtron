@@ -705,13 +705,22 @@ export function MessagesTimeline({
     >
       <list
         ref={listRef}
-        className={isWorking ? "timeline-list timeline-list--working" : "timeline-list"}
+        className="timeline-list"
         scroll-orientation="vertical"
         list-type="single"
         span-count={1}
         scroll-event-throttle={100}
         bindscroll={handleScroll}
       >
+        {!isWorking ? (
+          <list-item
+            item-key="timeline-settled-header-space"
+            key="timeline-settled-header-space"
+            estimated-main-axis-size-px={32}
+          >
+            <view className="timeline-settled-header-space" />
+          </list-item>
+        ) : null}
         {rows.map((row) => (
           <list-item item-key={row.id} key={row.id} reuse-identifier={reuseIdentifierForRow(row)}>
             <view
