@@ -31,6 +31,8 @@ import {
   type AuthAccessStreamEvent,
   type OrchestrationShellSnapshot,
   type OrchestrationShellStreamItem,
+  type OrchestrationGetTurnDiffInput,
+  type OrchestrationGetTurnDiffResult,
   type OrchestrationThreadShell,
   type OrchestrationThread,
   type OrchestrationThreadStreamItem,
@@ -570,6 +572,15 @@ export class LiveConnectorHost {
           { version: 1, type: "settingsUpdated", payload: { settings } },
         );
         return { ...config, settings };
+      });
+    }
+    if (request.method === "getTurnDiff") {
+      const params = request.params as OrchestrationGetTurnDiffInput;
+      return this.#runClient<OrchestrationGetTurnDiffResult>(
+        this.#client[ORCHESTRATION_WS_METHODS.getTurnDiff](params),
+      ).then((value) => {
+        this.diagnostics.lastCommandResult = { method: request.method, value };
+        return value;
       });
     }
     if (request.method === "respondToUserInput") {

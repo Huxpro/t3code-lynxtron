@@ -112,7 +112,11 @@ describe("LiveConnectorHost", () => {
     assert.throws(() => host.handleNativeCall("anything", {}, "shell"), /Unsupported/);
     assert.throws(
       () =>
-        host.handleNativeCall(T3_CONNECTOR_METHODS.command, { method: "deleteEverything" }, "bridge"),
+        host.handleNativeCall(
+          T3_CONNECTOR_METHODS.command,
+          { method: "deleteEverything" },
+          "bridge",
+        ),
       /Rejected live connector command/,
     );
   });
@@ -120,6 +124,13 @@ describe("LiveConnectorHost", () => {
   it("exposes T3_CONNECTOR_EVENT as its push channel name", () => {
     // Sanity: the host uses the shared protocol event name, not a private one.
     assert.equal(T3_CONNECTOR_EVENT, "t3:connector-event");
+  });
+
+  it("forwards turn-diff commands to the live orchestration RPC", () => {
+    const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
+    assert.include(source, 'if (request.method === "getTurnDiff")');
+    assert.include(source, "this.#client[ORCHESTRATION_WS_METHODS.getTurnDiff](params)");
+    assert.include(source, "OrchestrationGetTurnDiffResult");
   });
 
   // Production graph isolation: the dev-only live host must never be imported by
@@ -149,7 +160,10 @@ describe("LiveConnectorHost", () => {
         }
         if (!/\.(ts|tsx|js|mjs)$/.test(entry)) continue;
         const text = readFileSync(full, "utf8");
-        if (text.includes("liveConnectorHost") || text.includes("browser-preview/liveConnectorHost")) {
+        if (
+          text.includes("liveConnectorHost") ||
+          text.includes("browser-preview/liveConnectorHost")
+        ) {
           offenders.push(path.relative(srcRoot, full));
         }
       }
