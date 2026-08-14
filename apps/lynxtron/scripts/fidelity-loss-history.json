@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T05:27:13+09:00",
+  "updatedAt": "2026-08-15T06:20:28+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -2934,6 +2934,249 @@
               "confidence": 0.99,
               "method": "exact-bundle-main-transport-recovery",
               "source": "PID-owned server failure and replacement advance sequence 14 to 19 with zero renderer errors and isolated cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-diff-browser-baseline",
+      "observedAt": "2026-08-15T05:40:00+09:00",
+      "commit": "c8f0355f4107455c58907eb3e699dd556c4da18e",
+      "codeState": "commit",
+      "label": "Review diff Browser baseline",
+      "narrative": "A real OpenCode turn creates one ready checkpoint for review-fixture.txt with one addition and one deletion. Web opens the patch, while Lynx Browser Preview reaches the same thread, turn, and checkpoint but getTurnDiff silently resolves undefined, throws while reading result.diff, and remains on Loading code diff. The valid failure frame also measures a 30px user-message wrap drift, an 8px duplicated checkpoint-tree gap, and non-compact Lynx mode controls in the 444px Composer. This point records the current product loss before changing it.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The baseline measures a previously unknown fixed-denominator state from one immutable real checkpoint. It establishes product loss but makes no product change."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Review diff before authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-before-web.png",
+          "sha256": "b0b7183b3cdd7d6c33ecfd8943c3733669b59efb7bef7acb3b518466f91b728f",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "046badf6496c1f0a62b35df219c458ac2fd47fd6"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Review diff before Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-before-lynx.png",
+          "sha256": "d76637b60424c2f15d223b16794bbef982b531e33ef871141002e817b6e018be",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "046badf6496c1f0a62b35df219c458ac2fd47fd6"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/review-diff-rendering-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "fea2d901b97278c976225d30a0dc1a283c3cc3317d6eed1551e3992234daa3a4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "real-checkpoint-patch-failure",
+              "source": "same selected thread, turn, checkpoint, and file, but Lynx never renders the patch and stays on Loading code diff"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, -1, 30, 0, 30, -1, 0, 0, 30, -1, 3.5, 0, 29.5, -1, 8, 0, 29.5, -1, 0.5, 0, 38,
+                -1, -0.5, -0.5, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "review-shell-geometry",
+              "source": "user row, turn fold, assistant row, checkpoint card/header/tree, and Composer boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.537838,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.462162 at the valid failing review-diff frame"
+            },
+            "interaction": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "open-diff-command-failure",
+              "source": "real Open diff tap invokes a missing Browser Preview command path and never reaches a patch postcondition"
+            },
+            "runtime": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "renderer-error-gate",
+              "source": "promise rejects with Cannot read properties of undefined while reading diff"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-diff-rendering-fix",
+      "observedAt": "2026-08-15T06:06:00+09:00",
+      "commit": "bae3768289d7d8e234a40a774b708aafdb99a7ab",
+      "codeState": "commit",
+      "label": "Review diff rendering",
+      "narrative": "The live Browser Preview connector now forwards getTurnDiff to the real orchestration RPC. Lynx renders review-fixture.txt with the original and updated lines instead of crashing. Multi-word inline code stays in one natural-flow capsule, the expanded checkpoint tree stops double-counting its gap, and the Composer uses the measured center-panel width to move traits, access, and interaction controls behind a functional compact menu. The matched Browser gate passes with zero errors; full-frame SSIM improves from 0.462162 to 0.499074 while the remaining renderer material difference stays visible.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share one immutable database, selected thread, completed turn, checkpoint, file, route, theme, and viewport. Old R10 and Native-selector expectations are classified separately as harness mismatches."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Review diff authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-web.png",
+          "sha256": "01b38386e1d2fd1e1e1100afda6022a1049af4f0f976febca8e4de9a009bcd4a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "046badf6496c1f0a62b35df219c458ac2fd47fd6"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Review diff Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-lynx.png",
+          "sha256": "57574961536af1c81a5195d35ab153312edc51c7dd33732846ea9733ec845034",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "046badf6496c1f0a62b35df219c458ac2fd47fd6"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/review-diff-rendering-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "fea2d901b97278c976225d30a0dc1a283c3cc3317d6eed1551e3992234daa3a4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-review-patch-content",
+              "source": "selected turn, review-fixture.txt, one addition/deletion, original line, updated line, checkpoint, model, and compact controls match"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, -1, 1, 0, 1, -1, 0, 0, 1, -1, -4.5, 0, 0.5, -1, 0, 0, 0.5, -1, 0.5, 0, 1, -1,
+                -0.5, -0.5, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "review-shell-geometry",
+              "source": "user row, turn fold, assistant row, checkpoint card/header/tree, and Composer boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.500926,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.499074 at the matched review-diff frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-open-diff-postcondition",
+              "source": "pointer input opens the same turn/file patch in both panes without loading or error state"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same real checkpoint, successful getTurnDiff RPC, matched file identity, and zero Browser renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-diff-native-certification",
+      "observedAt": "2026-08-15T06:20:28+09:00",
+      "commit": "9e2c6770e7fa6a7ab88cc1c3a422e43554194ffe",
+      "codeState": "commit",
+      "label": "Review diff Native certification",
+      "narrative": "A PID-owned exact production bundle opens the same completed checkpoint, renders review-fixture.txt plus the original and updated lines, keeps the 444px Composer idle beside the 540px right panel, reports zero renderer errors, and disposes its isolated state. The Native screenshot is representative semantic and geometry evidence only; no Native material pixel residual is claimed.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The verifier commit adds exact-bundle Native evidence for the already measured product fix. It does not claim another product delta or substitute Native pixels for the Browser residual."
+      },
+      "screenshots": [
+        {
+          "client": "native",
+          "label": "Native review diff",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-native.png",
+          "sha256": "3c2d086a13ed2e948ca848b1e75b45c00e1a04945ddc95740d9f127c6bd9dfa9",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "046badf6496c1f0a62b35df219c458ac2fd47fd6"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/review-diff-rendering-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "fea2d901b97278c976225d30a0dc1a283c3cc3317d6eed1551e3992234daa3a4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-review-patch-content",
+              "source": "same completed turn, checkpoint, review-fixture.txt, original line, updated line, and idle Composer"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-review-diff-geometry",
+              "source": "measured checkpoint card, 540px right panel, diff surface, diff file, and 444px Composer"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-open-diff-tap",
+              "source": "DevTool tap opens the real checkpoint patch and reaches a stable file-content postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle uses main transport 2 to 3, zero renderer errors, and isolated cleanup"
             }
           }
         }

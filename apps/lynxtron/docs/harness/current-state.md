@@ -207,6 +207,17 @@ Plan 11 prose and screenshots.
   `14 → 19`, zero renderer errors, and isolated cleanup. This is an
   evidence-session update, not a product-fix attribution. Conservative loss is
   now 81.1117%, observed residual is 4.7000%, and evidence debt is 80.1802%.
+- A real OpenCode checkpoint then replaces the historical `review-diff` R10
+  blocker with current evidence. The valid baseline shows Browser Preview
+  returning `undefined` for `getTurnDiff`, leaving Lynx on `Loading code diff…`
+  with a promise error, plus 30px user-message drift, an 8px duplicated tree
+  gap, and non-compact controls in the 444px Composer. The live connector now
+  forwards the real RPC; Lynx renders `review-fixture.txt` with both changed
+  lines, inline code keeps natural flow, checkpoint geometry aligns, and a
+  functional compact menu owns traits/access/mode at narrow widths. Full-frame
+  SSIM improves `0.462162 → 0.499074`. Exact-bundle Native opens the same
+  turn/file patch with zero errors and isolated cleanup. Conservative loss is
+  now 78.6059%, observed residual is 3.8592%, and evidence debt is 77.7471%.
 
 ## Not currently proven
 
@@ -216,7 +227,8 @@ Plan 11 prose and screenshots.
 - Native physical keyboard/focus, transcript wheel/drag/follow, light/system
   theme persistence, approval response interactions, multi-question and
   multi-select input, typed custom answers, file-approval variants, other
-  failure classes, and full patch rendering are not certified.
+  failure classes, and multi-file/split/wrap/whitespace patch interactions are
+  not certified.
 - Browser/CDP evidence cannot satisfy Native-only input, list, window, or
   persistence requirements.
 - Historical `PASS`, `functional`, and `completed` labels do not independently

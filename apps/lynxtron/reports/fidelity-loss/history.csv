@@ -32,3 +32,6 @@ existing-thread-failed-presentation-fix,2026-08-14T19:09:09+08:00,13d2cebdbfabca
 existing-thread-approval-layout-fix,2026-08-15T01:43:31+08:00,547ebe3dbe6438d0952b94968f3b0e19be0f6589,commit,Existing Thread approval layout,0.840613,0.687361,0.053087,0.831677,0.168323,0.142824
 existing-thread-question-interaction-fix,2026-08-15T04:55:57+09:00,686456d8f51ad3c030ac650e0b82de4cd907010e,commit,Existing Thread question interaction,0.82883,0.687361,0.050526,0.819721,0.180279,0.154607
 composer-disabled-recovery-certification,2026-08-15T05:27:13+09:00,f7b9aaeb7eafb36c3f2dc1518a796ea6ef6c5141,commit,Composer disabled recovery certification,0.811117,0.687361,0.047,0.801802,0.198198,0.17232
+review-diff-browser-baseline,2026-08-15T05:40:00+09:00,c8f0355f4107455c58907eb3e699dd556c4da18e,commit,Review diff Browser baseline,0.808239,0.687361,0.085576,0.790294,0.209706,0.175198
+review-diff-rendering-fix,2026-08-15T06:06:00+09:00,bae3768289d7d8e234a40a774b708aafdb99a7ab,commit,Review diff rendering,0.800576,0.687361,0.04903,0.790294,0.209706,0.182861
+review-diff-native-certification,2026-08-15T06:20:28+09:00,9e2c6770e7fa6a7ab88cc1c3a422e43554194ffe,commit,Review diff Native certification,0.786059,0.687361,0.038592,0.777471,0.222529,0.197378

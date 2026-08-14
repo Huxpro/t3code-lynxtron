@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T06:19:49+09:00",
+  "productCommit": "bae3768289d7d8e234a40a774b708aafdb99a7ab",
+  "browserHarnessCommit": "1845d971b954730765e4b04135998e66bb7091cc",
+  "nativeVerifierCommit": "9e2c6770e7fa6a7ab88cc1c3a422e43554194ffe",
+  "stateId": "review-diff",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "selectedProject": "review-fixture",
+    "selectedThread": "67d4879f-390f-4c82-8a8e-d58cf215109d",
+    "lifecycle": "ready"
+  },
+  "fixture": {
+    "createdThroughRealConnector": true,
+    "providerInstanceId": "opencode",
+    "modelSelection": {
+      "instanceId": "opencode",
+      "model": "opencode/big-pickle"
+    },
+    "prompt": "Modify review-fixture.txt so its entire contents are exactly `updated by T3 review fixture` followed by one newline. Do not modify any other file. Then stop.",
+    "latestTurnState": "completed",
+    "turnId": "opencode-turn-ba6b35f9-dd28-4874-bde1-b3ce7dde942c",
+    "checkpointStatus": "ready",
+    "file": {
+      "path": "review-fixture.txt",
+      "kind": "modified",
+      "additions": 1,
+      "deletions": 1
+    },
+    "snapshotSha256": "ed4aaf72898c87114d53464bd891ce7b7e5dce33efbca266ffd29d8fe53d3179"
+  },
+  "classification": {
+    "harnessMismatch": [
+      "The historical review-diff gate required a Lynx R10 runtime blocker even after the product gained a real native patch renderer.",
+      "Shared data-review-surface attributes are not retained by the Native template encoder, so the Native verifier uses the stable diff-panel container while preserving turn, file, and patch-text assertions.",
+      "The first OpenCode fixture attempt used a bare big-pickle slug; the provider requires provider/model format and that failed snapshot was discarded."
+    ],
+    "productLoss": [
+      "Browser Preview omitted the getTurnDiff RPC forwarder, resolved undefined, and left the Lynx review panel stuck on Loading code diff with a promise error.",
+      "Multi-word inline code was split into compressed capsules, adding 30px to the user message and shifting every downstream transcript row.",
+      "The expanded Lynx checkpoint tree double-counted an 8px gap.",
+      "The narrow Lynx Composer derived compactness from the full viewport and kept Build and Full access inline instead of using the compact controls menu."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, interaction, and runtime. Exact-bundle Native updates content, geometry, interaction, and runtime only; its screenshot is representative and does not become a Native-to-Web material residual."
+  },
+  "browser": {
+    "before": {
+      "head": "c8f0355f4107455c58907eb3e699dd556c4da18e",
+      "fullFrameSsim": 0.462162,
+      "fullFrameResidual": 0.537838,
+      "lynxState": "loading-error",
+      "lynxConsoleError": "Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'diff')",
+      "lynxUserRow": { "x": 282, "y": 100, "width": 431, "height": 189 },
+      "lynxCheckpointCard": { "x": 286, "y": 419.75, "width": 423, "height": 87 },
+      "lynxComposerControls": ["Big Pickle", "Build", "Full access"],
+      "reportSha256": "82914120e0c0c09fe74012dbc4cbe0fe09f0a334599d9ac65d031045ebfbb1da"
+    },
+    "after": {
+      "head": "1845d971b954730765e4b04135998e66bb7091cc",
+      "productCommit": "bae3768289d7d8e234a40a774b708aafdb99a7ab",
+      "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+      "fullFrameSsim": 0.499074,
+      "fullFrameResidual": 0.500926,
+      "capturePass": true,
+      "rendererErrors": 0,
+      "selectedTurn": "opencode-turn-ba6b35f9-dd28-4874-bde1-b3ce7dde942c",
+      "filePaths": ["review-fixture.txt"],
+      "patchText": ["original review fixture", "updated by T3 review fixture"],
+      "geometry": {
+        "web": {
+          "userRow": { "x": 282, "y": 100, "width": 432, "height": 159 },
+          "turnFold": { "x": 282, "y": 259, "width": 432, "height": 45 },
+          "assistantRow": { "x": 282, "y": 304, "width": 432, "height": 213.25 },
+          "checkpointCard": { "x": 286, "y": 390.25, "width": 424, "height": 79 },
+          "checkpointHeader": { "x": 295, "y": 399.25, "width": 406, "height": 28.5 },
+          "checkpointTree": { "x": 295, "y": 435.75, "width": 406, "height": 24.5 },
+          "composer": { "x": 276, "y": 628, "width": 444, "height": 140 }
+        },
+        "lynx": {
+          "userRow": { "x": 282, "y": 100, "width": 431, "height": 160 },
+          "turnFold": { "x": 282, "y": 260, "width": 431, "height": 45 },
+          "assistantRow": { "x": 282, "y": 305, "width": 431, "height": 208.75 },
+          "checkpointCard": { "x": 286, "y": 390.75, "width": 423, "height": 79 },
+          "checkpointHeader": { "x": 295, "y": 399.75, "width": 405, "height": 29 },
+          "checkpointTree": { "x": 295, "y": 436.75, "width": 405, "height": 24 },
+          "composer": { "x": 275.5, "y": 628, "width": 444, "height": 140 }
+        }
+      },
+      "composerControls": {
+        "web": ["Big Pickle"],
+        "lynx": ["Big Pickle"],
+        "lynxCompactMenu": "functional provider trait, access, and interaction actions"
+      },
+      "reportSha256": "aaa5f0e50bfe152ae467aff0c0130e15f0f48719d0b1b7797e00c90c03b51fec"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundleSha256": "e0ecb4c589f0635f7ffa2f51bdc00c30db5bafc0f7c39459b389a7dc05500ced",
+    "snapshotId": "ed4aaf72898c87114d53464bd891ce7b7e5dce33efbca266ffd29d8fe53d3179",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "threadId": "67d4879f-390f-4c82-8a8e-d58cf215109d",
+    "turnId": "opencode-turn-ba6b35f9-dd28-4874-bde1-b3ce7dde942c",
+    "filePath": "review-fixture.txt",
+    "patchText": ["original review fixture", "updated by T3 review fixture"],
+    "geometry": {
+      "checkpointCard": { "x": 388, "y": 398, "width": 729, "height": 82 },
+      "rightPanel": { "x": 740, "y": 0, "width": 540, "height": 820 },
+      "diffSurface": { "x": 741, "y": 92, "width": 539, "height": 728 },
+      "diffFile": { "x": 749, "y": 100, "width": 523, "height": 78 },
+      "composer": { "x": 276, "y": 628, "width": 444, "height": 140 }
+    },
+    "composerState": "idle",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "4760b229587b4d990421fea57b065cb623a66594974398d7223127a4312a2615",
+    "screenshotSha256": "3c2d086a13ed2e948ca848b1e75b45c00e1a04945ddc95740d9f127c6bd9dfa9"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "046badf6496c1f0a62b35df219c458ac2fd47fd6"
+    },
+    "beforeWeb": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-before-web.png",
+      "sha256": "b0b7183b3cdd7d6c33ecfd8943c3733669b59efb7bef7acb3b518466f91b728f"
+    },
+    "beforeLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-before-lynx.png",
+      "sha256": "d76637b60424c2f15d223b16794bbef982b531e33ef871141002e817b6e018be"
+    },
+    "afterWeb": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-web.png",
+      "sha256": "01b38386e1d2fd1e1e1100afda6022a1049af4f0f976febca8e4de9a009bcd4a"
+    },
+    "afterLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-lynx.png",
+      "sha256": "57574961536af1c81a5195d35ab153312edc51c7dd33732846ea9733ec845034"
+    },
+    "native": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/review-diff-native.png",
+      "sha256": "3c2d086a13ed2e948ca848b1e75b45c00e1a04945ddc95740d9f127c6bd9dfa9"
+    }
+  },
+  "remainingRisk": [
+    "Web and Lynx use different patch renderer implementations; full-frame material residual remains 0.500926 and is not hidden by the semantic pass.",
+    "Native split mode, wrap toggle, whitespace toggle, file collapse, and multi-file checkpoints remain separate interaction scope.",
+    "Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web pixel residual."
+  ]
+}

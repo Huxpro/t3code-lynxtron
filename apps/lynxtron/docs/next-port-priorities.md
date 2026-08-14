@@ -9,18 +9,18 @@ Browser or shared-surface slice is progress only. A row becomes `completed`
 only when every success criterion below is proven by the strict manifest,
 production-resolver audit, focused tests, and Native evidence where required.
 
-| Rank | Gap | Surface | Score | Current status |
-| ---: | --- | --- | ---: | --- |
-| 1 | GAP-002 | Main shell / Sidebar / Composer | 66 | open |
-| 2 | GAP-005 | Composer | 58 | open; Stop is proven, physical input/focus is R5 |
-| 3 | GAP-009 | Light theme | 56 | open; Native runtime theme matrix absent |
-| 4 | GAP-006 | Model Picker | 55 | open |
-| 5 | GAP-008 | Existing thread / Transcript | 55 | open; Browser state matrix retained, Native list interaction absent |
-| 6 | GAP-011 | Native keyboard/focus | 52 | blocked-runtime(R5) |
-| 7 | GAP-007 | Quick Switch | 51 | open |
-| 8 | GAP-010 | Review / Changed Files | 50 | open; full patch renderer blocked(R10) |
-| 9 | GAP-003 | Settings sections | 45 | open |
-| 10 | GAP-012 | Settings Appearance | 39 | open |
+| Rank | Gap     | Surface                         | Score | Current status                                                                           |
+| ---: | ------- | ------------------------------- | ----: | ---------------------------------------------------------------------------------------- |
+|    1 | GAP-002 | Main shell / Sidebar / Composer |    66 | open                                                                                     |
+|    2 | GAP-005 | Composer                        |    58 | open; Stop is proven, physical input/focus is R5                                         |
+|    3 | GAP-009 | Light theme                     |    56 | open; Native runtime theme matrix absent                                                 |
+|    4 | GAP-006 | Model Picker                    |    55 | open                                                                                     |
+|    5 | GAP-008 | Existing thread / Transcript    |    55 | open; Browser state matrix retained, Native list interaction absent                      |
+|    6 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
+|    7 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
+|    8 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
+|    9 | GAP-003 | Settings sections               |    45 | open                                                                                     |
+|   10 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
 
 ## Baselines
 
@@ -149,14 +149,15 @@ host after the first Rspeedy compile instead of stalling before Rspack.
 
 - Goal: share checkpoint, changed-file tree, empty state, and an explicit patch
   renderer boundary.
-- Progress: checkpoint, tree, diff fallback, and empty Browser pairs exist;
-  canonical checkpoint/file semantics are observable on both renderers.
-- Current blocker: fresh H8 probe shows Native lacks `Worker`,
-  `OffscreenCanvas`, and `Blob`.
+- Progress: checkpoint, tree, empty, and a real one-file patch are observable
+  on both renderers. Exact-bundle Native opens the patch and verifies both
+  changed lines.
+- Runtime boundary: Native still lacks `Worker`, `OffscreenCanvas`, and `Blob`,
+  so the Web renderer itself remains a hard island.
 - Success:
   - checkpoint/tree/empty composition is physically shared;
-  - full patch view uses a host-backed renderer or an explicitly accepted
-    Native fallback;
+  - full patch view uses the bounded Native renderer or a future host-backed
+    implementation without importing the Web DOM/Worker renderer;
   - Native interaction and content claims are retained;
   - R10 closes or remains an approved hard island.
 
