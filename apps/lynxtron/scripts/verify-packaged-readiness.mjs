@@ -595,10 +595,15 @@ async function verifyComposerGeometry(client) {
   const [contextStrip] = await readSelectorRects(client, ".composer-context-strip");
   const contextControls = await readSelectorRects(client, ".composer-context-control");
   const contextIcons = await readSelectorRects(client, ".composer-context-icon");
+  const contextLabels = [composer.typography.contextCheckout, composer.typography.contextBranch];
   const wrongSize = (rect, size) =>
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
     Math.abs(rect.width - 12) > 0.75 || Math.abs(rect.height - 12) > 0.75;
+  const wrongMutedAlpha = (color) => {
+    const match = /^rgba\(113,113,122,([0-9.]+)\)$/u.exec(color);
+    return !match || Math.abs(Number(match[1]) - 0.7) > 1 / 255;
+  };
   const contextControlsAligned =
     contextStrip &&
     contextControls.length === 2 &&
@@ -610,10 +615,15 @@ async function verifyComposerGeometry(client) {
     Math.abs(
       contextControls[1].x + contextControls[1].width - (contextStrip.x + contextStrip.width - 4),
     ) <= 1.25;
-  const wrongMutedAlpha = (color) => {
-    const match = /^rgba\(113,113,122,([0-9.]+)\)$/u.exec(color);
-    return !match || Math.abs(Number(match[1]) - 0.7) > 1 / 255;
-  };
+  const contextLabelsAligned = contextLabels.every(
+    (label) =>
+      Math.abs((label.rect?.y ?? 0) - (contextStrip.y + 24)) <= 1.25 &&
+      Math.abs((label.rect?.height ?? 0) - 16) <= 0.5 &&
+      label.style.fontSize === "12px" &&
+      label.style.fontWeight === "500" &&
+      label.style.lineHeight === "16px" &&
+      !wrongMutedAlpha(label.style.color),
+  );
   if (
     chevrons.length < 2 ||
     chevrons.length > 3 ||
@@ -623,6 +633,7 @@ async function verifyComposerGeometry(client) {
     interactionIcons.length !== 1 ||
     wrongSize(interactionIcons[0], 18) ||
     !contextControlsAligned ||
+    !contextLabelsAligned ||
     contextIcons.length !== 4 ||
     contextIcons.some(wrongContextSize) ||
     Object.values(controlColors).some(wrongMutedAlpha)
@@ -634,6 +645,7 @@ async function verifyComposerGeometry(client) {
         interactionIcons,
         contextStrip,
         contextControls,
+        contextLabels,
         contextIcons,
         controlColors,
       })}`,
@@ -648,6 +660,7 @@ async function verifyComposerGeometry(client) {
     interactionIcons,
     contextStrip,
     contextControls,
+    contextLabels,
     contextIcons,
     controlColors,
   };
@@ -732,6 +745,8 @@ async function readComposerOutcome(client) {
         { id: "model", lynx: ".composer-toolbar-control--model" },
         { id: "runtime", lynx: ".composer-toolbar-control--runtime" },
         { id: "interaction", lynx: ".composer-toolbar-control--interaction" },
+        { id: "contextCheckout", lynx: ".composer-context-label--checkout" },
+        { id: "contextBranch", lynx: ".composer-context-label--branch" },
       ],
       colors: [
         { id: "surface", lynx: ".composer-surface" },

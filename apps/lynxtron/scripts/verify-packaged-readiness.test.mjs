@@ -23,10 +23,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, ".composer-toolbar-control--runtime .pill__icon-img");
     assert.include(source, ".composer-toolbar-control--interaction .pill__icon-img");
     assert.include(source, '".composer-context-control"');
+    assert.include(source, ".composer-context-label--checkout");
+    assert.include(source, ".composer-context-label--branch");
     assert.include(source, ".composer-context-icon");
     assert.include(source, "contextControls.length === 2");
     assert.include(source, "contextStrip.y + 20");
     assert.include(source, "<= 1.25");
+    assert.include(source, "contextStrip.y + 24");
+    assert.include(source, 'label.style.lineHeight === "16px"');
+    assert.include(source, "contextLabelsAligned");
     assert.include(source, "contextIcons.length !== 4");
     assert.include(source, "Math.abs(rect.width - 12) > 0.75");
     assert.include(source, "Math.abs(Number(match[1]) - 0.7) > 1 / 255");
