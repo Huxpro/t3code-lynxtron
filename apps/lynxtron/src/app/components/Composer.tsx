@@ -204,7 +204,7 @@ export function Composer({
           renderCollapsedBody={
             approvalActions
               ? () => (
-                  <view className="composer-approval-body">
+                  <>
                     <view className="composer-editor-area composer-editor-area--approval">
                       <text
                         className={[
@@ -241,7 +241,7 @@ export function Composer({
                         {approvalActions}
                       </view>
                     </view>
-                  </view>
+                  </>
                 )
               : undefined
           }
