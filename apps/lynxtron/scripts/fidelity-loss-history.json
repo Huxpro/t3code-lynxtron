@@ -2571,6 +2571,124 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-approval-layout-fix",
+      "observedAt": "2026-08-15T01:43:31+08:00",
+      "commit": "547ebe3dbe6438d0952b94968f3b0e19be0f6589",
+      "codeState": "commit",
+      "label": "Existing Thread approval layout",
+      "narrative": "A real pending command approval was created through the OpenCode connector in approval-required mode and admitted by thread ID, approval activity, running session, active turn, route, theme, viewport, and immutable snapshot. The initial pair exposed one dominant Lynx product loss: a redundant approval wrapper laid the 90px editor and 40px footer out as columns, collapsing the editor to 256px and moving the footer 256px right and 90px up. Removing that wrapper lets the shared Composer surface own the vertical stack directly. The largest retained geometry delta falls from 510px to 0.3125px, and full-frame SSIM improves from 0.893053 to 0.912805. Exact-bundle Native verifies the real approval identity, running and Stop semantics, pending copy, detail, all four actions, column geometry, main transport 2 to 3, zero renderer errors, and isolated cleanup.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share one immutable approval database, selected thread, route, theme, density, and viewport. The initial stale semantic projection, regenerated thread title, and Browser-versus-Native box-model semantics are recorded as harness mismatches, while Native remains corroborating rather than replacing the Browser pixel residual."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Approval before authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-before-web.png",
+          "sha256": "c45205a8e0e3be3206e94abb0a1a78ed45bfd712e80237835906d9ba73786bb0",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "892112bd38b07fa8fbeea5e4f371e852300cc48d"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Approval before Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-before-lynx.png",
+          "sha256": "1450ba0d85b837e953f7c9e9a24fd8151eb67c9c3839da2fb2bdc9e4eb47f1a4",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "892112bd38b07fa8fbeea5e4f371e852300cc48d"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Approval authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-web.png",
+          "sha256": "019900690e0363818668d1ec3c3e293737e47e468611c927ed5d085f8ca31614",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "892112bd38b07fa8fbeea5e4f371e852300cc48d"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Approval Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-lynx.png",
+          "sha256": "6830fd618e078fa7c4ddf768f41b7a2c9e3292eecb8e81d3bec2d617d857e53e",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "892112bd38b07fa8fbeea5e4f371e852300cc48d"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native approval transcript",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-native.png",
+          "sha256": "8ff70f39bfaeb00b8377abe4abb7e71bf565da2d2577cee2784aa5b024e6b06e",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "892112bd38b07fa8fbeea5e4f371e852300cc48d"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/existing-thread-approval-layout-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "872159fec7145ab3e04b7072eed03a5f8c8014e42217b462206e6fcdd24664e3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-approval"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-approval-content",
+              "source": "pending kind, heading, request kind, detail, editor projection, four approval actions, selected thread, and working state match"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.203125, 0, 0.203125, 0, -0.140625, 0, 0.0625, 0,
+                -0.3125, 0, -0.25, 0, -0.203125, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "approval-composer-box-geometry",
+              "source": "editor, footer, and four approval action x/y/width/height boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.087195,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.912805 at the matched 1280x820 approval frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same real pending approval with matching semantic projection and zero Browser renderer errors; Native exact-bundle transport/readiness is corroborating"
+            }
+          }
+        }
+      ]
     }
   ]
 }

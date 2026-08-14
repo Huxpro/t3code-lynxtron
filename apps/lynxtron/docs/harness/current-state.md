@@ -181,6 +181,15 @@ Plan 11 prose and screenshots.
   verifies the canonical error text, fallback model, failed work status, idle
   Composer, and transport. Conservative loss is now 84.7596%, observed
   residual is 5.4614%, and evidence debt is 83.8791%.
+- A real pending command approval then exercises the `approval-required`
+  connector path. The first matched pair exposes a redundant Lynx wrapper that
+  places the editor and footer side by side; removing it restores the shared
+  vertical Composer stack and reduces the maximum retained geometry delta from
+  510px to 0.3125px. Full-frame SSIM rises `0.893053 → 0.912805`.
+  Exact-bundle Native verifies the stable approval identity, running/Stop
+  semantics, detail copy, four actions, geometry, transport, zero errors, and
+  isolated cleanup. Conservative loss is now 84.0613%, observed residual is
+  5.3087%, and evidence debt is 83.1677%.
 
 ## Not currently proven
 
@@ -188,8 +197,9 @@ Plan 11 prose and screenshots.
 - No current Web/Lynx/Native pixel certification matrix exists; the final5
   packaged Native Context geometry/readiness gate is not pixel parity.
 - Native physical keyboard/focus, transcript wheel/drag/follow, light/system
-  theme persistence, approval/question populated transcripts, other failure
-  classes, and full patch rendering are not certified.
+  theme persistence, approval response interactions, populated question
+  transcripts, file-approval variants, other failure classes, and full patch
+  rendering are not certified.
 - Browser/CDP evidence cannot satisfy Native-only input, list, window, or
   persistence requirements.
 - Historical `PASS`, `functional`, and `completed` labels do not independently

@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T01:43:31+08:00",
+  "productCommit": "547ebe3dbe6438d0952b94968f3b0e19be0f6589",
+  "verificationHead": "55d279964d65ea19b502b5883b81cc3fb985d3d6",
+  "stateId": "existing-thread-approval",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "selectedProject": "t3code-lynxtron",
+    "selectedThread": "c594b27e-5b57-4989-86b0-5b2dd91ea9e0",
+    "lifecycle": "ready"
+  },
+  "fixture": {
+    "createdThroughRealConnector": true,
+    "providerInstanceId": "opencode",
+    "modelSelection": "opencode/big-pickle",
+    "runtimeMode": "approval-required",
+    "prompt": "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval.",
+    "activityKind": "approval.requested",
+    "requestId": "per_0011b6b5c0016dk7S7dIO5cams",
+    "requestKind": "command",
+    "detail": "printf pending-approval",
+    "sessionStatus": "running",
+    "activeTurnId": "opencode-turn-2a9286bc-e1c1-4acb-9eda-8a27052d6cf9",
+    "snapshotSha256": "4642f7eb8b28279e4ec92ae4ad730db3d261cf833803a8b3f95e64cc3a811e88"
+  },
+  "classification": {
+    "harnessMismatch": [
+      "The initial Browser capture predated approval semantic projection, so its old gate reported pass=false even though both panes had the same snapshot, selected thread, route, theme, viewport, and visible approval content.",
+      "The Native fixture manifest records the requested title, while the real server later regenerates the rendered thread title; stable identity therefore uses thread ID, pending-approval flag, model, active turn, and session status.",
+      "Browser workbench and Native DevTool report the pending surface with different box-model semantics; the Native gate uses its own measured 114px border box rather than reusing the workbench's content-box diagnostic."
+    ],
+    "productLoss": [
+      "A redundant Lynx-only approval body wrapper laid the 90px editor area and 40px footer out as adjacent columns instead of direct children in the shared vertical Composer surface.",
+      "The wrapper collapsed the editor from 766px to 256px, moved the footer 256px right and 90px up, and shifted all four approval actions into the editor row."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime. Native proves the exact-bundle approval identity, running/Stop semantics, content, action geometry, and cleanup without being promoted to Native pixel parity."
+  },
+  "browser": {
+    "before": {
+      "head": "2b020754aa97b6272639670a19b49e36bbd28553",
+      "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+      "lynxBundleSha256": "cc95076ed9f29c77f96126f0aabae8e200e765f2d5012c71a68b6524663fcb65",
+      "seedHash": "b5b373187894da63a1b7df6ae33d2097ee923906996b6e31b74f5004efccdb54",
+      "fullFrameSsim": 0.893053,
+      "webEditor": { "x": 385, "y": 637, "width": 766, "height": 90 },
+      "lynxEditor": { "x": 385, "y": 637, "width": 256, "height": 90 },
+      "webFooter": { "x": 385, "y": 727, "width": 766, "height": 40 },
+      "lynxFooter": { "x": 641, "y": 637, "width": 510, "height": 40 },
+      "maximumGeometryDelta": 510,
+      "captureGate": "invalid-harness",
+      "reportSha256": "f9867daebcb74971f318962d70f7123dcf2bbf8a4cc9ccf474d810eae1b0e102"
+    },
+    "after": {
+      "head": "55d279964d65ea19b502b5883b81cc3fb985d3d6",
+      "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+      "lynxBundleSha256": "22293272f54451468f5d8d4dab33cc8e3bf5ed673f7c5cd3f7820e38b06cb8a2",
+      "seedHash": "b5b373187894da63a1b7df6ae33d2097ee923906996b6e31b74f5004efccdb54",
+      "fullFrameSsim": 0.912805,
+      "fullFrameResidual": 0.087195,
+      "pendingRequest": {
+        "kind": "approval",
+        "text": "PENDING APPROVALCommand approval requestedCommandprintf pending-approval",
+        "detail": "printf pending-approval",
+        "options": []
+      },
+      "editor": {
+        "web": { "x": 385, "y": 637, "width": 766, "height": 90 },
+        "lynx": { "x": 385, "y": 637, "width": 766, "height": 90 }
+      },
+      "footer": {
+        "web": { "x": 385, "y": 727, "width": 766, "height": 40 },
+        "lynx": { "x": 385, "y": 727, "width": 766, "height": 40 }
+      },
+      "actions": {
+        "web": [
+          { "x": 397, "y": 727, "width": 96.796875, "height": 28 },
+          { "x": 501.796875, "y": 727, "width": 69.140625, "height": 28 },
+          { "x": 578.9375, "y": 727, "width": 184.3125, "height": 28 },
+          { "x": 771.25, "y": 727, "width": 112.203125, "height": 28 }
+        ],
+        "lynx": [
+          { "x": 397, "y": 727, "width": 97, "height": 28 },
+          { "x": 502, "y": 727, "width": 69, "height": 28 },
+          { "x": 579, "y": 727, "width": 184, "height": 28 },
+          { "x": 771, "y": 727, "width": 112, "height": 28 }
+        ]
+      },
+      "geometryDeltas": [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.203125, 0, 0.203125, 0, -0.140625, 0, 0.0625, 0, -0.3125, 0,
+        -0.25, 0, -0.203125, 0
+      ],
+      "maximumGeometryDelta": 0.3125,
+      "capturePass": true,
+      "rendererErrors": 0,
+      "readyMs": 1830,
+      "reportSha256": "6c2871166e51f59354275098e16580276e6ab97b357136fc17e6c609621610b8"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "55d279964d65ea19b502b5883b81cc3fb985d3d6",
+    "bundleSha256": "5e968bb0038818b531d2ffd54ccba7a7d7650bda1c65e3d4f87f958ff9cfaea1",
+    "snapshotId": "4642f7eb8b28279e4ec92ae4ad730db3d261cf833803a8b3f95e64cc3a811e88",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": { "before": 2, "after": 3 },
+    "semanticState": {
+      "sessionStatus": "running",
+      "composerState": "working",
+      "primaryState": "stop"
+    },
+    "content": {
+      "pending": "PENDING APPROVAL Command approval requested Command printf pending-approval",
+      "detail": "printf pending-approval",
+      "actions": ["Cancel turn", "Decline", "Always allow this session", "Approve once"]
+    },
+    "geometry": {
+      "frame": { "x": 384, "y": 521, "width": 768, "height": 247 },
+      "surface": { "x": 385, "y": 522, "width": 766, "height": 245 },
+      "pending": { "x": 385, "y": 522, "width": 766, "height": 114 },
+      "detail": { "x": 405, "y": 570, "width": 726, "height": 50 },
+      "editor": { "x": 385, "y": 637, "width": 766, "height": 90 },
+      "footer": { "x": 385, "y": 727, "width": 766, "height": 40 },
+      "actions": [
+        { "x": 397, "y": 727, "width": 97, "height": 28 },
+        { "x": 502, "y": 727, "width": 69, "height": 28 },
+        { "x": 579, "y": 727, "width": 184, "height": 28 },
+        { "x": 771, "y": 727, "width": 112, "height": 28 }
+      ]
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "87bd867fcd71b959072b1b0ef0b510cbc8101ccae8958483562f0ef9eafdfd26",
+    "screenshotSha256": "8ff70f39bfaeb00b8377abe4abb7e71bf565da2d2577cee2784aa5b024e6b06e",
+    "ledgerUpdate": "none: exact-bundle Native geometry/readiness evidence is not a matched Native-to-Web pixel residual"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "892112bd38b07fa8fbeea5e4f371e852300cc48d"
+    },
+    "beforeWeb": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-before-web.png",
+      "sha256": "c45205a8e0e3be3206e94abb0a1a78ed45bfd712e80237835906d9ba73786bb0"
+    },
+    "beforeLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-before-lynx.png",
+      "sha256": "1450ba0d85b837e953f7c9e9a24fd8151eb67c9c3839da2fb2bdc9e4eb47f1a4"
+    },
+    "afterWeb": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-web.png",
+      "sha256": "019900690e0363818668d1ec3c3e293737e47e468611c927ed5d085f8ca31614"
+    },
+    "afterLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-lynx.png",
+      "sha256": "6830fd618e078fa7c4ddf768f41b7a2c9e3292eecb8e81d3bec2d617d857e53e"
+    },
+    "native": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-approval-native.png",
+      "sha256": "8ff70f39bfaeb00b8377abe4abb7e71bf565da2d2577cee2784aa5b024e6b06e"
+    }
+  },
+  "remainingRisk": [
+    "The approval fixture covers a command request; file-read and file-change approval copy and actions remain separate scope.",
+    "Approval action taps, response receipts, decline/cancel recovery, physical keyboard focus, scrolling, and selection remain unverified.",
+    "Native is exact-bundle semantic and geometry evidence only; no matched Native-to-Web pixel residual is claimed."
+  ]
+}
