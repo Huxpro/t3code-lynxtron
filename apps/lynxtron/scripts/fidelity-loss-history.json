@@ -2082,6 +2082,150 @@
         }
       ],
       "updates": []
+    },
+    {
+      "id": "composer-footer-icon-material-fix",
+      "observedAt": "2026-08-14T13:22:36+08:00",
+      "commit": "6a013a418b639734d723d6791451ec63b22bc270",
+      "codeState": "commit",
+      "label": "Composer Footer icon material",
+      "narrative": "After Footer geometry and label alpha matched, localized dark Hero error showed that runtime and interaction mode icons still used opaque #a1a1aa PNGs while Web composed muted #818181 at 70% element alpha. Exact dark/light rasters plus 0.7 icon and chevron opacity preserve geometry and raise Hero Footer SSIM from 0.853794 to 0.855352 and Sendable Footer SSIM from 0.850723 to 0.852281. Composer-region SSIM improves by 0.000573 in both states. Matched light Hero corroborates the theme mapping. Exact-bundle dark and light Native runs resolve all five Footer icon leaves to opacity 0.7, advance main transport from 2 to 3, report zero renderer errors, retain 2560x1640 frames, and dispose isolated state; they are cross-surface material/readiness evidence, not Native pixel-residual updates.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct matched dark Hero and Sendable before/after pairs isolate the icon-material change with unchanged geometry; light Browser and exact-theme Native independently cover the shared theme mapping and opacity contract."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Dark Hero authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+          "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Dark Hero Footer material",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-material-lynx.png",
+          "sha256": "f71331b39ee8a7cc5822fa78ae28aa4609e60135d4d0f46755adb13214fc488c",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e14413dec895cc7cbbfeb2f70d4395294086b4f6"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Dark Sendable authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+          "sha256": "57937fe1dbe8aa43767ae4509d09877bbf62c9c8abf8294129b73b2bcd78917a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "075d4e3cdfdb6efb136fec304564f15263515c43"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Dark Sendable Footer material",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-footer-material-lynx.png",
+          "sha256": "4c6953ff5f9d43ff2c99f54445d6c4fa745101b5a1c9838901d073485534e787",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e14413dec895cc7cbbfeb2f70d4395294086b4f6"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Light Hero authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-light-context-web.png",
+          "sha256": "60c3794d461ac23b241af12833c5be679885d0ce2e8d2b65d3c761de11920232",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "f55118de737153ee0b3154bfd069314fc45d97ba"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Light Hero Footer material",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-light-footer-material-lynx.png",
+          "sha256": "8721309f33a7d79654f1624bd0112570eb84fb117b592584d922f9840a6e3bd9",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e14413dec895cc7cbbfeb2f70d4395294086b4f6"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native dark Footer material",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-footer-material-dark-native.png",
+          "sha256": "3fddc9b0bd5e0b72cded758b709e217cc60bd5a90b7fa14196cd12995b6c8859",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e14413dec895cc7cbbfeb2f70d4395294086b4f6"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native light Footer material",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-footer-material-light-native.png",
+          "sha256": "19184ee8d4baa61bb6e70a7a3e40238899164bafb319fa7850cb21586420734a",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e14413dec895cc7cbbfeb2f70d4395294086b4f6"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-footer-icon-material-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c43b0573f7b7aab5a339836feefee853a5c93ed106e497db4f66b02688eef5b5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.053978,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.946022 over the matched 768x172 dark Hero Composer/context region"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.049278,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.950722 over the matched 768x172 dark Sendable Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }

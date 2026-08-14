@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-14T13:22:36+08:00",
+  "productCommit": "6a013a418b639734d723d6791451ec63b22bc270",
+  "verificationHead": "bb2397a9de05cfd9c5892d6af573cd90c56789fc",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "themes": ["dark", "light"],
+    "semanticRoute": "new-thread",
+    "states": ["hero", "sendable"],
+    "lifecycle": "ready"
+  },
+  "rootCause": {
+    "component": "Composer Footer mode icons and chevrons",
+    "before": "Web composes runtime and interaction icons from the muted foreground with 70% element alpha, while Lynx used opaque #a1a1aa rasters. The semantic boxes were already aligned, so the remaining mismatch was icon material rather than geometry.",
+    "after": "The icon pipeline generates exact #818181 dark and #71717a light runtime/interaction rasters, and Footer icon and chevron leaves apply the same 0.7 opacity as Web."
+  },
+  "classification": {
+    "productLoss": true,
+    "harnessMismatch": null,
+    "ledgerScope": "Only direct dark Hero and Sendable matched pairs update material residuals. The light Hero pair and Native exact-theme runs corroborate cross-theme and cross-surface behavior without being substituted for a matched Native pixel residual."
+  },
+  "browser": {
+    "capturePass": true,
+    "rendererErrors": 0,
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "geometryUnchanged": true,
+    "darkHero": {
+      "footerSsim": {
+        "before": 0.853794,
+        "after": 0.855352
+      },
+      "composerRegionSsim": {
+        "before": 0.945449,
+        "after": 0.946022,
+        "residualBefore": 0.054551,
+        "residualAfter": 0.053978
+      },
+      "absoluteError": {
+        "runtimeIcon": {
+          "before": 30490,
+          "after": 19056
+        },
+        "interactionIcon": {
+          "before": 38732,
+          "after": 30402
+        },
+        "footer": {
+          "before": 336199,
+          "after": 310470
+        },
+        "composerRegion": {
+          "before": 517123,
+          "after": 491394
+        }
+      }
+    },
+    "darkSendable": {
+      "footerSsim": {
+        "before": 0.850723,
+        "after": 0.852281
+      },
+      "composerRegionSsim": {
+        "before": 0.950149,
+        "after": 0.950722,
+        "residualBefore": 0.049851,
+        "residualAfter": 0.049278
+      }
+    },
+    "lightHero": {
+      "footerSsim": 0.84784,
+      "composerRegionSsim": 0.924968,
+      "ledgerUpdate": "none: cross-theme corroboration only"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "bb2397a9de05cfd9c5892d6af573cd90c56789fc",
+    "bundleSha256": "11d5900ea9bd0d08be76f93f3b60f3b50454529027039e329ba819e1cfdd285a",
+    "viewport": {
+      "width": 1280,
+      "height": 820
+    },
+    "transportSequence": {
+      "before": 2,
+      "after": 3
+    },
+    "footerIconLeaves": [
+      {
+        "semantic": "model-chevron",
+        "opacity": "0.7"
+      },
+      {
+        "semantic": "runtime-icon",
+        "opacity": "0.7"
+      },
+      {
+        "semantic": "runtime-chevron",
+        "opacity": "0.7"
+      },
+      {
+        "semantic": "interaction-icon",
+        "opacity": "0.7"
+      },
+      {
+        "semantic": "interaction-chevron",
+        "opacity": "0.7"
+      }
+    ],
+    "dark": {
+      "expectedTheme": "dark",
+      "resolvedTheme": "dark",
+      "imageDimensions": {
+        "width": 2560,
+        "height": 1640
+      },
+      "reportSha256": "41c6f30c53ccdf6c73266315f029e629e2944c2c1eec731413857bcbf9b96193",
+      "screenshotSha256": "3fddc9b0bd5e0b72cded758b709e217cc60bd5a90b7fa14196cd12995b6c8859"
+    },
+    "light": {
+      "expectedTheme": "light",
+      "resolvedTheme": "light",
+      "imageDimensions": {
+        "width": 2560,
+        "height": 1640
+      },
+      "reportSha256": "7c14f0edc096f283346a63b199174d2bf7f4db4dbadd31c3d9fc048bf1feea58",
+      "screenshotSha256": "19184ee8d4baa61bb6e70a7a3e40238899164bafb319fa7850cb21586420734a"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "ledgerUpdate": "none: Native proves exact-bundle theme-aware icon alpha and readiness, not matched whole-state pixel residual"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "e14413dec895cc7cbbfeb2f70d4395294086b4f6"
+    },
+    "darkHeroAuthority": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-current-web.png",
+      "sha256": "04d3cbf7f8f4e7e894bfa1f87bbf05dc1e49b64bb856873b7013c1bd9457382b"
+    },
+    "darkHeroLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-material-lynx.png",
+      "sha256": "f71331b39ee8a7cc5822fa78ae28aa4609e60135d4d0f46755adb13214fc488c"
+    },
+    "darkSendableAuthority": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-current-web.png",
+      "sha256": "57937fe1dbe8aa43767ae4509d09877bbf62c9c8abf8294129b73b2bcd78917a"
+    },
+    "darkSendableLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-footer-material-lynx.png",
+      "sha256": "4c6953ff5f9d43ff2c99f54445d6c4fa745101b5a1c9838901d073485534e787"
+    },
+    "lightHeroAuthority": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-light-context-web.png",
+      "sha256": "60c3794d461ac23b241af12833c5be679885d0ce2e8d2b65d3c761de11920232"
+    },
+    "lightHeroLynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-light-footer-material-lynx.png",
+      "sha256": "8721309f33a7d79654f1624bd0112570eb84fb117b592584d922f9840a6e3bd9"
+    },
+    "darkNative": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-footer-material-dark-native.png",
+      "sha256": "3fddc9b0bd5e0b72cded758b709e217cc60bd5a90b7fa14196cd12995b6c8859"
+    },
+    "lightNative": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-footer-material-light-native.png",
+      "sha256": "19184ee8d4baa61bb6e70a7a3e40238899164bafb319fa7850cb21586420734a"
+    }
+  },
+  "remainingRisk": [
+    "Footer text rasterization and the surrounding Composer material remain larger contributors than these five icon leaves.",
+    "The light Hero frame corroborates the shared theme mapping but does not add a second score update.",
+    "Native whole-state pixel parity is not claimed because its canonical fixture is not the matched Browser pair."
+  ]
+}

@@ -137,6 +137,14 @@ Plan 11 prose and screenshots.
   the exact bundle with zero renderer errors. This scope closes without score
   movement because it duplicates existing residuals rather than hiding or
   reweighting them.
+- Footer icon material then isolates a smaller real mismatch after geometry and
+  label alpha were already aligned: Lynx used opaque `#a1a1aa` mode icons while
+  Web composes muted `#818181` at 70% element alpha. Exact dark/light rasters
+  plus `0.7` icon and chevron opacity improve Hero and Sendable Composer-region
+  SSIM by `0.000573` each without geometry movement. Matched light Browser
+  evidence and exact-theme dark/light Native runs corroborate the shared
+  mapping; only the direct dark pairs update the ledger. Conservative loss is
+  now 86.9312%, observed residual is 6.0727%, and evidence debt remains 86.0862%.
 
 ## Not currently proven
 
