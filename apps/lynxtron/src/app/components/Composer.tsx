@@ -431,7 +431,14 @@ export function Composer({
               <text className="composer-context-label composer-context-label--checkout">
                 {context.checkoutLabel}
               </text>
-              {!workspaceModeLocked ? <Icon name="chevron-down" size={12} color="#818181" /> : null}
+              {!workspaceModeLocked ? (
+                <Icon
+                  name="chevron-down"
+                  size={12}
+                  color="#818181"
+                  className="composer-context-icon composer-context-icon--checkout-chevron"
+                />
+              ) : null}
             </view>
             {workspaceMenuOpen ? (
               <>

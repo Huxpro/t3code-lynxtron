@@ -2258,27 +2258,31 @@
   font-family: "T3 DM Sans", var(--font-sans);
   text-stroke-color: rgba(var(--muted-foreground-rgb), 0.68);
   text-stroke-width: 0.15px;
-  transform: translate(0.5px, -1.5px) scaleX(1.02);
+  transform: translate(1px, -0.5px) scaleX(1.02);
   transform-origin: left center;
 }
 .composer-context-label--branch {
-  color: rgba(var(--muted-foreground-rgb), 0.64);
-  transform: translateY(0.5px);
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+  transform: translateY(-0.5px);
 }
 .composer-context-icon {
   opacity: 0.7;
 }
 .composer-context-icon--checkout {
-  transform: translate(0.5px, -1px);
+  transform: translateX(1px);
+}
+.composer-context-icon--checkout-chevron {
+  margin-right: -4px;
+  opacity: 0.5;
 }
 .composer-context-icon--branch {
-  opacity: 0.57;
-  transform: translate(1.5px, -1px);
+  margin-right: -2px;
+  margin-left: -2px;
 }
 .composer-context-icon--chevron {
-  opacity: 0.41;
-  transform: translate(-3.25px, -1px) scale(0.97, 0.95);
-  transform-origin: center center;
+  margin-right: -2px;
+  margin-left: -2px;
+  opacity: 0.5;
 }
 
 /* surface: composer card surface color; gap: none (token passthrough);
@@ -2636,19 +2640,20 @@
   align-items: center;
   height: 24px;
   gap: 4px;
-  transform: translateY(2px);
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 8px;
   box-sizing: border-box;
 }
 .composer-context-control--checkout {
-  padding-right: 11px;
-  padding-left: 11px;
-  transform: translate(0.25px, 2.5px);
+  padding-right: 7px;
+  padding-left: 10px;
 }
 .composer-context-control--branch {
   margin-left: auto;
   padding-right: 7px;
   padding-left: 7px;
-  transform: translate(3.5px, 2px);
 }
 
 /* surface: composer hero headline slot; gap: R7 (absolute slot positioning);
