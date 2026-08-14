@@ -218,6 +218,7 @@ export function validateHistory(model, history, options = {}) {
   const warnings = [];
   const attributionAllocations = new Set([
     "evidence-session",
+    "measured-product-change",
     "measurement-refinement",
     "working-tree-product-change",
   ]);

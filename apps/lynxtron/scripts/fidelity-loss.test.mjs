@@ -382,6 +382,44 @@ describe("fidelity loss", () => {
       roundForTest(data.points[1].loss - data.points[0].loss),
     );
   });
+
+  it("accepts a direct measured delta for a committed product change", () => {
+    const inputHistory = history([
+      {
+        id: "baseline",
+        observedAt: "2026-08-12T19:00:00Z",
+        label: "Baseline",
+        updates: [],
+      },
+      {
+        id: "committed-fix",
+        observedAt: "2026-08-12T20:00:00Z",
+        label: "Committed fix",
+        commit: "43d1855adbc05922364c5ff312d954282cb7b361",
+        attribution: {
+          allocation: "measured-product-change",
+          confidence: 0.95,
+          reason: "Measured the same snapshot before and after one committed product fix.",
+        },
+        updates: [
+          {
+            states: ["hero"],
+            clients: ["lynx"],
+            dimensions: {
+              content: { residual: 0, confidence: 1 },
+            },
+          },
+        ],
+      },
+    ]);
+    assert.deepEqual(validateHistory(model(), inputHistory).errors, []);
+    const data = computeTimeline(model(), inputHistory);
+    assert.equal(data.attribution.at(-1)?.allocation, "measured-product-change");
+    assert.equal(
+      roundForTest(data.attribution.at(-1)?.delta ?? 0),
+      roundForTest(data.points[1].loss - data.points[0].loss),
+    );
+  });
 });
 
 function roundForTest(value) {

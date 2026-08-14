@@ -91,6 +91,8 @@ before and after the commit. The website therefore distinguishes:
   No product commit receives the delta.
 - `working-tree-product-change`: an explicit before/after measurement isolates a
   real uncommitted product change without pretending it is an existing commit.
+- `measured-product-change`: a committed product change has a direct,
+  same-snapshot before/after measurement and receives that measured delta.
 - `measurement-refinement`: a stricter measurement raised loss without evidence
   of a product regression.
 - `evidence-policy`: stale evidence was demoted. Product residual stays
@@ -122,7 +124,7 @@ https://huangxuan.me/t3code-fidelity-assets/assets/
 ```
 
 The history ledger pins the hosting repository commit and SHA-256 for every
-asset. Fourteen remote images were loaded anonymously before the local copies
+asset. Seventeen remote images were loaded anonymously before the local copies
 were removed.
 
 Moving those seven files out of the checkout removed:
@@ -179,6 +181,22 @@ before/after measurement shows:
   `connecting` lifecycle with matching identity and no unexpected errors;
 - only Lynx-for-Web dimensions are updated; Native recovery and reconnect
   interaction remain unmeasured.
+
+The idle-thread checkpoint similarly separates a harness mismatch from product
+loss: the canonical idle fixture has zero messages, so the harness waits for Web
+thread sync to finish and then requires both transcript row arrays to remain
+empty. It does not require fake populated rows. On that valid sample:
+
+- Browser Sidebar rows move from `x=9, width=255` to the Web authority's
+  `x=8, width=239`, and both row y coordinates now match;
+- measured geometry residual falls from `0.214844` to `0.058594`; the remaining
+  15px card-wrapper height difference stays explicit;
+- full-frame SSIM improves from `0.908539` to `0.909155`; the low Sidebar-region
+  material score remains open;
+- a fresh staged-bundle Native run proves three 225×82 rows and three 225×78
+  cards stay within the 256px rail, with main transport sequence `2 → 3` and
+  zero renderer errors. This is Native containment/readiness evidence, not a
+  Native pixel-residual update.
 
 Evidence and report directories are capped at 100 screenshots:
 
@@ -237,16 +255,16 @@ point to make the curve smoother.
 
 ## Prompt-to-artifact checklist
 
-| Requested outcome                                        | Artifact                                                                                                                                  | Verification                                                                                                                                                              |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Define a weighted loss equation                          | `scripts/fidelity-loss-model.json`                                                                                                        | Client and dimension weights each sum to 1; focused tests reject invalid models                                                                                           |
-| Include screens, states, and visual approximation        | Fixed 40-state registry plus content, geometry, typography, material, interaction, and runtime dimensions                                 | Generated `history.json` contains 40 per-state rows and six per-dimension summaries                                                                                       |
-| Reconstruct progress over time and commits               | `scripts/fidelity-loss-history.json`                                                                                                      | Sixteen chronological milestones; every commit anchor resolves in Git; every source has a path and hash                                                                   |
-| Base the reconstruction on existing screenshots and logs | Historical anchor metrics, strict manifest gates, MAE/significant-pixel reports, SSIM matrix, runtime readiness, and Model Picker outcome | Twelve source artifacts are recorded; backup artifacts are hash-checked when the backup worktree is available                                                             |
-| Show that loss decreased                                 | `reports/fidelity-loss/{history.json,history.csv,index.html}`                                                                             | Conservative loss 98.30% → 68.74% historical best; historical-best line is monotonic                                                                                      |
-| Keep missing/stale evidence honest                       | Evidence confidence and archaeology confidence event                                                                                      | Current loss is 87.64% with 86.79% evidence debt; the 68.74% historical best remains visible                                                                              |
-| Provide a usable visualization                           | Single-file interactive HTML                                                                                                              | 16 points, 4 series, 6 group bars, 40 state rows, filters, legend toggles, and tooltips                                                                                   |
-| Connect loss to screenshots                              | Checkpoint review in `index.html`                                                                                                         | Baseline, strict-matrix, Model Picker, Composer, and lifecycle checkpoints load 14 direct Web/Lynx/Native frames from GitHub Pages; metrics-only checkpoints remain empty |
-| Explain every commit contribution                        | Attribution table, raw/EMA commit chart, and `commit-attribution.csv`                                                                     | Every measured interval balances exactly; 78 archaeology commits are explicitly unmeasured rather than blamed for evidence reset                                          |
-| Explain upward movement                                  | Attribution allocation types and cause text                                                                                               | Only two positive events remain: stricter pixel measurement and stale-evidence demotion                                                                                   |
-| Make the system repeatable                               | `report:fidelity-loss`, `report:fidelity-loss:check`, and `evidence:screenshot-budget`                                                    | Generator, staleness gate, and 100-screenshot cap pass; focused invariants cover score, attribution, and budget behavior                                                  |
+| Requested outcome                                        | Artifact                                                                                                                                  | Verification                                                                                                                                                                           |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Define a weighted loss equation                          | `scripts/fidelity-loss-model.json`                                                                                                        | Client and dimension weights each sum to 1; focused tests reject invalid models                                                                                                        |
+| Include screens, states, and visual approximation        | Fixed 40-state registry plus content, geometry, typography, material, interaction, and runtime dimensions                                 | Generated `history.json` contains 40 per-state rows and six per-dimension summaries                                                                                                    |
+| Reconstruct progress over time and commits               | `scripts/fidelity-loss-history.json`                                                                                                      | Sixteen chronological milestones; every commit anchor resolves in Git; every source has a path and hash                                                                                |
+| Base the reconstruction on existing screenshots and logs | Historical anchor metrics, strict manifest gates, MAE/significant-pixel reports, SSIM matrix, runtime readiness, and Model Picker outcome | Twelve source artifacts are recorded; backup artifacts are hash-checked when the backup worktree is available                                                                          |
+| Show that loss decreased                                 | `reports/fidelity-loss/{history.json,history.csv,index.html}`                                                                             | Conservative loss 98.30% → 68.74% historical best; historical-best line is monotonic                                                                                                   |
+| Keep missing/stale evidence honest                       | Evidence confidence and archaeology confidence event                                                                                      | Current loss is 87.08% with 86.24% evidence debt; the 68.74% historical best remains visible                                                                                           |
+| Provide a usable visualization                           | Single-file interactive HTML                                                                                                              | 18 points, 4 series, 6 group bars, 40 state rows, filters, legend toggles, and tooltips                                                                                                |
+| Connect loss to screenshots                              | Checkpoint review in `index.html`                                                                                                         | Baseline, strict-matrix, Model Picker, Composer, lifecycle, and idle-thread checkpoints load 17 direct Web/Lynx/Native frames from GitHub Pages; metrics-only checkpoints remain empty |
+| Explain every commit contribution                        | Attribution table, raw/EMA commit chart, and `commit-attribution.csv`                                                                     | Every measured interval balances exactly; 78 archaeology commits are explicitly unmeasured rather than blamed for evidence reset                                                       |
+| Explain upward movement                                  | Attribution allocation types and cause text                                                                                               | Only two positive events remain: stricter pixel measurement and stale-evidence demotion                                                                                                |
+| Make the system repeatable                               | `report:fidelity-loss`, `report:fidelity-loss:check`, and `evidence:screenshot-budget`                                                    | Generator, staleness gate, and 100-screenshot cap pass; focused invariants cover score, attribution, and budget behavior                                                               |

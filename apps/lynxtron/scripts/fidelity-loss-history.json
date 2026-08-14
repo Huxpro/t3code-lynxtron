@@ -1272,6 +1272,133 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-idle-current-browser",
+      "observedAt": "2026-08-14T07:35:10+08:00",
+      "commit": "d283dda05af714927db481073ec3c4a2ca185ed8",
+      "codeState": "commit",
+      "label": "Current idle-thread Sidebar baseline",
+      "narrative": "The corrected harness recognizes the seeded idle thread as an intentionally empty transcript after Web thread sync settles. The earlier non-empty transcript failure was capture timing noise and is not product loss. On the stable matched snapshot, Sidebar row geometry is a real product residual: Web rows are 239px wide at x=8 while Lynx rows are 255px wide at x=9 and shifted 3px downward. Empty-transcript copy remains different and is deliberately not overwritten by this checkpoint.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "A corrected empty-transcript readiness gate established the current-head product baseline without assigning the evidence correction to product code."
+      },
+      "screenshots": [
+        {
+          "client": "lynx",
+          "label": "Idle thread Sidebar before",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-idle-sidebar-before-lynx.png",
+          "sha256": "2b0579ce88aac5ca5d8136b049ca28ae42bc5127acd0fa591805405a4367bd40",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e357bb7460b13bd5a75380e030e02fdbf0e267a2"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/existing-thread-idle-sidebar-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "60eda1db702a4859c3d9a9fd3e6f4ece4fe84b93f43810654921539df8e198e5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "residual": 0.214844,
+              "confidence": 0.99,
+              "method": "sidebar-row-card-geometry",
+              "source": "two matched row/card pairs measured across x, y, width, and height on a 32px scale"
+            },
+            "material": {
+              "residual": 0.091461,
+              "confidence": 0.98,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.908539 at the matched 1280x820 idle-thread frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-empty-thread-readiness",
+              "source": "same empty thread, model, lifecycle, route, viewport, clean consoles, and both transcript row arrays empty after Web sync"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-idle-sidebar-geometry-fix",
+      "observedAt": "2026-08-14T07:53:51+08:00",
+      "commit": "d9d2444e544dcb8dde33fcc81ae7b9f3f963221a",
+      "codeState": "commit",
+      "label": "Idle-thread Sidebar row containment",
+      "narrative": "Lynx now accounts for the shared Sidebar group's 16px horizontal padding, removes the stale one-by-three-pixel list calibration, and bounds row cards. Both Browser rows now match Web at x=8 with width 239px and identical y/height. The remaining 15px card-wrapper height difference and low Sidebar material SSIM stay visible. A fresh 1280x820 Native run loads the exact staged bundle, advances the main transport sequence, renders the canonical thread, and proves all three 225px rows and 78px cards remain inside the 256px rail; it is containment evidence, not a Native pixel residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same Browser snapshot and viewport were captured before and after commit d9d2444e5, and a fresh exact-bundle Native geometry gate independently verified rail containment."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Idle thread Web authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-idle-sidebar-after-web.png",
+          "sha256": "e45de61ade0ba6ac35ed713a2d970dc4dc968bb379a15dd534f9d438f641f3b8",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e357bb7460b13bd5a75380e030e02fdbf0e267a2"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Idle thread Lynx-for-Web after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-idle-sidebar-after-lynx.png",
+          "sha256": "f17255048db507a8fdbb96e02bbcddc021781ec0965739562eeae5f770c4808e",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "e357bb7460b13bd5a75380e030e02fdbf0e267a2"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/existing-thread-idle-sidebar-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "60eda1db702a4859c3d9a9fd3e6f4ece4fe84b93f43810654921539df8e198e5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -15, 0, 0, 0, -15],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "sidebar-row-card-geometry",
+              "source": "both row boxes match exactly; both card boxes match x/y/width and retain a measured 15px wrapper-height difference"
+            },
+            "material": {
+              "residual": 0.090845,
+              "confidence": 0.98,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.909155 at the matched 1280x820 idle-thread frame"
+            }
+          }
+        }
+      ]
     }
   ]
 }

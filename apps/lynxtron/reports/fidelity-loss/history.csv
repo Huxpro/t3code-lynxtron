@@ -15,3 +15,5 @@ review-diff-current-head-evidence-blocker,2026-08-14T05:34:00+08:00,c26ae5afbc5f
 composer-hero-sendable-current-browser,2026-08-14T06:05:00+08:00,1a4fc90c5e092ac2b9fd16fe93fbe600609565a8,commit,Current-head Hero and Sendable Composer pair,0.883689,0.687361,0.069577,0.874992,0.125008,0.099748
 composer-hero-footer-material-fix,2026-08-14T06:13:00+08:00,633dca6512d09cf47ce4d61393e63507988a4839,commit,Hero Composer footer material parity,0.883649,0.687361,0.069258,0.874992,0.125008,0.099788
 lifecycle-error-current-browser,2026-08-14T07:11:00+08:00,8fb8d7f4d10d65d2235d1fad7dbef3b6873108e3,commit,Lifecycle reconnecting parity,0.876384,0.687361,0.064365,0.86788,0.13212,0.107053
+existing-thread-idle-current-browser,2026-08-14T07:35:10+08:00,d283dda05af714927db481073ec3c4a2ca185ed8,commit,Current idle-thread Sidebar baseline,0.871236,0.687361,0.064462,0.862364,0.137636,0.112201
+existing-thread-idle-sidebar-geometry-fix,2026-08-14T07:53:51+08:00,d9d2444e544dcb8dde33fcc81ae7b9f3f963221a,commit,Idle-thread Sidebar row containment,0.870826,0.687361,0.061484,0.862364,0.137636,0.112611

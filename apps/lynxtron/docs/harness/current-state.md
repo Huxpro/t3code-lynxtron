@@ -78,6 +78,12 @@ Plan 11 prose and screenshots.
   branch discovery before fault injection; the product fix removes a real 31px
   Lynx-only Hero offset while leaving Native recovery and reconnect interaction
   unmeasured.
+- The current idle-thread checkpoint separates an empty-transcript readiness
+  mismatch from the product. The Sidebar fix aligns both Browser row boxes
+  exactly, while retaining the 15px card-wrapper and material residuals. A
+  read-only Native DevTool gate independently proves all rows/cards stay inside
+  the staged 256px rail. Current conservative loss is 87.08%, observed residual
+  is 6.15%, and evidence debt is 86.24%.
 
 ## Not currently proven
 
