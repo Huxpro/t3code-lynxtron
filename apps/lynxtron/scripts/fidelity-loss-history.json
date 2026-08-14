@@ -1987,6 +1987,101 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-hero-1440-responsive-certification",
+      "observedAt": "2026-08-14T12:43:57+08:00",
+      "commit": "a58e3272a874a764ccc255754dfd7e9ffd997da9",
+      "codeState": "commit",
+      "label": "Composer Hero 1440 responsive certification",
+      "narrative": "Fresh matched 1440x900 dark and light Browser cells preserve the same 768px Composer and 724px Context geometry as 1280, shifted exactly +80px horizontally and +40px vertically; their residuals match the existing 1280 states to rounding, so no score is double-counted. Native cold start exposed a real reconciliation defect: late model-option insertion could reuse the runtime wrapper's unkeyed sibling position and overlap controls. Stable top-level toolbar keys fix the root cause. Two dark cold starts pass, a deterministic High · 1M fixture renders all five controls in canonical order, and light Native passes with the shared 16-band Context ramp. All exact-bundle runs advance main transport, retain 2880x1800 evidence, report zero renderer errors, and dispose isolated state.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Matched Browser viewports prove no responsive pixel regression, while repeated and forced-option Native cold starts directly cover the keyed reconciliation fix without changing ledger weights or duplicating existing material residuals."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "1440 dark Hero authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-1440-dark-web.png",
+          "sha256": "614bdd4dfa0ae3518d0fe9cc7c318963d66ab907fba920aae99069145585f411",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ce24c4a5759e30e93d65e3d03d89d1c305b85d67"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "1440 dark Hero Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-1440-dark-lynx.png",
+          "sha256": "39e8a0f83995c45a49c0d22635faea78a4446d67dd22dabdafc06c1dacd2fa4a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ce24c4a5759e30e93d65e3d03d89d1c305b85d67"
+          }
+        },
+        {
+          "client": "native",
+          "label": "1440 dark Hero Native",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-1440-dark-native.png",
+          "sha256": "13bae8f703b47b4298e890936a68f11706ccfd90701bc44b72ecb885a13a96e0",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ce24c4a5759e30e93d65e3d03d89d1c305b85d67"
+          }
+        },
+        {
+          "client": "web",
+          "label": "1440 light Hero authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-1440-light-web.png",
+          "sha256": "730b200d49021a7d20d7e8ef91ada502cb322bf165009edf1390abe54c6266e9",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ce24c4a5759e30e93d65e3d03d89d1c305b85d67"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "1440 light Hero Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-1440-light-lynx.png",
+          "sha256": "1e1b62daefe54d004e60d5401b76581abc9d855a296203728ce8ae2f869dd85a",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ce24c4a5759e30e93d65e3d03d89d1c305b85d67"
+          }
+        },
+        {
+          "client": "native",
+          "label": "1440 light Hero Native",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-1440-light-native.png",
+          "sha256": "dd2587af7a851f42611b40025d1aa162f87fdd0ccaa91937ec0ab5a5f949ce92",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "ce24c4a5759e30e93d65e3d03d89d1c305b85d67"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-hero-1440-viewport-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "66a362ce13ac4674752334a1f3361777ba2bbf80d5723e6a1b568613dac5c607"
+        }
+      ],
+      "updates": []
     }
   ]
 }

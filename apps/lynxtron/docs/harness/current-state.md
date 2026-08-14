@@ -129,6 +129,14 @@ Plan 11 prose and screenshots.
   lowers conservative loss to 86.93% and evidence debt to 86.09%; observed
   residual rises slightly to 6.07% because the newly measured light cell is no
   longer hidden by missing evidence.
+- Fresh 1440×900 dark/light Browser cells preserve the same responsive
+  Composer geometry and residuals as 1280×820. Native initially exposes a
+  late model-option insertion race that overlaps the runtime control; stable
+  top-level toolbar keys fix the reconciliation identity. Two dark cold starts,
+  one deterministic all-five-control run, and one light material run pass on
+  the exact bundle with zero renderer errors. This scope closes without score
+  movement because it duplicates existing residuals rather than hiding or
+  reweighting them.
 
 ## Not currently proven
 
