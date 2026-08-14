@@ -121,6 +121,14 @@ Plan 11 prose and screenshots.
   muted icon path but also exposes broader light Context material as a separate
   open scope. Current conservative loss is 87.07%, observed residual is 6.06%,
   and evidence debt remains 86.23%.
+- Matched light Hero evidence then localizes 64% of Context error to the top
+  material ramp. A Browser-only gradient is rejected after Native pixel
+  evidence proves it renders flat there; the final 16-band view ramp renders
+  the same profile in Lynx-for-Web and Native, raises light Context SSIM to
+  91.34%, and leaves dark frames byte-identical. Fresh light material evidence
+  lowers conservative loss to 86.93% and evidence debt to 86.09%; observed
+  residual rises slightly to 6.07% because the newly measured light cell is no
+  longer hidden by missing evidence.
 
 ## Not currently proven
 

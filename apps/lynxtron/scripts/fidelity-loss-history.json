@@ -1915,6 +1915,78 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-light-context-shared-ramp-fix",
+      "observedAt": "2026-08-14T12:11:19+08:00",
+      "commit": "e3b3bee8c1c57606553d40604417e41af64f6e1d",
+      "codeState": "commit",
+      "label": "Composer light Context shared material",
+      "narrative": "The newly validated light Hero scope matched snapshot, state, theme, and viewport, then localized 64% of Context absolute error to the top material ramp. Web authority showed a 221-to-254 glass-shadow profile while Lynx used five near-white bands. A CSS gradient improved Browser Preview but rendered flat on Native, so it was classified as a cross-surface product gap and superseded. The final shared 16-band view ramp renders the same pixel profile in Lynx-for-Web and Native, raises light Context SSIM from 0.847811 to 0.913372, raises the matched Composer-region SSIM from 0.908741 to 0.924627, and reduces Context absolute error by 69.4%. Dark Web/Lynx frames remain byte-identical. Exact-theme Native verification proves all 16 bands, endpoint colors, a retained 2560x1640 frame, main transport advancement, and zero renderer errors; Native whole-state pixel parity is not claimed because its canonical fixture differs.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Matched light Browser evidence supplies the whole-Composer residual; dark byte identity rules out regression, while exact-theme Native DOM and pixel evidence prove the shared ramp rather than the rejected Browser-only gradient."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Light Hero Context authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-light-context-web.png",
+          "sha256": "60c3794d461ac23b241af12833c5be679885d0ce2e8d2b65d3c761de11920232",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "f55118de737153ee0b3154bfd069314fc45d97ba"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Light Hero shared Context ramp",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-light-context-lynx.png",
+          "sha256": "025210425341cd1b4b7d3d64fe3ffb6defa6346694cb2e8969d89f3cb83e784d",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "f55118de737153ee0b3154bfd069314fc45d97ba"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native light shared Context ramp",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-light-context-native.png",
+          "sha256": "4f6f5fbc9eaedde9dd5541c285f930d2e7da561402dc5fa248643f0aa0e5486c",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "f55118de737153ee0b3154bfd069314fc45d97ba"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-context-light-material-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0422ec64f2e7dec072f9d2e7390e4296d9bcf810ee6a1cfaf27c65302fb23b56"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.075373,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.924627 over the matched 768x172 light Hero Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }
