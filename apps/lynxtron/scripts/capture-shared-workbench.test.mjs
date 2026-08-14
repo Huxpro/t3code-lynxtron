@@ -45,6 +45,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'expectedThreadFixture?.latestTurnState !== "error"');
   });
 
+  it("accepts an explicit immutable seed source for cross-client fixtures", () => {
+    assert.include(source, 'const explicitSeedSource = argValue("--seed-source", "")');
+    assert.include(source, "explicitSeedSource ||");
+    assert.include(source, "process.env.T3_PLAN11C_SEED_SOURCE");
+  });
+
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),

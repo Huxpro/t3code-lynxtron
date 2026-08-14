@@ -77,6 +77,7 @@ const sidebarTargetState = argValue("--sidebar-state", "");
 const changedFilesTargetState = argValue("--changed-files-state", "");
 const expandTurnId = argValue("--expand-turn-id", "");
 const explicitExpectedThreadId = argValue("--expect-thread", "");
+const explicitSeedSource = argValue("--seed-source", "");
 const expandThinking = hasFlag("--expand-thinking");
 const keepServer = hasFlag("--keep-server");
 const timeoutMs = Number(argValue("--timeout-ms", "35000"));
@@ -713,10 +714,11 @@ async function main() {
     "sidebar-inline-search",
   ]);
   const seedSource =
-    process.env.T3_PLAN11C_SEED_SOURCE ??
-    (threadStateIds.has(stateId)
-      ? path.join(process.env.HOME ?? "", ".t3-lynxtron/userdata/state.sqlite")
-      : path.join(process.env.HOME ?? "", ".t3/userdata/state.sqlite"));
+    explicitSeedSource ||
+    (process.env.T3_PLAN11C_SEED_SOURCE ??
+      (threadStateIds.has(stateId)
+        ? path.join(process.env.HOME ?? "", ".t3-lynxtron/userdata/state.sqlite")
+        : path.join(process.env.HOME ?? "", ".t3/userdata/state.sqlite")));
   const seedReportPath = path.join(baseDir, "workbench-seed-report.json");
   const reseed = spawnSync(
     process.env.T3_NODE_BIN?.trim() || "node",
