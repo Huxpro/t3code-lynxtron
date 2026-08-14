@@ -23,6 +23,7 @@ import {
 } from "../../../../web/src/components/chat/ComposerSurface";
 import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
+import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 
@@ -287,7 +288,7 @@ export function Composer({
                         trailing={
                           <Icon
                             name="chevron-down"
-                            size={12}
+                            size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
                             color="#71717a"
                             className="pill__chevron-img"
                           />
@@ -304,7 +305,7 @@ export function Composer({
                         trailing={
                           <Icon
                             name="chevron-down"
-                            size={12}
+                            size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
                             color="#71717a"
                             className="pill__chevron-img"
                           />
@@ -320,7 +321,7 @@ export function Composer({
                         leading={
                           <Icon
                             name={RUNTIME_MODE_ICONS[runtimeMode]}
-                            size={14}
+                            size={COMPOSER_FOOTER_ICON_GEOMETRY.runtime}
                             color="#a1a1aa"
                             className="pill__icon-img"
                           />
@@ -328,7 +329,7 @@ export function Composer({
                         trailing={
                           <Icon
                             name="chevron-down"
-                            size={12}
+                            size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
                             color="#71717a"
                             className="pill__chevron-img"
                           />
@@ -381,7 +382,11 @@ export function Composer({
                         leading={
                           <Icon
                             name={interactionMode === "plan" ? "pencil-line" : "bot"}
-                            size={14}
+                            size={
+                              interactionMode === "plan"
+                                ? COMPOSER_FOOTER_ICON_GEOMETRY.interaction.plan
+                                : COMPOSER_FOOTER_ICON_GEOMETRY.interaction.default
+                            }
                             color="#a1a1aa"
                             className="pill__icon-img"
                           />

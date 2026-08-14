@@ -2163,6 +2163,10 @@
   border-color: transparent;
   box-sizing: border-box;
 }
+.composer-toolbar-control .pill__chevron-img {
+  margin-right: -2px;
+  margin-left: -2px;
+}
 .composer-toolbar-control--model {
   width: auto;
 }
