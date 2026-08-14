@@ -101,4 +101,19 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '".transcript-work-status--failed"');
     assert.include(source, '"--verify-failed-transcript-state"');
   });
+
+  it("verifies the real Native approval request content, state, and column geometry", () => {
+    assert.include(source, "async function verifyApprovalTranscriptState");
+    assert.include(source, '".composer-pending-approval"');
+    assert.include(source, '".composer-pending-approval__detail"');
+    assert.include(source, '".composer-editor-area--approval"');
+    assert.include(source, '".composer-footer--approval"');
+    assert.include(source, '".composer-approval-action--accept"');
+    assert.include(source, 'clientState?.sessionStatus === "running"');
+    assert.include(source, 'frame?.attributes["data-composer-state"] === "working"');
+    assert.include(source, "approximately(footer?.rect?.y");
+    assert.include(source, '"native-approval.png"');
+    assert.include(source, '"--verify-approval-transcript-state"');
+    assert.include(source, "fixtureManifest.pendingRequestFixture");
+  });
 });
