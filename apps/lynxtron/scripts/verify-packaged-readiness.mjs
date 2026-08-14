@@ -2563,6 +2563,14 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
 }
 
 async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs }) {
+  await waitForLifecycleBannerToClear({ child, client, timeoutMs });
+  const connectedComposer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-frame",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
+  });
   const ports = [...log.read().matchAll(/Listening on http:\/\/127\.0\.0\.1:(\d+)/gu)].map(
     (match) => Number(match[1]),
   );
@@ -2586,6 +2594,21 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
   if (!failure.text.includes("Server exited") || !failure.text.includes("Reconnect")) {
     throw new Error(`Lifecycle failure lacks recovery guidance: ${JSON.stringify(failure)}`);
   }
+  const disabledComposer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-frame",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "disabled",
+  });
+  const disabledPrimaryAction = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-primary-action",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-composer-primary-state"] === "disabled",
+  });
 
   await tapSelector({
     child,
@@ -2607,6 +2630,13 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
     timeoutMs,
   });
   await waitForLifecycleBannerToClear({ child, client, timeoutMs });
+  const recoveredComposer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-frame",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
+  });
 
   const recoveredPorts = [...log.read().matchAll(/Listening on http:\/\/127\.0\.0\.1:(\d+)/gu)].map(
     (match) => Number(match[1]),
@@ -2623,10 +2653,23 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
 
   return {
     status: "pass",
+    connectedComposer: {
+      state: connectedComposer.attributes["data-composer-state"],
+      rect: connectedComposer.rect,
+    },
     interruptedServer: server,
     failure,
+    disabledComposer: {
+      state: disabledComposer.attributes["data-composer-state"],
+      rect: disabledComposer.rect,
+      primaryState: disabledPrimaryAction.attributes["data-composer-primary-state"],
+    },
     recoveryInput: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selector",
     reconnecting,
+    recoveredComposer: {
+      state: recoveredComposer.attributes["data-composer-state"],
+      rect: recoveredComposer.rect,
+    },
     recoveredServer,
     sequence: { before: beforeInterrupt.lastSeq, after: afterRecovery.lastSeq },
     finalBanner: null,

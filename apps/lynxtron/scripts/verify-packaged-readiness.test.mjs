@@ -91,6 +91,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar action menu rows collapsed");
   });
 
+  it("verifies Composer disabled and recovered states during lifecycle recovery", () => {
+    assert.include(source, "async function verifyLifecycleRecovery");
+    assert.include(source, 'measurement?.attributes["data-composer-state"] === "disabled"');
+    assert.include(source, 'measurement?.attributes["data-composer-primary-state"] === "disabled"');
+    assert.include(source, "connectedComposer");
+    assert.include(source, "disabledComposer");
+    assert.include(source, "recoveredComposer");
+  });
+
   it("verifies the Native working transcript layout and locked workspace copy", () => {
     assert.include(source, 'readSelectorRects(client, ".timeline-list")');
     assert.include(source, 'readSelectorRects(client, ".timeline-row-root--working")');
