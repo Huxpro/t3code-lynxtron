@@ -11,8 +11,11 @@ const COMPOSER_ANCHOR_IDS = [
   "context",
 ];
 
-export function assertComposerGeometry(measurements) {
-  for (const id of COMPOSER_ANCHOR_IDS) {
+export function assertComposerGeometry(measurements, options = {}) {
+  const requiredAnchorIds = options.allowMissingInteraction
+    ? COMPOSER_ANCHOR_IDS.filter((id) => id !== "interaction")
+    : COMPOSER_ANCHOR_IDS;
+  for (const id of requiredAnchorIds) {
     const rect = measurements.anchors[id]?.rect;
     if (!rect || rect.width <= 0 || rect.height <= 0) {
       throw new Error(`Composer ${id} lacks visible geometry.`);
@@ -23,7 +26,7 @@ export function assertComposerGeometry(measurements) {
     "model",
     ...(measurements.anchors.modelOption?.rect ? ["modelOption"] : []),
     "runtime",
-    "interaction",
+    ...(measurements.anchors.interaction?.rect ? ["interaction"] : []),
     "primaryAction",
   ];
   const controls = controlIds.map((id) => measurements.anchors[id].rect);

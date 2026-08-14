@@ -80,9 +80,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyCompletedTranscriptState");
     assert.include(source, "readSelectorRects(");
     assert.include(source, '".timeline-row-root--assistant"');
-    assert.include(source, "Math.abs(rowRoots[0].y - (timelineList.y + 48)) <= 1");
+    assert.include(source, 'readSelectorRects(client, ".timeline-host")');
+    assert.include(source, "Math.abs(rowRoots[0].y - (timelineHost.y + 48)) <= 1");
     assert.include(source, "Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5");
     assert.include(source, 'assistantText !== "fidelity loop complete"');
     assert.include(source, '"--verify-completed-transcript-state"');
+    assert.include(source, "allowMissingInteraction: true");
+    assert.include(source, '".model-picker-anchor > .composer-toolbar-control--model"');
   });
 });

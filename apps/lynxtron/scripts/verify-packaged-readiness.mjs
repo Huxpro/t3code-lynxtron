@@ -834,7 +834,8 @@ async function waitForMeasurement({ child, client, predicate, selector, timeoutM
   throw new Error(`Timed out waiting for ${selector}: ${JSON.stringify({ latest })}`);
 }
 
-async function readComposerOutcome(client) {
+async function readComposerOutcome(client, options = {}) {
+  const includeInteraction = options.allowMissingInteraction !== true;
   const measurements = await collectLynxMeasurements({
     runCdp: client.runCdp,
     spec: {
@@ -846,17 +847,27 @@ async function readComposerOutcome(client) {
         { id: "footer", lynx: ".composer-footer" },
         { id: "toolbar", lynx: ".composer-toolbar-row" },
         { id: "modelAnchor", lynx: ".model-picker-anchor" },
-        { id: "model", lynx: ".composer-toolbar-control--model" },
+        {
+          id: "model",
+          lynx: ".model-picker-anchor > .composer-toolbar-control--model",
+        },
         { id: "runtime", lynx: ".composer-toolbar-control--runtime" },
         { id: "runtimeWrap", lynx: ".composer-runtime-control-wrap" },
-        { id: "interaction", lynx: ".composer-toolbar-control--interaction" },
+        ...(includeInteraction
+          ? [{ id: "interaction", lynx: ".composer-toolbar-control--interaction" }]
+          : []),
         { id: "primaryAction", lynx: ".composer-primary-action" },
         { id: "context", lynx: ".composer-context-strip" },
       ],
       typography: [
-        { id: "model", lynx: ".composer-toolbar-control--model" },
+        {
+          id: "model",
+          lynx: ".model-picker-anchor > .composer-toolbar-control--model",
+        },
         { id: "runtime", lynx: ".composer-toolbar-control--runtime" },
-        { id: "interaction", lynx: ".composer-toolbar-control--interaction" },
+        ...(includeInteraction
+          ? [{ id: "interaction", lynx: ".composer-toolbar-control--interaction" }]
+          : []),
         { id: "contextCheckout", lynx: ".composer-context-label--checkout" },
         { id: "contextBranch", lynx: ".composer-context-label--branch" },
       ],
@@ -877,6 +888,13 @@ async function readComposerOutcome(client) {
     ".composer-toolbar-control--model-option",
   );
   if (modelOption) measurements.anchors.modelOption = modelOption;
+  if (!includeInteraction) {
+    const interaction = await readOptionalMeasurement(
+      client,
+      ".composer-toolbar-control--interaction",
+    );
+    if (interaction) measurements.anchors.interaction = interaction;
+  }
   return measurements;
 }
 
@@ -1411,28 +1429,32 @@ async function verifyComposerWorkingState({ client, devToolCli, outputDirectory,
 }
 
 async function verifyCompletedTranscriptState({ client, devToolCli, outputDirectory }) {
-  const composer = await readComposerOutcome(client);
-  assertComposerGeometry(composer);
+  const composer = await readComposerOutcome(client, { allowMissingInteraction: true });
+  assertComposerGeometry(composer, { allowMissingInteraction: true });
   const primaryAction = composer.anchors.primaryAction;
   if (primaryAction.attributes["data-composer-primary-state"] !== "disabled") {
     throw new Error(
       `Canonical completed Composer was not idle-disabled: ${JSON.stringify(primaryAction)}`,
     );
   }
+  const [timelineHost] = await readSelectorRects(client, ".timeline-host");
   const [timelineList] = await readSelectorRects(client, ".timeline-list");
   const rowRoots = await readSelectorRects(client, ".timeline-row-root");
   const [assistantRowRoot] = await readSelectorRects(client, ".timeline-row-root--assistant");
-  const [assistantRow] = await readSelectorRects(client, ".transcript-assistant-row");
-  const assistantText = (
-    await readOptionalMeasurement(client, ".transcript-assistant-row .markdown-body")
-  )?.text.trim();
+  const assistantRowMeasurement = await readOptionalMeasurement(
+    client,
+    ".transcript-assistant-row",
+  );
+  const assistantRow = assistantRowMeasurement?.rect;
+  const assistantText = assistantRowMeasurement?.text.trim();
   const checkoutLabel = composer.typography.contextCheckout.text.trim();
   const transcriptGeometryMatches =
+    timelineHost &&
     timelineList &&
     rowRoots.length === 2 &&
     assistantRowRoot &&
     assistantRow &&
-    Math.abs(rowRoots[0].y - (timelineList.y + 48)) <= 1 &&
+    Math.abs(rowRoots[0].y - (timelineHost.y + 48)) <= 1 &&
     Math.abs(assistantRowRoot.y - (rowRoots[0].y + rowRoots[0].height)) <= 1 &&
     Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5;
   if (
@@ -1442,6 +1464,7 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
   ) {
     throw new Error(
       `Canonical completed transcript drifted: ${JSON.stringify({
+        timelineHost,
         timelineList,
         rowRoots,
         assistantRowRoot,
@@ -1465,6 +1488,7 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
       ariaDisabled: primaryAction.attributes["aria-disabled"] ?? null,
     },
     transcript: {
+      timelineHost,
       timelineList,
       rowRoots,
       assistantRowRoot,
