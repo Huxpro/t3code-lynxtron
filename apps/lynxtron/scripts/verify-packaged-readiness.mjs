@@ -592,11 +592,24 @@ async function verifyComposerGeometry(client) {
     client,
     ".composer-toolbar-control--interaction .pill__icon-img",
   );
+  const [contextStrip] = await readSelectorRects(client, ".composer-context-strip");
+  const contextControls = await readSelectorRects(client, ".composer-context-control");
   const contextIcons = await readSelectorRects(client, ".composer-context-icon");
   const wrongSize = (rect, size) =>
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
     Math.abs(rect.width - 12) > 0.75 || Math.abs(rect.height - 12) > 0.75;
+  const contextControlsAligned =
+    contextStrip &&
+    contextControls.length === 2 &&
+    contextControls.every(
+      (rect) =>
+        Math.abs(rect.y - (contextStrip.y + 20)) <= 0.75 && Math.abs(rect.height - 24) <= 0.5,
+    ) &&
+    Math.abs(contextControls[0].x - (contextStrip.x + 4)) <= 0.75 &&
+    Math.abs(
+      contextControls[1].x + contextControls[1].width - (contextStrip.x + contextStrip.width - 4),
+    ) <= 0.75;
   const wrongMutedAlpha = (color) => {
     const match = /^rgba\(113,113,122,([0-9.]+)\)$/u.exec(color);
     return !match || Math.abs(Number(match[1]) - 0.7) > 1 / 255;
@@ -609,7 +622,8 @@ async function verifyComposerGeometry(client) {
     wrongSize(runtimeIcons[0], 16) ||
     interactionIcons.length !== 1 ||
     wrongSize(interactionIcons[0], 18) ||
-    contextIcons.length !== 3 ||
+    !contextControlsAligned ||
+    contextIcons.length !== 4 ||
     contextIcons.some(wrongContextSize) ||
     Object.values(controlColors).some(wrongMutedAlpha)
   ) {
@@ -618,6 +632,8 @@ async function verifyComposerGeometry(client) {
         chevrons,
         runtimeIcons,
         interactionIcons,
+        contextStrip,
+        contextControls,
         contextIcons,
         controlColors,
       })}`,
@@ -630,6 +646,8 @@ async function verifyComposerGeometry(client) {
     chevrons,
     runtimeIcons,
     interactionIcons,
+    contextStrip,
+    contextControls,
     contextIcons,
     controlColors,
   };
