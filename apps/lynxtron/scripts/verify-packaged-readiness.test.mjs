@@ -21,8 +21,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "--verify-composer-geometry");
     assert.include(source, "--expected-theme");
     assert.include(source, 'themeRoot.attributes["data-theme"] === expectedTheme');
-    assert.include(source, 'contextBackdrop.style.backgroundImage?.startsWith("linear-gradient(")');
     assert.include(source, 'contextBand.style.display === "none"');
+    assert.include(source, "composerThemeScreenshot");
+    assert.include(source, "native-composer-${expectedTheme}.png");
     assert.include(source, ".composer-toolbar-control .pill__chevron-img");
     assert.include(source, ".composer-toolbar-control--runtime .pill__icon-img");
     assert.include(source, ".composer-toolbar-control--interaction .pill__icon-img");

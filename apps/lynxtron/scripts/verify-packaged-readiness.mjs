@@ -78,6 +78,36 @@ function normalizeNativeScreenshotPng(screenshotPath) {
   renameSync(convertedPath, screenshotPath);
 }
 
+function captureNativeScreenshot({ client, devToolCli, outputDirectory, name }) {
+  const screenshotPath = path.join(outputDirectory, name);
+  const screenshot = spawnSync(
+    process.execPath,
+    [
+      devToolCli,
+      "take-screenshot",
+      "--client",
+      client.identity.clientId,
+      "--session",
+      String(client.identity.sessionId),
+      "--output",
+      screenshotPath,
+    ],
+    { cwd: APP_ROOT, encoding: "utf8" },
+  );
+  if (screenshot.error) throw screenshot.error;
+  if (screenshot.status !== 0 || !existsSync(screenshotPath)) {
+    throw new Error(
+      screenshot.stderr || screenshot.stdout || `Native screenshot capture failed: ${name}`,
+    );
+  }
+  normalizeNativeScreenshotPng(screenshotPath);
+  return {
+    path: screenshotPath,
+    bytes: statSync(screenshotPath).size,
+    sha256: sha256(screenshotPath),
+  };
+}
+
 function commandResult(response) {
   return response?.result?.result ?? response?.result ?? response;
 }
@@ -631,8 +661,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
     !expectedTheme ||
     (themeRoot.attributes["data-theme"] === expectedTheme &&
       (expectedTheme !== "light" ||
-        (contextBackdrop.style.backgroundImage?.startsWith("linear-gradient(") &&
-          contextBackdrop.style.backgroundColor === "rgb(254,254,254)" &&
+        (contextBackdrop.style.backgroundColor === "rgb(254,254,254)" &&
           contextBackdrop.style.borderBottomColor === "rgb(234,234,234)" &&
           contextBand.style.display === "none")));
   if (
@@ -1963,6 +1992,15 @@ async function runOnce({
     const composerGeometry = shouldVerifyComposerGeometry
       ? await verifyComposerGeometry(client, expectedTheme)
       : undefined;
+    const composerThemeScreenshot =
+      shouldVerifyComposerGeometry && expectedTheme
+        ? captureNativeScreenshot({
+            client,
+            devToolCli,
+            outputDirectory,
+            name: `native-composer-${expectedTheme}.png`,
+          })
+        : undefined;
     const settingsNavigation = runPlan11Outcomes
       ? await captureOutcome(
           () => verifySettingsRouteBehavior({ child, client, modelSelection, timeoutMs }),
@@ -2033,6 +2071,7 @@ async function runOnce({
       sidebarScope,
       sidebarGeometry,
       composerGeometry,
+      composerThemeScreenshot,
       settingsNavigation,
       composer,
       modelPickerFidelity,
