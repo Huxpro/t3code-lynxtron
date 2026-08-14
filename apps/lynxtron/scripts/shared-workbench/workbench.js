@@ -693,7 +693,7 @@ function readLynxPane() {
               contextControls: [...(root?.querySelectorAll(".composer-context-control") ?? [])].map(
                 (item) => ({
                   text: item.textContent?.trim() ?? "",
-                  box: readElementBox(item),
+                  ...composerControlDetails(item),
                 }),
               ),
               contextItems: [...(root?.querySelectorAll(".composer-context-item") ?? [])].map(
@@ -1318,7 +1318,7 @@ function readWebPane() {
                   doc.querySelector(".chat-composer-context-strip");
                 return [...(contextStrip?.querySelectorAll("button") ?? [])].map((item) => ({
                   text: item.textContent?.trim() ?? "",
-                  box: readElementBox(item),
+                  ...composerControlDetails(item),
                 }));
               })(),
               contextItems: [...doc.querySelectorAll(".composer-context-item")].map((item) =>
