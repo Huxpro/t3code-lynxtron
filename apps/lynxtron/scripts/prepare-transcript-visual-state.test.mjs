@@ -17,6 +17,8 @@ describe("transcript visual-state preparation", () => {
     assert.include(source, 'payload?.sessionStatus === "error"');
     assert.include(source, 'errorState: "session-error"');
     assert.include(source, "const settledResult = await settledPayloadPromise");
+    assert.include(source, "if (expectedAssistantText && assistantText !== expectedAssistantText)");
+    assert.include(source, 'argumentValue("--expect-assistant")');
   });
 
   it("interrupts only the legacy scroll-depth fixture mode", () => {

@@ -107,6 +107,7 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
   const title = options.title ?? "Native list transcript baseline";
   const promptText =
     options.promptText ?? "Explain how the sidebar derives its thread status labels.";
+  const expectedAssistantText = options.expectedAssistantText?.trim() || null;
   let fixture;
 
   try {
@@ -183,10 +184,25 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
       throw new Error(`Transcript turn became ${settledResult.errorState} instead of completed.`);
     }
     const payload = settledResult;
+    const assistantText =
+      payload.messages
+        .filter((message) => message.role === "assistant")
+        .at(-1)
+        ?.text.trim() ?? "";
+    if (expectedAssistantText && assistantText !== expectedAssistantText) {
+      throw new Error(
+        `Transcript assistant response did not match the canonical fixture: ${JSON.stringify({
+          expected: expectedAssistantText,
+          actual: assistantText,
+        })}`,
+      );
+    }
     fixture = {
       threadId,
       title,
       promptText,
+      expectedAssistantText,
+      assistantText,
       settleMode,
       modelSelection,
       messageCount: payload?.messages?.length ?? 0,
@@ -239,6 +255,9 @@ if (IS_MAIN_MODULE) {
     timeoutMs: Number(argumentValue("--timeout-ms") ?? "300000"),
     ...(argumentValue("--title") ? { title: argumentValue("--title") } : {}),
     ...(argumentValue("--prompt") ? { promptText: argumentValue("--prompt") } : {}),
+    ...(argumentValue("--expect-assistant")
+      ? { expectedAssistantText: argumentValue("--expect-assistant") }
+      : {}),
     ...(argumentValue("--instance-id") && argumentValue("--model")
       ? {
           modelSelection: {
