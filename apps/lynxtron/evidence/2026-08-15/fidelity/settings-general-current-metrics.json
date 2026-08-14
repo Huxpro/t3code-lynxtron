@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T07:40:28+09:00",
+  "productCommit": "db291a4751668918d1005aec480941dc7a1db7e0",
+  "nativeVerifierCommit": "8805a4301835add3395c535e6058295ad8c17846",
+  "stateId": "settings-general",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-general",
+    "route": "/settings/general",
+    "lifecycle": "ready"
+  },
+  "fixture": {
+    "createdThroughRealProjectCommand": true,
+    "projectTitle": "t3code-settings-fixture",
+    "threadId": "225b8321-38b4-4c4c-8051-8c12c7dfa95e",
+    "threadTitle": "Settings route anchor",
+    "modelSelection": {
+      "instanceId": "opencode",
+      "model": "opencode/big-pickle"
+    },
+    "snapshotSha256": "129de594be037ec036898d6a5bad7fa5b431a944aaf0bd98e170c0b046a709a9"
+  },
+  "classification": {
+    "harnessMismatch": [
+      "The first Native content assertion used Project Grouping while the shared authority copy is Project grouping; the exact copy assertion was corrected.",
+      "Settings Browser evidence does not compare chat model labels because the Settings route intentionally hides chat context and the Web diagnostic retained a non-visible model label."
+    ],
+    "productLoss": [],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime. Exact-bundle Native updates content, geometry, interaction, and runtime; its screenshot is representative rather than a Native-to-Web material residual."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "db291a4751668918d1005aec480941dc7a1db7e0",
+    "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+    "lynxBundleSha256": "771f9c98bb4b3d5b85e2e772b4f7a3689dd07e84aff2d0fd974eabb115e19ba5",
+    "fullFrameSsim": 0.833814,
+    "fullFrameResidual": 0.166186,
+    "capturePass": true,
+    "rendererErrors": 0,
+    "readyMs": 7639,
+    "navigationLabels": [
+      "General",
+      "Appearance",
+      "Keybindings",
+      "Providers",
+      "Source Control",
+      "Connections",
+      "Beta",
+      "Archive"
+    ],
+    "rowIds": [
+      "project-grouping",
+      "time-format",
+      "hide-whitespace-changes",
+      "assistant-output",
+      "provider-update-checks",
+      "auto-open-task-panel",
+      "new-threads",
+      "add-project-starts-in",
+      "archive-confirmation",
+      "delete-confirmation",
+      "text-generation-model",
+      "diagnostics"
+    ],
+    "sectionTitles": ["General", "About"],
+    "reportSha256": "28a0a8ca1b4880d0022d3fcf632ba75b01a134cdee4de2e2e2ae9c36f5f8767a"
+  },
+  "native": {
+    "status": "pass",
+    "head": "8805a4301835add3395c535e6058295ad8c17846",
+    "bundleSha256": "e0ecb4c589f0635f7ffa2f51bdc00c30db5bafc0f7c39459b389a7dc05500ced",
+    "snapshotId": "129de594be037ec036898d6a5bad7fa5b431a944aaf0bd98e170c0b046a709a9",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "resyncSequence": { "before": 14, "after": 15 },
+    "general": {
+      "panel": { "x": 256, "y": 52, "width": 1024, "height": 1311 },
+      "sectionCount": 2,
+      "rowCount": 14,
+      "sections": [
+        { "x": 320, "y": 100, "width": 896, "height": 927 },
+        { "x": 320, "y": 1075, "width": 896, "height": 200 }
+      ],
+      "rowWidths": [896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896],
+      "copyIncludes": [
+        "General",
+        "Project grouping",
+        "Time format",
+        "Background activity",
+        "Text generation model",
+        "About",
+        "Version 0.0.28",
+        "Diagnostics"
+      ]
+    },
+    "observedRoutes": [
+      "/settings/general",
+      "/settings/appearance",
+      "/settings/keybindings",
+      "/settings/providers",
+      "/settings/connections",
+      "/settings/source-control",
+      "/settings/beta",
+      "/settings/archived"
+    ],
+    "repeatedCycles": 2,
+    "finalRoute": "/",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "e9d1af7d31d3e3da320e662150f521122474a8be0fec20cf7875f365a2a1f310",
+    "screenshotSha256": "b5b4113c5a7e3fc2d16003704ec3d5353fd1ede78ff5000939ad01da518053d2"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "eac17f8ed74112e79a1d1552be5693bba41a2ae6"
+    },
+    "web": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-general-web.png",
+      "sha256": "d981b5d6380e0661e49dc1736d7bb056c79112ca790cc5af2411aa0008202198"
+    },
+    "lynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-general-lynx.png",
+      "sha256": "75b7666a335017e7abc474b4934397eed3649af66e80831f88d7578428e59e94"
+    },
+    "native": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-general-native.png",
+      "sha256": "b5b4113c5a7e3fc2d16003704ec3d5353fd1ede78ff5000939ad01da518053d2"
+    }
+  },
+  "remainingRisk": [
+    "Full-frame Browser material residual remains 0.166186 and is not hidden by the semantic pass.",
+    "General control mutation and restart persistence remain separate from this route/content checkpoint.",
+    "Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web pixel residual."
+  ]
+}

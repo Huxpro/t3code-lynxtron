@@ -238,6 +238,15 @@ Plan 11 prose and screenshots.
   Stop, taps it, advances sequence `16 → 20 → 25 → 37`, and returns to
   disabled with zero errors and isolated cleanup. Conservative loss is now
   75.4339%, observed residual is 3.3048%, and evidence debt is 74.5943%.
+- Settings General then receives a current three-surface pass. Web and Lynx
+  match the eight-item navigation, twelve canonical row IDs, General/About
+  sections, route, theme, and loading/error state. Full-frame SSIM is 0.833814,
+  so the remaining material difference stays explicit. Exact-bundle Native
+  records the full canonical copy, two section boxes, fourteen 896px rows,
+  navigates every Settings route, repeats the Providers cycle twice, survives
+  connector resync `14 → 15`, returns to chat, reports zero errors, and cleans
+  isolated state. Conservative loss is now 73.8082%, observed residual is
+  3.1908%, and evidence debt is 72.9449%.
 
 ## Not currently proven
 

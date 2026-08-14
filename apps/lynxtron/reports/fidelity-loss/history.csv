@@ -39,3 +39,5 @@ new-thread-hero-browser-certification,2026-08-15T06:36:00+09:00,52b94146f27cbca1
 new-thread-hero-native-certification,2026-08-15T06:45:03+09:00,c7d056fb7f349f77b2e567ed4493cb523eb17ada,commit,New Thread Hero Native certification,0.770237,0.687361,0.034724,0.761971,0.238029,0.2132
 composer-working-browser-certification,2026-08-15T07:10:00+09:00,1ca68b58353bd0b8e682f7ab39b666a96e7d3d44,commit,Composer working Browser certification,0.762485,0.687361,0.034142,0.754089,0.245911,0.220952
 composer-working-native-certification,2026-08-15T07:19:45+09:00,3c61c2d287cf894f917e795b32c12feae5f43f9f,commit,Composer working Native certification,0.754339,0.687361,0.033048,0.745943,0.254057,0.229098
+settings-general-browser-certification,2026-08-15T07:34:00+09:00,db291a4751668918d1005aec480941dc7a1db7e0,commit,Settings General Browser certification,0.749376,0.687361,0.03355,0.740676,0.259324,0.234061
+settings-general-native-certification,2026-08-15T07:40:28+09:00,8805a4301835add3395c535e6058295ad8c17846,commit,Settings General Native certification,0.738082,0.687361,0.031908,0.729449,0.270551,0.245355

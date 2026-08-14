@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T07:19:45+09:00",
+  "updatedAt": "2026-08-15T07:40:28+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -3463,6 +3463,148 @@
               "confidence": 0.99,
               "method": "exact-bundle-main-transport",
               "source": "fresh provider subprocess, PID-owned exact bundle, zero renderer errors, and isolated cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-general-browser-certification",
+      "observedAt": "2026-08-15T07:34:00+09:00",
+      "commit": "db291a4751668918d1005aec480941dc7a1db7e0",
+      "codeState": "commit",
+      "label": "Settings General Browser certification",
+      "narrative": "A fresh empty isolated project opens /settings/general on both shipping renderers. Navigation order, twelve canonical row ids, General/About sections, route, theme, and loading/error state match with zero errors. Full-frame SSIM is 0.833814, so the remaining material difference stays explicit rather than being hidden by the semantic pass.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser evidence replaces stale Settings General cells without a product change. Material remains measured at its actual residual."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Settings General authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-general-web.png",
+          "sha256": "d981b5d6380e0661e49dc1736d7bb056c79112ca790cc5af2411aa0008202198",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "eac17f8ed74112e79a1d1552be5693bba41a2ae6"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Settings General Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-general-lynx.png",
+          "sha256": "75b7666a335017e7abc474b4934397eed3649af66e80831f88d7578428e59e94",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "eac17f8ed74112e79a1d1552be5693bba41a2ae6"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/settings-general-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "debd5a4b3b6663d8f9fd374b664b8244f9a80f234988c5660c7eff1b73a05297"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-general-settings-content",
+              "source": "navigation labels, twelve row ids, General/About sections, route, theme, loading, and errors match"
+            },
+            "material": {
+              "residual": 0.166186,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.833814 at the matched 1280x820 General Settings frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same isolated project, /settings/general route, matching content ids, and zero Browser renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-general-native-certification",
+      "observedAt": "2026-08-15T07:40:28+09:00",
+      "commit": "8805a4301835add3395c535e6058295ad8c17846",
+      "codeState": "commit",
+      "label": "Settings General Native certification",
+      "narrative": "A PID-owned exact production bundle opens General Settings, records the full canonical copy, two sections, fourteen rendered rows, and 896px row widths, then navigates Appearance, Keybindings, Providers, Connections, Source Control, Beta, and Archive before returning to chat. The route cycle repeats twice, survives a connector resync, reports zero errors, and cleans isolated state.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, interaction, and runtime evidence fills current Settings cells without claiming Native material parity or a product delta."
+      },
+      "screenshots": [
+        {
+          "client": "native",
+          "label": "Native Settings General",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-general-native.png",
+          "sha256": "b5b4113c5a7e3fc2d16003704ec3d5353fd1ede78ff5000939ad01da518053d2",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "eac17f8ed74112e79a1d1552be5693bba41a2ae6"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/settings-general-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "debd5a4b3b6663d8f9fd374b664b8244f9a80f234988c5660c7eff1b73a05297"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-general-settings-content",
+              "source": "General/About copy, project grouping, time format, background activity, text generation model, version, and diagnostics"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-general-settings-geometry",
+              "source": "1024px panel, two section boxes, fourteen rows, and 896px row widths"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-settings-route-cycle",
+              "source": "General plus seven settings routes, Back to chat, and two repeated Providers cycles"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "resync sequence 14 to 15 preserves route; zero renderer errors and isolated cleanup"
             }
           }
         }
