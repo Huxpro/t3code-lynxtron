@@ -61,4 +61,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'kind === "working"');
     assert.include(workbench, 'item.querySelector(".transcript-working-row")');
   });
+
+  it("projects approval detail and actions into the shared Composer semantic contract", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, 'pendingRequestMetrics?.kind === "approval"');
+    assert.include(workbench, 'editorValue: pendingRequestMetrics.detail ?? ""');
+    assert.include(workbench, 'primaryState: "stop"');
+  });
 });

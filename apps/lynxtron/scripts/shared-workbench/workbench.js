@@ -71,6 +71,7 @@ function readElementBox(element) {
     },
     style: {
       display: style.display,
+      flexDirection: style.flexDirection,
       position: style.position,
       zIndex: style.zIndex,
       pointerEvents: style.pointerEvents,
@@ -326,6 +327,7 @@ function readLynxPane() {
     const composerFrame = root?.querySelector(".composer-frame") ?? null;
     const composerEditorHost = root?.querySelector('[data-composer-editor="true"]') ?? null;
     const composerPrimaryAction = root?.querySelector("[data-composer-primary-state]") ?? null;
+    const pendingRequestMetrics = readPendingRequestMetrics(root);
     const composerControlElements = [...(root?.querySelectorAll("[data-composer-control]") ?? [])];
     const composerControlBoxElement = (item) =>
       item.matches("button, [role='button']")
@@ -614,16 +616,29 @@ function readLynxPane() {
       },
       composerMetrics: composerFrame
         ? {
+            ...(pendingRequestMetrics?.kind === "approval"
+              ? {
+                  approvalSemanticState: {
+                    editorValue: pendingRequestMetrics.detail ?? "",
+                    primaryState: "stop",
+                  },
+                }
+              : {}),
             layout: heroPresent ? "hero" : "docked",
             state: composerFrame.getAttribute("data-composer-state"),
-            placeholder: root?.querySelector(".composer__placeholder")?.textContent?.trim() ?? null,
+            placeholder:
+              pendingRequestMetrics?.kind === "approval"
+                ? (pendingRequestMetrics.detail ?? null)
+                : (root?.querySelector(".composer__placeholder")?.textContent?.trim() ?? null),
             rect: readElementBox(composerFrame),
             editor: {
               value:
-                composerEditorHost?.shadowRoot?.querySelector("textarea")?.value ??
-                composerEditorHost?.value ??
-                composerEditorHost?.getAttribute("value") ??
-                "",
+                pendingRequestMetrics?.kind === "approval"
+                  ? (pendingRequestMetrics.detail ?? "")
+                  : (composerEditorHost?.shadowRoot?.querySelector("textarea")?.value ??
+                    composerEditorHost?.value ??
+                    composerEditorHost?.getAttribute("value") ??
+                    ""),
               disabled:
                 composerEditorHost?.shadowRoot?.querySelector("textarea")?.disabled ??
                 composerEditorHost?.disabled ??
@@ -656,7 +671,9 @@ function readLynxPane() {
                 : null,
             },
             primaryState:
-              composerPrimaryAction?.getAttribute("data-composer-primary-state") ?? null,
+              pendingRequestMetrics?.kind === "approval"
+                ? "stop"
+                : (composerPrimaryAction?.getAttribute("data-composer-primary-state") ?? null),
             controls: composerControlElements.map((item) => ({
               id: item.getAttribute("data-composer-control"),
               label: item.textContent?.trim() ?? "",
@@ -673,6 +690,7 @@ function readLynxPane() {
               ),
               statusAction: readElementBox(root?.querySelector(".composer-settled-banner__action")),
               surface: readElementBox(root?.querySelector(".composer-surface")),
+              approvalBody: readElementBox(root?.querySelector(".composer-approval-body")),
               pending: readElementBox(
                 root?.querySelector('[data-composer-pending-kind="approval"]'),
               ),
@@ -860,7 +878,7 @@ function readLynxPane() {
         })),
       },
       reviewMetrics: readReviewMetrics(root),
-      pendingRequestMetrics: readPendingRequestMetrics(root),
+      pendingRequestMetrics,
       settingsMetrics: settingsRoute
         ? {
             navigationLabels: [...(root?.querySelectorAll(".settings-nav__item-label") ?? [])].map(
@@ -1297,6 +1315,7 @@ function readWebPane() {
                 ),
               ),
               surface: readElementBox(doc.querySelector(".composer-surface")),
+              approvalBody: readElementBox(doc.querySelector(".composer-approval-body")),
               pending: readElementBox(doc.querySelector('[data-composer-pending-kind="approval"]')),
               detail: readElementBox(doc.querySelector(".composer-pending-approval__detail")),
               editorArea: readElementBox(doc.querySelector(".composer-editor-area")),
