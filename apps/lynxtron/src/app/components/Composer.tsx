@@ -10,8 +10,6 @@ import {
 } from "@t3tools/client-runtime/presentation/composer";
 import type { ProviderInteractionMode, RuntimeMode } from "@t3tools/contracts";
 import approvalEditorPendingUrl from "../assets/approval-editor-pending@2x.png?external";
-import externalChevronDownUrl from "../assets/chevron-down.svg?external";
-import externalGitBranchUrl from "../assets/git-branch.svg?external";
 import {
   COMPOSER_SHELL_CLASS,
   ComposerContextStrip,
@@ -26,10 +24,6 @@ import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
-
-function ExternalSvgIcon({ className, src }: { className: string; src: string }) {
-  return <svg className={className} style={{ width: "12px", height: "12px" }} src={src} />;
-}
 
 interface ComposerProps {
   disabled: boolean;
@@ -514,8 +508,10 @@ export function Composer({
         }
         branch={
           <view className="composer-context-control composer-context-control--branch">
-            <ExternalSvgIcon
-              src={externalGitBranchUrl}
+            <Icon
+              name="git-branch"
+              size={12}
+              color="#818181"
               className="composer-context-icon composer-context-icon--branch"
             />
             <text
@@ -524,8 +520,10 @@ export function Composer({
             >
               {context.branchLabel}
             </text>
-            <ExternalSvgIcon
-              src={externalChevronDownUrl}
+            <Icon
+              name="chevron-down"
+              size={12}
+              color="#818181"
               className="composer-context-icon composer-context-icon--chevron"
             />
           </view>
