@@ -61,12 +61,20 @@ function sha256(buffer) {
   return createHash("sha256").update(buffer).digest("hex");
 }
 
-/** Run a read-only VACUUM INTO through bun (present in this repo per AGENTS.md). */
+/** Run a read-only VACUUM INTO through the current Node SQLite runtime. */
 function vacuumInto(sourcePath, destPath) {
-  const code = `new (require('bun:sqlite').Database)(${JSON.stringify(sourcePath)}, { readonly: true }).run("VACUUM INTO '" + ${JSON.stringify(destPath)} + "'")`;
-  const result = spawnSync("bun", ["-e", code], { encoding: "utf8" });
+  const code = `
+    const { DatabaseSync } = require("node:sqlite");
+    const source = new DatabaseSync(${JSON.stringify(sourcePath)}, { readOnly: true });
+    source.exec("VACUUM INTO '" + ${JSON.stringify(destPath)}.replaceAll("'", "''") + "'");
+    source.close();
+  `;
+  const result = spawnSync(process.execPath, ["-e", code], { encoding: "utf8" });
   if (result.status !== 0) {
     throw new Error(`VACUUM INTO failed: ${result.stderr || result.stdout || "unknown"}`);
+  }
+  if (!existsSync(destPath)) {
+    throw new Error(`VACUUM INTO did not create ${destPath}`);
   }
 }
 
