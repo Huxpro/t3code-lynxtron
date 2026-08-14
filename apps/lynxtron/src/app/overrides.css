@@ -2773,6 +2773,40 @@
   position: relative;
   overflow: hidden;
 }
+.thread-error-banner {
+  display: flex;
+  flex-shrink: 0;
+  align-self: center;
+  max-width: 768px;
+  padding-top: 12px;
+}
+.thread-error-alert {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 42px;
+  padding: 12px 14px;
+  gap: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(239, 68, 68, 0.32);
+  border-radius: 12px;
+  background-color: rgba(239, 68, 68, 0.04);
+  box-sizing: border-box;
+}
+.thread-error-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+.thread-error-description {
+  color: rgba(254, 226, 226, 0.8);
+  font-size: 14px;
+  line-height: 20px;
+}
 .timeline-list {
   flex-grow: 1;
   flex-shrink: 1;
@@ -2792,6 +2826,9 @@
 }
 .lynx-web-preview .timeline-list {
   padding-top: 48px;
+}
+.lynx-web-preview .timeline-list--top-banner {
+  padding-top: 16px;
 }
 .lynx-web-preview .timeline-settled-header-space {
   display: none;

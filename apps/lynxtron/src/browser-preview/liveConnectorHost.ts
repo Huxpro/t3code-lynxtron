@@ -469,8 +469,14 @@ export class LiveConnectorHost {
   #emitThread(threadId: string): void {
     const thread = this.#threadSnapshots.get(threadId);
     if (!thread) return;
-    const activePlan = deriveActivePlanState(thread.activities, thread.latestTurn?.turnId ?? undefined);
-    const activeProposedPlan = findLatestProposedPlan(thread.proposedPlans, thread.latestTurn?.turnId);
+    const activePlan = deriveActivePlanState(
+      thread.activities,
+      thread.latestTurn?.turnId ?? undefined,
+    );
+    const activeProposedPlan = findLatestProposedPlan(
+      thread.proposedPlans,
+      thread.latestTurn?.turnId,
+    );
     this.#emit({
       kind: "thread",
       threadId,
@@ -479,6 +485,7 @@ export class LiveConnectorHost {
         messages: thread.messages,
         checkpoints: thread.checkpoints,
         sessionStatus: thread.session?.status ?? "idle",
+        sessionError: thread.session?.lastError ?? null,
         activities: thread.activities,
         activePlan,
         activeProposedPlan,
@@ -579,9 +586,9 @@ export class LiveConnectorHost {
               commandId: globalThis.crypto.randomUUID(),
               threadId: params.threadId,
             };
-      return this.#runClient(
-        this.#client[ORCHESTRATION_WS_METHODS.dispatchCommand](command),
-      ).then(() => this.#refreshArchived());
+      return this.#runClient(this.#client[ORCHESTRATION_WS_METHODS.dispatchCommand](command)).then(
+        () => this.#refreshArchived(),
+      );
     }
     return undefined;
   }

@@ -123,9 +123,7 @@ export function materializeTurnBootstrap(
     ...bootstrap,
     prepareWorktree: {
       ...bootstrap.prepareWorktree,
-      branch:
-        bootstrap.prepareWorktree.branch ??
-        buildTemporaryWorktreeBranchName(randomId),
+      branch: bootstrap.prepareWorktree.branch ?? buildTemporaryWorktreeBranchName(randomId),
     },
   };
 }
@@ -616,6 +614,7 @@ export class T3Connector {
       messages: thread.messages,
       checkpoints: thread.checkpoints,
       sessionStatus: thread.session?.status ?? "idle",
+      sessionError: thread.session?.lastError ?? null,
       activities: thread.activities,
       activePlan,
       activeProposedPlan,
@@ -882,9 +881,7 @@ export class T3Connector {
     return this.runClient<ProjectWriteFileResult>(this.client[WS_METHODS.projectsWriteFile](input));
   }
 
-  async getTurnDiff(
-    input: OrchestrationGetTurnDiffInput,
-  ): Promise<OrchestrationGetTurnDiffResult> {
+  async getTurnDiff(input: OrchestrationGetTurnDiffInput): Promise<OrchestrationGetTurnDiffResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<OrchestrationGetTurnDiffResult>(
       this.client[ORCHESTRATION_WS_METHODS.getTurnDiff](input),

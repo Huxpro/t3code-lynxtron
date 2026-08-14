@@ -20,6 +20,7 @@ import {
 } from "@t3tools/client-runtime/presentation/pending-requests";
 import { ChatRouteSurface } from "../../../../web/src/components/ChatRouteSurface";
 import { ConnectionLifecycleBannerSurface } from "../../../../web/src/components/chat/ConnectionLifecycleBannerSurface";
+import { ThreadErrorBannerSurface } from "../../../../web/src/components/chat/ThreadErrorBannerSurface";
 import {
   ComposerPendingApprovalSurface,
   ComposerPendingQuestionSurface,
@@ -64,6 +65,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     draftHeroThreadId,
     messages,
     sessionStatus,
+    sessionError,
     selectedModel,
     models,
     providers,
@@ -333,7 +335,12 @@ export function ChatView({ threadId }: ChatViewProps) {
         />
       }
       banner={
-        shouldRenderConnectionLifecycleBanner({ hero }) ? (
+        sessionError && !hero ? (
+          <ThreadErrorBannerSurface
+            description={sessionError}
+            icon={<Icon name="circle-alert" size={16} color="#ef4444" />}
+          />
+        ) : shouldRenderConnectionLifecycleBanner({ hero }) ? (
           <ConnectionLifecycleBannerSurface
             presentation={connectionLifecycle}
             onReconnect={() => {
@@ -359,6 +366,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           messages={messages}
           activities={activities}
           sessionStatus={sessionStatus}
+          hasTopBanner={Boolean(sessionError)}
           cwd={cwd}
           latestTurn={latestTurn}
           proposedPlans={proposedPlans}

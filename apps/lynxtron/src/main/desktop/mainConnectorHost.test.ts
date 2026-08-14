@@ -138,6 +138,7 @@ describe("main connector host", () => {
       messages: [{ id: "m1" }],
       checkpoints: [],
       sessionStatus: "working",
+      sessionError: "fixture error",
     });
 
     assert.deepEqual(
@@ -154,13 +155,14 @@ describe("main connector host", () => {
       snapshot: {
         status: { status: string };
         shell: { projects: unknown[]; threads: unknown[] };
-        threads: Record<string, { sessionStatus: string }>;
+        threads: Record<string, { sessionStatus: string; sessionError?: string | null }>;
       };
     };
     assert.equal(ready.seq, 3);
     assert.equal(ready.snapshot.status.status, "starting-server");
     assert.equal(ready.snapshot.shell.projects.length, 1);
     assert.equal(ready.snapshot.threads["t1"]?.sessionStatus, "working");
+    assert.equal(ready.snapshot.threads["t1"]?.sessionError, "fixture error");
   });
 
   it("represents pre-ready events in the ready snapshot", async () => {

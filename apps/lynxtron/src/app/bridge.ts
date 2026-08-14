@@ -98,6 +98,7 @@ export interface ThreadEventPayload {
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
+  readonly sessionError?: string | null;
   readonly activities?: ReadonlyArray<ActivityEntry>;
   readonly activePlan?: ActivePlanState | null;
   readonly activeProposedPlan?: LatestProposedPlanState | null;

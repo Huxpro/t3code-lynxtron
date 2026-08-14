@@ -4,6 +4,7 @@ import { ProjectId, ProviderInstanceId } from "@t3tools/contracts";
 import {
   findExactModelForSelection,
   projectModelSelectionCandidates,
+  resolveActiveThreadModelSelection,
 } from "./modelSelection.logic";
 
 const project = {
@@ -41,15 +42,38 @@ describe("project model selection candidates", () => {
       },
     ];
 
-    assert.deepEqual(
-      findExactModelForSelection(models, project.defaultModelSelection),
-      models[0],
-    );
+    assert.deepEqual(findExactModelForSelection(models, project.defaultModelSelection), models[0]);
     assert.isUndefined(
       findExactModelForSelection(models, {
         instanceId: ProviderInstanceId.make("codex"),
         model: "gpt-5.6-sol",
       }),
+    );
+  });
+
+  it("falls an invalid active-thread model back to the canonical provider projection", () => {
+    const fallbackModel = {
+      instanceId: ProviderInstanceId.make("opencode"),
+      slug: "opencode/big-pickle",
+    };
+    const fallbackSelection = {
+      instanceId: fallbackModel.instanceId,
+      model: fallbackModel.slug,
+    };
+
+    assert.deepEqual(
+      resolveActiveThreadModelSelection(
+        [fallbackModel],
+        {
+          instanceId: ProviderInstanceId.make("opencode"),
+          model: "opencode/not-a-real-model",
+        },
+        { selectedModel: fallbackModel, selection: fallbackSelection },
+      ),
+      {
+        selectedModel: fallbackModel,
+        selection: fallbackSelection,
+      },
     );
   });
 });

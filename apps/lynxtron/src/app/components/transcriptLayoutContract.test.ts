@@ -22,8 +22,12 @@ describe("transcript layout contract", () => {
     );
     expect(timelineSource).toContain('item-key="timeline-settled-header-space"');
     expect(timelineSource).toContain("estimated-main-axis-size-px={32}");
+    expect(timelineSource).toContain("!isWorking && !hasTopBanner");
     expect(appSource).toContain('__T3_LYNXTRON_WEB_PREVIEW__ ? " lynx-web-preview"');
     expect(overrides).toContain(".lynx-web-preview .timeline-list {\n  padding-top: 48px;");
+    expect(overrides).toContain(
+      ".lynx-web-preview .timeline-list--top-banner {\n  padding-top: 16px;",
+    );
     expect(overrides).toContain(
       ".lynx-web-preview .timeline-settled-header-space {\n  display: none;",
     );

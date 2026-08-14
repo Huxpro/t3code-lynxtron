@@ -70,6 +70,7 @@ import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
 import {
   findExactModelForSelection,
   projectModelSelectionCandidates,
+  resolveActiveThreadModelSelection,
 } from "./modelSelection.logic";
 import type {
   ConnectorCommandName,
@@ -102,6 +103,7 @@ export interface T3ClientState {
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
+  readonly sessionError: string | null;
   readonly models: ReadonlyArray<ModelInfo>;
   readonly selectedModel?: ModelInfo;
   readonly modelSelection?: ModelSelection;
@@ -131,6 +133,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   messages: [],
   checkpoints: [],
   sessionStatus: "idle",
+  sessionError: null,
   models: [],
   providers: [],
   authAccess: {
@@ -215,6 +218,7 @@ function resetActiveThreadState(
     messages: [],
     checkpoints: [],
     sessionStatus: "idle",
+    sessionError: null,
     activePlan: undefined,
     activeProposedPlan: undefined,
     activities: [],
@@ -255,18 +259,22 @@ function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelec
         ]),
   ]);
   const displayModels = deriveModelPickerModels(projection.entries, { includeDisabled: true });
-  const selectedModel = activeThread
-    ? findExactModelForSelection(displayModels, activeThread.modelSelection)
-    : projection.selectedModel;
-  const selection = activeThread
-    ? activeThread.modelSelection
-    : (projection.selection ??
-      (selectedModel
-        ? {
-            instanceId: selectedModel.instanceId,
-            model: selectedModel.slug,
-          }
-        : undefined));
+  const fallbackSelection =
+    projection.selection ??
+    (projection.selectedModel
+      ? {
+          instanceId: projection.selectedModel.instanceId,
+          model: projection.selectedModel.slug,
+        }
+      : undefined);
+  const activeProjection = activeThread
+    ? resolveActiveThreadModelSelection(displayModels, activeThread.modelSelection, {
+        selectedModel: projection.selectedModel,
+        selection: fallbackSelection,
+      })
+    : null;
+  const selectedModel = activeProjection?.selectedModel ?? projection.selectedModel;
+  const selection = activeProjection?.selection ?? fallbackSelection;
 
   patchState({
     serverConfig: effectiveConfig,
@@ -326,22 +334,24 @@ function applyShellPayload(shell: ShellEventPayload): void {
           }),
         )
       : null;
-  const activeModel = activeThread
-    ? findExactModelForSelection(
-        stateBeforeShell.providerEntries.length > 0
-          ? deriveModelPickerModels(stateBeforeShell.providerEntries, { includeDisabled: true })
-          : stateBeforeShell.models,
-        activeThread.modelSelection,
-      )
-    : undefined;
+  const activeModels =
+    stateBeforeShell.providerEntries.length > 0
+      ? deriveModelPickerModels(stateBeforeShell.providerEntries, { includeDisabled: true })
+      : stateBeforeShell.models;
+  const activeProjection = activeThread
+    ? resolveActiveThreadModelSelection(activeModels, activeThread.modelSelection, {
+        selectedModel: stateBeforeShell.selectedModel,
+        selection: stateBeforeShell.modelSelection,
+      })
+    : null;
   patchState({
     projects,
     threads,
     archivedThreads: shell.archivedThreads ?? [],
     ...(activeThread
       ? {
-          modelSelection: activeThread.modelSelection,
-          selectedModel: activeModel,
+          modelSelection: activeProjection?.selection ?? activeThread.modelSelection,
+          selectedModel: activeProjection?.selectedModel,
         }
       : modelProjection?.selection
         ? {
@@ -380,6 +390,7 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
     messages: payload.messages ?? [],
     checkpoints: payload.checkpoints ?? [],
     sessionStatus: payload.sessionStatus ?? "idle",
+    sessionError: payload.sessionError ?? null,
     activePlan: payload.activePlan ?? undefined,
     activeProposedPlan: payload.activeProposedPlan ?? undefined,
     activities: payload.activities ?? [],

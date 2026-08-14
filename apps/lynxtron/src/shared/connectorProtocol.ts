@@ -68,6 +68,7 @@ export interface ConnectorThreadPayload {
   readonly messages: ReadonlyArray<OrchestrationMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: OrchestrationSessionStatus;
+  readonly sessionError?: string | null;
   readonly activities?: ReadonlyArray<OrchestrationThreadActivity>;
   readonly activePlan?: ActivePlanState | null;
   readonly activeProposedPlan?: LatestProposedPlanState | null;

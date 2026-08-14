@@ -58,6 +58,7 @@ interface MessagesTimelineProps {
   messages: ReadonlyArray<ChatMessage>;
   activities: ReadonlyArray<ActivityEntry>;
   sessionStatus: SessionStatus;
+  hasTopBanner?: boolean;
   cwd?: string | undefined;
   latestTurn?: OrchestrationLatestTurn | null;
   proposedPlans?: ReadonlyArray<OrchestrationProposedPlan>;
@@ -480,6 +481,7 @@ export function MessagesTimeline({
   messages,
   activities,
   sessionStatus,
+  hasTopBanner = false,
   cwd,
   latestTurn = null,
   proposedPlans = [],
@@ -705,14 +707,14 @@ export function MessagesTimeline({
     >
       <list
         ref={listRef}
-        className="timeline-list"
+        className={hasTopBanner ? "timeline-list timeline-list--top-banner" : "timeline-list"}
         scroll-orientation="vertical"
         list-type="single"
         span-count={1}
         scroll-event-throttle={100}
         bindscroll={handleScroll}
       >
-        {!isWorking ? (
+        {!isWorking && !hasTopBanner ? (
           <list-item
             item-key="timeline-settled-header-space"
             key="timeline-settled-header-space"
