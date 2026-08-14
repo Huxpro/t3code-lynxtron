@@ -2341,6 +2341,121 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-completed-layout-fix",
+      "observedAt": "2026-08-14T15:23:56+08:00",
+      "commit": "65300ce8a08db8c5901ad2b8e890d5cf01bce402",
+      "codeState": "commit",
+      "label": "Existing Thread completed layout",
+      "narrative": "No current completed fixture existed, so a real connector-backed OpenCode turn was created in isolated state and admitted only after its terminal state and exact assistant response both matched. The first valid Browser pair exposed a 32px settled-header drift and missing assistant outer spacing. Matching Web required different renderer mechanisms: Browser Preview uses its 48px authority padding, while Native keeps a stable 16px list inset plus a real 32px list spacer. A single Native wrapper owns the assistant's 16px outer spacing. Full-frame SSIM improves from 0.924859 to 0.934639, transcript-viewport SSIM improves from 0.970158 to 0.987917, and transcript-column SSIM improves from 0.960334 to 0.983870. Exact-bundle Native verifies the canonical response, 48px relative inset, 75px assistant wrapper around a 59px visual row, idle Composer, Local checkout, main transport 2 to 3, zero renderer errors, and isolated cleanup.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share the same immutable completed-turn database, route, thread, model, theme, density, and viewport. Provider and geometry harness mismatches are recorded separately, and Native remains corroborating rather than replacing a pixel residual."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Completed thread before authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-completed-before-web.png",
+          "sha256": "686b53f12cb19c641e0f1a28a186f32346805d8a8ee6e020fbf4ea54e7a1861e",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "af8374d69dd953fa9d37b9bcf4e4088c7cbc6575"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Completed thread before Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-completed-before-lynx.png",
+          "sha256": "4cbf821bdeaa7f37432415ff448f00e8445883fcd01669243092ce4154f3854b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "af8374d69dd953fa9d37b9bcf4e4088c7cbc6575"
+          }
+        },
+        {
+          "client": "web",
+          "label": "Completed thread authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-completed-web.png",
+          "sha256": "d4ac0d2c5276402a841649ea3757807e618a53af864fc7a7ea07d3adc092fae2",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "af8374d69dd953fa9d37b9bcf4e4088c7cbc6575"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Completed thread Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-completed-lynx.png",
+          "sha256": "0abd896e626f6fed96799d6602f9db0de0175b12faa3d978d3e96bddada99d5b",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "af8374d69dd953fa9d37b9bcf4e4088c7cbc6575"
+          }
+        },
+        {
+          "client": "native",
+          "label": "Native completed transcript",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/existing-thread-completed-native.png",
+          "sha256": "18c11f99f711d81ed823a6df0d6aec72f4752c4932ebc0c3ce11891c761980e2",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "af8374d69dd953fa9d37b9bcf4e4088c7cbc6575"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/existing-thread-completed-layout-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "da5847cfa563555a1c382deaada4bfc3ca1d683d129de7f20fe009f41e2e7448"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-completed-thread-content",
+              "source": "exact user prompt, assistant response, model, Composer controls, Local checkout, and branch labels match"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, -0.25, 0, 0, 0, -2.25],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "completed-transcript-row-geometry",
+              "source": "both row x/y/width and outer heights at 1280x820"
+            },
+            "material": {
+              "residual": 0.012083,
+              "confidence": 0.99,
+              "method": "transcript-viewport-ssim",
+              "source": "1 - SSIM 0.987917 over the matched 1024x568 transcript viewport"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same selected completed thread with exact assistant response and zero Browser renderer errors; Native exact-bundle transport/readiness is corroborating"
+            }
+          }
+        }
+      ]
     }
   ]
 }

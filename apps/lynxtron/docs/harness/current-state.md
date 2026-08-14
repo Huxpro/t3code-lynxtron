@@ -157,6 +157,19 @@ Plan 11 prose and screenshots.
   Exact-bundle Native verifies the same inset, row boxes, Stop state, dark
   theme, and main transport. Conservative loss is now 86.1490%, observed
   residual is 5.7882%, and evidence debt is 85.2980%.
+- A real completed transcript is then created through the connector and admitted
+  only when both `latestTurnState=completed` and the exact assistant response
+  match. This rejects a missing Codex executable and a Claude OAuth error that
+  had been persisted as a nominally completed turn. The valid OpenCode pair
+  exposes settled-only geometry: Lynx starts 32px too high and drops the
+  assistant's 16px outer spacing. Browser Preview now uses Web's 48px settled
+  inset, while Native composes the same offset from a stable 16px list inset
+  plus a real 32px spacer. Full-frame SSIM rises
+  `0.924859 → 0.934639`, and transcript SSIM rises
+  `0.970158 → 0.987917`. Exact-bundle Native verifies the canonical response,
+  48px relative inset, 75px assistant wrapper, idle Composer, provider-shaped
+  controls, and transport. Conservative loss is now 85.3655%, observed
+  residual is 5.5244%, and evidence debt is 84.5097%.
 
 ## Not currently proven
 
@@ -164,8 +177,8 @@ Plan 11 prose and screenshots.
 - No current Web/Lynx/Native pixel certification matrix exists; the final5
   packaged Native Context geometry/readiness gate is not pixel parity.
 - Native physical keyboard/focus, transcript wheel/drag/follow, light/system
-  theme persistence, completed/failed populated transcripts, and full patch
-  rendering are not certified.
+  theme persistence, failed/approval/question populated transcripts, and full
+  patch rendering are not certified.
 - Browser/CDP evidence cannot satisfy Native-only input, list, window, or
   persistence requirements.
 - Historical `PASS`, `functional`, and `completed` labels do not independently
