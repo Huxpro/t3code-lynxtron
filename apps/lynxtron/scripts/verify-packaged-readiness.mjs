@@ -1410,6 +1410,72 @@ async function verifyComposerWorkingState({ client, devToolCli, outputDirectory,
   };
 }
 
+async function verifyCompletedTranscriptState({ client, devToolCli, outputDirectory }) {
+  const composer = await readComposerOutcome(client);
+  assertComposerGeometry(composer);
+  const primaryAction = composer.anchors.primaryAction;
+  if (primaryAction.attributes["data-composer-primary-state"] !== "disabled") {
+    throw new Error(
+      `Canonical completed Composer was not idle-disabled: ${JSON.stringify(primaryAction)}`,
+    );
+  }
+  const [timelineList] = await readSelectorRects(client, ".timeline-list");
+  const rowRoots = await readSelectorRects(client, ".timeline-row-root");
+  const [assistantRowRoot] = await readSelectorRects(client, ".timeline-row-root--assistant");
+  const [assistantRow] = await readSelectorRects(client, ".transcript-assistant-row");
+  const assistantText = (
+    await readOptionalMeasurement(client, ".transcript-assistant-row .markdown-body")
+  )?.text.trim();
+  const checkoutLabel = composer.typography.contextCheckout.text.trim();
+  const transcriptGeometryMatches =
+    timelineList &&
+    rowRoots.length === 2 &&
+    assistantRowRoot &&
+    assistantRow &&
+    Math.abs(rowRoots[0].y - (timelineList.y + 48)) <= 1 &&
+    Math.abs(assistantRowRoot.y - (rowRoots[0].y + rowRoots[0].height)) <= 1 &&
+    Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5;
+  if (
+    !transcriptGeometryMatches ||
+    assistantText !== "fidelity loop complete" ||
+    checkoutLabel !== "Local checkout"
+  ) {
+    throw new Error(
+      `Canonical completed transcript drifted: ${JSON.stringify({
+        timelineList,
+        rowRoots,
+        assistantRowRoot,
+        assistantRow,
+        assistantText,
+        checkoutLabel,
+      })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-completed.png",
+  });
+  return {
+    status: "pass",
+    primaryAction: {
+      state: primaryAction.attributes["data-composer-primary-state"] ?? null,
+      ariaLabel: primaryAction.attributes["aria-label"] ?? null,
+      ariaDisabled: primaryAction.attributes["aria-disabled"] ?? null,
+    },
+    transcript: {
+      timelineList,
+      rowRoots,
+      assistantRowRoot,
+      assistantRow,
+      assistantText,
+      checkoutLabel,
+    },
+    screenshot,
+  };
+}
+
 async function verifyRuntimeCapabilities(client) {
   let keyDispatchError = null;
   try {
@@ -2010,6 +2076,7 @@ async function runOnce({
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyComposerStop,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
+  verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -2142,6 +2209,13 @@ async function runOnce({
           stopEvidence: composerStopEvidence,
         })
       : undefined;
+    const completedTranscriptState = shouldVerifyCompletedTranscriptState
+      ? await verifyCompletedTranscriptState({
+          client,
+          devToolCli,
+          outputDirectory,
+        })
+      : undefined;
     const runtimeCapabilities = shouldVerifyRuntimeCapabilities
       ? await verifyRuntimeCapabilities(client)
       : undefined;
@@ -2174,6 +2248,7 @@ async function runOnce({
       modelPickerFidelity,
       composerStop,
       composerWorkingState,
+      completedTranscriptState,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -2198,6 +2273,7 @@ async function runOnce({
       modelPickerFidelity,
       composerStop,
       composerWorkingState,
+      completedTranscriptState,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -2240,6 +2316,9 @@ const verifyComposerBranding = process.argv.includes("--verify-composer-branding
 const shouldVerifyModelPickerFidelity = process.argv.includes("--verify-model-picker-fidelity");
 const verifyComposerStop = process.argv.includes("--verify-composer-stop");
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
+const shouldVerifyCompletedTranscriptState = process.argv.includes(
+  "--verify-completed-transcript-state",
+);
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -2336,6 +2415,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyComposerStop,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
+      verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,
