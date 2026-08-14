@@ -1483,6 +1483,78 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-footer-label-alpha-fix",
+      "observedAt": "2026-08-14T09:08:24+08:00",
+      "commit": "0359ee006da99ba7705173a58c02addc7cca26c3",
+      "codeState": "commit",
+      "label": "Composer Footer label alpha",
+      "narrative": "Web renders Composer Footer labels with the shared muted foreground at 70% alpha while Lynx previously used the same base color fully opaque. The one-token fix improves Hero Footer SSIM from 0.845620 to 0.853794 and Sendable Footer SSIM from 0.842550 to 0.850723. Composer-region residual improves by 0.001408 in both states. A fresh exact-bundle Native run resolves the 70% token to 178/255 alpha, within one 8-bit quantization step, with main transport advancement and zero renderer errors; Native pixel parity is not claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Hero and Sendable use the same snapshots and viewports before and after the single-token product commit, with a fresh staged Native token gate."
+      },
+      "screenshots": [
+        {
+          "client": "lynx",
+          "label": "Hero Footer alpha after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-hero-footer-alpha-after-lynx.png",
+          "sha256": "4e01af1d786fc4206f8c4bc1df88be205dabc5f9df40e8c4d5812d968581de29",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "9f237695898fd6dcb4eeee475447713abb0d0e27"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Sendable Footer alpha after",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/composer-sendable-footer-alpha-after-lynx.png",
+          "sha256": "aa9fb630ad43cb7785c54a85afe432312eb7361cfb1850f8f0907fe3deb3de64",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "9f237695898fd6dcb4eeee475447713abb0d0e27"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-14/fidelity/composer-footer-alpha-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "e88b73f3fd7ef11c6ee58ac8eadae0e712dd767abf87bd9e16550af47ea42172"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.075362,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.924638 over the matched 768x172 Hero Composer/context region"
+            }
+          }
+        },
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.070716,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.929284 over the matched 768x172 Sendable Composer/context region"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -18,3 +18,4 @@ lifecycle-error-current-browser,2026-08-14T07:11:00+08:00,8fb8d7f4d10d65d2235d1f
 existing-thread-idle-current-browser,2026-08-14T07:35:10+08:00,d283dda05af714927db481073ec3c4a2ca185ed8,commit,Current idle-thread Sidebar baseline,0.871236,0.687361,0.064462,0.862364,0.137636,0.112201
 existing-thread-idle-sidebar-geometry-fix,2026-08-14T07:53:51+08:00,d9d2444e544dcb8dde33fcc81ae7b9f3f963221a,commit,Idle-thread Sidebar row containment,0.870826,0.687361,0.061484,0.862364,0.137636,0.112611
 composer-footer-icon-geometry-fix,2026-08-14T08:32:12+08:00,2c3cd543da2416bd186ef351f31be5fd66888c64,commit,Composer Footer icon geometry,0.870749,0.687361,0.061178,0.862327,0.137673,0.112688
+composer-footer-label-alpha-fix,2026-08-14T09:08:24+08:00,0359ee006da99ba7705173a58c02addc7cca26c3,commit,Composer Footer label alpha,0.870744,0.687361,0.061141,0.862327,0.137673,0.112693
