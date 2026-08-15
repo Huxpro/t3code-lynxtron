@@ -4277,6 +4277,106 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-hero-light-browser-certification",
+      "observedAt": "2026-08-15T21:20:00+09:00",
+      "commit": "72471987d666ecb66c9636041cfb8127b837f08c",
+      "codeState": "commit",
+      "label": "New Thread light Hero Browser certification",
+      "narrative": "The same immutable empty Claude project is rendered in light theme by both shipping Browser renderers. Project, route, model, controls, absent non-git context, and Composer geometry match exactly with zero errors. Full-frame SSIM is 0.930940 and the 768x140 Composer region is 0.934183, so the remaining material residual stays explicit rather than being hidden by the semantic pass.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head light-theme Browser evidence replaces stale strict-matrix cells without a product change. One-level Composer-center pixel drift is recorded but does not justify speculative token edits."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/new-thread-hero-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "dd6202ad66cbc3c750e2abff01c27077061d3bf9cde57ad711080ec18555b1c9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-light-hero-content",
+              "source": "same project, no thread, Claude Fable 5, High · 1M, Full access, Build, placeholder, and absent non-git context"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "light-hero-composer-geometry",
+              "source": "Composer, surface, editor, and footer boxes match exactly at 1280x820"
+            },
+            "material": {
+              "residual": 0.06906,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.930940 at the matched light Hero frame; Composer-region SSIM is 0.934183"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-light-theme-readiness",
+              "source": "same immutable fixture, light theme identity, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "new-thread-hero-light-native-certification",
+      "observedAt": "2026-08-15T21:20:00+09:00",
+      "commit": "72471987d666ecb66c9636041cfb8127b837f08c",
+      "codeState": "commit",
+      "label": "New Thread light Hero Native certification",
+      "narrative": "A PID-owned exact production bundle loads the same empty project in light theme and verifies Claude Fable 5, High · 1M, Full access, Build, absent non-git context, 768x140 Composer geometry, main transport sequence 2 to 3, zero renderer errors, released ports, and isolated cleanup. The frame is representative and does not replace Browser material residuals.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native light-theme content, geometry, and runtime evidence replaces stale strict-matrix cells without claiming Native material parity or a product delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/new-thread-hero-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "dd6202ad66cbc3c750e2abff01c27077061d3bf9cde57ad711080ec18555b1c9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-light-hero-content",
+              "source": "light theme, project-default Claude Fable 5, High · 1M, Full access, Build, no thread, and no repository context selectors"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-light-hero-geometry",
+              "source": "Hero, Composer, surface, editor, and footer measured at 1280x820"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle, light theme, main transport 2 to 3, zero renderer errors, released ports, and isolated cleanup"
+            }
+          }
+        }
+      ]
     }
   ]
 }

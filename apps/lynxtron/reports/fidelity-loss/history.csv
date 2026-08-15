@@ -52,3 +52,5 @@ composer-hero-non-git-native-certification,2026-08-15T19:58:44+09:00,dfee2469653
 composer-sendable-non-git-browser-certification,2026-08-15T20:08:00+09:00,fd1d70d252413edb52c74cbfd903f10caec1e765,commit,Composer Sendable non-git Browser certification,0.674258,0.674258,0.02585,0.665614,0.334386,0.309179
 existing-thread-idle-browser-certification,2026-08-15T21:12:00+09:00,ddfc8dd518a65602e6d3c3205ba9eac41078f1a1,commit,Existing Thread idle Browser certification,0.672203,0.672203,0.025063,0.663776,0.336224,0.311234
 existing-thread-idle-native-certification,2026-08-15T21:12:00+09:00,ddfc8dd518a65602e6d3c3205ba9eac41078f1a1,commit,Existing Thread idle Native certification,0.663767,0.663767,0.024008,0.655497,0.344503,0.31967
+new-thread-hero-light-browser-certification,2026-08-15T21:20:00+09:00,72471987d666ecb66c9636041cfb8127b837f08c,commit,New Thread light Hero Browser certification,0.658917,0.658917,0.023649,0.650655,0.349345,0.32452
+new-thread-hero-light-native-certification,2026-08-15T21:20:00+09:00,72471987d666ecb66c9636041cfb8127b837f08c,commit,New Thread light Hero Native certification,0.652307,0.652307,0.023062,0.644099,0.355901,0.33113

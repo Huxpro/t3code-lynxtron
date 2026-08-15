@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T21:20:00+09:00",
+  "evidenceCommit": "72471987d666ecb66c9636041cfb8127b837f08c",
+  "stateId": "new-thread-hero-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "new-thread",
+    "repositoryState": "non-git"
+  },
+  "fixture": {
+    "workspace": "/tmp/t3-hero-claude-workspace",
+    "projectId": "dd422c59-fba4-4c0d-aa05-9e4168a702a1",
+    "projectTitle": "t3-hero-claude-workspace",
+    "threadCount": 0,
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "snapshotSha256": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977"
+  },
+  "classification": {
+    "productLoss": [],
+    "harnessMismatch": [],
+    "ledgerScope": "Matched Browser evidence updates light Hero content, geometry, material, and runtime. Exact-bundle Native updates content, geometry, and runtime; Native pixels are representative and do not replace the Browser residual."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "72471987d666ecb66c9636041cfb8127b837f08c",
+    "webBundleSha256": "c610aaf5abdfb3d70ef679fad5ce347415ccbdf9554a717db654d8b8dc188d05",
+    "lynxBundleSha256": "b2fa009a25d76534f0244423fb87f7db7ca07b303fec93989e884cd729aa57bb",
+    "capturePass": true,
+    "readyMs": 917,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "context": [],
+    "geometry": {
+      "web": {
+        "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 357, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 373, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 451, "width": 766, "height": 44 }
+      },
+      "lynx": {
+        "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 357, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 373, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 451, "width": 766, "height": 44 }
+      }
+    },
+    "fullFrameSsim": 0.93094,
+    "fullFrameResidual": 0.06906,
+    "composerRegion": {
+      "crop": { "x": 384, "y": 356, "width": 768, "height": 140 },
+      "ssim": 0.934183,
+      "residual": 0.065817
+    },
+    "pixelSamples": {
+      "background": { "web": "#fcfcfc", "lynx": "#fcfcfc" },
+      "composerCenter": { "web": "#fefefe", "lynx": "#ffffff" },
+      "footerControl": { "web": "#c6c6ca", "lynx": "#c4c4c8" }
+    },
+    "reportSha256": "043c8f189573e41a35c8b2b039762abfc3bd7f71d497bedd34fdc8699f01e2ee",
+    "webScreenshotSha256": "ce11480d7828ae0efc21926a079d3a6f48c862b3bd315bf1ec5bfdbb8690e530",
+    "lynxScreenshotSha256": "6f253ee469998ff511d4d0cffacd111a251b15e20678049b69f8169527a3d348",
+    "ownedBrowserProcessesAfterCapture": 0,
+    "ownedServerProcessesAfterCapture": 0,
+    "isolatedChromeProfilesAfterCapture": 0
+  },
+  "native": {
+    "status": "pass",
+    "head": "72471987d666ecb66c9636041cfb8127b837f08c",
+    "bundleSha256": "5ae2a28183fc269f4a4688d7e9baa2dee8fe180df9c075190b81afc13e364946",
+    "bundleBytes": 4374074,
+    "snapshotId": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977",
+    "viewport": { "width": 1280, "height": 820 },
+    "theme": "light",
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "context": [],
+    "geometry": {
+      "hero": { "x": 256, "y": 52, "width": 1024, "height": 768 },
+      "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+      "surface": { "x": 385, "y": 357, "width": 766, "height": 138 },
+      "editor": { "x": 401, "y": 373, "width": 734, "height": 70 },
+      "footer": { "x": 385, "y": 451, "width": 766, "height": 44 }
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "ownedProcessExited": true,
+    "ownedServerPortReleased": true,
+    "devToolListenerReleased": true,
+    "reportSha256": "f543180bff4204efa9a2519511af04fdd1ee647adfa9120f6e69acf0604add87"
+  },
+  "remainingRisk": [
+    "Full-frame light material residual remains 0.069060 and Composer-region residual remains 0.065817.",
+    "The observed Composer center differs by one RGB level and does not justify speculative token churn.",
+    "Native evidence proves exact-bundle light theme, content, geometry, runtime, and cleanup; it does not claim Native-to-Web material parity."
+  ]
+}
