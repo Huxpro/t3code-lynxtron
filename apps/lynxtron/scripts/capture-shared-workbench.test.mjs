@@ -67,8 +67,11 @@ describe("shared workbench lifecycle fault capture", () => {
     );
 
     assert.include(workbench, '".settings-page-scroll-fade > div"');
-    assert.include(workbench, '".settings-content--source-control > .settings-panel"');
-    assert.include(workbench, 'settingsPanel?.querySelectorAll(":scope > .settings-section")');
+    assert.include(workbench, '".settings-scroll--source-control > .source-control-panel"');
+    assert.include(
+      workbench,
+      'settingsPanel?.querySelectorAll(":scope > .source-control-section")',
+    );
     assert.include(
       workbench,
       'sourceControlRows: [...doc.querySelectorAll(".source-control-item")]',

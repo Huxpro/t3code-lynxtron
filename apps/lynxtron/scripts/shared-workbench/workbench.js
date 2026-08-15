@@ -893,7 +893,7 @@ function readLynxPane() {
       settingsMetrics: settingsRoute
         ? (() => {
             const settingsPanel = root?.querySelector(
-              ".settings-content--source-control > .settings-panel",
+              ".settings-scroll--source-control > .source-control-panel",
             );
             return {
               navigationLabels: [
@@ -908,7 +908,7 @@ function readLynxPane() {
               geometry: {
                 panel: readElementBox(settingsPanel),
                 sections: [
-                  ...(settingsPanel?.querySelectorAll(":scope > .settings-section") ?? []),
+                  ...(settingsPanel?.querySelectorAll(":scope > .source-control-section") ?? []),
                 ].map((item) => ({
                   title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
                   box: readElementBox(item),
