@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T06:21:22+09:00",
+  "updatedAt": "2026-08-16T06:42:56+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5910,6 +5910,60 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.889352 at the matched dark Review frame; light corroborates at SSIM 0.881967"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-completed-current-rich-fixture",
+      "observedAt": "2026-08-16T06:42:56+09:00",
+      "commit": "c37644560980b4fdb64ae3e56110fbb3b1fd7119",
+      "codeCommit": "e8c55e0d5dafb6fc3aa01c20176612a6beccca48",
+      "codeState": "commit",
+      "label": "Existing Thread Completed current rich fixture",
+      "narrative": "A current strict capture reuses the immutable completed Review fixture and measures a real user row with inline code, a turn fold, an assistant response, and an expanded checkpoint. Project, thread, completed turn, row order, exact row text, checkpoint identity, model, docked idle Composer, route, theme, and viewport match with zero errors. The current transcript-viewport SSIM is 0.940754 and geometry residual is 0.000488. This richer fixture supersedes the older simple two-message residual without attributing the difference to a product regression. A 26px to 30px checkpoint-meta experiment made row height exact but did not improve SSIM, so it was fully reverted.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The fixture contains additional real fold and checkpoint surfaces absent from the older simple capture. No product delta is assigned, and the no-benefit spacer hypothesis was reverted before this point."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-completed-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "26481da5406d28047cde7cf31d5f63e4575d37fca16cd8e0e49747ec75518f8f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-completed-rich-fixture-content",
+              "source": "Matching user, turn-fold, assistant, and checkpoint order; exact row text; inline code present; docked idle Composer"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, -4],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "completed-rich-transcript-row-geometry",
+              "source": "User, fold, and assistant row x/y/width/height anchors at 1280x820"
+            },
+            "material": {
+              "residual": 0.059246,
+              "confidence": 0.99,
+              "method": "transcript-viewport-ssim",
+              "source": "1 - SSIM 0.940754 over the matched 1024x568 transcript viewport; full-frame residual is 0.082118"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-completed-readiness",
+              "source": "Same immutable completed thread, expected checkpoint, exact content, and zero renderer errors with zero agent-browser pre/post leaks"
             }
           }
         }

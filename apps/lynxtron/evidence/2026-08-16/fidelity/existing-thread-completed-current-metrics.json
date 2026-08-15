@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T06:42:56+09:00",
+  "harnessCommit": "c37644560980b4fdb64ae3e56110fbb3b1fd7119",
+  "productCommit": "e8c55e0d5dafb6fc3aa01c20176612a6beccca48",
+  "stateId": "existing-thread-completed",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "fixture": {
+    "source": "/tmp/t3-review-state.LiMGsN/userdata/state.sqlite",
+    "seededSnapshotSha256": "75e732bec5010e97466af66e2d5f191490b417a20e0ac52200eaf697fcf7430d",
+    "projectTitle": "review-fixture",
+    "threadId": "de258875-a28f-44e2-917c-3ca2fdb45bb6",
+    "turnId": "opencode-turn-af08711b-1fea-41aa-8e55-89c5f69b0b07",
+    "latestTurnState": "completed",
+    "rows": [
+      {
+        "kind": "message",
+        "role": "user",
+        "text": "Modify review-fixture.txt so its entire contents are exactly `updated by T3 review fixture` followed by one newline. Do not modify any other file. Then stop."
+      },
+      {
+        "kind": "turn-fold"
+      },
+      {
+        "kind": "message",
+        "role": "assistant",
+        "text": "Done."
+      }
+    ],
+    "checkpoint": {
+      "file": "review-fixture.txt",
+      "additions": 1,
+      "deletions": 1
+    }
+  },
+  "classification": {
+    "measurementRefinement": [
+      "The previous current Completed evidence used a simpler two-message fixture. The immutable Review fixture adds a real turn fold and expanded checkpoint card, so its full-frame and transcript residuals are not a direct product-regression comparison.",
+      "The Lynx transcript already renders the inline-code capsule. The old reader measured only md-inline leaves and omitted the current inline-markdown-text and inline-markdown-code nodes.",
+      "The current strict capture matches project, thread, completed turn, row order, user text, assistant text, checkpoint identity, model, Composer state, route, theme, viewport, and zero errors."
+    ],
+    "rejectedProductHypothesis": [
+      "Increasing the checkpoint assistant meta spacer from 26px to 30px made the assistant row height exactly match Web at 151.75px.",
+      "The change did not improve transcript SSIM and slightly reduced full-frame SSIM from 0.917882 to 0.917871.",
+      "The experiment was fully reverted and is not attributed as a product improvement."
+    ],
+    "ledgerScope": "This evidence refresh updates current Lynx Browser content, geometry, material, and runtime for Existing Thread Completed. Existing Native evidence remains unchanged, interaction remains unmeasured for this state, and no product delta is assigned."
+  },
+  "browser": {
+    "status": "pass-with-residual",
+    "head": "c37644560980b4fdb64ae3e56110fbb3b1fd7119",
+    "readyMs": 1245,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "agentBrowserLeakPreflight": 0,
+    "agentBrowserLeakPostflight": 0,
+    "webBundleSha256": "9aaf6f482b3a4f4d6c887597e7c1189a25146ba65190b99870f2b54f4e619237",
+    "lynxBundleSha256": "b96cbdf173a22793f66017694c6ac9283cae7abdd845fc299edd231b86154163",
+    "content": {
+      "rowOrderMatch": true,
+      "rowTextMatch": true,
+      "inlineCodePresent": true,
+      "checkpointMatch": true,
+      "composerLayout": "docked",
+      "composerState": "idle",
+      "residual": 0
+    },
+    "geometry": {
+      "webRows": [
+        { "x": 384, "y": 100, "width": 768, "height": 113.5 },
+        { "x": 384, "y": 214, "width": 768, "height": 45 },
+        { "x": 384, "y": 259, "width": 768, "height": 167.75 }
+      ],
+      "lynxRows": [
+        { "x": 384, "y": 100, "width": 768, "height": 114 },
+        { "x": 384, "y": 214, "width": 768, "height": 45 },
+        { "x": 384, "y": 259, "width": 768, "height": 163.75 }
+      ],
+      "checkpointCard": {
+        "web": { "x": 388, "y": 299.75, "width": 760, "height": 79 },
+        "lynx": { "x": 388, "y": 299.75, "width": 760, "height": 79 }
+      },
+      "anchorDeltas": [0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, -4],
+      "anchorScale": 768,
+      "residual": 0.000488
+    },
+    "material": {
+      "fullFrameSsim": 0.917882,
+      "fullFrameResidual": 0.082118,
+      "transcriptViewportSsim": 0.940754,
+      "transcriptViewportResidual": 0.059246,
+      "transcriptColumnSsim": 0.913606,
+      "transcriptColumnResidual": 0.086394,
+      "composerSsim": 0.962168,
+      "regionsMae": {
+        "sidebar": 7.951,
+        "header": 8.894,
+        "transcript": 2.894,
+        "user": 12.867,
+        "turnFold": 2.371,
+        "assistant": 3.681,
+        "composer": 0.771
+      }
+    },
+    "reportSha256": "eee92b2c0775e0a5026aa3726ec87f7d5ff0e01784b9805131b85330fbb32f29",
+    "webScreenshotSha256": "f0ac332445c88011f6ce7a99ec582e99abedee4bd881accce0e59277100cc05c",
+    "lynxScreenshotSha256": "d3cda43aba53778cb29c9d81090ff7d8255996fa4eda4a5489489ae3f50bf795"
+  },
+  "validation": {
+    "readerAndCaptureTests": "21/21",
+    "strictCapture": "pass",
+    "lynxBrowserPreviewBuild": "pass-with-known-warnings",
+    "agentBrowserLeakGate": "preflight=0, postflight=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Current transcript-viewport material residual is 0.059246 for the richer user, fold, assistant, and checkpoint fixture.",
+    "The user inline-code capsule uses renderer-specific line wrapping and remains the largest transcript-region material difference.",
+    "The assistant outer row remains 4px shorter in Lynx, but the direct 30px-spacer experiment did not improve pixel similarity.",
+    "Physical scrolling, focus, selection, and keyboard interaction remain pending-user-session; existing Native representative evidence is not promoted to pixel parity."
+  ]
+}
