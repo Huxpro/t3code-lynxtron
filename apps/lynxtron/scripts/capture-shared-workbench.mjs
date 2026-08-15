@@ -295,6 +295,40 @@ function archiveSettingsGeometryMatches(webMetrics, lynxMetrics) {
   );
 }
 
+function betaSettingsGeometryMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "settings-beta") return true;
+  const webSection = webMetrics?.geometry?.sections?.[0]?.box?.rect;
+  const lynxSection = lynxMetrics?.geometry?.sections?.[0]?.box?.rect;
+  const lynxRows = lynxMetrics?.geometry?.settingsRows ?? [];
+  const expectedTitles = [
+    "Sidebar v2",
+    "Auto-settle inactive threads",
+    "Days of inactivity before auto-settle",
+  ];
+  return (
+    webSection &&
+    lynxSection &&
+    Math.abs(webSection.x - lynxSection.x) <= 1 &&
+    Math.abs(webSection.width - lynxSection.width) <= 1 &&
+    lynxRows.length === expectedTitles.length &&
+    lynxRows.every((row, index) => {
+      const rect = row.box?.rect;
+      const text = row.children?.[0]?.box?.rect;
+      const control = row.children?.[1]?.box?.rect;
+      return (
+        row.title === expectedTitles[index] &&
+        rect &&
+        text &&
+        control &&
+        Math.abs(webSection.x - rect.x) <= 1 &&
+        Math.abs(webSection.width - rect.width) <= 1 &&
+        text.width > 0 &&
+        control.width > 0
+      );
+    })
+  );
+}
+
 function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeight) {
   if (
     !composerMetricsMatch(webMetrics, expectation) ||
@@ -2529,10 +2563,9 @@ async function captureCell({
           : stateId !== "settings-source-control" ||
             ((state?.web?.settingsMetrics?.rowIds ?? []).includes("source-control") &&
               (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
-    const settingsGeometryReady = archiveSettingsGeometryMatches(
-      state?.web?.settingsMetrics,
-      state?.lynx?.settingsMetrics,
-    );
+    const settingsGeometryReady =
+      archiveSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
+      betaSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics);
     settingsAsyncReadyPolls =
       settingsAsyncReady && settingsGeometryReady ? settingsAsyncReadyPolls + 1 : 0;
     const webTimelineRows = state?.web?.timelineMetrics?.rows ?? [];
@@ -2839,10 +2872,9 @@ async function captureCell({
         : stateId !== "settings-source-control" ||
           ((state?.web?.settingsMetrics?.rowIds ?? []).includes("source-control") &&
             (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
-  const finalSettingsGeometryReady = archiveSettingsGeometryMatches(
-    state?.web?.settingsMetrics,
-    state?.lynx?.settingsMetrics,
-  );
+  const finalSettingsGeometryReady =
+    archiveSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
+    betaSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics);
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
     state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&
@@ -2977,6 +3009,8 @@ async function captureCell({
             JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
           JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
             JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+          JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
           JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
             JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
           JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===

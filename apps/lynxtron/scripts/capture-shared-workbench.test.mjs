@@ -91,10 +91,16 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelector(".settings-content")');
     assert.include(workbench, 'root?.querySelector(".settings-panel")');
     assert.include(workbench, ":scope > .settings-section");
+    assert.include(workbench, "sectionTexts:");
+    assert.include(source, "settingsMetrics?.sectionTexts");
     assert.include(source, "function archiveSettingsGeometryMatches");
     assert.include(source, 'stateId !== "settings-archive"');
     assert.include(source, 'lynxEmptyRow?.title === "No archived threads"');
     assert.include(source, "lynxText.width > 0");
+    assert.include(source, "function betaSettingsGeometryMatches");
+    assert.include(source, 'stateId !== "settings-beta"');
+    assert.include(source, '"Auto-settle inactive threads"');
+    assert.include(source, '"Days of inactivity before auto-settle"');
   });
 
   it("retains symmetric Quick Switch anatomy for geometry comparison", () => {

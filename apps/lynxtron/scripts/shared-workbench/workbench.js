@@ -954,6 +954,9 @@ function readLynxPane() {
               sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
                 (item) => item.textContent?.trim(),
               ),
+              sectionTexts: [...(root?.querySelectorAll(".settings-section") ?? [])].map(
+                (item) => item.textContent?.trim().replace(/\s+/g, " ") ?? "",
+              ),
               geometry: {
                 content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
@@ -1726,6 +1729,9 @@ function readWebPane() {
               sectionTitles: [
                 ...(settingsPanel?.querySelectorAll(":scope > section > div:first-child h2") ?? []),
               ].map((item) => item.textContent?.trim()),
+              sectionTexts: [...(settingsPanel?.querySelectorAll(":scope > section") ?? [])].map(
+                (item) => item.textContent?.trim().replace(/\s+/g, " ") ?? "",
+              ),
               geometry: {
                 content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
