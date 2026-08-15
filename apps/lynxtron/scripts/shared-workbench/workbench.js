@@ -1172,52 +1172,6 @@ function readWebPane() {
                   .querySelector('[data-model-picker-content] [data-slot="combobox-empty"]')
                   ?.textContent?.trim() ?? null)
               : null,
-        anatomy:
-          overlay === "quick-switch" || overlay === "file-picker"
-            ? {
-                panel: readElementBox(overlayElement),
-                search: readElementBox(
-                  doc
-                    .querySelector('[data-command-palette="true"] [data-slot="autocomplete-input"]')
-                    ?.closest(".relative")?.parentElement,
-                ),
-                input: readElementBox(
-                  doc.querySelector(
-                    '[data-command-palette="true"] [data-slot="autocomplete-input"]',
-                  ),
-                ),
-                results: readElementBox(
-                  doc.querySelector('[data-command-palette="true"] [data-slot="command-list"]') ??
-                    doc.querySelector('[data-command-palette="true"] .palette-empty')
-                      ?.parentElement,
-                ),
-                list: readElementBox(
-                  doc.querySelector(
-                    '[data-command-palette="true"] [data-slot="autocomplete-list"]',
-                  ),
-                ),
-                section: readElementBox(
-                  doc.querySelector('[data-command-palette="true"] [data-slot="command-group"]'),
-                ),
-                sectionLabel: readElementBox(
-                  doc.querySelector(
-                    '[data-command-palette="true"] [data-slot="command-group-label"]',
-                  ),
-                ),
-                row: readElementBox(
-                  doc.querySelector('[data-command-palette="true"] [role="option"]'),
-                ),
-                empty: readElementBox(
-                  doc.querySelector('[data-command-palette="true"] .palette-empty'),
-                ),
-                emptyText: readElementBox(
-                  doc.querySelector('[data-command-palette="true"] .palette-empty-text'),
-                ),
-                footer: readElementBox(
-                  doc.querySelector('[data-command-palette="true"] [data-slot="command-footer"]'),
-                ),
-              }
-            : null,
         semanticKeys:
           overlay === "model-picker"
             ? readJsonStringArray(modelPickerContent, "data-model-picker-filtered-keys")
@@ -1288,7 +1242,53 @@ function readWebPane() {
                   modelPickerContent?.querySelector(".model-picker-empty-text"),
                 ),
               }
-            : null,
+            : overlay === "quick-switch" || overlay === "file-picker"
+              ? {
+                  panel: readElementBox(overlayElement),
+                  search: readElementBox(
+                    doc
+                      .querySelector(
+                        '[data-command-palette="true"] [data-slot="autocomplete-input"]',
+                      )
+                      ?.closest(".relative")?.parentElement,
+                  ),
+                  input: readElementBox(
+                    doc.querySelector(
+                      '[data-command-palette="true"] [data-slot="autocomplete-input"]',
+                    ),
+                  ),
+                  results: readElementBox(
+                    doc.querySelector('[data-command-palette="true"] [data-slot="command-list"]') ??
+                      doc.querySelector('[data-command-palette="true"] .palette-empty')
+                        ?.parentElement,
+                  ),
+                  list: readElementBox(
+                    doc.querySelector(
+                      '[data-command-palette="true"] [data-slot="autocomplete-list"]',
+                    ),
+                  ),
+                  section: readElementBox(
+                    doc.querySelector('[data-command-palette="true"] [data-slot="command-group"]'),
+                  ),
+                  sectionLabel: readElementBox(
+                    doc.querySelector(
+                      '[data-command-palette="true"] [data-slot="command-group-label"]',
+                    ),
+                  ),
+                  row: readElementBox(
+                    doc.querySelector('[data-command-palette="true"] [role="option"]'),
+                  ),
+                  empty: readElementBox(
+                    doc.querySelector('[data-command-palette="true"] .palette-empty'),
+                  ),
+                  emptyText: readElementBox(
+                    doc.querySelector('[data-command-palette="true"] .palette-empty-text'),
+                  ),
+                  footer: readElementBox(
+                    doc.querySelector('[data-command-palette="true"] [data-slot="command-footer"]'),
+                  ),
+                }
+              : null,
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
             ? [...doc.querySelectorAll('[data-command-palette="true"] [role="option"]')].map(

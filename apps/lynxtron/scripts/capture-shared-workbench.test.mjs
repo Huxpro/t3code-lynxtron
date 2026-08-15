@@ -91,6 +91,21 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelectorAll(".source-control-item")');
   });
 
+  it("retains symmetric Quick Switch anatomy for geometry comparison", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, ': overlay === "quick-switch" || overlay === "file-picker"');
+    assert.include(workbench, "panel: readElementBox(overlayElement)");
+    assert.include(workbench, '[data-command-palette="true"] [data-slot="command-footer"]');
+    assert.include(source, "function quickSwitchAnatomyMatches");
+    assert.include(
+      source,
+      "quickSwitchAnatomyMatches(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics)",
+    );
+  });
+
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),

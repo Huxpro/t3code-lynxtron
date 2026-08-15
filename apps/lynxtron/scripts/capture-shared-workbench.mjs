@@ -193,6 +193,13 @@ function composerAnatomyMatches(webMetrics, lynxMetrics) {
   return true;
 }
 
+function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
+  if (!webMetrics?.anatomy || !lynxMetrics?.anatomy) return false;
+  return ["panel", "search", "results", "footer", "row"].every((key) =>
+    rectDeltaWithin(webMetrics.anatomy[key], lynxMetrics.anatomy[key], 2),
+  );
+}
+
 function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeight) {
   if (
     !composerMetricsMatch(webMetrics, expectation) ||
@@ -2324,6 +2331,8 @@ async function captureCell({
       !overlay ||
       (state?.web?.productState?.overlay === overlay &&
         state?.lynx?.productState?.overlay === overlay &&
+        (overlay !== "quick-switch" ||
+          quickSwitchAnatomyMatches(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics)) &&
         (!query ||
           (state?.web?.productState?.overlayQuery === query &&
             state?.lynx?.productState?.overlayQuery === query)) &&
@@ -2609,6 +2618,8 @@ async function captureCell({
     !overlay ||
     (state?.web?.productState?.overlay === overlay &&
       state?.lynx?.productState?.overlay === overlay &&
+      (overlay !== "quick-switch" ||
+        quickSwitchAnatomyMatches(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics)) &&
       (!query ||
         (state?.web?.productState?.overlayQuery === query &&
           state?.lynx?.productState?.overlayQuery === query)) &&
