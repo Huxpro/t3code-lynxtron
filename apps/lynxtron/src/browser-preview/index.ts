@@ -31,9 +31,7 @@ interface BrowserPreviewDiagnostics {
   readonly dataSource: "scenario" | "live-server";
   readonly rendererErrors: Array<string>;
   readonly nativeModuleCalls: Array<{ moduleName: string; method: string; data: unknown }>;
-  readonly connector:
-    | BrowserPreviewConnectorHost["diagnostics"]
-    | LiveConnectorHost["diagnostics"];
+  readonly connector: BrowserPreviewConnectorHost["diagnostics"] | LiveConnectorHost["diagnostics"];
   known: (typeof BROWSER_PREVIEW_SCENARIOS)[BrowserPreviewScenarioId]["known"];
   readonly unsupportedCapabilities: BrowserPreviewConnectorHost["diagnostics"]["unsupportedCapabilities"];
   viewportContract: BrowserPreviewViewportContract;
@@ -61,7 +59,10 @@ interface BrowserPreviewGeometry {
   readonly sidebar: BrowserPreviewRect | null;
   readonly toolbar: BrowserPreviewRect | null;
   readonly composer: BrowserPreviewRect | null;
-  readonly icons16: ReadonlyArray<{ readonly selector: string; readonly rect: BrowserPreviewRect | null }>;
+  readonly icons16: ReadonlyArray<{
+    readonly selector: string;
+    readonly rect: BrowserPreviewRect | null;
+  }>;
 }
 
 declare global {
@@ -92,8 +93,7 @@ const scenarioId = isBrowserPreviewScenarioId(requestedScenario)
   : DEFAULT_BROWSER_PREVIEW_SCENARIO_ID;
 const scenario = BROWSER_PREVIEW_SCENARIOS[scenarioId];
 const requestedRoute = previewUrl.searchParams.get("route") ?? scenario.route;
-const requestedTheme =
-  previewUrl.searchParams.get("theme") === "light" ? "light" : "dark";
+const requestedTheme = previewUrl.searchParams.get("theme") === "light" ? "light" : "dark";
 const themedScenario = {
   ...scenario,
   preferences: {
@@ -123,8 +123,7 @@ const liveHost = useLive
       {
         socketUrl: liveSocketUrl as string,
         route: requestedRoute,
-        overlay:
-          (scenario.preferences as { initialOverlay?: string }).initialOverlay ?? null,
+        overlay: (scenario.preferences as { initialOverlay?: string }).initialOverlay ?? null,
         theme: requestedTheme,
       },
       emitGlobalEvent as never,
@@ -295,7 +294,9 @@ const updateReadiness = () => {
   diagnostics.rendered = true;
   const productText = productRoot.textContent ?? "";
   diagnostics.stageBackdropPresent = Boolean(
-    shadowRoot?.querySelector(".sidebar__brand-bg, .sidebar-stage-backdrop, [data-stage-backdrop-variant]"),
+    shadowRoot?.querySelector(
+      ".sidebar__brand-bg, .sidebar-stage-backdrop, [data-stage-backdrop-variant]",
+    ),
   );
   diagnostics.heroPresent = Boolean(shadowRoot?.querySelector(".hero__headline"));
   diagnostics.activeThreadTitle =
@@ -427,6 +428,17 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".transcript-assistant-meta-spacer{display:block;width:100%;height:24px;}" +
       ".transcript-assistant-meta-spacer--code{height:31px;}" +
       ".transcript-assistant-meta-spacer--checkpoint{height:26px;}" +
+      ".right-panel{display:flex;flex-direction:column;}" +
+      ".right-panel__tabs{height:44px!important;min-height:44px!important;box-sizing:border-box;}" +
+      ".right-panel__content{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;height:0;margin-left:1px;width:calc(100% - 1px);}" +
+      ".diff-panel{display:flex;flex:1 1 0%;flex-direction:column;height:0;}" +
+      ".diff-panel-subheader{" +
+      "flex:none;height:40px;min-height:40px;max-height:40px;box-sizing:border-box;}" +
+      ".diff-panel__inner{width:100%;padding:0!important;box-sizing:border-box;}" +
+      ".diff-code-files,.diff-code-file,.diff-code-file__body{" +
+      "display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
+      ".diff-code-file__header,.diff-code-line{width:100%;box-sizing:border-box;}" +
       ".turn-diff-card{display:flex;flex-direction:column;width:760px;box-sizing:border-box;}" +
       ".turn-diff-card__header{display:flex;flex-direction:row;width:100%;box-sizing:border-box;}" +
       ".turn-diff-card__preview,.lynx-changed-files-tree{" +

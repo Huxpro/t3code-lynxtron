@@ -75,4 +75,28 @@ describe("resolveBrowserPreviewViewportContract", () => {
     assert.match(styles, /width: 100vw/);
     assert.match(styles, /height: 100vh/);
   });
+
+  it("restores the vertical Review layout stripped from the browser proxy bundle", () => {
+    const source = readFileSync(path.join(scriptDir, "index.ts"), "utf8");
+
+    assert.include(source, '".right-panel{display:flex;flex-direction:column;}"');
+    assert.include(
+      source,
+      '".right-panel__tabs{height:44px!important;min-height:44px!important;box-sizing:border-box;}"',
+    );
+    assert.include(
+      source,
+      '"display:flex;flex:1 1 0%;flex-direction:column;height:0;margin-left:1px;width:calc(100% - 1px);}"',
+    );
+    assert.include(
+      source,
+      '".diff-panel{display:flex;flex:1 1 0%;flex-direction:column;height:0;}"',
+    );
+    assert.include(source, '"flex:none;height:40px;min-height:40px;max-height:40px;');
+    assert.include(
+      source,
+      '".diff-panel__inner{width:100%;padding:0!important;box-sizing:border-box;}"',
+    );
+    assert.include(source, '".diff-code-files,.diff-code-file,.diff-code-file__body{"');
+  });
 });
