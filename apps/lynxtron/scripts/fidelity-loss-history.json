@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T06:59:12+09:00",
+  "updatedAt": "2026-08-16T07:15:36+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6059,6 +6059,101 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.860161 after the geometry fix; truthful access-management content remains session-specific"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-empty-current-grid-baseline",
+      "observedAt": "2026-08-16T07:07:00+09:00",
+      "commit": "02b431c039bc362261ad594228318d0fcbad9474",
+      "codeCommit": "02b431c039bc362261ad594228318d0fcbad9474",
+      "codeState": "commit",
+      "label": "Review Empty current grid baseline",
+      "narrative": "A strict current Review Empty capture opens the right panel without an active surface on the same completed thread. Panel bounds, four action keys, and zero-error runtime match, but unsupported CSS Grid collapses the Lynx actions into four 523x144 rows instead of Web's 2x2 241.5x112 grid. Geometry residual is 0.497153 and full-frame residual is 0.153413. Browser remains an explicit disabled placeholder and Terminal remains an honest not-connected placeholder; neither is credited as implemented functionality.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Fresh action-level geometry and truthful placeholder diagnostics replace the old coarse native matrix estimate. No product delta is assigned at this point."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-empty-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ed165b6ad19f81e351073c015e4daeee54654c11c85791c8e3ce8eaa7d0b17e0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.125,
+              "confidence": 0.99,
+              "method": "empty-panel-truthful-action-content",
+              "source": "Four action keys and labels match; Browser retains a registered-placeholder description and Terminal does not claim a live shell"
+            },
+            "geometry": {
+              "residual": 0.497153,
+              "confidence": 0.99,
+              "method": "empty-panel-action-grid-geometry",
+              "source": "Four action x/y/width/height boxes against the Web 2x2 authority before the fix"
+            },
+            "material": {
+              "residual": 0.153413,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.846587 at the current pre-fix Review Empty frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-empty-panel-readiness",
+              "source": "Same thread, route, theme, panel state, action keys, zero renderer errors, and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-empty-shared-grid-fix-current",
+      "observedAt": "2026-08-16T07:15:36+09:00",
+      "commit": "f69627d31940cefc6ab6a02715447abe6bc50825",
+      "codeCommit": "f69627d31940cefc6ab6a02715447abe6bc50825",
+      "codeState": "commit",
+      "label": "Review Empty shared action grid fix",
+      "narrative": "The shared RightPanelEmptySurface now owns two explicit flex rows with two cards each instead of relying on CSS Grid, and Lynx pins the authority 112px card height. Browser and Lynx action rectangles converge exactly at 241.5x112 in the same 2x2 positions. Geometry residual falls from 0.497153 to 0 and full-frame SSIM improves from 0.846587 to 0.881529. Browser and Terminal placeholder copy remains explicit, so content and remaining material residual are not hidden.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share one immutable fixture, route, theme, viewport, Web authority, and strict gate. The product change replaces unsupported Grid/flex-wrap behavior with one shared physical 2x2 structure."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-empty-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ed165b6ad19f81e351073c015e4daeee54654c11c85791c8e3ce8eaa7d0b17e0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 241.5,
+              "confidence": 0.99,
+              "method": "empty-panel-action-grid-geometry",
+              "source": "All four Browser and Lynx action x/y/width/height boxes match exactly"
+            },
+            "material": {
+              "residual": 0.118471,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.881529 at the matched post-fix Review Empty frame"
             }
           }
         }
