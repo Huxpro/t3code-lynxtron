@@ -162,6 +162,24 @@ function readTextLineRects(element) {
   }));
 }
 
+function readComposedText(element) {
+  if (!element) return "";
+  const text = [];
+  const visit = (node) => {
+    if (node.nodeType === 3) {
+      text.push(node.textContent ?? "");
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    for (const child of node.childNodes) visit(child);
+    if (node.shadowRoot) {
+      for (const child of node.shadowRoot.childNodes) visit(child);
+    }
+  };
+  visit(element);
+  return text.join(" ").trim().replace(/\s+/g, " ");
+}
+
 function findCommandSearchSurface(panel, input, results) {
   if (!panel || !input || !results) return null;
   const panelRect = panel.getBoundingClientRect();
@@ -245,12 +263,14 @@ function readReviewMetrics(root) {
           empty: Boolean(diffSurface.querySelector("[data-review-empty-state]")),
           loading: Boolean(diffSurface.querySelector("[data-review-patch-loading]")),
           error: Boolean(diffSurface.querySelector("[data-review-patch-error]")),
-          codeDiff: Boolean(diffSurface.querySelector("[data-review-code-diff]")),
+          codeDiff: Boolean(
+            diffSurface.querySelector("[data-review-code-diff], .diff-render-surface"),
+          ),
           runtimeBlocker:
             diffSurface
               .querySelector("[data-review-runtime-blocker]")
               ?.getAttribute("data-review-runtime-blocker") ?? null,
-          text: diffSurface.textContent?.trim().replace(/\s+/g, " ").slice(0, 480) ?? "",
+          text: readComposedText(diffSurface).slice(0, 480),
           renderedFileTitles: [...diffSurface.querySelectorAll("[data-title]")]
             .map((item) => item.textContent?.trim())
             .filter(Boolean),
