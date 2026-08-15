@@ -65,6 +65,9 @@ function readElementBox(element) {
   return {
     tagName: element.tagName.toLowerCase(),
     lynxComputedDisplay: element.getAttribute("lynx-computed-display"),
+    attributes: Object.fromEntries(
+      element.getAttributeNames().map((name) => [name, element.getAttribute(name)]),
+    ),
     rect: {
       x: rect.x,
       y: rect.y,

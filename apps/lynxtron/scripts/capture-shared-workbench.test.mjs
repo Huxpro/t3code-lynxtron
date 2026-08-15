@@ -76,6 +76,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "(state?.web?.settingsMetrics?.sectionTitles?.length ?? 0) === 0");
     assert.include(workbench, 'element.getAttribute("lynx-computed-display")');
     assert.include(workbench, 'style.getPropertyValue("--flex-direction")');
+    assert.include(workbench, "element.getAttributeNames()");
   });
 
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
