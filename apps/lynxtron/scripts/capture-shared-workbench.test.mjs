@@ -167,6 +167,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId !== "model-picker-selected"');
     assert.include(source, "webMetrics?.selectedRowKeys?.length === 1");
     assert.include(source, "lynxMetrics?.selectedRowKeys?.length === 1");
+    assert.notInclude(source, "webOverlaySemanticKeys");
+    assert.notInclude(source, "lynxOverlaySemanticKeys");
   });
 
   it("compares clipped pending-question work rows by their visible outer box", () => {

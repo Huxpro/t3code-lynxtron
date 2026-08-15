@@ -3226,7 +3226,8 @@ async function captureCell({
       modelPickerSemanticMatch,
       settingsContentMatch,
       overlayRowCountMatch: isModelPickerOverlay
-        ? webOverlaySemanticKeys.length === lynxOverlaySemanticKeys.length
+        ? (state?.web?.overlayMetrics?.semanticKeys?.length ?? 0) ===
+          (state?.lynx?.overlayMetrics?.semanticKeys?.length ?? 0)
         : state?.web?.overlayMetrics?.rowCount === state?.lynx?.overlayMetrics?.rowCount,
       webProjectSelectionStage,
       webShortcutInputChannel,
