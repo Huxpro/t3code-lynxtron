@@ -54,3 +54,5 @@ existing-thread-idle-browser-certification,2026-08-15T21:12:00+09:00,ddfc8dd518a
 existing-thread-idle-native-certification,2026-08-15T21:12:00+09:00,ddfc8dd518a65602e6d3c3205ba9eac41078f1a1,commit,Existing Thread idle Native certification,0.663767,0.663767,0.024008,0.655497,0.344503,0.31967
 new-thread-hero-light-browser-certification,2026-08-15T21:20:00+09:00,72471987d666ecb66c9636041cfb8127b837f08c,commit,New Thread light Hero Browser certification,0.658917,0.658917,0.023649,0.650655,0.349345,0.32452
 new-thread-hero-light-native-certification,2026-08-15T21:20:00+09:00,72471987d666ecb66c9636041cfb8127b837f08c,commit,New Thread light Hero Native certification,0.652307,0.652307,0.023062,0.644099,0.355901,0.33113
+quick-switch-default-browser-certification,2026-08-15T21:42:00+09:00,abfeebf434247bb32ca36a8fea5d0df7e2ac12fe,commit,Quick Switch default Browser certification,0.644847,0.644847,0.02306,0.636464,0.363536,0.33859
+quick-switch-default-native-certification,2026-08-15T21:42:00+09:00,9e56664a7f15e678bd80839bc64def1ac4b9fd24,commit,Quick Switch default Native certification,0.636373,0.636373,0.022535,0.62799,0.37201,0.347064

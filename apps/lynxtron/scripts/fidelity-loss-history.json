@@ -4377,6 +4377,112 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-default-browser-certification",
+      "observedAt": "2026-08-15T21:42:00+09:00",
+      "commit": "abfeebf434247bb32ca36a8fea5d0df7e2ac12fe",
+      "codeState": "commit",
+      "label": "Quick Switch default Browser certification",
+      "narrative": "The same immutable idle thread opens Quick Switch through real Cmd+K input in Web and a real Lynx host keyboard packet in Lynx-for-Web. Both renderers show the same seven rows, query, project and thread identity, 576px panel, 574x48 search shell, 558x32 first row, and footer within a 2px vertical tolerance. Full-frame SSIM is 0.851934 and panel-region SSIM is 0.786243, so the remaining glass and shadow material gap stays explicit.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser shortcut and anatomy evidence replaces stale matrix cells without a product change. Duplicate anatomy keys and mismatched search-shell selectors are classified as harness issues."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/quick-switch-default-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ec9f905c733f5a0c8c9a0101b626d091a8f36056e1479adc194e52cc2d53bc37"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-quick-switch-content",
+              "source": "same selected project and thread, command mode, empty query, and seven identical canonical row labels"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "quick-switch-panel-anatomy",
+              "source": "Panel, search shell, results, footer, and first row at 1280x820"
+            },
+            "material": {
+              "residual": 0.148066,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.851934 at the matched default Quick Switch frame; panel-region residual is 0.213757"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-command-shortcut",
+              "source": "Web cdp-meta-k and Lynx host keyboard packet meta-k open the same stable default palette"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-quick-switch-readiness",
+              "source": "same immutable fixture, identity match, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-default-native-certification",
+      "observedAt": "2026-08-15T21:42:00+09:00",
+      "commit": "9e56664a7f15e678bd80839bc64def1ac4b9fd24",
+      "codeState": "commit",
+      "label": "Quick Switch default Native certification",
+      "narrative": "A PID-owned exact production bundle opens the real default Quick Switch from isolated initial overlay state and verifies its seven canonical rows, panel, search, results, footer, outside dismissal, main transport sequence 2 to 3, zero renderer errors, released ports, and isolated cleanup. Native physical Cmd+K and pixel parity are not claimed.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, dismissal, and runtime evidence replaces stale cells without claiming Native shortcut input, material parity, or a product delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/quick-switch-default-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ec9f905c733f5a0c8c9a0101b626d091a8f36056e1479adc194e52cc2d53bc37"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-default"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-quick-switch-content",
+              "source": "command mode, empty query, and seven canonical action and thread rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-quick-switch-anatomy",
+              "source": "Measured Native panel, search, results, footer, seven rows, and outside dismissal"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle, main transport 2 to 3, zero renderer errors, released ports, and isolated cleanup"
+            }
+          }
+        }
+      ]
     }
   ]
 }

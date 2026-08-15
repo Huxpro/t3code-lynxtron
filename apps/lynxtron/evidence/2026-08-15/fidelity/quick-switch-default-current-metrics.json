@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T21:42:00+09:00",
+  "evidenceCommit": "9e56664a7f15e678bd80839bc64def1ac4b9fd24",
+  "stateId": "quick-switch-default",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch"
+  },
+  "fixture": {
+    "createdThroughRealConnector": true,
+    "workspace": "/tmp/t3-hero-claude-workspace",
+    "projectId": "dd422c59-fba4-4c0d-aa05-9e4168a702a1",
+    "projectTitle": "t3-hero-claude-workspace",
+    "threadId": "291e58da-0555-4e12-be72-214cfff15405",
+    "threadTitle": "Quick Switch idle thread",
+    "sessionStatus": "idle",
+    "messageCount": 0,
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "snapshotSha256": "e88f8c0d85f13e2829d8121f12b1b924b89d3243557c04889568dc99b41ae74c"
+  },
+  "classification": {
+    "productLoss": [],
+    "harnessMismatch": [
+      "The Web Quick Switch anatomy measurement was overwritten by a later model-picker-only object key, leaving anatomy null. The merged branch now retains symmetric panel, search, results, footer, and row measurements.",
+      "The first symmetric measurement compared Web's nested input wrapper against Lynx's full search row. A geometry-based ancestor resolver now selects the equivalent 574x48 search shell."
+    ],
+    "ledgerScope": "Browser evidence updates content, geometry, interaction, material, and runtime. Native updates content, geometry, interaction through outside dismissal, and runtime; Native shortcut input and pixel material are not claimed."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "abfeebf434247bb32ca36a8fea5d0df7e2ac12fe",
+    "webBundleSha256": "c610aaf5abdfb3d70ef679fad5ce347415ccbdf9554a717db654d8b8dc188d05",
+    "lynxBundleSha256": "b2fa009a25d76534f0244423fb87f7db7ca07b303fec93989e884cd729aa57bb",
+    "capturePass": true,
+    "readyMs": 1949,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "inputChannels": {
+      "web": "cdp-meta-k",
+      "lynx": "lynx-host-keyboard-packet:meta-k"
+    },
+    "rowLabels": [
+      "New thread in t3-hero-claude-workspace",
+      "New thread in...",
+      "Go to file",
+      "Search project contents",
+      "Add project",
+      "Open settings",
+      "Quick Switch idle thread"
+    ],
+    "geometry": {
+      "web": {
+        "panel": { "x": 352, "y": 82, "width": 576, "height": 408 },
+        "search": { "x": 353, "y": 83, "width": 574, "height": 48 },
+        "results": { "x": 353, "y": 131, "width": 574, "height": 318 },
+        "footer": { "x": 353, "y": 449, "width": 574, "height": 40 },
+        "firstRow": { "x": 361, "y": 167, "width": 558, "height": 32 }
+      },
+      "lynx": {
+        "panel": { "x": 352, "y": 82, "width": 576, "height": 406 },
+        "search": { "x": 353, "y": 83, "width": 574, "height": 48 },
+        "results": { "x": 353, "y": 131, "width": 574, "height": 316 },
+        "footer": { "x": 353, "y": 447, "width": 574, "height": 40 },
+        "firstRow": { "x": 361, "y": 167, "width": 558, "height": 32 }
+      }
+    },
+    "fullFrameSsim": 0.851934,
+    "fullFrameResidual": 0.148066,
+    "panelRegion": {
+      "crop": { "x": 352, "y": 82, "width": 576, "height": 408 },
+      "ssim": 0.786243,
+      "residual": 0.213757
+    },
+    "reportSha256": "027f5d63c9a9b35ee66042f0952d70cb3646c2ae7e8cdea64f31ee0d2ed074a4",
+    "webScreenshotSha256": "c01d5494acc27b2ce067f0a1e42e39e939c2ee6f7dac58c17b7de440385bbcbb",
+    "lynxScreenshotSha256": "56445474e7edc018b1c1ab9c95eb0ed7eda5cef9b511ce7a6055c79bb8990559",
+    "ownedBrowserProcessesAfterCapture": 0,
+    "ownedServerProcessesAfterCapture": 0,
+    "isolatedChromeProfilesAfterCapture": 0
+  },
+  "native": {
+    "status": "pass",
+    "head": "9e56664a7f15e678bd80839bc64def1ac4b9fd24",
+    "bundleSha256": "5ae2a28183fc269f4a4688d7e9baa2dee8fe180df9c075190b81afc13e364946",
+    "bundleBytes": 4374074,
+    "snapshotId": "e88f8c0d85f13e2829d8121f12b1b924b89d3243557c04889568dc99b41ae74c",
+    "viewport": { "width": 1280, "height": 820 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "input": "initialOverlay product state plus measured DevTool outside tap",
+    "shortcutEvidence": "not-claimed",
+    "geometry": {
+      "panel": { "x": 353, "y": 82, "width": 574, "height": 398 },
+      "search": { "x": 354, "y": 83, "width": 572, "height": 48 },
+      "results": { "x": 354, "y": 131, "width": 572, "height": 308 },
+      "footer": { "x": 354, "y": 439, "width": 572, "height": 40 },
+      "firstRow": { "x": 362, "y": 167, "width": 556, "height": 32 },
+      "lastRow": { "x": 362, "y": 387, "width": 556, "height": 44 }
+    },
+    "rowLabels": [
+      "New thread in t3-hero-claude-workspace",
+      "New thread in...",
+      "Go to file",
+      "Search project contents",
+      "Add project",
+      "Open settings",
+      "Quick Switch idle thread"
+    ],
+    "outsideDismissed": true,
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "ownedProcessExited": true,
+    "ownedServerPortReleased": true,
+    "devToolListenerReleased": true,
+    "reportSha256": "bf1b246ee25b42e3b1dc19ee5dd0154628740535630e8c97a2df58849e8cd67e"
+  },
+  "remainingRisk": [
+    "Full-frame Browser material residual remains 0.148066 and panel-region residual remains 0.213757, driven primarily by Web glass blur and shadow versus the Native-compatible flat material.",
+    "Native physical Cmd+K input remains unclaimed; Browser Web and Lynx-for-Web shortcut paths are verified.",
+    "Hover and active row material are separate interaction states and are not inferred from this default frame."
+  ]
+}
