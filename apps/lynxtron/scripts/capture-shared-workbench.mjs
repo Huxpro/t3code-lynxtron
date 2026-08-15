@@ -210,6 +210,43 @@ function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
   return keys.every((key) => rectDeltaWithin(webMetrics.anatomy[key], lynxMetrics.anatomy[key], 2));
 }
 
+function modelPickerSemanticsMatch(webMetrics, lynxMetrics) {
+  const selectedModelMatches = webMetrics?.selectedModelKey === lynxMetrics?.selectedModelKey;
+  const selectedRowsMatch =
+    JSON.stringify(webMetrics?.selectedRowKeys ?? []) ===
+    JSON.stringify(lynxMetrics?.selectedRowKeys ?? []);
+  const selectedStateReady =
+    stateId !== "model-picker-selected" ||
+    (typeof webMetrics?.selectedModelKey === "string" &&
+      webMetrics.selectedModelKey.length > 0 &&
+      webMetrics?.selectedRowKeys?.length === 1 &&
+      lynxMetrics?.selectedRowKeys?.length === 1 &&
+      webMetrics.selectedRowKeys[0] === webMetrics.selectedModelKey &&
+      lynxMetrics.selectedRowKeys[0] === lynxMetrics.selectedModelKey);
+  return (
+    JSON.stringify(webMetrics?.semanticKeys ?? []) ===
+      JSON.stringify(lynxMetrics?.semanticKeys ?? []) &&
+    JSON.stringify(
+      (webMetrics?.providerItems ?? []).map(({ id, active, disabled }) => ({
+        id,
+        active,
+        disabled,
+      })),
+    ) ===
+      JSON.stringify(
+        (lynxMetrics?.providerItems ?? []).map(({ id, active, disabled }) => ({
+          id,
+          active,
+          disabled,
+        })),
+      ) &&
+    selectedModelMatches &&
+    selectedRowsMatch &&
+    webMetrics?.selectedProviderId === lynxMetrics?.selectedProviderId &&
+    selectedStateReady
+  );
+}
+
 function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeight) {
   if (
     !composerMetricsMatch(webMetrics, expectation) ||
@@ -2415,28 +2452,7 @@ async function captureCell({
             state?.lynx?.overlayMetrics?.selectedProviderId === providerId)));
     const currentModelPickerSemanticMatch =
       overlay !== "model-picker" ||
-      (JSON.stringify(state?.web?.overlayMetrics?.semanticKeys ?? []) ===
-        JSON.stringify(state?.lynx?.overlayMetrics?.semanticKeys ?? []) &&
-        JSON.stringify(
-          (state?.web?.overlayMetrics?.providerItems ?? []).map(({ id, active, disabled }) => ({
-            id,
-            active,
-            disabled,
-          })),
-        ) ===
-          JSON.stringify(
-            (state?.lynx?.overlayMetrics?.providerItems ?? []).map(({ id, active, disabled }) => ({
-              id,
-              active,
-              disabled,
-            })),
-          ) &&
-        state?.web?.overlayMetrics?.selectedModelKey ===
-          state?.lynx?.overlayMetrics?.selectedModelKey &&
-        JSON.stringify(state?.web?.overlayMetrics?.selectedRowKeys ?? []) ===
-          JSON.stringify(state?.lynx?.overlayMetrics?.selectedRowKeys ?? []) &&
-        state?.web?.overlayMetrics?.selectedProviderId ===
-          state?.lynx?.overlayMetrics?.selectedProviderId);
+      modelPickerSemanticsMatch(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics);
     modelPickerSemanticReadyPolls = currentModelPickerSemanticMatch
       ? modelPickerSemanticReadyPolls + 1
       : 0;
@@ -2872,32 +2888,10 @@ async function captureCell({
   const webOverlayRowLabels = state?.web?.overlayMetrics?.rowLabels ?? [];
   const lynxOverlayRowLabels = state?.lynx?.overlayMetrics?.rowLabels ?? [];
   const isModelPickerOverlay = webState?.overlay === "model-picker";
-  const webOverlaySemanticKeys = state?.web?.overlayMetrics?.semanticKeys ?? [];
-  const lynxOverlaySemanticKeys = state?.lynx?.overlayMetrics?.semanticKeys ?? [];
   const modelPickerSemanticMatch =
-    JSON.stringify(webOverlaySemanticKeys) === JSON.stringify(lynxOverlaySemanticKeys) &&
     JSON.stringify(state?.web?.overlayMetrics?.providerIds ?? []) ===
       JSON.stringify(state?.lynx?.overlayMetrics?.providerIds ?? []) &&
-    JSON.stringify(
-      (state?.web?.overlayMetrics?.providerItems ?? []).map(({ id, active, disabled }) => ({
-        id,
-        active,
-        disabled,
-      })),
-    ) ===
-      JSON.stringify(
-        (state?.lynx?.overlayMetrics?.providerItems ?? []).map(({ id, active, disabled }) => ({
-          id,
-          active,
-          disabled,
-        })),
-      ) &&
-    state?.web?.overlayMetrics?.selectedModelKey ===
-      state?.lynx?.overlayMetrics?.selectedModelKey &&
-    JSON.stringify(state?.web?.overlayMetrics?.selectedRowKeys ?? []) ===
-      JSON.stringify(state?.lynx?.overlayMetrics?.selectedRowKeys ?? []) &&
-    state?.web?.overlayMetrics?.selectedProviderId ===
-      state?.lynx?.overlayMetrics?.selectedProviderId;
+    modelPickerSemanticsMatch(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics);
   const overlayContentMatch = isModelPickerOverlay
     ? modelPickerSemanticMatch
     : webOverlayRowLabels.length === 0 && lynxOverlayRowLabels.length === 0

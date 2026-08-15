@@ -163,6 +163,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'overlay === "model-picker"');
     assert.include(source, '[data-composer-control="model"]');
     assert.include(source, "let lynxOverlayInputSent = overlay.length === 0");
+    assert.include(source, "function modelPickerSemanticsMatch");
+    assert.include(source, 'stateId !== "model-picker-selected"');
+    assert.include(source, "webMetrics?.selectedRowKeys?.length === 1");
+    assert.include(source, "lynxMetrics?.selectedRowKeys?.length === 1");
   });
 
   it("compares clipped pending-question work rows by their visible outer box", () => {
