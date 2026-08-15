@@ -89,6 +89,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "emptyRect: readElementBox(emptySurface)");
     assert.include(workbench, "rect: readElementBox(item)");
     assert.include(workbench, "element.getAttributeNames()");
+    assert.include(workbench, "overflow: style.overflow");
+    assert.include(workbench, "panelAncestors: readElementAncestors");
     assert.include(workbench, "readElementAncestors(settingsPanel)");
     assert.include(workbench, 'root?.querySelectorAll(".settings-row")');
     assert.include(workbench, "children: [...item.children].map");

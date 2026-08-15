@@ -79,6 +79,9 @@ function readElementBox(element) {
       flexDirection: style.flexDirection,
       position: style.position,
       zIndex: style.zIndex,
+      overflow: style.overflow,
+      overflowX: style.overflowX,
+      overflowY: style.overflowY,
       pointerEvents: style.pointerEvents,
       boxSizing: style.boxSizing,
       minHeight: style.minHeight,
@@ -543,6 +546,10 @@ function readLynxPane() {
             : overlay === "model-picker"
               ? {
                   panel: readElementBox(root?.querySelector(".model-picker-panel")),
+                  panelAncestors: readElementAncestors(
+                    root?.querySelector(".model-picker-panel"),
+                    8,
+                  ),
                   body: readElementBox(root?.querySelector(".model-picker-body")),
                   rail: readElementBox(root?.querySelector(".model-picker-rail")),
                   content: readElementBox(modelPickerContent),
