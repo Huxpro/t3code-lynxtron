@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T00:14:57+09:00",
+  "updatedAt": "2026-08-16T00:23:05+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -4906,6 +4906,67 @@
               "confidence": 0.99,
               "method": "shared-server-working-readiness",
               "source": "Same immutable running session and model, session projection pass, complete workbench pass in 1071ms, zero renderer errors, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-provider-rail-browser-certification-current",
+      "observedAt": "2026-08-16T00:23:05+09:00",
+      "commit": "c50d5242e952b2bf28ca34d97422ca97ddda8db7",
+      "codeState": "commit",
+      "label": "Model Picker provider rail current Browser certification",
+      "narrative": "The same idle Codex thread opens the model picker through real model-trigger input, then both Browser renderers receive a real OpenCode provider-rail selection. The selected model remains Codex because provider browsing is not a model mutation, while the active provider changes to OpenCode and both panes render the same seven OpenCode rows and five provider states. Full-frame SSIM is 0.922091 and panel SSIM is 0.940604, so material residual remains explicit.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser provider navigation replaces stale cells without a product change or a model-selection claim. Native cells remain unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-provider-rail-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f5dbfd63c66496e49328be92615b520e16d7fa63ff6f76685697161fb1070aa3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-provider-rail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-provider-rail-content",
+              "source": "Same active OpenCode provider, seven OpenCode rows, five provider states, and unchanged Codex selected-model metadata"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 1, 0, 0, 2, 1, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "provider-rail-model-picker-anatomy",
+              "source": "Panel, rail, content, search, list, and first-row rectangles at 1280x820"
+            },
+            "material": {
+              "residual": 0.077909,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.922091 at the matched OpenCode rail frame; panel residual is 0.059396"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-provider-rail-input",
+              "source": "Web CDP pointer and Lynx DOM click move both active providers from Codex to OpenCode with identical row postconditions"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-provider-readiness",
+              "source": "Same immutable fixture, complete workbench pass in 1798ms, zero renderer errors, and released owned listeners"
             }
           }
         }
