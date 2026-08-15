@@ -10,7 +10,7 @@ const workbench = readFileSync(path.join(appRoot, "scripts/shared-workbench/work
 describe("review diff capture contract", () => {
   it("admits real patches in both panes instead of requiring the historical R10 blocker", () => {
     expect(workbench).toContain(
-      'diffSurface.querySelector("[data-review-code-diff], .diff-render-surface")',
+      'const codeDiff = diffSurface?.querySelector("[data-review-code-diff], .diff-render-surface")',
     );
     expect(workbench).toContain(
       'loading: Boolean(diffSurface.querySelector("[data-review-patch-loading]"))',
@@ -22,6 +22,11 @@ describe("review diff capture contract", () => {
     expect(workbench).toContain("if (node.nodeType === 3)");
     expect(workbench).toContain("if (node.nodeType !== 1) return");
     expect(workbench).toContain("text: readComposedText(diffSurface).slice(0, 480)");
+    expect(workbench).toContain("surfaceRect: readElementBox(diffSurface)");
+    expect(workbench).toContain("codeDiffRect: readElementBox(codeDiff)");
+    expect(workbench).toContain(
+      'item.querySelector(".diff-code-file__header, [data-diffs-header]")',
+    );
     expect(capture).toContain("webMetrics.diff.selectedTurn === lynxMetrics.diff.selectedTurn");
     expect(capture).toContain("const EXPECTED_REVIEW_PATCH_LINES = [");
     expect(capture).toContain("function reviewDiffHasExpectedPatch(diff)");

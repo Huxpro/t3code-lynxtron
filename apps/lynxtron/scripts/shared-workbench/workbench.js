@@ -217,6 +217,7 @@ function readReviewMetrics(root) {
     root?.querySelector("[data-preview-panel-mode]");
   const emptySurface = root?.querySelector("[data-right-panel-empty-state]");
   const diffSurface = root?.querySelector("[data-review-surface='diff']");
+  const codeDiff = diffSurface?.querySelector("[data-review-code-diff], .diff-render-surface");
   const checkpointCards = [...(root?.querySelectorAll("[data-review-checkpoint-card]") ?? [])];
   const trees = [...(root?.querySelectorAll("[data-review-tree]") ?? [])];
   return {
@@ -257,15 +258,29 @@ function readReviewMetrics(root) {
     treeFileCounts: trees.map((item) => Number(item.getAttribute("data-review-file-count") ?? "0")),
     diff: diffSurface
       ? {
+          surfaceRect: readElementBox(diffSurface),
+          subheaderRect: readElementBox(diffSurface.querySelector(".diff-panel-subheader")),
+          viewportRect: readElementBox(
+            diffSurface.querySelector(".diff-panel-viewport, .diff-panel"),
+          ),
+          codeDiffRect: readElementBox(codeDiff),
+          codeFiles: [...diffSurface.querySelectorAll("[data-review-code-file]")].map((item) => ({
+            path: item.getAttribute("data-review-code-file"),
+            rect: readElementBox(item),
+            headerRect: readElementBox(
+              item.querySelector(".diff-code-file__header, [data-diffs-header]"),
+            ),
+            lineRects: [...item.querySelectorAll("[data-review-code-line]")].map((line) =>
+              readElementBox(line),
+            ),
+          })),
           checkpointCount: Number(diffSurface.getAttribute("data-review-checkpoint-count") ?? "0"),
           selectedTurn: diffSurface.getAttribute("data-review-selected-turn") ?? null,
           fileCount: Number(diffSurface.getAttribute("data-review-file-count") ?? "0"),
           empty: Boolean(diffSurface.querySelector("[data-review-empty-state]")),
           loading: Boolean(diffSurface.querySelector("[data-review-patch-loading]")),
           error: Boolean(diffSurface.querySelector("[data-review-patch-error]")),
-          codeDiff: Boolean(
-            diffSurface.querySelector("[data-review-code-diff], .diff-render-surface"),
-          ),
+          codeDiff: Boolean(codeDiff),
           runtimeBlocker:
             diffSurface
               .querySelector("[data-review-runtime-blocker]")
