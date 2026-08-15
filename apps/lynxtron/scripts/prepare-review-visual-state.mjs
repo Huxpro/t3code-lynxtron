@@ -114,10 +114,7 @@ export async function prepareReviewVisualState(baseDirectory, options = {}) {
     if (connected.status !== "ready") {
       throw new Error(`Connector did not become ready: ${connected.status}`);
     }
-    const project = await onShell(
-      (shell) => shell.projects[0],
-      "canonical project shell",
-    );
+    const project = await onShell((shell) => shell.projects[0], "canonical project shell");
     if (latestShell.threads.length !== 0) {
       throw new Error("Review visual state must start from an empty visual snapshot.");
     }
@@ -144,8 +141,8 @@ export async function prepareReviewVisualState(baseDirectory, options = {}) {
         }
         const checkpoints =
           payload?.checkpoints
-          ?.filter((candidate) => candidate.status === "ready" && candidate.files.length > 0)
-          .sort((left, right) => right.checkpointTurnCount - left.checkpointTurnCount) ?? [];
+            ?.filter((candidate) => candidate.status === "ready" && candidate.files.length > 0)
+            .sort((left, right) => right.checkpointTurnCount - left.checkpointTurnCount) ?? [];
         if (checkpoints[0]) {
           return { kind: "ready", payload, checkpoint: checkpoints[0] };
         }
@@ -182,9 +179,13 @@ export async function prepareReviewVisualState(baseDirectory, options = {}) {
       );
     }
     const { payload, checkpoint } = outcome;
+    const finalThread = latestShell.threads.find((thread) => thread.id === threadId);
+    if (!finalThread?.title) {
+      throw new Error("Review fixture did not retain its final projected thread title.");
+    }
     fixture = {
       threadId,
-      title,
+      title: finalThread.title,
       prompt,
       modelSelection,
       messageCount: payload.messages.length,
