@@ -236,6 +236,20 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "lynxOverlaySemanticKeys");
   });
 
+  it("prepares the selected model through the isolated thread projection", () => {
+    assert.include(source, "async function prepareStateFixture");
+    assert.include(source, 'stateId !== "model-picker-selected"');
+    assert.include(source, '"apps/server/scripts/t3-sqlite-state.ts"');
+    assert.include(source, "UPDATE projection_threads");
+    assert.include(source, "model_selection_json = json_object");
+    assert.include(source, '"claudeAgent"');
+    assert.include(source, '"claude-fable-5"');
+    assert.include(source, "} finally {");
+    assert.include(source, "await rm(mutationReport.backup, { force: true })");
+    assert.include(source, "sourceSeedHash: seed?.snapshotSha256 ?? null");
+    assert.include(source, "fixturePreparation.preparedSha256");
+  });
+
   it("compares clipped pending-question work rows by their visible outer box", () => {
     const capture = readFileSync(
       path.join(import.meta.dirname, "capture-shared-workbench.mjs"),

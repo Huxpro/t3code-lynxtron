@@ -101,6 +101,10 @@ const explicitSeedSource = argValue("--seed-source", "");
 const expandThinking = hasFlag("--expand-thinking");
 const keepServer = hasFlag("--keep-server");
 const timeoutMs = Number(argValue("--timeout-ms", "35000"));
+const selectedModelFixture = {
+  instanceId: "claudeAgent",
+  model: "claude-fable-5",
+};
 if (sidebarTargetState && !["expanded", "collapsed"].includes(sidebarTargetState)) {
   throw new Error(`Unsupported --sidebar-state: ${sidebarTargetState}`);
 }
@@ -997,6 +1001,86 @@ async function hashFile(filePath) {
   };
 }
 
+async function prepareStateFixture({ seed, expectedThreadFixture }) {
+  if (stateId !== "model-picker-selected") {
+    return {
+      kind: "pristine-seed",
+      sourceSha256: seed?.snapshotSha256 ?? null,
+      preparedSha256: seed?.snapshotSha256 ?? null,
+    };
+  }
+
+  const threadId = expectedThreadFixture?.id;
+  if (!threadId) {
+    throw new Error("Selected-model fixture preparation requires a seeded thread");
+  }
+
+  const databasePath = path.join(baseDir, "userdata", "state.sqlite");
+  const escapedThreadId = threadId.replaceAll("'", "''");
+  const sql = `UPDATE projection_threads
+SET model_selection_json = json_object(
+  'instanceId', '${selectedModelFixture.instanceId}',
+  'model', '${selectedModelFixture.model}'
+)
+WHERE thread_id = '${escapedThreadId}';`;
+  const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
+  const mutation = spawnSync(
+    process.env.T3_NODE_BIN?.trim() || "node",
+    [sqliteStateScript, "exec", "--base-dir", baseDir, "--sql", sql],
+    { encoding: "utf8", cwd: repoRoot },
+  );
+  if (mutation.status !== 0) {
+    throw new Error(
+      `Selected-model fixture preparation failed: ${
+        mutation.stderr || mutation.stdout || "unknown"
+      }`,
+    );
+  }
+
+  const mutationReport = JSON.parse(mutation.stdout);
+  try {
+    const query = spawnSync(
+      process.env.T3_NODE_BIN?.trim() || "node",
+      [
+        sqliteStateScript,
+        "query",
+        "--base-dir",
+        baseDir,
+        "--sql",
+        `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`,
+      ],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    if (query.status !== 0) {
+      throw new Error(
+        `Selected-model fixture verification failed: ${query.stderr || query.stdout || "unknown"}`,
+      );
+    }
+    const queryReport = JSON.parse(query.stdout);
+    const expectedSelection = JSON.stringify(selectedModelFixture);
+    if (
+      queryReport.rows?.length !== 1 ||
+      queryReport.rows[0]?.model_selection_json !== expectedSelection
+    ) {
+      throw new Error(
+        `Selected-model fixture verification mismatch: ${JSON.stringify(queryReport.rows ?? [])}`,
+      );
+    }
+
+    const prepared = await hashFile(databasePath);
+    return {
+      kind: "thread-model-selection",
+      sourceSha256: seed?.snapshotSha256 ?? null,
+      preparedSha256: prepared.sha256,
+      threadId,
+      modelSelection: selectedModelFixture,
+      backupRemoved: true,
+    };
+  } finally {
+    await rm(mutationReport.backup, { force: true });
+  }
+}
+
 async function webEntryBundlePath() {
   const indexPath = path.join(WEB_DIST, "index.html");
   const indexHtml = await readFile(indexPath, "utf8");
@@ -1158,6 +1242,9 @@ async function main() {
       `State ${stateId} requires a populated failed-turn fixture, but ${seedSource} has none`,
     );
   }
+  const fixturePreparation = await prepareStateFixture({ seed, expectedThreadFixture });
+  seed.fixturePreparation = fixturePreparation;
+  await writeFile(seedReportPath, `${JSON.stringify(seed, null, 2)}\n`);
   const expectProject = semanticRoute.startsWith("settings-")
     ? ""
     : (expectedThreadFixture?.projectTitle ?? seed?.dataset?.projects?.[0]?.title ?? "");
@@ -1303,7 +1390,7 @@ async function main() {
         expectProject,
         expectThread,
         expectedThreadFixture,
-        seedHash: seed?.snapshotSha256 ?? null,
+        seedHash: fixturePreparation.preparedSha256,
         stateId,
         semanticRoute,
         webRoute: requestedWebRoute,
@@ -1335,7 +1422,13 @@ async function main() {
     task: "SB3",
     generatedAt: new Date().toISOString(),
     commit,
-    server: { baseDir, seedHash: seed?.snapshotSha256 ?? null, expectProject },
+    server: {
+      baseDir,
+      seedHash: fixturePreparation.preparedSha256,
+      sourceSeedHash: seed?.snapshotSha256 ?? null,
+      fixturePreparation,
+      expectProject,
+    },
     bundles: { web: webBundle, lynx: lynxBundle },
     cells: results,
     pass: failures === 0,
