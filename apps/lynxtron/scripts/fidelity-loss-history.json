@@ -4542,6 +4542,124 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-actions-only-browser-certification",
+      "observedAt": "2026-08-15T22:04:00+09:00",
+      "commit": "aa87ec40286a751999110035b02d486c4b61cb9a",
+      "codeState": "commit",
+      "label": "Quick Switch actions-only Browser certification",
+      "narrative": "The same immutable idle thread opens Quick Switch and receives the > actions-only prefix through real Browser input in both panes. Web and Lynx-for-Web converge on six action rows, query, panel, search, results, footer, and row geometry with zero errors. Full-frame SSIM is 0.869801, so the glass material residual remains explicit.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh Browser input and filtering evidence replaces stale actions-only cells without a product change. Native physical query input remains pending-user-session."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/quick-switch-filter-states-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "51a7682174ae8914df973c8c24b96c96cfff3080cb381bdb8f1a6c6f9dc95a0c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-actions-only-content",
+              "source": "query > and six identical action rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "actions-only-palette-anatomy",
+              "source": "Panel, search, results, footer, and first row match exactly"
+            },
+            "material": {
+              "residual": 0.130199,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.869801 at the matched actions-only frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-actions-prefix",
+              "source": "Real shortcut and character input produce the same > query and filtered rows"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-actions-readiness",
+              "source": "Same immutable fixture, identity match, ready lifecycle, zero Browser errors, and zero owned residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-empty-browser-certification",
+      "observedAt": "2026-08-15T22:04:00+09:00",
+      "commit": "aa87ec40286a751999110035b02d486c4b61cb9a",
+      "codeState": "commit",
+      "label": "Quick Switch empty Browser certification",
+      "narrative": "The same immutable idle thread receives zzzz-no-result through real Browser input in both panes. Web and Lynx-for-Web converge on zero rows, the same no-matches copy, and exact panel, search, 100px empty surface, footer, and overall geometry. Full-frame SSIM is 0.880696. The first run's failure was a harness row requirement applied to an intentionally empty state.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh Browser empty-state input evidence replaces stale cells without a product change. The state-aware anatomy gate is recorded as harness repair; Native physical typing remains pending."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/quick-switch-filter-states-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "51a7682174ae8914df973c8c24b96c96cfff3080cb381bdb8f1a6c6f9dc95a0c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-quick-switch-empty-content",
+              "source": "query zzzz-no-result, zero rows, and identical no-matches copy"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "empty-palette-anatomy",
+              "source": "Panel, search, results, footer, and empty surface match exactly"
+            },
+            "material": {
+              "residual": 0.119304,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.880696 at the matched empty Quick Switch frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-empty-query-input",
+              "source": "Real character input produces the same empty query postcondition and no-matches surface"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-empty-readiness",
+              "source": "Same immutable fixture, identity match, ready lifecycle, zero Browser errors, and zero owned residue"
+            }
+          }
+        }
+      ]
     }
   ]
 }
