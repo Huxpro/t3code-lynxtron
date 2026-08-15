@@ -43,6 +43,7 @@ export interface SidebarV2ControlsSurfaceProps {
   readonly onProjectScopeKeyChange: (scopeKey: string | null) => void;
   readonly projectScopeMenuOpen: boolean;
   readonly onProjectScopeMenuOpenChange: (open: boolean) => void;
+  readonly projectScopeControlWidth?: number;
   readonly scopedFavicon: ReactNode | null;
   readonly scopedDisplayName: string | null;
   readonly onNewProjectClick: HostButtonProps["onClick"];
@@ -125,7 +126,20 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
             className={`flex items-center gap-1${props.projectScopeVisual ? " sidebar-v2-control-row--authority" : ""}`}
           >
             {props.projectScopeVisual}
-            <HostView className="relative min-w-0 flex-1">
+            <HostView
+              className={`sidebar-v2-project-scope-host relative min-w-0 flex-1${
+                props.projectScopeMenuOpen ? " sidebar-v2-project-scope-host--open" : ""
+              }`}
+              {...(props.projectScopeControlWidth === undefined
+                ? {}
+                : {
+                    style: {
+                      width: `${props.projectScopeControlWidth}px`,
+                      minWidth: `${props.projectScopeControlWidth}px`,
+                      maxWidth: `${props.projectScopeControlWidth}px`,
+                    },
+                  })}
+            >
               <Menu
                 open={props.projectScopeMenuOpen}
                 onOpenChange={props.onProjectScopeMenuOpenChange}
@@ -143,7 +157,22 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                   </HostText>
                   <ChevronDownIcon className="size-4 shrink-0 text-sidebar-muted-foreground/70" />
                 </MenuTrigger>
-                <MenuPopup align="start" className="w-(--anchor-width) sidebar-v2-scope-popup">
+                <MenuPopup
+                  align="start"
+                  className="w-(--anchor-width) sidebar-v2-scope-popup"
+                  {...(props.projectScopeControlWidth === undefined
+                    ? {}
+                    : {
+                        style: {
+                          position: "fixed",
+                          top: "140px",
+                          left: "8px",
+                          width: `${props.projectScopeControlWidth}px`,
+                          height: `${(props.projectScopeOptions.length + 1) * 32 + 8}px`,
+                          minHeight: `${(props.projectScopeOptions.length + 1) * 32 + 8}px`,
+                        },
+                      })}
+                >
                   <MenuRadioGroup
                     value={props.projectScopeKey ?? "all"}
                     onValueChange={(value) =>

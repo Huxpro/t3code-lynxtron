@@ -170,16 +170,20 @@
   box-sizing: border-box;
   overflow: hidden;
 }
-.sidebar-v2-row-card > view {
+.sidebar-v2-row-card__content {
   width: 100%;
-  height: 78px;
-  min-height: 78px;
-  max-height: 78px;
+  height: 62px;
+  min-height: 62px;
+  max-height: 62px;
   padding: 8px 10px;
   box-sizing: border-box;
 }
-.sidebar-v2-row-card--active {
-  background-color: var(--sidebar-active-surface);
+.sidebar-v2-row-item--active {
+  background-color: rgba(241, 243, 247, 0.11);
+  border-radius: 6px;
+}
+.theme-light .sidebar-v2-row-item--active {
+  background-color: #ffffff;
 }
 .sidebar-v2-row-card--selected {
   background-color: var(--sidebar-row-selected);
@@ -193,7 +197,7 @@
 .sidebar-v2-row-card:active {
   background-color: var(--sidebar-row-active);
 }
-.sidebar-v2-row-card .sidebar-v2-row-actions {
+.sidebar-v2-row-card .sidebar-v2-row-status {
   opacity: 1;
 }
 .sidebar-v2-row-card .sidebar-v2-row-actions > view {
@@ -575,8 +579,6 @@
 .lynx-project-favicon {
   width: 14px;
   height: 14px;
-  border-radius: 7px;
-  background-color: var(--primary);
 }
 
 /* R1/R6/R7: ReactLynx cannot load the DOM-heavy Web project-row card. The
@@ -1164,13 +1166,52 @@
   box-sizing: border-box;
   transform: translate(1px, 2px);
 }
-.sidebar-v2-scope-popup {
-  position: fixed;
-  top: 140px;
-  left: 12px;
+.sidebar-v2-project-scope-host--open {
   z-index: 160;
-  width: 250px;
+}
+.lynx-overlay-host {
+  position: fixed;
+  overflow: visible;
+}
+.sidebar-v2-scope-popup {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 160;
+  width: 100%;
   max-height: 256px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background-color: rgb(25, 25, 25);
+  box-sizing: border-box;
+}
+.theme-light .sidebar-v2-scope-popup {
+  border-color: rgba(0, 0, 0, 0.08);
+  background-color: rgb(255, 255, 255);
+}
+.sidebar-v2-scope-popup .lynx-menu-radio-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 4px;
+  gap: 8px;
+  color: var(--popover-foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.sidebar-v2-scope-popup .lynx-menu-radio-item[data-checked="true"] {
+  background-color: var(--accent);
 }
 .sidebar-v2-thread-list {
   width: calc(100% - 16px);

@@ -204,7 +204,10 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
       data-thread-item
       data-thread-id={props.threadId}
       data-thread-active={props.isActive ? "true" : "false"}
-      className="sidebar-v2-row-item relative list-none py-0.5 [content-visibility:auto] [contain-intrinsic-size:auto_96px]"
+      className={cn(
+        "sidebar-v2-row-item relative list-none py-0.5 [content-visibility:auto] [contain-intrinsic-size:auto_96px]",
+        props.isActive && "sidebar-v2-row-item--active",
+      )}
     >
       <Tooltip>
         <TooltipTrigger
@@ -227,7 +230,10 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
             />
           }
         >
-          <HostView className="relative z-10 h-[4.875rem] px-2.5 py-2">
+          <HostView
+            className="sidebar-v2-row-card__content relative z-10 h-[4.875rem] px-2.5 py-2"
+            data-sidebar-card-content
+          >
             <HostView className="flex h-5 min-w-0 items-center gap-1.5">
               {props.favicon}
               {props.projectTitle ? (
@@ -245,7 +251,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               <HostView className="relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
                 <HostText
                   className={cn(
-                    "pointer-events-none tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
+                    "sidebar-v2-row-status pointer-events-none tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
                     props.snoozeMenuOpen && "opacity-0",
                     props.cardActionsPersistent && "opacity-0",
                   )}

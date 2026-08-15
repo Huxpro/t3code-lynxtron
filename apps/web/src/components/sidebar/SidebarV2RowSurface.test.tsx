@@ -117,6 +117,8 @@ describe("SidebarV2RowSurface", () => {
     expect(markup.indexOf("t3code")).toBeLessThan(markup.indexOf("Working"));
     expect(markup.indexOf("Working")).toBeLessThan(markup.indexOf("Port Lynxtron"));
     expect(markup.indexOf("Port Lynxtron")).toBeLessThan(markup.indexOf("feature/lynx"));
+    expect(markup).toContain("sidebar-v2-row-status");
+    expect(markup).toContain("sidebar-v2-row-actions");
   });
 
   it("keeps the project-card branch row stable when optional metadata is absent", () => {

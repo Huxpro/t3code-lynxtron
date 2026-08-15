@@ -88,15 +88,36 @@ export function MenuPopup({
   const isSidebarScopePopup = className?.includes("sidebar-v2-scope-popup") ?? false;
   const sideClass = side === "top" ? "bottom-full mb-1" : "top-full mt-1";
   const alignClass = align === "end" ? "right-0" : align === "start" ? "left-0" : "left-0";
+  if (isSidebarScopePopup) {
+    return (
+      <overlay level="1" className="lynx-overlay-host">
+        <view className="sidebar-v2-scope-overlay-root" style={{ width: "100vw", height: "100vh" }}>
+          <view
+            aria-hidden="true"
+            className="lynx-menu-dismiss-layer"
+            style={{ position: "absolute", inset: "0px", zIndex: 0 }}
+            bindtap={() => context.setOpen(false)}
+          />
+          <view
+            {...props}
+            className={classes(
+              "lynx-menu-popup flex max-h-64 w-full flex-col overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
+              className,
+            )}
+          >
+            {children}
+          </view>
+        </view>
+      </overlay>
+    );
+  }
   return (
     <>
-      {!isSidebarScopePopup ? (
-        <view
-          aria-hidden="true"
-          className="lynx-menu-dismiss-layer fixed bottom-0 left-[var(--sidebar-width)] right-0 top-0 z-40"
-          bindtap={() => context.setOpen(false)}
-        />
-      ) : null}
+      <view
+        aria-hidden="true"
+        className="lynx-menu-dismiss-layer fixed bottom-0 left-[var(--sidebar-width)] right-0 top-0 z-40"
+        bindtap={() => context.setOpen(false)}
+      />
       <view
         {...props}
         className={classes(

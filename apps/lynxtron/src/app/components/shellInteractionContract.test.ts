@@ -79,4 +79,43 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("min-height: 30px;");
     expect(overrides).toContain("flex-shrink: 0;");
   });
+
+  it("keeps Sidebar thread state truthful and actions progressively disclosed", () => {
+    const faviconSource = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ProjectFavicon.lynx.tsx"),
+      "utf8",
+    );
+
+    expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
+    expect(sidebarSource).toContain("topStatus={statusPresentation(status)}");
+    expect(sidebarSource).toContain("settlementSupported={false}");
+    expect(sidebarSource).not.toContain("cardActionsPersistent");
+    expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
+    expect(overrides).toContain(".sidebar-v2-row-item--active {");
+    expect(overrides).toContain("background-color: rgba(241, 243, 247, 0.11);");
+    expect(overrides).toContain(".theme-light .sidebar-v2-row-item--active {");
+    expect(overrides).toContain(".sidebar-v2-row-card__content {\n  width: 100%;\n  height: 62px;");
+    expect(overrides).not.toContain(".sidebar-v2-row-card:hover .sidebar-v2-row-actions,");
+    expect(faviconSource).toContain('name="folder"');
+    expect(faviconSource).not.toContain("background-color");
+  });
+
+  it("keeps the project scope popup inside the Sidebar rail", () => {
+    expect(overrides).toContain(
+      ".sidebar-v2-scope-popup {\n  position: absolute;\n  top: 36px;\n  left: 0;",
+    );
+    expect(overrides).toContain("width: 100%;");
+    expect(overrides).not.toContain("width: 250px;");
+    expect(overrides).toContain(".sidebar-v2-project-scope-host--open {");
+    expect(overrides).toContain(".sidebar-v2-scope-popup .lynx-menu-radio-item {");
+    expect(overrides).toContain("height: 32px;");
+    expect(sidebarSource).toContain("projectScopeControlWidth: sidebarWidth - 53");
+    expect(
+      readFileSync(
+        path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
+        "utf8",
+      ),
+    ).toContain('<overlay level="1" className="lynx-overlay-host">');
+    expect(overrides).toContain(".lynx-overlay-host {\n  position: fixed;\n  overflow: visible;");
+  });
 });

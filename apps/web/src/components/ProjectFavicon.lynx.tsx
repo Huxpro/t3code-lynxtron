@@ -1,4 +1,5 @@
 import type { EnvironmentId } from "@t3tools/contracts";
+import { Icon } from "../../../lynxtron/src/app/components/Icon";
 
 export function ProjectFavicon({
   className,
@@ -9,7 +10,10 @@ export function ProjectFavicon({
   readonly fallbackIcon?: unknown;
 }) {
   return (
-    <view
+    <Icon
+      name="folder"
+      size={14}
+      color="#818181"
       className={["lynx-project-favicon size-3.5 shrink-0", className].filter(Boolean).join(" ")}
     />
   );

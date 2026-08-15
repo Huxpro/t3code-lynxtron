@@ -20,6 +20,7 @@ import {
 import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
 import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV2RowSurface";
 import { HostText } from "./ui/hostElements";
+import { useSidebar } from "./ui/sidebar";
 import settingsRowUrl from "../../../lynxtron/src/app/assets/sidebar-settings-row@2x.png?external";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import { clientCapabilities } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
@@ -308,6 +309,7 @@ function LynxThreadActionMenu({
  */
 export default function SidebarV2() {
   const { activeThreadId, providerEntries, serverConfig } = useT3ClientState();
+  const { sidebarWidth } = useSidebar();
   const projects = useProjects();
   const threads = useThreadShells();
   const viewport = useViewportSnapshot();
@@ -440,6 +442,7 @@ export default function SidebarV2() {
         onProjectScopeKeyChange: setProjectScopeKey,
         projectScopeMenuOpen,
         onProjectScopeMenuOpenChange: setProjectScopeMenuOpen,
+        projectScopeControlWidth: sidebarWidth - 53,
         scopedFavicon: scopedProject ? (
           <ProjectFavicon
             environmentId={scopedProject.environmentId}
@@ -471,10 +474,9 @@ export default function SidebarV2() {
               isInFlight={status === "working" || status === "approval" || status === "input"}
               isUnread={false}
               isWoke={false}
-              settlementSupported={settlementSupported}
+              settlementSupported={false}
               snoozeSupported={false}
               showSnoozeButton={false}
-              cardActionsPersistent
               snoozeMenuOpen={false}
               snoozeWakeLabelText={null}
               projectTitle={project?.title ?? null}
@@ -518,11 +520,8 @@ export default function SidebarV2() {
                 >
                   <ProviderBrandIcon
                     driverKind={providerProjection.provider?.driverKind ?? null}
-                    size={12}
+                    size={14}
                   />
-                  <text className="sidebar-v2-provider-model" text-maxline="1">
-                    {providerProjection.modelLabel}
-                  </text>
                 </view>
               }
               detailsTooltip={null}
