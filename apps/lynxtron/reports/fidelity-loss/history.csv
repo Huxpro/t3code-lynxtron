@@ -93,3 +93,5 @@ quick-switch-query-current-visible-baseline,2026-08-16T07:56:00+09:00,2339dc20b3
 quick-switch-query-glass-fix-current,2026-08-16T08:03:00+09:00,bdd6da2d54bfa4d8fb562975536eec98fe181dc4,commit,Quick Switch Query glass material fix,0.51026,0.510256,0.020687,0.499915,0.500085,0.473177
 quick-switch-filter-states-current-visible-baseline,2026-08-16T08:11:00+09:00,742e035cd98cf57c2366c378be1895a3d4e5a8af,commit,Quick Switch filter states current visible baseline,0.510819,0.510256,0.021804,0.499915,0.500085,0.472618
 quick-switch-filter-states-glass-fix-current,2026-08-16T08:13:47+09:00,bdd6da2d54bfa4d8fb562975536eec98fe181dc4,commit,Quick Switch filter states glass fix,0.51016,0.51016,0.020487,0.499915,0.500085,0.473277
+model-picker-selected-current-visible-baseline,2026-08-16T08:51:27+09:00,137d9ba020c06e0e515fa83b5475a94e8bb06ab2,commit,Model Picker selected-model current visible baseline,0.509527,0.509527,0.021677,0.498659,0.501341,0.47391
+model-picker-selected-row-fidelity-fix-current,2026-08-16T08:51:27+09:00,4945d125c579a428f8b1d40d2dbbd1988d12d0b4,commit,Model Picker selected-row fidelity fix,0.509328,0.509328,0.021281,0.498659,0.501341,0.474109
