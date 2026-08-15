@@ -32,6 +32,13 @@ describe("Lynx Settings route projection", () => {
       ),
       "utf8",
     );
+    const generalLayout = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/generalSettingsHost.lynx.tsx",
+      ),
+      "utf8",
+    );
     for (const selector of [
       ".settings-content",
       ".settings-panel",
@@ -53,6 +60,13 @@ describe("Lynx Settings route projection", () => {
     expect(layout).toContain('"settings-section flex w-full min-w-0 flex-col self-stretch"');
     expect(layout).toContain('"settings-section__rows flex w-full min-w-0 flex-col self-stretch"');
     expect(layout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
+    expect(generalLayout).toContain('"settings-panel flex w-full min-w-0 flex-col self-stretch"');
+    expect(generalLayout).toContain('"settings-section flex w-full min-w-0 flex-col self-stretch"');
+    expect(generalLayout).toContain(
+      '"settings-section__rows flex w-full min-w-0 flex-col self-stretch"',
+    );
+    expect(generalLayout).toContain('"settings-row flex w-full min-w-0 self-stretch"');
+    expect(generalLayout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
   });
 
   it("renders portable Sidebar v2 auto-settle controls in Lynx", () => {

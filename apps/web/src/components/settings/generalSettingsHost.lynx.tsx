@@ -27,7 +27,13 @@ export function SettingsSection({
   readonly id?: string;
 }) {
   return (
-    <view id={id} className={joinClassNames("settings-section", className)}>
+    <view
+      id={id}
+      className={joinClassNames(
+        "settings-section flex w-full min-w-0 flex-col self-stretch",
+        className,
+      )}
+    >
       <view
         className={
           headerAction
@@ -43,7 +49,9 @@ export function SettingsSection({
           <view className="settings-section__header-right">{headerAction}</view>
         ) : null}
       </view>
-      <view className="settings-section__rows">{children}</view>
+      <view className="settings-section__rows flex w-full min-w-0 flex-col self-stretch">
+        {children}
+      </view>
     </view>
   );
 }
@@ -68,8 +76,11 @@ export function SettingsRow({
   readonly id?: string;
 }) {
   return (
-    <view id={id} className={joinClassNames("settings-row", className)}>
-      <view className="settings-row__text">
+    <view
+      id={id}
+      className={joinClassNames("settings-row flex w-full min-w-0 self-stretch", className)}
+    >
+      <view className="settings-row__text flex min-w-0 flex-1 flex-col">
         <view className="settings-row__title-line">
           <text className="settings-row__title">{title}</text>
           {resetAction ? <view className="settings-row__reset">{resetAction}</view> : null}
@@ -108,7 +119,16 @@ export function SettingsPageContainer({
   readonly children: ReactNode;
   readonly className?: string;
 }) {
-  return <view className={joinClassNames("settings-panel", className)}>{children}</view>;
+  return (
+    <view
+      className={joinClassNames(
+        "settings-panel flex w-full min-w-0 flex-col self-stretch",
+        className,
+      )}
+    >
+      {children}
+    </view>
+  );
 }
 
 export function GeneralSettingsSelect<Value extends string>({
