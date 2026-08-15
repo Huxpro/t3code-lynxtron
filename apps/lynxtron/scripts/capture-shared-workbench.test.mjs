@@ -74,6 +74,8 @@ describe("shared workbench lifecycle fault capture", () => {
       'sourceControlRows: [...doc.querySelectorAll(".source-control-item")]',
     );
     assert.notInclude(source, "(state?.web?.settingsMetrics?.sectionTitles?.length ?? 0) === 0");
+    assert.include(workbench, 'element.getAttribute("lynx-computed-display")');
+    assert.include(workbench, 'style.getPropertyValue("--flex-direction")');
   });
 
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {

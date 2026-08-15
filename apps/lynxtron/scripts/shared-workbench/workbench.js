@@ -63,6 +63,8 @@ function readElementBox(element) {
   const rect = element.getBoundingClientRect();
   const style = getComputedStyle(element);
   return {
+    tagName: element.tagName.toLowerCase(),
+    lynxComputedDisplay: element.getAttribute("lynx-computed-display"),
     rect: {
       x: rect.x,
       y: rect.y,
@@ -107,6 +109,9 @@ function readElementBox(element) {
       flexGrow: style.flexGrow,
       flexShrink: style.flexShrink,
       flexBasis: style.flexBasis,
+      flexDirectionToken: style.getPropertyValue("--flex-direction"),
+      lynxDisplayToken: style.getPropertyValue("--lynx-display"),
+      lynxDisplayToggle: style.getPropertyValue("--lynx-display-toggle"),
       fontSize: style.fontSize,
       fontWeight: style.fontWeight,
       lineHeight: style.lineHeight,
