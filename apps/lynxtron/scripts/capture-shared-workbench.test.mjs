@@ -114,6 +114,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"model-picker-empty": "__t3_no_models__"');
     assert.include(source, 'stateId !== "model-picker-empty"');
     assert.include(source, "webMetrics.emptyText === lynxMetrics?.emptyText");
+    assert.include(source, "if (!overlay) {");
+    assert.include(source, "Overlay ${overlay} closed before screenshot capture.");
     assert.include(source, 'stateId !== "settings-beta"');
     assert.include(source, '"Auto-settle inactive threads"');
     assert.include(source, '"Days of inactivity before auto-settle"');

@@ -3236,66 +3236,83 @@ async function captureCell({
       return { devicePixelRatio, webPane: { x: web.x, y: web.y, width: web.width, height: web.height }, lynxPane: { x: lynx.x, y: lynx.y, width: lynx.width, height: lynx.height } };
     })()`,
   );
-  for (let attempt = 0; attempt < 5; attempt += 1) {
-    const dismissNotificationPoint = await evaluate(
+  if (!overlay) {
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const dismissNotificationPoint = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pane = document.getElementById("web-pane");
+          const doc = pane?.contentWindow?.document;
+          const dismiss = doc?.querySelector('button[aria-label="Dismiss notification"]');
+          if (!dismiss || !pane) return null;
+          const paneRect = pane.getBoundingClientRect();
+          const rect = dismiss.getBoundingClientRect();
+          return {
+            x: paneRect.x + rect.x + rect.width / 2,
+            y: paneRect.y + rect.y + rect.height / 2,
+          };
+        })()`,
+      );
+      if (!dismissNotificationPoint) break;
+      await cdp.send(
+        "Input.dispatchMouseEvent",
+        {
+          type: "mouseMoved",
+          x: dismissNotificationPoint.x,
+          y: dismissNotificationPoint.y,
+          button: "none",
+        },
+        sessionId,
+      );
+      await cdp.send(
+        "Input.dispatchMouseEvent",
+        {
+          type: "mousePressed",
+          x: dismissNotificationPoint.x,
+          y: dismissNotificationPoint.y,
+          button: "left",
+          clickCount: 1,
+        },
+        sessionId,
+      );
+      await cdp.send(
+        "Input.dispatchMouseEvent",
+        {
+          type: "mouseReleased",
+          x: dismissNotificationPoint.x,
+          y: dismissNotificationPoint.y,
+          button: "left",
+          clickCount: 1,
+        },
+        sessionId,
+      );
+      await delay(350);
+    }
+  }
+  const notificationDismissed =
+    overlay.length > 0 ||
+    (await evaluate(
       cdp,
       sessionId,
-      `(() => {
-        const pane = document.getElementById("web-pane");
-        const doc = pane?.contentWindow?.document;
-        const dismiss = doc?.querySelector('button[aria-label="Dismiss notification"]');
-        if (!dismiss || !pane) return null;
-        const paneRect = pane.getBoundingClientRect();
-        const rect = dismiss.getBoundingClientRect();
-        return {
-          x: paneRect.x + rect.x + rect.width / 2,
-          y: paneRect.y + rect.y + rect.height / 2,
-        };
-      })()`,
-    );
-    if (!dismissNotificationPoint) break;
-    await cdp.send(
-      "Input.dispatchMouseEvent",
-      {
-        type: "mouseMoved",
-        x: dismissNotificationPoint.x,
-        y: dismissNotificationPoint.y,
-        button: "none",
-      },
-      sessionId,
-    );
-    await cdp.send(
-      "Input.dispatchMouseEvent",
-      {
-        type: "mousePressed",
-        x: dismissNotificationPoint.x,
-        y: dismissNotificationPoint.y,
-        button: "left",
-        clickCount: 1,
-      },
-      sessionId,
-    );
-    await cdp.send(
-      "Input.dispatchMouseEvent",
-      {
-        type: "mouseReleased",
-        x: dismissNotificationPoint.x,
-        y: dismissNotificationPoint.y,
-        button: "left",
-        clickCount: 1,
-      },
-      sessionId,
-    );
-    await delay(350);
-  }
-  const notificationDismissed = await evaluate(
-    cdp,
-    sessionId,
-    `!document.getElementById("web-pane")?.contentWindow?.document
-      ?.querySelector('button[aria-label="Dismiss notification"]')`,
-  );
+      `!document.getElementById("web-pane")?.contentWindow?.document
+        ?.querySelector('button[aria-label="Dismiss notification"]')`,
+    ));
   if (!notificationDismissed) {
     throw new Error("Web provider-update notification did not dismiss before capture.");
+  }
+  state =
+    (await evaluate(
+      cdp,
+      sessionId,
+      `(() => { const w = window.__T3_WORKBENCH__; return w ? w.read() : null; })()`,
+    ).catch(() => null)) ?? state;
+  if (
+    overlay &&
+    (state?.web?.productState?.overlay !== overlay ||
+      state?.lynx?.productState?.overlay !== overlay)
+  ) {
+    throw new Error(`Overlay ${overlay} closed before screenshot capture.`);
   }
   const clip = (r) => ({
     x: Math.round(r.x),
