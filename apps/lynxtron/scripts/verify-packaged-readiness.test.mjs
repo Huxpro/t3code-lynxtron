@@ -143,6 +143,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Idle thread rendered timeline content");
     assert.include(source, "idleFixture.messageCount !== 0");
     assert.include(source, 'measurement?.attributes["data-composer-state"] === "idle"');
+    assert.include(source, 'readOptionalMeasurement(client, "[data-chat-header]")');
+    assert.include(source, "Idle transcript placeholder lost the shared chat body");
     assert.include(source, "allowMissingContext: expectNoComposerContext");
     assert.include(source, "Non-repository idle thread rendered repository context.");
   });
