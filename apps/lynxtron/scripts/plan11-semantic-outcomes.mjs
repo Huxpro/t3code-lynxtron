@@ -12,9 +12,11 @@ const COMPOSER_ANCHOR_IDS = [
 ];
 
 export function assertComposerGeometry(measurements, options = {}) {
-  const requiredAnchorIds = options.allowMissingInteraction
-    ? COMPOSER_ANCHOR_IDS.filter((id) => id !== "interaction")
-    : COMPOSER_ANCHOR_IDS;
+  const requiredAnchorIds = COMPOSER_ANCHOR_IDS.filter(
+    (id) =>
+      !(options.allowMissingInteraction && id === "interaction") &&
+      !(options.allowMissingContext && id === "context"),
+  );
   for (const id of requiredAnchorIds) {
     const rect = measurements.anchors[id]?.rect;
     if (!rect || rect.width <= 0 || rect.height <= 0) {
@@ -45,7 +47,14 @@ export function assertComposerGeometry(measurements, options = {}) {
   }
 
   const shell = measurements.anchors.shell.rect;
-  for (const id of ["surface", "editor", "footer", "toolbar", ...controlIds, "context"]) {
+  for (const id of [
+    "surface",
+    "editor",
+    "footer",
+    "toolbar",
+    ...controlIds,
+    ...(options.allowMissingContext ? [] : ["context"]),
+  ]) {
     const rect = measurements.anchors[id].rect;
     if (rect.x < shell.x - 1 || rect.x + rect.width > shell.x + shell.width + 1) {
       throw new Error(`Composer ${id} escaped the shared shell.`);
@@ -66,10 +75,12 @@ export function assertComposerGeometry(measurements, options = {}) {
     throw new Error("Composer footer rendered above the editor.");
   }
 
-  const context = measurements.anchors.context.rect;
-  const surfaceBottom = surface.y + surface.height;
-  if (context.y > surfaceBottom + 1 || context.y + context.height < surfaceBottom - 1) {
-    throw new Error("Composer context strip lost its shared tucked overlap.");
+  if (!options.allowMissingContext) {
+    const context = measurements.anchors.context.rect;
+    const surfaceBottom = surface.y + surface.height;
+    if (context.y > surfaceBottom + 1 || context.y + context.height < surfaceBottom - 1) {
+      throw new Error("Composer context strip lost its shared tucked overlap.");
+    }
   }
 }
 

@@ -846,6 +846,7 @@ async function waitForMeasurement({ child, client, predicate, selector, timeoutM
 
 async function readComposerOutcome(client, options = {}) {
   const includeInteraction = options.allowMissingInteraction !== true;
+  const includeContext = options.allowMissingContext !== true;
   const measurements = await collectLynxMeasurements({
     runCdp: client.runCdp,
     spec: {
@@ -867,7 +868,7 @@ async function readComposerOutcome(client, options = {}) {
           ? [{ id: "interaction", lynx: ".composer-toolbar-control--interaction" }]
           : []),
         { id: "primaryAction", lynx: ".composer-primary-action" },
-        { id: "context", lynx: ".composer-context-strip" },
+        ...(includeContext ? [{ id: "context", lynx: ".composer-context-strip" }] : []),
       ],
       typography: [
         {
@@ -878,18 +879,26 @@ async function readComposerOutcome(client, options = {}) {
         ...(includeInteraction
           ? [{ id: "interaction", lynx: ".composer-toolbar-control--interaction" }]
           : []),
-        { id: "contextCheckout", lynx: ".composer-context-label--checkout" },
-        { id: "contextBranch", lynx: ".composer-context-label--branch" },
+        ...(includeContext
+          ? [
+              { id: "contextCheckout", lynx: ".composer-context-label--checkout" },
+              { id: "contextBranch", lynx: ".composer-context-label--branch" },
+            ]
+          : []),
       ],
       colors: [
         { id: "themeRoot", lynx: ".app-theme-root" },
         { id: "surface", lynx: ".composer-surface" },
         { id: "primaryAction", lynx: ".composer-primary-action" },
-        { id: "context", lynx: ".composer-context-strip" },
-        { id: "contextBackdrop", lynx: ".composer-context-backdrop" },
-        { id: "contextLegacyBand", lynx: ".composer-context-backdrop-band" },
-        { id: "contextLightBandFirst", lynx: ".composer-context-light-band--0" },
-        { id: "contextLightBandLast", lynx: ".composer-context-light-band--15" },
+        ...(includeContext
+          ? [
+              { id: "context", lynx: ".composer-context-strip" },
+              { id: "contextBackdrop", lynx: ".composer-context-backdrop" },
+              { id: "contextLegacyBand", lynx: ".composer-context-backdrop-band" },
+              { id: "contextLightBandFirst", lynx: ".composer-context-light-band--0" },
+              { id: "contextLightBandLast", lynx: ".composer-context-light-band--15" },
+            ]
+          : []),
       ],
     },
   });
@@ -908,7 +917,13 @@ async function readComposerOutcome(client, options = {}) {
   return measurements;
 }
 
-async function verifyHeroComposerState({ child, client, expectedModelLabel, timeoutMs }) {
+async function verifyHeroComposerState({
+  child,
+  client,
+  expectNoComposerContext,
+  expectedModelLabel,
+  timeoutMs,
+}) {
   const hero = await readOptionalMeasurement(client, ".hero");
   const overlay = await readOptionalMeasurement(client, ".composer-overlay");
   assertComposerRouteState({ hero, overlay }, "new-thread");
@@ -919,8 +934,27 @@ async function verifyHeroComposerState({ child, client, expectedModelLabel, time
     timeoutMs,
     predicate: (measurement) => measurement?.text.trim() === expectedModelLabel,
   });
-  const composer = await readComposerOutcome(client);
-  assertComposerGeometry(composer);
+  const composer = await readComposerOutcome(client, {
+    allowMissingContext: expectNoComposerContext,
+  });
+  assertComposerGeometry(composer, {
+    allowMissingContext: expectNoComposerContext,
+  });
+  const context = expectNoComposerContext
+    ? await Promise.all([
+        readOptionalMeasurement(client, ".composer-context-strip"),
+        readOptionalMeasurement(client, ".composer-context-label--checkout"),
+        readOptionalMeasurement(client, ".composer-context-label--branch"),
+      ]).then((measurements) => {
+        if (measurements.some((measurement) => measurement !== null)) {
+          throw new Error("Non-repository Hero Composer rendered repository context.");
+        }
+        return [];
+      })
+    : [
+        composer.typography.contextCheckout.text.trim(),
+        composer.typography.contextBranch.text.trim(),
+      ];
   const model = composer.anchors.model.text.trim();
   if (model !== expectedModelLabel) {
     throw new Error(
@@ -943,10 +977,7 @@ async function verifyHeroComposerState({ child, client, expectedModelLabel, time
         composer.anchors.runtime.text.trim(),
         composer.anchors.interaction.text.trim(),
       ].filter(Boolean),
-      context: [
-        composer.typography.contextCheckout.text.trim(),
-        composer.typography.contextBranch.text.trim(),
-      ],
+      context,
     },
   };
 }
@@ -2924,6 +2955,7 @@ async function runOnce({
   isFinalRun,
   modelSelection,
   expectedTheme,
+  expectNoComposerContext,
   expectedModelLabel,
   outputDirectory,
   projectCwd,
@@ -3071,6 +3103,7 @@ async function runOnce({
       ? await verifyHeroComposerState({
           child,
           client,
+          expectNoComposerContext,
           expectedModelLabel,
           timeoutMs,
         })
@@ -3296,6 +3329,7 @@ const height = Number(argumentValue("--height") ?? 820);
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? DEFAULT_TIMEOUT_MS);
 const expectedTheme = argumentValue("--expected-theme");
 const expectedModelLabel = argumentValue("--expected-model-label");
+const expectNoComposerContext = process.argv.includes("--expect-no-composer-context");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
@@ -3466,6 +3500,7 @@ for (let index = 1; index <= runs; index += 1) {
       isFinalRun: index === runs,
       modelSelection,
       expectedTheme,
+      expectNoComposerContext,
       expectedModelLabel,
       outputDirectory,
       projectCwd,

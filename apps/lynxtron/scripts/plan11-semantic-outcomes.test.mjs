@@ -31,6 +31,11 @@ function measurements(overrides = {}) {
 describe("Plan 11 semantic outcome assertions", () => {
   it("accepts visible Composer geometry in canonical control order", () => {
     assert.doesNotThrow(() => assertComposerGeometry(measurements()));
+    assert.doesNotThrow(() =>
+      assertComposerGeometry(measurements({ context: undefined }), {
+        allowMissingContext: true,
+      }),
+    );
   });
 
   it("rejects missing, reordered, and shell-escaping geometry independently", () => {

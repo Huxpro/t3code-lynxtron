@@ -124,8 +124,10 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyHeroComposerState");
     assert.include(source, '"--verify-hero-composer-state"');
     assert.include(source, '"--expected-model-label"');
+    assert.include(source, '"--expect-no-composer-context"');
     assert.include(source, 'assertComposerRouteState({ hero, overlay }, "new-thread")');
-    assert.include(source, "assertComposerGeometry(composer)");
+    assert.include(source, "allowMissingContext: expectNoComposerContext");
+    assert.include(source, "Non-repository Hero Composer rendered repository context.");
     assert.include(source, "heroOnlyEmptyFixture");
   });
 
