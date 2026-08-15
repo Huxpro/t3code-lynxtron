@@ -68,3 +68,4 @@ model-picker-provider-rail-browser-certification-current,2026-08-16T00:23:05+09:
 model-picker-query-browser-certification-current,2026-08-16T00:31:02+09:00,c166eadb9faffeab5c017d8f7e2e52b56d288242,commit,Model Picker query current Browser certification,0.594864,0.594864,0.022178,0.585675,0.414325,0.388573
 composer-sendable-browser-certification-current,2026-08-16T00:38:25+09:00,1e834cb701ad5ccb4fd31d1f50047b8ad0fe14e5,commit,Composer Sendable current Browser certification,0.59489,0.594864,0.022241,0.585675,0.414325,0.388547
 settings-archive-browser-certification-current,2026-08-16T01:18:08+09:00,391999b599f42ba922cae153b9a63306e7bf8314,commit,Settings Archive current Browser certification,0.590236,0.590236,0.022168,0.580946,0.419054,0.393201
+settings-beta-browser-certification-current,2026-08-16T01:43:30+09:00,1f104806f197c1b831674879182bbb1a21e5aa6e,commit,Settings Beta current Browser certification,0.585659,0.585659,0.022281,0.576217,0.423783,0.397778

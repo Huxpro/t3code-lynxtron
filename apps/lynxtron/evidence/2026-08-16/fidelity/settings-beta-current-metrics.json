@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T01:43:30+09:00",
+  "productCommit": "c96c0f1a20d3538e3044aaffe6e0c771cbd55ad8",
+  "evidenceCommit": "1f104806f197c1b831674879182bbb1a21e5aa6e",
+  "stateId": "settings-beta",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-beta",
+    "webRoute": "/settings/beta"
+  },
+  "fixture": {
+    "source": "read-only VACUUM INTO from ~/.t3/userdata/state.sqlite",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "clientSettings": {
+      "sidebarV2Enabled": true,
+      "sidebarV2ConfiguredByUser": true,
+      "sidebarAutoSettleAfterDays": 3
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Lynx omitted the portable auto-settle toggle and days input and displayed an obsolete status claiming Sidebar v2 had not moved, even though Lynx already renders Sidebar v2.",
+      "Portable client settings omitted sidebarAutoSettleAfterDays and sidebarV2ConfiguredByUser, preventing Lynx from sharing the Web Beta behavior.",
+      "The fix carries both settings through the schema-free client model and renders all three canonical rows with the same copy and persisted semantics."
+    ],
+    "harnessMismatch": [
+      "The original Settings gate compared only section titles and could not detect missing Beta rows. It now compares normalized section copy and requires three full-width rows with nonzero text and controls."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime for Beta Settings. Interaction and Native cells remain unchanged."
+  },
+  "browser": {
+    "status": "pass",
+    "capturePass": true,
+    "head": "1f104806f197c1b831674879182bbb1a21e5aa6e",
+    "readyMs": 2211,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "webBundleSha256": "54d0d6f36d7f6f06586a2c286b74934d8540d4c09e18a2d973c2233cdad7db4e",
+    "lynxBundleSha256": "0f27d6dcf62442506d59b4bcea4b76f2550125320eaa52ed019a6b9fcc964c0c",
+    "sectionTitle": "Beta features",
+    "rowTitles": [
+      "Sidebar v2",
+      "Auto-settle inactive threads",
+      "Days of inactivity before auto-settle"
+    ],
+    "sectionTextMatch": true,
+    "geometry": {
+      "web": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 309.0625 },
+        "section": { "x": 320, "y": 88, "width": 896, "height": 309.0625 },
+        "rows": { "x": 320, "y": 132, "width": 896, "height": 265.0625 }
+      },
+      "lynx": {
+        "panel": { "x": 320, "y": 100, "width": 896, "height": 318 },
+        "section": { "x": 320, "y": 100, "width": 896, "height": 270 },
+        "rows": { "x": 320, "y": 144, "width": 896, "height": 226 },
+        "sidebarV2": {
+          "row": { "x": 320, "y": 144, "width": 896, "height": 84 },
+          "text": { "x": 336, "y": 156, "width": 800, "height": 60 },
+          "control": { "x": 1168, "y": 176, "width": 32, "height": 20 }
+        },
+        "autoSettle": {
+          "row": { "x": 320, "y": 232, "width": 896, "height": 65 },
+          "text": { "x": 336, "y": 244, "width": 800, "height": 41 },
+          "control": { "x": 1168, "y": 254.5, "width": 32, "height": 20 }
+        },
+        "days": {
+          "row": { "x": 320, "y": 301, "width": 896, "height": 65 },
+          "text": { "x": 336, "y": 313, "width": 736, "height": 41 },
+          "control": { "x": 1104, "y": 317.5, "width": 96, "height": 32 }
+        }
+      }
+    },
+    "fullFrameSsim": 0.877422,
+    "fullFrameResidual": 0.122578,
+    "reportSha256": "39689488e88a80fc0b234950b99cc81f607568188a9357ea0fe5ee48276a219d",
+    "webScreenshotSha256": "89d8f9008bb399ed8356e8a52c01ee8620284c1abae9b3cb12082489b5b17b6d",
+    "lynxScreenshotSha256": "9fe867e7a03d6c78705ed886be2a5e3a5e6f20f37e2d570034f7daeca3ddb609"
+  },
+  "validation": {
+    "focusedTests": "33/33",
+    "webSettingsSurfaceTests": "13/13",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "Full-frame material residual remains 0.122578.",
+    "The Lynx Beta section begins 12px below Web and its row stack is 39px shorter.",
+    "This capture verifies rendered controls and persisted defaults but does not toggle or edit them.",
+    "Native Beta Settings interaction is not recaptured in this Browser-focused slice."
+  ]
+}

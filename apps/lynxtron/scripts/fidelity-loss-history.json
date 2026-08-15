@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T01:18:08+09:00",
+  "updatedAt": "2026-08-16T01:43:30+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5142,6 +5142,59 @@
               "confidence": 0.99,
               "method": "shared-server-archive-readiness",
               "source": "Canonical route, same empty fixture, complete workbench pass in 2125ms, zero renderer errors, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-beta-browser-certification-current",
+      "observedAt": "2026-08-16T01:43:30+09:00",
+      "commit": "1f104806f197c1b831674879182bbb1a21e5aa6e",
+      "codeState": "commit",
+      "label": "Settings Beta current Browser certification",
+      "narrative": "Lynx previously rendered only Sidebar v2 and an obsolete status claiming the renderer had not moved, while Web rendered portable auto-settle controls. The schema-free client settings also omitted sidebarAutoSettleAfterDays and sidebarV2ConfiguredByUser. The product now renders the same Sidebar v2, Auto-settle inactive threads, and Days of inactivity rows with identical copy and persisted semantics. A stricter Settings gate compares normalized section text and requires all three full-width rows with nonzero text and controls. Full-frame SSIM is 0.877422, so material residual remains explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Matched current-head Browser evidence attributes the missing rows and stale copy to the portable Beta implementation gap while retaining the measured material and vertical residuals."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-beta-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "64d86233a97163d8e4c7800dbe87d14e78a5cbcf736c6c17d7d1af916066730b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-beta-settings-content",
+              "source": "Exact normalized Beta section copy across Sidebar v2, Auto-settle inactive threads, and Days of inactivity rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 12, 0, 8.9375, 0, 12, 0, 39.0625, 0, 12, 0, 39.0625],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "beta-settings-width-contract",
+              "source": "Panel, section, and row-group widths plus three full-width Lynx rows with nonzero text and controls"
+            },
+            "material": {
+              "residual": 0.122578,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.877422 at the matched Beta Settings frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-beta-readiness",
+              "source": "Same client settings, complete content and geometry gates in 2211ms, zero renderer errors, and released owned listeners"
             }
           }
         }
