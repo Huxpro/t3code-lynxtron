@@ -2675,7 +2675,7 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   await tapSelector({
     child,
     client,
-    selector: '[data-thread-item][data-thread-active="false"]',
+    selector: '[data-thread-active="false"]',
     timeoutMs,
   });
   const selectedThreadRoute = await waitForRouteChange({

@@ -22,7 +22,7 @@ describe("packaged readiness Sidebar geometry", () => {
   });
 
   it("changes threads through the current Native Sidebar rows", () => {
-    assert.include(source, `selector: '[data-thread-item][data-thread-active="false"]'`);
+    assert.include(source, `selector: '[data-thread-active="false"]'`);
     assert.notInclude(source, 'selector: ".quick-switch-thread-row--other"');
   });
 
