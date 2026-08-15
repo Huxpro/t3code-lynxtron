@@ -48,6 +48,7 @@ describe("ChangedFilesCardSurface", () => {
     ] as const) {
       expect(markup).toContain('data-review-checkpoint-card="true"');
       expect(markup).toContain(`data-changed-files-state="${state}"`);
+      expect(markup).toContain(`turn-diff-card--${state}`);
       expect(markup).toContain('data-review-turn-id="turn-1"');
       expect(markup).toContain('data-review-file-count="2"');
       expect(markup).toContain('data-open-diff="true"');
@@ -57,6 +58,9 @@ describe("ChangedFilesCardSurface", () => {
     expect(collapsed).not.toContain("Expanded files");
     expect(preview).toContain("a.ts");
     expect(preview).toContain("Show all 2 files");
+    expect(preview).toContain("turn-diff-card__preview-scopes");
+    expect(preview).toContain("turn-diff-card__preview-files");
+    expect(preview).toContain("turn-diff-card__preview-show-all");
     expect(expanded).toContain("Expanded files");
     expect(expanded).toContain('data-folders="true"');
     expect(expanded).not.toContain("Show all 2 files");
@@ -65,9 +69,7 @@ describe("ChangedFilesCardSurface", () => {
   it("keeps the expanded header in normal flow with its body", () => {
     const expanded = renderCard({ expanded: true, compactPreviewVisible: false });
 
-    expect(expanded.indexOf("2 changed files")).toBeLessThan(
-      expanded.indexOf("Expanded files"),
-    );
+    expect(expanded.indexOf("2 changed files")).toBeLessThan(expanded.indexOf("Expanded files"));
     expect(expanded).not.toMatch(/\bsticky\b/);
     expect(expanded).not.toMatch(/\btop-2\b/);
   });

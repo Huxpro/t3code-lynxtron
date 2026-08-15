@@ -52,12 +52,18 @@ export function ChangedFilesCardSurface({
   readonly onExpandedChange: (expanded: boolean) => void;
   readonly onShowAll: () => void;
 }) {
-  const label =
-    statusLabel ?? `${fileCount} changed file${fileCount === 1 ? "" : "s"}`;
+  const label = statusLabel ?? `${fileCount} changed file${fileCount === 1 ? "" : "s"}`;
 
   return (
     <HostView
-      className="turn-diff-card mt-4 rounded-2xl border border-border/70 bg-secondary p-2 dark:border-transparent dark:bg-input/32"
+      className={cn(
+        "turn-diff-card mt-4 rounded-2xl border border-border/70 bg-secondary p-2 dark:border-transparent dark:bg-input/32",
+        expanded
+          ? "turn-diff-card--expanded"
+          : compactPreviewVisible
+            ? "turn-diff-card--preview"
+            : "turn-diff-card--collapsed",
+      )}
       data-review-checkpoint-card
       data-review-checkpoint-status={checkpointStatus}
       data-review-file-count={String(fileCount)}
@@ -94,10 +100,7 @@ export function ChangedFilesCardSurface({
             {stat}
           </HostView>
           <HostText
-            className={cn(
-              "ml-1 truncate text-[11px] text-muted-foreground",
-              hintClassName,
-            )}
+            className={cn("ml-1 truncate text-[11px] text-muted-foreground", hintClassName)}
           >
             {expanded ? "Hide files" : "Show files"}
           </HostText>
@@ -110,37 +113,50 @@ export function ChangedFilesCardSurface({
       {expanded ? (
         expandedBody
       ) : compactPreviewVisible ? (
-        <HostView className="px-2 pb-1.5 pt-1">
-          <HostView className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] text-muted-foreground">
+        <HostView className="turn-diff-card__preview px-2 pb-1.5 pt-1">
+          <HostView className="turn-diff-card__preview-scopes flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[11px] text-muted-foreground">
             {previewScopes.map((scope, index) => (
-              <HostView key={scope.key} className="inline-flex items-center gap-1">
-                {index > 0 ? <HostText aria-hidden="true">·</HostText> : null}
-                <HostText className="font-mono text-foreground/75">{scope.label}</HostText>
-                <HostText>
+              <HostView
+                key={scope.key}
+                className="turn-diff-card__preview-scope inline-flex items-center gap-1"
+              >
+                {index > 0 ? (
+                  <HostText className="turn-diff-card__preview-separator" aria-hidden="true">
+                    ·
+                  </HostText>
+                ) : null}
+                <HostText className="turn-diff-card__preview-scope-label font-mono text-foreground/75">
+                  {scope.label}
+                </HostText>
+                <HostText className="turn-diff-card__preview-scope-count">
                   {scope.fileCount} file{scope.fileCount === 1 ? "" : "s"}
                 </HostText>
               </HostView>
             ))}
           </HostView>
-          <HostView className="mt-2 flex flex-wrap items-center gap-1.5">
+          <HostView className="turn-diff-card__preview-files mt-2 flex flex-wrap items-center gap-1.5">
             {previewFiles.map((file) => (
               <HostButton
                 key={file.key}
                 type="button"
                 title={file.title}
-                className="inline-flex max-w-48 items-center gap-1 rounded-md border border-border/70 bg-background/45 px-1.5 py-1 font-mono text-[10px] text-muted-foreground"
+                className="turn-diff-card__preview-file inline-flex max-w-48 items-center gap-1 rounded-md border border-border/70 bg-background/45 px-1.5 py-1 font-mono text-[10px] text-muted-foreground"
                 onClick={file.onSelect}
               >
                 {file.icon}
-                <HostText className="truncate">{file.name}</HostText>
+                <HostText className="turn-diff-card__preview-file-name truncate">
+                  {file.name}
+                </HostText>
               </HostButton>
             ))}
             <HostButton
               type="button"
-              className="rounded-md px-1.5 py-1 text-[11px] font-medium text-muted-foreground"
+              className="turn-diff-card__preview-show-all rounded-md px-1.5 py-1 text-[11px] font-medium text-muted-foreground"
               onClick={onShowAll}
             >
-              <HostText>Show all {fileCount} files</HostText>
+              <HostText className="turn-diff-card__preview-show-all-label">
+                Show all {fileCount} files
+              </HostText>
             </HostButton>
           </HostView>
         </HostView>
