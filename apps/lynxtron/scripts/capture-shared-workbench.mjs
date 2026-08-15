@@ -247,6 +247,26 @@ function modelPickerSemanticsMatch(webMetrics, lynxMetrics) {
   );
 }
 
+function workingTranscriptGeometryMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "existing-thread-working") return true;
+  const webRows = webMetrics?.rowGeometry ?? [];
+  const lynxRows = lynxMetrics?.rowGeometry ?? [];
+  if (webRows.length !== 2 || lynxRows.length !== 2) return false;
+  return webRows.every((webRow, index) => {
+    const lynxRow = lynxRows[index];
+    return (
+      lynxRow?.id === webRow.id &&
+      lynxRow.kind === webRow.kind &&
+      ["x", "y", "width", "height"].every(
+        (key) =>
+          typeof webRow[key] === "number" &&
+          typeof lynxRow[key] === "number" &&
+          Math.abs(webRow[key] - lynxRow[key]) <= 1,
+      )
+    );
+  });
+}
+
 function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeight) {
   if (
     !composerMetricsMatch(webMetrics, expectation) ||
@@ -2492,7 +2512,11 @@ async function captureCell({
           webTimelineRows.length === 0 &&
           lynxTimelineRows.length === 0
         : webTimelineRows.length > 0 &&
-          JSON.stringify(webTimelineRows) === JSON.stringify(lynxTimelineRows));
+          JSON.stringify(webTimelineRows) === JSON.stringify(lynxTimelineRows) &&
+          workingTranscriptGeometryMatches(
+            state?.web?.timelineMetrics,
+            state?.lynx?.timelineMetrics,
+          ));
     transcriptReadyPolls = transcriptReady ? transcriptReadyPolls + 1 : 0;
     const expectedPendingKind =
       stateId === "existing-thread-approval"
@@ -2798,6 +2822,7 @@ async function captureCell({
     state?.web?.timelineMetrics?.workGroupCount === state?.lynx?.timelineMetrics?.workGroupCount &&
     JSON.stringify(state?.web?.timelineMetrics?.workEntries ?? []) ===
       JSON.stringify(state?.lynx?.timelineMetrics?.workEntries ?? []) &&
+    workingTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     webTurnFoldInputSent &&
     lynxTurnFoldInputSent &&
     webThinkingInputSent &&

@@ -121,6 +121,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "const rect = geometryOwner.getBoundingClientRect()");
     assert.include(workbench, 'kind === "working"');
     assert.include(workbench, 'item.querySelector(".transcript-working-row")');
+    assert.include(source, "function workingTranscriptGeometryMatches");
+    assert.include(source, 'stateId !== "existing-thread-working"');
+    assert.include(source, '["x", "y", "width", "height"]');
   });
 
   it("projects approval detail and actions into the shared Composer semantic contract", () => {
