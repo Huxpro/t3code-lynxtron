@@ -124,6 +124,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyReviewCheckpointStates");
     assert.include(source, '"--verify-review-checkpoint-states"');
     assert.include(source, 'selector: ".turn-diff-card__toggle"');
+    assert.include(source, "const restored = await restoreOutcomeSurface");
     assert.include(source, 'measurement?.attributes["data-changed-files-state"] === "preview"');
     assert.include(source, "Math.abs(measurement.rect.height - 106) <= 1");
     assert.include(source, 'readOptionalMeasurement(client, "[data-review-tree]")');
@@ -133,6 +134,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"native-review-checkpoint-preview.png"');
     assert.include(source, '"native-review-tree.png"');
     assert.include(outcomeChecksSource, "reviewCheckpointStates");
+  });
+
+  it("restores right-panel state before isolated outcome checks", () => {
+    assert.include(source, 'readOptionalMeasurement(client, ".right-panel")');
+    assert.include(source, 'selector: ".right-panel__layout-control--close"');
+    assert.include(source, 'closed.push("right-panel")');
   });
 
   it("verifies an empty new-thread Hero without borrowing lifecycle recovery", () => {

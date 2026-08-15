@@ -2369,6 +2369,7 @@ async function verifyReviewCheckpointStates({
   timeoutMs,
 }) {
   const checkpoint = reviewFixture.checkpoint;
+  const restored = await restoreOutcomeSurface({ child, client, timeoutMs });
   await waitForClientState({
     child,
     client,
@@ -2456,6 +2457,7 @@ async function verifyReviewCheckpointStates({
       turnId: checkpoint.turnId,
       file: checkpoint.files[0],
     },
+    restored,
     preview: {
       card: preview.rect,
       tree: null,
@@ -2794,6 +2796,23 @@ async function restoreOutcomeSurface({ child, client, timeoutMs }) {
       predicate: (measurement) => measurement === null,
     });
     closed.push(surfaceSelector);
+  }
+
+  if ((await readOptionalMeasurement(client, ".right-panel")) !== null) {
+    await tapSelector({
+      child,
+      client,
+      selector: ".right-panel__layout-control--close",
+      timeoutMs,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+    closed.push("right-panel");
   }
 
   const route = await readRoutePanel(client);
