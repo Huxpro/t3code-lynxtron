@@ -102,6 +102,46 @@ function waitForChildExit(child, timeoutMs) {
   });
 }
 
+function readOwnedDaemonListener(port) {
+  const listener = spawnSync("lsof", ["-Pan", `-iTCP:${port}`, "-sTCP:LISTEN", "-Fp"], {
+    encoding: "utf8",
+  });
+  if (listener.error) throw listener.error;
+  const processIds = [
+    ...new Set(
+      listener.stdout
+        .split("\n")
+        .filter((line) => /^p\d+$/u.test(line))
+        .map((line) => Number(line.slice(1))),
+    ),
+  ];
+  if (processIds.length === 0) return null;
+  if (processIds.length !== 1) {
+    throw new Error(`Expected one owned DevTool daemon on port ${port}; found ${processIds}.`);
+  }
+  const processId = processIds[0];
+  const command = spawnSync("ps", ["-p", String(processId), "-o", "command="], {
+    encoding: "utf8",
+  }).stdout.trim();
+  if (!command.includes("daemon-entry.mjs") || !command.includes(`--port ${port}`)) {
+    throw new Error(`Refusing to stop unexpected listener PID ${processId} on port ${port}.`);
+  }
+  return processId;
+}
+
+async function waitForProcessExit(processId, timeoutMs) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      process.kill(processId, 0);
+    } catch {
+      return true;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  return false;
+}
+
 async function waitForDaemon(port, child, timeoutMs = 5_000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -120,27 +160,18 @@ async function waitForDaemon(port, child, timeoutMs = 5_000) {
 }
 
 async function stopOwnedDaemon(child, port) {
-  const processId = child.pid;
+  const listenerProcessId = readOwnedDaemonListener(port);
   await fetch(`http://127.0.0.1:${port}/devtool/connector/shutdown`, {
     method: "POST",
   }).catch(() => undefined);
   await waitForChildExit(child, 1_000);
-  if (!Number.isInteger(processId) || processId <= 0) return;
-  const isAlive = () => {
-    try {
-      process.kill(processId, 0);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-  if (!isAlive()) return;
-  process.kill(processId, "SIGTERM");
-  await waitForChildExit(child, 2_000);
-  if (!isAlive()) return;
-  process.kill(processId, "SIGKILL");
-  await waitForChildExit(child, 2_000);
-  if (isAlive()) throw new Error(`Owned DevTool daemon PID ${processId} did not exit.`);
+  if (!listenerProcessId || (await waitForProcessExit(listenerProcessId, 1_000))) return;
+  process.kill(listenerProcessId, "SIGTERM");
+  if (await waitForProcessExit(listenerProcessId, 2_000)) return;
+  process.kill(listenerProcessId, "SIGKILL");
+  if (!(await waitForProcessExit(listenerProcessId, 2_000))) {
+    throw new Error(`Owned DevTool daemon PID ${listenerProcessId} did not exit.`);
+  }
 }
 
 export async function openOwnedDevToolSession({ appName, clientId, devToolCli, ownedPorts }) {
