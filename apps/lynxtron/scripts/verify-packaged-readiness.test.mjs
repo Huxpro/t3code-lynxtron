@@ -15,6 +15,7 @@ const outcomeChecksSource = source.slice(
 describe("packaged readiness Sidebar geometry", () => {
   it("verifies every row and card with read-only DevTool box models", () => {
     assert.include(source, "--verify-sidebar-geometry");
+    assert.include(source, '"--no-daemon"');
     assert.include(source, "DOM.querySelectorAll");
     assert.include(source, "DOM.getBoxModel");
     assert.include(source, "read-only Lynx DevTool DOM box models");

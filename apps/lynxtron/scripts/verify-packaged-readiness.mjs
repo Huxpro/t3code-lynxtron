@@ -2876,6 +2876,7 @@ function readRendererErrors({ clientId, devToolCli, sessionId }) {
     process.execPath,
     [
       devToolCli,
+      "--no-daemon",
       "get-console",
       "--client",
       clientId,
