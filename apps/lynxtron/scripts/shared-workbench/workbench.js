@@ -146,6 +146,26 @@ function readTextLineRects(element) {
   }));
 }
 
+function findCommandSearchSurface(panel, input, results) {
+  if (!panel || !input || !results) return null;
+  const panelRect = panel.getBoundingClientRect();
+  const resultsRect = results.getBoundingClientRect();
+  let current = input.parentElement;
+  while (current && current !== panel) {
+    const rect = current.getBoundingClientRect();
+    if (
+      Math.abs(rect.x - (panelRect.x + 1)) <= 1 &&
+      Math.abs(rect.width - (panelRect.width - 2)) <= 1 &&
+      Math.abs(rect.y - (panelRect.y + 1)) <= 1 &&
+      Math.abs(rect.y + rect.height - resultsRect.y) <= 1
+    ) {
+      return current;
+    }
+    current = current.parentElement;
+  }
+  return null;
+}
+
 function readJsonStringArray(element, attributeName) {
   const serialized = element?.getAttribute(attributeName);
   if (!serialized) return [];
@@ -1091,6 +1111,10 @@ function readWebPane() {
       : null;
     const modelPickerContent =
       overlay === "model-picker" ? doc.querySelector("[data-model-picker-content]") : null;
+    const commandInput = commandPaletteElement?.querySelector('[data-slot="autocomplete-input"]');
+    const commandResults =
+      commandPaletteElement?.querySelector('[data-slot="command-list"]') ??
+      commandPaletteElement?.querySelector(".palette-empty")?.parentElement;
     const composerFrame = doc.querySelector(".composer-frame");
     const composerEditor = doc.querySelector('[data-composer-editor="true"]');
     const composerPrimaryAction = doc.querySelector("[data-composer-primary-state]");
@@ -1246,22 +1270,10 @@ function readWebPane() {
               ? {
                   panel: readElementBox(overlayElement),
                   search: readElementBox(
-                    doc
-                      .querySelector(
-                        '[data-command-palette="true"] [data-slot="autocomplete-input"]',
-                      )
-                      ?.closest(".relative")?.parentElement,
+                    findCommandSearchSurface(overlayElement, commandInput, commandResults),
                   ),
-                  input: readElementBox(
-                    doc.querySelector(
-                      '[data-command-palette="true"] [data-slot="autocomplete-input"]',
-                    ),
-                  ),
-                  results: readElementBox(
-                    doc.querySelector('[data-command-palette="true"] [data-slot="command-list"]') ??
-                      doc.querySelector('[data-command-palette="true"] .palette-empty')
-                        ?.parentElement,
-                  ),
+                  input: readElementBox(commandInput),
+                  results: readElementBox(commandResults),
                   list: readElementBox(
                     doc.querySelector(
                       '[data-command-palette="true"] [data-slot="autocomplete-list"]',
