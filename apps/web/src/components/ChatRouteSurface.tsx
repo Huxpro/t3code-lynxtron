@@ -18,6 +18,7 @@ export function ChatRouteSurface({
   layoutControls,
   header,
   banner,
+  columnOverlay,
   chatColumnHidden = false,
   children,
   afterChatColumn,
@@ -30,6 +31,8 @@ export function ChatRouteSurface({
   readonly header: ReactNode;
   /** Optional banner below the header (Web: thread error banner). */
   readonly banner?: ReactNode;
+  /** Full-column overlay above the header and body without affecting layout. */
+  readonly columnOverlay?: ReactNode;
   /** Collapse the chat column when the right panel is maximized (Web). */
   readonly chatColumnHidden?: boolean;
   /** Chat column content (timeline, composer overlay, dialogs). */
@@ -46,7 +49,7 @@ export function ChatRouteSurface({
       {layoutControls}
       <HostView
         className={cn(
-          "flex min-h-0 min-w-0 flex-col overflow-x-hidden",
+          "chat-column-reference relative flex min-h-0 min-w-0 flex-col overflow-x-hidden",
           chatColumnHidden ? "w-0 flex-none" : "flex-1",
         )}
         data-chat-column-maximized-away={chatColumnHidden ? "true" : "false"}
@@ -57,6 +60,7 @@ export function ChatRouteSurface({
           <HostView className="relative flex min-h-0 min-w-0 flex-1 flex-col">{children}</HostView>
         </HostView>
         {afterChatColumn}
+        {columnOverlay}
       </HostView>
       {rightPanel}
       {overlays}

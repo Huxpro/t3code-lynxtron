@@ -27,6 +27,10 @@ import {
   type PendingUserInputDraftAnswer,
 } from "@t3tools/client-runtime/presentation/pending-user-input";
 import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
+import {
+  EMPTY_TRANSCRIPT_PLACEHOLDER,
+  shouldShowEmptyTranscript,
+} from "@t3tools/client-runtime/presentation/transcript";
 import { ChatRouteSurface } from "../../../../web/src/components/ChatRouteSurface";
 import { ConnectionLifecycleBannerSurface } from "../../../../web/src/components/chat/ConnectionLifecycleBannerSurface";
 import { ThreadErrorBannerSurface } from "../../../../web/src/components/chat/ThreadErrorBannerSurface";
@@ -35,6 +39,7 @@ import {
   ComposerPendingQuestionSurface,
 } from "../../../../web/src/components/chat/ComposerPendingSurface";
 import { ComposerPendingApprovalActions } from "../../../../web/src/components/chat/ComposerPendingApprovalActions";
+import { TranscriptEmptySurface } from "../../../../web/src/components/chat/TranscriptRowSurface";
 import { ChatHeader, ChatLayoutControls } from "./ChatHeader";
 import { Icon } from "./Icon";
 import { MessagesTimeline } from "./MessagesTimeline";
@@ -183,6 +188,14 @@ export function ChatView({ threadId }: ChatViewProps) {
     isWorking: isSessionBusy(sessionStatus),
     dockRequested: false,
   });
+  const showEmptyTranscript =
+    !hero &&
+    shouldShowEmptyTranscript({
+      activityCount: activities.length,
+      isWorking: isSessionBusy(sessionStatus),
+      messageCount: messages.length,
+      proposedPlanCount: proposedPlans.length,
+    });
   const composerPlaceholder = resolveDefaultComposerPlaceholder(
     deriveSessionPresentationPhase(activeThread?.session?.status),
   );
@@ -440,6 +453,14 @@ export function ChatView({ threadId }: ChatViewProps) {
             onOpenConnections={() => navigate("/settings/connections")}
           />
         ) : null
+      }
+      columnOverlay={
+        showEmptyTranscript ? (
+          <TranscriptEmptySurface
+            className="timeline-empty-overlay"
+            title={EMPTY_TRANSCRIPT_PLACEHOLDER}
+          />
+        ) : undefined
       }
       chatColumnHidden={rightPanel.isOpen && rightPanelMaximized}
       rightPanel={

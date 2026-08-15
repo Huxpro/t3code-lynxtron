@@ -9,7 +9,6 @@ import {
   summarizeChangedFiles,
 } from "@t3tools/client-runtime/presentation/diff";
 import {
-  EMPTY_TRANSCRIPT_PLACEHOLDER,
   deriveActiveWorkStartedAt,
   deriveMessagesTimelineRows,
   deriveTranscriptNewTurnAnchor,
@@ -30,7 +29,6 @@ import type {
   TurnId,
 } from "@t3tools/contracts";
 import {
-  TranscriptEmptySurface,
   TranscriptRowSurface,
   type TranscriptRowElements,
 } from "../../../../web/src/components/chat/TranscriptRowSurface";
@@ -692,15 +690,7 @@ export function MessagesTimeline({
   }, []);
 
   if (rows.length === 0) {
-    return (
-      <>
-        <view className="timeline-empty-spacer" />
-        <TranscriptEmptySurface
-          className="timeline-empty-overlay"
-          title={EMPTY_TRANSCRIPT_PLACEHOLDER}
-        />
-      </>
-    );
+    return <view className="timeline-empty-spacer" />;
   }
   return (
     <view

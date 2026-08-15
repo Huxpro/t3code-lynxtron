@@ -12,12 +12,50 @@ import {
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
   reduceTranscriptFollow,
   deriveTranscriptNewTurnAnchor,
+  shouldShowEmptyTranscript,
   workEntryIndicatesToolFailure,
   workEntryIndicatesToolSuccess,
   type StableMessagesTimelineRowsState,
   type TimelineEntry,
   type TranscriptMessage,
 } from "./transcript.ts";
+
+describe("empty transcript presentation", () => {
+  it("shows only for a truly idle empty session projection", () => {
+    expect(
+      shouldShowEmptyTranscript({
+        activityCount: 0,
+        isWorking: false,
+        messageCount: 0,
+        proposedPlanCount: 0,
+      }),
+    ).toBe(true);
+    expect(
+      shouldShowEmptyTranscript({
+        activityCount: 0,
+        isWorking: true,
+        messageCount: 0,
+        proposedPlanCount: 0,
+      }),
+    ).toBe(false);
+    expect(
+      shouldShowEmptyTranscript({
+        activityCount: 1,
+        isWorking: false,
+        messageCount: 0,
+        proposedPlanCount: 0,
+      }),
+    ).toBe(false);
+    expect(
+      shouldShowEmptyTranscript({
+        activityCount: 0,
+        isWorking: false,
+        messageCount: 1,
+        proposedPlanCount: 0,
+      }),
+    ).toBe(false);
+  });
+});
 
 function activity(input: {
   readonly id: string;

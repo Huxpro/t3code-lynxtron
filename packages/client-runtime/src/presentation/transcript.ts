@@ -23,6 +23,20 @@ import { isLatestTurnSettled } from "./session.ts";
 
 export const EMPTY_TRANSCRIPT_PLACEHOLDER = "Send a message to start the conversation.";
 
+export function shouldShowEmptyTranscript(options: {
+  readonly activityCount: number;
+  readonly isWorking: boolean;
+  readonly messageCount: number;
+  readonly proposedPlanCount: number;
+}): boolean {
+  return (
+    !options.isWorking &&
+    options.messageCount === 0 &&
+    options.activityCount === 0 &&
+    options.proposedPlanCount === 0
+  );
+}
+
 export type WorkRequestKind = "command" | "file-read" | "file-change";
 
 // Mirrors contracts TOOL_LIFECYCLE_ITEM_TYPES as a schema-free literal check:

@@ -3015,7 +3015,7 @@
   height: 100%;
   min-height: 0;
 }
-.timeline-empty-overlay {
+.chat-column-reference > .timeline-empty-overlay {
   position: absolute;
   top: 0;
   right: 0;
