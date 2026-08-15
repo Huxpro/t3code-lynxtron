@@ -1243,6 +1243,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
   );
   const collapsedComposerPrimaryActionDisabled =
     phase === "running" ||
+    phase === "connecting" ||
     isSendBusy ||
     isSendDisabled ||
     isConnecting ||
@@ -1255,6 +1256,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     deriveComposerControlState({
       working: phase === "running",
       blocked:
+        phase === "connecting" ||
         isSendBusy ||
         isSendDisabled ||
         isConnecting ||
