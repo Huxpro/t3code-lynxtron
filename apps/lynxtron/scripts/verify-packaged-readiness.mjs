@@ -1011,11 +1011,11 @@ async function verifyIdleThreadState({
     predicate: (measurement) =>
       measurement?.text.trim() === "Send a message to start the conversation.",
   });
-  const chatColumn = await readOptionalMeasurement(client, ".chat-column-reference");
-  if (!chatColumn) {
-    throw new Error("Idle thread chat-column geometry is unavailable.");
+  const chatBody = await readOptionalMeasurement(client, ".chat-body-reference");
+  if (!chatBody) {
+    throw new Error("Idle thread chat-body geometry is unavailable.");
   }
-  const expectedEmptyRect = chatColumn.rect;
+  const expectedEmptyRect = chatBody.rect;
   if (
     Math.abs(emptyTranscript.rect.x - expectedEmptyRect.x) > 1 ||
     Math.abs(emptyTranscript.rect.y - expectedEmptyRect.y) > 1 ||
