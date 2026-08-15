@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T08:13:47+09:00",
+  "updatedAt": "2026-08-16T08:51:27+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6495,6 +6495,122 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.920435 after the shared dark-glass fix"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-selected-current-visible-baseline",
+      "observedAt": "2026-08-16T08:51:27+09:00",
+      "commit": "137d9ba020c06e0e515fa83b5475a94e8bb06ab2",
+      "codeCommit": "137d9ba020c06e0e515fa83b5475a94e8bb06ab2",
+      "codeState": "commit",
+      "label": "Model Picker selected-model current visible baseline",
+      "narrative": "The selected state now requires an open model-picker overlay and one visible row matching the authoritative session projection. A disposable backed-up fixture selects Claude Fable 5 before server startup; both shipping Browser renderers expose the same provider, nine rows, selected key, route, theme, and zero errors. The first valid current pair supersedes the old 0.939482 score: full-frame SSIM is 0.715461, panel SSIM is 0.734683, and selected-row SSIM is 0.742665. The lower current values are measurement refinement, not a product regression.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Fresh explicit-overlay, visible-selected-row captures replace evidence that depended on caller-supplied overlay state and a manually prepared fixture. The product pixels are retained as the direct baseline."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-selected-visible-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a3f1dc77ab82294ec4e08ebabdc77f63c710fce6f5f2a014a3652b092321dbb4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-selected"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "strict-visible-selected-row-content",
+              "source": "Both panes expose Claude Fable 5 as the one selected row, the same nine labels, and the same active Claude provider"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2, 4, 6, 8, 10, 12, 14, 16
+              ],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "selected-model-current-anatomy",
+              "source": "Panel, rail, content, search, list, and selected-row rectangles at 1280x820; row rhythm differs by up to 16px before the product fix"
+            },
+            "typography": {
+              "residual": 0.257335,
+              "confidence": 0.99,
+              "method": "selected-row-ssim",
+              "source": "1 - selected-row SSIM 0.742665 with 16px Lynx row copy versus 12px Web copy"
+            },
+            "material": {
+              "residual": 0.284539,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.715461 at the first valid current selected-row frame; panel residual is 0.265317"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-model-trigger",
+              "source": "Real Browser pointer input opens both pickers and reaches one matching visible selected-row postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-selected-model-readiness",
+              "source": "Same prepared snapshot, selected thread and model identity, zero renderer errors, no helper backup, and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-selected-row-fidelity-fix-current",
+      "observedAt": "2026-08-16T08:51:27+09:00",
+      "commit": "4945d125c579a428f8b1d40d2dbbd1988d12d0b4",
+      "codeCommit": "4945d125c579a428f8b1d40d2dbbd1988d12d0b4",
+      "codeState": "commit",
+      "label": "Model Picker selected-row fidelity fix",
+      "narrative": "Shared semantic row classes let Lynx reproduce Web's vertical copy stack. Lynx now uses 12px title and metadata typography, muted metadata, 2px item separators, and a compact favorite affordance. Selected-row rhythm converges across all visible rows. Under the same strict fixture and overlay-preserving harness, full-frame SSIM improves from 0.715461 to 0.729786, panel SSIM from 0.734683 to 0.857584, and selected-row SSIM from 0.742665 to 0.872293. Native selected-row pixels and OS dismiss/focus interaction remain unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after captures share the final state defaults, prepared snapshot, route, theme, viewport, Web authority, and zero-error runtime. Only the shared row anatomy and Lynx row presentation change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-selected-visible-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a3f1dc77ab82294ec4e08ebabdc77f63c710fce6f5f2a014a3652b092321dbb4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-selected"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 1, 0, 0, 0.5, 2.078125, 0.5, 0.453125, 0.25, 0.1875],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "selected-row-final-anatomy",
+              "source": "Panel placement and 55px row rhythm match; remaining primary deltas are text raster width and one-pixel host quantization"
+            },
+            "typography": {
+              "residual": 0.127707,
+              "confidence": 0.99,
+              "method": "selected-row-ssim",
+              "source": "1 - selected-row SSIM 0.872293 after matching title, metadata, and favorite typography"
+            },
+            "material": {
+              "residual": 0.270214,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.729786 after the selected-row fix; panel residual is 0.142416"
             }
           }
         }
