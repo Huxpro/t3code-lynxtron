@@ -2672,26 +2672,11 @@ async function verifySettingsRouteBehavior({
 
 async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   const initialThreadRoute = await readRoutePanel(client);
-  await tapSelector({ child, client, selector: ".sidebar-inline-search", timeoutMs });
-  const quickSwitch = await waitForMeasurement({
-    child,
-    client,
-    selector: ".qs-panel",
-    timeoutMs,
-    predicate: (measurement) => measurement !== null,
-  });
   await tapSelector({
     child,
     client,
-    selector: ".quick-switch-thread-row--other",
+    selector: '[data-thread-item][data-thread-active="false"]',
     timeoutMs,
-  });
-  await waitForMeasurement({
-    child,
-    client,
-    selector: ".qs-panel",
-    timeoutMs,
-    predicate: (measurement) => measurement === null,
   });
   const selectedThreadRoute = await waitForRouteChange({
     child,
@@ -2762,7 +2747,6 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   return {
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selectors",
-    search: { opened: quickSwitch !== null, closedByThreadSelection: true },
     threadSelection: {
       beforeRoute: initialThreadRoute.route,
       afterRoute: selectedThreadRoute.route,
