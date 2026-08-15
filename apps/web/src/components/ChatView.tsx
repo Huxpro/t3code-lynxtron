@@ -25,7 +25,10 @@ import {
   projectConnectionLifecycle,
   type EnvironmentConnectionPresentation,
 } from "@t3tools/client-runtime/connection/presentation";
-import { shouldUseComposerHeroLayout } from "@t3tools/client-runtime/presentation/composer";
+import {
+  shouldShowComposerContextStrip,
+  shouldUseComposerHeroLayout,
+} from "@t3tools/client-runtime/presentation/composer";
 import { effectiveSettled, effectiveSnoozed } from "@t3tools/client-runtime/state/thread-settled";
 import {
   parseScopedThreadKey,
@@ -2511,7 +2514,10 @@ function ChatViewContent(props: ChatViewProps) {
     terminalUiLaunchContext?.threadId === activeThreadId ? terminalUiLaunchContext : null;
   // Default true while loading to avoid toolbar flicker.
   const isGitRepo = gitStatusQuery.data?.isRepo ?? true;
-  const showComposerContextStrip = isGitRepo && activeProject !== null;
+  const showComposerContextStrip = shouldShowComposerContextStrip({
+    hasProject: activeProject !== null,
+    isRepo: gitStatusQuery.data?.isRepo,
+  });
   const initialDiffPanelGitScope =
     gitStatusQuery.data?.hasWorkingTreeChanges === true ? "unstaged" : "branch";
   const diffPanelGitStatusResolutionKey = gitStatusQuery.data ? "resolved" : "pending";

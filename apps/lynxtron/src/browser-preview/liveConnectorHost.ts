@@ -86,6 +86,8 @@ import {
   type ConnectorStatusPayload,
   type ConnectorSyncReply,
   type ConnectorThreadPayload,
+  projectRepoContext,
+  type ProjectRepoContext,
 } from "../shared/connectorProtocol.ts";
 
 const EMPTY_ACCESS = projectAuthAccess(EMPTY_AUTH_ACCESS_SNAPSHOT);
@@ -554,9 +556,9 @@ export class LiveConnectorHost {
       return this.#runClient<VcsStatusResult>(
         this.#client[WS_METHODS.vcsRefreshStatus]({ cwd: params.cwd }),
       ).then((value) => {
-        const branch = value.refName ?? null;
-        this.diagnostics.lastCommandResult = { method: request.method, value: branch };
-        return branch;
+        const context: ProjectRepoContext = projectRepoContext(value);
+        this.diagnostics.lastCommandResult = { method: request.method, value: context };
+        return context;
       });
     }
     if (request.method === "updateServerSettings") {

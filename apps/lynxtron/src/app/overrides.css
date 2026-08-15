@@ -2110,7 +2110,7 @@
   flex-direction: column;
   width: 100%;
   max-width: 768px;
-  align-items: center;
+  align-items: stretch;
   transform: translateY(-10px);
 }
 /* ======================= Composer card ======================= */

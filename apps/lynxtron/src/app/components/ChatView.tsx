@@ -8,6 +8,7 @@ import {
   projectComposerPrimaryOption,
   projectComposerTraitsTrigger,
   resolveDefaultComposerPlaceholder,
+  shouldShowComposerContextStrip,
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
 } from "@t3tools/client-runtime/presentation/composer";
@@ -101,7 +102,11 @@ export function ChatView({ threadId }: ChatViewProps) {
   const [pendingUserInputDrafts, setPendingUserInputDrafts] = useState<
     Record<string, PendingUserInputDraftAnswer>
   >({});
-  const [checkoutBranch, setCheckoutBranch] = useState<string | null>(null);
+  const [checkoutRepoContext, setCheckoutRepoContext] = useState<{
+    readonly cwd: string;
+    readonly isRepo: boolean;
+    readonly branch: string | null;
+  } | null>(null);
   const [centerPanelWidth, setCenterPanelWidth] = useState(1024);
   const [rightPanelMaximized, setRightPanelMaximized] = useState(false);
   const [draftWorkspaceMode, setDraftWorkspaceMode] = useState<"local" | "worktree">("local");
@@ -127,6 +132,8 @@ export function ChatView({ threadId }: ChatViewProps) {
     [activeThread?.projectId, projects],
   );
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;
+  const currentRepoContext = checkoutRepoContext?.cwd === cwd ? checkoutRepoContext : null;
+  const checkoutBranch = currentRepoContext?.branch ?? null;
 
   const presentationModels = useMemo(
     () =>
@@ -240,6 +247,10 @@ export function ChatView({ threadId }: ChatViewProps) {
         ? "local"
         : draftWorkspaceMode;
   const workspaceModeLocked = messages.length > 0 || activeThread?.worktreePath != null;
+  const showComposerContextStrip = shouldShowComposerContextStrip({
+    hasProject: activeProject !== null,
+    isRepo: currentRepoContext?.isRepo,
+  });
 
   useEffect(() => {
     if (selectedModel) lastKnownSelectedModel.current = selectedModel;
@@ -286,18 +297,27 @@ export function ChatView({ threadId }: ChatViewProps) {
   }, [autoOpenPlanKey, clientSettings.autoOpenPlanSidebar]);
 
   useEffect(() => {
-    if (activeThread?.branch || !cwd || !connectorCommandsReady) {
-      setCheckoutBranch(null);
+    if (!cwd) {
+      setCheckoutRepoContext(null);
+      return;
+    }
+    if (!connectorCommandsReady) {
       return;
     }
     let cancelled = false;
-    void readProjectBranch(cwd).then((branch) => {
-      if (!cancelled) setCheckoutBranch(branch);
-    });
+    void readProjectBranch(cwd).then(
+      (context) => {
+        if (cancelled || !context) return;
+        setCheckoutRepoContext({ cwd, ...context });
+      },
+      () => {
+        if (!cancelled) setCheckoutRepoContext(null);
+      },
+    );
     return () => {
       cancelled = true;
     };
-  }, [activeThread?.branch, connectorCommandsReady, cwd, readProjectBranch]);
+  }, [connectorCommandsReady, cwd, readProjectBranch]);
 
   const handleInteractionModeTap = useCallback(() => {
     setThreadInteractionMode(
@@ -458,6 +478,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         modelDriverKind={presentedSelectedModel?.driverKind}
         modelOptionLabel={modelTraitsTrigger?.label}
         branch={activeThread?.branch ?? checkoutBranch ?? undefined}
+        showContextStrip={showComposerContextStrip}
         worktreePath={activeThread?.worktreePath ?? undefined}
         workspaceMode={workspaceMode}
         workspaceModeLocked={workspaceModeLocked}

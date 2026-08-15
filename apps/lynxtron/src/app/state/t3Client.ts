@@ -77,6 +77,7 @@ import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
   ConnectorSnapshot,
+  ProjectRepoContext,
 } from "../../shared/connectorProtocol.ts";
 
 interface PollBridge extends T3Bridge {}
@@ -796,7 +797,7 @@ function getTurnDiff(
   return bridge.getTurnDiff(input);
 }
 
-function readProjectBranch(cwd: string): Promise<string | null> {
+function readProjectBranch(cwd: string): Promise<ProjectRepoContext | null> {
   const bridge = getBridge();
   if (!bridge?.readProjectBranch) {
     return Promise.resolve(null);

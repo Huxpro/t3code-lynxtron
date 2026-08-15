@@ -82,9 +82,11 @@ import {
   type SourceControlDiscoveryResult,
   type TurnId,
   type RuntimeMode,
+  type VcsStatusResult,
 } from "@t3tools/contracts";
 import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
+import { projectRepoContext, type ProjectRepoContext } from "../../shared/connectorProtocol.ts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -907,21 +909,12 @@ export class T3Connector {
     );
   }
 
-  async readProjectBranch(input: { cwd: string }): Promise<string | null> {
-    return new Promise((resolve) => {
-      const child = spawn("git", ["-C", input.cwd, "branch", "--show-current"], {
-        stdio: ["ignore", "pipe", "ignore"],
-      });
-      let output = "";
-      child.stdout?.on("data", (chunk) => {
-        output += String(chunk);
-      });
-      child.on("error", () => resolve(null));
-      child.on("exit", (code) => {
-        const branch = output.trim();
-        resolve(code === 0 && branch.length > 0 ? branch : null);
-      });
-    });
+  async readProjectBranch(input: { cwd: string }): Promise<ProjectRepoContext> {
+    if (!this.client) throw new Error("not connected");
+    const status = await this.runClient<VcsStatusResult>(
+      this.client[WS_METHODS.vcsRefreshStatus](input),
+    );
+    return projectRepoContext(status);
   }
 
   async discoverSourceControl(): Promise<SourceControlDiscoveryResult> {

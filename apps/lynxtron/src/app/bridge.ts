@@ -56,6 +56,7 @@ import type {
   ActivePlanState,
   LatestProposedPlanState,
 } from "@t3tools/client-runtime/presentation/thread";
+import type { ProjectRepoContext } from "../shared/connectorProtocol";
 
 export type ConnectionStatus =
   | "idle"
@@ -172,7 +173,7 @@ export interface T3ConnectorCommandBridge {
   readProjectFile(input: ProjectReadFileInput): Promise<ProjectReadFileResult>;
   writeProjectFile(input: ProjectWriteFileInput): Promise<ProjectWriteFileResult>;
   getTurnDiff(input: OrchestrationGetTurnDiffInput): Promise<OrchestrationGetTurnDiffResult>;
-  readProjectBranch(input: { cwd: string }): Promise<string | null>;
+  readProjectBranch(input: { cwd: string }): Promise<ProjectRepoContext>;
   discoverSourceControl(): Promise<SourceControlDiscoveryResult>;
   createPairingCredential(input?: { readonly label?: string }): Promise<PairingCredentialResult>;
   revokePairingLink(input: { readonly id: string }): Promise<boolean>;

@@ -109,6 +109,21 @@ export interface ConnectorSyncReply {
   readonly seq: number;
 }
 
+export interface ProjectRepoContext {
+  readonly isRepo: boolean;
+  readonly branch: string | null;
+}
+
+export function projectRepoContext(input: {
+  readonly isRepo: boolean;
+  readonly refName: string | null | undefined;
+}): ProjectRepoContext {
+  return {
+    isRepo: input.isRepo,
+    branch: input.refName ?? null,
+  };
+}
+
 /** Allowlisted connector commands the renderer may invoke through main. */
 export const CONNECTOR_COMMAND_NAMES = [
   "reconnect",

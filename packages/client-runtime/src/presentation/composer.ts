@@ -126,6 +126,13 @@ export function isComposerDraftThread(options: {
   );
 }
 
+export function shouldShowComposerContextStrip(options: {
+  readonly hasProject: boolean;
+  readonly isRepo: boolean | null | undefined;
+}): boolean {
+  return options.hasProject && options.isRepo !== false;
+}
+
 export interface ComposerContextPresentation {
   readonly checkoutLabel: "Current checkout" | "Current worktree" | "Local checkout" | "Worktree";
   readonly branchLabel: string;

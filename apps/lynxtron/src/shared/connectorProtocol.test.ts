@@ -5,7 +5,25 @@ import {
   isConnectorCommandName,
   isConnectorEventEnvelope,
   isConnectorSyncReply,
+  projectRepoContext,
 } from "./connectorProtocol.ts";
+
+describe("project repo context", () => {
+  it("preserves non-repository, branch, and detached repository states", () => {
+    assert.deepEqual(projectRepoContext({ isRepo: false, refName: null }), {
+      isRepo: false,
+      branch: null,
+    });
+    assert.deepEqual(projectRepoContext({ isRepo: true, refName: "main" }), {
+      isRepo: true,
+      branch: "main",
+    });
+    assert.deepEqual(projectRepoContext({ isRepo: true, refName: null }), {
+      isRepo: true,
+      branch: null,
+    });
+  });
+});
 
 describe("connector protocol sequence classification", () => {
   it("applies the next in-order event", () => {

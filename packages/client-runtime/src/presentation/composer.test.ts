@@ -13,6 +13,7 @@ import {
   projectComposerContext,
   projectComposerPrimaryOption,
   resolveDefaultComposerPlaceholder,
+  shouldShowComposerContextStrip,
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
 } from "./composer.ts";
@@ -116,6 +117,13 @@ describe("composer controls presentation", () => {
         draftHeroThreadId: undefined,
       }),
     ).toBe(false);
+  });
+
+  it("shows repository context without flickering while status resolves", () => {
+    expect(shouldShowComposerContextStrip({ hasProject: false, isRepo: true })).toBe(false);
+    expect(shouldShowComposerContextStrip({ hasProject: true, isRepo: undefined })).toBe(true);
+    expect(shouldShowComposerContextStrip({ hasProject: true, isRepo: true })).toBe(true);
+    expect(shouldShowComposerContextStrip({ hasProject: true, isRepo: false })).toBe(false);
   });
 
   it("shows only context facts present in the canonical thread shell", () => {

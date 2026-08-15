@@ -33,6 +33,7 @@ interface ComposerProps {
   modelDriverKind?: string;
   modelOptionLabel?: string;
   branch?: string;
+  showContextStrip: boolean;
   worktreePath?: string;
   workspaceMode: "local" | "worktree";
   workspaceModeLocked: boolean;
@@ -77,6 +78,7 @@ export function Composer({
   modelDriverKind,
   modelOptionLabel,
   branch,
+  showContextStrip,
   worktreePath,
   workspaceMode,
   workspaceModeLocked,
@@ -520,156 +522,158 @@ export function Composer({
           }}
         />
       </view>
-      <ComposerContextStrip
-        backdrop={
-          <view className="composer-context-backdrop">
-            <view className="composer-context-backdrop-band composer-context-backdrop-band--seam" />
-            <view className="composer-context-backdrop-band composer-context-backdrop-band--1" />
-            <view className="composer-context-backdrop-band composer-context-backdrop-band--2" />
-            <view className="composer-context-backdrop-band composer-context-backdrop-band--3" />
-            <view className="composer-context-backdrop-band composer-context-backdrop-band--4" />
-            <view className="composer-context-light-band composer-context-light-band--0" />
-            <view className="composer-context-light-band composer-context-light-band--1" />
-            <view className="composer-context-light-band composer-context-light-band--2" />
-            <view className="composer-context-light-band composer-context-light-band--3" />
-            <view className="composer-context-light-band composer-context-light-band--4" />
-            <view className="composer-context-light-band composer-context-light-band--5" />
-            <view className="composer-context-light-band composer-context-light-band--6" />
-            <view className="composer-context-light-band composer-context-light-band--7" />
-            <view className="composer-context-light-band composer-context-light-band--8" />
-            <view className="composer-context-light-band composer-context-light-band--9" />
-            <view className="composer-context-light-band composer-context-light-band--10" />
-            <view className="composer-context-light-band composer-context-light-band--11" />
-            <view className="composer-context-light-band composer-context-light-band--12" />
-            <view className="composer-context-light-band composer-context-light-band--13" />
-            <view className="composer-context-light-band composer-context-light-band--14" />
-            <view className="composer-context-light-band composer-context-light-band--15" />
-          </view>
-        }
-        checkout={
-          <view className="composer-workspace-control-wrap">
-            <view
-              className="composer-context-control composer-context-control--checkout"
-              aria-label="Workspace"
-              aria-disabled={workspaceModeLocked ? "true" : "false"}
-              bindtap={
-                workspaceModeLocked ? undefined : () => setWorkspaceMenuOpen((open) => !open)
-              }
-            >
-              <Icon
-                name={workspaceMode === "worktree" ? "git-branch" : "folder"}
-                size={12}
-                color="#818181"
-                className="composer-context-icon composer-context-icon--checkout"
-              />
-              <text className="composer-context-label composer-context-label--checkout">
-                {context.checkoutLabel}
-              </text>
-              {!workspaceModeLocked ? (
+      {showContextStrip ? (
+        <ComposerContextStrip
+          backdrop={
+            <view className="composer-context-backdrop">
+              <view className="composer-context-backdrop-band composer-context-backdrop-band--seam" />
+              <view className="composer-context-backdrop-band composer-context-backdrop-band--1" />
+              <view className="composer-context-backdrop-band composer-context-backdrop-band--2" />
+              <view className="composer-context-backdrop-band composer-context-backdrop-band--3" />
+              <view className="composer-context-backdrop-band composer-context-backdrop-band--4" />
+              <view className="composer-context-light-band composer-context-light-band--0" />
+              <view className="composer-context-light-band composer-context-light-band--1" />
+              <view className="composer-context-light-band composer-context-light-band--2" />
+              <view className="composer-context-light-band composer-context-light-band--3" />
+              <view className="composer-context-light-band composer-context-light-band--4" />
+              <view className="composer-context-light-band composer-context-light-band--5" />
+              <view className="composer-context-light-band composer-context-light-band--6" />
+              <view className="composer-context-light-band composer-context-light-band--7" />
+              <view className="composer-context-light-band composer-context-light-band--8" />
+              <view className="composer-context-light-band composer-context-light-band--9" />
+              <view className="composer-context-light-band composer-context-light-band--10" />
+              <view className="composer-context-light-band composer-context-light-band--11" />
+              <view className="composer-context-light-band composer-context-light-band--12" />
+              <view className="composer-context-light-band composer-context-light-band--13" />
+              <view className="composer-context-light-band composer-context-light-band--14" />
+              <view className="composer-context-light-band composer-context-light-band--15" />
+            </view>
+          }
+          checkout={
+            <view className="composer-workspace-control-wrap">
+              <view
+                className="composer-context-control composer-context-control--checkout"
+                aria-label="Workspace"
+                aria-disabled={workspaceModeLocked ? "true" : "false"}
+                bindtap={
+                  workspaceModeLocked ? undefined : () => setWorkspaceMenuOpen((open) => !open)
+                }
+              >
                 <Icon
-                  name="chevron-down"
+                  name={workspaceMode === "worktree" ? "git-branch" : "folder"}
                   size={12}
                   color="#818181"
-                  className="composer-context-icon composer-context-icon--checkout-chevron"
+                  className="composer-context-icon composer-context-icon--checkout"
                 />
+                <text className="composer-context-label composer-context-label--checkout">
+                  {context.checkoutLabel}
+                </text>
+                {!workspaceModeLocked ? (
+                  <Icon
+                    name="chevron-down"
+                    size={12}
+                    color="#818181"
+                    className="composer-context-icon composer-context-icon--checkout-chevron"
+                  />
+                ) : null}
+              </view>
+              {workspaceMenuOpen ? (
+                <>
+                  <view
+                    className="composer-workspace-menu-dismiss"
+                    bindtap={() => setWorkspaceMenuOpen(false)}
+                  />
+                  <view
+                    className={`composer-workspace-menu${
+                      workspaceMode === "worktree" ? " composer-workspace-menu--worktree" : ""
+                    }`}
+                    aria-label="Workspace"
+                    data-composer-workspace-menu
+                  >
+                    <text className="composer-workspace-menu__eyebrow">Workspace</text>
+                    <view
+                      className={`composer-workspace-menu__item${
+                        workspaceMode === "local" ? " composer-workspace-menu__item--active" : ""
+                      }`}
+                      bindtap={() => {
+                        onWorkspaceModeChange("local");
+                        setWorkspaceMenuOpen(false);
+                      }}
+                    >
+                      <Icon name="folder" size={14} color="#818181" />
+                      <view className="composer-workspace-menu__copy">
+                        <text className="composer-workspace-menu__label">Local checkout</text>
+                        <text className="composer-workspace-menu__description">
+                          Work directly in the project folder.
+                        </text>
+                      </view>
+                    </view>
+                    <view
+                      className={`composer-workspace-menu__item${
+                        workspaceMode === "worktree" ? " composer-workspace-menu__item--active" : ""
+                      }`}
+                      bindtap={() => onWorkspaceModeChange("worktree")}
+                    >
+                      <Icon name="git-branch" size={14} color="#818181" />
+                      <view className="composer-workspace-menu__copy">
+                        <text className="composer-workspace-menu__label">New worktree</text>
+                        <text className="composer-workspace-menu__description">
+                          Create an isolated worktree from {branch ?? "the selected branch"}.
+                        </text>
+                      </view>
+                    </view>
+                    {workspaceMode === "worktree" ? (
+                      <view
+                        className="composer-workspace-menu__origin"
+                        bindtap={() => onStartFromOriginChange(!startFromOrigin)}
+                      >
+                        <view className="composer-workspace-menu__origin-copy">
+                          <text className="composer-workspace-menu__origin-label">
+                            Start from origin
+                          </text>
+                          <text className="composer-workspace-menu__origin-description">
+                            Fetch the latest matching branch before creating.
+                          </text>
+                        </view>
+                        <view
+                          className={`composer-workspace-menu__switch${
+                            startFromOrigin ? " composer-workspace-menu__switch--active" : ""
+                          }`}
+                          aria-checked={startFromOrigin ? "true" : "false"}
+                        >
+                          <view className="composer-workspace-menu__switch-thumb" />
+                        </view>
+                      </view>
+                    ) : null}
+                  </view>
+                </>
               ) : null}
             </view>
-            {workspaceMenuOpen ? (
-              <>
-                <view
-                  className="composer-workspace-menu-dismiss"
-                  bindtap={() => setWorkspaceMenuOpen(false)}
-                />
-                <view
-                  className={`composer-workspace-menu${
-                    workspaceMode === "worktree" ? " composer-workspace-menu--worktree" : ""
-                  }`}
-                  aria-label="Workspace"
-                  data-composer-workspace-menu
-                >
-                  <text className="composer-workspace-menu__eyebrow">Workspace</text>
-                  <view
-                    className={`composer-workspace-menu__item${
-                      workspaceMode === "local" ? " composer-workspace-menu__item--active" : ""
-                    }`}
-                    bindtap={() => {
-                      onWorkspaceModeChange("local");
-                      setWorkspaceMenuOpen(false);
-                    }}
-                  >
-                    <Icon name="folder" size={14} color="#818181" />
-                    <view className="composer-workspace-menu__copy">
-                      <text className="composer-workspace-menu__label">Local checkout</text>
-                      <text className="composer-workspace-menu__description">
-                        Work directly in the project folder.
-                      </text>
-                    </view>
-                  </view>
-                  <view
-                    className={`composer-workspace-menu__item${
-                      workspaceMode === "worktree" ? " composer-workspace-menu__item--active" : ""
-                    }`}
-                    bindtap={() => onWorkspaceModeChange("worktree")}
-                  >
-                    <Icon name="git-branch" size={14} color="#818181" />
-                    <view className="composer-workspace-menu__copy">
-                      <text className="composer-workspace-menu__label">New worktree</text>
-                      <text className="composer-workspace-menu__description">
-                        Create an isolated worktree from {branch ?? "the selected branch"}.
-                      </text>
-                    </view>
-                  </view>
-                  {workspaceMode === "worktree" ? (
-                    <view
-                      className="composer-workspace-menu__origin"
-                      bindtap={() => onStartFromOriginChange(!startFromOrigin)}
-                    >
-                      <view className="composer-workspace-menu__origin-copy">
-                        <text className="composer-workspace-menu__origin-label">
-                          Start from origin
-                        </text>
-                        <text className="composer-workspace-menu__origin-description">
-                          Fetch the latest matching branch before creating.
-                        </text>
-                      </view>
-                      <view
-                        className={`composer-workspace-menu__switch${
-                          startFromOrigin ? " composer-workspace-menu__switch--active" : ""
-                        }`}
-                        aria-checked={startFromOrigin ? "true" : "false"}
-                      >
-                        <view className="composer-workspace-menu__switch-thumb" />
-                      </view>
-                    </view>
-                  ) : null}
-                </view>
-              </>
-            ) : null}
-          </view>
-        }
-        branch={
-          <view className="composer-context-control composer-context-control--branch">
-            <Icon
-              name="git-branch"
-              size={12}
-              color="#818181"
-              className="composer-context-icon composer-context-icon--branch"
-            />
-            <text
-              className="composer-context-label composer-context-label--branch"
-              text-maxline="1"
-            >
-              {context.branchLabel}
-            </text>
-            <Icon
-              name="chevron-down"
-              size={12}
-              color="#818181"
-              className="composer-context-icon composer-context-icon--chevron"
-            />
-          </view>
-        }
-      />
+          }
+          branch={
+            <view className="composer-context-control composer-context-control--branch">
+              <Icon
+                name="git-branch"
+                size={12}
+                color="#818181"
+                className="composer-context-icon composer-context-icon--branch"
+              />
+              <text
+                className="composer-context-label composer-context-label--branch"
+                text-maxline="1"
+              >
+                {context.branchLabel}
+              </text>
+              <Icon
+                name="chevron-down"
+                size={12}
+                color="#818181"
+                className="composer-context-icon composer-context-icon--chevron"
+              />
+            </view>
+          }
+        />
+      ) : null}
     </view>
   );
 
