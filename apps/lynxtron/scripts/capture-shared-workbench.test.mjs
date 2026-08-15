@@ -151,6 +151,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "querySelector('[role=\"status\"]')");
   });
 
+  it("hashes the Web entry bundle declared by index.html", () => {
+    assert.include(source, "async function webEntryBundlePath");
+    assert.include(source, "type=[\"']module[\"']");
+    assert.include(source, "await hashFile(await webEntryBundlePath())");
+    assert.notInclude(source, "findFirst(WEB_DIST, /assets\\/.*\\.js$/)");
+  });
+
   it("compares clipped pending-question work rows by their visible outer box", () => {
     const capture = readFileSync(
       path.join(import.meta.dirname, "capture-shared-workbench.mjs"),

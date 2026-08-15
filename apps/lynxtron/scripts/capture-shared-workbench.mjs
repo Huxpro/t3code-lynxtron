@@ -726,6 +726,16 @@ async function hashFile(filePath) {
   };
 }
 
+async function webEntryBundlePath() {
+  const indexPath = path.join(WEB_DIST, "index.html");
+  const indexHtml = await readFile(indexPath, "utf8");
+  const entrySource = indexHtml.match(
+    /<script\b[^>]*\btype=["']module["'][^>]*\bsrc=["']([^"']+)["'][^>]*>/,
+  )?.[1];
+  if (!entrySource) return indexPath;
+  return path.join(WEB_DIST, entrySource.replace(/^\/+/, ""));
+}
+
 /** Mint a bearer + one wsTicket for the Lynx pane against the shared server. */
 async function mintLynxSocketUrl(serverPort, bootstrapToken) {
   const form = new URLSearchParams({
@@ -876,9 +886,7 @@ async function main() {
     ? ""
     : (expectedThreadFixture?.projectTitle ?? seed?.dataset?.projects?.[0]?.title ?? "");
   const expectThread = expectedThreadFixture?.id ?? null;
-  const webBundle = await hashFile(
-    (await findFirst(WEB_DIST, /assets\/.*\.js$/)) ?? path.join(WEB_DIST, "index.html"),
-  );
+  const webBundle = await hashFile(await webEntryBundlePath());
   const lynxBundle = await hashFile(path.join(LYNX_BUILD_DIR, "lynx/main.web.bundle"));
 
   // --- launch the shared server ---
