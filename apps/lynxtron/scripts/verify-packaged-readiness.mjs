@@ -983,7 +983,13 @@ async function verifyHeroComposerState({
   };
 }
 
-async function verifyIdleThreadState({ child, client, idleFixture, timeoutMs }) {
+async function verifyIdleThreadState({
+  child,
+  client,
+  expectNoComposerContext,
+  idleFixture,
+  timeoutMs,
+}) {
   const clientState = await waitForClientState({
     child,
     client,
@@ -1013,8 +1019,22 @@ async function verifyIdleThreadState({ child, client, idleFixture, timeoutMs }) 
       `Idle thread rendered timeline content: ${JSON.stringify({ timelineRows, timelineLists })}`,
     );
   }
-  const composer = await readComposerOutcome(client, { allowMissingContext: true });
-  assertComposerGeometry(composer, { allowMissingContext: true });
+  const composer = await readComposerOutcome(client, {
+    allowMissingContext: expectNoComposerContext,
+  });
+  assertComposerGeometry(composer, {
+    allowMissingContext: expectNoComposerContext,
+  });
+  if (expectNoComposerContext) {
+    const contextMeasurements = await Promise.all([
+      readOptionalMeasurement(client, ".composer-context-strip"),
+      readOptionalMeasurement(client, ".composer-context-label--checkout"),
+      readOptionalMeasurement(client, ".composer-context-label--branch"),
+    ]);
+    if (contextMeasurements.some((measurement) => measurement !== null)) {
+      throw new Error("Non-repository idle thread rendered repository context.");
+    }
+  }
   if (
     composer.anchors.frame.attributes["data-composer-state"] !== "idle" ||
     composer.anchors.primaryAction.attributes["data-composer-primary-state"] !== "disabled"
@@ -3179,6 +3199,7 @@ async function runOnce({
       ? await verifyIdleThreadState({
           child,
           client,
+          expectNoComposerContext,
           idleFixture,
           timeoutMs,
         })

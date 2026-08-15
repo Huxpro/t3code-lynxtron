@@ -142,6 +142,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'readSelectorRects(client, ".timeline-list")');
     assert.include(source, "Idle thread rendered timeline content");
     assert.include(source, "idleFixture.messageCount !== 0");
+    assert.include(source, "allowMissingContext: expectNoComposerContext");
+    assert.include(source, "Non-repository idle thread rendered repository context.");
   });
 
   it("captures Native General Settings content and geometry before route cycling", () => {
