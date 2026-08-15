@@ -3609,6 +3609,154 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-default-browser-certification",
+      "observedAt": "2026-08-15T14:37:44+09:00",
+      "commit": "12b76d6ffbf21c2e93d037b3b3b3350c52689113",
+      "codeState": "commit",
+      "label": "Model Picker default Browser certification",
+      "narrative": "A fresh zero-thread connector-created project opens the default dark Model Picker on both shipping Browser renderers. Project, route, theme, Claude Fable 5 selection, nine model rows, five provider entries, and overlay content match with zero errors. Removing the nested intrinsic-width wrappers corrects the Lynx list from 1587.109375x62 to 313x299 and the first row from 175.359375x53 to 304x53; the matched Web boxes are 312x299 and 303x53. Full-frame SSIM remains 0.913904.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser evidence measures the product fix against the same immutable state. A one-thread fixture mismatch and development shutdown noise are classified separately and excluded."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Model Picker authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-default-web.png",
+          "sha256": "b120a801de4f4313ffbab7f310a0f7f74217dfabe80ad953d727372532101759",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "c72bdb8b75a45c9e5214f5b4b2f0b3ec678e276b"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Model Picker Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-default-lynx.png",
+          "sha256": "fe0a2c4618dad10fa98824380400a9bdc19af1fd88f580ec122dc7bb9ab726ac",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "c72bdb8b75a45c9e5214f5b4b2f0b3ec678e276b"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/model-picker-default-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "93d6ec9b2fa7492f2007a97d2a32ef7b9f6383617143de63e3261eb7106ae330"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-model-picker-content",
+              "source": "same project, New Thread route, Claude Fable 5 selection, nine semantic model keys, five provider ids, and selected row"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 2, 0, 0, 1, 3, 2, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 1, 0, 0, 2, 1, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "model-picker-overlay-geometry",
+              "source": "Panel, body, rail, content, search, list, and first-row boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.086096,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.913904 at the matched default Model Picker frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-semantic-readiness",
+              "source": "same zero-thread connector-created project, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-default-native-certification",
+      "observedAt": "2026-08-15T14:38:04+09:00",
+      "commit": "12b76d6ffbf21c2e93d037b3b3b3350c52689113",
+      "codeState": "commit",
+      "label": "Model Picker default Native certification",
+      "narrative": "A PID-owned exact production bundle opens the dark Model Picker from a clean one-thread canonical fixture. It verifies Claude Fable 5, the 360x346 panel, rgb(25,25,25) panel and content, the provider rail, Current checkout, main transport sequence 2 to 3, zero errors, and both Close-button and outside-layer dismissal. Isolated state is disposed after the run.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, interaction, and runtime evidence fills current Model Picker cells without claiming Native material parity or a second product delta."
+      },
+      "screenshots": [
+        {
+          "client": "native",
+          "label": "Native Model Picker",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-default-native.png",
+          "sha256": "802c039e7ac357e4aebef5101d4a1959d5bafe151d6b26d4bc297d6f8f2bb29a",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "c72bdb8b75a45c9e5214f5b4b2f0b3ec678e276b"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/model-picker-default-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "93d6ec9b2fa7492f2007a97d2a32ef7b9f6383617143de63e3261eb7106ae330"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-default"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-model-picker-content",
+              "source": "Claude Fable 5, dark panel/content/rail colors, and Current checkout"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-model-picker-panel-geometry",
+              "source": "360x346 panel measured in the 1280x820 Native viewport"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-model-picker-dismissal",
+              "source": "DevTool taps on the measured Close control and outside dismiss layer both remove the panel"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle, main transport 2 to 3, zero renderer errors, and isolated cleanup"
+            }
+          }
+        }
+      ]
     }
   ]
 }

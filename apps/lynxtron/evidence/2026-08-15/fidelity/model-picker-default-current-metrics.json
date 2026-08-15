@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T14:38:04+09:00",
+  "productCommit": "12b76d6ffbf21c2e93d037b3b3b3350c52689113",
+  "nativeVerifierCommit": "12b76d6ffbf21c2e93d037b3b3b3350c52689113",
+  "stateId": "model-picker-default",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "route": "/",
+    "lifecycle": "ready",
+    "overlay": "model-picker"
+  },
+  "fixture": {
+    "createdThroughRealConnector": true,
+    "preparationMethod": "T3Connector.ensureProject",
+    "projectTitle": "t3-model-workspace",
+    "browserThreadCount": 0,
+    "nativeThreadTitle": "Model picker route anchor",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "browserSnapshotSha256": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977",
+    "nativeSnapshotSha256": "f1b2b68636d2a2d925c6550a749a469b41fb57d0f0a9eba1c8b2f76b1f9784cb"
+  },
+  "classification": {
+    "harnessMismatch": [
+      "A rejected Browser rerun reused the one-thread Native fixture, so Lynx selected the canonical thread while Web remained on New Thread. It was excluded and replaced with a fresh zero-thread Browser fixture.",
+      "Development bundles emitted three connection-refused errors after the owned server shut down. Development captures were used only for geometry diagnosis; the retained production capture has zero console errors."
+    ],
+    "productLoss": [
+      "The Lynx scroll-view inherited intrinsic width through picker-list-shell and picker-list-inner, producing a 1587.109375x62 list and a 175.359375x53 row inside a correctly sized 314px content column.",
+      "Removing both redundant wrappers lets the scroll-view participate directly in the content-column flex layout and lets rows stretch across its viewport."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime. Exact-bundle Native updates content, geometry, interaction, and runtime; its screenshot is representative rather than a Native-to-Web material residual."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "12b76d6ffbf21c2e93d037b3b3b3350c52689113",
+    "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+    "lynxBundleSha256": "3b56aeffff196e04873ad21bbd6e16467421cbb3b0f181f9ba9430d78aa7ad02",
+    "fullFrameSsim": 0.913904,
+    "fullFrameResidual": 0.086096,
+    "capturePass": true,
+    "rendererErrors": 0,
+    "readyMs": 1244,
+    "selectedModelKey": "claudeAgent:claude-fable-5",
+    "providerIds": ["favorites", "claudeAgent", "codex", "grok", "opencode"],
+    "rowCount": 9,
+    "geometry": {
+      "anchorDeltas": [
+        0, 2, 0, 0, 1, 3, 2, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 1, 0, 0, 2, 1, 0
+      ],
+      "anchorScale": 32,
+      "web": {
+        "panel": { "x": 397, "y": 87, "width": 360, "height": 346 },
+        "list": { "x": 443, "y": 133, "width": 312, "height": 299 },
+        "row": { "x": 451, "y": 139, "width": 303, "height": 53 }
+      },
+      "lynx": {
+        "panel": { "x": 397, "y": 89, "width": 360, "height": 346 },
+        "list": { "x": 443, "y": 135, "width": 313, "height": 299 },
+        "row": { "x": 451, "y": 141, "width": 304, "height": 53 }
+      }
+    },
+    "ownedBrowserProcessesAfterCapture": 0,
+    "ownedServerProcessesAfterCapture": 0,
+    "isolatedChromeProfilesAfterCapture": 0,
+    "reportSha256": "3a98f039364f21b9d6bf36c261ae1bcaaa019c5cb8fc38106d315f96c8f620f5"
+  },
+  "native": {
+    "status": "pass",
+    "head": "12b76d6ffbf21c2e93d037b3b3b3350c52689113",
+    "bundleSha256": "d79f59037119a799eee365b6a78e80496a52152adbba2d59d89c246dd8bb0a50",
+    "snapshotId": "f1b2b68636d2a2d925c6550a749a469b41fb57d0f0a9eba1c8b2f76b1f9784cb",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "model": "Claude Fable 5",
+    "panel": { "x": 397, "y": 377, "width": 360, "height": 346 },
+    "colors": {
+      "panel": "rgb(25,25,25)",
+      "content": "rgb(25,25,25)",
+      "rail": "rgba(255,255,255,0.0392157)"
+    },
+    "checkoutLabel": "Current checkout",
+    "dismissed": {
+      "closeButton": true,
+      "outsideTap": true
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "7bedf5bb9a7b5391259a7fdb8221ebc3db6648ee46043edababfeaa147ed0de3",
+    "screenshotSha256": "802c039e7ac357e4aebef5101d4a1959d5bafe151d6b26d4bc297d6f8f2bb29a"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "c72bdb8b75a45c9e5214f5b4b2f0b3ec678e276b"
+    },
+    "web": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-default-web.png",
+      "sha256": "b120a801de4f4313ffbab7f310a0f7f74217dfabe80ad953d727372532101759"
+    },
+    "lynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-default-lynx.png",
+      "sha256": "fe0a2c4618dad10fa98824380400a9bdc19af1fd88f580ec122dc7bb9ab726ac"
+    },
+    "native": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/model-picker-default-native.png",
+      "sha256": "802c039e7ac357e4aebef5101d4a1959d5bafe151d6b26d4bc297d6f8f2bb29a"
+    }
+  },
+  "remainingRisk": [
+    "Full-frame Browser material residual remains 0.086096 and is not hidden by the semantic and geometry pass.",
+    "Model Picker query, provider-rail selection, and empty-result states remain separate fixed-denominator states.",
+    "Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web pixel residual."
+  ]
+}

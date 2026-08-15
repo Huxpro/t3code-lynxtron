@@ -41,3 +41,5 @@ composer-working-browser-certification,2026-08-15T07:10:00+09:00,1ca68b58353bd0b
 composer-working-native-certification,2026-08-15T07:19:45+09:00,3c61c2d287cf894f917e795b32c12feae5f43f9f,commit,Composer working Native certification,0.754339,0.687361,0.033048,0.745943,0.254057,0.229098
 settings-general-browser-certification,2026-08-15T07:34:00+09:00,db291a4751668918d1005aec480941dc7a1db7e0,commit,Settings General Browser certification,0.749376,0.687361,0.03355,0.740676,0.259324,0.234061
 settings-general-native-certification,2026-08-15T07:40:28+09:00,8805a4301835add3395c535e6058295ad8c17846,commit,Settings General Native certification,0.738082,0.687361,0.031908,0.729449,0.270551,0.245355
+model-picker-default-browser-certification,2026-08-15T14:37:44+09:00,12b76d6ffbf21c2e93d037b3b3b3350c52689113,commit,Model Picker default Browser certification,0.731429,0.687361,0.03178,0.722613,0.277387,0.252008
+model-picker-default-native-certification,2026-08-15T14:38:04+09:00,12b76d6ffbf21c2e93d037b3b3b3350c52689113,commit,Model Picker default Native certification,0.720289,0.687361,0.030514,0.711485,0.288515,0.263148
