@@ -116,6 +116,19 @@ describe("Lynx model picker presentation", () => {
     expect(panelBlock).toContain("bottom: 32px;");
   });
 
+  it("matches the authority row typography and vertical rhythm", () => {
+    const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
+
+    expect(overrides).toContain(".picker-list {\n  display: flex;\n  flex-direction: column;");
+    expect(overrides).toContain("gap: 2px;");
+    expect(overrides).toContain(".model-picker-row-copy {");
+    expect(overrides).toContain(".model-picker-row-name {\n  color: var(--foreground);");
+    expect(overrides).toContain("font-size: 12px;\n  font-weight: 500;\n  line-height: 17px;");
+    expect(overrides).toContain(".model-picker-row-provider-label {");
+    expect(overrides).toContain("color: rgba(var(--muted-foreground-rgb), 0.7);");
+    expect(overrides).toContain("width: 20px;\n  height: 20px;");
+  });
+
   it("keeps the current thread selection authoritative over a cached model", () => {
     const cachedClaude = {
       instanceId: ProviderInstanceId.make("claudeAgent"),

@@ -29,6 +29,11 @@ describe("ModelPickerSurface", () => {
     expect(markup).toContain("New");
     expect(markup).toContain("data-trailing");
     expect(markup).toContain("model-picker-row--selected");
+    expect(markup).toContain("model-picker-row-copy flex min-w-0 flex-1 flex-col");
+    expect(markup).toContain("model-picker-row-title-line");
+    expect(markup).toContain("model-picker-row-provider-line");
+    expect(markup).toContain("model-picker-row-provider-label");
+    expect(markup).toContain("model-picker-row-trailing");
     expect(markup.indexOf("Claude Fable 5")).toBeLessThan(markup.indexOf("Claude Code"));
   });
 

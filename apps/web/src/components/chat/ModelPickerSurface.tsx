@@ -120,8 +120,8 @@ export function ModelPickerRowContent({
 }: ModelPickerRowContentProps) {
   return (
     <>
-      <HostView className="min-w-0 flex-1 text-left">
-        <HostView className="flex min-w-0 items-center gap-2">
+      <HostView className="model-picker-row-copy flex min-w-0 flex-1 flex-col text-left">
+        <HostView className="model-picker-row-title-line flex min-w-0 items-center gap-2">
           {favoriteMarker}
           <HostText className="model-picker-row-name min-w-0 truncate text-xs font-medium leading-snug text-foreground">
             {name}
@@ -129,16 +129,18 @@ export function ModelPickerRowContent({
           {showNewBadge ? <ModelPickerNewBadge /> : null}
         </HostView>
         {providerLabel ? (
-          <HostView className="mt-1 flex items-center gap-1.5">
+          <HostView className="model-picker-row-provider-line mt-1 flex items-center gap-1.5">
             {providerIcon}
-            <HostText className="truncate text-xs font-normal leading-snug text-muted-foreground/70">
+            <HostText className="model-picker-row-provider-label truncate text-xs font-normal leading-snug text-muted-foreground/70">
               {providerLabel}
             </HostText>
           </HostView>
         ) : null}
       </HostView>
       {trailing ? (
-        <HostView className="flex shrink-0 items-center gap-1.5">{trailing}</HostView>
+        <HostView className="model-picker-row-trailing flex shrink-0 items-center gap-1.5">
+          {trailing}
+        </HostView>
       ) : null}
     </>
   );
