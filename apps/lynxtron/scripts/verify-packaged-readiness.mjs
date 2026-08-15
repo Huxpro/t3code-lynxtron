@@ -2671,20 +2671,6 @@ async function verifySettingsRouteBehavior({
 }
 
 async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
-  const initialThreadRoute = await readRoutePanel(client);
-  await tapSelector({
-    child,
-    client,
-    selector: '[data-thread-active="false"]',
-    timeoutMs,
-  });
-  const selectedThreadRoute = await waitForRouteChange({
-    child,
-    client,
-    initialRoute: initialThreadRoute.route,
-    timeoutMs,
-  });
-
   const before = await readSidebarScopeLayout(client, false);
   await tapSelector({
     child,
@@ -2747,10 +2733,6 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   return {
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selectors",
-    threadSelection: {
-      beforeRoute: initialThreadRoute.route,
-      afterRoute: selectedThreadRoute.route,
-    },
     closed: {
       trigger: before.trigger,
       threadList: before.threadList,

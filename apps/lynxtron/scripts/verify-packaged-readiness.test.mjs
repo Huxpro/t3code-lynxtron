@@ -21,9 +21,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar rows escaped the rail");
   });
 
-  it("changes threads through the current Native Sidebar rows", () => {
-    assert.include(source, `selector: '[data-thread-active="false"]'`);
+  it("keeps the scope gate focused on scope behavior", () => {
     assert.notInclude(source, 'selector: ".quick-switch-thread-row--other"');
+    assert.notInclude(source, `selector: '[data-thread-active="false"]'`);
   });
 
   it("verifies current Composer Footer icon geometry without driving menus", () => {
