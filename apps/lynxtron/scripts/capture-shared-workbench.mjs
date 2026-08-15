@@ -78,9 +78,13 @@ const requestedWebRoute = argValue(
 const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
   "model-picker-empty": "model-picker",
+  "quick-switch-actions-only": "quick-switch",
+  "quick-switch-empty": "quick-switch",
 };
 const defaultQueryByStateId = {
   "model-picker-empty": "__t3_no_models__",
+  "quick-switch-actions-only": ">",
+  "quick-switch-empty": "zzzz-no-result",
 };
 const overlay = argValue("--overlay", defaultOverlayByStateId[stateId] ?? "");
 const requiresShortcutInput = overlay === "quick-switch" || overlay === "file-picker";

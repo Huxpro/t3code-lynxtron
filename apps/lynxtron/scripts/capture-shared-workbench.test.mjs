@@ -114,6 +114,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "function betaSettingsGeometryMatches");
     assert.include(source, '"model-picker-empty": "model-picker"');
     assert.include(source, '"model-picker-empty": "__t3_no_models__"');
+    assert.include(source, '"quick-switch-actions-only": "quick-switch"');
+    assert.include(source, '"quick-switch-empty": "quick-switch"');
+    assert.include(source, '"quick-switch-actions-only": ">"');
+    assert.include(source, '"quick-switch-empty": "zzzz-no-result"');
     assert.include(source, 'stateId !== "model-picker-empty"');
     assert.include(source, "webMetrics.emptyText === lynxMetrics?.emptyText");
     assert.include(source, "if (!overlay) {");
