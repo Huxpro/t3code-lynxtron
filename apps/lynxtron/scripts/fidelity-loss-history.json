@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T05:19:03+09:00",
+  "updatedAt": "2026-08-16T06:21:22+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5815,6 +5815,101 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.831529 at the matched post-fix General Settings frame; Settings-main residual is 0.161925"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-diff-current-harness-refinement",
+      "observedAt": "2026-08-16T06:20:00+09:00",
+      "commit": "0873f65e5600f685d2ae9c24b49043d4a2b3f0f0",
+      "codeCommit": "bae3768289d7d8e234a40a774b708aafdb99a7ab",
+      "codeState": "commit",
+      "label": "Review Full Diff current harness refinement",
+      "narrative": "A strict current-head Review capture invalidates the stale 0.499074 frame and a later summary-only frame. The reader now requires both panes to expose the selected turn, review-fixture.txt, and the original and updated patch lines. Browser Proxy conditioning restores the flex contracts stripped from Lynx-for-Web, after which Web and Lynx match the 539x776 surface, 539x40 subheader, and 539x736 viewport and patch rectangles exactly. With the old product background retained, full-frame SSIM is 0.888626. This point is a measurement refinement only; it does not attribute the harness delta to product code or change existing Native evidence.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The reader and Browser Proxy changes correct evidence admission and browser-only layout conditioning. The old right-panel product token is retained for this measured point, and no Native product claim is added."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-diff-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "05b7ddddd372cb1c5fda5a29c5b17e64e691680f5bc23c095c3b0c37054577e9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "strict-complete-review-patch",
+              "source": "Both panes match selected turn, review-fixture.txt, one addition/deletion, original review fixture, and updated by T3 review fixture"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "review-panel-primary-geometry",
+              "source": "Surface, subheader, viewport, and code-diff x/y/width/height rectangles at 1280x820"
+            },
+            "material": {
+              "residual": 0.111374,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.888626 under the final strict harness with the old right-panel product token"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-open-diff-postcondition",
+              "source": "Real Review actions settle both panes on the same complete patch without loading or error state"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-review-readiness",
+              "source": "Same immutable fixture, route, thread, turn, file, viewport, and Web bundle with zero renderer errors and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-diff-background-fix-current",
+      "observedAt": "2026-08-16T06:21:22+09:00",
+      "commit": "cd816245dbc3c1c0340023e36506366ccb0b63cf",
+      "codeCommit": "cd816245dbc3c1c0340023e36506366ccb0b63cf",
+      "codeState": "commit",
+      "label": "Review Full Diff background fix",
+      "narrative": "The right-panel shell now uses the shared application background instead of the pure-black Sidebar token. Under the same final harness and immutable fixture, dark full-frame SSIM improves from 0.888626 to 0.889352 while all sixteen primary geometry anchors remain exact. A separate light capture passes the same complete-patch and geometry gates at SSIM 0.881967. Remaining Browser error is concentrated in the custom file header and two line materials; existing Native content, geometry, interaction, and runtime evidence remains unchanged, and Native material parity is not claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct dark before/after captures share the final reader, Browser Proxy conditioning, Web bundle, fixture, route, theme, viewport, and patch. Only the right-panel background token changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-diff-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "05b7ddddd372cb1c5fda5a29c5b17e64e691680f5bc23c095c3b0c37054577e9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.110648,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.889352 at the matched dark Review frame; light corroborates at SSIM 0.881967"
             }
           }
         }
