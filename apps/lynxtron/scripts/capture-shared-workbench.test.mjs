@@ -80,6 +80,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'element.getAttribute("lynx-computed-display")');
     assert.include(workbench, 'style.getPropertyValue("--flex-direction")');
     assert.include(workbench, "element.getAttributeNames()");
+    assert.include(workbench, "readElementAncestors(settingsPanel)");
   });
 
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {

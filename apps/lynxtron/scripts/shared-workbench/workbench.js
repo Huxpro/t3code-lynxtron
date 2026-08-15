@@ -124,6 +124,16 @@ function readElementBox(element) {
   };
 }
 
+function readElementAncestors(element, depth = 4) {
+  const ancestors = [];
+  let current = element?.parentElement ?? null;
+  while (current && ancestors.length < depth) {
+    ancestors.push(readElementBox(current));
+    current = current.parentElement;
+  }
+  return ancestors;
+}
+
 function readTextLineRects(element) {
   if (!element) return [];
   const range = element.ownerDocument.createRange();
@@ -907,6 +917,7 @@ function readLynxPane() {
               ),
               geometry: {
                 panel: readElementBox(settingsPanel),
+                panelAncestors: readElementAncestors(settingsPanel),
                 sections: [
                   ...(settingsPanel?.querySelectorAll(":scope > .source-control-section") ?? []),
                 ].map((item) => ({
@@ -1644,6 +1655,7 @@ function readWebPane() {
               ].map((item) => item.textContent?.trim()),
               geometry: {
                 panel: readElementBox(settingsPanel),
+                panelAncestors: readElementAncestors(settingsPanel),
                 sections: [...(settingsPanel?.querySelectorAll(":scope > section") ?? [])].map(
                   (item) => ({
                     title:
