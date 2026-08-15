@@ -139,6 +139,24 @@ export interface SourceControlDiscoveryPresentation {
   readonly hasItems: boolean;
 }
 
+export interface SourceControlEmptyPresentation {
+  readonly sectionTitle: "Server environment";
+  readonly title: "Could not scan the server environment" | "Nothing detected yet";
+  readonly description: string;
+}
+
+export function deriveSourceControlEmptyPresentation(
+  error: string | null,
+): SourceControlEmptyPresentation {
+  return {
+    sectionTitle: "Server environment",
+    title: error === null ? "Nothing detected yet" : "Could not scan the server environment",
+    description:
+      error ??
+      "Install Git on the server, add optional hosting integrations or credentials your workspace needs, then rescan.",
+  };
+}
+
 export const SOURCE_CONTROL_WRITING_STYLE_OPTIONS: Readonly<
   Record<SourceControlWritingStyleMode, { readonly label: string; readonly description: string }>
 > = {

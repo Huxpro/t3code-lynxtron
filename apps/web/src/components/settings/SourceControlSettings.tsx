@@ -2,6 +2,7 @@ import { ChevronDownIcon, GitPullRequestIcon, InfoIcon, RefreshCwIcon } from "lu
 import * as Duration from "effect/Duration";
 import { useState, type ReactNode } from "react";
 import {
+  deriveSourceControlEmptyPresentation,
   projectSourceControlDiscoveryItem,
   type SourceControlItemPresentation,
 } from "@t3tools/client-runtime/presentation/source-control";
@@ -396,21 +397,18 @@ function EmptySourceControlDiscovery({
   readonly onScan: () => void;
 }) {
   const hasError = error !== null;
+  const presentation = deriveSourceControlEmptyPresentation(error);
 
   return (
-    <SettingsSection id={searchableSetting("source-control").id} title="Server environment">
+    <SettingsSection id={searchableSetting("source-control").id} title={presentation.sectionTitle}>
       <Empty className="min-h-88">
         <EmptyMedia variant="icon">
           <GitPullRequestIcon />
         </EmptyMedia>
         <EmptyHeader>
-          <EmptyTitle>
-            {hasError ? "Could not scan the server environment" : "Nothing detected yet"}
-          </EmptyTitle>
+          <EmptyTitle>{presentation.title}</EmptyTitle>
           <EmptyDescription {...(hasError ? { "data-source-control-error": true } : {})}>
-            {hasError
-              ? error
-              : "Install Git on the server, add optional hosting integrations or credentials your workspace needs, then rescan."}
+            {presentation.description}
           </EmptyDescription>
         </EmptyHeader>
         <EmptyContent>

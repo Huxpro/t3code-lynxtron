@@ -2,6 +2,7 @@ import * as Option from "effect/Option";
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  deriveSourceControlEmptyPresentation,
   projectSourceControlDiscovery,
   projectSourceControlDiscoveryItem,
   redactSourceControlAccount,
@@ -178,6 +179,20 @@ describe("source-control discovery presentation", () => {
     expect(result.hasItems).toBe(true);
     expect(result.versionControlSystems).toHaveLength(1);
     expect(result.sourceControlProviders).toHaveLength(0);
+  });
+
+  it("shares source-control empty and error copy across renderers", () => {
+    expect(deriveSourceControlEmptyPresentation(null)).toEqual({
+      sectionTitle: "Server environment",
+      title: "Nothing detected yet",
+      description:
+        "Install Git on the server, add optional hosting integrations or credentials your workspace needs, then rescan.",
+    });
+    expect(deriveSourceControlEmptyPresentation("Discovery failed.")).toEqual({
+      sectionTitle: "Server environment",
+      title: "Could not scan the server environment",
+      description: "Discovery failed.",
+    });
   });
 
   it("shares source-control writing style copy across renderers", () => {

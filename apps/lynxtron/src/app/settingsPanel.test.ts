@@ -65,4 +65,23 @@ describe("Lynx Settings route projection", () => {
     expect(settings).toContain('aria-label="Days of inactivity before auto-settle"');
     expect(settings).not.toContain("The Lynx Sidebar v2 renderer has not moved yet");
   });
+
+  it("matches the canonical Source Control empty and error anatomy", () => {
+    const settings = readFileSync(
+      path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),
+      "utf8",
+    );
+    const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
+    expect(settings).toContain("deriveSourceControlEmptyPresentation(discovery.error)");
+    expect(settings).toContain('className="source-control-empty__title"');
+    expect(settings).toContain('className="source-control-empty__description"');
+    expect(settings).toContain('name="git-pull-request"');
+    expect(settings).toContain('name="refresh-cw"');
+    expect(settings).toContain("data-source-control-retry");
+    const emptyStart = overrides.indexOf(".source-control-empty {");
+    const emptyBlock = overrides.slice(emptyStart, overrides.indexOf("}", emptyStart));
+    expect(emptyBlock).toContain("min-height: 352px;");
+    expect(emptyBlock).toContain("--align-self-column: stretch;");
+    expect(emptyBlock).toContain("width: 100%;");
+  });
 });

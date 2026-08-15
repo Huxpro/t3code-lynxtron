@@ -1,4 +1,4 @@
-import { useCallback } from "@lynx-js/react";
+import { useCallback, type ReactNode } from "@lynx-js/react";
 
 import {
   SettingsRow,
@@ -50,9 +50,18 @@ export function SelectBox({
   );
 }
 
-export function SmallButton({ label, onTap }: { label: string; onTap?: () => void }) {
+export function SmallButton({
+  label,
+  icon,
+  onTap,
+}: {
+  label: string;
+  icon?: ReactNode;
+  onTap?: () => void;
+}) {
   return (
     <Button onClick={onTap} size="xs" variant="outline">
+      {icon}
       {label}
     </Button>
   );

@@ -4,6 +4,7 @@ import {
 } from "@t3tools/client-runtime/presentation/time";
 import { canManageAuthAccess } from "@t3tools/client-runtime/presentation/connections";
 import {
+  deriveSourceControlEmptyPresentation,
   projectSourceControlDiscovery,
   redactSourceControlAccount,
   SOURCE_CONTROL_WRITING_STYLE_OPTIONS,
@@ -40,6 +41,7 @@ import {
 } from "../../../../web/src/components/ui/select";
 import { SettingsRow, SettingsSection, Toggle } from "./SettingsControls";
 import { SmallButton } from "./SettingsControls";
+import { Icon } from "./Icon";
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { useClientSettingsState } from "../state/prefsStore";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
@@ -207,25 +209,36 @@ export function SourceControlSettings() {
   }
 
   if (discovery.error || !presentation.hasItems) {
+    const emptyPresentation = deriveSourceControlEmptyPresentation(discovery.error);
     return (
       <view className="source-control-panel">
         <SettingsSection
           id={searchableSetting("source-control").id}
-          title="Source Control"
-          headerAction={scanButton}
+          title={emptyPresentation.sectionTitle}
           className="source-control-section"
           stacked
         >
-          <view className="settings-empty-card settings-empty-card--action">
-            <text
-              className="settings-empty__text"
-              data-source-control-error={discovery.error ? "true" : undefined}
-            >
-              {discovery.error ?? "No source-control integrations detected."}
-            </text>
-            <view data-source-control-retry>
+          <view className="source-control-empty">
+            <view className="source-control-empty__media" aria-hidden>
+              <view className="source-control-empty__media-layer source-control-empty__media-layer--left" />
+              <view className="source-control-empty__media-layer source-control-empty__media-layer--right" />
+              <view className="source-control-empty__media-layer source-control-empty__media-layer--front">
+                <Icon name="git-pull-request" size={18} />
+              </view>
+            </view>
+            <view className="source-control-empty__header">
+              <text className="source-control-empty__title">{emptyPresentation.title}</text>
+              <text
+                className="source-control-empty__description"
+                data-source-control-error={discovery.error ? "true" : undefined}
+              >
+                {emptyPresentation.description}
+              </text>
+            </view>
+            <view className="source-control-empty__content" data-source-control-retry>
               <SmallButton
                 label={discovery.pending ? "Scanning…" : "Scan"}
+                icon={<Icon name="refresh-cw" size={14} color="#a1a1aa" />}
                 onTap={() => setRefreshVersion((version) => version + 1)}
               />
             </view>
