@@ -293,6 +293,7 @@ export function Composer({
             renderFooterLeftControls: () =>
               approvalActions ? null : (
                 <ComposerToolbarRow
+                  overlayOpen={modelPicker !== undefined}
                   items={[
                     <view key="model" className="model-picker-anchor">
                       <ComposerToolbarControl

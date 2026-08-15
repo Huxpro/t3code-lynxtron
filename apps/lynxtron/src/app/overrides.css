@@ -7060,6 +7060,9 @@
   flex-shrink: 0;
   z-index: 51;
 }
+.composer-toolbar-row--overlay-open {
+  overflow: visible;
+}
 .model-picker-dismiss-layer {
   position: fixed;
   top: 0;
@@ -7072,7 +7075,7 @@
 .model-picker-panel {
   position: absolute;
   left: 0;
-  bottom: 30px;
+  bottom: 32px;
   width: 360px;
   height: 346px;
   box-sizing: border-box;

@@ -117,6 +117,13 @@ describe("ComposerSurface", () => {
     );
   });
 
+  it("marks the toolbar when an anchored overlay is open", () => {
+    const markup = renderToStaticMarkup(
+      <ComposerToolbarRow overlayOpen items={[<span data-control="model">M</span>]} />,
+    );
+    expect(markup).toContain("composer-toolbar-row--overlay-open");
+  });
+
   it("owns native toolbar-control density and truncation", () => {
     const markup = renderToStaticMarkup(
       <ComposerToolbarControl

@@ -68,12 +68,19 @@ export interface ComposerSurfaceProps {
 export function ComposerToolbarRow({
   items,
   separators = true,
+  overlayOpen = false,
 }: {
   readonly items: ReadonlyArray<ReactNode>;
   readonly separators?: boolean;
+  readonly overlayOpen?: boolean;
 }) {
   return (
-    <HostView className="composer-toolbar-row -m-1 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto p-1">
+    <HostView
+      className={cn(
+        "composer-toolbar-row -m-1 flex min-w-0 flex-1 items-center gap-1 overflow-x-auto p-1",
+        overlayOpen && "composer-toolbar-row--overlay-open",
+      )}
+    >
       {items.map((item, index) =>
         item === null || item === undefined || item === false ? null : (
           <Fragment key={index}>
