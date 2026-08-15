@@ -83,3 +83,5 @@ settings-general-column-flow-fix-current,2026-08-16T05:19:03+09:00,d2e57a3b25b9b
 review-diff-current-harness-refinement,2026-08-16T06:20:00+09:00,0873f65e5600f685d2ae9c24b49043d4a2b3f0f0,commit,Review Full Diff current harness refinement,0.524197,0.524197,0.019118,0.514924,0.485076,0.45924
 review-diff-background-fix-current,2026-08-16T06:21:22+09:00,cd816245dbc3c1c0340023e36506366ccb0b63cf,commit,Review Full Diff background fix,0.524196,0.524196,0.019116,0.514924,0.485076,0.459241
 existing-thread-completed-current-rich-fixture,2026-08-16T06:42:56+09:00,c37644560980b4fdb64ae3e56110fbb3b1fd7119,commit,Existing Thread Completed current rich fixture,0.524258,0.524196,0.019244,0.514924,0.485076,0.459179
+settings-connections-current-session-baseline,2026-08-16T06:54:00+09:00,bad65fb3b1607e606ccbebc84d26aef4cefd39a8,commit,Settings Connections current session baseline,0.520956,0.520956,0.021971,0.510194,0.489806,0.462481
+settings-connections-column-flow-fix-current,2026-08-16T06:59:12+09:00,0e942fe97ab334ce46d192aea74ecb9472397398,commit,Settings Connections column-flow fix,0.520153,0.520153,0.020333,0.510194,0.489806,0.463284
