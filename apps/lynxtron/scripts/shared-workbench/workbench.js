@@ -940,9 +940,10 @@ function readLynxPane() {
       pendingRequestMetrics,
       settingsMetrics: settingsRoute
         ? (() => {
-            const settingsPanel = root?.querySelector(
-              ".settings-content--source-control > .source-control-panel",
-            );
+            const settingsContent = root?.querySelector(".settings-content");
+            const settingsPanel =
+              root?.querySelector(".settings-content--source-control > .source-control-panel") ??
+              root?.querySelector(".settings-panel");
             return {
               navigationLabels: [
                 ...(root?.querySelectorAll(".settings-nav__item-label") ?? []),
@@ -954,13 +955,17 @@ function readLynxPane() {
                 (item) => item.textContent?.trim(),
               ),
               geometry: {
+                content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: [
-                  ...(settingsPanel?.querySelectorAll(":scope > .source-control-section") ?? []),
+                  ...(settingsPanel?.querySelectorAll(
+                    ":scope > .source-control-section, :scope > .settings-section",
+                  ) ?? []),
                 ].map((item) => ({
                   title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
                   box: readElementBox(item),
+                  rows: readElementBox(item.querySelector(".settings-section__rows")),
                 })),
                 sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
                   (item) => ({
@@ -1706,6 +1711,7 @@ function readWebPane() {
       settingsMetrics: settingsRoute
         ? (() => {
             const settingsPanel = doc.querySelector(".settings-page-scroll-fade > div");
+            const settingsContent = settingsPanel;
             return {
               navigationLabels: [
                 ...(doc.querySelectorAll(
@@ -1721,6 +1727,7 @@ function readWebPane() {
                 ...(settingsPanel?.querySelectorAll(":scope > section > div:first-child h2") ?? []),
               ].map((item) => item.textContent?.trim()),
               geometry: {
+                content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: [...(settingsPanel?.querySelectorAll(":scope > section") ?? [])].map(
@@ -1728,6 +1735,7 @@ function readWebPane() {
                     title:
                       item.querySelector(":scope > div:first-child h2")?.textContent?.trim() ?? "",
                     box: readElementBox(item),
+                    rows: readElementBox(item.querySelector(":scope > div:nth-child(2)")),
                   }),
                 ),
                 sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map(

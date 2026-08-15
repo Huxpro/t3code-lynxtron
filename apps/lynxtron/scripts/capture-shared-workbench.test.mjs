@@ -73,10 +73,8 @@ describe("shared workbench lifecycle fault capture", () => {
 
     assert.include(workbench, '".settings-page-scroll-fade > div"');
     assert.include(workbench, '".settings-content--source-control > .source-control-panel"');
-    assert.include(
-      workbench,
-      'settingsPanel?.querySelectorAll(":scope > .source-control-section")',
-    );
+    assert.include(workbench, ":scope > .source-control-section");
+    assert.include(workbench, ":scope > .settings-section");
     assert.include(
       workbench,
       'sourceControlRows: [...doc.querySelectorAll(".source-control-item")]',
@@ -90,6 +88,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "children: [...item.children].map");
     assert.include(workbench, 'root?.querySelectorAll(".source-control-item")');
     assert.include(source, '"settings-archive": "/settings/archived"');
+    assert.include(workbench, 'root?.querySelector(".settings-content")');
+    assert.include(workbench, 'root?.querySelector(".settings-panel")');
+    assert.include(workbench, ":scope > .settings-section");
   });
 
   it("retains symmetric Quick Switch anatomy for geometry comparison", () => {
