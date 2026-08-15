@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T07:50:49+09:00",
+  "updatedAt": "2026-08-16T08:03:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6256,6 +6256,101 @@
               "confidence": 0.99,
               "method": "model-picker-panel-ssim",
               "source": "1 - panel-region SSIM 0.927462 after the visible-panel and anchor fix; full-frame residual is 0.269597"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-query-current-visible-baseline",
+      "observedAt": "2026-08-16T07:56:00+09:00",
+      "commit": "2339dc20b3ed28f40eda5d8a5dedd25c551a4e95",
+      "codeCommit": "2339dc20b3ed28f40eda5d8a5dedd25c551a4e95",
+      "codeState": "commit",
+      "label": "Quick Switch Query current visible baseline",
+      "narrative": "A strict overlay-preserving capture opens Quick Switch through the real shortcut path and types settings into both panes. Both renderers show the same Open settings row with exact 576x166 panel geometry, but the first valid overlay-in-frame pixels invalidate the old 0.883405 score: Lynx paints an opaque #191919 panel over an overly dark scrim. Full-frame residual is 0.377259 and panel-region residual is 0.317720. This point replaces stale no-overlay evidence without assigning the harness correction to product code.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The overlay-preserving harness makes the retained pixels match the asserted state. No product delta is assigned at this baseline."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/quick-switch-query-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f90f8740ce51978508dd6d8744624c9457dad2a1e5934edcab3c15b9c1c46be8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "strict-quick-switch-query-content",
+              "source": "Both panes show query settings and the single Open settings result"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-panel-geometry",
+              "source": "Panel x/y/width/height and detailed anatomy match at 1280x820"
+            },
+            "material": {
+              "residual": 0.31772,
+              "confidence": 0.99,
+              "method": "quick-switch-panel-ssim",
+              "source": "1 - panel-region SSIM 0.682280 at the first valid overlay-in-frame capture; full-frame residual is 0.377259"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-shortcut-and-query-input",
+              "source": "Real Browser shortcut and Lynx host keyboard packet open the overlay; real character input reaches matching settings query postconditions"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-quick-switch-readiness",
+              "source": "Same fixture, route, query, row, geometry, zero renderer errors, and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-query-glass-fix-current",
+      "observedAt": "2026-08-16T08:03:00+09:00",
+      "commit": "bdd6da2d54bfa4d8fb562975536eec98fe181dc4",
+      "codeCommit": "bdd6da2d54bfa4d8fb562975536eec98fe181dc4",
+      "codeState": "commit",
+      "label": "Quick Switch Query glass material fix",
+      "narrative": "Quick Switch now uses Native-safe dark glass equivalents for the backdrop, panel, border, inset highlight, and shadow. Geometry, query, and result content remain unchanged. Full-frame SSIM improves from 0.622741 to 0.921441 and panel-region SSIM improves from 0.682280 to 0.880387. Other Quick Switch states remain separate evidence cells and are not inferred from this query state.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after captures share the strict overlay-preserving harness, fixture, query, route, theme, viewport, and Web authority. Only Quick Switch material tokens change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/quick-switch-query-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f90f8740ce51978508dd6d8744624c9457dad2a1e5934edcab3c15b9c1c46be8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.119613,
+              "confidence": 0.99,
+              "method": "quick-switch-panel-ssim",
+              "source": "1 - panel-region SSIM 0.880387 after the dark glass fix; full-frame residual is 0.078559"
             }
           }
         }
