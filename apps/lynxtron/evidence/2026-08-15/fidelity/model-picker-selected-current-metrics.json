@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T23:49:42+09:00",
+  "productCommits": {
+    "selectionAuthority": "a21e2a2b26d42d9cd2bde4fb9d7d74fb7510581d",
+    "emptyGeometry": "ab4b718bdfb2ff9641ede8fef0c37fab1d5b1e2b"
+  },
+  "evidenceCommit": "04d247062973d4f45e9ac12f14693828e8f8d334",
+  "stateId": "model-picker-selected",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "model-picker"
+  },
+  "fixture": {
+    "source": "isolated VACUUM INTO snapshot mutated through t3-sqlite-state with backup",
+    "snapshotSha256": "cecf402af1da7b0740be413a578ad3c50bb8f50356fcebd9d96ed8932ed51be6",
+    "databaseSha256": "129367490be6f6d7e0cbc191a62a8385f5c4aa451f0e03972db3c596ce1ae0bf",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "sessionStatus": "idle",
+    "liveSourceVerifiedUnchanged": true
+  },
+  "classification": {
+    "productLoss": [
+      "Lynx model-picker navigation followed the cached selectedModel instead of the authoritative current thread selection, so a Codex Composer could reopen on the Claude provider.",
+      "Lynx selected-model metadata and row styling also followed the cached model instead of currentModelSelection.",
+      "The unavailable-provider empty composition omitted the existing list spacer and placed the empty surface 181px before Web."
+    ],
+    "harnessMismatch": [
+      "Initial overlay state closed when the seeded thread was selected, so the harness now reopens both panes through the shared Composer model trigger.",
+      "The original selected-state gate allowed equal empty selected-row arrays. The current gate requires one identical visible row matching the selected model key.",
+      "One diagnostic frame produced a transient full-frame SSIM of 0.678872. A repeated retained frame returned 0.922087 with identical semantics and geometry, so the anomalous frame was rejected as capture timing noise."
+    ],
+    "ledgerScope": "Fresh Browser evidence updates content, geometry, material, interaction, and runtime for the visible selected-model state. Native cells remain unchanged."
+  },
+  "browser": {
+    "status": "pass",
+    "capturePass": true,
+    "head": "04d247062973d4f45e9ac12f14693828e8f8d334",
+    "readyMs": 2625,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "webBundleSha256": "54d0d6f36d7f6f06586a2c286b74934d8540d4c09e18a2d973c2233cdad7db4e",
+    "lynxBundleSha256": "bd3b979bb6684cafe24335f511674bb5075ac6bcea15082e3c012875046cd369",
+    "selectedModelKey": "claudeAgent:claude-fable-5",
+    "selectedProviderId": "claudeAgent",
+    "selectedRowKeys": {
+      "web": ["claudeAgent:claude-fable-5"],
+      "lynx": ["claudeAgent:claude-fable-5"]
+    },
+    "rowLabels": [
+      "Claude Fable 5",
+      "Claude Opus 5",
+      "Claude Opus 4.8",
+      "Claude Opus 4.7",
+      "Claude Opus 4.6",
+      "Claude Opus 4.5",
+      "Claude Sonnet 5",
+      "Claude Sonnet 4.6",
+      "Claude Haiku 4.5"
+    ],
+    "providerRail": [
+      { "id": "favorites", "active": false, "disabled": false },
+      { "id": "claudeAgent", "active": true, "disabled": false },
+      { "id": "codex", "active": false, "disabled": true },
+      { "id": "grok", "active": false, "disabled": true },
+      { "id": "opencode", "active": false, "disabled": false }
+    ],
+    "geometry": {
+      "web": {
+        "panel": { "x": 397, "y": 375, "width": 360, "height": 346 },
+        "rail": { "x": 398, "y": 376, "width": 44, "height": 344 },
+        "content": { "x": 442, "y": 376, "width": 314, "height": 344 },
+        "search": { "x": 443, "y": 376, "width": 313, "height": 45 },
+        "list": { "x": 443, "y": 421, "width": 312, "height": 299 },
+        "selectedRow": { "x": 451, "y": 427, "width": 303, "height": 53 }
+      },
+      "lynx": {
+        "panel": { "x": 397, "y": 377, "width": 360, "height": 346 },
+        "rail": { "x": 398, "y": 378, "width": 44, "height": 344 },
+        "content": { "x": 442, "y": 378, "width": 314, "height": 344 },
+        "search": { "x": 443, "y": 378, "width": 313, "height": 45 },
+        "list": { "x": 443, "y": 423, "width": 313, "height": 299 },
+        "selectedRow": { "x": 451, "y": 429, "width": 304, "height": 53 }
+      },
+      "unavailableSelectedEmptySurfaceBeforeDeltaY": 181,
+      "unavailableSelectedEmptySurfaceAfterDeltaY": 2
+    },
+    "fullFrameSsim": 0.939482,
+    "fullFrameResidual": 0.060518,
+    "panelSsim": 0.940604,
+    "panelResidual": 0.059396,
+    "inputChannels": {
+      "webOpen": "cdp-pointer-click:data-composer-control=model",
+      "lynxOpen": "cdp-pointer-click:data-composer-control=model"
+    },
+    "reportSha256": "58b592f6f853e5178f679c2be69c09b31e1af46a9555f9f8be20bd20d363d61b",
+    "webScreenshotSha256": "dfaadced720a5f5fdd84ca09bc9ace2e0b02502b61ed05bd2b18aed5119a8eb5",
+    "lynxScreenshotSha256": "7e9eac06eec3dc4540962995a41c1216b31f38377264987718175083d8966226"
+  },
+  "validation": {
+    "focusedTests": "38/38",
+    "workbenchContractTests": "16/16",
+    "lynxTypecheck": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "The 0.060518 full-frame material residual remains explicit.",
+    "Native selected-row state is not recaptured in this Browser-focused slice.",
+    "Unavailable-provider selected metadata is verified separately but is not substituted for the visible-row state."
+  ]
+}
