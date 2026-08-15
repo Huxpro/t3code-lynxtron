@@ -693,9 +693,13 @@ export function MessagesTimeline({
 
   if (rows.length === 0) {
     return (
-      <view className="timeline-empty-host">
-        <TranscriptEmptySurface title={EMPTY_TRANSCRIPT_PLACEHOLDER} />
-      </view>
+      <>
+        <view className="timeline-empty-spacer" />
+        <TranscriptEmptySurface
+          className="timeline-empty-overlay"
+          title={EMPTY_TRANSCRIPT_PLACEHOLDER}
+        />
+      </>
     );
   }
   return (
