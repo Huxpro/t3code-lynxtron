@@ -3,6 +3,25 @@
 The fidelity-loss system reconstructs the T3 Code Web → Lynx-for-Web →
 Lynxtron Native port as a weighted, fixed-denominator time series.
 
+## Required loop entrypoint
+
+Run every fidelity build, capture, verifier, and ledger mutation through:
+
+```sh
+node apps/lynxtron/scripts/run-fidelity-loop.mjs -- <loop-command>
+```
+
+The wrapper makes the complete command tree one owned run and executes the
+ownership-aware `agent-browser` leak gate before and after it. Orphaned
+`agent-browser` processes and descendants of the current loop fail the gate;
+processes with another live owner are informational. The postflight still runs
+when the command fails or receives `SIGINT`/`SIGTERM`. Never kill by pattern:
+stop only a PID captured and proven to belong to the current run.
+
+T3 fidelity capture does not use the `agent-browser` CLI. Evidence from a loop
+that bypassed this wrapper, failed either leak gate, or omitted the screenshot
+budget check is invalid harness evidence and cannot update product loss.
+
 ## Why a fixed denominator
 
 Counting only captured screens makes sparse evidence look artificially good.
