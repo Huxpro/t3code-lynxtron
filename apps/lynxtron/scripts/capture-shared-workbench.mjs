@@ -76,9 +76,15 @@ const requestedWebRoute = argValue(
     : "/",
 );
 const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
-const overlay = argValue("--overlay", "");
+const defaultOverlayByStateId = {
+  "model-picker-empty": "model-picker",
+};
+const defaultQueryByStateId = {
+  "model-picker-empty": "__t3_no_models__",
+};
+const overlay = argValue("--overlay", defaultOverlayByStateId[stateId] ?? "");
 const requiresShortcutInput = overlay === "quick-switch" || overlay === "file-picker";
-const query = argValue("--query", "");
+const query = argValue("--query", defaultQueryByStateId[stateId] ?? "");
 const providerId = argValue("--provider-id", "");
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
@@ -249,6 +255,13 @@ function modelPickerSemanticsMatch(webMetrics, lynxMetrics) {
       lynxMetrics?.selectedRowKeys?.length === 1 &&
       webMetrics.selectedRowKeys[0] === webMetrics.selectedModelKey &&
       lynxMetrics.selectedRowKeys[0] === lynxMetrics.selectedModelKey);
+  const emptyStateReady =
+    stateId !== "model-picker-empty" ||
+    (typeof webMetrics?.emptyText === "string" &&
+      webMetrics.emptyText.length > 0 &&
+      webMetrics.emptyText === lynxMetrics?.emptyText &&
+      (webMetrics?.rowCount ?? 0) === 0 &&
+      (lynxMetrics?.rowCount ?? 0) === 0);
   return (
     JSON.stringify(webMetrics?.semanticKeys ?? []) ===
       JSON.stringify(lynxMetrics?.semanticKeys ?? []) &&
@@ -269,7 +282,8 @@ function modelPickerSemanticsMatch(webMetrics, lynxMetrics) {
     selectedModelMatches &&
     selectedRowsMatch &&
     webMetrics?.selectedProviderId === lynxMetrics?.selectedProviderId &&
-    selectedStateReady
+    selectedStateReady &&
+    emptyStateReady
   );
 }
 
