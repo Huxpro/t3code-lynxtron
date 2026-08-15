@@ -4483,6 +4483,65 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-browser-certification",
+      "observedAt": "2026-08-15T21:50:00+09:00",
+      "commit": "2983344b6a10c6a1098b7c435290dbda95545f3e",
+      "codeState": "commit",
+      "label": "Quick Switch query Browser certification",
+      "narrative": "The same immutable idle thread opens Quick Switch through real Browser shortcut input and receives settings through character input in both panes. Web and Lynx-for-Web converge on query=settings, the single Open settings result, and identical panel, search, results, footer, and row geometry with zero errors. Full-frame SSIM is 0.883405, so the shared glass material gap remains explicit.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser input and filtering evidence replaces stale query cells without a product change. Native physical query input remains pending-user-session and is not inferred."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/quick-switch-query-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "96327077fbff0e9f1aa2e602133dfffa64c5829f7ae7109859aa057384ec9f6e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-quick-switch-query-content",
+              "source": "same selected project and thread, query settings, and one Open settings result"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "quick-switch-query-anatomy",
+              "source": "Panel, search shell, results, footer, and filtered row match exactly at 1280x820"
+            },
+            "material": {
+              "residual": 0.116595,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.883405 at the matched Quick Switch query frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-query-input",
+              "source": "Web character input and Lynx focused character input produce the same query and filtered-result postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-query-readiness",
+              "source": "same immutable fixture, identity match, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
     }
   ]
 }
