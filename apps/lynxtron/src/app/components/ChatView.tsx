@@ -454,7 +454,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           />
         ) : null
       }
-      columnOverlay={
+      bodyOverlay={
         showEmptyTranscript ? (
           <TranscriptEmptySurface
             className="timeline-empty-overlay"
