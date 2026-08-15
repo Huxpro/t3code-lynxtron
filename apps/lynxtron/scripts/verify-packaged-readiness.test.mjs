@@ -142,6 +142,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'readSelectorRects(client, ".timeline-list")');
     assert.include(source, "Idle thread rendered timeline content");
     assert.include(source, "idleFixture.messageCount !== 0");
+    assert.include(source, 'measurement?.attributes["data-composer-state"] === "idle"');
     assert.include(source, "allowMissingContext: expectNoComposerContext");
     assert.include(source, "Non-repository idle thread rendered repository context.");
   });

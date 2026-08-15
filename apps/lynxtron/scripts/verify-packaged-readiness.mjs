@@ -1019,6 +1019,13 @@ async function verifyIdleThreadState({
       `Idle thread rendered timeline content: ${JSON.stringify({ timelineRows, timelineLists })}`,
     );
   }
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-frame",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
+  });
   const composer = await readComposerOutcome(client, {
     allowMissingContext: expectNoComposerContext,
   });
