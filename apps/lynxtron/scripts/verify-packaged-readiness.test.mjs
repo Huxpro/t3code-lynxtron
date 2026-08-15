@@ -131,6 +131,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '".settings-content--general .settings-section"');
     assert.include(source, 'readSelectorRects(client, ".settings-content--general .settings-row")');
     assert.include(source, 'name: "native-settings-general.png"');
+    assert.include(source, 'selector: ".settings-content--source-control"');
+    assert.include(source, 'measurement.text.includes("Text generation")');
+    assert.include(source, 'readSelectorRects(client, ".source-control-item")');
+    assert.include(source, 'readSelectorRects(client, ".source-control-writing-row")');
+    assert.include(source, 'name: "native-settings-source-control.png"');
   });
 
   it("verifies the Native working transcript layout and locked workspace copy", () => {

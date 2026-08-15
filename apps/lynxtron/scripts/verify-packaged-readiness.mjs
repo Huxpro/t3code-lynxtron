@@ -2530,6 +2530,7 @@ async function verifySettingsRouteBehavior({
   timeoutMs,
 }) {
   const observed = [];
+  let sourceControl = null;
   await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
   observed.push(
     await waitForRoutePanel({
@@ -2593,6 +2594,33 @@ async function verifySettingsRouteBehavior({
       timeoutMs,
     });
     observed.push(await waitForRoutePanel({ child, client, panel, route, timeoutMs }));
+    if (route === "/settings/source-control") {
+      const sourceControlPanel = await waitForMeasurement({
+        child,
+        client,
+        selector: ".settings-content--source-control",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.text.includes("Version Control") === true &&
+          measurement.text.includes("Source Control Providers") &&
+          measurement.text.includes("Text generation") &&
+          measurement.text.includes("Source control writing style") &&
+          measurement.text.includes("Follow change request templates") &&
+          measurement.text.includes("Source control writer model"),
+      });
+      sourceControl = {
+        panel: sourceControlPanel.rect,
+        sections: await readSelectorRects(client, ".source-control-section"),
+        discoveryRows: await readSelectorRects(client, ".source-control-item"),
+        settingsRows: await readSelectorRects(client, ".source-control-writing-row"),
+        screenshot: captureNativeScreenshot({
+          client,
+          devToolCli,
+          outputDirectory,
+          name: "native-settings-source-control.png",
+        }),
+      };
+    }
   }
 
   await tapSelector({ child, client, selector: ".settings-nav__back", timeoutMs });
@@ -2634,6 +2662,7 @@ async function verifySettingsRouteBehavior({
       rows: generalRows,
       screenshot: generalScreenshot,
     },
+    sourceControl,
     resync: { beforeSeq: beforeResync.lastSeq, afterSeq: afterResync.lastSeq },
     observed,
     repeatedCycles: 2,
