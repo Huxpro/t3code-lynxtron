@@ -202,4 +202,26 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(capture, "compareClippedOuterHeight");
     assert.include(capture, "timeline-row-root--user-input");
   });
+
+  it("keeps Review checkpoint and tree as distinct interaction states", () => {
+    assert.include(source, "explicitChangedFilesTargetState ||");
+    assert.include(source, '["expanded", "preview", "collapsed"]');
+    assert.include(source, 'state === "preview"');
+    assert.include(source, "webChangedFilesClickCount < 3");
+    assert.include(source, "lynxChangedFilesClickCount < 3");
+    assert.include(source, "webChangedFilesClickCount += 1");
+    assert.include(source, "lynxChangedFilesClickCount += 1");
+    assert.include(source, 'reviewExpectation === "checkpoint"');
+    assert.include(source, '? "preview"');
+    assert.include(source, 'reviewExpectation === "tree"');
+    assert.include(source, '? "expanded"');
+    assert.include(source, 'webReadyCards[0]?.expandedState === "preview"');
+    assert.include(source, 'lynxReadyCards[0]?.expandedState === "preview"');
+    assert.include(source, "webMetrics.treeCount === 0");
+    assert.include(source, "lynxMetrics.treeCount === 0");
+    assert.include(source, 'webReadyCards[0]?.expandedState === "expanded"');
+    assert.include(source, 'lynxReadyCards[0]?.expandedState === "expanded"');
+    assert.include(source, "webMetrics.treeCount === 1");
+    assert.include(source, "lynxMetrics.treeCount === 1");
+  });
 });

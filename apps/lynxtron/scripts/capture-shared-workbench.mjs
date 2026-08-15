@@ -83,7 +83,7 @@ const providerId = argValue("--provider-id", "");
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
-const changedFilesTargetState = argValue("--changed-files-state", "");
+const explicitChangedFilesTargetState = argValue("--changed-files-state", "");
 const expandTurnId = argValue("--expand-turn-id", "");
 const explicitExpectedThreadId = argValue("--expect-thread", "");
 const explicitSeedSource = argValue("--seed-source", "");
@@ -93,8 +93,11 @@ const timeoutMs = Number(argValue("--timeout-ms", "35000"));
 if (sidebarTargetState && !["expanded", "collapsed"].includes(sidebarTargetState)) {
   throw new Error(`Unsupported --sidebar-state: ${sidebarTargetState}`);
 }
-if (changedFilesTargetState && !["expanded", "collapsed"].includes(changedFilesTargetState)) {
-  throw new Error(`Unsupported --changed-files-state: ${changedFilesTargetState}`);
+if (
+  explicitChangedFilesTargetState &&
+  !["expanded", "preview", "collapsed"].includes(explicitChangedFilesTargetState)
+) {
+  throw new Error(`Unsupported --changed-files-state: ${explicitChangedFilesTargetState}`);
 }
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
@@ -148,6 +151,9 @@ const reviewExpectation =
         : stateId === "review-diff"
           ? "diff"
           : null;
+const changedFilesTargetState =
+  explicitChangedFilesTargetState ||
+  (reviewExpectation === "checkpoint" ? "preview" : reviewExpectation === "tree" ? "expanded" : "");
 const ALL_VIEWPORTS = ["1280x820", "1440x900"];
 const viewports = (
   hasFlag("--all-viewports") ? ALL_VIEWPORTS : [argValue("--viewport", "1280x820")]
@@ -380,7 +386,7 @@ function normalizedChangedFilesState(reviewMetrics) {
   const state = reviewMetrics?.checkpointCards?.find(
     (card) => card.status === "ready",
   )?.expandedState;
-  return state === "expanded" ? "expanded" : state ? "collapsed" : null;
+  return state === "expanded" || state === "preview" || state === "collapsed" ? state : null;
 }
 
 function coreGeometryMatches(webState, lynxState) {
@@ -529,7 +535,11 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
     return (
       webReadyCards.length > 0 &&
       lynxReadyCards.length > 0 &&
-      webReadyCards[0]?.fileCount === lynxReadyCards[0]?.fileCount
+      webReadyCards[0]?.fileCount === lynxReadyCards[0]?.fileCount &&
+      webReadyCards[0]?.expandedState === "preview" &&
+      lynxReadyCards[0]?.expandedState === "preview" &&
+      webMetrics.treeCount === 0 &&
+      lynxMetrics.treeCount === 0
     );
   }
   if (expectation === "tree") {
@@ -537,8 +547,10 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
       webReadyCards.length > 0 &&
       lynxReadyCards.length > 0 &&
       webReadyCards[0]?.fileCount === lynxReadyCards[0]?.fileCount &&
-      webMetrics.treeCount >= 1 &&
-      lynxMetrics.treeCount >= 1 &&
+      webReadyCards[0]?.expandedState === "expanded" &&
+      lynxReadyCards[0]?.expandedState === "expanded" &&
+      webMetrics.treeCount === 1 &&
+      lynxMetrics.treeCount === 1 &&
       JSON.stringify(webMetrics.treeFileCounts) === JSON.stringify(lynxMetrics.treeFileCounts)
     );
   }
@@ -1418,6 +1430,8 @@ async function captureCell({
   let lynxSidebarStateInputSent = sidebarTargetState.length === 0;
   let webChangedFilesInputSent = changedFilesTargetState.length === 0;
   let lynxChangedFilesInputSent = changedFilesTargetState.length === 0;
+  let webChangedFilesClickCount = 0;
+  let lynxChangedFilesClickCount = 0;
   const reviewInteractionTimeline = [];
   let lastReviewTimelineKey = "";
   let ownedServerTerminated = false;
@@ -1954,13 +1968,19 @@ async function captureCell({
             };
           })()`,
         ).catch(() => null);
-        if (!webChangedFilesInputSent && changedFilesPoints?.web) {
+        if (!webChangedFilesInputSent && webChangedFilesClickCount < 3 && changedFilesPoints?.web) {
           await dispatchPointerClick(cdp, sessionId, changedFilesPoints.web);
+          webChangedFilesClickCount += 1;
           await delay(100);
           continue;
         }
-        if (!lynxChangedFilesInputSent && changedFilesPoints?.lynx) {
+        if (
+          !lynxChangedFilesInputSent &&
+          lynxChangedFilesClickCount < 3 &&
+          changedFilesPoints?.lynx
+        ) {
           await dispatchPointerClick(cdp, sessionId, changedFilesPoints.lynx);
+          lynxChangedFilesClickCount += 1;
           await delay(100);
           continue;
         }
@@ -3373,7 +3393,7 @@ async function captureCell({
       changedFilesInputChannel:
         changedFilesTargetState.length === 0
           ? "not-required"
-          : "web-pointer-click|lynx-pointer-click",
+          : `web-pointer-click:${webChangedFilesClickCount}|lynx-pointer-click:${lynxChangedFilesClickCount}`,
       overlayQueryInputChannel,
       providerInputChannel,
       providerInputDiagnostics,
