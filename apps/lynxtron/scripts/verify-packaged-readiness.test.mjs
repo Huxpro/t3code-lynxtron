@@ -131,6 +131,19 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "heroOnlyEmptyFixture");
   });
 
+  it("verifies idle from the canonical session projection rather than visual status", () => {
+    assert.include(source, "async function verifyIdleThreadState");
+    assert.include(source, '"--verify-idle-thread-state"');
+    assert.include(source, 'state?.sessionStatus === "idle"');
+    assert.include(source, "state?.activeTurnId === null");
+    assert.include(source, "state?.latestTurn === null");
+    assert.include(source, 'selector: ".transcript-empty"');
+    assert.include(source, 'readSelectorRects(client, ".timeline-row-root")');
+    assert.include(source, 'readSelectorRects(client, ".timeline-list")');
+    assert.include(source, "Idle thread rendered timeline content");
+    assert.include(source, "idleFixture.messageCount !== 0");
+  });
+
   it("captures Native General Settings content and geometry before route cycling", () => {
     assert.include(source, 'selector: ".settings-content--general"');
     assert.include(source, 'measurement.text.includes("Project grouping")');

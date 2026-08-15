@@ -853,6 +853,7 @@ async function readComposerOutcome(client, options = {}) {
       route: "packaged-composer",
       anchors: [
         { id: "shell", lynx: ".composer-shell" },
+        { id: "frame", lynx: ".composer-frame" },
         { id: "surface", lynx: ".composer-surface" },
         { id: "editor", lynx: ".composer__input" },
         { id: "footer", lynx: ".composer-footer" },
@@ -978,6 +979,70 @@ async function verifyHeroComposerState({
         composer.anchors.interaction.text.trim(),
       ].filter(Boolean),
       context,
+    },
+  };
+}
+
+async function verifyIdleThreadState({ child, client, idleFixture, timeoutMs }) {
+  const clientState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === idleFixture.threadId &&
+      state?.sessionStatus === "idle" &&
+      state?.activeTurnId === null &&
+      state?.latestTurn === null,
+  });
+  const hero = await readOptionalMeasurement(client, ".hero");
+  const overlay = await readOptionalMeasurement(client, ".composer-overlay");
+  assertComposerRouteState({ hero, overlay }, "existing-thread");
+  const emptyTranscript = await waitForMeasurement({
+    child,
+    client,
+    selector: ".transcript-empty",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Start a conversation") &&
+      measurement.text.includes("Ask T3 Code to build, explain, or fix something in your project."),
+  });
+  const timelineRows = await readSelectorRects(client, ".timeline-row-root");
+  const timelineLists = await readSelectorRects(client, ".timeline-list");
+  if (timelineRows.length !== 0 || timelineLists.length !== 0) {
+    throw new Error(
+      `Idle thread rendered timeline content: ${JSON.stringify({ timelineRows, timelineLists })}`,
+    );
+  }
+  const composer = await readComposerOutcome(client, { allowMissingContext: true });
+  assertComposerGeometry(composer, { allowMissingContext: true });
+  if (
+    composer.anchors.frame.attributes["data-composer-state"] !== "idle" ||
+    composer.anchors.primaryAction.attributes["data-composer-primary-state"] !== "disabled"
+  ) {
+    throw new Error(
+      `Idle thread Composer state drifted: ${JSON.stringify({
+        composerState: composer.anchors.frame.attributes["data-composer-state"],
+        primaryState: composer.anchors.primaryAction.attributes["data-composer-primary-state"],
+      })}`,
+    );
+  }
+  return {
+    status: "pass",
+    threadId: idleFixture.threadId,
+    sessionProjection: {
+      sessionStatus: clientState.sessionStatus,
+      activeTurnId: clientState.activeTurnId,
+      latestTurn: clientState.latestTurn,
+    },
+    emptyTranscript: emptyTranscript.rect,
+    timelineRowCount: timelineRows.length,
+    composer: {
+      state: composer.anchors.frame.attributes["data-composer-state"],
+      primaryState: composer.anchors.primaryAction.attributes["data-composer-primary-state"],
+      frame: composer.anchors.shell.rect,
+      surface: composer.anchors.surface.rect,
+      editor: composer.anchors.editor.rect,
+      footer: composer.anchors.footer.rect,
     },
   };
 }
@@ -2964,6 +3029,8 @@ async function runOnce({
   verifySettingsNavigation,
   verifyComposerGeometry: shouldVerifyComposerGeometry,
   verifyHeroComposerState: shouldVerifyHeroComposerState,
+  verifyIdleThreadState: shouldVerifyIdleThreadState,
+  idleFixture,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
@@ -3105,6 +3172,14 @@ async function runOnce({
           client,
           expectNoComposerContext,
           expectedModelLabel,
+          timeoutMs,
+        })
+      : undefined;
+    const idleThreadState = shouldVerifyIdleThreadState
+      ? await verifyIdleThreadState({
+          child,
+          client,
+          idleFixture,
           timeoutMs,
         })
       : undefined;
@@ -3253,6 +3328,7 @@ async function runOnce({
       sidebarGeometry,
       composerGeometry,
       heroComposerState,
+      idleThreadState,
       settingsNavigation,
       composer,
       modelPickerFidelity,
@@ -3283,6 +3359,7 @@ async function runOnce({
       sidebarGeometry,
       composerGeometry,
       heroComposerState,
+      idleThreadState,
       composerThemeScreenshot,
       settingsNavigation,
       composer,
@@ -3333,6 +3410,7 @@ const expectNoComposerContext = process.argv.includes("--expect-no-composer-cont
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
+const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
@@ -3392,6 +3470,21 @@ for (const requiredPath of [fixtureDir, projectCwd, desktopDir, bundle, devToolC
 const fixtureManifest = JSON.parse(
   readFileSync(path.join(fixtureDir, "visual-state.json"), "utf8"),
 );
+const idleFixture = fixtureManifest.idleThreadFixture;
+if (
+  shouldVerifyIdleThreadState &&
+  (typeof idleFixture?.threadId !== "string" ||
+    typeof idleFixture?.title !== "string" ||
+    idleFixture.sessionStatus !== "idle" ||
+    idleFixture.latestTurn !== null ||
+    idleFixture.messageCount !== 0 ||
+    typeof idleFixture?.modelSelection?.instanceId !== "string" ||
+    typeof idleFixture?.modelSelection?.model !== "string")
+) {
+  throw new Error(
+    "--verify-idle-thread-state requires a canonical idleThreadFixture with no turn or messages.",
+  );
+}
 const approvalFixture = fixtureManifest.pendingRequestFixture;
 if (
   shouldVerifyApprovalTranscriptState &&
@@ -3445,8 +3538,9 @@ if (
 ) {
   throw new Error("--verify-composer-stop requires visual-state.json project.projectId.");
 }
-const canonicalThreadTitle =
-  shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+const canonicalThreadTitle = shouldVerifyIdleThreadState
+  ? idleFixture.title
+  : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
     ? fixtureManifest.pendingRequestFixture.title
     : shouldVerifyReviewDiffState
       ? reviewFixture.title
@@ -3472,8 +3566,9 @@ if (
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
 }
-const modelSelection =
-  shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+const modelSelection = shouldVerifyIdleThreadState
+  ? idleFixture.modelSelection
+  : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
     ? fixtureManifest.pendingRequestFixture.modelSelection
     : shouldVerifyReviewDiffState
       ? reviewFixture.modelSelection
@@ -3509,6 +3604,8 @@ for (let index = 1; index <= runs; index += 1) {
       verifySettingsNavigation,
       verifyComposerGeometry: shouldVerifyComposerGeometry,
       verifyHeroComposerState: shouldVerifyHeroComposerState,
+      verifyIdleThreadState: shouldVerifyIdleThreadState,
+      idleFixture,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
@@ -3547,6 +3644,14 @@ const report = {
     projectTitle: fixtureManifest.project.title,
     canonicalThreadTitle,
     modelSelection,
+    idleThread: shouldVerifyIdleThreadState
+      ? {
+          threadId: idleFixture.threadId,
+          sessionStatus: idleFixture.sessionStatus,
+          latestTurn: idleFixture.latestTurn,
+          messageCount: idleFixture.messageCount,
+        }
+      : undefined,
     pendingRequest:
       shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
         ? {
