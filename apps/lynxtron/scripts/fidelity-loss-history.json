@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T22:41:00+09:00",
+  "updatedAt": "2026-08-15T23:03:15+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -4690,6 +4690,53 @@
               "confidence": 0.99,
               "method": "reversible-session-projection",
               "source": "running maps to Working, Stop, and one working row; starting with null activeTurnId maps to Connecting, disabled, and zero working rows on both Browser renderers"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-working-model-projection-fix",
+      "observedAt": "2026-08-15T23:03:15+09:00",
+      "commit": "a1c22c53b307bb6926ebbc84412bb1069dbdea9a",
+      "codeState": "commit",
+      "label": "Composer Working thread model projection",
+      "narrative": "The persisted thread model is codex/gpt-5.6-sol. Before the fix, Lynx auto-selection crossed provider boundaries and rendered Claude Fable 5 plus a Claude-only High · 1M control while Web rendered gpt-5.6-sol. Active-thread resolution now uses the complete provider catalog when available and otherwise preserves the persisted thread selection instead of substituting a cached provider. The same running snapshot now passes the complete Browser workbench cell with identical model, three controls, Working/Stop state, context, Composer geometry, and zero errors. The prior material residual remains unchanged because this checkpoint does not compute a new SSIM score.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A same-snapshot before/after pair attributes the model and control convergence to the active-thread projection fix without changing the material score or denominator."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-working-model-projection-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "8b9ca3ed216d49c7dd994177d1ec507fecb777715a0088ccb989b01f5e6cff58"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "authoritative-thread-model-content",
+              "source": "Both renderers show gpt-5.6-sol, Full access, Build, Working, Stop, and Local checkout/main from the same persisted Codex thread"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "working-composer-frame-geometry",
+              "source": "Both Composer frames are x384 y628 width768 height140 and the full anatomy gate passes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-complete-workbench-pass",
+              "source": "Identity and session projection match, the complete 1280x820 cell passes in 1209ms, and both renderers report zero errors"
             }
           }
         }
