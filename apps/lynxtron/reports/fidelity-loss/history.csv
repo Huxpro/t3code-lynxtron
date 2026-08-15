@@ -43,3 +43,5 @@ settings-general-browser-certification,2026-08-15T07:34:00+09:00,db291a475166891
 settings-general-native-certification,2026-08-15T07:40:28+09:00,8805a4301835add3395c535e6058295ad8c17846,commit,Settings General Native certification,0.738082,0.687361,0.031908,0.729449,0.270551,0.245355
 model-picker-default-browser-certification,2026-08-15T14:37:44+09:00,12b76d6ffbf21c2e93d037b3b3b3350c52689113,commit,Model Picker default Browser certification,0.731429,0.687361,0.03178,0.722613,0.277387,0.252008
 model-picker-default-native-certification,2026-08-15T14:38:04+09:00,12b76d6ffbf21c2e93d037b3b3b3350c52689113,commit,Model Picker default Native certification,0.720289,0.687361,0.030514,0.711485,0.288515,0.263148
+settings-source-control-browser-certification,2026-08-15T16:18:40+09:00,7969899b001369799050a764a14687d31574ba57,commit,Settings Source Control Browser certification,0.71367,0.687361,0.031457,0.704371,0.295629,0.269767
+settings-source-control-native-certification,2026-08-15T16:19:12+09:00,7969899b001369799050a764a14687d31574ba57,commit,Settings Source Control Native certification,0.702057,0.687361,0.030268,0.692758,0.307242,0.28138

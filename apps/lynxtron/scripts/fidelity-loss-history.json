@@ -3757,6 +3757,159 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-browser-certification",
+      "observedAt": "2026-08-15T16:18:40+09:00",
+      "commit": "7969899b001369799050a764a14687d31574ba57",
+      "codeState": "commit",
+      "label": "Settings Source Control Browser certification",
+      "narrative": "A fresh Git project opens /settings/source-control on both shipping Browser renderers after real server discovery. Navigation, six discovery rows, Version Control, Source Control Providers, and Text generation with three source-control writing controls match with zero errors. The fix replaces a missing Native section, zero-width Settings shell, and horizontal intrinsic layout with parent-relative 896px sections and responsive grid rows. Full-frame SSIM is 0.789753, so the remaining material difference stays explicit.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "Fresh current-head matched Browser evidence measures the Source Control product repair. Web selector gaps and development shutdown noise are classified separately and excluded."
+      },
+      "screenshots": [
+        {
+          "client": "web",
+          "label": "Source Control authority",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-source-control-web.png",
+          "sha256": "573ef003c1e176519581317a5ff8fd16ae511b62499bce9b053f7d92445b962e",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "cbb7219e55e01acdcbdf92abb8e3bc822974447c"
+          }
+        },
+        {
+          "client": "lynx",
+          "label": "Source Control Lynx",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-source-control-lynx.png",
+          "sha256": "ae5e07620a41ffd4329d9c48742e543e0b03f6534589d3551d6d953779a1f5e8",
+          "relationship": "direct",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "cbb7219e55e01acdcbdf92abb8e3bc822974447c"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/settings-source-control-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "dfe5d168fad33ae9198be44d749a22b3a16739a102f72ba7f451d44c766cd7d6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-source-control-content",
+              "source": "same route, navigation, discovery rows, three section titles, and three source-control writing controls"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 9.6875, 0, 9.6875, 0, 0, 0, 25.90625, 0, 9.6875, 0, 0, 0, 34.21875, 0,
+                35.59375, 0, 0, 0, 2.84375, 0, 6.84375, 0, 0, 0, 2.84375, 0, 9.6875, 0, 0, 0,
+                3.6875, 0, 16.21875, 0, 0, 0, 3.6875, 0, 24.21875, 0, 0, 0, 3.6875
+              ],
+              "anchorScale": 48,
+              "confidence": 0.99,
+              "method": "source-control-section-row-geometry",
+              "source": "Three section boxes, six discovery rows, and three writing rows at 1280x820"
+            },
+            "material": {
+              "residual": 0.210247,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.789753 at the matched Source Control frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-source-control-discovery",
+              "source": "same isolated Git project, completed discovery, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-source-control-native-certification",
+      "observedAt": "2026-08-15T16:19:12+09:00",
+      "commit": "7969899b001369799050a764a14687d31574ba57",
+      "codeState": "commit",
+      "label": "Settings Source Control Native certification",
+      "narrative": "A PID-owned exact production bundle navigates to Source Control and verifies Version Control, Source Control Providers, Text generation, six discovery rows, three real server-backed writing controls, 896px row widths, main transport, route resync, zero errors, and isolated cleanup. The full Settings route cycle and General page regression remain green.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, interaction, and runtime evidence fills Source Control cells without claiming Native material parity or a second product delta."
+      },
+      "screenshots": [
+        {
+          "client": "native",
+          "label": "Native Source Control settings",
+          "path": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-source-control-native.png",
+          "sha256": "467602d26107c057ab3646b9a9085913558ed5b2ebc12f1033985f2b571b5120",
+          "relationship": "representative",
+          "hosting": {
+            "provider": "github-pages",
+            "repository": "Huxpro/t3code-fidelity-assets",
+            "commit": "cbb7219e55e01acdcbdf92abb8e3bc822974447c"
+          }
+        }
+      ],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/settings-source-control-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "dfe5d168fad33ae9198be44d749a22b3a16739a102f72ba7f451d44c766cd7d6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-source-control-content",
+              "source": "Version Control, Source Control Providers, Text generation, six discovery rows, and three writing controls"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 48,
+              "confidence": 0.99,
+              "method": "native-source-control-geometry",
+              "source": "1024px panel, three 896px sections, six 896px discovery rows, and three 896px writing rows"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-settings-route-cycle",
+              "source": "Source Control participates in the eight-route Settings cycle, Back to chat, and two repeated Providers cycles"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "main transport 15 to 16 preserves Settings; zero renderer errors and isolated cleanup"
+            }
+          }
+        }
+      ]
     }
   ]
 }

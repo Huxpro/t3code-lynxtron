@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T16:19:12+09:00",
+  "productCommit": "7969899b001369799050a764a14687d31574ba57",
+  "nativeVerifierCommit": "01153a8ea5c7a994d4720f0bfba982ff2ab18f92",
+  "stateId": "settings-source-control",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-source-control",
+    "route": "/settings/source-control",
+    "lifecycle": "ready"
+  },
+  "fixture": {
+    "createdThroughRealProjectCommand": true,
+    "workspaceIsGitRepository": true,
+    "projectTitle": "t3-sc-workspace",
+    "browserThreadCount": 0,
+    "nativeThreadTitle": "Source control route anchor",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    },
+    "browserSnapshotSha256": "323733f0218eafa4d6d5bdc2b4f687e43fe13e99d6094f18b6ac840b65f1fa81",
+    "nativeSnapshotSha256": "0a6091e1e6a29afbdd5bedcb84331c7a288ca5f81a7b94aa0956a0ff0ba26e7d"
+  },
+  "classification": {
+    "harnessMismatch": [
+      "The first strict section comparison used a Web-only class selector and omitted Web section titles. The workbench now resolves each renderer's real markup and measures active-route panel, section, and row geometry.",
+      "Development Lynx-for-Web bundles emitted connection-refused errors after the owned server shut down. Development captures were used only for geometry diagnosis; retained production evidence has zero console errors."
+    ],
+    "productLoss": [
+      "The Lynx Source Control route omitted the Web authority's Text generation section and its three real server-backed settings.",
+      "The Lynx Settings shell depended on flex-grow with width 0, which the Web compatibility host reset, collapsing settings-root and settings-main to zero width.",
+      "Source Control sections and rows then rendered horizontally or at intrinsic widths. Before the fix, two sections shared one row and the six discovery rows were 33 to 275px wide and 244px high.",
+      "The repaired shell uses parent-relative width, one outer Settings scroll, single-column grid stacks, and responsive two-column row layouts. No fixed child width or negative-width compensation is used."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime. Exact-bundle Native updates content, geometry, interaction, and runtime; its screenshot is representative rather than a Native-to-Web material residual."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "7969899b001369799050a764a14687d31574ba57",
+    "webBundleSha256": "fd2b29ac2f8cbce6c9676b1004edf4ce2346acd0a5c44e111738213eaae0c84d",
+    "lynxBundleSha256": "16b46f172d0b50eee11bfa4fc33e397f0e4b4b9d9734ace0b6270ef25b57a6df",
+    "fullFrameSsim": 0.789753,
+    "fullFrameResidual": 0.210247,
+    "capturePass": true,
+    "rendererErrors": 0,
+    "readyMs": 4943,
+    "navigationLabels": [
+      "General",
+      "Appearance",
+      "Keybindings",
+      "Providers",
+      "Source Control",
+      "Connections",
+      "Beta",
+      "Archive"
+    ],
+    "sectionTitles": ["Version Control", "Source Control Providers", "Text generation"],
+    "sourceControlRowCount": 6,
+    "sourceControlWritingRows": [
+      "Source control writing style",
+      "Follow change request templates",
+      "Source control writer model"
+    ],
+    "geometry": {
+      "web": {
+        "sections": [
+          { "x": 320, "y": 88, "width": 896, "height": 181.6875 },
+          { "x": 320, "y": 317.6875, "width": 896, "height": 379.90625 },
+          { "x": 320, "y": 745.59375, "width": 896, "height": 290.21875 }
+        ],
+        "discoveryRows": [
+          { "x": 320, "y": 132, "width": 896, "height": 66.84375 },
+          { "x": 320, "y": 202.84375, "width": 896, "height": 66.84375 },
+          { "x": 320, "y": 361.6875, "width": 896, "height": 66.84375 },
+          { "x": 320, "y": 432.53125, "width": 896, "height": 85.6875 },
+          { "x": 320, "y": 522.21875, "width": 896, "height": 85.6875 },
+          { "x": 320, "y": 611.90625, "width": 896, "height": 85.6875 }
+        ]
+      },
+      "lynx": {
+        "sections": [
+          { "x": 320, "y": 88, "width": 896, "height": 172 },
+          { "x": 320, "y": 308, "width": 896, "height": 354 },
+          { "x": 320, "y": 710, "width": 896, "height": 256 }
+        ],
+        "discoveryRows": [
+          { "x": 320, "y": 132, "width": 896, "height": 64 },
+          { "x": 320, "y": 196, "width": 896, "height": 64 },
+          { "x": 320, "y": 352, "width": 896, "height": 64 },
+          { "x": 320, "y": 416, "width": 896, "height": 82 },
+          { "x": 320, "y": 498, "width": 896, "height": 82 },
+          { "x": 320, "y": 580, "width": 896, "height": 82 }
+        ],
+        "settingsRows": [
+          { "x": 320, "y": 754, "width": 896, "height": 64 },
+          { "x": 320, "y": 822, "width": 896, "height": 64 },
+          { "x": 320, "y": 890, "width": 896, "height": 72 }
+        ]
+      }
+    },
+    "ownedBrowserProcessesAfterCapture": 0,
+    "ownedServerProcessesAfterCapture": 0,
+    "isolatedChromeProfilesAfterCapture": 0,
+    "reportSha256": "d21ac33cd4d55303907090d55cdaf1220e0ceb4ee2ac38134618b6afb3bcae45"
+  },
+  "native": {
+    "status": "pass",
+    "head": "7969899b001369799050a764a14687d31574ba57",
+    "bundleSha256": "548974f956ef4773201c2a444fee93f275506f12dabc69a9d7d5b18c05081c04",
+    "snapshotId": "0a6091e1e6a29afbdd5bedcb84331c7a288ca5f81a7b94aa0956a0ff0ba26e7d",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "resyncSequence": { "before": 15, "after": 16 },
+    "sourceControl": {
+      "panel": { "x": 256, "y": 52, "width": 1024, "height": 920 },
+      "sections": [
+        { "x": 320, "y": 88, "width": 896, "height": 168 },
+        { "x": 320, "y": 304, "width": 896, "height": 292 },
+        { "x": 320, "y": 644, "width": 896, "height": 288 }
+      ],
+      "discoveryRows": [
+        { "x": 320, "y": 132, "width": 896, "height": 62 },
+        { "x": 320, "y": 194, "width": 896, "height": 62 },
+        { "x": 320, "y": 348, "width": 896, "height": 62 },
+        { "x": 320, "y": 410, "width": 896, "height": 62 },
+        { "x": 320, "y": 472, "width": 896, "height": 62 },
+        { "x": 320, "y": 534, "width": 896, "height": 62 }
+      ],
+      "settingsRows": [
+        { "x": 320, "y": 688, "width": 896, "height": 65 },
+        { "x": 320, "y": 757, "width": 896, "height": 65 },
+        { "x": 320, "y": 826, "width": 896, "height": 102 }
+      ]
+    },
+    "observedRoutes": [
+      "/settings/general",
+      "/settings/appearance",
+      "/settings/keybindings",
+      "/settings/providers",
+      "/settings/connections",
+      "/settings/source-control",
+      "/settings/beta",
+      "/settings/archived"
+    ],
+    "repeatedCycles": 2,
+    "finalRoute": "/",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "0e6b52a5806748367acec964101939f55efc8a280c5d3d06a4db07eba0e4c115",
+    "screenshotSha256": "467602d26107c057ab3646b9a9085913558ed5b2ebc12f1033985f2b571b5120"
+  },
+  "screenshots": {
+    "hosting": {
+      "provider": "github-pages",
+      "repository": "Huxpro/t3code-fidelity-assets",
+      "commit": "cbb7219e55e01acdcbdf92abb8e3bc822974447c"
+    },
+    "web": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-source-control-web.png",
+      "sha256": "573ef003c1e176519581317a5ff8fd16ae511b62499bce9b053f7d92445b962e"
+    },
+    "lynx": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-source-control-lynx.png",
+      "sha256": "ae5e07620a41ffd4329d9c48742e543e0b03f6534589d3551d6d953779a1f5e8"
+    },
+    "native": {
+      "url": "https://huangxuan.me/t3code-fidelity-assets/assets/settings-source-control-native.png",
+      "sha256": "467602d26107c057ab3646b9a9085913558ed5b2ebc12f1033985f2b571b5120"
+    }
+  },
+  "remainingRisk": [
+    "Full-frame Browser material residual remains 0.210247 and is not hidden by semantic or geometry passes.",
+    "The Browser row heights retain a 2 to 4px font-metric delta; no fixed or negative width compensation was introduced.",
+    "Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web pixel residual.",
+    "Source Control loading and error remain separate fixed-denominator states."
+  ]
+}
