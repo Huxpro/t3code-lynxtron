@@ -3910,6 +3910,112 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-scope-open-browser-certification",
+      "observedAt": "2026-08-15T19:01:39+09:00",
+      "commit": "02f2dd25f33c9c1eef49841f827e3d9455b077a4",
+      "codeState": "commit",
+      "label": "Project Scope Browser certification",
+      "narrative": "A two-project, two-thread fixture opens the project scope picker on both shipping Browser renderers with the same route, selected thread, model, dark theme, and row content. The popup is 203px wide on both renderers, matches the trigger width, stays inside the Sidebar, and no longer reflows the thread list. Native project cards now show session-derived time or status instead of persistent settle controls, use the folder fallback and compact provider hierarchy, and preserve the selected surface. Full-frame SSIM is 0.923391, so the remaining material residual stays explicit.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "Fresh matched Browser evidence measures the Sidebar card and project-scope product repair. Selector drift, DevTool daemon lifecycle, and external agent-browser residue are classified separately as harness issues."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/project-scope-open-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0b82472eb69b4201dd24491df252471f7b5ed918d7b012b3c186ad6dc9de5f90"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-scope-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-project-scope-content",
+              "source": "Same selected thread and project, All projects plus Scope-A and Scope-B rows, session-derived card time, and compact folder/provider hierarchy"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "scope-popup-trigger-card-geometry",
+              "source": "Popup, trigger, and two stable outer card boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.076609,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.923391 at the matched project-scope frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-project-scope",
+              "source": "Same immutable fixture, identity match, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-scope-open-native-certification",
+      "observedAt": "2026-08-15T19:01:39+09:00",
+      "commit": "02f2dd25f33c9c1eef49841f827e3d9455b077a4",
+      "codeState": "commit",
+      "label": "Project Scope Native certification",
+      "narrative": "A PID-owned exact production bundle opens the project scope menu through Lynx's built-in overlay host. It verifies the 203x104 popup and 203x32 trigger, three canonical options, Scope-B selection, outside dismissal, zero thread-list shift, main transport sequence 2 to 3, zero renderer errors, and isolated-state cleanup. The visible card state is a session-ready time rather than a static completion check.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, interaction, and runtime evidence fills project-scope cells without claiming Native material parity or a second product delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/project-scope-open-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0b82472eb69b4201dd24491df252471f7b5ed918d7b012b3c186ad6dc9de5f90"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-scope-open"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-project-scope-content",
+              "source": "All projects, Scope-A, Scope-B, selected Scope-B, and session-ready card time"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-project-scope-geometry",
+              "source": "203x104 popup, 203x32 trigger, and zero thread-list shift"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-scope-selection-dismissal",
+              "source": "Measured DevTool taps select Scope-B, close the popup, reopen it, and dismiss through the outside layer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle, main transport 2 to 3, zero renderer errors, isolated cleanup, and daemonless final console check"
+            }
+          }
+        }
+      ]
     }
   ]
 }
