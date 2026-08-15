@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T01:18:08+09:00",
+  "productCommit": "f73b86f5eb9612acf6b9e8b8435f77f535fbb37f",
+  "evidenceCommit": "391999b599f42ba922cae153b9a63306e7bf8314",
+  "stateId": "settings-archive",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-archive",
+    "webRoute": "/settings/archived"
+  },
+  "fixture": {
+    "source": "read-only VACUUM INTO from ~/.t3/userdata/state.sqlite",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "archivedThreadCount": 0
+  },
+  "classification": {
+    "productLoss": [
+      "Lynx Settings content used Web-style percentage and flex declarations without the platform column, stretch, and linear-weight semantics, collapsing the Archive section to 232px, the empty row to 64px, and its text column to zero.",
+      "The fix carries explicit Lynx layout semantics through Settings content, panels, sections, row groups, rows, and text. The panel, section, and rows now remain 896px wide; the empty row is 896px and its text column is 832px."
+    ],
+    "harnessMismatch": [
+      "The first two captures derived /settings/archive from the semantic state, but Web's canonical route is /settings/archived. The route map now uses the real path.",
+      "The original Settings reader measured general content only on Web and Source Control only on Lynx. The current reader captures shared content, panel, section, row-group, row, and text boxes.",
+      "The Archive hard gate now rejects collapsed sections, rows, empty rows, and zero-width text even when titles match."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime for empty Archive Settings. Native and mutation interaction cells remain unchanged."
+  },
+  "browser": {
+    "status": "pass",
+    "capturePass": true,
+    "head": "391999b599f42ba922cae153b9a63306e7bf8314",
+    "readyMs": 2125,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "webBundleSha256": "54d0d6f36d7f6f06586a2c286b74934d8540d4c09e18a2d973c2233cdad7db4e",
+    "lynxBundleSha256": "909a9beb1c2438a8328d150cd1cb02449c33eb0de441526571384e3e0dbc5b30",
+    "navigationLabels": [
+      "General",
+      "Appearance",
+      "Keybindings",
+      "Providers",
+      "Source Control",
+      "Connections",
+      "Beta",
+      "Archive"
+    ],
+    "sectionTitle": "Archived threads",
+    "rowId": "archive",
+    "emptyTitle": "No archived threads",
+    "emptyDescription": "Archived threads will appear here.",
+    "before": {
+      "sectionWidth": 232.375,
+      "emptyRowWidth": 64,
+      "textWidth": 0
+    },
+    "after": {
+      "web": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 112.84375 },
+        "section": { "x": 320, "y": 88, "width": 896, "height": 112.84375 },
+        "rows": { "x": 320, "y": 132, "width": 896, "height": 68.84375 }
+      },
+      "lynx": {
+        "panel": { "x": 320, "y": 100, "width": 896, "height": 161 },
+        "section": { "x": 320, "y": 100, "width": 896, "height": 113 },
+        "rows": { "x": 320, "y": 144, "width": 896, "height": 69 },
+        "emptyRow": { "x": 320, "y": 144, "width": 896, "height": 65 },
+        "text": { "x": 336, "y": 156, "width": 832, "height": 41 }
+      }
+    },
+    "fullFrameSsim": 0.937333,
+    "fullFrameResidual": 0.062667,
+    "reportSha256": "10398e56d5c96aba2adcad6c8cbfb7fc77528c589fb05947813d91fbd691f10b",
+    "webScreenshotSha256": "bfcaceff8355065ca200f5708bdaadeb9e6714f3e85ac1e807813f9607c37338",
+    "lynxScreenshotSha256": "8eb91ebf18eb9f56bc5465cd48a903d38f59ee8e1d337d1bbfb74d3c668845a0"
+  },
+  "validation": {
+    "focusedTests": "26/26",
+    "lynxTypecheck": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "Full-frame material residual remains 0.062667.",
+    "The Lynx Archive content starts 12px below Web after platform topbar and scroll-host composition.",
+    "This empty-state fixture does not verify unarchive or delete mutation interaction.",
+    "Native Archive Settings is not recaptured in this Browser-focused slice."
+  ]
+}

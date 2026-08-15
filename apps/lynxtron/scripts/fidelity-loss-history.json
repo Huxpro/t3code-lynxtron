@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T00:38:25+09:00",
+  "updatedAt": "2026-08-16T01:18:08+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5087,6 +5087,61 @@
               "confidence": 0.99,
               "method": "shared-server-sendable-readiness",
               "source": "Same immutable fixture and selected model, complete workbench pass in 3658ms, zero renderer errors, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-archive-browser-certification-current",
+      "observedAt": "2026-08-16T01:18:08+09:00",
+      "commit": "391999b599f42ba922cae153b9a63306e7bf8314",
+      "codeState": "commit",
+      "label": "Settings Archive current Browser certification",
+      "narrative": "The first Archive captures used the invalid singular Web route and were rejected as harness failures. On the canonical /settings/archived route, semantic content matched but Lynx collapsed the Settings section to 232px, the empty row to 64px, and its text column to zero because Web-style flex declarations did not carry Lynx column and stretch semantics. The shared Lynx layout now keeps the panel, section, row group, and empty row at 896px with an 832px text column. A geometry hard gate rejects future collapse. Full-frame SSIM is 0.937333, so material residual remains explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Matched current-head Browser evidence attributes the width recovery to the Settings layout fix while classifying the singular route and narrow reader as harness mismatches."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-archive-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "e3c951bb5407f43c21fd5ead57c9bae3bc52944fbb7a5d152a94b51c7cdab1e2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-archive"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-empty-archive-content",
+              "source": "Canonical Archive navigation, Archived threads section, No archived threads title, and empty description"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 12, 0, 0.15625, 0, 12, 0, 0.15625, 0, 12, 0, 0.15625, 0, 12, 0, 3.84375
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "archive-settings-width-contract",
+              "source": "Panel, section, row-group, and empty-row widths after recovering section 232.375 to 896, row 64 to 896, and text 0 to 832"
+            },
+            "material": {
+              "residual": 0.062667,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.937333 at the matched empty Archive frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-archive-readiness",
+              "source": "Canonical route, same empty fixture, complete workbench pass in 2125ms, zero renderer errors, and released owned listeners"
             }
           }
         }
