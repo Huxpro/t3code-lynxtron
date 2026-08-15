@@ -87,3 +87,5 @@ settings-connections-current-session-baseline,2026-08-16T06:54:00+09:00,bad65fb3
 settings-connections-column-flow-fix-current,2026-08-16T06:59:12+09:00,0e942fe97ab334ce46d192aea74ecb9472397398,commit,Settings Connections column-flow fix,0.520153,0.520153,0.020333,0.510194,0.489806,0.463284
 review-empty-current-grid-baseline,2026-08-16T07:07:00+09:00,02b431c039bc362261ad594228318d0fcbad9474,commit,Review Empty current grid baseline,0.516549,0.516549,0.022414,0.505465,0.494535,0.466888
 review-empty-shared-grid-fix-current,2026-08-16T07:15:36+09:00,f69627d31940cefc6ab6a02715447abe6bc50825,commit,Review Empty shared action grid fix,0.51573,0.51573,0.020758,0.505465,0.494535,0.467707
+model-picker-empty-current-visible-baseline,2026-08-16T07:38:00+09:00,2361c2ea07b4f2ac854b8fe1a8236239e272108d,commit,Model Picker Empty current visible baseline,0.510834,0.510834,0.021835,0.499915,0.500085,0.472603
+model-picker-empty-visible-panel-fix-current,2026-08-16T07:50:49+09:00,8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc,commit,Model Picker Empty visible panel fix,0.510256,0.510256,0.020678,0.499915,0.500085,0.473181

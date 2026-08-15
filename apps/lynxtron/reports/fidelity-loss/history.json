@@ -8683,6 +8683,175 @@
       ],
       "fromPoint": "review-empty-current-grid-baseline",
       "toPoint": "review-empty-shared-grid-fix-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 197,
+      "commit": "8c2628203d76502d288b55621ae66fd07a289d05",
+      "committedAt": "2026-08-16T07:18:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record current empty panel fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-empty-shared-grid-fix-current",
+      "toPoint": "model-picker-empty-current-visible-baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 10126,
+      "commit": "74186858fb0b7ad6b4fdf57217da45250b5d7e87",
+      "committedAt": "2026-08-16T07:19:19+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh empty panel fidelity report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-empty-shared-grid-fix-current",
+      "toPoint": "model-picker-empty-current-visible-baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 7,
+      "commit": "072ff0394c825408c5b9f50b1fdde54add308b9d",
+      "committedAt": "2026-08-16T07:21:16+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh Tailwind compatibility report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-empty-shared-grid-fix-current",
+      "toPoint": "model-picker-empty-current-visible-baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "5c107be3cebfb09cf7f6e7ad43cc1ddff8782270",
+      "committedAt": "2026-08-16T07:25:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): require the empty model picker",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-empty-shared-grid-fix-current",
+      "toPoint": "model-picker-empty-current-visible-baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 18,
+      "commit": "40ebf121718fd6bc29287e074c4c6aa2073982f1",
+      "committedAt": "2026-08-16T07:32:15+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align the model picker anchor",
+      "surfaces": [
+        "overlays",
+        "shell"
+      ],
+      "fromPoint": "review-empty-shared-grid-fix-current",
+      "toPoint": "model-picker-empty-current-visible-baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 18,
+      "commit": "01ec4a7279c5b0c60a4f37b14cb73d682d8e6ab5",
+      "committedAt": "2026-08-16T07:33:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "revert(lynxtron): keep the verified picker offset",
+      "surfaces": [
+        "overlays",
+        "shell"
+      ],
+      "fromPoint": "review-empty-shared-grid-fix-current",
+      "toPoint": "model-picker-empty-current-visible-baseline"
+    },
+    {
+      "allocation": "measurement-refinement",
+      "changedLines": 0,
+      "commit": "01ec4a7279c5b0c60a4f37b14cb73d682d8e6ab5",
+      "committedAt": "2026-08-16T07:38:00+09:00",
+      "confidence": 0.99,
+      "delta": -0.004896,
+      "reason": "The current point replaces invalid no-overlay pixels with strict overlay-in-frame evidence. No product delta is assigned to the harness corrections.",
+      "subject": "Model Picker Empty current visible baseline",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "review-empty-shared-grid-fix-current",
+      "toPoint": "model-picker-empty-current-visible-baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 131,
+      "commit": "2361c2ea07b4f2ac854b8fe1a8236239e272108d",
+      "committedAt": "2026-08-16T07:38:04+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): preserve overlays through screenshots",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-empty-current-visible-baseline",
+      "toPoint": "model-picker-empty-visible-panel-fix-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 9,
+      "commit": "b35d89761d1d3906cb3d4e75144f83708c93a38e",
+      "committedAt": "2026-08-16T07:47:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): expose overlay clipping ancestors",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "model-picker-empty-current-visible-baseline",
+      "toPoint": "model-picker-empty-visible-panel-fix-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 38,
+      "commit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "committedAt": "2026-08-16T07:49:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): render the anchored model picker",
+      "surfaces": [
+        "composer",
+        "overlays",
+        "shell"
+      ],
+      "fromPoint": "model-picker-empty-current-visible-baseline",
+      "toPoint": "model-picker-empty-visible-panel-fix-current"
+    },
+    {
+      "allocation": "measured-product-change",
+      "changedLines": 0,
+      "commit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "committedAt": "2026-08-16T07:50:49+09:00",
+      "confidence": 0.99,
+      "delta": -0.000578,
+      "reason": "Direct valid before/after captures share the strict overlay-preserving harness, immutable fixture, query, route, theme, viewport, and Web authority. The product changes only expose the anchored panel and align its offset.",
+      "subject": "Model Picker Empty visible panel fix",
+      "surfaces": [
+        "overlays"
+      ],
+      "fromPoint": "model-picker-empty-current-visible-baseline",
+      "toPoint": "model-picker-empty-visible-panel-fix-current"
     }
   ],
   "commitSeries": [
@@ -14966,9 +15135,130 @@
       "rawLoss": 0.51573,
       "smoothedLoss": 0.518462,
       "subject": "Review Empty shared action grid fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8c2628203d76502d288b55621ae66fd07a289d05",
+      "committedAt": "2026-08-16T07:18:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.51573,
+      "smoothedLoss": 0.517861,
+      "subject": "docs(lynxtron): record current empty panel fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "74186858fb0b7ad6b4fdf57217da45250b5d7e87",
+      "committedAt": "2026-08-16T07:19:19+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.51573,
+      "smoothedLoss": 0.517392,
+      "subject": "docs(lynxtron): refresh empty panel fidelity report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "072ff0394c825408c5b9f50b1fdde54add308b9d",
+      "committedAt": "2026-08-16T07:21:16+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.51573,
+      "smoothedLoss": 0.517027,
+      "subject": "docs(lynxtron): refresh Tailwind compatibility report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5c107be3cebfb09cf7f6e7ad43cc1ddff8782270",
+      "committedAt": "2026-08-16T07:25:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.51573,
+      "smoothedLoss": 0.516741,
+      "subject": "test(lynxtron): require the empty model picker"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "40ebf121718fd6bc29287e074c4c6aa2073982f1",
+      "committedAt": "2026-08-16T07:32:15+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.51573,
+      "smoothedLoss": 0.516519,
+      "subject": "fix(lynxtron): align the model picker anchor"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "01ec4a7279c5b0c60a4f37b14cb73d682d8e6ab5",
+      "committedAt": "2026-08-16T07:33:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.51573,
+      "smoothedLoss": 0.516345,
+      "subject": "revert(lynxtron): keep the verified picker offset"
+    },
+    {
+      "allocation": "measurement-refinement",
+      "commit": "01ec4a7279c5b0c60a4f37b14cb73d682d8e6ab5",
+      "committedAt": "2026-08-16T07:38:00+09:00",
+      "confidence": 0.99,
+      "delta": -0.004896,
+      "measuredCheckpoint": "model-picker-empty-current-visible-baseline",
+      "rawLoss": 0.510834,
+      "smoothedLoss": 0.515133,
+      "subject": "Model Picker Empty current visible baseline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2361c2ea07b4f2ac854b8fe1a8236239e272108d",
+      "committedAt": "2026-08-16T07:38:04+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.510834,
+      "smoothedLoss": 0.514187,
+      "subject": "test(lynxtron): preserve overlays through screenshots"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b35d89761d1d3906cb3d4e75144f83708c93a38e",
+      "committedAt": "2026-08-16T07:47:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.510834,
+      "smoothedLoss": 0.513449,
+      "subject": "test(lynxtron): expose overlay clipping ancestors"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "committedAt": "2026-08-16T07:49:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.510834,
+      "smoothedLoss": 0.512874,
+      "subject": "fix(lynxtron): render the anchored model picker"
+    },
+    {
+      "allocation": "measured-product-change",
+      "commit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "committedAt": "2026-08-16T07:50:49+09:00",
+      "confidence": 0.99,
+      "delta": -0.000578,
+      "measuredCheckpoint": "model-picker-empty-visible-panel-fix-current",
+      "rawLoss": 0.510256,
+      "smoothedLoss": 0.512298,
+      "subject": "Model Picker Empty visible panel fix"
     }
   ],
-  "generatedAt": "2026-08-16T07:15:36+09:00",
+  "generatedAt": "2026-08-16T07:50:49+09:00",
   "historyId": "t3-lynxtron-fidelity-history",
   "model": {
     "clients": {
@@ -60853,6 +61143,1018 @@
       ],
       "bestLoss": 0.51573,
       "improvementFromBaseline": 0.467707
+    },
+    {
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The current point replaces invalid no-overlay pixels with strict overlay-in-frame evidence. No product delta is assigned to the harness corrections."
+      },
+      "commit": "2361c2ea07b4f2ac854b8fe1a8236239e272108d",
+      "codeCommit": "01ec4a7279c5b0c60a4f37b14cb73d682d8e6ab5",
+      "codeState": "commit",
+      "id": "model-picker-empty-current-visible-baseline",
+      "label": "Model Picker Empty current visible baseline",
+      "narrative": "The old Empty Picker frame is invalid: assertions reused stale open-overlay state after a screenshot-time notification click closed the picker, so the apparent 0.917871 full-frame SSIM contained only base-page pixels. The strict harness now opens the picker with __t3_no_models__, requires matching No models found copy and zero rows, preserves the overlay through capture, and records clipping ancestors. In the first valid frame the DOM panel geometry already matches, but the Composer toolbar's overflow:auto clips the entire Lynx panel while the fixed backdrop remains visible. Panel-region residual is 0.599315 and full-frame residual is 0.330140.",
+      "observedAt": "2026-08-16T07:38:00+09:00",
+      "screenshots": [],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-empty-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0333d3ad2400550c0ed7e0067397b8f12dcaee2d4df2500470e4a9100deb9947"
+        }
+      ],
+      "confidence": 0.500085,
+      "evidenceDebt": 0.499915,
+      "loss": 0.510834,
+      "observedResidual": 0.021835,
+      "byDimension": {
+        "content": {
+          "confidence": 0.680667,
+          "evidenceDebt": 0.319333,
+          "loss": 0.3268,
+          "observedResidual": 0.01097
+        },
+        "geometry": {
+          "confidence": 0.66748,
+          "evidenceDebt": 0.33252,
+          "loss": 0.337477,
+          "observedResidual": 0.007427
+        },
+        "typography": {
+          "confidence": 0.030337,
+          "evidenceDebt": 0.969663,
+          "loss": 0.969837,
+          "observedResidual": 0.005729
+        },
+        "material": {
+          "confidence": 0.404696,
+          "evidenceDebt": 0.595304,
+          "loss": 0.637644,
+          "observedResidual": 0.104623
+        },
+        "interaction": {
+          "confidence": 0.359089,
+          "evidenceDebt": 0.640911,
+          "loss": 0.650324,
+          "observedResidual": 0.026211
+        },
+        "runtime": {
+          "confidence": 0.699709,
+          "evidenceDebt": 0.300291,
+          "loss": 0.304997,
+          "observedResidual": 0.006726
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.513558,
+          "evidenceDebt": 0.486442,
+          "loss": 0.490688,
+          "observedResidual": 0.008268
+        },
+        "composer": {
+          "confidence": 0.527915,
+          "evidenceDebt": 0.472085,
+          "loss": 0.494077,
+          "observedResidual": 0.041658
+        },
+        "transcript": {
+          "confidence": 0.374249,
+          "evidenceDebt": 0.625751,
+          "loss": 0.631956,
+          "observedResidual": 0.01658
+        },
+        "overlays": {
+          "confidence": 0.480258,
+          "evidenceDebt": 0.519742,
+          "loss": 0.528775,
+          "observedResidual": 0.018808
+        },
+        "settings": {
+          "confidence": 0.490749,
+          "evidenceDebt": 0.509251,
+          "loss": 0.524696,
+          "observedResidual": 0.031473
+        },
+        "review": {
+          "confidence": 0.709729,
+          "evidenceDebt": 0.290271,
+          "loss": 0.29825,
+          "observedResidual": 0.011242
+        }
+      },
+      "states": [
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 3
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.762233,
+          "observedResidual": 0.117026,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.740062,
+          "observedResidual": 0.034693,
+          "weight": 4
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.738422,
+          "observedResidual": 0.028603,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 0.735696,
+          "observedResidual": 0.018478,
+          "weight": 4
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.734483,
+          "observedResidual": 0.013975,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.734043,
+          "observedResidual": 0.012341,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31518,
+          "evidenceDebt": 0.68482,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.693652,
+          "observedResidual": 0.028023,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31248,
+          "evidenceDebt": 0.68752,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.693002,
+          "observedResidual": 0.017543,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31576,
+          "evidenceDebt": 0.68424,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.68929,
+          "observedResidual": 0.015994,
+          "weight": 4
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.658738,
+          "observedResidual": 0.020713,
+          "weight": 3
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.658134,
+          "observedResidual": 0.01898,
+          "weight": 3
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.657984,
+          "observedResidual": 0.018549,
+          "weight": 4
+        },
+        {
+          "confidence": 0.39978,
+          "evidenceDebt": 0.60022,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.654573,
+          "observedResidual": 0.135958,
+          "weight": 5
+        },
+        {
+          "confidence": 0.37038,
+          "evidenceDebt": 0.62962,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.649667,
+          "observedResidual": 0.054125,
+          "weight": 3
+        },
+        {
+          "confidence": 0.39273,
+          "evidenceDebt": 0.60727,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.612393,
+          "observedResidual": 0.013044,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.582502,
+          "observedResidual": 0.074449,
+          "weight": 3
+        },
+        {
+          "confidence": 0.43428,
+          "evidenceDebt": 0.56572,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.56572,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.55508,
+          "observedResidual": 0.013656,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.555039,
+          "observedResidual": 0.013566,
+          "weight": 4
+        },
+        {
+          "confidence": 0.48312,
+          "evidenceDebt": 0.51688,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.523425,
+          "observedResidual": 0.013547,
+          "weight": 4
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.417227,
+          "observedResidual": 0.012316,
+          "weight": 3
+        },
+        {
+          "confidence": 0.61854,
+          "evidenceDebt": 0.38146,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.413369,
+          "observedResidual": 0.051588,
+          "weight": 5
+        },
+        {
+          "confidence": 0.60789,
+          "evidenceDebt": 0.39211,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.397367,
+          "observedResidual": 0.008647,
+          "weight": 4
+        },
+        {
+          "confidence": 0.61794,
+          "evidenceDebt": 0.38206,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.387079,
+          "observedResidual": 0.008122,
+          "weight": 5
+        },
+        {
+          "confidence": 0.61914,
+          "evidenceDebt": 0.38086,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.385521,
+          "observedResidual": 0.007528,
+          "weight": 5
+        },
+        {
+          "confidence": 0.63612,
+          "evidenceDebt": 0.36388,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.371442,
+          "observedResidual": 0.011887,
+          "weight": 5
+        },
+        {
+          "confidence": 0.66924,
+          "evidenceDebt": 0.33076,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.339711,
+          "observedResidual": 0.013375,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 0.309936,
+          "observedResidual": 0.026489,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.298977,
+          "observedResidual": 0.011028,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.298706,
+          "observedResidual": 0.010646,
+          "weight": 3
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.296181,
+          "observedResidual": 0.007083,
+          "weight": 4
+        },
+        {
+          "confidence": 0.73689,
+          "evidenceDebt": 0.26311,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.29451,
+          "observedResidual": 0.042612,
+          "weight": 5
+        },
+        {
+          "confidence": 0.72684,
+          "evidenceDebt": 0.27316,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.279878,
+          "observedResidual": 0.009243,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 0.218094,
+          "observedResidual": 0.007784,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.21661,
+          "observedResidual": 0.005901,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.216522,
+          "observedResidual": 0.005789,
+          "weight": 4
+        }
+      ],
+      "bestLoss": 0.510834,
+      "improvementFromBaseline": 0.472603
+    },
+    {
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct valid before/after captures share the strict overlay-preserving harness, immutable fixture, query, route, theme, viewport, and Web authority. The product changes only expose the anchored panel and align its offset."
+      },
+      "commit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "codeCommit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "codeState": "commit",
+      "id": "model-picker-empty-visible-panel-fix-current",
+      "label": "Model Picker Empty visible panel fix",
+      "narrative": "The shared Composer toolbar now receives an overlay-open state and releases horizontal overflow only while the anchored picker exists, allowing the panel to paint above its fixed backdrop. The panel is also aligned two pixels to the Web Composer anchor. Empty Picker panel-region SSIM improves from 0.400685 to 0.927462, full-frame SSIM improves from 0.669860 to 0.730403, and panel geometry remains exact. Default-picker provider ordering remains a separate current-state issue rather than being hidden by this fix.",
+      "observedAt": "2026-08-16T07:50:49+09:00",
+      "screenshots": [],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-empty-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0333d3ad2400550c0ed7e0067397b8f12dcaee2d4df2500470e4a9100deb9947"
+        }
+      ],
+      "confidence": 0.500085,
+      "evidenceDebt": 0.499915,
+      "loss": 0.510256,
+      "observedResidual": 0.020678,
+      "byDimension": {
+        "content": {
+          "confidence": 0.680667,
+          "evidenceDebt": 0.319333,
+          "loss": 0.3268,
+          "observedResidual": 0.01097
+        },
+        "geometry": {
+          "confidence": 0.66748,
+          "evidenceDebt": 0.33252,
+          "loss": 0.337477,
+          "observedResidual": 0.007427
+        },
+        "typography": {
+          "confidence": 0.030337,
+          "evidenceDebt": 0.969663,
+          "loss": 0.969837,
+          "observedResidual": 0.005729
+        },
+        "material": {
+          "confidence": 0.404696,
+          "evidenceDebt": 0.595304,
+          "loss": 0.633511,
+          "observedResidual": 0.094409
+        },
+        "interaction": {
+          "confidence": 0.359089,
+          "evidenceDebt": 0.640911,
+          "loss": 0.650324,
+          "observedResidual": 0.026211
+        },
+        "runtime": {
+          "confidence": 0.699709,
+          "evidenceDebt": 0.300291,
+          "loss": 0.304997,
+          "observedResidual": 0.006726
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.513558,
+          "evidenceDebt": 0.486442,
+          "loss": 0.490688,
+          "observedResidual": 0.008268
+        },
+        "composer": {
+          "confidence": 0.527915,
+          "evidenceDebt": 0.472085,
+          "loss": 0.494077,
+          "observedResidual": 0.041658
+        },
+        "transcript": {
+          "confidence": 0.374249,
+          "evidenceDebt": 0.625751,
+          "loss": 0.631956,
+          "observedResidual": 0.01658
+        },
+        "overlays": {
+          "confidence": 0.480258,
+          "evidenceDebt": 0.519742,
+          "loss": 0.526198,
+          "observedResidual": 0.013442
+        },
+        "settings": {
+          "confidence": 0.490749,
+          "evidenceDebt": 0.509251,
+          "loss": 0.524696,
+          "observedResidual": 0.031473
+        },
+        "review": {
+          "confidence": 0.709729,
+          "evidenceDebt": 0.290271,
+          "loss": 0.29825,
+          "observedResidual": 0.011242
+        }
+      },
+      "states": [
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 3
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.19575,
+          "evidenceDebt": 0.80425,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.81003,
+          "observedResidual": 0.029527,
+          "weight": 2
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.762233,
+          "observedResidual": 0.117026,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.740062,
+          "observedResidual": 0.034693,
+          "weight": 4
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.738422,
+          "observedResidual": 0.028603,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 0.735696,
+          "observedResidual": 0.018478,
+          "weight": 4
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.734483,
+          "observedResidual": 0.013975,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.734043,
+          "observedResidual": 0.012341,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31518,
+          "evidenceDebt": 0.68482,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.693652,
+          "observedResidual": 0.028023,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31248,
+          "evidenceDebt": 0.68752,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.693002,
+          "observedResidual": 0.017543,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31576,
+          "evidenceDebt": 0.68424,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.68929,
+          "observedResidual": 0.015994,
+          "weight": 4
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.658738,
+          "observedResidual": 0.020713,
+          "weight": 3
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.658134,
+          "observedResidual": 0.01898,
+          "weight": 3
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.657984,
+          "observedResidual": 0.018549,
+          "weight": 4
+        },
+        {
+          "confidence": 0.39978,
+          "evidenceDebt": 0.60022,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.654573,
+          "observedResidual": 0.135958,
+          "weight": 5
+        },
+        {
+          "confidence": 0.37038,
+          "evidenceDebt": 0.62962,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.649667,
+          "observedResidual": 0.054125,
+          "weight": 3
+        },
+        {
+          "confidence": 0.39273,
+          "evidenceDebt": 0.60727,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.612393,
+          "observedResidual": 0.013044,
+          "weight": 4
+        },
+        {
+          "confidence": 0.43428,
+          "evidenceDebt": 0.56572,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.56572,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.55508,
+          "observedResidual": 0.013656,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.555039,
+          "observedResidual": 0.013566,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.553298,
+          "observedResidual": 0.009705,
+          "weight": 3
+        },
+        {
+          "confidence": 0.48312,
+          "evidenceDebt": 0.51688,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.523425,
+          "observedResidual": 0.013547,
+          "weight": 4
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.417227,
+          "observedResidual": 0.012316,
+          "weight": 3
+        },
+        {
+          "confidence": 0.61854,
+          "evidenceDebt": 0.38146,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.413369,
+          "observedResidual": 0.051588,
+          "weight": 5
+        },
+        {
+          "confidence": 0.60789,
+          "evidenceDebt": 0.39211,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.397367,
+          "observedResidual": 0.008647,
+          "weight": 4
+        },
+        {
+          "confidence": 0.61794,
+          "evidenceDebt": 0.38206,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.387079,
+          "observedResidual": 0.008122,
+          "weight": 5
+        },
+        {
+          "confidence": 0.61914,
+          "evidenceDebt": 0.38086,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.385521,
+          "observedResidual": 0.007528,
+          "weight": 5
+        },
+        {
+          "confidence": 0.63612,
+          "evidenceDebt": 0.36388,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.371442,
+          "observedResidual": 0.011887,
+          "weight": 5
+        },
+        {
+          "confidence": 0.66924,
+          "evidenceDebt": 0.33076,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.339711,
+          "observedResidual": 0.013375,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 0.309936,
+          "observedResidual": 0.026489,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.298977,
+          "observedResidual": 0.011028,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.298706,
+          "observedResidual": 0.010646,
+          "weight": 3
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.296181,
+          "observedResidual": 0.007083,
+          "weight": 4
+        },
+        {
+          "confidence": 0.73689,
+          "evidenceDebt": 0.26311,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.29451,
+          "observedResidual": 0.042612,
+          "weight": 5
+        },
+        {
+          "confidence": 0.72684,
+          "evidenceDebt": 0.27316,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.279878,
+          "observedResidual": 0.009243,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 0.218094,
+          "observedResidual": 0.007784,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.21661,
+          "observedResidual": 0.005901,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.216522,
+          "observedResidual": 0.005789,
+          "weight": 4
+        }
+      ],
+      "bestLoss": 0.510256,
+      "improvementFromBaseline": 0.473181
     }
   ],
   "provenance": {
