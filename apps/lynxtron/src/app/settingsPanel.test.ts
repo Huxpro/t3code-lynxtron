@@ -54,4 +54,15 @@ describe("Lynx Settings route projection", () => {
     expect(layout).toContain('"settings-section__rows flex w-full min-w-0 flex-col self-stretch"');
     expect(layout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
   });
+
+  it("renders portable Sidebar v2 auto-settle controls in Lynx", () => {
+    const settings = readFileSync(
+      path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),
+      "utf8",
+    );
+    expect(settings).toContain('searchableSetting("auto-settle-inactive-threads").title');
+    expect(settings).toContain("sidebarAutoSettleAfterDays: enabled");
+    expect(settings).toContain('aria-label="Days of inactivity before auto-settle"');
+    expect(settings).not.toContain("The Lynx Sidebar v2 renderer has not moved yet");
+  });
 });

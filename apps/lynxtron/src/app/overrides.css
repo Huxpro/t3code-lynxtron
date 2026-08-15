@@ -4659,6 +4659,21 @@
   align-items: center;
   flex-shrink: 0;
 }
+.settings-number-input {
+  width: 96px;
+  height: 32px;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 6px;
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
 
 /* Toggle switch: 30x18, on #366FFB, off white/8%, knob 16 #0a0a0a */
 .toggle {
