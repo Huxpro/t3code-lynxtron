@@ -3115,6 +3115,8 @@
   padding-bottom: 16px;
 }
 .timeline-row-root--assistant > .transcript-assistant-group {
+  width: 100%;
+  min-width: 0;
   padding-bottom: 0;
 }
 .transcript-working-outer {

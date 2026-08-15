@@ -44,9 +44,6 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain('row.kind === "message" && row.message.role === "assistant"');
     expect(timelineSource).not.toContain("wrapCodeWords");
     expect(overrides).toContain(".timeline-row-root--assistant {\n  padding-bottom: 16px;");
-    expect(overrides).toContain(
-      ".timeline-row-root--assistant > .transcript-assistant-group {\n  padding-bottom: 0;",
-    );
     expect(overrides).toContain(".inline-markdown-code {\n  display: flex;\n  flex-shrink: 0;");
     expect(overrides).toContain(".turn-diff-card .lynx-changed-files-tree {\n  margin-top: 0;");
     expect(composerSource).toContain("compactFooter && !questionMode");
@@ -63,5 +60,14 @@ describe("transcript layout contract", () => {
     expect(block).toContain("align-self: stretch;");
     expect(block).toContain("width: 100%;");
     expect(block).toContain("max-width: 760px;");
+  });
+
+  it("stretches assistant rows across the native list item before sizing review cards", () => {
+    const start = overrides.indexOf(
+      ".timeline-row-root--assistant > .transcript-assistant-group {",
+    );
+    const block = overrides.slice(start, overrides.indexOf("}", start));
+    expect(block).toContain("width: 100%;");
+    expect(block).toContain("min-width: 0;");
   });
 });
