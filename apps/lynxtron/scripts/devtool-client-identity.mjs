@@ -72,8 +72,12 @@ export function selectLatestDevToolSession(sessions) {
 
 export async function openOwnedDevToolSession({ appName, clientId, devToolCli, ownedPorts }) {
   const connectorModuleUrl = pathToFileURL(join(dirname(devToolCli), "connector.mjs")).href;
-  const { Connector, DaemonTransport } = await import(connectorModuleUrl);
-  const transport = new DaemonTransport();
+  const transportModuleUrl = pathToFileURL(join(dirname(devToolCli), "182.mjs")).href;
+  const [{ Connector }, { DesktopTransport }] = await Promise.all([
+    import(connectorModuleUrl),
+    import(transportModuleUrl),
+  ]);
+  const transport = new DesktopTransport();
   try {
     const connector = new Connector([transport]);
     const clients = await connector.listClients();

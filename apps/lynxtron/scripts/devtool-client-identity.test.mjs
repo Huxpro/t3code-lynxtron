@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -7,6 +9,13 @@ import {
 } from "./devtool-client-identity.mjs";
 
 describe("Lynx DevTool client identity", () => {
+  it("connects to owned desktop ports without spawning the persistent daemon", () => {
+    const source = readFileSync(new URL("./devtool-client-identity.mjs", import.meta.url), "utf8");
+
+    expect(source).toContain("new DesktopTransport()");
+    expect(source).not.toContain("new DaemonTransport()");
+  });
+
   it("parses only listening TCP names from lsof field output", () => {
     expect([...parseListeningTcpPorts("p42\nn*:8903\nn127.0.0.1:57021\n")]).toEqual([8903, 57021]);
   });
