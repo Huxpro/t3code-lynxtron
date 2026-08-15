@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { deriveSessionPresentationPhase, isLatestTurnSettled, isSessionBusy } from "./session.ts";
+import {
+  deriveSessionPresentationPhase,
+  isLatestTurnSettled,
+  isSessionBusy,
+  isSessionWorking,
+} from "./session.ts";
 
 describe("shared session presentation", () => {
   it("maps orchestration lifecycle states to client phases", () => {
@@ -16,6 +21,13 @@ describe("shared session presentation", () => {
     expect(isSessionBusy("running")).toBe(true);
     expect(isSessionBusy("ready")).toBe(false);
     expect(isSessionBusy(null)).toBe(false);
+  });
+
+  it("only presents a running session as working", () => {
+    expect(isSessionWorking("starting")).toBe(false);
+    expect(isSessionWorking("running")).toBe(true);
+    expect(isSessionWorking("ready")).toBe(false);
+    expect(isSessionWorking(null)).toBe(false);
   });
 
   it("only settles a completed, started turn that is no longer running", () => {

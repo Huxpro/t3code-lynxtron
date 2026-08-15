@@ -46,6 +46,13 @@ function statusPresentation(status: SidebarV2Status): SidebarV2RowStatus | null 
         icon: <Icon name="refresh-cw" size={16} color="#a1a1aa" className="size-4 shrink-0" />,
         workingDuration: null,
       };
+    case "connecting":
+      return {
+        label: "Connecting",
+        className: "text-sidebar-muted-foreground",
+        icon: null,
+        workingDuration: null,
+      };
     case "approval":
       return {
         label: "Approval",
@@ -471,7 +478,12 @@ export default function SidebarV2() {
               isActive={isActive}
               isSelected={false}
               shouldRecede={status === "ready" && !isActive}
-              isInFlight={status === "working" || status === "approval" || status === "input"}
+              isInFlight={
+                status === "working" ||
+                status === "connecting" ||
+                status === "approval" ||
+                status === "input"
+              }
               isUnread={false}
               isWoke={false}
               settlementSupported={false}

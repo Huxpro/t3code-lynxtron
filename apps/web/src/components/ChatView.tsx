@@ -29,6 +29,7 @@ import {
   shouldShowComposerContextStrip,
   shouldUseComposerHeroLayout,
 } from "@t3tools/client-runtime/presentation/composer";
+import { isSessionWorking } from "@t3tools/client-runtime/presentation/session";
 import { effectiveSettled, effectiveSnoozed } from "@t3tools/client-runtime/state/thread-settled";
 import {
   parseScopedThreadKey,
@@ -2144,7 +2145,7 @@ function ChatViewContent(props: ChatViewProps) {
     activePendingUserInput: activePendingUserInput?.requestId ?? null,
     threadError,
   });
-  const isWorking = phase === "running" || isSendBusy || isConnecting || isRevertingCheckpoint;
+  const sessionWorking = isSessionWorking(activeThread?.session?.status);
   const activeWorkStartedAt = deriveActiveWorkStartedAt(
     activeLatestTurn,
     activeThread?.session ?? null,
@@ -2401,7 +2402,7 @@ function ChatViewContent(props: ChatViewProps) {
   const isDraftHeroState = shouldUseComposerHeroLayout({
     isLocalDraftThread,
     timelineEntryCount: timelineEntries.length,
-    isWorking,
+    isWorking: sessionWorking,
     dockRequested: draftHeroDockRequested,
   });
   const [
@@ -5902,8 +5903,8 @@ function ChatViewContent(props: ChatViewProps) {
         {/* Messages — LegendList handles virtualization and scrolling internally */}
         <MessagesTimeline
           key={activeThread.id}
-          isWorking={isWorking}
-          activeTurnInProgress={isWorking || !latestTurnSettled}
+          isWorking={sessionWorking}
+          activeTurnInProgress={sessionWorking || !latestTurnSettled}
           activeTurnStartedAt={activeWorkStartedAt}
           listRef={legendListRef}
           timelineEntries={timelineEntries}

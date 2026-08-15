@@ -656,14 +656,14 @@ describe("resolveSidebarV2Status", () => {
     ).toBe("approval");
   });
 
-  it("reports working for running and starting sessions", () => {
+  it("keeps working and connecting tied to their projected session states", () => {
     expect(resolveSidebarV2Status({ ...idle, session })).toBe("working");
     expect(
       resolveSidebarV2Status({
         ...idle,
         session: { ...session, status: "starting" as const },
       }),
-    ).toBe("working");
+    ).toBe("connecting");
   });
 
   it("reports failed only while the session status is error", () => {

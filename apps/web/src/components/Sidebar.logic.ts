@@ -425,7 +425,7 @@ export function resolveThreadRowClassName(input: {
 // whether it finished, asked a question, or proposed a plan.
 // Unread completion is tracked separately: it describes whether a ready
 // thread needs attention, not what the thread is currently doing.
-export type SidebarV2Status = "approval" | "input" | "working" | "failed" | "ready";
+export type SidebarV2Status = "approval" | "input" | "working" | "connecting" | "failed" | "ready";
 
 type SidebarV2StatusInput = Pick<
   SidebarThreadSummary,
@@ -440,8 +440,9 @@ export function resolveSidebarV2Status(thread: SidebarV2StatusInput): SidebarV2S
     case "failed":
       return status.kind;
     case "working":
-    case "connecting":
       return "working";
+    case "connecting":
+      return "connecting";
     case "ready":
     case "plan-ready":
     case "completed":

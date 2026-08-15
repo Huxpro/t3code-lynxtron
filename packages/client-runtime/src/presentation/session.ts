@@ -30,6 +30,10 @@ export function isSessionBusy(status: OrchestrationSessionStatus | null | undefi
   return status === "starting" || status === "running";
 }
 
+export function isSessionWorking(status: OrchestrationSessionStatus | null | undefined): boolean {
+  return status === "running";
+}
+
 export function isLatestTurnSettled(
   latestTurn: LatestTurnTiming | null,
   session: SessionActivityState | null,

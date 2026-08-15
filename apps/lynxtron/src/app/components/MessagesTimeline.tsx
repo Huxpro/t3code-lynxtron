@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
 import type { NodesRef } from "@lynx-js/types";
-import { isSessionBusy } from "@t3tools/client-runtime/presentation/session";
+import { isSessionWorking } from "@t3tools/client-runtime/presentation/session";
 import {
   changedFileName,
   selectChangedFilePreview,
@@ -497,7 +497,7 @@ export function MessagesTimeline({
   const newestUserMessageIdRef = useRef<string | null | undefined>(undefined);
   const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
 
-  const isWorking = isSessionBusy(sessionStatus);
+  const isWorking = isSessionWorking(sessionStatus);
   const rowElements = useMemo(
     () => buildLynxTranscriptRowElements(cwd, latestTurn?.turnId ?? null),
     [cwd, latestTurn?.turnId],

@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useEffect, useRef, useState } from "@lynx-js/react";
 import {
   deriveSessionPresentationPhase,
-  isSessionBusy,
+  isSessionWorking,
 } from "@t3tools/client-runtime/presentation/session";
 import {
   isComposerDraftThread,
@@ -179,20 +179,21 @@ export function ChatView({ threadId }: ChatViewProps) {
   const lockedContinuationGroupKey = activeThread?.session
     ? (activeProviderEntry?.continuationGroupKey ?? null)
     : null;
+  const sessionWorking = isSessionWorking(sessionStatus);
   const hero = shouldUseComposerHeroLayout({
     isLocalDraftThread: isComposerDraftThread({
       activeThreadId,
       draftHeroThreadId,
     }),
     timelineEntryCount: messages.length,
-    isWorking: isSessionBusy(sessionStatus),
+    isWorking: sessionWorking,
     dockRequested: false,
   });
   const showEmptyTranscript =
     !hero &&
     shouldShowEmptyTranscript({
       activityCount: activities.length,
-      isWorking: isSessionBusy(sessionStatus),
+      isWorking: sessionWorking,
       messageCount: messages.length,
       proposedPlanCount: proposedPlans.length,
     });
@@ -633,8 +634,8 @@ export function ChatView({ threadId }: ChatViewProps) {
         }
         questionCustomAnswer={activePendingDraft?.customAnswer ?? ""}
         onQuestionCustomAnswerChange={handleQuestionCustomAnswerChange}
-        disabled={status !== "ready"}
-        busy={isSessionBusy(sessionStatus)}
+        disabled={status !== "ready" || sessionStatus === "starting"}
+        busy={sessionWorking}
         onSend={handleSend}
         onStop={interrupt}
         onModelTap={uiActions.toggleModelPicker}
