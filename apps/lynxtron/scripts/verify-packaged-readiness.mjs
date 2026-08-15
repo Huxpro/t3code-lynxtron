@@ -2360,6 +2360,116 @@ async function verifyReviewDiffState({
   };
 }
 
+async function verifyReviewCheckpointStates({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  reviewFixture,
+  timeoutMs,
+}) {
+  const checkpoint = reviewFixture.checkpoint;
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === reviewFixture.threadId && state?.latestTurn?.state === "completed",
+  });
+  let checkpointCard = await waitForMeasurement({
+    child,
+    client,
+    selector: ".turn-diff-card",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-review-checkpoint-status"] === "ready" &&
+      measurement?.attributes["data-review-turn-id"] === checkpoint.turnId,
+  });
+  if (checkpointCard.attributes["data-changed-files-state"] === "expanded") {
+    await tapSelector({
+      child,
+      client,
+      selector: ".turn-diff-card__toggle",
+      timeoutMs,
+    });
+  }
+  const preview = await waitForMeasurement({
+    child,
+    client,
+    selector: ".turn-diff-card",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-changed-files-state"] === "preview" &&
+      Math.abs(measurement.rect.height - 106) <= 1 &&
+      measurement.text.includes(checkpoint.files[0].path),
+  });
+  const previewTree = await readOptionalMeasurement(client, "[data-review-tree]");
+  if (previewTree) {
+    throw new Error(
+      `Review checkpoint preview retained an expanded tree: ${JSON.stringify(previewTree)}`,
+    );
+  }
+  const previewScreenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-review-checkpoint-preview.png",
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".turn-diff-card__toggle",
+    timeoutMs,
+  });
+  checkpointCard = await waitForMeasurement({
+    child,
+    client,
+    selector: ".turn-diff-card",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-changed-files-state"] === "expanded" &&
+      Math.abs(measurement.rect.height - 79) <= 1,
+  });
+  const tree = await waitForMeasurement({
+    child,
+    client,
+    selector: "[data-review-tree]",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-review-file-count"] === "1" &&
+      measurement.text.includes(checkpoint.files[0].path),
+  });
+  const treeRows = await readSelectorRects(client, "[data-review-file-path]");
+  if (treeRows.length !== 1) {
+    throw new Error(`Review tree did not expose one file row: ${JSON.stringify(treeRows)}`);
+  }
+  const treeScreenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-review-tree.png",
+  });
+  return {
+    status: "pass",
+    fixture: {
+      threadId: reviewFixture.threadId,
+      turnId: checkpoint.turnId,
+      file: checkpoint.files[0],
+    },
+    preview: {
+      card: preview.rect,
+      tree: null,
+      screenshot: previewScreenshot,
+    },
+    expanded: {
+      card: checkpointCard.rect,
+      tree: tree.rect,
+      rows: treeRows,
+      screenshot: treeScreenshot,
+    },
+  };
+}
+
 async function verifyRuntimeCapabilities(client) {
   let keyDispatchError = null;
   try {
@@ -3394,6 +3504,7 @@ async function runOnce({
   verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
   questionFixture,
   verifyReviewDiffState: shouldVerifyReviewDiffState,
+  verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
   composerStopEvidence,
@@ -3669,6 +3780,16 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const reviewCheckpointStates = shouldVerifyReviewCheckpointStates
+      ? await verifyReviewCheckpointStates({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          reviewFixture,
+          timeoutMs,
+        })
+      : undefined;
     const shellInteractions = shouldVerifyShellInteractions
       ? await verifyShellInteractions({
           child,
@@ -3718,6 +3839,7 @@ async function runOnce({
       approvalTranscriptState,
       questionTranscriptState,
       reviewDiffState,
+      reviewCheckpointStates,
       shellInteractions,
       runtimeCapabilities,
       branding,
@@ -3753,6 +3875,7 @@ async function runOnce({
       approvalTranscriptState,
       questionTranscriptState,
       reviewDiffState,
+      reviewCheckpointStates,
       shellInteractions,
       runtimeCapabilities,
       branding,
@@ -3814,6 +3937,9 @@ const shouldVerifyQuestionTranscriptState = process.argv.includes(
   "--verify-question-transcript-state",
 );
 const shouldVerifyReviewDiffState = process.argv.includes("--verify-review-diff-state");
+const shouldVerifyReviewCheckpointStates = process.argv.includes(
+  "--verify-review-checkpoint-states",
+);
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
@@ -3903,7 +4029,7 @@ if (
 }
 const reviewFixture = fixtureManifest.reviewFixture;
 if (
-  shouldVerifyReviewDiffState &&
+  (shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates) &&
   (typeof reviewFixture?.threadId !== "string" ||
     typeof reviewFixture?.title !== "string" ||
     reviewFixture.latestTurnState !== "completed" ||
@@ -3927,7 +4053,7 @@ const canonicalThreadTitle = shouldVerifyIdleThreadState
   ? idleFixture.title
   : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
     ? fixtureManifest.pendingRequestFixture.title
-    : shouldVerifyReviewDiffState
+    : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
       ? reviewFixture.title
       : fixtureManifest.sidebarFixture?.titles?.[0];
 const lifecycleOnlyEmptyFixture =
@@ -3971,7 +4097,7 @@ const modelSelection = shouldVerifyIdleThreadState
   ? idleFixture.modelSelection
   : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
     ? fixtureManifest.pendingRequestFixture.modelSelection
-    : shouldVerifyReviewDiffState
+    : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
       ? reviewFixture.modelSelection
       : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8"))
           .modelSelection;
@@ -4028,6 +4154,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
       questionFixture,
       verifyReviewDiffState: shouldVerifyReviewDiffState,
+      verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
       composerStopEvidence,

@@ -120,6 +120,21 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'measurement.text.includes("updated by T3 review fixture")');
   });
 
+  it("verifies distinct Native Review checkpoint preview and expanded tree states", () => {
+    assert.include(source, "async function verifyReviewCheckpointStates");
+    assert.include(source, '"--verify-review-checkpoint-states"');
+    assert.include(source, 'selector: ".turn-diff-card__toggle"');
+    assert.include(source, 'measurement?.attributes["data-changed-files-state"] === "preview"');
+    assert.include(source, "Math.abs(measurement.rect.height - 106) <= 1");
+    assert.include(source, 'readOptionalMeasurement(client, "[data-review-tree]")');
+    assert.include(source, 'measurement?.attributes["data-changed-files-state"] === "expanded"');
+    assert.include(source, "Math.abs(measurement.rect.height - 79) <= 1");
+    assert.include(source, 'readSelectorRects(client, "[data-review-file-path]")');
+    assert.include(source, '"native-review-checkpoint-preview.png"');
+    assert.include(source, '"native-review-tree.png"');
+    assert.include(outcomeChecksSource, "reviewCheckpointStates");
+  });
+
   it("verifies an empty new-thread Hero without borrowing lifecycle recovery", () => {
     assert.include(source, "async function verifyHeroComposerState");
     assert.include(source, '"--verify-hero-composer-state"');
