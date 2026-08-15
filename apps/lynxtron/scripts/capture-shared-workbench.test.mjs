@@ -92,6 +92,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "overflow: style.overflow");
     assert.include(workbench, "panelAncestors: readElementAncestors");
     assert.include(workbench, "readElementAncestors(settingsPanel)");
+    assert.include(workbench, "function readModelPickerRows");
+    assert.include(workbench, "modelPickerRows:");
+    assert.include(workbench, 'row.getAttribute("data-model-picker-key")');
+    assert.include(workbench, "textLeaves:");
+    assert.include(workbench, "icons:");
     assert.include(workbench, 'root?.querySelectorAll(".settings-row")');
     assert.include(workbench, "children: [...item.children].map");
     assert.include(workbench, 'root?.querySelectorAll(".source-control-item")');

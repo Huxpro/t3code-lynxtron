@@ -165,6 +165,26 @@ function readTextLineRects(element) {
   }));
 }
 
+function readModelPickerRows(elements) {
+  return [...elements].map((row) => ({
+    key: row.getAttribute("data-model-picker-key"),
+    selected: row.getAttribute("data-model-picker-selected") === "true",
+    box: readElementBox(row),
+    children: [...row.children].map((child) => readElementBox(child)),
+    textLeaves: [...row.querySelectorAll("x-text, text, span")]
+      .filter(
+        (leaf) => leaf.querySelector("x-text, text, span") === null && leaf.textContent?.trim(),
+      )
+      .map((leaf) => ({
+        text: leaf.textContent?.trim() ?? "",
+        box: readElementBox(leaf),
+      })),
+    icons: [...row.querySelectorAll("x-image, image, img, svg")].map((icon) =>
+      readElementBox(icon),
+    ),
+  }));
+}
+
 function readComposedText(element) {
   if (!element) return "";
   const text = [];
@@ -646,6 +666,10 @@ function readLynxPane() {
                     row.textContent?.trim(),
                   )
                 : [],
+        modelPickerRows:
+          overlay === "model-picker"
+            ? readModelPickerRows(root?.querySelectorAll(".model-picker-row") ?? [])
+            : [],
         rowCount:
           overlay === "quick-switch" || overlay === "file-picker"
             ? (root?.querySelectorAll(".palette-row").length ?? 0)
@@ -1408,6 +1432,12 @@ function readWebPane() {
                     ),
                   ].map((row) => row.textContent?.trim())
                 : [],
+        modelPickerRows:
+          overlay === "model-picker"
+            ? readModelPickerRows(
+                doc.querySelectorAll('[data-model-picker-content] [data-slot="combobox-item"]'),
+              )
+            : [],
         rowCount:
           overlay === "quick-switch" || overlay === "file-picker"
             ? doc.querySelectorAll('[data-command-palette="true"] [role="option"]').length
