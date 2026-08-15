@@ -454,6 +454,17 @@ function normalizedChangedFilesState(reviewMetrics) {
   return state === "expanded" || state === "preview" || state === "collapsed" ? state : null;
 }
 
+const EXPECTED_REVIEW_PATCH_LINES = ["original review fixture", "updated by T3 review fixture"];
+
+function reviewDiffHasExpectedPatch(diff) {
+  return (
+    diff?.codeDiff === true &&
+    diff.loading === false &&
+    diff.error === false &&
+    EXPECTED_REVIEW_PATCH_LINES.every((line) => diff.text.includes(line))
+  );
+}
+
 function coreGeometryMatches(webState, lynxState) {
   const webComposer = webState?.composerMetrics;
   const lynxComposer = lynxState?.composerMetrics;
@@ -622,7 +633,6 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
   }
   const webFilePaths = [...(webMetrics.diff?.filePaths ?? [])].sort();
   const lynxFilePaths = [...(lynxMetrics.diff?.filePaths ?? [])].sort();
-  const expectedPatchLines = ["original review fixture", "updated by T3 review fixture"];
   const diffPairReady =
     webMetrics.panelOpen === true &&
     lynxMetrics.panelOpen === true &&
@@ -635,14 +645,8 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
     webMetrics.diff.selectedTurn === lynxMetrics.diff.selectedTurn &&
     webFilePaths.length > 0 &&
     JSON.stringify(webFilePaths) === JSON.stringify(lynxFilePaths) &&
-    webMetrics.diff.codeDiff === true &&
-    lynxMetrics.diff.codeDiff === true &&
-    expectedPatchLines.every((line) => webMetrics.diff.text.includes(line)) &&
-    expectedPatchLines.every((line) => lynxMetrics.diff.text.includes(line)) &&
-    webMetrics.diff.loading === false &&
-    webMetrics.diff.error === false &&
-    lynxMetrics.diff.loading === false &&
-    lynxMetrics.diff.error === false
+    reviewDiffHasExpectedPatch(webMetrics.diff) &&
+    reviewDiffHasExpectedPatch(lynxMetrics.diff)
   );
 }
 
@@ -2110,7 +2114,11 @@ async function captureCell({
         continue;
       }
       const shouldOpenDiff = reviewExpectation === "diff";
-      if (shouldOpenDiff && !webReviewDiffInputSent && !state?.web?.reviewMetrics?.diff) {
+      if (
+        shouldOpenDiff &&
+        !webReviewDiffInputSent &&
+        !reviewDiffHasExpectedPatch(state?.web?.reviewMetrics?.diff)
+      ) {
         const checkpointDiffPoint = await evaluate(
           cdp,
           sessionId,
@@ -2161,7 +2169,11 @@ async function captureCell({
             };
           })()`,
         ).catch(() => null);
-        if (!lynxReviewDiffInputSent && !state?.lynx?.reviewMetrics?.diff && diffPoints?.lynx) {
+        if (
+          !lynxReviewDiffInputSent &&
+          !reviewDiffHasExpectedPatch(state?.lynx?.reviewMetrics?.diff) &&
+          diffPoints?.lynx
+        ) {
           await dispatchPointerClick(cdp, sessionId, diffPoints.lynx);
           lynxReviewDiffInputSent = true;
           await delay(100);
