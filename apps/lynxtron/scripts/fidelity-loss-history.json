@@ -4177,6 +4177,106 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-idle-browser-certification",
+      "observedAt": "2026-08-15T21:12:00+09:00",
+      "commit": "ddfc8dd518a65602e6d3c3205ba9eac41078f1a1",
+      "codeState": "commit",
+      "label": "Existing Thread idle Browser certification",
+      "narrative": "A connector-created thread with no session, turn, messages, activities, or plans is selected explicitly on both Browser renderers. The repaired Lynx route now uses the Web authority's single muted placeholder, fills the same 1024x768 chat body, keeps zero timeline rows, and preserves the 768x140 docked Composer at y=660. Full-frame SSIM improves from the prior 0.909155 evidence to 0.944915.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "Fresh matched Browser evidence measures the idle placeholder copy and route-level geometry repair. Selector gaps, transient connection state, unsupported Native shorthand, and intermediate wrong overlay levels were caught by harness gates and are classified separately."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/existing-thread-idle-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "17257865ecb5b6792564b830f2b19c93052c8316615e237fed1eaf42f2f9fc10"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-idle-session-content",
+              "source": "same selected thread, Claude Fable 5, session-derived idle state, shared single-line placeholder, zero timeline rows, and docked idle Composer"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "idle-body-composer-geometry",
+              "source": "Empty surface and Composer x/y/width/height match exactly at 1280x820"
+            },
+            "material": {
+              "residual": 0.055085,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.944915 at the matched idle-thread frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-idle-session-readiness",
+              "source": "same immutable sessionless thread, identity match, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-idle-native-certification",
+      "observedAt": "2026-08-15T21:12:00+09:00",
+      "commit": "ddfc8dd518a65602e6d3c3205ba9eac41078f1a1",
+      "codeState": "commit",
+      "label": "Existing Thread idle Native certification",
+      "narrative": "A PID-owned exact production bundle selects the same sessionless thread and verifies sessionStatus idle, null active and latest turns, zero timeline rows, the shared single-line placeholder across the measured Native chat-body surface, the docked idle Composer, main transport sequence 2 to 3, zero renderer errors, released ports, and isolated cleanup. Native pixels are not substituted for Browser material evidence.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, and runtime evidence fills the idle-session cells without claiming a second product delta, Native pixel parity, or nonexistent interaction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/existing-thread-idle-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "17257865ecb5b6792564b830f2b19c93052c8316615e237fed1eaf42f2f9fc10"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-idle-session-content",
+              "source": "canonical thread title, Claude Fable 5, sessionStatus idle, null turns, shared single-line placeholder, zero rows, and disabled send action"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-idle-body-composer-geometry",
+              "source": "Measured Native chat body, empty surface, Composer, surface, editor, and footer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle, main transport 2 to 3, canonical session projection, zero renderer errors, released ports, and isolated cleanup"
+            }
+          }
+        }
+      ]
     }
   ]
 }

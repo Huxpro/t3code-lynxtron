@@ -50,3 +50,5 @@ project-scope-open-native-certification,2026-08-15T19:01:39+09:00,02f2dd25f33c9c
 composer-hero-non-git-browser-certification,2026-08-15T19:58:44+09:00,dfee2469653d51336abfed60cca1928c4cd3cf61,commit,Composer Hero non-git Browser certification,0.684966,0.684966,0.028929,0.675581,0.324419,0.298471
 composer-hero-non-git-native-certification,2026-08-15T19:58:44+09:00,dfee2469653d51336abfed60cca1928c4cd3cf61,commit,Composer Hero non-git Native certification,0.674373,0.674373,0.025825,0.665741,0.334259,0.309064
 composer-sendable-non-git-browser-certification,2026-08-15T20:08:00+09:00,fd1d70d252413edb52c74cbfd903f10caec1e765,commit,Composer Sendable non-git Browser certification,0.674258,0.674258,0.02585,0.665614,0.334386,0.309179
+existing-thread-idle-browser-certification,2026-08-15T21:12:00+09:00,ddfc8dd518a65602e6d3c3205ba9eac41078f1a1,commit,Existing Thread idle Browser certification,0.672203,0.672203,0.025063,0.663776,0.336224,0.311234
+existing-thread-idle-native-certification,2026-08-15T21:12:00+09:00,ddfc8dd518a65602e6d3c3205ba9eac41078f1a1,commit,Existing Thread idle Native certification,0.663767,0.663767,0.024008,0.655497,0.344503,0.31967
