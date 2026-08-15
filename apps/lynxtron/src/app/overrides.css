@@ -4484,8 +4484,13 @@
   align-self: stretch;
 }
 .settings-content {
+  --align-self-column: stretch;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+  box-sizing: border-box;
   padding: 48px 32px 40px 32px;
 }
 .settings-content--source-control {
@@ -4493,16 +4498,23 @@
 }
 /* ============= Settings Panel ============= */
 .settings-panel {
+  --align-self-column: stretch;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 896px;
   align-self: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .settings-section {
+  --align-self-column: stretch;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
   margin-bottom: var(--settings-section-spacing);
 }
 .settings-section__header {
@@ -4545,8 +4557,12 @@
   font-family: var(--font-sans);
 }
 .settings-section__rows {
+  --align-self-column: stretch;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
 }
 .source-control-panel {
   display: grid;
@@ -4601,8 +4617,13 @@
 
 /* SettingsRow: 768 wide, padding 12/16, radius 14, gap 4 */
 .settings-row {
+  --align-self-column: stretch;
   display: flex;
   flex-direction: row;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+  box-sizing: border-box;
   align-items: center;
   justify-content: space-between;
   padding: var(--settings-row-padding-block) var(--settings-row-padding-inline);
@@ -4610,6 +4631,7 @@
   margin-bottom: var(--settings-row-gap);
 }
 .settings-row__text {
+  --lynx-linear-weight: 1;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
