@@ -124,6 +124,22 @@ function readElementBox(element) {
   };
 }
 
+function readComposerToolbarAllocation(firstControl, primaryActions) {
+  if (!firstControl || !primaryActions) return null;
+  const firstControlRect = firstControl.getBoundingClientRect();
+  const primaryActionsRect = primaryActions.getBoundingClientRect();
+  return {
+    rect: {
+      x: firstControlRect.x,
+      y: firstControlRect.y,
+      width: primaryActionsRect.x - firstControlRect.x,
+      height: firstControlRect.height,
+    },
+    firstControlRight: firstControlRect.x + firstControlRect.width,
+    primaryActionsX: primaryActionsRect.x,
+  };
+}
+
 function readElementAncestors(element, depth = 4) {
   const ancestors = [];
   let current = element?.parentElement ?? null;
@@ -757,6 +773,12 @@ function readLynxPane() {
               editorArea: readElementBox(root?.querySelector(".composer-editor-area")),
               footer: readElementBox(root?.querySelector(".composer-footer")),
               toolbar: readElementBox(root?.querySelector(".composer-toolbar-row")),
+              toolbarAllocation: readComposerToolbarAllocation(
+                composerControlElements[0]
+                  ? composerControlBoxElement(composerControlElements[0])
+                  : null,
+                root?.querySelector(".composer-primary-actions"),
+              ),
               primaryActions: readElementBox(root?.querySelector(".composer-primary-actions")),
               primaryAction: readElementBox(root?.querySelector(".composer-primary-action")),
               controlBoxes: composerControlElements.map((item) => ({
@@ -1424,6 +1446,12 @@ function readWebPane() {
               editorArea: readElementBox(doc.querySelector(".composer-editor-area")),
               footer: readElementBox(doc.querySelector(".composer-footer")),
               toolbar: readElementBox(doc.querySelector(".composer-toolbar-row")),
+              toolbarAllocation: readComposerToolbarAllocation(
+                composerControlElements[0]
+                  ? composerControlBoxElement(composerControlElements[0])
+                  : null,
+                doc.querySelector(".composer-primary-actions"),
+              ),
               primaryActions: readElementBox(doc.querySelector(".composer-primary-actions")),
               primaryAction: readElementBox(doc.querySelector(".composer-primary-action")),
               controlBoxes: composerControlElements.map((item) => ({

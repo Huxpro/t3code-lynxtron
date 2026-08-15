@@ -174,6 +174,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "querySelector('[role=\"status\"]')");
   });
 
+  it("compares Composer toolbar allocation instead of renderer-specific raw box sizing", () => {
+    assert.include(source, "function composerToolbarAllocationMatches");
+    assert.include(source, "webMetrics?.anatomy?.toolbarAllocation");
+    assert.include(source, "lynxMetrics?.anatomy?.toolbarAllocation");
+    assert.include(source, "rectDeltaWithin(webAllocation, lynxAllocation, 1)");
+    assert.include(source, "composerToolbarAllocationMatches(webMetrics, lynxMetrics)");
+    assert.include(source, "composerToolbarAllocationMatches(webComposer, lynxComposer)");
+  });
+
   it("hashes the Web entry bundle declared by index.html", () => {
     assert.include(source, "async function webEntryBundlePath");
     assert.include(source, "type=[\"']module[\"']");

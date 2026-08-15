@@ -26,6 +26,9 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "button, [role='button'], [data-slot='button']");
     assert.include(source, 'querySelectorAll("x-text, text, span")');
     assert.include(source, 'querySelectorAll("x-image, image, img, svg")');
+    assert.include(source, "function readComposerToolbarAllocation");
+    assert.include(source, "width: primaryActionsRect.x - firstControlRect.x");
+    assert.include(source, "toolbarAllocation: readComposerToolbarAllocation");
     assert.include(source, "primaryAction: readElementBox");
   });
 

@@ -214,6 +214,17 @@ function composerAnatomyMatches(webMetrics, lynxMetrics) {
   return true;
 }
 
+function composerToolbarAllocationMatches(webMetrics, lynxMetrics) {
+  const webAllocation = webMetrics?.anatomy?.toolbarAllocation;
+  const lynxAllocation = lynxMetrics?.anatomy?.toolbarAllocation;
+  if (!webAllocation && !lynxAllocation) return true;
+  if (!webAllocation?.rect || !lynxAllocation?.rect) return false;
+  return (
+    rectDeltaWithin(webAllocation, lynxAllocation, 1) &&
+    Math.abs(webAllocation.primaryActionsX - lynxAllocation.primaryActionsX) <= 1
+  );
+}
+
 function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
   if (!webMetrics?.anatomy || !lynxMetrics?.anatomy) return false;
   const webEmpty = webMetrics.emptyText !== null;
@@ -348,6 +359,7 @@ function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeigh
     return false;
   }
   if (!composerAnatomyMatches(webMetrics, lynxMetrics)) return false;
+  if (!composerToolbarAllocationMatches(webMetrics, lynxMetrics)) return false;
 
   const webRect = webMetrics?.rect?.rect;
   const lynxRect = lynxMetrics?.rect?.rect;
@@ -399,6 +411,7 @@ function coreGeometryMatches(webState, lynxState) {
         return false;
       }
     }
+    if (!composerToolbarAllocationMatches(webComposer, lynxComposer)) return false;
   }
 
   const webEmptyTranscript = webState?.timelineMetrics?.empty;
