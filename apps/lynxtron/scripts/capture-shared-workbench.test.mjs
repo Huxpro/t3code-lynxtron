@@ -67,7 +67,7 @@ describe("shared workbench lifecycle fault capture", () => {
     );
 
     assert.include(workbench, '".settings-page-scroll-fade > div"');
-    assert.include(workbench, '".settings-scroll--source-control > .source-control-panel"');
+    assert.include(workbench, '".settings-content--source-control > .source-control-panel"');
     assert.include(
       workbench,
       'settingsPanel?.querySelectorAll(":scope > .source-control-section")',
@@ -81,6 +81,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'style.getPropertyValue("--flex-direction")');
     assert.include(workbench, "element.getAttributeNames()");
     assert.include(workbench, "readElementAncestors(settingsPanel)");
+    assert.include(workbench, 'root?.querySelectorAll(".settings-row")');
   });
 
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {

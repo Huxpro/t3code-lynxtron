@@ -903,7 +903,7 @@ function readLynxPane() {
       settingsMetrics: settingsRoute
         ? (() => {
             const settingsPanel = root?.querySelector(
-              ".settings-scroll--source-control > .source-control-panel",
+              ".settings-content--source-control > .source-control-panel",
             );
             return {
               navigationLabels: [
@@ -930,6 +930,10 @@ function readLynxPane() {
                     box: readElementBox(item),
                   }),
                 ),
+                settingsRows: [...(root?.querySelectorAll(".settings-row") ?? [])].map((item) => ({
+                  title: item.querySelector(".settings-row__title")?.textContent?.trim() ?? "",
+                  box: readElementBox(item),
+                })),
               },
               sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
                 (item) => item.textContent?.trim(),
@@ -1669,6 +1673,10 @@ function readWebPane() {
                     box: readElementBox(item),
                   }),
                 ),
+                settingsRows: [...doc.querySelectorAll(".settings-row")].map((item) => ({
+                  title: item.querySelector(".settings-row__title, h3")?.textContent?.trim() ?? "",
+                  box: readElementBox(item),
+                })),
               },
               sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>
                 item.textContent?.trim(),
