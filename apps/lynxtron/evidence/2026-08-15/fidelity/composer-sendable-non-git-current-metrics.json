@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T20:08:00+09:00",
+  "evidenceCommit": "fd1d70d252413edb52c74cbfd903f10caec1e765",
+  "stateId": "composer-sendable",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "repositoryState": "non-git"
+  },
+  "fixture": {
+    "workspace": "/tmp/t3-hero-claude-workspace",
+    "projectId": "dd422c59-fba4-4c0d-aa05-9e4168a702a1",
+    "projectTitle": "t3-hero-claude-workspace",
+    "threadCount": 0,
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "sourceSnapshotSha256": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977",
+    "seededSnapshotSha256": "af2dd741fbc7ec4dcb6cb2cec719c80769b6832bfb88cbf780da991d9a2b5434"
+  },
+  "classification": {
+    "productLoss": [],
+    "harnessMismatch": [],
+    "nativeStatus": "pending-user-session",
+    "nativeReason": "DevTool cannot provide physical keyboard focus and typing evidence. Programmatic value injection is not accepted as Native interaction proof.",
+    "sessionStateBoundary": "Sendable is derived from real editor content and does not alter working state. Working remains derived from the canonical session projection."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "fd1d70d252413edb52c74cbfd903f10caec1e765",
+    "webBundleSha256": "031fe3af2dc2bf045a98996f8a5e04fb98b579a0adf63b49dddfefa6e309bfa9",
+    "lynxBundleSha256": "4144bb6bad8fa24432b44ebbab2f6deec04ab4cf163d2f4fa751cae9af325bea",
+    "capturePass": true,
+    "readyMs": 1235,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "inputChannel": "web-dom-focus+key-char:true|lynx-dom-focus+key-char:true",
+    "editorValue": "Explain the current changes",
+    "state": "sendable",
+    "primaryState": "send",
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "context": [],
+    "geometry": {
+      "web": {
+        "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+        "editor": { "x": 401, "y": 373, "width": 734, "height": 70 }
+      },
+      "lynx": {
+        "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+        "editor": { "x": 401, "y": 373, "width": 734, "height": 70 }
+      }
+    },
+    "composerRegion": {
+      "crop": { "x": 384, "y": 356, "width": 768, "height": 140 },
+      "ssim": 0.944247,
+      "residual": 0.055753
+    },
+    "fullFrameSsim": 0.939339,
+    "fullFrameResidual": 0.060661,
+    "reportSha256": "c39620074859a5ac73d54184de968bf06cc3bee11b31304f32718657be46fef1",
+    "webScreenshotSha256": "fbeb8c0900d24da5fb34aa88adfb29d81c984c3c4586d531df140a05bbc255a5",
+    "lynxScreenshotSha256": "c3dff2e665958186b9c072f7eb5c581c6148b2263d1144492cf0afe399ba8248",
+    "ownedBrowserProcessesAfterCapture": 0,
+    "ownedServerProcessesAfterCapture": 0,
+    "isolatedChromeProfilesAfterCapture": 0,
+    "agentBrowserProcessesAfterCapture": 0
+  },
+  "remainingRisk": [
+    "Composer-region material residual remains 0.055753.",
+    "Native physical keyboard focus, typing, and send remain pending an authorized user session.",
+    "This evidence does not change or infer working state; working continues to reflect the real session."
+  ]
+}

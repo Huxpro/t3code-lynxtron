@@ -4118,6 +4118,65 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-sendable-non-git-browser-certification",
+      "observedAt": "2026-08-15T20:08:00+09:00",
+      "commit": "fd1d70d252413edb52c74cbfd903f10caec1e765",
+      "codeState": "commit",
+      "label": "Composer Sendable non-git Browser certification",
+      "narrative": "The current non-git Claude fixture receives Explain the current changes through real key-character input in both Browser panes. Both renderers reach sendable with the send action, identical editor content, controls, absent repository context, and exact 768x140 Composer geometry. No product difference is observed. Composer-region SSIM is 0.944247. Native physical keyboard focus, typing, and send remain pending-user-session rather than being inferred from DevTool or programmatic injection.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser input evidence supersedes stale sendable measurements without a product change. Native blocker cells are intentionally untouched because no authorized physical keyboard session occurred."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-sendable-non-git-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "975d597a9547f66c734c72502636b39ca611996b1ccabdbee85aa8c8a69f7d97"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-sendable-composer-content",
+              "source": "same non-git project, key-character editor value, sendable state, send action, Claude Fable 5 controls, and no context labels"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "sendable-composer-frame-editor",
+              "source": "Composer and editor x/y/width/height match exactly at 1280x820"
+            },
+            "material": {
+              "residual": 0.055753,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.944247 over the matched 768x140 non-git Sendable Composer region"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-key-character-input",
+              "source": "real Browser input events produce the same complete editor value and send action in both panes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-sendable-readiness",
+              "source": "same immutable fixture, identity match, ready lifecycle, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
     }
   ]
 }
