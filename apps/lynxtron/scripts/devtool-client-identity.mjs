@@ -120,14 +120,27 @@ async function waitForDaemon(port, child, timeoutMs = 5_000) {
 }
 
 async function stopOwnedDaemon(child, port) {
+  const processId = child.pid;
   await fetch(`http://127.0.0.1:${port}/devtool/connector/shutdown`, {
     method: "POST",
   }).catch(() => undefined);
-  if (await waitForChildExit(child, 2_000)) return;
-  child.kill("SIGTERM");
-  if (await waitForChildExit(child, 2_000)) return;
-  child.kill("SIGKILL");
+  await waitForChildExit(child, 1_000);
+  if (!Number.isInteger(processId) || processId <= 0) return;
+  const isAlive = () => {
+    try {
+      process.kill(processId, 0);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  if (!isAlive()) return;
+  process.kill(processId, "SIGTERM");
   await waitForChildExit(child, 2_000);
+  if (!isAlive()) return;
+  process.kill(processId, "SIGKILL");
+  await waitForChildExit(child, 2_000);
+  if (isAlive()) throw new Error(`Owned DevTool daemon PID ${processId} did not exit.`);
 }
 
 export async function openOwnedDevToolSession({ appName, clientId, devToolCli, ownedPorts }) {
