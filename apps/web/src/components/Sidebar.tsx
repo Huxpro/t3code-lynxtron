@@ -76,6 +76,7 @@ import {
   MIN_SIDEBAR_THREAD_PREVIEW_COUNT,
 } from "@t3tools/contracts/settings-constants";
 import { isDesktopLocalConnectionTarget } from "@t3tools/client-runtime/presentation/connections";
+import { isSessionWorking } from "@t3tools/client-runtime/presentation/session";
 import { useDesktopLocalBootstraps } from "../connection/useDesktopLocalBootstraps";
 import { isElectron } from "../env";
 import { useOpenPrLink } from "../lib/openPullRequestLink";
@@ -448,8 +449,7 @@ export const SidebarThreadRow = memo(function SidebarThreadRow(props: SidebarThr
     },
     [discoveredPorts, navigateToThread, openPreview, threadRef],
   );
-  const isThreadRunning =
-    thread.session?.status === "running" && thread.session.activeTurnId != null;
+  const isThreadRunning = isSessionWorking(thread.session?.status);
   const threadStatus = resolveThreadStatusPill({
     thread: {
       ...thread,
@@ -1774,8 +1774,8 @@ const SidebarProjectItem = memo(function SidebarProjectItem(props: SidebarProjec
         const thread = threadRef ? readThreadShell(threadRef) : null;
         return threadRef && thread ? [{ threadKey, threadRef, thread }] : [];
       });
-      const hasRunningThread = selectedThreadEntries.some(
-        ({ thread }) => thread.session?.status === "running" && thread.session.activeTurnId != null,
+      const hasRunningThread = selectedThreadEntries.some(({ thread }) =>
+        isSessionWorking(thread.session?.status),
       );
 
       const clicked = await api.contextMenu.show(
