@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T03:18:11+09:00",
+  "updatedAt": "2026-08-16T04:42:48+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -724,7 +724,7 @@
         {
           "path": "apps/lynxtron/docs/harness/completion-audit.md",
           "classification": "tracked-current",
-          "sha256": "267828f7d6d1a87bb1627bf5aededae2743adafaecbf23b63312f904d98e5e89"
+          "sha256": "8b7a0e84643e853ed771851bd66364aa2abf596ab158fe9b8e5f0b2ee43c3203"
         }
       ],
       "confidenceEvents": [
@@ -5460,6 +5460,224 @@
               "confidence": 0.99,
               "method": "exact-bundle-source-control-pending-readiness",
               "source": "PID-owned exact bundle 11207f50, successful branch readiness probe, main transport 2 to 3 then 12, zero renderer errors, zero agent-browser pre/post leaks, and isolated cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-checkpoint-tree-native-baseline-current",
+      "observedAt": "2026-08-16T04:35:03+09:00",
+      "commit": "001971881ff045bb7e5577df50aea539c7decd06",
+      "codeCommit": "001971881ff045bb7e5577df50aea539c7decd06",
+      "codeState": "commit",
+      "label": "Review Checkpoint and Tree current Native baseline",
+      "narrative": "An exact-owned production bundle separates the Review Checkpoint preview from the expanded Changed Files Tree through real DevTool taps. Content, state, heights, interaction, main transport, zero renderer errors, and isolated cleanup pass, but the card is constrained by an intrinsic-width assistant parent: preview is 310px, expanded is 332px, and the tree is 314px instead of the 760px transcript column. This exact current baseline supersedes the stale Native geometry estimate without attributing a product delta.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle evidence refines the current Native baseline. It records the intrinsic-width product loss before the fix but does not assign that refinement to a product commit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-checkpoint-tree-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "275780d10d0ef8acb6224a2c2135dd0637674ee512cf738d509320d2f02a6b0e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-checkpoint"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-review-checkpoint-content",
+              "source": "Ready checkpoint, one modified review-fixture.txt file, +1/-1, preview state, and zero expanded trees"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 450, 0],
+              "anchorScale": 760,
+              "confidence": 0.99,
+              "method": "native-review-checkpoint-card-geometry",
+              "source": "Native preview card 310x106 against the 760x106 Web authority card"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-review-toggle",
+              "source": "Real DevTool taps drive preview to expanded and restore preview through observable state postconditions"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-review-readiness",
+              "source": "PID-owned bundle a3a135d5, main transport sequence 2 to 3, zero renderer errors, zero agent-browser pre/post leaks, and isolated cleanup"
+            }
+          }
+        },
+        {
+          "states": ["review-tree"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-review-tree-content",
+              "source": "Expanded state, one tree, and one review-fixture.txt row with +1/-1"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 428, 0, 0, 0, 428, 0],
+              "anchorScale": 760,
+              "confidence": 0.99,
+              "method": "native-review-tree-geometry",
+              "source": "Native expanded card 332x79 and tree 314x25 against 760x79 and 742x24.5 Web authority geometry"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-review-toggle",
+              "source": "Real DevTool tap exposes the expanded tree and one file row before restoring preview"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-review-readiness",
+              "source": "PID-owned bundle a3a135d5, main transport sequence 2 to 3, zero renderer errors, zero agent-browser pre/post leaks, and isolated cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-checkpoint-tree-browser-certification-current",
+      "observedAt": "2026-08-16T04:41:24+09:00",
+      "commit": "24010b27e01e40558ae0aa669427f7c64213f923",
+      "codeCommit": "24010b27e01e40558ae0aa669427f7c64213f923",
+      "codeState": "commit",
+      "label": "Review Checkpoint and Tree current Browser certification",
+      "narrative": "The same immutable completed-turn snapshot renders the distinct preview and expanded Review states in both shipping Browser renderers. Preview cards are exactly 760x106 with no tree; expanded cards are exactly 760x79 with one 742px tree and only 0.5px vertical quantization. Real pointer input drives both panes to the requested state, console output is empty, and the workbench releases its owned server and Chrome. Full-frame SSIM is 0.916127 for Checkpoint and 0.917942 for Tree, so the remaining Browser material residual stays explicit.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Matched current-head Browser evidence fills the distinct Checkpoint and Tree cells. The Native-only assistant-width fix does not receive a Browser material delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-checkpoint-tree-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "275780d10d0ef8acb6224a2c2135dd0637674ee512cf738d509320d2f02a6b0e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-checkpoint"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-review-checkpoint-content",
+              "source": "Ready checkpoint, one modified file, +1/-1, preview state, matching labels, and zero trees"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 760,
+              "confidence": 0.99,
+              "method": "review-checkpoint-card-geometry",
+              "source": "Both Browser renderers expose the preview card at x=388, y=299.75, 760x106"
+            },
+            "material": {
+              "residual": 0.083873,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.916127 at the matched Review Checkpoint preview frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-browser-review-toggle",
+              "source": "Real pointer input leaves both cards in preview with observable state and zero trees"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-review-readiness",
+              "source": "Same snapshot, thread, route, theme, viewport, and bundles in 1293ms with zero renderer errors and zero agent-browser pre/post leaks"
+            }
+          }
+        },
+        {
+          "states": ["review-tree"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-review-tree-content",
+              "source": "Expanded state, one tree, and one matching review-fixture.txt row with +1/-1"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0.5, 0, 0.5],
+              "anchorScale": 760,
+              "confidence": 0.99,
+              "method": "review-tree-geometry",
+              "source": "Both cards are 760x79; Web tree is 742x24.5 and Lynx tree is 742x24 with a 0.5px y offset"
+            },
+            "material": {
+              "residual": 0.082058,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.917942 at the matched expanded Review Tree frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-browser-review-toggle",
+              "source": "Real pointer input leaves both cards expanded with one observable tree and one file row"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-review-readiness",
+              "source": "Same snapshot, thread, route, theme, viewport, and bundles in 1271ms with zero renderer errors and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-checkpoint-tree-native-width-fix-current",
+      "observedAt": "2026-08-16T04:42:48+09:00",
+      "commit": "24010b27e01e40558ae0aa669427f7c64213f923",
+      "codeCommit": "24010b27e01e40558ae0aa669427f7c64213f923",
+      "codeState": "commit",
+      "label": "Review Checkpoint and Tree Native width fix",
+      "narrative": "The committed product gives the Native assistant-group parent an explicit full-width contract. Against the same exact fixture and 1280x820 viewport, preview grows from 310px to 760px, expanded grows from 332px to 760px, and the tree grows from 314px to 742px. Heights, x/y anchors, content, real toggle behavior, main transport, and zero-error cleanup remain stable. This point attributes only the directly measured Native geometry delta; Browser material and Native typography/material are not inferred.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-bundle Native before/after runs share the same snapshot, thread, viewport, theme, verifier, and interaction path. Only the assistant-parent width product change differs."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-checkpoint-tree-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "275780d10d0ef8acb6224a2c2135dd0637674ee512cf738d509320d2f02a6b0e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-checkpoint", "review-tree"],
+          "clients": ["native"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 760,
+              "confidence": 0.99,
+              "method": "exact-bundle-native-review-width-before-after",
+              "source": "Preview 310 to 760, expanded 332 to 760, and tree 314 to 742 while all x/y/height anchors remain stable"
             }
           }
         }
