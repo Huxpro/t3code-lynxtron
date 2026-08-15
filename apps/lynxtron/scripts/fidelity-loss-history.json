@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T02:34:19+09:00",
+  "updatedAt": "2026-08-16T03:18:11+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -724,7 +724,7 @@
         {
           "path": "apps/lynxtron/docs/harness/completion-audit.md",
           "classification": "tracked-current",
-          "sha256": "f0385fc0362989c2d77aadb72545bbd56ce57a61cad2a214e9ff7d178b6c27ca"
+          "sha256": "267828f7d6d1a87bb1627bf5aededae2743adafaecbf23b63312f904d98e5e89"
         }
       ],
       "confidenceEvents": [
@@ -5356,6 +5356,110 @@
               "confidence": 0.99,
               "method": "exact-bundle-source-control-error-readiness",
               "source": "PID-owned exact bundle ab323d7c, typed discovery probe, main transport 2 to 3, zero renderer errors, and isolated cleanup"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-source-control-loading-browser-certification-current",
+      "observedAt": "2026-08-16T03:17:46+09:00",
+      "commit": "32b91314fe3c63f4b41ba477c7423211eb155d85",
+      "codeCommit": "46c67927265de0ce0da9b5557e83ce7f386de815",
+      "codeState": "commit",
+      "label": "Settings Source Control loading current Browser certification",
+      "narrative": "The previous loading checkpoint depended on catching normal discovery before it settled. A deterministic server-layer pending mode now holds the real discoverSourceControl RPC without a renderer-local delay. Web authority renders Version Control and Source Control Providers as two 176px sections with two skeleton rows each; Lynx previously rendered one 136px Source Control card and shifted Text generation 264px upward. Shared section definitions plus four static Lynx skeleton rows now match both 896x176 sections, both 896x132 row stacks, and the y=536 Text generation anchor. Full-frame SSIM is 0.869591, Settings-main SSIM is 0.881258, and loading-section SSIM is 0.910490.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Matched current-head Browser evidence uses one deterministic pending server RPC, snapshot, route, theme, viewport, and identity. Settled-frame and process-leak runs were rejected before admission."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-source-control-loading-parity-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "699eebe0b2318cd56e3a15cf0c5c7a0f89e60a7bf907b34ee47b1883af5823f6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control-loading"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-loading-section-content",
+              "source": "Both renderers remain pending and expose Version Control, Source Control Providers, Text generation, and four loading rows"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 4.21875, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4.21875
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "source-control-loading-anatomy",
+              "source": "Panel, three sections, two 132px row stacks, and four 896x66 Lynx loading rows at 1280x820"
+            },
+            "material": {
+              "residual": 0.130409,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.869591 at the deterministic pending frame; loading-section residual is 0.089510"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-source-control-pending-readiness",
+              "source": "Same Effect.never server RPC, snapshot, route, theme, and viewport in 1394ms with zero renderer errors, zero agent-browser pre/post leaks, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-source-control-loading-native-certification-current",
+      "observedAt": "2026-08-16T03:18:11+09:00",
+      "commit": "4e0c5a142c6c113fd897becf02ac7fa8035b2ca7",
+      "codeCommit": "46c67927265de0ce0da9b5557e83ce7f386de815",
+      "codeState": "commit",
+      "label": "Settings Source Control loading current Native certification",
+      "narrative": "A PID-owned exact production bundle waits for a real readProjectBranch command before navigating, then holds discoverSourceControl pending in the server service. Native renders the same three section anchors and four 896x66 loading rows with main transport sequence 12 and zero renderer errors. The run uses isolated state and leaves zero owned process/state residue. A prior passing product run was rejected because postflight observed an unrelated agent-browser close process; only this zero-leak run is admitted. The retained Native screenshot is representative evidence, not a Native-to-Web material score.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, and runtime evidence fills the Native loading-state cells without claiming interaction or Native material parity."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-source-control-loading-parity-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "699eebe0b2318cd56e3a15cf0c5c7a0f89e60a7bf907b34ee47b1883af5823f6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control-loading"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-source-control-loading-content",
+              "source": "Version Control, Source Control Providers, Text generation, and four pending rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "native-source-control-loading-geometry",
+              "source": "Three canonical section anchors and four 896x66 loading rows in a 1280x820 Native viewport"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-source-control-pending-readiness",
+              "source": "PID-owned exact bundle 11207f50, successful branch readiness probe, main transport 2 to 3 then 12, zero renderer errors, zero agent-browser pre/post leaks, and isolated cleanup"
             }
           }
         }

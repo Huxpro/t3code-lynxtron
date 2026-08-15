@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T03:18:11+09:00",
+  "productCommit": "46c67927265de0ce0da9b5557e83ce7f386de815",
+  "browserVerifierCommit": "32b91314fe3c63f4b41ba477c7423211eb155d85",
+  "nativeVerifierCommit": "4e0c5a142c6c113fd897becf02ac7fa8035b2ca7",
+  "stateId": "settings-source-control-loading",
+  "scope": {
+    "authority": "web",
+    "candidates": ["lynx", "native"],
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-source-control-loading",
+    "route": "/settings/source-control"
+  },
+  "fixture": {
+    "browser": {
+      "source": "read-only VACUUM INTO from ~/.t3/userdata/state.sqlite",
+      "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+    },
+    "native": {
+      "createdThroughRealProjectCommand": true,
+      "snapshotSha256": "ff71d33fa35bf93548877612ff2dcb27c1fbb9f90d4229a8243df39b2598bd1c",
+      "projectTitle": "t3-sc-loading-native",
+      "modelSelection": {
+        "instanceId": "codex",
+        "model": "gpt-5.6-sol"
+      }
+    },
+    "pendingSignal": {
+      "source": "server SourceControlDiscovery service",
+      "environment": "T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING=1",
+      "behavior": "The real discoverSourceControl RPC remains pending through Effect.never; no renderer-local delay or boolean fixture is used."
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Web rendered Version Control and Source Control Providers as two 176px loading sections with two skeleton rows each. Lynx rendered one 136px Source Control card containing Scanning server integrations and shifted Text generation 264px upward.",
+      "The product now shares the two loading section definitions and renders four static Lynx skeleton rows. Both Browser renderers match the first two 896x176 sections, their 896x132 row stacks, and the Text generation y=536 anchor.",
+      "Full-frame SSIM is 0.869591, Settings-main SSIM is 0.881258, and the two loading-section region SSIM is 0.91049."
+    ],
+    "harnessMismatch": [
+      "The previous loading evidence depended on catching normal discovery before it completed and therefore was not deterministic. The server harness now holds the real RPC pending without a fixed sleep.",
+      "The old Lynx reader detected loading from the text Scanning. It now uses four explicit loading-row selectors while Web continues to use real skeleton nodes.",
+      "The first post-fix capture settled before admission and was rejected because both renderers reported loading=false.",
+      "A Native run that otherwise passed was rejected because postflight detected an unrelated agent-browser close process. That process exited on its own; no pattern kill was issued. Only the subsequent zero-leak run is retained."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime. Exact-bundle Native evidence updates content, geometry, and runtime. Loading has no user interaction claim, and Native material parity is not claimed."
+  },
+  "browser": {
+    "status": "pass-with-residual",
+    "capturePass": true,
+    "head": "32b91314fe3c63f4b41ba477c7423211eb155d85",
+    "readyMs": 1394,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "agentBrowserLeakPreflight": 0,
+    "agentBrowserLeakPostflight": 0,
+    "webBundleSha256": "b6f2ae3f87c329abb594be3db2b25a0005533f3fddcf5d85ed6bc494a6cb84a9",
+    "lynxBundleSha256": "5970d63639f8610d268b5cd84077c4c34f668e7440e9080204bd6b928fdbea7d",
+    "content": {
+      "loading": { "web": true, "lynx": true },
+      "sectionTitles": ["Version Control", "Source Control Providers", "Text generation"],
+      "loadingRowCount": { "webSkeletonLeaves": 28, "lynxRows": 4 }
+    },
+    "geometry": {
+      "web": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 738.21875 },
+        "versionControl": { "x": 320, "y": 88, "width": 896, "height": 176 },
+        "versionControlRows": { "x": 320, "y": 132, "width": 896, "height": 132 },
+        "providers": { "x": 320, "y": 312, "width": 896, "height": 176 },
+        "providerRows": { "x": 320, "y": 356, "width": 896, "height": 132 },
+        "textGeneration": { "x": 320, "y": 536, "width": 896, "height": 290.21875 }
+      },
+      "lynx": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 734 },
+        "versionControl": { "x": 320, "y": 88, "width": 896, "height": 176 },
+        "versionControlRows": { "x": 320, "y": 132, "width": 896, "height": 132 },
+        "providers": { "x": 320, "y": 312, "width": 896, "height": 176 },
+        "providerRows": { "x": 320, "y": 356, "width": 896, "height": 132 },
+        "textGeneration": { "x": 320, "y": 536, "width": 896, "height": 286 },
+        "loadingRows": [
+          { "x": 320, "y": 132, "width": 896, "height": 66 },
+          { "x": 320, "y": 198, "width": 896, "height": 66 },
+          { "x": 320, "y": 356, "width": 896, "height": 66 },
+          { "x": 320, "y": 422, "width": 896, "height": 66 }
+        ]
+      }
+    },
+    "fullFrameSsim": 0.869591,
+    "fullFrameResidual": 0.130409,
+    "settingsMainSsim": 0.881258,
+    "loadingSectionsSsim": 0.91049,
+    "reportSha256": "51c0880a1f161cc51e4215a5d9b66cc7256b9961bcd394afd3bcd13e4f399101",
+    "webScreenshotSha256": "05ddc0a294802272ec50e983512df16d376519319a3472f41a0534ea6554a5d3",
+    "lynxScreenshotSha256": "0cd68adc2031829a009f3ceb24269fda0ea1cbc25090b9a02c4809af73db0efd"
+  },
+  "native": {
+    "status": "pass",
+    "head": "4e0c5a142c6c113fd897becf02ac7fa8035b2ca7",
+    "bundleSha256": "11207f502efb4d96cad81dc5f3f709e26b822217c2106c28732437d32d4c81be",
+    "bundleBytes": 4422567,
+    "snapshotSha256": "ff71d33fa35bf93548877612ff2dcb27c1fbb9f90d4229a8243df39b2598bd1c",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "agentBrowserLeakPreflight": 0,
+    "agentBrowserLeakPostflight": 0,
+    "transportSequence": {
+      "beforeProbe": 2,
+      "afterProbe": 3,
+      "loadingState": 12
+    },
+    "connectorProbe": {
+      "method": "readProjectBranch",
+      "isRepo": true,
+      "branch": "archaeology/final5-20260812"
+    },
+    "geometry": {
+      "panel": { "x": 256, "y": 52, "width": 1024, "height": 812 },
+      "sections": [
+        { "x": 320, "y": 88, "width": 896, "height": 176 },
+        { "x": 320, "y": 312, "width": 896, "height": 176 },
+        { "x": 320, "y": 536, "width": 896, "height": 288 }
+      ],
+      "loadingRows": [
+        { "x": 320, "y": 132, "width": 896, "height": 66 },
+        { "x": 320, "y": 198, "width": 896, "height": 66 },
+        { "x": 320, "y": 356, "width": 896, "height": 66 },
+        { "x": 320, "y": 422, "width": 896, "height": 66 }
+      ]
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "e35eb1c211be3d2ceb4fd60c9e6e4f6535c77161c7a617c5d964e8dd295c4fc9",
+    "screenshotSha256": "6d8f9ccd00b5bdc15d94a19ed78160a4ed3990306356733113407c42aa5bd2aa"
+  },
+  "validation": {
+    "productTests": "37/37",
+    "browserHarnessTests": "24/24",
+    "nativeVerifierTests": "18/18",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "webProductionBuild": "pass",
+    "serverProductionBuild": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "lynxDesktopProductionBuild": "pass",
+    "browserHardGate": "pass",
+    "nativeExactBundleGate": "pass",
+    "agentBrowserLeakGate": "preflight=0, postflight=0",
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "Browser full-frame material residual remains 0.130409.",
+    "The Lynx Text generation section is 4.21875px shorter than Web because of renderer text quantization.",
+    "Lynx uses static skeleton fills to avoid continuous GPU repainting; Web's animated shimmer remains a deliberate material difference.",
+    "The Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web pixel residual."
+  ]
+}
