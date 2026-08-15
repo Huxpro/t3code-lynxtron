@@ -28,6 +28,27 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).not.toContain("background-color: rgba(var(--muted-rgb), 0.3);");
   });
 
+  it("keeps the model picker scroll chain constrained to the content column", () => {
+    const source = componentSource("ModelPicker.tsx");
+
+    const listBlocks = overrides.match(/\.picker-list \{[^}]+\}/g);
+    const list = listBlocks?.at(-1);
+
+    expect(list).toContain("flex-grow: 1;");
+    expect(list).toContain("flex-shrink: 1;");
+    expect(list).toContain("width: 100%;");
+    expect(list).toContain("min-width: 0;");
+    expect(list).toContain("height: 0;");
+    expect(list).toContain("min-height: 0;");
+    expect(source).not.toContain('className="picker-list-shell"');
+    expect(source).not.toContain('className="picker-list-inner"');
+    expect(overrides).not.toContain(".picker-list-shell {");
+    expect(overrides).not.toContain(".picker-list-inner {");
+    expect(overrides).toContain(
+      ".model-picker-row {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  align-self: stretch;\n  width: auto;",
+    );
+  });
+
   it("opens a truthful Terminal placeholder from the titlebar control", () => {
     const header = componentSource("ChatHeader.tsx");
     const chatView = componentSource("ChatView.tsx");

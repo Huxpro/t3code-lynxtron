@@ -369,7 +369,7 @@ export function ModelPicker({
                 />
               </view>
             ) : (
-              <view className="picker-list-shell">
+              <>
                 <scroll-view
                   key={scrollStateKey}
                   main-thread:ref={listScrollRef}
@@ -380,86 +380,84 @@ export function ModelPicker({
                   scroll-event-throttle={16}
                   bindscroll={handleListScroll}
                 >
-                  <view className="picker-list-inner">
-                    {rows.map(({ model, favorite, disabledReason }) => {
-                      const isSelected =
-                        selectedModel?.instanceId === model.instanceId &&
-                        selectedModel?.slug === model.slug;
-                      return (
-                        <ModelPickerRowSurface
-                          key={modelKey(model)}
-                          semanticKey={modelKey(model)}
-                          selected={isSelected}
-                          disabled={disabledReason !== null}
-                          disabledReason={disabledReason}
-                          onSelect={() => handleSelect(model)}
-                          onDisabledSelect={() =>
-                            showNotice("Model unavailable", disabledReason ?? model.name)
-                          }
-                          onHoverStart={
-                            disabledReason
-                              ? () => showNotice("Model unavailable", disabledReason)
-                              : clearNotice
-                          }
-                          name={model.shortName ?? model.name}
-                          showNewBadge={isModelPickerNewModel(model.driverKind, model.slug)}
-                          favoriteMarker={
-                            favorite && activeProvider !== "favorites" ? (
-                              <text className="picker-row__fav-star">★</text>
-                            ) : undefined
-                          }
-                          providerIcon={
-                            <ProviderBrandIcon
-                              driverKind={model.driverKind}
-                              size={12}
-                              className="picker-row__provider-icon"
-                            />
-                          }
-                          providerLabel={
-                            model.subProvider
-                              ? `${model.providerDisplayName} · ${model.subProvider}`
-                              : model.providerDisplayName
-                          }
-                          trailing={
-                            <view
-                              aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+                  {rows.map(({ model, favorite, disabledReason }) => {
+                    const isSelected =
+                      selectedModel?.instanceId === model.instanceId &&
+                      selectedModel?.slug === model.slug;
+                    return (
+                      <ModelPickerRowSurface
+                        key={modelKey(model)}
+                        semanticKey={modelKey(model)}
+                        selected={isSelected}
+                        disabled={disabledReason !== null}
+                        disabledReason={disabledReason}
+                        onSelect={() => handleSelect(model)}
+                        onDisabledSelect={() =>
+                          showNotice("Model unavailable", disabledReason ?? model.name)
+                        }
+                        onHoverStart={
+                          disabledReason
+                            ? () => showNotice("Model unavailable", disabledReason)
+                            : clearNotice
+                        }
+                        name={model.shortName ?? model.name}
+                        showNewBadge={isModelPickerNewModel(model.driverKind, model.slug)}
+                        favoriteMarker={
+                          favorite && activeProvider !== "favorites" ? (
+                            <text className="picker-row__fav-star">★</text>
+                          ) : undefined
+                        }
+                        providerIcon={
+                          <ProviderBrandIcon
+                            driverKind={model.driverKind}
+                            size={12}
+                            className="picker-row__provider-icon"
+                          />
+                        }
+                        providerLabel={
+                          model.subProvider
+                            ? `${model.providerDisplayName} · ${model.subProvider}`
+                            : model.providerDisplayName
+                        }
+                        trailing={
+                          <view
+                            aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+                            className={
+                              disabledReason
+                                ? "picker-row__star-btn picker-row__star-btn--disabled"
+                                : "picker-row__star-btn"
+                            }
+                            data-model-picker-favorite-key={modelKey(model)}
+                            data-model-picker-favorite={favorite ? "true" : "false"}
+                            catchtap={
+                              disabledReason
+                                ? undefined
+                                : (e: any) => {
+                                    e?.stopPropagation?.();
+                                    toggleFavorite(model);
+                                  }
+                            }
+                          >
+                            <text
                               className={
-                                disabledReason
-                                  ? "picker-row__star-btn picker-row__star-btn--disabled"
-                                  : "picker-row__star-btn"
-                              }
-                              data-model-picker-favorite-key={modelKey(model)}
-                              data-model-picker-favorite={favorite ? "true" : "false"}
-                              catchtap={
-                                disabledReason
-                                  ? undefined
-                                  : (e: any) => {
-                                      e?.stopPropagation?.();
-                                      toggleFavorite(model);
-                                    }
+                                favorite
+                                  ? "picker-row__star picker-row__star--active"
+                                  : "picker-row__star"
                               }
                             >
-                              <text
-                                className={
-                                  favorite
-                                    ? "picker-row__star picker-row__star--active"
-                                    : "picker-row__star"
-                                }
-                              >
-                                {favorite ? "★" : "☆"}
-                              </text>
-                            </view>
-                          }
-                        />
-                      );
-                    })}
-                  </view>
+                              {favorite ? "★" : "☆"}
+                            </text>
+                          </view>
+                        }
+                      />
+                    );
+                  })}
                 </scroll-view>
                 {showTopFade ? <view className="picker-list-fade picker-list-fade--top" /> : null}
                 {showBottomFade || rows.length > 5 ? (
                   <view className="picker-list-fade picker-list-fade--bottom" />
                 ) : null}
-              </view>
+              </>
             )}
             {notice ? (
               <view className="model-picker-notice" data-model-picker-notice="true">
