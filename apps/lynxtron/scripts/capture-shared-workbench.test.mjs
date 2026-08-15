@@ -101,6 +101,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId !== "settings-beta"');
     assert.include(source, '"Auto-settle inactive threads"');
     assert.include(source, '"Days of inactivity before auto-settle"');
+    assert.include(source, "sourceControlErrorSettingsGeometryMatches");
+    assert.include(workbench, "sourceControlEmptyTitles:");
+    assert.include(workbench, 'root?.querySelector(".source-control-empty")');
+    assert.include(workbench, "settingsPanel?.querySelector('[data-slot=\"empty\"]')");
   });
 
   it("retains symmetric Quick Switch anatomy for geometry comparison", () => {

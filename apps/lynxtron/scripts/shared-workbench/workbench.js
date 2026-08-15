@@ -960,6 +960,7 @@ function readLynxPane() {
               geometry: {
                 content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
+                sourceControlEmpty: readElementBox(root?.querySelector(".source-control-empty")),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: [
                   ...(settingsPanel?.querySelectorAll(
@@ -1000,6 +1001,9 @@ function readLynxPane() {
               errorTexts: [...(root?.querySelectorAll("[data-source-control-error]") ?? [])].map(
                 (item) => item.textContent?.trim(),
               ),
+              sourceControlEmptyTitles: [
+                ...(root?.querySelectorAll(".source-control-empty__title") ?? []),
+              ].map((item) => item.textContent?.trim()),
               sourceControlRetryLabels: [
                 ...(root?.querySelectorAll("[data-source-control-retry]") ?? []),
               ]
@@ -1735,6 +1739,9 @@ function readWebPane() {
               geometry: {
                 content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
+                sourceControlEmpty: readElementBox(
+                  settingsPanel?.querySelector('[data-slot="empty"]'),
+                ),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: [...(settingsPanel?.querySelectorAll(":scope > section") ?? [])].map(
                   (item) => ({
@@ -1773,6 +1780,9 @@ function readWebPane() {
               ),
               errorTexts: [...doc.querySelectorAll("[data-source-control-error]")].map((item) =>
                 item.textContent?.trim(),
+              ),
+              sourceControlEmptyTitles: [...doc.querySelectorAll('[data-slot="empty-title"]')].map(
+                (item) => item.textContent?.trim(),
               ),
               sourceControlRetryLabels: [...doc.querySelectorAll("[data-source-control-retry]")]
                 .map((item) => item.textContent?.trim() || item.getAttribute("aria-label"))
