@@ -9,10 +9,13 @@ import {
 } from "./devtool-client-identity.mjs";
 
 describe("Lynx DevTool client identity", () => {
-  it("connects to owned desktop ports without spawning the persistent daemon", () => {
+  it("owns an isolated daemon port and shuts it down with the session", () => {
     const source = readFileSync(new URL("./devtool-client-identity.mjs", import.meta.url), "utf8");
 
-    expect(source).toContain("new DesktopTransport()");
+    expect(source).toContain("reserveLoopbackPort()");
+    expect(source).toContain("new DaemonTransport(daemonPort)");
+    expect(source).toContain("/devtool/connector/shutdown");
+    expect(source).toContain("await stopOwnedDaemon(daemon, daemonPort)");
     expect(source).not.toContain("new DaemonTransport()");
   });
 
