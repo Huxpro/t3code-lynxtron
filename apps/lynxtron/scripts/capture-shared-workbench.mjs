@@ -78,6 +78,7 @@ const requestedWebRoute = argValue(
 const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
   "model-picker-empty": "model-picker",
+  "model-picker-selected": "model-picker",
   "quick-switch-actions-only": "quick-switch",
   "quick-switch-empty": "quick-switch",
 };

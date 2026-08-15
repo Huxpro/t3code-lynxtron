@@ -52,6 +52,9 @@ function runLeakGate(phase, stateFile) {
 
 async function run() {
   const { stateFile, command, commandArguments } = parseLoopArguments(process.argv.slice(2));
+  console.log(
+    "Fidelity loop guard: agent-browser PPID=1 or run-owned descendants fail; external live sessions are informational; never kill by pattern.",
+  );
   const preflightCode = runLeakGate("preflight", stateFile);
   if (preflightCode !== 0) {
     rmSync(stateFile, { force: true });

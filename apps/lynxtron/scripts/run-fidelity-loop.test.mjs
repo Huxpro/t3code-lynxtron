@@ -1,8 +1,18 @@
 import { describe, expect, it } from "vite-plus/test";
+import { readFileSync } from "node:fs";
 
 import { exitCodeForChild, parseLoopArguments } from "./run-fidelity-loop.mjs";
 
 describe("fidelity loop runner", () => {
+  it("keeps the agent-browser leak policy visible in every loop", () => {
+    const source = readFileSync(new URL("./run-fidelity-loop.mjs", import.meta.url), "utf8");
+    expect(source).toContain(
+      "agent-browser PPID=1 or run-owned descendants fail; external live sessions are informational; never kill by pattern.",
+    );
+    expect(source).toContain('runLeakGate("preflight", stateFile)');
+    expect(source).toContain('runLeakGate("postflight", stateFile)');
+  });
+
   it("uses a run-owned default leak state file", () => {
     expect(parseLoopArguments(["--", "node", "verify.mjs"], 4242)).toEqual({
       stateFile: "/tmp/t3-lynxtron-fidelity-loop-4242.json",
