@@ -158,6 +158,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "findFirst(WEB_DIST, /assets\\/.*\\.js$/)");
   });
 
+  it("reopens thread-scoped model picker states after selecting the seeded thread", () => {
+    assert.include(source, '"model-picker-selected",');
+    assert.include(source, 'overlay === "model-picker"');
+    assert.include(source, '[data-composer-control="model"]');
+    assert.include(source, "let lynxOverlayInputSent = overlay.length === 0");
+  });
+
   it("compares clipped pending-question work rows by their visible outer box", () => {
     const capture = readFileSync(
       path.join(import.meta.dirname, "capture-shared-workbench.mjs"),

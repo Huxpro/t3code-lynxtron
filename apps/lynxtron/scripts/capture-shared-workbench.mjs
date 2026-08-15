@@ -815,6 +815,11 @@ async function main() {
     "review-diff",
     "review-empty",
     "sidebar-inline-search",
+    "model-picker-default",
+    "model-picker-provider-rail",
+    "model-picker-query",
+    "model-picker-empty",
+    "model-picker-selected",
   ]);
   const seedSource =
     explicitSeedSource ||
@@ -1233,8 +1238,7 @@ async function captureCell({
   let webOverlayWaitPolls = 0;
   let webQuickSwitchKeyboardSent = false;
   let webShortcutInputChannel = requiresShortcutInput ? "pending" : "not-required";
-  let lynxOverlayInputSent =
-    overlay !== "project-scope" && overlay !== "quick-switch" && overlay !== "file-picker";
+  let lynxOverlayInputSent = overlay.length === 0;
   let lynxOverlayWaitPolls = 0;
   let lynxShortcutInputChannel = requiresShortcutInput ? "pending" : "not-required";
   let webSidebarSearchInputSent = sidebarQuery.length === 0;
@@ -1960,7 +1964,7 @@ async function captureCell({
             ? ""
             : overlay === "project-scope"
               ? '[data-testid="sidebar-v2-project-scope-trigger"]'
-              : '[data-chat-provider-model-picker="true"]';
+              : '[data-composer-control="model"]';
       const point = triggerSelector
         ? await evaluate(
             cdp,
@@ -2066,7 +2070,10 @@ async function captureCell({
       }
     }
     if (
-      (overlay === "project-scope" || overlay === "quick-switch" || overlay === "file-picker") &&
+      (overlay === "project-scope" ||
+        overlay === "quick-switch" ||
+        overlay === "file-picker" ||
+        overlay === "model-picker") &&
       !lynxOverlayInputSent &&
       state?.lynx?.connected === true &&
       state?.lynx?.productState?.overlay !== overlay
@@ -2091,6 +2098,10 @@ async function captureCell({
           lynxOverlayWaitPolls = 0;
         }
       } else {
+        const triggerSelector =
+          overlay === "project-scope"
+            ? '[data-testid="sidebar-v2-project-scope-trigger"]'
+            : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -2098,7 +2109,7 @@ async function captureCell({
             const frame = document.getElementById('lynx-pane');
             const doc = frame && frame.contentWindow && frame.contentWindow.document;
             const root = doc?.getElementById('t3-lynx-preview')?.shadowRoot;
-            const target = root?.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]');
+            const target = root?.querySelector(${JSON.stringify(triggerSelector)});
             if (!frame || !target) return null;
             const fr = frame.getBoundingClientRect();
             const r = target.getBoundingClientRect();
@@ -2121,7 +2132,7 @@ async function captureCell({
       }
     }
     if (
-      (overlay === "quick-switch" || overlay === "file-picker") &&
+      (overlay === "quick-switch" || overlay === "file-picker" || overlay === "model-picker") &&
       lynxOverlayInputSent &&
       state?.lynx?.productState?.overlay !== overlay
     ) {
