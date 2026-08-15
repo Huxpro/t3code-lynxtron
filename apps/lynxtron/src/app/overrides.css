@@ -5710,7 +5710,7 @@
   flex-direction: column;
   width: 540px;
   height: 100%;
-  background-color: var(--sidebar);
+  background-color: var(--background);
   border-left-width: 1px;
   border-left-style: solid;
   border-left-color: var(--sidebar-border);
