@@ -14,28 +14,28 @@ The archaeology is complete. Product certification is not complete.
 
 ## Prompt-to-artifact checklist
 
-| Objective | Artifact boundary | Verification command / gate | Evidence |
-| --- | --- | --- | --- |
-| 1. Classify user-owned, product, Harness, docs, valid evidence, and reproducible garbage | `worktree-inventory.md`, `evidence-registry.md`, `commit-archaeology-2026-08-12.md`; product under contracts/server/client-runtime/Web/Lynxtron source; Harness under Browser Preview/scripts; docs/evidence/reports isolated from product commits | classify every `git diff --name-only 4604dd443..HEAD` path; stop on an unmatched path | 439 changed paths classified; the two initially unmatched paths were the Lynxtron Rspack configs; original checkout and two dirty backup worktrees were preserved |
-| 2. Remove worthless screenshots and local databases while preserving negative evidence | `49b805f3d`; `.gitignore`; `evidence/2026-08-04/H8/runtime-boundaries.json`; `/tmp/t3-tail-remaining-*` backups | search active worktree for `state.sqlite*`, `.t3-*`, `.gradle`, and `midscene_run`; count evidence additions/deletions; verify backup hashes | no active SQLite/cache paths; 98 tracked screenshots removed; 0 binary evidence files added; R5/R10 structured negative evidence retained; tracked/untracked backups remain available |
-| 3. Run targeted tests per concern | changed tests under contracts, server, client-runtime, Web, and Lynxtron | derive tests from `git diff --name-only 4604dd443..HEAD`; use Web's `--project unit`; run affected package typechecks | 70 changed test files passed: 35 + 53 + 122 + 68 + 172 tests; five focused typecheck scopes passed |
-| 4. Split commits in dependency order | ordered range `4604dd443..HEAD`; detailed C01-C17 ledger in `commit-archaeology-2026-08-12.md` | `git log --reverse --format='%h %s' 4604dd443..HEAD`; detached sequential checkout | 78 commits in contracts → server → client-runtime → Web → Lynx host/product → Harness → cleanup/evidence/docs order |
-| 5. Keep every commit buildable/verifiable and avoid a 30k-line commit | detached test/typecheck and build-audit worktrees; generated atlas fix `a7aec9f74` | for each of the 76 pre-audit commits: changed tests, affected typechecks, `git diff --check`, clean status; build all 66 commits with a package compiler boundary at their historical revisions; final server/Web/Lynxtron/Browser Preview builds; two production build passes | 76/76 historical commits passed verification; 66/66 build-relevant commits compiled; 12 script/evidence/ignore/docs-only commits had no package compile target; largest text change was 7,807 lines, none exceeded 10,000; final builds passed and remained clean after the idempotency fix |
+| Objective                                                                                | Artifact boundary                                                                                                                                                                                                                                  | Verification command / gate                                                                                                                                                                                                                                                    | Evidence                                                                                                                                                                                                                                                                                    |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1. Classify user-owned, product, Harness, docs, valid evidence, and reproducible garbage | `worktree-inventory.md`, `evidence-registry.md`, `commit-archaeology-2026-08-12.md`; product under contracts/server/client-runtime/Web/Lynxtron source; Harness under Browser Preview/scripts; docs/evidence/reports isolated from product commits | classify every `git diff --name-only 4604dd443..HEAD` path; stop on an unmatched path                                                                                                                                                                                          | 439 changed paths classified; the two initially unmatched paths were the Lynxtron Rspack configs; original checkout and two dirty backup worktrees were preserved                                                                                                                           |
+| 2. Remove worthless screenshots and local databases while preserving negative evidence   | `49b805f3d`; `.gitignore`; `evidence/2026-08-04/H8/runtime-boundaries.json`; `/tmp/t3-tail-remaining-*` backups                                                                                                                                    | search active worktree for `state.sqlite*`, `.t3-*`, `.gradle`, and `midscene_run`; count evidence additions/deletions; verify backup hashes                                                                                                                                   | no active SQLite/cache paths; 98 tracked screenshots removed; 0 binary evidence files added; R5/R10 structured negative evidence retained; tracked/untracked backups remain available                                                                                                       |
+| 3. Run targeted tests per concern                                                        | changed tests under contracts, server, client-runtime, Web, and Lynxtron                                                                                                                                                                           | derive tests from `git diff --name-only 4604dd443..HEAD`; use Web's `--project unit`; run affected package typechecks                                                                                                                                                          | 70 changed test files passed: 35 + 53 + 122 + 68 + 172 tests; five focused typecheck scopes passed                                                                                                                                                                                          |
+| 4. Split commits in dependency order                                                     | ordered range `4604dd443..HEAD`; detailed C01-C17 ledger in `commit-archaeology-2026-08-12.md`                                                                                                                                                     | `git log --reverse --format='%h %s' 4604dd443..HEAD`; detached sequential checkout                                                                                                                                                                                             | 78 commits in contracts → server → client-runtime → Web → Lynx host/product → Harness → cleanup/evidence/docs order                                                                                                                                                                         |
+| 5. Keep every commit buildable/verifiable and avoid a 30k-line commit                    | detached test/typecheck and build-audit worktrees; generated atlas fix `a7aec9f74`                                                                                                                                                                 | for each of the 76 pre-audit commits: changed tests, affected typechecks, `git diff --check`, clean status; build all 66 commits with a package compiler boundary at their historical revisions; final server/Web/Lynxtron/Browser Preview builds; two production build passes | 76/76 historical commits passed verification; 66/66 build-relevant commits compiled; 12 script/evidence/ignore/docs-only commits had no package compile target; largest text change was 7,807 lines, none exceeded 10,000; final builds passed and remained clean after the idempotency fix |
 
 ## Requirement mapping
 
-| Requirement | Result | Evidence |
-| --- | --- | --- |
-| Preserve authored product work | completed | contracts, server, client-runtime, Web, Native host, and Lynx product commits are dependency ordered |
-| Avoid one giant commit | completed | 78 commits after the archaeology base; explicit path whitelists only |
-| Keep intermediate commits buildable | completed | dependency boundaries were rewritten after clean-worktree typecheck/build failures |
-| Separate product and harness | completed | Browser Preview, provenance, Native readiness, workbench, diagnostics, and ignores are separate commits |
-| Remove generated debris | completed | disposable state and 2,414 unreferenced binaries removed; 98 superseded tracked screenshots removed in `49b805f3d` |
-| Preserve negative evidence | completed | current tracked history remains structured; R5/R10 baseline is retained in `runtime-boundaries.json` |
-| Avoid giant generated reports | completed | 36k-line style and 316k-line reuse reports are not committed |
-| Verify focused behavior | completed | client-runtime 122 tests, provider ingestion 48 tests, Browser Preview 15 tests, harness 48 tests |
-| Avoid Electron restart loops | completed | final archaeology validation used only the isolated worktree and did not launch or restart the app |
-| State certification honestly | completed | current planning manifest reports 18 required pending cells; strict mode fails by design |
+| Requirement                         | Result    | Evidence                                                                                                           |
+| ----------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------ |
+| Preserve authored product work      | completed | contracts, server, client-runtime, Web, Native host, and Lynx product commits are dependency ordered               |
+| Avoid one giant commit              | completed | 78 commits after the archaeology base; explicit path whitelists only                                               |
+| Keep intermediate commits buildable | completed | dependency boundaries were rewritten after clean-worktree typecheck/build failures                                 |
+| Separate product and harness        | completed | Browser Preview, provenance, Native readiness, workbench, diagnostics, and ignores are separate commits            |
+| Remove generated debris             | completed | disposable state and 2,414 unreferenced binaries removed; 98 superseded tracked screenshots removed in `49b805f3d` |
+| Preserve negative evidence          | completed | current tracked history remains structured; R5/R10 baseline is retained in `runtime-boundaries.json`               |
+| Avoid giant generated reports       | completed | 36k-line style and 316k-line reuse reports are not committed                                                       |
+| Verify focused behavior             | completed | client-runtime 122 tests, provider ingestion 48 tests, Browser Preview 15 tests, harness 48 tests                  |
+| Avoid Electron restart loops        | completed | final archaeology validation used only the isolated worktree and did not launch or restart the app                 |
+| State certification honestly        | completed | current planning manifest reports 18 required pending cells; strict mode fails by design                           |
 
 ## Commit ledger
 
@@ -113,13 +113,20 @@ The historical gap ordering remains useful, but every row needs fresh evidence:
 
 Run one isolated evidence session for `new-thread-hero`:
 
-1. build once and record `HEAD` plus staged bundle hashes;
-2. seed one canonical snapshot;
-3. capture real Web and Lynx-for-Web from that snapshot;
-4. launch one exact-owned Native process only when the Browser pair is ready;
-5. prove main transport, advancing sequence, route/state identity, viewport,
+1. run `node apps/lynxtron/scripts/check-agent-browser-leaks.mjs --phase preflight`;
+   a nonzero result blocks the loop and must report PID/PPID/command without
+   pattern-killing anything;
+2. build once and record `HEAD` plus staged bundle hashes;
+3. seed one canonical snapshot;
+4. capture real Web and Lynx-for-Web from that snapshot;
+5. launch one exact-owned Native process only when the Browser pair is ready;
+6. prove main transport, advancing sequence, route/state identity, viewport,
    bundle identity, and zero errors;
-6. admit only the resulting current files into the manifest.
+7. stop only PIDs captured by this run and remove only its isolated state;
+8. run `node apps/lynxtron/scripts/check-agent-browser-leaks.mjs --phase postflight`
+   plus the screenshot-budget gate before admitting evidence.
 
 Do not reuse legacy pixels, operate a user-visible Electron app, or restart a
-Native process repeatedly after identical failures.
+Native process repeatedly after identical failures. Fidelity loops do not use
+the `agent-browser` CLI; the dual-renderer workbench owns its Chrome process
+directly and must leave both preflight and postflight leak counts at zero.

@@ -16,6 +16,7 @@
     "evidence:verify:archived": "node scripts/verify-evidence-manifest.mjs --require-archived-evidence",
     "evidence:verify:planning": "node scripts/verify-evidence-manifest.mjs --allow-incomplete",
     "evidence:gallery": "node scripts/generate-comparison-archive.mjs",
+    "evidence:process-leaks": "node scripts/check-agent-browser-leaks.mjs",
     "evidence:screenshot-budget": "node scripts/check-screenshot-budget.mjs --limit 100",
     "build:icons": "node scripts/build-icons.mjs",
     "build:connector": "node scripts/build-connector.mjs",
