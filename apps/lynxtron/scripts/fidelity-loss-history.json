@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T23:58:22+09:00",
+  "updatedAt": "2026-08-16T00:14:57+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -4853,6 +4853,59 @@
               "confidence": 0.99,
               "method": "shared-server-docked-readiness",
               "source": "Same immutable fixture and selected thread/model, complete workbench pass in 1224ms, zero renderer errors, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-working-inset-fix-current",
+      "observedAt": "2026-08-16T00:14:57+09:00",
+      "commit": "a1508ad462af12c02637721e399fb767447d936a",
+      "codeState": "commit",
+      "label": "Existing Thread working inset current certification",
+      "narrative": "A fresh running-session capture exposed that Browser-preview Lynx had regressed to the 48px settled inset, shifting its user and Working rows 32px below Web while semantic row content still passed. The product now applies the 16px inset whenever the projected session is working and keeps the separate 32px spacer only for settled timelines. Both rows now share x and y exactly, with only subpixel height quantization differences. A new hard gate compares both working rows across x, y, width, and height. Full-frame SSIM is 0.921975 and transcript SSIM is 0.929921, so material residual remains explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same-snapshot before and after captures attribute the 32px row correction to the session-derived list inset. The geometry hard gate is recorded separately from the product delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/existing-thread-working-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "6f02e100ea956c9b7af377914237f999bc884b9d1874ae21f87e0ffa896c9c59"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-working-transcript-content",
+              "source": "Same user message, Working row, gpt-5.6-sol model, Stop state, and Local checkout/main context"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.25, 0, 0, 0, 0.5],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "working-transcript-row-geometry",
+              "source": "User and Working outer rows at 1280x820 after reducing both vertical offsets from 32px to 0px"
+            },
+            "material": {
+              "residual": 0.078025,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.921975 at the matched Working frame; transcript-region residual is 0.070079"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-working-readiness",
+              "source": "Same immutable running session and model, session projection pass, complete workbench pass in 1071ms, zero renderer errors, and released owned listeners"
             }
           }
         }
