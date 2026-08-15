@@ -34,7 +34,12 @@ export function SettingsRouteHost({
 }) {
   return (
     <view className="settings-root">
-      <view className="settings-main">
+      <scroll-view
+        className="settings-main"
+        scroll-y
+        scroll-orientation="vertical"
+        {...({ "enable-scroll": false } as object)}
+      >
         <view className="settings-topbar">
           <text className="settings-topbar__title">Settings</text>
           <view className="settings-topbar__spacer" />
@@ -57,7 +62,12 @@ export function SettingsRouteHost({
             </view>
           ) : null}
         </view>
-        <scroll-view scroll-orientation="vertical" className="settings-scroll">
+        <scroll-view
+          scroll-orientation="vertical"
+          className={
+            contentId ? `settings-scroll settings-scroll--${contentId}` : "settings-scroll"
+          }
+        >
           <view
             className={
               contentId ? `settings-content settings-content--${contentId}` : "settings-content"
@@ -91,7 +101,7 @@ export function SettingsRouteHost({
             </view>
           </view>
         ) : null}
-      </view>
+      </scroll-view>
     </view>
   );
 }

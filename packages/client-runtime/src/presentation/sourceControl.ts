@@ -1,4 +1,5 @@
 import type {
+  SourceControlWritingStyleMode,
   SourceControlDiscoveryResult,
   SourceControlProviderDiscoveryItem,
   SourceControlProviderKind,
@@ -137,6 +138,25 @@ export interface SourceControlDiscoveryPresentation {
   readonly sourceControlProviders: ReadonlyArray<SourceControlProviderItemPresentation>;
   readonly hasItems: boolean;
 }
+
+export const SOURCE_CONTROL_WRITING_STYLE_OPTIONS: Readonly<
+  Record<SourceControlWritingStyleMode, { readonly label: string; readonly description: string }>
+> = {
+  repo_conventions: {
+    label: "Repository conventions",
+    description: "In each project, matches recent change descriptions and change request titles.",
+  },
+  conventional_commits: {
+    label: "Conventional Commits",
+    description:
+      "Uses Conventional Commit prefixes for change descriptions; change request titles and descriptions stay concise.",
+  },
+  custom: {
+    label: "Custom instructions",
+    description:
+      "Applies your instructions to change descriptions and change request titles and descriptions in every project.",
+  },
+};
 
 const REDACTED_TEXT_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
 

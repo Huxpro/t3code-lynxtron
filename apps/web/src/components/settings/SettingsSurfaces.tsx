@@ -265,8 +265,8 @@ export function SourceControlItemRowSurface({
         muted && "opacity-80",
       )}
     >
-      <HostView className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <HostView className="flex min-w-0 flex-1 flex-col gap-1">
+      <HostView className="source-control-item__layout flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <HostView className="source-control-item__copy flex min-w-0 flex-1 flex-col gap-1">
           <HostView className="flex min-w-0 flex-wrap items-center gap-2">
             {mark}
             <HostText className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">

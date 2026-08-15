@@ -17,30 +17,43 @@ export function SettingsSection({
   headerAction,
   children,
   className,
+  stacked = false,
 }: LynxClassNameProps & {
   readonly id?: string;
   readonly title: string;
   readonly icon?: ReactNode;
   readonly headerAction?: ReactNode;
   readonly children: ReactNode;
+  readonly stacked?: boolean;
 }) {
+  const header = (
+    <view
+      className={
+        headerAction
+          ? "settings-section__header settings-section__header--row"
+          : "settings-section__header"
+      }
+    >
+      <view className="settings-section__title-wrap">
+        {icon}
+        <text className="settings-section__title">{title}</text>
+      </view>
+      {headerAction ? <view className="settings-section__header-right">{headerAction}</view> : null}
+    </view>
+  );
+
+  if (stacked) {
+    return (
+      <view id={id} className={className}>
+        {header}
+        {children}
+      </view>
+    );
+  }
+
   return (
     <view id={id} className={joinClassNames("settings-section", className)}>
-      <view
-        className={
-          headerAction
-            ? "settings-section__header settings-section__header--row"
-            : "settings-section__header"
-        }
-      >
-        <view className="settings-section__title-wrap">
-          {icon}
-          <text className="settings-section__title">{title}</text>
-        </view>
-        {headerAction ? (
-          <view className="settings-section__header-right">{headerAction}</view>
-        ) : null}
-      </view>
+      {header}
       <view className="settings-section__rows">{children}</view>
     </view>
   );

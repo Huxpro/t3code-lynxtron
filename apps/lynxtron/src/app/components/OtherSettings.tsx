@@ -5,9 +5,14 @@ import {
 import {
   projectSourceControlDiscovery,
   redactSourceControlAccount,
+  SOURCE_CONTROL_WRITING_STYLE_OPTIONS,
   type SourceControlSummaryPart,
 } from "@t3tools/client-runtime/presentation/source-control";
-import type { SourceControlDiscoveryResult } from "@t3tools/contracts";
+import type {
+  SourceControlDiscoveryResult,
+  SourceControlWritingStyleMode,
+} from "@t3tools/contracts";
+import { DEFAULT_SERVER_SETTINGS } from "@t3tools/contracts/settings";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
 
 import {
@@ -20,6 +25,13 @@ import {
 } from "../../../../web/src/components/settings/SettingsSurfaces";
 import { searchableSetting } from "../../../../web/src/components/settings/settingsSearch";
 import { Badge } from "../../../../web/src/components/ui/badge";
+import {
+  Select,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../web/src/components/ui/select";
 import { SettingsRow, SettingsSection, Toggle } from "./SettingsControls";
 import { SmallButton } from "./SettingsControls";
 import { clientCapabilities } from "../platform/clientCapabilities";
@@ -38,9 +50,7 @@ const EMPTY_SOURCE_CONTROL_DISCOVERY: SourceControlDiscoveryState = {
   error: null,
 };
 
-function sourceControlSummaryForLynx(
-  parts: ReadonlyArray<SourceControlSummaryPart>,
-): string {
+function sourceControlSummaryForLynx(parts: ReadonlyArray<SourceControlSummaryPart>): string {
   return parts
     .map((part) =>
       part.kind === "sensitive"
@@ -51,6 +61,7 @@ function sourceControlSummaryForLynx(
 }
 
 export function SourceControlSettings() {
+  const { settings, settingsUpdatePending } = useT3ClientState();
   const [discovery, setDiscovery] = useState<SourceControlDiscoveryState>(
     EMPTY_SOURCE_CONTROL_DISCOVERY,
   );
@@ -91,30 +102,113 @@ export function SourceControlSettings() {
       onTap={() => setRefreshVersion((version) => version + 1)}
     />
   );
+  const sourceControlWritingStyle =
+    settings?.sourceControlWritingStyle ?? DEFAULT_SERVER_SETTINGS.sourceControlWritingStyle;
+  const usesDedicatedModel = settings?.sourceControlWriterModelSelection !== null;
+  const writerModel =
+    settings?.sourceControlWriterModelSelection ?? settings?.textGenerationModelSelection;
+  const updateSourceControlWritingStyle = (patch: Partial<typeof sourceControlWritingStyle>) => {
+    void t3ClientActions.updateServerSettings({ sourceControlWritingStyle: patch }).catch(() => {});
+  };
+  const textGenerationSection = (
+    <SettingsSection title="Text generation" className="source-control-section" stacked>
+      <SettingsRow
+        className="source-control-writing-row"
+        title="Source control writing style"
+        description={
+          SOURCE_CONTROL_WRITING_STYLE_OPTIONS[sourceControlWritingStyle.mode].description
+        }
+        control={
+          <Select
+            value={sourceControlWritingStyle.mode}
+            disabled={settingsUpdatePending}
+            onValueChange={(mode) =>
+              updateSourceControlWritingStyle({ mode: mode as SourceControlWritingStyleMode })
+            }
+          >
+            <SelectTrigger aria-label="Source control writing style">
+              <SelectValue>
+                {SOURCE_CONTROL_WRITING_STYLE_OPTIONS[sourceControlWritingStyle.mode].label}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectPopup>
+              {(
+                Object.keys(SOURCE_CONTROL_WRITING_STYLE_OPTIONS) as SourceControlWritingStyleMode[]
+              ).map((mode) => (
+                <SelectItem key={mode} value={mode}>
+                  {SOURCE_CONTROL_WRITING_STYLE_OPTIONS[mode].label}
+                </SelectItem>
+              ))}
+            </SelectPopup>
+          </Select>
+        }
+      />
+      <SettingsRow
+        className="source-control-writing-row"
+        title="Follow change request templates"
+        description="Structures change request descriptions using the current repository's template when one is available."
+        control={
+          <Toggle
+            value={sourceControlWritingStyle.followChangeRequestTemplates}
+            disabled={settingsUpdatePending}
+            onChange={(followChangeRequestTemplates) =>
+              updateSourceControlWritingStyle({ followChangeRequestTemplates })
+            }
+          />
+        }
+      />
+      <SettingsRow
+        className="source-control-writing-row"
+        title="Source control writer model"
+        description="Optional model override for change descriptions, change request titles and descriptions, and branch or bookmark names. Off uses the global text generation model."
+        status={usesDedicatedModel && writerModel ? writerModel.model : "Uses global model"}
+        control={
+          <Toggle
+            value={usesDedicatedModel}
+            disabled={!settings || settingsUpdatePending}
+            onChange={(enabled) => {
+              void t3ClientActions
+                .updateServerSettings({
+                  sourceControlWriterModelSelection: enabled
+                    ? (settings?.textGenerationModelSelection ?? null)
+                    : null,
+                })
+                .catch(() => {});
+            }}
+          />
+        }
+      />
+    </SettingsSection>
+  );
 
   if (discovery.pending && !discovery.result) {
     return (
-      <view className="settings-panel">
+      <view className="source-control-panel">
         <SettingsSection
           id={searchableSetting("source-control").id}
           title="Source Control"
           headerAction={scanButton}
+          className="source-control-section"
+          stacked
         >
           <view className="settings-empty-card">
             <text className="settings-empty__text">Scanning server integrations…</text>
           </view>
         </SettingsSection>
+        {textGenerationSection}
       </view>
     );
   }
 
   if (discovery.error || !presentation.hasItems) {
     return (
-      <view className="settings-panel">
+      <view className="source-control-panel">
         <SettingsSection
           id={searchableSetting("source-control").id}
           title="Source Control"
           headerAction={scanButton}
+          className="source-control-section"
+          stacked
         >
           <view className="settings-empty-card settings-empty-card--action">
             <text
@@ -131,17 +225,20 @@ export function SourceControlSettings() {
             </view>
           </view>
         </SettingsSection>
+        {textGenerationSection}
       </view>
     );
   }
 
   return (
-    <view className="settings-panel">
+    <view className="source-control-panel">
       {presentation.versionControlSystems.length > 0 ? (
         <SettingsSection
           id={searchableSetting("source-control").id}
           title="Version Control"
           headerAction={scanButton}
+          className="source-control-section"
+          stacked
         >
           {presentation.versionControlSystems.map((item) => (
             <SourceControlItemRowSurface
@@ -163,7 +260,12 @@ export function SourceControlSettings() {
         </SettingsSection>
       ) : null}
       {presentation.sourceControlProviders.length > 0 ? (
-        <SettingsSection title="Source Control Providers" headerAction={scanButton}>
+        <SettingsSection
+          title="Source Control Providers"
+          headerAction={scanButton}
+          className="source-control-section"
+          stacked
+        >
           {presentation.sourceControlProviders.map((item) => (
             <SourceControlItemRowSurface
               key={item.id}
@@ -183,6 +285,7 @@ export function SourceControlSettings() {
           ))}
         </SettingsSection>
       ) : null}
+      {textGenerationSection}
     </view>
   );
 }
@@ -347,10 +450,7 @@ export function ConnectionsSettings() {
           </view>
         ) : null}
       </SettingsSection>
-      <SettingsSection
-        id={searchableSetting("remote-environments").id}
-        title="Remote environments"
-      >
+      <SettingsSection id={searchableSetting("remote-environments").id} title="Remote environments">
         <view className="settings-empty-card">
           <text className="settings-empty__text">No saved remote environments</text>
           <text className="settings-empty__hint">

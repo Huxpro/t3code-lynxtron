@@ -4168,7 +4168,8 @@
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  width: 0;
+  flex-shrink: 1;
+  width: 100%;
   min-width: 0;
   height: 100%;
   background-color: var(--background);
@@ -4312,10 +4313,11 @@
 /* Right content */
 .settings-main {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  --align-self-column: stretch;
   flex-grow: 1;
-  width: 0;
+  flex-shrink: 1;
+  width: 100%;
+  min-width: 0;
   height: 100%;
   background-color: var(--background);
 }
@@ -4416,17 +4418,23 @@
   font-family: var(--font-sans);
 }
 .settings-scroll {
-  display: flex;
-  flex-direction: column;
+  --align-self-column: stretch;
+  --lynx-linear-weight: 1;
   flex-grow: 1;
-  height: 0;
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
+  height: calc(100% - 52px);
+  align-self: stretch;
 }
 .settings-content {
   display: flex;
   flex-direction: column;
   padding: 48px 32px 40px 32px;
 }
-
+.settings-content--source-control {
+  padding-top: 36px;
+}
 /* ============= Settings Panel ============= */
 .settings-panel {
   display: flex;
@@ -4483,6 +4491,56 @@
 .settings-section__rows {
   display: flex;
   flex-direction: column;
+}
+.source-control-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--settings-section-spacing);
+  width: 100%;
+  max-width: 896px;
+  min-width: 0;
+  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.source-control-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+}
+.source-control-item {
+  width: 100%;
+  min-width: 0;
+}
+.source-control-item {
+  box-sizing: border-box;
+}
+.source-control-item__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--settings-row-control-gap);
+}
+.source-control-item__copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 4px;
+  min-width: 0;
+}
+.source-control-writing-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--settings-row-control-gap);
+}
+.source-control-writing-row .settings-row__text {
+  width: auto;
+  min-width: 0;
+  margin-right: 0;
+}
+.source-control-writing-row .settings-row__control {
+  min-width: 0;
 }
 
 /* SettingsRow: 768 wide, padding 12/16, radius 14, gap 4 */

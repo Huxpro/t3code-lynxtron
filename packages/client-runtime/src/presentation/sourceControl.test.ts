@@ -5,6 +5,7 @@ import {
   projectSourceControlDiscovery,
   projectSourceControlDiscoveryItem,
   redactSourceControlAccount,
+  SOURCE_CONTROL_WRITING_STYLE_OPTIONS,
   sourceControlSummaryText,
 } from "./sourceControl.ts";
 
@@ -177,5 +178,25 @@ describe("source-control discovery presentation", () => {
     expect(result.hasItems).toBe(true);
     expect(result.versionControlSystems).toHaveLength(1);
     expect(result.sourceControlProviders).toHaveLength(0);
+  });
+
+  it("shares source-control writing style copy across renderers", () => {
+    expect(SOURCE_CONTROL_WRITING_STYLE_OPTIONS).toEqual({
+      repo_conventions: {
+        label: "Repository conventions",
+        description:
+          "In each project, matches recent change descriptions and change request titles.",
+      },
+      conventional_commits: {
+        label: "Conventional Commits",
+        description:
+          "Uses Conventional Commit prefixes for change descriptions; change request titles and descriptions stay concise.",
+      },
+      custom: {
+        label: "Custom instructions",
+        description:
+          "Applies your instructions to change descriptions and change request titles and descriptions in every project.",
+      },
+    });
   });
 });
