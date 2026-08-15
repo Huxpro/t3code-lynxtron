@@ -69,6 +69,7 @@ import {
 } from "./mainConnectorTransport";
 import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
 import {
+  availableThreadModels,
   findExactModelForSelection,
   projectModelSelectionCandidates,
   resolveActiveThreadModelSelection,
@@ -207,8 +208,9 @@ function resetActiveThreadState(
   threadFingerprint = "";
   const current = appAtomRegistry.get(t3ClientStateAtom);
   const thread = current.threads.find((candidate) => candidate.id === activeThreadId);
+  const activeModels = availableThreadModels(current);
   const activeProjection = thread
-    ? resolveActiveThreadModelSelection(current.models, thread.modelSelection, {
+    ? resolveActiveThreadModelSelection(activeModels, thread.modelSelection, {
         selectedModel: current.selectedModel,
         selection: current.modelSelection,
       })
@@ -335,10 +337,7 @@ function applyShellPayload(shell: ShellEventPayload): void {
           }),
         )
       : null;
-  const activeModels =
-    stateBeforeShell.providerEntries.length > 0
-      ? deriveModelPickerModels(stateBeforeShell.providerEntries, { includeDisabled: true })
-      : stateBeforeShell.models;
+  const activeModels = availableThreadModels(stateBeforeShell);
   const activeProjection = activeThread
     ? resolveActiveThreadModelSelection(activeModels, activeThread.modelSelection, {
         selectedModel: stateBeforeShell.selectedModel,

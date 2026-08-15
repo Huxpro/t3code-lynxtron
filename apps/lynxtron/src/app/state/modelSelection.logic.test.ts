@@ -1,7 +1,14 @@
 import { assert, describe, it } from "vite-plus/test";
-import { ProjectId, ProviderInstanceId } from "@t3tools/contracts";
+import {
+  ProjectId,
+  ProviderDriverKind,
+  ProviderInstanceId,
+  type ServerProvider,
+} from "@t3tools/contracts";
+import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentation/provider";
 
 import {
+  availableThreadModels,
   findExactModelForSelection,
   projectModelSelectionCandidates,
   resolveActiveThreadModelSelection,
@@ -14,6 +21,32 @@ const project = {
     model: "claude-fable-5",
   },
 };
+
+function provider(
+  instanceId: string,
+  driverKind: string,
+  models: ReadonlyArray<string>,
+): ServerProvider {
+  return {
+    instanceId: ProviderInstanceId.make(instanceId),
+    driver: ProviderDriverKind.make(driverKind),
+    displayName: instanceId,
+    enabled: true,
+    installed: true,
+    version: null,
+    status: "ready",
+    auth: { status: "authenticated" },
+    checkedAt: "2026-08-15T00:00:00.000Z",
+    models: models.map((slug) => ({
+      slug,
+      name: slug,
+      isCustom: false,
+      capabilities: {},
+    })),
+    slashCommands: [],
+    skills: [],
+  };
+}
 
 describe("project model selection candidates", () => {
   it("prefers the first project default for a new thread", () => {
@@ -100,5 +133,74 @@ describe("project model selection candidates", () => {
         },
       },
     );
+  });
+
+  it("does not replace an unavailable thread provider with a cached provider", () => {
+    const cachedModel = {
+      instanceId: ProviderInstanceId.make("claudeAgent"),
+      slug: "claude-fable-5",
+    };
+    const threadSelection = {
+      instanceId: ProviderInstanceId.make("codex"),
+      model: "gpt-5.6-sol",
+    };
+
+    assert.deepEqual(
+      resolveActiveThreadModelSelection([], threadSelection, {
+        selectedModel: cachedModel,
+        selection: {
+          instanceId: cachedModel.instanceId,
+          model: cachedModel.slug,
+        },
+      }),
+      {
+        selectedModel: undefined,
+        selection: threadSelection,
+      },
+    );
+  });
+});
+
+describe("available thread models", () => {
+  it("uses the complete provider catalog instead of the current projection subset", () => {
+    const projectedClaudeModel = {
+      instanceId: ProviderInstanceId.make("claudeAgent"),
+      driverKind: ProviderDriverKind.make("claudeAgent"),
+      providerDisplayName: "Claude",
+      slug: "claude-fable-5",
+      name: "Claude Fable 5",
+      isCustom: false,
+      capabilities: null,
+    };
+    const entries = deriveProviderInstanceEntries([
+      provider("claudeAgent", "claudeAgent", ["claude-fable-5"]),
+      provider("codex", "codex", ["gpt-5.6-sol"]),
+    ]);
+
+    const available = availableThreadModels({
+      models: [projectedClaudeModel],
+      providerEntries: entries,
+    });
+
+    assert.deepEqual(
+      available.map((model) => `${model.instanceId}:${model.slug}`),
+      ["claudeAgent:claude-fable-5", "codex:gpt-5.6-sol"],
+    );
+  });
+
+  it("falls back to projected models before provider entries arrive", () => {
+    const projectedModel = {
+      instanceId: ProviderInstanceId.make("claudeAgent"),
+      driverKind: ProviderDriverKind.make("claudeAgent"),
+      providerDisplayName: "Claude",
+      slug: "claude-fable-5",
+      name: "Claude Fable 5",
+      isCustom: false,
+      capabilities: null,
+    };
+
+    assert.deepEqual(availableThreadModels({ models: [projectedModel], providerEntries: [] }), [
+      projectedModel,
+    ]);
   });
 });

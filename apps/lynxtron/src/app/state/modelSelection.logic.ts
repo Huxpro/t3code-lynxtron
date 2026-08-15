@@ -1,4 +1,7 @@
+import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
+import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import type { ModelSelection, OrchestrationProjectShell } from "@t3tools/contracts";
+import type { ModelInfo } from "../bridge";
 
 type ProjectModelSelectionSource = Pick<OrchestrationProjectShell, "id" | "defaultModelSelection">;
 export function projectModelSelectionCandidates({
@@ -9,6 +12,15 @@ export function projectModelSelectionCandidates({
   readonly projects: ReadonlyArray<ProjectModelSelectionSource>;
 }): ReadonlyArray<ModelSelection | null | undefined> {
   return [projects[0]?.defaultModelSelection, currentSelection];
+}
+
+export function availableThreadModels(options: {
+  readonly models: ReadonlyArray<ModelInfo>;
+  readonly providerEntries: ReadonlyArray<ProviderInstanceEntry>;
+}) {
+  return options.providerEntries.length > 0
+    ? deriveModelPickerModels(options.providerEntries, { includeDisabled: true })
+    : options.models;
 }
 
 export function findExactModelForSelection<
@@ -46,12 +58,6 @@ export function resolveActiveThreadModelSelection<
         instanceId: threadSelection.instanceId,
         model: sameInstanceFallback.slug,
       },
-    };
-  }
-  if (fallback.selectedModel && fallback.selection) {
-    return {
-      selectedModel: fallback.selectedModel,
-      selection: fallback.selection,
     };
   }
   return { selectedModel: undefined, selection: threadSelection };
