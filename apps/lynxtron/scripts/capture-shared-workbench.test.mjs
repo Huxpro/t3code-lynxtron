@@ -101,6 +101,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId !== "settings-beta"');
     assert.include(source, '"Auto-settle inactive threads"');
     assert.include(source, '"Days of inactivity before auto-settle"');
+    assert.include(source, "function generalSettingsContentMatches");
+    assert.include(source, "function generalSettingsGeometryMatches");
+    assert.include(source, 'stateId !== "settings-general"');
+    assert.include(source, "webSections.length !== 2");
+    assert.include(source, "Math.abs(rect.width - 896) <= 1");
+    assert.include(source, "text.width > 0");
+    assert.include(source, "generalSettingsContentMatches(");
+    assert.include(source, "generalSettingsGeometryMatches(");
     assert.include(source, "sourceControlErrorSettingsGeometryMatches");
     assert.include(source, "sourceControlLoadingSettingsGeometryMatches");
     assert.include(source, "T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING");
