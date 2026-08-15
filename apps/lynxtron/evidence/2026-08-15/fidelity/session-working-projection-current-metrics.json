@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T22:41:00+09:00",
+  "productCommits": {
+    "sharedProjection": "e4799c12371316c43bf179e633b53bdd03c1beb4",
+    "sidebarReverseState": "a0aa8ff43b707e45f319b4d28f5ce54c48e3bcd3",
+    "connectingComposer": "bc9a6ce73754240849ddd4a97d22873fa205eb9e"
+  },
+  "evidenceCommit": "922fbb9d4b79187842ebe52b969326e046ea200c",
+  "stateIds": ["composer-working", "composer-connecting"],
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "classification": {
+    "productLoss": [
+      "Web previously allowed local send, connection, and checkpoint-revert state to create a Working transcript row even when the projected session was not running.",
+      "Lynx previously treated a starting session as Working and exposed Stop instead of the connecting reverse state.",
+      "Web Sidebar V1 previously required an active turn id in addition to a running session, so a valid running session whose turn projection lagged could be displayed as not working.",
+      "Web Composer previously ignored the projected connecting phase and rendered semantic idle while the same starting session rendered Connecting in the Sidebar."
+    ],
+    "harnessMismatch": [
+      "The first working capture used an unavailable assumed Node 24 path; the seed subprocess never launched. Current evidence uses the installed ~/.nvm Node 24 binary.",
+      "The first connecting capture referenced the fixture outside captureCell scope and exited after owned-process cleanup. The fixture is now passed explicitly.",
+      "The workbench previously hashed whichever JavaScript chunk directory traversal encountered first. Current evidence resolves the module entry declared by apps/web/dist/index.html."
+    ],
+    "residualProductLoss": [
+      "Both retained cells fail the full Composer anatomy gate because Web resolves gpt-5.6-sol while Lynx resolves Claude Fable 5 and an extra High · 1M control. This model/control mismatch remains separate from session-state correctness.",
+      "No material or geometry residual is updated from these cells."
+    ],
+    "ledgerScope": "Update only the existing composer-working Lynx runtime cell with reversible session-projection evidence. composer-connecting is reverse-state proof, not a new weighted state."
+  },
+  "artifacts": {
+    "web": {
+      "path": "apps/web/dist/assets/index-CcxukCJo.js",
+      "bytes": 3502648,
+      "sha256": "54d0d6f36d7f6f06586a2c286b74934d8540d4c09e18a2d973c2233cdad7db4e"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/output/browser-preview/lynx/main.web.bundle",
+      "bytes": 4225010,
+      "sha256": "24b251f2143a370f884a9e11d95e51e97f0ee04418829b65fbdde03a2b6aae37"
+    }
+  },
+  "working": {
+    "fixture": {
+      "source": "read-only VACUUM INTO from ~/.t3-lynxtron/userdata/state.sqlite",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "sessionStatus": "running"
+    },
+    "capturePass": false,
+    "sessionProjectionPass": true,
+    "readyMs": 45063,
+    "web": {
+      "composerState": "working",
+      "primaryState": "stop",
+      "sidebarStatus": "Working",
+      "workingRowCount": 1
+    },
+    "lynx": {
+      "composerState": "working",
+      "primaryState": "stop",
+      "sidebarStatus": "Working",
+      "workingRowCount": 1
+    },
+    "rendererErrors": 0,
+    "reportSha256": "1221f93498e4a5aefd1de5984a4fec8eb02b768b231aec6eae6b8591de6c491b"
+  },
+  "connecting": {
+    "fixture": {
+      "source": "isolated VACUUM INTO snapshot mutated through t3-sqlite-state with backup",
+      "snapshotSha256": "98538e9e750f201d7ed163214e239a1eac2fbf6783333e4646258be72d026493",
+      "sessionStatus": "starting",
+      "activeTurnId": null,
+      "liveSourceVerifiedUnchanged": true
+    },
+    "capturePass": false,
+    "sessionProjectionPass": true,
+    "readyMs": 45038,
+    "web": {
+      "composerState": "disabled",
+      "primaryState": "disabled",
+      "sidebarStatus": "Connecting",
+      "workingRowCount": 0
+    },
+    "lynx": {
+      "composerState": "disabled",
+      "primaryState": "disabled",
+      "sidebarStatus": "Connecting",
+      "workingRowCount": 0
+    },
+    "rendererErrors": 0,
+    "reportSha256": "7f0bcc64ccc33b2a854f0710711a59c62b622d70bfcefb8f37d70fcf3a82ef8b"
+  },
+  "validation": {
+    "sharedSessionTests": "4/4",
+    "sidebarLogicTests": "87/87",
+    "workbenchContractTests": "15/15",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "webProductionBuild": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "The model/control anatomy mismatch prevents whole-cell content, geometry, or material certification from these fixtures.",
+    "Native session projection was not recaptured in this slice; existing Native working evidence remains unchanged.",
+    "The connecting reverse state is intentionally not added to the fixed weighted denominator."
+  ]
+}

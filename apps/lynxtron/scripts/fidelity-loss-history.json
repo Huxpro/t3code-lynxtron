@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T07:40:28+09:00",
+  "updatedAt": "2026-08-15T22:41:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -4656,6 +4656,40 @@
               "confidence": 0.99,
               "method": "shared-server-empty-readiness",
               "source": "Same immutable fixture, identity match, ready lifecycle, zero Browser errors, and zero owned residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "session-working-projection-certification",
+      "observedAt": "2026-08-15T22:41:00+09:00",
+      "commit": "922fbb9d4b79187842ebe52b969326e046ea200c",
+      "codeState": "commit",
+      "label": "Session-derived Working and Connecting certification",
+      "narrative": "Matched same-server Browser evidence proves the reversible session projection rather than inferring state from selected styling or a local boolean. A running session gives both renderers Working, Stop, and one working row. The same isolated snapshot changed to starting plus null activeTurnId gives both renderers Connecting, disabled, and zero working rows. Full Composer anatomy still fails because the fixture resolves gpt-5.6-sol on Web and Claude Fable 5 plus High · 1M on Lynx; that residual is retained and no geometry or material cell is updated.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head reverse-state evidence refreshes only the existing composer-working runtime cell. The connecting state is proof of the way out, not a new weighted state or denominator change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/session-working-projection-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f22d77cbcd01c6265a0fd04a7751cefb4ed53945b285d2463a93b35c6b8cc94b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "reversible-session-projection",
+              "source": "running maps to Working, Stop, and one working row; starting with null activeTurnId maps to Connecting, disabled, and zero working rows on both Browser renderers"
             }
           }
         }
