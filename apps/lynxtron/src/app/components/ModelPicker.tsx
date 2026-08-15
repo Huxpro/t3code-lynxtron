@@ -364,15 +364,18 @@ export function ModelPicker({
             </view>
 
             {rows.length === 0 ? (
-              <view className="picker-empty-layout">
-                <ModelPickerEmptySurface
-                  message={
-                    activeProvider === "favorites" && !search.trim()
-                      ? "No favorite models yet"
-                      : "No models found"
-                  }
-                />
-              </view>
+              <>
+                <view className="picker-empty-list-spacer" />
+                <view className="picker-empty-layout">
+                  <ModelPickerEmptySurface
+                    message={
+                      activeProvider === "favorites" && !search.trim()
+                        ? "No favorite models yet"
+                        : "No models found"
+                    }
+                  />
+                </view>
+              </>
             ) : (
               <>
                 <scroll-view
