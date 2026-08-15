@@ -928,6 +928,11 @@ function readLynxPane() {
                   (item) => ({
                     text: item.textContent?.trim() ?? "",
                     box: readElementBox(item),
+                    children: [...item.children].map((child) => ({
+                      className: child.getAttribute("class") ?? "",
+                      text: child.textContent?.trim() ?? "",
+                      box: readElementBox(child),
+                    })),
                   }),
                 ),
                 settingsRows: [...(root?.querySelectorAll(".settings-row") ?? [])].map((item) => ({
@@ -1676,6 +1681,11 @@ function readWebPane() {
                   (item) => ({
                     text: item.textContent?.trim() ?? "",
                     box: readElementBox(item),
+                    children: [...item.children].map((child) => ({
+                      className: child.getAttribute("class") ?? "",
+                      text: child.textContent?.trim() ?? "",
+                      box: readElementBox(child),
+                    })),
                   }),
                 ),
                 settingsRows: [...doc.querySelectorAll(".settings-row")].map((item) => ({
