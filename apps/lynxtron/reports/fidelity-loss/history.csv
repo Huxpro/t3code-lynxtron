@@ -89,3 +89,5 @@ review-empty-current-grid-baseline,2026-08-16T07:07:00+09:00,02b431c039bc362261a
 review-empty-shared-grid-fix-current,2026-08-16T07:15:36+09:00,f69627d31940cefc6ab6a02715447abe6bc50825,commit,Review Empty shared action grid fix,0.51573,0.51573,0.020758,0.505465,0.494535,0.467707
 model-picker-empty-current-visible-baseline,2026-08-16T07:38:00+09:00,2361c2ea07b4f2ac854b8fe1a8236239e272108d,commit,Model Picker Empty current visible baseline,0.510834,0.510834,0.021835,0.499915,0.500085,0.472603
 model-picker-empty-visible-panel-fix-current,2026-08-16T07:50:49+09:00,8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc,commit,Model Picker Empty visible panel fix,0.510256,0.510256,0.020678,0.499915,0.500085,0.473181
+quick-switch-query-current-visible-baseline,2026-08-16T07:56:00+09:00,2339dc20b3ed28f40eda5d8a5dedd25c551a4e95,commit,Quick Switch Query current visible baseline,0.51055,0.510256,0.021267,0.499915,0.500085,0.472887
+quick-switch-query-glass-fix-current,2026-08-16T08:03:00+09:00,bdd6da2d54bfa4d8fb562975536eec98fe181dc4,commit,Quick Switch Query glass material fix,0.51026,0.510256,0.020687,0.499915,0.500085,0.473177
