@@ -4,13 +4,14 @@ import { execFileSync } from "node:child_process";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 
-function isAgentBrowserCommand(command) {
+function isAgentBrowserProcess(executable, command) {
+  const executableName = executable.split("/").at(-1) ?? executable;
   return (
-    /^(?:\S*\/)?agent-browser(?:\s|$)/u.test(command) ||
+    executableName.startsWith("agent-browser") ||
+    /\/agent-browser\//u.test(executable) ||
     /^(?:npx|bunx)\s+agent-browser(?:\s|$)/u.test(command) ||
     /^pnpm\s+dlx\s+agent-browser(?:\s|$)/u.test(command) ||
-    /\/agent-browser\//u.test(command) ||
-    /\/\.agent-browser(?:\/|\s|$)/u.test(command)
+    /^(?:\S*\/)?(?:node|bun)\s+\S*(?:\/agent-browser\/|\/\.agent-browser\/)\S*/u.test(command)
   );
 }
 
@@ -20,13 +21,14 @@ export function parseAgentBrowserProcesses(output) {
     .map((line) => line.trim())
     .filter(Boolean)
     .flatMap((line) => {
-      const match = line.match(/^(\d+)\s+(\d+)\s+(.+)$/u);
-      if (!match || !isAgentBrowserCommand(match[3])) return [];
+      const match = line.match(/^(\d+)\s+(\d+)\s+(\S+)\s+(.+)$/u);
+      if (!match || !isAgentBrowserProcess(match[3], match[4])) return [];
       return [
         {
           pid: Number(match[1]),
           parentPid: Number(match[2]),
-          command: match[3],
+          executable: match[3],
+          command: match[4],
         },
       ];
     });
@@ -34,7 +36,7 @@ export function parseAgentBrowserProcesses(output) {
 
 export function inspectAgentBrowserProcesses() {
   return parseAgentBrowserProcesses(
-    execFileSync("ps", ["-axo", "pid=,ppid=,command="], {
+    execFileSync("ps", ["-axo", "pid=,ppid=,comm=,command="], {
       encoding: "utf8",
     }),
   );
@@ -58,7 +60,9 @@ function main() {
   }
   console.error(`FAIL agent-browser ${phase} leak gate count=${processes.length}`);
   for (const entry of processes) {
-    console.error(`- pid=${entry.pid} ppid=${entry.parentPid} command=${entry.command}`);
+    console.error(
+      `- pid=${entry.pid} ppid=${entry.parentPid} executable=${entry.executable} command=${entry.command}`,
+    );
   }
   console.error("Observe and stop only a PID owned by this run; never kill by pattern.");
   process.exitCode = 1;
