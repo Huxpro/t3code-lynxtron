@@ -62,3 +62,4 @@ quick-switch-empty-browser-certification,2026-08-15T22:04:00+09:00,aa87ec40286a7
 session-working-projection-certification,2026-08-15T22:41:00+09:00,922fbb9d4b79187842ebe52b969326e046ea200c,commit,Session-derived Working and Connecting certification,0.617578,0.617578,0.022182,0.608902,0.391098,0.365859
 composer-working-model-projection-fix,2026-08-15T23:03:15+09:00,a1c22c53b307bb6926ebbc84412bb1069dbdea9a,commit,Composer Working thread model projection,0.617578,0.617578,0.022182,0.608902,0.391098,0.365859
 model-picker-selected-browser-certification,2026-08-15T23:49:42+09:00,04d247062973d4f45e9ac12f14693828e8f8d334,commit,Model Picker selected-model Browser certification,0.609285,0.609285,0.022053,0.600475,0.399525,0.374152
+composer-docked-browser-certification-current,2026-08-15T23:58:22+09:00,d447a3dcd133e234acaa079d3127b365a023daed,commit,Composer Docked current Browser certification,0.608991,0.608991,0.022086,0.600161,0.399839,0.374446

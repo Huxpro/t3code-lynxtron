@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-15T23:49:42+09:00",
+  "updatedAt": "2026-08-15T23:58:22+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -4798,6 +4798,61 @@
               "confidence": 0.99,
               "method": "shared-server-selected-model-readiness",
               "source": "Same immutable fixture, selected thread and model identity, complete workbench pass in 2625ms, zero renderer errors, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-docked-browser-certification-current",
+      "observedAt": "2026-08-15T23:58:22+09:00",
+      "commit": "d447a3dcd133e234acaa079d3127b365a023daed",
+      "codeState": "commit",
+      "label": "Composer Docked current Browser certification",
+      "narrative": "A sessionless empty thread is projected as idle by both Browser clients. Web and Lynx render the same gpt-5.6-sol model, idle/disabled state, follow-up placeholder, Full access and Build controls, Current checkout/main context, zero timeline rows, and exact Composer, surface, editor, footer, and context geometry. The measured toolbar content width differs by 8px. Full-frame SSIM is 0.922088 and the Composer crop is 0.970194, so material residual remains explicit rather than being hidden by the semantic pass.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser evidence replaces stale Composer Docked cells without a product change. Native and interaction confidence remain unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-docked-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d74dc03604a1d51ce8e03852d676275848d508a12b2e0b384458b970ce32f827"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-docked"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-docked-composer-content",
+              "source": "Same idle projection, gpt-5.6-sol, disabled send, follow-up placeholder, controls, context, and zero rows"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "docked-composer-anatomy",
+              "source": "Composer, surface, editor, footer, toolbar, and context rectangles at 1280x820"
+            },
+            "material": {
+              "residual": 0.077912,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.922088 at the matched Docked frame; Composer-region residual is 0.029806"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-docked-readiness",
+              "source": "Same immutable fixture and selected thread/model, complete workbench pass in 1224ms, zero renderer errors, and released owned listeners"
             }
           }
         }
