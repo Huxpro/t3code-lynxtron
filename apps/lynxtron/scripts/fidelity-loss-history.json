@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T00:23:05+09:00",
+  "updatedAt": "2026-08-16T00:31:02+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -4967,6 +4967,65 @@
               "confidence": 0.99,
               "method": "shared-server-provider-readiness",
               "source": "Same immutable fixture, complete workbench pass in 1798ms, zero renderer errors, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-query-browser-certification-current",
+      "observedAt": "2026-08-16T00:31:02+09:00",
+      "commit": "c166eadb9faffeab5c017d8f7e2e52b56d288242",
+      "codeState": "commit",
+      "label": "Model Picker query current Browser certification",
+      "narrative": "The same idle Codex thread opens the model picker and receives pickle through real character input in both Browser renderers. Web and Lynx converge on the query, the single OpenCode Big Pickle result, the preserved Codex selected-model metadata, and panel, content, search, list, and row geometry. Full-frame SSIM is 0.922098 and panel SSIM is 0.940604, so material residual remains explicit. Native physical query input remains pending-user-session.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser query input replaces stale cells without a product change. Native input is not inferred."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-query-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ffac22a68af29869d1193e69e63ecbae7be244b099d54327069ffed62e11ccea"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-model-query-content",
+              "source": "Query pickle, one opencode:opencode/big-pickle row, and preserved Codex selected-model metadata"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 1, 0, 0, 2, 1, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "model-query-anatomy",
+              "source": "Panel, content, search, list, and result-row rectangles at 1280x820"
+            },
+            "material": {
+              "residual": 0.077902,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.922098 at the matched query frame; panel residual is 0.059396"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-model-query-input",
+              "source": "Web key-char input and Lynx focused key-char input produce the same pickle query and one-row postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-model-query-readiness",
+              "source": "Same immutable fixture, complete workbench pass in 2070ms, zero renderer errors, and released owned listeners"
             }
           }
         }
