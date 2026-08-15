@@ -195,9 +195,13 @@ function composerAnatomyMatches(webMetrics, lynxMetrics) {
 
 function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
   if (!webMetrics?.anatomy || !lynxMetrics?.anatomy) return false;
-  return ["panel", "search", "results", "footer", "row"].every((key) =>
-    rectDeltaWithin(webMetrics.anatomy[key], lynxMetrics.anatomy[key], 2),
-  );
+  const webEmpty = webMetrics.emptyText !== null;
+  const lynxEmpty = lynxMetrics.emptyText !== null;
+  if (webEmpty !== lynxEmpty) return false;
+  const keys = webEmpty
+    ? ["panel", "search", "results", "footer", "empty"]
+    : ["panel", "search", "results", "footer", "row"];
+  return keys.every((key) => rectDeltaWithin(webMetrics.anatomy[key], lynxMetrics.anatomy[key], 2));
 }
 
 function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeight) {

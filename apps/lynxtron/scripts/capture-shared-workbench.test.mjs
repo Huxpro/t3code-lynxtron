@@ -105,6 +105,7 @@ describe("shared workbench lifecycle fault capture", () => {
       "findCommandSearchSurface(overlayElement, commandInput, commandResults)",
     );
     assert.include(source, "function quickSwitchAnatomyMatches");
+    assert.include(source, '["panel", "search", "results", "footer", "empty"]');
     assert.include(
       source,
       "quickSwitchAnatomyMatches(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics)",
