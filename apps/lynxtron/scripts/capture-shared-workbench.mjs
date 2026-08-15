@@ -622,6 +622,7 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
   }
   const webFilePaths = [...(webMetrics.diff?.filePaths ?? [])].sort();
   const lynxFilePaths = [...(lynxMetrics.diff?.filePaths ?? [])].sort();
+  const expectedPatchLines = ["original review fixture", "updated by T3 review fixture"];
   const diffPairReady =
     webMetrics.panelOpen === true &&
     lynxMetrics.panelOpen === true &&
@@ -634,7 +635,12 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
     webMetrics.diff.selectedTurn === lynxMetrics.diff.selectedTurn &&
     webFilePaths.length > 0 &&
     JSON.stringify(webFilePaths) === JSON.stringify(lynxFilePaths) &&
+    webMetrics.diff.codeDiff === true &&
     lynxMetrics.diff.codeDiff === true &&
+    expectedPatchLines.every((line) => webMetrics.diff.text.includes(line)) &&
+    expectedPatchLines.every((line) => lynxMetrics.diff.text.includes(line)) &&
+    webMetrics.diff.loading === false &&
+    webMetrics.diff.error === false &&
     lynxMetrics.diff.loading === false &&
     lynxMetrics.diff.error === false
   );

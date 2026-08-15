@@ -8,7 +8,7 @@ const capture = readFileSync(path.join(appRoot, "scripts/capture-shared-workbenc
 const workbench = readFileSync(path.join(appRoot, "scripts/shared-workbench/workbench.js"), "utf8");
 
 describe("review diff capture contract", () => {
-  it("admits a real Lynx patch instead of requiring the historical R10 blocker", () => {
+  it("admits real patches in both panes instead of requiring the historical R10 blocker", () => {
     expect(workbench).toContain(
       'codeDiff: Boolean(diffSurface.querySelector("[data-review-code-diff]"))',
     );
@@ -19,7 +19,19 @@ describe("review diff capture contract", () => {
       'error: Boolean(diffSurface.querySelector("[data-review-patch-error]"))',
     );
     expect(capture).toContain("webMetrics.diff.selectedTurn === lynxMetrics.diff.selectedTurn");
+    expect(capture).toContain("webMetrics.diff.codeDiff === true");
     expect(capture).toContain("lynxMetrics.diff.codeDiff === true");
+    expect(capture).toContain(
+      'const expectedPatchLines = ["original review fixture", "updated by T3 review fixture"]',
+    );
+    expect(capture).toContain(
+      "expectedPatchLines.every((line) => webMetrics.diff.text.includes(line))",
+    );
+    expect(capture).toContain(
+      "expectedPatchLines.every((line) => lynxMetrics.diff.text.includes(line))",
+    );
+    expect(capture).toContain("webMetrics.diff.loading === false");
+    expect(capture).toContain("webMetrics.diff.error === false");
     expect(capture).not.toContain('lynxMetrics.diff?.runtimeBlocker === "R10"');
   });
 });
