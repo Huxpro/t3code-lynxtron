@@ -223,12 +223,19 @@ function readReviewMetrics(root) {
   return {
     panelOpen: Boolean(rightPanel),
     panelEmpty: Boolean(emptySurface),
+    panelRect: readElementBox(rightPanel),
+    emptyRect: readElementBox(emptySurface),
     activeKind:
       rightPanel?.getAttribute("data-right-panel-active-kind") ??
       (diffSurface ? "diff" : emptySurface ? "empty" : null),
     actionKeys: [...(root?.querySelectorAll("[data-right-panel-action]") ?? [])].map((item) =>
       item.getAttribute("data-right-panel-action"),
     ),
+    actions: [...(root?.querySelectorAll("[data-right-panel-action]") ?? [])].map((item) => ({
+      key: item.getAttribute("data-right-panel-action"),
+      text: item.textContent?.trim().replace(/\s+/g, " ") ?? "",
+      rect: readElementBox(item),
+    })),
     checkpointCards: checkpointCards.map((item) => ({
       status: item.getAttribute("data-review-checkpoint-status"),
       turn:

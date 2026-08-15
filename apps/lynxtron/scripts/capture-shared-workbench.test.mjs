@@ -85,6 +85,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, ".transcript-user-bubble .inline-markdown-text");
     assert.include(workbench, ".transcript-user-bubble .inline-markdown-code");
     assert.include(workbench, ".transcript-assistant-row .inline-markdown-text");
+    assert.include(workbench, "panelRect: readElementBox(rightPanel)");
+    assert.include(workbench, "emptyRect: readElementBox(emptySurface)");
+    assert.include(workbench, "rect: readElementBox(item)");
     assert.include(workbench, "element.getAttributeNames()");
     assert.include(workbench, "readElementAncestors(settingsPanel)");
     assert.include(workbench, 'root?.querySelectorAll(".settings-row")');
