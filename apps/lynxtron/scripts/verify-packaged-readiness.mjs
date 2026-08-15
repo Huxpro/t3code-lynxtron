@@ -1009,8 +1009,7 @@ async function verifyIdleThreadState({
     selector: ".transcript-empty",
     timeoutMs,
     predicate: (measurement) =>
-      measurement?.text.includes("Start a conversation") &&
-      measurement.text.includes("Ask T3 Code to build, explain, or fix something in your project."),
+      measurement?.text.trim() === "Send a message to start the conversation.",
   });
   const timelineRows = await readSelectorRects(client, ".timeline-row-root");
   const timelineLists = await readSelectorRects(client, ".timeline-list");

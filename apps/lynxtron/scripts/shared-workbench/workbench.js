@@ -1434,7 +1434,12 @@ function readWebPane() {
       timelineMetrics: {
         host: readElementBox(doc.querySelector("[data-chat-messages]")),
         list: readElementBox(doc.querySelector("[data-chat-messages]")),
-        empty: readElementBox(doc.querySelector(".transcript-empty")),
+        empty: readElementBox(
+          doc.querySelector(".transcript-empty") ??
+            [...doc.querySelectorAll("[data-chat-messages] p")].find(
+              (item) => item.textContent?.trim() === "Send a message to start the conversation.",
+            ),
+        ),
         threadSyncLabel:
           [...doc.querySelectorAll('[role="status"]')]
             .map((item) => item.textContent?.trim() ?? "")
