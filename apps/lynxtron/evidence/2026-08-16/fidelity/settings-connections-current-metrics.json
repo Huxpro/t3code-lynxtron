@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T06:59:12+09:00",
+  "productCommit": "681cd2d762992e6981444570d4e32bceee90e1ba",
+  "harnessCommit": "0e942fe97ab334ce46d192aea74ecb9472397398",
+  "stateId": "settings-connections",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "route": "/settings/connections",
+    "semanticRoute": "settings-connections"
+  },
+  "fixture": {
+    "source": "/tmp/t3-review-state.LiMGsN/userdata/state.sqlite",
+    "seededSnapshotSha256": "75e732bec5010e97466af66e2d5f191490b417a20e0ac52200eaf697fcf7430d",
+    "sessionProjection": {
+      "web": "The paired Web session lacks access:write and exposes the non-administrative environment and remote-environment sections.",
+      "lynx": "The live Lynx connector session has access:write and exposes environment inventory plus authorized-client management.",
+      "policy": "Each renderer must truthfully reflect its own session scopes; selected styling or a local boolean must not simulate access."
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Connections bypassed the portable SettingsPageContainer column contract and laid three session-derived sections out as 298px horizontal columns.",
+      "Passing the established full-width, min-width, flex-column, and stretch utilities through SettingsPageContainer restores every Lynx section and row stack to 896px vertical flow.",
+      "The measured Connections geometry residual falls from 0.513074 to 0."
+    ],
+    "harnessMismatch": [
+      "The old content gate required complete section-title and section-text equality across sessions with different access scopes.",
+      "The corrected gate requires shared navigation, This environment, Remote environments, the remote-environments anchor, no errors, and full-width non-overlapping vertical sections.",
+      "Authorized clients remains conditional on the real session projection instead of being hidden or synthesized for visual matching."
+    ],
+    "ledgerScope": "The pre-fix point updates current Lynx Browser content, geometry, material, and runtime. The product point attributes only the directly measured geometry delta to 681cd2d76. Material remains explicit because expanding truthful access-management content does not improve full-frame SSIM."
+  },
+  "browser": {
+    "before": {
+      "status": "rejected-harness-content-gate",
+      "head": "bad65fb3b1607e606ccbebc84d26aef4cefd39a8",
+      "readyMs": 1206,
+      "identityMatch": true,
+      "rendererErrors": 0,
+      "webBundleSha256": "9aaf6f482b3a4f4d6c887597e7c1189a25146ba65190b99870f2b54f4e619237",
+      "lynxBundleSha256": "59f5e76fbbe2ae65b71324a28a99e72949d747be59ceecdd61290bd44e81c254",
+      "sections": [
+        {
+          "title": "This environment",
+          "box": { "x": 320, "y": 100, "width": 298.671875, "height": 530 },
+          "rows": { "x": 320, "y": 144, "width": 298.671875, "height": 176 }
+        },
+        {
+          "title": "Authorized clients",
+          "box": { "x": 618.671875, "y": 100, "width": 298.65625, "height": 530 },
+          "rows": { "x": 618.671875, "y": 144, "width": 298.65625, "height": 486 }
+        },
+        {
+          "title": "Remote environments",
+          "box": { "x": 917.328125, "y": 100, "width": 298.671875, "height": 530 },
+          "rows": { "x": 917.328125, "y": 144, "width": 298.671875, "height": 92 }
+        }
+      ],
+      "geometryResidual": 0.513074,
+      "fullFrameSsim": 0.862698,
+      "fullFrameResidual": 0.137302,
+      "reportSha256": "4da490b62085075684719909eddb6df870830358f241d82edd59ceaae21a68d4",
+      "webScreenshotSha256": "afafbf407b52c75bc876c87834ca89325eab5c7822f55fb39a313ea684ca8e32",
+      "lynxScreenshotSha256": "b53074d96acf8b9da5609a028a042e9deef60eaab450e6e1cae17f1544615998"
+    },
+    "after": {
+      "status": "pass-with-session-residual",
+      "head": "0e942fe97ab334ce46d192aea74ecb9472397398",
+      "readyMs": 2141,
+      "identityMatch": true,
+      "settingsContentMatch": true,
+      "rendererErrors": 0,
+      "agentBrowserLeakPreflight": 0,
+      "agentBrowserLeakPostflight": 0,
+      "webBundleSha256": "9aaf6f482b3a4f4d6c887597e7c1189a25146ba65190b99870f2b54f4e619237",
+      "lynxBundleSha256": "963d67affae28b312d018ce34fdef5a258d28e2b7ab95aa8fe6b14a54a0ce1d1",
+      "sharedContent": {
+        "navigationMatch": true,
+        "requiredSections": ["This environment", "Remote environments"],
+        "remoteEnvironmentsAnchorMatch": true,
+        "errors": 0
+      },
+      "sessionSpecificContent": {
+        "webSections": ["This environment", "Remote environments"],
+        "lynxSections": ["This environment", "Authorized clients", "Remote environments"],
+        "lynxAuthorizedClientRows": 4,
+        "residual": 0.333333
+      },
+      "sections": [
+        {
+          "title": "This environment",
+          "box": { "x": 320, "y": 100, "width": 896, "height": 182 },
+          "rows": { "x": 320, "y": 144, "width": 896, "height": 138 }
+        },
+        {
+          "title": "Authorized clients",
+          "box": { "x": 320, "y": 330, "width": 896, "height": 456 },
+          "rows": { "x": 320, "y": 374, "width": 896, "height": 412 }
+        },
+        {
+          "title": "Remote environments",
+          "box": { "x": 320, "y": 834, "width": 896, "height": 136 },
+          "rows": { "x": 320, "y": 878, "width": 896, "height": 92 }
+        }
+      ],
+      "geometry": {
+        "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "anchorScale": 896,
+        "residual": 0
+      },
+      "fullFrameSsim": 0.860161,
+      "fullFrameResidual": 0.139839,
+      "reportSha256": "a06b6587adfd16b81d7564c1b7c4e7bb62eae09fd731861c4f8683a7cefe60ae",
+      "webScreenshotSha256": "afafbf407b52c75bc876c87834ca89325eab5c7822f55fb39a313ea684ca8e32",
+      "lynxScreenshotSha256": "288d76f6a8ca58f9ba8181e07066cb0df8a62b78779d57037f16b008add60c20"
+    }
+  },
+  "validation": {
+    "productTests": "13/13",
+    "harnessTests": "18/18",
+    "lynxTypecheck": "pass",
+    "lynxBrowserPreviewBuild": "pass-with-known-warnings",
+    "strictSessionAwareCapture": "pass",
+    "agentBrowserLeakGate": "preflight=0, postflight=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Full-frame material residual remains 0.139839 because the two paired clients truthfully expose different access-management content.",
+    "A same-scope Web/Lynx pairing fixture is still needed for direct material comparison of Authorized clients.",
+    "Connections mutation and persistence remain a separate weighted state.",
+    "Native material parity is not claimed by Browser evidence."
+  ]
+}

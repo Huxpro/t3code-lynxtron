@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T06:42:56+09:00",
+  "updatedAt": "2026-08-16T06:59:12+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5964,6 +5964,101 @@
               "confidence": 0.99,
               "method": "shared-server-completed-readiness",
               "source": "Same immutable completed thread, expected checkpoint, exact content, and zero renderer errors with zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-connections-current-session-baseline",
+      "observedAt": "2026-08-16T06:54:00+09:00",
+      "commit": "bad65fb3b1607e606ccbebc84d26aef4cefd39a8",
+      "codeCommit": "bad65fb3b1607e606ccbebc84d26aef4cefd39a8",
+      "codeState": "commit",
+      "label": "Settings Connections current session baseline",
+      "narrative": "A fresh Connections capture reaches /settings/connections in both renderers with matching navigation and remote-environments identity, then exposes two separate boundaries. The Lynx product lays its three real session-derived sections out as 298px horizontal columns, producing geometry residual 0.513074. The paired Web session lacks access:write while the Lynx connector session has it, so Authorized clients is truthfully present only in Lynx; complete section-text equality is therefore an invalid cross-session gate. Full-frame residual is 0.137302. This point establishes the current baseline without assigning the harness mismatch to product code.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Fresh route, geometry, content, bundle, and session-projection diagnostics replace the old generic strict-matrix gate. No product delta is assigned at this point."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-connections-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c4d3675a768fe8dd764bb140c1109b6dc7bca2018f0c48a3339cd4519ba014a3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.333333,
+              "confidence": 0.99,
+              "method": "session-aware-connections-content",
+              "source": "Shared navigation, This environment, Remote environments, and anchor match; Authorized clients is present only in the access:write Lynx session"
+            },
+            "geometry": {
+              "residual": 0.513074,
+              "confidence": 0.99,
+              "method": "connections-section-flow-geometry",
+              "source": "Three Lynx section and row-stack x/y/width anchors against the 896px Web content column before the fix"
+            },
+            "material": {
+              "residual": 0.137302,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.862698 at the pre-fix Connections frame with truthful session-specific content"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-connections-readiness",
+              "source": "Same route, theme, navigation, remote-environments anchor, zero renderer errors, and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-connections-column-flow-fix-current",
+      "observedAt": "2026-08-16T06:59:12+09:00",
+      "commit": "0e942fe97ab334ce46d192aea74ecb9472397398",
+      "codeCommit": "681cd2d762992e6981444570d4e32bceee90e1ba",
+      "codeState": "commit",
+      "label": "Settings Connections column-flow fix",
+      "narrative": "Connections now routes through the established portable SettingsPageContainer with an explicit full-width column contract. This environment, Authorized clients, and Remote environments recover 896px non-overlapping vertical sections and row stacks, reducing geometry residual from 0.513074 to 0. The session-aware harness admits the state without hiding or synthesizing access-management content: Web remains non-administrative, while Lynx truthfully shows four authorized-client management rows. Full-frame residual remains 0.139839, so material and scope-specific content differences stay explicit rather than being credited to the geometry fix.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share one immutable snapshot, route, theme, viewport, and Web authority. The product change only restores the established Connections container layout; the later harness commit changes admission semantics, not pixels."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-connections-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c4d3675a768fe8dd764bb140c1109b6dc7bca2018f0c48a3339cd4519ba014a3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "connections-section-flow-geometry",
+              "source": "All three Lynx sections and row stacks are 896px wide at x=320 and vertically non-overlapping"
+            },
+            "material": {
+              "residual": 0.139839,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.860161 after the geometry fix; truthful access-management content remains session-specific"
             }
           }
         }
