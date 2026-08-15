@@ -282,7 +282,7 @@ export function ModelPicker({
               "data-model-picker-navigation-touched": navigation.touched ? "true" : "false",
             }
           : {})}
-        style={{ width: "360px", height: "346px", bottom: "32px" }}
+        style={{ width: "360px", height: "346px", bottom: "30px" }}
         catchtap={handlePanelTap}
       >
         <ModelPickerBodySurface>
