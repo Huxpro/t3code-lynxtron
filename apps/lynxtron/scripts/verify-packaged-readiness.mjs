@@ -2672,7 +2672,7 @@ async function verifySettingsRouteBehavior({
 
 async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   const initialThreadRoute = await readRoutePanel(client);
-  await tapSelector({ child, client, selector: ".sidebar-v2-search", timeoutMs });
+  await tapSelector({ child, client, selector: ".sidebar-inline-search", timeoutMs });
   const quickSwitch = await waitForMeasurement({
     child,
     client,

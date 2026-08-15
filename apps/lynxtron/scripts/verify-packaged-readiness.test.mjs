@@ -21,6 +21,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar rows escaped the rail");
   });
 
+  it("opens Quick Switch through the current Native inline search control", () => {
+    assert.include(source, 'selector: ".sidebar-inline-search"');
+    assert.notInclude(source, 'selector: ".sidebar-v2-search"');
+  });
+
   it("verifies current Composer Footer icon geometry without driving menus", () => {
     assert.include(source, "--verify-composer-geometry");
     assert.include(source, "--expected-theme");
