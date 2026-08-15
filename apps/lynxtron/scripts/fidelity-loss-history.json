@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T05:01:02+09:00",
+  "updatedAt": "2026-08-16T05:19:03+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5714,6 +5714,107 @@
               "confidence": 0.99,
               "method": "composer-toolbar-functional-allocation",
               "source": "Composer, surface, editor, footer, first-control-to-primary-action allocation, primary action, and context rectangles at 1280x820"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-general-column-flow-baseline-current",
+      "observedAt": "2026-08-16T05:06:40+09:00",
+      "commit": "ae12d3c54e00fdf705a92bfb17a5107842e9b6d9",
+      "codeCommit": "ae12d3c54e00fdf705a92bfb17a5107842e9b6d9",
+      "codeState": "commit",
+      "label": "Settings General current column-flow baseline",
+      "narrative": "A stricter current-head capture preserves the complete platform-specific General Settings copy and exposes a real layout regression hidden by the older semantic-only certification. Lynx places General and About side by side at 448px, then divides fourteen settings rows across the horizontal axis; twelve canonical rows shrink to 32px and every measured text column collapses to zero. Geometry residual is 0.531906, full-frame residual is 0.209365, and four platform capability or real-version rows remain visibly different. This point establishes the current baseline without attributing the measurement refinement to a product commit.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Fresh same-snapshot geometry and complete copy diagnostics replace the stale 0.68 browser-matrix estimate and the old content=0 claim. No product delta is assigned at this point."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-general-column-flow-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "2b4a4df3f116e1bbb2afa7bfe867750fdce7ad00a8afd253fff5c8f3d9e1a8b7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.285714,
+              "confidence": 0.99,
+              "method": "general-settings-platform-copy-ratio",
+              "source": "Ten of fourteen row identities and canonical descriptions match; Background activity, Text generation model, Version, and Diagnostics retain truthful platform capability or client-version differences"
+            },
+            "geometry": {
+              "residual": 0.531906,
+              "confidence": 0.99,
+              "method": "general-settings-section-row-geometry",
+              "source": "Two section boxes plus twelve canonical row boxes at 1280x820 before the column-flow fix"
+            },
+            "material": {
+              "residual": 0.209365,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.790635 at the current pre-fix General Settings frame; Settings-main residual is 0.213082"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-settings-readiness",
+              "source": "Same snapshot, route, theme, navigation, section titles, canonical row IDs, and zero renderer errors; the failed legacy content gate is classified separately"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-general-column-flow-fix-current",
+      "observedAt": "2026-08-16T05:19:03+09:00",
+      "commit": "d2e57a3b25b9baf6c515500660a82d39d28663b7",
+      "codeCommit": "c54555deba1e8e6850f7b7453062efeb95c1fc7c",
+      "codeState": "commit",
+      "label": "Settings General column-flow fix",
+      "narrative": "The General Settings Lynx host now uses the same explicit Native flex-column and stretch utility contract as the other shared Settings host. Both sections, both row stacks, and all fourteen rendered rows recover 896px vertical flow with nonzero text columns. Browser geometry residual drops from 0.531906 to 0.003366, full-frame SSIM improves from 0.790635 to 0.831529, and Settings-main SSIM improves from 0.786918 to 0.838075. An exact-owned Native bundle independently retains fourteen 896px rows, cycles all eight Settings routes twice, resyncs the connector, reports zero errors, and disposes isolated state. Platform capability and real-version copy differences remain explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after Browser captures share one immutable snapshot, route, theme, viewport, and Web authority bundle. The only product change is the General Settings Native host layout contract; the later harness commit changes admission rules, not pixels."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-general-column-flow-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "2b4a4df3f116e1bbb2afa7bfe867750fdce7ad00a8afd253fff5c8f3d9e1a8b7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 8, 0, -4.8125, 0, 3.1875, 0, 16.3125, 0, 8, 0, -1.84375, 0, 6.15625, 0, -1.84375,
+                0, 4.3125, 0, -1.84375, 0, 2.46875, 0, -1.84375, 0, 0.625, 0, -1.84375, 0, -5.90625,
+                0, -1.84375, 0, -7.75, 0, -1.84375, 0, -9.59375, 0, -1.84375, 0, -11.4375, 0,
+                -1.84375, 0, -13.28125, 0, -1.84375, 0, -15.125, 0, 14.3125, 0, 17.34375, 0,
+                -1.84375
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "general-settings-section-row-geometry",
+              "source": "Two 896px sections, two 896px row stacks, and twelve canonical 896px row boxes at 1280x820"
+            },
+            "material": {
+              "residual": 0.168471,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.831529 at the matched post-fix General Settings frame; Settings-main residual is 0.161925"
             }
           }
         }

@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T05:19:03+09:00",
+  "productCommit": "c54555deba1e8e6850f7b7453062efeb95c1fc7c",
+  "harnessCommit": "d2e57a3b25b9baf6c515500660a82d39d28663b7",
+  "stateId": "settings-general",
+  "scope": {
+    "authority": "web",
+    "candidates": ["lynx", "native"],
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-general",
+    "route": "/settings/general"
+  },
+  "fixture": {
+    "browser": {
+      "source": "/tmp/t3-review-state.LiMGsN/userdata/state.sqlite",
+      "seededSnapshotSha256": "75e732bec5010e97466af66e2d5f191490b417a20e0ac52200eaf697fcf7430d"
+    },
+    "native": {
+      "createdThroughRealProjectAndThreadCommands": true,
+      "snapshotSha256": "a57440b8b0e701be671892d72c2b68d5eb486542cb44220159267a8754181a66",
+      "projectTitle": "settings-general-fixture",
+      "modelSelection": {
+        "instanceId": "opencode",
+        "model": "opencode/big-pickle"
+      }
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "The Lynx General Settings host omitted the Native flex-column utility contract already used by the other portable Settings host. Two sections rendered side by side at 448px and fourteen rows divided the horizontal axis, leaving most text columns at zero width.",
+      "Reusing the existing flex, full-width, min-width, column, and stretch utilities restores both sections, both row stacks, and all fourteen rows to 896px vertical flow with nonzero text columns.",
+      "Full-frame SSIM improves from 0.790635 to 0.831529 and Settings-main SSIM improves from 0.786918 to 0.838075."
+    ],
+    "harnessMismatch": [
+      "The previous current General Settings certification updated content, material, and runtime but omitted Browser geometry, leaving a stale 0.68 browser-matrix geometry cell in the ledger.",
+      "The original General content gate required complete section-text equality even though the clients truthfully expose different app versions and platform-capability copy. The corrected gate requires identical navigation, section titles, and twelve canonical row IDs while retaining the full section text in diagnostics.",
+      "The first Native rerun used a Review fixture that did not satisfy the verifier sidebarFixture contract and was rejected before app launch. A fresh isolated project plus the canonical sidebar seeder produced the admitted Native run."
+    ],
+    "ledgerScope": "The current pre-fix Browser baseline updates Lynx content, geometry, material, and runtime. The product point attributes only the directly measured Lynx geometry and material delta to c54555deb. Native content, geometry, interaction, and runtime were already current; the fresh exact-bundle run is corroborating and does not claim Native material parity."
+  },
+  "browser": {
+    "before": {
+      "head": "ae12d3c54e00fdf705a92bfb17a5107842e9b6d9",
+      "readyMs": 1261,
+      "capturePass": false,
+      "rejectedGate": "settingsContentMatch",
+      "webBundleSha256": "092b6228139a59f27eb2cfd33a467bee9fd8e8f5ebd22428e6ad4f8d742b15bf",
+      "lynxBundleSha256": "34ab6b2369ba322deb3e1fd1ea8f56b69093765ff2f50e229690f9bd8b0050a6",
+      "geometry": {
+        "generalSection": { "x": 320, "y": 100, "width": 448, "height": 410 },
+        "generalRows": { "x": 414.21875, "y": 100, "width": 353.78125, "height": 410 },
+        "aboutSection": { "x": 768, "y": 100, "width": 448, "height": 410 },
+        "aboutRows": { "x": 848.828125, "y": 100, "width": 367.171875, "height": 410 },
+        "canonicalRowWidths": [32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 183.578125],
+        "canonicalTextWidths": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "residual": 0.531906
+      },
+      "fullFrameSsim": 0.790635,
+      "fullFrameResidual": 0.209365,
+      "settingsMainSsim": 0.786918,
+      "reportSha256": "1cc97a6c5bb1db3a61a1265ea27743dfd409c18af7e86dc992603ab9fbcf13c8",
+      "webScreenshotSha256": "d981b5d6380e0661e49dc1736d7bb056c79112ca790cc5af2411aa0008202198",
+      "lynxScreenshotSha256": "cd980db0eb21bf9b33f1e71dfa402c255fab95cf9c5f5d6ba49c72cc17ff373a"
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "head": "d2e57a3b25b9baf6c515500660a82d39d28663b7",
+      "readyMs": 2137,
+      "identityMatch": true,
+      "rendererErrors": 0,
+      "agentBrowserLeakPreflight": 0,
+      "agentBrowserLeakPostflight": 0,
+      "webBundleSha256": "092b6228139a59f27eb2cfd33a467bee9fd8e8f5ebd22428e6ad4f8d742b15bf",
+      "lynxBundleSha256": "7ea48fcb4fcb4dd67e3b5d9cf6974c31c47a87086cd59b392cd7fc800728e5f3",
+      "canonicalRowIds": [
+        "project-grouping",
+        "time-format",
+        "hide-whitespace-changes",
+        "assistant-output",
+        "provider-update-checks",
+        "auto-open-task-panel",
+        "new-threads",
+        "add-project-starts-in",
+        "archive-confirmation",
+        "delete-confirmation",
+        "text-generation-model",
+        "diagnostics"
+      ],
+      "capabilityCopyDifferences": [
+        "Background activity",
+        "Text generation model",
+        "Version",
+        "Diagnostics"
+      ],
+      "contentResidual": 0.285714,
+      "geometry": {
+        "generalSection": { "x": 320, "y": 100, "width": 896, "height": 923 },
+        "generalRows": { "x": 320, "y": 144, "width": 896, "height": 879 },
+        "aboutSection": { "x": 320, "y": 1071, "width": 896, "height": 198 },
+        "aboutRows": { "x": 320, "y": 1115, "width": 896, "height": 154 },
+        "rowWidths": [896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896],
+        "textWidths": [
+          800, 648, 800, 800, 800, 832, 800, 632, 520, 800, 800, 742.671875, 832, 718.171875
+        ],
+        "anchorDeltas": [
+          0, 8, 0, -4.8125, 0, 3.1875, 0, 16.3125, 0, 8, 0, -1.84375, 0, 6.15625, 0, -1.84375, 0,
+          4.3125, 0, -1.84375, 0, 2.46875, 0, -1.84375, 0, 0.625, 0, -1.84375, 0, -5.90625, 0,
+          -1.84375, 0, -7.75, 0, -1.84375, 0, -9.59375, 0, -1.84375, 0, -11.4375, 0, -1.84375, 0,
+          -13.28125, 0, -1.84375, 0, -15.125, 0, 14.3125, 0, 17.34375, 0, -1.84375
+        ],
+        "anchorScale": 896,
+        "residual": 0.003366
+      },
+      "fullFrameSsim": 0.831529,
+      "fullFrameResidual": 0.168471,
+      "settingsMainSsim": 0.838075,
+      "reportSha256": "277e532ee2433c728fd04a90f1b712ab46e3ea1b25a51c04b44a0c8ec336fa04",
+      "webScreenshotSha256": "d981b5d6380e0661e49dc1736d7bb056c79112ca790cc5af2411aa0008202198",
+      "lynxScreenshotSha256": "89a7cf5d64beb1a2920c5aeda2868f0b441e9ec692c6e4dc01b00a4b480c5954"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "d2e57a3b25b9baf6c515500660a82d39d28663b7",
+    "bundleSha256": "eb1f09e078055ac427b8fe015492621eb6a04758bbc2130f8b4d190dc1fa8ecd",
+    "bundleBytes": 4423772,
+    "snapshotSha256": "a57440b8b0e701be671892d72c2b68d5eb486542cb44220159267a8754181a66",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "generalSectionWidths": [896, 896],
+    "generalRowWidths": [896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896, 896],
+    "observedRoutes": [
+      "/settings/general",
+      "/settings/appearance",
+      "/settings/keybindings",
+      "/settings/providers",
+      "/settings/connections",
+      "/settings/source-control",
+      "/settings/beta",
+      "/settings/archived"
+    ],
+    "repeatedCycles": 2,
+    "finalRoute": "/",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "agentBrowserLeakPreflight": 0,
+    "agentBrowserLeakPostflight": 0,
+    "reportSha256": "4ab883784ced53ddae602db19d3c6ea5ebcb34500d954333cb7aabed1674b412",
+    "screenshotSha256": "b5b4113c5a7e3fc2d16003704ec3d5353fd1ede78ff5000939ad01da518053d2"
+  },
+  "validation": {
+    "productTests": "17/17",
+    "harnessTests": "21/21",
+    "lynxTypecheck": "pass",
+    "webProductionBuild": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "lynxDesktopProductionBuild": "pass",
+    "browserHardGate": "pass",
+    "nativeExactBundleGate": "pass",
+    "agentBrowserLeakGate": "preflight=0, postflight=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Browser full-frame material residual remains 0.168471 and Settings-main residual remains 0.161925.",
+    "Four platform-capability or real-version rows retain visible copy differences; content residual remains 0.285714.",
+    "General control mutation and restart persistence remain separate weighted states.",
+    "The Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web material residual."
+  ]
+}
