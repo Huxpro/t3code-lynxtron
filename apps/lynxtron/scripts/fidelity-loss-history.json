@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T07:15:36+09:00",
+  "updatedAt": "2026-08-16T07:50:49+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6154,6 +6154,108 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.881529 at the matched post-fix Review Empty frame"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-empty-current-visible-baseline",
+      "observedAt": "2026-08-16T07:38:00+09:00",
+      "commit": "2361c2ea07b4f2ac854b8fe1a8236239e272108d",
+      "codeCommit": "01ec4a7279c5b0c60a4f37b14cb73d682d8e6ab5",
+      "codeState": "commit",
+      "label": "Model Picker Empty current visible baseline",
+      "narrative": "The old Empty Picker frame is invalid: assertions reused stale open-overlay state after a screenshot-time notification click closed the picker, so the apparent 0.917871 full-frame SSIM contained only base-page pixels. The strict harness now opens the picker with __t3_no_models__, requires matching No models found copy and zero rows, preserves the overlay through capture, and records clipping ancestors. In the first valid frame the DOM panel geometry already matches, but the Composer toolbar's overflow:auto clips the entire Lynx panel while the fixed backdrop remains visible. Panel-region residual is 0.599315 and full-frame residual is 0.330140.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The current point replaces invalid no-overlay pixels with strict overlay-in-frame evidence. No product delta is assigned to the harness corrections."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-empty-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0333d3ad2400550c0ed7e0067397b8f12dcaee2d4df2500470e4a9100deb9947"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "strict-empty-picker-content",
+              "source": "Both panes show model-picker, query __t3_no_models__, No models found, and zero rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "empty-picker-panel-geometry",
+              "source": "Panel x/y/width/height DOM anchors match even though Lynx pixels are clipped"
+            },
+            "material": {
+              "residual": 0.599315,
+              "confidence": 0.99,
+              "method": "model-picker-panel-ssim",
+              "source": "1 - panel-region SSIM 0.400685 at the first valid overlay-in-frame capture; full-frame residual is 0.330140"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-picker-query-input",
+              "source": "Real pointer and key-character input opens both pickers and reaches the matching no-results postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-empty-picker-readiness",
+              "source": "Same fixture, query, overlay, empty copy, zero rows, zero renderer errors, and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-empty-visible-panel-fix-current",
+      "observedAt": "2026-08-16T07:50:49+09:00",
+      "commit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "codeCommit": "8a4d5d5b0ada6afe895ecb2be9a511dd2d1553cc",
+      "codeState": "commit",
+      "label": "Model Picker Empty visible panel fix",
+      "narrative": "The shared Composer toolbar now receives an overlay-open state and releases horizontal overflow only while the anchored picker exists, allowing the panel to paint above its fixed backdrop. The panel is also aligned two pixels to the Web Composer anchor. Empty Picker panel-region SSIM improves from 0.400685 to 0.927462, full-frame SSIM improves from 0.669860 to 0.730403, and panel geometry remains exact. Default-picker provider ordering remains a separate current-state issue rather than being hidden by this fix.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct valid before/after captures share the strict overlay-preserving harness, immutable fixture, query, route, theme, viewport, and Web authority. The product changes only expose the anchored panel and align its offset."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-empty-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0333d3ad2400550c0ed7e0067397b8f12dcaee2d4df2500470e4a9100deb9947"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "empty-picker-panel-geometry",
+              "source": "Web and Lynx panel x/y/width/height match exactly at 397,375,360,346"
+            },
+            "material": {
+              "residual": 0.072538,
+              "confidence": 0.99,
+              "method": "model-picker-panel-ssim",
+              "source": "1 - panel-region SSIM 0.927462 after the visible-panel and anchor fix; full-frame residual is 0.269597"
             }
           }
         }
