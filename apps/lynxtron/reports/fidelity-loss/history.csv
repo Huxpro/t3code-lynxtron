@@ -47,3 +47,5 @@ settings-source-control-browser-certification,2026-08-15T16:18:40+09:00,7969899b
 settings-source-control-native-certification,2026-08-15T16:19:12+09:00,7969899b001369799050a764a14687d31574ba57,commit,Settings Source Control Native certification,0.702057,0.687361,0.030268,0.692758,0.307242,0.28138
 project-scope-open-browser-certification,2026-08-15T19:01:39+09:00,02f2dd25f33c9c1eef49841f827e3d9455b077a4,commit,Project Scope Browser certification,0.696586,0.687361,0.029961,0.687215,0.312785,0.286851
 project-scope-open-native-certification,2026-08-15T19:01:39+09:00,02f2dd25f33c9c1eef49841f827e3d9455b077a4,commit,Project Scope Native certification,0.684973,0.684973,0.028888,0.675602,0.324398,0.298464
+composer-hero-non-git-browser-certification,2026-08-15T19:58:44+09:00,dfee2469653d51336abfed60cca1928c4cd3cf61,commit,Composer Hero non-git Browser certification,0.684966,0.684966,0.028929,0.675581,0.324419,0.298471
+composer-hero-non-git-native-certification,2026-08-15T19:58:44+09:00,dfee2469653d51336abfed60cca1928c4cd3cf61,commit,Composer Hero non-git Native certification,0.674373,0.674373,0.025825,0.665741,0.334259,0.309064

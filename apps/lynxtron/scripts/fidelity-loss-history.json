@@ -4016,6 +4016,108 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-hero-non-git-browser-certification",
+      "observedAt": "2026-08-15T19:58:44+09:00",
+      "commit": "dfee2469653d51336abfed60cca1928c4cd3cf61",
+      "codeState": "commit",
+      "label": "Composer Hero non-git Browser certification",
+      "narrative": "A connector-created non-git project renders the idle Hero Composer on both shipping Browser renderers with the same route, project, Claude Fable 5 model, controls, placeholder, and empty repository context. Before the repair Lynx rendered Current checkout and No branch 16px above Web; after the first conditional render it exposed a 574px intrinsic-width dependency. The final product keeps the optional context absent and restores exact 768x140 Composer geometry. Composer-region SSIM is 0.938503, so material residual remains explicit.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "Fresh matched Browser evidence measures the typed VCS context and Hero sizing product repair. Provider mismatch, unconditional verifier selectors, and package-manager runtime checks are classified separately as harness issues."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-hero-non-git-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0f49638279142757580e3dfd9986568ca511ad8ab6ce1d53a874defebc5c5610"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-non-git-composer-content",
+              "source": "same non-git project, no thread, Claude Fable 5, High · 1M, Full access, Build, placeholder, and no context labels"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "non-git-hero-composer-geometry",
+              "source": "Composer, surface, editor, and footer boxes match exactly at 1280x820 after removing the optional context strip"
+            },
+            "material": {
+              "residual": 0.061497,
+              "confidence": 0.99,
+              "method": "composer-region-ssim",
+              "source": "1 - SSIM 0.938503 over the matched 768x140 non-git Hero Composer region"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-typed-vcs-readiness",
+              "source": "same immutable non-git fixture, identity match, ready lifecycle, typed VCS status, zero Browser errors, and zero owned browser/server/profile residue"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-hero-non-git-native-certification",
+      "observedAt": "2026-08-15T19:58:44+09:00",
+      "commit": "dfee2469653d51336abfed60cca1928c4cd3cf61",
+      "codeState": "commit",
+      "label": "Composer Hero non-git Native certification",
+      "narrative": "A PID-owned exact production bundle opens the same non-git empty project and verifies Claude Fable 5, High · 1M, Full access, Build, an absent context strip and labels, exact 768x140 Composer geometry, main transport sequence 2 to 3, zero renderer errors, released ports, and isolated-state cleanup. No Native pixel or keyboard-interaction residual is claimed.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh exact-bundle Native content, geometry, and runtime evidence fills the non-git Hero scope without claiming a second product delta, Native material parity, or unperformed physical input."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-15/fidelity/composer-hero-non-git-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0f49638279142757580e3dfd9986568ca511ad8ab6ce1d53a874defebc5c5610"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-non-git-composer-content",
+              "source": "project-default Claude Fable 5, High · 1M, Full access, Build, no thread, and no repository context selectors"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "native-non-git-hero-geometry",
+              "source": "Hero, Composer, surface, editor, and footer measured at 1280x820 with all repository-context selectors absent"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-bundle-main-transport",
+              "source": "PID-owned exact bundle, main transport 2 to 3, zero renderer errors, released server and DevTool ports, and isolated cleanup"
+            }
+          }
+        }
+      ]
     }
   ]
 }

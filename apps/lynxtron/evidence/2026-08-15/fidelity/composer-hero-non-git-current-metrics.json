@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-15T19:58:44+09:00",
+  "productCommit": "dfee2469653d51336abfed60cca1928c4cd3cf61",
+  "nativeVerifierCommit": "e36c6694d5009b37e88808d874fcce3060da5f88",
+  "stateId": "composer-hero",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "route": "/",
+    "lifecycle": "ready",
+    "repositoryState": "non-git"
+  },
+  "fixture": {
+    "createdThroughRealConnector": true,
+    "workspace": "/tmp/t3-hero-claude-workspace",
+    "projectId": "dd422c59-fba4-4c0d-aa05-9e4168a702a1",
+    "projectTitle": "t3-hero-claude-workspace",
+    "threadCount": 0,
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "sourceSnapshotSha256": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977",
+    "seededSnapshotSha256": "af2dd741fbc7ec4dcb6cb2cec719c80769b6832bfb88cbf780da991d9a2b5434",
+    "gitProbeExitCode": 128
+  },
+  "classification": {
+    "harnessMismatch": [
+      "An earlier fixture retained a disabled Codex project default while Lynx selected the available Claude fallback. That provider-identity mismatch was rejected before scoring and is not product loss.",
+      "The original Native Hero verifier required repository context selectors unconditionally. The dedicated non-git gate now omits those selectors from collection and separately asserts that the strip, checkout label, and branch label are all absent.",
+      "The first production build attempts ran under Node 26 and triggered pnpm dependency-purge checks. Validation used the repository-compatible installed Node 24 runtime and existing local binaries without modifying dependencies."
+    ],
+    "productLoss": [
+      "Before the fix, Web hid repository context for this non-git project while Lynx rendered Current checkout and No branch, placing the Lynx Composer 16px above the authority.",
+      "After the context strip first became conditional, the Lynx Hero Composer shrank from 768px to 574.109375px because its width depended on the optional strip's intrinsic sizing. The final parent stretch rule makes the Composer width independent of repository context.",
+      "Both Lynx connector hosts now project typed VCS status into distinct non-repository, branch, and detached-repository states. The visible working state remains derived from the real session projection and was not replaced by local UI state."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Composer Hero content, geometry, material, and runtime for the newly comparable non-git scope. Exact-bundle Native updates content, geometry, and runtime; no keyboard interaction or Native material residual is claimed."
+  },
+  "browser": {
+    "status": "pass",
+    "captureHead": "e36c6694d5009b37e88808d874fcce3060da5f88",
+    "webBundleSha256": "031fe3af2dc2bf045a98996f8a5e04fb98b579a0adf63b49dddfefa6e309bfa9",
+    "lynxBundleSha256": "4144bb6bad8fa24432b44ebbab2f6deec04ab4cf163d2f4fa751cae9af325bea",
+    "capturePass": true,
+    "readyMs": 933,
+    "rendererErrors": 0,
+    "identityMatch": true,
+    "fullFrameSsim": 0.938765,
+    "fullFrameResidual": 0.061235,
+    "composerRegion": {
+      "crop": { "x": 384, "y": 356, "width": 768, "height": 140 },
+      "ssim": 0.938503,
+      "residual": 0.061497
+    },
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "placeholder": "Ask for follow-up changes or attach images",
+    "context": [],
+    "geometry": {
+      "web": {
+        "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 357, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 373, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 451, "width": 766, "height": 44 }
+      },
+      "lynx": {
+        "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 357, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 373, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 451, "width": 766, "height": 44 }
+      }
+    },
+    "reportSha256": "a1811060878d34511e4bb1d14c2cc8db4f10f0af85a1c172be184e5fa7f4b9fd",
+    "webScreenshotSha256": "ea1ef34bdb2624b7ae97300c6d8a38d260724c5573b22cfaaa34578a26b20fad",
+    "lynxScreenshotSha256": "9f44ab5c0e693a822550d8fd996c54c41b9d9facc3f98b2f833a9f15fbebde98",
+    "ownedBrowserProcessesAfterCapture": 0,
+    "ownedServerProcessesAfterCapture": 0,
+    "isolatedChromeProfilesAfterCapture": 0,
+    "agentBrowserProcessesAfterCapture": 0
+  },
+  "native": {
+    "status": "pass",
+    "captureHead": "e36c6694d5009b37e88808d874fcce3060da5f88",
+    "bundleSha256": "030c1e8d970a1cd602a356cdc3f7ad227596e69981ffbc3d74623a0889e5761a",
+    "bundleBytes": 4372484,
+    "snapshotId": "0ab48b25cba617ed3a4acca0161813b314c095ef63544bb4af60769eb1012977",
+    "viewport": { "width": 1280, "height": 820 },
+    "transportSequence": { "beforeProbe": 2, "afterProbe": 3 },
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "context": [],
+    "geometry": {
+      "hero": { "x": 256, "y": 52, "width": 1024, "height": 768 },
+      "composer": { "x": 384, "y": 356, "width": 768, "height": 140 },
+      "surface": { "x": 385, "y": 357, "width": 766, "height": 138 },
+      "editor": { "x": 401, "y": 373, "width": 734, "height": 70 },
+      "footer": { "x": 385, "y": 451, "width": 766, "height": 44 }
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "ownedProcessExited": true,
+    "ownedServerPortReleased": true,
+    "devToolListenerReleased": true,
+    "reportSha256": "52e777fd39c1021817c329afd6b68497fae6b12cf7ffeea82e9d6ef8b360c4cb"
+  },
+  "validation": {
+    "focusedTests": "49/49",
+    "harnessTests": "20/20",
+    "webTypecheck": "pass",
+    "lynxAppTypecheck": "pass",
+    "lynxMainTypecheck": "pass",
+    "lynxBrowserPreviewTypecheck": "pass",
+    "productionBrowserBuild": "pass",
+    "productionNativeBuild": "pass",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Composer-region material residual remains 0.061497 and is not hidden by the exact content and geometry pass.",
+    "Physical keyboard focus, typing, send, and attachment interaction remain outside this evidence.",
+    "Native evidence proves exact-bundle content, geometry, runtime, and cleanup; it does not claim Native-to-Web material parity."
+  ]
+}
