@@ -2823,10 +2823,8 @@ async function captureCell({
           (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
         : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
             JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
-          ((state?.web?.settingsMetrics?.sectionTitles?.length ?? 0) === 0 ||
-            (state?.lynx?.settingsMetrics?.sectionTitles?.length ?? 0) === 0 ||
-            JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-              JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? [])) &&
+          JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
           JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
             JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
           JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===

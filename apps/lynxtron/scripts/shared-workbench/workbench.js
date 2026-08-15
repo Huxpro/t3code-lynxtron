@@ -893,6 +893,19 @@ function readLynxPane() {
             sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
               (item) => item.textContent?.trim(),
             ),
+            geometry: {
+              panel: readElementBox(root?.querySelector(".settings-panel")),
+              sections: [...(root?.querySelectorAll(".settings-section") ?? [])].map((item) => ({
+                title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
+                box: readElementBox(item),
+              })),
+              sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
+                (item) => ({
+                  text: item.textContent?.trim() ?? "",
+                  box: readElementBox(item),
+                }),
+              ),
+            },
             sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
               (item) => item.textContent?.trim(),
             ),
@@ -1609,9 +1622,20 @@ function readWebPane() {
             rowIds: (SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? []).filter((id) =>
               doc.getElementById(id),
             ),
-            sectionTitles: [...doc.querySelectorAll(".settings-section__title")].map((item) =>
-              item.textContent?.trim(),
-            ),
+            sectionTitles: [
+              ...doc.querySelectorAll(".settings-panel section > div:first-child h2"),
+            ].map((item) => item.textContent?.trim()),
+            geometry: {
+              panel: readElementBox(doc.querySelector(".settings-panel > div")),
+              sections: [...doc.querySelectorAll(".settings-panel section")].map((item) => ({
+                title: item.querySelector(":scope > div:first-child h2")?.textContent?.trim() ?? "",
+                box: readElementBox(item),
+              })),
+              sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) => ({
+                text: item.textContent?.trim() ?? "",
+                box: readElementBox(item),
+              })),
+            },
             sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>
               item.textContent?.trim(),
             ),

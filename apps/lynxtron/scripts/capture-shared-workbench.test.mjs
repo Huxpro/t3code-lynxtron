@@ -60,6 +60,21 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "await rm(userDataDir, { recursive: true, force: true })");
   });
 
+  it("requires and measures the same settings sections on both renderers", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(workbench, '".settings-panel section > div:first-child h2"');
+    assert.include(workbench, 'root?.querySelectorAll(".settings-section")');
+    assert.include(
+      workbench,
+      'sourceControlRows: [...doc.querySelectorAll(".source-control-item")]',
+    );
+    assert.notInclude(source, "(state?.web?.settingsMetrics?.sectionTitles?.length ?? 0) === 0");
+  });
+
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
