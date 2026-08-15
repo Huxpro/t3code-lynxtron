@@ -30,6 +30,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "state?.web?.timelineMetrics?.threadSyncLabel === null");
     assert.include(source, "state?.web?.timelineMetrics?.empty?.text ===");
     assert.include(source, "state?.lynx?.timelineMetrics?.empty?.text");
+    assert.include(source, "const webEmptyTranscript = webState?.timelineMetrics?.empty");
+    assert.include(source, "rectDeltaWithin(webEmptyTranscript, lynxEmptyTranscript, 2)");
     assert.include(source, "webTimelineRows.length === 0");
     assert.include(source, "lynxTimelineRows.length === 0");
   });

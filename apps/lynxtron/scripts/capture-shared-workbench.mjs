@@ -254,6 +254,12 @@ function coreGeometryMatches(webState, lynxState) {
     }
   }
 
+  const webEmptyTranscript = webState?.timelineMetrics?.empty;
+  const lynxEmptyTranscript = lynxState?.timelineMetrics?.empty;
+  if (webEmptyTranscript || lynxEmptyTranscript) {
+    if (!rectDeltaWithin(webEmptyTranscript, lynxEmptyTranscript, 2)) return false;
+  }
+
   const webRows = webState?.timelineMetrics?.rowGeometry ?? [];
   const lynxRows = lynxState?.timelineMetrics?.rowGeometry ?? [];
   if (webRows.length > 0 || lynxRows.length > 0) {
