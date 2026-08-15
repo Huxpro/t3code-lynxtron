@@ -51,6 +51,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "process.env.T3_PLAN11C_SEED_SOURCE");
   });
 
+  it("reaps its exact browser process and removes the isolated profile", () => {
+    assert.include(source, "async function stopOwnedChild(child");
+    assert.include(source, 'browserCdp.send("Browser.close")');
+    assert.include(source, "await stopOwnedChild(chrome)");
+    assert.include(source, 'process.once("SIGINT", onSigint)');
+    assert.include(source, 'process.once("SIGTERM", onSigterm)');
+    assert.include(source, "await rm(userDataDir, { recursive: true, force: true })");
+  });
+
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),

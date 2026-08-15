@@ -26,7 +26,7 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
 import { createReadStream, existsSync } from "node:fs";
-import { mkdir, readFile, writeFile, stat } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile, stat } from "node:fs/promises";
 import { createServer, request as httpRequestRaw } from "node:http";
 import net from "node:net";
 import path from "node:path";
@@ -586,6 +586,31 @@ function waitForDevtools(chrome) {
   });
 }
 
+function waitForChildExit(child, timeoutMs) {
+  if (!child || child.exitCode !== null || child.signalCode !== null) {
+    return Promise.resolve(true);
+  }
+  return new Promise((resolve) => {
+    const onExit = () => {
+      clearTimeout(timer);
+      resolve(true);
+    };
+    const timer = setTimeout(() => {
+      child.off("exit", onExit);
+      resolve(false);
+    }, timeoutMs);
+    child.once("exit", onExit);
+  });
+}
+
+async function stopOwnedChild(child, gracefulSignal = "SIGTERM") {
+  if (!child || child.exitCode !== null || child.signalCode !== null) return;
+  child.kill(gracefulSignal);
+  if (await waitForChildExit(child, 2_000)) return;
+  child.kill("SIGKILL");
+  await waitForChildExit(child, 2_000);
+}
+
 async function evaluate(cdp, sessionId, expression) {
   const r = await cdp.send(
     "Runtime.evaluate",
@@ -831,19 +856,34 @@ async function main() {
 
   let front = null;
   let chrome = null;
+  let browserCdp = null;
+  let userDataDir = null;
+  let cleanupPromise = null;
   const cleanup = () => {
-    try {
-      chrome?.kill("SIGKILL");
-    } catch {
-      /* noop */
-    }
-    try {
-      front?.server.close();
-    } catch {
-      /* noop */
-    }
-    if (!keepServer && child && !child.killed) child.kill("SIGKILL");
+    cleanupPromise ??= (async () => {
+      if (browserCdp) {
+        await Promise.race([browserCdp.send("Browser.close").catch(() => undefined), delay(1_000)]);
+        browserCdp.close();
+      }
+      await stopOwnedChild(chrome);
+      if (front) {
+        await new Promise((resolve) => {
+          const timer = setTimeout(resolve, 2_000);
+          front.server.close(() => {
+            clearTimeout(timer);
+            resolve();
+          });
+        });
+      }
+      if (!keepServer) await stopOwnedChild(child);
+      if (userDataDir) await rm(userDataDir, { recursive: true, force: true });
+    })();
+    return cleanupPromise;
   };
+  const onSigint = () => void cleanup().finally(() => process.exit(130));
+  const onSigterm = () => void cleanup().finally(() => process.exit(143));
+  process.once("SIGINT", onSigint);
+  process.once("SIGTERM", onSigterm);
 
   const results = [];
   let failures = 0;
@@ -872,7 +912,7 @@ async function main() {
     console.log(`[shared-workbench] front ${origin}; lynx socket direct to shared server /ws`);
 
     // Launch headless Chrome once; a page target per viewport.
-    const userDataDir = path.join(
+    userDataDir = path.join(
       process.env.TMPDIR ?? "/tmp",
       `t3-shared-workbench-${process.pid}-${Date.now()}`,
     );
@@ -893,7 +933,7 @@ async function main() {
     );
     const endpoint = await waitForDevtools(chrome);
     const version = await fetchJson(endpoint, "/json/version");
-    const browserCdp = new Cdp(version.webSocketDebuggerUrl);
+    browserCdp = new Cdp(version.webSocketDebuggerUrl);
     await browserCdp.connect();
 
     for (const viewport of viewports) {
@@ -928,9 +968,10 @@ async function main() {
       results.push(captured);
       if (!captured.pass) failures += 1;
     }
-    browserCdp.close();
   } finally {
-    cleanup();
+    process.off("SIGINT", onSigint);
+    process.off("SIGTERM", onSigterm);
+    await cleanup();
     // The next run re-seeds pristine at startup, so no restore is needed here;
     // just leave the owned server killed by cleanup().
   }
