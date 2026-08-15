@@ -91,6 +91,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelector(".settings-content")');
     assert.include(workbench, 'root?.querySelector(".settings-panel")');
     assert.include(workbench, ":scope > .settings-section");
+    assert.include(source, "function archiveSettingsGeometryMatches");
+    assert.include(source, 'stateId !== "settings-archive"');
+    assert.include(source, 'lynxEmptyRow?.title === "No archived threads"');
+    assert.include(source, "lynxText.width > 0");
   });
 
   it("retains symmetric Quick Switch anatomy for geometry comparison", () => {

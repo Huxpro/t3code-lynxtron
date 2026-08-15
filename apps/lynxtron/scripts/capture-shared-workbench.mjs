@@ -271,6 +271,30 @@ function workingTranscriptGeometryMatches(webMetrics, lynxMetrics) {
   });
 }
 
+function archiveSettingsGeometryMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "settings-archive") return true;
+  const webSection = webMetrics?.geometry?.sections?.[0]?.box?.rect;
+  const lynxSection = lynxMetrics?.geometry?.sections?.[0]?.box?.rect;
+  const lynxRows = lynxMetrics?.geometry?.sections?.[0]?.rows?.rect;
+  const lynxEmptyRow = lynxMetrics?.geometry?.settingsRows?.[0];
+  const lynxText = lynxEmptyRow?.children?.[0]?.box?.rect;
+  return (
+    webSection &&
+    lynxSection &&
+    lynxRows &&
+    lynxEmptyRow?.title === "No archived threads" &&
+    lynxEmptyRow.box?.rect &&
+    lynxText &&
+    Math.abs(webSection.x - lynxSection.x) <= 1 &&
+    Math.abs(webSection.width - lynxSection.width) <= 1 &&
+    Math.abs(webSection.x - lynxRows.x) <= 1 &&
+    Math.abs(webSection.width - lynxRows.width) <= 1 &&
+    Math.abs(webSection.x - lynxEmptyRow.box.rect.x) <= 1 &&
+    Math.abs(webSection.width - lynxEmptyRow.box.rect.width) <= 1 &&
+    lynxText.width > 0
+  );
+}
+
 function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeight) {
   if (
     !composerMetricsMatch(webMetrics, expectation) ||
@@ -2505,7 +2529,12 @@ async function captureCell({
           : stateId !== "settings-source-control" ||
             ((state?.web?.settingsMetrics?.rowIds ?? []).includes("source-control") &&
               (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
-    settingsAsyncReadyPolls = settingsAsyncReady ? settingsAsyncReadyPolls + 1 : 0;
+    const settingsGeometryReady = archiveSettingsGeometryMatches(
+      state?.web?.settingsMetrics,
+      state?.lynx?.settingsMetrics,
+    );
+    settingsAsyncReadyPolls =
+      settingsAsyncReady && settingsGeometryReady ? settingsAsyncReadyPolls + 1 : 0;
     const webTimelineRows = state?.web?.timelineMetrics?.rows ?? [];
     const lynxTimelineRows = state?.lynx?.timelineMetrics?.rows ?? [];
     const transcriptReady =
@@ -2810,6 +2839,10 @@ async function captureCell({
         : stateId !== "settings-source-control" ||
           ((state?.web?.settingsMetrics?.rowIds ?? []).includes("source-control") &&
             (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
+  const finalSettingsGeometryReady = archiveSettingsGeometryMatches(
+    state?.web?.settingsMetrics,
+    state?.lynx?.settingsMetrics,
+  );
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
     state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&
@@ -3120,6 +3153,7 @@ async function captureCell({
     finalSessionProjectionReady &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
+    finalSettingsGeometryReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
     settingsContentMatch !== false &&
@@ -3141,6 +3175,7 @@ async function captureCell({
       finalSessionProjectionReady,
       finalReviewReady,
       finalSettingsAsyncReady,
+      finalSettingsGeometryReady,
       finalTranscriptReady,
       finalPendingRequestReady,
       settingsContentMatch,
