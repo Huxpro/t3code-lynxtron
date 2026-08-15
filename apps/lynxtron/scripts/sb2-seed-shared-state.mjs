@@ -110,6 +110,8 @@ function summarize(dbPath) {
     const messages = db.query('select count(*) c from projection_thread_messages').get();
     const workingThread =
       threads.find((thread) => thread.sessionStatus === 'running') ?? null;
+    const startingThread =
+      threads.find((thread) => thread.sessionStatus === 'starting') ?? null;
     const completedThread =
       threads.find(
         (thread) => thread.latestTurnState === 'completed' && thread.messageCount > 0,
@@ -125,6 +127,7 @@ function summarize(dbPath) {
       threads,
       canonicalThread: threads[0] ?? null,
       workingThread,
+      startingThread,
       completedThread,
       failedThread,
       idleThread,

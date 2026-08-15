@@ -114,6 +114,12 @@ const composerExpectationByStateId = {
     primaryState: "stop",
     editorDisabled: false,
   },
+  "composer-connecting": {
+    layout: "docked",
+    state: "disabled",
+    primaryState: "disabled",
+    editorDisabled: false,
+  },
   "composer-disabled": {
     layout: "docked",
     state: "disabled",
@@ -330,6 +336,41 @@ function threadReadyForReview(state, expectedThread) {
     (!expectedThread ||
       (state?.web?.productState?.selectedThread === expectedThread &&
         state?.lynx?.productState?.selectedThread === expectedThread))
+  );
+}
+
+function sessionProjectionMatches(state, expectedThreadFixture) {
+  const expectedStatus =
+    stateId === "composer-working"
+      ? "Working"
+      : stateId === "composer-connecting"
+        ? "Connecting"
+        : null;
+  if (expectedStatus === null) return true;
+  const expectedThreadId = expectedThreadFixture?.id;
+  const webThread = state?.web?.sidebarDiagnostics?.threads?.find(
+    (thread) => thread.threadId === expectedThreadId,
+  );
+  const lynxThread = state?.lynx?.sidebarDiagnostics?.threads?.find(
+    (thread) => thread.threadId === expectedThreadId,
+  );
+  const webWorkingRows = (state?.web?.timelineMetrics?.rows ?? []).filter(
+    (row) => row.kind === "working",
+  );
+  const lynxWorkingRows = (state?.lynx?.timelineMetrics?.rows ?? []).filter(
+    (row) => row.kind === "working",
+  );
+  const expectWorking = expectedStatus === "Working";
+  return (
+    expectedThreadFixture?.sessionStatus === (expectWorking ? "running" : "starting") &&
+    webThread?.status === expectedStatus &&
+    lynxThread?.status === expectedStatus &&
+    webWorkingRows.length > 0 === expectWorking &&
+    lynxWorkingRows.length > 0 === expectWorking &&
+    state?.web?.composerMetrics?.state === (expectWorking ? "working" : "disabled") &&
+    state?.lynx?.composerMetrics?.state === (expectWorking ? "working" : "disabled") &&
+    state?.web?.composerMetrics?.primaryState === (expectWorking ? "stop" : "disabled") &&
+    state?.lynx?.composerMetrics?.primaryState === (expectWorking ? "stop" : "disabled")
   );
 }
 
@@ -757,6 +798,7 @@ async function main() {
     "existing-thread-question",
     "composer-docked",
     "composer-working",
+    "composer-connecting",
     "composer-disabled",
     "review-checkpoint",
     "review-tree",
@@ -791,15 +833,17 @@ async function main() {
   const seed = JSON.parse(await readFile(seedReportPath, "utf8"));
   const expectedThreadFixture = explicitExpectedThreadId
     ? seed?.dataset?.threads?.find((thread) => thread.id === explicitExpectedThreadId)
-    : stateId === "composer-working" || stateId === "existing-thread-working"
-      ? seed?.dataset?.workingThread
-      : stateId === "existing-thread-completed"
-        ? seed?.dataset?.completedThread
-        : stateId === "existing-thread-failed"
-          ? seed?.dataset?.failedThread
-          : threadStateIds.has(stateId)
-            ? (seed?.dataset?.idleThread ?? seed?.dataset?.canonicalThread)
-            : null;
+    : stateId === "composer-connecting"
+      ? seed?.dataset?.startingThread
+      : stateId === "composer-working" || stateId === "existing-thread-working"
+        ? seed?.dataset?.workingThread
+        : stateId === "existing-thread-completed"
+          ? seed?.dataset?.completedThread
+          : stateId === "existing-thread-failed"
+            ? seed?.dataset?.failedThread
+            : threadStateIds.has(stateId)
+              ? (seed?.dataset?.idleThread ?? seed?.dataset?.canonicalThread)
+              : null;
   if (threadStateIds.has(stateId) && !expectedThreadFixture?.id) {
     throw new Error(
       `State ${stateId} requires a seeded thread fixture, but ${seedSource} has none`,
@@ -808,6 +852,11 @@ async function main() {
   if (stateId === "composer-working" && expectedThreadFixture?.sessionStatus !== "running") {
     throw new Error(
       `State ${stateId} requires a running thread fixture, but ${seedSource} has none`,
+    );
+  }
+  if (stateId === "composer-connecting" && expectedThreadFixture?.sessionStatus !== "starting") {
+    throw new Error(
+      `State ${stateId} requires a starting thread fixture, but ${seedSource} has none`,
     );
   }
   if (
@@ -966,6 +1015,7 @@ async function main() {
         lynxSocketUrl,
         expectProject,
         expectThread,
+        expectedThreadFixture,
         seedHash: seed?.snapshotSha256 ?? null,
         stateId,
         semanticRoute,
@@ -1061,6 +1111,7 @@ async function captureCell({
   lynxSocketUrl,
   expectProject,
   expectThread,
+  expectedThreadFixture,
   seedHash,
   stateId,
   semanticRoute,
@@ -2437,6 +2488,7 @@ async function captureCell({
       composerInputReady &&
       composerStateReady &&
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
+    const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const shortcutInputReady =
       !requiresShortcutInput ||
       (webOverlayInputSent &&
@@ -2493,6 +2545,7 @@ async function captureCell({
       transcriptReadyPolls >= 1 &&
       pendingRequestReadyPolls >= 1 &&
       composerReady &&
+      sessionProjectionReady &&
       shortcutInputReady &&
       sidebarSearchReady &&
       sidebarStateReady &&
@@ -2670,6 +2723,7 @@ async function captureCell({
     finalComposerInputReady &&
     finalComposerStateReady &&
     composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
+  const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalReviewReady =
     reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
     sidebarDiffPairMatches(
@@ -3021,6 +3075,7 @@ async function captureCell({
     finalChangedFilesStateReady &&
     finalCoreGeometryReady &&
     finalComposerReady &&
+    finalSessionProjectionReady &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
     finalTranscriptReady &&
@@ -3041,6 +3096,7 @@ async function captureCell({
       finalChangedFilesStateReady,
       finalCoreGeometryReady,
       finalComposerReady,
+      finalSessionProjectionReady,
       finalReviewReady,
       finalSettingsAsyncReady,
       finalTranscriptReady,
@@ -3116,6 +3172,38 @@ async function captureCell({
     identity: {
       match: identityMatch,
       stateIdentityMatch,
+      sessionProjection: {
+        match: finalSessionProjectionReady,
+        expectedSessionStatus: expectedThreadFixture?.sessionStatus ?? null,
+        expectedSidebarStatus:
+          stateId === "composer-working"
+            ? "Working"
+            : stateId === "composer-connecting"
+              ? "Connecting"
+              : null,
+        web: {
+          composerState: state?.web?.composerMetrics?.state ?? null,
+          primaryState: state?.web?.composerMetrics?.primaryState ?? null,
+          sidebarStatus:
+            state?.web?.sidebarDiagnostics?.threads?.find(
+              (thread) => thread.threadId === expectedThreadFixture?.id,
+            )?.status ?? null,
+          workingRowCount: (state?.web?.timelineMetrics?.rows ?? []).filter(
+            (row) => row.kind === "working",
+          ).length,
+        },
+        lynx: {
+          composerState: state?.lynx?.composerMetrics?.state ?? null,
+          primaryState: state?.lynx?.composerMetrics?.primaryState ?? null,
+          sidebarStatus:
+            state?.lynx?.sidebarDiagnostics?.threads?.find(
+              (thread) => thread.threadId === expectedThreadFixture?.id,
+            )?.status ?? null,
+          workingRowCount: (state?.lynx?.timelineMetrics?.rows ?? []).filter(
+            (row) => row.kind === "working",
+          ).length,
+        },
+      },
       expectProject,
       webState,
       lynxState,

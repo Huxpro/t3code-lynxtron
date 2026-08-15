@@ -133,6 +133,24 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'primaryState: "stop"');
   });
 
+  it("gates working and connecting presentation on the seeded session projection", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(source, '"composer-connecting"');
+    assert.include(source, "function sessionProjectionMatches");
+    assert.include(source, "seed?.dataset?.startingThread");
+    assert.include(source, 'expectedThreadFixture?.sessionStatus !== "starting"');
+    assert.include(source, "expectedThreadFixture,");
+    assert.include(source, 'expectedStatus === "Working"');
+    assert.include(source, "webThread?.status === expectedStatus");
+    assert.include(source, "lynxThread?.status === expectedStatus");
+    assert.include(source, "finalSessionProjectionReady");
+    assert.include(source, "sessionProjection: {");
+    assert.include(workbench, "querySelector('[role=\"status\"]')");
+  });
+
   it("compares clipped pending-question work rows by their visible outer box", () => {
     const capture = readFileSync(
       path.join(import.meta.dirname, "capture-shared-workbench.mjs"),
