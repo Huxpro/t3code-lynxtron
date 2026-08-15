@@ -74,6 +74,10 @@ describe("Lynx Settings route projection", () => {
       path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),
       "utf8",
     );
+    expect(settings).toContain(
+      '<SettingsPageContainer className="flex w-full min-w-0 flex-col self-stretch">',
+    );
+    expect(settings).toContain("</SettingsPageContainer>");
     expect(settings).toContain('searchableSetting("auto-settle-inactive-threads").title');
     expect(settings).toContain("sidebarAutoSettleAfterDays: enabled");
     expect(settings).toContain('aria-label="Days of inactivity before auto-settle"');

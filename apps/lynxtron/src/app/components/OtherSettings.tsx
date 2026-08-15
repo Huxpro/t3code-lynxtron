@@ -31,6 +31,7 @@ import {
   SourceControlMarkSurface,
   StatusDotSurface,
 } from "../../../../web/src/components/settings/SettingsSurfaces";
+import { SettingsPageContainer } from "../../../../web/src/components/settings/settingsLayout";
 import { searchableSetting } from "../../../../web/src/components/settings/settingsSearch";
 import { Badge } from "../../../../web/src/components/ui/badge";
 import {
@@ -441,7 +442,7 @@ export function ConnectionsSettings() {
   };
 
   return (
-    <view className="settings-panel">
+    <SettingsPageContainer className="flex w-full min-w-0 flex-col self-stretch">
       <SettingsSection title="This environment">
         {canManageAccess ? (
           <>
@@ -552,7 +553,7 @@ export function ConnectionsSettings() {
           </text>
         </view>
       </SettingsSection>
-    </view>
+    </SettingsPageContainer>
   );
 }
 
