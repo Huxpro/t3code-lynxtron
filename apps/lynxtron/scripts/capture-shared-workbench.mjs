@@ -58,12 +58,16 @@ const manifestPath = process.argv.includes("--manifest")
   : null;
 const stateId = argValue("--state-id", "new-thread-hero");
 const semanticRoute = argValue("--semantic-route", "new-thread");
+const settingsWebRouteBySemanticRoute = {
+  "settings-archive": "/settings/archived",
+};
 const requestedWebRoute = argValue(
   "--web-route",
   semanticRoute.startsWith("settings-")
-    ? `/settings/${semanticRoute
-        .replace(/^settings-/, "")
-        .replace(/-(loading|error|mutation)$/, "")}`
+    ? (settingsWebRouteBySemanticRoute[semanticRoute] ??
+        `/settings/${semanticRoute
+          .replace(/^settings-/, "")
+          .replace(/-(loading|error|mutation)$/, "")}`)
     : "/",
 );
 const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";

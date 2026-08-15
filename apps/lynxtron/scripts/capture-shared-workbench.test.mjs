@@ -89,6 +89,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelectorAll(".settings-row")');
     assert.include(workbench, "children: [...item.children].map");
     assert.include(workbench, 'root?.querySelectorAll(".source-control-item")');
+    assert.include(source, '"settings-archive": "/settings/archived"');
   });
 
   it("retains symmetric Quick Switch anatomy for geometry comparison", () => {
