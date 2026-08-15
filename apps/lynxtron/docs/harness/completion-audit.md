@@ -113,9 +113,12 @@ The historical gap ordering remains useful, but every row needs fresh evidence:
 
 Run one isolated evidence session for `new-thread-hero`:
 
-1. run `node apps/lynxtron/scripts/check-agent-browser-leaks.mjs --phase preflight`;
-   a nonzero result blocks the loop and must report PID/PPID/command without
-   pattern-killing anything;
+1. choose a run-owned state file, then run
+   `node apps/lynxtron/scripts/check-agent-browser-leaks.mjs --phase preflight --state-file <file>`;
+   an orphaned process or one descended from this run blocks the loop and must
+   report PID/PPID/command without pattern-killing anything; active processes
+   owned by another live parent are reported as external and do not invalidate
+   this run;
 2. build once and record `HEAD` plus staged bundle hashes;
 3. seed one canonical snapshot;
 4. capture real Web and Lynx-for-Web from that snapshot;
@@ -123,7 +126,8 @@ Run one isolated evidence session for `new-thread-hero`:
 6. prove main transport, advancing sequence, route/state identity, viewport,
    bundle identity, and zero errors;
 7. stop only PIDs captured by this run and remove only its isolated state;
-8. run `node apps/lynxtron/scripts/check-agent-browser-leaks.mjs --phase postflight`
+8. run
+   `node apps/lynxtron/scripts/check-agent-browser-leaks.mjs --phase postflight --state-file <same-file>`
    plus the screenshot-budget gate before admitting evidence.
 
 Do not reuse legacy pixels, operate a user-visible Electron app, or restart a

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { parseAgentBrowserProcesses } from "./check-agent-browser-leaks.mjs";
+import {
+  classifyAgentBrowserProcesses,
+  parseAgentBrowserProcesses,
+  parseProcessParents,
+  processDescendsFrom,
+} from "./check-agent-browser-leaks.mjs";
 
 describe("agent-browser leak gate", () => {
   it("detects CLI and package-path processes", () => {
@@ -55,5 +60,27 @@ describe("agent-browser leak gate", () => {
         204 1 Google Chrome /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
       `),
     ).toEqual([]);
+  });
+
+  it("separates owned, orphaned, and external processes", () => {
+    const processes = parseAgentBrowserProcesses(`
+      301 300 agent-browser agent-browser open http://owned.test
+      401 1 agent-browser agent-browser open http://orphan.test
+      501 500 agent-browser agent-browser open http://external.test
+    `);
+    const parents = parseProcessParents(`
+      300 200
+      301 300
+      401 1
+      500 499
+      501 500
+    `);
+    expect(processDescendsFrom(301, 200, parents)).toBe(true);
+    expect(processDescendsFrom(501, 200, parents)).toBe(false);
+    expect(classifyAgentBrowserProcesses(processes, parents, 200)).toEqual({
+      owned: [processes[0]],
+      orphaned: [processes[1]],
+      external: [processes[2]],
+    });
   });
 });
