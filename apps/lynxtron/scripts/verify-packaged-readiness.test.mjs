@@ -195,6 +195,22 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "sourceControlError");
   });
 
+  it("verifies the exact-bundle Source Control loading anatomy", () => {
+    assert.include(source, "async function verifySourceControlLoadingBehavior");
+    assert.include(source, '"--verify-source-control-loading"');
+    assert.include(source, 'T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1"');
+    assert.include(source, "async function waitForConnectorCommand");
+    assert.include(source, 'method: "readProjectBranch"');
+    assert.include(source, "params: { cwd: projectCwd }");
+    assert.include(source, 'selector: ".settings-content--source-control"');
+    assert.include(source, 'readSelectorRects(client, "[data-source-control-loading-row]")');
+    assert.include(source, "Math.abs(sections[0].height - 176) > 1");
+    assert.include(source, "Math.abs(sections[2].y - 536) > 1");
+    assert.include(source, "rows.length !== 4");
+    assert.include(source, '"native-settings-source-control-loading.png"');
+    assert.include(outcomeChecksSource, "sourceControlLoading");
+  });
+
   it("verifies the Native working transcript layout and locked workspace copy", () => {
     assert.include(source, "readComposerOutcome(client, { allowMissingInteraction: true })");
     assert.include(source, "assertComposerGeometry(composer, { allowMissingInteraction: true })");

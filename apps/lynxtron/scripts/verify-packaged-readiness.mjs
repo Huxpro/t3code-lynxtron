@@ -363,6 +363,25 @@ async function invokeConnector(client, method, params) {
   return JSON.parse(result.value);
 }
 
+async function waitForConnectorCommand({ child, client, method, params, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latestError = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error(`Lynxtron exited before connector command ${method} became ready.`);
+    }
+    try {
+      return await invokeConnector(client, method, params);
+    } catch (error) {
+      latestError = error instanceof Error ? error.message : String(error);
+    }
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(
+    `Connector command ${method} did not become ready: ${JSON.stringify({ latestError })}`,
+  );
+}
+
 async function waitForSourceControlDiscoveryError({ child, client, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest = null;
@@ -3019,6 +3038,85 @@ async function verifySourceControlErrorBehavior({
   };
 }
 
+async function verifySourceControlLoadingBehavior({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  projectCwd,
+  timeoutMs,
+}) {
+  const connectorProbe = await waitForConnectorCommand({
+    child,
+    client,
+    method: "readProjectBranch",
+    params: { cwd: projectCwd },
+    timeoutMs,
+  });
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--source-control",
+    timeoutMs,
+  });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "source-control",
+    route: "/settings/source-control",
+    timeoutMs,
+  });
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-content--source-control",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Version Control") === true &&
+      measurement.text.includes("Source Control Providers") &&
+      measurement.text.includes("Text generation"),
+  });
+  const sections = await readSelectorRects(client, ".source-control-section");
+  const rows = await readSelectorRects(client, "[data-source-control-loading-row]");
+  if (
+    sections.length !== 3 ||
+    rows.length !== 4 ||
+    Math.abs(sections[0].width - 896) > 1 ||
+    Math.abs(sections[0].height - 176) > 1 ||
+    Math.abs(sections[1].width - 896) > 1 ||
+    Math.abs(sections[1].height - 176) > 1 ||
+    Math.abs(sections[1].y - 312) > 1 ||
+    Math.abs(sections[2].y - 536) > 1 ||
+    rows.some((row) => Math.abs(row.width - 896) > 1 || Math.abs(row.height - 66) > 1)
+  ) {
+    throw new Error(
+      `Source Control loading geometry drifted: ${JSON.stringify({ sections, rows })}`,
+    );
+  }
+  return {
+    status: "pass",
+    panel: panel.rect,
+    sections,
+    rows,
+    connectorProbe,
+    transport: await readRendererReadiness(client),
+    screenshot: captureNativeScreenshot({
+      client,
+      devToolCli,
+      outputDirectory,
+      name: "native-settings-source-control-loading.png",
+    }),
+  };
+}
+
 async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   const before = await readSidebarScopeLayout(client, false);
   await tapSelector({
@@ -3275,6 +3373,7 @@ async function runOnce({
   requireCanonicalThread,
   timeoutMs,
   verifySettingsNavigation,
+  verifySourceControlLoading: shouldVerifySourceControlLoading,
   verifySourceControlError: shouldVerifySourceControlError,
   verifyComposerGeometry: shouldVerifyComposerGeometry,
   verifyHeroComposerState: shouldVerifyHeroComposerState,
@@ -3314,6 +3413,9 @@ async function runOnce({
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      ...(shouldVerifySourceControlLoading
+        ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
+        : {}),
       ...(shouldVerifySourceControlError ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR: "1" } : {}),
     },
     stdio: ["ignore", "pipe", "pipe"],
@@ -3470,6 +3572,16 @@ async function runOnce({
             timeoutMs,
           })
         : undefined;
+    const sourceControlLoading = shouldVerifySourceControlLoading
+      ? await verifySourceControlLoadingBehavior({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          projectCwd,
+          timeoutMs,
+        })
+      : undefined;
     const sourceControlError = shouldVerifySourceControlError
       ? await verifySourceControlErrorBehavior({
           child,
@@ -3595,6 +3707,7 @@ async function runOnce({
       idleThreadState,
       quickSwitchDefault,
       settingsNavigation,
+      sourceControlLoading,
       sourceControlError,
       composer,
       modelPickerFidelity,
@@ -3629,6 +3742,7 @@ async function runOnce({
       quickSwitchDefault,
       composerThemeScreenshot,
       settingsNavigation,
+      sourceControlLoading,
       sourceControlError,
       composer,
       modelPickerFidelity,
@@ -3676,6 +3790,7 @@ const expectedTheme = argumentValue("--expected-theme");
 const expectedModelLabel = argumentValue("--expected-model-label");
 const expectNoComposerContext = process.argv.includes("--expect-no-composer-context");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
+const shouldVerifySourceControlLoading = process.argv.includes("--verify-source-control-loading");
 const shouldVerifySourceControlError = process.argv.includes("--verify-source-control-error");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
@@ -3836,9 +3951,17 @@ const sourceControlErrorOnlyEmptyFixture =
   !verifyComposerBranding &&
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
+const sourceControlLoadingOnlyEmptyFixture =
+  shouldVerifySourceControlLoading &&
+  !verifySettingsNavigation &&
+  !verifySidebarScope &&
+  !verifyComposerBranding &&
+  !shouldVerifyModelPickerFidelity &&
+  !verifyPlan11SemanticOutcomes;
 if (
   !lifecycleOnlyEmptyFixture &&
   !heroOnlyEmptyFixture &&
+  !sourceControlLoadingOnlyEmptyFixture &&
   !sourceControlErrorOnlyEmptyFixture &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
@@ -3878,9 +4001,13 @@ for (let index = 1; index <= runs; index += 1) {
       outputDirectory,
       projectCwd,
       requireCanonicalThread:
-        !lifecycleOnlyEmptyFixture && !heroOnlyEmptyFixture && !sourceControlErrorOnlyEmptyFixture,
+        !lifecycleOnlyEmptyFixture &&
+        !heroOnlyEmptyFixture &&
+        !sourceControlLoadingOnlyEmptyFixture &&
+        !sourceControlErrorOnlyEmptyFixture,
       timeoutMs,
       verifySettingsNavigation,
+      verifySourceControlLoading: shouldVerifySourceControlLoading,
       verifySourceControlError: shouldVerifySourceControlError,
       verifyComposerGeometry: shouldVerifyComposerGeometry,
       verifyHeroComposerState: shouldVerifyHeroComposerState,
