@@ -80,3 +80,5 @@ review-checkpoint-tree-native-width-fix-current,2026-08-16T04:42:48+09:00,24010b
 composer-sendable-toolbar-allocation-refinement-current,2026-08-16T05:01:02+09:00,3f0942855bdc5cfd78ea4a19a89c6a067e4e74e5,commit,Composer Sendable toolbar allocation refinement,0.526721,0.526721,0.020105,0.517011,0.482989,0.456716
 settings-general-column-flow-baseline-current,2026-08-16T05:06:40+09:00,ae12d3c54e00fdf705a92bfb17a5107842e9b6d9,commit,Settings General current column-flow baseline,0.526418,0.526418,0.023695,0.514924,0.485076,0.457019
 settings-general-column-flow-fix-current,2026-08-16T05:19:03+09:00,d2e57a3b25b9baf6c515500660a82d39d28663b7,commit,Settings General column-flow fix,0.52496,0.52496,0.020691,0.514924,0.485076,0.458477
+review-diff-current-harness-refinement,2026-08-16T06:20:00+09:00,0873f65e5600f685d2ae9c24b49043d4a2b3f0f0,commit,Review Full Diff current harness refinement,0.524197,0.524197,0.019118,0.514924,0.485076,0.45924
+review-diff-background-fix-current,2026-08-16T06:21:22+09:00,cd816245dbc3c1c0340023e36506366ccb0b63cf,commit,Review Full Diff background fix,0.524196,0.524196,0.019116,0.514924,0.485076,0.459241
