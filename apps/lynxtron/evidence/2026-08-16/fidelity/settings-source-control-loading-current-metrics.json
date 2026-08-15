@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T02:00:00+09:00",
+  "evidenceCommit": "56ca43762e7022ff883645bd3be141abc70eb441",
+  "stateId": "settings-source-control-loading",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-source-control-loading",
+    "webRoute": "/settings/source-control"
+  },
+  "fixture": {
+    "source": "read-only VACUUM INTO from ~/.t3/userdata/state.sqlite",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "classification": {
+    "productLoss": [
+      "Both Browser renderers expose the real server-discovery loading state, but Web separates Version Control and Source Control Providers while Lynx combines them under Source Control.",
+      "The Lynx loading panel is 268.21875px shorter than Web. Its combined Source Control group is 264px shorter than the two corresponding Web sections, shifting Text generation 264px upward.",
+      "Full-frame SSIM is 0.834943, leaving a material residual of 0.165057."
+    ],
+    "harnessMismatch": [],
+    "ledgerScope": "Deterministic Browser loading evidence updates Lynx content, geometry, material, and runtime only. Interaction and Native cells remain unchanged."
+  },
+  "browser": {
+    "status": "pass-with-residual",
+    "capturePass": true,
+    "head": "56ca43762e7022ff883645bd3be141abc70eb441",
+    "readyMs": 1280,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "webBundleSha256": "54d0d6f36d7f6f06586a2c286b74934d8540d4c09e18a2d973c2233cdad7db4e",
+    "lynxBundleSha256": "edb27aa19d14a6fe9efd12135f91a3b3c2fea1ea064dce5c61d2f25a3466827c",
+    "loading": {
+      "web": true,
+      "lynx": true,
+      "lynxStatus": "Scanning server integrations…"
+    },
+    "sectionTitles": {
+      "web": ["Version Control", "Source Control Providers", "Text generation"],
+      "lynx": ["Source Control", "Text generation"]
+    },
+    "geometry": {
+      "web": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 738.21875 },
+        "sourceControlGroup": { "x": 320, "y": 88, "width": 896, "height": 400 },
+        "textGeneration": { "x": 320, "y": 536, "width": 896, "height": 290.21875 }
+      },
+      "lynx": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 470 },
+        "sourceControlGroup": { "x": 320, "y": 88, "width": 896, "height": 136 },
+        "textGeneration": { "x": 320, "y": 272, "width": 896, "height": 286 }
+      }
+    },
+    "fullFrameSsim": 0.834943,
+    "fullFrameResidual": 0.165057,
+    "reportSha256": "da575908adf84e4ba9473467f8bc55f747e751656b41e7201e76f39f444b2610",
+    "webScreenshotSha256": "9a5a5766c5012f0d6607b5e947767efc7f86a467c902c5af2bd2acb156ae6688",
+    "lynxScreenshotSha256": "81d8a9c487766b2b7b551bd0fffc89165836d88a3034fc872988946eed5d3548"
+  },
+  "validation": {
+    "deterministicLoadingState": "pass",
+    "sharedRouteAndTheme": "pass",
+    "sectionTitleGate": "pass",
+    "rendererErrors": 0,
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "The Browser loading gate allows platform-specific section grouping, so its PASS does not imply exact content parity.",
+    "The material residual remains 0.165057 and the loading layout remains vertically compressed.",
+    "No interaction is claimed because this state settles from server discovery rather than user input.",
+    "Native Source Control loading is not captured in this Browser-focused slice."
+  ]
+}
