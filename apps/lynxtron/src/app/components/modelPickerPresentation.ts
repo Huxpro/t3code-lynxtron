@@ -36,6 +36,16 @@ export interface ModelPickerContext {
   readonly lockedContinuationGroupKey: string | null;
 }
 
+export function resolveModelPickerSelectedKey(
+  currentSelection: ModelSelection | undefined,
+  selectedModel: Pick<ModelPickerModel, "instanceId" | "slug"> | undefined,
+): string | undefined {
+  if (currentSelection) {
+    return providerModelKey(currentSelection.instanceId, currentSelection.model);
+  }
+  return selectedModel ? providerModelKey(selectedModel.instanceId, selectedModel.slug) : undefined;
+}
+
 export function projectModelPickerProviders(
   entries: ReadonlyArray<ProviderInstanceEntry>,
   context: Pick<ModelPickerContext, "lockedProvider" | "lockedContinuationGroupKey">,

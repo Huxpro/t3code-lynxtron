@@ -32,7 +32,11 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { readModelPickerNavigation } from "../state/uiState";
 import { Icon } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
-import { projectModelPickerProviders, projectModelPickerRows } from "./modelPickerPresentation";
+import {
+  projectModelPickerProviders,
+  projectModelPickerRows,
+  resolveModelPickerSelectedKey,
+} from "./modelPickerPresentation";
 
 interface ModelPickerProps {
   models: ReadonlyArray<ModelInfo>;
@@ -166,6 +170,7 @@ export function ModelPicker({
   const scrollStateKey = `${activeProvider}:${search}:${rows
     .map((row) => modelKey(row.model))
     .join("|")}`;
+  const selectedModelKey = resolveModelPickerSelectedKey(currentModelSelection, selectedModel);
 
   const handleSelect = useCallback(
     (m: ModelInfo) => {
@@ -334,7 +339,7 @@ export function ModelPicker({
           <ModelPickerContentSurface
             filteredModelKeys={rows.map((row) => modelKey(row.model))}
             hasRail={!search.trim()}
-            selectedModelKey={selectedModel ? modelKey(selectedModel) : undefined}
+            selectedModelKey={selectedModelKey}
             selectedProviderId={activeProvider}
           >
             <ModelPickerSearchSurface
@@ -381,9 +386,7 @@ export function ModelPicker({
                   bindscroll={handleListScroll}
                 >
                   {rows.map(({ model, favorite, disabledReason }) => {
-                    const isSelected =
-                      selectedModel?.instanceId === model.instanceId &&
-                      selectedModel?.slug === model.slug;
+                    const isSelected = selectedModelKey === modelKey(model);
                     return (
                       <ModelPickerRowSurface
                         key={modelKey(model)}

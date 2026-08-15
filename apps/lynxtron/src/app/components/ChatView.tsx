@@ -280,7 +280,8 @@ export function ChatView({ threadId }: ChatViewProps) {
   useEffect(() => {
     uiActions.syncModelPickerProvider(
       modelPickerScopeKey,
-      selectedModel?.instanceId ??
+      presentedModelSelection?.instanceId ??
+        selectedModel?.instanceId ??
         (clientSettings.favorites.length > 0
           ? "favorites"
           : (providerEntries[0]?.instanceId ?? "favorites")),
@@ -288,6 +289,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   }, [
     clientSettings.favorites.length,
     modelPickerScopeKey,
+    presentedModelSelection?.instanceId,
     providerEntries,
     selectedModel?.instanceId,
   ]);

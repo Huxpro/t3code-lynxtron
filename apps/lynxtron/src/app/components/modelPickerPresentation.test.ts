@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import {
-  ProviderDriverKind,
-  ProviderInstanceId,
-  type ServerProvider,
-} from "@t3tools/contracts";
+import { ProviderDriverKind, ProviderInstanceId, type ServerProvider } from "@t3tools/contracts";
 import {
   deriveModelPickerModels,
   providerModelKey,
@@ -14,6 +10,7 @@ import {
   modelPickerRowDisabledReason,
   projectModelPickerProviders,
   projectModelPickerRows,
+  resolveModelPickerSelectedKey,
   type ModelPickerContext,
 } from "./modelPickerPresentation";
 
@@ -40,9 +37,7 @@ function provider(input: {
     checkedAt: "2026-08-11T00:00:00.000Z",
     ...(input.availability ? { availability: input.availability } : {}),
     ...(input.message ? { message: input.message } : {}),
-    ...(input.requiresNewThreadForModelChange
-      ? { requiresNewThreadForModelChange: true }
-      : {}),
+    ...(input.requiresNewThreadForModelChange ? { requiresNewThreadForModelChange: true } : {}),
     ...(input.continuationGroupKey
       ? { continuation: { groupKey: input.continuationGroupKey } }
       : {}),
@@ -107,14 +102,32 @@ function context(overrides: Partial<ModelPickerContext> = {}): ModelPickerContex
 }
 
 describe("Lynx model picker presentation", () => {
+  it("keeps the current thread selection authoritative over a cached model", () => {
+    const cachedClaude = {
+      instanceId: ProviderInstanceId.make("claudeAgent"),
+      slug: "claude-fable-5",
+    } as const;
+
+    expect(
+      resolveModelPickerSelectedKey(
+        {
+          instanceId: ProviderInstanceId.make("codex"),
+          model: "gpt-5.6-sol",
+        },
+        cachedClaude,
+      ),
+    ).toBe("codex:gpt-5.6-sol");
+    expect(resolveModelPickerSelectedKey(undefined, cachedClaude)).toBe(
+      "claudeAgent:claude-fable-5",
+    );
+  });
+
   it("keeps unavailable providers visible with the server reason", () => {
     const grok = projectModelPickerProviders(entries, context()).find(
       (item) => item.entry.instanceId === "grok",
     );
 
-    expect(grok?.disabledReason).toBe(
-      "Grok — Unavailable. Sign in to continue.",
-    );
+    expect(grok?.disabledReason).toBe("Grok — Unavailable. Sign in to continue.");
   });
 
   it("disables unavailable provider models when search reveals them", () => {
@@ -171,9 +184,7 @@ describe("Lynx model picker presentation", () => {
   });
 
   it("filters favorites and searches across provider labels", () => {
-    const favorites = new Set([
-      providerModelKey("opencode", "opencode/big-pickle"),
-    ]);
+    const favorites = new Set([providerModelKey("opencode", "opencode/big-pickle")]);
 
     expect(
       projectModelPickerRows({
