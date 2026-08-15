@@ -3007,6 +3007,17 @@
 }
 
 /* ======================= Timeline (non-hero) ======================= */
+.timeline-empty-host {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
+  min-height: 0;
+}
+.timeline-empty-host > .transcript-empty {
+  position: absolute;
+  inset: 0;
+}
 /* ======= Transcript native list (surface: chat transcript; Lynx host leaf
    for the shared transcript projection; remove-when: transcript row chrome is
    compiled from the shared Web composition via the Tailwind v3 pipeline) ==== */
