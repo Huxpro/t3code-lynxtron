@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T00:38:25+09:00",
+  "evidenceCommit": "1e834cb701ad5ccb4fd31d1f50047b8ad0fe14e5",
+  "stateId": "composer-sendable",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread"
+  },
+  "fixture": {
+    "source": "read-only VACUUM INTO from ~/.t3/userdata/state.sqlite",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "input": "hello fidelity"
+  },
+  "classification": {
+    "productLoss": [],
+    "harnessMismatch": [],
+    "ledgerScope": "Fresh Browser evidence updates Lynx content, geometry, material, interaction, and runtime for Composer Sendable. Native cells remain unchanged."
+  },
+  "browser": {
+    "status": "pass",
+    "capturePass": true,
+    "head": "1e834cb701ad5ccb4fd31d1f50047b8ad0fe14e5",
+    "readyMs": 3658,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "webBundleSha256": "54d0d6f36d7f6f06586a2c286b74934d8540d4c09e18a2d973c2233cdad7db4e",
+    "lynxBundleSha256": "05b323b5305845088b3b53e05f60c0e9cb127de4a7022f9835f54ecba6adb6c0",
+    "inputChannel": "web-dom-focus+key-char:true|lynx-dom-focus+key-char:true",
+    "input": "hello fidelity",
+    "layout": "hero",
+    "state": "sendable",
+    "primaryState": "send",
+    "model": "Claude Fable 5",
+    "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+    "context": ["Current checkout", "main"],
+    "geometry": {
+      "web": {
+        "composer": { "x": 384, "y": 340, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 341, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 357, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 435, "width": 766, "height": 44 },
+        "toolbar": { "x": 393, "y": 433, "width": 718, "height": 36 },
+        "context": { "x": 406, "y": 464, "width": 724, "height": 48 }
+      },
+      "lynx": {
+        "composer": { "x": 384, "y": 340, "width": 768, "height": 140 },
+        "surface": { "x": 385, "y": 341, "width": 766, "height": 138 },
+        "editor": { "x": 401, "y": 357, "width": 734, "height": 70 },
+        "footer": { "x": 385, "y": 435, "width": 766, "height": 44 },
+        "toolbar": { "x": 393, "y": 433, "width": 710, "height": 36 },
+        "primaryAction": { "x": 1107, "y": 435, "width": 32, "height": 32 },
+        "context": { "x": 406, "y": 464, "width": 724, "height": 48 }
+      }
+    },
+    "fullFrameSsim": 0.944924,
+    "fullFrameResidual": 0.055076,
+    "composerSsim": 0.952113,
+    "composerResidual": 0.047887,
+    "reportSha256": "a177fd3dc8bb012ebe9fb02906722e91c6f37f8605c03eb0745d7b9429fb8b56",
+    "webScreenshotSha256": "67214852175a402e3640bbd2624d35bec25debb7a6d19b3d5263f11e860bb7f7",
+    "lynxScreenshotSha256": "beb91fdb598d9b89398c5544bf1bb5c1231a683e1d1c5ea1ec2b8b3c5c65e4e5"
+  },
+  "validation": {
+    "workbenchContractTests": "16/16",
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "Full-frame material residual remains 0.055076 and Composer-region residual remains 0.047887.",
+    "The measured toolbar content width differs by 8px while the framed Composer anatomy and controls pass.",
+    "This state verifies input-to-sendable behavior but does not submit a turn.",
+    "Native physical typing remains pending-user-session."
+  ]
+}

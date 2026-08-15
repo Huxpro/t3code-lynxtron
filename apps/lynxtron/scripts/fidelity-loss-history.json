@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T00:31:02+09:00",
+  "updatedAt": "2026-08-16T00:38:25+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5026,6 +5026,67 @@
               "confidence": 0.99,
               "method": "shared-server-model-query-readiness",
               "source": "Same immutable fixture, complete workbench pass in 2070ms, zero renderer errors, and released owned listeners"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-sendable-browser-certification-current",
+      "observedAt": "2026-08-16T00:38:25+09:00",
+      "commit": "1e834cb701ad5ccb4fd31d1f50047b8ad0fe14e5",
+      "codeState": "commit",
+      "label": "Composer Sendable current Browser certification",
+      "narrative": "A fresh New Thread fixture receives hello fidelity through real character input in both Browser renderers. Web and Lynx converge on the input value, sendable/send state, Claude Fable 5 with High · 1M, Full access and Build controls, Current checkout/main context, and exact Composer, surface, editor, footer, and context geometry. The toolbar content width differs by 8px. Full-frame SSIM is 0.944924 and the Composer crop is 0.952113, so material residual remains explicit. The turn is not submitted.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Fresh current-head Browser character input replaces stale Sendable cells without a product change or a turn submission. Native physical typing remains pending."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-sendable-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "86985d499fb8ac86eb7e6612772d6230d3d2586f4d9067bebaed198ee8551f2f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-sendable-composer-content",
+              "source": "Same hello fidelity input, sendable/send state, Claude Fable 5, High · 1M, controls, and Current checkout/main context"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "sendable-composer-anatomy",
+              "source": "Composer, surface, editor, footer, toolbar, and context rectangles at 1280x820"
+            },
+            "material": {
+              "residual": 0.055076,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.944924 at the matched Sendable frame; Composer-region residual is 0.047887"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-composer-input",
+              "source": "Real Web and Lynx character input produces the same hello fidelity value and sendable/send postcondition without submitting"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-sendable-readiness",
+              "source": "Same immutable fixture and selected model, complete workbench pass in 3658ms, zero renderer errors, and released owned listeners"
             }
           }
         }
