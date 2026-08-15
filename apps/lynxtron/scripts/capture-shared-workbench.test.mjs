@@ -100,6 +100,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId !== "settings-archive"');
     assert.include(source, 'lynxEmptyRow?.title === "No archived threads"');
     assert.include(source, "lynxText.width > 0");
+    assert.include(source, "function connectionsSettingsContentMatches");
+    assert.include(source, "function connectionsSettingsGeometryMatches");
+    assert.include(source, 'stateId !== "settings-connections"');
+    assert.include(source, 'webMetrics?.rowIds?.includes("remote-environments")');
+    assert.include(source, 'lynxMetrics?.rowIds?.includes("remote-environments")');
+    assert.include(source, "rect.y >= previous.y + previous.height");
     assert.include(source, "function betaSettingsGeometryMatches");
     assert.include(source, 'stateId !== "settings-beta"');
     assert.include(source, '"Auto-settle inactive threads"');
