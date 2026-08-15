@@ -9,6 +9,7 @@ import {
   summarizeChangedFiles,
 } from "@t3tools/client-runtime/presentation/diff";
 import {
+  EMPTY_TRANSCRIPT_PLACEHOLDER,
   deriveActiveWorkStartedAt,
   deriveMessagesTimelineRows,
   deriveTranscriptNewTurnAnchor,
@@ -691,12 +692,7 @@ export function MessagesTimeline({
   }, []);
 
   if (rows.length === 0) {
-    return (
-      <TranscriptEmptySurface
-        title="Start a conversation"
-        subtitle="Ask T3 Code to build, explain, or fix something in your project."
-      />
-    );
+    return <TranscriptEmptySurface title={EMPTY_TRANSCRIPT_PLACEHOLDER} />;
   }
   return (
     <view

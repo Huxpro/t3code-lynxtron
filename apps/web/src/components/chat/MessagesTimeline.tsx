@@ -6,6 +6,7 @@ import {
   type TurnId,
 } from "@t3tools/contracts";
 import { parseScopedThreadKey } from "@t3tools/client-runtime/environment";
+import { EMPTY_TRANSCRIPT_PLACEHOLDER } from "@t3tools/client-runtime/presentation/transcript";
 import { resolveChatListAnchoredEndSpace } from "@t3tools/shared/chatList";
 import {
   createContext,
@@ -474,10 +475,8 @@ export const MessagesTimeline = memo(function MessagesTimeline({
       return null;
     }
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-sm text-muted-foreground/30">
-          Send a message to start the conversation.
-        </p>
+      <div className="transcript-empty flex h-full items-center justify-center">
+        <p className="text-sm text-muted-foreground/30">{EMPTY_TRANSCRIPT_PLACEHOLDER}</p>
       </div>
     );
   }

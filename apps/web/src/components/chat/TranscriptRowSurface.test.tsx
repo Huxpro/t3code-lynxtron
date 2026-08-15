@@ -2,7 +2,10 @@ import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vite-plus/test";
 
-import type { MessagesTimelineRow } from "@t3tools/client-runtime/presentation/transcript";
+import {
+  EMPTY_TRANSCRIPT_PLACEHOLDER,
+  type MessagesTimelineRow,
+} from "@t3tools/client-runtime/presentation/transcript";
 
 import {
   TranscriptEmptySurface,
@@ -222,5 +225,11 @@ describe("TranscriptRowSurface", () => {
     expect(markup.indexOf("Start a conversation")).toBeLessThan(
       markup.indexOf("Ask T3 Code anything."),
     );
+    const singleLine = renderToStaticMarkup(
+      <TranscriptEmptySurface title={EMPTY_TRANSCRIPT_PLACEHOLDER} />,
+    );
+    expect(singleLine).toContain(EMPTY_TRANSCRIPT_PLACEHOLDER);
+    expect(singleLine).toContain("text-muted-foreground/30");
+    expect(singleLine).not.toContain("transcript-empty-subtitle");
   });
 });

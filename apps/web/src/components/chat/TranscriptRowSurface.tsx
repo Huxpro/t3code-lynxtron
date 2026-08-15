@@ -504,8 +504,17 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
 /** Shared empty-transcript placement (defensive; hero routes own the primary). */
 export function TranscriptEmptySurface(input: {
   readonly title: string;
-  readonly subtitle: string;
+  readonly subtitle?: string;
 }) {
+  if (!input.subtitle) {
+    return (
+      <HostView className="transcript-empty flex flex-1 items-center justify-center text-center">
+        <HostText className="transcript-empty-title text-sm text-muted-foreground/30">
+          {input.title}
+        </HostText>
+      </HostView>
+    );
+  }
   return (
     <HostView className="transcript-empty flex flex-1 flex-col items-center justify-center gap-1 px-6 py-12 text-center">
       <HostText className="transcript-empty-title text-sm font-medium text-foreground/85">

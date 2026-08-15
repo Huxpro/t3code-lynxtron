@@ -21,6 +21,8 @@ import { isLatestTurnSettled } from "./session.ts";
  * semantics.
  */
 
+export const EMPTY_TRANSCRIPT_PLACEHOLDER = "Send a message to start the conversation.";
+
 export type WorkRequestKind = "command" | "file-read" | "file-change";
 
 // Mirrors contracts TOOL_LIFECYCLE_ITEM_TYPES as a schema-free literal check:
