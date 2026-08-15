@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import {
   deriveSourceControlEmptyPresentation,
   projectSourceControlDiscoveryItem,
+  SOURCE_CONTROL_LOADING_SECTIONS,
   type SourceControlItemPresentation,
 } from "@t3tools/client-runtime/presentation/source-control";
 import type {
@@ -78,7 +79,6 @@ const VCS_ICONS: Partial<Record<VcsDriverKind, Icon>> = {
   jj: JujutsuIcon,
 };
 
-const SOURCE_CONTROL_SKELETON_ROWS = ["primary", "secondary"] as const;
 const GIT_FETCH_INTERVAL_STEP_SECONDS = 5;
 type BackgroundActivityOverridePatch = Partial<{
   [K in keyof BackgroundActivitySettings["overrides"]]:
@@ -353,13 +353,15 @@ function GitFetchIntervalSettings() {
 function SourceControlSectionSkeleton({
   title,
   headerAction,
+  rows,
 }: {
   readonly title: string;
   readonly headerAction?: ReactNode;
+  readonly rows: ReadonlyArray<string>;
 }) {
   return (
     <SettingsSection title={title} headerAction={headerAction}>
-      {SOURCE_CONTROL_SKELETON_ROWS.map((row) => (
+      {rows.map((row) => (
         <div key={row} className="rounded-xl px-3 py-3 sm:px-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0 flex-1 space-y-2">
@@ -470,8 +472,14 @@ export function SourceControlSettingsPanel() {
     <SettingsPageContainer>
       {isInitialScanPending ? (
         <>
-          <SourceControlSectionSkeleton title="Version Control" headerAction={scanButton} />
-          <SourceControlSectionSkeleton title="Source Control Providers" />
+          {SOURCE_CONTROL_LOADING_SECTIONS.map((section, index) => (
+            <SourceControlSectionSkeleton
+              key={section.id}
+              title={section.title}
+              rows={section.rows}
+              headerAction={index === 0 ? scanButton : undefined}
+            />
+          ))}
         </>
       ) : hasDiscoveryItems ? (
         <>

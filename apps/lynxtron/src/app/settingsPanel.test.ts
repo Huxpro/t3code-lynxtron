@@ -84,4 +84,22 @@ describe("Lynx Settings route projection", () => {
     expect(emptyBlock).toContain("--align-self-column: stretch;");
     expect(emptyBlock).toContain("width: 100%;");
   });
+
+  it("matches the canonical Source Control initial loading anatomy", () => {
+    const settings = readFileSync(
+      path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),
+      "utf8",
+    );
+    const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
+    expect(settings).toContain("SOURCE_CONTROL_LOADING_SECTIONS.map");
+    expect(settings).toContain("data-source-control-loading-row={row}");
+    expect(settings).toContain('label="Rescan server environment"');
+    expect(settings).not.toContain("Scanning server integrations…");
+    const rowStart = overrides.indexOf(".source-control-loading-row {");
+    const rowBlock = overrides.slice(rowStart, overrides.indexOf("}", rowStart));
+    expect(rowBlock).toContain("height: 66px;");
+    expect(rowBlock).toContain("--align-self-column: stretch;");
+    expect(rowBlock).toContain("width: 100%;");
+    expect(overrides).not.toContain(".source-control-loading-row { animation:");
+  });
 });

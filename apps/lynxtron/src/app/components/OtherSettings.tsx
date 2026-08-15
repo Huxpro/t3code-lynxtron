@@ -7,6 +7,7 @@ import {
   deriveSourceControlEmptyPresentation,
   projectSourceControlDiscovery,
   redactSourceControlAccount,
+  SOURCE_CONTROL_LOADING_SECTIONS,
   SOURCE_CONTROL_WRITING_STYLE_OPTIONS,
   type SourceControlSummaryPart,
 } from "@t3tools/client-runtime/presentation/source-control";
@@ -20,7 +21,7 @@ import {
   MAX_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
   MIN_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
 } from "@t3tools/contracts/settings";
-import { useEffect, useMemo, useState } from "@lynx-js/react";
+import { useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 
 import {
   ArchivedThreadsSurface,
@@ -39,8 +40,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../web/src/components/ui/select";
-import { SettingsRow, SettingsSection, Toggle } from "./SettingsControls";
-import { SmallButton } from "./SettingsControls";
+import {
+  SettingsRow,
+  SettingsSection,
+  SmallButton,
+  SmallIconButton,
+  Toggle,
+} from "./SettingsControls";
 import { Icon } from "./Icon";
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { useClientSettingsState } from "../state/prefsStore";
@@ -66,6 +72,56 @@ function sourceControlSummaryForLynx(parts: ReadonlyArray<SourceControlSummaryPa
         : part.text,
     )
     .join("");
+}
+
+function SourceControlLoadingSection({
+  anchor,
+  title,
+  rows,
+  headerAction,
+}: {
+  anchor: boolean;
+  title: string;
+  rows: ReadonlyArray<string>;
+  headerAction?: ReactNode;
+}) {
+  return (
+    <SettingsSection
+      id={anchor ? searchableSetting("source-control").id : undefined}
+      title={title}
+      headerAction={headerAction}
+      className="source-control-section"
+      stacked
+    >
+      <view className="settings-section__rows flex w-full min-w-0 flex-col self-stretch">
+        {rows.map((row) => (
+          <view
+            key={row}
+            className="source-control-loading-row"
+            data-source-control-loading-row={row}
+          >
+            <view className="source-control-loading-row__layout">
+              <view className="source-control-loading-row__copy">
+                <view className="source-control-loading-row__headline">
+                  <view className="source-control-loading-row__mark">
+                    <view className="source-control-loading-row__icon" />
+                    <view className="source-control-loading-row__dot" />
+                  </view>
+                  <view className="source-control-loading-row__label" />
+                  <view className="source-control-loading-row__badge" />
+                </view>
+                <view className="source-control-loading-row__detail" />
+              </view>
+              <view className="source-control-loading-row__actions">
+                <view className="source-control-loading-row__button" />
+                <view className="source-control-loading-row__switch" />
+              </view>
+            </view>
+          </view>
+        ))}
+      </view>
+    </SettingsSection>
+  );
 }
 
 export function SourceControlSettings() {
@@ -108,6 +164,13 @@ export function SourceControlSettings() {
     <SmallButton
       label={discovery.pending ? "Scanning…" : "Rescan"}
       onTap={() => setRefreshVersion((version) => version + 1)}
+    />
+  );
+  const loadingScanButton = (
+    <SmallIconButton
+      label="Rescan server environment"
+      icon={<Icon name="refresh-cw" size={12} color="#818181" />}
+      disabled
     />
   );
   const sourceControlWritingStyle =
@@ -191,18 +254,16 @@ export function SourceControlSettings() {
 
   if (discovery.pending && !discovery.result) {
     return (
-      <view className="source-control-panel">
-        <SettingsSection
-          id={searchableSetting("source-control").id}
-          title="Source Control"
-          headerAction={scanButton}
-          className="source-control-section"
-          stacked
-        >
-          <view className="settings-empty-card">
-            <text className="settings-empty__text">Scanning server integrations…</text>
-          </view>
-        </SettingsSection>
+      <view className="source-control-panel" data-source-control-loading>
+        {SOURCE_CONTROL_LOADING_SECTIONS.map((section, index) => (
+          <SourceControlLoadingSection
+            key={section.id}
+            anchor={index === 0}
+            title={section.title}
+            rows={section.rows}
+            headerAction={index === 0 ? loadingScanButton : undefined}
+          />
+        ))}
         {textGenerationSection}
       </view>
     );

@@ -6,6 +6,7 @@ import {
   projectSourceControlDiscovery,
   projectSourceControlDiscoveryItem,
   redactSourceControlAccount,
+  SOURCE_CONTROL_LOADING_SECTIONS,
   SOURCE_CONTROL_WRITING_STYLE_OPTIONS,
   sourceControlSummaryText,
 } from "./sourceControl.ts";
@@ -193,6 +194,17 @@ describe("source-control discovery presentation", () => {
       title: "Could not scan the server environment",
       description: "Discovery failed.",
     });
+  });
+
+  it("shares the initial Source Control loading sections across renderers", () => {
+    expect(SOURCE_CONTROL_LOADING_SECTIONS).toEqual([
+      { id: "version-control", title: "Version Control", rows: ["primary", "secondary"] },
+      {
+        id: "source-control-providers",
+        title: "Source Control Providers",
+        rows: ["primary", "secondary"],
+      },
+    ]);
   });
 
   it("shares source-control writing style copy across renderers", () => {

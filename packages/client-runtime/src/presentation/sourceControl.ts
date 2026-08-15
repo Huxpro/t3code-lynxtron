@@ -145,6 +145,15 @@ export interface SourceControlEmptyPresentation {
   readonly description: string;
 }
 
+export const SOURCE_CONTROL_LOADING_SECTIONS = [
+  { id: "version-control", title: "Version Control", rows: ["primary", "secondary"] },
+  {
+    id: "source-control-providers",
+    title: "Source Control Providers",
+    rows: ["primary", "secondary"],
+  },
+] as const;
+
 export function deriveSourceControlEmptyPresentation(
   error: string | null,
 ): SourceControlEmptyPresentation {

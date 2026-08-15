@@ -67,6 +67,24 @@ export function SmallButton({
   );
 }
 
+export function SmallIconButton({
+  label,
+  icon,
+  disabled = false,
+  onTap,
+}: {
+  label: string;
+  icon: ReactNode;
+  disabled?: boolean;
+  onTap?: () => void;
+}) {
+  return (
+    <Button aria-label={label} disabled={disabled} onClick={onTap} size="icon-xs" variant="ghost">
+      {icon}
+    </Button>
+  );
+}
+
 export function GlassSlider({ percent }: { percent: number }) {
   const fillPct = Math.max(0, Math.min(100, ((percent - 40) / 60) * 100));
   return (
