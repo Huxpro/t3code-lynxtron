@@ -2,7 +2,7 @@ import { AuthSessionId } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 import * as DateTime from "effect/DateTime";
 
-import { projectAuthAccess } from "./connections.ts";
+import { canManageAuthAccess, projectAuthAccess } from "./connections.ts";
 
 describe("connections presentation", () => {
   it("sorts current and connected clients before offline clients", () => {
@@ -120,5 +120,47 @@ describe("connections presentation", () => {
       clientSessionCount: 0,
       hasEntries: false,
     });
+  });
+
+  it("derives access management from the current session write scope", () => {
+    const presentation = projectAuthAccess({
+      pairingLinks: [],
+      clientSessions: [
+        {
+          sessionId: AuthSessionId.make("other-admin"),
+          subject: "other-admin",
+          scopes: ["access:write"],
+          method: "bearer-access-token",
+          client: { deviceType: "desktop" },
+          issuedAt: DateTime.makeUnsafe("2026-07-27T08:00:00.000Z"),
+          expiresAt: DateTime.makeUnsafe("2026-08-27T08:00:00.000Z"),
+          lastConnectedAt: null,
+          connected: true,
+          current: false,
+        },
+        {
+          sessionId: AuthSessionId.make("current-reader"),
+          subject: "current-reader",
+          scopes: ["access:read"],
+          method: "bearer-access-token",
+          client: { deviceType: "desktop" },
+          issuedAt: DateTime.makeUnsafe("2026-07-27T09:00:00.000Z"),
+          expiresAt: DateTime.makeUnsafe("2026-08-27T09:00:00.000Z"),
+          lastConnectedAt: null,
+          connected: true,
+          current: true,
+        },
+      ],
+    });
+
+    expect(canManageAuthAccess(presentation)).toBe(false);
+    expect(
+      canManageAuthAccess({
+        ...presentation,
+        clientSessions: presentation.clientSessions.map((session) =>
+          session.current ? { ...session, scopes: ["access:read", "access:write"] } : session,
+        ),
+      }),
+    ).toBe(true);
   });
 });

@@ -2,6 +2,7 @@ import {
   formatRelativeTimeLabel,
   formatRelativeTimeUntilLabel,
 } from "@t3tools/client-runtime/presentation/time";
+import { canManageAuthAccess } from "@t3tools/client-runtime/presentation/connections";
 import {
   projectSourceControlDiscovery,
   redactSourceControlAccount,
@@ -297,6 +298,7 @@ export function SourceControlSettings() {
 
 export function ConnectionsSettings() {
   const { authAccess } = useT3ClientState();
+  const canManageAccess = canManageAuthAccess(authAccess);
   const [accessMutation, setAccessMutation] = useState<string | null>(null);
   const [accessError, setAccessError] = useState<string | null>(null);
   const [pairingCredential, setPairingCredential] = useState<{
@@ -367,99 +369,112 @@ export function ConnectionsSettings() {
   return (
     <view className="settings-panel">
       <SettingsSection title="This environment">
-        <SettingsRow
-          title="Network access"
-          description="Local only. Lynxtron launches this backend on the loopback interface."
-        />
-        <SettingsRow
-          title="Access inventory"
-          description={`${authAccess.clientSessionCount} authorized ${authAccess.clientSessionCount === 1 ? "client" : "clients"} · ${authAccess.pairingLinkCount} active pairing ${authAccess.pairingLinkCount === 1 ? "link" : "links"}`}
-        />
-      </SettingsSection>
-      <SettingsSection title="Authorized clients">
-        <SettingsRow
-          title="New pairing link"
-          description={
-            accessError ??
-            (pairingCredential
-              ? `One-time code: ${pairingCredential.credential} · ${formatRelativeTimeUntilLabel(pairingCredential.expiresAt, Date.now())}`
-              : "Create a one-time code with standard client permissions.")
-          }
-          control={
-            <SmallButton
-              label={
-                accessMutation === "create"
-                  ? "Creating…"
-                  : accessMutation === "copy"
-                    ? "Copying…"
-                    : pairingCredential
-                      ? "Copy code"
-                      : "Create"
-              }
-              onTap={pairingCredential ? copyPairingCode : createPairingLink}
+        {canManageAccess ? (
+          <>
+            <SettingsRow
+              title="Network access"
+              description="Local only. Lynxtron launches this backend on the loopback interface."
             />
-          }
-        />
-        {authAccess.pairingLinks.map((pairingLink) => (
-          <AccessListRowSurface
-            key={pairingLink.id}
-            statusDot={<StatusDotSurface tone="warning" />}
-            primaryLabel={pairingLink.label}
-            description={`${formatRelativeTimeUntilLabel(pairingLink.expiresAt, Date.now())} · ${scopeLabel(pairingLink.scopeCount)}`}
-            control={
-              <SmallButton
-                label={accessMutation === `link:${pairingLink.id}` ? "Revoking…" : "Revoke"}
-                onTap={() => revokePairingLink(pairingLink.id)}
-              />
-            }
-          />
-        ))}
-        {authAccess.clientSessions.map((clientSession) => (
-          <AccessListRowSurface
-            key={clientSession.sessionId}
-            statusDot={<StatusDotSurface tone={clientSession.isLive ? "success" : "muted"} />}
-            primaryLabel={clientSession.primaryLabel}
-            primaryTrailing={
-              clientSession.current ? (
-                <text className="access-list-row__device-chip">This device</text>
-              ) : undefined
-            }
-            description={`${clientSession.isLive ? "Connected" : "Offline"} · ${clientSession.deviceInfoBits.join(" · ") || clientSession.subject} · ${scopeLabel(clientSession.scopeCount)}`}
-            control={
-              clientSession.current ? undefined : (
-                <SmallButton
-                  label={
-                    accessMutation === `client:${clientSession.sessionId}` ? "Revoking…" : "Revoke"
-                  }
-                  onTap={() => revokeClientSession(clientSession.sessionId)}
-                />
-              )
-            }
-          />
-        ))}
-        {authAccess.clientSessions.some((clientSession) => !clientSession.current) ? (
+            <SettingsRow
+              title="Access inventory"
+              description={`${authAccess.clientSessionCount} authorized ${authAccess.clientSessionCount === 1 ? "client" : "clients"} · ${authAccess.pairingLinkCount} active pairing ${authAccess.pairingLinkCount === 1 ? "link" : "links"}`}
+            />
+          </>
+        ) : (
           <SettingsRow
-            title="Other clients"
-            description="Revoke every authorized client except this device."
+            title="Administrative access"
+            description="Pairing links and client-session management require the access:write scope for this backend."
+          />
+        )}
+      </SettingsSection>
+      {canManageAccess ? (
+        <SettingsSection title="Authorized clients">
+          <SettingsRow
+            title="New pairing link"
+            description={
+              accessError ??
+              (pairingCredential
+                ? `One-time code: ${pairingCredential.credential} · ${formatRelativeTimeUntilLabel(pairingCredential.expiresAt, Date.now())}`
+                : "Create a one-time code with standard client permissions.")
+            }
             control={
               <SmallButton
-                label={accessMutation === "clients:others" ? "Revoking…" : "Revoke all"}
-                onTap={revokeOtherClientSessions}
+                label={
+                  accessMutation === "create"
+                    ? "Creating…"
+                    : accessMutation === "copy"
+                      ? "Copying…"
+                      : pairingCredential
+                        ? "Copy code"
+                        : "Create"
+                }
+                onTap={pairingCredential ? copyPairingCode : createPairingLink}
               />
             }
           />
-        ) : null}
-        {!authAccess.hasEntries ? (
-          <view className="settings-empty-card">
-            <text className="settings-empty__text">No pairing links or authorized clients.</text>
-          </view>
-        ) : null}
-      </SettingsSection>
+          {authAccess.pairingLinks.map((pairingLink) => (
+            <AccessListRowSurface
+              key={pairingLink.id}
+              statusDot={<StatusDotSurface tone="warning" />}
+              primaryLabel={pairingLink.label}
+              description={`${formatRelativeTimeUntilLabel(pairingLink.expiresAt, Date.now())} · ${scopeLabel(pairingLink.scopeCount)}`}
+              control={
+                <SmallButton
+                  label={accessMutation === `link:${pairingLink.id}` ? "Revoking…" : "Revoke"}
+                  onTap={() => revokePairingLink(pairingLink.id)}
+                />
+              }
+            />
+          ))}
+          {authAccess.clientSessions.map((clientSession) => (
+            <AccessListRowSurface
+              key={clientSession.sessionId}
+              statusDot={<StatusDotSurface tone={clientSession.isLive ? "success" : "muted"} />}
+              primaryLabel={clientSession.primaryLabel}
+              primaryTrailing={
+                clientSession.current ? (
+                  <text className="access-list-row__device-chip">This device</text>
+                ) : undefined
+              }
+              description={`${clientSession.isLive ? "Connected" : "Offline"} · ${clientSession.deviceInfoBits.join(" · ") || clientSession.subject} · ${scopeLabel(clientSession.scopeCount)}`}
+              control={
+                clientSession.current ? undefined : (
+                  <SmallButton
+                    label={
+                      accessMutation === `client:${clientSession.sessionId}`
+                        ? "Revoking…"
+                        : "Revoke"
+                    }
+                    onTap={() => revokeClientSession(clientSession.sessionId)}
+                  />
+                )
+              }
+            />
+          ))}
+          {authAccess.clientSessions.some((clientSession) => !clientSession.current) ? (
+            <SettingsRow
+              title="Other clients"
+              description="Revoke every authorized client except this device."
+              control={
+                <SmallButton
+                  label={accessMutation === "clients:others" ? "Revoking…" : "Revoke all"}
+                  onTap={revokeOtherClientSessions}
+                />
+              }
+            />
+          ) : null}
+          {!authAccess.hasEntries ? (
+            <view className="settings-empty-card">
+              <text className="settings-empty__text">No pairing links or authorized clients.</text>
+            </view>
+          ) : null}
+        </SettingsSection>
+      ) : null}
       <SettingsSection id={searchableSetting("remote-environments").id} title="Remote environments">
         <view className="settings-empty-card">
           <text className="settings-empty__text">No saved remote environments</text>
           <text className="settings-empty__hint">
-            Remote environment catalog actions have not moved into the Lynx host yet.
+            Click “Add environment” to pair another environment.
           </text>
         </view>
       </SettingsSection>

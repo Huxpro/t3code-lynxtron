@@ -5,6 +5,7 @@ import type {
   AuthSessionId,
   ServerAuthSessionMethod,
 } from "@t3tools/contracts";
+import { AuthAccessWriteScope } from "@t3tools/contracts";
 import type { ConnectionTarget } from "../connection/model.ts";
 
 export const DESKTOP_LOCAL_CONNECTION_ID_PREFIX = "local:";
@@ -61,6 +62,14 @@ export interface AuthAccessPresentation {
   readonly pairingLinkCount: number;
   readonly clientSessionCount: number;
   readonly hasEntries: boolean;
+}
+
+export function canManageAuthAccess(presentation: AuthAccessPresentation): boolean {
+  return (
+    presentation.clientSessions
+      .find((clientSession) => clientSession.current)
+      ?.scopes.includes(AuthAccessWriteScope) ?? false
+  );
 }
 
 function formatDateTime(value: { readonly epochMilliseconds: number }): string {
