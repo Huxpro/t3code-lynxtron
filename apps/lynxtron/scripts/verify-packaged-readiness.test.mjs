@@ -149,6 +149,16 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Non-repository idle thread rendered repository context.");
   });
 
+  it("verifies the Native default Quick Switch and outside dismissal", () => {
+    assert.include(source, "async function verifyQuickSwitchDefault");
+    assert.include(source, '"--verify-quick-switch-default"');
+    assert.include(source, 'selector: ".palette-panel"');
+    assert.include(source, 'readSelectorRects(client, ".palette-row")');
+    assert.include(source, '"Quick Switch idle thread"');
+    assert.include(source, 'selector: ".palette-backdrop"');
+    assert.include(source, "initialOverlay product state plus measured DevTool outside tap");
+  });
+
   it("captures Native General Settings content and geometry before route cycling", () => {
     assert.include(source, 'selector: ".settings-content--general"');
     assert.include(source, 'measurement.text.includes("Project grouping")');

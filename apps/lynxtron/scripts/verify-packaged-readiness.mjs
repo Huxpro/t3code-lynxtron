@@ -1091,6 +1091,73 @@ async function verifyIdleThreadState({
   };
 }
 
+async function verifyQuickSwitchDefault({ child, client, timeoutMs }) {
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-search-overlay-mode"] === "command",
+  });
+  const search = await readOptionalMeasurement(client, ".palette-search");
+  const results = await readOptionalMeasurement(client, ".palette-results");
+  const footer = await readOptionalMeasurement(client, ".palette-footer");
+  const rows = await readSelectorRects(client, ".palette-row");
+  const expectedLabels = [
+    "New thread in t3-hero-claude-workspace",
+    "New thread in...",
+    "Go to file",
+    "Search project contents",
+    "Add project",
+    "Open settings",
+    "Quick Switch idle thread",
+  ];
+  const labels = expectedLabels.filter((label) => panel.text.includes(label));
+  if (
+    !search ||
+    !results ||
+    !footer ||
+    rows.length !== expectedLabels.length ||
+    JSON.stringify(labels) !== JSON.stringify(expectedLabels)
+  ) {
+    throw new Error(
+      `Quick Switch default anatomy drifted: ${JSON.stringify({
+        panel: panel.rect,
+        search: search?.rect,
+        results: results?.rect,
+        footer: footer?.rect,
+        rows,
+        labels,
+      })}`,
+    );
+  }
+  await tapSelector({
+    child,
+    client,
+    selector: ".palette-backdrop",
+    point: "bottom-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  return {
+    status: "pass",
+    input: "initialOverlay product state plus measured DevTool outside tap",
+    panel: panel.rect,
+    search: search.rect,
+    results: results.rect,
+    footer: footer.rect,
+    rows,
+    labels,
+    dismissed: true,
+  };
+}
+
 async function verifyComposerBehavior({ child, client, timeoutMs }) {
   const existingOverlay = await readOptionalMeasurement(client, ".composer-overlay");
   const existingHero = await readOptionalMeasurement(client, ".hero");
@@ -3075,6 +3142,7 @@ async function runOnce({
   verifyHeroComposerState: shouldVerifyHeroComposerState,
   verifyIdleThreadState: shouldVerifyIdleThreadState,
   idleFixture,
+  verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
@@ -3228,6 +3296,9 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const quickSwitchDefault = shouldVerifyQuickSwitchDefault
+      ? await verifyQuickSwitchDefault({ child, client, timeoutMs })
+      : undefined;
     const composerThemeScreenshot =
       shouldVerifyComposerGeometry && expectedTheme
         ? captureNativeScreenshot({
@@ -3374,6 +3445,7 @@ async function runOnce({
       composerGeometry,
       heroComposerState,
       idleThreadState,
+      quickSwitchDefault,
       settingsNavigation,
       composer,
       modelPickerFidelity,
@@ -3405,6 +3477,7 @@ async function runOnce({
       composerGeometry,
       heroComposerState,
       idleThreadState,
+      quickSwitchDefault,
       composerThemeScreenshot,
       settingsNavigation,
       composer,
@@ -3456,6 +3529,7 @@ const verifySettingsNavigation = process.argv.includes("--verify-settings-naviga
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
+const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
@@ -3651,6 +3725,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyHeroComposerState: shouldVerifyHeroComposerState,
       verifyIdleThreadState: shouldVerifyIdleThreadState,
       idleFixture,
+      verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
