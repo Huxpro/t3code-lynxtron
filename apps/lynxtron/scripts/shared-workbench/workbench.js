@@ -606,6 +606,10 @@ function readLynxPane() {
           const rect = item.getBoundingClientRect();
           const child = item.querySelector('[role="button"]');
           const childRect = child?.getBoundingClientRect();
+          const content = item.querySelector("[data-sidebar-card-content]");
+          const contentRect = content?.getBoundingClientRect();
+          const childStyle = child ? getComputedStyle(child) : null;
+          const contentStyle = content ? getComputedStyle(content) : null;
           return {
             tagName: item.tagName,
             id: item.id || null,
@@ -626,6 +630,19 @@ function readLynxPane() {
                       width: childRect.width,
                       height: childRect.height,
                     },
+                    backgroundColor: childStyle?.backgroundColor ?? null,
+                    content:
+                      content && contentRect
+                        ? {
+                            rect: {
+                              x: contentRect.x,
+                              y: contentRect.y,
+                              width: contentRect.width,
+                              height: contentRect.height,
+                            },
+                            backgroundColor: contentStyle?.backgroundColor ?? null,
+                          }
+                        : null,
                   }
                 : null,
           };
@@ -1577,6 +1594,10 @@ function readWebPane() {
           const rect = item.getBoundingClientRect();
           const child = item.querySelector('[role="button"]');
           const childRect = child?.getBoundingClientRect();
+          const content = item.querySelector("[data-sidebar-card-content]");
+          const contentRect = content?.getBoundingClientRect();
+          const childStyle = child ? getComputedStyle(child) : null;
+          const contentStyle = content ? getComputedStyle(content) : null;
           return {
             tagName: item.tagName,
             id: item.id || null,
@@ -1597,6 +1618,19 @@ function readWebPane() {
                       width: childRect.width,
                       height: childRect.height,
                     },
+                    backgroundColor: childStyle?.backgroundColor ?? null,
+                    content:
+                      content && contentRect
+                        ? {
+                            rect: {
+                              x: contentRect.x,
+                              y: contentRect.y,
+                              width: contentRect.width,
+                              height: contentRect.height,
+                            },
+                            backgroundColor: contentStyle?.backgroundColor ?? null,
+                          }
+                        : null,
                   }
                 : null,
           };
