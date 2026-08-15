@@ -522,7 +522,12 @@ async function readSidebarScopeLayout(client, includePopup) {
     { id: "trigger", lynx: ".sidebar-v2-project-scope-trigger" },
     { id: "threadList", lynx: ".sidebar-v2-thread-list" },
   ];
-  if (includePopup) anchors.push({ id: "popup", lynx: ".sidebar-v2-scope-popup" });
+  if (includePopup) {
+    anchors.push(
+      { id: "popup", lynx: ".sidebar-v2-scope-popup" },
+      { id: "dismissLayer", lynx: ".lynx-menu-dismiss-layer" },
+    );
+  }
   const measurements = await collectLynxMeasurements({
     runCdp: client.runCdp,
     spec: {
@@ -2716,7 +2721,11 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   const selected = await waitForSidebarPopup({ child, client, open: false, timeoutMs });
   if (selected.trigger.text.trim() === "All projects") {
     throw new Error(
-      `Selecting the project scope did not update the trigger: ${JSON.stringify(selected.trigger)}`,
+      `Selecting the project scope did not update the trigger: ${JSON.stringify({
+        dismissLayer: opened.dismissLayer,
+        popup: opened.popup,
+        trigger: selected.trigger,
+      })}`,
     );
   }
 
