@@ -11,7 +11,7 @@
     "R9"
   ],
   "removedSelectorCount": 79,
-  "removedDeclarationCount": 12,
+  "removedDeclarationCount": 11,
   "removedSelectors": [
     ".\\[\\&\\>span\\:last-child\\]\\:flex>span:last-child",
     ".\\[\\&\\>span\\:last-child\\]\\:gap-2>span:last-child",
@@ -128,11 +128,6 @@
       "property": "grid-template-columns",
       "value": "4ch 4ch",
       "selector": ".grid-cols-\\[4ch_4ch\\]"
-    },
-    {
-      "property": "grid-template-columns",
-      "value": "repeat(2, minmax(0, 1fr))",
-      "selector": ".grid-cols-2"
     },
     {
       "property": "padding-left",
