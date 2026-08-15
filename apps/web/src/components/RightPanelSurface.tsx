@@ -124,6 +124,9 @@ export function RightPanelEmptySurface({
   readonly renderDisabledWrapper?: (action: RightPanelActionItem, card: ReactNode) => ReactNode;
 }) {
   const wrap = renderDisabledWrapper ?? ((_action, card) => card);
+  const actionRows = Array.from({ length: Math.ceil(actions.length / 2) }, (_unused, index) =>
+    actions.slice(index * 2, index * 2 + 2),
+  );
   return (
     <HostView
       data-right-panel-empty-state
@@ -136,31 +139,42 @@ export function RightPanelEmptySurface({
             Choose what to show in the right panel.
           </HostText>
         </HostView>
-        <HostView className="grid grid-cols-2 gap-2">
-          {actions.map((action) => {
-            const card = (
-              <HostButton
-                type="button"
-                data-right-panel-action={action.key}
-                {...(action.disabled ? { "aria-disabled": true } : { onClick: action.onSelect })}
-                className={cn(
-                  "flex min-h-28 w-full flex-col items-start rounded-lg border border-border/80 bg-card p-4 text-left",
-                  action.disabled
-                    ? "cursor-not-allowed opacity-40 dark:border-transparent dark:shadow-none dark:inset-ring-1 dark:inset-ring-white/5"
-                    : "transition hover:border-border hover:bg-accent/60 dark:border-transparent dark:shadow-none dark:inset-ring-1 dark:inset-ring-white/5",
-                )}
-              >
-                <HostView className="mb-3">{action.icon}</HostView>
-                <HostText className="text-sm font-medium">{action.label}</HostText>
-                <HostText className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  {action.description}
-                </HostText>
-              </HostButton>
-            );
-            return (
-              <Fragment key={action.key}>{action.disabled ? wrap(action, card) : card}</Fragment>
-            );
-          })}
+        <HostView className="right-panel-empty-grid flex flex-col gap-2">
+          {actionRows.map((row, rowIndex) => (
+            <HostView
+              key={`right-panel-empty-row:${rowIndex}`}
+              className="right-panel-empty-row flex w-full gap-2"
+            >
+              {row.map((action) => {
+                const card = (
+                  <HostButton
+                    type="button"
+                    data-right-panel-action={action.key}
+                    {...(action.disabled
+                      ? { "aria-disabled": true }
+                      : { onClick: action.onSelect })}
+                    className={cn(
+                      "right-panel-empty-card flex min-h-28 min-w-0 flex-1 flex-col items-start rounded-lg border border-border/80 bg-card p-4 text-left",
+                      action.disabled
+                        ? "cursor-not-allowed opacity-40 dark:border-transparent dark:shadow-none dark:inset-ring-1 dark:inset-ring-white/5"
+                        : "transition hover:border-border hover:bg-accent/60 dark:border-transparent dark:shadow-none dark:inset-ring-1 dark:inset-ring-white/5",
+                    )}
+                  >
+                    <HostView className="mb-3">{action.icon}</HostView>
+                    <HostText className="text-sm font-medium">{action.label}</HostText>
+                    <HostText className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      {action.description}
+                    </HostText>
+                  </HostButton>
+                );
+                return (
+                  <Fragment key={action.key}>
+                    {action.disabled ? wrap(action, card) : card}
+                  </Fragment>
+                );
+              })}
+            </HostView>
+          ))}
         </HostView>
       </HostView>
     </HostView>

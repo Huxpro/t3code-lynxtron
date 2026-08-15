@@ -62,6 +62,15 @@ describe("transcript layout contract", () => {
     expect(block).toContain("max-width: 760px;");
   });
 
+  it("keeps empty right-panel cards at the authority height", () => {
+    const start = overrides.indexOf(".right-panel-empty-card {");
+    const block = overrides.slice(start, overrides.indexOf("}", start));
+
+    expect(block).toContain("height: 112px;");
+    expect(block).toContain("min-height: 112px;");
+    expect(block).toContain("max-height: 112px;");
+  });
+
   it("stretches assistant rows across the native list item before sizing review cards", () => {
     const start = overrides.indexOf(
       ".timeline-row-root--assistant > .transcript-assistant-group {",

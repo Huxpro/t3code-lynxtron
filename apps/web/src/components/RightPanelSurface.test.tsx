@@ -113,7 +113,9 @@ describe("RightPanelEmptySurface", () => {
     expect(markup).toContain("Files");
     expect(markup).toContain("Browse and read workspace files.");
     expect(markup).toContain("Browser");
-    expect(markup).toContain("grid");
+    expect(markup).toContain("right-panel-empty-grid");
+    expect(markup).toContain("right-panel-empty-row");
+    expect(markup).toContain("right-panel-empty-card");
   });
 
   it("marks disabled cards with aria-disabled and the muted treatment", () => {

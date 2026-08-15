@@ -5905,6 +5905,13 @@
 /* surface: right panel empty state (glyph leaf); gap: R1 (raster icon set
    does not cover surface-kind glyphs); remove-when: glyphs move to the raster
    icon island. */
+.right-panel-empty-card {
+  height: 112px;
+  min-height: 112px;
+  max-height: 112px;
+  box-sizing: border-box;
+}
+
 .right-panel__empty-card-icon {
   font-size: 20px;
 }
