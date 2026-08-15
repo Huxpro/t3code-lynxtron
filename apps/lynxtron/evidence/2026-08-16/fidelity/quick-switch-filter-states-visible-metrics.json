@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T08:13:47+09:00",
+  "productCommit": "bdd6da2d54bfa4d8fb562975536eec98fe181dc4",
+  "harnessCommit": "742e035cd98cf57c2366c378be1895a3d4e5a8af",
+  "stateIds": ["quick-switch-actions-only", "quick-switch-empty"],
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch"
+  },
+  "fixture": {
+    "source": "/tmp/t3-review-state.LiMGsN/userdata/state.sqlite",
+    "seededSnapshotSha256": "75e732bec5010e97466af66e2d5f191490b417a20e0ac52200eaf697fcf7430d",
+    "projectTitle": "review-fixture",
+    "threadId": "de258875-a28f-44e2-917c-3ca2fdb45bb6"
+  },
+  "classification": {
+    "invalidPriorEvidence": [
+      "The previous filter-state captures predated the overlay-preservation fix and could retain base-page pixels after a screenshot-time click closed Quick Switch.",
+      "Actions Only and Empty now have explicit Quick Switch overlays and deterministic default queries, so neither state can pass on the base page."
+    ],
+    "productLoss": [
+      "Direct final-harness before captures reproduce the opaque panel and overly dark scrim independently for Actions Only and Empty.",
+      "The shared dark-glass material fix raises Actions Only full-frame SSIM from 0.619983 to 0.920870.",
+      "The same measured product change raises Empty full-frame SSIM from 0.621993 to 0.920435."
+    ],
+    "ledgerScope": "Fresh overlay-in-frame Browser evidence updates both Lynx filter states independently. The product point attributes each directly measured material delta to bdd6da2d5. Native physical query input remains unchanged."
+  },
+  "states": {
+    "actionsOnly": {
+      "query": ">",
+      "rowLabels": [
+        "New thread in review-fixture",
+        "New thread in...",
+        "Go to file",
+        "Search project contents",
+        "Add project",
+        "Open settings"
+      ],
+      "rowCount": 6,
+      "geometry": {
+        "panel": { "x": 352, "y": 82, "width": 576, "height": 326 },
+        "residual": 0
+      },
+      "before": {
+        "readyMs": 2315,
+        "fullFrameSsim": 0.619983,
+        "fullFrameResidual": 0.380017,
+        "reportSha256": "59c7e65dfc0ef450aaef986f261d85a1b2cfb26e359228094af828739b7586b8",
+        "webScreenshotSha256": "33d624c44ed73a9905d889b0daba89041509aec0ef1f14c03dfc5e14ea91d133",
+        "lynxScreenshotSha256": "bc7fedc23b94906ffc3aca48ff804321015e525750ca4c040a94ff4b56511c13"
+      },
+      "after": {
+        "readyMs": 2291,
+        "fullFrameSsim": 0.92087,
+        "fullFrameResidual": 0.07913,
+        "reportSha256": "00e575c0804818505e0001f0b58faf53ff7c88847d6e7c5ccb88f97888ae8ee6",
+        "webScreenshotSha256": "33d624c44ed73a9905d889b0daba89041509aec0ef1f14c03dfc5e14ea91d133",
+        "lynxScreenshotSha256": "e9b162a6b56e5e6160ee3793038115a08c86874008846c9f6ac9b6990a995392"
+      }
+    },
+    "empty": {
+      "query": "zzzz-no-result",
+      "emptyText": "No matching commands, projects, or threads.",
+      "rowCount": 0,
+      "geometry": {
+        "panel": { "x": 352, "y": 82, "width": 576, "height": 190 },
+        "residual": 0
+      },
+      "before": {
+        "readyMs": 2338,
+        "fullFrameSsim": 0.621993,
+        "fullFrameResidual": 0.378007,
+        "reportSha256": "d2331c510446c70e83397c38a36ef55afb5db11649abcf247d76efd32f0da67e",
+        "webScreenshotSha256": "62714b55b5ab3e79aff007e3736c8ed824192d025ffa2558c8eae2e06dfaefdd",
+        "lynxScreenshotSha256": "eae56ce26b7f567c57a3d6ae02904d5bc0bd14236aa146e6084b51b2e0def7e2"
+      },
+      "after": {
+        "readyMs": 2503,
+        "fullFrameSsim": 0.920435,
+        "fullFrameResidual": 0.079565,
+        "reportSha256": "aec9f4549063b9becd7433f8239061ba39d576c20321a942b760e51091fb1a4c",
+        "webScreenshotSha256": "62714b55b5ab3e79aff007e3736c8ed824192d025ffa2558c8eae2e06dfaefdd",
+        "lynxScreenshotSha256": "8621507791ea6d0d4cb04c7a868def94c42211f2a55cd0ea121fdf2554c727ec"
+      }
+    }
+  },
+  "validation": {
+    "harnessTests": "18/18",
+    "strictActionsOnlyCapture": "pass",
+    "strictEmptyCapture": "pass",
+    "rendererErrors": 0,
+    "agentBrowserLeakGate": "preflight=0, postflight=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Actions Only full-frame residual remains 0.079130.",
+    "Empty full-frame residual remains 0.079565.",
+    "Native physical query input remains pending-user-session.",
+    "Quick Switch Default remains a separate current overlay state."
+  ]
+}

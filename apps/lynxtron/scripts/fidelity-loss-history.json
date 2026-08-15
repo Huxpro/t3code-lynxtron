@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T08:03:00+09:00",
+  "updatedAt": "2026-08-16T08:13:47+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6351,6 +6351,150 @@
               "confidence": 0.99,
               "method": "quick-switch-panel-ssim",
               "source": "1 - panel-region SSIM 0.880387 after the dark glass fix; full-frame residual is 0.078559"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-filter-states-current-visible-baseline",
+      "observedAt": "2026-08-16T08:11:00+09:00",
+      "commit": "742e035cd98cf57c2366c378be1895a3d4e5a8af",
+      "codeCommit": "2339dc20b3ed28f40eda5d8a5dedd25c551a4e95",
+      "codeState": "commit",
+      "label": "Quick Switch filter states current visible baseline",
+      "narrative": "Actions Only and Empty now have explicit Quick Switch overlays and deterministic default queries, preventing either state from passing on base-page pixels. Direct final-harness captures reproduce the old opaque-panel and dark-scrim loss independently: Actions Only full-frame SSIM is 0.619983 for six matching action rows, and Empty is 0.621993 with matching no-results copy. Geometry, content, real input, and runtime pass in both states. This point replaces stale pre-overlay-preservation evidence without assigning the harness correction to product code.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Fresh explicit-state, overlay-in-frame captures replace older evidence whose screenshot-time click could close the overlay. The old material is retained for direct attribution."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/quick-switch-filter-states-visible-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "57bdea5f5c0364ae58309a1b24a46c94ec01c5a2d4a237b9e270587708259ffa"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "strict-actions-only-content",
+              "source": "Both panes show query > and the same six action rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-actions-only-geometry",
+              "source": "Panel and detailed anatomy match at 1280x820"
+            },
+            "material": {
+              "residual": 0.380017,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.619983 at the direct old-material Actions Only frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-shortcut-and-query-input",
+              "source": "Real shortcut and character input reach the matching > postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-actions-only-readiness",
+              "source": "Same fixture, query, rows, zero errors, and zero agent-browser pre/post leaks"
+            }
+          }
+        },
+        {
+          "states": ["quick-switch-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "strict-quick-switch-empty-content",
+              "source": "Both panes show query zzzz-no-result, matching no-results copy, and zero rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-empty-geometry",
+              "source": "Panel and empty-state anatomy match at 1280x820"
+            },
+            "material": {
+              "residual": 0.378007,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.621993 at the direct old-material Empty frame"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "real-shortcut-and-query-input",
+              "source": "Real shortcut and character input reach the matching empty postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-quick-switch-empty-readiness",
+              "source": "Same fixture, query, empty copy, zero errors, and zero agent-browser pre/post leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-filter-states-glass-fix-current",
+      "observedAt": "2026-08-16T08:13:47+09:00",
+      "commit": "bdd6da2d54bfa4d8fb562975536eec98fe181dc4",
+      "codeCommit": "bdd6da2d54bfa4d8fb562975536eec98fe181dc4",
+      "codeState": "commit",
+      "label": "Quick Switch filter states glass fix",
+      "narrative": "The measured Quick Switch dark-glass product fix is verified independently in the remaining filter states. Actions Only full-frame SSIM improves from 0.619983 to 0.920870 and Empty improves from 0.621993 to 0.920435, with unchanged exact geometry and content. Native physical query input remains pending-user-session rather than being inferred from Browser evidence.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after captures for each state share the final overlay-preserving harness, immutable fixture, query, route, theme, viewport, and Web authority. Only the shared Quick Switch material changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/quick-switch-filter-states-visible-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "57bdea5f5c0364ae58309a1b24a46c94ec01c5a2d4a237b9e270587708259ffa"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.07913,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.920870 after the shared dark-glass fix"
+            }
+          }
+        },
+        {
+          "states": ["quick-switch-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.079565,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.920435 after the shared dark-glass fix"
             }
           }
         }
