@@ -2383,6 +2383,8 @@ async function captureCell({
       !stateId.startsWith("existing-thread-") ||
       (isEmptyTranscriptState
         ? state?.web?.timelineMetrics?.threadSyncLabel === null &&
+          state?.web?.timelineMetrics?.empty === null &&
+          state?.lynx?.timelineMetrics?.empty === null &&
           webTimelineRows.length === 0 &&
           lynxTimelineRows.length === 0
         : webTimelineRows.length > 0 &&
@@ -2673,6 +2675,8 @@ async function captureCell({
             (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
+    state?.web?.timelineMetrics?.empty === null &&
+    state?.lynx?.timelineMetrics?.empty === null &&
     (state?.web?.timelineMetrics?.rows?.length ?? 0) === 0 &&
     (state?.lynx?.timelineMetrics?.rows?.length ?? 0) === 0;
   const finalPopulatedTranscriptReady =
