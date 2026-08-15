@@ -55,4 +55,13 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain("data-composer-compact-controls-menu");
     expect(composerSource).toContain("!compactFooter && !questionMode");
   });
+
+  it("stretches Review checkpoint cards across the transcript column", () => {
+    const start = overrides.indexOf(".turn-diff-card {");
+    const block = overrides.slice(start, overrides.indexOf("}", start));
+    expect(block).toContain("--align-self-column: stretch;");
+    expect(block).toContain("align-self: stretch;");
+    expect(block).toContain("width: 100%;");
+    expect(block).toContain("max-width: 760px;");
+  });
 });

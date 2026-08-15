@@ -3511,12 +3511,14 @@
 /* surface: transcript checkpoint/turn-diff card; gap: R7; remove-when: the
    shared Web card composition can compile to Lynx native list children. */
 .turn-diff-card {
+  --align-self-column: stretch;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
   max-width: 760px;
   min-width: 0;
+  align-self: stretch;
   margin-top: 7.75px;
   padding: 8px;
   border-radius: 18px;
