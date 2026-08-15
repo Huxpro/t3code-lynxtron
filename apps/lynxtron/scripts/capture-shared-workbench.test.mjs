@@ -82,6 +82,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "(state?.web?.settingsMetrics?.sectionTitles?.length ?? 0) === 0");
     assert.include(workbench, 'element.getAttribute("lynx-computed-display")');
     assert.include(workbench, 'style.getPropertyValue("--flex-direction")');
+    assert.include(workbench, ".transcript-user-bubble .inline-markdown-text");
+    assert.include(workbench, ".transcript-user-bubble .inline-markdown-code");
+    assert.include(workbench, ".transcript-assistant-row .inline-markdown-text");
     assert.include(workbench, "element.getAttributeNames()");
     assert.include(workbench, "readElementAncestors(settingsPanel)");
     assert.include(workbench, 'root?.querySelectorAll(".settings-row")');

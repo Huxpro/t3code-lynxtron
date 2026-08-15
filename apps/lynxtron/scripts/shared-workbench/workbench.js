@@ -870,7 +870,7 @@ function readLynxPane() {
         composerOverlay: readElementBox(root?.querySelector(".composer-overlay")),
         inlineRuns: [
           ...(root?.querySelectorAll(
-            ".transcript-user-bubble .md-inline, .transcript-user-bubble .md-inline-code, .transcript-assistant-row .md-inline, .transcript-assistant-row .md-inline-code",
+            ".transcript-user-bubble .md-inline, .transcript-user-bubble .md-inline-code, .transcript-user-bubble .inline-markdown-text, .transcript-user-bubble .inline-markdown-code, .transcript-assistant-row .md-inline, .transcript-assistant-row .md-inline-code, .transcript-assistant-row .inline-markdown-text, .transcript-assistant-row .inline-markdown-code",
           ) ?? []),
         ].map((item) => ({
           className: item.getAttribute("class"),
