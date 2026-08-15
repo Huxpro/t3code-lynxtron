@@ -700,7 +700,9 @@ export function MessagesTimeline({
     >
       <list
         ref={listRef}
-        className={hasTopBanner ? "timeline-list timeline-list--top-banner" : "timeline-list"}
+        className={
+          isWorking || hasTopBanner ? "timeline-list timeline-list--top-banner" : "timeline-list"
+        }
         scroll-orientation="vertical"
         list-type="single"
         span-count={1}
