@@ -3017,7 +3017,10 @@
 }
 .timeline-empty-host > .transcript-empty {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 /* ======= Transcript native list (surface: chat transcript; Lynx host leaf
    for the shared transcript projection; remove-when: transcript row chrome is
