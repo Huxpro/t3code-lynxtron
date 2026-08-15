@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T05:01:02+09:00",
+  "harnessCommit": "3f0942855bdc5cfd78ea4a19a89c6a067e4e74e5",
+  "stateId": "composer-sendable",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread"
+  },
+  "fixture": {
+    "source": "isolated snapshot copied from the prior read-only VACUUM fixture",
+    "seededSnapshotSha256": "b0817e39ce3d382e18bb8cc2c226df1b9c213fef4263bd00272854d57c690f0a",
+    "projectTitle": "background-only",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "input": "hello fidelity",
+    "context": ["Current checkout", "main"]
+  },
+  "classification": {
+    "productLoss": [],
+    "harnessMismatch": [
+      "The shared toolbar custom element reports a 718px Web border box and a 710px Lynx content box even though both place the first visible control at x=397 and the primary action at x=1107.",
+      "The prior geometry ledger treated the raw 8px box-model difference as a product delta. The renderer-neutral functional allocation from first control to primary action is exactly 710x28 in both panes.",
+      "Composer, surface, editor, footer, primary action, context, input, state, and screenshots are unchanged. This is measurement refinement, not a CSS fix."
+    ],
+    "ledgerScope": "Only Composer Sendable Lynx geometry is refined from the renderer-specific raw toolbar box to the matched functional allocation. Material, content, interaction, runtime, and all Native cells remain unchanged."
+  },
+  "browser": {
+    "status": "pass-with-residual",
+    "head": "3f0942855bdc5cfd78ea4a19a89c6a067e4e74e5",
+    "readyMs": 3709,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "agentBrowserLeakPreflight": 0,
+    "agentBrowserLeakPostflight": 0,
+    "inputChannel": "web-dom-focus+key-char:true|lynx-dom-focus+key-char:true",
+    "state": {
+      "web": "sendable",
+      "lynx": "sendable"
+    },
+    "primaryState": {
+      "web": "send",
+      "lynx": "send"
+    },
+    "geometry": {
+      "composer": {
+        "web": { "x": 384, "y": 340, "width": 768, "height": 140 },
+        "lynx": { "x": 384, "y": 340, "width": 768, "height": 140 }
+      },
+      "footer": {
+        "web": { "x": 385, "y": 435, "width": 766, "height": 44 },
+        "lynx": { "x": 385, "y": 435, "width": 766, "height": 44 }
+      },
+      "rawToolbar": {
+        "web": { "x": 393, "y": 433, "width": 718, "height": 36 },
+        "lynx": { "x": 393, "y": 433, "width": 710, "height": 36 }
+      },
+      "toolbarAllocation": {
+        "web": { "x": 397, "y": 437, "width": 710, "height": 28 },
+        "lynx": { "x": 397, "y": 437, "width": 710, "height": 28 }
+      },
+      "primaryActions": {
+        "web": { "x": 1107, "y": 435, "width": 32, "height": 32 },
+        "lynx": { "x": 1107, "y": 435, "width": 32, "height": 32 }
+      }
+    },
+    "fullFrameSsim": 0.944924,
+    "fullFrameResidual": 0.055076,
+    "composerSsim": 0.952113,
+    "composerResidual": 0.047887,
+    "webBundleSha256": "092b6228139a59f27eb2cfd33a467bee9fd8e8f5ebd22428e6ad4f8d742b15bf",
+    "lynxBundleSha256": "34ab6b2369ba322deb3e1fd1ea8f56b69093765ff2f50e229690f9bd8b0050a6",
+    "reportSha256": "d10a812b9e09f50ff3cc18e937fd8d8e3d502ef61202b29c366bcb2f2a907307",
+    "webScreenshotSha256": "67214852175a402e3640bbd2624d35bec25debb7a6d19b3d5263f11e860bb7f7",
+    "lynxScreenshotSha256": "beb91fdb598d9b89398c5544bf1bb5c1231a683e1d1c5ea1ec2b8b3c5c65e4e5"
+  },
+  "corroboration": {
+    "repositoryState": "non-git",
+    "seededSnapshotSha256": "af2dd741fbc7ec4dcb6cb2cec719c80769b6832bfb88cbf780da991d9a2b5434",
+    "projectTitle": "t3-hero-claude-workspace",
+    "toolbarAllocation": {
+      "web": { "x": 397, "y": 453, "width": 710, "height": 28 },
+      "lynx": { "x": 397, "y": 453, "width": 710, "height": 28 }
+    },
+    "reportSha256": "ec20372debdfef9c3b0c106a0b6382d9d218a6bd577adefc4ed51473dcfc79b9"
+  },
+  "validation": {
+    "harnessTests": "21/21",
+    "webProductionBuild": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "contextFixtureGate": "pass",
+    "nonGitFixtureGate": "pass",
+    "agentBrowserLeakGate": "preflight=0, postflight=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Full-frame material residual remains 0.055076 and Composer-region residual remains 0.047887.",
+    "Native physical keyboard focus, typing, and send remain pending-user-session.",
+    "The state verifies input-to-sendable behavior but does not submit a turn."
+  ]
+}

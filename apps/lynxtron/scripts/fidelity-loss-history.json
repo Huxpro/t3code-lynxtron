@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T04:42:48+09:00",
+  "updatedAt": "2026-08-16T05:01:02+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5678,6 +5678,42 @@
               "confidence": 0.99,
               "method": "exact-bundle-native-review-width-before-after",
               "source": "Preview 310 to 760, expanded 332 to 760, and tree 314 to 742 while all x/y/height anchors remain stable"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-sendable-toolbar-allocation-refinement-current",
+      "observedAt": "2026-08-16T05:01:02+09:00",
+      "commit": "3f0942855bdc5cfd78ea4a19a89c6a067e4e74e5",
+      "codeCommit": "3f0942855bdc5cfd78ea4a19a89c6a067e4e74e5",
+      "codeState": "commit",
+      "label": "Composer Sendable toolbar allocation refinement",
+      "narrative": "Current-head captures of both the checkout-context and non-git Sendable fixtures reproduce a raw 718px Web toolbar box and 710px Lynx custom-element box. The first visible control starts at x=397 and the primary action starts at x=1107 in both renderers, giving the same functional 710x28 allocation; Composer, footer, primary action, context, input, state, and screenshot hashes are unchanged. The 8px delta was a renderer box-model measurement mismatch, not product geometry. Material residual remains 0.055076 and Native physical typing remains pending-user-session.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The same pixels and product state are reclassified with a renderer-neutral toolbar allocation. No product source changed and no material or Native claim is added."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-sendable-toolbar-allocation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "e9fc113527136827808eb031d18ca40b5c184aad080ea3ed8b1bcbdba6844602"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "composer-toolbar-functional-allocation",
+              "source": "Composer, surface, editor, footer, first-control-to-primary-action allocation, primary action, and context rectangles at 1280x820"
             }
           }
         }
