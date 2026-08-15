@@ -66,8 +66,9 @@ describe("shared workbench lifecycle fault capture", () => {
       "utf8",
     );
 
-    assert.include(workbench, '".settings-panel section > div:first-child h2"');
-    assert.include(workbench, 'root?.querySelectorAll(".settings-section")');
+    assert.include(workbench, '".settings-page-scroll-fade > div"');
+    assert.include(workbench, '".settings-content--source-control > .settings-panel"');
+    assert.include(workbench, 'settingsPanel?.querySelectorAll(":scope > .settings-section")');
     assert.include(
       workbench,
       'sourceControlRows: [...doc.querySelectorAll(".source-control-item")]',

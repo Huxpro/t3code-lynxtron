@@ -883,50 +883,57 @@ function readLynxPane() {
       reviewMetrics: readReviewMetrics(root),
       pendingRequestMetrics,
       settingsMetrics: settingsRoute
-        ? {
-            navigationLabels: [...(root?.querySelectorAll(".settings-nav__item-label") ?? [])].map(
-              (item) => item.textContent?.trim(),
-            ),
-            rowIds: (SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? []).filter((id) =>
-              root?.getElementById(id),
-            ),
-            sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
-              (item) => item.textContent?.trim(),
-            ),
-            geometry: {
-              panel: readElementBox(root?.querySelector(".settings-panel")),
-              sections: [...(root?.querySelectorAll(".settings-section") ?? [])].map((item) => ({
-                title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
-                box: readElementBox(item),
-              })),
-              sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
-                (item) => ({
-                  text: item.textContent?.trim() ?? "",
-                  box: readElementBox(item),
-                }),
+        ? (() => {
+            const settingsPanel = root?.querySelector(
+              ".settings-content--source-control > .settings-panel",
+            );
+            return {
+              navigationLabels: [
+                ...(root?.querySelectorAll(".settings-nav__item-label") ?? []),
+              ].map((item) => item.textContent?.trim()),
+              rowIds: (SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? []).filter((id) =>
+                root?.getElementById(id),
               ),
-            },
-            sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
-              (item) => item.textContent?.trim(),
-            ),
-            emptyTexts: [...(root?.querySelectorAll(".settings-empty__text") ?? [])].map((item) =>
-              item.textContent?.trim(),
-            ),
-            errorTexts: [...(root?.querySelectorAll("[data-source-control-error]") ?? [])].map(
-              (item) => item.textContent?.trim(),
-            ),
-            sourceControlRetryLabels: [
-              ...(root?.querySelectorAll("[data-source-control-retry]") ?? []),
-            ]
-              .map((item) => item.textContent?.trim())
-              .filter((label) => label === "Scan" || label === "Rescan"),
-            loading: (root?.querySelector(".settings-empty__text")?.textContent ?? "").includes(
-              "Scanning",
-            ),
-            hostSlotTitles: [...(root?.querySelectorAll(".settings-row:not([id])") ?? [])].map(
-              (item) => item.querySelector(".settings-row__title")?.textContent?.trim(),
-            ),
-          }
+              sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
+                (item) => item.textContent?.trim(),
+              ),
+              geometry: {
+                panel: readElementBox(settingsPanel),
+                sections: [
+                  ...(settingsPanel?.querySelectorAll(":scope > .settings-section") ?? []),
+                ].map((item) => ({
+                  title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
+                  box: readElementBox(item),
+                })),
+                sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
+                  (item) => ({
+                    text: item.textContent?.trim() ?? "",
+                    box: readElementBox(item),
+                  }),
+                ),
+              },
+              sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
+                (item) => item.textContent?.trim(),
+              ),
+              emptyTexts: [...(root?.querySelectorAll(".settings-empty__text") ?? [])].map((item) =>
+                item.textContent?.trim(),
+              ),
+              errorTexts: [...(root?.querySelectorAll("[data-source-control-error]") ?? [])].map(
+                (item) => item.textContent?.trim(),
+              ),
+              sourceControlRetryLabels: [
+                ...(root?.querySelectorAll("[data-source-control-retry]") ?? []),
+              ]
+                .map((item) => item.textContent?.trim())
+                .filter((label) => label === "Scan" || label === "Rescan"),
+              loading: (root?.querySelector(".settings-empty__text")?.textContent ?? "").includes(
+                "Scanning",
+              ),
+              hostSlotTitles: [...(root?.querySelectorAll(".settings-row:not([id])") ?? [])].map(
+                (item) => item.querySelector(".settings-row__title")?.textContent?.trim(),
+              ),
+            };
+          })()
         : null,
       rendererErrors: d.rendererErrors ?? [],
       nativeModuleCalls: d.nativeModuleCalls ?? [],
@@ -1611,48 +1618,56 @@ function readWebPane() {
           }),
       },
       settingsMetrics: settingsRoute
-        ? {
-            navigationLabels: [
-              ...(doc.querySelectorAll(
-                '[data-slot="sidebar-menu-button"] span, .settings-nav [role="link"]',
-              ) ?? []),
-            ]
-              .map((item) => item.textContent?.trim())
-              .filter((label) => SETTINGS_NAV_LABELS.includes(label)),
-            rowIds: (SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? []).filter((id) =>
-              doc.getElementById(id),
-            ),
-            sectionTitles: [
-              ...doc.querySelectorAll(".settings-panel section > div:first-child h2"),
-            ].map((item) => item.textContent?.trim()),
-            geometry: {
-              panel: readElementBox(doc.querySelector(".settings-panel > div")),
-              sections: [...doc.querySelectorAll(".settings-panel section")].map((item) => ({
-                title: item.querySelector(":scope > div:first-child h2")?.textContent?.trim() ?? "",
-                box: readElementBox(item),
-              })),
-              sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) => ({
-                text: item.textContent?.trim() ?? "",
-                box: readElementBox(item),
-              })),
-            },
-            sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>
-              item.textContent?.trim(),
-            ),
-            emptyTexts: [...doc.querySelectorAll(".settings-empty__text")].map((item) =>
-              item.textContent?.trim(),
-            ),
-            errorTexts: [...doc.querySelectorAll("[data-source-control-error]")].map((item) =>
-              item.textContent?.trim(),
-            ),
-            sourceControlRetryLabels: [...doc.querySelectorAll("[data-source-control-retry]")]
-              .map((item) => item.textContent?.trim() || item.getAttribute("aria-label"))
-              .filter(Boolean),
-            loading: doc.querySelectorAll('[data-slot="skeleton"]').length > 0,
-            hostSlotTitles: [...doc.querySelectorAll(".settings-row:not([id])")].map((item) =>
-              item.querySelector(".settings-row__title")?.textContent?.trim(),
-            ),
-          }
+        ? (() => {
+            const settingsPanel = doc.querySelector(".settings-page-scroll-fade > div");
+            return {
+              navigationLabels: [
+                ...(doc.querySelectorAll(
+                  '[data-slot="sidebar-menu-button"] span, .settings-nav [role="link"]',
+                ) ?? []),
+              ]
+                .map((item) => item.textContent?.trim())
+                .filter((label) => SETTINGS_NAV_LABELS.includes(label)),
+              rowIds: (SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? []).filter((id) =>
+                doc.getElementById(id),
+              ),
+              sectionTitles: [
+                ...(settingsPanel?.querySelectorAll(":scope > section > div:first-child h2") ?? []),
+              ].map((item) => item.textContent?.trim()),
+              geometry: {
+                panel: readElementBox(settingsPanel),
+                sections: [...(settingsPanel?.querySelectorAll(":scope > section") ?? [])].map(
+                  (item) => ({
+                    title:
+                      item.querySelector(":scope > div:first-child h2")?.textContent?.trim() ?? "",
+                    box: readElementBox(item),
+                  }),
+                ),
+                sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map(
+                  (item) => ({
+                    text: item.textContent?.trim() ?? "",
+                    box: readElementBox(item),
+                  }),
+                ),
+              },
+              sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>
+                item.textContent?.trim(),
+              ),
+              emptyTexts: [...doc.querySelectorAll(".settings-empty__text")].map((item) =>
+                item.textContent?.trim(),
+              ),
+              errorTexts: [...doc.querySelectorAll("[data-source-control-error]")].map((item) =>
+                item.textContent?.trim(),
+              ),
+              sourceControlRetryLabels: [...doc.querySelectorAll("[data-source-control-retry]")]
+                .map((item) => item.textContent?.trim() || item.getAttribute("aria-label"))
+                .filter(Boolean),
+              loading: doc.querySelectorAll('[data-slot="skeleton"]').length > 0,
+              hostSlotTitles: [...doc.querySelectorAll(".settings-row:not([id])")].map((item) =>
+                item.querySelector(".settings-row__title")?.textContent?.trim(),
+              ),
+            };
+          })()
         : null,
       textSample: text.slice(0, 200),
     };
