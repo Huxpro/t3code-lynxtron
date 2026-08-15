@@ -933,6 +933,11 @@ function readLynxPane() {
                 settingsRows: [...(root?.querySelectorAll(".settings-row") ?? [])].map((item) => ({
                   title: item.querySelector(".settings-row__title")?.textContent?.trim() ?? "",
                   box: readElementBox(item),
+                  children: [...item.children].map((child) => ({
+                    className: child.getAttribute("class") ?? "",
+                    text: child.textContent?.trim() ?? "",
+                    box: readElementBox(child),
+                  })),
                 })),
               },
               sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
@@ -1676,6 +1681,11 @@ function readWebPane() {
                 settingsRows: [...doc.querySelectorAll(".settings-row")].map((item) => ({
                   title: item.querySelector(".settings-row__title, h3")?.textContent?.trim() ?? "",
                   box: readElementBox(item),
+                  children: [...item.children].map((child) => ({
+                    className: child.getAttribute("class") ?? "",
+                    text: child.textContent?.trim() ?? "",
+                    box: readElementBox(child),
+                  })),
                 })),
               },
               sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>

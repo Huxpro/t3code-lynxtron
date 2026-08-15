@@ -82,6 +82,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "element.getAttributeNames()");
     assert.include(workbench, "readElementAncestors(settingsPanel)");
     assert.include(workbench, 'root?.querySelectorAll(".settings-row")');
+    assert.include(workbench, "children: [...item.children].map");
   });
 
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
