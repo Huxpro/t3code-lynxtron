@@ -991,6 +991,12 @@ function readLynxPane() {
                     box: readElementBox(child),
                   })),
                 })),
+                loadingRows: [
+                  ...(root?.querySelectorAll("[data-source-control-loading-row]") ?? []),
+                ].map((item) => ({
+                  id: item.getAttribute("data-source-control-loading-row"),
+                  box: readElementBox(item),
+                })),
               },
               sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
                 (item) => item.textContent?.trim(),
@@ -1009,9 +1015,8 @@ function readLynxPane() {
               ]
                 .map((item) => item.textContent?.trim())
                 .filter((label) => label === "Scan" || label === "Rescan"),
-              loading: (root?.querySelector(".settings-empty__text")?.textContent ?? "").includes(
-                "Scanning",
-              ),
+              loading:
+                (root?.querySelectorAll("[data-source-control-loading-row]") ?? []).length > 0,
               hostSlotTitles: [...(root?.querySelectorAll(".settings-row:not([id])") ?? [])].map(
                 (item) => item.querySelector(".settings-row__title")?.textContent?.trim(),
               ),
@@ -1770,6 +1775,10 @@ function readWebPane() {
                     text: child.textContent?.trim() ?? "",
                     box: readElementBox(child),
                   })),
+                })),
+                loadingRows: [...doc.querySelectorAll('[data-slot="skeleton"]')].map((item) => ({
+                  id: item.getAttribute("data-source-control-loading-row"),
+                  box: readElementBox(item),
                 })),
               },
               sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>

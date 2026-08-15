@@ -35,3 +35,25 @@ export function sourceControlErrorSettingsGeometryMatches(webMetrics, lynxMetric
     )
   );
 }
+
+export function sourceControlLoadingSettingsGeometryMatches(webMetrics, lynxMetrics) {
+  const expectedTitles = ["Version Control", "Source Control Providers", "Text generation"];
+  const webSections = webMetrics?.geometry?.sections ?? [];
+  const lynxSections = lynxMetrics?.geometry?.sections ?? [];
+  const webRows = webMetrics?.geometry?.loadingRows ?? [];
+  const lynxRows = lynxMetrics?.geometry?.loadingRows ?? [];
+  return (
+    webMetrics?.loading === true &&
+    lynxMetrics?.loading === true &&
+    JSON.stringify(webMetrics?.sectionTitles ?? []) === JSON.stringify(expectedTitles) &&
+    JSON.stringify(lynxMetrics?.sectionTitles ?? []) === JSON.stringify(expectedTitles) &&
+    webSections.length === 3 &&
+    lynxSections.length === 3 &&
+    webSections.every((webSection, index) =>
+      rectWithin(webSection?.box?.rect, lynxSections[index]?.box?.rect, 12),
+    ) &&
+    webRows.length >= 4 &&
+    lynxRows.length === 4 &&
+    lynxRows.every((row) => row.box?.rect?.width > 0 && row.box.rect.height > 0)
+  );
+}

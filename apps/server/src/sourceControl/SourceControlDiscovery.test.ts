@@ -332,3 +332,49 @@ it.effect("returns a typed error for the harness failure scenario", () => {
       }),
   );
 });
+
+it.effect("holds discovery pending for the deterministic loading harness", () => {
+  const environmentKey = "T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING";
+  const previousValue = process.env[environmentKey];
+  const processMock = {
+    run: () => Effect.die("the injected pending state must not run discovery probes"),
+  } satisfies Partial<VcsProcess.VcsProcess["Service"]>;
+  const testLayer = SourceControlDiscovery.layer.pipe(
+    Layer.provide(
+      ServerConfig.layerTest(process.cwd(), {
+        prefix: "t3-source-control-discovery-pending-",
+      }),
+    ),
+    Layer.provide(Layer.mock(VcsProcess.VcsProcess)(processMock)),
+    Layer.provide(
+      sourceControlProviderRegistryTestLayer({
+        process: processMock,
+        bitbucket: {},
+      }),
+    ),
+    Layer.provideMerge(NodeServices.layer),
+  );
+
+  return Effect.acquireUseRelease(
+    Effect.sync(() => {
+      process.env[environmentKey] = "1";
+    }),
+    () =>
+      Effect.gen(function* () {
+        const discovery = yield* SourceControlDiscovery.SourceControlDiscovery;
+        const result = yield* Effect.raceFirst(
+          discovery.discover.pipe(Effect.as("discovery")),
+          Effect.succeed("pending"),
+        );
+        assert.strictEqual(result, "pending");
+      }).pipe(Effect.provide(testLayer)),
+    () =>
+      Effect.sync(() => {
+        if (previousValue === undefined) {
+          delete process.env[environmentKey];
+        } else {
+          process.env[environmentKey] = previousValue;
+        }
+      }),
+  );
+});

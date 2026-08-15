@@ -33,7 +33,10 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-import { sourceControlErrorSettingsGeometryMatches } from "./shared-workbench/settingsGates.mjs";
+import {
+  sourceControlErrorSettingsGeometryMatches,
+  sourceControlLoadingSettingsGeometryMatches,
+} from "./shared-workbench/settingsGates.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const lynxAppDir = path.resolve(scriptDir, "..");
@@ -1036,6 +1039,9 @@ async function main() {
       env: {
         ...process.env,
         SHELL: "/bin/sh",
+        ...(stateId === "settings-source-control-loading"
+          ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
+          : {}),
         ...(stateId === "settings-source-control-error"
           ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR: "1" }
           : {}),
@@ -2568,6 +2574,11 @@ async function captureCell({
     const settingsGeometryReady =
       archiveSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
       betaSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
+      (stateId !== "settings-source-control-loading" ||
+        sourceControlLoadingSettingsGeometryMatches(
+          state?.web?.settingsMetrics,
+          state?.lynx?.settingsMetrics,
+        )) &&
       (stateId !== "settings-source-control-error" ||
         sourceControlErrorSettingsGeometryMatches(
           state?.web?.settingsMetrics,
@@ -2882,6 +2893,11 @@ async function captureCell({
   const finalSettingsGeometryReady =
     archiveSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
     betaSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
+    (stateId !== "settings-source-control-loading" ||
+      sourceControlLoadingSettingsGeometryMatches(
+        state?.web?.settingsMetrics,
+        state?.lynx?.settingsMetrics,
+      )) &&
     (stateId !== "settings-source-control-error" ||
       sourceControlErrorSettingsGeometryMatches(
         state?.web?.settingsMetrics,
@@ -3008,6 +3024,8 @@ async function captureCell({
     : stateId === "settings-source-control-loading"
       ? state?.web?.settingsMetrics?.loading === true &&
         state?.lynx?.settingsMetrics?.loading === true &&
+        JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+          JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
         JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
           JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
       : stateId === "settings-source-control-error"

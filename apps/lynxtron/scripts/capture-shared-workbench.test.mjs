@@ -102,7 +102,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"Auto-settle inactive threads"');
     assert.include(source, '"Days of inactivity before auto-settle"');
     assert.include(source, "sourceControlErrorSettingsGeometryMatches");
+    assert.include(source, "sourceControlLoadingSettingsGeometryMatches");
+    assert.include(source, "T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING");
     assert.include(workbench, "sourceControlEmptyTitles:");
+    assert.include(workbench, "data-source-control-loading-row");
+    assert.include(workbench, "doc.querySelectorAll('[data-slot=\"skeleton\"]')");
     assert.include(workbench, 'root?.querySelector(".source-control-empty")');
     assert.include(workbench, "settingsPanel?.querySelector('[data-slot=\"empty\"]')");
   });

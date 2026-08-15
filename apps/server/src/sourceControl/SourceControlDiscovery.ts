@@ -131,21 +131,23 @@ export const make = Effect.gen(function* () {
 
   return SourceControlDiscovery.of({
     discover:
-      globalThis.process.env.T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR === "1"
-        ? Effect.fail(
-            new SourceControlDiscoveryError({
-              detail: "Source-control discovery is unavailable in this test environment.",
+      globalThis.process.env.T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING === "1"
+        ? Effect.never
+        : globalThis.process.env.T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR === "1"
+          ? Effect.fail(
+              new SourceControlDiscoveryError({
+                detail: "Source-control discovery is unavailable in this test environment.",
+              }),
+            )
+          : Effect.all({
+              versionControlSystems: Effect.all(
+                VCS_PROBES.map((entry) => probe(entry)) as ReadonlyArray<
+                  Effect.Effect<VcsDiscoveryItem>
+                >,
+                { concurrency: "unbounded" },
+              ),
+              sourceControlProviders: sourceControlProviders.discover,
             }),
-          )
-        : Effect.all({
-            versionControlSystems: Effect.all(
-              VCS_PROBES.map((entry) => probe(entry)) as ReadonlyArray<
-                Effect.Effect<VcsDiscoveryItem>
-              >,
-              { concurrency: "unbounded" },
-            ),
-            sourceControlProviders: sourceControlProviders.discover,
-          }),
   });
 });
 

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { sourceControlErrorSettingsGeometryMatches } from "./settingsGates.mjs";
+import {
+  sourceControlErrorSettingsGeometryMatches,
+  sourceControlLoadingSettingsGeometryMatches,
+} from "./settingsGates.mjs";
 
 const webMetrics = {
   sectionTitles: ["Server environment", "Text generation"],
@@ -42,6 +45,58 @@ describe("Source Control error Settings gate", () => {
             { box: { rect: { x: 320, y: 88, width: 896, height: 396 } } },
             { box: { rect: { x: 320, y: 532, width: 896, height: 286 } } },
           ],
+        },
+      }),
+    ).toBe(true);
+  });
+});
+
+describe("Source Control loading Settings gate", () => {
+  const web = {
+    loading: true,
+    sectionTitles: ["Version Control", "Source Control Providers", "Text generation"],
+    geometry: {
+      sections: [
+        { box: { rect: { x: 320, y: 88, width: 896, height: 176 } } },
+        { box: { rect: { x: 320, y: 312, width: 896, height: 176 } } },
+        { box: { rect: { x: 320, y: 536, width: 896, height: 290.21875 } } },
+      ],
+      loadingRows: Array.from({ length: 18 }, () => ({
+        box: { rect: { x: 320, y: 132, width: 20, height: 20 } },
+      })),
+    },
+  };
+
+  it("rejects the old single-card loading anatomy", () => {
+    expect(
+      sourceControlLoadingSettingsGeometryMatches(web, {
+        loading: true,
+        sectionTitles: ["Source Control", "Text generation"],
+        geometry: {
+          sections: [
+            { box: { rect: { x: 320, y: 88, width: 896, height: 136 } } },
+            { box: { rect: { x: 320, y: 272, width: 896, height: 286 } } },
+          ],
+          loadingRows: [],
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it("accepts three canonical sections and four full loading rows", () => {
+    expect(
+      sourceControlLoadingSettingsGeometryMatches(web, {
+        loading: true,
+        sectionTitles: ["Version Control", "Source Control Providers", "Text generation"],
+        geometry: {
+          sections: [
+            { box: { rect: { x: 320, y: 88, width: 896, height: 176 } } },
+            { box: { rect: { x: 320, y: 312, width: 896, height: 176 } } },
+            { box: { rect: { x: 320, y: 536, width: 896, height: 286 } } },
+          ],
+          loadingRows: Array.from({ length: 4 }, () => ({
+            box: { rect: { x: 320, y: 132, width: 896, height: 66 } },
+          })),
         },
       }),
     ).toBe(true);
