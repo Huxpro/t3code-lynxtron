@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T08:51:27+09:00",
+  "productCommit": "4945d125c579a428f8b1d40d2dbbd1988d12d0b4",
+  "harnessCommits": {
+    "stateAndLeakGuards": "63a28925d901800eecbe791d592c5823a1920dc2",
+    "selectedFixturePreparation": "e217b90f1b14b38e014c831f27b5e1a9d6653cca",
+    "rowDiagnostics": "137d9ba020c06e0e515fa83b5475a94e8bb06ab2"
+  },
+  "stateId": "model-picker-selected",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "model-picker"
+  },
+  "fixture": {
+    "source": "/Users/bytedance/.t3-lynxtron/userdata/state.sqlite",
+    "sourceAccess": "read-only VACUUM INTO",
+    "sourceSnapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "preparedSnapshotSha256": "129367490be6f6d7e0cbc191a62a8385f5c4aa451f0e03972db3c596ce1ae0bf",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "preparation": "The backed-up t3-sqlite-state helper updates only the disposable thread projection before server startup, verifies the authoritative value, and removes its owned backup."
+  },
+  "classification": {
+    "supersededPriorEvidence": [
+      "The 2026-08-15 selected-model score depended on the caller manually passing overlay=model-picker; the state itself did not require an open picker.",
+      "A fresh frozen source selected unavailable codex:gpt-5.6-sol and correctly produced zero visible selected rows, so the selected-row state needed an explicit session projection fixture rather than an equal-empty-array pass.",
+      "The old full-frame SSIM 0.939482 and panel SSIM 0.940604 are not reused as current evidence because they do not share the final state defaults, fixture preparation, bundles, or row diagnostics."
+    ],
+    "harnessMismatch": [
+      "The strict state now defaults to overlay=model-picker and fails if the overlay closes before screenshot capture.",
+      "The selected state requires one visible selected row in each renderer matching the authoritative session model key.",
+      "Every fidelity loop prints and enforces the agent-browser policy: PPID=1 or run-owned descendants fail, external live sessions are informational, and pattern killing is forbidden."
+    ],
+    "productLoss": [
+      "The first valid current pair showed exact selected-model semantics and exact panel placement, but Lynx rendered 16px regular white row copy without Web's 2px item separators while Web used 12px title and metadata typography.",
+      "Lynx also rendered a 16px favorite glyph in a 28px hitbox while Web rendered a 12px star in its compact trailing affordance.",
+      "The shared semantic row classes plus Lynx typography, metadata, separator, and star sizing fixes improve full-frame SSIM from 0.715461 to 0.729786, panel SSIM from 0.734683 to 0.857584, and selected-row SSIM from 0.742665 to 0.872293."
+    ],
+    "ledgerScope": "The strict baseline is a measurement refinement. The product point attributes only the direct final-harness Browser delta to 4945d125c. Native interaction and material cells remain unchanged."
+  },
+  "browser": {
+    "status": "pass",
+    "capturePass": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "overlayContentMatch": true,
+    "modelPickerSemanticMatch": true,
+    "rendererErrors": 0,
+    "readyMs": 1428,
+    "selectedModelKey": "claudeAgent:claude-fable-5",
+    "selectedProviderId": "claudeAgent",
+    "selectedRowKeys": {
+      "web": ["claudeAgent:claude-fable-5"],
+      "lynx": ["claudeAgent:claude-fable-5"]
+    },
+    "rowCount": {
+      "web": 9,
+      "lynx": 9
+    },
+    "rowLabels": [
+      "Claude Fable 5",
+      "Claude Opus 5",
+      "Claude Opus 4.8",
+      "Claude Opus 4.7",
+      "Claude Opus 4.6",
+      "Claude Opus 4.5",
+      "Claude Sonnet 5",
+      "Claude Sonnet 4.6",
+      "Claude Haiku 4.5"
+    ],
+    "geometry": {
+      "web": {
+        "panel": { "x": 397, "y": 375, "width": 360, "height": 346 },
+        "rail": { "x": 398, "y": 376, "width": 44, "height": 344 },
+        "content": { "x": 442, "y": 376, "width": 314, "height": 344 },
+        "search": { "x": 443, "y": 376, "width": 313, "height": 45 },
+        "list": { "x": 443, "y": 421, "width": 312, "height": 299 },
+        "selectedRow": { "x": 451, "y": 427, "width": 303, "height": 53 },
+        "selectedTitle": { "x": 459, "y": 435, "width": 83.484375, "height": 16.5 },
+        "selectedProviderLabel": { "x": 477, "y": 455.5, "width": 39.03125, "height": 16.5 },
+        "selectedProviderIcon": { "x": 459, "y": 457.75, "width": 12, "height": 12 },
+        "selectedFavoriteIcon": { "x": 732, "y": 447.5, "width": 12, "height": 12 }
+      },
+      "lynx": {
+        "panel": { "x": 397, "y": 375, "width": 360, "height": 346 },
+        "rail": { "x": 398, "y": 376, "width": 44, "height": 344 },
+        "content": { "x": 442, "y": 376, "width": 314, "height": 344 },
+        "search": { "x": 443, "y": 376, "width": 313, "height": 45 },
+        "list": { "x": 443, "y": 421, "width": 313, "height": 299 },
+        "selectedRow": { "x": 451, "y": 427, "width": 304, "height": 53 },
+        "selectedTitle": { "x": 459, "y": 435, "width": 85.5625, "height": 17 },
+        "selectedProviderLabel": { "x": 477, "y": 455, "width": 39.484375, "height": 17 },
+        "selectedProviderIcon": { "x": 459, "y": 457.5, "width": 12, "height": 12 },
+        "selectedFavoriteGlyph": {
+          "x": 730.90625,
+          "y": 447.5,
+          "width": 12.1875,
+          "height": 12
+        }
+      },
+      "panelDelta": { "x": 0, "y": 0, "width": 0, "height": 0 },
+      "rowRhythmDeltaY": 0,
+      "largestPrimaryDelta": 2.078125
+    },
+    "before": {
+      "fullFrameSsim": 0.715461,
+      "fullFrameResidual": 0.284539,
+      "panelSsim": 0.734683,
+      "panelResidual": 0.265317,
+      "selectedRowSsim": 0.742665,
+      "selectedRowResidual": 0.257335,
+      "reportSha256": "d4a8479ec71e6dc583a553b37ae555266cd86f0e375342eaebd657d417bd9a3f",
+      "webScreenshotSha256": "52ae574b987db4f7e41afddb528d127b74080d9a143afa3eacba6f4ac09adaa8",
+      "lynxScreenshotSha256": "16271d1025e7d1617c0b732661e861eee879401e8007e0cc405e0da3b74e1aa5"
+    },
+    "after": {
+      "fullFrameSsim": 0.729786,
+      "fullFrameResidual": 0.270214,
+      "panelSsim": 0.857584,
+      "panelResidual": 0.142416,
+      "selectedRowSsim": 0.872293,
+      "selectedRowResidual": 0.127707,
+      "reportSha256": "4784820ea726fcaae1245877a3ba55005037c5db21867db14c62f97a93dc9614",
+      "webScreenshotSha256": "9dca016aa33bc18233efe8c0ec843dcde312a086219c756824a1d2e1dc104dae",
+      "lynxScreenshotSha256": "bbc31074a461ed55d43bf7d4e9db3309c79885b65a48f8086f4b9b7c0eecadc8",
+      "webBundleSha256": "6a3f3ff4bf10c50e9e10f0e9d1acf2e2a43f56428c44dc450120ff2049b1a5f6",
+      "lynxBundleSha256": "dfd7b68d131772693a5732bd9ac94d09f9e0abfb75be2acd833776a71dc644b4"
+    }
+  },
+  "validation": {
+    "focusedTests": "41/41",
+    "lynxTypecheck": "pass",
+    "webTypecheck": "pass",
+    "lynxBrowserPreviewBuild": "pass with existing import.meta and bundle-size warnings",
+    "webBuild": "pass with existing chunk-size warnings",
+    "strictBeforeCapture": "pass",
+    "strictAfterCapture": "pass",
+    "rendererErrors": 0,
+    "agentBrowserLeakGate": "all loop, test, build, capture, commit, and push preflight/postflight checks owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Full-frame residual remains 0.270214 and panel residual remains 0.142416; the large backdrop and broader glass material differences remain explicit.",
+    "The Lynx favorite affordance is a matched-size glyph rather than the Web Lucide vector, so its raster shape is not pixel-identical.",
+    "Native selected-row pixels and real OS focus/dismiss interaction were not recaptured in this Browser-focused slice."
+  ]
+}
