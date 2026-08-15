@@ -174,6 +174,27 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'name: "native-settings-source-control.png"');
   });
 
+  it("verifies the exact-bundle Source Control error anatomy and retry", () => {
+    assert.include(source, "async function verifySourceControlErrorBehavior");
+    assert.include(source, '"--verify-source-control-error"');
+    assert.include(source, 'T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR: "1"');
+    assert.include(source, "async function waitForSourceControlDiscoveryError");
+    assert.include(
+      source,
+      'latest.message === "Source-control discovery is unavailable in this test environment."',
+    );
+    assert.include(source, 'selector: ".source-control-empty"');
+    assert.include(source, 'readSelectorRects(client, ".source-control-empty__title")');
+    assert.include(source, 'readSelectorRects(client, ".source-control-empty__description")');
+    assert.include(source, 'readSelectorRects(client, "[data-source-control-retry]")');
+    assert.include(source, "Math.abs(sections[0].height - 396) > 1");
+    assert.include(source, "Math.abs(empty.height - 352) > 1");
+    assert.include(source, "Math.abs(sectionGap - 48) > 2");
+    assert.include(source, "waitForSequenceAdvance");
+    assert.include(source, '"native-settings-source-control-error.png"');
+    assert.include(outcomeChecksSource, "sourceControlError");
+  });
+
   it("verifies the Native working transcript layout and locked workspace copy", () => {
     assert.include(source, "readComposerOutcome(client, { allowMissingInteraction: true })");
     assert.include(source, "assertComposerGeometry(composer, { allowMissingInteraction: true })");

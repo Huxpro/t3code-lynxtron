@@ -363,6 +363,37 @@ async function invokeConnector(client, method, params) {
   return JSON.parse(result.value);
 }
 
+async function waitForSourceControlDiscoveryError({ child, client, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before Source Control discovery became ready.");
+    }
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression:
+        'globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.invoke("discoverSourceControl", {}).then((value) => JSON.stringify({status:"success",value})).catch((error) => JSON.stringify({status:"error",message:error instanceof Error?error.message:String(error)}))',
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    const result = commandResult(response);
+    latest =
+      typeof result?.value === "string"
+        ? JSON.parse(result.value)
+        : { status: "transport-error", value: result?.value ?? null };
+    if (
+      latest.status === "error" &&
+      latest.message === "Source-control discovery is unavailable in this test environment."
+    ) {
+      return latest;
+    }
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(
+    `Source Control discovery did not reach the injected typed error: ${JSON.stringify({ latest })}`,
+  );
+}
+
 async function readConnectorSnapshot(client) {
   const response = await client.runCdp("Runtime.evaluate", {
     expression:
@@ -2882,6 +2913,112 @@ async function verifySettingsRouteBehavior({
   };
 }
 
+async function verifySourceControlErrorBehavior({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+}) {
+  const discoveryProbe = await waitForSourceControlDiscoveryError({ child, client, timeoutMs });
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--source-control",
+    timeoutMs,
+  });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "source-control",
+    route: "/settings/source-control",
+    timeoutMs,
+  });
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-content--source-control",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Server environment") === true &&
+      measurement.text.includes("Could not scan the server environment") &&
+      measurement.text.includes(
+        "Source-control discovery is unavailable in this test environment.",
+      ) &&
+      measurement.text.includes("Scan") &&
+      measurement.text.includes("Text generation"),
+  });
+  const sections = await readSelectorRects(client, ".source-control-section");
+  const [empty] = await readSelectorRects(client, ".source-control-empty");
+  const [title] = await readSelectorRects(client, ".source-control-empty__title");
+  const [description] = await readSelectorRects(client, ".source-control-empty__description");
+  const [retry] = await readSelectorRects(client, "[data-source-control-retry]");
+  const sectionGap =
+    sections.length === 2 ? sections[1].y - (sections[0].y + sections[0].height) : null;
+  if (
+    sections.length !== 2 ||
+    !empty ||
+    !title ||
+    !description ||
+    !retry ||
+    Math.abs(sections[0].width - 896) > 1 ||
+    Math.abs(sections[0].height - 396) > 1 ||
+    Math.abs(empty.width - 896) > 1 ||
+    Math.abs(empty.height - 352) > 1 ||
+    typeof sectionGap !== "number" ||
+    Math.abs(sectionGap - 48) > 2
+  ) {
+    throw new Error(
+      `Source Control error geometry drifted: ${JSON.stringify({ sections, sectionGap, empty, title, description, retry })}`,
+    );
+  }
+  const beforeRetry = await readRendererReadiness(client);
+  await tapSelector({ child, client, selector: "[data-source-control-retry]", timeoutMs });
+  const afterRetry = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeRetry,
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".source-control-empty",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Could not scan the server environment") === true &&
+      measurement.text.includes(
+        "Source-control discovery is unavailable in this test environment.",
+      ),
+  });
+  return {
+    status: "pass",
+    panel: panel.rect,
+    sections,
+    sectionGap,
+    empty,
+    title,
+    description,
+    retry,
+    discoveryProbe,
+    retryTransport: { before: beforeRetry, after: afterRetry },
+    screenshot: captureNativeScreenshot({
+      client,
+      devToolCli,
+      outputDirectory,
+      name: "native-settings-source-control-error.png",
+    }),
+  };
+}
+
 async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   const before = await readSidebarScopeLayout(client, false);
   await tapSelector({
@@ -3138,6 +3275,7 @@ async function runOnce({
   requireCanonicalThread,
   timeoutMs,
   verifySettingsNavigation,
+  verifySourceControlError: shouldVerifySourceControlError,
   verifyComposerGeometry: shouldVerifyComposerGeometry,
   verifyHeroComposerState: shouldVerifyHeroComposerState,
   verifyIdleThreadState: shouldVerifyIdleThreadState,
@@ -3176,6 +3314,7 @@ async function runOnce({
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      ...(shouldVerifySourceControlError ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR: "1" } : {}),
     },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -3331,6 +3470,15 @@ async function runOnce({
             timeoutMs,
           })
         : undefined;
+    const sourceControlError = shouldVerifySourceControlError
+      ? await verifySourceControlErrorBehavior({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
     const composer = runPlan11Outcomes
       ? await captureOutcome(
           () => verifyComposerBehavior({ child, client, timeoutMs }),
@@ -3447,6 +3595,7 @@ async function runOnce({
       idleThreadState,
       quickSwitchDefault,
       settingsNavigation,
+      sourceControlError,
       composer,
       modelPickerFidelity,
       composerStop,
@@ -3480,6 +3629,7 @@ async function runOnce({
       quickSwitchDefault,
       composerThemeScreenshot,
       settingsNavigation,
+      sourceControlError,
       composer,
       modelPickerFidelity,
       composerStop,
@@ -3526,6 +3676,7 @@ const expectedTheme = argumentValue("--expected-theme");
 const expectedModelLabel = argumentValue("--expected-model-label");
 const expectNoComposerContext = process.argv.includes("--expect-no-composer-context");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
+const shouldVerifySourceControlError = process.argv.includes("--verify-source-control-error");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
@@ -3678,9 +3829,17 @@ const heroOnlyEmptyFixture =
   !verifyComposerBranding &&
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
+const sourceControlErrorOnlyEmptyFixture =
+  shouldVerifySourceControlError &&
+  !verifySettingsNavigation &&
+  !verifySidebarScope &&
+  !verifyComposerBranding &&
+  !shouldVerifyModelPickerFidelity &&
+  !verifyPlan11SemanticOutcomes;
 if (
   !lifecycleOnlyEmptyFixture &&
   !heroOnlyEmptyFixture &&
+  !sourceControlErrorOnlyEmptyFixture &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
@@ -3718,9 +3877,11 @@ for (let index = 1; index <= runs; index += 1) {
       expectedModelLabel,
       outputDirectory,
       projectCwd,
-      requireCanonicalThread: !lifecycleOnlyEmptyFixture && !heroOnlyEmptyFixture,
+      requireCanonicalThread:
+        !lifecycleOnlyEmptyFixture && !heroOnlyEmptyFixture && !sourceControlErrorOnlyEmptyFixture,
       timeoutMs,
       verifySettingsNavigation,
+      verifySourceControlError: shouldVerifySourceControlError,
       verifyComposerGeometry: shouldVerifyComposerGeometry,
       verifyHeroComposerState: shouldVerifyHeroComposerState,
       verifyIdleThreadState: shouldVerifyIdleThreadState,
