@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T02:34:19+09:00",
+  "productCommit": "aa8a3a87137d53e524cf502e0612de0d33fb88e4",
+  "browserVerifierCommit": "36ec93d795343421019115a8c964aa018e0171c8",
+  "nativeVerifierCommit": "970cdc83d536469e2a62f03c0ee578308b81b8b0",
+  "stateId": "settings-source-control-error",
+  "scope": {
+    "authority": "web",
+    "candidates": ["lynx", "native"],
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-source-control-error",
+    "route": "/settings/source-control"
+  },
+  "fixture": {
+    "browser": {
+      "source": "read-only VACUUM INTO from ~/.t3/userdata/state.sqlite",
+      "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+    },
+    "native": {
+      "createdThroughRealProjectCommand": true,
+      "snapshotSha256": "c07b14f3c9d4777e359b92125435cc41f3bf729cceec9f615a3ebe98776c7d5e",
+      "projectTitle": "t3-sc-error-native",
+      "modelSelection": {
+        "instanceId": "codex",
+        "model": "gpt-5.6-sol"
+      }
+    },
+    "fault": {
+      "source": "server SourceControlDiscovery service",
+      "environment": "T3_TEST_SOURCE_CONTROL_DISCOVERY_ERROR=1",
+      "message": "Source-control discovery is unavailable in this test environment."
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Web rendered the canonical Server environment section with a stacked icon, Could not scan the server environment title, typed error description, and Scan action. Lynx rendered only a Source Control heading, raw error string, and Scan action.",
+      "The Lynx error section was 160px tall instead of 396px, shifting Text generation from y=532 to y=296. The shared empty-state projection and Lynx anatomy recover the canonical content and exact 896x396 section plus 896x352 empty surface.",
+      "Full-frame SSIM improves from 0.831678 to 0.864727; Settings-main SSIM improves from 0.830602 to 0.874760; error-section SSIM improves from 0.814889 to 0.895093."
+    ],
+    "harnessMismatch": [
+      "The original Browser gate required only equal error strings and Scan labels, so the 236px layout collapse still passed. A pure geometry helper now rejects the old frame and requires canonical titles, empty surface, and section geometry.",
+      "The first Native verifier attempt navigated before connector commands were ready and observed the startup error not connected. The verifier now waits on a real discoverSourceControl RPC until the injected typed error arrives.",
+      "The second Native attempt compared a Browser absolute y coordinate with Native coordinates. The corrected verifier requires the same 896x396 section, 896x352 empty surface, and 48px relative section gap inside the Native coordinate space."
+    ],
+    "ledgerScope": "Matched Browser evidence updates Lynx content, geometry, material, and runtime. Exact-bundle Native evidence updates content, geometry, interaction, and runtime. Native material parity is not claimed."
+  },
+  "browser": {
+    "status": "pass-with-residual",
+    "capturePass": true,
+    "head": "aa8a3a87137d53e524cf502e0612de0d33fb88e4",
+    "readyMs": 2429,
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "webBundleSha256": "bf797448f4ea4eb8b0738b567af7c28c84964996e2f4b9784fff9bb463597335",
+    "lynxBundleSha256": "c9db48c01669aa40c658fa4125ad218a95a38bcf4d7f70daf2d77f17174ea712",
+    "content": {
+      "sectionTitles": ["Server environment", "Text generation"],
+      "emptyTitle": "Could not scan the server environment",
+      "error": "Source-control discovery is unavailable in this test environment.",
+      "retry": "Scan"
+    },
+    "before": {
+      "lynxErrorSection": { "x": 320, "y": 88, "width": 896, "height": 160 },
+      "lynxTextGeneration": { "x": 320, "y": 296, "width": 896, "height": 286 },
+      "fullFrameSsim": 0.831678,
+      "settingsMainSsim": 0.830602,
+      "errorSectionSsim": 0.814889
+    },
+    "after": {
+      "web": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 734.21875 },
+        "errorSection": { "x": 320, "y": 88, "width": 896, "height": 396 },
+        "empty": { "x": 320, "y": 132, "width": 896, "height": 352 },
+        "textGeneration": { "x": 320, "y": 532, "width": 896, "height": 290.21875 }
+      },
+      "lynx": {
+        "panel": { "x": 320, "y": 88, "width": 896, "height": 730 },
+        "errorSection": { "x": 320, "y": 88, "width": 896, "height": 396 },
+        "empty": { "x": 320, "y": 132, "width": 896, "height": 352 },
+        "textGeneration": { "x": 320, "y": 532, "width": 896, "height": 286 }
+      },
+      "fullFrameSsim": 0.864727,
+      "fullFrameResidual": 0.135273,
+      "settingsMainSsim": 0.87476,
+      "errorSectionSsim": 0.895093
+    },
+    "reportSha256": "82d2ce5b0980a9bf345294bc3a4dbeaa5802f3e152c9054845e318befb59f230",
+    "webScreenshotSha256": "83a35f61a9292dbaaa9c15ee222a1ff5ac8900bb6d0d00e40f81c170c4d62802",
+    "lynxScreenshotSha256": "aeeda7ebc0f67cf38df0ce72636a5e35a5b84b20f779cc16e44893dda272987f"
+  },
+  "native": {
+    "status": "pass",
+    "head": "970cdc83d536469e2a62f03c0ee578308b81b8b0",
+    "bundleSha256": "ab323d7cdfb2d3d278c2968a052252e1ad603d0571828dcbb50314e4e32c2ed3",
+    "bundleBytes": 4417165,
+    "snapshotSha256": "c07b14f3c9d4777e359b92125435cc41f3bf729cceec9f615a3ebe98776c7d5e",
+    "viewport": { "width": 1280, "height": 820 },
+    "imageDimensions": { "width": 2560, "height": 1640 },
+    "transportSequence": {
+      "beforeProbe": 2,
+      "afterProbe": 3,
+      "beforeRetry": 10,
+      "afterRetry": 11
+    },
+    "geometry": {
+      "panel": { "x": 256, "y": 52, "width": 1024, "height": 808 },
+      "errorSection": { "x": 320, "y": 88, "width": 896, "height": 396 },
+      "empty": { "x": 320, "y": 132, "width": 896, "height": 352 },
+      "textGeneration": { "x": 320, "y": 532, "width": 896, "height": 288 },
+      "sectionGap": 48,
+      "retry": { "x": 739, "y": 374, "width": 59, "height": 24 }
+    },
+    "interaction": "DevTool Input.emulateTouchFromMouseEvent on the measured Scan control; the main transport advanced from 10 to 11 and returned to the same typed server error.",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "e43abda1f86c84f63af6eaf2e26ae42376e44da3c0dfb249597b191ca18a6982",
+    "screenshotSha256": "6862bbea607e7e22db320916fedb1213b77cb8c265d71bb86043dcc0eaca9915"
+  },
+  "validation": {
+    "productTests": "38/38",
+    "browserHarnessTests": "18/18",
+    "nativeVerifierTests": "17/17",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "webProductionBuild": "pass",
+    "lynxBrowserPreviewBuild": "pass",
+    "lynxDesktopProductionBuild": "pass",
+    "browserHardGate": "pass",
+    "nativeExactBundleGate": "pass",
+    "ownedListenersAfterCapture": 0
+  },
+  "remainingRisk": [
+    "Browser full-frame material residual remains 0.135273.",
+    "The Lynx Text generation section is 4.21875px shorter than Web because of renderer text quantization.",
+    "The Native screenshot is exact-bundle representative evidence, not a matched Native-to-Web pixel residual.",
+    "Source Control loading remains a separate high-loss state with intentionally different loading anatomy."
+  ]
+}
