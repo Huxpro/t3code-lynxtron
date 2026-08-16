@@ -93,6 +93,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     providers,
     providerEntries,
     modelSelection,
+    modelSelectionError,
     serverConfig,
     activePlan,
     activeProposedPlan,
@@ -462,9 +463,9 @@ export function ChatView({ threadId }: ChatViewProps) {
         />
       }
       banner={
-        sessionError && !hero ? (
+        (sessionError || modelSelectionError) && !hero ? (
           <ThreadErrorBannerSurface
-            description={sessionError}
+            description={sessionError ?? modelSelectionError}
             icon={<Icon name="circle-alert" size={16} color="#ef4444" />}
           />
         ) : shouldRenderConnectionLifecycleBanner({ hero }) ? (
@@ -501,7 +502,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           messages={messages}
           activities={activities}
           sessionStatus={sessionStatus}
-          hasTopBanner={Boolean(sessionError)}
+          hasTopBanner={Boolean(sessionError || modelSelectionError)}
           cwd={cwd}
           latestTurn={latestTurn}
           proposedPlans={proposedPlans}

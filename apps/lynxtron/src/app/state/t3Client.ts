@@ -74,8 +74,10 @@ import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
 import {
   availableThreadModels,
   findExactModelForSelection,
+  modelSelectionMutationError,
   projectModelSelectionCandidates,
   resolveActiveThreadModelSelection,
+  shouldRollbackModelSelectionMutation,
 } from "./modelSelection.logic";
 import { shouldReportVcsStatusReadFailure } from "./vcsStatusProjection.logic";
 import type {
@@ -117,6 +119,8 @@ export interface T3ClientState {
   readonly models: ReadonlyArray<ModelInfo>;
   readonly selectedModel?: ModelInfo;
   readonly modelSelection?: ModelSelection;
+  readonly modelSelectionError: string | null;
+  readonly modelSelectionPending: boolean;
   readonly serverConfig?: ServerConfig;
   readonly providers: ReadonlyArray<ServerProvider>;
   readonly settings?: ServerSettings;
@@ -148,6 +152,8 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   sessionStatus: "idle",
   sessionError: null,
   models: [],
+  modelSelectionError: null,
+  modelSelectionPending: false,
   providers: [],
   authAccess: {
     pairingLinks: [],
@@ -180,6 +186,7 @@ let mainTransport: MainConnectorTransport | null = null;
 let mainCommandBridge: Partial<PollBridge> | null = null;
 let mtsProviderFixture: ServerProvider | undefined;
 let vcsStatusRequestSequence = 0;
+let modelSelectionMutationSequence = 0;
 
 function getPreloadBridge(): Partial<PollBridge> | undefined {
   "background only";
@@ -532,6 +539,8 @@ function installTransportDevToolHook(): void {
         showInteractionModeToggle: boolean | undefined;
       };
       modelCount: number;
+      modelSelectionError: string | null;
+      modelSelectionPending: boolean;
       providerCount: number;
       providerEntryCount: number;
       vcsStatus: VcsStatusResult | null;
@@ -600,6 +609,8 @@ function installTransportDevToolHook(): void {
             : [];
         }),
       modelCount: state.models.length,
+      modelSelectionError: state.modelSelectionError,
+      modelSelectionPending: state.modelSelectionPending,
       providerCount: state.providers.length,
       providerEntryCount: state.providerEntries.length,
       vcsStatus: state.vcsStatus,
@@ -980,25 +991,86 @@ function revokeOtherClientSessions(): Promise<number> {
   return bridge.revokeOtherClientSessions();
 }
 
+function projectThreadModelSelection(
+  threads: ReadonlyArray<ThreadSummary>,
+  threadId: string | undefined,
+  selection: ModelSelection | undefined,
+): ReadonlyArray<ThreadSummary> {
+  if (!threadId || !selection) return threads;
+  return threads.map((thread) =>
+    thread.id === threadId ? { ...thread, modelSelection: selection } : thread,
+  );
+}
+
+function persistModelSelectionMutation(input: {
+  readonly previous: {
+    readonly selectedModel: ModelInfo | undefined;
+    readonly selection: ModelSelection | undefined;
+    readonly threads: ReadonlyArray<ThreadSummary>;
+  };
+  readonly selectedModel: ModelInfo | undefined;
+  readonly selection: ModelSelection;
+  readonly threadId: string | undefined;
+}): void {
+  const bridge = getBridge();
+  const sequence = ++modelSelectionMutationSequence;
+  patchState({
+    selectedModel: input.selectedModel,
+    modelSelection: input.selection,
+    modelSelectionError: null,
+    modelSelectionPending: true,
+    threads: projectThreadModelSelection(input.previous.threads, input.threadId, input.selection),
+  });
+  setPref("modelSelection", input.selection);
+  const mutation = bridge?.setModelSelection
+    ? bridge.setModelSelection({ threadId: input.threadId, selection: input.selection })
+    : Promise.reject(new Error("Model selection updates are unavailable."));
+  void mutation.then(
+    () => {
+      if (
+        shouldRollbackModelSelectionMutation({
+          currentSequence: modelSelectionMutationSequence,
+          failedSequence: sequence,
+        })
+      ) {
+        patchState({ modelSelectionError: null, modelSelectionPending: false });
+      }
+    },
+    (error: unknown) => {
+      if (
+        !shouldRollbackModelSelectionMutation({
+          currentSequence: modelSelectionMutationSequence,
+          failedSequence: sequence,
+        })
+      ) {
+        return;
+      }
+      patchState({
+        selectedModel: input.previous.selectedModel,
+        modelSelection: input.previous.selection,
+        modelSelectionError: modelSelectionMutationError(error),
+        modelSelectionPending: false,
+        threads: input.previous.threads,
+      });
+      setPref("modelSelection", input.previous.selection ?? null);
+    },
+  );
+}
+
 function setModelSelection(model: ModelInfo): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const threadId = state.activeThreadId;
   const selection = { instanceId: model.instanceId, model: model.slug };
-  patchState({
+  persistModelSelectionMutation({
+    previous: {
+      selectedModel: state.selectedModel,
+      selection: state.modelSelection,
+      threads: state.threads,
+    },
     selectedModel: model,
-    modelSelection: selection,
-    threads: threadId
-      ? state.threads.map((thread) =>
-          thread.id === threadId ? { ...thread, modelSelection: selection } : thread,
-        )
-      : state.threads,
+    selection,
+    threadId,
   });
-  setPref("modelSelection", selection);
-  void getBridge()
-    ?.setModelSelection?.({ threadId, selection })
-    .catch((cause) => {
-      console.error("[t3-client] failed to set model selection", { cause, selection, threadId });
-    });
 }
 
 function setModelOptions(options: NonNullable<ModelSelection["options"]>): void {
@@ -1013,20 +1085,15 @@ function setModelOptions(options: NonNullable<ModelSelection["options"]>): void 
       : undefined);
   if (!selection) return;
   const nextSelection: ModelSelection = { ...selection, options };
-  patchState({
-    modelSelection: nextSelection,
-    threads: state.activeThreadId
-      ? state.threads.map((thread) =>
-          thread.id === state.activeThreadId
-            ? { ...thread, modelSelection: nextSelection }
-            : thread,
-        )
-      : state.threads,
-  });
-  setPref("modelSelection", nextSelection);
-  void getBridge()?.setModelSelection?.({
-    threadId: state.activeThreadId,
+  persistModelSelectionMutation({
+    previous: {
+      selectedModel: state.selectedModel,
+      selection: state.modelSelection,
+      threads: state.threads,
+    },
+    selectedModel: state.selectedModel,
     selection: nextSelection,
+    threadId: state.activeThreadId,
   });
 }
 

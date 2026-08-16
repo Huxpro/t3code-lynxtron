@@ -90,3 +90,19 @@ export function resolveActiveThreadModelSelection<
   }
   return { selectedModel: undefined, selection: threadSelection };
 }
+
+export interface ModelSelectionMutationSnapshot<TModel, TSelection> {
+  readonly selectedModel: TModel | undefined;
+  readonly selection: TSelection | undefined;
+}
+
+export function shouldRollbackModelSelectionMutation(input: {
+  readonly currentSequence: number;
+  readonly failedSequence: number;
+}): boolean {
+  return input.currentSequence === input.failedSequence;
+}
+
+export function modelSelectionMutationError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}

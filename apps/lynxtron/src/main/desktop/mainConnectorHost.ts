@@ -29,6 +29,7 @@ import {
   type ConnectorThreadPayload,
 } from "../../shared/connectorProtocol.ts";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
+import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
 import type { ServerConfig } from "@t3tools/contracts";
 
 export interface MainConnectorWindow {
@@ -71,6 +72,7 @@ export interface MainConnectorHostOptions {
   readonly removeHandler?: (method: string) => void;
   readonly createConnector: (events: ConnectorEventCallbacks) => ConnectorLike;
   readonly onLog?: (line: string) => void;
+  readonly testSocketOpenErrorForThreadModelSelectionOnce?: boolean;
 }
 
 const EMPTY_ACCESS: AuthAccessPresentation = {
@@ -80,6 +82,12 @@ const EMPTY_ACCESS: AuthAccessPresentation = {
   clientSessionCount: 0,
   hasEntries: false,
 };
+
+const RETRYABLE_COMMANDS = new Set<ConnectorCommandRequest["method"]>([
+  "setModelSelection",
+  "setThreadRuntimeMode",
+  "setThreadInteractionMode",
+]);
 
 /**
  * Dispatch one allowlisted command to the connector. Request shapes mirror
@@ -124,6 +132,7 @@ export class MainConnectorHost {
   private reconnectPromise: Promise<unknown> | undefined;
   private connectorGeneration = 0;
   private disposed = false;
+  private testSocketOpenErrorForThreadModelSelectionPending: boolean;
   private seq = 0;
   private status: ConnectorStatusPayload = { status: "idle" };
   private config: ServerConfig | null = null;
@@ -133,6 +142,8 @@ export class MainConnectorHost {
 
   constructor(options: MainConnectorHostOptions) {
     this.options = options;
+    this.testSocketOpenErrorForThreadModelSelectionPending =
+      options.testSocketOpenErrorForThreadModelSelectionOnce === true;
   }
 
   /** Register the typed renderer->main handlers. Idempotent. */
@@ -168,7 +179,7 @@ export class MainConnectorHost {
     };
   }
 
-  private handleCommand(params: unknown): Promise<unknown> {
+  private async handleCommand(params: unknown): Promise<unknown> {
     if (this.disposed) {
       return Promise.reject(new Error("connector host is disposed"));
     }
@@ -183,14 +194,34 @@ export class MainConnectorHost {
     if (request.method === "reconnect") {
       return this.reconnect();
     }
-    const connector = this.connector;
-    if (!connector) {
-      return Promise.reject(new Error("connector is not started"));
-    }
-    try {
+    const dispatch = () => {
+      const connector = this.connector;
+      if (!connector) throw new Error("connector is not started");
+      if (
+        this.testSocketOpenErrorForThreadModelSelectionPending &&
+        request.method === "setModelSelection" &&
+        typeof (request.params as { threadId?: unknown } | undefined)?.threadId === "string"
+      ) {
+        this.testSocketOpenErrorForThreadModelSelectionPending = false;
+        throw new Error('SocketOpenError: timeout waiting for "open"');
+      }
       return Promise.resolve(dispatchConnectorCommand(connector, request));
+    };
+    try {
+      return await dispatch();
     } catch (error) {
-      return Promise.reject(error instanceof Error ? error : new Error(String(error)));
+      const cause = error instanceof Error ? error : new Error(String(error));
+      if (
+        !RETRYABLE_COMMANDS.has(request.method) ||
+        !isTransportConnectionErrorMessage(cause.message)
+      ) {
+        throw cause;
+      }
+      this.options.onLog?.(
+        `[main-connector] ${request.method} hit a stale transport; reconnecting once`,
+      );
+      await this.reconnect();
+      return dispatch();
     }
   }
 

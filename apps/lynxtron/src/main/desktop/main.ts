@@ -81,11 +81,7 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
       },
       {
         label: "View",
-        submenu: [
-          createReloadMenuItem(app),
-          { type: "separator" },
-          ...itemsFor("view"),
-        ],
+        submenu: [createReloadMenuItem(app), { type: "separator" }, ...itemsFor("view")],
       },
       {
         label: "Edit",
@@ -135,6 +131,8 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
     removeHandler: (method) => lynxBridge.removeHandler(method),
     createConnector: (events) => new T3Connector(events),
     onLog: (line) => console.log(line),
+    testSocketOpenErrorForThreadModelSelectionOnce:
+      process.env.T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE === "1",
   });
   host.attach();
   win.on("closed", () => {
