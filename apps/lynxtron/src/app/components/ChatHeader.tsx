@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "@lynx-js/react";
+import { useMemo, useState } from "@lynx-js/react";
 import { resolveQuickAction, type GitQuickAction } from "@t3tools/client-runtime/state/git-actions";
 import type { EditorId, VcsStatusResult } from "@t3tools/contracts";
 import { ChatHeaderSurface } from "../../../../web/src/components/chat/ChatHeaderSurface";
@@ -15,7 +15,8 @@ interface ChatHeaderProps {
   projectName: string;
   threadTitle: string;
   cwd?: string;
-  connectorCommandsReady?: boolean;
+  vcsStatus?: VcsStatusResult | null;
+  vcsStatusPending?: boolean;
   availableEditors?: ReadonlyArray<EditorId>;
   sessionStatus?: unknown;
   connectionStatus?: unknown;
@@ -141,7 +142,8 @@ export function ChatHeader({
   projectName,
   threadTitle,
   cwd,
-  connectorCommandsReady = false,
+  vcsStatus = null,
+  vcsStatusPending = false,
   availableEditors = [],
   rightPanelOpen,
   centerPanelWidth = 1024,
@@ -151,36 +153,6 @@ export function ChatHeader({
     getPref<EditorId | null>("t3code:last-editor", null),
   );
   const [openMenuVisible, setOpenMenuVisible] = useState(false);
-  const [vcsStatus, setVcsStatus] = useState<VcsStatusResult | null>(null);
-  const [vcsStatusPending, setVcsStatusPending] = useState(Boolean(cwd));
-  useEffect(() => {
-    let cancelled = false;
-    if (!cwd || !connectorCommandsReady) {
-      setVcsStatus(null);
-      setVcsStatusPending(Boolean(cwd));
-      return () => {
-        cancelled = true;
-      };
-    }
-    setVcsStatusPending(true);
-    void t3ClientActions
-      .readVcsStatus(cwd)
-      .then((status) => {
-        if (!cancelled) setVcsStatus(status);
-      })
-      .catch((cause) => {
-        if (!cancelled) {
-          console.error("[chat-header] failed to read VCS status", { cwd, cause });
-          setVcsStatus(null);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setVcsStatusPending(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [connectorCommandsReady, cwd]);
   const preferredEditor = useMemo(
     () => resolvePreferredEditor(availableEditors, storedEditor),
     [availableEditors, storedEditor],

@@ -101,6 +101,9 @@ export interface T3ClientState {
   readonly status: ConnectionStatus;
   readonly statusDetail?: string;
   readonly connectorCommandsReady: boolean;
+  readonly vcsStatus: VcsStatusResult | null;
+  readonly vcsStatusCwd: string | null;
+  readonly vcsStatusPending: boolean;
   readonly projects: ReadonlyArray<ProjectSummary>;
   readonly threads: ReadonlyArray<ThreadSummary>;
   readonly archivedThreads: ReadonlyArray<ThreadSummary>;
@@ -133,6 +136,9 @@ export interface T3ClientState {
 const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   status: "idle",
   connectorCommandsReady: false,
+  vcsStatus: null,
+  vcsStatusCwd: null,
+  vcsStatusPending: false,
   projects: [],
   threads: [],
   archivedThreads: [],
@@ -172,6 +178,7 @@ let threadFingerprint = "";
 let mainTransport: MainConnectorTransport | null = null;
 let mainCommandBridge: Partial<PollBridge> | null = null;
 let mtsProviderFixture: ServerProvider | undefined;
+let vcsStatusRequestSequence = 0;
 
 function getPreloadBridge(): Partial<PollBridge> | undefined {
   "background only";
@@ -197,6 +204,42 @@ function patchState(partial: Partial<T3ClientState>): void {
     ...appAtomRegistry.get(t3ClientStateAtom),
     ...partial,
   });
+}
+
+function activeVcsCwd(state: T3ClientState): string | null {
+  const activeThread = state.threads.find((thread) => thread.id === state.activeThreadId);
+  const activeProject =
+    state.projects.find((project) => project.id === activeThread?.projectId) ??
+    state.projects[0] ??
+    null;
+  return activeThread?.worktreePath ?? activeProject?.workspaceRoot ?? null;
+}
+
+function refreshVcsStatusProjection(): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const cwd = activeVcsCwd(state);
+  const bridge = getBridge();
+  const requestSequence = ++vcsStatusRequestSequence;
+  if (!cwd || !bridge?.readVcsStatus) {
+    patchState({
+      vcsStatus: null,
+      vcsStatusCwd: cwd,
+      vcsStatusPending: Boolean(cwd),
+    });
+    return;
+  }
+  patchState({ vcsStatusCwd: cwd, vcsStatusPending: true });
+  void bridge.readVcsStatus({ cwd }).then(
+    (vcsStatus) => {
+      if (requestSequence !== vcsStatusRequestSequence) return;
+      patchState({ vcsStatus, vcsStatusCwd: cwd, vcsStatusPending: false });
+    },
+    (cause) => {
+      if (requestSequence !== vcsStatusRequestSequence) return;
+      console.error("[t3-client] failed to read VCS status", { cwd, cause });
+      patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
+    },
+  );
 }
 
 export function installT3ClientFixtureForDevTool(partial: Partial<T3ClientState>): void {
@@ -382,6 +425,8 @@ function applyShellPayload(shell: ShellEventPayload): void {
     // here caused Settings to flash back to chat when the shell snapshot
     // arrived. On the chat route this still navigates to the selected thread.
     selectThread(threads[0].id, { navigate: getPathname().startsWith("/settings") === false });
+  } else {
+    refreshVcsStatusProjection();
   }
 }
 
@@ -473,6 +518,9 @@ function installTransportDevToolHook(): void {
       modelCount: number;
       providerCount: number;
       providerEntryCount: number;
+      vcsStatus: VcsStatusResult | null;
+      vcsStatusCwd: string | null;
+      vcsStatusPending: boolean;
     };
     __T3_LYNXTRON_SELECT_THREAD__?: (threadId: string) => void;
     __T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?: (provider: ServerProvider) => boolean;
@@ -501,6 +549,9 @@ function installTransportDevToolHook(): void {
       modelCount: state.models.length,
       providerCount: state.providers.length,
       providerEntryCount: state.providerEntries.length,
+      vcsStatus: state.vcsStatus,
+      vcsStatusCwd: state.vcsStatusCwd,
+      vcsStatusPending: state.vcsStatusPending,
       ...(activeProject ? { activeProject } : {}),
       ...(activeThread ? { activeThread } : {}),
       ...(selectedProvider
@@ -580,6 +631,7 @@ async function bootstrapT3Client(): Promise<void> {
   mainTransport = transport;
   mainCommandBridge = buildMainCommandBridge(transport);
   patchState({ connectorCommandsReady: true });
+  refreshVcsStatusProjection();
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   if (activeThreadId) {
     void mainCommandBridge.selectThread?.(activeThreadId);
@@ -626,6 +678,7 @@ function selectThread(
 ): void {
   resetActiveThreadState(threadId, { draftHero: options?.draftHero });
   getBridge()?.selectThread?.(threadId);
+  refreshVcsStatusProjection();
   if (options?.navigate !== false) {
     navigate(`/${LYNX_PRIMARY_ENVIRONMENT_ID}/${threadId}`);
   }

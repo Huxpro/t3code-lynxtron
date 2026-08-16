@@ -74,6 +74,9 @@ export function ChatView({ threadId }: ChatViewProps) {
     status,
     statusDetail,
     connectorCommandsReady,
+    vcsStatus,
+    vcsStatusCwd,
+    vcsStatusPending,
     projects,
     threads,
     activeThreadId,
@@ -435,7 +438,8 @@ export function ChatView({ threadId }: ChatViewProps) {
           projectName={activeProject?.title ?? "t3code"}
           threadTitle={activeThread?.title ?? "New thread"}
           cwd={cwd}
-          connectorCommandsReady={connectorCommandsReady}
+          vcsStatus={vcsStatusCwd === cwd ? vcsStatus : null}
+          vcsStatusPending={vcsStatusCwd !== cwd || vcsStatusPending}
           availableEditors={serverConfig?.availableEditors ?? []}
           rightPanelOpen={rightPanel.isOpen}
           centerPanelWidth={centerPanelWidth}

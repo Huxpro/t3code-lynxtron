@@ -74,6 +74,7 @@ describe("desktop shell interaction contract", () => {
 
   it("projects and opens the real repository Publish flow", () => {
     const header = componentSource("ChatHeader.tsx");
+    const chatView = componentSource("ChatView.tsx");
     const publish = componentSource("GitPublishDialog.tsx");
     const app = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
     const uiState = readFileSync(path.resolve(import.meta.dirname, "../state/uiState.ts"), "utf8");
@@ -81,9 +82,10 @@ describe("desktop shell interaction contract", () => {
     const client = readFileSync(path.resolve(import.meta.dirname, "../state/t3Client.ts"), "utf8");
 
     expect(header).toContain('from "@t3tools/client-runtime/state/git-actions"');
-    expect(header).toContain(".readVcsStatus(cwd)");
-    expect(header).toContain("connectorCommandsReady");
-    expect(header).toContain("[connectorCommandsReady, cwd]");
+    expect(client).toContain("function refreshVcsStatusProjection()");
+    expect(client).toContain("bridge.readVcsStatus({ cwd })");
+    expect(chatView).toContain("vcsStatusCwd === cwd ? vcsStatus : null");
+    expect(header).toContain("vcsStatusPending");
     expect(header).toContain("data-git-quick-action-kind");
     expect(header).toContain("data-git-quick-action-label");
     expect(header).toContain('gitQuickAction.kind === "open_publish"');
