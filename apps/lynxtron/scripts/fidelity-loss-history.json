@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T15:21:26+09:00",
+  "updatedAt": "2026-08-16T18:00:53+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7416,6 +7416,28 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-appearance-unavailable-native-current",
+      "observedAt": "2026-08-16T18:00:53+09:00",
+      "commit": "9fe74b39046837552b53056e06ce95ba3b8d7a1a",
+      "codeCommit": "2521d30465b3cdf31eea648e07af18a1d389f096",
+      "codeState": "commit",
+      "label": "Settings Appearance unavailable-state Native proof",
+      "narrative": "The Appearance panel rendered unsupported Glass opacity, Environment identification, and Word wrap rows with the same contrast as the working Theme selector, so unavailable capabilities were not visually obvious. Shared SettingsRow now owns an explicit unavailable state with disabled semantics, while the Lynx Appearance host applies it only to those three unsupported capabilities. A light-mode 1280x820 exact-bundle Native run opens Settings and Appearance through measured DevTool touch, keeps Theme as the only available row, and requires each unsupported row to expose aria-disabled=true, data-settings-unavailable=true, 896px width, and computed opacity 0.48. Main transport advances 2 to 3 and Settings resync advances 15 to 16, all eight Settings routes render, two Back cycles pass, renderer errors are zero, isolated state is disposed, screenshot budget remains 32/100, and every agent-browser gate reports zero owned or orphaned processes. Three preceding attempts are classified as harness mismatch because Lynx DevTool serializes search ids as idSelector and returns empty row-level innerText; the final verifier uses canonical panel copy plus exact row-set, attributes, box, and computed-style invariants. Appearance is not a modeled state in the fixed denominator, so this point intentionally records evidence without changing any residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The product change introduces an explicit shared unavailable state and applies it only to three Lynx Appearance capabilities. The final exact-bundle run directly measures the resulting disabled attributes and opacity while preserving Theme availability; harness-only corrections are separately committed and named."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-appearance-unavailable-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b2e3fe412e5786457a72df05b53af5d7826e78289dc13ed87e989467b7a31721"
+        }
+      ],
+      "updates": []
     }
   ]
 }
