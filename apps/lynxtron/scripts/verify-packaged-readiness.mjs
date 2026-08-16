@@ -3809,20 +3809,35 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
     predicate: (measurement) =>
       measurement?.text.trim().length > 0 && Math.abs((measurement?.rect.height ?? 0) - 24) <= 0.5,
   });
-  const [rowRadius, rowFontFamily, rowFontSize] = await Promise.all([
-    readFirstSelectorStyleValue(client, ".files-panel .file-tree-row", "border-radius"),
+  const [rowTopLeftRadius, rowTopRightRadius, rowBottomRightRadius, rowBottomLeftRadius] =
+    await Promise.all([
+      readFirstSelectorStyleValue(client, ".files-panel .file-tree-row", "border-top-left-radius"),
+      readFirstSelectorStyleValue(client, ".files-panel .file-tree-row", "border-top-right-radius"),
+      readFirstSelectorStyleValue(
+        client,
+        ".files-panel .file-tree-row",
+        "border-bottom-right-radius",
+      ),
+      readFirstSelectorStyleValue(
+        client,
+        ".files-panel .file-tree-row",
+        "border-bottom-left-radius",
+      ),
+    ]);
+  const [rowFontFamily, rowFontSize] = await Promise.all([
     readFirstSelectorStyleValue(client, ".files-panel .file-tree-row__name", "font-family"),
     readFirstSelectorStyleValue(client, ".files-panel .file-tree-row__name", "font-size"),
   ]);
+  const rowRadii = [rowTopLeftRadius, rowTopRightRadius, rowBottomRightRadius, rowBottomLeftRadius];
   if (
-    rowRadius !== "5px" ||
+    rowRadii.some((radius) => radius !== "5px") ||
     rowFontSize !== "12px" ||
     typeof rowFontFamily !== "string" ||
     rowFontFamily.length === 0
   ) {
     throw new Error(
       `Native Files row styling drifted: ${JSON.stringify({
-        rowRadius,
+        rowRadii,
         rowFontFamily,
         rowFontSize,
       })}`,
@@ -3851,7 +3866,7 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
     firstVisibleRow: {
       rect: row.rect,
       text: row.text,
-      borderRadius: rowRadius,
+      borderRadii: rowRadii,
       fontFamily: rowFontFamily,
       fontSize: rowFontSize,
     },

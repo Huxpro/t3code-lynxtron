@@ -174,8 +174,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".files-panel__browser"');
     assert.include(source, 'selector: ".files-panel .file-tree-row"');
     assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 24) <= 0.5");
-    assert.include(source, '"border-radius"');
-    assert.include(source, 'rowRadius !== "5px"');
+    assert.include(source, '"border-top-left-radius"');
+    assert.include(source, '"border-top-right-radius"');
+    assert.include(source, '"border-bottom-right-radius"');
+    assert.include(source, '"border-bottom-left-radius"');
+    assert.include(source, 'rowRadii.some((radius) => radius !== "5px")');
     assert.include(source, 'rowFontSize !== "12px"');
     assert.include(source, 'typing: "pending-user-session"');
     assert.include(source, 'name: "native-files-browser.png"');
