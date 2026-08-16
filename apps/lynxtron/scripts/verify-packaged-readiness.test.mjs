@@ -149,6 +149,8 @@ describe("packaged readiness Sidebar geometry", () => {
       source,
       '".composer-toolbar-control--model-option .composer-toolbar-control-label"',
     );
+    assert.include(source, '"letter-spacing"');
+    assert.include(source, "computedLetterSpacing !== expectedLetterSpacing");
     assert.include(source, 'expectedLetterSpacing: "-0.33px"');
     assert.include(source, 'expectedLetterSpacing: "-0.42px"');
     assert.include(source, 'expectedLetterSpacing: "-0.44px"');

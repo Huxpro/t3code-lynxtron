@@ -1934,10 +1934,15 @@ async function readModelOptionTracking({ client, expectedLabel, expectedLetterSp
     client,
     ".composer-toolbar-control--model-option .composer-toolbar-control-label",
   );
+  const computedLetterSpacing = await readFirstSelectorStyleValue(
+    client,
+    ".composer-toolbar-control--model-option .composer-toolbar-control-label",
+    "letter-spacing",
+  );
   if (
     trigger.text.trim() !== expectedLabel ||
     label?.text.trim() !== expectedLabel ||
-    label?.style.letterSpacing !== expectedLetterSpacing ||
+    computedLetterSpacing !== expectedLetterSpacing ||
     !label.rect ||
     label.rect.width >= trigger.rect.width
   ) {
@@ -1947,6 +1952,7 @@ async function readModelOptionTracking({ client, expectedLabel, expectedLetterSp
         expectedLetterSpacing,
         trigger,
         label,
+        computedLetterSpacing,
       })}`,
     );
   }
@@ -1954,7 +1960,7 @@ async function readModelOptionTracking({ client, expectedLabel, expectedLetterSp
     text: label.text.trim(),
     rect: label.rect,
     controlRect: trigger.rect,
-    letterSpacing: label.style.letterSpacing,
+    letterSpacing: computedLetterSpacing,
   };
 }
 
