@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T20:38:41+09:00",
+  "updatedAt": "2026-08-16T21:34:25+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7579,6 +7579,41 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.957728 at the matched Sendable frame; Composer residual is 0.027370 and toolbar-allocation residual is 0.130882"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-sendable-send-material-current",
+      "observedAt": "2026-08-16T21:34:25+09:00",
+      "commit": "3b64c9604",
+      "codeCommit": "35498df5b6c90b725222ddd16952e8ba394cd073",
+      "codeState": "commit",
+      "label": "Composer Send action material fix",
+      "narrative": "After the multi-trait shaping fix, a component-level audit identified the 32x32 Send action as the next largest localized Sendable Composer contributor. Web renders #366ffb at 90% over the Composer surface and uses a custom 14x14 arrow with a 14-unit viewBox and 1.8 stroke; Lynx rendered opaque #366ffb and reused the generic Lucide 24-unit arrow-up raster with a 2.0 stroke. Lynx now receives semantic primary-action state classes, applies the 90% primary surface only in Send state, and uses a dedicated generated raster from the exact Web arrow path without changing other arrow-up uses. On the same immutable snapshot, Web bundle, Web pixels, state, theme, viewport, model, and hello fidelity input, Primary action SSIM improves from 0.828140 to 0.971784 and its icon crop from 0.586248 to 0.997426. Footer improves from 0.925637 to 0.928608, the 768x140 Composer crop from 0.972630 to 0.973501, and full-frame SSIM from 0.957728 to 0.957815. Exact Native evidence selects a disposable idle thread, injects draft text without submitting a turn, and verifies Send state, the dynamic state class, 32x32 geometry, rgba(54,111,251,0.898039) with one-byte alpha quantization, the 14x14 glyph, main transport, zero renderer errors, a representative screenshot, and state cleanup. Probe enablement, running-thread identity, composed-class selection, and alpha string precision failures are recorded as harness mismatches rather than product loss. This point updates only Composer Sendable Lynx material and changes no weights or other dimensions.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The matched Browser pair changes only the Lynx Send surface and dedicated glyph while retaining identical authority pixels and all surrounding geometry. Primary and icon crop improvements localize the measured delta directly to this product change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-send-material-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4e7265e6675f783fb910b5863ff2bf549ed4922ae242e4f530f9458798310d22"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.042185,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.957815 at the matched Sendable frame; Primary action residual is 0.028216 and icon residual is 0.002574"
             }
           }
         }
