@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T14:03:03+09:00",
+  "updatedAt": "2026-08-16T14:55:33+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7152,6 +7152,53 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-failed-readiness",
               "source": "Exact f7711bad bundle advances main transport 2 to 4, reports zero renderer errors, disposes isolated state, and every agent-browser gate reports zero owned or orphaned processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-approval-native-recovery-current",
+      "observedAt": "2026-08-16T14:55:33+09:00",
+      "commit": "b712a93780729acbe0f294b929d8f69622371052",
+      "codeState": "commit",
+      "label": "Existing Thread Approval Native recovery certification",
+      "narrative": "A current exact-bundle Native run verifies the persisted command-approval baseline: selected thread identity, running session, Working Composer, Stop action, canonical pending copy and detail, four approval actions, and the exact 768x247 vertical Composer geometry. Interaction exploration exposed two harness boundaries rather than a product defect. A provider callback created by a previous process cannot be resumed by the packaged process, so Decline correctly emits provider.approval.respond.failed and must not fake approval.resolved. A natural-language attempt to create a second live approval was nondeterministic and was rejected rather than retried until passing. The retained deterministic scope drives the real Decline action on the persisted request, observes the failure receipt, removes the stale pending surface, advances sequence 14 to 20, and cold-restarts without resurrecting the pending request. Fixture-builder connector logs now redact websocket tickets. Successful delivery to a live provider callback and the other approval decisions remain explicitly unverified.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact-bundle run closes current Native content, geometry, and runtime evidence while preserving the existing interaction debt. Stale-request recovery is documented but is not used to claim whole-state interaction parity."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-approval-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "3161aecc11738a4ad3d0c168fb23d5fb6bf141144f99ba19d92a16df8ef9b3ab"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-approval"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-approval-content",
+              "source": "Exact bundle renders the selected pending command approval, running and Working state, Stop action, canonical detail, and all four approval actions"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "native-current-approval-geometry",
+              "source": "Frame, surface, pending card, detail, editor, footer, and four action rectangles match the retained Native approval contract"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-stale-approval-recovery",
+              "source": "Real Decline input emits the canonical provider failure receipt without fake resolution, removes the pending projection, advances sequence 14 to 20, survives cold restart, reports zero renderer errors, disposes isolated state, and every agent-browser gate reports zero owned or orphaned processes"
             }
           }
         }
