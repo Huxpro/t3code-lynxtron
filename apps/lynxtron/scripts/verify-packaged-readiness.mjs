@@ -4552,6 +4552,29 @@ async function openConnectionsSettings({ child, client, timeoutMs }) {
   });
 }
 
+async function verifyFixedNetworkAccessRow({ checked, child, client, description, timeoutMs }) {
+  const row = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-connections-network-access",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Network access") === true &&
+      measurement.text.includes(description) &&
+      !measurement.text.includes("Access inventory"),
+  });
+  const control = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-connections-network-access .ui-switch",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["aria-checked"] === String(checked) &&
+      measurement.attributes.class?.includes("ui-switch--disabled") === true,
+  });
+  return { row, control };
+}
+
 async function verifyConnectionsLocalPolicy({ child, client, timeoutMs }) {
   const route = await openConnectionsSettings({ child, client, timeoutMs });
   const panel = await waitForMeasurement({
@@ -4563,6 +4586,14 @@ async function verifyConnectionsLocalPolicy({ child, client, timeoutMs }) {
       measurement?.text.includes("This environment") === true &&
       measurement.text.includes("Remote environments") &&
       !measurement.text.includes("Authorized clients"),
+  });
+  const networkAccess = await verifyFixedNetworkAccessRow({
+    checked: false,
+    child,
+    client,
+    description:
+      "This backend is only reachable on this machine. Restart it with a non-loopback host to enable remote pairing.",
+    timeoutMs,
   });
   const createButton = await readOptionalMeasurement(
     client,
@@ -4577,6 +4608,7 @@ async function verifyConnectionsLocalPolicy({ child, client, timeoutMs }) {
     status: "pass",
     route,
     panel: panel.rect,
+    networkAccess,
     authorizedClientsVisible: false,
     createPairingVisible: false,
   };
@@ -4604,6 +4636,14 @@ async function verifyConnectionsMutation({
   });
   const initialPairingLinkIds = [...initialState.pairingLinkIds];
   const route = await openConnectionsSettings({ child, client, timeoutMs });
+  const networkAccess = await verifyFixedNetworkAccessRow({
+    checked: true,
+    child,
+    client,
+    description:
+      "This backend is already configured for remote access. Network exposure changes must be made where the server is launched.",
+    timeoutMs,
+  });
   const createSelector = ".settings-connections-create-pairing";
   const createButton = await waitForMeasurement({
     child,
@@ -4732,6 +4772,14 @@ async function verifyConnectionsMutation({
       client: restartedClient,
       timeoutMs,
     });
+    const restartedNetworkAccess = await verifyFixedNetworkAccessRow({
+      checked: true,
+      child: restartedChild,
+      client: restartedClient,
+      description:
+        "This backend is already configured for remote access. Network exposure changes must be made where the server is launched.",
+      timeoutMs,
+    });
     const restartedCreateButton = await waitForMeasurement({
       child: restartedChild,
       client: restartedClient,
@@ -4745,6 +4793,7 @@ async function verifyConnectionsMutation({
         status: "pass",
         input: "DevTool touch on measured Create and thread-specific Revoke actions",
         route,
+        networkAccess,
         initialPairingLinkCount: initialPairingLinkIds.length,
         createdPairingLinkId,
         createButton,
@@ -4759,6 +4808,7 @@ async function verifyConnectionsMutation({
           restartedClient: restartedClient.identity,
           transport: restartTransport,
           route: restartRoute,
+          networkAccess: restartedNetworkAccess,
           pairingLinkCount: restartedState.pairingLinkIds.length,
           createButton: restartedCreateButton,
         },

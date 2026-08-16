@@ -275,6 +275,7 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies Native Connections pairing creation, revocation, and cold restart", () => {
     assert.include(source, "async function verifyConnectionsMutation");
     assert.include(source, "async function openConnectionsSettings");
+    assert.include(source, "async function verifyFixedNetworkAccessRow");
     assert.include(source, '"--verify-connections-mutation"');
     assert.include(source, 'shouldVerifyConnectionsMutation ? { T3CODE_HOST: "0.0.0.0" }');
     assert.include(source, 'T3CODE_HOST: "0.0.0.0"');
@@ -283,6 +284,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "settings-connections-revoke-pairing--${createdPairingLinkId}");
     assert.include(source, 'measurement?.text.trim() === "Copy code"');
     assert.include(source, 'measurement?.text.trim() === "Create"');
+    assert.include(source, "checked: true");
+    assert.include(source, '"ui-switch--disabled"');
+    assert.include(source, "restartedNetworkAccess");
     assert.include(source, "Connections cold restart did not return an owned process id.");
     assert.include(outcomeChecksSource, "connectionsMutation");
   });
@@ -291,6 +295,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyConnectionsLocalPolicy");
     assert.include(source, '"--verify-connections-local-policy"');
     assert.include(source, '!measurement.text.includes("Authorized clients")');
+    assert.include(source, "checked: false");
+    assert.include(source, '!measurement.text.includes("Access inventory")');
+    assert.include(source, '".settings-connections-network-access .ui-switch"');
     assert.include(source, '".settings-connections-create-pairing"');
     assert.include(source, "authorizedClientsVisible: false");
     assert.include(outcomeChecksSource, "connectionsLocalPolicy");
