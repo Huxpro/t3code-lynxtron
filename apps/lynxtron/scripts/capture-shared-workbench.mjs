@@ -651,6 +651,22 @@ function sidebarStageIdentityMatches(state) {
   );
 }
 
+function headerGitActionMatches(state) {
+  const webAction = state?.web?.headerMetrics?.actionItems?.find((item) => item.id === "commit");
+  const lynxAction = state?.lynx?.headerMetrics?.actionItems?.find((item) => item.id === "commit");
+  if (!webAction && !lynxAction) return true;
+  const lynxReadStatus = state?.lynx?.connectorDiagnostics?.commands?.some(
+    ({ method }) => method === "readVcsStatus",
+  );
+  return (
+    Boolean(webAction && lynxAction && lynxReadStatus) &&
+    webAction.gitQuickActionKind !== null &&
+    webAction.gitQuickActionLabel !== null &&
+    webAction.gitQuickActionKind === lynxAction.gitQuickActionKind &&
+    webAction.gitQuickActionLabel === lynxAction.gitQuickActionLabel
+  );
+}
+
 async function dispatchPointerClick(cdp, sessionId, point) {
   await cdp.send(
     "Input.dispatchMouseEvent",
@@ -2901,6 +2917,7 @@ async function captureCell({
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
+    const headerGitActionReady = headerGitActionMatches(state);
     const shortcutInputReady =
       !requiresShortcutInput ||
       (webOverlayInputSent &&
@@ -2959,6 +2976,7 @@ async function captureCell({
       composerReady &&
       sessionProjectionReady &&
       stageIdentityReady &&
+      headerGitActionReady &&
       shortcutInputReady &&
       sidebarSearchReady &&
       sidebarStateReady &&
@@ -3138,6 +3156,7 @@ async function captureCell({
     composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
+  const finalHeaderGitActionReady = headerGitActionMatches(state);
   const finalReviewReady =
     reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
     sidebarDiffPairMatches(
@@ -3516,6 +3535,7 @@ async function captureCell({
     finalComposerReady &&
     finalSessionProjectionReady &&
     finalStageIdentityReady &&
+    finalHeaderGitActionReady &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
     finalSettingsGeometryReady &&
@@ -3539,6 +3559,7 @@ async function captureCell({
       finalComposerReady,
       finalSessionProjectionReady,
       finalStageIdentityReady,
+      finalHeaderGitActionReady,
       finalReviewReady,
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
@@ -3653,6 +3674,16 @@ async function captureCell({
         match: finalStageIdentityReady,
         web: state?.web?.sidebarDiagnostics?.stageIdentity ?? null,
         lynx: state?.lynx?.sidebarDiagnostics?.stageIdentity ?? null,
+      },
+      headerGitAction: {
+        match: finalHeaderGitActionReady,
+        web: state?.web?.headerMetrics?.actionItems?.find((item) => item.id === "commit") ?? null,
+        lynx: state?.lynx?.headerMetrics?.actionItems?.find((item) => item.id === "commit") ?? null,
+        lynxReadStatus: Boolean(
+          state?.lynx?.connectorDiagnostics?.commands?.some(
+            ({ method }) => method === "readVcsStatus",
+          ),
+        ),
       },
       expectProject,
       webState,

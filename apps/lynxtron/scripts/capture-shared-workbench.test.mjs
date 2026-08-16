@@ -257,11 +257,18 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(workbench, "function readHeaderActionItems");
     assert.include(workbench, "ariaLabel: item.getAttribute");
+    assert.include(workbench, "gitQuickActionKind: item.getAttribute");
+    assert.include(workbench, "gitQuickActionLabel: item.getAttribute");
     assert.include(workbench, "text: readComposedText(item)");
     assert.include(workbench, "children: [...item.children].map");
     assert.include(workbench, "textLeaves:");
     assert.include(workbench, "icons:");
     assert.include(workbench, "actionItems: readHeaderActionItems(");
+    assert.include(source, "function headerGitActionMatches");
+    assert.include(source, 'method === "readVcsStatus"');
+    assert.include(source, "headerGitActionReady");
+    assert.include(source, "finalHeaderGitActionReady");
+    assert.include(source, "headerGitAction: {");
   });
 
   it("hashes the Web entry bundle declared by index.html", () => {

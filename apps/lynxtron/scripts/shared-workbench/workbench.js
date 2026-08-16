@@ -206,6 +206,8 @@ function readHeaderActionItems(elements, ids = []) {
   return [...elements].map((item, index) => ({
     id: item.getAttribute("data-header-action") ?? ids[index] ?? String(index),
     ariaLabel: item.getAttribute("aria-label"),
+    gitQuickActionKind: item.getAttribute("data-git-quick-action-kind"),
+    gitQuickActionLabel: item.getAttribute("data-git-quick-action-label"),
     text: readComposedText(item),
     box: readElementBox(item),
     children: [...item.children].map((child) => ({
