@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T12:51:54+09:00",
+  "productCommits": [
+    "018814968c30c7517fb9983d59b7d89f98b2bfc0",
+    "a460f56aed70c16b95348da9a52a9510a4be6dcf"
+  ],
+  "verificationCommit": "94297adf8e3b4585b9401a418b2a987976c9f198",
+  "stateId": "lifecycle-native-recovery",
+  "scope": {
+    "client": "native",
+    "viewport": "1280x820",
+    "theme": "light",
+    "sessionStatus": "running",
+    "interaction": "interrupt the isolated owned server and reconnect"
+  },
+  "fixture": {
+    "source": "disposable copy of /tmp/t3-git-publish-native-fixture",
+    "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "projectTitle": "t3code-lynxtron",
+    "threadTitle": "New thread",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "The shared Composer control projection prioritized working over blocked, so a running session kept a clickable Stop action after the backend became unavailable.",
+      "A VCS status request canceled by the expected disconnect was logged as a renderer error even though the lifecycle recovered successfully.",
+      "The fix preserves the real running and Working state, disables only the unavailable primary action, and suppresses only disconnect-canceled VCS failures while retaining online VCS errors."
+    ],
+    "harnessMismatch": [
+      "The original lifecycle verifier hard-coded connected and recovered Composer state to idle. The fixture carried a real running session, so readiness now requires the shell session, thread-detail session, and Composer semantic state to agree before interruption and after recovery."
+    ],
+    "evidenceBoundary": "This exact-bundle run verifies Native lifecycle content, session-derived Composer state, action availability, real reconnect interaction, transport, owned process identity, errors, and cleanup. It does not provide Native pixel parity."
+  },
+  "native": {
+    "status": "pass",
+    "head": "94297adf8e3b4585b9401a418b2a987976c9f198",
+    "bundle": {
+      "bytes": 4464097,
+      "sha256": "67ac39df48ff3d71171b2cc3c779f2f28ff8e26a4873e2ea1468243f75784d7f"
+    },
+    "appProcessId": 20159,
+    "transport": {
+      "kind": "main",
+      "readinessSequence": {
+        "before": 2,
+        "after": 3
+      },
+      "recoverySequence": {
+        "before": 11,
+        "after": 16
+      }
+    },
+    "connected": {
+      "sessionStatus": "running",
+      "composerState": "working",
+      "composerRect": {
+        "x": 384,
+        "y": 628,
+        "width": 768,
+        "height": 140
+      },
+      "server": {
+        "processId": 20219,
+        "parentProcessId": 20159,
+        "port": 56833
+      }
+    },
+    "failure": {
+      "phase": "error",
+      "banner": "T3 Code: Connection failed Server exited (code=null signal=SIGKILL). Reconnect Connections",
+      "composerState": "working",
+      "primaryActionState": "disabled"
+    },
+    "reconnect": {
+      "input": "DevTool Input.emulateTouchFromMouseEvent on the measured Reconnect selector",
+      "phase": "reconnecting",
+      "banner": "T3 Code: Failed to connect. Reconnecting... Waiting for server… Reconnecting... Connections"
+    },
+    "recovered": {
+      "sessionStatus": "running",
+      "composerState": "working",
+      "composerRect": {
+        "x": 384,
+        "y": 628,
+        "width": 768,
+        "height": 140
+      },
+      "server": {
+        "processId": 20708,
+        "parentProcessId": 20159,
+        "port": 57388
+      },
+      "finalBanner": null
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "e34386565a7336dcefac7b59ae340acfb5064174d56a4b36e3233e3209816ec4"
+  },
+  "validation": {
+    "focusedTests": "39/39",
+    "typecheck": {
+      "lynxtron": "pass",
+      "browserPreview": "pass"
+    },
+    "build": "Lynx production build passed with existing unsupported-property and import.meta warnings",
+    "agentBrowserLeakGate": "Every loop preflight and postflight reported owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Native material and pixel parity are not measured by this lifecycle run.",
+    "The reconnect action uses a measured DevTool tap rather than physical keyboard activation.",
+    "The active provider process represented by the restored running session is fixture state; no provider subprocess was resumed or interrupted."
+  ]
+}
