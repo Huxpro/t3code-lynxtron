@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T12:19:29+09:00",
+  "productCommit": "0bed0d8bd789ef69872cfa6131d644851fb63f07",
+  "verificationCommit": "f1da007ee4b2a402683390db431b857bb21b4ca2",
+  "stateId": "settings-beta-mutation",
+  "scope": {
+    "client": "native",
+    "viewport": "1280x820",
+    "theme": "light",
+    "route": "/settings/beta",
+    "interaction": "Auto-settle inactive threads off, on, and cold restart"
+  },
+  "fixture": {
+    "source": "disposable copy of /tmp/t3-git-publish-native-fixture",
+    "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "projectTitle": "t3code-lynxtron",
+    "threadTitle": "New thread",
+    "initialClientSettings": {
+      "sidebarV2Enabled": true,
+      "sidebarV2ConfiguredByUser": true,
+      "sidebarAutoSettleAfterDays": 3
+    }
+  },
+  "classification": {
+    "productLoss": [],
+    "harnessMismatch": [
+      "The first mutation attempts used a fixture whose decoded default kept sidebarV2Enabled false, so the conditional auto-settle controls correctly did not render. Explicitly seeding true, true, and 3 corrected the fixture scope without changing product behavior."
+    ],
+    "evidenceBoundary": "This exact-bundle run verifies Native content identity, control state, real DevTool tap mutation, preference persistence, cold-restart restoration, transport, errors, and cleanup. It does not provide Native pixel parity or physical keyboard evidence."
+  },
+  "native": {
+    "status": "pass",
+    "reportHead": "0bed0d8bd789ef69872cfa6131d644851fb63f07",
+    "bundle": {
+      "bytes": 4463998,
+      "sha256": "a8663ff0a1ea7acc5b9e6fffdc34b328b7a4a333ef90b97e5abd32bb9f0a1c46"
+    },
+    "transport": {
+      "kind": "main",
+      "readinessSequence": {
+        "before": 2,
+        "after": 3
+      },
+      "coldRestartSequence": 2
+    },
+    "route": {
+      "path": "/settings/beta",
+      "panel": "beta"
+    },
+    "mutation": {
+      "input": "DevTool Input.emulateTouchFromMouseEvent on the measured semantic switch",
+      "selector": ".settings-toggle--auto-settle",
+      "ariaLabel": "Auto-settle inactive threads",
+      "rect": {
+        "x": 1170,
+        "y": 256,
+        "width": 30,
+        "height": 18
+      },
+      "initial": {
+        "ariaChecked": "true",
+        "daysInputPresent": true,
+        "daysInputValue": "3"
+      },
+      "disabled": {
+        "ariaChecked": "false",
+        "daysInputPresent": false,
+        "diskValue": null
+      },
+      "enabled": {
+        "ariaChecked": "true",
+        "daysInputPresent": true,
+        "daysInputValue": "3",
+        "diskValue": 3
+      }
+    },
+    "coldRestart": {
+      "initialProcessId": 20665,
+      "restartedProcessId": 21373,
+      "sameBundleIdentity": true,
+      "sameIsolatedState": true,
+      "ariaChecked": "true",
+      "daysInputValue": "3",
+      "diskValue": 3
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "43e6d6866e486cacd328c24acfaeb20b9e38c35c71ddc7f495763f391bffbfcf"
+  },
+  "validation": {
+    "packagedReadinessTests": "23/23",
+    "settingsSurfaceTests": "13/13",
+    "typecheck": {
+      "lynxtron": "pass",
+      "browserPreview": "pass"
+    },
+    "build": "Lynx production build passed with existing unsupported-property and import.meta warnings",
+    "agentBrowserLeakGate": "Every loop preflight and postflight reported owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "The existing settings-beta Browser material residual remains 0.122578 and is unchanged by this Native evidence session.",
+    "Native physical keyboard focus traversal is not covered.",
+    "The days field was restored from the default value 3; this run did not edit it to a different valid number."
+  ]
+}
