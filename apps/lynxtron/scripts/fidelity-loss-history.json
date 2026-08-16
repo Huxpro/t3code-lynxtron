@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T19:48:29+09:00",
+  "updatedAt": "2026-08-16T20:38:41+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7548,6 +7548,41 @@
         }
       ],
       "updates": []
+    },
+    {
+      "id": "composer-sendable-trait-tracking-current",
+      "observedAt": "2026-08-16T20:38:41+09:00",
+      "commit": "10ee818e6",
+      "codeCommit": "06e443a37f40ea8738f85e7d47f093535014cf0b",
+      "codeState": "commit",
+      "label": "Composer Sendable multi-trait shaping fix",
+      "narrative": "A fresh current-head audit selected Composer Sendable because it had the largest fixed-model contribution: weight 5, loss 0.654573, and observed residual 0.135958. Identity-gated 1280x820 dark Browser captures reused one immutable SQLite snapshot, identical Web bundle and pixels, the same new-thread state, Claude Fable 5 selection, and hello fidelity input. The Editor, Context, primary action, semantic controls, and functional toolbar allocation were already stable. The remaining hotspot was the Footer: Lynx shaped High · 1M 5.015625px wider than Web despite identical DM Sans font bytes, size, weight, line height, and copy, shifting Runtime and Build roughly 5.3px and 5.8px right. Lynx now applies a platform correction only when a server-declared traits label contains separators, distributing a fixed per-separator compensation across the complete label; single-trait labels are unchanged and longer labels receive proportionally smaller tracking. Full-frame SSIM improves from 0.944924 to 0.957728, the 768x140 Composer crop from 0.952113 to 0.972630, the 768x172 Composer-plus-Context crop from 0.957058 to 0.973667, Footer from 0.852281 to 0.925637, and toolbar allocation from 0.748253 to 0.869118. Editor, Context, and primary-action residuals remain exactly unchanged, isolating attribution. Exact Native evidence requires computed tracking of -0.33px, -0.42px, and -0.44px across initial, Effort-mutated, and Thinking-mutated long labels while preserving persistence, selected reopen, outside dismissal, main transport, zero renderer errors, and state cleanup. A segmented-label experiment and a compact-style-subset read are recorded as harness/design mismatches and do not enter loss. This point updates only Composer Sendable Lynx material; no weights, states, clients, or other dimensions change.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after Browser captures share one immutable snapshot, Web bundle, Web pixels, state, theme, viewport, model, input, and semantic geometry. Only the Lynx multi-trait shaping correction changes, and the unchanged Editor, Context, and primary-action residuals localize the improvement to the Footer controls."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-sendable-trait-tracking-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "2c34ab0fca8a2ff7600b5f1704694fe8bb869489cc406c3b0ec4111032ea6997"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.042272,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.957728 at the matched Sendable frame; Composer residual is 0.027370 and toolbar-allocation residual is 0.130882"
+            }
+          }
+        }
+      ]
     }
   ]
 }
