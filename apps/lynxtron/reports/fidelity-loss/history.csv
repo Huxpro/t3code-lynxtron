@@ -124,3 +124,5 @@ settings-connections-network-access-current,2026-08-16T23:07:37+09:00,b38d901baa
 lifecycle-error-current-certification,2026-08-16T23:29:03+09:00,5e27a168c5aee3eedb0ae52e56dc9fe7dfc7ef9f,commit,Lifecycle current Browser and Native certification,0.422802,0.422802,0.017963,0.412244,0.587756,0.560635
 settings-shared-content-origin-current,2026-08-16T23:54:10+09:00,9a169b44bfe12997e68de70d39b38a47cb2054b0,commit,Shared Settings content origin and route reset,0.422733,0.422733,0.017846,0.412244,0.587756,0.560704
 quick-switch-query-footer-current,2026-08-17T00:30:39+09:00,b9c46c1086261b4b1e0823ec3d04acde0330c726,commit,Quick Switch Query footer anatomy,0.419525,0.419525,0.017634,0.409105,0.590895,0.563912
+composer-sendable-light-1440-git-init-baseline,2026-08-17T02:47:04+09:00,632d2acafb301140f9904a2279245f73dbac9c32,commit,Composer Sendable light 1440 non-Git baseline,0.42193,0.419525,0.021703,0.409105,0.590895,0.561507
+composer-sendable-light-1440-git-init-current,2026-08-17T03:28:35+09:00,5bd4b289056bac0bdf37068f09adec4392da602d,commit,Shared Initialize Git action and Native flow,0.408999,0.408999,0.014659,0.400206,0.599794,0.574438
