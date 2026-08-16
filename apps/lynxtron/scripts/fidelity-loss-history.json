@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T08:51:27+09:00",
+  "updatedAt": "2026-08-16T09:44:51+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6611,6 +6611,162 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.729786 after the selected-row fix; panel residual is 0.142416"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-working-light-responsive-baseline",
+      "observedAt": "2026-08-16T09:44:51+09:00",
+      "commit": "4548f83ec5125556dcd6e47cf58896f16013bf25",
+      "codeCommit": "4548f83ec5125556dcd6e47cf58896f16013bf25",
+      "codeState": "commit",
+      "label": "Existing Thread Working light responsive baseline",
+      "narrative": "A new 1440x900 light Working cell first exposed a harness mismatch: Web rendered no environment artwork while Lynx rendered Nightly artwork, so the apparent 0.935394 frame was rejected. The final harness synchronizes environmentIdentificationMode across both panes, waits for live server config before loading the Lynx bundle, and requires matching backdrop variant, visibility, and brand state. The first valid same-state frame passes running-session, Stop, Working row, route, theme, dimensions, stage identity, and zero-error gates. Full-frame SSIM is 0.943558; Sidebar SSIM is 0.860247 and Sidebar-top SSIM is 0.772457. The Header-actions residual is 0.311188 and remains an explicit functional GitActionsControl P1.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The invalid stage-mismatched frame never updates loss. The retained baseline uses one immutable server snapshot and one canonical client-local settings document in both Browser renderers."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-working-light-responsive-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b19abf004e37e1678c52cf1af10d2c53765b8ae79d318e00dc222aeec917272b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "light-responsive-working-content",
+              "source": "Same running thread, user message, Working row, gpt-5.6-sol model, Stop state, Local checkout, and no environment artwork"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 70, 0, 0.625, 0, 0, 0, 0.5],
+              "anchorScale": 1440,
+              "confidence": 0.99,
+              "method": "light-responsive-shell-anatomy",
+              "source": "1440x900 Sidebar brand, Sidebar rail, Working rows, and Composer anchors before the responsive brand fix"
+            },
+            "material": {
+              "residual": 0.056442,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.943558 at the valid light responsive Working frame; Sidebar-top residual is 0.227543"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "running-session-projection",
+              "source": "Both panes project Working Sidebar status, one Working transcript row, and a Stop primary action from the same session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-light-responsive-readiness",
+              "source": "Same snapshot, theme, 1440x900 viewport, client settings, live config, zero renderer errors, and zero agent-browser leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-working-responsive-brand-fix",
+      "observedAt": "2026-08-16T09:44:51+09:00",
+      "commit": "980260efa64083bfc6bed9e18b7adb670eeb04ad",
+      "codeCommit": "980260efa64083bfc6bed9e18b7adb670eeb04ad",
+      "codeState": "commit",
+      "label": "Existing Thread Working responsive brand fix",
+      "narrative": "Lynx retained the fixed x=130 authority-atlas brand host after the viewport left 1280x820. A responsive-only override moves the real shared brand to Web's x=60 titlebar inset while preserving the authority calibration. Full-frame SSIM improves from 0.943558 to 0.944451, Sidebar SSIM from 0.860247 to 0.865391, and Sidebar-top SSIM from 0.772457 to 0.877196. Header-actions SSIM stays 0.688812 because the fixed Lynx Commit-to-Diff placeholder is not equivalent to Web's state-driven GitActionsControl; that P1 remains open.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before/after captures share the final stage-identity harness, immutable server and client state, light theme, 1440x900 viewport, and Web authority. Only the responsive brand host offset changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-working-light-responsive-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b19abf004e37e1678c52cf1af10d2c53765b8ae79d318e00dc222aeec917272b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.625, 0, 0, 0, 0.5],
+              "anchorScale": 1440,
+              "confidence": 0.99,
+              "method": "light-responsive-brand-anatomy",
+              "source": "Web and Lynx brand x/y/height align at 60/12/28; only 0.625px text-width quantization remains"
+            },
+            "material": {
+              "residual": 0.055549,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.944451 after the responsive brand fix; Sidebar-top residual is 0.122804"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-working-light-native-responsive-certification",
+      "observedAt": "2026-08-16T09:44:51+09:00",
+      "commit": "980260efa64083bfc6bed9e18b7adb670eeb04ad",
+      "codeCommit": "980260efa64083bfc6bed9e18b7adb670eeb04ad",
+      "codeState": "commit",
+      "label": "Existing Thread Working light Native responsive certification",
+      "narrative": "One exact-owned production run loads the staged 67571f20 bundle at 1440x900 light against a disposable copy of the same snapshot. Read-only Lynx DevTool geometry verifies the Sidebar brand at x=60 with foreground color, two contained thread cards, the 16px Working timeline inset, 40px outer and 24px visual Working rows, Local checkout, Stop action, main transport sequence 2 to 3, zero renderer errors, and disposed isolated state. This is Native geometry, runtime, and state evidence, not Web-vs-Native pixel parity.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Exact staged bundle and isolated state independently corroborate the responsive brand and Working state without assigning another product delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-working-light-responsive-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b19abf004e37e1678c52cf1af10d2c53765b8ae79d318e00dc222aeec917272b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-working-content",
+              "source": "Canonical New thread, gpt-5.6-sol, Working row, Stop action, and Local checkout"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1440,
+              "confidence": 0.99,
+              "method": "native-responsive-brand-working-geometry",
+              "source": "Brand x=60, Sidebar containment, 16px timeline inset, and 40/24px Working row contracts"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-main-transport-semantic-probe",
+              "source": "Same-value model selection advances the main transport from sequence 2 to 3 while Stop remains visible"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-readiness",
+              "source": "Exact bundle identity, light 1440x900 viewport, zero renderer errors, and disposed isolated state"
             }
           }
         }
