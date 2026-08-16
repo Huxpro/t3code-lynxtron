@@ -117,3 +117,4 @@ sidebar-card-working-native-current,2026-08-16T18:48:27+09:00,10d588ff984642e987
 composer-light-shadow-native-current,2026-08-16T19:16:12+09:00,cfa143777a758d9208de96ed605fa1422c691b01,commit,Light Composer smooth Context shadow,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
 files-browser-native-current,2026-08-16T19:48:29+09:00,95703e621,commit,Files browser Web-anatomy Native proof,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
 composer-sendable-trait-tracking-current,2026-08-16T20:38:41+09:00,10ee818e6,commit,Composer Sendable multi-trait shaping fix,0.431384,0.431384,0.018365,0.420746,0.579254,0.552053
+composer-sendable-send-material-current,2026-08-16T21:34:25+09:00,3b64c9604,commit,Composer Send action material fix,0.431384,0.431384,0.018365,0.420746,0.579254,0.552053
