@@ -75,6 +75,7 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).not.toContain("handleModelOptionTap");
     expect(overrides).toContain(".composer-model-option-menu {");
     expect(overrides).toContain(".composer-model-option-menu__item--selected {");
+    expect(composer).toContain("getComposerModelOptionLetterSpacing(modelOptionLabel)");
   });
 
   it("opens a truthful Terminal placeholder from the titlebar control", () => {

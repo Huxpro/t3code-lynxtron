@@ -13,7 +13,7 @@
  *   model → model option/traits → runtime mode → interaction mode → plan
  * Send/stop primary actions sit at the trailing edge in every state.
  */
-import { Fragment, type ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 
 import { cn } from "../../lib/cn";
 import { HostButton, HostHeadline, HostText, HostView } from "../ui/hostElements";
@@ -104,6 +104,7 @@ export function ComposerToolbarControl({
   className,
   controlId,
   label,
+  labelStyle,
   leading,
   onClick,
   trailing,
@@ -111,6 +112,7 @@ export function ComposerToolbarControl({
   readonly className?: string;
   readonly controlId?: string | undefined;
   readonly label: string;
+  readonly labelStyle?: CSSProperties | undefined;
   readonly leading?: ReactNode;
   readonly onClick?: () => void;
   readonly trailing?: ReactNode;
@@ -126,7 +128,9 @@ export function ComposerToolbarControl({
       onClick={onClick}
     >
       {leading}
-      <HostText className="composer-toolbar-control-label min-w-0 truncate">{label}</HostText>
+      <HostText className="composer-toolbar-control-label min-w-0 truncate" style={labelStyle}>
+        {label}
+      </HostText>
       {trailing}
     </HostButton>
   );

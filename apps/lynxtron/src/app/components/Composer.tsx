@@ -24,6 +24,7 @@ import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.logic";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
+import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
 interface ComposerProps {
   disabled: boolean;
   busy: boolean;
@@ -434,6 +435,9 @@ export function Composer({
                           className="composer-toolbar-control--model-option"
                           controlId="model-option"
                           label={modelOptionLabel}
+                          labelStyle={{
+                            letterSpacing: getComposerModelOptionLetterSpacing(modelOptionLabel),
+                          }}
                           trailing={
                             <Icon
                               name="chevron-down"
