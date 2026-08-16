@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T22:26:51+09:00",
+  "productCommit": "fe09bac1045a193718a16866cbb226c6dccfaf5b",
+  "harnessCommit": "d3e35be4e177426e7ff3ccda4a41e2cdc8ff84b4",
+  "nativeVerifierCommit": "457bdacc90109ea2389e53a70dd7dea5349d084a",
+  "stateId": "settings-connections",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "browserTheme": "dark",
+    "nativeTheme": "light",
+    "route": "/settings/connections",
+    "policy": "Authorized clients requires both access:write and a remote-reachable server."
+  },
+  "fixture": {
+    "browser": {
+      "source": "immutable VACUUM INTO snapshot from ~/.t3/userdata/state.sqlite",
+      "snapshotSha256": "8353c6369d96ce567797512390f43c530bc74198bbf91b6032b0b9bc300dec0c",
+      "sessionScope": "Both Web and Lynx receive real administrative sessions with access:write.",
+      "serverAuthPolicy": "loopback"
+    },
+    "native": {
+      "source": "disposable /tmp/t3-git-publish-native-fixture snapshot",
+      "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+      "modelSelection": {
+        "instanceId": "codex",
+        "model": "gpt-5.6-sol"
+      }
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Lynx showed Authorized clients whenever the session had access:write, even when the server was loopback-only and Web correctly hid remote pairing management.",
+      "A shared reachability predicate now requires both the administrative scope and auth.policy === remote-reachable, keeping Web and Lynx policy decisions identical.",
+      "On the same snapshot and same-scope sessions, removing the unreachable 456px Authorized clients section improves full-frame residual from 0.130207 to 0.090694."
+    ],
+    "harnessMismatch": [
+      "The earlier Connections residual paired a non-administrative Web session with an administrative Lynx session, so the extra section could not be attributed to product code.",
+      "The corrected harness uses the real desktop administrative bootstrap credential for the Web pane; SQLite inspection confirms the browser session owns access:write.",
+      "No renderer-only fixture hides or synthesizes Authorized clients. The remaining This environment copy and row-anatomy residual stays explicit."
+    ],
+    "evidenceBoundary": "Matched Browser captures attribute the policy-driven pixel delta. Exact Native local and remote runs prove both sides of the reachability policy plus remote Create, Copy code, Revoke, persistence, transport, zero renderer errors, and cleanup. Native geometry is representative and is not claimed as pixel parity."
+  },
+  "browser": {
+    "status": "pass",
+    "sameSnapshot": true,
+    "sameSessionScope": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameWebPixels": true,
+    "beforeHead": "fa9bd3dcaa6464c50a202361a819f886f825bce1",
+    "afterHead": "d3e35be4e177426e7ff3ccda4a41e2cdc8ff84b4",
+    "bundles": {
+      "webBefore": "dee8522bc59699371f8c97f944078191e321a1ff76a06e69a70c54e0941bb734",
+      "webAfter": "06caf5008f3f894cdb535a8333ef27d0493cfc799ffed16d780180dda06072b1",
+      "lynxBefore": "b03276093c83cb20ee0d1cc50dd8b7c5ce30fbc22dabcc834269832b32459c9a",
+      "lynxAfter": "d685e46f3ebb15546aa62ea4bddb7ed07835c8bbaa7062f9a7648ca3083a8776"
+    },
+    "reports": {
+      "beforeSha256": "10356f2ddd9ddf84652cc11bac6f257d7680476b51dd746bf9eb3594d03ad8f7",
+      "afterSha256": "09326f27e2d13f56eaebc517e4c89e7cbb69939de62f18acee7152ad734564bf"
+    },
+    "screenshots": {
+      "webBefore": "afafbf407b52c75bc876c87834ca89325eab5c7822f55fb39a313ea684ca8e32",
+      "webAfter": "afafbf407b52c75bc876c87834ca89325eab5c7822f55fb39a313ea684ca8e32",
+      "lynxBefore": "33cc07a92ed2e2989fbd6b39398a5996dc40830537b379a01b547799db10c94b",
+      "lynxAfter": "ebd8ba55735bb391cd0808ad6a63c28d93bad797635e9a11bbf0d2a0d7a2a2e2",
+      "retention": "diagnostic files remain in /tmp and are not tracked"
+    },
+    "sections": {
+      "beforeLynx": ["This environment", "Authorized clients", "Remote environments"],
+      "afterLynx": ["This environment", "Remote environments"],
+      "web": ["This environment", "Remote environments"],
+      "removedAuthorizedClientsHeight": 456
+    },
+    "residuals": {
+      "fullFrame": {
+        "beforeSsim": 0.869793,
+        "afterSsim": 0.909306,
+        "before": 0.130207,
+        "after": 0.090694,
+        "delta": -0.039513
+      },
+      "settingsPanel": {
+        "before": 0.132121,
+        "after": 0.079328,
+        "delta": -0.052793
+      },
+      "content": {
+        "before": 0.157893,
+        "after": 0.093477,
+        "delta": -0.064416
+      },
+      "thisEnvironment": {
+        "before": 0.220447,
+        "after": 0.220447,
+        "delta": 0
+      }
+    },
+    "rendererErrors": 0
+  },
+  "native": {
+    "bundle": {
+      "bytes": 4477398,
+      "sha256": "c2d6538b9d1897ae7d5902cb648d48ed75911327df967f88704af940843fb434"
+    },
+    "localPolicy": {
+      "status": "pass",
+      "reportSha256": "6a5b4220fda12d811b455ad3250580880ae9502a03b65f396d47e70a6c95eef9",
+      "panel": {
+        "x": 256,
+        "y": 52,
+        "width": 1024,
+        "height": 479
+      },
+      "authorizedClientsVisible": false,
+      "createPairingVisible": false,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "remotePolicy": {
+      "status": "pass",
+      "reportSha256": "fc7515fa6170e8ca82ed76d6446d8917fcbfbcced464428f1096ae1ae57f4bba",
+      "sequence": ["Create", "Copy code", "Revoke", "Create", "cold restart", "Create"],
+      "initialPairingLinkCount": 0,
+      "revokedPairingLinkCount": 0,
+      "coldRestartPairingLinkCount": 0,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "transport": {
+      "kind": "main",
+      "beforeProbe": 2,
+      "afterProbe": 3
+    }
+  },
+  "validation": {
+    "focusedTests": {
+      "connectionsProduct": "20/20",
+      "captureHarness": "23/23",
+      "nativeVerifier": "34/34"
+    },
+    "typecheck": {
+      "clientRuntime": "pass with existing Effect suggestion",
+      "web": "pass",
+      "lynxtron": "pass"
+    },
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0; external live sessions were informational and were not touched.",
+    "screenshotBudget": "32/100",
+    "retainedTrialApp": "PID 18721 remained alive throughout the run"
+  },
+  "remainingRisk": [
+    "The remaining full-frame residual 0.090694 is dominated by This environment copy and row anatomy that did not change in this policy slice.",
+    "The matched Browser pair covers dark 1280x820 loopback policy; Native light evidence proves both loopback and remote-reachable behavior.",
+    "Physical keyboard focus traversal remains outside the measured-touch verifier."
+  ]
+}
