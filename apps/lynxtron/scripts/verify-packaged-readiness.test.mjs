@@ -59,6 +59,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'contextLightBandColors[0] === "rgb(222,222,222)"');
     assert.include(source, 'contextLightBandColors[15] === "rgb(250,250,250)"');
     assert.include(source, 'contextLightBandColors[30] === "rgb(255,255,255)"');
+    assert.notInclude(source, "contextLightBandFirst");
+    assert.notInclude(source, "contextLightBandLast");
     assert.include(source, "composerThemeScreenshot");
     assert.include(source, "native-composer-${expectedTheme}.png");
     assert.notInclude(outcomeChecksSource, "composerThemeScreenshot");
