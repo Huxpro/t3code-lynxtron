@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T13:10:46+09:00",
+  "updatedAt": "2026-08-16T13:32:01+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7027,6 +7027,53 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-archive-cold-restart",
               "source": "Distinct owned app PIDs load the same 5cd21a28 bundle and isolated state; the archived thread survives restart, renderer errors are zero, state is disposed, and every owned/orphaned agent-browser gate is zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-connections-mutation-native-certification-current",
+      "observedAt": "2026-08-16T13:32:01+09:00",
+      "commit": "7e717ab1cb2399e82d0a4477b66e71a36a7fa33e",
+      "codeCommit": "55ae2fab5",
+      "codeState": "commit",
+      "label": "Settings Connections Native mutation certification",
+      "narrative": "An isolated exact-bundle run starts with zero active pairing links, creates one through the measured Native Create action, observes Copy code plus the new link's exact Revoke action, revokes only that link, and requires the UI to return to Create before cold restart. The first run exposed a product loss: the component discarded the created link id and kept the now-invalid one-time code after the same link was revoked. The fix retains the link id with the local credential and clears it only after successful revocation of that exact link. A second owned process loads the same bundle and isolated state with zero links and Create restored. No one-time credential enters diagnostics or tracked evidence. Renderer errors are zero and isolated state is disposed. This is Native content, interaction, persistence, and runtime evidence, not Native pixel parity.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The failing and passing exact-bundle runs share the same isolated state, route, access scope, viewport, and create/revoke sequence. The product fix directly changes the stale local credential state without changing the access service or visual scope."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-connections-mutation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4c9d9b0612794b8eecdd578a68edb1f41df01803eaf43998cab5df8b14cf1336"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-pairing-mutation-content",
+              "source": "The same Connections row truthfully moves from Create to Copy code and back to Create as the isolated pairing link is created and revoked"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-pairing-create-revoke",
+              "source": "Measured Native Create and exact-link Revoke actions change the access projection from zero to one to zero links without touching existing client sessions"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-pairing-cold-restart",
+              "source": "Distinct owned PIDs load the same 06fea632 bundle and isolated state; the revoked link remains absent after restart, renderer errors are zero, no credential is retained in evidence, state is disposed, and every agent-browser gate is zero"
             }
           }
         }
