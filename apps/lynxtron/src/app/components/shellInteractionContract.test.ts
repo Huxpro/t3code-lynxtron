@@ -80,6 +80,11 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("flex-shrink: 0;");
   });
 
+  it("releases the authority brand position at responsive viewports", () => {
+    expect(overrides).toContain(".sidebar-brand-host {\n  position: absolute;\n  left: 130px;");
+    expect(overrides).toContain(".viewport-responsive .sidebar-brand-host {\n  left: 60px;\n}");
+  });
+
   it("keeps Sidebar thread state truthful and actions progressively disclosed", () => {
     const faviconSource = readFileSync(
       path.resolve(import.meta.dirname, "../../../../web/src/components/ProjectFavicon.lynx.tsx"),
