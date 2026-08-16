@@ -2367,6 +2367,8 @@ async function verifyModelPickerFidelity({
   expectedTheme,
   outputDirectory,
   timeoutMs,
+  viewportHeight,
+  viewportWidth,
 }) {
   await tapSelector({
     child,
@@ -2397,6 +2399,19 @@ async function verifyModelPickerFidelity({
     selector: ".model-picker-rail-scroll",
     timeoutMs,
     predicate: (measurement) => measurement !== null,
+  });
+  const dismissLayer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-dismiss-layer",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement !== null &&
+      Math.abs((measurement.rect?.x ?? -1) - 0) <= 1 &&
+      Math.abs((measurement.rect?.y ?? -1) - 0) <= 1 &&
+      Math.abs((measurement.rect?.width ?? 0) - viewportWidth) <= 1 &&
+      Math.abs((measurement.rect?.height ?? 0) - viewportHeight) <= 1 &&
+      measurement.style.backgroundColor === "rgba(0,0,0,0)",
   });
   const expectedColors =
     expectedTheme === "light"
@@ -2504,6 +2519,10 @@ async function verifyModelPickerFidelity({
     panel: {
       rect: panel.rect,
       attributes: panel.attributes,
+    },
+    dismissLayer: {
+      rect: dismissLayer.rect,
+      backgroundColor: dismissLayer.style.backgroundColor,
     },
     colors: resolvedColors,
     checkoutLabel: checkout.text.trim(),
@@ -5592,6 +5611,8 @@ async function runOnce({
           expectedTheme,
           outputDirectory,
           timeoutMs,
+          viewportHeight: height,
+          viewportWidth: width,
         })
       : undefined;
     const modelSelectionMutation = shouldVerifyModelSelectionMutation

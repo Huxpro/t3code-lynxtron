@@ -89,6 +89,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'panel: "rgb(255,255,255)"');
     assert.include(source, 'selector: ".model-picker-close"');
     assert.include(source, 'selector: ".model-picker-dismiss-layer"');
+    assert.include(source, 'measurement.style.backgroundColor === "rgba(0,0,0,0)"');
+    assert.include(source, "Math.abs((measurement.rect?.width ?? 0) - viewportWidth) <= 1");
+    assert.include(source, "Math.abs((measurement.rect?.height ?? 0) - viewportHeight) <= 1");
+    assert.include(source, "viewportHeight: height");
+    assert.include(source, "viewportWidth: width");
     assert.include(source, 'point: "bottom-right"');
     assert.include(source, "outsideTap: true");
   });
