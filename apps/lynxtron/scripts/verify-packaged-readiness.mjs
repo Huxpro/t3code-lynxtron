@@ -1664,6 +1664,95 @@ async function verifyModelSelectionMutation({
   };
 }
 
+async function verifyRuntimeMenuDismiss({ child, client, timeoutMs }) {
+  const beforeState = await readClientState(client);
+  const beforeMode = beforeState?.activeThread?.runtimeMode;
+  if (typeof beforeMode !== "string") {
+    throw new Error(`Runtime menu baseline is incomplete: ${JSON.stringify(beforeState)}`);
+  }
+  const trigger = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--runtime",
+    timeoutMs,
+    predicate: (measurement) => Boolean(measurement?.text.trim()),
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--runtime",
+    timeoutMs,
+  });
+  const menu = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const activeItem = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu__item--active",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["aria-checked"] === "true",
+  });
+  const dismissLayer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu-dismiss-layer",
+    timeoutMs,
+    predicate: (measurement) =>
+      (measurement?.rect?.width ?? 0) >= 1280 && (measurement?.rect?.height ?? 0) >= 820,
+  });
+  await tapSelector({
+    child,
+    client,
+    point: "bottom-right",
+    selector: ".composer-runtime-menu-dismiss-layer",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const afterState = await readClientState(client);
+  const afterTrigger = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--runtime",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === trigger.text.trim(),
+  });
+  if (afterState?.activeThread?.runtimeMode !== beforeMode) {
+    throw new Error(
+      `Dismissing runtime menu changed the permission: ${JSON.stringify({
+        beforeMode,
+        afterMode: afterState?.activeThread?.runtimeMode,
+      })}`,
+    );
+  }
+
+  return {
+    status: "pass",
+    input: "DevTool Input.emulateTouchFromMouseEvent on measured runtime trigger and dismiss layer",
+    runtimeMode: beforeMode,
+    label: afterTrigger.text.trim(),
+    trigger: trigger.rect,
+    menu: menu.rect,
+    activeItem: {
+      text: activeItem.text.trim(),
+      rect: activeItem.rect,
+    },
+    dismissLayer: dismissLayer.rect,
+    dismissed: true,
+    valueUnchanged: true,
+  };
+}
+
 async function verifyComposerStopBehavior({
   child,
   client,
@@ -4753,6 +4842,7 @@ async function runOnce({
   verifyComposerBranding,
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
+  verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
   verifyComposerStop,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
@@ -4994,6 +5084,13 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const runtimeMenuDismiss = shouldVerifyRuntimeMenuDismiss
+      ? await verifyRuntimeMenuDismiss({
+          child,
+          client,
+          timeoutMs,
+        })
+      : undefined;
     const composerStop = verifyComposerStop
       ? await verifyComposerStopBehavior({
           child,
@@ -5196,6 +5293,7 @@ async function runOnce({
       composer,
       modelPickerFidelity,
       modelSelectionMutation,
+      runtimeMenuDismiss,
       composerStop,
       composerWorkingState,
       completedTranscriptState,
@@ -5238,6 +5336,7 @@ async function runOnce({
       composer,
       modelPickerFidelity,
       modelSelectionMutation,
+      runtimeMenuDismiss,
       composerStop,
       composerWorkingState,
       completedTranscriptState,
@@ -5302,6 +5401,7 @@ const shouldVerifyModelPickerFidelity = process.argv.includes("--verify-model-pi
 const shouldVerifyModelSelectionMutation = process.argv.includes(
   "--verify-model-selection-mutation",
 );
+const shouldVerifyRuntimeMenuDismiss = process.argv.includes("--verify-runtime-menu-dismiss");
 const verifyComposerStop = process.argv.includes("--verify-composer-stop");
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
@@ -5540,6 +5640,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyComposerBranding,
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
+      verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
       verifyComposerStop,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,

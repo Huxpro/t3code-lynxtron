@@ -105,6 +105,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"native-model-selection-after.png"');
   });
 
+  it("verifies the runtime permission menu dismisses without changing value", () => {
+    assert.include(source, "async function verifyRuntimeMenuDismiss");
+    assert.include(source, '"--verify-runtime-menu-dismiss"');
+    assert.include(source, 'selector: ".composer-runtime-menu-dismiss-layer"');
+    assert.include(source, 'point: "bottom-right"');
+    assert.include(source, "afterState?.activeThread?.runtimeMode !== beforeMode");
+    assert.include(source, "valueUnchanged: true");
+  });
+
   it("drives titlebar panels and verifies Sidebar menu rows do not collapse", () => {
     assert.include(source, "async function verifyShellInteractions");
     assert.include(source, '"--verify-shell-interactions"');
