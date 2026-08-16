@@ -4928,6 +4928,7 @@ if (
   throw new Error("--verify-review-diff-state requires a real completed reviewFixture checkpoint.");
 }
 const fixtureManifestProjectId = fixtureManifest.project?.projectId;
+const transcriptFixture = fixtureManifest.transcriptFixture;
 if (
   verifyComposerStop &&
   (typeof fixtureManifestProjectId !== "string" || fixtureManifestProjectId.length === 0)
@@ -4936,11 +4937,13 @@ if (
 }
 const canonicalThreadTitle = shouldVerifyIdleThreadState
   ? idleFixture.title
-  : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
-    ? fixtureManifest.pendingRequestFixture.title
-    : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
-      ? reviewFixture.title
-      : fixtureManifest.sidebarFixture?.titles?.[0];
+  : shouldVerifyCompletedTranscriptState || shouldVerifyFailedTranscriptState
+    ? transcriptFixture?.title
+    : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+      ? fixtureManifest.pendingRequestFixture.title
+      : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
+        ? reviewFixture.title
+        : fixtureManifest.sidebarFixture?.titles?.[0];
 const lifecycleOnlyEmptyFixture =
   shouldVerifyLifecycleRecovery &&
   !verifySettingsNavigation &&
@@ -4980,12 +4983,14 @@ if (
 }
 const modelSelection = shouldVerifyIdleThreadState
   ? idleFixture.modelSelection
-  : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
-    ? fixtureManifest.pendingRequestFixture.modelSelection
-    : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
-      ? reviewFixture.modelSelection
-      : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8"))
-          .modelSelection;
+  : shouldVerifyCompletedTranscriptState || shouldVerifyFailedTranscriptState
+    ? transcriptFixture?.modelSelection
+    : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+      ? fixtureManifest.pendingRequestFixture.modelSelection
+      : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
+        ? reviewFixture.modelSelection
+        : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8"))
+            .modelSelection;
 if (typeof modelSelection?.instanceId !== "string" || typeof modelSelection?.model !== "string") {
   throw new Error("The readiness fixture must declare a saved modelSelection.");
 }

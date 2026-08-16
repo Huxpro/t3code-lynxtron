@@ -348,6 +348,8 @@ describe("packaged readiness Sidebar geometry", () => {
     );
     assert.include(source, '".transcript-work-status--failed"');
     assert.include(source, '"--verify-failed-transcript-state"');
+    assert.include(source, "transcriptFixture?.title");
+    assert.include(source, "transcriptFixture?.modelSelection");
   });
 
   it("verifies the real Native approval request content, state, and column geometry", () => {

@@ -211,9 +211,16 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
     if (settleMode === "failed" && !failureReason) {
       throw new Error("Failed transcript fixture has no persisted session error.");
     }
+    const persistedTitle =
+      new DatabaseSync(databasePath)
+        .prepare("SELECT title FROM projection_threads WHERE thread_id = ?")
+        .get(threadId)?.title ?? null;
+    if (typeof persistedTitle !== "string" || persistedTitle.trim().length === 0) {
+      throw new Error("Transcript fixture has no persisted thread title.");
+    }
     fixture = {
       threadId,
-      title,
+      title: persistedTitle,
       promptText,
       expectedAssistantText,
       assistantText,
@@ -247,6 +254,9 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
     snapshotId: sha256File(databasePath),
     route: "thread-transcript",
     threadCount: 1,
+    sidebarFixture: {
+      titles: [fixture.title],
+    },
     transcriptFixture: fixture,
   };
   writeFileSync(manifestPath, `${JSON.stringify(nextManifest, null, 2)}\n`);

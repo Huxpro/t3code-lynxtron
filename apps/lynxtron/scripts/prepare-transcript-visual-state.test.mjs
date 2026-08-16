@@ -42,4 +42,12 @@ describe("transcript visual-state preparation", () => {
     assert.include(source, "SELECT last_error AS lastError");
     assert.include(source, "Failed transcript fixture has no persisted session error.");
   });
+
+  it("declares the created transcript as the canonical Sidebar fixture", () => {
+    assert.include(source, "SELECT title FROM projection_threads WHERE thread_id = ?");
+    assert.include(source, "Transcript fixture has no persisted thread title.");
+    assert.include(source, "title: persistedTitle");
+    assert.include(source, "sidebarFixture: {");
+    assert.include(source, "titles: [fixture.title]");
+  });
 });
