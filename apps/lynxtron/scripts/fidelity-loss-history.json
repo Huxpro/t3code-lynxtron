@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T09:44:51+09:00",
+  "updatedAt": "2026-08-16T12:19:29+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6887,6 +6887,53 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-git-publish-readiness",
               "source": "Main transport readiness advances 2 to 3, Publish open advances 11 to 12, renderer errors are zero, isolated state is disposed, and agent-browser leak gates remain zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-beta-mutation-native-certification-current",
+      "observedAt": "2026-08-16T12:19:29+09:00",
+      "commit": "f1da007ee4b2a402683390db431b857bb21b4ca2",
+      "codeCommit": "0bed0d8bd789ef69872cfa6131d644851fb63f07",
+      "codeState": "commit",
+      "label": "Settings Beta Native mutation certification",
+      "narrative": "An exact-owned production bundle opens Settings Beta from isolated state with Sidebar v2 enabled and auto-settle set to 3 days. A measured Native DevTool tap changes the semantic switch from checked to unchecked, removes the days input, and persists null. A second tap restores checked, the days input, and disk value 3. The first owned app then exits and a second owned process loads the same exact bundle and isolated state; the checked switch, value 3, main transport, and disk value all survive the cold restart with zero renderer errors and isolated cleanup. The earlier missing selector was a fixture mismatch because Sidebar v2 decoded false, not a product loss. This is Native state, interaction, persistence, and runtime evidence, not Native pixel parity.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The run closes previously unknown Native mutation and persistence cells without assigning a product delta or changing the existing Browser material residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-beta-mutation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "e20b6821a6422a029c6e1ca4f26020384eb7c407f71ef5fb5fc2f9e1a56320e0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-beta-mutation-content",
+              "source": "Settings Beta exposes Auto-settle inactive threads with semantic checked true and a days input value of 3 before and after cold restart"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-beta-toggle-mutation",
+              "source": "Measured Native taps drive checked true to false to true, remove and restore the days row, and persist null then 3"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-beta-cold-restart",
+              "source": "Distinct owned PIDs load the same a8663ff0 bundle and isolated state; main transport is ready, value 3 survives restart, renderer errors are zero, state is disposed, and every agent-browser gate is zero"
             }
           }
         }
