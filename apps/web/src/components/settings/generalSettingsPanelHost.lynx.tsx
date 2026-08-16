@@ -17,6 +17,7 @@ export function GeneralSettingsAboutContent({ versionLabel }: { readonly version
 export function GeneralSettingsBackgroundActivityContent() {
   return (
     <SettingsRow
+      id="background-activity"
       title="Background activity"
       description="Control the shared policy for background Git refreshes and provider health checks."
       status="Advanced background activity controls are not yet available in Lynxtron."

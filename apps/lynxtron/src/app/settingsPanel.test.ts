@@ -105,6 +105,7 @@ describe("Lynx Settings route projection", () => {
       expect(appearance).toContain(unavailableProp);
     }
     expect(generalHost).toContain("GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = true");
+    expect(generalHost).toContain('id="background-activity"');
     expect(generalHost).toMatch(/title="Background activity"[\s\S]+?unavailable/);
     expect(generalPanel).toContain(
       "textGenerationModelUnavailable={GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE}",
