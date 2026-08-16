@@ -22,6 +22,7 @@ import {
 } from "../../../../web/src/components/chat/ComposerSurface";
 import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
+import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.logic";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
@@ -114,13 +115,13 @@ export function Composer({
   const [modelOptionMenuOpen, setModelOptionMenuOpen] = useState(false);
   const [compactControlsMenuOpen, setCompactControlsMenuOpen] = useState(false);
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
+  const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
   useEffect(() => {
     const diagnosticsGlobal = globalThis as {
-      __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
       __T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?: (value: string) => boolean;
     };
-    if (typeof diagnosticsGlobal.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
+    if (!viewport.testResize) return;
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__ = (nextValue) => {
       setValue(nextValue);
       return true;
@@ -128,7 +129,7 @@ export function Composer({
     return () => {
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__;
     };
-  }, []);
+  }, [viewport.testResize]);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
