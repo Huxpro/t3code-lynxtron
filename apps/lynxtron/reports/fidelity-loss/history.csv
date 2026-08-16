@@ -107,3 +107,4 @@ settings-connections-mutation-native-certification-current,2026-08-16T13:32:01+0
 existing-thread-failed-current-brand-fix,2026-08-16T14:03:03+09:00,9779a5864,commit,Existing Thread Failed current brand fix,0.468358,0.468358,0.019631,0.457712,0.542288,0.515079
 existing-thread-approval-native-recovery-current,2026-08-16T14:55:33+09:00,b712a93780729acbe0f294b929d8f69622371052,commit,Existing Thread Approval Native recovery certification,0.459884,0.459884,0.019329,0.449238,0.550762,0.523553
 existing-thread-completed-current-refresh,2026-08-16T15:21:26+09:00,42197f63416abd2341f776b60adcc34bfa0cde61,commit,Existing Thread Completed current refresh,0.449306,0.449306,0.018992,0.438645,0.561355,0.534131
+model-picker-selection-mutation-native-current,2026-08-16T16:41:42+09:00,620e09e323dd6ed6f577ae213d30138391cf98e1,commit,Model Picker Native selection mutation,0.442001,0.442001,0.018748,0.431339,0.568661,0.541436
