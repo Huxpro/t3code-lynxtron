@@ -199,6 +199,30 @@
     "largestLocalizedDelta": "Toolbar allocation residual decreased by 0.120865",
     "unchangedSurfaces": ["Editor", "Context", "Primary action"]
   },
+  "fidelityImpact": {
+    "milestones": {
+      "before": 117,
+      "after": 118
+    },
+    "fixedStateCount": 40,
+    "totalLoss": {
+      "before": 0.431408,
+      "after": 0.431384,
+      "delta": -0.000024
+    },
+    "evidenceDebt": {
+      "before": 0.420746,
+      "after": 0.420746,
+      "delta": 0
+    },
+    "composerSendable": {
+      "observedResidualBefore": 0.135958,
+      "observedResidualAfter": 0.134183,
+      "stateLossBefore": 0.654573,
+      "stateLossAfter": 0.653864,
+      "weightedStateContributionDelta": -0.003545
+    }
+  },
   "validation": {
     "focusedTests": {
       "product": "28/28",
