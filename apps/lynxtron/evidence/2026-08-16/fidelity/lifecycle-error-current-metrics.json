@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T23:29:03+09:00",
+  "harnessCommit": "85bcf6eb18c885408c0ccdffced9a78ef81832d5",
+  "productCommit": "94297adf8e3b4585b9401a418b2a987976c9f198",
+  "stateId": "lifecycle-error",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "browserTheme": "dark",
+    "nativeTheme": "light",
+    "semanticRoute": "new-thread",
+    "selectedProject": "background-only",
+    "lifecycle": "connecting"
+  },
+  "fixture": {
+    "browser": {
+      "source": "immutable VACUUM INTO snapshot from ~/.t3/userdata/state.sqlite",
+      "snapshotSha256": "8353c6369d96ce567797512390f43c530bc74198bbf91b6032b0b9bc300dec0c",
+      "ownedServerTerminatedAfterBranchDiscovery": true
+    },
+    "native": {
+      "source": "disposable /tmp/t3-git-publish-native-fixture snapshot",
+      "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+      "sessionStatus": "running"
+    }
+  },
+  "classification": {
+    "productLoss": [],
+    "harnessMismatch": [
+      "The first current-head Browser capture issued readProjectBranch but a slower readVcsStatus completed afterward and overwrote the single lastCommandResult diagnostic, so the fault-injection gate waited until timeout.",
+      "The old gate also permitted disconnect before branch discovery had ever been requested, recreating the invalid early-fault sample documented by the original Lifecycle evidence.",
+      "The dev-only live connector now retains a bounded history of completed command results, and fault injection requires that history to contain readProjectBranch. No production runtime imports or behavior change."
+    ],
+    "capabilityGap": [
+      "During the preceding Connections loop, Web exposed functional multi-environment onboarding while Lynxtron had no environment catalog, connectPairing, remove, or retry contract. The Remote environments residual remains a truthful feature gap; no fake Add environment affordance was added."
+    ],
+    "ledgerScope": "This point is a measurement refinement. It refreshes current Browser content, geometry, typography, material, and runtime plus current Native content, interaction, and runtime. It assigns no product delta to the harness commit and changes no weights or scope."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "85bcf6eb18c885408c0ccdffced9a78ef81832d5",
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "identityMatch": true,
+    "bothDisconnected": true,
+    "expectedTransportErrorsOnly": true,
+    "bundles": {
+      "web": "498ad6eee72ff82db852b6191d59cfd3b416280e1fb67851e5cb8886b84e0234",
+      "lynx": "5f95feb3e894bc473e72fb55b0fe3307e5ba78f7444cdc9104dd2c60cb834ad6"
+    },
+    "reportSha256": "fb40cf22ff0007c044fcaf53e69c19f80f700f33561c8e6381fecd0dd476879a",
+    "screenshots": {
+      "web": "7862e7efbfd64497499cd588759c1731ad3560c3a4cb749f15871224992e2d82",
+      "lynx": "a24459a04babd11e24f3e0e366d32800251d15c2b3261cb697208ed033e32d95",
+      "retention": "diagnostic files remain in /tmp and are not tracked"
+    },
+    "content": {
+      "placeholder": "Ask for follow-up changes or attach images",
+      "visibleModelLabel": "Claude Fable 5",
+      "composerState": "disabled",
+      "primaryActionState": "disabled",
+      "residual": 0
+    },
+    "geometry": {
+      "webComposer": {
+        "x": 384,
+        "y": 340,
+        "width": 768,
+        "height": 140
+      },
+      "lynxComposer": {
+        "x": 384,
+        "y": 340,
+        "width": 768,
+        "height": 140
+      },
+      "residual": 0
+    },
+    "typography": {
+      "webEditorLineHeight": 22.75,
+      "lynxEditorLineHeight": 23,
+      "anchorScale": 32,
+      "residual": 0.007813
+    },
+    "material": {
+      "fullFrameSsim": 0.93027,
+      "fullFrameResidual": 0.06973,
+      "mainSsim": 0.930627,
+      "mainResidual": 0.069373,
+      "composerRegionSsim": 0.946681,
+      "composerRegionResidual": 0.053319
+    },
+    "runtime": {
+      "branchResultObserved": true,
+      "commandResultMethods": ["readVcsStatus", "readProjectBranch"],
+      "rendererErrors": 0,
+      "residual": 0
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "85bcf6eb18c885408c0ccdffced9a78ef81832d5",
+    "bundle": {
+      "bytes": 4478389,
+      "sha256": "5519fae2529651080728c6beba9c80dadcacf55ba2294194aedcbe982647cb74"
+    },
+    "reportSha256": "9fde5f2c652ae040ab31e835f69598234859f1b58c3bf7737fd4ddaa9b9e2ecb",
+    "connected": {
+      "sessionStatus": "running",
+      "composerState": "working",
+      "composerRect": {
+        "x": 384,
+        "y": 628,
+        "width": 768,
+        "height": 140
+      }
+    },
+    "failure": {
+      "phase": "error",
+      "primaryActionState": "disabled",
+      "composerState": "working"
+    },
+    "reconnect": {
+      "input": "DevTool Input.emulateTouchFromMouseEvent on the measured Reconnect selector",
+      "phase": "reconnecting"
+    },
+    "recovered": {
+      "sessionStatus": "running",
+      "composerState": "working",
+      "composerRect": {
+        "x": 384,
+        "y": 628,
+        "width": 768,
+        "height": 140
+      },
+      "finalBanner": null
+    },
+    "transport": {
+      "readinessBefore": 3,
+      "readinessAfter": 4,
+      "recoveryBefore": 11,
+      "recoveryAfter": 16
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": {
+      "liveHostAndCaptureHarness": "32/32"
+    },
+    "typecheck": {
+      "browserPreview": "pass"
+    },
+    "build": {
+      "browserPreview": "pass with existing bundle-size and Effect import.meta warnings",
+      "productionBundleReused": "5519fae2529651080728c6beba9c80dadcacf55ba2294194aedcbe982647cb74"
+    },
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0.",
+    "screenshotBudget": "32/100",
+    "retainedTrialApp": "PID 18721 remained alive throughout the run"
+  },
+  "remainingRisk": [
+    "Native material and pixel parity are not claimed by the recovery verifier; Browser supplies the current pixel measurement.",
+    "Reconnect uses a measured DevTool tap rather than physical keyboard activation.",
+    "The restored running session is fixture state; no provider subprocess is resumed."
+  ]
+}
