@@ -63,6 +63,7 @@ export function SettingsRow({
   resetAction,
   control,
   children,
+  unavailable = false,
   className,
   id,
 }: {
@@ -72,13 +73,20 @@ export function SettingsRow({
   readonly resetAction?: ReactNode;
   readonly control?: ReactNode;
   readonly children?: ReactNode;
+  readonly unavailable?: boolean;
   readonly className?: string;
   readonly id?: string;
 }) {
   return (
     <view
       id={id}
-      className={joinClassNames("settings-row flex w-full min-w-0 self-stretch", className)}
+      aria-disabled={unavailable ? "true" : undefined}
+      data-settings-unavailable={unavailable ? "true" : undefined}
+      className={joinClassNames(
+        "settings-row flex w-full min-w-0 self-stretch",
+        unavailable ? "settings-row--unavailable" : undefined,
+        className,
+      )}
     >
       <view className="settings-row__text flex min-w-0 flex-1 flex-col">
         <view className="settings-row__title-line">

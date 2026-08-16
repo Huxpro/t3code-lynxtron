@@ -6,6 +6,7 @@ import {
   GeneralSettingsDiagnosticsControl,
   GeneralSettingsTextGenerationModelControl,
   GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS,
+  GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE,
 } from "./generalSettingsPanelHost";
 import {
   getGeneralSettingsSurfaceActions,
@@ -42,6 +43,7 @@ export function GeneralSettingsPanel() {
       }
       textGenerationModelDirty={surface.textGenerationModelDirty}
       textGenerationModelStatus={GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS}
+      textGenerationModelUnavailable={GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE}
       values={surface.values}
       versionLabel={surface.versionLabel}
     />

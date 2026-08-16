@@ -69,9 +69,23 @@ describe("Lynx Settings route projection", () => {
     expect(generalLayout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
   });
 
-  it("marks unavailable Appearance capabilities as disabled and visibly muted", () => {
+  it("marks unavailable Settings capabilities as disabled and visibly muted", () => {
     const appearance = readFileSync(
       path.resolve(import.meta.dirname, "components/AppearanceSettings.tsx"),
+      "utf8",
+    );
+    const generalHost = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/generalSettingsPanelHost.lynx.tsx",
+      ),
+      "utf8",
+    );
+    const generalPanel = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/GeneralSettingsPanel.tsx",
+      ),
       "utf8",
     );
     const layout = readFileSync(
@@ -90,6 +104,11 @@ describe("Lynx Settings route projection", () => {
     ]) {
       expect(appearance).toContain(unavailableProp);
     }
+    expect(generalHost).toContain("GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = true");
+    expect(generalHost).toMatch(/title="Background activity"[\s\S]+?unavailable/);
+    expect(generalPanel).toContain(
+      "textGenerationModelUnavailable={GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE}",
+    );
     expect(layout).toContain('aria-disabled={unavailable ? "true" : undefined}');
     expect(layout).toContain('data-settings-unavailable={unavailable ? "true" : undefined}');
     expect(layout).toContain('unavailable ? "settings-row--unavailable" : undefined');

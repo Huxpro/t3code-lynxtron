@@ -2,6 +2,7 @@ import { GeneralSettingsValueButton, SettingsRow } from "./generalSettingsHost";
 
 export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS =
   "Text generation model selection is not yet available in Lynxtron.";
+export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = true;
 
 export function GeneralSettingsAboutContent({ versionLabel }: { readonly versionLabel: string }) {
   return (
@@ -19,6 +20,7 @@ export function GeneralSettingsBackgroundActivityContent() {
       title="Background activity"
       description="Control the shared policy for background Git refreshes and provider health checks."
       status="Advanced background activity controls are not yet available in Lynxtron."
+      unavailable
     />
   );
 }

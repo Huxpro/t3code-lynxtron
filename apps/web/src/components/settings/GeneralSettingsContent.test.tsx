@@ -17,6 +17,7 @@ describe("GeneralSettingsContent", () => {
         textGenerationModelControl={<button data-model-control />}
         textGenerationModelDirty={false}
         textGenerationModelStatus="Unavailable on this host."
+        textGenerationModelUnavailable
         values={GENERAL_SETTINGS_DEFAULT_VALUES}
         versionLabel="0.0.28"
       />,
@@ -46,6 +47,10 @@ describe("GeneralSettingsContent", () => {
     expect(markup).toContain("data-diagnostics-control");
     expect(markup).toContain("data-model-control");
     expect(markup).toContain("Unavailable on this host.");
+    expect(markup).toContain('id="text-generation-model"');
+    expect(markup).toMatch(
+      /id="text-generation-model"[^>]+aria-disabled="true"[^>]+data-settings-unavailable="true"/,
+    );
     expect(markup).toContain(
       "Default model for generated text like thread titles and source control content.",
     );
@@ -56,5 +61,23 @@ describe("GeneralSettingsContent", () => {
     expect(markup.indexOf("data-background-activity")).toBeLessThan(
       markup.indexOf("auto-open-task-panel"),
     );
+  });
+
+  it("keeps the text generation model row available unless the host disables it", () => {
+    const markup = renderToStaticMarkup(
+      <GeneralSettingsContent
+        defaults={GENERAL_SETTINGS_DEFAULT_VALUES}
+        diagnosticsDescription="Terminal logs only."
+        onUpdate={vi.fn()}
+        textGenerationModelControl={<button data-model-control />}
+        textGenerationModelDirty={false}
+        values={GENERAL_SETTINGS_DEFAULT_VALUES}
+        versionLabel="0.0.28"
+      />,
+    );
+
+    expect(markup).toContain('id="text-generation-model"');
+    expect(markup).not.toMatch(/id="text-generation-model"[^>]+aria-disabled/);
+    expect(markup).not.toMatch(/id="text-generation-model"[^>]+data-settings-unavailable/);
   });
 });

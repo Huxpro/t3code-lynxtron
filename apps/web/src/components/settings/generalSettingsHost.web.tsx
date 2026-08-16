@@ -46,6 +46,7 @@ export function SettingsRow({
   resetAction,
   control,
   children,
+  unavailable = false,
   className,
   ...rowProps
 }: Omit<ComponentPropsWithoutRef<"div">, "title"> & {
@@ -55,13 +56,17 @@ export function SettingsRow({
   resetAction?: ReactNode;
   control?: ReactNode;
   children?: ReactNode;
+  unavailable?: boolean;
 }) {
   return (
     <div
       {...rowProps}
+      aria-disabled={unavailable || undefined}
+      data-settings-unavailable={unavailable || undefined}
       className={joinClassNames(
         "settings-row rounded-xl px-3 sm:px-4",
         children ? "pt-3 pb-1" : "py-3",
+        unavailable && "pointer-events-none opacity-50",
         className,
       )}
     >

@@ -51,6 +51,7 @@ export interface GeneralSettingsContentProps {
   readonly textGenerationModelControl: ReactNode;
   readonly textGenerationModelDirty: boolean;
   readonly textGenerationModelStatus?: ReactNode;
+  readonly textGenerationModelUnavailable?: boolean;
   readonly values: GeneralSettingsValues;
   readonly versionDescription?: string;
   readonly versionLabel: string;
@@ -81,6 +82,7 @@ export function GeneralSettingsContent({
   textGenerationModelControl,
   textGenerationModelDirty,
   textGenerationModelStatus,
+  textGenerationModelUnavailable = false,
   values,
   versionDescription = "Current version of the application.",
   versionLabel,
@@ -393,6 +395,7 @@ export function GeneralSettingsContent({
           }
           status={textGenerationModelStatus}
           control={textGenerationModelControl}
+          unavailable={textGenerationModelUnavailable}
         />
       </SettingsSection>
 
