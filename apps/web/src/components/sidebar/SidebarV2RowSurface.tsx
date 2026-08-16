@@ -47,6 +47,7 @@ export interface SidebarV2RowSurfaceProps {
   readonly providerIndicator: ReactNode;
   readonly detailsTooltip: ReactNode;
   readonly detailsOverlay?: ReactNode;
+  readonly detailsRelationId?: string;
   readonly snoozeControl: ReactNode;
   readonly settleIcon: ReactNode;
   readonly unsettleIcon: ReactNode;
@@ -107,6 +108,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               <HostView
                 role="button"
                 tabIndex={0}
+                data-floating-anchor={props.detailsRelationId}
                 data-testid="sidebar-v2-row-slim"
                 aria-busy={props.isRegeneratingTitle || undefined}
                 className={cn(
@@ -215,6 +217,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
             <HostView
               role="button"
               tabIndex={0}
+              data-floating-anchor={props.detailsRelationId}
               data-testid="sidebar-v2-row-card"
               aria-busy={props.isRegeneratingTitle || undefined}
               className={cn(

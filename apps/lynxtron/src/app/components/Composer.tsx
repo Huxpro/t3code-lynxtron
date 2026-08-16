@@ -347,7 +347,11 @@ export function Composer({
                     modelPicker !== undefined || modelOptionMenuOpen || runtimeModeMenuOpen
                   }
                   items={[
-                    <view key="model" className="model-picker-anchor">
+                    <view
+                      key="model"
+                      className="model-picker-anchor"
+                      data-floating-anchor="composer-model-picker"
+                    >
                       <ComposerToolbarControl
                         className="composer-toolbar-control--model max-w-48"
                         controlId="model"
@@ -563,7 +567,11 @@ export function Composer({
                       </view>
                     ) : null,
                     !compactFooter && !questionMode ? (
-                      <view key="runtime" className="composer-runtime-control-wrap">
+                      <view
+                        key="runtime"
+                        className="composer-runtime-control-wrap"
+                        data-floating-anchor="composer-runtime-menu"
+                      >
                         <ComposerToolbarControl
                           className="composer-toolbar-control--runtime"
                           controlId="runtime"
@@ -596,6 +604,7 @@ export function Composer({
                               className="composer-runtime-menu"
                               aria-label="Runtime mode"
                               data-composer-runtime-menu
+                              data-floating-popup="composer-runtime-menu"
                             >
                               {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
                                 <view
@@ -697,7 +706,10 @@ export function Composer({
             </view>
           }
           checkout={
-            <view className="composer-workspace-control-wrap">
+            <view
+              className="composer-workspace-control-wrap"
+              data-floating-anchor="composer-workspace-menu"
+            >
               <view
                 className="composer-context-control composer-context-control--checkout"
                 aria-label="Workspace"
@@ -736,6 +748,7 @@ export function Composer({
                     }`}
                     aria-label="Workspace"
                     data-composer-workspace-menu
+                    data-floating-popup="composer-workspace-menu"
                   >
                     <text className="composer-workspace-menu__eyebrow">Workspace</text>
                     <view

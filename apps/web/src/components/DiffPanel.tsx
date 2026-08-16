@@ -548,11 +548,12 @@ export default function DiffPanel({
           <DropdownMenuTrigger
             className="inline-flex h-6 max-w-full items-center gap-1 rounded-md bg-muted/70 px-2 text-xs font-medium text-foreground outline-none transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
             aria-label={`Diff scope: ${selectedScopeLabel}`}
+            data-floating-anchor="diff-scope-menu"
           >
             <span className="truncate">{selectedScopeLabel}</span>
             <ChevronDownIcon className="size-3.5 shrink-0 text-muted-foreground" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-60">
+          <DropdownMenuContent align="start" data-floating-popup="diff-scope-menu" className="w-60">
             <DropdownMenuItem
               className={
                 selectedTurnId === null && selectedGitScope === "unstaged"
@@ -903,8 +904,8 @@ export default function DiffPanel({
                     </div>
                   </div>
                   <p className="mt-3 rounded-lg bg-muted/45 p-2.5 text-[10px] leading-[15px] text-muted-foreground">
-                    Full patch rendering is unavailable; this view uses the canonical checkpoint file
-                    summary.
+                    Full patch rendering is unavailable; this view uses the canonical checkpoint
+                    file summary.
                   </p>
                 </div>
               ) : (
@@ -984,11 +985,11 @@ export default function DiffPanel({
                     layout: { paddingTop: 0, paddingBottom: 8, gap: 8 },
                   }}
                 />
-                  <div hidden aria-hidden>
-                    {codeViewFiles.map(({ filePath }) => (
-                      <span key={filePath} data-review-file-path={filePath} />
-                    ))}
-                  </div>
+                <div hidden aria-hidden>
+                  {codeViewFiles.map(({ filePath }) => (
+                    <span key={filePath} data-review-file-path={filePath} />
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="min-h-0 flex-1 overflow-auto p-2">

@@ -23,6 +23,7 @@ import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurfa
 import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV2RowSurface";
 import { HostText } from "./ui/hostElements";
 import { useSidebar } from "./ui/sidebar";
+import { TooltipPopup } from "./ui/tooltip";
 import settingsRowUrl from "../../../lynxtron/src/app/assets/sidebar-settings-row@2x.png?external";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import { clientCapabilities } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
@@ -129,28 +130,31 @@ function resolveThreadProvider(
 }
 
 function LynxThreadDetails({
+  relationId,
   thread,
   projectTitle,
   provider,
   instanceId,
   modelLabel,
-  onClose,
 }: {
+  readonly relationId: string;
   readonly thread: ReturnType<typeof useThreadShells>[number];
   readonly projectTitle: string | null;
   readonly provider: ProviderInstanceEntry | null;
   readonly instanceId: string;
   readonly modelLabel: string;
-  readonly onClose: () => void;
 }) {
   return (
-    <>
-      <view className="sidebar-v2-details-dismiss" bindtap={onClose} />
-      <view
-        className="sidebar-v2-details-popover"
-        data-sidebar-thread-details={thread.id}
-        bindtap={stopPropagation}
-      >
+    <TooltipPopup
+      relationId={relationId}
+      side="right"
+      align="start"
+      sideOffset={4}
+      variant="glass"
+      className="sidebar-v2-details-popover"
+      data-sidebar-thread-details={thread.id}
+    >
+      <view className="sidebar-v2-details-content">
         <text className="sidebar-v2-details-title" text-maxline="2">
           {thread.title}
         </text>
@@ -179,7 +183,7 @@ function LynxThreadDetails({
           </view>
         ) : null}
       </view>
-    </>
+    </TooltipPopup>
   );
 }
 
@@ -350,7 +354,6 @@ export default function SidebarV2() {
   const [projectScopeKey, setProjectScopeKey] = useState<string | null>(null);
   const [projectScopeMenuOpen, setProjectScopeMenuOpen] = useState(false);
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
-  const [detailsThreadId, setDetailsThreadId] = useState<string | null>(null);
   const [actionMenuThreadId, setActionMenuThreadId] = useState<string | null>(null);
   const orderedProjects = useMemo(
     () => sortScopedProjectsForSidebar(projects, threads, "updated_at"),
@@ -493,8 +496,8 @@ export default function SidebarV2() {
           const project = projectById.get(thread.projectId) ?? null;
           const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
           const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
-          const detailsOpen = detailsThreadId === thread.id;
           const actionMenuOpen = actionMenuThreadId === thread.id;
+          const detailsRelationId = `sidebar-thread-details:${thread.id}`;
           return (
             <SidebarV2RowSurface
               key={thread.id}
@@ -548,21 +551,24 @@ export default function SidebarV2() {
               diff={null}
               remoteIndicator={null}
               providerIndicator={
-                <view
-                  className="sidebar-v2-provider-summary"
-                  aria-label={`Show details for ${thread.title}`}
-                  bindtap={(event: unknown) => {
-                    stopPropagation(event);
-                    setDetailsThreadId(detailsOpen ? null : thread.id);
-                  }}
-                >
+                <view className="sidebar-v2-provider-summary" aria-hidden="true">
                   <ProviderBrandIcon
                     driverKind={providerProjection.provider?.driverKind ?? null}
                     size={14}
                   />
                 </view>
               }
-              detailsTooltip={null}
+              detailsTooltip={
+                <LynxThreadDetails
+                  relationId={detailsRelationId}
+                  thread={thread}
+                  projectTitle={project?.title ?? null}
+                  provider={providerProjection.provider}
+                  instanceId={providerProjection.instanceId}
+                  modelLabel={providerProjection.modelLabel}
+                />
+              }
+              detailsRelationId={detailsRelationId}
               detailsOverlay={
                 actionMenuOpen ? (
                   <LynxThreadActionMenu
@@ -571,15 +577,6 @@ export default function SidebarV2() {
                     settled={false}
                     settlementSupported={settlementSupported}
                     onClose={() => setActionMenuThreadId(null)}
-                  />
-                ) : detailsOpen ? (
-                  <LynxThreadDetails
-                    thread={thread}
-                    projectTitle={project?.title ?? null}
-                    provider={providerProjection.provider}
-                    instanceId={providerProjection.instanceId}
-                    modelLabel={providerProjection.modelLabel}
-                    onClose={() => setDetailsThreadId(null)}
                   />
                 ) : undefined
               }
@@ -590,7 +587,6 @@ export default function SidebarV2() {
                   aria-label={`Thread actions for ${thread.title}`}
                   bindtap={(event: unknown) => {
                     stopPropagation(event);
-                    setDetailsThreadId(null);
                     setActionMenuThreadId(actionMenuOpen ? null : thread.id);
                   }}
                 >
@@ -608,7 +604,6 @@ export default function SidebarV2() {
               onKeyDown={() => {}}
               onContextMenu={(event) => {
                 stopPropagation(event);
-                setDetailsThreadId(null);
                 setActionMenuThreadId(thread.id);
               }}
               onSettleClick={(event) => {
@@ -686,6 +681,7 @@ export default function SidebarV2() {
               remoteIndicator={null}
               providerIndicator={null}
               detailsTooltip={null}
+              detailsRelationId={`sidebar-thread-details:${thread.id}`}
               detailsOverlay={
                 actionMenuOpen ? (
                   <LynxThreadActionMenu
@@ -707,7 +703,6 @@ export default function SidebarV2() {
               onKeyDown={() => {}}
               onContextMenu={(event) => {
                 stopPropagation(event);
-                setDetailsThreadId(null);
                 setActionMenuThreadId(thread.id);
               }}
               onSettleClick={stopPropagation}

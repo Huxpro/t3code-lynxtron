@@ -28,9 +28,11 @@ function MenuPopup({
   alignOffset,
   side = "bottom",
   anchor,
+  relationId,
   ...props
 }: MenuPrimitive.Popup.Props & {
   align?: MenuPrimitive.Positioner.Props["align"];
+  relationId?: string;
   sideOffset?: MenuPrimitive.Positioner.Props["sideOffset"];
   alignOffset?: MenuPrimitive.Positioner.Props["alignOffset"];
   side?: MenuPrimitive.Positioner.Props["side"];
@@ -52,6 +54,7 @@ function MenuPopup({
             "dropdown-glass relative flex not-[class*='w-']:min-w-32 origin-(--transform-origin) rounded-lg outline-none focus:outline-none",
             className,
           )}
+          data-floating-popup={relationId}
           data-slot="menu-popup"
           {...props}
         >

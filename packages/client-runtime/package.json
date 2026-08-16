@@ -139,6 +139,10 @@
       "types": "./src/presentation/composer.ts",
       "default": "./src/presentation/composer.ts"
     },
+    "./presentation/floating-relation": {
+      "types": "./src/presentation/floatingRelation.ts",
+      "default": "./src/presentation/floatingRelation.ts"
+    },
     "./presentation/pending-requests": {
       "types": "./src/presentation/pendingRequests.ts",
       "default": "./src/presentation/pendingRequests.ts"

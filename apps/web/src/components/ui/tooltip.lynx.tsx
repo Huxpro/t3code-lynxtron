@@ -4,8 +4,22 @@ import {
   isValidElement,
   type ReactElement,
   type ReactNode,
+  runOnBackground,
+  runOnMainThread,
+  useCallback,
   useContext,
+  useEffect,
+  useMainThreadRef,
+  useMemo,
+  useRef,
+  useState,
 } from "@lynx-js/react";
+import {
+  resolveFloatingAnchorPoint,
+  type FloatingAlign,
+  type FloatingRect,
+  type FloatingSide,
+} from "@t3tools/client-runtime/presentation/floating-relation";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -13,33 +27,219 @@ type ElementProps = Record<string, unknown> & {
   readonly render?: ReactElement<Record<string, unknown>>;
 };
 
-const TooltipContext = createContext(false);
+interface TooltipProviderValue {
+  readonly closeDelay: number;
+  readonly delay: number;
+}
+
+interface TooltipContextValue {
+  readonly anchorRect: FloatingRect | null;
+  readonly open: boolean;
+  readonly setHover: (inside: boolean, rect?: FloatingRect) => void;
+}
+
+interface MainThreadElement {
+  animate(keyframes: ReadonlyArray<Record<string, number | string>>, options?: unknown): never;
+  getAttribute(attributeName: string): unknown;
+  getAttributeNames(): string[];
+  invoke(methodName: string, params?: Record<string, unknown>): Promise<unknown>;
+  querySelector(selector: string): MainThreadElement | null;
+  querySelectorAll(selector: string): MainThreadElement[];
+  setAttribute(name: string, value: unknown): void;
+  setStyleProperties(styles: Record<string, string>): void;
+  setStyleProperty(name: string, value: string): void;
+}
+
+interface MainThreadMouseEvent {
+  readonly x: number;
+  readonly y: number;
+}
+
+const TooltipProviderContext = createContext<TooltipProviderValue>({
+  closeDelay: 0,
+  delay: 0,
+});
+const TooltipContext = createContext<TooltipContextValue | null>(null);
 
 export const TooltipCreateHandle = () => ({});
 
-export function TooltipProvider({ children }: ElementProps) {
-  return <>{children}</>;
+export function TooltipProvider({
+  children,
+  closeDelay = 0,
+  delay = 0,
+}: ElementProps & {
+  readonly closeDelay?: number;
+  readonly delay?: number;
+}) {
+  const value = useMemo(() => ({ closeDelay, delay }), [closeDelay, delay]);
+  return (
+    <TooltipProviderContext.Provider value={value}>{children}</TooltipProviderContext.Provider>
+  );
 }
 
 export function Tooltip({ children }: ElementProps) {
-  return <TooltipContext.Provider value={false}>{children}</TooltipContext.Provider>;
+  const provider = useContext(TooltipProviderContext);
+  const [open, setOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<FloatingRect | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const setHover = useCallback(
+    (inside: boolean, rect?: FloatingRect) => {
+      if (timerRef.current !== null) clearTimeout(timerRef.current);
+      if (inside && rect) setAnchorRect(rect);
+      const delay = inside ? provider.delay : provider.closeDelay;
+      if (delay <= 0) {
+        setOpen(inside);
+        return;
+      }
+      timerRef.current = setTimeout(() => {
+        setOpen(inside);
+        timerRef.current = null;
+      }, delay);
+    },
+    [provider.closeDelay, provider.delay],
+  );
+  const value = useMemo(() => ({ anchorRect, open, setHover }), [anchorRect, open, setHover]);
+  return <TooltipContext.Provider value={value}>{children}</TooltipContext.Provider>;
 }
 
 export function TooltipTrigger({ children, render, ...props }: ElementProps) {
+  const context = useContext(TooltipContext);
+  const tooltipOpen = context?.open === true;
+  const triggerRef = useMainThreadRef<MainThreadElement>(null);
+  const reportHover = useCallback(
+    (inside: boolean, rect?: FloatingRect) => context?.setHover(inside, rect),
+    [context],
+  );
+  const handleMouseMove = async () => {
+    "main thread";
+    if (tooltipOpen) return;
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+    const measured = (await trigger.invoke("boundingClientRect", {
+      relativeTo: null,
+    })) as Partial<{
+      readonly height: number;
+      readonly left: number;
+      readonly top: number;
+      readonly width: number;
+    }> | null;
+    if (
+      !measured ||
+      typeof measured.left !== "number" ||
+      typeof measured.top !== "number" ||
+      typeof measured.width !== "number" ||
+      typeof measured.height !== "number"
+    ) {
+      return;
+    }
+    const rect = {
+      x: measured.left,
+      y: measured.top,
+      width: measured.width,
+      height: measured.height,
+    };
+    trigger.setAttribute("data-floating-anchor-rect", JSON.stringify(rect));
+    runOnBackground(reportHover)(true, rect);
+  };
+  const relationId =
+    props["data-floating-anchor"] ??
+    (isValidElement(render) ? render.props["data-floating-anchor"] : undefined);
+  useEffect(() => {
+    if (typeof relationId !== "string") return;
+    const target = globalThis as {
+      __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
+      __T3_LYNXTRON_TOOLTIP_PROBE__?: Record<
+        string,
+        { readonly hover: () => Promise<void>; readonly leave: () => Promise<void> }
+      >;
+    };
+    if (!target.__T3_LYNXTRON_VIEWPORT_PROBE__) return;
+    const probes = target.__T3_LYNXTRON_TOOLTIP_PROBE__ ?? {};
+    const probe = {
+      hover: async () => {
+        await runOnMainThread(handleMouseMove)();
+      },
+      leave: async () => {
+        reportHover(false);
+      },
+    };
+    probes[relationId] = probe;
+    target.__T3_LYNXTRON_TOOLTIP_PROBE__ = probes;
+    return () => {
+      if (probes[relationId] === probe) delete probes[relationId];
+      if (Object.keys(probes).length === 0) delete target.__T3_LYNXTRON_TOOLTIP_PROBE__;
+    };
+  }, [handleMouseMove, relationId, reportHover]);
+  const hoverProps = {
+    "main-thread:ref": triggerRef,
+    "main-thread:bindmousemove": handleMouseMove,
+  };
   if (isValidElement(render)) {
-    return cloneElement(render, { ...props, children });
+    return cloneElement(render, { ...props, ...hoverProps, children });
   }
-  return <view {...props}>{children}</view>;
+  return (
+    <view {...props} {...hoverProps}>
+      {children}
+    </view>
+  );
 }
 
 export function TooltipPopup({
+  align = "center",
   children,
   hidden = false,
+  relationId,
+  side = "top",
+  sideOffset = 4,
   ...props
 }: ElementProps & {
+  readonly align?: FloatingAlign;
   readonly hidden?: boolean;
+  readonly relationId?: string;
+  readonly side?: FloatingSide;
+  readonly sideOffset?: number;
 }) {
-  const open = useContext(TooltipContext);
-  if (!open || hidden) return null;
-  return <view {...props}>{children}</view>;
+  const context = useContext(TooltipContext);
+  const anchorRect = context?.anchorRect ?? null;
+  const reportHover = useCallback(
+    (inside: boolean, rect?: FloatingRect) => context?.setHover(inside, rect),
+    [context],
+  );
+  const handleGlobalMouseMove = (event: MainThreadMouseEvent) => {
+    "main thread";
+    const rect = anchorRect;
+    if (!rect) return;
+    const x = event.x;
+    const y = event.y;
+    const inside =
+      x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height;
+    if (!inside) runOnBackground(reportHover)(false, rect);
+  };
+  if (!context?.open || !context.anchorRect || hidden) return null;
+  const point = resolveFloatingAnchorPoint(context.anchorRect, {
+    side,
+    align,
+    sideOffset,
+  });
+  return (
+    <overlay level="1" className="lynx-tooltip-overlay">
+      <view
+        {...props}
+        event-through
+        className={`lynx-tooltip-popup${props.className ? ` ${props.className}` : ""}`}
+        data-floating-popup={relationId}
+        data-floating-side={side}
+        data-floating-align={align}
+        data-floating-side-offset={String(sideOffset)}
+        main-thread:global-bindmousemove={handleGlobalMouseMove}
+        style={{
+          left: `${point.x}px`,
+          top: `${point.y}px`,
+          transform: point.transform,
+        }}
+      >
+        {children}
+      </view>
+    </overlay>
+  );
 }

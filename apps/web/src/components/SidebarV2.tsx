@@ -214,6 +214,7 @@ function terminalProcessLabel(count: number): string {
 }
 
 function SidebarV2ThreadTooltip({
+  relationId,
   thread,
   projectTitle,
   projectCwd,
@@ -225,6 +226,7 @@ function SidebarV2ThreadTooltip({
   terminalStatus,
   terminalProcessCount,
 }: {
+  relationId: string;
   thread: SidebarThreadSummary;
   projectTitle: string | null;
   projectCwd: string | null;
@@ -241,6 +243,7 @@ function SidebarV2ThreadTooltip({
 }) {
   return (
     <TooltipPopup
+      relationId={relationId}
       side="right"
       align="start"
       sideOffset={4}
@@ -556,6 +559,7 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
 
   const detailsTooltip = (
     <SidebarV2ThreadTooltip
+      relationId={`sidebar-thread-details:${threadKey}`}
       thread={thread}
       projectTitle={props.projectTitle}
       projectCwd={props.projectCwd}
@@ -830,6 +834,7 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
         ) : null
       }
       detailsTooltip={detailsTooltip}
+      detailsRelationId={`sidebar-thread-details:${threadKey}`}
       snoozeControl={
         showSnoozeButton ? (
           <SnoozePopoverButton
@@ -947,6 +952,7 @@ const SidebarV2SearchResultRow = memo(function SidebarV2SearchResultRow(props: {
           </span>
         </TooltipTrigger>
         <SidebarV2ThreadTooltip
+          relationId={`sidebar-thread-details:${thread.environmentId}:${thread.id}`}
           thread={thread}
           projectTitle={props.projectTitle}
           projectCwd={props.projectCwd}

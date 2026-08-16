@@ -381,10 +381,17 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                 <MenuTrigger
                   className="relative inline-flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground"
                   aria-label="Add panel surface"
+                  data-floating-anchor="right-panel-add-menu"
                 >
                   <Plus className="size-4" />
                 </MenuTrigger>
-                <MenuPopup align="start" side="bottom" sideOffset={6} className="min-w-44">
+                <MenuPopup
+                  align="start"
+                  side="bottom"
+                  sideOffset={6}
+                  data-floating-popup="right-panel-add-menu"
+                  className="min-w-44"
+                >
                   <SurfaceMenuItem
                     available={props.browserAvailable}
                     disabledReason={SURFACE_DISABLED_REASONS.browser}

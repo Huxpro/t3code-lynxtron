@@ -270,6 +270,7 @@ export function ModelPicker({
     <>
       <view
         className="model-picker-panel"
+        data-floating-popup="composer-model-picker"
         {...(viewport.testResize
           ? {
               "data-model-picker-navigation-provider": navigation.provider,

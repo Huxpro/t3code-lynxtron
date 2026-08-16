@@ -330,13 +330,14 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
                 className="font-medium"
                 aria-label="Runtime mode"
                 data-composer-control="runtime"
+                data-floating-anchor="composer-runtime-menu"
               />
             }
           >
             <ComposerControlIcon icon={RuntimeModeIcon} />
             <SelectValue>{runtimeModeOption.label}</SelectValue>
           </TooltipTrigger>
-          <SelectPopup alignItemWithTrigger={false}>
+          <SelectPopup alignItemWithTrigger={false} data-floating-popup="composer-runtime-menu">
             {runtimeModeOptions.map((mode) => {
               const option = getComposerRuntimeModePresentation(mode);
               const OptionIcon = runtimeModeIcons[mode];

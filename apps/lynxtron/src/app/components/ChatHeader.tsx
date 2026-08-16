@@ -248,7 +248,7 @@ export function ChatHeader({
               primaryAriaLabel="Add action"
               onPrimaryTap={uiActions.openProjectActionDialog}
             />
-            <view className="open-in-control">
+            <view className="open-in-control" data-floating-anchor="header-open-in-menu">
               <ActionButton
                 className={`action-btn--open${compactActions ? " action-btn--compact" : ""}`}
                 icon={preferredEditor === "cursor" ? "cursor" : "folder"}
@@ -271,6 +271,7 @@ export function ChatHeader({
                   <scroll-view
                     className="open-in-menu"
                     aria-label="Open in editor"
+                    data-floating-popup="header-open-in-menu"
                     scroll-orientation="vertical"
                   >
                     {availableEditors.length === 0 ? (

@@ -159,14 +159,14 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                 </MenuTrigger>
                 <MenuPopup
                   align="start"
+                  relationId="sidebar-project-scope"
+                  side="bottom"
+                  sideOffset={4}
                   className="w-(--anchor-width) sidebar-v2-scope-popup"
                   {...(props.projectScopeControlWidth === undefined
                     ? {}
                     : {
                         style: {
-                          position: "fixed",
-                          top: "140px",
-                          left: "8px",
                           width: `${props.projectScopeControlWidth}px`,
                           height: `${(props.projectScopeOptions.length + 1) * 32 + 8}px`,
                           minHeight: `${(props.projectScopeOptions.length + 1) * 32 + 8}px`,
@@ -192,6 +192,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                         key={option.scopeKey}
                         value={option.scopeKey}
                         closeOnClick
+                        data-sidebar-project-scope-option={option.scopeKey}
                         className="sidebar-v2-scope-option h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
                       >
                         {option.favicon}

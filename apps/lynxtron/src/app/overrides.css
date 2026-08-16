@@ -180,22 +180,33 @@
   line-height: 14px;
   max-width: 72px;
 }
-.sidebar-v2-details-dismiss {
+.lynx-tooltip-overlay {
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 88;
+  pointer-events: none;
+  overflow: visible;
+}
+.lynx-tooltip-popup {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
 }
 .sidebar-v2-details-popover {
-  position: fixed;
-  top: 132px;
-  left: 244px;
   z-index: 89;
   display: flex;
   flex-direction: column;
   width: 272px;
+  max-width: 320px;
+  box-sizing: border-box;
+}
+.sidebar-v2-details-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   gap: 8px;
   padding: 12px;
   border-radius: 10px;
@@ -204,6 +215,7 @@
   border-color: var(--border);
   background-color: var(--popover);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+  box-sizing: border-box;
 }
 .sidebar-v2-action-menu-dismiss {
   position: fixed;
@@ -1112,12 +1124,13 @@
 }
 .lynx-overlay-host {
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   overflow: visible;
 }
 .sidebar-v2-scope-popup {
-  position: absolute;
-  top: 36px;
-  left: 0;
   display: flex;
   flex-direction: column;
   z-index: 160;
@@ -2165,7 +2178,6 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.4);
 }
 .composer-shell--approval {
   height: 247px;
@@ -2181,6 +2193,7 @@
   width: 100%;
   border-radius: 22px;
   background-color: var(--composer-frame);
+  box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.4);
   box-sizing: border-box;
 }
 .composer-surface {

@@ -287,6 +287,7 @@ export const OpenInPicker = memo(function OpenInPicker({
           render={
             <Button
               aria-label={compact ? "Choose editor" : "Copy options"}
+              data-floating-anchor="header-open-in-menu"
               size="icon-xs"
               variant="outline"
             />
@@ -294,7 +295,7 @@ export const OpenInPicker = memo(function OpenInPicker({
         >
           <ChevronDownIcon aria-hidden="true" className="size-4" />
         </MenuTrigger>
-        <MenuPopup align="end">
+        <MenuPopup align="end" data-floating-popup="header-open-in-menu">
           {options.length === 0 && <MenuItem disabled>No installed editors found</MenuItem>}
           {options.map(({ label, Icon, value, kind }) => (
             <MenuItem key={value} onClick={() => openInEditor(value)}>

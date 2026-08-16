@@ -4,11 +4,19 @@ import {
   isValidElement,
   type ReactElement,
   type ReactNode,
+  runOnBackground,
   useCallback,
   useContext,
+  useMainThreadRef,
   useMemo,
   useState,
 } from "@lynx-js/react";
+import {
+  resolveFloatingAnchorPoint,
+  type FloatingAlign,
+  type FloatingRect,
+  type FloatingSide,
+} from "@t3tools/client-runtime/presentation/floating-relation";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -21,8 +29,22 @@ function classes(...values: ReadonlyArray<string | undefined>): string {
 }
 
 interface MenuContextValue {
+  readonly anchorRect: FloatingRect | null;
   readonly open: boolean;
+  readonly setAnchorRect: (rect: FloatingRect) => void;
   readonly setOpen: (open: boolean) => void;
+}
+
+interface MainThreadElement {
+  animate(keyframes: ReadonlyArray<Record<string, number | string>>, options?: unknown): never;
+  getAttribute(attributeName: string): unknown;
+  getAttributeNames(): string[];
+  invoke(methodName: string, params?: Record<string, unknown>): Promise<unknown>;
+  querySelector(selector: string): MainThreadElement | null;
+  querySelectorAll(selector: string): MainThreadElement[];
+  setAttribute(name: string, value: unknown): void;
+  setStyleProperties(styles: Record<string, string>): void;
+  setStyleProperty(name: string, value: string): void;
 }
 
 interface RadioContextValue {
@@ -46,6 +68,7 @@ export function Menu({
   readonly onOpenChange?: (open: boolean) => void;
 }) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const [anchorRect, setAnchorRect] = useState<FloatingRect | null>(null);
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = useCallback(
     (next: boolean) => {
@@ -54,18 +77,62 @@ export function Menu({
     },
     [controlledOpen, onOpenChange],
   );
-  const value = useMemo(() => ({ open, setOpen }), [open, setOpen]);
+  const value = useMemo(
+    () => ({ anchorRect, open, setAnchorRect, setOpen }),
+    [anchorRect, open, setOpen],
+  );
   return <MenuContext.Provider value={value}>{children}</MenuContext.Provider>;
 }
 
 export function MenuTrigger({ children, render, ...props }: ElementProps) {
   const context = useContext(MenuContext);
-  const handleTap = useCallback(() => context?.setOpen(!context.open), [context]);
+  const triggerRef = useMainThreadRef<MainThreadElement>(null);
+  const toggle = useCallback(
+    (rect: FloatingRect) => {
+      context?.setAnchorRect(rect);
+      context?.setOpen(!context.open);
+    },
+    [context],
+  );
+  const handleTap = async () => {
+    "main thread";
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+    const measured = (await trigger.invoke("boundingClientRect", {
+      relativeTo: null,
+    })) as Partial<{
+      readonly height: number;
+      readonly left: number;
+      readonly top: number;
+      readonly width: number;
+    }> | null;
+    if (
+      !measured ||
+      typeof measured.left !== "number" ||
+      typeof measured.top !== "number" ||
+      typeof measured.width !== "number" ||
+      typeof measured.height !== "number"
+    ) {
+      return;
+    }
+    const rect = {
+      x: measured.left,
+      y: measured.top,
+      width: measured.width,
+      height: measured.height,
+    };
+    trigger.setAttribute("data-floating-anchor-rect", JSON.stringify(rect));
+    runOnBackground(toggle)(rect);
+  };
+  const triggerProps = {
+    "main-thread:ref": triggerRef,
+    "main-thread:bindtap": handleTap,
+  };
   if (isValidElement(render)) {
-    return cloneElement(render, { ...props, children, bindtap: handleTap });
+    return cloneElement(render, { ...props, ...triggerProps, children });
   }
   return (
-    <view {...props} bindtap={handleTap}>
+    <view {...props} {...triggerProps}>
       {children}
     </view>
   );
@@ -76,11 +143,13 @@ export function MenuPopup({
   children,
   className,
   side = "bottom",
-  sideOffset: _sideOffset,
+  sideOffset = 4,
+  relationId,
   ...props
 }: ElementProps & {
-  readonly align?: "center" | "end" | "start";
-  readonly side?: "bottom" | "left" | "right" | "top";
+  readonly align?: FloatingAlign;
+  readonly relationId?: string;
+  readonly side?: FloatingSide;
   readonly sideOffset?: number;
 }) {
   const context = useContext(MenuContext);
@@ -89,26 +158,54 @@ export function MenuPopup({
   const sideClass = side === "top" ? "bottom-full mb-1" : "top-full mt-1";
   const alignClass = align === "end" ? "right-0" : align === "start" ? "left-0" : "left-0";
   if (isSidebarScopePopup) {
+    if (!context.anchorRect) return null;
+    const point = resolveFloatingAnchorPoint(context.anchorRect, {
+      side,
+      align,
+      sideOffset,
+    });
+    const callerStyle =
+      typeof props.style === "object" && props.style !== null
+        ? (props.style as Record<string, string>)
+        : {};
     return (
-      <overlay level="1" className="lynx-overlay-host">
-        <view className="sidebar-v2-scope-overlay-root" style={{ width: "100vw", height: "100vh" }}>
-          <view
-            aria-hidden="true"
-            className="lynx-menu-dismiss-layer"
-            style={{ position: "absolute", inset: "0px", zIndex: 0 }}
-            bindtap={() => context.setOpen(false)}
-          />
-          <view
-            {...props}
-            className={classes(
-              "lynx-menu-popup flex max-h-64 w-full flex-col overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
-              className,
-            )}
-          >
-            {children}
-          </view>
+      <>
+        <view
+          {...props}
+          data-floating-popup={relationId}
+          data-floating-side={side}
+          data-floating-align={align}
+          data-floating-side-offset={String(sideOffset)}
+          className={classes(
+            "lynx-menu-popup flex max-h-64 w-full flex-col overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
+            className,
+          )}
+          style={{
+            ...callerStyle,
+            position: "fixed",
+            left: `${point.x}px`,
+            top: `${point.y}px`,
+            transform: point.transform,
+            zIndex: 161,
+          }}
+          catchtap={() => {}}
+        >
+          {children}
         </view>
-      </overlay>
+        <view
+          aria-hidden="true"
+          className="lynx-menu-dismiss-layer fixed bottom-0 left-0 right-0 top-0"
+          style={{
+            position: "fixed",
+            top: "0px",
+            right: "0px",
+            bottom: "0px",
+            left: "0px",
+            zIndex: 160,
+          }}
+          bindtap={() => context.setOpen(false)}
+        />
+      </>
     );
   }
   return (

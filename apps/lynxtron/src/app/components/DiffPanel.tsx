@@ -131,6 +131,7 @@ export function DiffPanel({
         <view
           className="diff-panel-header__scope"
           aria-label={`Diff scope: ${selectedScopeLabel}`}
+          data-floating-anchor="diff-scope-menu"
           bindtap={() => setScopeMenuOpen((open) => !open)}
         >
           <text className="diff-panel-header__scope-label" text-maxline="1">
@@ -139,7 +140,7 @@ export function DiffPanel({
           <Icon name="chevron-down" size={14} color="#818181" />
         </view>
         {scopeMenuOpen ? (
-          <view className="diff-panel-header__scope-menu">
+          <view className="diff-panel-header__scope-menu" data-floating-popup="diff-scope-menu">
             {orderedCheckpoints.map((checkpoint, index) => {
               const active = checkpoint.turnId === selectedCheckpoint?.turnId;
               return (

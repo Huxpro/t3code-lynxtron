@@ -236,7 +236,7 @@ export function RightPanel({
           </view>
         </scroll-view>
         {/* Add surface button */}
-        <view className="right-panel__add-btn-wrapper">
+        <view className="right-panel__add-btn-wrapper" data-floating-anchor="right-panel-add-menu">
           <view
             className={`right-panel__add-btn lynx-titlebar-no-drag${
               showAddMenu ? " right-panel__add-btn--active" : ""
@@ -246,7 +246,7 @@ export function RightPanel({
             <Icon name="plus" size={16} color="#818181" />
           </view>
           {showAddMenu ? (
-            <view className="right-panel__add-menu">
+            <view className="right-panel__add-menu" data-floating-popup="right-panel-add-menu">
               {ADDABLE_SURFACES.map((item) => (
                 <view
                   key={item.kind}
