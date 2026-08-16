@@ -7874,6 +7874,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-footer-current",
+      "observedAt": "2026-08-17T00:30:39+09:00",
+      "commit": "b9c46c1086261b4b1e0823ec3d04acde0330c726",
+      "codeCommit": "c32be7381a0ad4c93b1defd557c2da61e1df90d2",
+      "codeState": "commit",
+      "label": "Quick Switch Query footer anatomy",
+      "narrative": "The current strict overlay-preserving Quick Switch Query capture had exact panel and footer geometry, but localized the largest remaining panel hotspot to the footer. Web rendered 10px vertical padding, DM Sans 14px/500/20 typography, no top divider, and 17px lower radii while Lynx inherited 12px/400/16 system typography, no vertical padding, a 1px divider, and square lower corners. A local Lynx override now matches those authority tokens without changing the 40px footer or 576x166 panel geometry. On one immutable snapshot with the same query, result, route, viewport, Web bundle, and authority crops, full-frame SSIM improves from 0.926485 to 0.927919, panel SSIM from 0.884028 to 0.897624, and footer SSIM from 0.730011 to 0.739566. Authority panel and footer crops remain exactly identical across captures. A dedicated exact-bundle Native run rebuilds the canonical idle-thread fixture through the real connector, loads the initial Quick Switch product state, verifies all seven canonical rows and a 40px footer, dismisses through a measured outside tap, advances main transport 11 to 12, reports zero renderer errors, and disposes isolated state. A separate light Native Settings run confirms all five unavailable rows remain aria-disabled, muted at opacity 0.48, and non-interactive; that result is regression evidence only and receives no new residual allocation. The failed combined Native attempt used a fixture without initialOverlay and is classified as a harness mismatch.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Browser before and after pair keeps one immutable snapshot, identical authority panel and footer pixels, exact geometry, query, result, route, theme, and viewport. Only the Lynx footer anatomy changes, and the localized footer, panel, and full-frame metrics all improve."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/quick-switch-query-footer-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "8f47a422688c4fe82b49bfabb45f6ee24123e27fc830a4ccf87109b069f55dcd"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.072081,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.927919 at the matched Query frame; panel residual is 0.102376 and footer residual is 0.260434"
+            }
+          }
+        },
+        {
+          "states": ["quick-switch-default"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-measured-outside-tap",
+              "source": "Measured backdrop tap closes the initial Quick Switch panel and the panel remains absent"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-quick-switch-readiness",
+              "source": "Seven canonical rows, 40px footer, main transport sequence 11 to 12, zero renderer errors, and disposed isolated state"
+            }
+          }
+        }
+      ]
     }
   ]
 }
