@@ -83,4 +83,22 @@ describe("agent-browser leak gate", () => {
       external: [processes[2]],
     });
   });
+
+  it("keeps a loop-marked process owned after it leaves the command tree", () => {
+    const processes = parseAgentBrowserProcesses(`
+      601 600 agent-browser agent-browser open http://detached.test
+      701 700 agent-browser agent-browser open http://external.test
+    `);
+    const parents = parseProcessParents(`
+      600 599
+      601 600
+      700 699
+      701 700
+    `);
+    expect(classifyAgentBrowserProcesses(processes, parents, 200, new Set([601]))).toEqual({
+      owned: [processes[0]],
+      orphaned: [],
+      external: [processes[1]],
+    });
+  });
 });

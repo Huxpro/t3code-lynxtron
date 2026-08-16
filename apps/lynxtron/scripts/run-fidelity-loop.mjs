@@ -41,10 +41,10 @@ export function exitCodeForChild(code, signal) {
   return signal === "SIGINT" ? 130 : signal === "SIGTERM" ? 143 : 1;
 }
 
-function runLeakGate(phase, stateFile) {
+function runLeakGate(phase, stateFile, loopId) {
   const result = spawnSync(
     process.execPath,
-    [leakCheckerPath, "--phase", phase, "--state-file", stateFile],
+    [leakCheckerPath, "--phase", phase, "--state-file", stateFile, "--loop-id", loopId],
     { stdio: "inherit" },
   );
   return exitCodeForChild(result.status, result.signal);
@@ -52,10 +52,11 @@ function runLeakGate(phase, stateFile) {
 
 async function run() {
   const { stateFile, command, commandArguments } = parseLoopArguments(process.argv.slice(2));
+  const loopId = `${process.pid}-${Date.now()}`;
   console.log(
-    "Fidelity loop guard: agent-browser PPID=1 or run-owned descendants fail; external live sessions are informational; never kill by pattern.",
+    "Fidelity loop guard: agent-browser PPID=1, run-owned descendants, or detached processes carrying this loop ID fail; external live sessions are informational; never kill by pattern.",
   );
-  const preflightCode = runLeakGate("preflight", stateFile);
+  const preflightCode = runLeakGate("preflight", stateFile, loopId);
   if (preflightCode !== 0) {
     rmSync(stateFile, { force: true });
     return preflightCode;
@@ -77,7 +78,10 @@ async function run() {
     commandCode = await new Promise((resolve) => {
       child = spawn(command, commandArguments, {
         cwd: process.cwd(),
-        env: process.env,
+        env: {
+          ...process.env,
+          T3_LYNXTRON_FIDELITY_LOOP_ID: loopId,
+        },
         stdio: "inherit",
       });
       child.once("error", (error) => {
@@ -93,7 +97,7 @@ async function run() {
     process.removeListener("SIGTERM", onSigterm);
   }
 
-  const postflightCode = runLeakGate("postflight", stateFile);
+  const postflightCode = runLeakGate("postflight", stateFile, loopId);
   return postflightCode === 0 ? commandCode : postflightCode;
 }
 

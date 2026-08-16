@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import path from "node:path";
 
 import { exitCodeForChild, parseLoopArguments } from "./run-fidelity-loop.mjs";
@@ -11,10 +11,11 @@ describe("fidelity loop runner", () => {
   it("keeps the agent-browser leak policy visible in every loop", () => {
     const source = readFileSync(new URL("./run-fidelity-loop.mjs", import.meta.url), "utf8");
     expect(source).toContain(
-      "agent-browser PPID=1 or run-owned descendants fail; external live sessions are informational; never kill by pattern.",
+      "agent-browser PPID=1, run-owned descendants, or detached processes carrying this loop ID fail; external live sessions are informational; never kill by pattern.",
     );
-    expect(source).toContain('runLeakGate("preflight", stateFile)');
-    expect(source).toContain('runLeakGate("postflight", stateFile)');
+    expect(source).toContain("T3_LYNXTRON_FIDELITY_LOOP_ID: loopId");
+    expect(source).toContain('runLeakGate("preflight", stateFile, loopId)');
+    expect(source).toContain('runLeakGate("postflight", stateFile, loopId)');
   });
 
   it("uses a run-owned default leak state file", () => {
@@ -75,5 +76,50 @@ describe("fidelity loop runner", () => {
     expect(result.stdout).toContain("PASS agent-browser preflight leak gate owned=0 orphaned=0");
     expect(result.stdout).toContain("PASS agent-browser postflight leak gate owned=0 orphaned=0");
     expect(existsSync(stateFile)).toBe(false);
+  });
+
+  it("fails when the command leaves a detached agent-browser process", () => {
+    const suffix = `${process.pid}-${Date.now()}`;
+    const stateFile = path.join("/tmp", `t3-lynxtron-fidelity-loop-test-${suffix}.json`);
+    const processFile = path.join("/tmp", `t3-lynxtron-agent-browser-test-${suffix}.pid`);
+    let leakedProcessId;
+    try {
+      const result = spawnSync(
+        process.execPath,
+        [
+          runnerPath,
+          "--state-file",
+          stateFile,
+          "--",
+          process.execPath,
+          "-e",
+          `
+            const { spawn } = require("node:child_process");
+            const { writeFileSync } = require("node:fs");
+            const child = spawn(process.execPath, ["-e", "setInterval(() => {}, 1000)"], {
+              argv0: "agent-browser",
+              detached: true,
+              env: process.env,
+              stdio: "ignore",
+            });
+            writeFileSync(${JSON.stringify(processFile)}, String(child.pid));
+            child.unref();
+          `,
+        ],
+        { encoding: "utf8" },
+      );
+      leakedProcessId = Number(readFileSync(processFile, "utf8"));
+      expect(result.status).toBe(1);
+      expect(result.stderr).toContain("FAIL agent-browser postflight leak gate");
+      expect(result.stderr).toContain(`pid=${leakedProcessId}`);
+    } finally {
+      if (Number.isInteger(leakedProcessId)) {
+        try {
+          process.kill(leakedProcessId, "SIGTERM");
+        } catch {}
+      }
+      rmSync(stateFile, { force: true });
+      rmSync(processFile, { force: true });
+    }
   });
 });

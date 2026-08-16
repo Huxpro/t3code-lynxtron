@@ -11,6 +11,7 @@ function isAgentBrowserProcess(executable, command) {
   return (
     executableName.startsWith("agent-browser") ||
     /\/agent-browser\//u.test(executable) ||
+    /^agent-browser(?:\s|$)/u.test(command) ||
     /^(?:npx|bunx)\s+agent-browser(?:\s|$)/u.test(command) ||
     /^pnpm\s+dlx\s+agent-browser(?:\s|$)/u.test(command) ||
     /^(?:\S*\/)?(?:node|bun)\s+\S*(?:\/agent-browser\/|\/\.agent-browser\/)\S*/u.test(command)
@@ -60,23 +61,49 @@ export function processDescendsFrom(processId, ancestorId, parents) {
   return false;
 }
 
-export function classifyAgentBrowserProcesses(processes, parents, ownerProcessId) {
+export function classifyAgentBrowserProcesses(
+  processes,
+  parents,
+  ownerProcessId,
+  loopOwnedProcessIds = new Set(),
+) {
   const orphaned = processes.filter((entry) => entry.parentPid === 1);
   const owned = processes.filter(
-    (entry) => entry.parentPid !== 1 && processDescendsFrom(entry.pid, ownerProcessId, parents),
+    (entry) =>
+      entry.parentPid !== 1 &&
+      (loopOwnedProcessIds.has(entry.pid) ||
+        processDescendsFrom(entry.pid, ownerProcessId, parents)),
   );
   const external = processes.filter((entry) => !orphaned.includes(entry) && !owned.includes(entry));
   return { orphaned, owned, external };
 }
 
-export function inspectProcesses() {
+function processHasLoopMarker(processId, loopId) {
+  if (!loopId) return false;
+  try {
+    const commandAndEnvironment = execFileSync(
+      "ps",
+      ["eww", "-p", String(processId), "-o", "command="],
+      { encoding: "utf8" },
+    );
+    return commandAndEnvironment.includes(`T3_LYNXTRON_FIDELITY_LOOP_ID=${loopId}`);
+  } catch {
+    return false;
+  }
+}
+
+export function inspectProcesses(loopId) {
   const agentBrowserOutput = execFileSync("ps", ["-axo", "pid=,ppid=,comm=,command="], {
     encoding: "utf8",
   });
   const parentOutput = execFileSync("ps", ["-axo", "pid=,ppid="], { encoding: "utf8" });
+  const agentBrowsers = parseAgentBrowserProcesses(agentBrowserOutput);
   return {
-    agentBrowsers: parseAgentBrowserProcesses(agentBrowserOutput),
+    agentBrowsers,
     parents: parseProcessParents(parentOutput),
+    loopOwnedProcessIds: new Set(
+      agentBrowsers.filter(({ pid }) => processHasLoopMarker(pid, loopId)).map(({ pid }) => pid),
+    ),
   };
 }
 
@@ -109,17 +136,28 @@ function main() {
     argumentValue(argv, "--state-file") ??
       path.join("/tmp", `t3-lynxtron-agent-browser-${process.ppid}.json`),
   );
-  const { agentBrowsers, parents } = inspectProcesses();
-  const ownerProcessId =
+  const previousState =
     phase === "postflight" && existsSync(stateFile)
-      ? JSON.parse(readFileSync(stateFile, "utf8")).ownerProcessId
-      : process.ppid;
-  const classified = classifyAgentBrowserProcesses(agentBrowsers, parents, ownerProcessId);
+      ? JSON.parse(readFileSync(stateFile, "utf8"))
+      : undefined;
+  const ownerProcessId = previousState?.ownerProcessId ?? process.ppid;
+  const loopId = previousState?.loopId ?? argumentValue(argv, "--loop-id");
+  const { agentBrowsers, parents, loopOwnedProcessIds } = inspectProcesses(loopId);
+  const classified = classifyAgentBrowserProcesses(
+    agentBrowsers,
+    parents,
+    ownerProcessId,
+    loopOwnedProcessIds,
+  );
 
   if (phase === "preflight") {
     writeFileSync(
       stateFile,
-      `${JSON.stringify({ ownerProcessId, observedProcessIds: agentBrowsers.map(({ pid }) => pid) })}\n`,
+      `${JSON.stringify({
+        ownerProcessId,
+        loopId,
+        observedProcessIds: agentBrowsers.map(({ pid }) => pid),
+      })}\n`,
     );
   } else if (phase === "postflight") {
     rmSync(stateFile, { force: true });
