@@ -678,12 +678,9 @@ async function verifySidebarGeometry(client, viewportWidth) {
       `Sidebar rows escaped the rail: ${JSON.stringify({ sidebar, threadList, invalid })}`,
     );
   }
-  if (
-    viewportWidth !== 1280 &&
-    (!brand?.rect || Math.abs(brand.rect.x - 60) > 1 || !brand.text.includes("Code"))
-  ) {
+  if (!brand?.rect || Math.abs(brand.rect.x - 60) > 1 || !brand.text.includes("Code")) {
     throw new Error(
-      `Responsive Sidebar brand drifted from the titlebar inset: ${JSON.stringify({
+      `Sidebar brand drifted from the titlebar inset: ${JSON.stringify({
         brand,
         viewportWidth,
       })}`,

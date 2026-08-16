@@ -22,11 +22,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar rows escaped the rail");
   });
 
-  it("verifies the responsive Native brand inset", () => {
+  it("verifies the Native brand inset at every viewport", () => {
     assert.include(source, "async function verifySidebarGeometry(client, viewportWidth)");
     assert.include(source, 'readOptionalMeasurement(client, ".sidebar-brand")');
-    assert.include(source, "viewportWidth !== 1280");
     assert.include(source, "Math.abs(brand.rect.x - 60) > 1");
+    assert.notInclude(source, "viewportWidth !== 1280 &&");
     assert.include(source, "verifySidebarGeometry(client, width)");
   });
 
