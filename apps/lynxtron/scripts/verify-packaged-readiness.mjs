@@ -1197,10 +1197,11 @@ async function verifyComposerSendMaterial({ child, client, timeoutMs }) {
   const action = await waitForMeasurement({
     child,
     client,
-    selector: ".composer-primary-action--send",
+    selector: ".composer-primary-action",
     timeoutMs,
     predicate: (measurement) =>
       measurement?.attributes["data-composer-primary-state"] === "send" &&
+      measurement.attributes.class?.includes("composer-primary-action--send") === true &&
       measurement.style.backgroundColor === "rgba(54,111,251,0.9)" &&
       Math.abs((measurement.rect?.width ?? 0) - 32) <= 0.5 &&
       Math.abs((measurement.rect?.height ?? 0) - 32) <= 0.5,
@@ -1208,7 +1209,7 @@ async function verifyComposerSendMaterial({ child, client, timeoutMs }) {
   const icon = await waitForMeasurement({
     child,
     client,
-    selector: ".composer-primary-action--send image",
+    selector: ".composer-primary-action image",
     timeoutMs,
     predicate: (measurement) =>
       Math.abs((measurement?.rect.width ?? 0) - 14) <= 0.5 &&

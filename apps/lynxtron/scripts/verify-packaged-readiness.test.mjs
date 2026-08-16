@@ -101,9 +101,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyComposerSendMaterial");
     assert.include(source, '"--verify-composer-send-material"');
     assert.include(source, "__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
-    assert.include(source, 'selector: ".composer-primary-action--send"');
+    assert.include(source, 'selector: ".composer-primary-action"');
+    assert.include(
+      source,
+      'measurement.attributes.class?.includes("composer-primary-action--send")',
+    );
     assert.include(source, 'measurement.style.backgroundColor === "rgba(54,111,251,0.9)"');
-    assert.include(source, 'selector: ".composer-primary-action--send image"');
+    assert.include(source, 'selector: ".composer-primary-action image"');
     assert.include(source, 'input: "test-only Composer state fixture; no turn submitted"');
     assert.include(
       source,
