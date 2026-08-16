@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T21:34:25+09:00",
+  "updatedAt": "2026-08-16T22:26:51+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7618,6 +7618,63 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-connections-reachability-policy-current",
+      "observedAt": "2026-08-16T22:26:51+09:00",
+      "commit": "ea93a520965fc8e6b9af249a348f40454a5899fc",
+      "codeCommit": "fe09bac1045a193718a16866cbb226c6dccfaf5b",
+      "codeState": "commit",
+      "label": "Settings Connections reachability policy fix",
+      "narrative": "A corrected same-scope Browser fixture gives both Web and Lynx real access:write sessions over the same immutable snapshot. That removes the earlier session-scope mismatch and exposes a product loss: Web correctly hides Authorized clients for a loopback server, while Lynx showed the 456px remote-pairing section because it checked only access scope. A shared predicate now requires both access:write and auth.policy === remote-reachable. With identical Web pixels, route, theme, viewport, snapshot, and administrative scope, full-frame SSIM improves from 0.869793 to 0.909306, settings-panel residual falls from 0.132121 to 0.079328, and content residual falls from 0.157893 to 0.093477. The unchanged This environment residual of 0.220447 stays explicit. Exact Native evidence proves loopback hides Authorized clients and Create, while a real T3CODE_HOST=0.0.0.0 run preserves Create, Copy code, exact-link Revoke, restored Create, and cold-restart persistence with zero renderer errors and disposed isolated state. This point updates only Settings Connections Lynx material; no weights, states, clients, or unrelated dimensions change.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The matched Browser pair uses one immutable snapshot and real same-scope sessions, retains identical authority pixels, and changes only the shared reachability predicate. Native local and remote runs separately prove both policy branches without substituting geometry for pixel evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-connections-reachability-policy-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "2bc471a7baabeedd81eff108501022198f4113886ea9e371a697aac8baa69105"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.090694,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.909306 at the matched same-scope loopback Connections frame; settings-panel residual is 0.079328 and content residual is 0.093477"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-general-unavailable-native-current",
+      "observedAt": "2026-08-16T22:26:51+09:00",
+      "commit": "ea93a520965fc8e6b9af249a348f40454a5899fc",
+      "codeCommit": "1d4704a14ca1ba301d359456d39e0f716b0d5e76",
+      "codeState": "commit",
+      "label": "Settings General unavailable capability treatment",
+      "narrative": "General Settings used normal foreground contrast for two completely unsupported Lynxtron capabilities: Background activity and Text generation model. The shared General row adapters now carry explicit unavailable semantics, the Lynx host marks only those two rows disabled and muted at computed opacity 0.48, and the Web host keeps its working model control available. About remains available because its current-version information is still truthful even though automatic updates are not implemented. A fresh exact-bundle light 1280x820 run verifies the exact background-activity and text-generation-model ids, aria-disabled=true, data-settings-unavailable=true, 0.48 opacity, twelve preserved available rows, complete Settings route cycling, main transport 2 to 3, zero renderer errors, a representative 2560x1640 screenshot, and disposed isolated state. The first package test invocation accidentally broadened to the Web suite and the initial Native capture lacked a General-specific opacity gate; both are classified as harness issues. No matched Browser pair exists for this checkpoint, so it changes no modeled residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The product commits add host-aware disabled semantics and a stable Native id only for the two unsupported General capabilities. The exact-bundle verifier checks the complete expected unavailable id set and rejects any extra muted rows."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-general-unavailable-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "8e0810cd64130ad211d7feb6e29a1004e38673684697e33c538b79fc5a433eaa"
+        }
+      ],
+      "updates": []
     }
   ]
 }
