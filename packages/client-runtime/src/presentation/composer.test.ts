@@ -290,11 +290,18 @@ describe("deriveComposerSendState", () => {
 });
 
 describe("deriveComposerControlState", () => {
-  it("keeps semantic and primary action states aligned", () => {
+  it("keeps session state visible while blocking unavailable actions", () => {
     expect(
       deriveComposerControlState({
         working: true,
         blocked: true,
+        hasSendableContent: false,
+      }),
+    ).toEqual({ semanticState: "working", primaryActionState: "disabled" });
+    expect(
+      deriveComposerControlState({
+        working: true,
+        blocked: false,
         hasSendableContent: false,
       }),
     ).toEqual({ semanticState: "working", primaryActionState: "stop" });

@@ -316,7 +316,10 @@ export function deriveComposerControlState(options: {
   readonly hasSendableContent: boolean;
 }): ComposerControlState {
   if (options.working) {
-    return { semanticState: "working", primaryActionState: "stop" };
+    return {
+      semanticState: "working",
+      primaryActionState: options.blocked ? "disabled" : "stop",
+    };
   }
   if (options.blocked) {
     return { semanticState: "disabled", primaryActionState: "disabled" };
