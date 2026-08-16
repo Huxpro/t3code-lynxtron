@@ -32,13 +32,16 @@ export function AppearanceSettingsSurface({
   glassOpacityControl,
   glassOpacityResetAction,
   glassOpacityStatus,
+  glassOpacityUnavailable,
   environmentIdentificationControl,
   environmentIdentificationResetAction,
   environmentIdentificationStatus,
+  environmentIdentificationUnavailable,
   showEnvironmentIdentification,
   wordWrapControl,
   wordWrapResetAction,
   wordWrapStatus,
+  wordWrapUnavailable,
 }: {
   readonly themeControl?: ReactNode | undefined;
   readonly themeResetAction?: ReactNode | undefined;
@@ -46,13 +49,16 @@ export function AppearanceSettingsSurface({
   readonly glassOpacityControl?: ReactNode | undefined;
   readonly glassOpacityResetAction?: ReactNode | undefined;
   readonly glassOpacityStatus?: ReactNode | undefined;
+  readonly glassOpacityUnavailable?: boolean | undefined;
   readonly environmentIdentificationControl?: ReactNode | undefined;
   readonly environmentIdentificationResetAction?: ReactNode | undefined;
   readonly environmentIdentificationStatus?: ReactNode | undefined;
+  readonly environmentIdentificationUnavailable?: boolean | undefined;
   readonly showEnvironmentIdentification: boolean;
   readonly wordWrapControl?: ReactNode | undefined;
   readonly wordWrapResetAction?: ReactNode | undefined;
   readonly wordWrapStatus?: ReactNode | undefined;
+  readonly wordWrapUnavailable?: boolean | undefined;
 }) {
   return (
     <SettingsSection id="appearance" title="Appearance">
@@ -69,6 +75,7 @@ export function AppearanceSettingsSurface({
         resetAction={glassOpacityResetAction}
         status={glassOpacityStatus}
         control={glassOpacityControl}
+        {...(glassOpacityUnavailable ? { unavailable: true } : {})}
       />
       {showEnvironmentIdentification ? (
         <SettingsRow
@@ -77,6 +84,7 @@ export function AppearanceSettingsSurface({
           resetAction={environmentIdentificationResetAction}
           status={environmentIdentificationStatus}
           control={environmentIdentificationControl}
+          {...(environmentIdentificationUnavailable ? { unavailable: true } : {})}
         />
       ) : null}
       <SettingsRow
@@ -85,6 +93,7 @@ export function AppearanceSettingsSurface({
         resetAction={wordWrapResetAction}
         status={wordWrapStatus}
         control={wordWrapControl}
+        {...(wordWrapUnavailable ? { unavailable: true } : {})}
       />
     </SettingsSection>
   );

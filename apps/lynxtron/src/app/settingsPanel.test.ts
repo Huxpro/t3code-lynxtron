@@ -69,6 +69,39 @@ describe("Lynx Settings route projection", () => {
     expect(generalLayout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
   });
 
+  it("marks unavailable Appearance capabilities as disabled and visibly muted", () => {
+    const appearance = readFileSync(
+      path.resolve(import.meta.dirname, "components/AppearanceSettings.tsx"),
+      "utf8",
+    );
+    const layout = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/settingsLayout.lynx.tsx",
+      ),
+      "utf8",
+    );
+    const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
+
+    for (const unavailableProp of [
+      "glassOpacityUnavailable",
+      "environmentIdentificationUnavailable",
+      "wordWrapUnavailable",
+    ]) {
+      expect(appearance).toContain(unavailableProp);
+    }
+    expect(layout).toContain('aria-disabled={unavailable ? "true" : undefined}');
+    expect(layout).toContain('data-settings-unavailable={unavailable ? "true" : undefined}');
+    expect(layout).toContain('unavailable ? "settings-row--unavailable" : undefined');
+
+    const unavailableStart = overrides.indexOf(".settings-row--unavailable {");
+    const unavailableBlock = overrides.slice(
+      unavailableStart,
+      overrides.indexOf("}", unavailableStart),
+    );
+    expect(unavailableBlock).toContain("opacity: 0.48;");
+  });
+
   it("renders portable Sidebar v2 auto-settle controls in Lynx", () => {
     const settings = readFileSync(
       path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),

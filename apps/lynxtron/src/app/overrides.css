@@ -4832,6 +4832,9 @@
   border-radius: var(--settings-row-radius);
   margin-bottom: var(--settings-row-gap);
 }
+.settings-row--unavailable {
+  opacity: 0.48;
+}
 .settings-row__text {
   --lynx-linear-weight: 1;
   display: flex;

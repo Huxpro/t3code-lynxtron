@@ -49,14 +49,38 @@ describe("AppearanceSettingsSurface", () => {
       <AppearanceSettingsSurface
         themeStatus="Not yet available in Lynxtron."
         glassOpacityStatus="Not yet available in Lynxtron."
+        glassOpacityUnavailable
         showEnvironmentIdentification={false}
         wordWrapStatus="Not yet available in Lynxtron."
+        wordWrapUnavailable
       />,
     );
 
     expect(markup).toContain("Not yet available in Lynxtron.");
+    expect(markup.match(/aria-disabled="true"/g)).toHaveLength(2);
+    expect(markup.match(/data-settings-unavailable="true"/g)).toHaveLength(2);
+    expect(markup.match(/pointer-events-none opacity-50/g)).toHaveLength(2);
     expect(markup).not.toContain("Environment identification");
     expect(markup).not.toContain("data-theme-control");
+  });
+
+  it("greys out every explicitly unavailable Appearance capability", () => {
+    const markup = renderToStaticMarkup(
+      <AppearanceSettingsSurface
+        glassOpacityStatus="Unavailable"
+        glassOpacityUnavailable
+        environmentIdentificationStatus="Unavailable"
+        environmentIdentificationUnavailable
+        showEnvironmentIdentification
+        wordWrapStatus="Unavailable"
+        wordWrapUnavailable
+      />,
+    );
+
+    expect(markup.match(/aria-disabled="true"/g)).toHaveLength(3);
+    expect(markup.match(/data-settings-unavailable="true"/g)).toHaveLength(3);
+    expect(markup).toContain('id="theme" tabindex="-1"');
+    expect(markup).not.toMatch(/id="theme"[^>]+aria-disabled/);
   });
 });
 

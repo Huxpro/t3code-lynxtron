@@ -5,10 +5,7 @@ import {
 } from "../../../../web/src/components/SidebarStageBackdrop";
 import { SelectBox } from "./SettingsControls";
 import { useThemePreferenceState } from "../state/prefsStore";
-import {
-  LYNX_THEME_LABELS,
-  NEXT_LYNX_THEME,
-} from "../state/themePreference.logic";
+import { LYNX_THEME_LABELS, NEXT_LYNX_THEME } from "../state/themePreference.logic";
 
 const UNAVAILABLE_STATUS = "Not yet available in Lynxtron.";
 
@@ -34,14 +31,15 @@ export function AppearanceSettings() {
           />
         }
         themeStatus={
-          themePreference === "system"
-            ? "Follows the operating system appearance."
-            : undefined
+          themePreference === "system" ? "Follows the operating system appearance." : undefined
         }
         glassOpacityStatus={UNAVAILABLE_STATUS}
+        glassOpacityUnavailable
         environmentIdentificationStatus={UNAVAILABLE_STATUS}
+        environmentIdentificationUnavailable
         showEnvironmentIdentification={showEnvironmentIdentification}
         wordWrapStatus={UNAVAILABLE_STATUS}
+        wordWrapUnavailable
       />
     </view>
   );

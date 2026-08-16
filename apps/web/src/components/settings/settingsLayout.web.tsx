@@ -129,6 +129,7 @@ export function SettingsRow({
   resetAction,
   control,
   children,
+  unavailable = false,
   className,
   ...rowProps
 }: Omit<ComponentPropsWithoutRef<"div">, "title"> & {
@@ -138,6 +139,7 @@ export function SettingsRow({
   resetAction?: ReactNode;
   control?: ReactNode;
   children?: ReactNode;
+  unavailable?: boolean;
 }) {
   const targetRef = useSettingsSearchTarget<HTMLDivElement>(rowProps.id);
 
@@ -145,8 +147,15 @@ export function SettingsRow({
     <div
       {...rowProps}
       ref={targetRef}
+      aria-disabled={unavailable || undefined}
+      data-settings-unavailable={unavailable || undefined}
       tabIndex={rowProps.id ? -1 : rowProps.tabIndex}
-      className={cn("rounded-xl px-3 sm:px-4", children ? "pt-3 pb-1" : "py-3", className)}
+      className={cn(
+        "rounded-xl px-3 sm:px-4",
+        children ? "pt-3 pb-1" : "py-3",
+        unavailable && "pointer-events-none opacity-50",
+        className,
+      )}
     >
       <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1fr)_minmax(10rem,auto)] sm:items-center sm:gap-8">
         <div className="min-w-0 flex-1 space-y-1">
