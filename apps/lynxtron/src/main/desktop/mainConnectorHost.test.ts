@@ -364,6 +364,115 @@ describe("main connector host", () => {
     );
   });
 
+  it("reconnects once and retries idempotent metadata commands after stale transport errors", async () => {
+    const handlers = new Map<string, (params: unknown) => unknown>();
+    const logs: string[] = [];
+    const calls: Array<{ generation: number; method: string; input: unknown }> = [];
+    let generation = 0;
+    const host = new MainConnectorHost({
+      window: { sendGlobalEvent: () => true },
+      registerHandler: (method, handler) => {
+        handlers.set(method, handler as (params: unknown) => unknown);
+      },
+      createConnector: (events) => {
+        const currentGeneration = ++generation;
+        return {
+          ...events,
+          connect: () => Promise.resolve({ status: "ready" }),
+          dispose: () => {},
+          setModelSelection: (input: unknown) => {
+            calls.push({
+              generation: currentGeneration,
+              method: "setModelSelection",
+              input,
+            });
+            return currentGeneration === 1
+              ? Promise.reject(new Error('SocketOpenError: timeout waiting for "open"'))
+              : Promise.resolve();
+          },
+          sendPrompt: (input: unknown) => {
+            calls.push({ generation: currentGeneration, method: "sendPrompt", input });
+            return Promise.reject(new Error('SocketOpenError: timeout waiting for "open"'));
+          },
+        };
+      },
+      onLog: (line) => logs.push(line),
+    });
+    host.attach();
+    await host.connect();
+    const command = handlers.get(T3_CONNECTOR_METHODS.command)!;
+    const selection = {
+      threadId: "t1",
+      selection: { instanceId: "codex", model: "gpt-5.6-sol" },
+    };
+
+    await command({ method: "setModelSelection", params: selection });
+
+    assert.equal(generation, 2);
+    assert.deepEqual(
+      calls.filter((call) => call.method === "setModelSelection"),
+      [
+        { generation: 1, method: "setModelSelection", input: selection },
+        { generation: 2, method: "setModelSelection", input: selection },
+      ],
+    );
+    assert.isTrue(logs.some((line) => line.includes("reconnecting once")));
+
+    await assertRejects(
+      command({ method: "sendPrompt", params: { threadId: "t1", text: "hello" } }),
+      /SocketOpenError/,
+    );
+    assert.equal(generation, 2);
+    assert.equal(calls.filter((call) => call.method === "sendPrompt").length, 1);
+  });
+
+  it("injects the SocketOpenError only for the first thread model mutation", async () => {
+    const handlers = new Map<string, (params: unknown) => unknown>();
+    const logs: string[] = [];
+    const calls: Array<{ generation: number; input: unknown }> = [];
+    let generation = 0;
+    const host = new MainConnectorHost({
+      window: { sendGlobalEvent: () => true },
+      registerHandler: (method, handler) => {
+        handlers.set(method, handler as (params: unknown) => unknown);
+      },
+      createConnector: (events) => {
+        const currentGeneration = ++generation;
+        return {
+          ...events,
+          connect: () => Promise.resolve({ status: "ready" }),
+          dispose: () => {},
+          setModelSelection: (input: unknown) => {
+            calls.push({ generation: currentGeneration, input });
+            return Promise.resolve();
+          },
+        };
+      },
+      onLog: (line) => logs.push(line),
+      testSocketOpenErrorForThreadModelSelectionOnce: true,
+    });
+    host.attach();
+    await host.connect();
+    const command = handlers.get(T3_CONNECTOR_METHODS.command)!;
+    const projectSelection = {
+      selection: { instanceId: "claudeAgent", model: "claude-fable-5" },
+    };
+    const threadSelection = {
+      threadId: "t1",
+      selection: { instanceId: "claudeAgent", model: "claude-opus-5" },
+    };
+
+    await command({ method: "setModelSelection", params: projectSelection });
+    await command({ method: "setModelSelection", params: threadSelection });
+
+    assert.equal(generation, 2);
+    assert.deepEqual(calls, [
+      { generation: 1, input: projectSelection },
+      { generation: 2, input: threadSelection },
+    ]);
+    assert.isTrue(logs.some((line) => line.includes("reconnecting once")));
+  });
+
   it("forwards undelivered push failures to the log without throwing", async () => {
     const { host, connector, logs } = createHarness({
       window: { sendGlobalEvent: () => false },

@@ -10,9 +10,11 @@ import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentat
 import {
   availableThreadModels,
   findExactModelForSelection,
+  modelSelectionMutationError,
   projectModelSelectionCandidates,
   resolveActiveThreadModelSelection,
   resolveModelPickerNavigationProvider,
+  shouldRollbackModelSelectionMutation,
 } from "./modelSelection.logic";
 
 const project = {
@@ -262,5 +264,30 @@ describe("model picker navigation provider", () => {
       }),
       "codex",
     );
+  });
+});
+
+describe("model selection mutation lifecycle", () => {
+  it("rolls back only the latest failed optimistic mutation", () => {
+    assert.isTrue(
+      shouldRollbackModelSelectionMutation({
+        currentSequence: 4,
+        failedSequence: 4,
+      }),
+    );
+    assert.isFalse(
+      shouldRollbackModelSelectionMutation({
+        currentSequence: 5,
+        failedSequence: 4,
+      }),
+    );
+  });
+
+  it("normalizes bridge errors without throwing during presentation", () => {
+    assert.equal(
+      modelSelectionMutationError(new Error('SocketOpenError: timeout waiting for "open"')),
+      'SocketOpenError: timeout waiting for "open"',
+    );
+    assert.equal(modelSelectionMutationError("connection failed"), "connection failed");
   });
 });
