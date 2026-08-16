@@ -79,6 +79,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".composer-primary-action--send {");
     expect(overrides).toContain("background-color: rgba(var(--primary-rgb), 0.9);");
     expect(composer).toContain('name={busy ? "square" : "send-arrow"}');
+    expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
   });
 
   it("opens a truthful Terminal placeholder from the titlebar control", () => {

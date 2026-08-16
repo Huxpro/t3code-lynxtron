@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, type ReactNode } from "@lynx-js/react";
+import { useState, useCallback, useEffect, useRef, type ReactNode } from "@lynx-js/react";
 import { shouldUseCompactComposerFooter } from "../../../../web/src/components/composerFooterLayout";
 import {
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
@@ -115,6 +115,20 @@ export function Composer({
   const [compactControlsMenuOpen, setCompactControlsMenuOpen] = useState(false);
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
   const questionMode = questionActions !== undefined;
+  useEffect(() => {
+    const diagnosticsGlobal = globalThis as {
+      __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
+      __T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?: (value: string) => boolean;
+    };
+    if (typeof diagnosticsGlobal.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
+    diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__ = (nextValue) => {
+      setValue(nextValue);
+      return true;
+    };
+    return () => {
+      delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__;
+    };
+  }, []);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });

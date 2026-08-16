@@ -1186,6 +1186,44 @@ async function readComposerOutcome(client, options = {}) {
   return measurements;
 }
 
+async function verifyComposerSendMaterial({ child, client, timeoutMs }) {
+  const fixtureResponse = await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('hello fidelity') ?? false",
+    returnByValue: true,
+  });
+  if (commandResult(fixtureResponse)?.value !== true) {
+    throw new Error(`Composer input fixture was not applied: ${JSON.stringify(fixtureResponse)}`);
+  }
+  const action = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-primary-action--send",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-composer-primary-state"] === "send" &&
+      measurement.style.backgroundColor === "rgba(54,111,251,0.9)" &&
+      Math.abs((measurement.rect?.width ?? 0) - 32) <= 0.5 &&
+      Math.abs((measurement.rect?.height ?? 0) - 32) <= 0.5,
+  });
+  const icon = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-primary-action--send image",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.width ?? 0) - 14) <= 0.5 &&
+      Math.abs((measurement?.rect.height ?? 0) - 14) <= 0.5,
+  });
+  return {
+    status: "pass",
+    input: "test-only Composer state fixture; no turn submitted",
+    action: action.rect,
+    backgroundColor: action.style.backgroundColor,
+    icon: icon.rect,
+    state: action.attributes["data-composer-primary-state"],
+  };
+}
+
 async function verifyHeroComposerState({
   child,
   client,
@@ -5676,6 +5714,7 @@ async function runOnce({
   verifySourceControlLoading: shouldVerifySourceControlLoading,
   verifySourceControlError: shouldVerifySourceControlError,
   verifyComposerGeometry: shouldVerifyComposerGeometry,
+  verifyComposerSendMaterial: shouldVerifyComposerSendMaterial,
   verifyHeroComposerState: shouldVerifyHeroComposerState,
   verifyIdleThreadState: shouldVerifyIdleThreadState,
   idleFixture,
@@ -5830,6 +5869,9 @@ async function runOnce({
       : undefined;
     const composerGeometry = shouldVerifyComposerGeometry
       ? await verifyComposerGeometry(client, expectedTheme)
+      : undefined;
+    const composerSendMaterial = shouldVerifyComposerSendMaterial
+      ? await verifyComposerSendMaterial({ child, client, timeoutMs })
       : undefined;
     const heroComposerState = shouldVerifyHeroComposerState
       ? await verifyHeroComposerState({
@@ -6152,6 +6194,7 @@ async function runOnce({
       sidebarScope,
       sidebarGeometry,
       composerGeometry,
+      composerSendMaterial,
       heroComposerState,
       idleThreadState,
       quickSwitchDefault,
@@ -6196,6 +6239,7 @@ async function runOnce({
       sidebarScope,
       sidebarGeometry,
       composerGeometry,
+      composerSendMaterial,
       heroComposerState,
       idleThreadState,
       quickSwitchDefault,
@@ -6262,6 +6306,7 @@ const verifySettingsNavigation = process.argv.includes("--verify-settings-naviga
 const shouldVerifySourceControlLoading = process.argv.includes("--verify-source-control-loading");
 const shouldVerifySourceControlError = process.argv.includes("--verify-source-control-error");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
+const shouldVerifyComposerSendMaterial = process.argv.includes("--verify-composer-send-material");
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
@@ -6506,6 +6551,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifySourceControlLoading: shouldVerifySourceControlLoading,
       verifySourceControlError: shouldVerifySourceControlError,
       verifyComposerGeometry: shouldVerifyComposerGeometry,
+      verifyComposerSendMaterial: shouldVerifyComposerSendMaterial,
       verifyHeroComposerState: shouldVerifyHeroComposerState,
       verifyIdleThreadState: shouldVerifyIdleThreadState,
       idleFixture,
