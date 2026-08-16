@@ -11792,6 +11792,1894 @@
       ],
       "fromPoint": "settings-connections-network-access-current",
       "toPoint": "lifecycle-error-current-certification"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 118,
+      "commit": "c2bfd9f0f50bfc609caad6400927f1e5aee66706",
+      "committedAt": "2026-08-16T12:52:56+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record lifecycle recovery fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 49,
+      "commit": "75d43e89974bb9a9e4aed6564d2ada873926a80d",
+      "committedAt": "2026-08-16T12:55:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register lifecycle recovery fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 700,
+      "commit": "adf5dfa5d4becaf533b0e78ffd722d38879b5ed8",
+      "committedAt": "2026-08-16T12:58:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh lifecycle recovery loss report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 16,
+      "commit": "17d091ec7196adf672abf118798e1569d92b9cae",
+      "committedAt": "2026-08-16T13:08:45+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): expose archive mutation state",
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 245,
+      "commit": "a3458c43b48a3804c0ff04102d298c5e35234472",
+      "committedAt": "2026-08-16T13:09:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify archive mutation persistence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 82,
+      "commit": "c3c8d225a1073addcf9290c1670d53a3c8e2d26c",
+      "committedAt": "2026-08-16T13:11:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record archive mutation fidelity",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 48,
+      "commit": "63ce4e99019b140a0b5b59b55c13a8f531ffe820",
+      "committedAt": "2026-08-16T13:14:24+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register archive mutation fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 701,
+      "commit": "c44cc96826878092e7545552fbfe145f0a587e12",
+      "committedAt": "2026-08-16T13:16:16+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh archive mutation loss report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 57,
+      "commit": "0dec2249926eafd0e1ba4b3ac9e53125cd6a4710",
+      "committedAt": "2026-08-16T13:26:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): clear revoked pairing codes",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 5,
+      "commit": "55ae2fab563628f7abd9a680b54640790cde8f52",
+      "committedAt": "2026-08-16T13:28:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): wire revoked pairing cleanup",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6,
+      "commit": "7255b977742b14089680fbeaca7cea1170f5f99d",
+      "committedAt": "2026-08-16T13:29:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): expose pairing mutation state",
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 253,
+      "commit": "7e717ab1cb2399e82d0a4477b66e71a36a7fa33e",
+      "committedAt": "2026-08-16T13:30:45+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify pairing revoke persistence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 87,
+      "commit": "a6affe62a51971dc09c685fc46e44bcd0378e53e",
+      "committedAt": "2026-08-16T13:33:13+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record connections mutation fidelity",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 49,
+      "commit": "660a95d3c9c1207da3cf1797b3060745302298d5",
+      "committedAt": "2026-08-16T13:35:35+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register connections mutation fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 673,
+      "commit": "5dff6ed05d60fb6e7f01cdfa99c7ff427bc3b330",
+      "committedAt": "2026-08-16T13:37:30+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh connections mutation loss report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 49,
+      "commit": "761d87a000e1a4153fda7b1cd4f04c0b80c98654",
+      "committedAt": "2026-08-16T13:48:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): declare transcript fixture identity",
+      "surfaces": [
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6,
+      "commit": "9779a5864179051b0463b15e6f641c6668d5c5bb",
+      "committedAt": "2026-08-16T14:00:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align the base Sidebar brand",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 11,
+      "commit": "c0f0cc08b58163f6bd5475b1c94d8d0f9392a9c3",
+      "committedAt": "2026-08-16T14:01:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): gate the Sidebar brand at 1280",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 130,
+      "commit": "5f092b4a266879e8504e963e0d0fa7205897edb8",
+      "committedAt": "2026-08-16T14:05:00+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record current failed-thread fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 80,
+      "commit": "1dff80b7288edd39bba491f43deb3543a542c429",
+      "committedAt": "2026-08-16T14:08:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register current failed-thread fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 729,
+      "commit": "c78f3c2b7ddea632a2bff3d802925756e4509193",
+      "committedAt": "2026-08-16T14:09:58+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh current failed-thread loss report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 25,
+      "commit": "bc4495771b5e8bac5808cb9ee8c75b7372722064",
+      "committedAt": "2026-08-16T14:15:18+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): redact fixture websocket tickets",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 42,
+      "commit": "2f4aeed5610a374984e73f3401624bdb5fe4f817",
+      "committedAt": "2026-08-16T14:30:03+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): expose approval receipt state",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 319,
+      "commit": "1c3ab4fee6f50fb75d50c3df8fd720ed1f522a9b",
+      "committedAt": "2026-08-16T14:31:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify live approval decline",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 116,
+      "commit": "b712a93780729acbe0f294b929d8f69622371052",
+      "committedAt": "2026-08-16T14:54:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify stale approval recovery",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 90,
+      "commit": "5731b980884488c757d65304f1e8ab8efd3742e9",
+      "committedAt": "2026-08-16T14:56:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record approval recovery fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 49,
+      "commit": "ba6d1e92eb39ab7c8b09a6fbf6e46d15619252e2",
+      "committedAt": "2026-08-16T14:59:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register approval recovery fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8216,
+      "commit": "6a913b4ba0e21316f928675f2dedf0d47315486d",
+      "committedAt": "2026-08-16T15:01:34+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh approval recovery loss report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 5,
+      "commit": "42197f63416abd2341f776b60adcc34bfa0cde61",
+      "committedAt": "2026-08-16T15:19:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): bind completed geometry to row order",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 195,
+      "commit": "1702d3609dd59f269ac392c77d73f8e34220a200",
+      "committedAt": "2026-08-16T15:23:46+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh current completed fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 82,
+      "commit": "e0b9e2565ff15a27cfa6ea6e845efd6232d6b59d",
+      "committedAt": "2026-08-16T15:28:00+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register current completed fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 648,
+      "commit": "ec18dbb1cf7fb9f24ee9802d81ab4191ece1c568",
+      "committedAt": "2026-08-16T15:29:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh current completed loss report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 113,
+      "commit": "30c1fe417938d05b91b832cfb456f7695eb1ad87",
+      "committedAt": "2026-08-16T16:40:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): make model picker selections usable",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 320,
+      "commit": "ed5d9d8a4998d9a3213cc31aa8a3b86fc4bcc65e",
+      "committedAt": "2026-08-16T16:40:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify persisted model selection",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 128,
+      "commit": "620e09e323dd6ed6f577ae213d30138391cf98e1",
+      "committedAt": "2026-08-16T16:43:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record model selection mutation",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 47,
+      "commit": "5f8e4c369f98f11f2a977fa022220739a0ffb474",
+      "committedAt": "2026-08-16T16:45:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record model selection fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 645,
+      "commit": "7a9c3a306164ad34db1a47362b66ee14c4f0f532",
+      "committedAt": "2026-08-16T16:48:19+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 103,
+      "commit": "8ffd623d8ed9f4ae1c1b25ef30c5affd8cedbc48",
+      "committedAt": "2026-08-16T16:55:17+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): dismiss permission menu outside",
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 110,
+      "commit": "af98b3879920728c2da77f36a1b384878b303644",
+      "committedAt": "2026-08-16T16:55:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify permission menu dismissal",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 97,
+      "commit": "c890362689effde1401d7eeade910d852b953c2c",
+      "committedAt": "2026-08-16T16:57:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record permission menu dismissal",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 41,
+      "commit": "eacb05668e5aa423b5d5ad8af0bd4a1abf4b7222",
+      "committedAt": "2026-08-16T16:59:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record permission dismiss fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 672,
+      "commit": "f547508d7e4b3b10773f9ae47fb1fb54dd89b682",
+      "committedAt": "2026-08-16T17:01:23+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 492,
+      "commit": "783434cc503327e7bde32c8a516d5b39004221b1",
+      "committedAt": "2026-08-16T17:31:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): add model options menu",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 510,
+      "commit": "9ce152377fbd5786ee430841ffc88747ae14e24d",
+      "committedAt": "2026-08-16T17:32:26+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify effort and thinking options",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 140,
+      "commit": "c64ae5f4bd91a6a1ef3c5b348df139793eca73f9",
+      "committedAt": "2026-08-16T17:35:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record model options menu",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 47,
+      "commit": "c20e2250c5463c0bf1193e89bd47d9da2d382e33",
+      "committedAt": "2026-08-16T17:37:15+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record model options fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 672,
+      "commit": "a759d15975ace6f49f46d47403bba7009e1f91ac",
+      "committedAt": "2026-08-16T17:38:54+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 102,
+      "commit": "2521d30465b3cdf31eea648e07af18a1d389f096",
+      "committedAt": "2026-08-16T17:49:07+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): mute unavailable appearance settings",
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 97,
+      "commit": "be401c764ae08644d7eaeeef13e11bde03c65e7e",
+      "committedAt": "2026-08-16T17:52:40+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify unavailable settings rows",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 73,
+      "commit": "ed72b7e0cd8fd2f576628e6450df4efe76ab148c",
+      "committedAt": "2026-08-16T17:55:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): read settings rows by visible copy",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 15,
+      "commit": "3a474fe8820080ca734048ef966617bad2c5f7bb",
+      "committedAt": "2026-08-16T17:57:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): avoid row text separator assumptions",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 65,
+      "commit": "4b691449e87a84bc43661368e1b64f903f5a2604",
+      "committedAt": "2026-08-16T17:59:22+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify appearance row sets",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 151,
+      "commit": "9fe74b39046837552b53056e06ce95ba3b8d7a1a",
+      "committedAt": "2026-08-16T18:01:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record unavailable settings evidence",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "eaefcbf3ac74db80c220b3585ad23c75825e1ae6",
+      "committedAt": "2026-08-16T18:04:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): log unavailable settings proof",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 3088,
+      "commit": "49590615ac89fc62f1103d5bc62d0be6bb5d804c",
+      "committedAt": "2026-08-16T18:08:22+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 11,
+      "commit": "55916098177c41d75e863239635d437848ca6832",
+      "committedAt": "2026-08-16T18:15:29+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): remove model picker modal dim",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 26,
+      "commit": "5cf49a3a0d3a2acf62e66e8a47d49c7b25a56ed0",
+      "committedAt": "2026-08-16T18:15:54+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify model picker dismiss surface",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 5,
+      "commit": "e8c02be245e40004b3dea278b9a53d6290fc9ef2",
+      "committedAt": "2026-08-16T18:19:11+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): accept canonical checkout labels",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 112,
+      "commit": "59c22b68bead8cc71839b2d98f03d1356814a3de",
+      "committedAt": "2026-08-16T18:21:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record model picker dismiss evidence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "c718f895550364be4fc21040b638c2898d868012",
+      "committedAt": "2026-08-16T18:23:22+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): log model picker dismiss proof",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8562,
+      "commit": "2cebe0091f3dd8945f54826b230da10f5a040335",
+      "committedAt": "2026-08-16T18:25:09+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8,
+      "commit": "fe533fcb04369168566c59dfc73ed70636b68867",
+      "committedAt": "2026-08-16T18:34:07+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): clear macOS traffic lights",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 4,
+      "commit": "ea9635e7892cf63f7a4893a581a1bffa3ca5732e",
+      "committedAt": "2026-08-16T18:34:34+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify macOS brand inset",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 111,
+      "commit": "316b094f82705d94801c2197f19e00fb70a20677",
+      "committedAt": "2026-08-16T18:37:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record titlebar brand geometry",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "884a36d6bfe2e7206ce8da2a2feec42182ea390b",
+      "committedAt": "2026-08-16T18:40:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): log titlebar brand clearance",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 3150,
+      "commit": "6365ed4b9ffbdb82e51b22e18d8daa77fc673eb4",
+      "committedAt": "2026-08-16T18:41:54+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 16,
+      "commit": "93718c3cdfe01df70d956037aaa12c4f11bc0e81",
+      "committedAt": "2026-08-16T18:46:01+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): balance Sidebar thread cards",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 60,
+      "commit": "0cf615ec46b309099055da9b8f37314e143f5921",
+      "committedAt": "2026-08-16T18:46:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify Sidebar card state",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 135,
+      "commit": "10d588ff984642e9870f3187745b493fde29bc84",
+      "committedAt": "2026-08-16T18:49:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record Sidebar card state evidence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "5fa4b069112d210d08e909683447d12b99d7f7a9",
+      "committedAt": "2026-08-16T18:51:56+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): log Sidebar card state proof",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 3141,
+      "commit": "5d6724d22fefc07dd83dc329f54a061913316f47",
+      "committedAt": "2026-08-16T18:53:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 115,
+      "commit": "0fbbd1913e3e0b305ee093a11c4539e24ee3a8ea",
+      "committedAt": "2026-08-16T19:07:34+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): smooth the light Composer shadow",
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 32,
+      "commit": "746930328240e3124074f3882302734b1e03faa8",
+      "committedAt": "2026-08-16T19:08:14+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify light shadow profile",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 35,
+      "commit": "bc1fcf664c085b277ab548b48fe5854a05b34f09",
+      "committedAt": "2026-08-16T19:12:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): read shadow bands as a set",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8,
+      "commit": "a6d876e9501d53734d45035f320dc68a30b13fc8",
+      "committedAt": "2026-08-16T19:15:12+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): report the full shadow profile",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 180,
+      "commit": "cfa143777a758d9208de96ed605fa1422c691b01",
+      "committedAt": "2026-08-16T19:18:05+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record light Composer shadow evidence",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "b8a4a10466f90508e37f48c740c3cd2cf2277d9f",
+      "committedAt": "2026-08-16T19:20:21+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): log light Composer shadow proof",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 2,
+      "commit": "3067e79711d2c52ca27c52fc99fb312b803fbb74",
+      "committedAt": "2026-08-16T19:23:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): fix shadow evidence hash",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 672,
+      "commit": "45301ac410431c64a9980b489be0e6ae574cedfe",
+      "committedAt": "2026-08-16T19:25:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 315,
+      "commit": "725c45bbbcfb98266ddecea0b19b2e49fd80b445",
+      "committedAt": "2026-08-16T19:35:42+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align the Files browser with web",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 207,
+      "commit": "bdc9c2c801659a507668f58cfe84281e1a067195",
+      "committedAt": "2026-08-16T19:40:32+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify the Native Files browser",
+      "surfaces": [
+        "shell",
+        "review"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 14,
+      "commit": "5c54f6ed444d15df139c3b48d85aae768d97f61a",
+      "committedAt": "2026-08-16T19:43:42+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): preserve Files search focus feedback",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 32,
+      "commit": "1098cfb6fa5f611da92afb46fbe102dcb7d90347",
+      "committedAt": "2026-08-16T19:47:01+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): read Files row corner radii",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 147,
+      "commit": "95703e6215d7fd962747496b6af882d7f5530c0f",
+      "committedAt": "2026-08-16T19:50:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record Files browser evidence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "b195c37093c21b88184d8c72c99c3a044cb2f98d",
+      "committedAt": "2026-08-16T19:52:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register Files browser fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 9021,
+      "commit": "5eebd00c8a4fe7da2a3ead789a0d64c780a2a61a",
+      "committedAt": "2026-08-16T19:55:35+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh Files browser fidelity reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 40,
+      "commit": "06e443a37f40ea8738f85e7d47f093535014cf0b",
+      "committedAt": "2026-08-16T20:26:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align Composer trait label shaping",
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 79,
+      "commit": "3b367c8b159b87f1c32b0d1e36ad56dad1c79aa7",
+      "committedAt": "2026-08-16T20:30:10+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify Composer trait tracking",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 12,
+      "commit": "09c4412a33ce40843004408cc852df59be053359",
+      "committedAt": "2026-08-16T20:33:16+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): read computed trait tracking",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 225,
+      "commit": "10ee818e690bffdc136df6761a7e1a29df26f7b7",
+      "committedAt": "2026-08-16T20:38:03+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record Composer trait shaping evidence",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "666745e0701bcac7519ddad8f0ce37ddb5b62ab5",
+      "committedAt": "2026-08-16T20:41:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): add Composer shaping loss impact",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 37,
+      "commit": "b5171a55078c35476a804df24151793ea3fa94b5",
+      "committedAt": "2026-08-16T20:43:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register Composer shaping loss",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1494,
+      "commit": "3cc68282a074965bb1f5649328d7db358aa4c296",
+      "committedAt": "2026-08-16T20:46:09+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh Composer shaping reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 26,
+      "commit": "35498df5b6c90b725222ddd16952e8ba394cd073",
+      "committedAt": "2026-08-16T21:03:21+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): match Composer send action material",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 74,
+      "commit": "36f0698fa3760c97aae94c6cdb6ad5a7b70f0c66",
+      "committedAt": "2026-08-16T21:06:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify Native send material",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 7,
+      "commit": "1d13b479f343ef9427fd6c088643959b74bc3304",
+      "committedAt": "2026-08-16T21:10:07+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): gate send fixture on viewport state",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8,
+      "commit": "c1da083bc3328d1f6f91c8fd4009986aa93450ce",
+      "committedAt": "2026-08-16T21:14:18+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): enable the send material probe",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 13,
+      "commit": "32397e3c3a3afb86b50e5499c64152db9ed4d904",
+      "committedAt": "2026-08-16T21:18:17+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): stabilize the send material selector",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 12,
+      "commit": "9fd24db30a731717d3778887bac115d8a969d5b5",
+      "committedAt": "2026-08-16T21:21:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): select an idle send fixture",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 16,
+      "commit": "1c5b7b266c2a0d8d0e8a73a8885f304bd895d7d5",
+      "committedAt": "2026-08-16T21:26:12+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): tolerate Native alpha quantization",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 26,
+      "commit": "c2e92045dd37ddc26776cb8c1349256b3492e836",
+      "committedAt": "2026-08-16T21:28:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): capture Native send material",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 198,
+      "commit": "3b64c96043b1cb033b7076a8c3401b2abbf17e35",
+      "committedAt": "2026-08-16T21:33:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record Composer send material evidence",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "0425aeb4f8aa72064ef3dcc5a57a63d5f02080fd",
+      "committedAt": "2026-08-16T21:38:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): add Send material loss impact",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 37,
+      "commit": "6e1fa3de083f66c9e4a07e20144ac8f03f78982e",
+      "committedAt": "2026-08-16T21:40:20+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register Composer send material",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1558,
+      "commit": "fa9bd3dcaa6464c50a202361a819f886f825bce1",
+      "committedAt": "2026-08-16T21:42:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh Composer send reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 18,
+      "commit": "d3e35be4e177426e7ff3ccda4a41e2cdc8ff84b4",
+      "committedAt": "2026-08-16T21:54:14+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): align Connections session scopes",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 55,
+      "commit": "fe09bac1045a193718a16866cbb226c6dccfaf5b",
+      "committedAt": "2026-08-16T22:00:03+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(clients): align Connections reachability policy",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 53,
+      "commit": "457bdacc90109ea2389e53a70dd7dea5349d084a",
+      "committedAt": "2026-08-16T22:03:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify Connections reachability policy",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 68,
+      "commit": "1d4704a14ca1ba301d359456d39e0f716b0d5e76",
+      "committedAt": "2026-08-16T22:16:23+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): mute unavailable General settings",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 2,
+      "commit": "8d35ba70b15dad92619e3704d1d02a4825609e86",
+      "committedAt": "2026-08-16T22:20:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): identify unavailable background settings",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 60,
+      "commit": "f4790df024573f1afffbefb5e4c3d16987391543",
+      "committedAt": "2026-08-16T22:22:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify unavailable General settings",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 306,
+      "commit": "ea93a520965fc8e6b9af249a348f40454a5899fc",
+      "committedAt": "2026-08-16T22:28:40+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record Settings policy evidence",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 59,
+      "commit": "b1fa3b77a2310d1a9c565ab42ba987c0b8097528",
+      "committedAt": "2026-08-16T22:31:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register Settings policy evidence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 12794,
+      "commit": "bb9bc1b60ae1072fb16da6dc2121f02464182bbe",
+      "committedAt": "2026-08-16T22:34:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh Settings policy reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 78,
+      "commit": "0615347372b627517a72df2367e695549a69e616",
+      "committedAt": "2026-08-16T22:58:09+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(clients): align fixed network access",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 57,
+      "commit": "a91190f80c374ea708a5ec49c73b2755d7c13587",
+      "committedAt": "2026-08-16T23:03:13+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify fixed network access",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 192,
+      "commit": "b38d901baa68667e8ff9bdb2fc7116b504d3240e",
+      "committedAt": "2026-08-16T23:09:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record network access evidence",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 37,
+      "commit": "530c4827e2a1c372981aa182a703dba2df2d80c5",
+      "committedAt": "2026-08-16T23:13:15+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register network access loss",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 3364,
+      "commit": "753be8406a7cce820ad16f6606977f6224fde513",
+      "committedAt": "2026-08-16T23:15:38+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh network access reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 47,
+      "commit": "85bcf6eb18c885408c0ccdffced9a78ef81832d5",
+      "committedAt": "2026-08-16T23:24:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): stabilize lifecycle fault capture",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 171,
+      "commit": "5e27a168c5aee3eedb0ae52e56dc9fe7dfc7ef9f",
+      "committedAt": "2026-08-16T23:30:28+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record current lifecycle evidence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 86,
+      "commit": "0b7e8211c9426fc0bd5ec025a6d76abef0a2bf02",
+      "committedAt": "2026-08-16T23:32:57+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register current lifecycle proof",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 538,
+      "commit": "5b75a62501f7a2afcde1a69574f0910f0f2575f3",
+      "committedAt": "2026-08-16T23:36:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh lifecycle reports",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 18,
+      "commit": "173724c785f99779e621de922d89dae06e0aebbd",
+      "committedAt": "2026-08-16T23:47:18+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align Settings content origin",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
+    },
+    {
+      "allocation": "measured-product-change",
+      "changedLines": 0,
+      "commit": "173724c785f99779e621de922d89dae06e0aebbd",
+      "committedAt": "2026-08-16T23:54:10+09:00",
+      "confidence": 0.99,
+      "delta": -0.000069,
+      "reason": "All three before/after Browser pairs use one immutable snapshot, identical authority pixels, state, theme, viewport, and bundles per side. One shared 12px Lynx inset change moves only the candidate content origin, and the Native matrix separately proves route scroll reset.",
+      "subject": "Shared Settings content origin and route reset",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "lifecycle-error-current-certification",
+      "toPoint": "settings-shared-content-origin-current"
     }
   ],
   "commitSeries": [
@@ -20352,9 +22240,1384 @@
       "rawLoss": 0.422802,
       "smoothedLoss": 0.429456,
       "subject": "Lifecycle current Browser and Native certification"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c2bfd9f0f50bfc609caad6400927f1e5aee66706",
+      "committedAt": "2026-08-16T12:52:56+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.427992,
+      "subject": "docs(lynxtron): record lifecycle recovery fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "75d43e89974bb9a9e4aed6564d2ada873926a80d",
+      "committedAt": "2026-08-16T12:55:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.42685,
+      "subject": "docs(lynxtron): register lifecycle recovery fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "adf5dfa5d4becaf533b0e78ffd722d38879b5ed8",
+      "committedAt": "2026-08-16T12:58:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.42596,
+      "subject": "docs(lynxtron): refresh lifecycle recovery loss report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "17d091ec7196adf672abf118798e1569d92b9cae",
+      "committedAt": "2026-08-16T13:08:45+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.425265,
+      "subject": "test(lynxtron): expose archive mutation state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a3458c43b48a3804c0ff04102d298c5e35234472",
+      "committedAt": "2026-08-16T13:09:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.424723,
+      "subject": "test(lynxtron): verify archive mutation persistence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c3c8d225a1073addcf9290c1670d53a3c8e2d26c",
+      "committedAt": "2026-08-16T13:11:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.4243,
+      "subject": "docs(lynxtron): record archive mutation fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "63ce4e99019b140a0b5b59b55c13a8f531ffe820",
+      "committedAt": "2026-08-16T13:14:24+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423971,
+      "subject": "docs(lynxtron): register archive mutation fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c44cc96826878092e7545552fbfe145f0a587e12",
+      "committedAt": "2026-08-16T13:16:16+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423714,
+      "subject": "docs(lynxtron): refresh archive mutation loss report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0dec2249926eafd0e1ba4b3ac9e53125cd6a4710",
+      "committedAt": "2026-08-16T13:26:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423513,
+      "subject": "fix(lynxtron): clear revoked pairing codes"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "55ae2fab563628f7abd9a680b54640790cde8f52",
+      "committedAt": "2026-08-16T13:28:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423357,
+      "subject": "fix(lynxtron): wire revoked pairing cleanup"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7255b977742b14089680fbeaca7cea1170f5f99d",
+      "committedAt": "2026-08-16T13:29:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423235,
+      "subject": "test(lynxtron): expose pairing mutation state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7e717ab1cb2399e82d0a4477b66e71a36a7fa33e",
+      "committedAt": "2026-08-16T13:30:45+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423139,
+      "subject": "test(lynxtron): verify pairing revoke persistence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a6affe62a51971dc09c685fc46e44bcd0378e53e",
+      "committedAt": "2026-08-16T13:33:13+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423065,
+      "subject": "docs(lynxtron): record connections mutation fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "660a95d3c9c1207da3cf1797b3060745302298d5",
+      "committedAt": "2026-08-16T13:35:35+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.423007,
+      "subject": "docs(lynxtron): register connections mutation fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5dff6ed05d60fb6e7f01cdfa99c7ff427bc3b330",
+      "committedAt": "2026-08-16T13:37:30+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422962,
+      "subject": "docs(lynxtron): refresh connections mutation loss report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "761d87a000e1a4153fda7b1cd4f04c0b80c98654",
+      "committedAt": "2026-08-16T13:48:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422927,
+      "subject": "test(lynxtron): declare transcript fixture identity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9779a5864179051b0463b15e6f641c6668d5c5bb",
+      "committedAt": "2026-08-16T14:00:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422899,
+      "subject": "fix(lynxtron): align the base Sidebar brand"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c0f0cc08b58163f6bd5475b1c94d8d0f9392a9c3",
+      "committedAt": "2026-08-16T14:01:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422878,
+      "subject": "test(lynxtron): gate the Sidebar brand at 1280"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5f092b4a266879e8504e963e0d0fa7205897edb8",
+      "committedAt": "2026-08-16T14:05:00+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422861,
+      "subject": "docs(lynxtron): record current failed-thread fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1dff80b7288edd39bba491f43deb3543a542c429",
+      "committedAt": "2026-08-16T14:08:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422848,
+      "subject": "docs(lynxtron): register current failed-thread fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c78f3c2b7ddea632a2bff3d802925756e4509193",
+      "committedAt": "2026-08-16T14:09:58+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422838,
+      "subject": "docs(lynxtron): refresh current failed-thread loss report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "bc4495771b5e8bac5808cb9ee8c75b7372722064",
+      "committedAt": "2026-08-16T14:15:18+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.42283,
+      "subject": "fix(lynxtron): redact fixture websocket tickets"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2f4aeed5610a374984e73f3401624bdb5fe4f817",
+      "committedAt": "2026-08-16T14:30:03+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422824,
+      "subject": "test(lynxtron): expose approval receipt state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1c3ab4fee6f50fb75d50c3df8fd720ed1f522a9b",
+      "committedAt": "2026-08-16T14:31:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422819,
+      "subject": "test(lynxtron): verify live approval decline"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b712a93780729acbe0f294b929d8f69622371052",
+      "committedAt": "2026-08-16T14:54:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422815,
+      "subject": "test(lynxtron): verify stale approval recovery"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5731b980884488c757d65304f1e8ab8efd3742e9",
+      "committedAt": "2026-08-16T14:56:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422812,
+      "subject": "docs(lynxtron): record approval recovery fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ba6d1e92eb39ab7c8b09a6fbf6e46d15619252e2",
+      "committedAt": "2026-08-16T14:59:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.42281,
+      "subject": "docs(lynxtron): register approval recovery fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "6a913b4ba0e21316f928675f2dedf0d47315486d",
+      "committedAt": "2026-08-16T15:01:34+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422808,
+      "subject": "docs(lynxtron): refresh approval recovery loss report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "42197f63416abd2341f776b60adcc34bfa0cde61",
+      "committedAt": "2026-08-16T15:19:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422807,
+      "subject": "test(lynxtron): bind completed geometry to row order"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1702d3609dd59f269ac392c77d73f8e34220a200",
+      "committedAt": "2026-08-16T15:23:46+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422806,
+      "subject": "docs(lynxtron): refresh current completed fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "e0b9e2565ff15a27cfa6ea6e845efd6232d6b59d",
+      "committedAt": "2026-08-16T15:28:00+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422805,
+      "subject": "docs(lynxtron): register current completed fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ec18dbb1cf7fb9f24ee9802d81ab4191ece1c568",
+      "committedAt": "2026-08-16T15:29:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422804,
+      "subject": "docs(lynxtron): refresh current completed loss report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "30c1fe417938d05b91b832cfb456f7695eb1ad87",
+      "committedAt": "2026-08-16T16:40:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422804,
+      "subject": "fix(lynxtron): make model picker selections usable"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ed5d9d8a4998d9a3213cc31aa8a3b86fc4bcc65e",
+      "committedAt": "2026-08-16T16:40:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422803,
+      "subject": "test(lynxtron): verify persisted model selection"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "620e09e323dd6ed6f577ae213d30138391cf98e1",
+      "committedAt": "2026-08-16T16:43:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422803,
+      "subject": "test(lynxtron): record model selection mutation"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5f8e4c369f98f11f2a977fa022220739a0ffb474",
+      "committedAt": "2026-08-16T16:45:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422803,
+      "subject": "docs(lynxtron): record model selection fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7a9c3a306164ad34db1a47362b66ee14c4f0f532",
+      "committedAt": "2026-08-16T16:48:19+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422803,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8ffd623d8ed9f4ae1c1b25ef30c5affd8cedbc48",
+      "committedAt": "2026-08-16T16:55:17+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422803,
+      "subject": "fix(lynxtron): dismiss permission menu outside"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "af98b3879920728c2da77f36a1b384878b303644",
+      "committedAt": "2026-08-16T16:55:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify permission menu dismissal"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c890362689effde1401d7eeade910d852b953c2c",
+      "committedAt": "2026-08-16T16:57:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record permission menu dismissal"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "eacb05668e5aa423b5d5ad8af0bd4a1abf4b7222",
+      "committedAt": "2026-08-16T16:59:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): record permission dismiss fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "f547508d7e4b3b10773f9ae47fb1fb54dd89b682",
+      "committedAt": "2026-08-16T17:01:23+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "783434cc503327e7bde32c8a516d5b39004221b1",
+      "committedAt": "2026-08-16T17:31:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "feat(lynxtron): add model options menu"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9ce152377fbd5786ee430841ffc88747ae14e24d",
+      "committedAt": "2026-08-16T17:32:26+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify effort and thinking options"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c64ae5f4bd91a6a1ef3c5b348df139793eca73f9",
+      "committedAt": "2026-08-16T17:35:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record model options menu"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c20e2250c5463c0bf1193e89bd47d9da2d382e33",
+      "committedAt": "2026-08-16T17:37:15+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): record model options fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a759d15975ace6f49f46d47403bba7009e1f91ac",
+      "committedAt": "2026-08-16T17:38:54+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2521d30465b3cdf31eea648e07af18a1d389f096",
+      "committedAt": "2026-08-16T17:49:07+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): mute unavailable appearance settings"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "be401c764ae08644d7eaeeef13e11bde03c65e7e",
+      "committedAt": "2026-08-16T17:52:40+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify unavailable settings rows"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ed72b7e0cd8fd2f576628e6450df4efe76ab148c",
+      "committedAt": "2026-08-16T17:55:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): read settings rows by visible copy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3a474fe8820080ca734048ef966617bad2c5f7bb",
+      "committedAt": "2026-08-16T17:57:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): avoid row text separator assumptions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4b691449e87a84bc43661368e1b64f903f5a2604",
+      "committedAt": "2026-08-16T17:59:22+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify appearance row sets"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9fe74b39046837552b53056e06ce95ba3b8d7a1a",
+      "committedAt": "2026-08-16T18:01:51+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record unavailable settings evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "eaefcbf3ac74db80c220b3585ad23c75825e1ae6",
+      "committedAt": "2026-08-16T18:04:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): log unavailable settings proof"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "49590615ac89fc62f1103d5bc62d0be6bb5d804c",
+      "committedAt": "2026-08-16T18:08:22+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "55916098177c41d75e863239635d437848ca6832",
+      "committedAt": "2026-08-16T18:15:29+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): remove model picker modal dim"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5cf49a3a0d3a2acf62e66e8a47d49c7b25a56ed0",
+      "committedAt": "2026-08-16T18:15:54+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify model picker dismiss surface"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "e8c02be245e40004b3dea278b9a53d6290fc9ef2",
+      "committedAt": "2026-08-16T18:19:11+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): accept canonical checkout labels"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "59c22b68bead8cc71839b2d98f03d1356814a3de",
+      "committedAt": "2026-08-16T18:21:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record model picker dismiss evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c718f895550364be4fc21040b638c2898d868012",
+      "committedAt": "2026-08-16T18:23:22+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): log model picker dismiss proof"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2cebe0091f3dd8945f54826b230da10f5a040335",
+      "committedAt": "2026-08-16T18:25:09+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fe533fcb04369168566c59dfc73ed70636b68867",
+      "committedAt": "2026-08-16T18:34:07+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): clear macOS traffic lights"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ea9635e7892cf63f7a4893a581a1bffa3ca5732e",
+      "committedAt": "2026-08-16T18:34:34+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify macOS brand inset"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "316b094f82705d94801c2197f19e00fb70a20677",
+      "committedAt": "2026-08-16T18:37:52+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record titlebar brand geometry"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "884a36d6bfe2e7206ce8da2a2feec42182ea390b",
+      "committedAt": "2026-08-16T18:40:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): log titlebar brand clearance"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "6365ed4b9ffbdb82e51b22e18d8daa77fc673eb4",
+      "committedAt": "2026-08-16T18:41:54+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "93718c3cdfe01df70d956037aaa12c4f11bc0e81",
+      "committedAt": "2026-08-16T18:46:01+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): balance Sidebar thread cards"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0cf615ec46b309099055da9b8f37314e143f5921",
+      "committedAt": "2026-08-16T18:46:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify Sidebar card state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "10d588ff984642e9870f3187745b493fde29bc84",
+      "committedAt": "2026-08-16T18:49:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record Sidebar card state evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5fa4b069112d210d08e909683447d12b99d7f7a9",
+      "committedAt": "2026-08-16T18:51:56+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): log Sidebar card state proof"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5d6724d22fefc07dd83dc329f54a061913316f47",
+      "committedAt": "2026-08-16T18:53:49+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0fbbd1913e3e0b305ee093a11c4539e24ee3a8ea",
+      "committedAt": "2026-08-16T19:07:34+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): smooth the light Composer shadow"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "746930328240e3124074f3882302734b1e03faa8",
+      "committedAt": "2026-08-16T19:08:14+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify light shadow profile"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "bc1fcf664c085b277ab548b48fe5854a05b34f09",
+      "committedAt": "2026-08-16T19:12:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): read shadow bands as a set"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a6d876e9501d53734d45035f320dc68a30b13fc8",
+      "committedAt": "2026-08-16T19:15:12+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): report the full shadow profile"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "cfa143777a758d9208de96ed605fa1422c691b01",
+      "committedAt": "2026-08-16T19:18:05+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record light Composer shadow evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b8a4a10466f90508e37f48c740c3cd2cf2277d9f",
+      "committedAt": "2026-08-16T19:20:21+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): log light Composer shadow proof"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3067e79711d2c52ca27c52fc99fb312b803fbb74",
+      "committedAt": "2026-08-16T19:23:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): fix shadow evidence hash"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "45301ac410431c64a9980b489be0e6ae574cedfe",
+      "committedAt": "2026-08-16T19:25:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "725c45bbbcfb98266ddecea0b19b2e49fd80b445",
+      "committedAt": "2026-08-16T19:35:42+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): align the Files browser with web"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "bdc9c2c801659a507668f58cfe84281e1a067195",
+      "committedAt": "2026-08-16T19:40:32+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify the Native Files browser"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5c54f6ed444d15df139c3b48d85aae768d97f61a",
+      "committedAt": "2026-08-16T19:43:42+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): preserve Files search focus feedback"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1098cfb6fa5f611da92afb46fbe102dcb7d90347",
+      "committedAt": "2026-08-16T19:47:01+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): read Files row corner radii"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "95703e6215d7fd962747496b6af882d7f5530c0f",
+      "committedAt": "2026-08-16T19:50:02+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record Files browser evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b195c37093c21b88184d8c72c99c3a044cb2f98d",
+      "committedAt": "2026-08-16T19:52:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): register Files browser fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5eebd00c8a4fe7da2a3ead789a0d64c780a2a61a",
+      "committedAt": "2026-08-16T19:55:35+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh Files browser fidelity reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "06e443a37f40ea8738f85e7d47f093535014cf0b",
+      "committedAt": "2026-08-16T20:26:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): align Composer trait label shaping"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3b367c8b159b87f1c32b0d1e36ad56dad1c79aa7",
+      "committedAt": "2026-08-16T20:30:10+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify Composer trait tracking"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "09c4412a33ce40843004408cc852df59be053359",
+      "committedAt": "2026-08-16T20:33:16+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): read computed trait tracking"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "10ee818e690bffdc136df6761a7e1a29df26f7b7",
+      "committedAt": "2026-08-16T20:38:03+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record Composer trait shaping evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "666745e0701bcac7519ddad8f0ce37ddb5b62ab5",
+      "committedAt": "2026-08-16T20:41:31+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): add Composer shaping loss impact"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b5171a55078c35476a804df24151793ea3fa94b5",
+      "committedAt": "2026-08-16T20:43:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): register Composer shaping loss"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3cc68282a074965bb1f5649328d7db358aa4c296",
+      "committedAt": "2026-08-16T20:46:09+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh Composer shaping reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "35498df5b6c90b725222ddd16952e8ba394cd073",
+      "committedAt": "2026-08-16T21:03:21+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): match Composer send action material"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "36f0698fa3760c97aae94c6cdb6ad5a7b70f0c66",
+      "committedAt": "2026-08-16T21:06:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify Native send material"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1d13b479f343ef9427fd6c088643959b74bc3304",
+      "committedAt": "2026-08-16T21:10:07+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): gate send fixture on viewport state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c1da083bc3328d1f6f91c8fd4009986aa93450ce",
+      "committedAt": "2026-08-16T21:14:18+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): enable the send material probe"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "32397e3c3a3afb86b50e5499c64152db9ed4d904",
+      "committedAt": "2026-08-16T21:18:17+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): stabilize the send material selector"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9fd24db30a731717d3778887bac115d8a969d5b5",
+      "committedAt": "2026-08-16T21:21:33+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): select an idle send fixture"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1c5b7b266c2a0d8d0e8a73a8885f304bd895d7d5",
+      "committedAt": "2026-08-16T21:26:12+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): tolerate Native alpha quantization"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c2e92045dd37ddc26776cb8c1349256b3492e836",
+      "committedAt": "2026-08-16T21:28:43+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): capture Native send material"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3b64c96043b1cb033b7076a8c3401b2abbf17e35",
+      "committedAt": "2026-08-16T21:33:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record Composer send material evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0425aeb4f8aa72064ef3dcc5a57a63d5f02080fd",
+      "committedAt": "2026-08-16T21:38:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): add Send material loss impact"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "6e1fa3de083f66c9e4a07e20144ac8f03f78982e",
+      "committedAt": "2026-08-16T21:40:20+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): register Composer send material"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fa9bd3dcaa6464c50a202361a819f886f825bce1",
+      "committedAt": "2026-08-16T21:42:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh Composer send reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "d3e35be4e177426e7ff3ccda4a41e2cdc8ff84b4",
+      "committedAt": "2026-08-16T21:54:14+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): align Connections session scopes"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fe09bac1045a193718a16866cbb226c6dccfaf5b",
+      "committedAt": "2026-08-16T22:00:03+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(clients): align Connections reachability policy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "457bdacc90109ea2389e53a70dd7dea5349d084a",
+      "committedAt": "2026-08-16T22:03:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify Connections reachability policy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1d4704a14ca1ba301d359456d39e0f716b0d5e76",
+      "committedAt": "2026-08-16T22:16:23+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): mute unavailable General settings"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8d35ba70b15dad92619e3704d1d02a4825609e86",
+      "committedAt": "2026-08-16T22:20:59+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): identify unavailable background settings"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "f4790df024573f1afffbefb5e4c3d16987391543",
+      "committedAt": "2026-08-16T22:22:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify unavailable General settings"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ea93a520965fc8e6b9af249a348f40454a5899fc",
+      "committedAt": "2026-08-16T22:28:40+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record Settings policy evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b1fa3b77a2310d1a9c565ab42ba987c0b8097528",
+      "committedAt": "2026-08-16T22:31:27+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): register Settings policy evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "bb9bc1b60ae1072fb16da6dc2121f02464182bbe",
+      "committedAt": "2026-08-16T22:34:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh Settings policy reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0615347372b627517a72df2367e695549a69e616",
+      "committedAt": "2026-08-16T22:58:09+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(clients): align fixed network access"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a91190f80c374ea708a5ec49c73b2755d7c13587",
+      "committedAt": "2026-08-16T23:03:13+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): verify fixed network access"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "b38d901baa68667e8ff9bdb2fc7116b504d3240e",
+      "committedAt": "2026-08-16T23:09:36+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record network access evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "530c4827e2a1c372981aa182a703dba2df2d80c5",
+      "committedAt": "2026-08-16T23:13:15+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): register network access loss"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "753be8406a7cce820ad16f6606977f6224fde513",
+      "committedAt": "2026-08-16T23:15:38+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh network access reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "85bcf6eb18c885408c0ccdffced9a78ef81832d5",
+      "committedAt": "2026-08-16T23:24:47+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): stabilize lifecycle fault capture"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5e27a168c5aee3eedb0ae52e56dc9fe7dfc7ef9f",
+      "committedAt": "2026-08-16T23:30:28+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "test(lynxtron): record current lifecycle evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0b7e8211c9426fc0bd5ec025a6d76abef0a2bf02",
+      "committedAt": "2026-08-16T23:32:57+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): register current lifecycle proof"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5b75a62501f7a2afcde1a69574f0910f0f2575f3",
+      "committedAt": "2026-08-16T23:36:06+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "docs(lynxtron): refresh lifecycle reports"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "173724c785f99779e621de922d89dae06e0aebbd",
+      "committedAt": "2026-08-16T23:47:18+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.422802,
+      "smoothedLoss": 0.422802,
+      "subject": "fix(lynxtron): align Settings content origin"
+    },
+    {
+      "allocation": "measured-product-change",
+      "commit": "173724c785f99779e621de922d89dae06e0aebbd",
+      "committedAt": "2026-08-16T23:54:10+09:00",
+      "confidence": 0.99,
+      "delta": -0.000069,
+      "measuredCheckpoint": "settings-shared-content-origin-current",
+      "rawLoss": 0.422733,
+      "smoothedLoss": 0.422787,
+      "subject": "Shared Settings content origin and route reset"
     }
   ],
-  "generatedAt": "2026-08-16T23:29:03+09:00",
+  "generatedAt": "2026-08-16T23:54:10+09:00",
   "historyId": "t3-lynxtron-fidelity-history",
   "model": {
     "clients": {
@@ -83949,6 +87212,512 @@
       ],
       "bestLoss": 0.422802,
       "improvementFromBaseline": 0.560635
+    },
+    {
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "All three before/after Browser pairs use one immutable snapshot, identical authority pixels, state, theme, viewport, and bundles per side. One shared 12px Lynx inset change moves only the candidate content origin, and the Native matrix separately proves route scroll reset."
+      },
+      "commit": "9a169b44bfe12997e68de70d39b38a47cb2054b0",
+      "codeCommit": "173724c785f99779e621de922d89dae06e0aebbd",
+      "codeState": "commit",
+      "id": "settings-shared-content-origin-current",
+      "label": "Shared Settings content origin and route reset",
+      "narrative": "Three independent current-head Settings captures proved one shared renderer loss: Web placed the first section at y=88 while Lynx placed Connections, Beta, and Archive at y=100 despite matching x=320, width=896, copy, and state identity. The Lynx Settings content wrapper used 48px top padding below its 52px topbar; Web resolves to a 36px content inset at this viewport, and Source Control already carried that value as a special case. Lynx now uses the shared 36px inset for every Settings route and removes the special case. Full-frame residual improves from 0.086424 to 0.080882 for Connections, 0.112195 to 0.102458 for Beta, and 0.052284 to 0.047619 for Archive; every first section lands exactly at y=88 with unchanged authority pixels. Native verification then exposed a separate route interaction loss: after scrolling long General content, the shared scroll-view retained its offset and rendered Appearance at y=-37.6. Keying the Settings scroll surface by pathname remounts each route at its own top. A hard-gated exact-bundle matrix verifies General and Source Control first sections at y=88, Appearance Theme at y=132, two repeated General cycles, all eight routes, unavailable opacities, transport, zero renderer errors, and disposed isolated state. This point updates only the measured Lynx geometry and material of Connections, Beta, and Archive; no weights or scope change.",
+      "observedAt": "2026-08-16T23:54:10+09:00",
+      "screenshots": [],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-content-origin-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "899bd3ae16ca341df6023c9ac26f7dd261435f1dfff892916815944f913b3d06"
+        }
+      ],
+      "confidence": 0.587756,
+      "evidenceDebt": 0.412244,
+      "loss": 0.422733,
+      "observedResidual": 0.017846,
+      "byDimension": {
+        "content": {
+          "confidence": 0.826605,
+          "evidenceDebt": 0.173395,
+          "loss": 0.180862,
+          "observedResidual": 0.009033
+        },
+        "geometry": {
+          "confidence": 0.733643,
+          "evidenceDebt": 0.266357,
+          "loss": 0.269871,
+          "observedResidual": 0.00479
+        },
+        "typography": {
+          "confidence": 0.053983,
+          "evidenceDebt": 0.946017,
+          "loss": 0.949819,
+          "observedResidual": 0.070433
+        },
+        "material": {
+          "confidence": 0.404802,
+          "evidenceDebt": 0.595198,
+          "loss": 0.633418,
+          "observedResidual": 0.094417
+        },
+        "interaction": {
+          "confidence": 0.466902,
+          "evidenceDebt": 0.533098,
+          "loss": 0.54251,
+          "observedResidual": 0.020159
+        },
+        "runtime": {
+          "confidence": 0.848174,
+          "evidenceDebt": 0.151826,
+          "loss": 0.156532,
+          "observedResidual": 0.005548
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.60247,
+          "evidenceDebt": 0.39753,
+          "loss": 0.401634,
+          "observedResidual": 0.006811
+        },
+        "composer": {
+          "confidence": 0.59474,
+          "evidenceDebt": 0.40526,
+          "loss": 0.427103,
+          "observedResidual": 0.036727
+        },
+        "transcript": {
+          "confidence": 0.628556,
+          "evidenceDebt": 0.371444,
+          "loss": 0.377607,
+          "observedResidual": 0.009804
+        },
+        "overlays": {
+          "confidence": 0.518379,
+          "evidenceDebt": 0.481621,
+          "loss": 0.489539,
+          "observedResidual": 0.015274
+        },
+        "settings": {
+          "confidence": 0.544371,
+          "evidenceDebt": 0.455629,
+          "loss": 0.470377,
+          "observedResidual": 0.027092
+        },
+        "review": {
+          "confidence": 0.709729,
+          "evidenceDebt": 0.290271,
+          "loss": 0.29825,
+          "observedResidual": 0.011242
+        }
+      },
+      "states": [
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.758964,
+          "observedResidual": 0.104887,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.7364,
+          "observedResidual": 0.021094,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.73336,
+          "observedResidual": 0.009804,
+          "weight": 3
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.658151,
+          "observedResidual": 0.019029,
+          "weight": 4
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.655931,
+          "observedResidual": 0.012658,
+          "weight": 3
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.655907,
+          "observedResidual": 0.012589,
+          "weight": 3
+        },
+        {
+          "confidence": 0.39978,
+          "evidenceDebt": 0.60022,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.653859,
+          "observedResidual": 0.134171,
+          "weight": 5
+        },
+        {
+          "confidence": 0.37038,
+          "evidenceDebt": 0.62962,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.649667,
+          "observedResidual": 0.054125,
+          "weight": 3
+        },
+        {
+          "confidence": 0.43428,
+          "evidenceDebt": 0.56572,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.56572,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.55508,
+          "observedResidual": 0.013656,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.555039,
+          "observedResidual": 0.013566,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.553298,
+          "observedResidual": 0.009705,
+          "weight": 3
+        },
+        {
+          "confidence": 0.48312,
+          "evidenceDebt": 0.51688,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.523425,
+          "observedResidual": 0.013547,
+          "weight": 4
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.417227,
+          "observedResidual": 0.012316,
+          "weight": 3
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 0.414936,
+          "observedResidual": 0.008433,
+          "weight": 4
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.413755,
+          "observedResidual": 0.006432,
+          "weight": 5
+        },
+        {
+          "confidence": 0.61854,
+          "evidenceDebt": 0.38146,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.413369,
+          "observedResidual": 0.051588,
+          "weight": 5
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.413238,
+          "observedResidual": 0.005556,
+          "weight": 4
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 3
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60789,
+          "evidenceDebt": 0.39211,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.397367,
+          "observedResidual": 0.008647,
+          "weight": 4
+        },
+        {
+          "confidence": 0.61794,
+          "evidenceDebt": 0.38206,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.387079,
+          "observedResidual": 0.008122,
+          "weight": 5
+        },
+        {
+          "confidence": 0.61914,
+          "evidenceDebt": 0.38086,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.385521,
+          "observedResidual": 0.007528,
+          "weight": 5
+        },
+        {
+          "confidence": 0.63324,
+          "evidenceDebt": 0.36676,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.372242,
+          "observedResidual": 0.008657,
+          "weight": 5
+        },
+        {
+          "confidence": 0.63612,
+          "evidenceDebt": 0.36388,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.371442,
+          "observedResidual": 0.011887,
+          "weight": 5
+        },
+        {
+          "confidence": 0.63756,
+          "evidenceDebt": 0.36244,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.366677,
+          "observedResidual": 0.006646,
+          "weight": 4
+        },
+        {
+          "confidence": 0.66924,
+          "evidenceDebt": 0.33076,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.339711,
+          "observedResidual": 0.013375,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 0.309936,
+          "observedResidual": 0.026489,
+          "weight": 4
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.304399,
+          "observedResidual": 0.02952,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.298977,
+          "observedResidual": 0.011028,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.298706,
+          "observedResidual": 0.010646,
+          "weight": 3
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.296181,
+          "observedResidual": 0.007083,
+          "weight": 4
+        },
+        {
+          "confidence": 0.73689,
+          "evidenceDebt": 0.26311,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.29451,
+          "observedResidual": 0.042612,
+          "weight": 5
+        },
+        {
+          "confidence": 0.72684,
+          "evidenceDebt": 0.27316,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.279878,
+          "observedResidual": 0.009243,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 0.218094,
+          "observedResidual": 0.007784,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.21661,
+          "observedResidual": 0.005901,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.216522,
+          "observedResidual": 0.005789,
+          "weight": 4
+        },
+        {
+          "confidence": 0.85446,
+          "evidenceDebt": 0.14554,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.158522,
+          "observedResidual": 0.015193,
+          "weight": 5
+        }
+      ],
+      "bestLoss": 0.422733,
+      "improvementFromBaseline": 0.560704
     }
   ],
   "provenance": {
