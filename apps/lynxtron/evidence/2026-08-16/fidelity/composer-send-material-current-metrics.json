@@ -172,6 +172,30 @@
     "rendererErrors": 0,
     "isolatedStateDisposed": true
   },
+  "fidelityImpact": {
+    "milestones": {
+      "before": 118,
+      "after": 119
+    },
+    "fixedStateCount": 40,
+    "totalLoss": {
+      "before": 0.431384,
+      "after": 0.431384,
+      "deltaAtSixDecimals": 0
+    },
+    "evidenceDebt": {
+      "before": 0.420746,
+      "after": 0.420746,
+      "delta": 0
+    },
+    "composerSendable": {
+      "observedResidualBefore": 0.134183,
+      "observedResidualAfter": 0.134171,
+      "stateLossBefore": 0.653864,
+      "stateLossAfter": 0.653859,
+      "weightedStateContributionDelta": -0.000025
+    }
+  },
   "validation": {
     "focusedTests": {
       "product": "25/25",
