@@ -34,6 +34,8 @@ import type {
   ServerSettings,
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
+  SourceControlPublishRepositoryInput,
+  SourceControlPublishRepositoryResult,
   VcsStatusResult,
   RuntimeMode,
   ThreadTurnStartBootstrap,
@@ -813,6 +815,16 @@ function readVcsStatus(cwd: string): Promise<VcsStatusResult | null> {
   return bridge.readVcsStatus({ cwd });
 }
 
+function publishRepository(
+  input: SourceControlPublishRepositoryInput,
+): Promise<SourceControlPublishRepositoryResult> {
+  const bridge = getBridge();
+  if (!bridge?.publishRepository) {
+    return Promise.reject(new Error("Repository publishing is unavailable."));
+  }
+  return bridge.publishRepository(input);
+}
+
 function discoverSourceControl(): Promise<SourceControlDiscoveryResult> {
   const bridge = getBridge();
   if (!bridge?.discoverSourceControl) {
@@ -967,6 +979,7 @@ export const t3ClientActions = {
   interrupt,
   listProjectEntries,
   openInEditor,
+  publishRepository,
   readProjectFile,
   readProjectBranch,
   readVcsStatus,

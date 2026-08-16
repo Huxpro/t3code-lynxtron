@@ -80,6 +80,8 @@ import {
   type ServerSettings,
   type ServerSettingsPatch,
   type SourceControlDiscoveryResult,
+  type SourceControlPublishRepositoryInput,
+  type SourceControlPublishRepositoryResult,
   type TurnId,
   type RuntimeMode,
   type VcsStatusResult,
@@ -917,6 +919,15 @@ export class T3Connector {
   async readVcsStatus(input: { cwd: string }): Promise<VcsStatusResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<VcsStatusResult>(this.client[WS_METHODS.vcsRefreshStatus](input));
+  }
+
+  async publishRepository(
+    input: SourceControlPublishRepositoryInput,
+  ): Promise<SourceControlPublishRepositoryResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<SourceControlPublishRepositoryResult>(
+      this.client[WS_METHODS.sourceControlPublishRepository](input),
+    );
   }
 
   async discoverSourceControl(): Promise<SourceControlDiscoveryResult> {

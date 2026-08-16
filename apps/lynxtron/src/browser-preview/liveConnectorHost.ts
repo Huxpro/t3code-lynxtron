@@ -42,6 +42,8 @@ import {
   type ServerSettings,
   type ServerSettingsPatch,
   type SourceControlDiscoveryResult,
+  type SourceControlPublishRepositoryInput,
+  type SourceControlPublishRepositoryResult,
   type ServerConfigStreamEvent,
   type VcsStatusResult,
 } from "@t3tools/contracts";
@@ -572,6 +574,15 @@ export class LiveConnectorHost {
       const params = request.params as { cwd: string };
       return this.#runClient<VcsStatusResult>(
         this.#client[WS_METHODS.vcsRefreshStatus]({ cwd: params.cwd }),
+      ).then((value) => {
+        this.diagnostics.lastCommandResult = { method: request.method, value };
+        return value;
+      });
+    }
+    if (request.method === "publishRepository") {
+      const params = request.params as SourceControlPublishRepositoryInput;
+      return this.#runClient<SourceControlPublishRepositoryResult>(
+        this.#client[WS_METHODS.sourceControlPublishRepository](params),
       ).then((value) => {
         this.diagnostics.lastCommandResult = { method: request.method, value };
         return value;
