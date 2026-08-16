@@ -271,6 +271,28 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "headerGitAction: {");
   });
 
+  it("opens and dismisses the Publish dialog through real pointer input", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, "function readGitPublishDialog");
+    assert.include(workbench, "\"[data-git-publish-dialog='true']\"");
+    assert.include(workbench, '"[data-git-publish-step-label]"');
+    assert.include(workbench, '"[data-git-publish-provider]"');
+    assert.include(source, 'const isGitPublishDialogState = stateId === "git-publish-dialog"');
+    assert.include(source, "function gitPublishDialogMatches");
+    assert.include(source, "webGitPublishInputSent");
+    assert.include(source, "lynxGitPublishInputSent");
+    assert.include(source, "await dispatchPointerClick(cdp, sessionId, publishPoints.web)");
+    assert.include(source, "await dispatchPointerClick(cdp, sessionId, publishPoints.lynx)");
+    assert.include(source, "await dispatchPointerClick(cdp, sessionId, dismissPoints.web)");
+    assert.include(source, "await dispatchPointerClick(cdp, sessionId, dismissPoints.lynx)");
+    assert.include(source, "gitPublishDismissed = true");
+    assert.include(source, "finalGitPublishDialogReady");
+    assert.include(source, "gitPublishDialog: {");
+  });
+
   it("hashes the Web entry bundle declared by index.html", () => {
     assert.include(source, "async function webEntryBundlePath");
     assert.include(source, "type=[\"']module[\"']");

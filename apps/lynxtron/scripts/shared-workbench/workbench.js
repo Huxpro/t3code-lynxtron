@@ -227,6 +227,34 @@ function readHeaderActionItems(elements, ids = []) {
   }));
 }
 
+function readGitPublishDialog(root) {
+  const dialog = root?.querySelector("[data-git-publish-dialog='true']") ?? null;
+  if (!dialog) return null;
+  return {
+    rect: readElementBox(dialog),
+    title: readComposedText(dialog.querySelector("[data-slot='dialog-title'], .git-publish-title")),
+    description: readComposedText(
+      dialog.querySelector("[data-slot='dialog-description'], .git-publish-description"),
+    ),
+    steps: [...dialog.querySelectorAll("[data-git-publish-step-label]")].map((step) => ({
+      label: step.getAttribute("data-git-publish-step-label"),
+      state: step.getAttribute("data-git-publish-step-state"),
+      rect: readElementBox(step),
+    })),
+    providers: [...dialog.querySelectorAll("[data-git-publish-provider]")].map((provider) => ({
+      kind: provider.getAttribute("data-git-publish-provider"),
+      ready: provider.getAttribute("data-git-publish-provider-ready") === "true",
+      text: readComposedText(provider),
+      rect: readElementBox(provider),
+    })),
+    dismiss: readElementBox(
+      root.querySelector(
+        "[data-slot='dialog-backdrop'], [aria-label='Dismiss Publish repository']",
+      ),
+    ),
+  };
+}
+
 function readComposedText(element) {
   if (!element) return "";
   const text = [];
@@ -1076,6 +1104,7 @@ function readLynxPane() {
         actions: readElementBox(root?.querySelector("[data-chat-header-actions]")),
         actionItems: readHeaderActionItems(root?.querySelectorAll("[data-header-action]") ?? []),
       },
+      gitPublishDialog: readGitPublishDialog(root),
       reviewMetrics: readReviewMetrics(root),
       pendingRequestMetrics,
       settingsMetrics: settingsRoute
@@ -1749,6 +1778,7 @@ function readWebPane() {
           "commit",
         ]),
       },
+      gitPublishDialog: readGitPublishDialog(doc),
       reviewMetrics: readReviewMetrics(doc),
       pendingRequestMetrics: readPendingRequestMetrics(doc),
       sidebarDiagnostics: {

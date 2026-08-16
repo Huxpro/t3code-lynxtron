@@ -116,6 +116,7 @@ if (
 }
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
+const isGitPublishDialogState = stateId === "git-publish-dialog";
 const composerExpectationByStateId = {
   "composer-hero": {
     layout: "hero",
@@ -667,6 +668,23 @@ function headerGitActionMatches(state) {
   );
 }
 
+function gitPublishDialogMatches(state) {
+  if (!isGitPublishDialogState) return true;
+  const web = state?.web?.gitPublishDialog;
+  const lynx = state?.lynx?.gitPublishDialog;
+  return (
+    web?.title === "Publish repository" &&
+    lynx?.title === web.title &&
+    lynx?.description === web.description &&
+    JSON.stringify(web?.steps?.map(({ label, state: stepState }) => [label, stepState])) ===
+      JSON.stringify(lynx?.steps?.map(({ label, state: stepState }) => [label, stepState])) &&
+    JSON.stringify(web?.providers?.map(({ kind, ready }) => [kind, ready])) ===
+      JSON.stringify(lynx?.providers?.map(({ kind, ready }) => [kind, ready])) &&
+    web?.dismiss !== null &&
+    lynx?.dismiss !== null
+  );
+}
+
 async function dispatchPointerClick(cdp, sessionId, point) {
   await cdp.send(
     "Input.dispatchMouseEvent",
@@ -1184,6 +1202,7 @@ async function main() {
     "existing-thread-failed",
     "existing-thread-approval",
     "existing-thread-question",
+    "git-publish-dialog",
     "composer-docked",
     "composer-working",
     "composer-connecting",
@@ -1568,6 +1587,7 @@ async function captureCell({
     "new-thread-hero-light": "new-thread",
     "existing-thread-idle": "existing-thread",
     "existing-thread-working": "existing-thread",
+    "git-publish-dialog": "existing-thread",
     "existing-thread-completed": "existing-thread",
     "existing-thread-failed": "existing-thread",
     "project-scope-open": "project-scope-open",
@@ -1683,6 +1703,11 @@ async function captureCell({
   let lynxChangedFilesInputSent = changedFilesTargetState.length === 0;
   let webChangedFilesClickCount = 0;
   let lynxChangedFilesClickCount = 0;
+  let webGitPublishInputSent = !isGitPublishDialogState;
+  let lynxGitPublishInputSent = !isGitPublishDialogState;
+  let gitPublishDismissed = !isGitPublishDialogState;
+  const gitPublishPostconditionTimeline = [];
+  let lastGitPublishTimelineKey = "";
   const reviewInteractionTimeline = [];
   let lastReviewTimelineKey = "";
   let ownedServerTerminated = false;
@@ -1698,6 +1723,66 @@ async function captureCell({
     }
     if (expectThread && state?.lynx?.productState?.selectedThread === expectThread) {
       lynxThreadInputSent = true;
+    }
+    if (isGitPublishDialogState) {
+      const timelineKey = JSON.stringify({
+        webDialog: state?.web?.gitPublishDialog !== null,
+        lynxDialog: state?.lynx?.gitPublishDialog !== null,
+        lynxProviderCount: state?.lynx?.gitPublishDialog?.providers?.length ?? 0,
+        lynxLastCommand: state?.lynx?.connectorDiagnostics?.lastCommandResult?.method ?? null,
+      });
+      if (timelineKey !== lastGitPublishTimelineKey) {
+        gitPublishPostconditionTimeline.push({
+          elapsedMs: Date.now() - readyStart,
+          ...JSON.parse(timelineKey),
+        });
+        lastGitPublishTimelineKey = timelineKey;
+      }
+    }
+    if (
+      isGitPublishDialogState &&
+      threadReadyForReview(state, expectThread) &&
+      headerGitActionMatches(state) &&
+      (!webGitPublishInputSent || !lynxGitPublishInputSent)
+    ) {
+      const publishPoints = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pointFor = (frameId, shadow) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const target = root?.querySelector(
+              '[data-git-quick-action-kind="open_publish"] [data-header-action-part="primary"], ' +
+              '[data-git-quick-action-kind="open_publish"] button'
+            );
+            if (!frame || !target) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
+            return {
+              x: frameRect.x + rect.x + rect.width / 2,
+              y: frameRect.y + rect.y + rect.height / 2,
+            };
+          };
+          return {
+            web: pointFor('web-pane', false),
+            lynx: pointFor('lynx-pane', true),
+          };
+        })()`,
+      ).catch(() => null);
+      if (!webGitPublishInputSent && publishPoints?.web) {
+        await dispatchPointerClick(cdp, sessionId, publishPoints.web);
+        webGitPublishInputSent = true;
+        await delay(100);
+        continue;
+      }
+      if (!lynxGitPublishInputSent && publishPoints?.lynx) {
+        await dispatchPointerClick(cdp, sessionId, publishPoints.lynx);
+        lynxGitPublishInputSent = true;
+        await delay(100);
+        continue;
+      }
     }
     if (expandTurnId && threadReadyForReview(state, expectThread)) {
       const webTurnFold = state?.web?.timelineMetrics?.turnFolds?.find(
@@ -2918,6 +3003,7 @@ async function captureCell({
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const headerGitActionReady = headerGitActionMatches(state);
+    const gitPublishDialogReady = gitPublishDialogMatches(state);
     const shortcutInputReady =
       !requiresShortcutInput ||
       (webOverlayInputSent &&
@@ -2977,6 +3063,7 @@ async function captureCell({
       sessionProjectionReady &&
       stageIdentityReady &&
       headerGitActionReady &&
+      gitPublishDialogReady &&
       shortcutInputReady &&
       sidebarSearchReady &&
       sidebarStateReady &&
@@ -3157,6 +3244,7 @@ async function captureCell({
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalHeaderGitActionReady = headerGitActionMatches(state);
+  const finalGitPublishDialogReady = gitPublishDialogMatches(state);
   const finalReviewReady =
     reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
     sidebarDiffPairMatches(
@@ -3499,6 +3587,57 @@ async function captureCell({
     diff = dff.ok ? path.relative(repoRoot, diffPath) : { error: dff.reason };
   }
 
+  if (isGitPublishDialogState && finalGitPublishDialogReady) {
+    const dismissPoints = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId, shadow) => {
+          const frame = document.getElementById(frameId);
+          const doc = frame?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const target = root?.querySelector(
+            '[data-slot="dialog-backdrop"], [aria-label="Dismiss Publish repository"]'
+          );
+          if (!frame || !target) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
+          return {
+            x: frameRect.x + rect.x + 8,
+            y: frameRect.y + rect.y + 8,
+          };
+        };
+        return {
+          web: pointFor('web-pane', false),
+          lynx: pointFor('lynx-pane', true),
+        };
+      })()`,
+    ).catch(() => null);
+    if (dismissPoints?.web) await dispatchPointerClick(cdp, sessionId, dismissPoints.web);
+    if (dismissPoints?.lynx) await dispatchPointerClick(cdp, sessionId, dismissPoints.lynx);
+    const dismissDeadline = Date.now() + 3_000;
+    while (Date.now() < dismissDeadline) {
+      const dismissed = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const web = document.getElementById('web-pane')?.contentWindow?.document;
+          const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+            ?.getElementById('t3-lynx-preview')?.shadowRoot;
+          return {
+            web: !web?.querySelector('[data-git-publish-dialog="true"]'),
+            lynx: !lynx?.querySelector('[data-git-publish-dialog="true"]'),
+          };
+        })()`,
+      ).catch(() => null);
+      if (dismissed?.web && dismissed?.lynx) {
+        gitPublishDismissed = true;
+        break;
+      }
+      await delay(100);
+    }
+  }
+
   await browserCdp.send("Target.closeTarget", { targetId }).catch(() => undefined);
 
   // Shared-server identity gate: both panes rendered the seeded project.
@@ -3536,6 +3675,8 @@ async function captureCell({
     finalSessionProjectionReady &&
     finalStageIdentityReady &&
     finalHeaderGitActionReady &&
+    finalGitPublishDialogReady &&
+    gitPublishDismissed &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
     finalSettingsGeometryReady &&
@@ -3560,6 +3701,8 @@ async function captureCell({
       finalSessionProjectionReady,
       finalStageIdentityReady,
       finalHeaderGitActionReady,
+      finalGitPublishDialogReady,
+      gitPublishDismissed,
       finalReviewReady,
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
@@ -3586,6 +3729,7 @@ async function captureCell({
           overlayMetrics: state?.web?.overlayMetrics ?? null,
           sidebarDiagnostics: state?.web?.sidebarDiagnostics ?? null,
           headerMetrics: state?.web?.headerMetrics ?? null,
+          gitPublishDialog: state?.web?.gitPublishDialog ?? null,
           composerMetrics: state?.web?.composerMetrics ?? null,
           timelineMetrics: state?.web?.timelineMetrics ?? null,
           reviewMetrics: state?.web?.reviewMetrics ?? null,
@@ -3609,6 +3753,7 @@ async function captureCell({
           overlayMetrics: state?.lynx?.overlayMetrics ?? null,
           sidebarDiagnostics: state?.lynx?.sidebarDiagnostics ?? null,
           headerMetrics: state?.lynx?.headerMetrics ?? null,
+          gitPublishDialog: state?.lynx?.gitPublishDialog ?? null,
           composerMetrics: state?.lynx?.composerMetrics ?? null,
           timelineMetrics: state?.lynx?.timelineMetrics ?? null,
           reviewMetrics: state?.lynx?.reviewMetrics ?? null,
@@ -3684,6 +3829,17 @@ async function captureCell({
             ({ method }) => method === "readVcsStatus",
           ),
         ),
+      },
+      gitPublishDialog: {
+        match: finalGitPublishDialogReady,
+        openedBy: isGitPublishDialogState ? "web-cdp-pointer|lynx-cdp-pointer" : "not-required",
+        dismissedBy: isGitPublishDialogState
+          ? "web-backdrop-cdp-pointer|lynx-backdrop-cdp-pointer"
+          : "not-required",
+        dismissed: gitPublishDismissed,
+        postconditionTimeline: gitPublishPostconditionTimeline,
+        web: state?.web?.gitPublishDialog ?? null,
+        lynx: state?.lynx?.gitPublishDialog ?? null,
       },
       expectProject,
       webState,
