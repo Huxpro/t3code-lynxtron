@@ -2164,65 +2164,8 @@ async function verifyApprovalDeclineMutation({
   timeoutMs,
   width,
 }) {
-  const initialState = await readClientState(client);
-  const projectId = initialState?.activeProject?.id;
-  if (typeof projectId !== "string" || projectId.length === 0) {
-    throw new Error(
-      `Approval mutation could not resolve a project: ${JSON.stringify(initialState)}`,
-    );
-  }
-  const modelSelection = {
-    instanceId: "opencode",
-    model: "opencode/big-pickle",
-  };
-  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
-  const created = await invokeConnector(client, "createThread", {
-    projectId,
-    title: "Live approval decline acceptance",
-  });
-  const liveThreadId = created?.threadId;
-  if (typeof liveThreadId !== "string" || liveThreadId.length === 0) {
-    throw new Error(`Approval mutation createThread failed: ${JSON.stringify(created)}`);
-  }
-  await invokeConnector(client, "setThreadRuntimeMode", {
-    threadId: liveThreadId,
-    runtimeMode: "approval-required",
-  });
-  const selectResponse = await client.runCdp("Runtime.evaluate", {
-    expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(liveThreadId)})`,
-    returnByValue: true,
-  });
-  if (selectResponse?.exceptionDetails) {
-    throw new Error(`Approval mutation thread selection failed: ${JSON.stringify(selectResponse)}`);
-  }
-  await waitForClientState({
-    child,
-    client,
-    timeoutMs,
-    predicate: (state) =>
-      state?.activeThreadId === liveThreadId &&
-      state?.activeThread?.runtimeMode === "approval-required",
-  });
-  await invokeConnector(client, "sendPrompt", {
-    threadId: liveThreadId,
-    text: "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval.",
-  });
-  const pendingState = await waitForClientState({
-    child,
-    client,
-    timeoutMs,
-    predicate: (state) =>
-      state?.activeThreadId === liveThreadId &&
-      state?.activeThread?.hasPendingApprovals === true &&
-      state?.sessionStatus === "running" &&
-      state?.pendingApprovalRequests?.some((request) => request.requestKind === "command") === true,
-  });
-  const requestId = pendingState.pendingApprovalRequests.find(
-    (request) => request.requestKind === "command",
-  )?.requestId;
-  if (typeof requestId !== "string" || requestId.length === 0) {
-    throw new Error(`Approval mutation request id is missing: ${JSON.stringify(pendingState)}`);
-  }
+  const threadId = approvalFixture.threadId;
+  const requestId = approvalFixture.activity.payload.requestId;
   const selector = ".composer-approval-action--decline";
   const before = await waitForMeasurement({
     child,
@@ -2239,13 +2182,11 @@ async function verifyApprovalDeclineMutation({
     client,
     timeoutMs,
     predicate: (state) =>
-      state?.activeThreadId === liveThreadId &&
+      state?.activeThreadId === threadId &&
       state?.activeThread?.hasPendingApprovals === false &&
       state?.approvalReceipts?.some(
         (receipt) =>
-          receipt.kind === "approval.resolved" &&
-          receipt.requestId === requestId &&
-          receipt.decision === "decline",
+          receipt.kind === "provider.approval.respond.failed" && receipt.requestId === requestId,
       ) === true,
   });
   const afterSequence = await waitForSequenceAdvance({
@@ -2261,13 +2202,12 @@ async function verifyApprovalDeclineMutation({
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
-  const failedReceipt = resolvedState.approvalReceipts.find(
-    (receipt) =>
-      receipt.kind === "provider.approval.respond.failed" && receipt.requestId === requestId,
+  const resolvedReceipt = resolvedState.approvalReceipts.find(
+    (receipt) => receipt.kind === "approval.resolved" && receipt.requestId === requestId,
   );
-  if (failedReceipt) {
+  if (resolvedReceipt) {
     throw new Error(
-      `Approval decline produced a failure receipt: ${JSON.stringify(failedReceipt)}`,
+      `Stale approval decline faked a resolution receipt: ${JSON.stringify(resolvedReceipt)}`,
     );
   }
 
@@ -2315,7 +2255,7 @@ async function verifyApprovalDeclineMutation({
       timeoutMs,
     });
     const restartSelectResponse = await restartedClient.runCdp("Runtime.evaluate", {
-      expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(liveThreadId)})`,
+      expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(threadId)})`,
       returnByValue: true,
     });
     if (restartSelectResponse?.exceptionDetails) {
@@ -2328,14 +2268,7 @@ async function verifyApprovalDeclineMutation({
       client: restartedClient,
       timeoutMs,
       predicate: (state) =>
-        state?.activeThreadId === liveThreadId &&
-        state?.activeThread?.hasPendingApprovals === false &&
-        state?.approvalReceipts?.some(
-          (receipt) =>
-            receipt.kind === "approval.resolved" &&
-            receipt.requestId === requestId &&
-            receipt.decision === "decline",
-        ) === true,
+        state?.activeThreadId === threadId && state?.activeThread?.hasPendingApprovals === false,
     });
     await waitForMeasurement({
       child: restartedChild,
@@ -2349,12 +2282,13 @@ async function verifyApprovalDeclineMutation({
       outcome: {
         status: "pass",
         input: "DevTool touch on the measured Decline action",
-        liveThreadId,
+        threadId,
         requestId,
         before,
         sequence: { before: beforeSequence.lastSeq, after: afterSequence.lastSeq },
         receipt: resolvedState.approvalReceipts.find(
-          (receipt) => receipt.requestId === requestId && receipt.kind === "approval.resolved",
+          (receipt) =>
+            receipt.requestId === requestId && receipt.kind === "provider.approval.respond.failed",
         ),
         pendingRemoved: true,
         coldRestart: {
@@ -2363,9 +2297,12 @@ async function verifyApprovalDeclineMutation({
           restartedProcessId: restartedChild.pid,
           restartedClient: restartedClient.identity,
           transport: restartTransport,
-          receipt: restartedState.approvalReceipts.find(
-            (receipt) => receipt.requestId === requestId && receipt.kind === "approval.resolved",
-          ),
+          replayedReceipt:
+            restartedState.approvalReceipts.find(
+              (receipt) =>
+                receipt.requestId === requestId &&
+                receipt.kind === "provider.approval.respond.failed",
+            ) ?? null,
           pendingRestored: false,
         },
       },

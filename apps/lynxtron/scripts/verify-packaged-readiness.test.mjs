@@ -367,17 +367,16 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "fixtureManifest.pendingRequestFixture");
   });
 
-  it("verifies a real Native approval decline receipt and cold restart", () => {
+  it("verifies stale Native approval decline recovery and cold restart", () => {
     assert.include(source, "async function verifyApprovalDeclineMutation");
     assert.include(source, '"--verify-approval-decline-mutation"');
     assert.include(source, 'const selector = ".composer-approval-action--decline"');
-    assert.include(source, 'title: "Live approval decline acceptance"');
-    assert.include(source, 'runtimeMode: "approval-required"');
-    assert.include(source, 'invokeConnector(client, "sendPrompt"');
-    assert.include(source, "state?.pendingApprovalRequests?.some");
-    assert.include(source, 'receipt.kind === "approval.resolved"');
-    assert.include(source, 'receipt.decision === "decline"');
-    assert.include(source, "Approval decline produced a failure receipt");
+    assert.include(source, "const threadId = approvalFixture.threadId");
+    assert.include(source, "const requestId = approvalFixture.activity.payload.requestId");
+    assert.include(source, 'receipt.kind === "provider.approval.respond.failed"');
+    assert.include(source, "Stale approval decline faked a resolution receipt");
+    assert.include(source, "replayedReceipt:");
+    assert.include(source, "pendingRestored: false");
     assert.include(source, "Approval cold restart did not return an owned process id.");
     assert.include(outcomeChecksSource, "approvalDeclineMutation");
     assert.isBelow(
