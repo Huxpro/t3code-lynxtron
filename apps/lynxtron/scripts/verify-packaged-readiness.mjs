@@ -684,6 +684,25 @@ async function readSelectorStyleValues(client, selector, property) {
   );
 }
 
+async function readFirstSelectorStyleValue(client, selector, property) {
+  await client.runCdp("DOM.enable", { useCompression: false });
+  const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
+  const root = commandResult(documentResponse)?.root;
+  const rootNodeId = root?.children?.[0]?.nodeId ?? root?.nodeId;
+  if (!Number.isInteger(rootNodeId) || rootNodeId <= 0) {
+    throw new Error("Lynx DevTool did not return a DOM root node.");
+  }
+  const nodeResponse = await client.runCdp("DOM.querySelector", {
+    nodeId: rootNodeId,
+    selector,
+  });
+  const nodeId = commandResult(nodeResponse)?.nodeId;
+  if (!Number.isInteger(nodeId) || nodeId <= 0) return null;
+  const styleResponse = await client.runCdp("CSS.getComputedStyleForNode", { nodeId });
+  const computedStyle = commandResult(styleResponse)?.computedStyle ?? [];
+  return computedStyle.find((entry) => entry.name === property)?.value ?? null;
+}
+
 async function readSelectorAttributeMeasurement(client, { attribute, selector, value }) {
   await client.runCdp("DOM.enable", { useCompression: false });
   const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
@@ -3690,6 +3709,156 @@ async function verifyShellInteractions({ child, client, timeoutMs }) {
   };
 }
 
+async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, timeoutMs }) {
+  if ((await readOptionalMeasurement(client, ".right-panel")) !== null) {
+    await tapSelector({
+      child,
+      client,
+      selector: ".right-panel__layout-control--close",
+      timeoutMs,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+  }
+  await tapSelector({
+    child,
+    client,
+    selector: ".topbar__toggle--terminal",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-right-panel-active-kind"] === "terminal",
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".right-panel__add-btn",
+    timeoutMs,
+  });
+  await waitForSelectorAttributeMeasurement({
+    attribute: "data-right-panel-add-kind",
+    child,
+    client,
+    selector: ".right-panel__add-item",
+    timeoutMs,
+    value: "files",
+  });
+  await tapSelectorByAttribute({
+    attribute: "data-right-panel-add-kind",
+    child,
+    client,
+    selector: ".right-panel__add-item",
+    timeoutMs,
+    value: "files",
+  });
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-right-panel-active-kind"] === "files",
+  });
+  const toolbar = await waitForMeasurement({
+    child,
+    client,
+    selector: ".files-panel__toolbar",
+    timeoutMs,
+    predicate: (measurement) => Math.abs((measurement?.rect.height ?? 0) - 40) <= 0.5,
+  });
+  const refresh = await waitForMeasurement({
+    child,
+    client,
+    selector: ".files-panel__refresh",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["aria-label"] === "Refresh workspace files" &&
+      Math.abs((measurement?.rect.width ?? 0) - 28) <= 0.5 &&
+      Math.abs((measurement?.rect.height ?? 0) - 28) <= 0.5,
+  });
+  const search = await waitForMeasurement({
+    child,
+    client,
+    selector: ".files-panel__search-input",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes.placeholder === "Search files" &&
+      Math.abs((measurement?.rect.height ?? 0) - 28) <= 0.5,
+  });
+  const browser = await waitForMeasurement({
+    child,
+    client,
+    selector: ".files-panel__browser",
+    timeoutMs,
+    predicate: (measurement) => (measurement?.rect.height ?? 0) > 0,
+  });
+  const row = await waitForMeasurement({
+    child,
+    client,
+    selector: ".files-panel .file-tree-row",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.trim().length > 0 && Math.abs((measurement?.rect.height ?? 0) - 24) <= 0.5,
+  });
+  const [rowRadius, rowFontFamily, rowFontSize] = await Promise.all([
+    readFirstSelectorStyleValue(client, ".files-panel .file-tree-row", "border-radius"),
+    readFirstSelectorStyleValue(client, ".files-panel .file-tree-row__name", "font-family"),
+    readFirstSelectorStyleValue(client, ".files-panel .file-tree-row__name", "font-size"),
+  ]);
+  if (
+    rowRadius !== "5px" ||
+    rowFontSize !== "12px" ||
+    typeof rowFontFamily !== "string" ||
+    rowFontFamily.length === 0
+  ) {
+    throw new Error(
+      `Native Files row styling drifted: ${JSON.stringify({
+        rowRadius,
+        rowFontFamily,
+        rowFontSize,
+      })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-files-browser.png",
+  });
+
+  return {
+    status: "pass",
+    input: "DevTool touch on the measured right-panel controls; search typing pending-user-session",
+    panel: panel.rect,
+    toolbar: toolbar.rect,
+    refresh: refresh.rect,
+    search: {
+      rect: search.rect,
+      placeholder: search.attributes.placeholder,
+      filtering: "source-contract",
+      typing: "pending-user-session",
+    },
+    browser: browser.rect,
+    firstVisibleRow: {
+      rect: row.rect,
+      text: row.text,
+      borderRadius: rowRadius,
+      fontFamily: rowFontFamily,
+      fontSize: rowFontSize,
+    },
+    screenshot,
+  };
+}
+
 async function verifyGitPublishDialog({ child, client, timeoutMs }) {
   let headerAction;
   try {
@@ -5445,6 +5614,7 @@ async function runOnce({
   verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
+  verifyFilesBrowser: shouldVerifyFilesBrowser,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyBetaMutation: shouldVerifyBetaMutation,
   verifyArchiveMutation: shouldVerifyArchiveMutation,
@@ -5790,6 +5960,15 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const filesBrowser = shouldVerifyFilesBrowser
+      ? await verifyFilesBrowser({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
     const gitPublishDialog = shouldVerifyGitPublishDialog
       ? await verifyGitPublishDialog({
           child,
@@ -5905,6 +6084,7 @@ async function runOnce({
       reviewDiffState,
       reviewCheckpointStates,
       shellInteractions,
+      filesBrowser,
       gitPublishDialog,
       betaMutation,
       archiveMutation,
@@ -5949,6 +6129,7 @@ async function runOnce({
       reviewDiffState,
       reviewCheckpointStates,
       shellInteractions,
+      filesBrowser,
       gitPublishDialog,
       betaMutation,
       archiveMutation,
@@ -6027,6 +6208,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
   "--verify-review-checkpoint-states",
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
+const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
 const shouldVerifyArchiveMutation = process.argv.includes("--verify-archive-mutation");
@@ -6260,6 +6442,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
+      verifyFilesBrowser: shouldVerifyFilesBrowser,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyBetaMutation: shouldVerifyBetaMutation,
       verifyArchiveMutation: shouldVerifyArchiveMutation,

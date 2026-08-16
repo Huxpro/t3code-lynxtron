@@ -102,6 +102,7 @@ describe("desktop shell interaction contract", () => {
 
   it("matches the compact Files browser anatomy and keeps search functional", () => {
     const files = componentSource("FilesPanel.tsx");
+    const panel = componentSource("RightPanel.tsx");
 
     expect(files).toContain('className="files-panel__toolbar" data-surface-subheader');
     expect(files).toContain('aria-label="Refresh workspace files"');
@@ -116,6 +117,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".files-panel .file-tree-row {");
     expect(overrides).toContain("min-height: 24px;");
     expect(overrides).toContain("border-radius: 5px;");
+    expect(panel).toContain("data-right-panel-add-kind={item.kind}");
   });
 
   it("projects and opens the real repository Publish flow", () => {

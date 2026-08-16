@@ -248,6 +248,7 @@ export function RightPanel({
                 <view
                   key={item.kind}
                   className={`right-panel__add-item${item.disabled ? " right-panel__add-item--disabled" : ""}`}
+                  data-right-panel-add-kind={item.kind}
                   {...(item.disabled
                     ? {}
                     : {

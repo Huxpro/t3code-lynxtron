@@ -161,6 +161,27 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar action menu rows collapsed");
   });
 
+  it("verifies the compact Native Files browser without overstating keyboard evidence", () => {
+    assert.include(source, "async function verifyFilesBrowser");
+    assert.include(source, '"--verify-files-browser"');
+    assert.include(source, 'attribute: "data-right-panel-add-kind"');
+    assert.include(source, 'value: "files"');
+    assert.include(source, 'selector: ".files-panel__toolbar"');
+    assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 40) <= 0.5");
+    assert.include(source, 'selector: ".files-panel__refresh"');
+    assert.include(source, 'selector: ".files-panel__search-input"');
+    assert.include(source, 'measurement?.attributes.placeholder === "Search files"');
+    assert.include(source, 'selector: ".files-panel__browser"');
+    assert.include(source, 'selector: ".files-panel .file-tree-row"');
+    assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 24) <= 0.5");
+    assert.include(source, '"border-radius"');
+    assert.include(source, 'rowRadius !== "5px"');
+    assert.include(source, 'rowFontSize !== "12px"');
+    assert.include(source, 'typing: "pending-user-session"');
+    assert.include(source, 'name: "native-files-browser.png"');
+    assert.include(outcomeChecksSource, "filesBrowser");
+  });
+
   it("verifies the Native Publish wizard and backdrop dismissal", () => {
     assert.include(source, "async function verifyGitPublishDialog");
     assert.include(source, '"--verify-git-publish-dialog"');
