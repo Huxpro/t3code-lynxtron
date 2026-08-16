@@ -121,8 +121,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("flex-shrink: 0;");
   });
 
-  it("releases the authority brand position at responsive viewports", () => {
-    expect(overrides).toContain(".sidebar-brand-host {\n  position: absolute;\n  left: 130px;");
+  it("keeps the authority brand on the shared titlebar inset", () => {
+    expect(overrides).toContain(".sidebar-brand-host {\n  position: absolute;\n  left: 60px;");
     expect(overrides).toContain(".viewport-responsive .sidebar-brand-host {\n  left: 60px;\n}");
   });
 
