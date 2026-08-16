@@ -4758,39 +4758,44 @@ async function verifySettingsRouteBehavior({
         client,
         ".settings-content--appearance .settings-row",
       );
-      const theme = rows.find((row) =>
-        row.text.includes("Choose how T3 Code looks across the app."),
-      );
-      if (
-        !theme ||
-        theme.attributes["aria-disabled"] === "true" ||
-        theme.attributes["data-settings-unavailable"] === "true"
-      ) {
-        throw new Error(`Appearance Theme row is not available: ${JSON.stringify(theme)}`);
-      }
-      const unavailableRows = [];
-      for (const title of [
+      const unavailableTitles = [
         "Glass opacity",
         ...(appearancePanel.text.includes("Environment identification")
           ? ["Environment identification"]
           : []),
         "Word wrap",
-      ]) {
-        const row = rows.find(
-          (candidate) =>
-            candidate.attributes["data-settings-unavailable"] === "true" &&
-            candidate.text.includes(title),
+      ];
+      const unavailableRows = rows.filter(
+        (row) => row.attributes["data-settings-unavailable"] === "true",
+      );
+      const availableRows = rows.filter(
+        (row) => row.attributes["data-settings-unavailable"] !== "true",
+      );
+      const [theme] = availableRows;
+      if (
+        rows.length !== unavailableTitles.length + 1 ||
+        availableRows.length !== 1 ||
+        theme.attributes["aria-disabled"] === "true" ||
+        theme.attributes["data-settings-unavailable"] === "true"
+      ) {
+        throw new Error(
+          `Appearance row availability is inconsistent: ${JSON.stringify({
+            availableRows,
+            rows,
+            unavailableTitles,
+          })}`,
         );
-        if (
-          !row ||
-          row.attributes["aria-disabled"] !== "true" ||
-          row.attributes["data-settings-unavailable"] !== "true"
-        ) {
-          throw new Error(
-            `Appearance unavailable row lost disabled semantics: ${JSON.stringify({ title, row })}`,
-          );
-        }
-        unavailableRows.push(row);
+      }
+      if (
+        unavailableRows.length !== unavailableTitles.length ||
+        unavailableRows.some((row) => row.attributes["aria-disabled"] !== "true")
+      ) {
+        throw new Error(
+          `Appearance unavailable rows lost disabled semantics: ${JSON.stringify({
+            unavailableRows,
+            unavailableTitles,
+          })}`,
+        );
       }
       const unavailableOpacities = await readSelectorStyleValues(
         client,
