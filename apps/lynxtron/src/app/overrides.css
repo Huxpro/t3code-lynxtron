@@ -4784,6 +4784,7 @@
 }
 .settings-row__desc {
   color: var(--muted-foreground-80);
+  max-width: 576px;
   font-size: var(--settings-row-description-font-size);
   line-height: var(--settings-row-description-line-height);
   font-family: var(--font-sans);
