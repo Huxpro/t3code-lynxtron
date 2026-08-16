@@ -11,10 +11,14 @@ import { Icon } from "./Icon";
 export { SettingsRow, SettingsSection };
 
 export function Toggle({
+  ariaLabel,
+  settingControl,
   value,
   onChange,
   disabled = false,
 }: {
+  ariaLabel?: string;
+  settingControl?: string;
   value: boolean;
   onChange?: (v: boolean) => void;
   disabled?: boolean;
@@ -22,7 +26,16 @@ export function Toggle({
   const handleTap = useCallback(() => {
     if (!disabled) onChange?.(!value);
   }, [disabled, value, onChange]);
-  return <Switch checked={value} disabled={disabled} onCheckedChange={handleTap} />;
+  return (
+    <Switch
+      aria-label={ariaLabel}
+      checked={value}
+      className={settingControl ? `settings-toggle--${settingControl}` : undefined}
+      data-setting-control={settingControl}
+      disabled={disabled}
+      onCheckedChange={handleTap}
+    />
+  );
 }
 
 export function SelectBox({

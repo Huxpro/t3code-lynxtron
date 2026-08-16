@@ -4,13 +4,16 @@ export interface SwitchProps {
   readonly "aria-label"?: string;
   readonly checked?: boolean;
   readonly className?: string;
+  readonly "data-setting-control"?: string;
   readonly disabled?: boolean;
   readonly onCheckedChange?: (checked: boolean) => void;
 }
 
 export function Switch({
+  "aria-label": ariaLabel,
   checked = false,
   className,
+  "data-setting-control": settingControl,
   disabled = false,
   onCheckedChange,
 }: SwitchProps) {
@@ -28,6 +31,9 @@ export function Switch({
       ]
         .filter(Boolean)
         .join(" ")}
+      aria-label={ariaLabel}
+      aria-checked={checked ? "true" : "false"}
+      data-setting-control={settingControl}
       bindtap={handleTap}
     >
       <view

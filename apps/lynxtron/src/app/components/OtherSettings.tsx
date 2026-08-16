@@ -573,6 +573,8 @@ export function BetaSettings() {
         sidebarV2Setting={searchableSetting("sidebar-v2")}
         sidebarV2Control={
           <Toggle
+            ariaLabel="Enable the sidebar v2 beta"
+            settingControl="sidebar-v2"
             value={clientSettings.sidebarV2Enabled}
             onChange={(sidebarV2Enabled) =>
               updateClientSettings({
@@ -590,6 +592,8 @@ export function BetaSettings() {
                 description="Threads with no activity for this long settle automatically. Threads on merged or closed PRs always settle."
                 control={
                   <Toggle
+                    ariaLabel="Auto-settle inactive threads"
+                    settingControl="auto-settle"
                     value={clientSettings.sidebarAutoSettleAfterDays !== null}
                     onChange={(enabled) =>
                       updateClientSettings({
