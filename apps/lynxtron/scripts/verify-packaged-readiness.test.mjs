@@ -241,6 +241,7 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies Native Beta mutation, disk persistence, and cold restart", () => {
     assert.include(source, "async function verifyBetaMutation");
     assert.include(source, "async function openBetaSettings");
+    assert.include(source, "async function readBetaSettingsGeometry");
     assert.include(source, '"--verify-beta-mutation"');
     assert.include(source, 'selector: ".settings-nav__item--beta"');
     assert.include(source, 'const selector = ".settings-toggle--auto-settle"');
@@ -254,6 +255,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "restartedProcessId");
     assert.include(source, "restartedClient");
     assert.include(source, "Beta auto-settle value changed across cold restart");
+    assert.include(source, "expectedRowHeights = [103, 84, 65]");
+    assert.include(source, "Math.abs(rowStack.height - 264) > 1");
+    assert.include(source, "Math.abs(description.width - 576) > 1");
+    assert.include(source, "beforeGeometry");
+    assert.include(source, "restoredGeometry");
+    assert.include(source, "restartedGeometry");
     assert.include(outcomeChecksSource, "betaMutation");
   });
 

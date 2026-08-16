@@ -4137,6 +4137,39 @@ async function openBetaSettings({ child, client, timeoutMs }) {
   return route;
 }
 
+async function readBetaSettingsGeometry(client) {
+  const rows = await readSelectorRects(client, ".settings-content--beta .settings-row");
+  const descriptions = await readSelectorRects(
+    client,
+    ".settings-content--beta .settings-row__desc",
+  );
+  const [rowStack] = await readSelectorRects(
+    client,
+    ".settings-content--beta .settings-section__rows",
+  );
+  const expectedRowHeights = [103, 84, 65];
+  if (
+    rows.length !== expectedRowHeights.length ||
+    descriptions.length !== expectedRowHeights.length ||
+    !rowStack ||
+    Math.abs(rowStack.height - 264) > 1 ||
+    rows.some((row, index) => Math.abs(row.height - expectedRowHeights[index]) > 1) ||
+    descriptions.some((description) => Math.abs(description.width - 576) > 1)
+  ) {
+    throw new Error(
+      `Beta Settings geometry drifted: ${JSON.stringify({
+        expectedRowHeights,
+        expectedDescriptionWidth: 576,
+        expectedRowStackHeight: 264,
+        rows,
+        descriptions,
+        rowStack,
+      })}`,
+    );
+  }
+  return { rows, descriptions, rowStack };
+}
+
 async function verifyBetaMutation({
   baseDir,
   bundle,
@@ -4166,6 +4199,7 @@ async function verifyBetaMutation({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
+  const beforeGeometry = await readBetaSettingsGeometry(client);
 
   await tapSelector({ child, client, selector, timeoutMs });
   const disabled = await waitForMeasurement({
@@ -4202,6 +4236,7 @@ async function verifyBetaMutation({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
+  const restoredGeometry = await readBetaSettingsGeometry(client);
   const enabledPrefs = readIsolatedClientSettings(baseDir);
   if (
     !Number.isInteger(enabledPrefs.clientSettings?.sidebarAutoSettleAfterDays) ||
@@ -4274,6 +4309,7 @@ async function verifyBetaMutation({
         measurement?.attributes.value ===
         String(enabledPrefs.clientSettings.sidebarAutoSettleAfterDays),
     });
+    const restartedGeometry = await readBetaSettingsGeometry(restartedClient);
     const restartedPrefs = readIsolatedClientSettings(baseDir);
     if (
       restartedPrefs.clientSettings?.sidebarAutoSettleAfterDays !==
@@ -4294,10 +4330,12 @@ async function verifyBetaMutation({
         route,
         before,
         beforeDays,
+        beforeGeometry,
         disabled,
         disabledDiskValue: disabledPrefs.clientSettings.sidebarAutoSettleAfterDays,
         enabled,
         restoredDays,
+        restoredGeometry,
         enabledDiskValue: enabledPrefs.clientSettings.sidebarAutoSettleAfterDays,
         prefsPath: enabledPrefs.prefsPath,
         coldRestart: {
@@ -4309,6 +4347,7 @@ async function verifyBetaMutation({
           route: restartRoute,
           toggle: restartedToggle,
           days: restartedDays,
+          geometry: restartedGeometry,
           diskValue: restartedPrefs.clientSettings.sidebarAutoSettleAfterDays,
         },
       },
