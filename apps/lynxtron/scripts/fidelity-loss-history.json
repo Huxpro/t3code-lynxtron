@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T18:00:53+09:00",
+  "updatedAt": "2026-08-16T18:20:39+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7435,6 +7435,28 @@
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-appearance-unavailable-current-metrics.json",
           "classification": "tracked-current",
           "sha256": "b2e3fe412e5786457a72df05b53af5d7826e78289dc13ed87e989467b7a31721"
+        }
+      ],
+      "updates": []
+    },
+    {
+      "id": "model-picker-dismiss-surface-native-current",
+      "observedAt": "2026-08-16T18:20:39+09:00",
+      "commit": "59c22b68bead8cc71839b2d98f03d1356814a3de",
+      "codeCommit": "55916098177c41d75e863239635d437848ca6832",
+      "codeState": "commit",
+      "label": "Model Picker transparent outside-dismiss surface",
+      "narrative": "The production Web authority is ProviderModelPicker's Base UI Popover portal: it anchors the picker to the Composer model control, blocks background scrolling while open, and does not render a visual backdrop. The unused ModelPickerOverlaySurface helper is not product authority. Lynx had coupled its outside-dismiss hit target to the modal overlay backdrop token, dimming the application around an otherwise anchored picker. The dismiss layer is now transparent while retaining fixed fullscreen interaction geometry. A light-mode 1280x820 exact-bundle Native run measures the anchored panel at 397,375 with size 360x346, the transparent dismiss layer at 0,0 with size 1280x820, the expected light panel/content/rail colors, successful Close and bottom-right outside dismissal, main transport advancing 2 to 3, zero renderer errors, and disposed isolated state. The first strict run passed the new overlay gate but hit an unrelated Current checkout-only verifier assumption; the fixture correctly rendered Local checkout, so the harness now accepts both canonical workspace labels. Existing Browser full-frame and panel residuals remain explicit, and this point intentionally does not overwrite the already-certified Native interaction/runtime cells or claim full panel material parity.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The product delta changes only the model-picker dismiss layer from modal backdrop color to transparent. The final exact-bundle run directly measures fullscreen geometry and computed transparency while preserving anchored panel geometry and both dismissal paths."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-dismiss-surface-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0451b0683e4ada3892264e9ac542c24c4de471311a8057b4fba9f68486b838ab"
         }
       ],
       "updates": []
