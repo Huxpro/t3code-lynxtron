@@ -7369,6 +7369,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-model-options-menu-native-current",
+      "observedAt": "2026-08-16T17:33:06+09:00",
+      "commit": "c64ae5f4b",
+      "codeCommit": "783434cc5",
+      "codeState": "commit",
+      "label": "Composer model options Native menu",
+      "narrative": "The Lynx model-options control previously changed only the first server descriptor immediately on tap and rendered no menu, leaving Thinking, Context window, and future provider descriptors inaccessible. Shared client-runtime projection now exposes every server-declared select and boolean descriptor plus a pure selection update that preserves all other values. Lynx renders the resulting sections in a dismissible scroll menu for both wide and compact Composer layouts. A deterministic exact-bundle Native run injects Codex Reasoning, Context window, and Thinking descriptors through the existing test-only provider fixture hook. Real measured touch changes Extra High to High, then Thinking Off to Thinking On; both mutations advance the main sequence, update the Composer label, converge the active thread projection with projection_threads persistence, reopen with the changed rows selected, and dismiss outside through a 1280x820 layer. Renderer errors are zero and isolated state is disposed. Pixel parity and physical keyboard behavior remain explicit debt.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The old product had no model-options popup and only a first-descriptor cycle. The passing run uses the same sessionless thread and exact bundle identity while exercising the new shared descriptor projection, menu, and persistence path."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-model-options-menu-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a3ccd9e3e81770d3c03c45ada887920ca1039b718a9cdc1c5ad0132b4dfa7eb6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-docked"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-server-declared-model-options",
+              "source": "The menu exposes Reasoning, Context window, and Thinking sections with High, Extra High, 200k, 1M, On, and Off values from provider descriptors"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-effort-thinking-mutation",
+              "source": "Measured Native rows change Extra High to High and Thinking Off to Thinking On, reopen selected, and dismiss outside without dropping the preserved Context window value"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-model-options-persistence",
+              "source": "Exact e4e4c32a bundle advances main sequences 13 to 16 and 17 to 20, converges projection and SQLite selections, reports zero renderer errors, disposes state, and every owned or orphaned agent-browser gate is zero"
+            }
+          }
+        }
+      ]
     }
   ]
 }
