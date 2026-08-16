@@ -1929,7 +1929,43 @@ async function verifyRuntimeMenuDismiss({ child, client, timeoutMs }) {
   };
 }
 
-async function verifyModelOptionMenuMutation({ baseDir, child, client, timeoutMs }) {
+async function readModelOptionTracking({ client, expectedLabel, expectedLetterSpacing, trigger }) {
+  const label = await readOptionalMeasurement(
+    client,
+    ".composer-toolbar-control--model-option .composer-toolbar-control-label",
+  );
+  if (
+    trigger.text.trim() !== expectedLabel ||
+    label?.text.trim() !== expectedLabel ||
+    label?.style.letterSpacing !== expectedLetterSpacing ||
+    !label.rect ||
+    label.rect.width >= trigger.rect.width
+  ) {
+    throw new Error(
+      `Native model-option tracking drifted: ${JSON.stringify({
+        expectedLabel,
+        expectedLetterSpacing,
+        trigger,
+        label,
+      })}`,
+    );
+  }
+  return {
+    text: label.text.trim(),
+    rect: label.rect,
+    controlRect: trigger.rect,
+    letterSpacing: label.style.letterSpacing,
+  };
+}
+
+async function verifyModelOptionMenuMutation({
+  baseDir,
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+}) {
   const beforeState = await selectSessionlessFixtureThread({
     baseDir,
     child,
@@ -2012,6 +2048,12 @@ async function verifyModelOptionMenuMutation({ baseDir, child, client, timeoutMs
     timeoutMs,
     predicate: (measurement) => Boolean(measurement?.text.trim()),
   });
+  const initialTracking = await readModelOptionTracking({
+    client,
+    expectedLabel: "Extra High · 1M · Thinking Off",
+    expectedLetterSpacing: "-0.33px",
+    trigger,
+  });
   const beforeSequence = await readRendererReadiness(client);
   await tapSelector({
     child,
@@ -2090,6 +2132,12 @@ async function verifyModelOptionMenuMutation({ baseDir, child, client, timeoutMs
     timeoutMs,
     predicate: (measurement) => Boolean(measurement?.text.trim()),
   });
+  const effortTracking = await readModelOptionTracking({
+    client,
+    expectedLabel: "High · 1M · Thinking Off",
+    expectedLetterSpacing: "-0.42px",
+    trigger: afterTrigger,
+  });
   await tapSelector({
     child,
     client,
@@ -2164,6 +2212,18 @@ async function verifyModelOptionMenuMutation({ baseDir, child, client, timeoutMs
     timeoutMs,
     predicate: (measurement) => measurement?.text.includes("Thinking On"),
   });
+  const thinkingTracking = await readModelOptionTracking({
+    client,
+    expectedLabel: "High · 1M · Thinking On",
+    expectedLetterSpacing: "-0.44px",
+    trigger: thinkingTrigger,
+  });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-composer-model-option-tracking.png",
+  });
   await tapSelector({
     child,
     client,
@@ -2214,6 +2274,11 @@ async function verifyModelOptionMenuMutation({ baseDir, child, client, timeoutMs
       after: afterTrigger.text.trim(),
       rect: trigger.rect,
     },
+    tracking: {
+      initial: initialTracking,
+      effort: effortTracking,
+      thinking: thinkingTracking,
+    },
     menu: {
       rect: menu.rect,
       text: menu.text.trim(),
@@ -2248,6 +2313,7 @@ async function verifyModelOptionMenuMutation({ baseDir, child, client, timeoutMs
     dismissLayer: dismissLayer.rect,
     reopenedSelected: true,
     dismissed: true,
+    screenshot,
   };
 }
 
@@ -5873,6 +5939,8 @@ async function runOnce({
           baseDir,
           child,
           client,
+          devToolCli,
+          outputDirectory,
           timeoutMs,
         })
       : undefined;

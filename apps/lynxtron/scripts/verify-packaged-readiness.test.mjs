@@ -144,6 +144,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".composer-model-option-menu__item--unselected"');
     assert.include(source, "data-composer-model-option-descriptor");
     assert.include(source, "readPersistedThreadModelSelection");
+    assert.include(source, "async function readModelOptionTracking");
+    assert.include(
+      source,
+      '".composer-toolbar-control--model-option .composer-toolbar-control-label"',
+    );
+    assert.include(source, 'expectedLetterSpacing: "-0.33px"');
+    assert.include(source, 'expectedLetterSpacing: "-0.42px"');
+    assert.include(source, 'expectedLetterSpacing: "-0.44px"');
+    assert.include(source, 'name: "native-composer-model-option-tracking.png"');
     assert.include(source, 'selector: ".composer-model-option-menu__item--selected"');
     assert.include(source, 'selector: ".composer-model-option-menu-dismiss-layer"');
     assert.include(source, "reopenedSelected: true");
