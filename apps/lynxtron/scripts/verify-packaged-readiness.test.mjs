@@ -25,7 +25,7 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies the Native brand inset at every viewport", () => {
     assert.include(source, "async function verifySidebarGeometry(client, viewportWidth)");
     assert.include(source, 'readOptionalMeasurement(client, ".sidebar-brand")');
-    assert.include(source, "Math.abs(brand.rect.x - 60) > 1");
+    assert.include(source, "Math.abs(brand.rect.x - 130) > 1");
     assert.notInclude(source, "viewportWidth !== 1280 &&");
     assert.include(source, "verifySidebarGeometry(client, width)");
   });
