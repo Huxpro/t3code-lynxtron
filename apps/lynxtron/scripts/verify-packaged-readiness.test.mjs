@@ -400,6 +400,10 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '".settings-content--general .settings-section"');
     assert.include(
       source,
+      'assertSettingsTopOrigin("General first section", generalSections[0], 88)',
+    );
+    assert.include(
+      source,
       'readSelectorMeasurements(\n    client,\n    ".settings-content--general .settings-row",',
     );
     assert.include(source, '["background-activity", "text-generation-model"]');
@@ -413,6 +417,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'readSelectorRects(client, ".source-control-item")');
     assert.include(source, 'readSelectorRects(client, ".source-control-writing-row")');
     assert.include(source, 'name: "native-settings-source-control.png"');
+    assert.include(source, 'assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 132)');
+    assert.include(
+      source,
+      'assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 88)',
+    );
+    assert.include(source, "assertSettingsTopOrigin(`General cycle ${cycle}`");
   });
 
   it("verifies unavailable Appearance rows as muted disabled capabilities", () => {

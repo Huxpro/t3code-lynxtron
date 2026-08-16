@@ -5124,6 +5124,22 @@ async function waitForChatRoute({ child, client, timeoutMs }) {
   throw new Error(`Back did not return to chat: ${JSON.stringify({ latest })}`);
 }
 
+function assertSettingsTopOrigin(label, rect, expectedY) {
+  if (
+    !rect ||
+    Math.abs(rect.x - 320) > 1 ||
+    Math.abs(rect.y - expectedY) > 1 ||
+    Math.abs(rect.width - 896) > 1
+  ) {
+    throw new Error(
+      `${label} did not reset to the Settings top origin: ${JSON.stringify({
+        expected: { x: 320, y: expectedY, width: 896 },
+        rect,
+      })}`,
+    );
+  }
+}
+
 async function waitForRouteChange({ child, client, initialRoute, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
@@ -5181,6 +5197,7 @@ async function verifySettingsRouteBehavior({
     client,
     ".settings-content--general .settings-section",
   );
+  assertSettingsTopOrigin("General first section", generalSections[0], 88);
   const generalRows = await readSelectorMeasurements(
     client,
     ".settings-content--general .settings-row",
@@ -5296,6 +5313,7 @@ async function verifySettingsRouteBehavior({
         (row) => row.attributes["data-settings-unavailable"] !== "true",
       );
       const [theme] = availableRows;
+      assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 132);
       if (
         rows.length !== unavailableTitles.length + 1 ||
         availableRows.length !== 1 ||
@@ -5378,6 +5396,7 @@ async function verifySettingsRouteBehavior({
           name: "native-settings-source-control.png",
         }),
       };
+      assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 88);
     }
   }
 
@@ -5393,6 +5412,11 @@ async function verifySettingsRouteBehavior({
       route: "/settings/general",
       timeoutMs,
     });
+    const [cycledGeneralSection] = await readSelectorRects(
+      client,
+      ".settings-content--general .settings-section",
+    );
+    assertSettingsTopOrigin(`General cycle ${cycle}`, cycledGeneralSection, 88);
     await tapSelector({
       child,
       client,
