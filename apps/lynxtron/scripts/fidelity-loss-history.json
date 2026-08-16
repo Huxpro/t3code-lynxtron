@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T22:26:51+09:00",
+  "updatedAt": "2026-08-16T23:07:37+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7675,6 +7675,41 @@
         }
       ],
       "updates": []
+    },
+    {
+      "id": "settings-connections-network-access-current",
+      "observedAt": "2026-08-16T23:07:37+09:00",
+      "commit": "b38d901baa68667e8ff9bdb2fc7116b504d3240e",
+      "codeCommit": "0615347372b627517a72df2367e695549a69e616",
+      "codeState": "commit",
+      "label": "Settings Connections fixed Network access anatomy",
+      "narrative": "After the reachability-policy fix, the largest localized Connections hotspot was This environment: residual 0.213094 inside the 896x194 absolute crop. With the same administrative loopback session, Web rendered one disabled Network access row while Lynx used a different hard-coded description and added an Access inventory row, growing the section from 113 authority-like pixels to 182 and shifting Remote environments to y=330. A shared fixed-host projection now derives the exact loopback or remote description and checked state from ServerAuthPolicy; Web and Lynx consume it, Lynx renders one disabled switch row, and inventory remains in the remote-only Authorized clients section. On one immutable snapshot with identical authority pixels, state, scope, theme, and viewport, full-frame SSIM improves from 0.909306 to 0.913576, Settings-main residual from 0.078101 to 0.072484, and the This environment absolute crop from 0.213094 to 0.198954. Lynx Remote environments moves to y=261 versus Web y=265.6875. Exact Native evidence proves loopback off/disabled copy, remote on/disabled copy, Create-Copy-Revoke restoration, and remote cold restart with the same committed bundle, zero renderer errors, and disposed isolated state. Two wrapping experiments are recorded as rejected: a row width rule had no pixels, while a description-width rule improved the row crop but worsened the whole weighted state. This point updates only Settings Connections Lynx material and changes no weights or scope.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after Browser captures use one immutable snapshot and real same-scope sessions, retain identical Web pixels, and change only the shared Network access projection plus the removal of the duplicate Lynx inventory row. Exact Native local and remote runs prove both policy branches and persistence separately."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-connections-network-access-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "3721c117267966c9ce019eccc79ef0b9e2789f59b16889ab1e0b885901796b82"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.086424,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.913576 at the matched loopback Connections frame; Settings-main residual is 0.072484 and This environment absolute residual is 0.198954"
+            }
+          }
+        }
+      ]
     }
   ]
 }
