@@ -2448,7 +2448,9 @@ async function verifyModelPickerFidelity({
     client,
     selector: ".composer-context-label--checkout",
     timeoutMs,
-    predicate: (measurement) => measurement?.text.trim() === "Current checkout",
+    predicate: (measurement) =>
+      measurement !== null &&
+      ["Current checkout", "Local checkout"].includes(measurement.text.trim()),
   });
   const screenshotPath = path.join(outputDirectory, "native-model-picker.png");
   const screenshot = spawnSync(

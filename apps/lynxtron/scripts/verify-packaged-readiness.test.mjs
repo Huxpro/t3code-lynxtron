@@ -94,6 +94,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Math.abs((measurement.rect?.height ?? 0) - viewportHeight) <= 1");
     assert.include(source, "viewportHeight: height");
     assert.include(source, "viewportWidth: width");
+    assert.include(source, '["Current checkout", "Local checkout"]');
     assert.include(source, 'point: "bottom-right"');
     assert.include(source, "outsideTap: true");
   });
