@@ -1062,7 +1062,7 @@
 }
 .sidebar-brand-host {
   position: absolute;
-  left: 60px;
+  left: 130px;
   top: 12px;
   display: flex;
   height: 28px;
@@ -5209,7 +5209,7 @@
   opacity: 0.54;
 }
 .viewport-responsive .sidebar-brand-host {
-  left: 60px;
+  left: 130px;
 }
 .viewport-responsive .lynx-sidebar-global-control--on-backdrop .sidebar-global-toggle-icon {
   opacity: 0.96;

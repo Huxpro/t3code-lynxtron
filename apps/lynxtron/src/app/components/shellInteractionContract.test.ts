@@ -150,8 +150,8 @@ describe("desktop shell interaction contract", () => {
   });
 
   it("keeps the authority brand on the shared titlebar inset", () => {
-    expect(overrides).toContain(".sidebar-brand-host {\n  position: absolute;\n  left: 60px;");
-    expect(overrides).toContain(".viewport-responsive .sidebar-brand-host {\n  left: 60px;\n}");
+    expect(overrides).toContain(".sidebar-brand-host {\n  position: absolute;\n  left: 130px;");
+    expect(overrides).toContain(".viewport-responsive .sidebar-brand-host {\n  left: 130px;\n}");
   });
 
   it("keeps Sidebar thread state truthful and actions progressively disclosed", () => {
