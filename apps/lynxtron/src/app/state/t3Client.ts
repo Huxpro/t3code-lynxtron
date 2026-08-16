@@ -518,6 +518,15 @@ function installTransportDevToolHook(): void {
       archivedThreadIds: ReadonlyArray<string>;
       pairingLinkIds: ReadonlyArray<string>;
       pairingLinkCount: number;
+      approvalReceipts: ReadonlyArray<{
+        readonly kind: string;
+        readonly requestId: string | null;
+        readonly decision: string | null;
+      }>;
+      pendingApprovalRequests: ReadonlyArray<{
+        readonly requestId: string;
+        readonly requestKind: string | null;
+      }>;
       selectedProvider?: {
         instanceId: string;
         showInteractionModeToggle: boolean | undefined;
@@ -557,6 +566,39 @@ function installTransportDevToolHook(): void {
       archivedThreadIds: state.archivedThreads.map((thread) => thread.id),
       pairingLinkIds: state.authAccess.pairingLinks.map((pairingLink) => pairingLink.id),
       pairingLinkCount: state.authAccess.pairingLinkCount,
+      approvalReceipts: state.activities
+        .filter(
+          (activity) =>
+            activity.kind === "approval.resolved" ||
+            activity.kind === "provider.approval.respond.failed",
+        )
+        .map((activity) => {
+          const payload =
+            typeof activity.payload === "object" && activity.payload !== null
+              ? (activity.payload as { decision?: unknown; requestId?: unknown })
+              : {};
+          return {
+            kind: activity.kind,
+            requestId: typeof payload.requestId === "string" ? payload.requestId : null,
+            decision: typeof payload.decision === "string" ? payload.decision : null,
+          };
+        }),
+      pendingApprovalRequests: state.activities
+        .filter((activity) => activity.kind === "approval.requested")
+        .flatMap((activity) => {
+          const payload =
+            typeof activity.payload === "object" && activity.payload !== null
+              ? (activity.payload as { requestId?: unknown; requestKind?: unknown })
+              : {};
+          return typeof payload.requestId === "string"
+            ? [
+                {
+                  requestId: payload.requestId,
+                  requestKind: typeof payload.requestKind === "string" ? payload.requestKind : null,
+                },
+              ]
+            : [];
+        }),
       modelCount: state.models.length,
       providerCount: state.providers.length,
       providerEntryCount: state.providerEntries.length,
