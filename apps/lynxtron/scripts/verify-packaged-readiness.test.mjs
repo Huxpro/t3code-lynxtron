@@ -276,6 +276,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyConnectionsMutation");
     assert.include(source, "async function openConnectionsSettings");
     assert.include(source, '"--verify-connections-mutation"');
+    assert.include(source, 'shouldVerifyConnectionsMutation ? { T3CODE_HOST: "0.0.0.0" }');
+    assert.include(source, 'T3CODE_HOST: "0.0.0.0"');
     assert.include(source, 'selector: ".settings-nav__item--connections"');
     assert.include(source, 'const createSelector = ".settings-connections-create-pairing"');
     assert.include(source, "settings-connections-revoke-pairing--${createdPairingLinkId}");
@@ -283,6 +285,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'measurement?.text.trim() === "Create"');
     assert.include(source, "Connections cold restart did not return an owned process id.");
     assert.include(outcomeChecksSource, "connectionsMutation");
+  });
+
+  it("hides access management on a loopback Native Connections route", () => {
+    assert.include(source, "async function verifyConnectionsLocalPolicy");
+    assert.include(source, '"--verify-connections-local-policy"');
+    assert.include(source, '!measurement.text.includes("Authorized clients")');
+    assert.include(source, '".settings-connections-create-pairing"');
+    assert.include(source, "authorizedClientsVisible: false");
+    assert.include(outcomeChecksSource, "connectionsLocalPolicy");
   });
 
   it("restores the session-derived Composer state during lifecycle recovery", () => {

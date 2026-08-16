@@ -4552,6 +4552,36 @@ async function openConnectionsSettings({ child, client, timeoutMs }) {
   });
 }
 
+async function verifyConnectionsLocalPolicy({ child, client, timeoutMs }) {
+  const route = await openConnectionsSettings({ child, client, timeoutMs });
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-content--connections",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("This environment") === true &&
+      measurement.text.includes("Remote environments") &&
+      !measurement.text.includes("Authorized clients"),
+  });
+  const createButton = await readOptionalMeasurement(
+    client,
+    ".settings-connections-create-pairing",
+  );
+  if (createButton !== null) {
+    throw new Error(
+      `Loopback Connections exposed pairing creation: ${JSON.stringify(createButton)}`,
+    );
+  }
+  return {
+    status: "pass",
+    route,
+    panel: panel.rect,
+    authorizedClientsVisible: false,
+    createPairingVisible: false,
+  };
+}
+
 async function verifyConnectionsMutation({
   baseDir,
   bundle,
@@ -4666,6 +4696,7 @@ async function verifyConnectionsMutation({
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      T3CODE_HOST: "0.0.0.0",
     },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -5778,6 +5809,7 @@ async function runOnce({
   verifyBetaMutation: shouldVerifyBetaMutation,
   verifyArchiveMutation: shouldVerifyArchiveMutation,
   verifyConnectionsMutation: shouldVerifyConnectionsMutation,
+  verifyConnectionsLocalPolicy: shouldVerifyConnectionsLocalPolicy,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -5795,6 +5827,7 @@ async function runOnce({
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      ...(shouldVerifyConnectionsMutation ? { T3CODE_HOST: "0.0.0.0" } : {}),
       ...(shouldVerifyModelOptionMenuMutation || shouldVerifyComposerSendMaterial
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
@@ -5986,6 +6019,9 @@ async function runOnce({
           outputDirectory,
           timeoutMs,
         })
+      : undefined;
+    const connectionsLocalPolicy = shouldVerifyConnectionsLocalPolicy
+      ? await verifyConnectionsLocalPolicy({ child, client, timeoutMs })
       : undefined;
     const composer = runPlan11Outcomes
       ? await captureOutcome(
@@ -6263,6 +6299,7 @@ async function runOnce({
       betaMutation,
       archiveMutation,
       connectionsMutation,
+      connectionsLocalPolicy,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -6309,6 +6346,7 @@ async function runOnce({
       betaMutation,
       archiveMutation,
       connectionsMutation,
+      connectionsLocalPolicy,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -6389,6 +6427,9 @@ const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
 const shouldVerifyArchiveMutation = process.argv.includes("--verify-archive-mutation");
 const shouldVerifyConnectionsMutation = process.argv.includes("--verify-connections-mutation");
+const shouldVerifyConnectionsLocalPolicy = process.argv.includes(
+  "--verify-connections-local-policy",
+);
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -6624,6 +6665,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyBetaMutation: shouldVerifyBetaMutation,
       verifyArchiveMutation: shouldVerifyArchiveMutation,
       verifyConnectionsMutation: shouldVerifyConnectionsMutation,
+      verifyConnectionsLocalPolicy: shouldVerifyConnectionsLocalPolicy,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,
