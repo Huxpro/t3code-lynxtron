@@ -55,9 +55,25 @@ describe("desktop shell interaction contract", () => {
     expect(source).toContain('className="composer-runtime-menu-dismiss-layer"');
     expect(source).toContain('aria-label="Dismiss runtime mode"');
     expect(source).toContain("bindtap={() => setRuntimeModeMenuOpen(false)}");
-    expect(source).toContain("modelPicker !== undefined || runtimeModeMenuOpen");
+    expect(source).toContain("modelOptionMenuOpen || runtimeModeMenuOpen");
+    expect(source).toContain("modelPicker !== undefined");
     expect(overrides).toContain(".composer-runtime-menu-dismiss-layer {");
     expect(overrides).toContain(".composer-runtime-control-wrap {");
+  });
+
+  it("renders server-declared model options in a dismissible menu", () => {
+    const composer = componentSource("Composer.tsx");
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(composer).toContain('className="composer-model-option-menu-dismiss-layer"');
+    expect(composer).toContain('aria-label="Dismiss model options"');
+    expect(composer).toContain("modelOptionSections.map");
+    expect(composer).toContain("onSelectModelOption?.(section.id, item.value)");
+    expect(chatView).toContain("projectComposerTraitsMenu");
+    expect(chatView).toContain("selectComposerTraitOption");
+    expect(chatView).not.toContain("handleModelOptionTap");
+    expect(overrides).toContain(".composer-model-option-menu {");
+    expect(overrides).toContain(".composer-model-option-menu__item--selected {");
   });
 
   it("opens a truthful Terminal placeholder from the titlebar control", () => {

@@ -5,9 +5,10 @@ import {
 } from "@t3tools/client-runtime/presentation/session";
 import {
   isComposerDraftThread,
-  projectComposerPrimaryOption,
+  projectComposerTraitsMenu,
   projectComposerTraitsTrigger,
   resolveDefaultComposerPlaceholder,
+  selectComposerTraitOption,
   shouldShowComposerContextStrip,
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
@@ -232,13 +233,13 @@ export function ChatView({ threadId }: ChatViewProps) {
         : null,
     [presentedModelSelection?.options, presentedSelectedModel],
   );
-  const primaryModelOption = useMemo(
+  const modelOptionSections = useMemo(
     () =>
-      projectComposerPrimaryOption({
-        capabilities: selectedModel?.capabilities,
-        selections: modelSelection?.options,
+      projectComposerTraitsMenu({
+        capabilities: presentedSelectedModel?.capabilities,
+        selections: presentedModelSelection?.options,
       }),
-    [modelSelection?.options, selectedModel?.capabilities],
+    [presentedModelSelection?.options, presentedSelectedModel?.capabilities],
   );
   const connectionLifecycle = useMemo(
     () =>
@@ -351,11 +352,18 @@ export function ChatView({ threadId }: ChatViewProps) {
     );
   }, [activeThread?.interactionMode, setThreadInteractionMode]);
 
-  const handleModelOptionTap = useCallback(() => {
-    if (primaryModelOption) {
-      setModelOptions(primaryModelOption.nextSelections);
-    }
-  }, [primaryModelOption, setModelOptions]);
+  const handleSelectModelOption = useCallback(
+    (descriptorId: string, value: string | boolean) => {
+      const nextSelections = selectComposerTraitOption({
+        capabilities: presentedSelectedModel?.capabilities,
+        selections: presentedModelSelection?.options,
+        descriptorId,
+        value,
+      });
+      if (nextSelections) setModelOptions(nextSelections);
+    },
+    [presentedModelSelection?.options, presentedSelectedModel?.capabilities, setModelOptions],
+  );
 
   const handleSend = useCallback(
     (text: string) => {
@@ -513,6 +521,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         modelInstanceId={modelInstanceId}
         modelDriverKind={presentedSelectedModel?.driverKind}
         modelOptionLabel={modelTraitsTrigger?.label}
+        modelOptionSections={modelOptionSections}
         branch={activeThread?.branch ?? checkoutBranch ?? undefined}
         showContextStrip={showComposerContextStrip}
         worktreePath={activeThread?.worktreePath ?? undefined}
@@ -680,7 +689,9 @@ export function ChatView({ threadId }: ChatViewProps) {
             />
           ) : null
         }
-        onModelOptionTap={modelTraitsTrigger ? handleModelOptionTap : undefined}
+        onSelectModelOption={
+          modelTraitsTrigger && modelOptionSections.length > 0 ? handleSelectModelOption : undefined
+        }
         onRuntimeModeChange={setThreadRuntimeMode}
         onInteractionModeTap={handleInteractionModeTap}
         onWorkspaceModeChange={setDraftWorkspaceMode}

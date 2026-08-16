@@ -12,7 +12,9 @@ import {
   isComposerDraftThread,
   projectComposerContext,
   projectComposerPrimaryOption,
+  projectComposerTraitsMenu,
   resolveDefaultComposerPlaceholder,
+  selectComposerTraitOption,
   shouldShowComposerContextStrip,
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
@@ -221,6 +223,104 @@ describe("composer controls presentation", () => {
         ultrathinkPromptControlled: false,
       }),
     ).toEqual({ label: "High · 1M", showFastModeIcon: false });
+  });
+
+  it("projects server-declared select and boolean traits into menu sections", () => {
+    expect(
+      projectComposerTraitsMenu({
+        capabilities: {
+          optionDescriptors: [
+            {
+              id: "reasoningEffort",
+              label: "Reasoning",
+              type: "select",
+              options: [
+                { id: "high", label: "High" },
+                { id: "xhigh", label: "Extra High" },
+              ],
+            },
+            {
+              id: "contextWindow",
+              label: "Context window",
+              type: "select",
+              options: [
+                { id: "200k", label: "200k" },
+                { id: "1m", label: "1M" },
+              ],
+            },
+            {
+              id: "thinking",
+              label: "Thinking",
+              type: "boolean",
+            },
+          ],
+        },
+        selections: [
+          { id: "reasoningEffort", value: "xhigh" },
+          { id: "contextWindow", value: "1m" },
+          { id: "thinking", value: false },
+        ],
+      }),
+    ).toEqual([
+      {
+        id: "reasoningEffort",
+        label: "Reasoning",
+        items: [
+          { id: "high", label: "High", selected: false, value: "high" },
+          { id: "xhigh", label: "Extra High", selected: true, value: "xhigh" },
+        ],
+      },
+      {
+        id: "contextWindow",
+        label: "Context window",
+        items: [
+          { id: "200k", label: "200k", selected: false, value: "200k" },
+          { id: "1m", label: "1M", selected: true, value: "1m" },
+        ],
+      },
+      {
+        id: "thinking",
+        label: "Thinking",
+        items: [
+          { id: "on", label: "On", selected: false, value: true },
+          { id: "off", label: "Off", selected: true, value: false },
+        ],
+      },
+    ]);
+  });
+
+  it("updates one provider trait while preserving every other selection", () => {
+    expect(
+      selectComposerTraitOption({
+        capabilities: {
+          optionDescriptors: [
+            {
+              id: "reasoningEffort",
+              label: "Reasoning",
+              type: "select",
+              options: [
+                { id: "high", label: "High" },
+                { id: "xhigh", label: "Extra High" },
+              ],
+            },
+            {
+              id: "thinking",
+              label: "Thinking",
+              type: "boolean",
+            },
+          ],
+        },
+        selections: [
+          { id: "reasoningEffort", value: "high" },
+          { id: "thinking", value: false },
+        ],
+        descriptorId: "reasoningEffort",
+        value: "xhigh",
+      }),
+    ).toEqual([
+      { id: "reasoningEffort", value: "xhigh" },
+      { id: "thinking", value: false },
+    ]);
   });
 
   it("omits the compact option control when the provider declares none", () => {

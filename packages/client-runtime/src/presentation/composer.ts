@@ -12,7 +12,7 @@ import {
   getProviderOptionCurrentValue,
   getProviderOptionDescriptors,
 } from "@t3tools/shared/providerOptions";
-import type { SessionPresentationPhase } from "./session";
+import type { SessionPresentationPhase } from "./session.ts";
 
 const INLINE_TERMINAL_CONTEXT_PLACEHOLDER = "\uFFFC";
 
@@ -167,6 +167,89 @@ export interface ComposerPrimaryOptionProjection {
   readonly nextSelections: ReadonlyArray<ProviderOptionSelection>;
 }
 
+export interface ComposerTraitsMenuItemPresentation {
+  readonly id: string;
+  readonly label: string;
+  readonly description?: string | undefined;
+  readonly selected: boolean;
+  readonly value: string | boolean;
+}
+
+export interface ComposerTraitsMenuSectionPresentation {
+  readonly id: string;
+  readonly label: string;
+  readonly items: ReadonlyArray<ComposerTraitsMenuItemPresentation>;
+}
+
+export function projectComposerTraitsMenu(options: {
+  readonly capabilities: ModelCapabilities | null | undefined;
+  readonly selections: ReadonlyArray<ProviderOptionSelection> | null | undefined;
+}): ReadonlyArray<ComposerTraitsMenuSectionPresentation> {
+  if (!options.capabilities) return [];
+  const sections: Array<ComposerTraitsMenuSectionPresentation> = [];
+  for (const descriptor of getProviderOptionDescriptors({
+    caps: options.capabilities,
+    selections: options.selections,
+  })) {
+    if (descriptor.type === "select") {
+      const currentValue = getProviderOptionCurrentValue(descriptor);
+      const items = descriptor.options.map((option) => ({
+        id: option.id,
+        label: option.label,
+        ...(option.description ? { description: option.description } : {}),
+        selected: option.id === currentValue,
+        value: option.id,
+      }));
+      if (items.length > 0) {
+        sections.push({ id: descriptor.id, label: descriptor.label, items });
+      }
+      continue;
+    }
+    const currentValue = getProviderOptionCurrentValue(descriptor) === true;
+    sections.push({
+      id: descriptor.id,
+      label: descriptor.label,
+      items: [
+        { id: "on", label: "On", selected: currentValue, value: true },
+        { id: "off", label: "Off", selected: !currentValue, value: false },
+      ],
+    });
+  }
+  return sections;
+}
+
+export function selectComposerTraitOption(options: {
+  readonly capabilities: ModelCapabilities | null | undefined;
+  readonly selections: ReadonlyArray<ProviderOptionSelection> | null | undefined;
+  readonly descriptorId: string;
+  readonly value: string | boolean;
+}): ReadonlyArray<ProviderOptionSelection> | null {
+  if (!options.capabilities) return null;
+  const descriptors = getProviderOptionDescriptors({
+    caps: options.capabilities,
+    selections: options.selections,
+  });
+  let changed = false;
+  const nextDescriptors = descriptors.map((descriptor) => {
+    if (descriptor.id !== options.descriptorId) return descriptor;
+    if (descriptor.type === "boolean" && typeof options.value === "boolean") {
+      changed = true;
+      return { ...descriptor, currentValue: options.value };
+    }
+    if (
+      descriptor.type === "select" &&
+      typeof options.value === "string" &&
+      descriptor.options.some((option) => option.id === options.value)
+    ) {
+      changed = true;
+      return { ...descriptor, currentValue: options.value };
+    }
+    return descriptor;
+  });
+  if (!changed) return null;
+  return buildProviderOptionSelectionsFromDescriptors(nextDescriptors) ?? null;
+}
+
 export function buildComposerTraitsTriggerDisplay(input: {
   readonly provider: ProviderDriverKind;
   readonly descriptors: ReadonlyArray<ProviderOptionDescriptor>;
@@ -270,17 +353,12 @@ export function projectComposerPrimaryOption(options: {
         ]?.id;
   if (nextValue === undefined) return null;
 
-  const nextDescriptors = descriptors.map((candidate) => {
-    if (candidate.id !== descriptor.id) return candidate;
-    if (candidate.type === "boolean" && typeof nextValue === "boolean") {
-      return { ...candidate, currentValue: nextValue };
-    }
-    if (candidate.type === "select" && typeof nextValue === "string") {
-      return { ...candidate, currentValue: nextValue };
-    }
-    return candidate;
+  const nextSelections = selectComposerTraitOption({
+    capabilities: options.capabilities,
+    selections: options.selections,
+    descriptorId: descriptor.id,
+    value: nextValue,
   });
-  const nextSelections = buildProviderOptionSelectionsFromDescriptors(nextDescriptors);
   if (!nextSelections) return null;
 
   return {
