@@ -53,10 +53,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'themeRoot.attributes["data-theme"] === expectedTheme');
     assert.include(source, 'contextLegacyBand.style.display === "none"');
     assert.include(source, 'readSelectorRects(client, ".composer-context-light-band")');
-    assert.include(source, "contextLightBands.length === 16");
-    assert.include(source, "contextBackdrop.rect.y + index * 2");
+    assert.include(source, "contextLightBands.length === 31");
+    assert.include(source, "contextBackdrop.rect.y + index");
     assert.include(source, 'contextLightBandFirst.style.backgroundColor === "rgb(222,222,222)"');
-    assert.include(source, 'contextLightBandLast.style.backgroundColor === "rgb(254,254,254)"');
+    assert.include(source, 'contextLightBandMiddle.style.backgroundColor === "rgb(250,250,250)"');
+    assert.include(source, 'contextLightBandLast.style.backgroundColor === "rgb(255,255,255)"');
+    assert.include(source, "lynx: '[data-composer-context-light-band=\"30\"]'");
     assert.include(source, "composerThemeScreenshot");
     assert.include(source, "native-composer-${expectedTheme}.png");
     assert.notInclude(outcomeChecksSource, "composerThemeScreenshot");
