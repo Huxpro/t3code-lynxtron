@@ -419,6 +419,11 @@ export function ConnectionsSettings() {
     setAccessError(null);
     void t3ClientActions
       .revokePairingLink(id)
+      .then((revoked) =>
+        setPairingCredential((current) =>
+          pairingCredentialAfterRevocation(current, { id, revoked }),
+        ),
+      )
       .catch(mutationError)
       .finally(() => setAccessMutation(null));
   };
