@@ -31,6 +31,7 @@ import {
 import { connectionStatusText } from "@t3tools/client-runtime/connection";
 import {
   projectAuthAccess,
+  shouldShowAuthorizedClients,
   type AuthClientSessionPresentation,
 } from "@t3tools/client-runtime/presentation/connections";
 import {
@@ -2275,6 +2276,10 @@ export function ConnectionsSettings() {
   );
   const isLocalBackendRemotelyReachable =
     isLocalBackendNetworkAccessible || tailscaleHttpsEndpoint?.status === "available";
+  const showAuthorizedClients = shouldShowAuthorizedClients({
+    canManageAccess: canManageLocalBackend,
+    authPolicy: isLocalBackendRemotelyReachable ? "remote-reachable" : currentAuthPolicy,
+  });
   const defaultDesktopNetworkAdvertisedEndpoint = useMemo(
     () =>
       selectPairingEndpoint(visibleDesktopNetworkAdvertisedEndpoints, defaultAdvertisedEndpointKey),
@@ -3001,7 +3006,7 @@ export function ConnectionsSettings() {
             )}
           </SettingsSection>
 
-          {isLocalBackendRemotelyReachable ? (
+          {showAuthorizedClients ? (
             <SettingsSection
               title="Authorized clients"
               headerAction={

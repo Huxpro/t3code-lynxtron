@@ -2,7 +2,10 @@ import {
   formatRelativeTimeLabel,
   formatRelativeTimeUntilLabel,
 } from "@t3tools/client-runtime/presentation/time";
-import { canManageAuthAccess } from "@t3tools/client-runtime/presentation/connections";
+import {
+  canManageAuthAccess,
+  shouldShowAuthorizedClients,
+} from "@t3tools/client-runtime/presentation/connections";
 import {
   deriveSourceControlEmptyPresentation,
   projectSourceControlDiscovery,
@@ -376,8 +379,12 @@ export function SourceControlSettings() {
 }
 
 export function ConnectionsSettings() {
-  const { authAccess } = useT3ClientState();
+  const { authAccess, serverConfig } = useT3ClientState();
   const canManageAccess = canManageAuthAccess(authAccess);
+  const showAuthorizedClients = shouldShowAuthorizedClients({
+    canManageAccess,
+    authPolicy: serverConfig?.auth.policy,
+  });
   const [accessMutation, setAccessMutation] = useState<string | null>(null);
   const [accessError, setAccessError] = useState<string | null>(null);
   const [pairingCredential, setPairingCredential] = useState<PairingCredentialState | null>(null);
@@ -469,7 +476,7 @@ export function ConnectionsSettings() {
           />
         )}
       </SettingsSection>
-      {canManageAccess ? (
+      {showAuthorizedClients ? (
         <SettingsSection title="Authorized clients">
           <SettingsRow
             title="New pairing link"

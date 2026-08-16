@@ -2,7 +2,11 @@ import { AuthSessionId } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 import * as DateTime from "effect/DateTime";
 
-import { canManageAuthAccess, projectAuthAccess } from "./connections.ts";
+import {
+  canManageAuthAccess,
+  projectAuthAccess,
+  shouldShowAuthorizedClients,
+} from "./connections.ts";
 
 describe("connections presentation", () => {
   it("sorts current and connected clients before offline clients", () => {
@@ -162,5 +166,26 @@ describe("connections presentation", () => {
         ),
       }),
     ).toBe(true);
+  });
+
+  it("shows authorized clients only for remotely reachable administrative sessions", () => {
+    expect(
+      shouldShowAuthorizedClients({
+        canManageAccess: true,
+        authPolicy: "remote-reachable",
+      }),
+    ).toBe(true);
+    expect(
+      shouldShowAuthorizedClients({
+        canManageAccess: true,
+        authPolicy: "loopback-browser",
+      }),
+    ).toBe(false);
+    expect(
+      shouldShowAuthorizedClients({
+        canManageAccess: false,
+        authPolicy: "remote-reachable",
+      }),
+    ).toBe(false);
   });
 });

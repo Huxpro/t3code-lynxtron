@@ -3,6 +3,7 @@ import type {
   AuthClientMetadata,
   AuthEnvironmentScope,
   AuthSessionId,
+  ServerAuthPolicy,
   ServerAuthSessionMethod,
 } from "@t3tools/contracts";
 import { AuthAccessWriteScope } from "@t3tools/contracts";
@@ -70,6 +71,13 @@ export function canManageAuthAccess(presentation: AuthAccessPresentation): boole
       .find((clientSession) => clientSession.current)
       ?.scopes.includes(AuthAccessWriteScope) ?? false
   );
+}
+
+export function shouldShowAuthorizedClients(options: {
+  readonly canManageAccess: boolean;
+  readonly authPolicy: ServerAuthPolicy | null | undefined;
+}): boolean {
+  return options.canManageAccess && options.authPolicy === "remote-reachable";
 }
 
 function formatDateTime(value: { readonly epochMilliseconds: number }): string {
