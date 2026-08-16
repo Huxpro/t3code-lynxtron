@@ -125,6 +125,25 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "gitPublishDialog");
   });
 
+  it("verifies Native Beta mutation, disk persistence, and cold restart", () => {
+    assert.include(source, "async function verifyBetaMutation");
+    assert.include(source, "async function openBetaSettings");
+    assert.include(source, '"--verify-beta-mutation"');
+    assert.include(source, 'selector: ".settings-nav__item--beta"');
+    assert.include(source, 'const selector = ".settings-toggle--auto-settle"');
+    assert.include(source, 'measurement?.attributes["aria-checked"] === "false"');
+    assert.include(source, 'selector: ".settings-number-input"');
+    assert.include(source, "readIsolatedClientSettings(baseDir)");
+    assert.include(source, "sidebarAutoSettleAfterDays !== null");
+    assert.include(source, "disabledDiskValue");
+    assert.include(source, "enabledDiskValue");
+    assert.include(source, "Beta cold restart did not return an owned process id.");
+    assert.include(source, "restartedProcessId");
+    assert.include(source, "restartedClient");
+    assert.include(source, "Beta auto-settle value changed across cold restart");
+    assert.include(outcomeChecksSource, "betaMutation");
+  });
+
   it("verifies Composer disabled and recovered states during lifecycle recovery", () => {
     assert.include(source, "async function verifyLifecycleRecovery");
     assert.include(source, 'measurement?.attributes["data-composer-state"] === "disabled"');

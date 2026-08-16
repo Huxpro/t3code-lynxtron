@@ -2769,6 +2769,226 @@ async function verifyGitPublishDialog({ child, client, timeoutMs }) {
   };
 }
 
+function readIsolatedClientSettings(baseDir) {
+  const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
+  const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
+  return {
+    prefsPath,
+    clientSettings: prefs.clientSettings ?? null,
+  };
+}
+
+async function openBetaSettings({ child, client, timeoutMs }) {
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--beta",
+    timeoutMs,
+  });
+  const route = await waitForRoutePanel({
+    child,
+    client,
+    panel: "beta",
+    route: "/settings/beta",
+    timeoutMs,
+  });
+  return route;
+}
+
+async function verifyBetaMutation({
+  baseDir,
+  bundle,
+  child,
+  client,
+  desktopDir,
+  devToolCli,
+  executable,
+  height,
+  projectCwd,
+  timeoutMs,
+  width,
+}) {
+  const route = await openBetaSettings({ child, client, timeoutMs });
+  const selector = ".settings-toggle--auto-settle";
+  const before = await waitForMeasurement({
+    child,
+    client,
+    selector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["aria-checked"] === "true",
+  });
+  const beforeDays = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-number-input",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+
+  await tapSelector({ child, client, selector, timeoutMs });
+  const disabled = await waitForMeasurement({
+    child,
+    client,
+    selector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["aria-checked"] === "false",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-number-input",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const disabledPrefs = readIsolatedClientSettings(baseDir);
+  if (disabledPrefs.clientSettings?.sidebarAutoSettleAfterDays !== null) {
+    throw new Error(`Beta auto-settle disable did not persist: ${JSON.stringify(disabledPrefs)}`);
+  }
+
+  await tapSelector({ child, client, selector, timeoutMs });
+  const enabled = await waitForMeasurement({
+    child,
+    client,
+    selector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["aria-checked"] === "true",
+  });
+  const restoredDays = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-number-input",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const enabledPrefs = readIsolatedClientSettings(baseDir);
+  if (
+    !Number.isInteger(enabledPrefs.clientSettings?.sidebarAutoSettleAfterDays) ||
+    enabledPrefs.clientSettings.sidebarAutoSettleAfterDays <= 0
+  ) {
+    throw new Error(`Beta auto-settle enable did not persist: ${JSON.stringify(enabledPrefs)}`);
+  }
+
+  const initialProcessId = child.pid;
+  const initialClient = client.identity;
+  const initialRendererErrors = readRendererErrors({
+    clientId: client.identity.clientId,
+    devToolCli,
+    sessionId: client.identity.sessionId,
+  });
+  if (initialRendererErrors) {
+    throw new Error(`Renderer errors before Beta cold restart:\n${initialRendererErrors}`);
+  }
+  await client.close();
+  await stopOwnedProcess(child);
+
+  const restartedChild = spawn(executable, [desktopDir], {
+    cwd: APP_ROOT,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      T3_LYNXTRON_BASE_DIR: baseDir,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
+      T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!Number.isInteger(restartedChild.pid) || restartedChild.pid <= 0) {
+    throw new Error("Beta cold restart did not return an owned process id.");
+  }
+  const restartedLog = createLogCapture(restartedChild);
+  let restartedClient;
+  try {
+    restartedClient = await waitForOwnedSession({
+      child: restartedChild,
+      devToolCli,
+      expectedBundleUrl: pathToFileURL(bundle).href,
+      timeoutMs,
+    });
+    await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
+    const restartTransport = await waitForMainTransport({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartRoute = await openBetaSettings({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartedToggle = await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector,
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["aria-checked"] === "true",
+    });
+    const restartedDays = await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".settings-number-input",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes.value ===
+        String(enabledPrefs.clientSettings.sidebarAutoSettleAfterDays),
+    });
+    const restartedPrefs = readIsolatedClientSettings(baseDir);
+    if (
+      restartedPrefs.clientSettings?.sidebarAutoSettleAfterDays !==
+      enabledPrefs.clientSettings.sidebarAutoSettleAfterDays
+    ) {
+      throw new Error(
+        `Beta auto-settle value changed across cold restart: ${JSON.stringify({
+          before: enabledPrefs,
+          after: restartedPrefs,
+        })}`,
+      );
+    }
+
+    return {
+      outcome: {
+        status: "pass",
+        input: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selectors",
+        route,
+        before,
+        beforeDays,
+        disabled,
+        disabledDiskValue: disabledPrefs.clientSettings.sidebarAutoSettleAfterDays,
+        enabled,
+        restoredDays,
+        enabledDiskValue: enabledPrefs.clientSettings.sidebarAutoSettleAfterDays,
+        prefsPath: enabledPrefs.prefsPath,
+        coldRestart: {
+          initialProcessId,
+          initialClient,
+          restartedProcessId: restartedChild.pid,
+          restartedClient: restartedClient.identity,
+          transport: restartTransport,
+          route: restartRoute,
+          toggle: restartedToggle,
+          days: restartedDays,
+          diskValue: restartedPrefs.clientSettings.sidebarAutoSettleAfterDays,
+        },
+      },
+      child: restartedChild,
+      client: restartedClient,
+      log: restartedLog,
+    };
+  } catch (error) {
+    await restartedClient?.close();
+    await stopOwnedProcess(restartedChild);
+    throw error;
+  }
+}
+
 async function verifyDevBranding(client) {
   const backdrop = await readOptionalMeasurement(client, ".sidebar-stage-backdrop--dev");
   const brand = await readOptionalMeasurement(client, ".sidebar-brand");
@@ -3626,6 +3846,7 @@ async function runOnce({
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
+  verifyBetaMutation: shouldVerifyBetaMutation,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -3634,7 +3855,7 @@ async function runOnce({
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
   const baseDir = path.join(runRoot, "state");
   cpSync(fixtureDir, baseDir, { recursive: true });
-  const child = spawn(executable, [desktopDir], {
+  let child = spawn(executable, [desktopDir], {
     cwd: APP_ROOT,
     env: {
       ...process.env,
@@ -3653,7 +3874,7 @@ async function runOnce({
   if (!Number.isInteger(child.pid) || child.pid <= 0) {
     throw new Error("Lynxtron did not return an owned process id.");
   }
-  const log = createLogCapture(child);
+  let log = createLogCapture(child);
   let client;
   const startedAt = new Date().toISOString();
   try {
@@ -3923,6 +4144,26 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    let betaMutation;
+    if (shouldVerifyBetaMutation) {
+      const betaVerification = await verifyBetaMutation({
+        baseDir,
+        bundle,
+        child,
+        client,
+        desktopDir,
+        devToolCli,
+        executable,
+        height,
+        projectCwd,
+        timeoutMs,
+        width,
+      });
+      betaMutation = betaVerification.outcome;
+      child = betaVerification.child;
+      client = betaVerification.client;
+      log = betaVerification.log;
+    }
     const runtimeCapabilities = shouldVerifyRuntimeCapabilities
       ? await verifyRuntimeCapabilities(client)
       : undefined;
@@ -3968,6 +4209,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       gitPublishDialog,
+      betaMutation,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -4005,6 +4247,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       gitPublishDialog,
+      betaMutation,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -4070,6 +4313,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
+const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -4287,6 +4531,7 @@ for (let index = 1; index <= runs; index += 1) {
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
+      verifyBetaMutation: shouldVerifyBetaMutation,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,
