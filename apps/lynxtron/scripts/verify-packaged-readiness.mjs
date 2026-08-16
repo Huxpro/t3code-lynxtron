@@ -625,6 +625,43 @@ async function readSelectorRects(client, selector) {
   return rects;
 }
 
+async function readSelectorMeasurements(client, selector) {
+  await client.runCdp("DOM.enable", { useCompression: false });
+  const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
+  const root = commandResult(documentResponse)?.root;
+  const rootNodeId = root?.children?.[0]?.nodeId ?? root?.nodeId;
+  if (!Number.isInteger(rootNodeId) || rootNodeId <= 0) {
+    throw new Error("Lynx DevTool did not return a DOM root node.");
+  }
+  const nodesResponse = await client.runCdp("DOM.querySelectorAll", {
+    nodeId: rootNodeId,
+    selector,
+  });
+  return Promise.all(
+    (commandResult(nodesResponse)?.nodeIds ?? []).map(async (nodeId) => {
+      const [attributesResponse, boxResponse, textResponse] = await Promise.all([
+        client.runCdp("DOM.getAttributes", { nodeId }),
+        client.runCdp("DOM.getBoxModel", { nodeId }),
+        client.runCdp("DOM.innerText", { nodeId }),
+      ]);
+      const attributeList = commandResult(attributesResponse)?.attributes ?? [];
+      const attributes = Object.fromEntries(
+        Array.from({ length: Math.floor(attributeList.length / 2) }, (_, index) => [
+          attributeList[index * 2],
+          attributeList[index * 2 + 1],
+        ]),
+      );
+      const model = commandResult(boxResponse)?.model;
+      return {
+        nodeId,
+        rect: quadRect(model?.border ?? model?.content),
+        text: commandResult(textResponse)?.innerText ?? "",
+        attributes,
+      };
+    }),
+  );
+}
+
 async function readSelectorStyleValues(client, selector, property) {
   await client.runCdp("DOM.enable", { useCompression: false });
   const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
@@ -4717,11 +4754,11 @@ async function verifySettingsRouteBehavior({
           measurement.text.includes("Glass opacity") &&
           measurement.text.includes("Word wrap"),
       });
-      const theme = await readSelectorAttributeMeasurement(client, {
-        attribute: "id",
-        selector: ".settings-content--appearance .settings-row",
-        value: "theme",
-      });
+      const rows = await readSelectorMeasurements(
+        client,
+        ".settings-content--appearance .settings-row",
+      );
+      const theme = rows.find((row) => row.text.startsWith("Theme\n"));
       if (
         !theme ||
         theme.attributes["aria-disabled"] === "true" ||
@@ -4730,25 +4767,21 @@ async function verifySettingsRouteBehavior({
         throw new Error(`Appearance Theme row is not available: ${JSON.stringify(theme)}`);
       }
       const unavailableRows = [];
-      for (const id of [
-        "setting-glass-opacity",
+      for (const title of [
+        "Glass opacity",
         ...(appearancePanel.text.includes("Environment identification")
-          ? ["environment-identification"]
+          ? ["Environment identification"]
           : []),
-        "word-wrap",
+        "Word wrap",
       ]) {
-        const row = await readSelectorAttributeMeasurement(client, {
-          attribute: "id",
-          selector: ".settings-content--appearance .settings-row",
-          value: id,
-        });
+        const row = rows.find((candidate) => candidate.text.startsWith(`${title}\n`));
         if (
           !row ||
           row.attributes["aria-disabled"] !== "true" ||
           row.attributes["data-settings-unavailable"] !== "true"
         ) {
           throw new Error(
-            `Appearance unavailable row lost disabled semantics: ${JSON.stringify({ id, row })}`,
+            `Appearance unavailable row lost disabled semantics: ${JSON.stringify({ title, row })}`,
           );
         }
         unavailableRows.push(row);
