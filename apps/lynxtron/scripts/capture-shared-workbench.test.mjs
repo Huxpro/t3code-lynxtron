@@ -250,6 +250,20 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "composerToolbarAllocationMatches(webComposer, lynxComposer)");
   });
 
+  it("records Header action presentation instead of comparing outer boxes alone", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, "function readHeaderActionItems");
+    assert.include(workbench, "ariaLabel: item.getAttribute");
+    assert.include(workbench, "text: readComposedText(item)");
+    assert.include(workbench, "children: [...item.children].map");
+    assert.include(workbench, "textLeaves:");
+    assert.include(workbench, "icons:");
+    assert.include(workbench, "actionItems: readHeaderActionItems(");
+  });
+
   it("hashes the Web entry bundle declared by index.html", () => {
     assert.include(source, "async function webEntryBundlePath");
     assert.include(source, "type=[\"']module[\"']");

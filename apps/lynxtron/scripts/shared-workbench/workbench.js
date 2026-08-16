@@ -202,6 +202,29 @@ function readModelPickerRows(elements) {
   }));
 }
 
+function readHeaderActionItems(elements, ids = []) {
+  return [...elements].map((item, index) => ({
+    id: item.getAttribute("data-header-action") ?? ids[index] ?? String(index),
+    ariaLabel: item.getAttribute("aria-label"),
+    text: readComposedText(item),
+    box: readElementBox(item),
+    children: [...item.children].map((child) => ({
+      ariaLabel: child.getAttribute("aria-label"),
+      text: readComposedText(child),
+      box: readElementBox(child),
+    })),
+    textLeaves: [...item.querySelectorAll("x-text, text, span")]
+      .filter((leaf) => leaf.querySelector("x-text, text, span") === null && readComposedText(leaf))
+      .map((leaf) => ({
+        text: readComposedText(leaf),
+        box: readElementBox(leaf),
+      })),
+    icons: [...item.querySelectorAll("x-image, image, img, svg")].map((icon) =>
+      readElementBox(icon),
+    ),
+  }));
+}
+
 function readComposedText(element) {
   if (!element) return "";
   const text = [];
@@ -1049,10 +1072,7 @@ function readLynxPane() {
         project: readElementBox(root?.querySelector(".chat-header-project-group")),
         thread: readElementBox(root?.querySelector(".topbar__thread")),
         actions: readElementBox(root?.querySelector("[data-chat-header-actions]")),
-        actionItems: [...(root?.querySelectorAll("[data-header-action]") ?? [])].map((item) => ({
-          id: item.getAttribute("data-header-action"),
-          box: readElementBox(item),
-        })),
+        actionItems: readHeaderActionItems(root?.querySelectorAll("[data-header-action]") ?? []),
       },
       reviewMetrics: readReviewMetrics(root),
       pendingRequestMetrics,
@@ -1721,12 +1741,11 @@ function readWebPane() {
         project: readElementBox(doc.querySelector(".chat-header-project-group")),
         thread: readElementBox(doc.querySelector(".topbar__thread")),
         actions: readElementBox(doc.querySelector("[data-chat-header-actions]")),
-        actionItems: [...doc.querySelectorAll("[data-chat-header-actions] > *")].map(
-          (item, index) => ({
-            id: ["add", "open", "commit"][index] ?? String(index),
-            box: readElementBox(item),
-          }),
-        ),
+        actionItems: readHeaderActionItems(doc.querySelectorAll("[data-chat-header-actions] > *"), [
+          "add",
+          "open",
+          "commit",
+        ]),
       },
       reviewMetrics: readReviewMetrics(doc),
       pendingRequestMetrics: readPendingRequestMetrics(doc),
