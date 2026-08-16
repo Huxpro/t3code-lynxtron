@@ -93,6 +93,18 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "outsideTap: true");
   });
 
+  it("verifies a Native model row changes and persists the active thread selection", () => {
+    assert.include(source, "async function verifyModelSelectionMutation");
+    assert.include(source, '"--verify-model-selection-mutation"');
+    assert.include(source, 'selector: ".model-picker-row--unselected"');
+    assert.include(source, 'measurement?.attributes["data-model-picker-key"]');
+    assert.include(source, "waitForSequenceAdvance");
+    assert.include(source, "state?.activeThread?.modelSelection?.instanceId");
+    assert.include(source, "readPersistedThreadModelSelection");
+    assert.include(source, "projection_threads");
+    assert.include(source, '"native-model-selection-after.png"');
+  });
+
   it("drives titlebar panels and verifies Sidebar menu rows do not collapse", () => {
     assert.include(source, "async function verifyShellInteractions");
     assert.include(source, '"--verify-shell-interactions"');

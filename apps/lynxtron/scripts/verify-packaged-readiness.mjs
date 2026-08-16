@@ -1453,6 +1453,217 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
   };
 }
 
+function readPersistedThreadModelSelection(baseDir, threadId) {
+  const escapedThreadId = threadId.replaceAll("'", "''");
+  const query = spawnSync(
+    process.env.T3_NODE_BIN?.trim() || "node",
+    [
+      path.join(REPO_ROOT, "apps/server/scripts/t3-sqlite-state.ts"),
+      "query",
+      "--base-dir",
+      baseDir,
+      "--sql",
+      `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`,
+    ],
+    { cwd: REPO_ROOT, encoding: "utf8" },
+  );
+  if (query.status !== 0) {
+    throw new Error(
+      `Could not read persisted model selection: ${query.stderr || query.stdout || "unknown"}`,
+    );
+  }
+  const report = JSON.parse(query.stdout);
+  const stored = report.rows?.[0]?.model_selection_json;
+  return typeof stored === "string" ? JSON.parse(stored) : null;
+}
+
+async function verifyModelSelectionMutation({
+  baseDir,
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+}) {
+  let beforeState = await readClientState(client);
+  if (beforeState?.sessionStatus !== "idle" || beforeState?.activeThread?.session != null) {
+    const initialThreadId = beforeState?.activeThreadId;
+    const seedReport = JSON.parse(
+      readFileSync(path.join(baseDir, "workbench-seed-report.json"), "utf8"),
+    );
+    const idleThreadId = seedReport.dataset?.idleThread?.id;
+    if (typeof idleThreadId !== "string") {
+      throw new Error("Model selection fixture has no sessionless idle thread.");
+    }
+    await tapSelectorByAttribute({
+      attribute: "data-thread-id",
+      child,
+      client,
+      descendantSelector: ".sidebar-v2-row-card",
+      selector: ".sidebar-v2-row-item",
+      timeoutMs,
+      value: idleThreadId,
+    });
+    beforeState = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === idleThreadId &&
+        state?.activeThreadId !== initialThreadId &&
+        state?.sessionStatus === "idle" &&
+        state?.activeThread?.session == null,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".sidebar-v2-row-item--active",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-thread-id"] === idleThreadId,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-frame",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
+    });
+  }
+  const threadId = beforeState?.activeThreadId;
+  const beforeSelection = beforeState?.activeThread?.modelSelection;
+  if (
+    typeof threadId !== "string" ||
+    typeof beforeSelection?.instanceId !== "string" ||
+    typeof beforeSelection?.model !== "string"
+  ) {
+    throw new Error(`Model selection baseline is incomplete: ${JSON.stringify(beforeState)}`);
+  }
+  const beforeModel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model",
+    timeoutMs,
+    predicate: (measurement) => Boolean(measurement?.text.trim()),
+  });
+  const beforeSequence = await readRendererReadiness(client);
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model",
+    timeoutMs,
+  });
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const content = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-content",
+    timeoutMs,
+    predicate: (measurement) =>
+      typeof measurement?.attributes["data-model-picker-selected-provider"] === "string",
+  });
+  const target = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-row--unselected",
+    timeoutMs,
+    predicate: (measurement) => {
+      const key = measurement?.attributes["data-model-picker-key"];
+      return typeof key === "string" && key.includes(":");
+    },
+  });
+  const targetKey = target.attributes["data-model-picker-key"];
+  const separator = targetKey.indexOf(":");
+  const targetSelection = {
+    instanceId: targetKey.slice(0, separator),
+    model: targetKey.slice(separator + 1),
+  };
+  await tapSelector({
+    child,
+    client,
+    selector: ".model-picker-row--unselected",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const afterSequence = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeSequence,
+    timeoutMs,
+  });
+  const afterState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === threadId &&
+      state?.activeThread?.modelSelection?.instanceId === targetSelection.instanceId &&
+      state?.activeThread?.modelSelection?.model === targetSelection.model,
+  });
+  const afterModel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model",
+    timeoutMs,
+    predicate: (measurement) =>
+      Boolean(measurement?.text.trim()) && measurement.text.trim() !== beforeModel.text.trim(),
+  });
+  const persistedSelection = readPersistedThreadModelSelection(baseDir, threadId);
+  if (
+    persistedSelection?.instanceId !== targetSelection.instanceId ||
+    persistedSelection?.model !== targetSelection.model
+  ) {
+    throw new Error(
+      `Model selection did not persist: ${JSON.stringify({ targetSelection, persistedSelection })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-model-selection-after.png",
+  });
+
+  return {
+    status: "pass",
+    input: "DevTool Input.emulateTouchFromMouseEvent on measured model trigger and row",
+    threadId,
+    panel: panel.rect,
+    activeProvider: content.attributes["data-model-picker-selected-provider"],
+    target: {
+      key: targetKey,
+      label: target.text.trim(),
+      rect: target.rect,
+    },
+    selection: {
+      before: beforeSelection,
+      after: afterState.activeThread.modelSelection,
+      persisted: persistedSelection,
+    },
+    modelLabel: {
+      before: beforeModel.text.trim(),
+      after: afterModel.text.trim(),
+    },
+    sequence: {
+      before: beforeSequence.lastSeq,
+      after: afterSequence.lastSeq,
+    },
+    overlayDismissed: true,
+    screenshot,
+  };
+}
+
 async function verifyComposerStopBehavior({
   child,
   client,
@@ -3725,6 +3936,86 @@ async function tapSelector({ child, client, point = "center", selector, timeoutM
   }
 }
 
+async function tapSelectorByAttribute({
+  attribute,
+  child,
+  client,
+  descendantSelector,
+  selector,
+  timeoutMs,
+  value,
+}) {
+  await client.runCdp("DOM.enable", { useCompression: false });
+  const deadline = Date.now() + timeoutMs;
+  let nodeId;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error(`Lynxtron exited before ${selector}[${attribute}] became tappable.`);
+    }
+    const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
+    const root = commandResult(documentResponse)?.root;
+    const rootNodeId = root?.children?.[0]?.nodeId ?? root?.nodeId;
+    if (!Number.isInteger(rootNodeId) || rootNodeId <= 0) {
+      throw new Error("Lynx DevTool did not return a DOM root node.");
+    }
+    const nodesResponse = await client.runCdp("DOM.querySelectorAll", {
+      nodeId: rootNodeId,
+      selector,
+    });
+    for (const candidateId of commandResult(nodesResponse)?.nodeIds ?? []) {
+      const attributesResponse = await client.runCdp("DOM.getAttributes", {
+        nodeId: candidateId,
+      });
+      const attributes = commandResult(attributesResponse)?.attributes ?? [];
+      const record = Object.fromEntries(
+        Array.from({ length: Math.floor(attributes.length / 2) }, (_, index) => [
+          attributes[index * 2],
+          attributes[index * 2 + 1],
+        ]),
+      );
+      if (record[attribute] === value) {
+        nodeId = candidateId;
+        break;
+      }
+    }
+    if (Number.isInteger(nodeId) && nodeId > 0) break;
+    await waitForChildExit(child, 100);
+  }
+  if (!Number.isInteger(nodeId) || nodeId <= 0) {
+    throw new Error(`Lynx route smoke could not find ${selector}[${attribute}="${value}"].`);
+  }
+  if (descendantSelector) {
+    const descendantResponse = await client.runCdp("DOM.querySelector", {
+      nodeId,
+      selector: descendantSelector,
+    });
+    const descendantNodeId = commandResult(descendantResponse)?.nodeId;
+    if (!Number.isInteger(descendantNodeId) || descendantNodeId <= 0) {
+      throw new Error(
+        `Lynx route smoke could not find ${descendantSelector} within ${selector}[${attribute}="${value}"].`,
+      );
+    }
+    nodeId = descendantNodeId;
+  }
+  const boxResponse = await client.runCdp("DOM.getBoxModel", { nodeId });
+  const model = commandResult(boxResponse)?.model;
+  const tapPoint = quadPoint(model?.border ?? model?.content);
+  const timestamp = Date.now() / 1000;
+  for (const [type, offset] of [
+    ["mouseMoved", 0],
+    ["mousePressed", 0.01],
+    ["mouseReleased", 0.02],
+  ]) {
+    await client.runCdp("Input.emulateTouchFromMouseEvent", {
+      type,
+      x: tapPoint.x,
+      y: tapPoint.y,
+      timestamp: timestamp + offset,
+      button: "left",
+    });
+  }
+}
+
 async function restoreOutcomeSurface({ child, client, timeoutMs }) {
   const closed = [];
   for (const [surfaceSelector, dismissSelector, point] of [
@@ -4461,6 +4752,7 @@ async function runOnce({
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
   verifyComposerBranding,
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
+  verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
   verifyComposerStop,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
@@ -4692,6 +4984,16 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const modelSelectionMutation = shouldVerifyModelSelectionMutation
+      ? await verifyModelSelectionMutation({
+          baseDir,
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
     const composerStop = verifyComposerStop
       ? await verifyComposerStopBehavior({
           child,
@@ -4893,6 +5195,7 @@ async function runOnce({
       sourceControlError,
       composer,
       modelPickerFidelity,
+      modelSelectionMutation,
       composerStop,
       composerWorkingState,
       completedTranscriptState,
@@ -4934,6 +5237,7 @@ async function runOnce({
       sourceControlError,
       composer,
       modelPickerFidelity,
+      modelSelectionMutation,
       composerStop,
       composerWorkingState,
       completedTranscriptState,
@@ -4995,6 +5299,9 @@ const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
 const verifyComposerBranding = process.argv.includes("--verify-composer-branding");
 const shouldVerifyModelPickerFidelity = process.argv.includes("--verify-model-picker-fidelity");
+const shouldVerifyModelSelectionMutation = process.argv.includes(
+  "--verify-model-selection-mutation",
+);
 const verifyComposerStop = process.argv.includes("--verify-composer-stop");
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
@@ -5232,6 +5539,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
       verifyComposerBranding,
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
+      verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
       verifyComposerStop,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
