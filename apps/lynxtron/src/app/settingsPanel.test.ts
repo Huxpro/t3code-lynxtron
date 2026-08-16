@@ -137,6 +137,19 @@ describe("Lynx Settings route projection", () => {
     expect(settings).not.toContain("The Lynx Sidebar v2 renderer has not moved yet");
   });
 
+  it("uses the shared fixed network-access projection without a duplicate inventory row", () => {
+    const settings = readFileSync(
+      path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),
+      "utf8",
+    );
+    expect(settings).toContain("fixedNetworkAccessPresentation(serverConfig?.auth.policy)");
+    expect(settings).toContain('className="settings-connections-network-access"');
+    expect(settings).toContain('ariaLabel="Enable network access"');
+    expect(settings).toContain("value={networkAccess.checked}");
+    expect(settings).toMatch(/value=\{networkAccess\.checked\}[\s\S]+?disabled/);
+    expect(settings).not.toContain('title="Access inventory"');
+  });
+
   it("matches the canonical Source Control empty and error anatomy", () => {
     const settings = readFileSync(
       path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),

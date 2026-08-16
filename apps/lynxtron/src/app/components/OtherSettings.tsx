@@ -4,6 +4,7 @@ import {
 } from "@t3tools/client-runtime/presentation/time";
 import {
   canManageAuthAccess,
+  fixedNetworkAccessPresentation,
   shouldShowAuthorizedClients,
 } from "@t3tools/client-runtime/presentation/connections";
 import {
@@ -381,6 +382,7 @@ export function SourceControlSettings() {
 export function ConnectionsSettings() {
   const { authAccess, serverConfig } = useT3ClientState();
   const canManageAccess = canManageAuthAccess(authAccess);
+  const networkAccess = fixedNetworkAccessPresentation(serverConfig?.auth.policy);
   const showAuthorizedClients = shouldShowAuthorizedClients({
     canManageAccess,
     authPolicy: serverConfig?.auth.policy,
@@ -459,16 +461,14 @@ export function ConnectionsSettings() {
     <SettingsPageContainer className="flex w-full min-w-0 flex-col self-stretch">
       <SettingsSection title="This environment">
         {canManageAccess ? (
-          <>
-            <SettingsRow
-              title="Network access"
-              description="Local only. Lynxtron launches this backend on the loopback interface."
-            />
-            <SettingsRow
-              title="Access inventory"
-              description={`${authAccess.clientSessionCount} authorized ${authAccess.clientSessionCount === 1 ? "client" : "clients"} · ${authAccess.pairingLinkCount} active pairing ${authAccess.pairingLinkCount === 1 ? "link" : "links"}`}
-            />
-          </>
+          <SettingsRow
+            className="settings-connections-network-access"
+            title="Network access"
+            description={networkAccess.description}
+            control={
+              <Toggle ariaLabel="Enable network access" value={networkAccess.checked} disabled />
+            }
+          />
         ) : (
           <SettingsRow
             title="Administrative access"

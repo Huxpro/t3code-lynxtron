@@ -80,6 +80,23 @@ export function shouldShowAuthorizedClients(options: {
   return options.canManageAccess && options.authPolicy === "remote-reachable";
 }
 
+export function fixedNetworkAccessPresentation(authPolicy: ServerAuthPolicy | null | undefined): {
+  readonly checked: boolean;
+  readonly description: string;
+} {
+  return authPolicy === "remote-reachable"
+    ? {
+        checked: true,
+        description:
+          "This backend is already configured for remote access. Network exposure changes must be made where the server is launched.",
+      }
+    : {
+        checked: false,
+        description:
+          "This backend is only reachable on this machine. Restart it with a non-loopback host to enable remote pairing.",
+      };
+}
+
 function formatDateTime(value: { readonly epochMilliseconds: number }): string {
   // @effect-diagnostics-next-line globalDate:off -- schema-free renderer projection
   return new Date(value.epochMilliseconds).toISOString();

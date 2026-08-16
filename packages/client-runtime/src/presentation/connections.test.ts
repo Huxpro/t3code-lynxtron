@@ -4,6 +4,7 @@ import * as DateTime from "effect/DateTime";
 
 import {
   canManageAuthAccess,
+  fixedNetworkAccessPresentation,
   projectAuthAccess,
   shouldShowAuthorizedClients,
 } from "./connections.ts";
@@ -187,5 +188,21 @@ describe("connections presentation", () => {
         authPolicy: "remote-reachable",
       }),
     ).toBe(false);
+  });
+
+  it("describes fixed network exposure from the server auth policy", () => {
+    expect(fixedNetworkAccessPresentation("loopback-browser")).toEqual({
+      checked: false,
+      description:
+        "This backend is only reachable on this machine. Restart it with a non-loopback host to enable remote pairing.",
+    });
+    expect(fixedNetworkAccessPresentation("remote-reachable")).toEqual({
+      checked: true,
+      description:
+        "This backend is already configured for remote access. Network exposure changes must be made where the server is launched.",
+    });
+    expect(fixedNetworkAccessPresentation(null)).toEqual(
+      fixedNetworkAccessPresentation("loopback-browser"),
+    );
   });
 });

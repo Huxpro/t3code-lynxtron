@@ -30,6 +30,7 @@ import {
 } from "@t3tools/contracts";
 import { connectionStatusText } from "@t3tools/client-runtime/connection";
 import {
+  fixedNetworkAccessPresentation,
   projectAuthAccess,
   shouldShowAuthorizedClients,
   type AuthClientSessionPresentation,
@@ -1876,6 +1877,7 @@ export function ConnectionsSettings() {
   const isLocalBackendNetworkAccessible = desktopBridge
     ? desktopServerExposureState?.mode === "network-accessible"
     : currentAuthPolicy === "remote-reachable";
+  const fixedNetworkAccess = fixedNetworkAccessPresentation(currentAuthPolicy);
   const trimmedTailscaleServePortInput = tailscaleServePortInput.trim();
   const parsedTailscaleServePort = Number(trimmedTailscaleServePortInput);
   const isTailscaleServePortValid =
@@ -2916,19 +2918,16 @@ export function ConnectionsSettings() {
   );
   const renderDisabledNetworkAccessRow = () => (
     <SettingsRow
+      className="settings-connections-network-access"
       title="Network access"
-      description={
-        currentAuthPolicy === "remote-reachable"
-          ? "This backend is already configured for remote access. Network exposure changes must be made where the server is launched."
-          : "This backend is only reachable on this machine. Restart it with a non-loopback host to enable remote pairing."
-      }
+      description={fixedNetworkAccess.description}
       control={
         <Tooltip>
           <TooltipTrigger
             render={
               <span className="inline-flex">
                 <Switch
-                  checked={isLocalBackendNetworkAccessible}
+                  checked={fixedNetworkAccess.checked}
                   disabled
                   aria-label="Enable network access"
                 />
