@@ -868,13 +868,15 @@ async function verifyComposerGeometry(client, expectedTheme) {
   const contextControls = await readSelectorRects(client, ".composer-context-control");
   const contextIcons = await readSelectorRects(client, ".composer-context-icon");
   const contextLightBands = await readSelectorRects(client, ".composer-context-light-band");
+  const contextLightBandColors = await readSelectorStyleValues(
+    client,
+    ".composer-context-light-band",
+    "background-color",
+  );
   const contextLabels = [composer.typography.contextCheckout, composer.typography.contextBranch];
   const themeRoot = composer.colors.themeRoot;
   const contextBackdrop = composer.colors.contextBackdrop;
   const contextLegacyBand = composer.colors.contextLegacyBand;
-  const contextLightBandFirst = composer.colors.contextLightBandFirst;
-  const contextLightBandMiddle = composer.colors.contextLightBandMiddle;
-  const contextLightBandLast = composer.colors.contextLightBandLast;
   const wrongSize = (rect, size) =>
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
@@ -928,9 +930,10 @@ async function verifyComposerGeometry(client, expectedTheme) {
           contextBackdrop.style.borderBottomColor === "rgb(234,234,234)" &&
           contextLegacyBand.style.display === "none" &&
           contextLightBandsAligned &&
-          contextLightBandFirst.style.backgroundColor === "rgb(222,222,222)" &&
-          contextLightBandMiddle.style.backgroundColor === "rgb(250,250,250)" &&
-          contextLightBandLast.style.backgroundColor === "rgb(255,255,255)")));
+          contextLightBandColors.length === 31 &&
+          contextLightBandColors[0] === "rgb(222,222,222)" &&
+          contextLightBandColors[15] === "rgb(250,250,250)" &&
+          contextLightBandColors[30] === "rgb(255,255,255)")));
   if (
     chevrons.length < 2 ||
     chevrons.length > 3 ||
@@ -1146,18 +1149,6 @@ async function readComposerOutcome(client, options = {}) {
               { id: "context", lynx: ".composer-context-strip" },
               { id: "contextBackdrop", lynx: ".composer-context-backdrop" },
               { id: "contextLegacyBand", lynx: ".composer-context-backdrop-band" },
-              {
-                id: "contextLightBandFirst",
-                lynx: '[data-composer-context-light-band="0"]',
-              },
-              {
-                id: "contextLightBandMiddle",
-                lynx: '[data-composer-context-light-band="15"]',
-              },
-              {
-                id: "contextLightBandLast",
-                lynx: '[data-composer-context-light-band="30"]',
-              },
             ]
           : []),
       ],
