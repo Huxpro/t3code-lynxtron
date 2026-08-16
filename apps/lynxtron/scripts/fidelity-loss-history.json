@@ -6771,6 +6771,126 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-working-header-git-publish-fix-current",
+      "observedAt": "2026-08-16T11:42:06+09:00",
+      "commit": "0b5d7a25215ba37a91f494f2d8f6f441fb86c4d0",
+      "codeCommit": "0b5d7a25215ba37a91f494f2d8f6f441fb86c4d0",
+      "codeState": "commit",
+      "label": "Existing Thread Working Header Git publish fix",
+      "narrative": "The clean no-remote repository state now reaches one shared Git quick-action projection in Web and Lynx: open_publish with the label Publish repository. Connection-scoped VCS refresh rejects stale cwd results, the Header uses content-driven geometry instead of a fixed 101px Commit placeholder, and the real three-step Publish wizard opens from either side of the split action. Header-actions SSIM improves from 0.688812 to 0.824786 and full-frame SSIM from 0.944451 to 0.947815. Separate light and dark Browser states prove matched wizard semantics and real backdrop dismissal without publishing an external repository.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The retained before and after Header captures share the immutable running session, clean no-remote repository, light theme, 1440x900 viewport, final semantic readiness gates, and Web authority. Harness mismatches are recorded separately and do not enter the product delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/header-git-publish-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f50cf30669dee10cb05b665d265e8cabc6ad822105a354dd58b95024a51c8e33"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-git-quick-action-projection",
+              "source": "Both panes expose open_publish, Publish repository, one clean no-remote cwd, three Publish steps, four provider states, and no external publish side effect"
+            },
+            "geometry": {
+              "anchorDeltas": [0.015625, 0, 0.015625, 0, 0.265625, 0],
+              "anchorScale": 1440,
+              "confidence": 0.99,
+              "method": "header-git-action-anatomy",
+              "source": "Outer, primary, text, and options geometry after content-driven Header layout; only subpixel text-width quantization remains"
+            },
+            "typography": {
+              "residual": 0.175214,
+              "confidence": 0.99,
+              "method": "header-actions-ssim",
+              "source": "1 - Header-actions SSIM 0.824786 after matching label, intrinsic width, and optical text placement"
+            },
+            "material": {
+              "residual": 0.052185,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.947815 at the final light Working frame; the separate Publish overlay remains measured but is not substituted into this state residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-publish-open-dismiss",
+              "source": "Real Browser pointer input opens both three-step wizards and separate backdrop pointer input dismisses both in light and dark"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-vcs-readiness",
+              "source": "Lynx diagnostics include readVcsStatus and discoverSourceControl, both captures have zero renderer errors, and every loop reports zero owned or orphaned agent-browser processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-working-native-git-publish-certification-current",
+      "observedAt": "2026-08-16T11:42:06+09:00",
+      "commit": "66767382708ee72d19a365cf2a6e3807eefacef8",
+      "codeCommit": "0b5d7a25215ba37a91f494f2d8f6f441fb86c4d0",
+      "codeState": "commit",
+      "label": "Existing Thread Working Native Git publish certification",
+      "narrative": "A PID-owned exact-bundle Native run loads a69444d2 at 1440x900 light against disposable state copied from the accepted Browser fixture. Native projects open_publish and Publish repository, opens a 576x428 three-step wizard with four 254x50 provider cards and authenticated GitHub active, advances the main transport from sequence 11 to 12, dismisses through the real backdrop, reports zero renderer errors, and disposes isolated state. This is Native content, geometry, interaction, and runtime evidence, not Native pixel parity.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact staged Native bundle independently corroborates the product repair and closes the prior Browser-only interaction gap without assigning another measured pixel delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/header-git-publish-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f50cf30669dee10cb05b665d265e8cabc6ad822105a354dd58b95024a51c8e33"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-working"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-git-publish-content",
+              "source": "Native Header label and kind, three wizard steps, four provider cards, and authenticated GitHub match the canonical clean no-remote state"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1440,
+              "confidence": 0.99,
+              "method": "native-publish-wizard-geometry",
+              "source": "157x24 Header action, 576x428 dialog, three 170x58 steps, and four 254x50 provider cards are all measured from the exact bundle"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-publish-open-dismiss",
+              "source": "Measured Native DevTool tap opens the wizard, authenticated provider readiness settles, and measured backdrop tap removes the dialog"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-git-publish-readiness",
+              "source": "Main transport readiness advances 2 to 3, Publish open advances 11 to 12, renderer errors are zero, isolated state is disposed, and agent-browser leak gates remain zero"
+            }
+          }
+        }
+      ]
     }
   ]
 }
