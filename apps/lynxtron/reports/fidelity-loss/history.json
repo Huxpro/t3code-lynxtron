@@ -9950,6 +9950,128 @@
       ],
       "fromPoint": "settings-archive-mutation-native-certification-current",
       "toPoint": "settings-connections-mutation-native-certification-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6,
+      "commit": "7255b977742b14089680fbeaca7cea1170f5f99d",
+      "committedAt": "2026-08-16T13:29:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): expose pairing mutation state",
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 253,
+      "commit": "7e717ab1cb2399e82d0a4477b66e71a36a7fa33e",
+      "committedAt": "2026-08-16T13:30:45+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify pairing revoke persistence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 87,
+      "commit": "a6affe62a51971dc09c685fc46e44bcd0378e53e",
+      "committedAt": "2026-08-16T13:33:13+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record connections mutation fidelity",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 49,
+      "commit": "660a95d3c9c1207da3cf1797b3060745302298d5",
+      "committedAt": "2026-08-16T13:35:35+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register connections mutation fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 673,
+      "commit": "5dff6ed05d60fb6e7f01cdfa99c7ff427bc3b330",
+      "committedAt": "2026-08-16T13:37:30+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): refresh connections mutation loss report",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 49,
+      "commit": "761d87a000e1a4153fda7b1cd4f04c0b80c98654",
+      "committedAt": "2026-08-16T13:48:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): declare transcript fixture identity",
+      "surfaces": [
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6,
+      "commit": "9779a5864179051b0463b15e6f641c6668d5c5bb",
+      "committedAt": "2026-08-16T14:00:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align the base Sidebar brand",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
+    },
+    {
+      "allocation": "measured-product-change",
+      "changedLines": 0,
+      "commit": "9779a5864",
+      "committedAt": "2026-08-16T14:03:03+09:00",
+      "confidence": 0.99,
+      "delta": -0.008635,
+      "reason": "Direct before and after Browser captures share the same immutable failed-turn snapshot, route, session projection, dark theme, 1280x820 viewport, bundles except for the one-token brand offset, and zero-error gates. Transcript pixels are unchanged.",
+      "subject": "Existing Thread Failed current brand fix",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "settings-connections-mutation-native-certification-current",
+      "toPoint": "existing-thread-failed-current-brand-fix"
     }
   ],
   "commitSeries": [
@@ -17157,9 +17279,97 @@
       "rawLoss": 0.476993,
       "smoothedLoss": 0.480276,
       "subject": "Settings Connections Native mutation certification"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7255b977742b14089680fbeaca7cea1170f5f99d",
+      "committedAt": "2026-08-16T13:29:39+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.476993,
+      "smoothedLoss": 0.479554,
+      "subject": "test(lynxtron): expose pairing mutation state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "7e717ab1cb2399e82d0a4477b66e71a36a7fa33e",
+      "committedAt": "2026-08-16T13:30:45+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.476993,
+      "smoothedLoss": 0.478991,
+      "subject": "test(lynxtron): verify pairing revoke persistence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a6affe62a51971dc09c685fc46e44bcd0378e53e",
+      "committedAt": "2026-08-16T13:33:13+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.476993,
+      "smoothedLoss": 0.478551,
+      "subject": "docs(lynxtron): record connections mutation fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "660a95d3c9c1207da3cf1797b3060745302298d5",
+      "committedAt": "2026-08-16T13:35:35+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.476993,
+      "smoothedLoss": 0.478208,
+      "subject": "docs(lynxtron): register connections mutation fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5dff6ed05d60fb6e7f01cdfa99c7ff427bc3b330",
+      "committedAt": "2026-08-16T13:37:30+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.476993,
+      "smoothedLoss": 0.477941,
+      "subject": "docs(lynxtron): refresh connections mutation loss report"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "761d87a000e1a4153fda7b1cd4f04c0b80c98654",
+      "committedAt": "2026-08-16T13:48:48+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.476993,
+      "smoothedLoss": 0.477732,
+      "subject": "test(lynxtron): declare transcript fixture identity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9779a5864179051b0463b15e6f641c6668d5c5bb",
+      "committedAt": "2026-08-16T14:00:50+09:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.476993,
+      "smoothedLoss": 0.47757,
+      "subject": "fix(lynxtron): align the base Sidebar brand"
+    },
+    {
+      "allocation": "measured-product-change",
+      "commit": "9779a5864",
+      "committedAt": "2026-08-16T14:03:03+09:00",
+      "confidence": 0.99,
+      "delta": -0.008635,
+      "measuredCheckpoint": "existing-thread-failed-current-brand-fix",
+      "rawLoss": 0.468358,
+      "smoothedLoss": 0.475543,
+      "subject": "Existing Thread Failed current brand fix"
     }
   ],
-  "generatedAt": "2026-08-16T13:32:01+09:00",
+  "generatedAt": "2026-08-16T14:03:03+09:00",
   "historyId": "t3-lynxtron-fidelity-history",
   "model": {
     "clients": {
@@ -71646,6 +71856,512 @@
       ],
       "bestLoss": 0.476993,
       "improvementFromBaseline": 0.506444
+    },
+    {
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before and after Browser captures share the same immutable failed-turn snapshot, route, session projection, dark theme, 1280x820 viewport, bundles except for the one-token brand offset, and zero-error gates. Transcript pixels are unchanged."
+      },
+      "commit": "9779a5864",
+      "codeCommit": "9779a5864",
+      "codeState": "commit",
+      "id": "existing-thread-failed-current-brand-fix",
+      "label": "Existing Thread Failed current brand fix",
+      "narrative": "A current failed turn is rebuilt through the real connector with an invalid OpenCode model and admitted only after latestTurn=error, sessionStatus=error, and the persisted failure reason agree. The fixture harness first needed two corrections: it now records the provider-generated persisted thread title as the canonical Sidebar identity, and packaged transcript verification consumes the transcript manifest rather than Sidebar and preference sidecars. Under one immutable dark 1280x820 snapshot, Web places the Sidebar brand at x=60 while Lynx retained the obsolete authority offset x=130. Moving the base host to the shared 60px titlebar inset aligns both Browser renderers and exact-bundle Native. Full-frame SSIM improves from 0.941368 to 0.942441, Sidebar SSIM from 0.877036 to 0.882504, and Sidebar-top SSIM from 0.748305 to 0.845063. Transcript SSIM remains exactly 0.968888, proving the measured delta is isolated to Sidebar chrome. Native independently verifies the persisted title, Big Pickle fallback, error banner, failed work row, Local checkout, brand x=60, main transport 2 to 4, zero renderer errors, and isolated cleanup. Remaining 4px transcript offset, 8px failed-row height difference, and material residual stay explicit.",
+      "observedAt": "2026-08-16T14:03:03+09:00",
+      "screenshots": [],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-failed-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "3d570e867765f0d312b3ea7de5da0791a18159595ca29ca399e692c6705614fb"
+        }
+      ],
+      "confidence": 0.542288,
+      "evidenceDebt": 0.457712,
+      "loss": 0.468358,
+      "observedResidual": 0.019631,
+      "byDimension": {
+        "content": {
+          "confidence": 0.743263,
+          "evidenceDebt": 0.256737,
+          "loss": 0.264204,
+          "observedResidual": 0.010046
+        },
+        "geometry": {
+          "confidence": 0.698332,
+          "evidenceDebt": 0.301668,
+          "loss": 0.3053,
+          "observedResidual": 0.005202
+        },
+        "typography": {
+          "confidence": 0.053877,
+          "evidenceDebt": 0.946123,
+          "loss": 0.949924,
+          "observedResidual": 0.070556
+        },
+        "material": {
+          "confidence": 0.404696,
+          "evidenceDebt": 0.595304,
+          "loss": 0.634474,
+          "observedResidual": 0.096789
+        },
+        "interaction": {
+          "confidence": 0.419069,
+          "evidenceDebt": 0.580931,
+          "loss": 0.590343,
+          "observedResidual": 0.02246
+        },
+        "runtime": {
+          "confidence": 0.761859,
+          "evidenceDebt": 0.238141,
+          "loss": 0.242847,
+          "observedResidual": 0.006177
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.546014,
+          "evidenceDebt": 0.453986,
+          "loss": 0.458232,
+          "observedResidual": 0.007776
+        },
+        "composer": {
+          "confidence": 0.527915,
+          "evidenceDebt": 0.472085,
+          "loss": 0.494077,
+          "observedResidual": 0.041658
+        },
+        "transcript": {
+          "confidence": 0.521636,
+          "evidenceDebt": 0.478364,
+          "loss": 0.48444,
+          "observedResidual": 0.011646
+        },
+        "overlays": {
+          "confidence": 0.485848,
+          "evidenceDebt": 0.514152,
+          "loss": 0.522069,
+          "observedResidual": 0.016296
+        },
+        "settings": {
+          "confidence": 0.544371,
+          "evidenceDebt": 0.455629,
+          "loss": 0.471075,
+          "observedResidual": 0.028373
+        },
+        "review": {
+          "confidence": 0.709729,
+          "evidenceDebt": 0.290271,
+          "loss": 0.29825,
+          "observedResidual": 0.011242
+        }
+      },
+      "states": [
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.762233,
+          "observedResidual": 0.117026,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.738422,
+          "observedResidual": 0.028603,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 0.735696,
+          "observedResidual": 0.018478,
+          "weight": 4
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.734483,
+          "observedResidual": 0.013975,
+          "weight": 3
+        },
+        {
+          "confidence": 0.26928,
+          "evidenceDebt": 0.73072,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.734043,
+          "observedResidual": 0.012341,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31248,
+          "evidenceDebt": 0.68752,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.693002,
+          "observedResidual": 0.017543,
+          "weight": 5
+        },
+        {
+          "confidence": 0.31576,
+          "evidenceDebt": 0.68424,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.68929,
+          "observedResidual": 0.015994,
+          "weight": 4
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.658151,
+          "observedResidual": 0.019029,
+          "weight": 4
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.655931,
+          "observedResidual": 0.012658,
+          "weight": 3
+        },
+        {
+          "confidence": 0.34848,
+          "evidenceDebt": 0.65152,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.655907,
+          "observedResidual": 0.012589,
+          "weight": 3
+        },
+        {
+          "confidence": 0.39978,
+          "evidenceDebt": 0.60022,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.654573,
+          "observedResidual": 0.135958,
+          "weight": 5
+        },
+        {
+          "confidence": 0.37038,
+          "evidenceDebt": 0.62962,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.649667,
+          "observedResidual": 0.054125,
+          "weight": 3
+        },
+        {
+          "confidence": 0.44025,
+          "evidenceDebt": 0.55975,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.580909,
+          "observedResidual": 0.04806,
+          "weight": 4
+        },
+        {
+          "confidence": 0.43428,
+          "evidenceDebt": 0.56572,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.56572,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.55508,
+          "observedResidual": 0.013656,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.555039,
+          "observedResidual": 0.013566,
+          "weight": 4
+        },
+        {
+          "confidence": 0.45108,
+          "evidenceDebt": 0.54892,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.553298,
+          "observedResidual": 0.009705,
+          "weight": 3
+        },
+        {
+          "confidence": 0.48312,
+          "evidenceDebt": 0.51688,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.523425,
+          "observedResidual": 0.013547,
+          "weight": 4
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.417227,
+          "observedResidual": 0.012316,
+          "weight": 3
+        },
+        {
+          "confidence": 0.61854,
+          "evidenceDebt": 0.38146,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.413369,
+          "observedResidual": 0.051588,
+          "weight": 5
+        },
+        {
+          "confidence": 0.59004,
+          "evidenceDebt": 0.40996,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.413238,
+          "observedResidual": 0.005556,
+          "weight": 4
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 3
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60789,
+          "evidenceDebt": 0.39211,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.397367,
+          "observedResidual": 0.008647,
+          "weight": 4
+        },
+        {
+          "confidence": 0.61794,
+          "evidenceDebt": 0.38206,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.387079,
+          "observedResidual": 0.008122,
+          "weight": 5
+        },
+        {
+          "confidence": 0.61914,
+          "evidenceDebt": 0.38086,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.385521,
+          "observedResidual": 0.007528,
+          "weight": 5
+        },
+        {
+          "confidence": 0.63612,
+          "evidenceDebt": 0.36388,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.371442,
+          "observedResidual": 0.011887,
+          "weight": 5
+        },
+        {
+          "confidence": 0.66924,
+          "evidenceDebt": 0.33076,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.339711,
+          "observedResidual": 0.013375,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 0.309936,
+          "observedResidual": 0.026489,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.298977,
+          "observedResidual": 0.011028,
+          "weight": 4
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.298706,
+          "observedResidual": 0.010646,
+          "weight": 3
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.296181,
+          "observedResidual": 0.007083,
+          "weight": 4
+        },
+        {
+          "confidence": 0.73689,
+          "evidenceDebt": 0.26311,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.29451,
+          "observedResidual": 0.042612,
+          "weight": 5
+        },
+        {
+          "confidence": 0.72684,
+          "evidenceDebt": 0.27316,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.279878,
+          "observedResidual": 0.009243,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 0.218094,
+          "observedResidual": 0.007784,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.21661,
+          "observedResidual": 0.005901,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.216522,
+          "observedResidual": 0.005789,
+          "weight": 4
+        },
+        {
+          "confidence": 0.85446,
+          "evidenceDebt": 0.14554,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.158522,
+          "observedResidual": 0.015193,
+          "weight": 5
+        }
+      ],
+      "bestLoss": 0.468358,
+      "improvementFromBaseline": 0.515079
     }
   ],
   "provenance": {
