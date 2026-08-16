@@ -481,6 +481,7 @@ export function ConnectionsSettings() {
             }
             control={
               <SmallButton
+                className="settings-connections-create-pairing"
                 label={
                   accessMutation === "create"
                     ? "Creating…"
@@ -502,6 +503,7 @@ export function ConnectionsSettings() {
               description={`${formatRelativeTimeUntilLabel(pairingLink.expiresAt, Date.now())} · ${scopeLabel(pairingLink.scopeCount)}`}
               control={
                 <SmallButton
+                  className={`settings-connections-revoke-pairing--${pairingLink.id}`}
                   label={accessMutation === `link:${pairingLink.id}` ? "Revoking…" : "Revoke"}
                   onTap={() => revokePairingLink(pairingLink.id)}
                 />

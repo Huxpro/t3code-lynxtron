@@ -516,6 +516,8 @@ function installTransportDevToolHook(): void {
       activeThread?: ThreadSummary;
       threadIds: ReadonlyArray<string>;
       archivedThreadIds: ReadonlyArray<string>;
+      pairingLinkIds: ReadonlyArray<string>;
+      pairingLinkCount: number;
       selectedProvider?: {
         instanceId: string;
         showInteractionModeToggle: boolean | undefined;
@@ -553,6 +555,8 @@ function installTransportDevToolHook(): void {
       latestTurn: state.latestTurn,
       threadIds: state.threads.map((thread) => thread.id),
       archivedThreadIds: state.archivedThreads.map((thread) => thread.id),
+      pairingLinkIds: state.authAccess.pairingLinks.map((pairingLink) => pairingLink.id),
+      pairingLinkCount: state.authAccess.pairingLinkCount,
       modelCount: state.models.length,
       providerCount: state.providers.length,
       providerEntryCount: state.providerEntries.length,
