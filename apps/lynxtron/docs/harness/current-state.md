@@ -61,11 +61,11 @@ Plan 11 prose and screenshots.
 - The same page links measured checkpoints to fourteen representative comparison
   frames hosted by the public `Huxpro/t3code-fidelity-assets` GitHub Pages site.
   No screenshot binary remains in the T3 fidelity-loss report directory.
-- The reconstructed conservative loss fell from 98.30% at the first archived
-  geometry milestone to a historical best of 68.74% after the Model Picker
-  closeout. The final5 archaeology reset raised conservative loss to 91.97%
-  because stale evidence was demoted; it does not claim that the product
-  regressed.
+- The reconstructed conservative loss now falls from 98.3437% at the first
+  archived geometry milestone to a current and historical best of 40.8999%.
+  Current observed residual is 1.4659% and evidence debt is 40.0206%. The
+  final5 archaeology reset remains visible in the timeline because stale
+  evidence was demoted; it does not claim that the product regressed.
 - A fresh current-head Browser pair reduced conservative loss to 91.10% by
   measuring the docked Composer's Lynx-for-Web cells. A follow-up shared-source
   fix projects placeholder copy from the same session phase in Web and Lynx,
@@ -247,6 +247,17 @@ Plan 11 prose and screenshots.
   connector resync `14 → 15`, returns to chat, reports zero errors, and cleans
   isolated state. Conservative loss is now 73.8082%, observed residual is
   3.1908%, and evidence debt is 72.9449%.
+- The latest Composer Sendable loop opens a new light 1440x900 non-Git scope
+  instead of reusing the dark 1280 cell. Its pre-fix baseline is retained even
+  though it raises conservative loss `41.9525% → 42.1930%`: Web renders an
+  enabled Initialize Git action while Lynx renders disabled Commit/show_hint.
+  A shared `initialize_repo` projection, real Lynx `vcs.init` command, and
+  unborn-HEAD remote-status fix align the content and behavior. With identical
+  authority pixels, full-frame residual improves `0.045116 → 0.044435`, Header
+  `0.156418 → 0.140956`, and the action crop `0.606031 → 0.369162`; Composer
+  remains exactly `0.031095`. Exact-bundle Native creates `.git`, moves
+  `isRepo false → true`, projects Publish repository next, reports zero errors,
+  and cleans isolated state. Conservative loss reaches a new best of 40.8999%.
 
 ## Not currently proven
 
