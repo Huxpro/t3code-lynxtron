@@ -269,11 +269,6 @@ export function ModelPicker({
   return (
     <>
       <view
-        className="model-picker-dismiss-layer"
-        aria-label="Dismiss model picker"
-        bindtap={onClose}
-      />
-      <view
         className="model-picker-panel"
         {...(viewport.testResize
           ? {
@@ -480,6 +475,11 @@ export function ModelPicker({
           </ModelPickerContentSurface>
         </ModelPickerBodySurface>
       </view>
+      <view
+        className="model-picker-dismiss-layer"
+        aria-label="Dismiss model picker"
+        bindtap={onClose}
+      />
     </>
   );
 }
