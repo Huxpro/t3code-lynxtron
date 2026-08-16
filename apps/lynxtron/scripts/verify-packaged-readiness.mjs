@@ -1186,7 +1186,13 @@ async function readComposerOutcome(client, options = {}) {
   return measurements;
 }
 
-async function verifyComposerSendMaterial({ child, client, timeoutMs }) {
+async function verifyComposerSendMaterial({ baseDir, child, client, timeoutMs }) {
+  const idleState = await selectSessionlessFixtureThread({
+    baseDir,
+    child,
+    client,
+    timeoutMs,
+  });
   const fixtureResponse = await client.runCdp("Runtime.evaluate", {
     expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('hello fidelity') ?? false",
     returnByValue: true,
@@ -1222,6 +1228,7 @@ async function verifyComposerSendMaterial({ child, client, timeoutMs }) {
     backgroundColor: action.style.backgroundColor,
     icon: icon.rect,
     state: action.attributes["data-composer-primary-state"],
+    threadId: idleState.activeThreadId,
   };
 }
 
@@ -5874,7 +5881,7 @@ async function runOnce({
       ? await verifyComposerGeometry(client, expectedTheme)
       : undefined;
     const composerSendMaterial = shouldVerifyComposerSendMaterial
-      ? await verifyComposerSendMaterial({ child, client, timeoutMs })
+      ? await verifyComposerSendMaterial({ baseDir, child, client, timeoutMs })
       : undefined;
     const heroComposerState = shouldVerifyHeroComposerState
       ? await verifyHeroComposerState({

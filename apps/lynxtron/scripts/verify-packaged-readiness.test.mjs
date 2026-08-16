@@ -100,6 +100,7 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies the exact Native Send material without submitting a turn", () => {
     assert.include(source, "async function verifyComposerSendMaterial");
     assert.include(source, '"--verify-composer-send-material"');
+    assert.include(source, "selectSessionlessFixtureThread");
     assert.include(source, "__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
     assert.include(source, 'selector: ".composer-primary-action"');
     assert.include(
