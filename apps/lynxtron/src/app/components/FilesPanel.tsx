@@ -1,8 +1,8 @@
 import {
   buildProjectEntryTree,
-  summarizeProjectEntries,
   type ProjectEntryTreeNode,
 } from "@t3tools/client-runtime/presentation/files";
+import { getProjectFilePickerMatches } from "@t3tools/client-runtime/presentation/file-picker";
 import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coordinator";
 import type { ProjectEntry, ProjectReadFileResult } from "@t3tools/contracts";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
@@ -13,6 +13,7 @@ import {
   FileTreeFileRowSurface,
 } from "../../../../web/src/components/chat/FileTreeSurface";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import { Icon } from "./Icon";
 
 interface ListingState {
   readonly cwd: string | null;
@@ -159,6 +160,7 @@ function renderTreeNode(
           depth={depth}
           expanded={expanded}
           chevron={<text className="file-tree__chevron-glyph">▸</text>}
+          folderIcon={<Icon name="folder" size={14} color="#71717a" />}
           onToggle={() => onToggleDirectory(node.path)}
         />
         {expanded ? (
@@ -187,6 +189,7 @@ function renderTreeNode(
       depth={depth}
       showLeadingSpacer={hasDirectoryNodes || depth > 0}
       selected={node.path === selectedPath}
+      fileIcon={<Icon name="file-json" size={14} color="#71717a" />}
       onSelect={() => onSelectFile(node.path)}
     />
   );
@@ -197,6 +200,7 @@ export function FilesPanel() {
   const [listing, setListing] = useState<ListingState>(EMPTY_LISTING);
   const [preview, setPreview] = useState<PreviewState>(EMPTY_PREVIEW);
   const [refreshVersion, setRefreshVersion] = useState(0);
+  const [search, setSearch] = useState("");
   const [expandedDirectories, setExpandedDirectories] = useState<Record<string, boolean>>({});
 
   const project = useMemo(() => {
@@ -251,8 +255,13 @@ export function FilesPanel() {
     };
   }, [cwd, refreshVersion]);
 
-  const summary = useMemo(() => summarizeProjectEntries(listing.entries), [listing.entries]);
-  const tree = useMemo(() => buildProjectEntryTree(listing.entries), [listing.entries]);
+  const visibleEntries = useMemo<ReadonlyArray<ProjectEntry>>(() => {
+    if (!search.trim()) return listing.entries;
+    return getProjectFilePickerMatches(listing.entries, search, listing.entries.length).map(
+      (entry) => ({ kind: "file", path: entry.path }),
+    );
+  }, [listing.entries, search]);
+  const tree = useMemo(() => buildProjectEntryTree(visibleEntries), [visibleEntries]);
   const hasDirectoryNodes = useMemo(() => tree.some((node) => node.kind === "directory"), [tree]);
 
   const toggleDirectory = useCallback((path: string) => {
@@ -285,81 +294,88 @@ export function FilesPanel() {
   );
 
   return (
-    <scroll-view className="files-panel" scroll-orientation="vertical">
-      <view className="files-panel__inner">
-        {cwd && project ? (
-          <>
-            <view className="files-panel__info">
-              <view className="files-panel__info-copy">
-                <text className="files-panel__label">{project.title}</text>
-                <text className="files-panel__path">{cwd}</text>
-                <text className="files-panel__count">
-                  {listing.pending && listing.entries.length === 0
-                    ? "Indexing…"
-                    : `${summary.fileCount} files${listing.truncated ? " · partial" : ""}`}
-                </text>
-              </view>
-              <view
-                className="files-panel__refresh"
-                bindtap={() => setRefreshVersion((version) => version + 1)}
-              >
-                <text className="files-panel__refresh-label">Refresh</text>
-              </view>
+    <view className="files-panel">
+      {cwd && project ? (
+        <>
+          <view className="files-panel__toolbar" data-surface-subheader>
+            <view
+              className={`files-panel__refresh${listing.pending ? " files-panel__refresh--pending" : ""}`}
+              aria-label="Refresh workspace files"
+              bindtap={() => setRefreshVersion((version) => version + 1)}
+            >
+              <Icon name="refresh-cw" size={14} color="#71717a" />
             </view>
-
-            {listing.error ? (
-              <view className="files-panel__error">
-                <text className="files-panel__error-title">Unable to list workspace</text>
-                <text className="files-panel__error-copy">{listing.error}</text>
-              </view>
-            ) : tree.length > 0 ? (
-              <FileTreeChildrenSurface>
-                {tree.map((node) =>
-                  renderTreeNode(
-                    node,
-                    0,
-                    hasDirectoryNodes,
-                    expandedDirectories,
-                    preview.path,
-                    toggleDirectory,
-                    selectFile,
-                  ),
-                )}
-              </FileTreeChildrenSurface>
-            ) : listing.pending ? null : (
-              <view className="files-panel__empty">
-                <text className="files-panel__empty-title">Workspace is empty</text>
-                <text className="files-panel__empty-desc">No indexed files were returned.</text>
-              </view>
-            )}
-
-            {preview.path ? (
-              <view className="files-panel__preview">
-                <text className="files-panel__preview-path">{preview.path}</text>
-                {preview.pending ? (
-                  <text className="files-panel__preview-status">Loading file…</text>
-                ) : preview.error ? (
-                  <text className="files-panel__preview-error">{preview.error}</text>
-                ) : preview.result && cwd ? (
-                  <EditableFilePreview
-                    key={`${cwd}:${preview.path}`}
-                    cwd={cwd}
-                    path={preview.path}
-                    result={preview.result}
-                  />
-                ) : null}
-              </view>
-            ) : null}
-          </>
-        ) : (
-          <view className="files-panel__empty">
-            <text className="files-panel__empty-title">No project open</text>
-            <text className="files-panel__empty-desc">
-              Open a project to browse workspace files.
-            </text>
+            <view className="files-panel__search">
+              <Icon name="search" size={14} color="#71717a" />
+              <input
+                className="files-panel__search-input"
+                aria-label={`Search ${project.title} files`}
+                placeholder="Search files"
+                {...({ value: search } as object)}
+                bindinput={(event: { detail: { value: string } }) => setSearch(event.detail.value)}
+              />
+            </view>
           </view>
-        )}
-      </view>
-    </scroll-view>
+          <scroll-view className="files-panel__browser" scroll-orientation="vertical">
+            <view className="files-panel__inner">
+              {listing.error ? (
+                <view className="files-panel__error">
+                  <text className="files-panel__error-title">Unable to list workspace</text>
+                  <text className="files-panel__error-copy">{listing.error}</text>
+                </view>
+              ) : tree.length > 0 ? (
+                <view className="files-panel__tree">
+                  <FileTreeChildrenSurface>
+                    {tree.map((node) =>
+                      renderTreeNode(
+                        node,
+                        0,
+                        hasDirectoryNodes,
+                        expandedDirectories,
+                        preview.path,
+                        toggleDirectory,
+                        selectFile,
+                      ),
+                    )}
+                  </FileTreeChildrenSurface>
+                </view>
+              ) : listing.pending ? null : (
+                <view className="files-panel__empty">
+                  <text className="files-panel__empty-title">
+                    {search.trim() ? "No matching files" : "Workspace is empty"}
+                  </text>
+                  <text className="files-panel__empty-desc">
+                    {search.trim() ? "Try a different search." : "No indexed files were returned."}
+                  </text>
+                </view>
+              )}
+
+              {preview.path ? (
+                <view className="files-panel__preview">
+                  <text className="files-panel__preview-path">{preview.path}</text>
+                  {preview.pending ? (
+                    <text className="files-panel__preview-status">Loading file…</text>
+                  ) : preview.error ? (
+                    <text className="files-panel__preview-error">{preview.error}</text>
+                  ) : preview.result && cwd ? (
+                    <EditableFilePreview
+                      key={`${cwd}:${preview.path}`}
+                      cwd={cwd}
+                      path={preview.path}
+                      result={preview.result}
+                    />
+                  ) : null}
+                </view>
+              ) : null}
+            </view>
+          </scroll-view>
+        </>
+      ) : (
+        <view className="files-panel__empty">
+          <text className="files-panel__empty-title">No project open</text>
+          <text className="files-panel__empty-desc">Open a project to browse workspace files.</text>
+        </view>
+      )}
+    </view>
   );
 }

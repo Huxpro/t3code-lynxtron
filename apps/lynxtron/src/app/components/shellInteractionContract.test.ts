@@ -100,6 +100,24 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".topbar__toggle:active {");
   });
 
+  it("matches the compact Files browser anatomy and keeps search functional", () => {
+    const files = componentSource("FilesPanel.tsx");
+
+    expect(files).toContain('className="files-panel__toolbar" data-surface-subheader');
+    expect(files).toContain('aria-label="Refresh workspace files"');
+    expect(files).toContain('placeholder="Search files"');
+    expect(files).toContain("getProjectFilePickerMatches");
+    expect(files).toContain('className="files-panel__browser"');
+    expect(files).toContain('folderIcon={<Icon name="folder" size={14}');
+    expect(files).toContain('fileIcon={<Icon name="file-json" size={14}');
+    expect(files).not.toContain('className="files-panel__info"');
+    expect(overrides).toContain(".files-panel__toolbar {");
+    expect(overrides).toContain("height: 40px;");
+    expect(overrides).toContain(".files-panel .file-tree-row {");
+    expect(overrides).toContain("min-height: 24px;");
+    expect(overrides).toContain("border-radius: 5px;");
+  });
+
   it("projects and opens the real repository Publish flow", () => {
     const header = componentSource("ChatHeader.tsx");
     const chatView = componentSource("ChatView.tsx");
