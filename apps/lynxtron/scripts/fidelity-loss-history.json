@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T13:32:01+09:00",
+  "updatedAt": "2026-08-16T14:03:03+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7074,6 +7074,84 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-pairing-cold-restart",
               "source": "Distinct owned PIDs load the same 06fea632 bundle and isolated state; the revoked link remains absent after restart, renderer errors are zero, no credential is retained in evidence, state is disposed, and every agent-browser gate is zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-failed-current-brand-fix",
+      "observedAt": "2026-08-16T14:03:03+09:00",
+      "commit": "9779a5864",
+      "codeState": "commit",
+      "label": "Existing Thread Failed current brand fix",
+      "narrative": "A current failed turn is rebuilt through the real connector with an invalid OpenCode model and admitted only after latestTurn=error, sessionStatus=error, and the persisted failure reason agree. The fixture harness first needed two corrections: it now records the provider-generated persisted thread title as the canonical Sidebar identity, and packaged transcript verification consumes the transcript manifest rather than Sidebar and preference sidecars. Under one immutable dark 1280x820 snapshot, Web places the Sidebar brand at x=60 while Lynx retained the obsolete authority offset x=130. Moving the base host to the shared 60px titlebar inset aligns both Browser renderers and exact-bundle Native. Full-frame SSIM improves from 0.941368 to 0.942441, Sidebar SSIM from 0.877036 to 0.882504, and Sidebar-top SSIM from 0.748305 to 0.845063. Transcript SSIM remains exactly 0.968888, proving the measured delta is isolated to Sidebar chrome. Native independently verifies the persisted title, Big Pickle fallback, error banner, failed work row, Local checkout, brand x=60, main transport 2 to 4, zero renderer errors, and isolated cleanup. Remaining 4px transcript offset, 8px failed-row height difference, and material residual stay explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before and after Browser captures share the same immutable failed-turn snapshot, route, session projection, dark theme, 1280x820 viewport, bundles except for the one-token brand offset, and zero-error gates. Transcript pixels are unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-failed-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "3d570e867765f0d312b3ea7de5da0791a18159595ca29ca399e692c6705614fb"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-failed-thread-content",
+              "source": "Both Browser renderers match failed session projection, persisted title, prompt, Big Pickle fallback, error banner, failed work status, model controls, and Local checkout"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.625, 0, 0, -4, 0, 0.25, 0, -4, 0, -8],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "current-failed-brand-and-row-geometry",
+              "source": "Brand x/y/height align at 60/12/28 with 0.625px width quantization; two transcript rows retain their measured vertical and height deltas"
+            },
+            "material": {
+              "residual": 0.057559,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.942441 at the final same-snapshot failed frame; Sidebar-top residual is 0.154937 and transcript residual is 0.031112"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-failed-readiness",
+              "source": "Same failed snapshot, thread, session error, route, theme, viewport, model fallback, and zero Browser renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-failed-thread-content",
+              "source": "Exact bundle renders the persisted title, Big Pickle fallback, canonical error text, failed work status, disabled primary action, and Local checkout"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "native-failed-thread-geometry",
+              "source": "Brand x=60, 256x820 Sidebar, contained thread card, 358x58 error banner, 1024x510 timeline host, and canonical failed row boxes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-failed-readiness",
+              "source": "Exact f7711bad bundle advances main transport 2 to 4, reports zero renderer errors, disposes isolated state, and every agent-browser gate reports zero owned or orphaned processes"
             }
           }
         }
