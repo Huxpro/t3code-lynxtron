@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T14:55:33+09:00",
+  "updatedAt": "2026-08-16T15:21:26+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -5932,7 +5932,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-completed-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "26481da5406d28047cde7cf31d5f63e4575d37fca16cd8e0e49747ec75518f8f"
+          "sha256": "c8a8898874adb827e2dac9b5ec811e0ba0a65049677fe1a50e6313c4728789a2"
         }
       ],
       "updates": [
@@ -7199,6 +7199,84 @@
               "confidence": 0.99,
               "method": "native-stale-approval-recovery",
               "source": "Real Decline input emits the canonical provider failure receipt without fake resolution, removes the pending projection, advances sequence 14 to 20, survives cold restart, reports zero renderer errors, disposes isolated state, and every agent-browser gate reports zero owned or orphaned processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-completed-current-refresh",
+      "observedAt": "2026-08-16T15:21:26+09:00",
+      "commit": "42197f63416abd2341f776b60adcc34bfa0cde61",
+      "codeState": "commit",
+      "label": "Existing Thread Completed current refresh",
+      "narrative": "The immutable rich Review snapshot is recaptured on the current Web and Lynx-for-Web bundles with the same project, thread, completed turn, row order, exact user and assistant copy, expanded checkpoint, dark theme, 1280x820 viewport, and zero errors. Current full-frame SSIM is 0.932244, transcript-viewport SSIM is 0.944169, transcript-column SSIM is 0.925558, and Composer SSIM is 0.944370. The improvement over the previous current measurement is a refresh across intervening shell changes, not wholly attributed to one product commit. A separately created simple completed fixture supplies current exact-bundle Native evidence. Native initially selected a stale recycled assistant-class node; binding outer geometry to the canonical second row after row-count and content gates removes that harness ambiguity. The final Native run verifies Big Pickle, exact assistant response, idle-disabled Composer, Local checkout, brand x=60, settled 48px relative inset, 75px assistant outer wrapper around a 59px visual row, main transport 2 to 3, zero renderer errors, and isolated cleanup. The Browser and Native snapshots remain distinct, and interaction remains unmeasured.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The Browser point reuses the exact prior rich snapshot but spans intervening shell changes, so it refreshes current residuals without assigning a direct product delta. Native independently updates non-pixel evidence from a separate connector-backed fixture."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/existing-thread-completed-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c8a8898874adb827e2dac9b5ec811e0ba0a65049677fe1a50e6313c4728789a2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-completed-rich-content",
+              "source": "Matching completed turn, user, fold, assistant, checkpoint, inline code, model, and idle Composer on the immutable rich snapshot"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, -4],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "current-completed-rich-geometry",
+              "source": "Current user, fold, assistant, and checkpoint row geometry at 1280x820"
+            },
+            "material": {
+              "residual": 0.067756,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.932244; transcript-viewport residual is 0.055831 and transcript-column residual is 0.074442"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-completed-shared-server-readiness",
+              "source": "Same rich snapshot, selected completed turn, exact content, route, theme, viewport, bundles, and zero Browser renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-completed-content",
+              "source": "Exact bundle renders the persisted title, Big Pickle, exact assistant response, idle-disabled Composer, and Local checkout"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "native-current-completed-geometry",
+              "source": "Brand x=60, contained Sidebar card, 1024x514 timeline, 48px relative settled inset, and 75px assistant wrapper around a 59px visual row"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-completed-readiness",
+              "source": "Exact 1507a888 bundle advances main transport 2 to 3, reports zero renderer errors, disposes isolated state, and every agent-browser gate reports zero owned or orphaned processes"
             }
           }
         }
