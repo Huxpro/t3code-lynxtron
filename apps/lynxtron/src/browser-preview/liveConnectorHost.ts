@@ -164,6 +164,7 @@ export class LiveConnectorHost {
   #threadSequences = new Map<string, number>();
   #threadFibers = new Map<string, Fiber.Fiber<unknown, unknown>>();
   #disposed = false;
+  #startPromise: Promise<void> | null = null;
 
   constructor(options: LiveConnectorHostOptions, emitGlobalEvent: EmitGlobalEvent) {
     this.#options = options;
@@ -192,8 +193,14 @@ export class LiveConnectorHost {
   }
 
   /** Open the live RPC connection and start subscriptions. Idempotent. */
-  async start(): Promise<void> {
-    if (this.#client || this.#disposed) return;
+  start(): Promise<void> {
+    if (this.#startPromise) return this.#startPromise;
+    if (this.#disposed) return Promise.resolve();
+    this.#startPromise = this.#start();
+    return this.#startPromise;
+  }
+
+  async #start(): Promise<void> {
     try {
       const config = await this.#openRpc(this.#options.socketUrl);
       this.#setConfig(config, { version: 1, type: "snapshot", config });

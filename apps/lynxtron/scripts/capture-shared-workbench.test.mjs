@@ -229,6 +229,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, '"[data-stage-backdrop-variant]"');
     assert.include(workbench, "backdropVisible:");
     assert.include(workbench, "brandOnBackdrop:");
+    assert.include(workbench, 'const environmentIdentificationMode = "none"');
+    assert.include(workbench, "environmentIdentificationMode:");
+    assert.include(workbench, "lynxQuery.set");
     assert.include(sidebarStageBackdrop, "data-stage-backdrop-variant={variant}");
     assert.include(source, "function sidebarStageIdentityMatches");
     assert.include(source, "stageIdentityReady");

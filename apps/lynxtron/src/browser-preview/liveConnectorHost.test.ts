@@ -126,6 +126,19 @@ describe("LiveConnectorHost", () => {
     assert.equal(T3_CONNECTOR_EVENT, "t3:connector-event");
   });
 
+  it("waits for the live config before replying to renderer readiness", () => {
+    const hostSource = readFileSync(
+      path.join(srcRoot, "browser-preview/liveConnectorHost.ts"),
+      "utf8",
+    );
+    const previewSource = readFileSync(path.join(srcRoot, "browser-preview/index.ts"), "utf8");
+    assert.include(hostSource, "#startPromise: Promise<void> | null = null");
+    assert.include(hostSource, "if (this.#startPromise) return this.#startPromise");
+    assert.include(previewSource, "const liveHostReady = liveHost ? liveHost.start()");
+    assert.include(previewSource, "void liveHostReady.then(() =>");
+    assert.include(previewSource, "view.url = bundleUrl");
+  });
+
   it("forwards turn-diff commands to the live orchestration RPC", () => {
     const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
     assert.include(source, 'if (request.method === "getTurnDiff")');

@@ -27,6 +27,7 @@ const expectThread = url.searchParams.get("expectThread") || null;
 const expectedSemanticRoute = url.searchParams.get("semanticRoute") ?? "new-thread";
 const theme = url.searchParams.get("theme") === "light" ? "light" : "dark";
 const expectedOverlay = url.searchParams.get("overlay") || null;
+const environmentIdentificationMode = "none";
 const SETTINGS_NAV_LABELS = [
   "General",
   "Appearance",
@@ -386,7 +387,11 @@ webPane.srcdoc = `<!doctype html><script>
 localStorage.setItem("t3code:theme", ${JSON.stringify(theme)});
 localStorage.setItem(
   "t3code:client-settings:v1",
-  JSON.stringify({ sidebarV2Enabled: true, sidebarV2ConfiguredByUser: true }),
+  JSON.stringify({
+    sidebarV2Enabled: true,
+    sidebarV2ConfiguredByUser: true,
+    environmentIdentificationMode: ${JSON.stringify(environmentIdentificationMode)},
+  }),
 );
 location.replace(${JSON.stringify(webEntry)});
 <\/script>`;
@@ -398,6 +403,7 @@ const lynxQuery = new URLSearchParams({
   width: String(width),
   height: String(height),
   theme,
+  environmentIdentificationMode,
 });
 if (socketUrl) {
   lynxQuery.set("live", "1");

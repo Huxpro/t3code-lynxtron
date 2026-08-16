@@ -94,12 +94,24 @@ const scenarioId = isBrowserPreviewScenarioId(requestedScenario)
 const scenario = BROWSER_PREVIEW_SCENARIOS[scenarioId];
 const requestedRoute = previewUrl.searchParams.get("route") ?? scenario.route;
 const requestedTheme = previewUrl.searchParams.get("theme") === "light" ? "light" : "dark";
+const requestedEnvironmentIdentificationMode =
+  previewUrl.searchParams.get("environmentIdentificationMode") === "none" ? "none" : "artwork";
+const scenarioClientSettings =
+  (
+    scenario.preferences as {
+      readonly clientSettings?: Readonly<Record<string, unknown>>;
+    }
+  ).clientSettings ?? {};
 const themedScenario = {
   ...scenario,
   preferences: {
     ...scenario.preferences,
     initialRoute: requestedRoute,
     themePreference: requestedTheme,
+    clientSettings: {
+      ...scenarioClientSettings,
+      environmentIdentificationMode: requestedEnvironmentIdentificationMode,
+    },
   },
 };
 
@@ -254,11 +266,10 @@ const handleViewportResize = (): void => {
   emitGlobalEvent(T3_VIEWPORT_EVENT, [viewportSnapshot()]);
 };
 
-// Live host opens the RPC connection eagerly; the static host is push-driven by
-// the renderer's ready call.
-if (liveHost) {
-  void liveHost.start();
-}
+// The live renderer's first ready snapshot must already contain the server
+// config. Load the Lynx bundle only after the one owned live connection has
+// started; otherwise config can be emitted before the renderer subscribes.
+const liveHostReady = liveHost ? liveHost.start() : Promise.resolve();
 
 const toRect = (element: Element | null): BrowserPreviewRect | null => {
   if (!element) return null;
@@ -578,7 +589,14 @@ observeProductRender();
 
 applyViewportContract(viewportContract);
 view.nativeModulesMap = nativeModules.map;
-view.url = bundleUrl;
+void liveHostReady.then(() => {
+  if (liveHost?.diagnostics.error) {
+    diagnostics.rendererErrors.push(liveHost.diagnostics.error);
+    status.value = "error";
+    return;
+  }
+  view.url = bundleUrl;
+});
 window.addEventListener("resize", handleViewportResize);
 
 window.addEventListener(
