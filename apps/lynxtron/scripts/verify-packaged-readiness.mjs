@@ -907,6 +907,49 @@ async function waitForMeasurement({ child, client, predicate, selector, timeoutM
   throw new Error(`Timed out waiting for ${selector}: ${JSON.stringify({ latest })}`);
 }
 
+function composerStateForSessionStatus(sessionStatus) {
+  if (sessionStatus === "running") return "working";
+  if (sessionStatus === "starting") return "disabled";
+  return "idle";
+}
+
+async function waitForSessionComposerProjection({
+  child,
+  client,
+  expectedSessionStatus,
+  timeoutMs,
+}) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the session-derived Composer state stabilized.");
+    }
+    const state = await readClientState(client);
+    const composer = await readOptionalMeasurement(client, ".composer-frame");
+    const shellSessionStatus = state?.activeThread?.session?.status ?? "idle";
+    const expectedComposerState = composerStateForSessionStatus(state?.sessionStatus);
+    latest = {
+      composer,
+      expectedComposerState,
+      sessionStatus: state?.sessionStatus ?? null,
+      shellSessionStatus,
+    };
+    if (
+      typeof state?.sessionStatus === "string" &&
+      state.sessionStatus === shellSessionStatus &&
+      (expectedSessionStatus === undefined || state.sessionStatus === expectedSessionStatus) &&
+      composer?.attributes["data-composer-state"] === expectedComposerState
+    ) {
+      return latest;
+    }
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(
+    `Session-derived Composer state did not stabilize: ${JSON.stringify({ latest })}`,
+  );
+}
+
 async function readComposerOutcome(client, options = {}) {
   const includeInteraction = options.allowMissingInteraction !== true;
   const includeContext = options.allowMissingContext !== true;
@@ -3649,12 +3692,10 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
 
 async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs }) {
   await waitForLifecycleBannerToClear({ child, client, timeoutMs });
-  const connectedComposer = await waitForMeasurement({
+  const connectedProjection = await waitForSessionComposerProjection({
     child,
     client,
-    selector: ".composer-frame",
     timeoutMs,
-    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
   });
   const ports = [...log.read().matchAll(/Listening on http:\/\/127\.0\.0\.1:(\d+)/gu)].map(
     (match) => Number(match[1]),
@@ -3684,7 +3725,9 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
     client,
     selector: ".composer-frame",
     timeoutMs,
-    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "disabled",
+    predicate: (measurement) =>
+      measurement?.attributes["data-composer-state"] ===
+      connectedProjection.composer.attributes["data-composer-state"],
   });
   const disabledPrimaryAction = await waitForMeasurement({
     child,
@@ -3715,12 +3758,11 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
     timeoutMs,
   });
   await waitForLifecycleBannerToClear({ child, client, timeoutMs });
-  const recoveredComposer = await waitForMeasurement({
+  const recoveredProjection = await waitForSessionComposerProjection({
     child,
     client,
-    selector: ".composer-frame",
+    expectedSessionStatus: connectedProjection.sessionStatus,
     timeoutMs,
-    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
   });
 
   const recoveredPorts = [...log.read().matchAll(/Listening on http:\/\/127\.0\.0\.1:(\d+)/gu)].map(
@@ -3739,8 +3781,9 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
   return {
     status: "pass",
     connectedComposer: {
-      state: connectedComposer.attributes["data-composer-state"],
-      rect: connectedComposer.rect,
+      sessionStatus: connectedProjection.sessionStatus,
+      state: connectedProjection.composer.attributes["data-composer-state"],
+      rect: connectedProjection.composer.rect,
     },
     interruptedServer: server,
     failure,
@@ -3752,8 +3795,9 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
     recoveryInput: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selector",
     reconnecting,
     recoveredComposer: {
-      state: recoveredComposer.attributes["data-composer-state"],
-      rect: recoveredComposer.rect,
+      sessionStatus: recoveredProjection.sessionStatus,
+      state: recoveredProjection.composer.attributes["data-composer-state"],
+      rect: recoveredProjection.composer.rect,
     },
     recoveredServer,
     sequence: { before: beforeInterrupt.lastSeq, after: afterRecovery.lastSeq },

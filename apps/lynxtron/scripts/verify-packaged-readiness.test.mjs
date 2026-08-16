@@ -144,10 +144,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "betaMutation");
   });
 
-  it("verifies Composer disabled and recovered states during lifecycle recovery", () => {
+  it("restores the session-derived Composer state during lifecycle recovery", () => {
     assert.include(source, "async function verifyLifecycleRecovery");
-    assert.include(source, 'measurement?.attributes["data-composer-state"] === "disabled"');
+    assert.include(source, "async function waitForSessionComposerProjection");
+    assert.include(source, 'if (sessionStatus === "running") return "working"');
+    assert.include(source, 'if (sessionStatus === "starting") return "disabled"');
+    assert.include(source, "state.sessionStatus === shellSessionStatus");
+    assert.include(source, 'connectedProjection.composer.attributes["data-composer-state"]');
     assert.include(source, 'measurement?.attributes["data-composer-primary-state"] === "disabled"');
+    assert.include(source, "expectedSessionStatus: connectedProjection.sessionStatus");
     assert.include(source, "connectedComposer");
     assert.include(source, "disabledComposer");
     assert.include(source, "recoveredComposer");
