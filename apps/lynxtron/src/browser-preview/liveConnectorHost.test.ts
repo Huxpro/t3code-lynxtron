@@ -107,6 +107,14 @@ describe("LiveConnectorHost", () => {
     );
   });
 
+  it("retains bounded command results independently from completion order", () => {
+    const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
+    assert.include(source, "readonly commandResults:");
+    assert.include(source, "this.diagnostics.commandResults.push(result)");
+    assert.include(source, "this.diagnostics.commandResults.length > 32");
+    assert.include(source, "this.#recordCommandResult(request.method, context)");
+  });
+
   it("rejects unknown modules and commands", () => {
     const { host } = harness();
     assert.throws(() => host.handleNativeCall("anything", {}, "shell"), /Unsupported/);

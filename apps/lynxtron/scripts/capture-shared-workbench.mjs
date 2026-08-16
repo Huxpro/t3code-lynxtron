@@ -1959,10 +1959,9 @@ async function captureCell({
       state?.lynx?.semanticReady === true &&
       state?.web?.productState?.selectedProject === expectProject &&
       state?.lynx?.productState?.selectedProject === expectProject &&
-      (!state?.lynx?.connectorDiagnostics?.commands?.some(
+      state?.lynx?.connectorDiagnostics?.commandResults?.some(
         ({ method }) => method === "readProjectBranch",
-      ) ||
-        state?.lynx?.connectorDiagnostics?.lastCommandResult?.method === "readProjectBranch") &&
+      ) === true &&
       (!expectThread ||
         (state?.web?.productState?.selectedThread === expectThread &&
           state?.lynx?.productState?.selectedThread === expectThread))

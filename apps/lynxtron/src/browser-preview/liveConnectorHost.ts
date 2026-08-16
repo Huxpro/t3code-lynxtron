@@ -123,6 +123,7 @@ export interface LiveConnectorDiagnostics {
   } | null;
   readonly commands: Array<{ sequence: number; method: string }>;
   lastCommandResult: { readonly method: string; readonly value: unknown } | null;
+  readonly commandResults: Array<{ readonly method: string; readonly value: unknown }>;
   readonly unsupportedCapabilities: readonly [
     "keyboard",
     "filesystem",
@@ -184,6 +185,7 @@ export class LiveConnectorHost {
       initialStateResult: null,
       commands: [],
       lastCommandResult: null,
+      commandResults: [],
       unsupportedCapabilities: [
         "keyboard",
         "filesystem",
@@ -533,7 +535,7 @@ export class LiveConnectorHost {
       return this.#runClient<SourceControlDiscoveryResult>(
         this.#client[WS_METHODS.serverDiscoverSourceControl]({}),
       ).then((value) => {
-        this.diagnostics.lastCommandResult = { method: request.method, value };
+        this.#recordCommandResult(request.method, value);
         return value;
       });
     }
@@ -542,7 +544,7 @@ export class LiveConnectorHost {
       return this.#runClient<ProjectListEntriesResult>(
         this.#client[WS_METHODS.projectsListEntries]({ cwd: params.cwd }),
       ).then((value) => {
-        this.diagnostics.lastCommandResult = { method: request.method, value };
+        this.#recordCommandResult(request.method, value);
         return value;
       });
     }
@@ -556,7 +558,7 @@ export class LiveConnectorHost {
       return this.#runClient<ProjectSearchEntriesResult>(
         this.#client[WS_METHODS.projectsSearchEntries](params),
       ).then((value) => {
-        this.diagnostics.lastCommandResult = { method: request.method, value };
+        this.#recordCommandResult(request.method, value);
         return value;
       });
     }
@@ -566,7 +568,7 @@ export class LiveConnectorHost {
         this.#client[WS_METHODS.vcsRefreshStatus]({ cwd: params.cwd }),
       ).then((value) => {
         const context: ProjectRepoContext = projectRepoContext(value);
-        this.diagnostics.lastCommandResult = { method: request.method, value: context };
+        this.#recordCommandResult(request.method, context);
         return context;
       });
     }
@@ -575,7 +577,7 @@ export class LiveConnectorHost {
       return this.#runClient<VcsStatusResult>(
         this.#client[WS_METHODS.vcsRefreshStatus]({ cwd: params.cwd }),
       ).then((value) => {
-        this.diagnostics.lastCommandResult = { method: request.method, value };
+        this.#recordCommandResult(request.method, value);
         return value;
       });
     }
@@ -584,7 +586,7 @@ export class LiveConnectorHost {
       return this.#runClient<SourceControlPublishRepositoryResult>(
         this.#client[WS_METHODS.sourceControlPublishRepository](params),
       ).then((value) => {
-        this.diagnostics.lastCommandResult = { method: request.method, value };
+        this.#recordCommandResult(request.method, value);
         return value;
       });
     }
@@ -608,7 +610,7 @@ export class LiveConnectorHost {
       return this.#runClient<OrchestrationGetTurnDiffResult>(
         this.#client[ORCHESTRATION_WS_METHODS.getTurnDiff](params),
       ).then((value) => {
-        this.diagnostics.lastCommandResult = { method: request.method, value };
+        this.#recordCommandResult(request.method, value);
         return value;
       });
     }
@@ -628,7 +630,7 @@ export class LiveConnectorHost {
           createdAt: new Date().toISOString(),
         }),
       ).then((value) => {
-        this.diagnostics.lastCommandResult = { method: request.method, value };
+        this.#recordCommandResult(request.method, value);
         return value;
       });
     }
@@ -651,5 +653,14 @@ export class LiveConnectorHost {
       );
     }
     return undefined;
+  }
+
+  #recordCommandResult(method: string, value: unknown): void {
+    const result = { method, value };
+    this.diagnostics.lastCommandResult = result;
+    this.diagnostics.commandResults.push(result);
+    if (this.diagnostics.commandResults.length > 32) {
+      this.diagnostics.commandResults.splice(0, this.diagnostics.commandResults.length - 32);
+    }
   }
 }

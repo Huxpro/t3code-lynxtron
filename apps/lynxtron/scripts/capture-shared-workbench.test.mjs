@@ -14,10 +14,9 @@ describe("shared workbench lifecycle fault capture", () => {
 
   it("waits for connection-scoped branch discovery before injecting the disconnect", () => {
     assert.include(source, 'method === "readProjectBranch"');
-    assert.include(
-      source,
-      'state?.lynx?.connectorDiagnostics?.lastCommandResult?.method === "readProjectBranch"',
-    );
+    assert.include(source, "state?.lynx?.connectorDiagnostics?.commandResults?.some(");
+    assert.include(source, '({ method }) => method === "readProjectBranch"');
+    assert.notInclude(source, "!state?.lynx?.connectorDiagnostics?.commands?.some(");
   });
 
   it("admits the expected disconnected lifecycle without requiring semantic readiness", () => {
