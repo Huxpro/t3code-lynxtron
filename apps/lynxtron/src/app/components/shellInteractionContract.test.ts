@@ -10,6 +10,14 @@ const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
 );
+const clientSource = readFileSync(
+  path.resolve(import.meta.dirname, "../state/t3Client.ts"),
+  "utf8",
+);
+const connectorSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../main/desktop/connector.ts"),
+  "utf8",
+);
 
 describe("desktop shell interaction contract", () => {
   it("keeps the anchored model picker dismissible without modal dimming", () => {
@@ -81,12 +89,19 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).not.toContain("handleModelOptionTap");
     expect(overrides).toContain(".composer-model-option-menu {");
     expect(overrides).toContain("height: 280px;");
+    expect(composer).toContain('className="composer-model-option-menu__content"');
+    expect(overrides).toContain(".composer-model-option-menu__content {");
+    expect(overrides).toContain("flex-shrink: 0;");
     expect(overrides).toContain(".composer-model-option-menu__item--selected {");
     expect(composer).toContain("getComposerModelOptionLetterSpacing(modelOptionLabel)");
     expect(overrides).toContain(".composer-primary-action--send {");
     expect(overrides).toContain("background-color: rgba(var(--primary-rgb), 0.9);");
     expect(composer).toContain('name={busy ? "square" : "send-arrow"}');
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
+  });
+
+  it("uses the Web Composer host shadow instead of a light-only approximation", () => {
+    expect(overrides).toContain("box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.4);");
   });
 
   it("opens a truthful Terminal placeholder from the titlebar control", () => {
@@ -137,6 +152,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".files-panel .file-tree-row {");
     expect(overrides).toContain("min-height: 24px;");
     expect(overrides).toContain("border-radius: 5px;");
+    expect(overrides).toContain("font-family: var(--font-sans);");
+    expect(overrides).toContain("font-size: 12px;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");
     expect(panel).toContain('case "file":');
     expect(panel).toContain("<FilePanel path={surface.path} />");
@@ -159,6 +176,7 @@ describe("desktop shell interaction contract", () => {
     expect(header).toContain("data-git-quick-action-kind");
     expect(header).toContain("data-git-quick-action-label");
     expect(header).toContain('gitQuickAction.kind === "initialize_repo"');
+    expect(header).toContain('? "git-branch-plus"');
     expect(header).toContain(".initializeRepository(cwd)");
     expect(header).toContain('grouped={gitQuickAction.kind !== "initialize_repo"}');
     expect(header).toContain('gitQuickAction.kind === "open_publish"');
@@ -223,10 +241,24 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".sidebar-v2-row-item--active {");
     expect(overrides).toContain("background-color: rgba(241, 243, 247, 0.11);");
     expect(overrides).toContain(".theme-light .sidebar-v2-row-item--active {");
-    expect(overrides).toContain(".sidebar-v2-row-card__content {\n  width: 100%;\n  height: 62px;");
+    expect(overrides).toContain(".sidebar-v2-row-card__content {\n  width: 100%;\n  height: 78px;");
     expect(overrides).not.toContain(".sidebar-v2-row-card:hover .sidebar-v2-row-actions,");
     expect(faviconSource).toContain('name="folder"');
     expect(faviconSource).not.toContain("background-color");
+  });
+
+  it("keeps model selection visible while the canonical shell catches up", () => {
+    expect(clientSource).toContain("threads: threadId");
+    expect(clientSource).toContain(
+      "thread.id === threadId ? { ...thread, modelSelection: selection } : thread",
+    );
+    expect(clientSource).toContain("? { ...thread, modelSelection: nextSelection }");
+    expect(connectorSource).toContain(
+      "const pendingSelection = this.pendingThreadModelSelections.get(thread.id);",
+    );
+    expect(connectorSource).toContain(
+      "return pendingSelection ? { ...thread, modelSelection: pendingSelection } : thread;",
+    );
   });
 
   it("uses the shared Sidebar inset without shrinking the thread list twice", () => {

@@ -903,6 +903,15 @@ async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentI
 async function verifyComposerGeometry(client, expectedTheme) {
   const composer = await readComposerOutcome(client);
   assertComposerGeometry(composer);
+  const shellShadow = await readFirstSelectorStyleValue(client, ".composer-shell", "box-shadow");
+  const shellShadowMatches =
+    typeof shellShadow === "string" &&
+    shellShadow.includes("12px") &&
+    shellShadow.includes("28px") &&
+    shellShadow.includes("-18px") &&
+    (shellShadow.includes("0.4)") ||
+      shellShadow.includes("0.4 ") ||
+      shellShadow.includes("#00000066"));
   const controlColors = {
     model: composer.anchors.model.style.color,
     runtime: composer.anchors.runtime.style.color,
@@ -1008,6 +1017,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
           contextLightBandColors[15] === "rgb(250,250,250)" &&
           contextLightBandColors[30] === "rgb(255,255,255)")));
   if (
+    !shellShadowMatches ||
     chevrons.length < 2 ||
     chevrons.length > 3 ||
     chevrons.some((rect) => wrongSize(rect, 14)) ||
@@ -1027,6 +1037,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
   ) {
     throw new Error(
       `Composer Footer icon geometry drifted: ${JSON.stringify({
+        shellShadow,
         chevrons,
         runtimeIcons,
         interactionIcons,
@@ -1053,6 +1064,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
     status: "pass",
     input: "read-only Lynx DevTool DOM box models",
     composer,
+    shellShadow,
     chevrons,
     runtimeIcons,
     interactionIcons,

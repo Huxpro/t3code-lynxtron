@@ -69,6 +69,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "--verify-composer-geometry");
     assert.include(source, "--expected-theme");
     assert.include(source, 'themeRoot.attributes["data-theme"] === expectedTheme');
+    assert.include(source, '".composer-shell"');
+    assert.include(source, '"box-shadow"');
+    assert.include(source, 'shellShadow.includes("-18px")');
+    assert.include(source, 'shellShadow.includes("#00000066")');
+    assert.include(source, "!shellShadowMatches");
     assert.include(
       source,
       '{ id: "contextLegacyBand", lynx: ".composer-context-backdrop-band--1" }',
