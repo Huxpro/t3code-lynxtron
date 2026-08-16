@@ -111,6 +111,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Math.abs(Number(match[4]) - 0.9) <= 1 / 255");
     assert.include(source, 'selector: ".composer-primary-action image"');
     assert.include(source, 'input: "test-only Composer state fixture; no turn submitted"');
+    assert.include(source, 'name: "native-composer-send-material.png"');
     assert.include(
       source,
       "shouldVerifyModelOptionMenuMutation || shouldVerifyComposerSendMaterial",

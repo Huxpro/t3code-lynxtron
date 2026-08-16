@@ -1186,7 +1186,14 @@ async function readComposerOutcome(client, options = {}) {
   return measurements;
 }
 
-async function verifyComposerSendMaterial({ baseDir, child, client, timeoutMs }) {
+async function verifyComposerSendMaterial({
+  baseDir,
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+}) {
   const idleState = await selectSessionlessFixtureThread({
     baseDir,
     child,
@@ -1232,6 +1239,12 @@ async function verifyComposerSendMaterial({ baseDir, child, client, timeoutMs })
       Math.abs((measurement?.rect.width ?? 0) - 14) <= 0.5 &&
       Math.abs((measurement?.rect.height ?? 0) - 14) <= 0.5,
   });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-composer-send-material.png",
+  });
   return {
     status: "pass",
     input: "test-only Composer state fixture; no turn submitted",
@@ -1240,6 +1253,7 @@ async function verifyComposerSendMaterial({ baseDir, child, client, timeoutMs })
     icon: icon.rect,
     state: action.attributes["data-composer-primary-state"],
     threadId: idleState.activeThreadId,
+    screenshot,
   };
 }
 
@@ -5892,7 +5906,14 @@ async function runOnce({
       ? await verifyComposerGeometry(client, expectedTheme)
       : undefined;
     const composerSendMaterial = shouldVerifyComposerSendMaterial
-      ? await verifyComposerSendMaterial({ baseDir, child, client, timeoutMs })
+      ? await verifyComposerSendMaterial({
+          baseDir,
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          timeoutMs,
+        })
       : undefined;
     const heroComposerState = shouldVerifyHeroComposerState
       ? await verifyHeroComposerState({
