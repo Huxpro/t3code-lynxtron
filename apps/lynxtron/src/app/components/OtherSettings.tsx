@@ -683,7 +683,13 @@ export function ArchiveSettings() {
           ...group,
           threads: group.threads.map((thread) => ({
             ...thread,
-            action: <SmallButton label="Unarchive" onTap={() => archiveThread(thread.id, true)} />,
+            action: (
+              <SmallButton
+                className={`settings-archive-unarchive--${thread.id}`}
+                label="Unarchive"
+                onTap={() => archiveThread(thread.id, true)}
+              />
+            ),
           })),
         }))}
         emptyTitle="No archived threads"

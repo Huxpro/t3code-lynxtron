@@ -514,6 +514,8 @@ function installTransportDevToolHook(): void {
       latestTurn: OrchestrationLatestTurn | null;
       activeProject?: ProjectSummary;
       activeThread?: ThreadSummary;
+      threadIds: ReadonlyArray<string>;
+      archivedThreadIds: ReadonlyArray<string>;
       selectedProvider?: {
         instanceId: string;
         showInteractionModeToggle: boolean | undefined;
@@ -549,6 +551,8 @@ function installTransportDevToolHook(): void {
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
+      threadIds: state.threads.map((thread) => thread.id),
+      archivedThreadIds: state.archivedThreads.map((thread) => thread.id),
       modelCount: state.models.length,
       providerCount: state.providers.length,
       providerEntryCount: state.providerEntries.length,

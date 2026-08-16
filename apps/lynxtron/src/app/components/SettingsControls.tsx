@@ -64,16 +64,18 @@ export function SelectBox({
 }
 
 export function SmallButton({
+  className,
   label,
   icon,
   onTap,
 }: {
+  className?: string;
   label: string;
   icon?: ReactNode;
   onTap?: () => void;
 }) {
   return (
-    <Button onClick={onTap} size="xs" variant="outline">
+    <Button className={className} onClick={onTap} size="xs" variant="outline">
       {icon}
       {label}
     </Button>
