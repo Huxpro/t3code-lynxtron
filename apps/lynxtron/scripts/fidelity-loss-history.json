@@ -7281,6 +7281,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-selection-mutation-native-current",
+      "observedAt": "2026-08-16T16:41:42+09:00",
+      "commit": "620e09e323dd6ed6f577ae213d30138391cf98e1",
+      "codeCommit": "30c1fe417938d05b91b832cfb456f7695eb1ad87",
+      "codeState": "commit",
+      "label": "Model Picker Native selection mutation",
+      "narrative": "A deterministic exact-bundle Native run reproduces the reported model-switch failure boundary and closes it without hiding Browser debt. The Lynx picker had consumed only the ready-provider projection subset even though ChatView had already derived the complete presentation catalog. An idle thread that still referenced unavailable Codex therefore opened an empty Codex rail and exposed no selectable model. The product now feeds the complete catalog to Model Picker and opens an unlocked picker on the first ready provider while preserving provider locks for active sessions. Real measured touch first selects the sessionless thread, opens the picker, and selects Big Pickle. The Composer label changes from gpt-5.6-sol to Big Pickle, the active thread projection and isolated SQLite row both become opencode:opencode/big-pickle, main sequence advances 13 to 15, the overlay dismisses, renderer errors are zero, and isolated state is disposed. Two Browser diagnostics remain invalid as parity evidence: one false-positive capture ended with overlay=null and provider input pending, while the strict capture correctly failed because Web authority stayed on unavailable Codex and Lynx selected a ready provider. No Browser geometry or material claim is added.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The failing and passing Native runs share the same sessionless thread, provider snapshots, viewport, theme, exact bundle path, and measured touch flow. The fix changes only picker catalog/default-provider projection; the strict Browser mismatch remains explicitly unclosed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-selection-mutation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "cfa65c94b17827b94a58da6b91ab19dab61a88378c5cd2494abeebbb3e204bf1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-selected"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-selection-content",
+              "source": "The sessionless thread exposes a selectable Big Pickle row and updates the Composer from gpt-5.6-sol to Big Pickle after real touch input"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-model-selection-mutation",
+              "source": "Measured Sidebar, model-trigger, and model-row touches close the overlay and change the active thread selection from codex:gpt-5.6-sol to opencode:opencode/big-pickle"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-model-persistence",
+              "source": "Exact e1277c69 bundle advances main sequence 13 to 15, converges the client projection with isolated projection_threads persistence, reports zero renderer errors, disposes state, and every owned or orphaned agent-browser gate is zero"
+            }
+          }
+        }
+      ]
     }
   ]
 }
