@@ -114,6 +114,19 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "valueUnchanged: true");
   });
 
+  it("verifies model-option menus mutate and persist server-declared selections", () => {
+    assert.include(source, "async function verifyModelOptionMenuMutation");
+    assert.include(source, '"--verify-model-option-menu-mutation"');
+    assert.include(source, 'T3_LYNXTRON_VIEWPORT_PROBE: "1"');
+    assert.include(source, "__T3_LYNXTRON_MTS_PROVIDER_FIXTURE__");
+    assert.include(source, 'selector: ".composer-model-option-menu__item--unselected"');
+    assert.include(source, "data-composer-model-option-descriptor");
+    assert.include(source, "readPersistedThreadModelSelection");
+    assert.include(source, 'selector: ".composer-model-option-menu__item--selected"');
+    assert.include(source, 'selector: ".composer-model-option-menu-dismiss-layer"');
+    assert.include(source, "reopenedSelected: true");
+  });
+
   it("drives titlebar panels and verifies Sidebar menu rows do not collapse", () => {
     assert.include(source, "async function verifyShellInteractions");
     assert.include(source, '"--verify-shell-interactions"');

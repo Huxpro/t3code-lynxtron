@@ -647,6 +647,66 @@ async function readSelectorStyleValues(client, selector, property) {
   );
 }
 
+async function readSelectorAttributeMeasurement(client, { attribute, selector, value }) {
+  await client.runCdp("DOM.enable", { useCompression: false });
+  const documentResponse = await client.runCdp("DOM.getDocument", { depth: 0 });
+  const root = commandResult(documentResponse)?.root;
+  const rootNodeId = root?.children?.[0]?.nodeId ?? root?.nodeId;
+  if (!Number.isInteger(rootNodeId) || rootNodeId <= 0) {
+    throw new Error("Lynx DevTool did not return a DOM root node.");
+  }
+  const nodesResponse = await client.runCdp("DOM.querySelectorAll", {
+    nodeId: rootNodeId,
+    selector,
+  });
+  for (const nodeId of commandResult(nodesResponse)?.nodeIds ?? []) {
+    const attributesResponse = await client.runCdp("DOM.getAttributes", { nodeId });
+    const attributeList = commandResult(attributesResponse)?.attributes ?? [];
+    const attributes = Object.fromEntries(
+      Array.from({ length: Math.floor(attributeList.length / 2) }, (_, index) => [
+        attributeList[index * 2],
+        attributeList[index * 2 + 1],
+      ]),
+    );
+    if (attributes[attribute] !== value) continue;
+    const [boxResponse, textResponse] = await Promise.all([
+      client.runCdp("DOM.getBoxModel", { nodeId }),
+      client.runCdp("DOM.innerText", { nodeId }),
+    ]);
+    const model = commandResult(boxResponse)?.model;
+    return {
+      nodeId,
+      rect: quadRect(model?.border ?? model?.content),
+      text: commandResult(textResponse)?.innerText ?? "",
+      attributes,
+    };
+  }
+  return null;
+}
+
+async function waitForSelectorAttributeMeasurement({
+  attribute,
+  child,
+  client,
+  selector,
+  timeoutMs,
+  value,
+}) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error(`Lynxtron exited before ${selector}[${attribute}] became ready.`);
+    }
+    latest = await readSelectorAttributeMeasurement(client, { attribute, selector, value });
+    if (latest) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(
+    `Timed out waiting for ${selector}[${attribute}="${value}"]: ${JSON.stringify({ latest })}`,
+  );
+}
+
 async function verifySidebarGeometry(client, viewportWidth) {
   const [sidebar] = await readSelectorRects(client, ".sidebar");
   const [threadList] = await readSelectorRects(client, ".sidebar-v2-thread-list");
@@ -1477,6 +1537,55 @@ function readPersistedThreadModelSelection(baseDir, threadId) {
   return typeof stored === "string" ? JSON.parse(stored) : null;
 }
 
+async function selectSessionlessFixtureThread({ baseDir, child, client, timeoutMs }) {
+  let state = await readClientState(client);
+  if (state?.sessionStatus === "idle" && state?.activeThread?.session == null) {
+    return state;
+  }
+  const initialThreadId = state?.activeThreadId;
+  const seedReport = JSON.parse(
+    readFileSync(path.join(baseDir, "workbench-seed-report.json"), "utf8"),
+  );
+  const idleThreadId = seedReport.dataset?.idleThread?.id;
+  if (typeof idleThreadId !== "string") {
+    throw new Error("The fixture has no sessionless idle thread.");
+  }
+  await tapSelectorByAttribute({
+    attribute: "data-thread-id",
+    child,
+    client,
+    descendantSelector: ".sidebar-v2-row-card",
+    selector: ".sidebar-v2-row-item",
+    timeoutMs,
+    value: idleThreadId,
+  });
+  state = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (candidate) =>
+      candidate?.activeThreadId === idleThreadId &&
+      candidate?.activeThreadId !== initialThreadId &&
+      candidate?.sessionStatus === "idle" &&
+      candidate?.activeThread?.session == null,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-row-item--active",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-thread-id"] === idleThreadId,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-frame",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
+  });
+  return state;
+}
+
 async function verifyModelSelectionMutation({
   baseDir,
   child,
@@ -1485,50 +1594,12 @@ async function verifyModelSelectionMutation({
   outputDirectory,
   timeoutMs,
 }) {
-  let beforeState = await readClientState(client);
-  if (beforeState?.sessionStatus !== "idle" || beforeState?.activeThread?.session != null) {
-    const initialThreadId = beforeState?.activeThreadId;
-    const seedReport = JSON.parse(
-      readFileSync(path.join(baseDir, "workbench-seed-report.json"), "utf8"),
-    );
-    const idleThreadId = seedReport.dataset?.idleThread?.id;
-    if (typeof idleThreadId !== "string") {
-      throw new Error("Model selection fixture has no sessionless idle thread.");
-    }
-    await tapSelectorByAttribute({
-      attribute: "data-thread-id",
-      child,
-      client,
-      descendantSelector: ".sidebar-v2-row-card",
-      selector: ".sidebar-v2-row-item",
-      timeoutMs,
-      value: idleThreadId,
-    });
-    beforeState = await waitForClientState({
-      child,
-      client,
-      timeoutMs,
-      predicate: (state) =>
-        state?.activeThreadId === idleThreadId &&
-        state?.activeThreadId !== initialThreadId &&
-        state?.sessionStatus === "idle" &&
-        state?.activeThread?.session == null,
-    });
-    await waitForMeasurement({
-      child,
-      client,
-      selector: ".sidebar-v2-row-item--active",
-      timeoutMs,
-      predicate: (measurement) => measurement?.attributes["data-thread-id"] === idleThreadId,
-    });
-    await waitForMeasurement({
-      child,
-      client,
-      selector: ".composer-frame",
-      timeoutMs,
-      predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
-    });
-  }
+  const beforeState = await selectSessionlessFixtureThread({
+    baseDir,
+    child,
+    client,
+    timeoutMs,
+  });
   const threadId = beforeState?.activeThreadId;
   const beforeSelection = beforeState?.activeThread?.modelSelection;
   if (
@@ -1750,6 +1821,328 @@ async function verifyRuntimeMenuDismiss({ child, client, timeoutMs }) {
     dismissLayer: dismissLayer.rect,
     dismissed: true,
     valueUnchanged: true,
+  };
+}
+
+async function verifyModelOptionMenuMutation({ baseDir, child, client, timeoutMs }) {
+  const beforeState = await selectSessionlessFixtureThread({
+    baseDir,
+    child,
+    client,
+    timeoutMs,
+  });
+  const providerFixture = {
+    instanceId: "codex",
+    driver: "codex",
+    displayName: "Codex",
+    showInteractionModeToggle: true,
+    enabled: true,
+    installed: true,
+    version: "test",
+    status: "ready",
+    auth: { status: "authenticated" },
+    checkedAt: "2026-08-16T00:00:00.000Z",
+    availability: "available",
+    models: [
+      {
+        slug: "gpt-5.6-sol",
+        name: "gpt-5.6-sol",
+        isCustom: false,
+        isDefault: true,
+        capabilities: {
+          optionDescriptors: [
+            {
+              id: "reasoningEffort",
+              label: "Reasoning",
+              type: "select",
+              options: [
+                { id: "high", label: "High" },
+                { id: "xhigh", label: "Extra High", isDefault: true },
+              ],
+            },
+            {
+              id: "contextWindow",
+              label: "Context window",
+              type: "select",
+              options: [
+                { id: "200k", label: "200k" },
+                { id: "1m", label: "1M", isDefault: true },
+              ],
+            },
+            {
+              id: "thinking",
+              label: "Thinking",
+              type: "boolean",
+              currentValue: false,
+            },
+          ],
+        },
+      },
+    ],
+    slashCommands: [],
+    skills: [],
+  };
+  const fixtureResponse = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?.(${JSON.stringify(providerFixture)})`,
+    returnByValue: true,
+  });
+  if (commandResult(fixtureResponse)?.value !== true) {
+    throw new Error(
+      `Model-option provider fixture was not applied: ${JSON.stringify(fixtureResponse)}`,
+    );
+  }
+  const threadId = beforeState?.activeThreadId;
+  const beforeSelection = beforeState?.activeThread?.modelSelection;
+  if (
+    typeof threadId !== "string" ||
+    typeof beforeSelection?.instanceId !== "string" ||
+    typeof beforeSelection?.model !== "string"
+  ) {
+    throw new Error(`Model-option baseline is incomplete: ${JSON.stringify(beforeState)}`);
+  }
+  const trigger = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model-option",
+    timeoutMs,
+    predicate: (measurement) => Boolean(measurement?.text.trim()),
+  });
+  const beforeSequence = await readRendererReadiness(client);
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model-option",
+    timeoutMs,
+  });
+  const menu = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-model-option-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const target = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-model-option-menu__item--unselected",
+    timeoutMs,
+    predicate: (measurement) =>
+      typeof measurement?.attributes["data-composer-model-option-descriptor"] === "string" &&
+      typeof measurement?.attributes["data-composer-model-option-value"] === "string" &&
+      typeof measurement?.attributes["data-composer-model-option-value-type"] === "string",
+  });
+  const descriptorId = target.attributes["data-composer-model-option-descriptor"];
+  const valueText = target.attributes["data-composer-model-option-value"];
+  const value =
+    target.attributes["data-composer-model-option-value-type"] === "boolean"
+      ? valueText === "true"
+      : valueText;
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-model-option-menu__item--unselected",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-model-option-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const afterSequence = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeSequence,
+    timeoutMs,
+  });
+  const afterState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === threadId &&
+      state?.activeThread?.modelSelection?.options?.some(
+        (option) => option.id === descriptorId && option.value === value,
+      ),
+  });
+  const persistedSelection = readPersistedThreadModelSelection(baseDir, threadId);
+  if (
+    JSON.stringify(persistedSelection?.options ?? null) !==
+    JSON.stringify(afterState.activeThread.modelSelection.options ?? null)
+  ) {
+    throw new Error(
+      `Model options did not persist: ${JSON.stringify({
+        projected: afterState.activeThread.modelSelection.options,
+        persisted: persistedSelection?.options,
+      })}`,
+    );
+  }
+  const afterTrigger = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model-option",
+    timeoutMs,
+    predicate: (measurement) => Boolean(measurement?.text.trim()),
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model-option",
+    timeoutMs,
+  });
+  const selected = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-model-option-menu__item--selected",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-composer-model-option-descriptor"] === descriptorId &&
+      measurement?.attributes["data-composer-model-option-value"] === valueText,
+  });
+  const thinkingTarget = await waitForSelectorAttributeMeasurement({
+    attribute: "data-composer-model-option-descriptor",
+    child,
+    client,
+    selector: ".composer-model-option-menu__item--unselected",
+    timeoutMs,
+    value: "thinking",
+  });
+  const beforeThinkingSequence = await readRendererReadiness(client);
+  await tapSelectorByAttribute({
+    attribute: "data-composer-model-option-descriptor",
+    child,
+    client,
+    selector: ".composer-model-option-menu__item--unselected",
+    timeoutMs,
+    value: "thinking",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-model-option-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const afterThinkingSequence = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeThinkingSequence,
+    timeoutMs,
+  });
+  const thinkingState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === threadId &&
+      state?.activeThread?.modelSelection?.options?.some(
+        (option) => option.id === "thinking" && option.value === true,
+      ),
+  });
+  const thinkingPersistedSelection = readPersistedThreadModelSelection(baseDir, threadId);
+  if (
+    JSON.stringify(thinkingPersistedSelection?.options ?? null) !==
+    JSON.stringify(thinkingState.activeThread.modelSelection.options ?? null)
+  ) {
+    throw new Error(
+      `Thinking option did not persist: ${JSON.stringify({
+        projected: thinkingState.activeThread.modelSelection.options,
+        persisted: thinkingPersistedSelection?.options,
+      })}`,
+    );
+  }
+  const thinkingTrigger = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model-option",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("Thinking On"),
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model-option",
+    timeoutMs,
+  });
+  const selectedThinking = await waitForSelectorAttributeMeasurement({
+    attribute: "data-composer-model-option-descriptor",
+    child,
+    client,
+    selector: ".composer-model-option-menu__item--selected",
+    timeoutMs,
+    value: "thinking",
+  });
+  if (selectedThinking.attributes["data-composer-model-option-value"] !== "true") {
+    throw new Error(`Thinking menu did not reopen selected: ${JSON.stringify(selectedThinking)}`);
+  }
+  const dismissLayer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-model-option-menu-dismiss-layer",
+    timeoutMs,
+    predicate: (measurement) =>
+      (measurement?.rect?.width ?? 0) >= 1280 && (measurement?.rect?.height ?? 0) >= 820,
+  });
+  await tapSelector({
+    child,
+    client,
+    point: "bottom-right",
+    selector: ".composer-model-option-menu-dismiss-layer",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-model-option-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    input:
+      "DevTool Input.emulateTouchFromMouseEvent on measured model-option rows and dismiss layer",
+    threadId,
+    trigger: {
+      before: trigger.text.trim(),
+      after: afterTrigger.text.trim(),
+      rect: trigger.rect,
+    },
+    menu: {
+      rect: menu.rect,
+      text: menu.text.trim(),
+    },
+    selectedOption: {
+      descriptorId,
+      value,
+      label: selected.text.trim(),
+      rect: selected.rect,
+    },
+    thinkingOption: {
+      descriptorId: "thinking",
+      beforeLabel: thinkingTarget.text.trim(),
+      afterLabel: selectedThinking.text.trim(),
+      value: true,
+      rect: selectedThinking.rect,
+    },
+    selections: {
+      before: beforeSelection.options ?? [],
+      after: afterState.activeThread.modelSelection.options ?? [],
+      persisted: persistedSelection.options ?? [],
+      afterThinking: thinkingState.activeThread.modelSelection.options ?? [],
+      persistedThinking: thinkingPersistedSelection.options ?? [],
+    },
+    sequence: {
+      before: beforeSequence.lastSeq,
+      after: afterSequence.lastSeq,
+      beforeThinking: beforeThinkingSequence.lastSeq,
+      afterThinking: afterThinkingSequence.lastSeq,
+    },
+    finalTrigger: thinkingTrigger.text.trim(),
+    dismissLayer: dismissLayer.rect,
+    reopenedSelected: true,
+    dismissed: true,
   };
 }
 
@@ -4843,6 +5236,7 @@ async function runOnce({
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
   verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
+  verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
   verifyComposerStop,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
@@ -4877,6 +5271,7 @@ async function runOnce({
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      ...(shouldVerifyModelOptionMenuMutation ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
       ...(shouldVerifySourceControlLoading
         ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
         : {}),
@@ -5091,6 +5486,14 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const modelOptionMenuMutation = shouldVerifyModelOptionMenuMutation
+      ? await verifyModelOptionMenuMutation({
+          baseDir,
+          child,
+          client,
+          timeoutMs,
+        })
+      : undefined;
     const composerStop = verifyComposerStop
       ? await verifyComposerStopBehavior({
           child,
@@ -5294,6 +5697,7 @@ async function runOnce({
       modelPickerFidelity,
       modelSelectionMutation,
       runtimeMenuDismiss,
+      modelOptionMenuMutation,
       composerStop,
       composerWorkingState,
       completedTranscriptState,
@@ -5337,6 +5741,7 @@ async function runOnce({
       modelPickerFidelity,
       modelSelectionMutation,
       runtimeMenuDismiss,
+      modelOptionMenuMutation,
       composerStop,
       composerWorkingState,
       completedTranscriptState,
@@ -5402,6 +5807,9 @@ const shouldVerifyModelSelectionMutation = process.argv.includes(
   "--verify-model-selection-mutation",
 );
 const shouldVerifyRuntimeMenuDismiss = process.argv.includes("--verify-runtime-menu-dismiss");
+const shouldVerifyModelOptionMenuMutation = process.argv.includes(
+  "--verify-model-option-menu-mutation",
+);
 const verifyComposerStop = process.argv.includes("--verify-composer-stop");
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
@@ -5641,6 +6049,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
       verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
+      verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
       verifyComposerStop,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
