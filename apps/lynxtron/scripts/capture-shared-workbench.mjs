@@ -1706,6 +1706,7 @@ async function captureCell({
   let webGitPublishInputSent = !isGitPublishDialogState;
   let lynxGitPublishInputSent = !isGitPublishDialogState;
   let gitPublishDismissed = !isGitPublishDialogState;
+  let gitPublishThreadReadyPolls = isGitPublishDialogState ? 0 : 3;
   const gitPublishPostconditionTimeline = [];
   let lastGitPublishTimelineKey = "";
   const reviewInteractionTimeline = [];
@@ -1725,6 +1726,16 @@ async function captureCell({
       lynxThreadInputSent = true;
     }
     if (isGitPublishDialogState) {
+      const selectThreadCommandCount =
+        state?.lynx?.connectorDiagnostics?.commands?.filter(
+          ({ method }) => method === "selectThread",
+        ).length ?? 0;
+      gitPublishThreadReadyPolls =
+        threadReadyForReview(state, expectThread) && selectThreadCommandCount >= 2
+          ? gitPublishThreadReadyPolls + 1
+          : 0;
+    }
+    if (isGitPublishDialogState) {
       const timelineKey = JSON.stringify({
         webDialog: state?.web?.gitPublishDialog !== null,
         lynxDialog: state?.lynx?.gitPublishDialog !== null,
@@ -1741,7 +1752,7 @@ async function captureCell({
     }
     if (
       isGitPublishDialogState &&
-      threadReadyForReview(state, expectThread) &&
+      gitPublishThreadReadyPolls >= 3 &&
       headerGitActionMatches(state) &&
       (!webGitPublishInputSent || !lynxGitPublishInputSent)
     ) {
