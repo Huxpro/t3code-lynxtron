@@ -22,6 +22,7 @@ import {
 } from "../../../../web/src/components/chat/ComposerSurface";
 import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
+import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.logic";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 interface ComposerProps {
   disabled: boolean;
@@ -630,22 +631,17 @@ export function Composer({
               <view className="composer-context-backdrop-band composer-context-backdrop-band--2" />
               <view className="composer-context-backdrop-band composer-context-backdrop-band--3" />
               <view className="composer-context-backdrop-band composer-context-backdrop-band--4" />
-              <view className="composer-context-light-band composer-context-light-band--0" />
-              <view className="composer-context-light-band composer-context-light-band--1" />
-              <view className="composer-context-light-band composer-context-light-band--2" />
-              <view className="composer-context-light-band composer-context-light-band--3" />
-              <view className="composer-context-light-band composer-context-light-band--4" />
-              <view className="composer-context-light-band composer-context-light-band--5" />
-              <view className="composer-context-light-band composer-context-light-band--6" />
-              <view className="composer-context-light-band composer-context-light-band--7" />
-              <view className="composer-context-light-band composer-context-light-band--8" />
-              <view className="composer-context-light-band composer-context-light-band--9" />
-              <view className="composer-context-light-band composer-context-light-band--10" />
-              <view className="composer-context-light-band composer-context-light-band--11" />
-              <view className="composer-context-light-band composer-context-light-band--12" />
-              <view className="composer-context-light-band composer-context-light-band--13" />
-              <view className="composer-context-light-band composer-context-light-band--14" />
-              <view className="composer-context-light-band composer-context-light-band--15" />
+              {COMPOSER_CONTEXT_LIGHT_PROFILE.map((value, index) => (
+                <view
+                  key={`${index}:${value}`}
+                  className="composer-context-light-band"
+                  data-composer-context-light-band={String(index)}
+                  style={{
+                    top: `${index}px`,
+                    backgroundColor: `rgb(${value}, ${value}, ${value})`,
+                  }}
+                />
+              ))}
             </view>
           }
           checkout={
