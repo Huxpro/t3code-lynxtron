@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T18:36:53+09:00",
+  "updatedAt": "2026-08-16T18:48:27+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7479,6 +7479,28 @@
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/titlebar-brand-traffic-light-current-metrics.json",
           "classification": "tracked-current",
           "sha256": "dd743b191e43bfde90220ea45a6f275f3d985af7f4e1685e3dc878456d83ff28"
+        }
+      ],
+      "updates": []
+    },
+    {
+      "id": "sidebar-card-working-native-current",
+      "observedAt": "2026-08-16T18:48:27+09:00",
+      "commit": "10d588ff984642e9870f3187745b493fde29bc84",
+      "codeCommit": "93718c3cdfe01df70d956037aaa12c4f11bc0e81",
+      "codeState": "commit",
+      "label": "Sidebar card inset and Working-state proof",
+      "narrative": "The shared Sidebar group already supplies its horizontal content inset, but the Lynx thread list subtracted another 16px from its width. In a 256px Sidebar the list, rows, and cards therefore started at x=7 with width 225, leaving approximately 7px on the left and 24px on the right. Lynx now lets the list use the full shared content width, including the responsive path. The strict Native geometry verifier requires symmetric list insets and exact row/card width convergence. It also reads the active client session and requires the visible Working label to agree with session.status=running after pending approval and user-input blockers receive their higher shared priority. A fresh light-mode 1280x820 exact-bundle run measures a 241px list, rows, and cards with 7px and 8px side insets, observes sessionStatus=running and visible Working, advances main transport 2 to 3, reports zero renderer errors, and disposes isolated state. The Working product logic itself was already correct through resolveSidebarV2Status and shared deriveSidebarImmediateStatus, so only geometry changed. The fixed denominator has no populated Sidebar state, so this point intentionally changes no modeled residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The before and after Native runs share the same fixture and viewport. The product delta removes only the redundant list-width subtraction, while the separately committed verifier proves symmetric geometry and truthful session-derived Working state."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/sidebar-card-working-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "cdb04d54716d8c4573c358aecefe5b493924af47c2edab2a6515059b4eb83cdc"
         }
       ],
       "updates": []
