@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T18:20:39+09:00",
+  "updatedAt": "2026-08-16T18:36:53+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7457,6 +7457,28 @@
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/model-picker-dismiss-surface-current-metrics.json",
           "classification": "tracked-current",
           "sha256": "0451b0683e4ada3892264e9ac542c24c4de471311a8057b4fba9f68486b838ab"
+        }
+      ],
+      "updates": []
+    },
+    {
+      "id": "titlebar-brand-traffic-light-native-current",
+      "observedAt": "2026-08-16T18:36:53+09:00",
+      "commit": "316b094f82705d94801c2197f19e00fb70a20677",
+      "codeCommit": "fe533fcb04369168566c59dfc73ed70636b68867",
+      "codeState": "commit",
+      "label": "macOS titlebar brand traffic-light clearance",
+      "narrative": "The production Web macOS authority sets workspace-controls-left to 90px and then applies the 28px titlebar-control size plus 12px gap, placing the Sidebar brand at x=130. Historical matched Web and Lynx measurements also place the 55x28 brand at x=130. Current Native had regressed to x=60, entering the third traffic-light envelope for LynxWindow's trafficLightPosition x=16,y=18, while the existing verifier incorrectly certified x=60. The Lynx brand host and its responsive override now restore x=130, and the read-only Native Sidebar geometry verifier requires that authority value. A fresh light-mode 1280x820 exact-bundle run measures the brand at 130,12 with size 55x28, keeps both 225px rows and cards inside the 256px Sidebar, advances main transport 2 to 3, reports zero renderer errors, and disposes isolated state. An attempted verify-composer-branding diagnostic was blocked by an unrelated model-picker mutation on the unavailable-Codex fixture; the retained proof uses the independent read-only Sidebar geometry path. The fixed denominator contains only sidebar-resize, not populated/titlebar geometry, so this evidence point intentionally changes no modeled residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after exact-bundle Native runs use the same fixture, viewport, theme, and geometry verifier. The product delta only changes the brand host inset from 60px to the production authority value 130px, and the strict verifier is committed separately."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/titlebar-brand-traffic-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "dd743b191e43bfde90220ea45a6f275f3d985af7f4e1685e3dc878456d83ff28"
         }
       ],
       "updates": []
