@@ -11,7 +11,9 @@ import { useViewportSnapshot } from "../hooks/useViewportSnapshot";
 import { ProjectFavicon } from "./ProjectFavicon";
 import {
   resolveSidebarV2Status,
+  resolveWorkingStartedAt,
   resolveSettledTimestamp,
+  formatWorkingDurationLabel,
   sortScopedProjectsForSidebar,
   sortSettledThreadsForSidebarV2,
   sortThreadsForSidebarV2,
@@ -36,7 +38,31 @@ function settledTimeLabel(thread: ReturnType<typeof useThreadShells>[number]): s
   return timestamp === null ? "" : compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
 }
 
-function statusPresentation(status: SidebarV2Status): SidebarV2RowStatus | null {
+function LynxWorkingDuration({
+  thread,
+}: {
+  readonly thread: ReturnType<typeof useThreadShells>[number];
+}) {
+  const startedAt = resolveWorkingStartedAt(thread);
+  const startedMs = startedAt === null ? Number.NaN : Date.parse(startedAt);
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    if (Number.isNaN(startedMs)) return;
+    const interval = setInterval(() => setTick((tick) => tick + 1), 1_000);
+    return () => clearInterval(interval);
+  }, [startedMs]);
+  if (Number.isNaN(startedMs)) return null;
+  return (
+    <HostText className="sidebar-v2-working-duration font-mono tabular-nums">
+      {formatWorkingDurationLabel(Date.now() - startedMs)}
+    </HostText>
+  );
+}
+
+function statusPresentation(
+  status: SidebarV2Status,
+  thread: ReturnType<typeof useThreadShells>[number],
+): SidebarV2RowStatus | null {
   switch (status) {
     case "working":
       return {
@@ -44,7 +70,7 @@ function statusPresentation(status: SidebarV2Status): SidebarV2RowStatus | null 
         className:
           "animate-sidebar-working-text text-sky-600 motion-reduce:animate-none dark:text-sky-400",
         icon: <Icon name="refresh-cw" size={16} color="#a1a1aa" className="size-4 shrink-0" />,
-        workingDuration: null,
+        workingDuration: <LynxWorkingDuration thread={thread} />,
       };
     case "connecting":
       return {
@@ -496,7 +522,7 @@ export default function SidebarV2() {
               branch={thread.branch ?? null}
               threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
               settledTimeLabel=""
-              topStatus={statusPresentation(status)}
+              topStatus={statusPresentation(status, thread)}
               jumpLabel={null}
               favicon={
                 <ProjectFavicon

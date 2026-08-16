@@ -13,6 +13,7 @@ import {
   FileTreeFileRowSurface,
 } from "../../../../web/src/components/chat/FileTreeSurface";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import { uiActions } from "../state/uiState";
 import { Icon } from "./Icon";
 
 interface ListingState {
@@ -34,13 +35,6 @@ const EMPTY_LISTING: ListingState = {
   cwd: null,
   entries: [],
   truncated: false,
-  pending: false,
-  error: null,
-};
-
-const EMPTY_PREVIEW: PreviewState = {
-  path: null,
-  result: null,
   pending: false,
   error: null,
 };
@@ -198,7 +192,6 @@ function renderTreeNode(
 export function FilesPanel() {
   const { activeThreadId, projects, threads } = useT3ClientState();
   const [listing, setListing] = useState<ListingState>(EMPTY_LISTING);
-  const [preview, setPreview] = useState<PreviewState>(EMPTY_PREVIEW);
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [search, setSearch] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
@@ -216,7 +209,6 @@ export function FilesPanel() {
   useEffect(() => {
     if (!cwd) {
       setListing(EMPTY_LISTING);
-      setPreview(EMPTY_PREVIEW);
       return;
     }
 
@@ -272,27 +264,7 @@ export function FilesPanel() {
     }));
   }, []);
 
-  const selectFile = useCallback(
-    (path: string) => {
-      if (!cwd) return;
-      setPreview({ path, result: null, pending: true, error: null });
-      void t3ClientActions
-        .readProjectFile(cwd, path)
-        .then((result) => {
-          setPreview((current) =>
-            current.path === path ? { path, result, pending: false, error: null } : current,
-          );
-        })
-        .catch((error: unknown) => {
-          setPreview((current) =>
-            current.path === path
-              ? { path, result: null, pending: false, error: errorMessage(error) }
-              : current,
-          );
-        });
-    },
-    [cwd],
-  );
+  const selectFile = useCallback((path: string) => uiActions.openFileSurface(path), []);
 
   return (
     <view className="files-panel">
@@ -337,7 +309,7 @@ export function FilesPanel() {
                         0,
                         hasDirectoryNodes,
                         expandedDirectories,
-                        preview.path,
+                        null,
                         toggleDirectory,
                         selectFile,
                       ),
@@ -354,24 +326,6 @@ export function FilesPanel() {
                   </text>
                 </view>
               )}
-
-              {preview.path ? (
-                <view className="files-panel__preview">
-                  <text className="files-panel__preview-path">{preview.path}</text>
-                  {preview.pending ? (
-                    <text className="files-panel__preview-status">Loading file…</text>
-                  ) : preview.error ? (
-                    <text className="files-panel__preview-error">{preview.error}</text>
-                  ) : preview.result && cwd ? (
-                    <EditableFilePreview
-                      key={`${cwd}:${preview.path}`}
-                      cwd={cwd}
-                      path={preview.path}
-                      result={preview.result}
-                    />
-                  ) : null}
-                </view>
-              ) : null}
             </view>
           </scroll-view>
         </>
@@ -382,5 +336,61 @@ export function FilesPanel() {
         </view>
       )}
     </view>
+  );
+}
+
+export function FilePanel({ path }: { readonly path: string }) {
+  const { activeThreadId, projects, threads } = useT3ClientState();
+  const [preview, setPreview] = useState<PreviewState>({
+    path,
+    result: null,
+    pending: true,
+    error: null,
+  });
+  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const project =
+    projects.find((candidate) => candidate.id === activeThread?.projectId) ?? projects[0] ?? null;
+  const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
+
+  useEffect(() => {
+    if (!cwd) {
+      setPreview({ path, result: null, pending: false, error: "No project open." });
+      return;
+    }
+    let cancelled = false;
+    setPreview({ path, result: null, pending: true, error: null });
+    void t3ClientActions
+      .readProjectFile(cwd, path)
+      .then((result) => {
+        if (!cancelled) setPreview({ path, result, pending: false, error: null });
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setPreview({ path, result: null, pending: false, error: errorMessage(error) });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [cwd, path]);
+
+  return (
+    <scroll-view className="file-panel" scroll-y scroll-orientation="vertical">
+      <view className="file-panel__content">
+        <text className="file-panel__path">{path}</text>
+        {preview.pending ? (
+          <text className="files-panel__preview-status">Loading file…</text>
+        ) : preview.error ? (
+          <text className="files-panel__preview-error">{preview.error}</text>
+        ) : preview.result && cwd ? (
+          <EditableFilePreview
+            key={`${cwd}:${path}`}
+            cwd={cwd}
+            path={path}
+            result={preview.result}
+          />
+        ) : null}
+      </view>
+    </scroll-view>
   );
 }

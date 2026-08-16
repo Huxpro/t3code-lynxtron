@@ -22,13 +22,19 @@ import type { ProviderInstanceId, TurnId } from "@t3tools/contracts";
 import { appAtomRegistry } from "./atomRegistry";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
 
-export type RightPanelKind = "plan" | "diff" | "files" | "terminal";
+export type RightPanelKind = "plan" | "diff" | "files" | "file" | "terminal";
 
 export type RightPanelSurface =
   | {
       readonly id: string;
       readonly kind: "plan" | "files" | "terminal";
       readonly label: string;
+    }
+  | {
+      readonly id: string;
+      readonly kind: "file";
+      readonly label: string;
+      readonly path: string;
     }
   | {
       readonly id: string;
@@ -108,6 +114,19 @@ export function applyRightPanelAction(
           surfaces: state.surfaces.map((surface) => (surface.id === existing.id ? next : surface)),
         };
       }
+      if (existing && action.surface.kind === "file" && existing.kind === "file") {
+        const next = {
+          ...existing,
+          id: action.surface.id,
+          label: action.surface.label,
+          path: action.surface.path,
+        };
+        return {
+          isOpen: true,
+          activeSurfaceId: next.id,
+          surfaces: state.surfaces.map((surface) => (surface.id === existing.id ? next : surface)),
+        };
+      }
       return openPanelSurface(state, existing ?? action.surface);
     }
     case "close-surface":
@@ -150,6 +169,8 @@ function kindLabel(kind: RightPanelKind): string {
       return "Diff";
     case "files":
       return "Files";
+    case "file":
+      return "File";
     case "terminal":
       return "Terminal";
   }
@@ -267,7 +288,7 @@ export const uiActions = {
     updateSearchOverlay({ _tag: "OpenNewThreadIn" });
   },
   openRightPanelSurface(
-    kind: RightPanelKind,
+    kind: Exclude<RightPanelKind, "file">,
     selection?: { readonly turnId: TurnId; readonly filePath?: string },
   ): void {
     updateRightPanel({
@@ -286,6 +307,25 @@ export const uiActions = {
               kind,
               label: kindLabel(kind),
             },
+    });
+  },
+  openFileSurface(path: string): void {
+    const trimmedPath = path.trim();
+    if (!trimmedPath) return;
+    const current = appAtomRegistry.get(rightPanelStateAtom);
+    const withoutExplorer = {
+      ...current,
+      surfaces: current.surfaces.filter((surface) => surface.kind !== "files"),
+    };
+    appAtomRegistry.set(rightPanelStateAtom, withoutExplorer);
+    updateRightPanel({
+      type: "open",
+      surface: {
+        id: `file:${trimmedPath}`,
+        kind: "file",
+        label: trimmedPath.split("/").at(-1) ?? trimmedPath,
+        path: trimmedPath,
+      },
     });
   },
   toggleRightPanel(): void {

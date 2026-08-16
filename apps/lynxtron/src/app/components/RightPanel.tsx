@@ -21,7 +21,7 @@ import {
 } from "../state/uiState";
 import { PlanPanel } from "./PlanPanel";
 import { DiffPanel } from "./DiffPanel";
-import { FilesPanel } from "./FilesPanel";
+import { FilePanel, FilesPanel } from "./FilesPanel";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
@@ -42,6 +42,7 @@ const SURFACE_ICONS: Record<RightPanelKind, IconName> = {
   plan: "clipboard-list",
   diff: "file-diff",
   files: "files",
+  file: "file-json",
   terminal: "terminal-square",
 };
 
@@ -103,6 +104,8 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
       return <DiffPanel turnId={surface.turnId} filePath={surface.filePath} />;
     case "files":
       return <FilesPanel />;
+    case "file":
+      return <FilePanel path={surface.path} />;
     case "terminal":
       return (
         <view className="terminal-placeholder" data-terminal-placeholder="true">
@@ -147,7 +150,7 @@ export function RightPanel({
     uiActions.closeRightPanelSurface(surface.id);
   }, []);
 
-  const handleAddSurface = useCallback((kind: RightPanelKind) => {
+  const handleAddSurface = useCallback((kind: Exclude<RightPanelKind, "file">) => {
     uiActions.openRightPanelSurface(kind);
     setShowAddMenu(false);
   }, []);
