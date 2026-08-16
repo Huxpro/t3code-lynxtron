@@ -435,6 +435,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           projectName={activeProject?.title ?? "t3code"}
           threadTitle={activeThread?.title ?? "New thread"}
           cwd={cwd}
+          connectorCommandsReady={connectorCommandsReady}
           availableEditors={serverConfig?.availableEditors ?? []}
           rightPanelOpen={rightPanel.isOpen}
           centerPanelWidth={centerPanelWidth}

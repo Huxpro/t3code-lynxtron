@@ -72,6 +72,39 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".topbar__toggle:active {");
   });
 
+  it("projects and opens the real repository Publish flow", () => {
+    const header = componentSource("ChatHeader.tsx");
+    const publish = componentSource("GitPublishDialog.tsx");
+    const bridge = readFileSync(path.resolve(import.meta.dirname, "../bridge.ts"), "utf8");
+    const client = readFileSync(path.resolve(import.meta.dirname, "../state/t3Client.ts"), "utf8");
+
+    expect(header).toContain('from "@t3tools/client-runtime/state/git-actions"');
+    expect(header).toContain(".readVcsStatus(cwd)");
+    expect(header).toContain("connectorCommandsReady");
+    expect(header).toContain("[connectorCommandsReady, cwd]");
+    expect(header).toContain("data-git-quick-action-kind");
+    expect(header).toContain("data-git-quick-action-label");
+    expect(header).toContain('gitQuickAction.kind === "open_publish"');
+    expect(header).toContain("<GitPublishDialog");
+    expect(header).not.toContain('openRightPanelSurface("publish")');
+    expect(publish).toContain('data-git-publish-dialog="true"');
+    expect(publish).toContain("PUBLISH_PROVIDERS");
+    expect(publish).toContain('["Provider", "Repository", "Summary"]');
+    expect(publish).toContain("data-git-publish-step-state");
+    expect(publish).toContain("data-git-publish-provider-ready");
+    expect(publish).toContain("discoverSourceControl()");
+    expect(publish).toContain(".publishRepository({");
+    expect(publish).toContain('aria-label="Dismiss Publish repository"');
+    expect(publish).toContain('aria-label="Close Publish repository"');
+    expect(publish).toContain('className="git-publish-dialog" catchtap');
+    expect(bridge).toContain("publishRepository(");
+    expect(client).toContain("function publishRepository(");
+    expect(overrides).toContain(".git-publish-dialog {");
+    expect(overrides).not.toContain(".action-btn--commit {\n  width: 101px;");
+    expect(overrides).toContain(".action-btn__label {\n  flex-shrink: 0;");
+    expect(overrides).toContain("white-space: nowrap;");
+  });
+
   it("prevents Sidebar action rows from collapsing into one another", () => {
     expect(sidebarSource).toContain("const actionCount =");
     expect(sidebarSource).toContain("const menuHeight = actionCount * 30 + 10;");
