@@ -162,6 +162,8 @@ describe("desktop shell interaction contract", () => {
 
     expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
     expect(sidebarSource).toContain("topStatus={statusPresentation(status)}");
+    expect(sidebarSource).toContain('case "working":');
+    expect(sidebarSource).toContain('label: "Working"');
     expect(sidebarSource).toContain("settlementSupported={false}");
     expect(sidebarSource).not.toContain("cardActionsPersistent");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
@@ -172,6 +174,16 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).not.toContain(".sidebar-v2-row-card:hover .sidebar-v2-row-actions,");
     expect(faviconSource).toContain('name="folder"');
     expect(faviconSource).not.toContain("background-color");
+  });
+
+  it("uses the shared Sidebar inset without shrinking the thread list twice", () => {
+    const listBlocks = overrides.match(/\.sidebar-v2-thread-list \{[^}]+\}/g);
+
+    expect(listBlocks).not.toBeNull();
+    for (const block of listBlocks ?? []) {
+      expect(block).toContain("width: 100%;");
+      expect(block).not.toContain("calc(100% - 16px)");
+    }
   });
 
   it("keeps the project scope popup inside the Sidebar rail", () => {
