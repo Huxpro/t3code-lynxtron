@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T19:16:12+09:00",
+  "productCommit": "0fbbd1913e3e0b305ee093a11c4539e24ee3a8ea",
+  "nativeVerifierCommits": [
+    "746930328240e3124074f3882302734b1e03faa8",
+    "bc1fcf664c085b277ab548b48fe5854a05b34f09",
+    "a6d876e9501d53734d45035f320dc68a30b13fc8"
+  ],
+  "stateId": "composer-docked",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "surface": "Composer Context lower shadow"
+  },
+  "fixture": {
+    "source": "disposable /tmp/t3-git-publish-native-fixture snapshot",
+    "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "The current Web light Composer produces a smooth thirty-one-pixel grayscale shadow profile from 222 to 255 under the Context seam.",
+      "Lynx approximated that profile with sixteen two-pixel bands, repeating every sampled value and creating visible steps that read as a heavier block under the input."
+    ],
+    "harnessMismatch": [
+      "The first Native run queried dynamically generated data attributes that Lynx DevTool does not serialize.",
+      "The second Native run passed the set-based geometry/color gate but failed while formatting the diagnostic result because stale first/last variables remained.",
+      "The final verifier reads all thirty-one computed colors in DOM order and records the complete array while retaining exact one-pixel geometry checks."
+    ],
+    "evidenceBoundary": "The matched Browser pair supplies material residuals and direct before/after attribution. Native proves exact-theme profile geometry/colors, transport, zero renderer errors, screenshot dimensions, and cleanup without substituting Native pixels for Browser parity."
+  },
+  "browser": {
+    "status": "pass",
+    "capturePass": true,
+    "sameFixture": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "rendererErrors": 0,
+    "geometry": {
+      "composer": {
+        "web": { "x": 384, "y": 628, "width": 768, "height": 140 },
+        "lynx": { "x": 384, "y": 628, "width": 768, "height": 140 }
+      },
+      "context": {
+        "web": { "x": 406, "y": 752, "width": 724, "height": 48 },
+        "lynx": { "x": 406, "y": 752, "width": 724, "height": 48 }
+      }
+    },
+    "before": {
+      "composerContextSsim": 0.948181,
+      "composerContextResidual": 0.051819,
+      "contextSsim": 0.939967,
+      "contextResidual": 0.060033,
+      "reportSha256": "b0f6d1dfac680e08aa21f96ab9ba1088934679bc4212a756e3c968d2d96b5e85",
+      "webScreenshotSha256": "126ed3e4536c53509edb702d06988be2e6a72e8f90f45470070bb4d9514ef649",
+      "lynxScreenshotSha256": "1ecfff1ff0e5be968620986dc45f8c4ab1c548015326b23fd22bbecb6262209d",
+      "profile": [
+        222, 222, 228, 228, 232, 232, 237, 237, 240, 240, 244, 244, 246, 246, 248, 248, 250, 250,
+        252, 252, 253, 253, 253, 253, 254, 254, 254, 254, 254, 254, 254
+      ]
+    },
+    "after": {
+      "composerContextSsim": 0.948806,
+      "composerContextResidual": 0.051194,
+      "contextSsim": 0.941876,
+      "contextResidual": 0.058124,
+      "reportSha256": "938d5eabf04dfeeb2fa796048cf020407ff609b2293df5fb0a2b5395ebba072c",
+      "webScreenshotSha256": "90b41e230e011f6a2530d94e05bb5ce8957d2d2f9b19d71ecc80403a1b093fa3",
+      "lynxScreenshotSha256": "103af2fc915886f71477621c1f3bcd9e9945030d1bcd221f89fc88e325fa9d37",
+      "profile": [
+        222, 225, 228, 230, 232, 235, 237, 239, 241, 242, 244, 245, 246, 248, 249, 250, 251, 251,
+        252, 253, 253, 254, 254, 254, 254, 255, 255, 255, 255, 255, 255
+      ],
+      "centerProfileExactMatch": true
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "a6d876e9501d53734d45035f320dc68a30b13fc8",
+    "bundle": {
+      "bytes": 4472874,
+      "sha256": "b2639db7d9fae3ac324ee331cd35ead1203928f944e37adb56b71275c2aecf32"
+    },
+    "reportSha256": "91d81dc43d2195ad33993c22034cd5b980dcfbdbfee354b678312ce24af9eb29",
+    "contextBackdrop": {
+      "x": 406,
+      "y": 768,
+      "width": 724,
+      "height": 32,
+      "backgroundColor": "rgb(254,254,254)",
+      "borderBottomColor": "rgb(234,234,234)"
+    },
+    "bands": {
+      "count": 31,
+      "width": 722,
+      "height": 1,
+      "firstY": 768,
+      "lastY": 798,
+      "colors": [
+        "rgb(222,222,222)",
+        "rgb(225,225,225)",
+        "rgb(228,228,228)",
+        "rgb(230,230,230)",
+        "rgb(232,232,232)",
+        "rgb(235,235,235)",
+        "rgb(237,237,237)",
+        "rgb(239,239,239)",
+        "rgb(241,241,241)",
+        "rgb(242,242,242)",
+        "rgb(244,244,244)",
+        "rgb(245,245,245)",
+        "rgb(246,246,246)",
+        "rgb(248,248,248)",
+        "rgb(249,249,249)",
+        "rgb(250,250,250)",
+        "rgb(251,251,251)",
+        "rgb(251,251,251)",
+        "rgb(252,252,252)",
+        "rgb(253,253,253)",
+        "rgb(253,253,253)",
+        "rgb(254,254,254)",
+        "rgb(254,254,254)",
+        "rgb(254,254,254)",
+        "rgb(254,254,254)",
+        "rgb(255,255,255)",
+        "rgb(255,255,255)",
+        "rgb(255,255,255)",
+        "rgb(255,255,255)",
+        "rgb(255,255,255)",
+        "rgb(255,255,255)"
+      ]
+    },
+    "transport": {
+      "kind": "main",
+      "beforeProbe": 2,
+      "afterProbe": 3
+    },
+    "screenshot": {
+      "dimensions": {
+        "width": 2560,
+        "height": 1640
+      },
+      "sha256": "85ee2eb988ead1c3c88fae2c007e490d19b0e0e0081382a6dfb92dd1c9ef8041",
+      "retention": "diagnostic file remains in /tmp and is not tracked"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": {
+      "productAndShell": "12/12",
+      "nativeVerifier": "31/31"
+    },
+    "typecheck": {
+      "lynxtron": "pass"
+    },
+    "build": {
+      "browserWorkbench": "pass with existing bundle-size and Effect import.meta warnings",
+      "production": "pass with existing unsupported-property and Effect import.meta warnings"
+    },
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "retainedTrialApp": "PID 18721 remained alive throughout the run"
+  },
+  "remainingRisk": [
+    "Composer/context residual remains 0.051194 and includes broader surface, outline, typography, and control material differences.",
+    "The 31-row profile is the Native-safe equivalent of the current Web CSS shadow; it should be remeasured if the Web shadow token changes.",
+    "Dark mode is unchanged and retains its existing separate shadow/material evidence."
+  ]
+}
