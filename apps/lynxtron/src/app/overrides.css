@@ -4528,10 +4528,7 @@
   min-width: 0;
   align-self: stretch;
   box-sizing: border-box;
-  padding: 48px 32px 40px 32px;
-}
-.settings-content--source-control {
-  padding-top: 36px;
+  padding: 36px 32px 40px 32px;
 }
 /* ============= Settings Panel ============= */
 .settings-panel {

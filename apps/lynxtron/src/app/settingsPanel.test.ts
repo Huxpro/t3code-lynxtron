@@ -53,6 +53,10 @@ describe("Lynx Settings route projection", () => {
       expect(block).toContain("--align-self-column: stretch;");
       expect(block).toContain("width: 100%;");
     }
+    const contentStart = overrides.indexOf(".settings-content {");
+    const contentBlock = overrides.slice(contentStart, overrides.indexOf("}", contentStart));
+    expect(contentBlock).toContain("padding: 36px 32px 40px 32px;");
+    expect(overrides).not.toContain(".settings-content--source-control {");
     const settingsRowMarker = overrides.indexOf("/* SettingsRow:");
     const textStart = overrides.indexOf(".settings-row__text {", settingsRowMarker);
     const textBlock = overrides.slice(textStart, overrides.indexOf("}", textStart));
@@ -67,6 +71,14 @@ describe("Lynx Settings route projection", () => {
     );
     expect(generalLayout).toContain('"settings-row flex w-full min-w-0 self-stretch"');
     expect(generalLayout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
+    const routeHost = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/settingsRouteHost.lynx.tsx",
+      ),
+      "utf8",
+    );
+    expect(routeHost).toContain("key={pathname}");
   });
 
   it("marks unavailable Settings capabilities as disabled and visibly muted", () => {

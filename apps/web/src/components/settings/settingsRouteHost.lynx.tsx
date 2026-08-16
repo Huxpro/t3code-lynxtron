@@ -63,6 +63,7 @@ export function SettingsRouteHost({
           ) : null}
         </view>
         <scroll-view
+          key={pathname}
           scroll-orientation="vertical"
           className={
             contentId ? `settings-scroll settings-scroll--${contentId}` : "settings-scroll"
