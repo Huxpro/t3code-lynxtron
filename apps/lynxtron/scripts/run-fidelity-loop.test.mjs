@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vite-plus/test";
-import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 
 import { exitCodeForChild, parseLoopArguments } from "./run-fidelity-loop.mjs";
+
+const runnerPath = path.join(import.meta.dirname, "run-fidelity-loop.mjs");
 
 describe("fidelity loop runner", () => {
   it("keeps the agent-browser leak policy visible in every loop", () => {
@@ -44,5 +48,32 @@ describe("fidelity loop runner", () => {
     expect(exitCodeForChild(null, "SIGINT")).toBe(130);
     expect(exitCodeForChild(null, "SIGTERM")).toBe(143);
     expect(exitCodeForChild(null, "SIGKILL")).toBe(1);
+  });
+
+  it.each([
+    { name: "success", childExitCode: 0 },
+    { name: "failure", childExitCode: 7 },
+  ])("runs the agent-browser gate before and after a $name command", ({ childExitCode }) => {
+    const stateFile = path.join(
+      "/tmp",
+      `t3-lynxtron-fidelity-loop-test-${process.pid}-${childExitCode}.json`,
+    );
+    const result = spawnSync(
+      process.execPath,
+      [
+        runnerPath,
+        "--state-file",
+        stateFile,
+        "--",
+        process.execPath,
+        "-e",
+        `process.exit(${childExitCode})`,
+      ],
+      { encoding: "utf8" },
+    );
+    expect(result.status).toBe(childExitCode);
+    expect(result.stdout).toContain("PASS agent-browser preflight leak gate owned=0 orphaned=0");
+    expect(result.stdout).toContain("PASS agent-browser postflight leak gate owned=0 orphaned=0");
+    expect(existsSync(stateFile)).toBe(false);
   });
 });
