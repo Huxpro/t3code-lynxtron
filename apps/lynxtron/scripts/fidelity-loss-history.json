@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T23:29:03+09:00",
+  "updatedAt": "2026-08-16T23:54:10+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7790,6 +7790,86 @@
               "confidence": 0.99,
               "method": "native-owned-server-recovery",
               "source": "Owned server replacement advances sequence 11 to 16, restores running session state, clears final banner, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-shared-content-origin-current",
+      "observedAt": "2026-08-16T23:54:10+09:00",
+      "commit": "9a169b44bfe12997e68de70d39b38a47cb2054b0",
+      "codeCommit": "173724c785f99779e621de922d89dae06e0aebbd",
+      "codeState": "commit",
+      "label": "Shared Settings content origin and route reset",
+      "narrative": "Three independent current-head Settings captures proved one shared renderer loss: Web placed the first section at y=88 while Lynx placed Connections, Beta, and Archive at y=100 despite matching x=320, width=896, copy, and state identity. The Lynx Settings content wrapper used 48px top padding below its 52px topbar; Web resolves to a 36px content inset at this viewport, and Source Control already carried that value as a special case. Lynx now uses the shared 36px inset for every Settings route and removes the special case. Full-frame residual improves from 0.086424 to 0.080882 for Connections, 0.112195 to 0.102458 for Beta, and 0.052284 to 0.047619 for Archive; every first section lands exactly at y=88 with unchanged authority pixels. Native verification then exposed a separate route interaction loss: after scrolling long General content, the shared scroll-view retained its offset and rendered Appearance at y=-37.6. Keying the Settings scroll surface by pathname remounts each route at its own top. A hard-gated exact-bundle matrix verifies General and Source Control first sections at y=88, Appearance Theme at y=132, two repeated General cycles, all eight routes, unavailable opacities, transport, zero renderer errors, and disposed isolated state. This point updates only the measured Lynx geometry and material of Connections, Beta, and Archive; no weights or scope change.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "All three before/after Browser pairs use one immutable snapshot, identical authority pixels, state, theme, viewport, and bundles per side. One shared 12px Lynx inset change moves only the candidate content origin, and the Native matrix separately proves route scroll reset."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-content-origin-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "899bd3ae16ca341df6023c9ac26f7dd261435f1dfff892916815944f913b3d06"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-first-section-origin",
+              "source": "First section x=320 y=88 width=896 exactly matches Web after a 12px correction"
+            },
+            "material": {
+              "residual": 0.080882,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.919118 at the matched Connections frame"
+            }
+          }
+        },
+        {
+          "states": ["settings-beta"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-first-section-origin",
+              "source": "Beta first section x=320 y=88 width=896 exactly matches Web"
+            },
+            "material": {
+              "residual": 0.102458,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.897542 at the matched Beta frame"
+            }
+          }
+        },
+        {
+          "states": ["settings-archive"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-first-section-origin",
+              "source": "Archive first section x=320 y=88 width=896 exactly matches Web"
+            },
+            "material": {
+              "residual": 0.047619,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.952381 at the matched Archive frame"
             }
           }
         }
