@@ -3237,6 +3237,221 @@ async function verifyArchiveMutation({
   }
 }
 
+async function openConnectionsSettings({ child, client, timeoutMs }) {
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--connections",
+    timeoutMs,
+  });
+  return waitForRoutePanel({
+    child,
+    client,
+    panel: "connections",
+    route: "/settings/connections",
+    timeoutMs,
+  });
+}
+
+async function verifyConnectionsMutation({
+  baseDir,
+  bundle,
+  child,
+  client,
+  desktopDir,
+  devToolCli,
+  executable,
+  height,
+  projectCwd,
+  timeoutMs,
+  width,
+}) {
+  const initialState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      Array.isArray(state?.pairingLinkIds) && Number.isInteger(state?.pairingLinkCount),
+  });
+  const initialPairingLinkIds = [...initialState.pairingLinkIds];
+  const route = await openConnectionsSettings({ child, client, timeoutMs });
+  const createSelector = ".settings-connections-create-pairing";
+  const createButton = await waitForMeasurement({
+    child,
+    client,
+    selector: createSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Create",
+  });
+
+  await tapSelector({ child, client, selector: createSelector, timeoutMs });
+  const createdState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      Array.isArray(state?.pairingLinkIds) &&
+      state.pairingLinkIds.length === initialPairingLinkIds.length + 1,
+  });
+  const createdPairingLinkId = createdState.pairingLinkIds.find(
+    (id) => !initialPairingLinkIds.includes(id),
+  );
+  if (!createdPairingLinkId) {
+    throw new Error(
+      `Connections mutation could not identify the created pairing link: ${JSON.stringify({
+        before: initialPairingLinkIds,
+        after: createdState.pairingLinkIds,
+      })}`,
+    );
+  }
+  const copyButton = await waitForMeasurement({
+    child,
+    client,
+    selector: createSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Copy code",
+  });
+  const revokeSelector = `.settings-connections-revoke-pairing--${createdPairingLinkId}`;
+  const revokeButton = await waitForMeasurement({
+    child,
+    client,
+    selector: revokeSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Revoke",
+  });
+
+  await tapSelector({ child, client, selector: revokeSelector, timeoutMs });
+  const revokedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      Array.isArray(state?.pairingLinkIds) &&
+      state.pairingLinkIds.length === initialPairingLinkIds.length &&
+      state.pairingLinkIds.includes(createdPairingLinkId) === false,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: revokeSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const restoredCreateButton = await waitForMeasurement({
+    child,
+    client,
+    selector: createSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Create",
+  });
+
+  const initialProcessId = child.pid;
+  const initialClient = client.identity;
+  const initialRendererErrors = readRendererErrors({
+    clientId: client.identity.clientId,
+    devToolCli,
+    sessionId: client.identity.sessionId,
+  });
+  if (initialRendererErrors) {
+    throw new Error(`Renderer errors before Connections cold restart:\n${initialRendererErrors}`);
+  }
+  await client.close();
+  await stopOwnedProcess(child);
+
+  const restartedChild = spawn(executable, [desktopDir], {
+    cwd: APP_ROOT,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      T3_LYNXTRON_BASE_DIR: baseDir,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
+      T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!Number.isInteger(restartedChild.pid) || restartedChild.pid <= 0) {
+    throw new Error("Connections cold restart did not return an owned process id.");
+  }
+  const restartedLog = createLogCapture(restartedChild);
+  let restartedClient;
+  try {
+    restartedClient = await waitForOwnedSession({
+      child: restartedChild,
+      devToolCli,
+      expectedBundleUrl: pathToFileURL(bundle).href,
+      timeoutMs,
+    });
+    await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
+    const restartTransport = await waitForMainTransport({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartedState = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        Array.isArray(state?.pairingLinkIds) &&
+        state.pairingLinkIds.length === initialPairingLinkIds.length &&
+        state.pairingLinkIds.includes(createdPairingLinkId) === false,
+    });
+    const restartRoute = await openConnectionsSettings({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartedCreateButton = await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: createSelector,
+      timeoutMs,
+      predicate: (measurement) => measurement?.text.trim() === "Create",
+    });
+
+    return {
+      outcome: {
+        status: "pass",
+        input: "DevTool touch on measured Create and thread-specific Revoke actions",
+        route,
+        initialPairingLinkCount: initialPairingLinkIds.length,
+        createdPairingLinkId,
+        createButton,
+        copyButton,
+        revokeButton,
+        revokedPairingLinkCount: revokedState.pairingLinkIds.length,
+        restoredCreateButton,
+        coldRestart: {
+          initialProcessId,
+          initialClient,
+          restartedProcessId: restartedChild.pid,
+          restartedClient: restartedClient.identity,
+          transport: restartTransport,
+          route: restartRoute,
+          pairingLinkCount: restartedState.pairingLinkIds.length,
+          createButton: restartedCreateButton,
+        },
+      },
+      child: restartedChild,
+      client: restartedClient,
+      log: restartedLog,
+    };
+  } catch (error) {
+    await restartedClient?.close();
+    await stopOwnedProcess(restartedChild);
+    throw error;
+  }
+}
+
 async function verifyDevBranding(client) {
   const backdrop = await readOptionalMeasurement(client, ".sidebar-stage-backdrop--dev");
   const brand = await readOptionalMeasurement(client, ".sidebar-brand");
@@ -4097,6 +4312,7 @@ async function runOnce({
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyBetaMutation: shouldVerifyBetaMutation,
   verifyArchiveMutation: shouldVerifyArchiveMutation,
+  verifyConnectionsMutation: shouldVerifyConnectionsMutation,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -4434,6 +4650,26 @@ async function runOnce({
       client = archiveVerification.client;
       log = archiveVerification.log;
     }
+    let connectionsMutation;
+    if (shouldVerifyConnectionsMutation) {
+      const connectionsVerification = await verifyConnectionsMutation({
+        baseDir,
+        bundle,
+        child,
+        client,
+        desktopDir,
+        devToolCli,
+        executable,
+        height,
+        projectCwd,
+        timeoutMs,
+        width,
+      });
+      connectionsMutation = connectionsVerification.outcome;
+      child = connectionsVerification.child;
+      client = connectionsVerification.client;
+      log = connectionsVerification.log;
+    }
     const runtimeCapabilities = shouldVerifyRuntimeCapabilities
       ? await verifyRuntimeCapabilities(client)
       : undefined;
@@ -4481,6 +4717,7 @@ async function runOnce({
       gitPublishDialog,
       betaMutation,
       archiveMutation,
+      connectionsMutation,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -4520,6 +4757,7 @@ async function runOnce({
       gitPublishDialog,
       betaMutation,
       archiveMutation,
+      connectionsMutation,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -4587,6 +4825,7 @@ const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-inte
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
 const shouldVerifyArchiveMutation = process.argv.includes("--verify-archive-mutation");
+const shouldVerifyConnectionsMutation = process.argv.includes("--verify-connections-mutation");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -4806,6 +5045,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyBetaMutation: shouldVerifyBetaMutation,
       verifyArchiveMutation: shouldVerifyArchiveMutation,
+      verifyConnectionsMutation: shouldVerifyConnectionsMutation,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,

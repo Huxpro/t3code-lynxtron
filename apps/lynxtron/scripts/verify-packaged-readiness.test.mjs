@@ -159,6 +159,19 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "archiveMutation");
   });
 
+  it("verifies Native Connections pairing creation, revocation, and cold restart", () => {
+    assert.include(source, "async function verifyConnectionsMutation");
+    assert.include(source, "async function openConnectionsSettings");
+    assert.include(source, '"--verify-connections-mutation"');
+    assert.include(source, 'selector: ".settings-nav__item--connections"');
+    assert.include(source, 'const createSelector = ".settings-connections-create-pairing"');
+    assert.include(source, "settings-connections-revoke-pairing--${createdPairingLinkId}");
+    assert.include(source, 'measurement?.text.trim() === "Copy code"');
+    assert.include(source, 'measurement?.text.trim() === "Create"');
+    assert.include(source, "Connections cold restart did not return an owned process id.");
+    assert.include(outcomeChecksSource, "connectionsMutation");
+  });
+
   it("restores the session-derived Composer state during lifecycle recovery", () => {
     assert.include(source, "async function verifyLifecycleRecovery");
     assert.include(source, "async function waitForSessionComposerProjection");
