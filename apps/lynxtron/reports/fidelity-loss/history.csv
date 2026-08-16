@@ -111,3 +111,4 @@ model-picker-selection-mutation-native-current,2026-08-16T16:41:42+09:00,620e09e
 composer-runtime-menu-dismiss-native-current,2026-08-16T16:56:40+09:00,c89036268,commit,Composer runtime permission dismissal,0.434939,0.434939,0.018518,0.424277,0.575723,0.548498
 composer-model-options-menu-native-current,2026-08-16T17:33:06+09:00,c64ae5f4b,commit,Composer model options Native menu,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
 settings-appearance-unavailable-native-current,2026-08-16T18:00:53+09:00,9fe74b39046837552b53056e06ce95ba3b8d7a1a,commit,Settings Appearance unavailable-state Native proof,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
+model-picker-dismiss-surface-native-current,2026-08-16T18:20:39+09:00,59c22b68bead8cc71839b2d98f03d1356814a3de,commit,Model Picker transparent outside-dismiss surface,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
