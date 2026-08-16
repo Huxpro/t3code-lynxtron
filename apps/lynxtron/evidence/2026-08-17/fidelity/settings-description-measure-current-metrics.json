@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-17T01:04:35+09:00",
+  "productCommit": "bb1dd7448",
+  "productTestCommit": "7cad2b9d9",
+  "nativeVerifierCommit": "40660dd8f3c4024c27c0e33fefbb693bf6e38faf",
+  "stateIds": ["settings-beta", "settings-connections"],
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "browserTheme": "dark",
+    "nativeTheme": "light",
+    "surface": "shared SettingsRow description measure and resulting row-stack geometry"
+  },
+  "fixture": {
+    "browser": {
+      "source": "/tmp/t3-connections-env-loop-seed/state.sqlite",
+      "sourceSnapshotSha256": "bbaea8fa7de5718ae0614cab7dab3da8ed1b7af98fa84ded37ce088404565344",
+      "seededSnapshotSha256": "8353c6369d96ce567797512390f43c530bc74198bbf91b6032b0b9bc300dec0c"
+    },
+    "native": {
+      "source": "/tmp/t3-git-publish-native-fixture",
+      "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+      "projectTitle": "t3code-lynxtron",
+      "initialClientSettings": {
+        "sidebarV2Enabled": true,
+        "sidebarV2ConfiguredByUser": true,
+        "sidebarAutoSettleAfterDays": 3
+      }
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Web limits every SettingsRow description to max-w-xl, or 576px at this viewport. Lynx let the same copy use the full text column, so the first two Beta descriptions each wrapped one line less.",
+      "The missing authority measure compressed the Beta row stack from Web's 265.0625px to 226px and shifted the second and third controls upward.",
+      "Lynx now applies the shared 576px description measure. The Beta row stack becomes 264px, the section becomes 308px versus Web 309.0625px, and Connections also improves without route-specific height patches."
+    ],
+    "harnessMismatch": [
+      "Settings Appearance was considered as a new Browser scope but rejected from pixel-loss admission because Web exposes functional Glass opacity, Environment identification, and Word wrap controls while Lynx truthfully marks them unavailable. That capability-bound state is not a comparable visual sample.",
+      "The first metrics aggregation script failed to capture ffmpeg stderr under Node 26. The retained values were recomputed with spawnSync from the same PNGs; no product or capture artifact changed.",
+      "General was recaptured directly before and after the token because no same-seed baseline remained in /tmp. Its Web and Lynx frames are byte-stable across the token."
+    ],
+    "evidenceBoundary": "Matched Browser captures provide direct before/after pixel attribution. Exact-bundle Native proves the description widths, row heights, row-stack height, real toggle mutation, disk persistence, cold restart, transport, zero renderer errors, and cleanup. Native pixels are not substituted for Web-to-Lynx material residuals.",
+    "ledgerScope": "Update Lynx geometry and material for Settings Beta and Settings Connections. Update Native Beta mutation geometry/runtime evidence. General and Archive are explicit zero-delta regression controls. No weights, states, clients, or scope are removed."
+  },
+  "browser": {
+    "status": "pass",
+    "head": "40660dd8f3c4024c27c0e33fefbb693bf6e38faf",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "agentBrowserLeakPreflight": 0,
+    "agentBrowserLeakPostflight": 0,
+    "bundles": {
+      "web": "498ad6eee72ff82db852b6191d59cfd3b416280e1fb67851e5cb8886b84e0234",
+      "lynx": "77ecc22d78e5d8dd639110547aacfca19d73ff97534322e76a1936204e91ccbe"
+    },
+    "beta": {
+      "before": {
+        "reportSha256": "27ab667665f637d438b17939394c1fef34d668009f05fa7cfd46c12f3d63996b",
+        "webScreenshotSha256": "89d8f9008bb399ed8356e8a52c01ee8620284c1abae9b3cb12082489b5b17b6d",
+        "lynxScreenshotSha256": "33773d54a71c2e1aa63c673aebdcd9eaa29e5dc9ce8981ea9b3ecac520112cbb",
+        "fullFrameSsim": 0.897542,
+        "fullFrameResidual": 0.102458,
+        "sectionSsim": 0.732589,
+        "rowStackSsim": 0.724853,
+        "geometry": {
+          "section": { "x": 320, "y": 88, "width": 896, "height": 270 },
+          "rowStack": { "x": 320, "y": 132, "width": 896, "height": 226 },
+          "rowHeights": [84, 65, 65]
+        }
+      },
+      "after": {
+        "reportSha256": "6966c3d643ac4692ec0815ea48d3b9c3d63ee88ab9c81703b950a5d208636ab3",
+        "webScreenshotSha256": "89d8f9008bb399ed8356e8a52c01ee8620284c1abae9b3cb12082489b5b17b6d",
+        "lynxScreenshotSha256": "bad0c598c556e7d2bdb5e3e00407f0280889abed2f31a80c3f321637fa784997",
+        "fullFrameSsim": 0.917354,
+        "fullFrameResidual": 0.082646,
+        "sectionSsim": 0.808661,
+        "rowStackSsim": 0.813798,
+        "authoritySsim": 1,
+        "geometry": {
+          "webSection": { "x": 320, "y": 88, "width": 896, "height": 309.0625 },
+          "webRowStack": { "x": 320, "y": 132, "width": 896, "height": 265.0625 },
+          "lynxSection": { "x": 320, "y": 88, "width": 896, "height": 308 },
+          "lynxRowStack": { "x": 320, "y": 132, "width": 896, "height": 264 },
+          "lynxRowHeights": [103, 84, 65],
+          "descriptionWidth": 576
+        }
+      }
+    },
+    "connections": {
+      "before": {
+        "reportSha256": "42574a7998bca8b85e09219ebb5c357990d7561a40427066ecb942f9b61c5430",
+        "fullFrameSsim": 0.919118,
+        "fullFrameResidual": 0.080882
+      },
+      "after": {
+        "reportSha256": "ffd02cdf3be0ae8aa022bbef081f9d35a3a98945c1b023704f315e0fa44323c2",
+        "webScreenshotSha256": "afafbf407b52c75bc876c87834ca89325eab5c7822f55fb39a313ea684ca8e32",
+        "lynxScreenshotSha256": "c1126f5f9b267135366f863a650dbe9af5de6d11160839b8df824fb651771efd",
+        "fullFrameSsim": 0.923705,
+        "fullFrameResidual": 0.076295,
+        "authoritySsim": 1
+      }
+    },
+    "regressionControls": {
+      "general": {
+        "beforeSsim": 0.813112,
+        "afterSsim": 0.813112,
+        "authoritySsim": 1,
+        "delta": 0
+      },
+      "archive": {
+        "beforeSsim": 0.952381,
+        "afterSsim": 0.952381,
+        "authoritySsim": 1,
+        "delta": 0
+      }
+    },
+    "retention": "Diagnostic PNGs remain in /tmp and are not tracked."
+  },
+  "native": {
+    "status": "pass",
+    "head": "40660dd8f3c4024c27c0e33fefbb693bf6e38faf",
+    "bundle": {
+      "bytes": 4478896,
+      "sha256": "f35ca8d730fc568ea10252e39e89e6687df5f7a71b59baf8f2111bba09f4b2ea"
+    },
+    "reportSha256": "90be496127763f992e8f41e5b16e47dfce36bde2ac1afb6d0b87ca0e47814b85",
+    "transport": {
+      "kind": "main",
+      "beforeSeq": 10,
+      "afterSeq": 11
+    },
+    "geometry": {
+      "beforeMutation": {
+        "rowHeights": [103, 84, 65],
+        "descriptionWidths": [576, 576, 576],
+        "rowStackHeight": 264
+      },
+      "afterRestore": {
+        "rowHeights": [103, 84, 65],
+        "descriptionWidths": [576, 576, 576],
+        "rowStackHeight": 264
+      },
+      "afterColdRestart": {
+        "rowHeights": [103, 84, 65],
+        "descriptionWidths": [576, 576, 576],
+        "rowStackHeight": 264
+      }
+    },
+    "mutation": {
+      "input": "DevTool Input.emulateTouchFromMouseEvent on the measured auto-settle switch",
+      "disabledDiskValue": null,
+      "enabledDiskValue": 3,
+      "coldRestartDiskValue": 3
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": "49/49",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "browserPreviewBuild": "pass with existing bundle-size and Effect import.meta warnings",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "browserHardGates": "Beta, Connections, General, and Archive pass strict identity, content, geometry, dimensions, and console gates.",
+    "nativeHardGate": "Beta geometry, off/on mutation, disk persistence, and cold restart pass.",
+    "agentBrowserLeakGate": "Every completed loop reported owned=0 orphaned=0.",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0,
+    "userTestWindow": "PID 49295 remains running on the exact production bundle."
+  },
+  "remainingRisk": [
+    "Beta full-frame residual remains 0.082646; its row stack is still 1.0625px shorter than Web because of renderer text quantization.",
+    "Connections full-frame residual remains 0.076295 and still includes the truthful Remote environments capability gap.",
+    "Settings Appearance matched pixel parity remains unavailable until Lynxtron has real Glass opacity, Environment identification, and Word wrap contracts.",
+    "Native physical keyboard focus and number-field editing remain pending a user-authorized Computer Use session."
+  ]
+}
