@@ -647,11 +647,12 @@ async function readSelectorStyleValues(client, selector, property) {
   );
 }
 
-async function verifySidebarGeometry(client) {
+async function verifySidebarGeometry(client, viewportWidth) {
   const [sidebar] = await readSelectorRects(client, ".sidebar");
   const [threadList] = await readSelectorRects(client, ".sidebar-v2-thread-list");
   const rows = await readSelectorRects(client, ".sidebar-v2-row-item");
   const cards = await readSelectorRects(client, ".sidebar-v2-row-card");
+  const brand = await readOptionalMeasurement(client, ".sidebar-brand");
   if (!sidebar || !threadList || rows.length === 0 || rows.length !== cards.length) {
     throw new Error(
       `Sidebar geometry is incomplete: ${JSON.stringify({ sidebar, threadList, rows, cards })}`,
@@ -677,6 +678,17 @@ async function verifySidebarGeometry(client) {
       `Sidebar rows escaped the rail: ${JSON.stringify({ sidebar, threadList, invalid })}`,
     );
   }
+  if (
+    viewportWidth !== 1280 &&
+    (!brand?.rect || Math.abs(brand.rect.x - 60) > 1 || !brand.text.includes("Code"))
+  ) {
+    throw new Error(
+      `Responsive Sidebar brand drifted from the titlebar inset: ${JSON.stringify({
+        brand,
+        viewportWidth,
+      })}`,
+    );
+  }
   return {
     status: "pass",
     input: "read-only Lynx DevTool DOM box models",
@@ -684,6 +696,7 @@ async function verifySidebarGeometry(client) {
     threadList,
     rows,
     cards,
+    brand,
   };
 }
 
@@ -3644,7 +3657,7 @@ async function runOnce({
         ? await verifySidebarScopeBehavior({ child, client, timeoutMs })
         : undefined;
     const sidebarGeometry = shouldVerifySidebarGeometry
-      ? await verifySidebarGeometry(client)
+      ? await verifySidebarGeometry(client, width)
       : undefined;
     const composerGeometry = shouldVerifyComposerGeometry
       ? await verifyComposerGeometry(client, expectedTheme)

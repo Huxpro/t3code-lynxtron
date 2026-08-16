@@ -22,6 +22,14 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar rows escaped the rail");
   });
 
+  it("verifies the responsive Native brand inset", () => {
+    assert.include(source, "async function verifySidebarGeometry(client, viewportWidth)");
+    assert.include(source, 'readOptionalMeasurement(client, ".sidebar-brand")');
+    assert.include(source, "viewportWidth !== 1280");
+    assert.include(source, "Math.abs(brand.rect.x - 60) > 1");
+    assert.include(source, "verifySidebarGeometry(client, width)");
+  });
+
   it("keeps the scope gate focused on scope behavior", () => {
     assert.notInclude(source, 'selector: ".quick-switch-thread-row--other"');
     assert.notInclude(source, `selector: '[data-thread-active="false"]'`);
