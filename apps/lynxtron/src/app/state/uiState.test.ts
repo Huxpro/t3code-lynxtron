@@ -11,6 +11,12 @@ import {
 
 const plan: RightPanelSurface = { id: "plan:1", kind: "plan", label: "Plan" };
 const files: RightPanelSurface = { id: "files:2", kind: "files", label: "Files" };
+const file: RightPanelSurface = {
+  id: "file:AGENTS.md",
+  kind: "file",
+  label: "AGENTS.md",
+  path: "AGENTS.md",
+};
 const diff: RightPanelSurface = {
   id: "diff:3",
   kind: "diff",
@@ -81,6 +87,25 @@ describe("applyRightPanelAction", () => {
       isOpen: true,
       activeSurfaceId: diff.id,
       surfaces: [{ ...diff, turnId: "turn-2", filePath: "src/fib.js" }],
+    });
+  });
+
+  it("reuses the file surface while replacing its selected path", () => {
+    const opened = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
+      type: "open",
+      surface: file,
+    });
+    const nextFile = {
+      id: "file:README.md",
+      kind: "file" as const,
+      label: "README.md",
+      path: "README.md",
+    };
+
+    expect(applyRightPanelAction(opened, { type: "open", surface: nextFile })).toEqual({
+      isOpen: true,
+      activeSurfaceId: nextFile.id,
+      surfaces: [nextFile],
     });
   });
 

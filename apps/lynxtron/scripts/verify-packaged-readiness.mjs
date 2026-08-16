@@ -763,16 +763,21 @@ async function waitForSelectorAttributeMeasurement({
   );
 }
 
-async function verifySidebarGeometry(client, viewportWidth) {
+async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentIdentificationMode) {
   const [sidebar] = await readSelectorRects(client, ".sidebar");
   const [threadList] = await readSelectorRects(client, ".sidebar-v2-thread-list");
   const rows = await readSelectorRects(client, ".sidebar-v2-row-item");
   const cards = await readSelectorRects(client, ".sidebar-v2-row-card");
   const brand = await readOptionalMeasurement(client, ".sidebar-brand");
+  const backdrop = await readOptionalMeasurement(client, ".sidebar__brand-bg");
   const clientState = await readClientState(client);
   const activeStatus = await readOptionalMeasurement(
     client,
     ".sidebar-v2-row-item--active .sidebar-v2-row-status",
+  );
+  const workingDuration = await readOptionalMeasurement(
+    client,
+    ".sidebar-v2-row-item--active .sidebar-v2-working-duration",
   );
   if (!sidebar || !threadList || rows.length === 0 || rows.length !== cards.length) {
     throw new Error(
@@ -823,13 +828,22 @@ async function verifySidebarGeometry(client, viewportWidth) {
     clientState?.activeThread?.hasPendingApprovals !== true &&
     clientState?.activeThread?.hasPendingUserInput !== true;
   const workingVisible = activeStatus?.text.includes("Working") === true;
-  if (workingVisible !== workingExpected) {
+  const durationText = workingDuration?.text.trim() ?? "";
+  const durationVisible = /^(?:\d+s|\d+m|\d+h \d+m)$/u.test(durationText);
+  if (
+    workingVisible !== workingExpected ||
+    durationVisible !== workingExpected ||
+    (workingExpected && !activeStatus?.text.includes(durationText))
+  ) {
     throw new Error(
       `Sidebar Working label disagrees with the active session: ${JSON.stringify({
         activeStatus,
+        durationText,
+        durationVisible,
         pendingApprovals: clientState?.activeThread?.hasPendingApprovals ?? null,
         pendingUserInput: clientState?.activeThread?.hasPendingUserInput ?? null,
         sessionStatus,
+        workingDuration,
         workingExpected,
         workingVisible,
       })}`,
@@ -843,6 +857,27 @@ async function verifySidebarGeometry(client, viewportWidth) {
       })}`,
     );
   }
+  const artworkExpected = expectedEnvironmentIdentificationMode === "artwork";
+  if (
+    expectedEnvironmentIdentificationMode &&
+    (Boolean(backdrop) !== artworkExpected ||
+      (artworkExpected &&
+        (!backdrop?.rect ||
+          Math.abs(backdrop.rect.x - sidebar.x) > 1 ||
+          Math.abs(backdrop.rect.width - sidebar.width) > 1 ||
+          Math.abs(backdrop.rect.height - 80) > 1 ||
+          !brand.attributes.class?.includes("sidebar-brand--on-backdrop"))) ||
+      (!artworkExpected && brand.attributes.class?.includes("sidebar-brand--on-backdrop")))
+  ) {
+    throw new Error(
+      `Sidebar branding mode drifted: ${JSON.stringify({
+        backdrop,
+        brand,
+        expectedEnvironmentIdentificationMode,
+        sidebar,
+      })}`,
+    );
+  }
   return {
     status: "pass",
     input: "read-only Lynx DevTool DOM box models",
@@ -851,8 +886,12 @@ async function verifySidebarGeometry(client, viewportWidth) {
     rows,
     cards,
     brand,
+    backdrop,
+    environmentIdentificationMode: expectedEnvironmentIdentificationMode ?? null,
     insets: { left: leftInset, right: rightInset },
     statusProjection: {
+      durationText,
+      durationVisible,
       sessionStatus,
       workingExpected,
       workingVisible,
@@ -896,6 +935,18 @@ async function verifyComposerGeometry(client, expectedTheme) {
   const themeRoot = composer.colors.themeRoot;
   const contextBackdrop = composer.colors.contextBackdrop;
   const contextLegacyBand = composer.colors.contextLegacyBand;
+  const contextSeam = await readOptionalMeasurement(
+    client,
+    ".composer-context-backdrop-band--seam",
+  );
+  const [contextSeamDisplay, contextSeamColor] = await Promise.all([
+    readFirstSelectorStyleValue(client, ".composer-context-backdrop-band--seam", "display"),
+    readFirstSelectorStyleValue(
+      client,
+      ".composer-context-backdrop-band--seam",
+      "background-color",
+    ),
+  ]);
   const wrongSize = (rect, size) =>
     Math.abs(rect.width - size) > 0.5 || Math.abs(rect.height - size) > 0.5;
   const wrongContextSize = (rect) =>
@@ -948,6 +999,9 @@ async function verifyComposerGeometry(client, expectedTheme) {
         (contextBackdrop.style.backgroundColor === "rgb(254,254,254)" &&
           contextBackdrop.style.borderBottomColor === "rgb(234,234,234)" &&
           contextLegacyBand.style.display === "none" &&
+          contextSeam?.rect?.height === 1 &&
+          contextSeamDisplay !== "none" &&
+          contextSeamColor === "rgb(255,255,255)" &&
           contextLightBandsAligned &&
           contextLightBandColors.length === 31 &&
           contextLightBandColors[0] === "rgb(222,222,222)" &&
@@ -985,6 +1039,9 @@ async function verifyComposerGeometry(client, expectedTheme) {
         themeRoot,
         contextBackdrop,
         contextLegacyBand,
+        contextSeam,
+        contextSeamColor,
+        contextSeamDisplay,
         contextLightBands,
         contextLightBandColors,
         contextIcons,
@@ -1006,6 +1063,9 @@ async function verifyComposerGeometry(client, expectedTheme) {
     themeRoot,
     contextBackdrop,
     contextLegacyBand,
+    contextSeam,
+    contextSeamColor,
+    contextSeamDisplay,
     contextLightBands,
     contextLightBandColors,
     contextIcons,
@@ -1165,7 +1225,7 @@ async function readComposerOutcome(client, options = {}) {
           ? [
               { id: "context", lynx: ".composer-context-strip" },
               { id: "contextBackdrop", lynx: ".composer-context-backdrop" },
-              { id: "contextLegacyBand", lynx: ".composer-context-backdrop-band" },
+              { id: "contextLegacyBand", lynx: ".composer-context-backdrop-band--1" },
             ]
           : []),
       ],
@@ -1556,11 +1616,13 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
-  await tapSelector({
+  await tapSelectorByAttribute({
+    attribute: "data-model-picker-key",
     child,
     client,
     selector: ".model-picker-row--unselected",
     timeoutMs,
+    value: targetKey,
   });
   await waitForMeasurement({
     child,
@@ -4041,16 +4103,64 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
       })}`,
     );
   }
-  const screenshot = captureNativeScreenshot({
+  const treeScreenshot = captureNativeScreenshot({
     client,
     devToolCli,
     outputDirectory,
     name: "native-files-browser.png",
   });
+  const fileRow = await waitForMeasurement({
+    child,
+    client,
+    selector: ".files-panel .file-tree-row--file",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim().length > 0,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".files-panel .file-tree-row--file",
+    timeoutMs,
+  });
+  const filePanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-right-panel-active-kind"] === "file",
+  });
+  const filePath = await waitForMeasurement({
+    child,
+    client,
+    selector: ".file-panel__path",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim().length > 0,
+  });
+  const [remainingTree, legacyInlinePreview] = await Promise.all([
+    readOptionalMeasurement(client, ".files-panel"),
+    readOptionalMeasurement(client, ".files-panel__preview"),
+  ]);
+  if (remainingTree || legacyInlinePreview) {
+    throw new Error(
+      `Native Files selection did not replace the tree with a file surface: ${JSON.stringify({
+        filePanel,
+        filePath,
+        legacyInlinePreview,
+        remainingTree,
+      })}`,
+    );
+  }
+  const fileScreenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-file-surface.png",
+  });
 
   return {
     status: "pass",
-    input: "DevTool touch on the measured right-panel controls; search typing pending-user-session",
+    input:
+      "DevTool touch on measured right-panel controls and the first file row; search typing pending-user-session",
     panel: panel.rect,
     toolbar: toolbar.rect,
     refresh: refresh.rect,
@@ -4068,7 +4178,17 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
       fontFamily: rowFontFamily,
       fontSize: rowFontSize,
     },
-    screenshot,
+    fileSelection: {
+      selectedRow: fileRow,
+      panel: filePanel.rect,
+      path: filePath.text.trim(),
+      treeReplaced: remainingTree === null,
+      legacyInlinePreview: legacyInlinePreview === null,
+    },
+    screenshots: {
+      tree: treeScreenshot,
+      file: fileScreenshot,
+    },
   };
 }
 
@@ -5984,6 +6104,7 @@ async function runOnce({
   isFinalRun,
   modelSelection,
   expectedTheme,
+  expectedEnvironmentIdentificationMode,
   expectNoComposerContext,
   expectedModelLabel,
   outputDirectory,
@@ -6034,6 +6155,24 @@ async function runOnce({
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
   const baseDir = path.join(runRoot, "state");
   cpSync(fixtureDir, baseDir, { recursive: true });
+  if (expectedEnvironmentIdentificationMode) {
+    const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
+    const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
+    writeFileSync(
+      prefsPath,
+      `${JSON.stringify(
+        {
+          ...prefs,
+          clientSettings: {
+            ...prefs.clientSettings,
+            environmentIdentificationMode: expectedEnvironmentIdentificationMode,
+          },
+        },
+        null,
+        2,
+      )}\n`,
+    );
+  }
   let child = spawn(executable, [desktopDir], {
     cwd: APP_ROOT,
     env: {
@@ -6149,7 +6288,7 @@ async function runOnce({
         ? await verifySidebarScopeBehavior({ child, client, timeoutMs })
         : undefined;
     const sidebarGeometry = shouldVerifySidebarGeometry
-      ? await verifySidebarGeometry(client, width)
+      ? await verifySidebarGeometry(client, width, expectedEnvironmentIdentificationMode)
       : undefined;
     const composerGeometry = shouldVerifyComposerGeometry
       ? await verifyComposerGeometry(client, expectedTheme)
@@ -6596,6 +6735,9 @@ const width = Number(argumentValue("--width") ?? 1280);
 const height = Number(argumentValue("--height") ?? 820);
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? DEFAULT_TIMEOUT_MS);
 const expectedTheme = argumentValue("--expected-theme");
+const expectedEnvironmentIdentificationMode = argumentValue(
+  "--expected-environment-identification-mode",
+);
 const expectedModelLabel = argumentValue("--expected-model-label");
 const expectNoComposerContext = process.argv.includes("--expect-no-composer-context");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
@@ -6671,6 +6813,13 @@ if (!Number.isInteger(width) || !Number.isInteger(height)) {
 }
 if (expectedTheme && expectedTheme !== "light" && expectedTheme !== "dark") {
   throw new Error("--expected-theme must be light or dark.");
+}
+if (
+  expectedEnvironmentIdentificationMode &&
+  expectedEnvironmentIdentificationMode !== "artwork" &&
+  expectedEnvironmentIdentificationMode !== "none"
+) {
+  throw new Error("--expected-environment-identification-mode must be artwork or none.");
 }
 if (shouldVerifyHeroComposerState && !expectedModelLabel) {
   throw new Error("--verify-hero-composer-state requires --expected-model-label.");
@@ -6836,6 +6985,7 @@ for (let index = 1; index <= runs; index += 1) {
       isFinalRun: index === runs,
       modelSelection,
       expectedTheme,
+      expectedEnvironmentIdentificationMode,
       expectNoComposerContext,
       expectedModelLabel,
       outputDirectory,
@@ -6926,6 +7076,7 @@ const report = {
   },
   viewport: { width, height },
   expectedTheme: expectedTheme ?? null,
+  expectedEnvironmentIdentificationMode: expectedEnvironmentIdentificationMode ?? null,
   results,
   semanticOutcomes: verifyPlan11SemanticOutcomes
     ? buildPlan11SemanticOutcomes(results.at(-1))

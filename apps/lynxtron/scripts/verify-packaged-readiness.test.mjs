@@ -23,14 +23,20 @@ describe("packaged readiness Sidebar geometry", () => {
   });
 
   it("verifies the Native brand inset at every viewport", () => {
-    assert.include(source, "async function verifySidebarGeometry(client, viewportWidth)");
+    assert.include(
+      source,
+      "async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentIdentificationMode)",
+    );
     assert.include(source, 'readOptionalMeasurement(client, ".sidebar-brand")');
     assert.include(source, "Math.abs(brand.rect.x - 130) > 1");
     assert.notInclude(source, "viewportWidth !== 1280 &&");
-    assert.include(source, "verifySidebarGeometry(client, width)");
+    assert.include(
+      source,
+      "verifySidebarGeometry(client, width, expectedEnvironmentIdentificationMode)",
+    );
   });
 
-  it("verifies symmetric Sidebar cards and session-derived Working state", () => {
+  it("verifies symmetric Sidebar cards and session-derived Working duration", () => {
     assert.include(source, "Math.abs(leftInset - rightInset) > 1");
     assert.include(source, "Math.abs(row.width - threadList.width) > 1");
     assert.include(source, "Math.abs(card.width - threadList.width) > 1");
@@ -39,7 +45,19 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "clientState?.activeThread?.hasPendingApprovals !== true");
     assert.include(source, "clientState?.activeThread?.hasPendingUserInput !== true");
     assert.include(source, 'activeStatus?.text.includes("Working") === true');
+    assert.include(source, '".sidebar-v2-row-item--active .sidebar-v2-working-duration"');
+    assert.include(source, "/^(?:\\d+s|\\d+m|\\d+h \\d+m)$/u.test(durationText)");
+    assert.include(source, "activeStatus?.text.includes(durationText)");
     assert.include(source, "Sidebar Working label disagrees with the active session");
+  });
+
+  it("verifies titlebar branding artwork and none modes without moving the brand", () => {
+    assert.include(source, '"--expected-environment-identification-mode"');
+    assert.include(source, '".sidebar__brand-bg"');
+    assert.include(source, 'expectedEnvironmentIdentificationMode === "artwork"');
+    assert.include(source, 'brand.attributes.class?.includes("sidebar-brand--on-backdrop")');
+    assert.include(source, "Sidebar branding mode drifted");
+    assert.include(source, "environmentIdentificationMode: expectedEnvironmentIdentificationMode");
   });
 
   it("keeps the scope gate focused on scope behavior", () => {
@@ -51,7 +69,14 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "--verify-composer-geometry");
     assert.include(source, "--expected-theme");
     assert.include(source, 'themeRoot.attributes["data-theme"] === expectedTheme');
+    assert.include(
+      source,
+      '{ id: "contextLegacyBand", lynx: ".composer-context-backdrop-band--1" }',
+    );
     assert.include(source, 'contextLegacyBand.style.display === "none"');
+    assert.include(source, '".composer-context-backdrop-band--seam"');
+    assert.include(source, 'contextSeamColor === "rgb(255,255,255)"');
+    assert.include(source, 'contextSeamDisplay !== "none"');
     assert.include(source, 'readSelectorRects(client, ".composer-context-light-band")');
     assert.include(source, '"background-color"');
     assert.include(source, "contextLightBands.length === 31");
@@ -142,6 +167,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"--verify-model-selection-mutation"');
     assert.include(source, 'selector: ".model-picker-row--unselected"');
     assert.include(source, 'measurement?.attributes["data-model-picker-key"]');
+    assert.include(source, 'attribute: "data-model-picker-key"');
+    assert.include(source, "value: targetKey");
     assert.include(source, "waitForSequenceAdvance");
     assert.include(source, "state?.activeThread?.modelSelection?.instanceId");
     assert.include(source, "readPersistedThreadModelSelection");
@@ -216,8 +243,14 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"border-bottom-left-radius"');
     assert.include(source, 'rowRadii.some((radius) => radius !== "5px")');
     assert.include(source, 'rowFontSize !== "12px"');
+    assert.include(source, 'selector: ".files-panel .file-tree-row--file"');
+    assert.include(source, 'measurement?.attributes["data-right-panel-active-kind"] === "file"');
+    assert.include(source, 'selector: ".file-panel__path"');
+    assert.include(source, 'readOptionalMeasurement(client, ".files-panel__preview")');
+    assert.include(source, "Native Files selection did not replace the tree with a file surface");
     assert.include(source, 'typing: "pending-user-session"');
     assert.include(source, 'name: "native-files-browser.png"');
+    assert.include(source, 'name: "native-file-surface.png"');
     assert.include(outcomeChecksSource, "filesBrowser");
   });
 

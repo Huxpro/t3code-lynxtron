@@ -126,6 +126,9 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('className="files-panel__browser"');
     expect(files).toContain('folderIcon={<Icon name="folder" size={14}');
     expect(files).toContain('fileIcon={<Icon name="file-json" size={14}');
+    expect(files).toContain("uiActions.openFileSurface(path)");
+    expect(files).toContain("export function FilePanel");
+    expect(files).not.toContain('className="files-panel__preview"');
     expect(files).not.toContain('className="files-panel__info"');
     expect(overrides).toContain(".files-panel__toolbar {");
     expect(overrides).toContain("height: 40px;");
@@ -135,6 +138,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("min-height: 24px;");
     expect(overrides).toContain("border-radius: 5px;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");
+    expect(panel).toContain('case "file":');
+    expect(panel).toContain("<FilePanel path={surface.path} />");
   });
 
   it("projects and opens the real repository Publish flow", () => {
@@ -198,12 +203,17 @@ describe("desktop shell interaction contract", () => {
     );
 
     expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
-    expect(sidebarSource).toContain("topStatus={statusPresentation(status)}");
+    expect(sidebarSource).toContain("topStatus={statusPresentation(status, thread)}");
     expect(sidebarSource).toContain('case "working":');
     expect(sidebarSource).toContain('label: "Working"');
+    expect(sidebarSource).toContain("function LynxWorkingDuration");
+    expect(sidebarSource).toContain("resolveWorkingStartedAt(thread)");
+    expect(sidebarSource).toContain("formatWorkingDurationLabel(Date.now() - startedMs)");
+    expect(sidebarSource).toContain("workingDuration: <LynxWorkingDuration thread={thread} />");
     expect(sidebarSource).toContain("settlementSupported={false}");
     expect(sidebarSource).not.toContain("cardActionsPersistent");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
+    expect(overrides).toContain(".sidebar-v2-working-duration {");
     expect(overrides).toContain(".sidebar-v2-row-item--active {");
     expect(overrides).toContain("background-color: rgba(241, 243, 247, 0.11);");
     expect(overrides).toContain(".theme-light .sidebar-v2-row-item--active {");
