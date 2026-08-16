@@ -4,6 +4,8 @@ import { createRequire } from "node:module";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 
+import { redactConnectorLog } from "./redact-connector-log.mjs";
+
 const require = createRequire(import.meta.url);
 const appRoot = resolve(import.meta.dirname, "..");
 
@@ -62,7 +64,7 @@ export async function prepareReviewVisualState(baseDirectory, options = {}) {
       threadPayloads.set(threadId, payload);
       for (const listener of threadListeners) listener({ threadId, payload });
     },
-    onLog: (line) => process.stderr.write(`${line}\n`),
+    onLog: (line) => process.stderr.write(`${redactConnectorLog(line)}\n`),
   });
 
   const onShell = (predicate, label, timeoutMs = 30_000) =>
