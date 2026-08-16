@@ -161,6 +161,9 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies model-option menus mutate and persist server-declared selections", () => {
     assert.include(source, "async function verifyModelOptionMenuMutation");
     assert.include(source, '"--verify-model-option-menu-mutation"');
+    assert.include(source, "__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?.(120)");
+    assert.include(source, 'scrolledMenu.attributes["data-wheel-offset"]');
+    assert.include(source, "thinkingAfterScroll.rect.y < thinkingBeforeScroll.rect.y");
     assert.include(source, 'T3_LYNXTRON_VIEWPORT_PROBE: "1"');
     assert.include(source, "__T3_LYNXTRON_MTS_PROVIDER_FIXTURE__");
     assert.include(source, 'selector: ".composer-model-option-menu__item--unselected"');

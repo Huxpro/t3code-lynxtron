@@ -2145,6 +2145,56 @@ async function verifyModelOptionMenuMutation({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
+  const thinkingBeforeScroll = await waitForSelectorAttributeMeasurement({
+    attribute: "data-composer-model-option-descriptor",
+    child,
+    client,
+    selector: ".composer-model-option-menu__item--unselected",
+    timeoutMs,
+    value: "thinking",
+  });
+  const wheelProbe = await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?.(120)",
+    awaitPromise: true,
+    returnByValue: true,
+  });
+  if (commandResult(wheelProbe)?.exceptionDetails) {
+    throw new Error(`Model-option wheel probe failed: ${JSON.stringify(wheelProbe)}`);
+  }
+  const scrollDeadline = Date.now() + timeoutMs;
+  let thinkingAfterScroll = null;
+  let scrolledMenu = null;
+  while (Date.now() < scrollDeadline) {
+    thinkingAfterScroll = await readSelectorAttributeMeasurement(client, {
+      attribute: "data-composer-model-option-descriptor",
+      selector: ".composer-model-option-menu__item--unselected",
+      value: "thinking",
+    });
+    scrolledMenu = await readOptionalMeasurement(client, ".composer-model-option-menu");
+    if (
+      thinkingAfterScroll &&
+      scrolledMenu &&
+      thinkingAfterScroll.rect.y < thinkingBeforeScroll.rect.y &&
+      Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0) > 0
+    ) {
+      break;
+    }
+    await waitForChildExit(child, 100);
+  }
+  if (
+    !thinkingAfterScroll ||
+    !scrolledMenu ||
+    thinkingAfterScroll.rect.y >= thinkingBeforeScroll.rect.y ||
+    Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0) <= 0
+  ) {
+    throw new Error(
+      `Model-option menu did not scroll: ${JSON.stringify({
+        thinkingBeforeScroll,
+        thinkingAfterScroll,
+        scrolledMenu,
+      })}`,
+    );
+  }
   const target = await waitForMeasurement({
     child,
     client,
@@ -2359,6 +2409,11 @@ async function verifyModelOptionMenuMutation({
     menu: {
       rect: menu.rect,
       text: menu.text.trim(),
+      scroll: {
+        beforeThinkingY: thinkingBeforeScroll.rect.y,
+        afterThinkingY: thinkingAfterScroll.rect.y,
+        wheelOffset: Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0),
+      },
     },
     selectedOption: {
       descriptorId,
