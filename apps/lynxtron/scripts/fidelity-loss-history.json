@@ -7522,7 +7522,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-light-shadow-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "9d809a81b9379469ceae202293a70cc1684b260ec27117194fa5d7f8a3325bee"
+          "sha256": "6da579ce3c6944eda724df3a7fcaf2ddbeb07930f4cc4176b77860601f46f986"
         }
       ],
       "updates": []
