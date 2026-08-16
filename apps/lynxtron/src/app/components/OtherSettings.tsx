@@ -49,6 +49,10 @@ import {
   Toggle,
 } from "./SettingsControls";
 import { Icon } from "./Icon";
+import {
+  pairingCredentialAfterRevocation,
+  type PairingCredentialState,
+} from "./connectionsMutation.logic";
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { useClientSettingsState } from "../state/prefsStore";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
@@ -376,10 +380,7 @@ export function ConnectionsSettings() {
   const canManageAccess = canManageAuthAccess(authAccess);
   const [accessMutation, setAccessMutation] = useState<string | null>(null);
   const [accessError, setAccessError] = useState<string | null>(null);
-  const [pairingCredential, setPairingCredential] = useState<{
-    readonly credential: string;
-    readonly expiresAt: string;
-  } | null>(null);
+  const [pairingCredential, setPairingCredential] = useState<PairingCredentialState | null>(null);
 
   const scopeLabel = (count: number) => `${count} ${count === 1 ? "scope" : "scopes"}`;
   const mutationError = (error: unknown) =>
@@ -393,6 +394,7 @@ export function ConnectionsSettings() {
       .createPairingCredential()
       .then((result) =>
         setPairingCredential({
+          id: result.id,
           credential: result.credential,
           expiresAt: result.expiresAt,
         }),
