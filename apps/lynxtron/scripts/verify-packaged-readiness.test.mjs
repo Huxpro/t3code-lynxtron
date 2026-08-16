@@ -30,6 +30,18 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "verifySidebarGeometry(client, width)");
   });
 
+  it("verifies symmetric Sidebar cards and session-derived Working state", () => {
+    assert.include(source, "Math.abs(leftInset - rightInset) > 1");
+    assert.include(source, "Math.abs(row.width - threadList.width) > 1");
+    assert.include(source, "Math.abs(card.width - threadList.width) > 1");
+    assert.include(source, "Sidebar card insets are asymmetric");
+    assert.include(source, 'sessionStatus === "running"');
+    assert.include(source, "clientState?.activeThread?.hasPendingApprovals !== true");
+    assert.include(source, "clientState?.activeThread?.hasPendingUserInput !== true");
+    assert.include(source, 'activeStatus?.text.includes("Working") === true');
+    assert.include(source, "Sidebar Working label disagrees with the active session");
+  });
+
   it("keeps the scope gate focused on scope behavior", () => {
     assert.notInclude(source, 'selector: ".quick-switch-thread-row--other"');
     assert.notInclude(source, `selector: '[data-thread-active="false"]'`);

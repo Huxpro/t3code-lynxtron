@@ -750,6 +750,11 @@ async function verifySidebarGeometry(client, viewportWidth) {
   const rows = await readSelectorRects(client, ".sidebar-v2-row-item");
   const cards = await readSelectorRects(client, ".sidebar-v2-row-card");
   const brand = await readOptionalMeasurement(client, ".sidebar-brand");
+  const clientState = await readClientState(client);
+  const activeStatus = await readOptionalMeasurement(
+    client,
+    ".sidebar-v2-row-item--active .sidebar-v2-row-status",
+  );
   if (!sidebar || !threadList || rows.length === 0 || rows.length !== cards.length) {
     throw new Error(
       `Sidebar geometry is incomplete: ${JSON.stringify({ sidebar, threadList, rows, cards })}`,
@@ -775,6 +780,42 @@ async function verifySidebarGeometry(client, viewportWidth) {
       `Sidebar rows escaped the rail: ${JSON.stringify({ sidebar, threadList, invalid })}`,
     );
   }
+  const leftInset = threadList.x - sidebar.x;
+  const rightInset = sidebarRight - listRight;
+  if (
+    Math.abs(leftInset - rightInset) > 1 ||
+    rows.some((row) => Math.abs(row.width - threadList.width) > 1) ||
+    cards.some((card) => Math.abs(card.width - threadList.width) > 1)
+  ) {
+    throw new Error(
+      `Sidebar card insets are asymmetric: ${JSON.stringify({
+        cards,
+        leftInset,
+        rightInset,
+        rows,
+        sidebar,
+        threadList,
+      })}`,
+    );
+  }
+  const sessionStatus = clientState?.activeThread?.session?.status ?? "idle";
+  const workingExpected =
+    sessionStatus === "running" &&
+    clientState?.activeThread?.hasPendingApprovals !== true &&
+    clientState?.activeThread?.hasPendingUserInput !== true;
+  const workingVisible = activeStatus?.text.includes("Working") === true;
+  if (workingVisible !== workingExpected) {
+    throw new Error(
+      `Sidebar Working label disagrees with the active session: ${JSON.stringify({
+        activeStatus,
+        pendingApprovals: clientState?.activeThread?.hasPendingApprovals ?? null,
+        pendingUserInput: clientState?.activeThread?.hasPendingUserInput ?? null,
+        sessionStatus,
+        workingExpected,
+        workingVisible,
+      })}`,
+    );
+  }
   if (!brand?.rect || Math.abs(brand.rect.x - 130) > 1 || !brand.text.includes("Code")) {
     throw new Error(
       `Sidebar brand drifted from the titlebar inset: ${JSON.stringify({
@@ -791,6 +832,13 @@ async function verifySidebarGeometry(client, viewportWidth) {
     rows,
     cards,
     brand,
+    insets: { left: leftInset, right: rightInset },
+    statusProjection: {
+      sessionStatus,
+      workingExpected,
+      workingVisible,
+      text: activeStatus?.text ?? null,
+    },
   };
 }
 
