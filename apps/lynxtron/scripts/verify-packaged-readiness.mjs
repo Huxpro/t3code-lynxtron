@@ -5131,7 +5131,53 @@ async function verifySettingsRouteBehavior({
     client,
     ".settings-content--general .settings-section",
   );
-  const generalRows = await readSelectorRects(client, ".settings-content--general .settings-row");
+  const generalRows = await readSelectorMeasurements(
+    client,
+    ".settings-content--general .settings-row",
+  );
+  const expectedGeneralUnavailableIds = ["background-activity", "text-generation-model"];
+  const generalUnavailableRows = generalRows.filter(
+    (row) => row.attributes["data-settings-unavailable"] === "true",
+  );
+  const generalUnavailableIds = generalUnavailableRows.map(
+    (row) => row.attributes.idSelector ?? null,
+  );
+  if (
+    JSON.stringify(generalUnavailableIds) !== JSON.stringify(expectedGeneralUnavailableIds) ||
+    generalUnavailableRows.some((row) => row.attributes["aria-disabled"] !== "true") ||
+    generalRows.some(
+      (row) =>
+        !expectedGeneralUnavailableIds.includes(row.attributes.idSelector) &&
+        (row.attributes["aria-disabled"] === "true" ||
+          row.attributes["data-settings-unavailable"] === "true"),
+    )
+  ) {
+    throw new Error(
+      `General row availability is inconsistent: ${JSON.stringify({
+        expectedGeneralUnavailableIds,
+        generalRows,
+        generalUnavailableIds,
+      })}`,
+    );
+  }
+  const generalUnavailableOpacities = await readSelectorStyleValues(
+    client,
+    ".settings-content--general .settings-row--unavailable",
+    "opacity",
+  );
+  if (
+    generalUnavailableOpacities.length !== expectedGeneralUnavailableIds.length ||
+    generalUnavailableOpacities.some(
+      (opacity) => opacity === null || Math.abs(Number(opacity) - 0.48) > 1 / 255,
+    )
+  ) {
+    throw new Error(
+      `General unavailable rows are not visibly muted: ${JSON.stringify({
+        generalUnavailableOpacities,
+        generalUnavailableRows,
+      })}`,
+    );
+  }
   const generalScreenshot = captureNativeScreenshot({
     client,
     devToolCli,
@@ -5322,6 +5368,8 @@ async function verifySettingsRouteBehavior({
       text: generalPanel.text,
       sections: generalSections,
       rows: generalRows,
+      unavailableRows: generalUnavailableRows,
+      unavailableOpacities: generalUnavailableOpacities,
       screenshot: generalScreenshot,
     },
     appearance,

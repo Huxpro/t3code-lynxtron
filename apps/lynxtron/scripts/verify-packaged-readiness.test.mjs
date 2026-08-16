@@ -391,7 +391,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'measurement.text.includes("Diagnostics")');
     assert.include(source, "const generalSections = await readSelectorRects(");
     assert.include(source, '".settings-content--general .settings-section"');
-    assert.include(source, 'readSelectorRects(client, ".settings-content--general .settings-row")');
+    assert.include(
+      source,
+      'readSelectorMeasurements(\n    client,\n    ".settings-content--general .settings-row",',
+    );
+    assert.include(source, '["background-activity", "text-generation-model"]');
+    assert.include(source, "generalUnavailableIds");
+    assert.include(source, 'row.attributes["aria-disabled"] !== "true"');
+    assert.include(source, '".settings-content--general .settings-row--unavailable"');
+    assert.include(source, "generalUnavailableOpacities");
     assert.include(source, 'name: "native-settings-general.png"');
     assert.include(source, 'selector: ".settings-content--source-control"');
     assert.include(source, 'measurement.text.includes("Text generation")');
