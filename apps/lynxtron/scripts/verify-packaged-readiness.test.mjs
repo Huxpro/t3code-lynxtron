@@ -105,6 +105,26 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar action menu rows collapsed");
   });
 
+  it("verifies the Native Publish wizard and backdrop dismissal", () => {
+    assert.include(source, "async function verifyGitPublishDialog");
+    assert.include(source, '"--verify-git-publish-dialog"');
+    assert.include(source, 'selector: ".action-btn--commit"');
+    assert.include(
+      source,
+      'measurement?.attributes["data-git-quick-action-kind"] === "open_publish"',
+    );
+    assert.include(source, 'selector: ".git-publish-dialog"');
+    assert.include(source, 'selector: ".git-publish-provider-card--active"');
+    assert.include(source, 'measurement?.attributes["data-git-publish-provider"] === "github"');
+    assert.include(source, 'readSelectorRects(client, "[data-git-publish-step-label]")');
+    assert.include(source, 'readSelectorRects(client, "[data-git-publish-provider]")');
+    assert.include(source, 'selector: ".git-publish-dismiss"');
+    assert.include(source, "steps.length !== 3");
+    assert.include(source, "providers.length !== 4");
+    assert.include(source, "dismissed: true");
+    assert.include(outcomeChecksSource, "gitPublishDialog");
+  });
+
   it("verifies Composer disabled and recovered states during lifecycle recovery", () => {
     assert.include(source, "async function verifyLifecycleRecovery");
     assert.include(source, 'measurement?.attributes["data-composer-state"] === "disabled"');

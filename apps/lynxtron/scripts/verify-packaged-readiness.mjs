@@ -2683,6 +2683,92 @@ async function verifyShellInteractions({ child, client, timeoutMs }) {
   };
 }
 
+async function verifyGitPublishDialog({ child, client, timeoutMs }) {
+  let headerAction;
+  try {
+    headerAction = await waitForMeasurement({
+      child,
+      client,
+      selector: ".action-btn--commit",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["data-git-quick-action-kind"] === "open_publish" &&
+        measurement.attributes["data-git-quick-action-label"] === "Publish repository",
+    });
+  } catch (error) {
+    const clientState = await readClientState(client);
+    throw new Error(
+      `Native Header did not project Publish repository: ${JSON.stringify({
+        cause: error instanceof Error ? error.message : String(error),
+        clientState,
+      })}`,
+    );
+  }
+  const beforeOpen = await readRendererReadiness(client);
+  await tapSelector({
+    child,
+    client,
+    selector: ".action-btn--commit .action-btn__primary",
+    timeoutMs,
+  });
+  const dialog = await waitForMeasurement({
+    child,
+    client,
+    selector: ".git-publish-dialog",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Publish repository") &&
+      measurement.text.includes("Pick where to host it"),
+  });
+  const afterOpen = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeOpen,
+    timeoutMs,
+  });
+  const activeProvider = await waitForMeasurement({
+    child,
+    client,
+    selector: ".git-publish-provider-card--active",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-git-publish-provider"] === "github" &&
+      measurement.attributes["data-git-publish-provider-ready"] === "true",
+  });
+  const steps = await readSelectorRects(client, "[data-git-publish-step-label]");
+  const providers = await readSelectorRects(client, "[data-git-publish-provider]");
+  if (steps.length !== 3 || providers.length !== 4) {
+    throw new Error(
+      `Native Publish wizard anatomy drifted: ${JSON.stringify({ steps, providers })}`,
+    );
+  }
+  await tapSelector({
+    child,
+    client,
+    point: "top-left",
+    selector: ".git-publish-dismiss",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".git-publish-dialog",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  return {
+    status: "pass",
+    input: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selectors",
+    headerAction,
+    dialog,
+    activeProvider,
+    steps,
+    providers,
+    sequence: { beforeOpen: beforeOpen.lastSeq, afterOpen: afterOpen.lastSeq },
+    dismissed: true,
+  };
+}
+
 async function verifyDevBranding(client) {
   const backdrop = await readOptionalMeasurement(client, ".sidebar-stage-backdrop--dev");
   const brand = await readOptionalMeasurement(client, ".sidebar-brand");
@@ -3539,6 +3625,7 @@ async function runOnce({
   verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
+  verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -3829,6 +3916,13 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const gitPublishDialog = shouldVerifyGitPublishDialog
+      ? await verifyGitPublishDialog({
+          child,
+          client,
+          timeoutMs,
+        })
+      : undefined;
     const runtimeCapabilities = shouldVerifyRuntimeCapabilities
       ? await verifyRuntimeCapabilities(client)
       : undefined;
@@ -3873,6 +3967,7 @@ async function runOnce({
       reviewDiffState,
       reviewCheckpointStates,
       shellInteractions,
+      gitPublishDialog,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -3909,6 +4004,7 @@ async function runOnce({
       reviewDiffState,
       reviewCheckpointStates,
       shellInteractions,
+      gitPublishDialog,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -3973,6 +4069,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
   "--verify-review-checkpoint-states",
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
+const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -4189,6 +4286,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
+      verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,
