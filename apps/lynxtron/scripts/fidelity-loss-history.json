@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T12:19:29+09:00",
+  "updatedAt": "2026-08-16T12:51:54+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6934,6 +6934,53 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-beta-cold-restart",
               "source": "Distinct owned PIDs load the same a8663ff0 bundle and isolated state; main transport is ready, value 3 survives restart, renderer errors are zero, state is disposed, and every agent-browser gate is zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "lifecycle-native-recovery-certification-current",
+      "observedAt": "2026-08-16T12:51:54+09:00",
+      "commit": "94297adf8e3b4585b9401a418b2a987976c9f198",
+      "codeCommit": "a460f56aed70c16b95348da9a52a9510a4be6dcf",
+      "codeState": "commit",
+      "label": "Lifecycle Native Recovery certification",
+      "narrative": "The lifecycle verifier first exposed a harness mismatch: it hard-coded idle while the isolated fixture projected a real running session and Working Composer. Once readiness required matching shell session, thread-detail session, and Composer state, interruption exposed two product losses. The working-first shared control projection kept a clickable Stop action after the backend became unavailable, and a VCS request canceled by the expected disconnect polluted the renderer error console. The shared Composer now keeps the session-derived Working frame while disabling the unavailable primary action, and VCS errors remain visible only while the client is ready. An exact-owned production run interrupts server PID 20219 on port 56833, renders the error and disabled action, reconnects through a measured Native tap, replaces it with owned PID 20708 on port 57388, restores the same running and Working projection, advances sequence 11 to 16, reports zero renderer errors, and disposes isolated state. This is Native lifecycle, interaction, and runtime evidence, not Native pixel parity.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The failing and passing exact-bundle runs share the same isolated running-session fixture and lifecycle path. The product fixes directly change unavailable action projection and disconnect-canceled VCS reporting; the idle assumption is recorded separately as a harness mismatch."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/lifecycle-native-recovery-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "2e2367d8b0a2c966e73e9de8807f3213ba809c393ff00d7329969204770a7b45"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-native-recovery"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "session-derived-lifecycle-content",
+              "source": "Running and Working remain truthful before, during, and after the backend outage while the error and reconnecting banners expose the actual connection phase"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-owned-server-reconnect",
+              "source": "The unavailable Working action is disabled, a measured Native Reconnect tap enters reconnecting, and the same session-derived Composer state returns"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-lifecycle-recovery",
+              "source": "Owned server PID and port change from 20219:56833 to 20708:57388 under app PID 20159, sequence advances 11 to 16, renderer errors are zero, isolated state is disposed, and every agent-browser gate is zero"
             }
           }
         }
