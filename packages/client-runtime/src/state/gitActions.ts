@@ -5,6 +5,10 @@ import type {
   VcsStatusResult,
 } from "@t3tools/contracts";
 import { isTemporaryWorktreeBranch } from "@t3tools/shared/git";
+import {
+  DEFAULT_CHANGE_REQUEST_TERMINOLOGY,
+  getChangeRequestTerminology,
+} from "@t3tools/shared/sourceControl";
 
 export type GitActionIconName = "commit" | "push" | "pr";
 
@@ -22,7 +26,7 @@ export interface GitActionMenuItem {
 export interface GitQuickAction {
   label: string;
   disabled: boolean;
-  kind: "run_action" | "run_pull" | "open_pr" | "show_hint";
+  kind: "run_action" | "run_pull" | "open_pr" | "open_publish" | "show_hint";
   action?: GitStackedAction;
   hint?: string;
 }
@@ -151,8 +155,8 @@ export function buildMenuItems(
 export function resolveQuickAction(
   gitStatus: VcsStatusResult | null,
   isBusy: boolean,
-  isDefaultBranch = false,
-  hasOriginRemote = true,
+  isDefaultRef = false,
+  hasPrimaryRemote = true,
 ): GitQuickAction {
   if (isBusy) {
     return { label: "Commit", disabled: true, kind: "show_hint", hint: "Git action in progress." };
@@ -171,27 +175,31 @@ export function resolveQuickAction(
   const hasChanges = gitStatus.hasWorkingTreeChanges;
   const hasOpenPr = gitStatus.pr?.state === "open";
   const isAhead = gitStatus.aheadCount > 0;
+  const hasDefaultBranchDelta = (gitStatus.aheadOfDefaultCount ?? gitStatus.aheadCount) > 0;
   const isBehind = gitStatus.behindCount > 0;
   const isDiverged = isAhead && isBehind;
+  const terminology = gitStatus.sourceControlProvider
+    ? getChangeRequestTerminology(gitStatus.sourceControlProvider)
+    : DEFAULT_CHANGE_REQUEST_TERMINOLOGY;
 
   if (!hasBranch) {
     return {
       label: "Commit",
       disabled: true,
       kind: "show_hint",
-      hint: "Create and checkout a branch before pushing or opening a PR.",
+      hint: `Create and checkout a ref before pushing or opening a ${terminology.singular}.`,
     };
   }
 
   if (hasChanges) {
-    if (!gitStatus.hasUpstream && !hasOriginRemote) {
+    if (!gitStatus.hasUpstream && !hasPrimaryRemote) {
       return { label: "Commit", disabled: false, kind: "run_action", action: "commit" };
     }
-    if (hasOpenPr || isDefaultBranch) {
+    if (hasOpenPr || isDefaultRef) {
       return { label: "Commit & push", disabled: false, kind: "run_action", action: "commit_push" };
     }
     return {
-      label: "Commit, push & PR",
+      label: `Commit, push & ${terminology.shortLabel}`,
       disabled: false,
       kind: "run_action",
       action: "commit_push_pr",
@@ -199,20 +207,19 @@ export function resolveQuickAction(
   }
 
   if (!gitStatus.hasUpstream) {
-    if (!hasOriginRemote) {
+    if (!hasPrimaryRemote) {
       if (hasOpenPr && !isAhead) {
-        return { label: "View PR", disabled: false, kind: "open_pr" };
+        return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
       }
       return {
-        label: "Push",
-        disabled: true,
-        kind: "show_hint",
-        hint: 'Add an "origin" remote before pushing or creating a PR.',
+        label: "Publish repository",
+        disabled: false,
+        kind: "open_publish",
       };
     }
     if (!isAhead) {
       if (hasOpenPr) {
-        return { label: "View PR", disabled: false, kind: "open_pr" };
+        return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
       }
       return {
         label: "Push",
@@ -221,16 +228,16 @@ export function resolveQuickAction(
         hint: "No local commits to push.",
       };
     }
-    if (hasOpenPr || isDefaultBranch) {
+    if (hasOpenPr || isDefaultRef) {
       return {
         label: "Push",
         disabled: false,
         kind: "run_action",
-        action: isDefaultBranch ? "commit_push" : "push",
+        action: isDefaultRef ? "commit_push" : "push",
       };
     }
     return {
-      label: "Push & create PR",
+      label: `Push & create ${terminology.shortLabel}`,
       disabled: false,
       kind: "run_action",
       action: "create_pr",
@@ -239,7 +246,7 @@ export function resolveQuickAction(
 
   if (isDiverged) {
     return {
-      label: "Sync branch",
+      label: "Sync ref",
       disabled: true,
       kind: "show_hint",
       hint: "Branch has diverged from upstream. Rebase/merge first.",
@@ -255,16 +262,16 @@ export function resolveQuickAction(
   }
 
   if (isAhead) {
-    if (hasOpenPr || isDefaultBranch) {
+    if (hasOpenPr || isDefaultRef) {
       return {
         label: "Push",
         disabled: false,
         kind: "run_action",
-        action: isDefaultBranch ? "commit_push" : "push",
+        action: isDefaultRef ? "commit_push" : "push",
       };
     }
     return {
-      label: "Push & create PR",
+      label: `Push & create ${terminology.shortLabel}`,
       disabled: false,
       kind: "run_action",
       action: "create_pr",
@@ -272,7 +279,16 @@ export function resolveQuickAction(
   }
 
   if (hasOpenPr && gitStatus.hasUpstream) {
-    return { label: "View PR", disabled: false, kind: "open_pr" };
+    return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
+  }
+
+  if (hasDefaultBranchDelta && !isDefaultRef) {
+    return {
+      label: `Create ${terminology.shortLabel}`,
+      disabled: false,
+      kind: "run_action",
+      action: "create_pr",
+    };
   }
 
   return {
