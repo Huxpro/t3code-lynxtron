@@ -1,4 +1,13 @@
-import { useState, useCallback, useEffect, useRef, type ReactNode } from "@lynx-js/react";
+import {
+  runOnMainThread,
+  useState,
+  useCallback,
+  useEffect,
+  useMainThreadRef,
+  useRef,
+  type ReactNode,
+} from "@lynx-js/react";
+import type { MainThread } from "@lynx-js/types";
 import { shouldUseCompactComposerFooter } from "../../../../web/src/components/composerFooterLayout";
 import {
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
@@ -115,19 +124,39 @@ export function Composer({
   const [modelOptionMenuOpen, setModelOptionMenuOpen] = useState(false);
   const [compactControlsMenuOpen, setCompactControlsMenuOpen] = useState(false);
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
+  const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
+  const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
+  const handleModelOptionMenuWheel = (event: MainThread.WheelEvent) => {
+    "main thread";
+    const nextOffset = Math.max(0, modelOptionMenuWheelRef.current.offset + event.deltaY);
+    modelOptionMenuWheelRef.current = { offset: nextOffset };
+    const target =
+      modelOptionMenuScrollRef.current ??
+      event.currentTarget ??
+      lynx.querySelector(".composer-model-option-menu");
+    if (!target) return;
+    target.setAttribute("data-wheel-offset", `${nextOffset}`);
+    target.invoke("scrollTo", { offset: nextOffset, smooth: false });
+    event.preventDefault?.();
+    event.stopPropagation?.();
+  };
   useEffect(() => {
     const diagnosticsGlobal = globalThis as {
       __T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?: (value: string) => boolean;
+      __T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
     };
     if (!viewport.testResize) return;
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__ = (nextValue) => {
       setValue(nextValue);
       return true;
     };
+    diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__ = (deltaY) =>
+      runOnMainThread(handleModelOptionMenuWheel)({ deltaY } as MainThread.WheelEvent);
     return () => {
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__;
+      delete diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__;
     };
   }, [viewport.testResize]);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
@@ -469,15 +498,12 @@ export function Composer({
                         />
                         {modelOptionMenuOpen ? (
                           <>
-                            <view
-                              className="composer-model-option-menu-dismiss-layer"
-                              aria-label="Dismiss model options"
-                              bindtap={() => setModelOptionMenuOpen(false)}
-                            />
                             <scroll-view
                               className="composer-model-option-menu"
                               aria-label="Model options"
                               data-composer-model-option-menu
+                              main-thread:ref={modelOptionMenuScrollRef}
+                              main-thread:global-bindwheel={handleModelOptionMenuWheel}
                               scroll-y
                               scroll-orientation="vertical"
                             >
@@ -525,6 +551,11 @@ export function Composer({
                                 </view>
                               ))}
                             </scroll-view>
+                            <view
+                              className="composer-model-option-menu-dismiss-layer"
+                              aria-label="Dismiss model options"
+                              bindtap={() => setModelOptionMenuOpen(false)}
+                            />
                           </>
                         ) : null}
                       </view>
@@ -559,11 +590,6 @@ export function Composer({
                         />
                         {runtimeModeMenuOpen ? (
                           <>
-                            <view
-                              className="composer-runtime-menu-dismiss-layer"
-                              aria-label="Dismiss runtime mode"
-                              bindtap={() => setRuntimeModeMenuOpen(false)}
-                            />
                             <view
                               className="composer-runtime-menu"
                               aria-label="Runtime mode"
@@ -601,6 +627,11 @@ export function Composer({
                                 </view>
                               ))}
                             </view>
+                            <view
+                              className="composer-runtime-menu-dismiss-layer"
+                              aria-label="Dismiss runtime mode"
+                              bindtap={() => setRuntimeModeMenuOpen(false)}
+                            />
                           </>
                         ) : null}
                       </view>
