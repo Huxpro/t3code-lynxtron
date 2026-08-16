@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T18:36:53+09:00",
+  "productCommit": "fe533fcb04369168566c59dfc73ed70636b68867",
+  "nativeVerifierCommit": "ea9635e7892cf63f7a4893a581a1bffa3ca5732e",
+  "stateId": "sidebar-populated",
+  "scope": {
+    "client": "native",
+    "viewport": "1280x820",
+    "theme": "light",
+    "route": "/",
+    "surface": "macOS titlebar Sidebar brand"
+  },
+  "authority": {
+    "webSource": "apps/web/src/components/AppSidebarLayout.tsx",
+    "trafficLightsLeftInset": 90,
+    "titlebarControlSize": 28,
+    "titlebarControlGap": 12,
+    "brandX": 130,
+    "matchedEvidence": [
+      "apps/lynxtron/evidence/2026-07-28/T6-C1/sidebar/1280x820/populated/electron-certified.web-measurements.json",
+      "apps/lynxtron/evidence/2026-07-28/T6-C1/sidebar/1280x820/populated/lynx-certified-current.lynx-measurements.json"
+    ]
+  },
+  "fixture": {
+    "source": "disposable /tmp/t3-git-publish-native-fixture snapshot",
+    "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "projectTitle": "t3code-lynxtron",
+    "canonicalThreadTitle": "New thread",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "The Native Sidebar brand regressed to x=60 while the production macOS authority and prior matched evidence place it at x=130.",
+      "With LynxWindow traffic lights configured at x=16, the x=60 brand entered the third traffic-light envelope instead of respecting the production titlebar content inset."
+    ],
+    "harnessMismatch": [
+      "The existing Native Sidebar geometry verifier incorrectly required x=60, certifying the regression instead of catching it.",
+      "A separate verify-composer-branding diagnostic was blocked by an unrelated model-picker row mutation on this unavailable-Codex fixture; the retained proof uses the independent read-only Sidebar geometry verifier."
+    ],
+    "evidenceBoundary": "This exact-bundle run proves Native brand and Sidebar box geometry, main transport, zero renderer errors, and isolated cleanup. It does not claim a fresh matched pixel score."
+  },
+  "before": {
+    "head": "2cebe0091f3dd8945f54826b230da10f5a040335",
+    "brand": {
+      "x": 60,
+      "y": 12,
+      "width": 55,
+      "height": 28
+    },
+    "verdict": "overlaps the macOS traffic-light safe envelope"
+  },
+  "native": {
+    "status": "pass",
+    "head": "ea9635e7892cf63f7a4893a581a1bffa3ca5732e",
+    "bundle": {
+      "bytes": 4476369,
+      "sha256": "54c5f1a2e5b461a698ca8b7f47d74fd1fca1fbaa77288f4d83bf75aebaae249b"
+    },
+    "reportSha256": "c072ad514549657055163660fbe097b161ea2b67661d38edf3e4ce6731c70314",
+    "brand": {
+      "x": 130,
+      "y": 12,
+      "width": 55,
+      "height": 28,
+      "text": "Code"
+    },
+    "sidebar": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 820
+    },
+    "threadList": {
+      "x": 7,
+      "y": 141,
+      "width": 225,
+      "height": 165
+    },
+    "rowWidths": [225, 225],
+    "cardWidths": [225, 225],
+    "transport": {
+      "kind": "main",
+      "beforeProbe": 2,
+      "afterProbe": 3
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": {
+      "shellInteractionContract": "10/10",
+      "nativeVerifier": "30/30"
+    },
+    "typecheck": {
+      "lynxtron": "pass"
+    },
+    "build": "Lynx production build passed with existing unsupported-property and Effect import.meta warnings",
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "retainedTrialApp": "PID 18721 remained alive throughout the run"
+  },
+  "remainingRisk": [
+    "Fullscreen macOS titlebar behavior is not covered by this non-fullscreen fixture.",
+    "Fresh pixel material parity was not recaptured; this checkpoint is exact Native geometry.",
+    "The Composer branding verifier still couples branding with broader Composer mutations and should not be used for isolated titlebar proof."
+  ]
+}
