@@ -3032,6 +3032,211 @@ async function verifyBetaMutation({
   }
 }
 
+async function openArchiveSettings({ child, client, timeoutMs }) {
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--archived",
+    timeoutMs,
+  });
+  return waitForRoutePanel({
+    child,
+    client,
+    panel: "archive",
+    route: "/settings/archived",
+    timeoutMs,
+  });
+}
+
+async function verifyArchiveMutation({
+  baseDir,
+  bundle,
+  child,
+  client,
+  desktopDir,
+  devToolCli,
+  executable,
+  height,
+  projectCwd,
+  timeoutMs,
+  width,
+}) {
+  const initialState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      Array.isArray(state?.threadIds) &&
+      Array.isArray(state?.archivedThreadIds) &&
+      state.threadIds.length > 1,
+  });
+  const targetThreadId = initialState.threadIds.find(
+    (threadId) => threadId !== initialState.activeThreadId,
+  );
+  if (!targetThreadId) {
+    throw new Error(
+      `Archive mutation fixture lacks an inactive thread: ${JSON.stringify(initialState)}`,
+    );
+  }
+
+  await invokeConnector(client, "archiveThread", { threadId: targetThreadId });
+  const preparedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.archivedThreadIds?.includes(targetThreadId) === true &&
+      state?.threadIds?.includes(targetThreadId) === false,
+  });
+  const route = await openArchiveSettings({ child, client, timeoutMs });
+  const actionSelector = `.settings-archive-unarchive--${targetThreadId}`;
+  const preparedAction = await waitForMeasurement({
+    child,
+    client,
+    selector: actionSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("Unarchive") === true,
+  });
+
+  await tapSelector({ child, client, selector: actionSelector, timeoutMs });
+  const unarchivedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.threadIds?.includes(targetThreadId) === true &&
+      state?.archivedThreadIds?.includes(targetThreadId) === false,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: actionSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  await invokeConnector(client, "archiveThread", { threadId: targetThreadId });
+  const rearchivedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.archivedThreadIds?.includes(targetThreadId) === true &&
+      state?.threadIds?.includes(targetThreadId) === false,
+  });
+  const restoredAction = await waitForMeasurement({
+    child,
+    client,
+    selector: actionSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("Unarchive") === true,
+  });
+
+  const initialProcessId = child.pid;
+  const initialClient = client.identity;
+  const initialRendererErrors = readRendererErrors({
+    clientId: client.identity.clientId,
+    devToolCli,
+    sessionId: client.identity.sessionId,
+  });
+  if (initialRendererErrors) {
+    throw new Error(`Renderer errors before Archive cold restart:\n${initialRendererErrors}`);
+  }
+  await client.close();
+  await stopOwnedProcess(child);
+
+  const restartedChild = spawn(executable, [desktopDir], {
+    cwd: APP_ROOT,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      T3_LYNXTRON_BASE_DIR: baseDir,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
+      T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!Number.isInteger(restartedChild.pid) || restartedChild.pid <= 0) {
+    throw new Error("Archive cold restart did not return an owned process id.");
+  }
+  const restartedLog = createLogCapture(restartedChild);
+  let restartedClient;
+  try {
+    restartedClient = await waitForOwnedSession({
+      child: restartedChild,
+      devToolCli,
+      expectedBundleUrl: pathToFileURL(bundle).href,
+      timeoutMs,
+    });
+    await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
+    const restartTransport = await waitForMainTransport({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartedState = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        state?.archivedThreadIds?.includes(targetThreadId) === true &&
+        state?.threadIds?.includes(targetThreadId) === false,
+    });
+    const restartRoute = await openArchiveSettings({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartedAction = await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: actionSelector,
+      timeoutMs,
+      predicate: (measurement) => measurement?.text.includes("Unarchive") === true,
+    });
+
+    return {
+      outcome: {
+        status: "pass",
+        input: "Typed archive commands plus DevTool touch on the measured Unarchive action",
+        targetThreadId,
+        route,
+        preparedState,
+        preparedAction,
+        unarchivedState,
+        rearchivedState,
+        restoredAction,
+        coldRestart: {
+          initialProcessId,
+          initialClient,
+          restartedProcessId: restartedChild.pid,
+          restartedClient: restartedClient.identity,
+          transport: restartTransport,
+          route: restartRoute,
+          state: restartedState,
+          action: restartedAction,
+        },
+      },
+      child: restartedChild,
+      client: restartedClient,
+      log: restartedLog,
+    };
+  } catch (error) {
+    await restartedClient?.close();
+    await stopOwnedProcess(restartedChild);
+    throw error;
+  }
+}
+
 async function verifyDevBranding(client) {
   const backdrop = await readOptionalMeasurement(client, ".sidebar-stage-backdrop--dev");
   const brand = await readOptionalMeasurement(client, ".sidebar-brand");
@@ -3891,6 +4096,7 @@ async function runOnce({
   verifyShellInteractions: shouldVerifyShellInteractions,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyBetaMutation: shouldVerifyBetaMutation,
+  verifyArchiveMutation: shouldVerifyArchiveMutation,
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
@@ -4208,6 +4414,26 @@ async function runOnce({
       client = betaVerification.client;
       log = betaVerification.log;
     }
+    let archiveMutation;
+    if (shouldVerifyArchiveMutation) {
+      const archiveVerification = await verifyArchiveMutation({
+        baseDir,
+        bundle,
+        child,
+        client,
+        desktopDir,
+        devToolCli,
+        executable,
+        height,
+        projectCwd,
+        timeoutMs,
+        width,
+      });
+      archiveMutation = archiveVerification.outcome;
+      child = archiveVerification.child;
+      client = archiveVerification.client;
+      log = archiveVerification.log;
+    }
     const runtimeCapabilities = shouldVerifyRuntimeCapabilities
       ? await verifyRuntimeCapabilities(client)
       : undefined;
@@ -4254,6 +4480,7 @@ async function runOnce({
       shellInteractions,
       gitPublishDialog,
       betaMutation,
+      archiveMutation,
       runtimeCapabilities,
       branding,
       lifecycleRecovery,
@@ -4292,6 +4519,7 @@ async function runOnce({
       shellInteractions,
       gitPublishDialog,
       betaMutation,
+      archiveMutation,
       runtimeCapabilities,
       branding,
       rendererErrors: 0,
@@ -4358,6 +4586,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
+const shouldVerifyArchiveMutation = process.argv.includes("--verify-archive-mutation");
 const composerStopEvidence = argumentValue("--composer-stop-evidence") ?? null;
 const shouldVerifyRuntimeCapabilities = process.argv.includes("--verify-runtime-capabilities");
 const verifyPlan11SemanticOutcomes = process.argv.includes("--verify-plan11-semantic-outcomes");
@@ -4576,6 +4805,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyShellInteractions: shouldVerifyShellInteractions,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyBetaMutation: shouldVerifyBetaMutation,
+      verifyArchiveMutation: shouldVerifyArchiveMutation,
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,

@@ -144,6 +144,21 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "betaMutation");
   });
 
+  it("verifies Native Archive unarchive, rearchive, and cold restart", () => {
+    assert.include(source, "async function verifyArchiveMutation");
+    assert.include(source, "async function openArchiveSettings");
+    assert.include(source, '"--verify-archive-mutation"');
+    assert.include(source, 'selector: ".settings-nav__item--archived"');
+    assert.include(
+      source,
+      'invokeConnector(client, "archiveThread", { threadId: targetThreadId })',
+    );
+    assert.include(source, "settings-archive-unarchive--${targetThreadId}");
+    assert.include(source, "Archive cold restart did not return an owned process id.");
+    assert.include(source, "restartedProcessId");
+    assert.include(outcomeChecksSource, "archiveMutation");
+  });
+
   it("restores the session-derived Composer state during lifecycle recovery", () => {
     assert.include(source, "async function verifyLifecycleRecovery");
     assert.include(source, "async function waitForSessionComposerProjection");
