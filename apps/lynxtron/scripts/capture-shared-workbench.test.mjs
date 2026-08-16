@@ -284,8 +284,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "function gitPublishDialogMatches");
     assert.include(source, "webGitPublishInputSent");
     assert.include(source, "lynxGitPublishInputSent");
-    assert.include(source, "await dispatchPointerClick(cdp, sessionId, publishPoints.web)");
-    assert.include(source, "await dispatchPointerClick(cdp, sessionId, publishPoints.lynx)");
+    assert.include(source, "async function dispatchOverlayOpeningPointerClick");
+    assert.include(
+      source,
+      "await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.web)",
+    );
+    assert.include(
+      source,
+      "await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.lynx)",
+    );
     assert.include(source, "await dispatchPointerClick(cdp, sessionId, dismissPoints.web)");
     assert.include(source, "await dispatchPointerClick(cdp, sessionId, dismissPoints.lynx)");
     assert.include(source, "gitPublishDismissed = true");

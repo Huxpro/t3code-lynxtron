@@ -698,6 +698,20 @@ async function dispatchPointerClick(cdp, sessionId, point) {
   );
 }
 
+async function dispatchOverlayOpeningPointerClick(cdp, sessionId, point) {
+  const pressed = cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mousePressed", ...point, button: "left", clickCount: 1 },
+    sessionId,
+  );
+  const released = cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mouseReleased", ...point, button: "left", clickCount: 1 },
+    sessionId,
+  );
+  await Promise.all([pressed, released]);
+}
+
 function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
   if (expectation === null) return true;
   if (!webMetrics || !lynxMetrics) return false;
@@ -1783,13 +1797,13 @@ async function captureCell({
         })()`,
       ).catch(() => null);
       if (!webGitPublishInputSent && publishPoints?.web) {
-        await dispatchPointerClick(cdp, sessionId, publishPoints.web);
+        await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.web);
         webGitPublishInputSent = true;
         await delay(100);
         continue;
       }
       if (!lynxGitPublishInputSent && publishPoints?.lynx) {
-        await dispatchPointerClick(cdp, sessionId, publishPoints.lynx);
+        await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.lynx);
         lynxGitPublishInputSent = true;
         await delay(100);
         continue;
