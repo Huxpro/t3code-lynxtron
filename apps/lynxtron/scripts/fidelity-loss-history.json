@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T19:16:12+09:00",
+  "updatedAt": "2026-08-16T19:48:29+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7523,6 +7523,28 @@
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-light-shadow-current-metrics.json",
           "classification": "tracked-current",
           "sha256": "6da579ce3c6944eda724df3a7fcaf2ddbeb07930f4cc4176b77860601f46f986"
+        }
+      ],
+      "updates": []
+    },
+    {
+      "id": "files-browser-native-current",
+      "observedAt": "2026-08-16T19:48:29+09:00",
+      "commit": "95703e621",
+      "codeCommit": "5c54f6ed444d15df139c3b48d85aae768d97f61a",
+      "codeState": "commit",
+      "label": "Files browser Web-anatomy Native proof",
+      "narrative": "The production Web Files browser uses a fixed 40px compact subheader with a 28px refresh control and ghost search above a separately scrolling compact tree. Lynx instead rendered an oversized bordered project card with title, absolute path, file count, and text Refresh action, then used 28px rows, 12px rounding, and 11px monospace labels. Lynx now preserves the real list/read/edit flow while using the Web anatomy, functional shared file-picker filtering, folder/file icons, 24px rows, 5px corners, and 12px DM Sans labels. A first production build revealed that Lynx strips :focus-within, so an explicit bindfocus/bindblur state restores Native search feedback. A fresh light-mode 1280x820 exact-bundle run reaches Files through measured right-panel touch, measures the 40px toolbar, both 28px controls, 728px independent browser scroll, and a 531x24 first row with four computed 5px corners and 12px DM Sans text; main transport advances 2 to 3, renderer errors are zero, isolated state is disposed, screenshot budget remains 32/100, and PID 18721 stays alive. The first strict run is classified as a harness mismatch because Lynx DevTool reports the border-radius shorthand as 0px while all four corner longhands are 5px. No same-snapshot Web Files screenshot exists for this run, so Native pixels are representative rather than a pixel-parity claim, and keyboard search remains pending-user-session. Files browser is outside the fixed 39-state denominator, so this evidence point intentionally changes no modeled residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The product commits replace the oversized Files card with the production Web anatomy and restore Native focus feedback. The separately committed exact-bundle verifier measures the resulting geometry, typography, corner radii, indexed content, transport, and cleanup without assigning unmatched pixel residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/files-browser-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "7f1e3fbdc693fa020001b92999242b878bdf921082a8735419aa7b6848e97e9f"
         }
       ],
       "updates": []
