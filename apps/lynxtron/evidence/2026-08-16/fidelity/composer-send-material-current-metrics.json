@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T21:31:36+09:00",
+  "productCommit": "35498df5b6c90b725222ddd16952e8ba394cd073",
+  "nativeVerifierCommits": [
+    "36f0698fa3760c97aae94c6cdb6ad5a7b70f0c66",
+    "c1da083bc3328d1f6f91c8fd4009986aa93450ce",
+    "32397e3c3a3afb86b50e5499c64152db9ed4d904",
+    "9fd24db30a731717d3778887bac115d8a969d5b5",
+    "1c5b7b266c2a0d8d0e8a73a8885f304bd895d7d5",
+    "c2e92045dd37ddc26776cb8c1349256b3492e836"
+  ],
+  "stateId": "composer-sendable",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "surface": "Composer Send primary action"
+  },
+  "fixture": {
+    "source": "immutable VACUUM INTO snapshot from ~/.t3/userdata/state.sqlite",
+    "snapshotSha256": "8353c6369d96ce567797512390f43c530bc74198bbf91b6032b0b9bc300dec0c",
+    "projectTitle": "background-only",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "input": "hello fidelity"
+  },
+  "classification": {
+    "productLoss": [
+      "The Web Send action composes #366ffb at 90% over the Composer surface, producing an effective primary background near rgb(51,102,228), while Lynx rendered opaque rgb(54,111,251).",
+      "Web uses a custom 14x14 arrow path with a 14-unit viewBox and 1.8 stroke. Lynx reused the generic Lucide 24-unit arrow-up raster with a 2.0 stroke, leaving the icon crop residual at 0.413752.",
+      "The fix adds semantic primary-action state classes, applies the Native-safe 90% Send surface only to Send state, and adds a dedicated raster generated from the exact Web arrow path without changing other arrow-up uses."
+    ],
+    "harnessMismatch": [
+      "The first alpha experiment used an attribute selector that Lynx ignored; a semantic state class produced the first real pixel change.",
+      "The first Native verifier run did not enable the viewport test probe, so the test-only draft fixture was never installed.",
+      "The next run selected a running canonical thread and truthfully rendered Stop; the final verifier selects a disposable sessionless thread before injecting draft text.",
+      "Direct composed-class selection was unstable in Lynx DevTool, so the verifier waits on the stable action selector and checks the dynamic class and state attributes.",
+      "Native reports 90% alpha as 0.898039 because it quantizes to an 8-bit channel; the final verifier requires exact RGB channels and a one-byte alpha tolerance."
+    ],
+    "evidenceBoundary": "Matched Browser captures supply before/after pixel attribution. Exact Native uses a test-only draft fixture on a sessionless disposable thread to prove the Send state class, computed surface, 32x32 action, 14x14 glyph, transport, zero renderer errors, screenshot identity, and cleanup without submitting a turn. Native pixels are representative and do not replace the Browser residual."
+  },
+  "browser": {
+    "status": "pass",
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameWebBundle": true,
+    "sameWebPixels": true,
+    "beforeHead": "09c4412a33ce40843004408cc852df59be053359",
+    "afterHead": "c2e92045dd37ddc26776cb8c1349256b3492e836",
+    "bundles": {
+      "web": "dee8522bc59699371f8c97f944078191e321a1ff76a06e69a70c54e0941bb734",
+      "lynxBefore": "5156a3c04909fb630d1a4489ff44c127843f303cdf77999ff2a911490125549e",
+      "lynxAfter": "b03276093c83cb20ee0d1cc50dd8b7c5ce30fbc22dabcc834269832b32459c9a"
+    },
+    "screenshots": {
+      "webBefore": "67214852175a402e3640bbd2624d35bec25debb7a6d19b3d5263f11e860bb7f7",
+      "webAfter": "67214852175a402e3640bbd2624d35bec25debb7a6d19b3d5263f11e860bb7f7",
+      "lynxBefore": "eee16416f12e55c542ca8dba8669ec89854d7cfbb30db3d8299766564c9f87f0",
+      "lynxAfter": "f63c039b9c6db962759093896f63fa89cf3bba45e22d64c202c608ee351ede8e",
+      "retention": "diagnostic files remain in /tmp and are not tracked"
+    },
+    "reports": {
+      "beforeSha256": "761b81c6df1caa99616475f7072b3634469893f2ea3fdd75ed43143e1f62121a",
+      "afterSha256": "90090e1db8db576fbc4b6fcfb4d7eb6ea5969383008e627c55cfcd84c2ad4d7d"
+    },
+    "residuals": {
+      "fullFrame": {
+        "beforeSsim": 0.957728,
+        "afterSsim": 0.957815,
+        "before": 0.042272,
+        "after": 0.042185,
+        "delta": -0.000087
+      },
+      "composer": {
+        "beforeSsim": 0.97263,
+        "afterSsim": 0.973501,
+        "before": 0.02737,
+        "after": 0.026499,
+        "delta": -0.000871
+      },
+      "composerWithContext": {
+        "beforeSsim": 0.973667,
+        "afterSsim": 0.974373,
+        "before": 0.026333,
+        "after": 0.025627,
+        "delta": -0.000706
+      },
+      "footer": {
+        "beforeSsim": 0.925637,
+        "afterSsim": 0.928608,
+        "before": 0.074363,
+        "after": 0.071392,
+        "delta": -0.002971
+      },
+      "primaryAction": {
+        "beforeSsim": 0.82814,
+        "afterSsim": 0.971784,
+        "before": 0.17186,
+        "after": 0.028216,
+        "delta": -0.143644
+      },
+      "primaryIcon": {
+        "beforeSsim": 0.586248,
+        "afterSsim": 0.997426,
+        "before": 0.413752,
+        "after": 0.002574,
+        "delta": -0.411178
+      }
+    },
+    "geometry": {
+      "action": {
+        "web": { "x": 1107, "y": 435, "width": 32, "height": 32 },
+        "lynx": { "x": 1107, "y": 435, "width": 32, "height": 32 }
+      },
+      "icon": {
+        "web": { "x": 1116, "y": 444, "width": 14, "height": 14 },
+        "lynx": { "x": 1116, "y": 444, "width": 14, "height": 14 }
+      }
+    },
+    "material": {
+      "beforeBackground": "rgb(54,111,251)",
+      "afterBackground": "rgba(54,111,251,0.9)",
+      "effectiveAfterMainPixel": "rgb(50,101,227)",
+      "authorityMainPixel": "rgb(51,102,228)",
+      "iconPath": "M7 11.5V2.5M7 2.5L3 6.5M7 2.5L11 6.5",
+      "iconStrokeWidth": 1.8
+    },
+    "rendererErrors": 0
+  },
+  "native": {
+    "status": "pass",
+    "head": "c2e92045dd37ddc26776cb8c1349256b3492e836",
+    "bundle": {
+      "bytes": 4477142,
+      "sha256": "9591c56a2bf72ee3a598daff675c71b895f9f2eac4e6c330ab128889ea38acb1"
+    },
+    "reportSha256": "1a26d270e035af6e3502535f947e241d195a912944476f878f954379401564db",
+    "state": "send",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "action": {
+      "x": 1107,
+      "y": 723,
+      "width": 32,
+      "height": 32,
+      "backgroundColor": "rgba(54,111,251,0.898039)"
+    },
+    "icon": {
+      "x": 1116,
+      "y": 732,
+      "width": 14,
+      "height": 14
+    },
+    "transport": {
+      "kind": "main",
+      "beforeProbe": 2,
+      "afterProbe": 3
+    },
+    "screenshot": {
+      "dimensions": { "width": 2560, "height": 1640 },
+      "bytes": 195929,
+      "sha256": "8d6ca590adabba0297ec6ca0e3a56621ca258543dca1af4fbd67e48759a5097b",
+      "retention": "diagnostic file remains in /tmp and is not tracked"
+    },
+    "turnSubmitted": false,
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": {
+      "product": "25/25",
+      "nativeVerifier": "33/33"
+    },
+    "typecheck": {
+      "web": "pass",
+      "lynxtron": "pass"
+    },
+    "build": {
+      "browserPreview": "pass with existing bundle-size and Effect import.meta warnings",
+      "production": "pass with existing unsupported-property and Effect import.meta warnings",
+      "iconGenerator": "deterministic after formatting"
+    },
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0; external live sessions were informational and were not touched.",
+    "screenshotBudget": "32/100",
+    "retainedTrialApp": "PID 18721 remained alive throughout the run"
+  },
+  "remainingRisk": [
+    "The remaining Primary action residual 0.028216 is concentrated in Web-only outer and inset shadow edge pixels; no additional shadow approximation is added without a larger measured benefit.",
+    "The matched Browser pair covers dark 1280x820 Send state. Native exact-bundle evidence uses the light fixture to prove semantic tokens and geometry across theme resolution.",
+    "Physical keyboard typing and real send submission remain outside this verifier; the test-only fixture intentionally does not submit a turn."
+  ]
+}
