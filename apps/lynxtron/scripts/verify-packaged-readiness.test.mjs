@@ -313,12 +313,13 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies unavailable Appearance rows as muted disabled capabilities", () => {
     assert.include(source, 'selector: ".settings-content--appearance"');
     assert.include(source, "async function readSelectorMeasurements");
-    assert.include(source, 'row.text.startsWith("Theme\\n")');
+    assert.include(source, 'row.text.includes("Choose how T3 Code looks across the app.")');
     assert.include(source, 'theme.attributes["aria-disabled"] === "true"');
     assert.include(source, '"Glass opacity"');
     assert.include(source, '"Environment identification"');
     assert.include(source, '"Word wrap"');
-    assert.include(source, "candidate.text.startsWith(`${title}\\n`)");
+    assert.include(source, 'candidate.attributes["data-settings-unavailable"] === "true"');
+    assert.include(source, "candidate.text.includes(title)");
     assert.include(source, 'row.attributes["aria-disabled"] !== "true"');
     assert.include(source, 'row.attributes["data-settings-unavailable"] !== "true"');
     assert.include(source, '".settings-content--appearance .settings-row--unavailable"');

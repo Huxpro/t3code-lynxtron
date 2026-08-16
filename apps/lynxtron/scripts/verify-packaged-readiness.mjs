@@ -4758,7 +4758,9 @@ async function verifySettingsRouteBehavior({
         client,
         ".settings-content--appearance .settings-row",
       );
-      const theme = rows.find((row) => row.text.startsWith("Theme\n"));
+      const theme = rows.find((row) =>
+        row.text.includes("Choose how T3 Code looks across the app."),
+      );
       if (
         !theme ||
         theme.attributes["aria-disabled"] === "true" ||
@@ -4774,7 +4776,11 @@ async function verifySettingsRouteBehavior({
           : []),
         "Word wrap",
       ]) {
-        const row = rows.find((candidate) => candidate.text.startsWith(`${title}\n`));
+        const row = rows.find(
+          (candidate) =>
+            candidate.attributes["data-settings-unavailable"] === "true" &&
+            candidate.text.includes(title),
+        );
         if (
           !row ||
           row.attributes["aria-disabled"] !== "true" ||
