@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T23:07:37+09:00",
+  "updatedAt": "2026-08-16T23:29:03+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -7706,6 +7706,90 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - SSIM 0.913576 at the matched loopback Connections frame; Settings-main residual is 0.072484 and This environment absolute residual is 0.198954"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "lifecycle-error-current-certification",
+      "observedAt": "2026-08-16T23:29:03+09:00",
+      "commit": "5e27a168c5aee3eedb0ae52e56dc9fe7dfc7ef9f",
+      "codeCommit": "94297adf8e3b4585b9401a418b2a987976c9f198",
+      "codeState": "commit",
+      "label": "Lifecycle current Browser and Native certification",
+      "narrative": "A current-head audit selected Lifecycle Reconnecting because its fixed-model loss 0.689290 was dominated by evidence debt 0.684240 rather than the previously measured Browser residual. The first capture failed only its target-state gate: readProjectBranch completed, but a slower readVcsStatus overwrote the single lastCommandResult diagnostic. The dev-only harness now retains a bounded command-result history and requires an observed branch result before terminating the owned server, preventing both asynchronous completion-order races and the invalid early-fault sample documented in the original evidence. With one immutable snapshot, both renderers reach the same background-only new-thread state, then disconnect from the same owned server and render matching connecting lifecycle, disabled Composer state, Claude Fable 5 label, placeholder, and exact 768x140 Composer geometry at x=384 y=340. Current full-frame SSIM is 0.930270, main-region SSIM 0.930627, and Composer-region SSIM 0.946681; renderer errors are zero. A current exact-bundle Native run kills the owned child server, verifies error and disabled primary action, taps the measured Reconnect action, observes reconnecting, restores the real running session and working Composer at the same geometry, advances transport from 11 to 16, clears the banner, reports zero renderer errors, and disposes isolated state. This is measurement refinement: the harness commit receives no product delta, Native material/geometry remain unmeasured, and no weights or scope change.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The only code change is confined to the dev-only Browser preview diagnostics and capture admission gate. Current Browser and Native evidence refreshes measured dimensions without changing product runtime behavior."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/lifecycle-error-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "bc4fa4b9f73986735c438a4e1e8a0af4f76def69c7a3eb71145c393f3bc7ec68"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "matched-lifecycle-content",
+              "source": "Same disconnected lifecycle, disabled Composer state, Claude Fable 5 label, and follow-up placeholder"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "matched-composer-geometry",
+              "source": "Both Browser renderers place the 768x140 Composer at x=384 y=340"
+            },
+            "typography": {
+              "residual": 0.007813,
+              "confidence": 0.99,
+              "method": "editor-line-height-delta",
+              "source": "Web 22.75px versus Lynx 23px over a 32px scale"
+            },
+            "material": {
+              "residual": 0.06973,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.930270; main residual 0.069373 and Composer-region residual 0.053319"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "owned-server-fault-browser",
+              "source": "Branch result observed before fault injection, both clients disconnect into connecting lifecycle, and console has no unexpected errors"
+            }
+          }
+        },
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-lifecycle-content",
+              "source": "Error, reconnecting, and recovered banners plus session-derived working Composer state are all verified"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-measured-reconnect-tap",
+              "source": "Measured Reconnect tap advances from error to reconnecting and restores the owned server"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-owned-server-recovery",
+              "source": "Owned server replacement advances sequence 11 to 16, restores running session state, clears final banner, reports zero renderer errors, and disposes isolated state"
             }
           }
         }
