@@ -7328,6 +7328,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-runtime-menu-dismiss-native-current",
+      "observedAt": "2026-08-16T16:56:40+09:00",
+      "commit": "c89036268",
+      "codeCommit": "8ffd623d8",
+      "codeState": "commit",
+      "label": "Composer runtime permission dismissal",
+      "narrative": "Web's runtime Select dismisses outside its popup, but the Lynx permission menu was only an absolute list and could be closed only by choosing a permission or tapping the trigger again. The Composer now exposes a full-window transparent dismiss layer while the runtime control island and menu remain above it. A current exact-bundle Native run opens Full access, verifies the 272x254 menu and active Full access row, measures a 1280x820 dismiss layer, taps its bottom-right corner, and requires the menu to disappear without changing the visible label or active thread runtimeMode. Main transport is healthy, renderer errors are zero, isolated state is disposed, and no screenshot is added to the repository. Menu material, typography, and keyboard Escape remain explicit debt.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The failing code path had no outside interaction surface. The passing exact-bundle run differs only by the dismiss layer and z-order changes, and it verifies the permission value remains unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/composer-runtime-menu-dismiss-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ede4b403b7f13d7149834f43b84bddf5073245f57bc68f0e63d64496d7d98ff9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-docked"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-runtime-menu-outside-dismiss",
+              "source": "Measured runtime-trigger and fullscreen dismiss-layer touches close the menu while preserving Full access in both the Composer label and active thread projection"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-runtime-menu-dismiss",
+              "source": "Exact 0a0c2933 bundle keeps main transport healthy, reports zero renderer errors, disposes isolated state, and every owned or orphaned agent-browser gate is zero"
+            }
+          }
+        }
+      ]
     }
   ]
 }
