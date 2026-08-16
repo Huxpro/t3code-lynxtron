@@ -110,3 +110,4 @@ existing-thread-completed-current-refresh,2026-08-16T15:21:26+09:00,42197f63416a
 model-picker-selection-mutation-native-current,2026-08-16T16:41:42+09:00,620e09e323dd6ed6f577ae213d30138391cf98e1,commit,Model Picker Native selection mutation,0.442001,0.442001,0.018748,0.431339,0.568661,0.541436
 composer-runtime-menu-dismiss-native-current,2026-08-16T16:56:40+09:00,c89036268,commit,Composer runtime permission dismissal,0.434939,0.434939,0.018518,0.424277,0.575723,0.548498
 composer-model-options-menu-native-current,2026-08-16T17:33:06+09:00,c64ae5f4b,commit,Composer model options Native menu,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
+settings-appearance-unavailable-native-current,2026-08-16T18:00:53+09:00,9fe74b39046837552b53056e06ce95ba3b8d7a1a,commit,Settings Appearance unavailable-state Native proof,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
