@@ -2150,6 +2150,236 @@ async function verifyApprovalTranscriptState({
   };
 }
 
+async function verifyApprovalDeclineMutation({
+  approvalFixture,
+  baseDir,
+  bundle,
+  child,
+  client,
+  desktopDir,
+  devToolCli,
+  executable,
+  height,
+  projectCwd,
+  timeoutMs,
+  width,
+}) {
+  const initialState = await readClientState(client);
+  const projectId = initialState?.activeProject?.id;
+  if (typeof projectId !== "string" || projectId.length === 0) {
+    throw new Error(
+      `Approval mutation could not resolve a project: ${JSON.stringify(initialState)}`,
+    );
+  }
+  const modelSelection = {
+    instanceId: "opencode",
+    model: "opencode/big-pickle",
+  };
+  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  const created = await invokeConnector(client, "createThread", {
+    projectId,
+    title: "Live approval decline acceptance",
+  });
+  const liveThreadId = created?.threadId;
+  if (typeof liveThreadId !== "string" || liveThreadId.length === 0) {
+    throw new Error(`Approval mutation createThread failed: ${JSON.stringify(created)}`);
+  }
+  await invokeConnector(client, "setThreadRuntimeMode", {
+    threadId: liveThreadId,
+    runtimeMode: "approval-required",
+  });
+  const selectResponse = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(liveThreadId)})`,
+    returnByValue: true,
+  });
+  if (selectResponse?.exceptionDetails) {
+    throw new Error(`Approval mutation thread selection failed: ${JSON.stringify(selectResponse)}`);
+  }
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === liveThreadId &&
+      state?.activeThread?.runtimeMode === "approval-required",
+  });
+  await invokeConnector(client, "sendPrompt", {
+    threadId: liveThreadId,
+    text: "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval.",
+  });
+  const pendingState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === liveThreadId &&
+      state?.activeThread?.hasPendingApprovals === true &&
+      state?.sessionStatus === "running" &&
+      state?.pendingApprovalRequests?.some((request) => request.requestKind === "command") === true,
+  });
+  const requestId = pendingState.pendingApprovalRequests.find(
+    (request) => request.requestKind === "command",
+  )?.requestId;
+  if (typeof requestId !== "string" || requestId.length === 0) {
+    throw new Error(`Approval mutation request id is missing: ${JSON.stringify(pendingState)}`);
+  }
+  const selector = ".composer-approval-action--decline";
+  const before = await waitForMeasurement({
+    child,
+    client,
+    selector,
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Decline",
+  });
+  const beforeSequence = await readRendererReadiness(client);
+
+  await tapSelector({ child, client, selector, timeoutMs });
+  const resolvedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === liveThreadId &&
+      state?.activeThread?.hasPendingApprovals === false &&
+      state?.approvalReceipts?.some(
+        (receipt) =>
+          receipt.kind === "approval.resolved" &&
+          receipt.requestId === requestId &&
+          receipt.decision === "decline",
+      ) === true,
+  });
+  const afterSequence = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeSequence,
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-pending-approval",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const failedReceipt = resolvedState.approvalReceipts.find(
+    (receipt) =>
+      receipt.kind === "provider.approval.respond.failed" && receipt.requestId === requestId,
+  );
+  if (failedReceipt) {
+    throw new Error(
+      `Approval decline produced a failure receipt: ${JSON.stringify(failedReceipt)}`,
+    );
+  }
+
+  const initialProcessId = child.pid;
+  const initialClient = client.identity;
+  const initialRendererErrors = readRendererErrors({
+    clientId: client.identity.clientId,
+    devToolCli,
+    sessionId: client.identity.sessionId,
+  });
+  if (initialRendererErrors) {
+    throw new Error(`Renderer errors before Approval cold restart:\n${initialRendererErrors}`);
+  }
+  await client.close();
+  await stopOwnedProcess(child);
+
+  const restartedChild = spawn(executable, [desktopDir], {
+    cwd: APP_ROOT,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      T3_LYNXTRON_BASE_DIR: baseDir,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
+      T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!Number.isInteger(restartedChild.pid) || restartedChild.pid <= 0) {
+    throw new Error("Approval cold restart did not return an owned process id.");
+  }
+  const restartedLog = createLogCapture(restartedChild);
+  let restartedClient;
+  try {
+    restartedClient = await waitForOwnedSession({
+      child: restartedChild,
+      devToolCli,
+      expectedBundleUrl: pathToFileURL(bundle).href,
+      timeoutMs,
+    });
+    await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
+    const restartTransport = await waitForMainTransport({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartSelectResponse = await restartedClient.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(liveThreadId)})`,
+      returnByValue: true,
+    });
+    if (restartSelectResponse?.exceptionDetails) {
+      throw new Error(
+        `Approval cold restart thread selection failed: ${JSON.stringify(restartSelectResponse)}`,
+      );
+    }
+    const restartedState = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === liveThreadId &&
+        state?.activeThread?.hasPendingApprovals === false &&
+        state?.approvalReceipts?.some(
+          (receipt) =>
+            receipt.kind === "approval.resolved" &&
+            receipt.requestId === requestId &&
+            receipt.decision === "decline",
+        ) === true,
+    });
+    await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".composer-pending-approval",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+
+    return {
+      outcome: {
+        status: "pass",
+        input: "DevTool touch on the measured Decline action",
+        liveThreadId,
+        requestId,
+        before,
+        sequence: { before: beforeSequence.lastSeq, after: afterSequence.lastSeq },
+        receipt: resolvedState.approvalReceipts.find(
+          (receipt) => receipt.requestId === requestId && receipt.kind === "approval.resolved",
+        ),
+        pendingRemoved: true,
+        coldRestart: {
+          initialProcessId,
+          initialClient,
+          restartedProcessId: restartedChild.pid,
+          restartedClient: restartedClient.identity,
+          transport: restartTransport,
+          receipt: restartedState.approvalReceipts.find(
+            (receipt) => receipt.requestId === requestId && receipt.kind === "approval.resolved",
+          ),
+          pendingRestored: false,
+        },
+      },
+      child: restartedChild,
+      client: restartedClient,
+      log: restartedLog,
+    };
+  } catch (error) {
+    await restartedClient?.close();
+    await stopOwnedProcess(restartedChild);
+    throw error;
+  }
+}
+
 async function verifyQuestionTranscriptState({
   child,
   client,
@@ -4299,6 +4529,7 @@ async function runOnce({
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
   verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
   verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
+  verifyApprovalDeclineMutation: shouldVerifyApprovalDeclineMutation,
   approvalFixture,
   verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
   questionFixture,
@@ -4367,6 +4598,7 @@ async function runOnce({
     };
     const canonicalState =
       shouldVerifyApprovalTranscriptState ||
+      shouldVerifyApprovalDeclineMutation ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyReviewDiffState
         ? await waitForClientState({
@@ -4375,24 +4607,24 @@ async function runOnce({
             timeoutMs,
             predicate: (state) =>
               state?.activeThreadId ===
-                (shouldVerifyApprovalTranscriptState
+                (shouldVerifyApprovalTranscriptState || shouldVerifyApprovalDeclineMutation
                   ? approvalFixture.threadId
                   : shouldVerifyQuestionTranscriptState
                     ? questionFixture.threadId
                     : reviewFixture.threadId) &&
-              (shouldVerifyApprovalTranscriptState
+              (shouldVerifyApprovalTranscriptState || shouldVerifyApprovalDeclineMutation
                 ? state?.activeThread?.hasPendingApprovals === true
                 : shouldVerifyQuestionTranscriptState
                   ? state?.activeThread?.hasPendingUserInput === true
                   : state?.latestTurn?.state === "completed") &&
               state?.activeThread?.modelSelection?.instanceId ===
-                (shouldVerifyApprovalTranscriptState
+                (shouldVerifyApprovalTranscriptState || shouldVerifyApprovalDeclineMutation
                   ? approvalFixture.modelSelection?.instanceId
                   : shouldVerifyQuestionTranscriptState
                     ? questionFixture.modelSelection?.instanceId
                     : reviewFixture.modelSelection?.instanceId) &&
               state?.activeThread?.modelSelection?.model ===
-                (shouldVerifyApprovalTranscriptState
+                (shouldVerifyApprovalTranscriptState || shouldVerifyApprovalDeclineMutation
                   ? approvalFixture.modelSelection?.model
                   : shouldVerifyQuestionTranscriptState
                     ? questionFixture.modelSelection?.model
@@ -4400,7 +4632,7 @@ async function runOnce({
               (shouldVerifyReviewDiffState ||
                 (state?.sessionStatus === "running" &&
                   state?.activeTurnId ===
-                    (shouldVerifyApprovalTranscriptState
+                    (shouldVerifyApprovalTranscriptState || shouldVerifyApprovalDeclineMutation
                       ? approvalFixture.activeTurnId
                       : questionFixture.activeTurnId))),
           })
@@ -4555,14 +4787,36 @@ async function runOnce({
           outputDirectory,
         })
       : undefined;
-    const approvalTranscriptState = shouldVerifyApprovalTranscriptState
-      ? await verifyApprovalTranscriptState({
-          approvalFixture,
-          client,
-          devToolCli,
-          outputDirectory,
-        })
-      : undefined;
+    const approvalTranscriptState =
+      shouldVerifyApprovalTranscriptState || shouldVerifyApprovalDeclineMutation
+        ? await verifyApprovalTranscriptState({
+            approvalFixture,
+            client,
+            devToolCli,
+            outputDirectory,
+          })
+        : undefined;
+    let approvalDeclineMutation;
+    if (shouldVerifyApprovalDeclineMutation) {
+      const approvalDeclineVerification = await verifyApprovalDeclineMutation({
+        approvalFixture,
+        baseDir,
+        bundle,
+        child,
+        client,
+        desktopDir,
+        devToolCli,
+        executable,
+        height,
+        projectCwd,
+        timeoutMs,
+        width,
+      });
+      approvalDeclineMutation = approvalDeclineVerification.outcome;
+      child = approvalDeclineVerification.child;
+      client = approvalDeclineVerification.client;
+      log = approvalDeclineVerification.log;
+    }
     const questionTranscriptState = shouldVerifyQuestionTranscriptState
       ? await verifyQuestionTranscriptState({
           child,
@@ -4707,6 +4961,7 @@ async function runOnce({
       completedTranscriptState,
       failedTranscriptState,
       approvalTranscriptState,
+      approvalDeclineMutation,
       questionTranscriptState,
       reviewDiffState,
       reviewCheckpointStates,
@@ -4747,6 +5002,7 @@ async function runOnce({
       completedTranscriptState,
       failedTranscriptState,
       approvalTranscriptState,
+      approvalDeclineMutation,
       questionTranscriptState,
       reviewDiffState,
       reviewCheckpointStates,
@@ -4810,6 +5066,9 @@ const shouldVerifyCompletedTranscriptState = process.argv.includes(
 const shouldVerifyFailedTranscriptState = process.argv.includes("--verify-failed-transcript-state");
 const shouldVerifyApprovalTranscriptState = process.argv.includes(
   "--verify-approval-transcript-state",
+);
+const shouldVerifyApprovalDeclineMutation = process.argv.includes(
+  "--verify-approval-decline-mutation",
 );
 const shouldVerifyQuestionTranscriptState = process.argv.includes(
   "--verify-question-transcript-state",
@@ -4880,7 +5139,7 @@ if (
 }
 const approvalFixture = fixtureManifest.pendingRequestFixture;
 if (
-  shouldVerifyApprovalTranscriptState &&
+  (shouldVerifyApprovalTranscriptState || shouldVerifyApprovalDeclineMutation) &&
   (approvalFixture?.mode !== "approval" ||
     typeof approvalFixture.threadId !== "string" ||
     typeof approvalFixture.title !== "string" ||
@@ -4936,7 +5195,9 @@ const canonicalThreadTitle = shouldVerifyIdleThreadState
   ? idleFixture.title
   : shouldVerifyCompletedTranscriptState || shouldVerifyFailedTranscriptState
     ? transcriptFixture?.title
-    : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+    : shouldVerifyApprovalTranscriptState ||
+        shouldVerifyApprovalDeclineMutation ||
+        shouldVerifyQuestionTranscriptState
       ? fixtureManifest.pendingRequestFixture.title
       : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
         ? reviewFixture.title
@@ -4982,7 +5243,9 @@ const modelSelection = shouldVerifyIdleThreadState
   ? idleFixture.modelSelection
   : shouldVerifyCompletedTranscriptState || shouldVerifyFailedTranscriptState
     ? transcriptFixture?.modelSelection
-    : shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+    : shouldVerifyApprovalTranscriptState ||
+        shouldVerifyApprovalDeclineMutation ||
+        shouldVerifyQuestionTranscriptState
       ? fixtureManifest.pendingRequestFixture.modelSelection
       : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
         ? reviewFixture.modelSelection
@@ -5037,6 +5300,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
       verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
       verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
+      verifyApprovalDeclineMutation: shouldVerifyApprovalDeclineMutation,
       approvalFixture,
       verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
       questionFixture,
@@ -5079,7 +5343,9 @@ const report = {
         }
       : undefined,
     pendingRequest:
-      shouldVerifyApprovalTranscriptState || shouldVerifyQuestionTranscriptState
+      shouldVerifyApprovalTranscriptState ||
+      shouldVerifyApprovalDeclineMutation ||
+      shouldVerifyQuestionTranscriptState
         ? {
             mode: fixtureManifest.pendingRequestFixture.mode,
             threadId: fixtureManifest.pendingRequestFixture.threadId,

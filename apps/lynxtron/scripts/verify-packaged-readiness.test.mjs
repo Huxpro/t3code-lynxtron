@@ -367,6 +367,25 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "fixtureManifest.pendingRequestFixture");
   });
 
+  it("verifies a real Native approval decline receipt and cold restart", () => {
+    assert.include(source, "async function verifyApprovalDeclineMutation");
+    assert.include(source, '"--verify-approval-decline-mutation"');
+    assert.include(source, 'const selector = ".composer-approval-action--decline"');
+    assert.include(source, 'title: "Live approval decline acceptance"');
+    assert.include(source, 'runtimeMode: "approval-required"');
+    assert.include(source, 'invokeConnector(client, "sendPrompt"');
+    assert.include(source, "state?.pendingApprovalRequests?.some");
+    assert.include(source, 'receipt.kind === "approval.resolved"');
+    assert.include(source, 'receipt.decision === "decline"');
+    assert.include(source, "Approval decline produced a failure receipt");
+    assert.include(source, "Approval cold restart did not return an owned process id.");
+    assert.include(outcomeChecksSource, "approvalDeclineMutation");
+    assert.isBelow(
+      source.indexOf("const approvalTranscriptState ="),
+      source.indexOf("let approvalDeclineMutation;"),
+    );
+  });
+
   it("selects and submits a real Native pending question", () => {
     assert.include(source, "async function verifyQuestionTranscriptState");
     assert.include(source, '"--verify-question-transcript-state"');
