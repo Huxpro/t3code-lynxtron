@@ -201,6 +201,7 @@ export function FilesPanel() {
   const [preview, setPreview] = useState<PreviewState>(EMPTY_PREVIEW);
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const [expandedDirectories, setExpandedDirectories] = useState<Record<string, boolean>>({});
 
   const project = useMemo(() => {
@@ -305,13 +306,17 @@ export function FilesPanel() {
             >
               <Icon name="refresh-cw" size={14} color="#71717a" />
             </view>
-            <view className="files-panel__search">
+            <view
+              className={`files-panel__search${searchFocused ? " files-panel__search--focused" : ""}`}
+            >
               <Icon name="search" size={14} color="#71717a" />
               <input
                 className="files-panel__search-input"
                 aria-label={`Search ${project.title} files`}
                 placeholder="Search files"
                 {...({ value: search } as object)}
+                bindfocus={() => setSearchFocused(true)}
+                bindblur={() => setSearchFocused(false)}
                 bindinput={(event: { detail: { value: string } }) => setSearch(event.detail.value)}
               />
             </view>

@@ -6552,7 +6552,7 @@
   background-color: transparent;
   box-sizing: border-box;
 }
-.files-panel__search:focus-within {
+.files-panel__search--focused {
   background-color: var(--accent);
 }
 .files-panel__search-input {

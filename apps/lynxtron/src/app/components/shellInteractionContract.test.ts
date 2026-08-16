@@ -107,6 +107,9 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('className="files-panel__toolbar" data-surface-subheader');
     expect(files).toContain('aria-label="Refresh workspace files"');
     expect(files).toContain('placeholder="Search files"');
+    expect(files).toContain("files-panel__search--focused");
+    expect(files).toContain("bindfocus={() => setSearchFocused(true)}");
+    expect(files).toContain("bindblur={() => setSearchFocused(false)}");
     expect(files).toContain("getProjectFilePickerMatches");
     expect(files).toContain('className="files-panel__browser"');
     expect(files).toContain('folderIcon={<Icon name="folder" size={14}');
@@ -114,6 +117,8 @@ describe("desktop shell interaction contract", () => {
     expect(files).not.toContain('className="files-panel__info"');
     expect(overrides).toContain(".files-panel__toolbar {");
     expect(overrides).toContain("height: 40px;");
+    expect(overrides).toContain(".files-panel__search--focused {");
+    expect(overrides).not.toContain(".files-panel__search:focus-within {");
     expect(overrides).toContain(".files-panel .file-tree-row {");
     expect(overrides).toContain("min-height: 24px;");
     expect(overrides).toContain("border-radius: 5px;");
