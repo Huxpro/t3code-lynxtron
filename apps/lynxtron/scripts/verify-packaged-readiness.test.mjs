@@ -105,6 +105,10 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'measurement.style.backgroundColor === "rgba(54,111,251,0.9)"');
     assert.include(source, 'selector: ".composer-primary-action--send image"');
     assert.include(source, 'input: "test-only Composer state fixture; no turn submitted"');
+    assert.include(
+      source,
+      "shouldVerifyModelOptionMenuMutation || shouldVerifyComposerSendMaterial",
+    );
     assert.include(outcomeChecksSource, "composerSendMaterial");
   });
 

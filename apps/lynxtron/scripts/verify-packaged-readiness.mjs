@@ -5762,7 +5762,9 @@ async function runOnce({
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
-      ...(shouldVerifyModelOptionMenuMutation ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
+      ...(shouldVerifyModelOptionMenuMutation || shouldVerifyComposerSendMaterial
+        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
+        : {}),
       ...(shouldVerifySourceControlLoading
         ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
         : {}),
