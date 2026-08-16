@@ -59,7 +59,10 @@ import {
   useModelPickerOpen,
   useRightPanelState,
 } from "../state/uiState";
-import { resolveActiveThreadModelSelection } from "../state/modelSelection.logic";
+import {
+  resolveActiveThreadModelSelection,
+  resolveModelPickerNavigationProvider,
+} from "../state/modelSelection.logic";
 import approvalDetailLabelUrl from "../assets/approval-detail-label@2x.png?external";
 import approvalDetailValuePendingUrl from "../assets/approval-detail-value-pending@2x.png?external";
 import approvalEyebrowUrl from "../assets/approval-eyebrow@2x.png?external";
@@ -281,17 +284,21 @@ export function ChatView({ threadId }: ChatViewProps) {
   }, [activeThreadId, activeThread?.worktreePath]);
 
   useEffect(() => {
+    const preferredProvider =
+      presentedModelSelection?.instanceId ?? selectedModel?.instanceId ?? undefined;
     uiActions.syncModelPickerProvider(
       modelPickerScopeKey,
-      presentedModelSelection?.instanceId ??
-        selectedModel?.instanceId ??
-        (clientSettings.favorites.length > 0
-          ? "favorites"
-          : (providerEntries[0]?.instanceId ?? "favorites")),
+      resolveModelPickerNavigationProvider({
+        preferredProvider,
+        providerEntries,
+        hasFavorites: clientSettings.favorites.length > 0,
+        providerSwitchLocked: lockedProvider !== null,
+      }),
     );
   }, [
     clientSettings.favorites.length,
     modelPickerScopeKey,
+    lockedProvider,
     presentedModelSelection?.instanceId,
     providerEntries,
     selectedModel?.instanceId,
@@ -649,7 +656,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         modelPicker={
           modelPickerOpen ? (
             <ModelPicker
-              models={models}
+              models={presentationModels}
               providers={providerEntries}
               providerSnapshots={providers}
               selectedModel={selectedModel}

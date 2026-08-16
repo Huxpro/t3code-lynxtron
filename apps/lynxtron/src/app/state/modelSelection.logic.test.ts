@@ -12,6 +12,7 @@ import {
   findExactModelForSelection,
   projectModelSelectionCandidates,
   resolveActiveThreadModelSelection,
+  resolveModelPickerNavigationProvider,
 } from "./modelSelection.logic";
 
 const project = {
@@ -202,5 +203,64 @@ describe("available thread models", () => {
     assert.deepEqual(availableThreadModels({ models: [projectedModel], providerEntries: [] }), [
       projectedModel,
     ]);
+  });
+});
+
+describe("model picker navigation provider", () => {
+  it("keeps a ready current provider", () => {
+    const entries = deriveProviderInstanceEntries([
+      provider("claudeAgent", "claudeAgent", ["claude-fable-5"]),
+      provider("codex", "codex", ["gpt-5.6-sol"]),
+    ]);
+
+    assert.equal(
+      resolveModelPickerNavigationProvider({
+        preferredProvider: ProviderInstanceId.make("codex"),
+        providerEntries: entries,
+        hasFavorites: false,
+        providerSwitchLocked: false,
+      }),
+      "codex",
+    );
+  });
+
+  it("opens on the first ready provider when the current provider is unavailable", () => {
+    const entries = deriveProviderInstanceEntries([
+      {
+        ...provider("codex", "codex", ["gpt-5.6-sol"]),
+        status: "error",
+      },
+      provider("opencode", "opencode", ["opencode/big-pickle"]),
+    ]);
+
+    assert.equal(
+      resolveModelPickerNavigationProvider({
+        preferredProvider: ProviderInstanceId.make("codex"),
+        providerEntries: entries,
+        hasFavorites: false,
+        providerSwitchLocked: false,
+      }),
+      "opencode",
+    );
+  });
+
+  it("does not leave a locked provider when its runtime becomes unavailable", () => {
+    const entries = deriveProviderInstanceEntries([
+      {
+        ...provider("codex", "codex", ["gpt-5.6-sol"]),
+        status: "error",
+      },
+      provider("opencode", "opencode", ["opencode/big-pickle"]),
+    ]);
+
+    assert.equal(
+      resolveModelPickerNavigationProvider({
+        preferredProvider: ProviderInstanceId.make("codex"),
+        providerEntries: entries,
+        hasFavorites: false,
+        providerSwitchLocked: true,
+      }),
+      "codex",
+    );
   });
 });

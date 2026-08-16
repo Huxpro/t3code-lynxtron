@@ -1,6 +1,13 @@
 import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
-import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
-import type { ModelSelection, OrchestrationProjectShell } from "@t3tools/contracts";
+import {
+  isProviderInstancePickerReady,
+  type ProviderInstanceEntry,
+} from "@t3tools/client-runtime/presentation/provider";
+import type {
+  ModelSelection,
+  OrchestrationProjectShell,
+  ProviderInstanceId,
+} from "@t3tools/contracts";
 import type { ModelInfo } from "../bridge";
 
 type ProjectModelSelectionSource = Pick<OrchestrationProjectShell, "id" | "defaultModelSelection">;
@@ -21,6 +28,27 @@ export function availableThreadModels(options: {
   return options.providerEntries.length > 0
     ? deriveModelPickerModels(options.providerEntries, { includeDisabled: true })
     : options.models;
+}
+
+export function resolveModelPickerNavigationProvider(options: {
+  readonly preferredProvider: ProviderInstanceId | undefined;
+  readonly providerEntries: ReadonlyArray<ProviderInstanceEntry>;
+  readonly hasFavorites: boolean;
+  readonly providerSwitchLocked: boolean;
+}): ProviderInstanceId | "favorites" {
+  const preferred = options.providerEntries.find(
+    (entry) => entry.instanceId === options.preferredProvider,
+  );
+  if (preferred && isProviderInstancePickerReady(preferred)) {
+    return preferred.instanceId;
+  }
+  if (preferred && options.providerSwitchLocked) {
+    return preferred.instanceId;
+  }
+  return (
+    options.providerEntries.find(isProviderInstancePickerReady)?.instanceId ??
+    (options.hasFavorites ? "favorites" : (options.preferredProvider ?? "favorites"))
+  );
 }
 
 export function findExactModelForSelection<
