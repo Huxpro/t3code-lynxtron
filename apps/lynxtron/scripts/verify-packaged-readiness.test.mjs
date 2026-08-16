@@ -310,6 +310,20 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'name: "native-settings-source-control.png"');
   });
 
+  it("verifies unavailable Appearance rows as muted disabled capabilities", () => {
+    assert.include(source, 'selector: ".settings-content--appearance"');
+    assert.include(source, 'value: "theme"');
+    assert.include(source, 'theme.attributes["aria-disabled"] === "true"');
+    assert.include(source, '"setting-glass-opacity"');
+    assert.include(source, '"environment-identification"');
+    assert.include(source, '"word-wrap"');
+    assert.include(source, 'row.attributes["aria-disabled"] !== "true"');
+    assert.include(source, 'row.attributes["data-settings-unavailable"] !== "true"');
+    assert.include(source, '".settings-content--appearance .settings-row--unavailable"');
+    assert.include(source, "Math.abs(Number(opacity) - 0.48) > 1 / 255");
+    assert.include(source, 'name: "native-settings-appearance-unavailable.png"');
+  });
+
   it("verifies the exact-bundle Source Control error anatomy and retry", () => {
     assert.include(source, "async function verifySourceControlErrorBehavior");
     assert.include(source, '"--verify-source-control-error"');

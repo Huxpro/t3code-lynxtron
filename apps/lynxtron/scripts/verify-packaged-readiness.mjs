@@ -4640,6 +4640,7 @@ async function verifySettingsRouteBehavior({
   timeoutMs,
 }) {
   const observed = [];
+  let appearance = null;
   let sourceControl = null;
   await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
   observed.push(
@@ -4704,7 +4705,86 @@ async function verifySettingsRouteBehavior({
       timeoutMs,
     });
     observed.push(await waitForRoutePanel({ child, client, panel, route, timeoutMs }));
-    if (route === "/settings/source-control") {
+    if (route === "/settings/appearance") {
+      const appearancePanel = await waitForMeasurement({
+        child,
+        client,
+        selector: ".settings-content--appearance",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.text.includes("Appearance") === true &&
+          measurement.text.includes("Theme") &&
+          measurement.text.includes("Glass opacity") &&
+          measurement.text.includes("Word wrap"),
+      });
+      const theme = await readSelectorAttributeMeasurement(client, {
+        attribute: "id",
+        selector: ".settings-content--appearance .settings-row",
+        value: "theme",
+      });
+      if (
+        !theme ||
+        theme.attributes["aria-disabled"] === "true" ||
+        theme.attributes["data-settings-unavailable"] === "true"
+      ) {
+        throw new Error(`Appearance Theme row is not available: ${JSON.stringify(theme)}`);
+      }
+      const unavailableRows = [];
+      for (const id of [
+        "setting-glass-opacity",
+        ...(appearancePanel.text.includes("Environment identification")
+          ? ["environment-identification"]
+          : []),
+        "word-wrap",
+      ]) {
+        const row = await readSelectorAttributeMeasurement(client, {
+          attribute: "id",
+          selector: ".settings-content--appearance .settings-row",
+          value: id,
+        });
+        if (
+          !row ||
+          row.attributes["aria-disabled"] !== "true" ||
+          row.attributes["data-settings-unavailable"] !== "true"
+        ) {
+          throw new Error(
+            `Appearance unavailable row lost disabled semantics: ${JSON.stringify({ id, row })}`,
+          );
+        }
+        unavailableRows.push(row);
+      }
+      const unavailableOpacities = await readSelectorStyleValues(
+        client,
+        ".settings-content--appearance .settings-row--unavailable",
+        "opacity",
+      );
+      if (
+        unavailableOpacities.length !== unavailableRows.length ||
+        unavailableOpacities.some(
+          (opacity) => opacity === null || Math.abs(Number(opacity) - 0.48) > 1 / 255,
+        )
+      ) {
+        throw new Error(
+          `Appearance unavailable rows are not visibly muted: ${JSON.stringify({
+            unavailableOpacities,
+            unavailableRows,
+          })}`,
+        );
+      }
+      appearance = {
+        panel: appearancePanel.rect,
+        text: appearancePanel.text,
+        theme,
+        unavailableRows,
+        unavailableOpacities,
+        screenshot: captureNativeScreenshot({
+          client,
+          devToolCli,
+          outputDirectory,
+          name: "native-settings-appearance-unavailable.png",
+        }),
+      };
+    } else if (route === "/settings/source-control") {
       const sourceControlPanel = await waitForMeasurement({
         child,
         client,
@@ -4772,6 +4852,7 @@ async function verifySettingsRouteBehavior({
       rows: generalRows,
       screenshot: generalScreenshot,
     },
+    appearance,
     sourceControl,
     resync: { beforeSeq: beforeResync.lastSeq, afterSeq: afterResync.lastSeq },
     observed,
