@@ -21,6 +21,9 @@ describe("desktop shell interaction contract", () => {
     expect(source).toContain("catchtap={handlePanelTap}");
     expect(source).toContain('className="model-picker-close"');
     expect(source).toContain("bindtap={onClose}");
+    expect(source.indexOf('className="model-picker-panel"')).toBeLessThan(
+      source.indexOf('className="model-picker-dismiss-layer"'),
+    );
     expect(overrides).toContain(".model-picker-dismiss-layer {");
     expect(overrides).toContain("background-color: transparent;");
     expect(overrides).toContain("background-color: var(--popover);");
@@ -68,12 +71,16 @@ describe("desktop shell interaction contract", () => {
 
     expect(composer).toContain('className="composer-model-option-menu-dismiss-layer"');
     expect(composer).toContain('aria-label="Dismiss model options"');
+    expect(composer.indexOf('className="composer-model-option-menu"')).toBeLessThan(
+      composer.indexOf('className="composer-model-option-menu-dismiss-layer"'),
+    );
     expect(composer).toContain("modelOptionSections.map");
     expect(composer).toContain("onSelectModelOption?.(section.id, item.value)");
     expect(chatView).toContain("projectComposerTraitsMenu");
     expect(chatView).toContain("selectComposerTraitOption");
     expect(chatView).not.toContain("handleModelOptionTap");
     expect(overrides).toContain(".composer-model-option-menu {");
+    expect(overrides).toContain("height: 280px;");
     expect(overrides).toContain(".composer-model-option-menu__item--selected {");
     expect(composer).toContain("getComposerModelOptionLetterSpacing(modelOptionLabel)");
     expect(overrides).toContain(".composer-primary-action--send {");
