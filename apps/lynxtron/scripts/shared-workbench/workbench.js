@@ -153,6 +153,22 @@ function readElementAncestors(element, depth = 4) {
   return ancestors;
 }
 
+function readSidebarStageIdentity(root) {
+  const backdrop = root?.querySelector("[data-stage-backdrop-variant]") ?? null;
+  const brand = root?.querySelector(".sidebar-brand") ?? null;
+  const backdropBox = readElementBox(backdrop);
+  return {
+    variant: backdrop?.getAttribute("data-stage-backdrop-variant") ?? null,
+    backdropPresent: backdrop !== null,
+    backdropVisible:
+      backdropBox !== null &&
+      backdropBox.style.display !== "none" &&
+      backdropBox.rect.width > 0 &&
+      backdropBox.rect.height > 0,
+    brandOnBackdrop: brand?.classList.contains("sidebar-brand--on-backdrop") ?? false,
+  };
+}
+
 function readTextLineRects(element) {
   if (!element) return [];
   const range = element.ownerDocument.createRange();
@@ -680,6 +696,7 @@ function readLynxPane() {
                 : 0,
       },
       sidebarDiagnostics: {
+        stageIdentity: readSidebarStageIdentity(root),
         state:
           root
             ?.querySelector('[data-slot="sidebar-wrapper"]')
@@ -1708,6 +1725,7 @@ function readWebPane() {
       reviewMetrics: readReviewMetrics(doc),
       pendingRequestMetrics: readPendingRequestMetrics(doc),
       sidebarDiagnostics: {
+        stageIdentity: readSidebarStageIdentity(doc),
         state:
           doc.querySelector('[data-slot="sidebar-wrapper"]')?.getAttribute("data-sidebar-state") ??
           null,

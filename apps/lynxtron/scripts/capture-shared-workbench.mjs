@@ -611,7 +611,7 @@ function threadReadyForReview(state, expectedThread) {
 
 function sessionProjectionMatches(state, expectedThreadFixture) {
   const expectedStatus =
-    stateId === "composer-working"
+    stateId === "composer-working" || stateId === "existing-thread-working"
       ? "Working"
       : stateId === "composer-connecting"
         ? "Connecting"
@@ -641,6 +641,13 @@ function sessionProjectionMatches(state, expectedThreadFixture) {
     state?.lynx?.composerMetrics?.state === (expectWorking ? "working" : "disabled") &&
     state?.web?.composerMetrics?.primaryState === (expectWorking ? "stop" : "disabled") &&
     state?.lynx?.composerMetrics?.primaryState === (expectWorking ? "stop" : "disabled")
+  );
+}
+
+function sidebarStageIdentityMatches(state) {
+  return (
+    JSON.stringify(state?.web?.sidebarDiagnostics?.stageIdentity ?? null) ===
+    JSON.stringify(state?.lynx?.sidebarDiagnostics?.stageIdentity ?? null)
   );
 }
 
@@ -2893,6 +2900,7 @@ async function captureCell({
       composerStateReady &&
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
+    const stageIdentityReady = sidebarStageIdentityMatches(state);
     const shortcutInputReady =
       !requiresShortcutInput ||
       (webOverlayInputSent &&
@@ -2950,6 +2958,7 @@ async function captureCell({
       pendingRequestReadyPolls >= 1 &&
       composerReady &&
       sessionProjectionReady &&
+      stageIdentityReady &&
       shortcutInputReady &&
       sidebarSearchReady &&
       sidebarStateReady &&
@@ -3128,6 +3137,7 @@ async function captureCell({
     finalComposerStateReady &&
     composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
+  const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalReviewReady =
     reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
     sidebarDiffPairMatches(
@@ -3505,6 +3515,7 @@ async function captureCell({
     finalCoreGeometryReady &&
     finalComposerReady &&
     finalSessionProjectionReady &&
+    finalStageIdentityReady &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
     finalSettingsGeometryReady &&
@@ -3527,6 +3538,7 @@ async function captureCell({
       finalCoreGeometryReady,
       finalComposerReady,
       finalSessionProjectionReady,
+      finalStageIdentityReady,
       finalReviewReady,
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
@@ -3552,6 +3564,7 @@ async function captureCell({
           visibleModelLabel: webState?.visibleModelLabel ?? null,
           overlayMetrics: state?.web?.overlayMetrics ?? null,
           sidebarDiagnostics: state?.web?.sidebarDiagnostics ?? null,
+          headerMetrics: state?.web?.headerMetrics ?? null,
           composerMetrics: state?.web?.composerMetrics ?? null,
           timelineMetrics: state?.web?.timelineMetrics ?? null,
           reviewMetrics: state?.web?.reviewMetrics ?? null,
@@ -3574,6 +3587,7 @@ async function captureCell({
           visibleModelLabel: lynxState?.visibleModelLabel ?? null,
           overlayMetrics: state?.lynx?.overlayMetrics ?? null,
           sidebarDiagnostics: state?.lynx?.sidebarDiagnostics ?? null,
+          headerMetrics: state?.lynx?.headerMetrics ?? null,
           composerMetrics: state?.lynx?.composerMetrics ?? null,
           timelineMetrics: state?.lynx?.timelineMetrics ?? null,
           reviewMetrics: state?.lynx?.reviewMetrics ?? null,
@@ -3607,7 +3621,7 @@ async function captureCell({
         match: finalSessionProjectionReady,
         expectedSessionStatus: expectedThreadFixture?.sessionStatus ?? null,
         expectedSidebarStatus:
-          stateId === "composer-working"
+          stateId === "composer-working" || stateId === "existing-thread-working"
             ? "Working"
             : stateId === "composer-connecting"
               ? "Connecting"
@@ -3634,6 +3648,11 @@ async function captureCell({
             (row) => row.kind === "working",
           ).length,
         },
+      },
+      sidebarStageIdentity: {
+        match: finalStageIdentityReady,
+        web: state?.web?.sidebarDiagnostics?.stageIdentity ?? null,
+        lynx: state?.lynx?.sidebarDiagnostics?.stageIdentity ?? null,
       },
       expectProject,
       webState,

@@ -204,12 +204,38 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "seed?.dataset?.startingThread");
     assert.include(source, 'expectedThreadFixture?.sessionStatus !== "starting"');
     assert.include(source, "expectedThreadFixture,");
+    assert.include(
+      source,
+      'stateId === "composer-working" || stateId === "existing-thread-working"',
+    );
     assert.include(source, 'expectedStatus === "Working"');
     assert.include(source, "webThread?.status === expectedStatus");
     assert.include(source, "lynxThread?.status === expectedStatus");
     assert.include(source, "finalSessionProjectionReady");
     assert.include(source, "sessionProjection: {");
     assert.include(workbench, "querySelector('[role=\"status\"]')");
+  });
+
+  it("rejects mismatched sidebar stage identity before comparing pixels", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    const sidebarStageBackdrop = readFileSync(
+      path.join(import.meta.dirname, "../../web/src/components/SidebarStageBackdrop.tsx"),
+      "utf8",
+    );
+    assert.include(workbench, "function readSidebarStageIdentity");
+    assert.include(workbench, '"[data-stage-backdrop-variant]"');
+    assert.include(workbench, "backdropVisible:");
+    assert.include(workbench, "brandOnBackdrop:");
+    assert.include(sidebarStageBackdrop, "data-stage-backdrop-variant={variant}");
+    assert.include(source, "function sidebarStageIdentityMatches");
+    assert.include(source, "stageIdentityReady");
+    assert.include(source, "finalStageIdentityReady");
+    assert.include(source, "sidebarStageIdentity: {");
+    assert.include(source, "headerMetrics: state?.web?.headerMetrics ?? null");
+    assert.include(source, "headerMetrics: state?.lynx?.headerMetrics ?? null");
   });
 
   it("compares Composer toolbar allocation instead of renderer-specific raw box sizing", () => {
