@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-16T12:51:54+09:00",
+  "updatedAt": "2026-08-16T13:10:46+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6981,6 +6981,52 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-lifecycle-recovery",
               "source": "Owned server PID and port change from 20219:56833 to 20708:57388 under app PID 20159, sequence advances 11 to 16, renderer errors are zero, isolated state is disposed, and every agent-browser gate is zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-archive-mutation-native-certification-current",
+      "observedAt": "2026-08-16T13:10:46+09:00",
+      "commit": "a3458c43b48a3804c0ff04102d298c5e35234472",
+      "codeState": "commit",
+      "label": "Settings Archive Native mutation certification",
+      "narrative": "The disposable fixture had two live threads and no archived thread, so the verifier prepares the inactive thread through the real typed archiveThread command instead of writing SQLite or hard-coding renderer state. Native then renders its thread-specific Unarchive action on /settings/archived, a measured DevTool tap moves the thread back to the live shell, a second typed command restores it to Archive, and a cold restart of the exact same bundle and isolated state retains the archived projection and action. The run reports zero renderer errors and disposes isolated state. No Archive product loss was found; this is an evidence-session update for Native content, interaction, persistence, and runtime, not Native pixel parity.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact-bundle run closes previously unknown Native Archive mutation cells without assigning a product delta or altering unmeasured visual residuals."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/settings-archive-mutation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "7bce1c4a3b9bfefe9fbfdf6cb091f70213d141ff233168a5ae13f7b5db8ab105"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-archive-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-archive-mutation-content",
+              "source": "The selected inactive thread moves between live and archived shell projections and exposes its exact Unarchive action on the canonical Archive route"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-unarchive-and-typed-rearchive",
+              "source": "A measured Native Unarchive tap returns the target to the live list and a typed archiveThread command restores it to Archive"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-archive-cold-restart",
+              "source": "Distinct owned app PIDs load the same 5cd21a28 bundle and isolated state; the archived thread survives restart, renderer errors are zero, state is disposed, and every owned/orphaned agent-browser gate is zero"
             }
           }
         }
