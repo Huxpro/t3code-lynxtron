@@ -55,6 +55,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "process.env.T3_PLAN11C_SEED_SOURCE");
   });
 
+  it("uses the administrative desktop grant for comparable Connections panes", () => {
+    assert.include(source, "function webCredentialForState");
+    assert.include(source, 'targetStateId === "settings-connections"');
+    assert.include(source, "desktopBootstrapToken: bootstrapToken");
+    assert.include(source, "startupToken,");
+    assert.notInclude(source, "hideAuthorizedClients");
+  });
+
   it("reaps its exact browser process and removes the isolated profile", () => {
     assert.notInclude(source, "agent-browser");
     assert.include(source, "async function stopOwnedChild(child");

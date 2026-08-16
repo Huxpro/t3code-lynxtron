@@ -105,6 +105,10 @@ const selectedModelFixture = {
   instanceId: "claudeAgent",
   model: "claude-fable-5",
 };
+
+function webCredentialForState({ desktopBootstrapToken, startupToken, stateId: targetStateId }) {
+  return targetStateId === "settings-connections" ? desktopBootstrapToken : startupToken;
+}
 if (sidebarTargetState && !["expanded", "collapsed"].includes(sidebarTargetState)) {
   throw new Error(`Unsupported --sidebar-state: ${sidebarTargetState}`);
 }
@@ -1441,7 +1445,11 @@ async function main() {
         webBundle,
         lynxBundle,
         serverPort,
-        startupToken,
+        startupToken: webCredentialForState({
+          desktopBootstrapToken: bootstrapToken,
+          startupToken,
+          stateId,
+        }),
         lynxSocketUrl,
         expectProject,
         expectThread,
