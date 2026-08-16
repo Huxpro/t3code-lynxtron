@@ -4192,6 +4192,84 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
   };
 }
 
+async function verifyGitInitialize({ child, client, projectCwd, timeoutMs }) {
+  const gitDirectory = path.join(projectCwd, ".git");
+  if (existsSync(gitDirectory)) {
+    throw new Error(`Git initialization fixture is already a repository: ${projectCwd}`);
+  }
+  const headerAction = await waitForMeasurement({
+    child,
+    client,
+    selector: ".action-btn--commit",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-git-quick-action-kind"] === "initialize_repo" &&
+      measurement.attributes["data-git-quick-action-label"] === "Initialize Git" &&
+      measurement.attributes["aria-disabled"] === "false",
+  });
+  const beforeState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.vcsStatusCwd === projectCwd &&
+      state?.vcsStatusPending === false &&
+      state?.vcsStatus?.isRepo === false,
+  });
+  const beforeTransport = await readRendererReadiness(client);
+  if (beforeTransport.kind !== "main" || !Number.isInteger(beforeTransport.lastSeq)) {
+    throw new Error(`Git initialization lacks main transport: ${JSON.stringify(beforeTransport)}`);
+  }
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".action-btn--commit",
+    timeoutMs,
+  });
+  const afterState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.vcsStatusCwd === projectCwd &&
+      state?.vcsStatusPending === false &&
+      state?.vcsStatus?.isRepo === true,
+  });
+  const nextAction = await waitForMeasurement({
+    child,
+    client,
+    selector: ".action-btn--commit",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-git-quick-action-kind"] !== "initialize_repo" &&
+      measurement?.attributes["data-git-quick-action-label"] !== "Initialize Git",
+  });
+  if (!existsSync(gitDirectory)) {
+    throw new Error(`Git initialization did not create ${gitDirectory}`);
+  }
+
+  return {
+    status: "pass",
+    input: "DevTool Input.emulateTouchFromMouseEvent on the measured Initialize Git action",
+    projectCwd,
+    headerAction,
+    before: {
+      isRepo: beforeState.vcsStatus.isRepo,
+      transport: beforeTransport,
+    },
+    after: {
+      isRepo: afterState.vcsStatus.isRepo,
+      gitDirectory,
+      nextAction: {
+        kind: nextAction.attributes["data-git-quick-action-kind"] ?? null,
+        label: nextAction.attributes["data-git-quick-action-label"] ?? null,
+        rect: nextAction.rect,
+      },
+    },
+  };
+}
+
 async function verifyGitPublishDialog({ child, client, timeoutMs }) {
   let headerAction;
   try {
@@ -6142,6 +6220,7 @@ async function runOnce({
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
   verifyFilesBrowser: shouldVerifyFilesBrowser,
+  verifyGitInitialize: shouldVerifyGitInitialize,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyBetaMutation: shouldVerifyBetaMutation,
   verifyArchiveMutation: shouldVerifyArchiveMutation,
@@ -6533,6 +6612,14 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const gitInitialize = shouldVerifyGitInitialize
+      ? await verifyGitInitialize({
+          child,
+          client,
+          projectCwd,
+          timeoutMs,
+        })
+      : undefined;
     const gitPublishDialog = shouldVerifyGitPublishDialog
       ? await verifyGitPublishDialog({
           child,
@@ -6650,6 +6737,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       filesBrowser,
+      gitInitialize,
       gitPublishDialog,
       betaMutation,
       archiveMutation,
@@ -6697,6 +6785,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       filesBrowser,
+      gitInitialize,
       gitPublishDialog,
       betaMutation,
       archiveMutation,
@@ -6781,6 +6870,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
+const shouldVerifyGitInitialize = process.argv.includes("--verify-git-initialize");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
 const shouldVerifyArchiveMutation = process.argv.includes("--verify-archive-mutation");
@@ -6943,11 +7033,19 @@ const sourceControlLoadingOnlyEmptyFixture =
   !verifyComposerBranding &&
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
+const gitInitializeOnlyEmptyFixture =
+  shouldVerifyGitInitialize &&
+  !verifySettingsNavigation &&
+  !verifySidebarScope &&
+  !verifyComposerBranding &&
+  !shouldVerifyModelPickerFidelity &&
+  !verifyPlan11SemanticOutcomes;
 if (
   !lifecycleOnlyEmptyFixture &&
   !heroOnlyEmptyFixture &&
   !sourceControlLoadingOnlyEmptyFixture &&
   !sourceControlErrorOnlyEmptyFixture &&
+  !gitInitializeOnlyEmptyFixture &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
@@ -6994,7 +7092,8 @@ for (let index = 1; index <= runs; index += 1) {
         !lifecycleOnlyEmptyFixture &&
         !heroOnlyEmptyFixture &&
         !sourceControlLoadingOnlyEmptyFixture &&
-        !sourceControlErrorOnlyEmptyFixture,
+        !sourceControlErrorOnlyEmptyFixture &&
+        !gitInitializeOnlyEmptyFixture,
       timeoutMs,
       verifySettingsNavigation,
       verifySourceControlLoading: shouldVerifySourceControlLoading,
@@ -7027,6 +7126,7 @@ for (let index = 1; index <= runs; index += 1) {
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
       verifyFilesBrowser: shouldVerifyFilesBrowser,
+      verifyGitInitialize: shouldVerifyGitInitialize,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyBetaMutation: shouldVerifyBetaMutation,
       verifyArchiveMutation: shouldVerifyArchiveMutation,

@@ -24,6 +24,19 @@ function status(overrides: Partial<VcsStatusResult> = {}): VcsStatusResult {
 }
 
 describe("shared Git quick action", () => {
+  it("projects repository initialization outside a Git repository", () => {
+    assert.deepEqual(resolveQuickAction(status({ isRepo: false }), false), {
+      label: "Initialize Git",
+      disabled: false,
+      kind: "initialize_repo",
+    });
+    assert.deepEqual(resolveQuickAction(status({ isRepo: false }), true), {
+      label: "Initializing...",
+      disabled: true,
+      kind: "initialize_repo",
+    });
+  });
+
   it("projects Publish repository for a clean repository without a primary remote", () => {
     assert.deepEqual(
       resolveQuickAction(

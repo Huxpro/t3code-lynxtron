@@ -76,6 +76,10 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
       calls.push({ method: "readVcsStatus", input });
       return Promise.resolve({ isRepo: true, refName: "main" });
     },
+    initializeRepository: (input: unknown) => {
+      calls.push({ method: "initializeRepository", input });
+      return Promise.resolve();
+    },
     publishRepository: (input: unknown) => {
       calls.push({ method: "publishRepository", input });
       return Promise.resolve({ status: "pushed" });
@@ -254,6 +258,12 @@ describe("main connector host", () => {
       input: { cwd: "/repo" },
     });
 
+    await command({ method: "initializeRepository", params: { cwd: "/repo" } });
+    assert.deepEqual(connector.calls[7], {
+      method: "initializeRepository",
+      input: { cwd: "/repo" },
+    });
+
     await command({
       method: "publishRepository",
       params: {
@@ -263,7 +273,7 @@ describe("main connector host", () => {
         visibility: "private",
       },
     });
-    assert.deepEqual(connector.calls[7], {
+    assert.deepEqual(connector.calls[8], {
       method: "publishRepository",
       input: {
         cwd: "/repo",
@@ -274,19 +284,19 @@ describe("main connector host", () => {
     });
 
     await command({ method: "settleThread", params: { threadId: "t1" } });
-    assert.deepEqual(connector.calls[8], {
+    assert.deepEqual(connector.calls[9], {
       method: "settleThread",
       input: { threadId: "t1" },
     });
 
     await command({ method: "unsettleThread", params: { threadId: "t1" } });
-    assert.deepEqual(connector.calls[9], {
+    assert.deepEqual(connector.calls[10], {
       method: "unsettleThread",
       input: { threadId: "t1" },
     });
 
     await command({ method: "revokePairingLink", params: { id: "link-1" } });
-    assert.deepEqual(connector.calls[10], { method: "revokePairingLink", input: "link-1" });
+    assert.deepEqual(connector.calls[11], { method: "revokePairingLink", input: "link-1" });
 
     await assertRejects(command({ method: "dispose" }), /Rejected connector command/);
     await assertRejects(command({ method: "connect" }), /Rejected connector command/);

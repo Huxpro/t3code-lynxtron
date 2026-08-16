@@ -274,6 +274,26 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "gitPublishDialog");
   });
 
+  it("verifies Native repository initialization through the real connector", () => {
+    assert.include(source, "async function verifyGitInitialize");
+    assert.include(source, '"--verify-git-initialize"');
+    assert.include(
+      source,
+      'measurement?.attributes["data-git-quick-action-kind"] === "initialize_repo"',
+    );
+    assert.include(
+      source,
+      'measurement.attributes["data-git-quick-action-label"] === "Initialize Git"',
+    );
+    assert.include(source, 'selector: ".action-btn--commit"');
+    assert.include(source, "state?.vcsStatus?.isRepo === false");
+    assert.include(source, "state?.vcsStatus?.isRepo === true");
+    assert.include(source, 'path.join(projectCwd, ".git")');
+    assert.include(source, "Git initialization did not create");
+    assert.include(source, "gitInitializeOnlyEmptyFixture");
+    assert.include(outcomeChecksSource, "gitInitialize");
+  });
+
   it("verifies Native Beta mutation, disk persistence, and cold restart", () => {
     assert.include(source, "async function verifyBetaMutation");
     assert.include(source, "async function openBetaSettings");

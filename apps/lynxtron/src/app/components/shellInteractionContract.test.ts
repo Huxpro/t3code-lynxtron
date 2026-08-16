@@ -158,6 +158,9 @@ describe("desktop shell interaction contract", () => {
     expect(header).toContain("vcsStatusPending");
     expect(header).toContain("data-git-quick-action-kind");
     expect(header).toContain("data-git-quick-action-label");
+    expect(header).toContain('gitQuickAction.kind === "initialize_repo"');
+    expect(header).toContain(".initializeRepository(cwd)");
+    expect(header).toContain('grouped={gitQuickAction.kind !== "initialize_repo"}');
     expect(header).toContain('gitQuickAction.kind === "open_publish"');
     expect(header).toContain("uiActions.openGitPublishDialog");
     expect(header).not.toContain("<GitPublishDialog");
@@ -176,7 +179,10 @@ describe("desktop shell interaction contract", () => {
     expect(app).toContain("onClose={uiActions.closeGitPublishDialog}");
     expect(uiState).toContain('Atom.withLabel("lynx-git-publish-dialog-open")');
     expect(bridge).toContain("publishRepository(");
+    expect(bridge).toContain("initializeRepository(");
     expect(client).toContain("function publishRepository(");
+    expect(client).toContain("async function initializeRepository(cwd: string)");
+    expect(client).toContain("refreshVcsStatusProjection();");
     expect(overrides).toContain(".git-publish-dialog {");
     expect(overrides).not.toContain(".action-btn--commit {\n  width: 101px;");
     expect(overrides).toContain(".action-btn__label {\n  flex-shrink: 0;");
