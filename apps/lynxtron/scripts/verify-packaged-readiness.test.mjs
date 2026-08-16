@@ -290,6 +290,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "state?.vcsStatus?.isRepo === true");
     assert.include(source, 'path.join(projectCwd, ".git")');
     assert.include(source, "Git initialization did not create");
+    assert.include(source, 'name: "native-git-initialize.png"');
     assert.include(source, "gitInitializeOnlyEmptyFixture");
     assert.include(outcomeChecksSource, "gitInitialize");
   });

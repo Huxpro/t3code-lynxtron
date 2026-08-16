@@ -4192,7 +4192,14 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
   };
 }
 
-async function verifyGitInitialize({ child, client, projectCwd, timeoutMs }) {
+async function verifyGitInitialize({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  projectCwd,
+  timeoutMs,
+}) {
   const gitDirectory = path.join(projectCwd, ".git");
   if (existsSync(gitDirectory)) {
     throw new Error(`Git initialization fixture is already a repository: ${projectCwd}`);
@@ -4220,6 +4227,12 @@ async function verifyGitInitialize({ child, client, projectCwd, timeoutMs }) {
   if (beforeTransport.kind !== "main" || !Number.isInteger(beforeTransport.lastSeq)) {
     throw new Error(`Git initialization lacks main transport: ${JSON.stringify(beforeTransport)}`);
   }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-git-initialize.png",
+  });
 
   await tapSelector({
     child,
@@ -4254,6 +4267,7 @@ async function verifyGitInitialize({ child, client, projectCwd, timeoutMs }) {
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured Initialize Git action",
     projectCwd,
     headerAction,
+    screenshot,
     before: {
       isRepo: beforeState.vcsStatus.isRepo,
       transport: beforeTransport,
@@ -6616,6 +6630,8 @@ async function runOnce({
       ? await verifyGitInitialize({
           child,
           client,
+          devToolCli,
+          outputDirectory,
           projectCwd,
           timeoutMs,
         })
