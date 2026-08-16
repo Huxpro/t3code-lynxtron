@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T18:00:53+09:00",
+  "productCommit": "2521d30465b3cdf31eea648e07af18a1d389f096",
+  "nativeVerifierCommits": [
+    "be401c764ae08644d7eaeeef13e11bde03c65e7e",
+    "ed72b7e0cd8fd2f576628e6450df4efe76ab148c",
+    "3a474fe8820080ca734048ef966617bad2c5f7bb",
+    "4b691449e87a84bc43661368e1b64f903f5a2604"
+  ],
+  "stateId": "settings-appearance-unavailable",
+  "scope": {
+    "client": "native",
+    "viewport": "1280x820",
+    "theme": "light",
+    "route": "/settings/appearance",
+    "interaction": "open Settings and navigate to Appearance through measured DevTool touch"
+  },
+  "fixture": {
+    "source": "disposable /tmp/t3-git-publish-native-fixture snapshot",
+    "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "projectTitle": "t3code-lynxtron",
+    "canonicalThreadTitle": "New thread",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Unsupported Appearance rows used normal foreground contrast, so users could not distinguish unavailable capabilities from the working Theme control at a glance.",
+      "The shared row had no explicit unavailable state, so Lynx could not expose disabled semantics independently from explanatory status copy."
+    ],
+    "harnessMismatch": [
+      "The first Native attempt queried shared search ids as DOM id attributes, but Lynx DevTool serializes them as idSelector and returned no match.",
+      "The next two attempts assumed Web-style row innerText separators and non-empty row text, while Lynx DevTool returned empty row-level innerText.",
+      "The final verifier uses panel-level canonical copy plus exact available/unavailable row-set invariants, row attributes, box geometry, and computed opacity."
+    ],
+    "evidenceBoundary": "This exact-bundle run proves Native Appearance content, disabled semantics, geometry, computed opacity, measured navigation, transport, zero renderer errors, and cleanup. The screenshot is representative Native evidence and is not claimed as matched Web pixel parity."
+  },
+  "native": {
+    "status": "pass",
+    "head": "4b691449e87a84bc43661368e1b64f903f5a2604",
+    "bundle": {
+      "bytes": 4476409,
+      "sha256": "518114106710ae7c08b62fefe1fcb3dc61e2ffd527b0cf0584349410e13deded"
+    },
+    "reportSha256": "8fc60e2ddc5c8845258ed4f51d9939f964c5e452e0e20cacb285d3820e6a046e",
+    "route": {
+      "path": "/settings/appearance",
+      "panel": "appearance"
+    },
+    "panel": {
+      "x": 256,
+      "y": 52,
+      "width": 1024,
+      "height": 510
+    },
+    "availableRow": {
+      "title": "Theme",
+      "x": 320,
+      "y": 144,
+      "width": 896,
+      "height": 65,
+      "ariaDisabled": false,
+      "settingsUnavailable": false
+    },
+    "unavailableRows": [
+      {
+        "title": "Glass opacity",
+        "x": 320,
+        "y": 213,
+        "width": 896,
+        "height": 83,
+        "ariaDisabled": true,
+        "settingsUnavailable": true,
+        "opacity": 0.48
+      },
+      {
+        "title": "Environment identification",
+        "x": 320,
+        "y": 300,
+        "width": 896,
+        "height": 83,
+        "ariaDisabled": true,
+        "settingsUnavailable": true,
+        "opacity": 0.48
+      },
+      {
+        "title": "Word wrap",
+        "x": 320,
+        "y": 387,
+        "width": 896,
+        "height": 83,
+        "ariaDisabled": true,
+        "settingsUnavailable": true,
+        "opacity": 0.48
+      }
+    ],
+    "screenshot": {
+      "dimensions": {
+        "width": 2560,
+        "height": 1640
+      },
+      "sha256": "92d37fe8399391a1a3570b72210620d79bbf077482f1447de4e380e64639a64d",
+      "retention": "diagnostic file remains in /tmp and is not tracked"
+    },
+    "transport": {
+      "kind": "main",
+      "beforeProbe": 2,
+      "afterProbe": 3,
+      "beforeSettingsResync": 15,
+      "afterSettingsResync": 16
+    },
+    "observedRoutes": [
+      "/settings/general",
+      "/settings/appearance",
+      "/settings/keybindings",
+      "/settings/providers",
+      "/settings/connections",
+      "/settings/source-control",
+      "/settings/beta",
+      "/settings/archived"
+    ],
+    "repeatedCycles": 2,
+    "finalRoute": "/",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": {
+      "webSettings": "18/18",
+      "lynxPackage": "339/339",
+      "nativeVerifier": "30/30"
+    },
+    "typecheck": {
+      "web": "pass",
+      "lynxtron": "pass"
+    },
+    "build": "Lynx production build passed with existing unsupported-property and Effect import.meta warnings",
+    "unrelatedBroadTestFailures": "An accidentally broadened Web package run found 3 pre-existing MessagesTimeline failures; the two targeted Settings files passed 18/18.",
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "retainedTrialApp": "PID 18721 remained alive throughout the run"
+  },
+  "remainingRisk": [
+    "Matched Web/Lynx Browser material residual for Appearance is not measured by this Native semantics checkpoint.",
+    "Native screenshot is exact-bundle representative evidence, not a Native-to-Web pixel residual.",
+    "Physical keyboard and focus traversal remain outside this measured-touch scope."
+  ]
+}
