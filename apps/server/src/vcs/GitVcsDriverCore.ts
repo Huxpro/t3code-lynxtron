@@ -1472,7 +1472,8 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
     if (branchResult === null) {
       return NON_REPOSITORY_REMOTE_STATUS_DETAILS;
     }
-    if (branchResult.exitCode !== 0) {
+    const unbornHead = branchResult.exitCode !== 0 && isUnbornHeadStderr(branchResult.stderr);
+    if (branchResult.exitCode !== 0 && !unbornHead) {
       if (isNonRepositoryGitStderr(branchResult.stderr)) {
         return NON_REPOSITORY_REMOTE_STATUS_DETAILS;
       }
@@ -1489,7 +1490,7 @@ export const makeGitVcsDriverCore = Effect.fn("makeGitVcsDriverCore")(function* 
       });
     }
 
-    const branchValue = branchResult.stdout.trim();
+    const branchValue = unbornHead ? "" : branchResult.stdout.trim();
     const branch = branchValue.length > 0 && branchValue !== "HEAD" ? branchValue : null;
     const upstream = yield* resolveCurrentUpstream(cwd);
     const upstreamRef = upstream?.upstreamRef ?? null;

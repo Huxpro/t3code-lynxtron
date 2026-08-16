@@ -9,6 +9,7 @@ import {
   getChangeRequestTerminology,
   type ChangeRequestTerminology,
 } from "../sourceControlPresentation";
+export { resolveQuickAction, type GitQuickAction } from "@t3tools/client-runtime/state/git-actions";
 
 export type GitActionIconName = "commit" | "push" | "pr";
 
@@ -21,14 +22,6 @@ export interface GitActionMenuItem {
   icon: GitActionIconName;
   kind: "open_dialog" | "open_pr";
   dialogAction?: GitDialogAction;
-}
-
-export interface GitQuickAction {
-  label: string;
-  disabled: boolean;
-  kind: "run_action" | "run_pull" | "open_pr" | "open_publish" | "show_hint";
-  action?: GitStackedAction;
-  hint?: string;
 }
 
 export interface DefaultBranchActionDialogCopy {
@@ -162,151 +155,6 @@ export function buildMenuItems(
           dialogAction: "create_pr",
         },
   ];
-}
-
-export function resolveQuickAction(
-  gitStatus: VcsStatusResult | null,
-  isBusy: boolean,
-  isDefaultRef = false,
-  hasPrimaryRemote = true,
-): GitQuickAction {
-  if (isBusy) {
-    return { label: "Commit", disabled: true, kind: "show_hint", hint: "Git action in progress." };
-  }
-
-  if (!gitStatus) {
-    return {
-      label: "Commit",
-      disabled: true,
-      kind: "show_hint",
-      hint: "Git status is unavailable.",
-    };
-  }
-
-  const hasBranch = gitStatus.refName !== null;
-  const hasChanges = gitStatus.hasWorkingTreeChanges;
-  const hasOpenPr = gitStatus.pr?.state === "open";
-  const isAhead = gitStatus.aheadCount > 0;
-  const hasDefaultBranchDelta = (gitStatus.aheadOfDefaultCount ?? gitStatus.aheadCount) > 0;
-  const isBehind = gitStatus.behindCount > 0;
-  const isDiverged = isAhead && isBehind;
-  const terminology = resolveChangeRequestTerminology(gitStatus);
-
-  if (!hasBranch) {
-    return {
-      label: "Commit",
-      disabled: true,
-      kind: "show_hint",
-      hint: `Create and checkout a ref before pushing or opening a ${terminology.singular}.`,
-    };
-  }
-
-  if (hasChanges) {
-    if (!gitStatus.hasUpstream && !hasPrimaryRemote) {
-      return { label: "Commit", disabled: false, kind: "run_action", action: "commit" };
-    }
-    if (hasOpenPr || isDefaultRef) {
-      return { label: "Commit & push", disabled: false, kind: "run_action", action: "commit_push" };
-    }
-    return {
-      label: `Commit, push & ${terminology.shortLabel}`,
-      disabled: false,
-      kind: "run_action",
-      action: "commit_push_pr",
-    };
-  }
-
-  if (!gitStatus.hasUpstream) {
-    if (!hasPrimaryRemote) {
-      if (hasOpenPr && !isAhead) {
-        return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
-      }
-      return {
-        label: "Publish repository",
-        disabled: false,
-        kind: "open_publish",
-      };
-    }
-    if (!isAhead) {
-      if (hasOpenPr) {
-        return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
-      }
-      return {
-        label: "Push",
-        disabled: true,
-        kind: "show_hint",
-        hint: "No local commits to push.",
-      };
-    }
-    if (hasOpenPr || isDefaultRef) {
-      return {
-        label: "Push",
-        disabled: false,
-        kind: "run_action",
-        action: isDefaultRef ? "commit_push" : "push",
-      };
-    }
-    return {
-      label: `Push & create ${terminology.shortLabel}`,
-      disabled: false,
-      kind: "run_action",
-      action: "create_pr",
-    };
-  }
-
-  if (isDiverged) {
-    return {
-      label: "Sync ref",
-      disabled: true,
-      kind: "show_hint",
-      hint: "Branch has diverged from upstream. Rebase/merge first.",
-    };
-  }
-
-  if (isBehind) {
-    return {
-      label: "Pull",
-      disabled: false,
-      kind: "run_pull",
-    };
-  }
-
-  if (isAhead) {
-    if (hasOpenPr || isDefaultRef) {
-      return {
-        label: "Push",
-        disabled: false,
-        kind: "run_action",
-        action: isDefaultRef ? "commit_push" : "push",
-      };
-    }
-    return {
-      label: `Push & create ${terminology.shortLabel}`,
-      disabled: false,
-      kind: "run_action",
-      action: "create_pr",
-    };
-  }
-
-  if (hasOpenPr && gitStatus.hasUpstream) {
-    return { label: `View ${terminology.shortLabel}`, disabled: false, kind: "open_pr" };
-  }
-
-  if (hasDefaultBranchDelta && !isDefaultRef) {
-    return {
-      label: `Create ${terminology.shortLabel}`,
-      disabled: false,
-      kind: "run_action",
-      action: "create_pr",
-    };
-  }
-
-  return {
-    label: "Commit",
-    disabled: true,
-    kind: "show_hint",
-    hint: "Branch is up to date. No action needed.",
-  };
 }
 
 export function requiresDefaultBranchConfirmation(

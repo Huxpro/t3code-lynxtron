@@ -48,6 +48,7 @@ import type {
   SourceControlDiscoveryResult,
   SourceControlPublishRepositoryInput,
   SourceControlPublishRepositoryResult,
+  VcsInitInput,
   VcsStatusResult,
   RuntimeMode,
   ModelSelection,
@@ -178,6 +179,7 @@ export interface T3ConnectorCommandBridge {
   getTurnDiff(input: OrchestrationGetTurnDiffInput): Promise<OrchestrationGetTurnDiffResult>;
   readProjectBranch(input: { cwd: string }): Promise<ProjectRepoContext>;
   readVcsStatus(input: { cwd: string }): Promise<VcsStatusResult>;
+  initializeRepository(input: VcsInitInput): Promise<void>;
   publishRepository(
     input: SourceControlPublishRepositoryInput,
   ): Promise<SourceControlPublishRepositoryResult>;

@@ -152,6 +152,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "getTurnDiff",
   "readProjectBranch",
   "readVcsStatus",
+  "initializeRepository",
   "publishRepository",
   "discoverSourceControl",
   "createPairingCredential",

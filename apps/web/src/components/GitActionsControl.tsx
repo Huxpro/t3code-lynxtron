@@ -1669,6 +1669,8 @@ export default function GitActionsControl({
           variant="outline"
           size="xs"
           disabled={initAction.isPending}
+          data-git-quick-action-kind={quickAction.kind}
+          data-git-quick-action-label={quickAction.label}
           onClick={() => {
             void (async () => {
               const result = await initAction.run();
@@ -1688,9 +1690,7 @@ export default function GitActionsControl({
           }}
         >
           <GitBranchPlusIcon className="size-3.5" aria-hidden />
-          <span className="ml-0.5">
-            {initAction.isPending ? "Initializing..." : "Initialize Git"}
-          </span>
+          <span className="ml-0.5">{quickAction.label}</span>
         </Button>
       ) : (
         <Group

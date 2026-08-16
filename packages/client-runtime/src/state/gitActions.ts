@@ -26,7 +26,7 @@ export interface GitActionMenuItem {
 export interface GitQuickAction {
   label: string;
   disabled: boolean;
-  kind: "run_action" | "run_pull" | "open_pr" | "open_publish" | "show_hint";
+  kind: "initialize_repo" | "run_action" | "run_pull" | "open_pr" | "open_publish" | "show_hint";
   action?: GitStackedAction;
   hint?: string;
 }
@@ -158,6 +158,14 @@ export function resolveQuickAction(
   isDefaultRef = false,
   hasPrimaryRemote = true,
 ): GitQuickAction {
+  if (gitStatus && !gitStatus.isRepo) {
+    return {
+      label: isBusy ? "Initializing..." : "Initialize Git",
+      disabled: isBusy,
+      kind: "initialize_repo",
+    };
+  }
+
   if (isBusy) {
     return { label: "Commit", disabled: true, kind: "show_hint", hint: "Git action in progress." };
   }

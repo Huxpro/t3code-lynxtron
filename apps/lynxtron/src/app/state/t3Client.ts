@@ -921,6 +921,15 @@ function readVcsStatus(cwd: string): Promise<VcsStatusResult | null> {
   return bridge.readVcsStatus({ cwd });
 }
 
+async function initializeRepository(cwd: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.initializeRepository) {
+    throw new Error("Repository initialization is unavailable.");
+  }
+  await bridge.initializeRepository({ cwd });
+  refreshVcsStatusProjection();
+}
+
 function publishRepository(
   input: SourceControlPublishRepositoryInput,
 ): Promise<SourceControlPublishRepositoryResult> {
@@ -1082,6 +1091,7 @@ export const t3ClientActions = {
   deleteThread,
   discoverSourceControl,
   getTurnDiff,
+  initializeRepository,
   interrupt,
   listProjectEntries,
   openInEditor,

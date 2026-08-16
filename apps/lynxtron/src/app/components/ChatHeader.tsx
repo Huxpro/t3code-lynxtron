@@ -153,6 +153,7 @@ export function ChatHeader({
     getPref<EditorId | null>("t3code:last-editor", null),
   );
   const [openMenuVisible, setOpenMenuVisible] = useState(false);
+  const [gitInitPending, setGitInitPending] = useState(false);
   const preferredEditor = useMemo(
     () => resolvePreferredEditor(availableEditors, storedEditor),
     [availableEditors, storedEditor],
@@ -164,22 +165,24 @@ export function ChatHeader({
     () =>
       resolveQuickAction(
         vcsStatus,
-        vcsStatusPending,
+        vcsStatusPending || gitInitPending,
         vcsStatus?.isDefaultRef ?? false,
         vcsStatus?.hasPrimaryRemote ?? true,
       ),
-    [vcsStatus, vcsStatusPending],
+    [gitInitPending, vcsStatus, vcsStatusPending],
   );
   const gitQuickActionIcon: IconName =
-    gitQuickAction.kind === "open_publish" ||
-    gitQuickAction.action === "push" ||
-    gitQuickAction.action === "commit_push"
-      ? "cloud-upload"
-      : gitQuickAction.kind === "open_pr" ||
-          gitQuickAction.action === "create_pr" ||
-          gitQuickAction.action === "commit_push_pr"
-        ? "git-pull-request"
-        : "git-commit-horizontal";
+    gitQuickAction.kind === "initialize_repo"
+      ? "git-branch"
+      : gitQuickAction.kind === "open_publish" ||
+          gitQuickAction.action === "push" ||
+          gitQuickAction.action === "commit_push"
+        ? "cloud-upload"
+        : gitQuickAction.kind === "open_pr" ||
+            gitQuickAction.action === "create_pr" ||
+            gitQuickAction.action === "commit_push_pr"
+          ? "git-pull-request"
+          : "git-commit-horizontal";
   const openProject = (editor: EditorId | null) => {
     if (!cwd || !editor) return;
     setStoredEditor(editor);
@@ -189,7 +192,24 @@ export function ChatHeader({
       console.error("[chat-header] failed to open project in editor", { cwd, editor, cause });
     });
   };
-  const gitActionImplemented = gitQuickAction.kind === "open_publish";
+  const initializeRepository = () => {
+    if (!cwd || gitInitPending) return;
+    setGitInitPending(true);
+    void t3ClientActions
+      .initializeRepository(cwd)
+      .catch((cause) => {
+        console.error("[chat-header] failed to initialize repository", { cwd, cause });
+      })
+      .finally(() => {
+        setGitInitPending(false);
+      });
+  };
+  const gitActionImplemented =
+    gitQuickAction.kind === "initialize_repo" || gitQuickAction.kind === "open_publish";
+  const handleGitPrimaryTap =
+    gitQuickAction.kind === "initialize_repo"
+      ? initializeRepository
+      : uiActions.openGitPublishDialog;
   return (
     <view
       className={`chat-header-reference topbar lynx-titlebar-drag-region${
@@ -291,13 +311,19 @@ export function ChatHeader({
               className={`action-btn--commit${compactActions ? " action-btn--compact" : ""}`}
               icon={gitQuickActionIcon}
               label={compactActions ? undefined : gitQuickAction.label}
-              grouped
+              grouped={gitQuickAction.kind !== "initialize_repo"}
               disabled={gitQuickAction.disabled || !gitActionImplemented}
               primaryAriaLabel={gitQuickAction.label}
-              optionsAriaLabel="Git action options"
+              optionsAriaLabel={
+                gitQuickAction.kind === "initialize_repo" ? undefined : "Git action options"
+              }
               gitAction={gitQuickAction}
-              onPrimaryTap={uiActions.openGitPublishDialog}
-              onOptionsTap={uiActions.openGitPublishDialog}
+              onPrimaryTap={handleGitPrimaryTap}
+              onOptionsTap={
+                gitQuickAction.kind === "initialize_repo"
+                  ? undefined
+                  : uiActions.openGitPublishDialog
+              }
             />
           </view>
         }

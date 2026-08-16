@@ -84,6 +84,7 @@ import {
   type SourceControlPublishRepositoryResult,
   type TurnId,
   type RuntimeMode,
+  type VcsInitInput,
   type VcsStatusResult,
 } from "@t3tools/contracts";
 import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
@@ -919,6 +920,11 @@ export class T3Connector {
   async readVcsStatus(input: { cwd: string }): Promise<VcsStatusResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<VcsStatusResult>(this.client[WS_METHODS.vcsRefreshStatus](input));
+  }
+
+  async initializeRepository(input: VcsInitInput): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(this.client[WS_METHODS.vcsInit](input));
   }
 
   async publishRepository(
