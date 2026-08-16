@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T17:33:06+09:00",
+  "productCommit": "783434cc5",
+  "verificationCommit": "9ce152377fbd5786ee430841ffc88747ae14e24d",
+  "stateId": "composer-docked",
+  "scope": {
+    "client": "native",
+    "viewport": "1280x820",
+    "theme": "light",
+    "route": "existing-thread",
+    "interaction": "open the server-declared model-options menu, change effort, change thinking, reopen selected state, and dismiss outside"
+  },
+  "fixture": {
+    "source": "disposable copy of /tmp/t3-git-publish-native-fixture",
+    "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "providerCapabilitySource": "Existing test-only provider fixture hook enabled by T3_LYNXTRON_VIEWPORT_PROBE=1",
+    "descriptors": ["reasoningEffort", "contextWindow", "thinking"]
+  },
+  "classification": {
+    "productLoss": [
+      "The Lynx model-options control cycled only the first server descriptor immediately on tap and rendered no menu.",
+      "Thinking, context window, and additional future provider descriptors were inaccessible even though the shared trigger label exposed their current values.",
+      "The fix projects every server-declared select and boolean descriptor in client-runtime, renders a dismissible menu in Lynx, and updates one descriptor while preserving the complete selection set."
+    ],
+    "harnessMismatch": [
+      "The machine provider probe did not consistently expose optionDescriptors, so the final verifier uses the existing test-only provider fixture hook to supply deterministic server-declared capabilities without changing production behavior."
+    ],
+    "evidenceBoundary": "This exact-bundle run closes Native content, Effort and Thinking interaction, persistence, selected reopen state, dismissal, and runtime. It does not claim menu pixel parity or physical keyboard interaction."
+  },
+  "native": {
+    "status": "pass",
+    "head": "9ce152377fbd5786ee430841ffc88747ae14e24d",
+    "bundle": {
+      "bytes": 4475414,
+      "sha256": "e4e4c32ae2a7d20b9e61aa371801ff03af9153ca1595778b574cf53acb3307bc"
+    },
+    "processId": 41852,
+    "client": {
+      "clientId": "localhost:8902",
+      "port": 8902,
+      "sessionId": 1,
+      "bundleUrl": "file:///Users/bytedance/github/t3code-archaeology-verify3/apps/lynxtron/dist/desktop/main.lynx.bundle"
+    },
+    "transportProbe": {
+      "kind": "main",
+      "before": 2,
+      "after": 4
+    },
+    "menu": {
+      "rect": {
+        "x": 540,
+        "y": 407,
+        "width": 264,
+        "height": 312
+      },
+      "text": "Reasoning High Extra High Context window 200k 1M Thinking On Off",
+      "dismissLayer": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 820
+      }
+    },
+    "effortMutation": {
+      "input": "DevTool Input.emulateTouchFromMouseEvent on measured model-option trigger and unselected effort row",
+      "triggerBefore": "Extra High · 1M · Thinking Off",
+      "triggerAfter": "High · 1M · Thinking Off",
+      "descriptorId": "reasoningEffort",
+      "value": "high",
+      "selectedRow": {
+        "x": 545,
+        "y": 440,
+        "width": 254,
+        "height": 34
+      },
+      "sequence": {
+        "before": 13,
+        "after": 16
+      }
+    },
+    "thinkingMutation": {
+      "input": "DevTool Input.emulateTouchFromMouseEvent on the measured Thinking On row",
+      "triggerAfter": "High · 1M · Thinking On",
+      "descriptorId": "thinking",
+      "value": true,
+      "selectedRow": {
+        "x": 545,
+        "y": 642,
+        "width": 254,
+        "height": 34
+      },
+      "sequence": {
+        "before": 17,
+        "after": 20
+      }
+    },
+    "finalSelections": [
+      {
+        "id": "reasoningEffort",
+        "value": "high"
+      },
+      {
+        "id": "contextWindow",
+        "value": "1m"
+      },
+      {
+        "id": "thinking",
+        "value": true
+      }
+    ],
+    "projectedMatchesPersisted": true,
+    "reopenedSelected": true,
+    "dismissed": true,
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "5af498733d87d25e6360b30c86729683e2ada5d06a92d5935eebbc61df8ed9f9"
+  },
+  "validation": {
+    "focusedTests": "56/56",
+    "typecheck": {
+      "clientRuntime": "pass with one pre-existing Effect suggestion",
+      "web": "pass",
+      "lynxtron": "pass",
+      "browserPreview": "pass"
+    },
+    "build": {
+      "native": "pass with existing unsupported-property and import.meta warnings",
+      "browserWorkbench": "pass with existing bundle-size warnings"
+    },
+    "agentBrowserLeakGate": "Every owned loop reported owned=0 orphaned=0; external sessions were informational only.",
+    "screenshotBudget": "32/100"
+  },
+  "remainingRisk": [
+    "Menu geometry, typography, and material are not compared against Web in this behavior slice.",
+    "Keyboard navigation and Escape dismissal remain pending a physical keyboard or authorized Computer Use session.",
+    "Provider prompt-injected options such as Ultrathink remain governed by Web prompt semantics and are not exercised by this Native fixture."
+  ]
+}
