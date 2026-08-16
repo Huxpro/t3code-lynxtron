@@ -123,3 +123,4 @@ settings-general-unavailable-native-current,2026-08-16T22:26:51+09:00,ea93a52096
 settings-connections-network-access-current,2026-08-16T23:07:37+09:00,b38d901baa68667e8ff9bdb2fc7116b504d3240e,commit,Settings Connections fixed Network access anatomy,0.431325,0.431325,0.018263,0.420746,0.579254,0.552112
 lifecycle-error-current-certification,2026-08-16T23:29:03+09:00,5e27a168c5aee3eedb0ae52e56dc9fe7dfc7ef9f,commit,Lifecycle current Browser and Native certification,0.422802,0.422802,0.017963,0.412244,0.587756,0.560635
 settings-shared-content-origin-current,2026-08-16T23:54:10+09:00,9a169b44bfe12997e68de70d39b38a47cb2054b0,commit,Shared Settings content origin and route reset,0.422733,0.422733,0.017846,0.412244,0.587756,0.560704
+quick-switch-query-footer-current,2026-08-17T00:30:39+09:00,b9c46c1086261b4b1e0823ec3d04acde0330c726,commit,Quick Switch Query footer anatomy,0.419525,0.419525,0.017634,0.409105,0.590895,0.563912
