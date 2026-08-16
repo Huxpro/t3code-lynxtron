@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "description": "Source-derived trigger-to-floating-surface relations. Preferred placement records component intent; collision placement records an accepted viewport flip without changing the logical trigger.",
+  "relations": [
+    {
+      "id": "sidebar-thread-details",
+      "surface": "Sidebar thread details",
+      "trigger": {
+        "web": "[data-floating-anchor^=\"sidebar-thread-details:\"]",
+        "lynx": "[data-floating-anchor^=\"sidebar-thread-details:\"]"
+      },
+      "popup": {
+        "web": "[data-floating-popup^=\"sidebar-thread-details:\"]",
+        "lynx": "[data-floating-popup^=\"sidebar-thread-details:\"]"
+      },
+      "preferredPlacement": {
+        "side": "right",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "source": [
+        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/SidebarV2.lynx.tsx"
+      ]
+    },
+    {
+      "id": "sidebar-project-scope",
+      "surface": "Sidebar project scope",
+      "trigger": {
+        "web": "[data-testid=\"sidebar-v2-project-scope-trigger\"]",
+        "lynx": ".sidebar-v2-project-scope-trigger"
+      },
+      "popup": {
+        "web": ".sidebar-v2-scope-popup",
+        "lynx": "[data-floating-popup=\"sidebar-project-scope\"]"
+      },
+      "preferredPlacement": {
+        "side": "bottom",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "source": [
+        "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+        "apps/web/src/components/ui/menu.lynx.tsx"
+      ]
+    },
+    {
+      "id": "composer-model-picker",
+      "surface": "Composer model picker",
+      "trigger": {
+        "web": "[data-floating-anchor=\"composer-model-picker\"]",
+        "lynx": "[data-floating-anchor=\"composer-model-picker\"]"
+      },
+      "popup": {
+        "web": "[data-floating-popup=\"composer-model-picker\"]",
+        "lynx": "[data-floating-popup=\"composer-model-picker\"]"
+      },
+      "preferredPlacement": {
+        "side": "bottom",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "collisionPlacement": {
+        "side": "top",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "source": [
+        "apps/web/src/components/chat/ProviderModelPicker.tsx",
+        "apps/lynxtron/src/app/components/Composer.tsx",
+        "apps/lynxtron/src/app/components/ModelPicker.tsx"
+      ]
+    },
+    {
+      "id": "composer-runtime-menu",
+      "surface": "Composer runtime menu",
+      "trigger": {
+        "web": "[data-floating-anchor=\"composer-runtime-menu\"]",
+        "lynx": "[data-floating-anchor=\"composer-runtime-menu\"]"
+      },
+      "popup": {
+        "web": "[data-floating-popup=\"composer-runtime-menu\"]",
+        "lynx": "[data-floating-popup=\"composer-runtime-menu\"]"
+      },
+      "preferredPlacement": {
+        "side": "bottom",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "collisionPlacement": {
+        "side": "top",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "source": [
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/lynxtron/src/app/components/Composer.tsx"
+      ]
+    },
+    {
+      "id": "composer-workspace-menu",
+      "surface": "Composer workspace menu",
+      "trigger": {
+        "web": "[data-floating-anchor=\"composer-workspace-menu\"]",
+        "lynx": "[data-floating-anchor=\"composer-workspace-menu\"]"
+      },
+      "popup": {
+        "web": "[data-floating-popup=\"composer-workspace-menu\"]",
+        "lynx": "[data-floating-popup=\"composer-workspace-menu\"]"
+      },
+      "preferredPlacement": {
+        "side": "top",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "source": [
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/lynxtron/src/app/components/Composer.tsx"
+      ]
+    },
+    {
+      "id": "header-open-in-menu",
+      "surface": "Header Open in menu",
+      "trigger": {
+        "web": "[data-floating-anchor=\"header-open-in-menu\"]",
+        "lynx": "[data-floating-anchor=\"header-open-in-menu\"]"
+      },
+      "popup": {
+        "web": "[data-floating-popup=\"header-open-in-menu\"]",
+        "lynx": "[data-floating-popup=\"header-open-in-menu\"]"
+      },
+      "preferredPlacement": {
+        "side": "bottom",
+        "align": "end",
+        "sideOffset": 4
+      },
+      "source": [
+        "apps/web/src/components/chat/OpenInPicker.tsx",
+        "apps/lynxtron/src/app/components/ChatHeader.tsx"
+      ]
+    },
+    {
+      "id": "right-panel-add-menu",
+      "surface": "Right panel add menu",
+      "trigger": {
+        "web": "[data-floating-anchor=\"right-panel-add-menu\"]",
+        "lynx": "[data-floating-anchor=\"right-panel-add-menu\"]"
+      },
+      "popup": {
+        "web": "[data-floating-popup=\"right-panel-add-menu\"]",
+        "lynx": "[data-floating-popup=\"right-panel-add-menu\"]"
+      },
+      "preferredPlacement": {
+        "side": "bottom",
+        "align": "start",
+        "sideOffset": 6
+      },
+      "source": [
+        "apps/web/src/components/RightPanelTabs.tsx",
+        "apps/lynxtron/src/app/components/RightPanel.tsx"
+      ]
+    },
+    {
+      "id": "diff-scope-menu",
+      "surface": "Diff scope menu",
+      "trigger": {
+        "web": "[data-floating-anchor=\"diff-scope-menu\"]",
+        "lynx": "[data-floating-anchor=\"diff-scope-menu\"]"
+      },
+      "popup": {
+        "web": "[data-floating-popup=\"diff-scope-menu\"]",
+        "lynx": "[data-floating-popup=\"diff-scope-menu\"]"
+      },
+      "preferredPlacement": {
+        "side": "bottom",
+        "align": "start",
+        "sideOffset": 4
+      },
+      "source": [
+        "apps/web/src/components/DiffPanel.tsx",
+        "apps/lynxtron/src/app/components/DiffPanel.tsx"
+      ]
+    }
+  ]
+}

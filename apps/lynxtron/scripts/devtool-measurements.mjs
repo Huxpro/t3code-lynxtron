@@ -33,6 +33,19 @@ function attributeRecord(response) {
   return Object.fromEntries(pairs);
 }
 
+export function floatingAuthorityRect(measurement) {
+  const encoded = measurement?.attributes?.["data-floating-anchor-rect"];
+  if (typeof encoded !== "string") return measurement?.rect ?? null;
+  try {
+    const rect = JSON.parse(encoded);
+    return ["x", "y", "width", "height"].every((key) => Number.isFinite(rect?.[key]))
+      ? rect
+      : (measurement?.rect ?? null);
+  } catch {
+    return measurement?.rect ?? null;
+  }
+}
+
 async function queryNode(runCdp, rootNodeId, selector) {
   const response = await runCdp("DOM.querySelector", {
     nodeId: rootNodeId,
@@ -146,6 +159,27 @@ export async function collectLynxMeasurements({ runCdp, spec }) {
     Object.fromEntries(
       await Promise.all(entries.map(async (entry) => [entry.id, await measure(entry.lynx)])),
     );
+  const relations = Object.fromEntries(
+    await Promise.all(
+      (spec.relations ?? []).map(async (entry) => [
+        entry.id,
+        {
+          placement: {
+            side: entry.side,
+            align: entry.align,
+            sideOffset: entry.sideOffset,
+            ...(entry.alignOffset === undefined ? {} : { alignOffset: entry.alignOffset }),
+          },
+          anchor: await measure(entry.lynx.anchor).then((measurement) => ({
+            ...measurement,
+            devToolRect: measurement.rect,
+            rect: floatingAuthorityRect(measurement),
+          })),
+          popup: await measure(entry.lynx.popup),
+        },
+      ]),
+    ),
+  );
 
   return {
     schemaVersion: 1,
@@ -154,5 +188,6 @@ export async function collectLynxMeasurements({ runCdp, spec }) {
     anchors: await collect(spec.anchors),
     typography: await collect(spec.typography),
     colors: await collect(spec.colors),
+    relations,
   };
 }

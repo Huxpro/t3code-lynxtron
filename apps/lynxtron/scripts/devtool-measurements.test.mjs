@@ -1,8 +1,27 @@
 import { assert, describe, expect, it } from "vite-plus/test";
 
-import { collectLynxMeasurements } from "./devtool-measurements.mjs";
+import { collectLynxMeasurements, floatingAuthorityRect } from "./devtool-measurements.mjs";
 
 describe("Lynx DevTool visual measurements", () => {
+  it("prefers the runtime floating anchor authority while retaining DevTool geometry", () => {
+    assert.deepEqual(
+      floatingAuthorityRect({
+        rect: { x: 8, y: 104, width: 203, height: 32 },
+        attributes: {
+          "data-floating-anchor-rect": '{"x":7,"y":102,"width":203,"height":32}',
+        },
+      }),
+      { x: 7, y: 102, width: 203, height: 32 },
+    );
+    assert.deepEqual(
+      floatingAuthorityRect({
+        rect: { x: 8, y: 104, width: 203, height: 32 },
+        attributes: { "data-floating-anchor-rect": "invalid" },
+      }),
+      { x: 8, y: 104, width: 203, height: 32 },
+    );
+  });
+
   it("collects canonical box, type, color, and text fields for every selector", async () => {
     let nextNodeId = 10;
     const selectorIds = new Map();
@@ -61,6 +80,15 @@ describe("Lynx DevTool visual measurements", () => {
         anchors: [entry],
         typography: [entry],
         colors: [entry],
+        relations: [
+          {
+            id: "sampleRelation",
+            side: "right",
+            align: "start",
+            sideOffset: 4,
+            lynx: { anchor: ".anchor", popup: ".popup" },
+          },
+        ],
       },
     });
 
@@ -83,6 +111,18 @@ describe("Lynx DevTool visual measurements", () => {
       "aria-label": "Measured item",
       "data-state": "ready",
     });
+    assert.deepEqual(measurements.relations.sampleRelation.placement, {
+      side: "right",
+      align: "start",
+      sideOffset: 4,
+    });
+    assert.deepEqual(measurements.relations.sampleRelation.anchor.rect, {
+      x: 20,
+      y: 40,
+      width: 200,
+      height: 100,
+    });
+    assert.equal(measurements.relations.sampleRelation.popup.selector, ".popup");
     assert.equal(selectorIds.get(".lynx") > 0, true);
     assert.equal(calls[0].method, "DOM.enable");
     assert.deepEqual(calls[0].params, { useCompression: false });

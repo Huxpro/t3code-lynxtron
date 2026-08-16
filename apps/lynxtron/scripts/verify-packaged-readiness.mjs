@@ -26,6 +26,10 @@ import {
   buildPlan11SemanticCertification,
   buildPlan11SemanticOutcomes,
 } from "./plan11-semantic-outcomes.mjs";
+import {
+  floatingRelationResidual,
+  measureFloatingRelation,
+} from "../../../packages/client-runtime/src/presentation/floatingRelation.ts";
 
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const REPO_ROOT = path.resolve(APP_ROOT, "../..");
@@ -130,6 +134,16 @@ function quadPoint(quad, position = "center") {
     x: (quad[0] + quad[2] + quad[4] + quad[6]) / 4,
     y: (quad[1] + quad[3] + quad[5] + quad[7]) / 4,
   };
+}
+
+async function moveMouse(client, point) {
+  await client.runCdp("Input.emulateTouchFromMouseEvent", {
+    type: "mouseMoved",
+    x: Math.round(point.x),
+    y: Math.round(point.y),
+    timestamp: Date.now() / 1000,
+    button: "none",
+  });
 }
 
 function resolveLynxtronExecutable() {
@@ -900,18 +914,215 @@ async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentI
   };
 }
 
+function assertFloatingRelation({ anchor, label, placement, popup, viewport }) {
+  const metrics = measureFloatingRelation(anchor, popup, placement);
+  const residual = floatingRelationResidual(metrics, placement);
+  const contained =
+    popup.x >= -1 &&
+    popup.y >= -1 &&
+    popup.x + popup.width <= viewport.width + 1 &&
+    popup.y + popup.height <= viewport.height + 1;
+  if (residual > 0.01 || !contained) {
+    throw new Error(
+      `${label} floating relation drifted: ${JSON.stringify({
+        anchor,
+        contained,
+        metrics,
+        placement,
+        popup,
+        residual,
+        viewport,
+      })}`,
+    );
+  }
+  return { anchor, contained, metrics, placement, popup, residual };
+}
+
+async function verifyFloatingRelations({ child, client, height, timeoutMs, width }) {
+  const viewport = { width, height };
+  const detailsPlacement = { side: "right", align: "start", sideOffset: 4 };
+  const modelPlacement = { side: "top", align: "start", sideOffset: 4 };
+  const readFirstCard = async () => {
+    const cards = await readSelectorMeasurements(client, ".sidebar-v2-row-card");
+    if (!cards[0]?.rect) throw new Error("Sidebar floating relation has no row-card anchor.");
+    return cards[0];
+  };
+  const invokeTooltipProbe = async (relationId, action) => {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_TOOLTIP_PROBE__?.[${JSON.stringify(
+        relationId,
+      )}]?.[${JSON.stringify(action)}]?.().then?.(() => true) ?? false`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (commandResult(response)?.value !== true) {
+      throw new Error(
+        `Tooltip ${action} probe is unavailable for ${relationId}: ${JSON.stringify(response)}`,
+      );
+    }
+  };
+  const hoverCard = async (card) => {
+    const relationId = card.attributes["data-floating-anchor"];
+    if (typeof relationId !== "string") {
+      throw new Error(`Sidebar row has no floating relation id: ${JSON.stringify(card)}`);
+    }
+    await invokeTooltipProbe(relationId, "hover");
+    try {
+      return await waitForMeasurement({
+        child,
+        client,
+        selector: ".sidebar-v2-details-popover",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["data-floating-side"] === "right" &&
+          measurement.attributes["data-floating-align"] === "start" &&
+          measurement.attributes["data-floating-side-offset"] === "4",
+      });
+    } catch (error) {
+      const latestCard = await readFirstCard();
+      throw new Error(
+        `Sidebar hover did not open details: ${JSON.stringify({
+          cause: error instanceof Error ? error.message : String(error),
+          card: latestCard,
+        })}`,
+      );
+    }
+  };
+  const initialCard = await readFirstCard();
+  const initialPopup = await hoverCard(initialCard);
+  const initialDetails = assertFloatingRelation({
+    anchor: initialCard.rect,
+    label: "Sidebar details",
+    placement: detailsPlacement,
+    popup: initialPopup.rect,
+    viewport,
+  });
+  await invokeTooltipProbe(initialCard.attributes["data-floating-anchor"], "leave");
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-details-popover",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  const resizeResponse = await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_MTS_RESIZE_PROBE__?.sidebar(256,320).then(()=>true)",
+    awaitPromise: true,
+    returnByValue: true,
+  });
+  if (commandResult(resizeResponse)?.value !== true) {
+    throw new Error(`Sidebar resize probe is unavailable: ${JSON.stringify(resizeResponse)}`);
+  }
+  const resizedCard = await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-row-card",
+    timeoutMs,
+    predicate: (measurement) => (measurement?.rect.width ?? 0) > initialCard.rect.width + 40,
+  });
+  const resizedPopup = await hoverCard(resizedCard);
+  const resizedDetails = assertFloatingRelation({
+    anchor: resizedCard.rect,
+    label: "Resized Sidebar details",
+    placement: detailsPlacement,
+    popup: resizedPopup.rect,
+    viewport,
+  });
+  if (
+    Math.abs(
+      resizedPopup.rect.x -
+        initialPopup.rect.x -
+        (resizedCard.rect.x +
+          resizedCard.rect.width -
+          (initialCard.rect.x + initialCard.rect.width)),
+    ) > 1
+  ) {
+    throw new Error(
+      `Sidebar details did not follow its resized anchor: ${JSON.stringify({
+        initialCard: initialCard.rect,
+        initialPopup: initialPopup.rect,
+        resizedCard: resizedCard.rect,
+        resizedPopup: resizedPopup.rect,
+      })}`,
+    );
+  }
+  await invokeTooltipProbe(resizedCard.attributes["data-floating-anchor"], "leave");
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-details-popover",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  const modelAnchor = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-anchor",
+    timeoutMs,
+    predicate: (measurement) => measurement?.rect.width > 0,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model",
+    timeoutMs,
+  });
+  const modelPopup = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const model = assertFloatingRelation({
+    anchor: modelAnchor.rect,
+    label: "Model picker",
+    placement: modelPlacement,
+    popup: modelPopup.rect,
+    viewport,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".model-picker-dismiss-layer",
+    point: "bottom-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    input:
+      "relation-scoped background probe calling the real MTS hover handler, Sidebar resize, and model-trigger tap",
+    details: {
+      initial: initialDetails,
+      resized: resizedDetails,
+      followedAnchor: true,
+    },
+    model,
+  };
+}
+
 async function verifyComposerGeometry(client, expectedTheme) {
   const composer = await readComposerOutcome(client);
   assertComposerGeometry(composer);
-  const shellShadow = await readFirstSelectorStyleValue(client, ".composer-shell", "box-shadow");
-  const shellShadowMatches =
-    typeof shellShadow === "string" &&
-    shellShadow.includes("12px") &&
-    shellShadow.includes("28px") &&
-    shellShadow.includes("-18px") &&
-    (shellShadow.includes("0.4)") ||
-      shellShadow.includes("0.4 ") ||
-      shellShadow.includes("#00000066"));
+  const frameShadow = await readFirstSelectorStyleValue(client, ".composer-frame", "box-shadow");
+  const frameShadowMatches =
+    typeof frameShadow === "string" &&
+    frameShadow.includes("12px") &&
+    frameShadow.includes("28px") &&
+    frameShadow.includes("-18px") &&
+    (frameShadow.includes("0.4)") ||
+      frameShadow.includes("0.4 ") ||
+      frameShadow.includes("#00000066"));
   const controlColors = {
     model: composer.anchors.model.style.color,
     runtime: composer.anchors.runtime.style.color,
@@ -1017,7 +1228,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
           contextLightBandColors[15] === "rgb(250,250,250)" &&
           contextLightBandColors[30] === "rgb(255,255,255)")));
   if (
-    !shellShadowMatches ||
+    !frameShadowMatches ||
     chevrons.length < 2 ||
     chevrons.length > 3 ||
     chevrons.some((rect) => wrongSize(rect, 14)) ||
@@ -1037,7 +1248,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
   ) {
     throw new Error(
       `Composer Footer icon geometry drifted: ${JSON.stringify({
-        shellShadow,
+        frameShadow,
         chevrons,
         runtimeIcons,
         interactionIcons,
@@ -1064,7 +1275,7 @@ async function verifyComposerGeometry(client, expectedTheme) {
     status: "pass",
     input: "read-only Lynx DevTool DOM box models",
     composer,
-    shellShadow,
+    frameShadow,
     chevrons,
     runtimeIcons,
     interactionIcons,
@@ -1841,6 +2052,8 @@ async function verifyModelSelectionMutation({
   child,
   client,
   devToolCli,
+  expectSocketRecovery,
+  log,
   outputDirectory,
   timeoutMs,
 }) {
@@ -1930,7 +2143,9 @@ async function verifyModelSelectionMutation({
     predicate: (state) =>
       state?.activeThreadId === threadId &&
       state?.activeThread?.modelSelection?.instanceId === targetSelection.instanceId &&
-      state?.activeThread?.modelSelection?.model === targetSelection.model,
+      state?.activeThread?.modelSelection?.model === targetSelection.model &&
+      state?.modelSelectionPending === false &&
+      state?.modelSelectionError === null,
   });
   const afterModel = await waitForMeasurement({
     child,
@@ -1940,6 +2155,14 @@ async function verifyModelSelectionMutation({
     predicate: (measurement) =>
       Boolean(measurement?.text.trim()) && measurement.text.trim() !== beforeModel.text.trim(),
   });
+  if (expectSocketRecovery) {
+    await waitForLogText(
+      child,
+      log,
+      "[main-connector] setModelSelection hit a stale transport; reconnecting once",
+      timeoutMs,
+    );
+  }
   const persistedSelection = readPersistedThreadModelSelection(baseDir, threadId);
   if (
     persistedSelection?.instanceId !== targetSelection.instanceId ||
@@ -1971,6 +2194,8 @@ async function verifyModelSelectionMutation({
       before: beforeSelection,
       after: afterState.activeThread.modelSelection,
       persisted: persistedSelection,
+      pending: afterState.modelSelectionPending,
+      error: afterState.modelSelectionError,
     },
     modelLabel: {
       before: beforeModel.text.trim(),
@@ -1981,6 +2206,7 @@ async function verifyModelSelectionMutation({
       after: afterSequence.lastSeq,
     },
     overlayDismissed: true,
+    socketRecovery: expectSocketRecovery ? "reconnected-and-retried-once" : "not-injected",
     screenshot,
   };
 }
@@ -5958,7 +6184,13 @@ async function verifySourceControlLoadingBehavior({
   };
 }
 
-async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
+async function verifySidebarScopeBehavior({ child, client, height, timeoutMs, width }) {
+  const viewport = { width, height };
+  const placement = { side: "bottom", align: "start", sideOffset: 4 };
+  const floatingAnchorRect = (measurement) => {
+    const runtimeRect = measurement.attributes["data-floating-anchor-rect"];
+    return typeof runtimeRect === "string" ? JSON.parse(runtimeRect) : measurement.rect;
+  };
   const before = await readSidebarScopeLayout(client, false);
   await tapSelector({
     child,
@@ -5999,14 +6231,37 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
   if (!opened.popup.text.includes("All projects")) {
     throw new Error(`Sidebar scope popup lost canonical options: ${opened.popup.text}`);
   }
+  const initialRelation = assertFloatingRelation({
+    anchor: floatingAnchorRect(opened.trigger),
+    label: "Sidebar project scope",
+    placement,
+    popup: popupRect,
+    viewport,
+  });
 
-  await tapSelector({ child, client, selector: ".sidebar-v2-scope-option", timeoutMs });
+  const projectOption = await waitForMeasurement({
+    child,
+    client,
+    selector: "[data-sidebar-project-scope-option]",
+    timeoutMs,
+    predicate: (measurement) =>
+      typeof measurement?.attributes["data-sidebar-project-scope-option"] === "string",
+  });
+  await tapSelectorByAttribute({
+    attribute: "data-sidebar-project-scope-option",
+    child,
+    client,
+    selector: "[data-sidebar-project-scope-option]",
+    timeoutMs,
+    value: projectOption.attributes["data-sidebar-project-scope-option"],
+  });
   const selected = await waitForSidebarPopup({ child, client, open: false, timeoutMs });
   if (selected.trigger.text.trim() === "All projects") {
     throw new Error(
       `Selecting the project scope did not update the trigger: ${JSON.stringify({
         dismissLayer: opened.dismissLayer,
         popup: opened.popup,
+        projectOption,
         trigger: selected.trigger,
       })}`,
     );
@@ -6018,7 +6273,14 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
     selector: ".sidebar-v2-project-scope-trigger",
     timeoutMs,
   });
-  await waitForSidebarPopup({ child, client, open: true, timeoutMs });
+  const reopened = await waitForSidebarPopup({ child, client, open: true, timeoutMs });
+  const reopenedRelation = assertFloatingRelation({
+    anchor: floatingAnchorRect(reopened.trigger),
+    label: "Reopened Sidebar project scope",
+    placement,
+    popup: reopened.popup.rect,
+    viewport,
+  });
   await tapSelector({ child, client, selector: ".lynx-menu-dismiss-layer", timeoutMs });
   await waitForSidebarPopup({ child, client, open: false, timeoutMs });
 
@@ -6034,7 +6296,9 @@ async function verifySidebarScopeBehavior({ child, client, timeoutMs }) {
       popup: opened.popup,
       threadList: opened.threadList,
       listShift,
+      relation: initialRelation,
     },
+    reopenedRelation,
     selectedScope: selected.trigger.text,
     outsideTapClosed: true,
   };
@@ -6225,11 +6489,13 @@ async function runOnce({
   idleFixture,
   verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
+  verifyFloatingRelations: shouldVerifyFloatingRelations,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
   verifyComposerBranding,
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
+  verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
   verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
   verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
   verifyComposerStop,
@@ -6290,6 +6556,10 @@ async function runOnce({
       ...(shouldVerifyConnectionsMutation ? { T3CODE_HOST: "0.0.0.0" } : {}),
       ...(shouldVerifyModelOptionMenuMutation || shouldVerifyComposerSendMaterial
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
+        : {}),
+      ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
+      ...(shouldVerifyModelSelectionSocketRecovery
+        ? { T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE: "1" }
         : {}),
       ...(shouldVerifySourceControlLoading
         ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
@@ -6386,14 +6656,23 @@ async function runOnce({
     const cleanupOutcome = () => restoreOutcomeSurface({ child, client, timeoutMs });
     const sidebarScope = runPlan11Outcomes
       ? await captureOutcome(
-          () => verifySidebarScopeBehavior({ child, client, timeoutMs }),
+          () => verifySidebarScopeBehavior({ child, client, height, timeoutMs, width }),
           cleanupOutcome,
         )
       : verifySidebarScope
-        ? await verifySidebarScopeBehavior({ child, client, timeoutMs })
+        ? await verifySidebarScopeBehavior({ child, client, height, timeoutMs, width })
         : undefined;
     const sidebarGeometry = shouldVerifySidebarGeometry
       ? await verifySidebarGeometry(client, width, expectedEnvironmentIdentificationMode)
+      : undefined;
+    const floatingRelations = shouldVerifyFloatingRelations
+      ? await verifyFloatingRelations({
+          child,
+          client,
+          height,
+          timeoutMs,
+          width,
+        })
       : undefined;
     const composerGeometry = shouldVerifyComposerGeometry
       ? await verifyComposerGeometry(client, expectedTheme)
@@ -6404,6 +6683,8 @@ async function runOnce({
           child,
           client,
           devToolCli,
+          expectSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
+          log,
           outputDirectory,
           timeoutMs,
         })
@@ -6509,6 +6790,8 @@ async function runOnce({
           child,
           client,
           devToolCli,
+          expectSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
+          log,
           outputDirectory,
           timeoutMs,
         })
@@ -6741,6 +7024,7 @@ async function runOnce({
     const outcomeChecks = [
       sidebarScope,
       sidebarGeometry,
+      floatingRelations,
       composerGeometry,
       composerSendMaterial,
       heroComposerState,
@@ -6788,6 +7072,7 @@ async function runOnce({
       lifecycleRecovery,
       sidebarScope,
       sidebarGeometry,
+      floatingRelations,
       composerGeometry,
       composerSendMaterial,
       heroComposerState,
@@ -6866,12 +7151,16 @@ const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-compo
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
+const shouldVerifyFloatingRelations = process.argv.includes("--verify-floating-relations");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
 const verifyComposerBranding = process.argv.includes("--verify-composer-branding");
 const shouldVerifyModelPickerFidelity = process.argv.includes("--verify-model-picker-fidelity");
 const shouldVerifyModelSelectionMutation = process.argv.includes(
   "--verify-model-selection-mutation",
+);
+const shouldVerifyModelSelectionSocketRecovery = process.argv.includes(
+  "--verify-model-selection-socket-recovery",
 );
 const shouldVerifyRuntimeMenuDismiss = process.argv.includes("--verify-runtime-menu-dismiss");
 const shouldVerifyModelOptionMenuMutation = process.argv.includes(
@@ -6941,6 +7230,11 @@ if (
 }
 if (shouldVerifyHeroComposerState && !expectedModelLabel) {
   throw new Error("--verify-hero-composer-state requires --expected-model-label.");
+}
+if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutation) {
+  throw new Error(
+    "--verify-model-selection-socket-recovery requires --verify-model-selection-mutation.",
+  );
 }
 if (verifyPlan11SemanticOutcomes && runs !== 3) {
   throw new Error("--verify-plan11-semantic-outcomes requires exactly three fresh runs.");
@@ -7133,11 +7427,13 @@ for (let index = 1; index <= runs; index += 1) {
       idleFixture,
       verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
+      verifyFloatingRelations: shouldVerifyFloatingRelations,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
       verifyComposerBranding,
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
+      verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
       verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
       verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
       verifyComposerStop,

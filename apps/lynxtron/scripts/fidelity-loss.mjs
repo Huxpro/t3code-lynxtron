@@ -70,7 +70,7 @@ function assertUnit(value, label, errors) {
   }
 }
 
-function normalizeDimensionValue(model, dimension, value) {
+export function normalizeDimensionValue(model, dimension, value) {
   if (typeof value === "number") {
     return { confidence: 1, method: "declared", residual: value, source: null };
   }
@@ -89,14 +89,25 @@ function normalizeDimensionValue(model, dimension, value) {
       residual: pixelResidual(model, value.pixel),
     };
   }
-  if (value.anchorDeltas) {
+  if (value.anchorDeltas || value.relationResiduals) {
     const scale = Number(value.anchorScale ?? 32);
-    const residual =
-      value.anchorDeltas.reduce((sum, delta) => sum + clamp(Math.abs(Number(delta)) / scale), 0) /
-      value.anchorDeltas.length;
+    const anchorResiduals = (value.anchorDeltas ?? []).map((delta) =>
+      clamp(Math.abs(Number(delta)) / scale),
+    );
+    const relationResiduals = (value.relationResiduals ?? []).map((residual) =>
+      clamp(Number(residual)),
+    );
+    const residuals = [...anchorResiduals, ...relationResiduals];
+    const residual = residuals.reduce((sum, entry) => sum + entry, 0) / residuals.length;
     return {
       ...value,
-      method: value.method ?? "geometry-anchors",
+      method:
+        value.method ??
+        (anchorResiduals.length > 0 && relationResiduals.length > 0
+          ? "geometry-anchors-and-relations"
+          : relationResiduals.length > 0
+            ? "geometry-relations"
+            : "geometry-anchors"),
       residual: round(residual),
     };
   }
@@ -339,6 +350,14 @@ export function validateHistory(model, history, options = {}) {
         }
         if (value?.anchorDeltas && value.anchorDeltas.length === 0) {
           errors.push(`${point.id}.${dimension}.anchorDeltas must not be empty`);
+          continue;
+        }
+        if (value?.relationResiduals && value.relationResiduals.length === 0) {
+          errors.push(`${point.id}.${dimension}.relationResiduals must not be empty`);
+          continue;
+        }
+        if (value?.relationResiduals && dimension !== "geometry") {
+          errors.push(`${point.id}.${dimension}.relationResiduals require the geometry dimension`);
           continue;
         }
         if (value?.gate && !Number.isFinite(model.formula.gateResiduals?.[value.gate])) {

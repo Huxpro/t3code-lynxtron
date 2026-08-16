@@ -138,6 +138,21 @@ function measurementExpression(spec) {
     };
     const collect = (entries) =>
       Object.fromEntries(entries.map((entry) => [entry.id, measure(entry)]));
+    const relations = Object.fromEntries(
+      (spec.relations ?? []).map((entry) => [
+        entry.id,
+        {
+          placement: {
+            side: entry.side,
+            align: entry.align,
+            sideOffset: entry.sideOffset,
+            ...(entry.alignOffset === undefined ? {} : { alignOffset: entry.alignOffset }),
+          },
+          anchor: measure({ web: entry.web.anchor }),
+          popup: measure({ web: entry.web.popup }),
+        },
+      ]),
+    );
     return {
       schemaVersion: 1,
       source: "electron-cdp",
@@ -145,6 +160,7 @@ function measurementExpression(spec) {
       anchors: collect(spec.anchors),
       typography: collect(spec.typography),
       colors: collect(spec.colors),
+      relations,
     };
   })()`;
 }
@@ -155,7 +171,15 @@ async function waitForVisualState(
   { includeAfterInteraction = false, timeoutMs = 30_000 } = {},
 ) {
   const deadline = Date.now() + timeoutMs;
-  const selectors = [...spec.anchors, ...spec.typography, ...spec.colors]
+  const selectors = [
+    ...spec.anchors,
+    ...spec.typography,
+    ...spec.colors,
+    ...(spec.relations ?? []).flatMap((entry) => [
+      { web: entry.web.anchor, afterInteraction: entry.afterInteraction },
+      { web: entry.web.popup, afterInteraction: entry.afterInteraction },
+    ]),
+  ]
     .filter((entry) => includeAfterInteraction || entry.afterInteraction !== true)
     .map((entry) => entry.web);
   while (Date.now() < deadline) {

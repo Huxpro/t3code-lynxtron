@@ -80,6 +80,78 @@ describe("visual measurement comparison", () => {
     assert.equal(result.colors.sidebar.exact, false);
   });
 
+  it("compares trigger-to-popup relations independently of absolute viewport position", () => {
+    const placement = { side: "right", align: "start", sideOffset: 4 };
+    const result = compareVisualMeasurements({
+      web: {
+        anchors: {},
+        typography: {},
+        colors: {},
+        relations: {
+          sidebarDetails: {
+            placement,
+            anchor: fixture({ x: 8, y: 120, width: 240, height: 78 }, "14px", ""),
+            popup: fixture({ x: 252, y: 120, width: 272, height: 91 }, "14px", ""),
+          },
+        },
+      },
+      lynx: {
+        anchors: {},
+        typography: {},
+        colors: {},
+        relations: {
+          sidebarDetails: {
+            placement,
+            anchor: fixture({ x: 72, y: 280, width: 240, height: 78 }, "14px", ""),
+            popup: fixture({ x: 316, y: 280, width: 272, height: 91 }, "14px", ""),
+          },
+        },
+      },
+      deviceScaleFactor: 2,
+      lynxCoordinateScale: 1,
+    });
+
+    assert.equal(result.relations.sidebarDetails.lynx.residual, 0);
+    assert.equal(result.relations.sidebarDetails.residualDelta, 0);
+    assert.equal(result.relations.sidebarDetails.pass, true);
+    assert.equal(result.summary.relationsPassing, 1);
+  });
+
+  it("rejects a fixed popup that stops following its trigger", () => {
+    const placement = { side: "right", align: "start", sideOffset: 4 };
+    const result = compareVisualMeasurements({
+      web: {
+        anchors: {},
+        typography: {},
+        colors: {},
+        relations: {
+          sidebarDetails: {
+            placement,
+            anchor: fixture({ x: 8, y: 120, width: 240, height: 78 }, "14px", ""),
+            popup: fixture({ x: 252, y: 120, width: 272, height: 91 }, "14px", ""),
+          },
+        },
+      },
+      lynx: {
+        anchors: {},
+        typography: {},
+        colors: {},
+        relations: {
+          sidebarDetails: {
+            placement,
+            anchor: fixture({ x: 72, y: 280, width: 240, height: 78 }, "14px", ""),
+            popup: fixture({ x: 244, y: 132, width: 272, height: 91 }, "14px", ""),
+          },
+        },
+      },
+      deviceScaleFactor: 2,
+      lynxCoordinateScale: 1,
+    });
+
+    assert.isAbove(result.relations.sidebarDetails.lynx.residual, 0.8);
+    assert.equal(result.relations.sidebarDetails.pass, false);
+  });
+
   it("normalizes equivalent Electron and Lynx color syntaxes by declared property", () => {
     assert.equal(normalizeCssColor("oklch(0.145 0 0)"), "rgba(10,10,10,1)");
     assert.equal(normalizeCssColor("oklch(0.97 0 0)"), "rgba(245,245,245,1)");

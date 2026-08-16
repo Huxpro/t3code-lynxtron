@@ -9,6 +9,7 @@ import { afterEach, assert, describe, it } from "vite-plus/test";
 import {
   buildArtifacts,
   computeTimeline,
+  normalizeDimensionValue,
   pixelResidual,
   validateHistory,
   validateModel,
@@ -185,6 +186,48 @@ describe("fidelity loss", () => {
 
   it("normalizes pixel residuals with the declared formula", () => {
     assert.equal(pixelResidual(model(), { mae: 5, significantShare: 0.1 }), 0.5);
+  });
+
+  it("folds relation residuals into geometry without changing the fixed denominator", () => {
+    const inputModel = model();
+    const normalized = normalizeDimensionValue(inputModel, "geometry", {
+      anchorDeltas: [0, 16],
+      relationResiduals: [0, 1],
+      anchorScale: 32,
+      confidence: 1,
+    });
+
+    assert.equal(normalized.method, "geometry-anchors-and-relations");
+    assert.equal(normalized.residual, 0.375);
+    assert.equal(inputModel.expectedCellCount, 4);
+    assert.equal(inputModel.expectedTotalWeight, 1);
+  });
+
+  it("rejects relation residuals outside the geometry dimension", () => {
+    const result = validateHistory(
+      model(),
+      history([
+        {
+          id: "bad-relation-dimension",
+          observedAt: "2026-08-01T00:00:00Z",
+          label: "Bad relation dimension",
+          updates: [
+            {
+              states: ["hero"],
+              clients: ["lynx"],
+              dimensions: {
+                content: { relationResiduals: [0.2], confidence: 1 },
+              },
+            },
+          ],
+        },
+      ]),
+    );
+    assert.isTrue(
+      result.errors.some((entry) =>
+        entry.includes("relationResiduals require the geometry dimension"),
+      ),
+    );
   });
 
   it("rejects invalid weights and unknown state updates", () => {

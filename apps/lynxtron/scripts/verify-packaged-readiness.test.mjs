@@ -51,6 +51,22 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar Working label disagrees with the active session");
   });
 
+  it("verifies floating surfaces through trigger relations instead of viewport coordinates", () => {
+    assert.include(source, '"--verify-floating-relations"');
+    assert.include(source, "measureFloatingRelation(anchor, popup, placement)");
+    assert.include(source, "floatingRelationResidual(metrics, placement)");
+    assert.include(source, "__T3_LYNXTRON_TOOLTIP_PROBE__");
+    assert.include(source, 'invokeTooltipProbe(relationId, "hover")');
+    assert.include(source, "invokeTooltipProbe(initialCard.attributes");
+    assert.include(source, '".sidebar-v2-details-popover"');
+    assert.include(source, 'side: "right", align: "start", sideOffset: 4');
+    assert.include(source, "__T3_LYNXTRON_MTS_RESIZE_PROBE__?.sidebar(256,320)");
+    assert.include(source, "Sidebar details did not follow its resized anchor");
+    assert.include(source, '".model-picker-anchor"');
+    assert.include(source, 'side: "top", align: "start", sideOffset: 4');
+    assert.include(outcomeChecksSource, "floatingRelations");
+  });
+
   it("verifies titlebar branding artwork and none modes without moving the brand", () => {
     assert.include(source, '"--expected-environment-identification-mode"');
     assert.include(source, '".sidebar__brand-bg"');
@@ -69,11 +85,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "--verify-composer-geometry");
     assert.include(source, "--expected-theme");
     assert.include(source, 'themeRoot.attributes["data-theme"] === expectedTheme');
-    assert.include(source, '".composer-shell"');
+    assert.include(source, '".composer-frame"');
     assert.include(source, '"box-shadow"');
-    assert.include(source, 'shellShadow.includes("-18px")');
-    assert.include(source, 'shellShadow.includes("#00000066")');
-    assert.include(source, "!shellShadowMatches");
+    assert.include(source, 'frameShadow.includes("-18px")');
+    assert.include(source, 'frameShadow.includes("#00000066")');
+    assert.include(source, "!frameShadowMatches");
     assert.include(
       source,
       '{ id: "contextLegacyBand", lynx: ".composer-context-backdrop-band--1" }',
@@ -176,6 +192,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "value: targetKey");
     assert.include(source, "waitForSequenceAdvance");
     assert.include(source, "state?.activeThread?.modelSelection?.instanceId");
+    assert.include(source, "state?.modelSelectionPending === false");
+    assert.include(source, "state?.modelSelectionError === null");
+    assert.include(source, '"--verify-model-selection-socket-recovery"');
+    assert.include(source, "T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE");
+    assert.include(
+      source,
+      '"[main-connector] setModelSelection hit a stale transport; reconnecting once"',
+    );
+    assert.include(source, '"reconnected-and-retried-once"');
     assert.include(source, "readPersistedThreadModelSelection");
     assert.include(source, "projection_threads");
     assert.include(source, '"native-model-selection-after.png"');

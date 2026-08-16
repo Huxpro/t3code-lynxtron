@@ -10,6 +10,13 @@ const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
 );
+const sidebarControlsSource = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+  ),
+  "utf8",
+);
 const clientSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/t3Client.ts"),
   "utf8",
@@ -100,8 +107,15 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
   });
 
-  it("uses the Web Composer host shadow instead of a light-only approximation", () => {
+  it("uses the Web shadow on the rounded Composer frame rather than the outer stack", () => {
     expect(overrides).toContain("box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.4);");
+    const shellStart = overrides.indexOf(".composer-shell {");
+    const shellBlock = overrides.slice(shellStart, overrides.indexOf("}", shellStart));
+    const frameStart = overrides.indexOf(".composer-frame {");
+    const frameBlock = overrides.slice(frameStart, overrides.indexOf("}", frameStart));
+    expect(shellBlock).not.toContain("box-shadow");
+    expect(frameBlock).toContain("border-radius: 22px;");
+    expect(frameBlock).toContain("box-shadow:");
   });
 
   it("opens a truthful Terminal placeholder from the titlebar control", () => {
@@ -247,12 +261,41 @@ describe("desktop shell interaction contract", () => {
     expect(faviconSource).not.toContain("background-color");
   });
 
-  it("keeps model selection visible while the canonical shell catches up", () => {
-    expect(clientSource).toContain("threads: threadId");
-    expect(clientSource).toContain(
-      "thread.id === threadId ? { ...thread, modelSelection: selection } : thread",
+  it("keeps Sidebar details hover-anchored to the complete thread card", () => {
+    const tooltipSource = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/tooltip.lynx.tsx"),
+      "utf8",
     );
-    expect(clientSource).toContain("? { ...thread, modelSelection: nextSelection }");
+
+    expect(sidebarSource).toContain("<TooltipPopup");
+    expect(sidebarSource).toContain('side="right"');
+    expect(sidebarSource).toContain('align="start"');
+    expect(sidebarSource).toContain("sideOffset={4}");
+    expect(sidebarSource).toContain("detailsRelationId={detailsRelationId}");
+    expect(sidebarSource).not.toContain("detailsThreadId");
+    expect(sidebarSource).not.toContain("Show details for");
+    expect(overrides).not.toContain("top: 132px;");
+    expect(overrides).not.toContain("left: 244px;");
+    expect(overrides).not.toContain(".sidebar-v2-details-dismiss {");
+    expect(tooltipSource).toContain('"main-thread:bindmousemove": handleMouseMove');
+    expect(tooltipSource).toContain("main-thread:global-bindmousemove={handleGlobalMouseMove}");
+    expect(tooltipSource).not.toContain(
+      '"main-thread:global-bindmousemove": handleGlobalMouseMove',
+    );
+    expect(tooltipSource).toContain("runOnMainThread(handleMouseMove)");
+    expect(tooltipSource).toContain("__T3_LYNXTRON_TOOLTIP_PROBE__");
+    expect(tooltipSource).toContain('trigger.invoke("boundingClientRect"');
+    expect(tooltipSource).toContain("resolveFloatingAnchorPoint(context.anchorRect");
+    expect(tooltipSource).toContain("data-floating-side={side}");
+  });
+
+  it("keeps model selection visible while the canonical shell catches up", () => {
+    expect(clientSource).toContain("function persistModelSelectionMutation");
+    expect(clientSource).toContain("modelSelectionPending: true");
+    expect(clientSource).toContain("modelSelectionError: modelSelectionMutationError(error)");
+    expect(clientSource).toContain("shouldRollbackModelSelectionMutation");
+    expect(clientSource).toContain("projectThreadModelSelection(");
+    expect(clientSource).not.toContain("[t3-client] failed to set model selection");
     expect(connectorSource).toContain(
       "const pendingSelection = this.pendingThreadModelSelections.get(thread.id);",
     );
@@ -271,22 +314,28 @@ describe("desktop shell interaction contract", () => {
     }
   });
 
-  it("keeps the project scope popup inside the Sidebar rail", () => {
-    expect(overrides).toContain(
-      ".sidebar-v2-scope-popup {\n  position: absolute;\n  top: 36px;\n  left: 0;",
+  it("keeps the project scope popup related to its measured Sidebar trigger", () => {
+    const menuSource = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
+      "utf8",
     );
+    const scopePopupBlock = overrides.match(/\.sidebar-v2-scope-popup \{[^}]+\}/)?.[0] ?? "";
+
+    expect(scopePopupBlock).not.toContain("top:");
+    expect(scopePopupBlock).not.toContain("left:");
     expect(overrides).toContain("width: 100%;");
     expect(overrides).not.toContain("width: 250px;");
     expect(overrides).toContain(".sidebar-v2-project-scope-host--open {");
     expect(overrides).toContain(".sidebar-v2-scope-popup .lynx-menu-radio-item {");
     expect(overrides).toContain("height: 32px;");
     expect(sidebarSource).toContain("projectScopeControlWidth: sidebarWidth - 53");
-    expect(
-      readFileSync(
-        path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
-        "utf8",
-      ),
-    ).toContain('<overlay level="1" className="lynx-overlay-host">');
-    expect(overrides).toContain(".lynx-overlay-host {\n  position: fixed;\n  overflow: visible;");
+    expect(menuSource).toContain('trigger.invoke("boundingClientRect"');
+    expect(menuSource).toContain("resolveFloatingAnchorPoint(context.anchorRect");
+    expect(menuSource).toContain('position: "fixed"');
+    expect(menuSource).not.toContain('top: "140px"');
+    expect(menuSource).not.toContain('left: "8px"');
+    expect(sidebarControlsSource).not.toContain('top: "140px"');
+    expect(sidebarControlsSource).not.toContain('left: "8px"');
+    expect(sidebarControlsSource).toContain('relationId="sidebar-project-scope"');
   });
 });

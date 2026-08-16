@@ -3,6 +3,11 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import {
+  floatingRelationResidual,
+  measureFloatingRelation,
+} from "../../../packages/client-runtime/src/presentation/floatingRelation.ts";
+
 function argumentValue(name) {
   const index = process.argv.indexOf(name);
   return index >= 0 ? process.argv[index + 1] : undefined;
@@ -255,6 +260,55 @@ export function compareVisualMeasurements({
       ];
     }),
   );
+  const relationIds = [
+    ...new Set([...Object.keys(web.relations ?? {}), ...Object.keys(lynx.relations ?? {})]),
+  ];
+  const relations = Object.fromEntries(
+    relationIds.map((id) => {
+      const webRelation = web.relations?.[id];
+      const lynxRelation = lynx.relations?.[id];
+      const placement = webRelation?.placement ?? lynxRelation?.placement;
+      const webAnchor = webRelation?.anchor?.rect ?? null;
+      const webPopup = webRelation?.popup?.rect ?? null;
+      const lynxAnchor = scaleRect(lynxRelation?.anchor?.rect, lynxCoordinateScale);
+      const lynxPopup = scaleRect(lynxRelation?.popup?.rect, lynxCoordinateScale);
+      const webMetrics =
+        placement && webAnchor && webPopup
+          ? measureFloatingRelation(webAnchor, webPopup, placement)
+          : null;
+      const lynxMetrics =
+        placement && lynxAnchor && lynxPopup
+          ? measureFloatingRelation(lynxAnchor, lynxPopup, placement)
+          : null;
+      const webResidual =
+        placement && webMetrics ? floatingRelationResidual(webMetrics, placement) : null;
+      const lynxResidual =
+        placement && lynxMetrics ? floatingRelationResidual(lynxMetrics, placement) : null;
+      return [
+        id,
+        {
+          placement: placement ?? null,
+          web: {
+            anchor: webAnchor,
+            popup: webPopup,
+            metrics: webMetrics,
+            residual: webResidual,
+          },
+          lynx: {
+            anchor: lynxAnchor,
+            popup: lynxPopup,
+            metrics: lynxMetrics,
+            residual: lynxResidual,
+          },
+          residualDelta:
+            webResidual === null || lynxResidual === null
+              ? null
+              : Number((lynxResidual - webResidual).toFixed(6)),
+          pass: lynxResidual !== null && lynxResidual <= 0.01,
+        },
+      ];
+    }),
+  );
 
   return {
     schemaVersion: 1,
@@ -271,6 +325,7 @@ export function compareVisualMeasurements({
     anchors,
     typography,
     colors,
+    relations,
     summary: {
       anchorsPassing: Object.values(anchors).filter((entry) => entry.pass).length,
       anchorsTotal: Object.keys(anchors).length,
@@ -280,6 +335,8 @@ export function compareVisualMeasurements({
       exactAnchorTextTotal: Object.keys(anchors).length,
       exactColors: Object.values(colors).filter((entry) => entry.exact).length,
       exactColorsTotal: Object.keys(colors).length,
+      relationsPassing: Object.values(relations).filter((entry) => entry.pass).length,
+      relationsTotal: Object.keys(relations).length,
     },
     masks: [],
   };
