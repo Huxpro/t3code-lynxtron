@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-17T00:30:39+09:00",
+  "productCommit": "c32be7381a0ad4c93b1defd557c2da61e1df90d2",
+  "verifierCommit": "830ac0772982ab106af76c57c8826e989e1d5dc7",
+  "stateId": "quick-switch-query",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "browserTheme": "dark",
+    "nativeTheme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch",
+    "query": "settings",
+    "surface": "Quick Switch footer typography and lower edge"
+  },
+  "fixture": {
+    "browser": {
+      "source": "/tmp/t3-quick-switch-loop-seed/state.sqlite",
+      "sourceSnapshotSha256": "4f3ab2a192e031e3f169deef96ba0136693795d9e444645ee9737b1a1a3d64ad",
+      "seededSnapshotSha256": "5e4b4a2df0da7420241d3bf19433d828bbf3a19f25572f19a6dd5df1fa7bc7b8",
+      "projectTitle": "t3code-lynxtron",
+      "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+      "result": "Open settings"
+    },
+    "native": {
+      "source": "real connector-created disposable Quick Switch idle-thread snapshot",
+      "snapshotId": "844baf37fee290ef93a99e592cb6f57c77a6652e7cec0b6dfa891f3cf7a9a231",
+      "projectTitle": "t3-hero-claude-workspace",
+      "threadTitle": "Quick Switch idle thread",
+      "initialOverlay": "quick-switch"
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "The matched Query panel and footer geometry were already exact, but Lynx inherited 12px/400/16 system typography, no vertical padding, a 1px top divider, and square lower corners.",
+      "The local Lynx footer now matches the Web authority's 10px vertical padding, DM Sans 14px/500/20 typography, divider-free top edge, and 17px lower radii while retaining the existing 40px total height.",
+      "Footer SSIM improves from 0.730011 to 0.739566, panel SSIM from 0.884028 to 0.897624, and full-frame SSIM from 0.926485 to 0.927919."
+    ],
+    "harnessMismatch": [
+      "The first combined Native Settings and Quick Switch run used a Settings fixture without initialOverlay=quick-switch, so the Quick Switch gate timed out before Settings began. The owned process and isolated state were disposed and the sample is excluded.",
+      "The historical dedicated Quick Switch fixture had already been cleaned from /tmp. It was rebuilt through the real connector with one idle thread, then normalized through the shared seed script before the dedicated Native gate.",
+      "The two full Web PNGs differ by capture noise at SSIM 0.999999, while the panel and footer authority crops are exactly identical at SSIM 1.0."
+    ],
+    "ledgerScope": "The matched Browser pair updates only Quick Switch Query Lynx material. Exact Native updates Quick Switch default interaction and runtime. The concurrent Settings unavailable verification is regression evidence only and receives no new residual allocation."
+  },
+  "browser": {
+    "before": {
+      "status": "pass-with-footer-loss",
+      "head": "8065b93854f9343eaa47a1b2cc99f4698b270e48",
+      "readyMs": 2586,
+      "identityMatch": true,
+      "stateIdentityMatch": true,
+      "rendererErrors": 0,
+      "webBundleSha256": "498ad6eee72ff82db852b6191d59cfd3b416280e1fb67851e5cb8886b84e0234",
+      "lynxBundleSha256": "2b6ba9c22e99a37c08ea9278491584eb820a1492f41c6ba3927ef7a9c9594eda",
+      "reportSha256": "4167baed34a176be1792f2344bd86de0e40e62777c43b70280cb264babe3ed1b",
+      "webScreenshotSha256": "d5cc579407b553a4f88cc33e128b9e7a81843fc15994756f4a01c1a750f1a57c",
+      "lynxScreenshotSha256": "a19201107735a94075415889a20db0a60cc59684ce11982a7f8b11eff54d4dd0",
+      "geometry": {
+        "webPanel": { "x": 352, "y": 82, "width": 576, "height": 166 },
+        "lynxPanel": { "x": 352, "y": 82, "width": 576, "height": 166 },
+        "webFooter": { "x": 353, "y": 207, "width": 574, "height": 40 },
+        "lynxFooter": { "x": 353, "y": 207, "width": 574, "height": 40 }
+      },
+      "footerStyle": {
+        "paddingBlock": 0,
+        "borderTopWidth": 1,
+        "lowerRadius": 0,
+        "fontFamily": "system",
+        "fontSize": 12,
+        "fontWeight": 400,
+        "lineHeight": 16
+      },
+      "material": {
+        "fullFrameSsim": 0.926485,
+        "fullFrameResidual": 0.073515,
+        "panelSsim": 0.884028,
+        "panelResidual": 0.115972,
+        "footerSsim": 0.730011,
+        "footerResidual": 0.269989
+      }
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "codeState": "working-tree-product-change",
+      "productCommit": "c32be7381a0ad4c93b1defd557c2da61e1df90d2",
+      "readyMs": 2520,
+      "identityMatch": true,
+      "stateIdentityMatch": true,
+      "rendererErrors": 0,
+      "agentBrowserLeakPreflight": 0,
+      "agentBrowserLeakPostflight": 0,
+      "webBundleSha256": "498ad6eee72ff82db852b6191d59cfd3b416280e1fb67851e5cb8886b84e0234",
+      "lynxBundleSha256": "e3e2a1f74ba12230901c8e4f1cffce9aaffe5259eaf3d3df2ae1ee17b349a438",
+      "reportSha256": "5e7a53264b5faa4a026ac8396b4b392ddafc96d8ae7fb3f9e637f4582c85e7a3",
+      "webScreenshotSha256": "e5a94d1c867f52b3ede5d09a92015dafa77de8e7a44be9ed1c48f3c109c8ffe6",
+      "lynxScreenshotSha256": "a7b010917fbe2f702da33aa1bac3396d281e7428530c69a4d6af314b382a4723",
+      "geometry": {
+        "webPanel": { "x": 352, "y": 82, "width": 576, "height": 166 },
+        "lynxPanel": { "x": 352, "y": 82, "width": 576, "height": 166 },
+        "webFooter": { "x": 353, "y": 207, "width": 574, "height": 40 },
+        "lynxFooter": { "x": 353, "y": 207, "width": 574, "height": 40 },
+        "anchorDeltas": [0, 0, 0, 0],
+        "anchorScale": 574
+      },
+      "footerStyle": {
+        "paddingBlock": 10,
+        "borderTopWidth": 0,
+        "lowerRadius": 17,
+        "fontFamily": "DM Sans",
+        "fontSize": 14,
+        "fontWeight": 500,
+        "lineHeight": 20
+      },
+      "material": {
+        "fullFrameSsim": 0.927919,
+        "fullFrameResidual": 0.072081,
+        "panelSsim": 0.897624,
+        "panelResidual": 0.102376,
+        "footerSsim": 0.739566,
+        "footerResidual": 0.260434
+      },
+      "authorityNoise": {
+        "fullFrameSsim": 0.999999,
+        "panelSsim": 1,
+        "footerSsim": 1
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "830ac0772982ab106af76c57c8826e989e1d5dc7",
+    "bundle": {
+      "bytes": 4478873,
+      "sha256": "af50c9e03b08cdfaf0f41be21b1082f3850e667bfcbd14787db7e481d4b0c6e1"
+    },
+    "reportSha256": "4ec4373d1b516b338eaa225ff28dcc18e54ba80a1d19d8b0957fab92c9f11587",
+    "transport": {
+      "kind": "main",
+      "beforeSeq": 11,
+      "afterSeq": 12
+    },
+    "quickSwitchDefault": {
+      "panel": { "x": 353, "y": 82, "width": 574, "height": 398 },
+      "search": { "x": 354, "y": 83, "width": 572, "height": 48 },
+      "results": { "x": 354, "y": 131, "width": 572, "height": 308 },
+      "footer": { "x": 354, "y": 439, "width": 572, "height": 40 },
+      "rowCount": 7,
+      "dismissedByMeasuredOutsideTap": true
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "settingsUnavailableRegression": {
+    "status": "pass",
+    "theme": "light",
+    "reportSha256": "9aa5f4382c87697b44d2ebe5f736c2358a2a634316b87cf6ad117a83e79d6903",
+    "general": {
+      "unavailableIds": ["background-activity", "text-generation-model"],
+      "opacities": [0.48, 0.48]
+    },
+    "appearance": {
+      "availableIds": ["theme"],
+      "unavailableIds": ["setting-glass-opacity", "environment-identification", "word-wrap"],
+      "opacities": [0.48, 0.48, 0.48]
+    },
+    "observedRouteCount": 8,
+    "repeatedCycles": 2,
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "allocation": "regression-only"
+  },
+  "validation": {
+    "focusedTests": {
+      "quickSwitchAndLynxSettings": "17/17",
+      "webSettings": "16/16"
+    },
+    "build": {
+      "browserPreview": "pass with existing bundle-size and Effect import.meta warnings",
+      "production": "pass with existing unsupported-property and Effect import.meta warnings"
+    },
+    "agentBrowserLeakGate": "Every completed loop reported owned=0 orphaned=0.",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "remainingRisk": [
+    "The Query footer crop retains residual 0.260434 after authority anatomy alignment.",
+    "Native geometry and dismissal are verified, but Native-to-Web footer pixel parity is not inferred.",
+    "Physical keyboard focus and Escape dismissal remain pending a user-authorized Computer Use session."
+  ]
+}
