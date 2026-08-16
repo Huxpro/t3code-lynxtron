@@ -507,49 +507,51 @@ export function Composer({
                               scroll-y
                               scroll-orientation="vertical"
                             >
-                              {modelOptionSections.map((section) => (
-                                <view
-                                  key={section.id}
-                                  className="composer-model-option-menu__section"
-                                  data-composer-model-option-section={section.id}
-                                >
-                                  <text className="composer-model-option-menu__section-label">
-                                    {section.label}
-                                  </text>
-                                  {section.items.map((item) => (
-                                    <view
-                                      key={item.id}
-                                      className={`composer-model-option-menu__item${
-                                        item.selected
-                                          ? " composer-model-option-menu__item--selected"
-                                          : " composer-model-option-menu__item--unselected"
-                                      }`}
-                                      aria-checked={item.selected ? "true" : "false"}
-                                      data-composer-model-option-descriptor={section.id}
-                                      data-composer-model-option-value={String(item.value)}
-                                      data-composer-model-option-value-type={typeof item.value}
-                                      bindtap={() => {
-                                        onSelectModelOption?.(section.id, item.value);
-                                        setModelOptionMenuOpen(false);
-                                      }}
-                                    >
-                                      <view className="composer-model-option-menu__copy">
-                                        <text className="composer-model-option-menu__label">
-                                          {item.label}
-                                        </text>
-                                        {item.description ? (
-                                          <text className="composer-model-option-menu__description">
-                                            {item.description}
+                              <view className="composer-model-option-menu__content">
+                                {modelOptionSections.map((section) => (
+                                  <view
+                                    key={section.id}
+                                    className="composer-model-option-menu__section"
+                                    data-composer-model-option-section={section.id}
+                                  >
+                                    <text className="composer-model-option-menu__section-label">
+                                      {section.label}
+                                    </text>
+                                    {section.items.map((item) => (
+                                      <view
+                                        key={item.id}
+                                        className={`composer-model-option-menu__item${
+                                          item.selected
+                                            ? " composer-model-option-menu__item--selected"
+                                            : " composer-model-option-menu__item--unselected"
+                                        }`}
+                                        aria-checked={item.selected ? "true" : "false"}
+                                        data-composer-model-option-descriptor={section.id}
+                                        data-composer-model-option-value={String(item.value)}
+                                        data-composer-model-option-value-type={typeof item.value}
+                                        bindtap={() => {
+                                          onSelectModelOption?.(section.id, item.value);
+                                          setModelOptionMenuOpen(false);
+                                        }}
+                                      >
+                                        <view className="composer-model-option-menu__copy">
+                                          <text className="composer-model-option-menu__label">
+                                            {item.label}
                                           </text>
+                                          {item.description ? (
+                                            <text className="composer-model-option-menu__description">
+                                              {item.description}
+                                            </text>
+                                          ) : null}
+                                        </view>
+                                        {item.selected ? (
+                                          <Icon name="check" size={14} color="#818181" />
                                         ) : null}
                                       </view>
-                                      {item.selected ? (
-                                        <Icon name="check" size={14} color="#818181" />
-                                      ) : null}
-                                    </view>
-                                  ))}
-                                </view>
-                              ))}
+                                    ))}
+                                  </view>
+                                ))}
+                              </view>
                             </scroll-view>
                             <view
                               className="composer-model-option-menu-dismiss-layer"

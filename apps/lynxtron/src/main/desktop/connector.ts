@@ -549,7 +549,10 @@ export class T3Connector {
         // Archived threads leave the sidebar (they surface in Settings > Archive).
         .filter((t) => !t.archivedAt),
       "updated_at",
-    );
+    ).map((thread) => {
+      const pendingSelection = this.pendingThreadModelSelections.get(thread.id);
+      return pendingSelection ? { ...thread, modelSelection: pendingSelection } : thread;
+    });
     const archivedThreads = this.archivedThreads
       .slice()
       .sort((a, b) => ((b.archivedAt ?? "") > (a.archivedAt ?? "") ? 1 : -1));

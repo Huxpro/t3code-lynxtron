@@ -76,6 +76,7 @@ export type IconName =
   | "pencil-line"
   | "chevron-down"
   | "git-branch"
+  | "git-branch-plus"
   | "git-pull-request"
   | "git-commit-horizontal"
   | "folder"

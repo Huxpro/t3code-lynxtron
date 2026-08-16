@@ -981,11 +981,24 @@ function revokeOtherClientSessions(): Promise<number> {
 }
 
 function setModelSelection(model: ModelInfo): void {
-  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const threadId = state.activeThreadId;
   const selection = { instanceId: model.instanceId, model: model.slug };
-  patchState({ selectedModel: model, modelSelection: selection });
+  patchState({
+    selectedModel: model,
+    modelSelection: selection,
+    threads: threadId
+      ? state.threads.map((thread) =>
+          thread.id === threadId ? { ...thread, modelSelection: selection } : thread,
+        )
+      : state.threads,
+  });
   setPref("modelSelection", selection);
-  void getBridge()?.setModelSelection?.({ threadId, selection });
+  void getBridge()
+    ?.setModelSelection?.({ threadId, selection })
+    .catch((cause) => {
+      console.error("[t3-client] failed to set model selection", { cause, selection, threadId });
+    });
 }
 
 function setModelOptions(options: NonNullable<ModelSelection["options"]>): void {
@@ -1000,7 +1013,16 @@ function setModelOptions(options: NonNullable<ModelSelection["options"]>): void 
       : undefined);
   if (!selection) return;
   const nextSelection: ModelSelection = { ...selection, options };
-  patchState({ modelSelection: nextSelection });
+  patchState({
+    modelSelection: nextSelection,
+    threads: state.activeThreadId
+      ? state.threads.map((thread) =>
+          thread.id === state.activeThreadId
+            ? { ...thread, modelSelection: nextSelection }
+            : thread,
+        )
+      : state.threads,
+  });
   setPref("modelSelection", nextSelection);
   void getBridge()?.setModelSelection?.({
     threadId: state.activeThreadId,

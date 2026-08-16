@@ -173,7 +173,7 @@ export function ChatHeader({
   );
   const gitQuickActionIcon: IconName =
     gitQuickAction.kind === "initialize_repo"
-      ? "git-branch"
+      ? "git-branch-plus"
       : gitQuickAction.kind === "open_publish" ||
           gitQuickAction.action === "push" ||
           gitQuickAction.action === "commit_push"
