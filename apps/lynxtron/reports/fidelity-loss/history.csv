@@ -118,3 +118,5 @@ composer-light-shadow-native-current,2026-08-16T19:16:12+09:00,cfa143777a758d920
 files-browser-native-current,2026-08-16T19:48:29+09:00,95703e621,commit,Files browser Web-anatomy Native proof,0.431408,0.431408,0.018406,0.420746,0.579254,0.552029
 composer-sendable-trait-tracking-current,2026-08-16T20:38:41+09:00,10ee818e6,commit,Composer Sendable multi-trait shaping fix,0.431384,0.431384,0.018365,0.420746,0.579254,0.552053
 composer-sendable-send-material-current,2026-08-16T21:34:25+09:00,3b64c9604,commit,Composer Send action material fix,0.431384,0.431384,0.018365,0.420746,0.579254,0.552053
+settings-connections-reachability-policy-current,2026-08-16T22:26:51+09:00,ea93a520965fc8e6b9af249a348f40454a5899fc,commit,Settings Connections reachability policy fix,0.43133,0.43133,0.018272,0.420746,0.579254,0.552107
+settings-general-unavailable-native-current,2026-08-16T22:26:51+09:00,ea93a520965fc8e6b9af249a348f40454a5899fc,commit,Settings General unavailable capability treatment,0.43133,0.43133,0.018272,0.420746,0.579254,0.552107
