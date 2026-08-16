@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-17T03:28:35+09:00",
+  "productCommit": "d55cb6bfb0f64c29cf771bf8b4accc1f72c91660",
+  "verifierCommits": [
+    "b18a14c568843b2cdf17268e8443e6375dfe18c3",
+    "5bd4b289056bac0bdf37068f09adec4392da602d"
+  ],
+  "stateId": "composer-sendable",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1440x900",
+    "theme": "light",
+    "semanticRoute": "new-thread",
+    "interaction": "hello fidelity character input",
+    "surface": "non-Git Header action inside the Composer Sendable screen"
+  },
+  "fixture": {
+    "source": "/tmp/t3-hero-claude-fixture/userdata/state.sqlite",
+    "snapshotSha256": "af2dd741fbc7ec4dcb6cb2cec719c80769b6832bfb88cbf780da991d9a2b5434",
+    "projectTitle": "t3-hero-claude-workspace",
+    "workspace": "/tmp/t3-hero-claude-workspace",
+    "threadCount": 0,
+    "sessionCount": 0,
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    },
+    "input": "hello fidelity"
+  },
+  "classification": {
+    "productLoss": [
+      "With one non-Git project, Web rendered the working Initialize Git action while Lynx rendered a disabled Commit/show_hint split control.",
+      "The Lynx bridge did not expose the existing vcs.init RPC, so matching the label alone would have produced a dead control.",
+      "After vcs.init created an unborn repository, remote status treated rev-parse --abbrev-ref HEAD as a fatal branch lookup instead of a valid repository with no remote branch."
+    ],
+    "invalidHarness": [
+      "The first Browser attempt used a snapshot containing a running session. Web stayed on the draft Hero while Lynx truthfully restored the running thread; that sample is excluded from product loss.",
+      "The first disposable Native fixture copied a WAL-mode SQLite main file and then deleted its WAL, producing a 4 KB database without projection tables. The accepted fixture uses read-only VACUUM INTO.",
+      "The initial zero-thread Native verifier required activeProject from a diagnostic hook that derives projects only through activeThread. The final identity gate uses the exact VCS cwd plus non-Git status and Header semantics.",
+      "One intermediate Native run created .git but failed its postcondition because the server could not read remote status for unborn HEAD. That failure identified the server product defect but is not retained as certification evidence."
+    ],
+    "evidenceBoundary": "The matched Browser pair supplies before/after pixels, geometry, styles, same-snapshot identity, character-input behavior, and console evidence. Exact-bundle Native separately proves a measured Initialize Git tap, real .git creation, isRepo false-to-true transition, the next Publish repository action, main transport, a representative frame, zero renderer errors, and isolated cleanup."
+  },
+  "browser": {
+    "status": "pass",
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameAuthorityPixels": true,
+    "beforeHead": "632d2acafb301140f9904a2279245f73dbac9c32",
+    "afterHead": "b18a14c568843b2cdf17268e8443e6375dfe18c3",
+    "bundles": {
+      "before": {
+        "web": "498ad6eee72ff82db852b6191d59cfd3b416280e1fb67851e5cb8886b84e0234",
+        "lynx": "4b3ab8273a3dae363eb9047a9dbb84392f0df79eb1bc81700104e4e16a01116e"
+      },
+      "after": {
+        "web": "d25a9b5da13ede2df13a8a952b1dd562ba8671a1dc54af7566ea5dd374d5fe9c",
+        "lynx": "97f73023bfe258e439ea01cb51bf996b480e066005a42e74668d23b5db807134"
+      }
+    },
+    "reports": {
+      "beforeSha256": "392d398ad914cd08f35260d6281fed2d17ef557c7b878f768b01b7c783e2fa1e",
+      "afterSha256": "bdffdd461744314e1567575a66a79bde56eb544f23671eeb728b4c5fcba02b5b"
+    },
+    "screenshots": {
+      "webBefore": "1b0305e185e0af7e664dfc7648c99340ebbd0fe18e85fb374e4d0ac54e918bbb",
+      "webAfter": "1b0305e185e0af7e664dfc7648c99340ebbd0fe18e85fb374e4d0ac54e918bbb",
+      "lynxBefore": "38f8c76d212e42baa85f232faf6e41bc182a2d034cfe05bc52e1b6340c176812",
+      "lynxAfter": "3e503b6152445624e3640c46f06d66637d6415938ff2b90e6aea62ccc5314926",
+      "retention": "diagnostic files remain in /tmp and are not tracked"
+    },
+    "assertions": {
+      "lynxBefore": "7d79b94d982b80bffcc69c1bd1b23100c8e654261a75c020b4c4d47e9cb7b8bd",
+      "lynxAfter": "7be0a0b39c8d600ab50e2042805141eb9deda99b433e51d040fa0efe7457c6fe"
+    },
+    "inputChannel": "web-dom-focus+key-char:true|lynx-dom-focus+key-char:true",
+    "before": {
+      "webAction": {
+        "kind": null,
+        "label": null,
+        "text": "Initialize Git",
+        "rect": {
+          "x": 1257.90625,
+          "y": 14,
+          "width": 98.09375,
+          "height": 24
+        }
+      },
+      "lynxAction": {
+        "kind": "show_hint",
+        "label": "Commit",
+        "text": "Commit",
+        "rect": {
+          "x": 1255.6875,
+          "y": 14,
+          "width": 100.3125,
+          "height": 24
+        }
+      }
+    },
+    "after": {
+      "webAction": {
+        "kind": "initialize_repo",
+        "label": "Initialize Git",
+        "text": "Initialize Git",
+        "rect": {
+          "x": 1257.90625,
+          "y": 14,
+          "width": 98.09375,
+          "height": 24
+        }
+      },
+      "lynxAction": {
+        "kind": "initialize_repo",
+        "label": "Initialize Git",
+        "text": "Initialize Git",
+        "rect": {
+          "x": 1260.984375,
+          "y": 14,
+          "width": 95.015625,
+          "height": 24
+        }
+      }
+    },
+    "composerGeometry": {
+      "web": {
+        "x": 464,
+        "y": 396,
+        "width": 768,
+        "height": 140
+      },
+      "lynx": {
+        "x": 464,
+        "y": 396,
+        "width": 768,
+        "height": 140
+      }
+    },
+    "residuals": {
+      "fullFrame": {
+        "before": 0.045116,
+        "after": 0.044435,
+        "delta": -0.000681
+      },
+      "header": {
+        "before": 0.156418,
+        "after": 0.140956,
+        "delta": -0.015462
+      },
+      "initializeAction": {
+        "before": 0.606031,
+        "after": 0.369162,
+        "delta": -0.236869
+      },
+      "composer": {
+        "before": 0.031095,
+        "after": 0.031095,
+        "delta": 0
+      }
+    },
+    "rendererErrors": 0
+  },
+  "native": {
+    "status": "pass",
+    "head": "5bd4b289056bac0bdf37068f09adec4392da602d",
+    "serverBundle": {
+      "sha256": "a31e67fa8ffb38871788678599a19de0d7af1c3698c1f523ff276023b1a498e4"
+    },
+    "lynxBundle": {
+      "bytes": 4484610,
+      "sha256": "7d7bac8e4b190f27860eb7db90c84778be5a9688f4e296bb4e6dfba7a599dcc5"
+    },
+    "reportSha256": "b928f0c99f065a4d1b32fc8d7e562461990682e8ef254eaefa22f73afccf8cb0",
+    "screenshot": {
+      "width": 2560,
+      "height": 1640,
+      "bytes": 924907,
+      "sha256": "191fa5bc36a06c0155c7f9ebad32b6c700b50e8b7e307adc93715decc99853de",
+      "retention": "diagnostic file remains in /tmp and is not tracked"
+    },
+    "interaction": {
+      "initialAction": {
+        "kind": "initialize_repo",
+        "label": "Initialize Git",
+        "rect": {
+          "x": 1110,
+          "y": 14,
+          "width": 94,
+          "height": 24
+        }
+      },
+      "input": "DevTool Input.emulateTouchFromMouseEvent on the measured Initialize Git action",
+      "isRepoBefore": false,
+      "isRepoAfter": true,
+      "gitDirectoryCreated": true,
+      "nextAction": {
+        "kind": "open_publish",
+        "label": "Publish repository",
+        "rect": {
+          "x": 1047,
+          "y": 14,
+          "width": 157,
+          "height": 24
+        }
+      }
+    },
+    "transport": {
+      "kind": "main",
+      "lastSeqBefore": 10
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "componentContribution": {
+    "stateWeight": 5,
+    "newScopeBaselineObservedResidual": 0.316309,
+    "fixedObservedResidual": 0.006527,
+    "weightedStateContributionDelta": -1.54891,
+    "largestLocalizedDelta": "Initialize action residual decreased by 0.236869",
+    "unchangedSurface": "Composer crop residual remained exactly 0.031095"
+  },
+  "fidelityImpact": {
+    "fixedStateCount": 40,
+    "milestones": {
+      "before": 125,
+      "baseline": 126,
+      "after": 127
+    },
+    "totalLoss": {
+      "before": 0.419525,
+      "baseline": 0.42193,
+      "after": 0.408999,
+      "baselineDelta": 0.002405,
+      "productDelta": -0.012931,
+      "netDelta": -0.010526
+    },
+    "observedResidual": {
+      "before": 0.017634,
+      "baseline": 0.021703,
+      "after": 0.014659
+    },
+    "evidenceDebt": {
+      "before": 0.409105,
+      "baseline": 0.409105,
+      "after": 0.400206
+    }
+  },
+  "validation": {
+    "focusedTests": {
+      "server": "43/43",
+      "sharedAndLynx": "72/72",
+      "webGitLogic": "62/62",
+      "finalVerifier": "36/36"
+    },
+    "typecheck": {
+      "server": "pass with existing Effect suggestions",
+      "clientRuntime": "pass with existing Effect suggestion",
+      "web": "pass",
+      "lynxtron": "pass"
+    },
+    "build": {
+      "server": "pass",
+      "browserWorkbench": "pass with existing bundle-size and Effect import.meta warnings",
+      "production": "pass with existing unsupported-property and Effect import.meta warnings"
+    },
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0; external live sessions were informational and were not touched.",
+    "screenshotBudget": "32/100",
+    "retainedUserApp": "PID 61665 remained alive throughout the loop"
+  },
+  "remainingRisk": [
+    "The light 1440 Initialize action retains a localized residual of 0.369162, primarily from the Web-only shadow and the Web GitBranchPlus versus Lynx git-branch raster.",
+    "The Lynx action is 3.078125px narrower than Web after content parity; this remains explicit in the geometry and Header residual.",
+    "Native physical keyboard input remains pending-user-session and is not claimed by this measured-touch interaction."
+  ]
+}
