@@ -77,6 +77,7 @@ import {
   projectModelSelectionCandidates,
   resolveActiveThreadModelSelection,
 } from "./modelSelection.logic";
+import { shouldReportVcsStatusReadFailure } from "./vcsStatusProjection.logic";
 import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
@@ -236,7 +237,9 @@ function refreshVcsStatusProjection(): void {
     },
     (cause) => {
       if (requestSequence !== vcsStatusRequestSequence) return;
-      console.error("[t3-client] failed to read VCS status", { cwd, cause });
+      if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
+        console.error("[t3-client] failed to read VCS status", { cwd, cause });
+      }
       patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
     },
   );
