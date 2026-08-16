@@ -1879,7 +1879,7 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
   const [timelineHost] = await readSelectorRects(client, ".timeline-host");
   const [timelineList] = await readSelectorRects(client, ".timeline-list");
   const rowRoots = await readSelectorRects(client, ".timeline-row-root");
-  const [assistantRowRoot] = await readSelectorRects(client, ".timeline-row-root--assistant");
+  const assistantRowRoot = rowRoots[1];
   const assistantRowMeasurement = await readOptionalMeasurement(
     client,
     ".transcript-assistant-row",

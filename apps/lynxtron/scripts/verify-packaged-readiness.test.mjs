@@ -327,7 +327,8 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies the Native completed transcript layout and canonical response", () => {
     assert.include(source, "async function verifyCompletedTranscriptState");
     assert.include(source, "readSelectorRects(");
-    assert.include(source, '".timeline-row-root--assistant"');
+    assert.include(source, "const assistantRowRoot = rowRoots[1]");
+    assert.notInclude(source, '".timeline-row-root--assistant"');
     assert.include(source, 'readSelectorRects(client, ".timeline-host")');
     assert.include(source, "Math.abs(rowRoots[0].y - (timelineHost.y + 48)) <= 1");
     assert.include(source, "Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5");
