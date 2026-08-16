@@ -46,6 +46,7 @@ import type {
   ServerConfig,
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
+  VcsStatusResult,
   RuntimeMode,
   ModelSelection,
   ThreadTurnStartBootstrap,
@@ -174,6 +175,7 @@ export interface T3ConnectorCommandBridge {
   writeProjectFile(input: ProjectWriteFileInput): Promise<ProjectWriteFileResult>;
   getTurnDiff(input: OrchestrationGetTurnDiffInput): Promise<OrchestrationGetTurnDiffResult>;
   readProjectBranch(input: { cwd: string }): Promise<ProjectRepoContext>;
+  readVcsStatus(input: { cwd: string }): Promise<VcsStatusResult>;
   discoverSourceControl(): Promise<SourceControlDiscoveryResult>;
   createPairingCredential(input?: { readonly label?: string }): Promise<PairingCredentialResult>;
   revokePairingLink(input: { readonly id: string }): Promise<boolean>;

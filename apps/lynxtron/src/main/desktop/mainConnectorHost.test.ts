@@ -72,6 +72,10 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
       calls.push({ method: "readProjectBranch", input });
       return Promise.resolve("main");
     },
+    readVcsStatus: (input: unknown) => {
+      calls.push({ method: "readVcsStatus", input });
+      return Promise.resolve({ isRepo: true, refName: "main" });
+    },
     selectThread: (input: unknown) => {
       calls.push({ method: "selectThread", input });
     },
@@ -240,20 +244,26 @@ describe("main connector host", () => {
       input: { cwd: "/repo" },
     });
 
-    await command({ method: "settleThread", params: { threadId: "t1" } });
+    await command({ method: "readVcsStatus", params: { cwd: "/repo" } });
     assert.deepEqual(connector.calls[6], {
+      method: "readVcsStatus",
+      input: { cwd: "/repo" },
+    });
+
+    await command({ method: "settleThread", params: { threadId: "t1" } });
+    assert.deepEqual(connector.calls[7], {
       method: "settleThread",
       input: { threadId: "t1" },
     });
 
     await command({ method: "unsettleThread", params: { threadId: "t1" } });
-    assert.deepEqual(connector.calls[7], {
+    assert.deepEqual(connector.calls[8], {
       method: "unsettleThread",
       input: { threadId: "t1" },
     });
 
     await command({ method: "revokePairingLink", params: { id: "link-1" } });
-    assert.deepEqual(connector.calls[8], { method: "revokePairingLink", input: "link-1" });
+    assert.deepEqual(connector.calls[9], { method: "revokePairingLink", input: "link-1" });
 
     await assertRejects(command({ method: "dispose" }), /Rejected connector command/);
     await assertRejects(command({ method: "connect" }), /Rejected connector command/);

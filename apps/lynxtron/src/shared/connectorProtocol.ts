@@ -151,6 +151,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "writeProjectFile",
   "getTurnDiff",
   "readProjectBranch",
+  "readVcsStatus",
   "discoverSourceControl",
   "createPairingCredential",
   "revokePairingLink",

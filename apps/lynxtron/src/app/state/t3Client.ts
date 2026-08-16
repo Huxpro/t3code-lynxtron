@@ -34,6 +34,7 @@ import type {
   ServerSettings,
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
+  VcsStatusResult,
   RuntimeMode,
   ThreadTurnStartBootstrap,
   TurnId,
@@ -804,6 +805,14 @@ function readProjectBranch(cwd: string): Promise<ProjectRepoContext | null> {
   return bridge.readProjectBranch({ cwd });
 }
 
+function readVcsStatus(cwd: string): Promise<VcsStatusResult | null> {
+  const bridge = getBridge();
+  if (!bridge?.readVcsStatus) {
+    return Promise.resolve(null);
+  }
+  return bridge.readVcsStatus({ cwd });
+}
+
 function discoverSourceControl(): Promise<SourceControlDiscoveryResult> {
   const bridge = getBridge();
   if (!bridge?.discoverSourceControl) {
@@ -960,6 +969,7 @@ export const t3ClientActions = {
   openInEditor,
   readProjectFile,
   readProjectBranch,
+  readVcsStatus,
   reconnect,
   renameThread,
   respondToApproval,

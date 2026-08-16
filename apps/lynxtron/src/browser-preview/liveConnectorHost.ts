@@ -568,6 +568,15 @@ export class LiveConnectorHost {
         return context;
       });
     }
+    if (request.method === "readVcsStatus") {
+      const params = request.params as { cwd: string };
+      return this.#runClient<VcsStatusResult>(
+        this.#client[WS_METHODS.vcsRefreshStatus]({ cwd: params.cwd }),
+      ).then((value) => {
+        this.diagnostics.lastCommandResult = { method: request.method, value };
+        return value;
+      });
+    }
     if (request.method === "updateServerSettings") {
       const patch = (request.params as { patch: ServerSettingsPatch }).patch;
       return this.#runClient<ServerSettings>(

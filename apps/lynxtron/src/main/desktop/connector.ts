@@ -910,11 +910,13 @@ export class T3Connector {
   }
 
   async readProjectBranch(input: { cwd: string }): Promise<ProjectRepoContext> {
-    if (!this.client) throw new Error("not connected");
-    const status = await this.runClient<VcsStatusResult>(
-      this.client[WS_METHODS.vcsRefreshStatus](input),
-    );
+    const status = await this.readVcsStatus(input);
     return projectRepoContext(status);
+  }
+
+  async readVcsStatus(input: { cwd: string }): Promise<VcsStatusResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<VcsStatusResult>(this.client[WS_METHODS.vcsRefreshStatus](input));
   }
 
   async discoverSourceControl(): Promise<SourceControlDiscoveryResult> {
