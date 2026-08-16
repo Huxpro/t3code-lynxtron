@@ -1200,6 +1200,17 @@ async function verifyComposerSendMaterial({ baseDir, child, client, timeoutMs })
   if (commandResult(fixtureResponse)?.value !== true) {
     throw new Error(`Composer input fixture was not applied: ${JSON.stringify(fixtureResponse)}`);
   }
+  const sendBackgroundMatches = (color) => {
+    const match = /^rgba\((\d+),(\d+),(\d+),([0-9.]+)\)$/u.exec(color);
+    return (
+      match !== null &&
+      match
+        .slice(1, 4)
+        .map(Number)
+        .every((channel, index) => channel === [54, 111, 251][index]) &&
+      Math.abs(Number(match[4]) - 0.9) <= 1 / 255
+    );
+  };
   const action = await waitForMeasurement({
     child,
     client,
@@ -1208,7 +1219,7 @@ async function verifyComposerSendMaterial({ baseDir, child, client, timeoutMs })
     predicate: (measurement) =>
       measurement?.attributes["data-composer-primary-state"] === "send" &&
       measurement.attributes.class?.includes("composer-primary-action--send") === true &&
-      measurement.style.backgroundColor === "rgba(54,111,251,0.9)" &&
+      sendBackgroundMatches(measurement.style.backgroundColor) &&
       Math.abs((measurement.rect?.width ?? 0) - 32) <= 0.5 &&
       Math.abs((measurement.rect?.height ?? 0) - 32) <= 0.5,
   });

@@ -107,7 +107,8 @@ describe("packaged readiness Sidebar geometry", () => {
       source,
       'measurement.attributes.class?.includes("composer-primary-action--send")',
     );
-    assert.include(source, 'measurement.style.backgroundColor === "rgba(54,111,251,0.9)"');
+    assert.include(source, "sendBackgroundMatches(measurement.style.backgroundColor)");
+    assert.include(source, "Math.abs(Number(match[4]) - 0.9) <= 1 / 255");
     assert.include(source, 'selector: ".composer-primary-action image"');
     assert.include(source, 'input: "test-only Composer state fixture; no turn submitted"');
     assert.include(
