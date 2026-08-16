@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-16T19:48:29+09:00",
+  "productCommit": "725c45bbbcfb98266ddecea0b19b2e49fd80b445",
+  "productCorrectionCommit": "5c54f6ed444d15df139c3b48d85aae768d97f61a",
+  "nativeVerifierCommits": [
+    "bdc9c2c801659a507668f58cfe84281e1a067195",
+    "1098cfb6fa5f611da92afb46fbe102dcb7d90347"
+  ],
+  "stateId": "files-browser",
+  "scope": {
+    "authority": "web-source-anatomy",
+    "candidate": "native-lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "surface": "right-panel Files browser"
+  },
+  "fixture": {
+    "source": "disposable /tmp/t3-git-publish-native-fixture snapshot",
+    "snapshotId": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "projectTitle": "t3code-lynxtron",
+    "canonicalThreadTitle": "New thread",
+    "projectCwd": "/Users/bytedance/github/t3code-lynxtron",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "Lynx rendered an oversized bordered project card with project title, absolute path, file count, and a text Refresh button where the production Web Files browser uses a fixed compact subheader.",
+      "The file tree used 28px rows, 12px rounding, and 11px monospace labels instead of the Web Files authority's 24px rows, 5px rounding, and 12px sans labels.",
+      "The toolbar and tree shared one scroll surface, the search control was absent, and folder/file rows lacked the production Files browser icon treatment.",
+      "The first production build showed that Lynx strips :focus-within, so the new search control initially lacked the intended Native focus feedback."
+    ],
+    "harnessMismatch": [
+      "The first strict Native run queried the computed border-radius shorthand. Lynx DevTool returned 0px even though the encoded scoped rule followed the shared 12px rule and all four computed corner longhands were 5px.",
+      "The final verifier reads border-top-left-radius, border-top-right-radius, border-bottom-right-radius, and border-bottom-left-radius independently and requires all four values to be 5px."
+    ],
+    "evidenceBoundary": "Web source owns the Files browser anatomy and exact compact dimensions. This exact-bundle Native run proves measured touch reachability, real indexed content, geometry, typography, corner radii, transport, zero renderer errors, screenshot dimensions, and cleanup. No same-snapshot Web Files screenshot exists in this run, so the Native screenshot is representative evidence and is not claimed as matched Web pixel parity. Physical keyboard search input remains pending-user-session; the source contract proves that bindinput feeds getProjectFilePickerMatches and rebuilds the filtered tree."
+  },
+  "authority": {
+    "source": "apps/web/src/components/files/FileBrowserPanel.tsx",
+    "treeSource": "apps/web/src/components/chat/FileTreeSurface.tsx",
+    "anatomy": {
+      "subheaderHeight": 40,
+      "controlHeight": 28,
+      "rowHeight": 24,
+      "rowRadius": 5,
+      "labelFontSize": 12,
+      "labelFontFamily": "sans",
+      "toolbarPadding": "0 8px",
+      "treePadding": 4
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "1098cfb6fa5f611da92afb46fbe102dcb7d90347",
+    "bundle": {
+      "bytes": 4475267,
+      "sha256": "c17d40df90ec90ef216bbe880c18a790db37b880542a9f20b6eceea44eed64aa"
+    },
+    "reportSha256": "39342226cd81a0cdf08bd65178117c9aa4f5f3fd440eed01d0b8a087b6d0b7e8",
+    "panel": {
+      "x": 740,
+      "y": 0,
+      "width": 540,
+      "height": 820
+    },
+    "toolbar": {
+      "x": 741,
+      "y": 52,
+      "width": 539,
+      "height": 40
+    },
+    "refresh": {
+      "x": 749,
+      "y": 58,
+      "width": 28,
+      "height": 28
+    },
+    "search": {
+      "x": 809,
+      "y": 58,
+      "width": 455,
+      "height": 28,
+      "placeholder": "Search files",
+      "filtering": "source-contract",
+      "typing": "pending-user-session"
+    },
+    "browser": {
+      "x": 741,
+      "y": 92,
+      "width": 539,
+      "height": 728
+    },
+    "firstVisibleRow": {
+      "text": "docs",
+      "x": 745,
+      "y": 96,
+      "width": 531,
+      "height": 24,
+      "borderRadii": ["5px", "5px", "5px", "5px"],
+      "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+      "fontSize": "12px"
+    },
+    "transport": {
+      "kind": "main",
+      "beforeProbe": 2,
+      "afterProbe": 3
+    },
+    "screenshot": {
+      "dimensions": {
+        "width": 2560,
+        "height": 1640
+      },
+      "bytes": 360946,
+      "sha256": "7401544b5234e355b980d53c183530549296f33ae77abdacf22f57feb45f24df",
+      "retention": "diagnostic file remains in /tmp and is not tracked"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": {
+      "productAndShell": "12/12",
+      "nativeVerifier": "32/32",
+      "combinedContracts": "44/44"
+    },
+    "typecheck": {
+      "lynxtron": "pass"
+    },
+    "build": {
+      "production": "pass with existing unsupported-property and Effect import.meta warnings",
+      "filesFocusWithinWarning": "removed by explicit bindfocus and bindblur state"
+    },
+    "agentBrowserLeakGate": "Every loop reported owned=0 orphaned=0; one external live session was informational and was not touched.",
+    "screenshotBudget": "32/100",
+    "retainedTrialApp": "PID 18721 remained alive throughout the run"
+  },
+  "remainingRisk": [
+    "A same-snapshot Web Files capture is still required before assigning an SSIM or claiming pixel parity for the complete panel material.",
+    "Physical keyboard search entry and focus traversal remain pending-user-session because DevTool touch evidence is not OS keyboard evidence.",
+    "The exact Native proof is light mode; the implementation uses shared semantic tokens, but this run does not add a separate dark-mode screenshot."
+  ]
+}
