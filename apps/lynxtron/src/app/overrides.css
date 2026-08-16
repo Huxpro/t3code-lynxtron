@@ -2485,6 +2485,9 @@
   width: 32px;
   height: 32px;
 }
+.composer-primary-action--send {
+  background-color: rgba(var(--primary-rgb), 0.9);
+}
 /* surface: composer context strip labels; gap: none (token passthrough);
    remove-when: label typography compiles from the shared composition. */
 .composer-context-label {

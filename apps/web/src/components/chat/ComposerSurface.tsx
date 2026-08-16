@@ -153,6 +153,7 @@ export function ComposerPrimaryAction({
       data-composer-primary-state={state}
       className={cn(
         "composer-primary-action flex size-8 shrink-0 items-center justify-center rounded-full",
+        `composer-primary-action--${state}`,
         state === "stop" ? "bg-destructive" : "bg-primary",
         state === "disabled" && "opacity-30",
       )}

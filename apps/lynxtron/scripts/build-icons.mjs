@@ -123,6 +123,11 @@ const ICON_BODIES = {
 // Brand/fill icons (non-lucide): filled paths with their own viewBox + color,
 // copied verbatim from t3code's web UI (apps/web/src/components).
 const FILL_ICONS = {
+  "send-arrow": {
+    viewBox: "0 0 14 14",
+    color: "#ffffff",
+    body: '<path d="M7 11.5V2.5M7 2.5L3 6.5M7 2.5L11 6.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+  },
   // OpenAI knot — apps/web/src/components/Icons.tsx (OpenAI)
   openai: {
     viewBox: "0 0 256 260",
@@ -276,8 +281,9 @@ function rasterFill(body, viewBox, w, h) {
 for (const [name, def] of Object.entries(FILL_ICONS)) {
   // Square-ish render box for claude (256x257); wide box for the wordmark.
   const isWordmark = name === "t3-wordmark";
-  const w = isWordmark ? 34 : 18;
-  const h = isWordmark ? 20 : 18;
+  const isSendArrow = name === "send-arrow";
+  const w = isWordmark ? 34 : isSendArrow ? 14 : 18;
+  const h = isWordmark ? 20 : isSendArrow ? 14 : 18;
   entries.push([`${name}@fill`, rasterFill(def.body, def.viewBox, w, h)]);
   if (def.lightBody) {
     entries.push([`${name}@fill-light`, rasterFill(def.lightBody, def.viewBox, w, h)]);

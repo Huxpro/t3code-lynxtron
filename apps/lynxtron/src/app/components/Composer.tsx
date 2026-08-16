@@ -619,7 +619,7 @@ export function Composer({
               questionActions ?? (
                 <ComposerPrimaryAction
                   state={controlState.primaryActionState}
-                  icon={<Icon name={busy ? "square" : "arrow-up"} size={14} color="#ffffff" />}
+                  icon={<Icon name={busy ? "square" : "send-arrow"} size={14} color="#ffffff" />}
                   onClick={handleSend}
                 />
               ),

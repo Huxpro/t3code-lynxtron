@@ -151,8 +151,11 @@ describe("ComposerSurface", () => {
       <ComposerPrimaryAction state="stop" icon={<span />} onClick={() => {}} />,
     );
     expect(send).toContain("bg-primary");
+    expect(send).toContain("composer-primary-action--send");
     expect(disabled).toContain("opacity-30");
+    expect(disabled).toContain("composer-primary-action--disabled");
     expect(stop).toContain("bg-destructive");
+    expect(stop).toContain("composer-primary-action--stop");
     expect(stop).toContain('aria-label="Stop response"');
   });
 

@@ -61,6 +61,7 @@ function lightColor(color: string): string {
 export type IconName =
   | "plus"
   | "arrow-up"
+  | "send-arrow"
   | "square"
   | "message-square-plus"
   | "send"
@@ -141,6 +142,7 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className }: IconProp
     // Fill icons (brand marks) have a single pre-colored variant.
     if (
       name === "openai" ||
+      name === "send-arrow" ||
       name === "claude" ||
       name === "cursor" ||
       name === "grok" ||
