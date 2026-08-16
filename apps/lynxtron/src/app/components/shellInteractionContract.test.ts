@@ -49,6 +49,17 @@ describe("desktop shell interaction contract", () => {
     );
   });
 
+  it("dismisses the runtime permission menu without changing its value", () => {
+    const source = componentSource("Composer.tsx");
+
+    expect(source).toContain('className="composer-runtime-menu-dismiss-layer"');
+    expect(source).toContain('aria-label="Dismiss runtime mode"');
+    expect(source).toContain("bindtap={() => setRuntimeModeMenuOpen(false)}");
+    expect(source).toContain("modelPicker !== undefined || runtimeModeMenuOpen");
+    expect(overrides).toContain(".composer-runtime-menu-dismiss-layer {");
+    expect(overrides).toContain(".composer-runtime-control-wrap {");
+  });
+
   it("opens a truthful Terminal placeholder from the titlebar control", () => {
     const header = componentSource("ChatHeader.tsx");
     const chatView = componentSource("ChatView.tsx");

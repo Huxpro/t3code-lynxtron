@@ -293,7 +293,7 @@ export function Composer({
             renderFooterLeftControls: () =>
               approvalActions ? null : (
                 <ComposerToolbarRow
-                  overlayOpen={modelPicker !== undefined}
+                  overlayOpen={modelPicker !== undefined || runtimeModeMenuOpen}
                   items={[
                     <view key="model" className="model-picker-anchor">
                       <ComposerToolbarControl
@@ -447,43 +447,50 @@ export function Composer({
                           onClick={() => setRuntimeModeMenuOpen((open) => !open)}
                         />
                         {runtimeModeMenuOpen ? (
-                          <view
-                            className="composer-runtime-menu"
-                            aria-label="Runtime mode"
-                            data-composer-runtime-menu
-                          >
-                            {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
-                              <view
-                                key={option.mode}
-                                className={`composer-runtime-menu__item${
-                                  option.mode === runtimeMode
-                                    ? " composer-runtime-menu__item--active"
-                                    : ""
-                                }`}
-                                aria-checked={option.mode === runtimeMode ? "true" : "false"}
-                                bindtap={() => {
-                                  onRuntimeModeChange(option.mode);
-                                  setRuntimeModeMenuOpen(false);
-                                }}
-                              >
-                                <view className="composer-runtime-menu__icon">
-                                  <Icon
-                                    name={RUNTIME_MODE_ICONS[option.mode]}
-                                    size={14}
-                                    color="#818181"
-                                  />
+                          <>
+                            <view
+                              className="composer-runtime-menu-dismiss-layer"
+                              aria-label="Dismiss runtime mode"
+                              bindtap={() => setRuntimeModeMenuOpen(false)}
+                            />
+                            <view
+                              className="composer-runtime-menu"
+                              aria-label="Runtime mode"
+                              data-composer-runtime-menu
+                            >
+                              {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
+                                <view
+                                  key={option.mode}
+                                  className={`composer-runtime-menu__item${
+                                    option.mode === runtimeMode
+                                      ? " composer-runtime-menu__item--active"
+                                      : ""
+                                  }`}
+                                  aria-checked={option.mode === runtimeMode ? "true" : "false"}
+                                  bindtap={() => {
+                                    onRuntimeModeChange(option.mode);
+                                    setRuntimeModeMenuOpen(false);
+                                  }}
+                                >
+                                  <view className="composer-runtime-menu__icon">
+                                    <Icon
+                                      name={RUNTIME_MODE_ICONS[option.mode]}
+                                      size={14}
+                                      color="#818181"
+                                    />
+                                  </view>
+                                  <view className="composer-runtime-menu__copy">
+                                    <text className="composer-runtime-menu__label">
+                                      {option.label}
+                                    </text>
+                                    <text className="composer-runtime-menu__description">
+                                      {option.description}
+                                    </text>
+                                  </view>
                                 </view>
-                                <view className="composer-runtime-menu__copy">
-                                  <text className="composer-runtime-menu__label">
-                                    {option.label}
-                                  </text>
-                                  <text className="composer-runtime-menu__description">
-                                    {option.description}
-                                  </text>
-                                </view>
-                              </view>
-                            ))}
-                          </view>
+                              ))}
+                            </view>
+                          </>
                         ) : null}
                       </view>
                     ) : null,
