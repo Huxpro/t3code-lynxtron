@@ -12,7 +12,7 @@ const sidebarSource = readFileSync(
 );
 
 describe("desktop shell interaction contract", () => {
-  it("keeps the model picker theme-owned and dismissible outside the panel", () => {
+  it("keeps the anchored model picker dismissible without modal dimming", () => {
     const source = componentSource("ModelPicker.tsx");
 
     expect(source).toContain('className="model-picker-dismiss-layer"');
@@ -22,10 +22,11 @@ describe("desktop shell interaction contract", () => {
     expect(source).toContain('className="model-picker-close"');
     expect(source).toContain("bindtap={onClose}");
     expect(overrides).toContain(".model-picker-dismiss-layer {");
-    expect(overrides).toContain("background-color: var(--overlay-backdrop);");
+    expect(overrides).toContain("background-color: transparent;");
     expect(overrides).toContain("background-color: var(--popover);");
-    expect(overrides).not.toContain("background-color: rgba(var(--muted-rgb), 0.4);");
-    expect(overrides).not.toContain("background-color: rgba(var(--muted-rgb), 0.3);");
+    const dismissStart = overrides.indexOf(".model-picker-dismiss-layer {");
+    const dismissBlock = overrides.slice(dismissStart, overrides.indexOf("}", dismissStart));
+    expect(dismissBlock).not.toContain("var(--overlay-backdrop)");
   });
 
   it("keeps the model picker scroll chain constrained to the content column", () => {
