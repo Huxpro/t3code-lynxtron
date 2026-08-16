@@ -75,6 +75,8 @@ describe("desktop shell interaction contract", () => {
   it("projects and opens the real repository Publish flow", () => {
     const header = componentSource("ChatHeader.tsx");
     const publish = componentSource("GitPublishDialog.tsx");
+    const app = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
+    const uiState = readFileSync(path.resolve(import.meta.dirname, "../state/uiState.ts"), "utf8");
     const bridge = readFileSync(path.resolve(import.meta.dirname, "../bridge.ts"), "utf8");
     const client = readFileSync(path.resolve(import.meta.dirname, "../state/t3Client.ts"), "utf8");
 
@@ -85,7 +87,8 @@ describe("desktop shell interaction contract", () => {
     expect(header).toContain("data-git-quick-action-kind");
     expect(header).toContain("data-git-quick-action-label");
     expect(header).toContain('gitQuickAction.kind === "open_publish"');
-    expect(header).toContain("<GitPublishDialog");
+    expect(header).toContain("uiActions.openGitPublishDialog");
+    expect(header).not.toContain("<GitPublishDialog");
     expect(header).not.toContain('openRightPanelSurface("publish")');
     expect(publish).toContain('data-git-publish-dialog="true"');
     expect(publish).toContain("PUBLISH_PROVIDERS");
@@ -97,6 +100,9 @@ describe("desktop shell interaction contract", () => {
     expect(publish).toContain('aria-label="Dismiss Publish repository"');
     expect(publish).toContain('aria-label="Close Publish repository"');
     expect(publish).toContain('className="git-publish-dialog" catchtap');
+    expect(app).toContain("<GitPublishDialog");
+    expect(app).toContain("onClose={uiActions.closeGitPublishDialog}");
+    expect(uiState).toContain('Atom.withLabel("lynx-git-publish-dialog-open")');
     expect(bridge).toContain("publishRepository(");
     expect(client).toContain("function publishRepository(");
     expect(overrides).toContain(".git-publish-dialog {");

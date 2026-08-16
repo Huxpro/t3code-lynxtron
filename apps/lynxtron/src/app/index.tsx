@@ -15,6 +15,7 @@ import { ProviderSettings } from "./components/ProviderSettings";
 import { KeybindingsSettings } from "./components/KeybindingsSettings";
 import { QuickSwitch } from "./components/QuickSwitch";
 import { ProjectActionDialog } from "./components/ProjectActionDialog";
+import { GitPublishDialog } from "./components/GitPublishDialog";
 import {
   ArchiveSettings,
   BetaSettings,
@@ -37,6 +38,7 @@ import { readPreviewInitialState, t3ClientActions, useT3ClientState } from "./st
 import {
   installResponsiveUiProbe,
   uiActions,
+  useGitPublishDialogOpen,
   useProjectActionDialogOpen,
   useSearchOverlayState,
 } from "./state/uiState";
@@ -195,10 +197,12 @@ function RootSwitch() {
 function RootOverlays() {
   const searchOverlay = useSearchOverlayState();
   const projectActionDialogOpen = useProjectActionDialogOpen();
+  const gitPublishDialogOpen = useGitPublishDialogOpen();
   const { projects, threads, activeThreadId } = useT3ClientState();
   const activeThread = threads.find((thread) => thread.id === activeThreadId);
   const activeProject =
     projects.find((project) => project.id === activeThread?.projectId) ?? projects[0] ?? null;
+  const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;
   return (
     <>
       {searchOverlay.open ? (
@@ -210,6 +214,9 @@ function RootOverlays() {
         />
       ) : null}
       {projectActionDialogOpen ? <ProjectActionDialog project={activeProject} /> : null}
+      {gitPublishDialogOpen && cwd ? (
+        <GitPublishDialog cwd={cwd} onClose={uiActions.closeGitPublishDialog} />
+      ) : null}
     </>
   );
 }

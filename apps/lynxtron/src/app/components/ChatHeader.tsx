@@ -8,7 +8,6 @@ import { uiActions } from "../state/uiState";
 import externalCursorUrl from "../assets/cursor.svg?external";
 import headerPendingUrl from "../assets/header-pending@2x.png?external";
 import { Icon, type IconName } from "./Icon";
-import { GitPublishDialog } from "./GitPublishDialog";
 import { editorLabel, resolvePreferredEditor } from "./openInEditor.logic";
 import { shouldCompactHeaderActions } from "./chatHeaderLayout";
 
@@ -152,7 +151,6 @@ export function ChatHeader({
     getPref<EditorId | null>("t3code:last-editor", null),
   );
   const [openMenuVisible, setOpenMenuVisible] = useState(false);
-  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [vcsStatus, setVcsStatus] = useState<VcsStatusResult | null>(null);
   const [vcsStatusPending, setVcsStatusPending] = useState(Boolean(cwd));
   useEffect(() => {
@@ -221,122 +219,117 @@ export function ChatHeader({
   };
   const gitActionImplemented = gitQuickAction.kind === "open_publish";
   return (
-    <>
-      <view
-        className={`chat-header-reference topbar lynx-titlebar-drag-region${
-          compactActions ? " topbar--compact-actions" : ""
-        }${useAuthoritySurface ? " topbar--authority" : ""}`}
-        data-chat-header
-        data-chat-header-center-width={String(centerPanelWidth)}
-        data-chat-header-actions-compact={compactActions ? "true" : "false"}
-      >
-        {useAuthoritySurface ? (
-          <image className="topbar-authority-surface" src={headerPendingUrl} />
-        ) : null}
-        <ChatHeaderSurface
-          activeProjectName={projectName}
-          activeThreadTitle={threadTitle}
-          projectIcon={
-            <view className="chat-header-project-icon-reference topbar__proj-icon">
-              <Icon name="folder" size={14} color="#818181" className="topbar__proj-icon-img" />
-            </view>
-          }
-          rightPanelOpen={rightPanelOpen ?? false}
-          contentProps={{
-            bindlayoutchange: (event: { detail?: { width?: unknown } }) => {
-              const width = event.detail?.width;
-              if (typeof width === "number" && Number.isFinite(width) && width > 0) {
-                onCenterPanelWidthChange(width);
-              }
-            },
-          }}
-          actions={
-            <view className="topbar__actions-inner lynx-titlebar-no-drag">
-              <ActionButton
-                className={`action-btn--add${compactActions ? " action-btn--compact" : ""}`}
-                icon="plus"
-                label={compactActions ? undefined : "Add action"}
-                primaryAriaLabel="Add action"
-                onPrimaryTap={uiActions.openProjectActionDialog}
-              />
-              <view className="open-in-control">
-                <ActionButton
-                  className={`action-btn--open${compactActions ? " action-btn--compact" : ""}`}
-                  icon={preferredEditor === "cursor" ? "cursor" : "folder"}
-                  label={compactActions ? undefined : "Open"}
-                  grouped
-                  disabled={!cwd || preferredEditor === null}
-                  primaryAriaLabel={
-                    preferredEditor ? `Open in ${editorLabel(preferredEditor)}` : "Open project"
-                  }
-                  optionsAriaLabel="Choose editor"
-                  onPrimaryTap={() => openProject(preferredEditor)}
-                  onOptionsTap={() => setOpenMenuVisible((visible) => !visible)}
-                />
-                {openMenuVisible ? (
-                  <>
-                    <view
-                      className="open-in-menu-dismiss-layer"
-                      bindtap={() => setOpenMenuVisible(false)}
-                    />
-                    <scroll-view
-                      className="open-in-menu"
-                      aria-label="Open in editor"
-                      scroll-orientation="vertical"
-                    >
-                      {availableEditors.length === 0 ? (
-                        <view className="open-in-menu__item open-in-menu__item--disabled">
-                          <text className="open-in-menu__label">No installed editors found</text>
-                        </view>
-                      ) : (
-                        availableEditors.map((editor) => (
-                          <view
-                            key={editor}
-                            className={`open-in-menu__item${
-                              editor === preferredEditor ? " open-in-menu__item--selected" : ""
-                            }`}
-                            data-open-editor={editor}
-                            bindtap={() => openProject(editor)}
-                          >
-                            {editor === "cursor" ? (
-                              <svg
-                                className="open-in-menu__brand-icon"
-                                src={externalCursorUrl}
-                                style={{ width: "14px", height: "14px" }}
-                              />
-                            ) : (
-                              <Icon name="folder" size={14} color="#a1a1aa" />
-                            )}
-                            <text className="open-in-menu__label">{editorLabel(editor)}</text>
-                            {editor === preferredEditor ? (
-                              <Icon name="check" size={14} color="#a1a1aa" />
-                            ) : null}
-                          </view>
-                        ))
-                      )}
-                    </scroll-view>
-                  </>
-                ) : null}
-              </view>
-              <ActionButton
-                className={`action-btn--commit${compactActions ? " action-btn--compact" : ""}`}
-                icon={gitQuickActionIcon}
-                label={compactActions ? undefined : gitQuickAction.label}
-                grouped
-                disabled={gitQuickAction.disabled || !gitActionImplemented}
-                primaryAriaLabel={gitQuickAction.label}
-                optionsAriaLabel="Git action options"
-                gitAction={gitQuickAction}
-                onPrimaryTap={() => setPublishDialogOpen(true)}
-                onOptionsTap={() => setPublishDialogOpen(true)}
-              />
-            </view>
-          }
-        />
-      </view>
-      {publishDialogOpen && cwd ? (
-        <GitPublishDialog cwd={cwd} onClose={() => setPublishDialogOpen(false)} />
+    <view
+      className={`chat-header-reference topbar lynx-titlebar-drag-region${
+        compactActions ? " topbar--compact-actions" : ""
+      }${useAuthoritySurface ? " topbar--authority" : ""}`}
+      data-chat-header
+      data-chat-header-center-width={String(centerPanelWidth)}
+      data-chat-header-actions-compact={compactActions ? "true" : "false"}
+    >
+      {useAuthoritySurface ? (
+        <image className="topbar-authority-surface" src={headerPendingUrl} />
       ) : null}
-    </>
+      <ChatHeaderSurface
+        activeProjectName={projectName}
+        activeThreadTitle={threadTitle}
+        projectIcon={
+          <view className="chat-header-project-icon-reference topbar__proj-icon">
+            <Icon name="folder" size={14} color="#818181" className="topbar__proj-icon-img" />
+          </view>
+        }
+        rightPanelOpen={rightPanelOpen ?? false}
+        contentProps={{
+          bindlayoutchange: (event: { detail?: { width?: unknown } }) => {
+            const width = event.detail?.width;
+            if (typeof width === "number" && Number.isFinite(width) && width > 0) {
+              onCenterPanelWidthChange(width);
+            }
+          },
+        }}
+        actions={
+          <view className="topbar__actions-inner lynx-titlebar-no-drag">
+            <ActionButton
+              className={`action-btn--add${compactActions ? " action-btn--compact" : ""}`}
+              icon="plus"
+              label={compactActions ? undefined : "Add action"}
+              primaryAriaLabel="Add action"
+              onPrimaryTap={uiActions.openProjectActionDialog}
+            />
+            <view className="open-in-control">
+              <ActionButton
+                className={`action-btn--open${compactActions ? " action-btn--compact" : ""}`}
+                icon={preferredEditor === "cursor" ? "cursor" : "folder"}
+                label={compactActions ? undefined : "Open"}
+                grouped
+                disabled={!cwd || preferredEditor === null}
+                primaryAriaLabel={
+                  preferredEditor ? `Open in ${editorLabel(preferredEditor)}` : "Open project"
+                }
+                optionsAriaLabel="Choose editor"
+                onPrimaryTap={() => openProject(preferredEditor)}
+                onOptionsTap={() => setOpenMenuVisible((visible) => !visible)}
+              />
+              {openMenuVisible ? (
+                <>
+                  <view
+                    className="open-in-menu-dismiss-layer"
+                    bindtap={() => setOpenMenuVisible(false)}
+                  />
+                  <scroll-view
+                    className="open-in-menu"
+                    aria-label="Open in editor"
+                    scroll-orientation="vertical"
+                  >
+                    {availableEditors.length === 0 ? (
+                      <view className="open-in-menu__item open-in-menu__item--disabled">
+                        <text className="open-in-menu__label">No installed editors found</text>
+                      </view>
+                    ) : (
+                      availableEditors.map((editor) => (
+                        <view
+                          key={editor}
+                          className={`open-in-menu__item${
+                            editor === preferredEditor ? " open-in-menu__item--selected" : ""
+                          }`}
+                          data-open-editor={editor}
+                          bindtap={() => openProject(editor)}
+                        >
+                          {editor === "cursor" ? (
+                            <svg
+                              className="open-in-menu__brand-icon"
+                              src={externalCursorUrl}
+                              style={{ width: "14px", height: "14px" }}
+                            />
+                          ) : (
+                            <Icon name="folder" size={14} color="#a1a1aa" />
+                          )}
+                          <text className="open-in-menu__label">{editorLabel(editor)}</text>
+                          {editor === preferredEditor ? (
+                            <Icon name="check" size={14} color="#a1a1aa" />
+                          ) : null}
+                        </view>
+                      ))
+                    )}
+                  </scroll-view>
+                </>
+              ) : null}
+            </view>
+            <ActionButton
+              className={`action-btn--commit${compactActions ? " action-btn--compact" : ""}`}
+              icon={gitQuickActionIcon}
+              label={compactActions ? undefined : gitQuickAction.label}
+              grouped
+              disabled={gitQuickAction.disabled || !gitActionImplemented}
+              primaryAriaLabel={gitQuickAction.label}
+              optionsAriaLabel="Git action options"
+              gitAction={gitQuickAction}
+              onPrimaryTap={uiActions.openGitPublishDialog}
+              onOptionsTap={uiActions.openGitPublishDialog}
+            />
+          </view>
+        }
+      />
+    </view>
   );
 }
