@@ -4620,6 +4620,137 @@
   margin-left: auto;
   margin-right: auto;
 }
+.settings-panel--keybindings {
+  max-width: 948px;
+}
+.keybindings-settings__count {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+  font-family: var(--font-sans);
+  margin-left: auto;
+}
+.keybindings-settings__notice {
+  display: flex;
+  width: 100%;
+  height: 43px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--border);
+  background-color: rgba(245, 158, 11, 0.05);
+}
+.keybindings-settings__notice-text {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 20px;
+  font-family: var(--font-sans);
+}
+.keybindings-table__header,
+.keybindings-table__row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-width: 680px;
+  box-sizing: border-box;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.keybindings-table__header {
+  height: 34px;
+  align-items: center;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--border);
+  background-color: var(--muted);
+}
+.keybindings-table__header-command,
+.keybindings-table__header-key,
+.keybindings-table__header-when,
+.keybindings-table__header-status,
+.keybindings-table__command,
+.keybindings-table__key,
+.keybindings-table__when,
+.keybindings-table__status {
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.keybindings-table__header-command,
+.keybindings-table__command {
+  width: 319px;
+}
+.keybindings-table__header-key,
+.keybindings-table__key {
+  width: 247px;
+}
+.keybindings-table__header-when,
+.keybindings-table__when {
+  width: 290px;
+}
+.keybindings-table__header-status,
+.keybindings-table__status {
+  width: 60px;
+}
+.keybindings-table__header-command,
+.keybindings-table__header-key,
+.keybindings-table__header-when,
+.keybindings-table__header-status {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.77px;
+  font-family: var(--font-sans);
+}
+.keybindings-table__row {
+  height: 41px;
+  align-items: center;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--border);
+}
+.keybindings-table__row--last {
+  height: 40px;
+}
+.keybindings-table__command,
+.keybindings-table__key,
+.keybindings-table__when,
+.keybindings-table__status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.keybindings-table__command {
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  padding-right: 16px;
+}
+.keybindings-table__key,
+.keybindings-table__when {
+  color: var(--foreground);
+  font-size: 12px;
+  line-height: 20px;
+  font-family: var(--font-mono);
+  padding-right: 16px;
+}
+.keybindings-table__status {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 0;
+}
+.keybindings-table__status--conflict {
+  color: #f59e0b;
+  height: 20px;
+}
 
 .settings-section {
   --align-self-column: stretch;
