@@ -304,6 +304,61 @@ describe("desktop shell interaction contract", () => {
     );
   });
 
+  it("limits Workspace menu harness control to viewport-test runs", () => {
+    const composer = componentSource("Composer.tsx");
+    const preview = readFileSync(
+      path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
+      "utf8",
+    );
+
+    expect(composer).toContain("if (!viewport.testResize) return;");
+    expect(composer).toContain('"t3:workspace-menu-test"');
+    expect(preview).toContain("openWorkspaceMenuForHarness");
+    expect(preview).toContain('emitGlobalEvent("t3:workspace-menu-test", [{ open }])');
+  });
+
+  it("keeps the Workspace menu source-aligned and trigger-relative", () => {
+    const composer = componentSource("Composer.tsx");
+    const workspaceBlock = overrides.match(/\.composer-workspace-menu \{[^}]+\}/)?.[0] ?? "";
+    const emptyTimelineBlock =
+      overrides.match(/\.chat-body-reference > \.timeline-empty-overlay \{[^}]+\}/)?.[0] ?? "";
+    const composerOverlayBlock = overrides.match(/\.composer-overlay \{[^}]+\}/)?.[0] ?? "";
+
+    expect(composer).toContain('data-floating-side="top"');
+    expect(composer).toContain('data-floating-align="start"');
+    expect(composer).toContain('data-floating-side-offset="4"');
+    expect(composer).toContain("resolveCurrentWorkspaceLabel(worktreePath ?? null)");
+    expect(composer).toContain('resolveEnvModeLabel("worktree")');
+    expect(composer).toContain("worktreePath: worktreePath ?? null");
+    expect(composer).not.toContain('worktreePath ?? "pending"');
+    expect(composer).toContain("{checkoutLabel}");
+    expect(composer).toContain('className="composer-workspace-menu__list"');
+    expect(composer).toContain("catchtap={() => undefined}");
+    expect(composer.indexOf("className={`composer-workspace-menu${")).toBeLessThan(
+      composer.indexOf('className="composer-workspace-menu-dismiss"'),
+    );
+    expect(composer).toMatch(
+      /composer-workspace-menu__item--worktree[^]*onWorkspaceModeChange\("worktree"\);[^]*setWorkspaceMenuOpen\(false\);/,
+    );
+    expect(workspaceBlock).toContain("position: absolute;");
+    expect(workspaceBlock).toContain("left: 0;");
+    expect(workspaceBlock).toContain("bottom: 28px;");
+    expect(workspaceBlock).not.toContain("top: -178px;");
+    expect(workspaceBlock).not.toContain("width: 310px;");
+    expect(overrides).not.toContain(".composer-workspace-menu--worktree {\n  top: -236px;");
+    expect(overrides).toContain("min-height: 29px;");
+    expect(emptyTimelineBlock).toContain("pointer-events: none;");
+    expect(composerOverlayBlock).toContain("position: relative;");
+    expect(composerOverlayBlock).toContain("z-index: 20;");
+    expect(overrides).toContain(
+      ".composer-workspace-control-wrap {\n  position: relative;\n  display: flex;\n  z-index: 52;",
+    );
+    expect(overrides).toContain("composer-workspace-menu-dismiss {\n  position: fixed;");
+    expect(workspaceBlock).toContain("z-index: 3;");
+    expect(overrides).toContain("composer-workspace-menu-dismiss {\n  position: fixed;");
+    expect(overrides).toContain("z-index: 2;");
+  });
+
   it("uses the shared Sidebar inset without shrinking the thread list twice", () => {
     const listBlocks = overrides.match(/\.sidebar-v2-thread-list \{[^}]+\}/g);
 

@@ -43,4 +43,14 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "contextBackdrop: null");
     assert.include(source, "contextBands: []");
   });
+
+  it("records Workspace menu relation, rows, and material in both renderers", () => {
+    assert.include(source, '\"workspace-menu\"');
+    assert.include(source, '[data-floating-popup=\"composer-workspace-menu\"]');
+    assert.include(source, '[data-floating-anchor=\"composer-workspace-menu\"]');
+    assert.include(source, 'root?.querySelector(\".composer-workspace-menu__item\")');
+    assert.include(source, "overlayElement?.querySelector('[data-slot=\"select-item\"]')");
+    assert.include(source, 'root?.querySelector(\".composer-workspace-menu__description\")');
+    assert.include(source, "description: null");
+  });
 });

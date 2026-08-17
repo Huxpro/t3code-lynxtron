@@ -485,7 +485,9 @@ function readLynxPane() {
           ? "model-picker"
           : root?.querySelector(".sidebar-v2-scope-popup") !== null
             ? "project-scope"
-            : null;
+            : root?.querySelector(".composer-workspace-menu") !== null
+              ? "workspace-menu"
+              : null;
     const overlayElement =
       overlay === "quick-switch" || overlay === "file-picker"
         ? paletteElement
@@ -493,7 +495,9 @@ function readLynxPane() {
           ? root?.querySelector(".model-picker-panel")
           : overlay === "project-scope"
             ? root?.querySelector(".sidebar-v2-scope-popup")
-            : null;
+            : overlay === "workspace-menu"
+              ? root?.querySelector(".composer-workspace-menu")
+              : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -517,6 +521,7 @@ function readLynxPane() {
     const modelTriggerElement = root?.querySelector(".composer-toolbar-control--model") ?? null;
     const projectScopeTriggerElement =
       root?.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]') ?? null;
+    const workspaceTriggerElement = root?.querySelector(".composer-workspace-control-wrap") ?? null;
     const settingsRoute = expectedSemanticRoute.startsWith("settings-");
     const quickSwitchInput = root?.querySelector(".qs-search__input") ?? null;
     const modelPickerInput = root?.querySelector(".picker-search__input") ?? null;
@@ -574,7 +579,11 @@ function readLynxPane() {
       };
     };
     const overlayTriggerElement =
-      overlay === "project-scope" ? projectScopeTriggerElement : modelTriggerElement;
+      overlay === "project-scope"
+        ? projectScopeTriggerElement
+        : overlay === "workspace-menu"
+          ? workspaceTriggerElement
+          : modelTriggerElement;
     const modelTriggerRect = overlayTriggerElement
       ? (() => {
           const rect = overlayTriggerElement.getBoundingClientRect();
@@ -655,7 +664,16 @@ function readLynxPane() {
                   empty: readElementBox(root?.querySelector(".model-picker-empty")),
                   emptyText: readElementBox(root?.querySelector(".model-picker-empty-text")),
                 }
-              : null,
+              : overlay === "workspace-menu"
+                ? {
+                    panel: readElementBox(overlayElement),
+                    row: readElementBox(root?.querySelector(".composer-workspace-menu__item")),
+                    label: readElementBox(root?.querySelector(".composer-workspace-menu__label")),
+                    description: readElementBox(
+                      root?.querySelector(".composer-workspace-menu__description"),
+                    ),
+                  }
+                : null,
         query:
           overlay === "quick-switch" || overlay === "file-picker"
             ? lynxInputValue(quickSwitchInput)
@@ -740,7 +758,12 @@ function readLynxPane() {
                 ? [...(root?.querySelectorAll(".lynx-menu-radio-item") ?? [])].map((row) =>
                     row.textContent?.trim(),
                   )
-                : [],
+                : overlay === "workspace-menu"
+                  ? [...(root?.querySelectorAll(".composer-workspace-menu__item") ?? [])].map(
+                      (row) =>
+                        row.querySelector(".composer-workspace-menu__label")?.textContent?.trim(),
+                    )
+                  : [],
         modelPickerRows:
           overlay === "model-picker"
             ? readModelPickerRows(root?.querySelectorAll(".model-picker-row") ?? [])
@@ -752,7 +775,9 @@ function readLynxPane() {
               ? (root?.querySelectorAll(".model-picker-row").length ?? 0)
               : overlay === "project-scope"
                 ? (root?.querySelectorAll(".lynx-menu-radio-item").length ?? 0)
-                : 0,
+                : overlay === "workspace-menu"
+                  ? (root?.querySelectorAll(".composer-workspace-menu__item").length ?? 0)
+                  : 0,
       },
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(root),
@@ -1254,18 +1279,26 @@ function readWebPane() {
           ? "model-picker"
           : doc.querySelector(".sidebar-v2-scope-popup") !== null
             ? "project-scope"
-            : null;
+            : doc.querySelector('[data-floating-popup="composer-workspace-menu"]') !== null
+              ? "workspace-menu"
+              : null;
     const modelTriggerElement =
       doc.querySelector('[data-chat-provider-model-picker="true"]') ?? null;
     const projectScopeTriggerElement =
       doc.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]') ?? null;
+    const workspaceTriggerElement =
+      doc.querySelector('[data-floating-anchor="composer-workspace-menu"]') ?? null;
     const quickSwitchTriggerElement =
       doc.querySelector(".sidebar-v2-search") ??
       doc.querySelector('[data-testid="command-palette-trigger"]') ??
       doc.querySelector('[aria-label="Search threads and commands"]') ??
       null;
     const overlayTriggerElement =
-      overlay === "project-scope" ? projectScopeTriggerElement : modelTriggerElement;
+      overlay === "project-scope"
+        ? projectScopeTriggerElement
+        : overlay === "workspace-menu"
+          ? workspaceTriggerElement
+          : modelTriggerElement;
     const modelTriggerRect = overlayTriggerElement
       ? (() => {
           const rect = overlayTriggerElement.getBoundingClientRect();
@@ -1284,7 +1317,9 @@ function readWebPane() {
           ? doc.querySelector("[data-model-picker-content]")
           : overlay === "project-scope"
             ? doc.querySelector(".sidebar-v2-scope-popup")
-            : null;
+            : overlay === "workspace-menu"
+              ? doc.querySelector('[data-floating-popup="composer-workspace-menu"]')
+              : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -1487,7 +1522,16 @@ function readWebPane() {
                     doc.querySelector('[data-command-palette="true"] [data-slot="command-footer"]'),
                   ),
                 }
-              : null,
+              : overlay === "workspace-menu"
+                ? {
+                    panel: readElementBox(overlayElement),
+                    row: readElementBox(overlayElement?.querySelector('[data-slot="select-item"]')),
+                    label: readElementBox(
+                      overlayElement?.querySelector('[data-slot="select-item-text"]'),
+                    ),
+                    description: null,
+                  }
+                : null,
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
             ? [...doc.querySelectorAll('[data-command-palette="true"] [role="option"]')].map(
@@ -1505,7 +1549,13 @@ function readWebPane() {
                       '.sidebar-v2-scope-popup [data-slot="menu-radio-item"]',
                     ),
                   ].map((row) => row.textContent?.trim())
-                : [],
+                : overlay === "workspace-menu"
+                  ? [
+                      ...doc.querySelectorAll(
+                        '[data-floating-popup="composer-workspace-menu"] [data-slot="select-item"]',
+                      ),
+                    ].map((row) => row.textContent?.trim())
+                  : [],
         modelPickerRows:
           overlay === "model-picker"
             ? readModelPickerRows(
@@ -1521,7 +1571,11 @@ function readWebPane() {
               : overlay === "project-scope"
                 ? doc.querySelectorAll('.sidebar-v2-scope-popup [data-slot="menu-radio-item"]')
                     .length
-                : 0,
+                : overlay === "workspace-menu"
+                  ? doc.querySelectorAll(
+                      '[data-floating-popup="composer-workspace-menu"] [data-slot="select-item"]',
+                    ).length
+                  : 0,
       },
       composerMetrics: composerFrame
         ? {

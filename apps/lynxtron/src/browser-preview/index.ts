@@ -45,6 +45,7 @@ interface BrowserPreviewDiagnostics {
   emitSequenceGapForDiagnostic(): number;
   switchScenario(scenarioId: BrowserPreviewScenarioId): number;
   dispatchKeyboardShortcut(shortcut: "command" | "files"): boolean;
+  openWorkspaceMenuForHarness(open: boolean): boolean;
 }
 
 interface BrowserPreviewRect {
@@ -232,6 +233,10 @@ const diagnostics: BrowserPreviewDiagnostics = {
         sequence: ++keyboardSequence,
       },
     ]);
+    return true;
+  },
+  openWorkspaceMenuForHarness: (open) => {
+    emitGlobalEvent("t3:workspace-menu-test", [{ open }]);
     return true;
   },
 };

@@ -653,9 +653,10 @@ async function readSelectorMeasurements(client, selector) {
   });
   return Promise.all(
     (commandResult(nodesResponse)?.nodeIds ?? []).map(async (nodeId) => {
-      const [attributesResponse, boxResponse, textResponse] = await Promise.all([
+      const [attributesResponse, boxResponse, outerHtmlResponse, textResponse] = await Promise.all([
         client.runCdp("DOM.getAttributes", { nodeId }),
         client.runCdp("DOM.getBoxModel", { nodeId }),
+        client.runCdp("DOM.getOuterHTML", { nodeId }),
         client.runCdp("DOM.innerText", { nodeId }),
       ]);
       const attributeList = commandResult(attributesResponse)?.attributes ?? [];
@@ -666,10 +667,22 @@ async function readSelectorMeasurements(client, selector) {
         ]),
       );
       const model = commandResult(boxResponse)?.model;
+      const innerText = commandResult(textResponse)?.innerText ?? "";
+      const outerHTML = commandResult(outerHtmlResponse)?.outerHTML ?? "";
+      const rawText = [...outerHTML.matchAll(/<raw-text\b[^>]*\btext="([^"]*)"/gu)]
+        .map((match) =>
+          match[1]
+            .replaceAll("&quot;", '"')
+            .replaceAll("&apos;", "'")
+            .replaceAll("&lt;", "<")
+            .replaceAll("&gt;", ">")
+            .replaceAll("&amp;", "&"),
+        )
+        .join("");
       return {
         nodeId,
         rect: quadRect(model?.border ?? model?.content),
-        text: commandResult(textResponse)?.innerText ?? "",
+        text: innerText || rawText,
         attributes,
       };
     }),
@@ -2332,6 +2345,135 @@ async function readModelOptionTracking({ client, expectedLabel, expectedLetterSp
     rect: label.rect,
     controlRect: trigger.rect,
     letterSpacing: computedLetterSpacing,
+  };
+}
+
+async function verifyWorkspaceMenu({ baseDir, child, client, height, timeoutMs, width }) {
+  await selectSessionlessFixtureThread({
+    baseDir,
+    child,
+    client,
+    timeoutMs,
+  });
+  const trigger = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-context-control--checkout",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["aria-disabled"] !== "true" &&
+      measurement?.text.includes("Current checkout"),
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-context-control--checkout",
+    timeoutMs,
+  });
+  const menu = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-workspace-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("New worktree"),
+  });
+  const rows = await readSelectorMeasurements(client, ".composer-workspace-menu__item");
+  const rowLabels = await readSelectorMeasurements(client, ".composer-workspace-menu__label");
+  const relation = assertFloatingRelation({
+    anchor: trigger.rect,
+    label: "Workspace menu",
+    placement: { side: "top", align: "start", sideOffset: 4 },
+    popup: menu.rect,
+    viewport: { width, height },
+  });
+  if (
+    rows.length !== 2 ||
+    rowLabels.length !== 2 ||
+    rowLabels[0]?.text.trim() !== "Current checkout" ||
+    rowLabels[1]?.text.trim() !== "New worktree"
+  ) {
+    throw new Error(`Workspace menu content drifted: ${JSON.stringify({ rowLabels, rows })}`);
+  }
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-workspace-menu__item--worktree",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-workspace-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const selectedTrigger = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-context-control--checkout",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("New worktree"),
+  });
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-context-control--checkout",
+    timeoutMs,
+  });
+  const worktreeMenu = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-workspace-menu--worktree",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("Start from origin"),
+  });
+  const dismissLayer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-workspace-menu-dismiss",
+    timeoutMs,
+    predicate: (measurement) =>
+      (measurement?.rect?.width ?? 0) >= width && (measurement?.rect?.height ?? 0) >= height,
+  });
+  await tapSelector({
+    child,
+    client,
+    point: "center",
+    selector: ".composer-workspace-menu-dismiss",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-workspace-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const afterDismiss = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-context-control--checkout",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("New worktree"),
+  });
+
+  return {
+    status: "pass",
+    input: "DevTool taps on the measured Workspace trigger, row, and outside dismiss layer",
+    trigger: trigger.rect,
+    menu: menu.rect,
+    rows: rows.map((row, index) => ({
+      rect: row.rect,
+      text: rowLabels[index]?.text.trim() ?? "",
+    })),
+    relation,
+    selectedLabel: selectedTrigger.text.trim(),
+    worktreeMenu: worktreeMenu.rect,
+    dismissLayer: dismissLayer.rect,
+    outsideTapClosed: true,
+    valueRetainedAfterDismiss: afterDismiss.text.includes("New worktree"),
   };
 }
 
@@ -6497,6 +6639,7 @@ async function runOnce({
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
   verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
   verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
+  verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,
   verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
   verifyComposerStop,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
@@ -6803,6 +6946,16 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const workspaceMenu = shouldVerifyWorkspaceMenu
+      ? await verifyWorkspaceMenu({
+          baseDir,
+          child,
+          client,
+          height,
+          timeoutMs,
+          width,
+        })
+      : undefined;
     const modelOptionMenuMutation = shouldVerifyModelOptionMenuMutation
       ? await verifyModelOptionMenuMutation({
           baseDir,
@@ -7037,6 +7190,7 @@ async function runOnce({
       modelPickerFidelity,
       modelSelectionMutation,
       runtimeMenuDismiss,
+      workspaceMenu,
       modelOptionMenuMutation,
       composerStop,
       composerWorkingState,
@@ -7086,6 +7240,7 @@ async function runOnce({
       modelPickerFidelity,
       modelSelectionMutation,
       runtimeMenuDismiss,
+      workspaceMenu,
       modelOptionMenuMutation,
       composerStop,
       composerWorkingState,
@@ -7163,6 +7318,7 @@ const shouldVerifyModelSelectionSocketRecovery = process.argv.includes(
   "--verify-model-selection-socket-recovery",
 );
 const shouldVerifyRuntimeMenuDismiss = process.argv.includes("--verify-runtime-menu-dismiss");
+const shouldVerifyWorkspaceMenu = process.argv.includes("--verify-workspace-menu");
 const shouldVerifyModelOptionMenuMutation = process.argv.includes(
   "--verify-model-option-menu-mutation",
 );
@@ -7435,6 +7591,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
       verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
       verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
+      verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,
       verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
       verifyComposerStop,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,

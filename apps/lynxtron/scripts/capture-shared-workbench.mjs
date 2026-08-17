@@ -79,6 +79,7 @@ const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
+  "workspace-menu-open": "workspace-menu",
   "quick-switch-actions-only": "quick-switch",
   "quick-switch-empty": "quick-switch",
 };
@@ -1225,6 +1226,7 @@ async function main() {
     "composer-working",
     "composer-connecting",
     "composer-disabled",
+    "workspace-menu-open",
     "review-checkpoint",
     "review-tree",
     "review-diff",
@@ -1630,6 +1632,7 @@ async function captureCell({
     "composer-docked": "existing-thread",
     "composer-working": "existing-thread",
     "composer-disabled": "existing-thread",
+    "workspace-menu-open": "existing-thread",
     "settings-general": "settings-general",
     "settings-connections": "settings-general",
     "settings-source-control": "settings-general",
@@ -2478,6 +2481,7 @@ async function captureCell({
       !webOverlayInputSent &&
       state?.web?.connected === true &&
       state?.web?.productState?.selectedProject === expectProject &&
+      (overlay !== "workspace-menu" || state?.lynx?.productState?.overlay === overlay) &&
       state?.web?.productState?.overlay !== overlay
     ) {
       const triggerSelector =
@@ -2487,7 +2491,9 @@ async function captureCell({
             ? ""
             : overlay === "project-scope"
               ? '[data-testid="sidebar-v2-project-scope-trigger"]'
-              : '[data-composer-control="model"]';
+              : overlay === "workspace-menu"
+                ? '[data-floating-anchor="composer-workspace-menu"]'
+                : '[data-composer-control="model"]';
       const point = triggerSelector
         ? await evaluate(
             cdp,
@@ -2594,6 +2600,7 @@ async function captureCell({
     }
     if (
       (overlay === "project-scope" ||
+        overlay === "workspace-menu" ||
         overlay === "quick-switch" ||
         overlay === "file-picker" ||
         overlay === "model-picker") &&
@@ -2621,10 +2628,32 @@ async function captureCell({
           lynxOverlayWaitPolls = 0;
         }
       } else {
+        if (overlay === "workspace-menu") {
+          const opened = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const frame = document.getElementById('lynx-pane');
+              const probe = frame?.contentWindow?.__T3_LYNX_WEB_PREVIEW__?.openWorkspaceMenuForHarness;
+              if (typeof probe !== 'function') return false;
+              probe(true);
+              return true;
+            })()`,
+          ).catch(() => false);
+          if (opened) {
+            lynxOverlayInputSent = true;
+            lynxShortcutInputChannel = "lynx-workbench-probe:workspace-menu";
+            lynxOverlayWaitPolls = 0;
+            await delay(100);
+            continue;
+          }
+        }
         const triggerSelector =
           overlay === "project-scope"
             ? '[data-testid="sidebar-v2-project-scope-trigger"]'
-            : '[data-composer-control="model"]';
+            : overlay === "workspace-menu"
+              ? '[aria-label="Workspace"]:not([data-composer-workspace-menu])'
+              : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -2633,7 +2662,7 @@ async function captureCell({
             const doc = frame && frame.contentWindow && frame.contentWindow.document;
             const root = doc?.getElementById('t3-lynx-preview')?.shadowRoot;
             const target = root?.querySelector(${JSON.stringify(triggerSelector)});
-            if (!frame || !target) return null;
+            if (!frame || !target || target.getAttribute('aria-disabled') === 'true') return null;
             const fr = frame.getBoundingClientRect();
             const r = target.getBoundingClientRect();
             return { x: fr.x + r.x + r.width / 2, y: fr.y + r.y + r.height / 2 };
@@ -2655,7 +2684,10 @@ async function captureCell({
       }
     }
     if (
-      (overlay === "quick-switch" || overlay === "file-picker" || overlay === "model-picker") &&
+      (overlay === "quick-switch" ||
+        overlay === "file-picker" ||
+        overlay === "model-picker" ||
+        overlay === "workspace-menu") &&
       lynxOverlayInputSent &&
       state?.lynx?.productState?.overlay !== overlay
     ) {
@@ -3559,7 +3591,50 @@ async function captureCell({
     (state?.web?.productState?.overlay !== overlay ||
       state?.lynx?.productState?.overlay !== overlay)
   ) {
-    throw new Error(`Overlay ${overlay} closed before screenshot capture.`);
+    const overlayDiagnostics =
+      overlay === "workspace-menu"
+        ? await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const frame = document.getElementById('lynx-pane');
+              const root = frame?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot;
+              if (!root) return null;
+              const candidates = [...root.querySelectorAll(
+                '[aria-label="Workspace"], [class*="workspace"], [class*="context-control"]'
+              )];
+              return candidates.map((element) => {
+                const rect = element.getBoundingClientRect();
+                return {
+                  tagName: element.tagName,
+                  text: element.textContent?.trim() ?? "",
+                  attributes: Object.fromEntries(
+                    element.getAttributeNames().map((name) => [name, element.getAttribute(name)])
+                  ),
+                  rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+                };
+              });
+            })()`,
+          ).catch((error) => ({ error: String(error) }))
+        : null;
+    throw new Error(
+      `Overlay ${overlay} closed before screenshot capture: ${JSON.stringify({
+        overlayDiagnostics,
+        web: {
+          overlay: state?.web?.productState?.overlay ?? null,
+          metrics: state?.web?.overlayMetrics ?? null,
+          inputSent: webOverlayInputSent,
+          waitPolls: webOverlayWaitPolls,
+        },
+        lynx: {
+          overlay: state?.lynx?.productState?.overlay ?? null,
+          metrics: state?.lynx?.overlayMetrics ?? null,
+          inputSent: lynxOverlayInputSent,
+          waitPolls: lynxOverlayWaitPolls,
+        },
+      })}`,
+    );
   }
   const clip = (r) => ({
     x: Math.round(r.x),

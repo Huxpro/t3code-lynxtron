@@ -215,6 +215,21 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "valueUnchanged: true");
   });
 
+  it("verifies Workspace menu relation, selection, and outside dismissal", () => {
+    assert.include(source, "async function verifyWorkspaceMenu");
+    assert.include(source, '"--verify-workspace-menu"');
+    assert.include(source, 'selector: ".composer-context-control--checkout"');
+    assert.include(source, 'readSelectorMeasurements(client, ".composer-workspace-menu__label")');
+    assert.include(source, 'client.runCdp("DOM.getOuterHTML", { nodeId })');
+    assert.include(source, "innerText || rawText");
+    assert.include(source, 'selector: ".composer-workspace-menu__item--worktree"');
+    assert.include(source, 'side: "top", align: "start", sideOffset: 4');
+    assert.include(source, 'selector: ".composer-workspace-menu-dismiss"');
+    assert.include(source, 'point: "center"');
+    assert.include(source, 'measurement?.text.includes("Start from origin")');
+    assert.include(source, "valueRetainedAfterDismiss");
+  });
+
   it("verifies model-option menus mutate and persist server-declared selections", () => {
     assert.include(source, "async function verifyModelOptionMenuMutation");
     assert.include(source, '"--verify-model-option-menu-mutation"');

@@ -134,7 +134,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId !== "model-picker-empty"');
     assert.include(source, "webMetrics.emptyText === lynxMetrics?.emptyText");
     assert.include(source, "if (!overlay) {");
-    assert.include(source, "Overlay ${overlay} closed before screenshot capture.");
+    assert.include(source, "Overlay ${overlay} closed before screenshot capture:");
     assert.include(source, 'stateId !== "settings-beta"');
     assert.include(source, '"Auto-settle inactive threads"');
     assert.include(source, '"Days of inactivity before auto-settle"');
@@ -175,6 +175,16 @@ describe("shared workbench lifecycle fault capture", () => {
       source,
       "quickSwitchAnatomyMatches(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics)",
     );
+  });
+
+  it("drives the new Workspace menu overlay through real renderer triggers", () => {
+    assert.include(source, '"workspace-menu-open": "workspace-menu"');
+    assert.include(source, '"workspace-menu-open": "existing-thread"');
+    assert.include(source, '"workspace-menu-open",');
+    assert.include(source, 'overlay === "workspace-menu"');
+    assert.include(source, '[data-floating-anchor="composer-workspace-menu"]');
+    assert.include(source, "openWorkspaceMenuForHarness");
+    assert.include(source, '"lynx-workbench-probe:workspace-menu"');
   });
 
   it("measures Lynx recycled-row geometry at the direct list-item wrapper", () => {
