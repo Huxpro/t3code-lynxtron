@@ -19,7 +19,7 @@ errors. Product code does not import the probes.
 | G1  | PrimJS/QuickJS missing modern built-ins               | JS API     | lynx     | P0       | unfiled                                                    |
 | G2  | Web Encoding API and `URLSearchParams` absent         | JS API     | lynx     | P1       | unfiled                                                    |
 | G3  | Async bundle URL rejected (R11)                       | Bundler    | lynxtron | P0       | filed #148                                                 |
-| G4  | External custom-font URLs never reach the loader (R2) | Text       | lynxtron | P1       | confirmed, ready to file                                   |
+| G4  | External custom-font URLs never reach the loader (R2) | Text       | lynxtron | P1       | filed [lynxtron#193]                                       |
 | G5  | Renderer keyboard/global shortcut gap (R5)            | Events     | lynxtron | P0       | filed #149                                                 |
 | G6  | Inline/data-URI SVG gaps (R1)                         | UI         | lynx     | P0       | unfiled                                                    |
 | G7  | CSS hover/focus selectors (R6)                        | CSS/events | lynx     | P1       | confirmed CSS gap; mouse dispatch pending physical session |
@@ -111,8 +111,9 @@ valid 0.0.8 workaround and must be described as an SDK-4.0 re-probe caveat.
 
 1. Follow up on [lynx#8663](https://github.com/lynx-family/lynx/issues/8663)
    with the 0.0.8 scale geometry if maintainers need a lower-stack control.
-2. File G4 narrowly for external font URLs, attaching the working bundled
-   relative control.
+2. Follow up on [lynxtron#193](https://github.com/lynx-family/lynxtron/issues/193)
+   for external font URLs; the issue includes the working bundled relative
+   control.
 3. Keep G7's event-adapter conclusion pending a physical mouse session; file
    only the already-confirmed CSS pseudo-selector ergonomics gap meanwhile.
 4. Remove G14 and G15 from upstream filing lists.
