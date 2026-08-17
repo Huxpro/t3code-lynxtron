@@ -237,43 +237,43 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
             className="sidebar-v2-row-card__content relative z-10 h-[4.875rem] px-2.5 py-2"
             data-sidebar-card-content
           >
-            <HostView className="flex h-5 min-w-0 items-center gap-1.5">
+            <HostView className="sidebar-v2-row-project-line flex h-5 min-w-0 items-center gap-1.5">
               {props.favicon}
               {props.projectTitle ? (
                 <HostText
                   className={cn(
-                    "min-w-0 flex-1 truncate text-xs text-muted-foreground/85",
+                    "sidebar-v2-row-project-title min-w-0 flex-1 truncate text-xs text-muted-foreground/85",
                     props.shouldRecede ? "font-normal" : "font-medium",
                   )}
                 >
                   {props.projectTitle}
                 </HostText>
               ) : (
-                <HostText className="flex-1" />
+                <HostText className="sidebar-v2-row-project-title flex-1" />
               )}
-              <HostView className="relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
-                <HostText
+              <HostView className="sidebar-v2-row-status-slot relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
+                <HostView
                   className={cn(
-                    "sidebar-v2-row-status pointer-events-none tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
+                    "sidebar-v2-row-status pointer-events-none flex items-center justify-end tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
                     props.snoozeMenuOpen && "opacity-0",
                     props.cardActionsPersistent && "opacity-0",
                   )}
                 >
                   {props.topStatus ? (
-                    <HostText
+                    <HostView
                       className={cn(
-                        "inline-flex items-center gap-1 font-medium",
+                        "sidebar-v2-row-status-content flex items-center justify-end gap-1 whitespace-nowrap font-medium",
                         props.topStatus.className,
                       )}
                     >
                       {props.topStatus.icon}
                       <HostText role="status">{props.topStatus.label}</HostText>
                       {props.topStatus.workingDuration}
-                    </HostText>
+                    </HostView>
                   ) : (
-                    props.threadTimeLabel
+                    <HostText>{props.threadTimeLabel}</HostText>
                   )}
-                </HostText>
+                </HostView>
                 {props.settlementSupported || props.showSnoozeButton ? (
                   <HostText
                     className={cn(
@@ -298,7 +298,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 ) : null}
               </HostView>
             </HostView>
-            <HostView className="mt-1 flex min-w-0">
+            <HostView className="sidebar-v2-row-title-line mt-1 flex min-w-0">
               {props.title}
               {props.isRegeneratingTitle ? (
                 <HostText role="status" className="sr-only">
@@ -306,7 +306,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 </HostText>
               ) : null}
             </HostView>
-            <HostView className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground/75">
+            <HostView className="sidebar-v2-row-metadata-line mt-0.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground/75">
               {props.branch ? (
                 <HostText className="min-w-0 flex-1 truncate whitespace-nowrap">
                   {props.branch}

@@ -487,7 +487,7 @@ export default function SidebarV2() {
         onProjectScopeKeyChange: setProjectScopeKey,
         projectScopeMenuOpen,
         onProjectScopeMenuOpenChange: setProjectScopeMenuOpen,
-        projectScopeControlWidth: sidebarWidth - 53,
+        projectScopePopupWidth: sidebarWidth - 53,
         scopedFavicon: scopedProject ? (
           <ProjectFavicon
             environmentId={scopedProject.environmentId}

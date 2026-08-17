@@ -1,10 +1,14 @@
+import { CommandId } from "@t3tools/contracts";
 import * as Clock from "effect/Clock";
+import * as Crypto from "effect/Crypto";
+import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Schedule from "effect/Schedule";
 
+import { OrchestrationEngineService } from "../../orchestration/Services/OrchestrationEngine.ts";
 import { ProjectionSnapshotQuery } from "../../orchestration/Services/ProjectionSnapshotQuery.ts";
 import { ProviderSessionDirectory } from "../Services/ProviderSessionDirectory.ts";
 import {
@@ -25,7 +29,9 @@ const makeProviderSessionReaper = (options?: ProviderSessionReaperLiveOptions) =
   Effect.gen(function* () {
     const providerService = yield* ProviderService;
     const directory = yield* ProviderSessionDirectory;
+    const orchestrationEngine = yield* OrchestrationEngineService;
     const projectionSnapshotQuery = yield* ProjectionSnapshotQuery;
+    const crypto = yield* Crypto.Crypto;
 
     const inactivityThresholdMs = Math.max(
       1,
@@ -40,6 +46,33 @@ const makeProviderSessionReaper = (options?: ProviderSessionReaperLiveOptions) =
 
       for (const binding of bindings) {
         if (binding.status === "stopped") {
+          const thread = yield* projectionSnapshotQuery
+            .getThreadShellById(binding.threadId)
+            .pipe(Effect.map(Option.getOrUndefined));
+          if (thread?.session?.status === "starting" || thread?.session?.status === "running") {
+            const reconciledAt = DateTime.formatIso(yield* DateTime.now);
+            const commandId = CommandId.make(
+              `server:provider-session-reconcile:${yield* crypto.randomUUIDv4}`,
+            );
+            yield* orchestrationEngine.dispatch({
+              type: "thread.session.set",
+              commandId,
+              threadId: binding.threadId,
+              session: {
+                ...thread.session,
+                status: "stopped",
+                activeTurnId: null,
+                lastError: null,
+                updatedAt: reconciledAt,
+              },
+              createdAt: reconciledAt,
+            });
+            yield* Effect.logInfo("provider.session.projection-reconciled", {
+              threadId: binding.threadId,
+              previousStatus: thread.session.status,
+              runtimeStatus: binding.status,
+            });
+          }
           continue;
         }
 

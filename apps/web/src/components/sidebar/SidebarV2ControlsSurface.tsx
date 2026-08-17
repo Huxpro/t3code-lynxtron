@@ -43,7 +43,7 @@ export interface SidebarV2ControlsSurfaceProps {
   readonly onProjectScopeKeyChange: (scopeKey: string | null) => void;
   readonly projectScopeMenuOpen: boolean;
   readonly onProjectScopeMenuOpenChange: (open: boolean) => void;
-  readonly projectScopeControlWidth?: number;
+  readonly projectScopePopupWidth?: number;
   readonly scopedFavicon: ReactNode | null;
   readonly scopedDisplayName: string | null;
   readonly onNewProjectClick: HostButtonProps["onClick"];
@@ -60,7 +60,7 @@ export interface SidebarV2ControlsSurfaceProps {
 export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
   return (
     <>
-      <SidebarGroup className="px-2 pb-2 pt-3">
+      <SidebarGroup className="sidebar-v2-control-group px-2 pb-2 pt-3">
         <HostView
           className={`flex items-center gap-1${props.searchVisual ? " sidebar-v2-control-row--authority" : ""}`}
         >
@@ -121,7 +121,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
         </HostView>
       </SidebarGroup>
       {props.projectScopeOptions.length > 0 ? (
-        <SidebarGroup className="px-2 pb-2 pt-0">
+        <SidebarGroup className="sidebar-v2-control-group px-2 pb-2 pt-0">
           <HostView
             className={`flex items-center gap-1${props.projectScopeVisual ? " sidebar-v2-control-row--authority" : ""}`}
           >
@@ -130,15 +130,6 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
               className={`sidebar-v2-project-scope-host relative min-w-0 flex-1${
                 props.projectScopeMenuOpen ? " sidebar-v2-project-scope-host--open" : ""
               }`}
-              {...(props.projectScopeControlWidth === undefined
-                ? {}
-                : {
-                    style: {
-                      width: `${props.projectScopeControlWidth}px`,
-                      minWidth: `${props.projectScopeControlWidth}px`,
-                      maxWidth: `${props.projectScopeControlWidth}px`,
-                    },
-                  })}
             >
               <Menu
                 open={props.projectScopeMenuOpen}
@@ -163,11 +154,11 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                   side="bottom"
                   sideOffset={4}
                   className="w-(--anchor-width) sidebar-v2-scope-popup"
-                  {...(props.projectScopeControlWidth === undefined
+                  {...(props.projectScopePopupWidth === undefined
                     ? {}
                     : {
                         style: {
-                          width: `${props.projectScopeControlWidth}px`,
+                          width: `${props.projectScopePopupWidth}px`,
                           height: `${(props.projectScopeOptions.length + 1) * 32 + 8}px`,
                           minHeight: `${(props.projectScopeOptions.length + 1) * 32 + 8}px`,
                         },
