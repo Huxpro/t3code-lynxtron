@@ -234,6 +234,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("width: 526px;");
     expect(overrides).toContain("height: 49px;");
     expect(overrides).toContain("margin-top: 8px;");
+    expect(overrides).toContain("font-size: 14px;");
+    expect(overrides).toContain("line-height: 20px;");
     expect(overrides).toContain("height: 28px;");
     expect(overrides).toContain("padding: 0 9px;");
     expect(app).toContain("<GitPublishDialog");
