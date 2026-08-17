@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-17T20:36:00+09:00",
+  "updatedAt": "2026-08-17T21:56:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -8529,6 +8529,172 @@
               "residual": 0,
               "confidence": 0.99,
               "method": "native-sidebar-search-readiness",
+              "source": "Exact bundle, main sequence 11 to 12, zero renderer errors, disposed isolated state, and zero owned/orphaned agent-browser processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "git-publish-dialog-baseline",
+      "observedAt": "2026-08-17T21:16:06+09:00",
+      "commit": "ee4a18ae2790eefe1ed24fee3709f4b5fb691ef3",
+      "codeState": "working-tree",
+      "label": "Git Publish provider-step baseline",
+      "narrative": "A previously unmodeled dark 1280x820 Git Publish provider step was captured on one immutable database, selected idle thread, clean no-remote repository, provider readiness set, and unchanged Web authority. The first valid structural measurement exposed a P1 Lynx layout failure: column CSS tokens did not reach the physical layout, so header, body, and footer were arranged horizontally and overflowed the 576px popup; the provider grid relied on unsupported flex wrapping and became a one-column stack outside the popup; the three steps measured variable widths and 58px height instead of Web's 170x49 cards. Popup material remains unknown because the outer Page screenshot path retained stale iframe pixels that did not include the measured dialog.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds a new same-snapshot overlay state before the repair. It preserves the high structural residual and leaves invalid compositor pixels unknown instead of folding the state into the existing-thread Header evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/git-publish-dialog-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "840916439fa2910422d4d2d20e40a6336ee6bd83733882014eb146df21af0672"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["git-publish-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "git-publish-provider-step-content",
+              "source": "Title, description, step states, and provider readiness match, but Lynx adds provider host subtitles absent from the Web provider cards"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 31, 0, 62, 163.171875, 5, 42.75, 9, 120.421875, 5, 28.296875, 9, 92.125, 5,
+                35.296875, 9, 684.09375, 119, 4, 0, 416.09375, 59, 4, 0, 684.09375, 59, 4, 0,
+                416.09375, 1, 4, 0
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "git-publish-popup-step-provider-geometry",
+              "source": "Popup, three steps, and four provider x/y/width/height deltas against the Web authority"
+            },
+            "typography": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "git-publish-typography-contract",
+              "source": "Lynx uses 13px/19px description typography and extra provider host text while Web uses 14px/20px and label-only cards"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-publish-open-dismiss",
+              "source": "Real pointer input opens both provider steps and real backdrop input dismisses both without publishing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-publish-readiness",
+              "source": "Same state identity, completed readVcsStatus and discoverSourceControl results, zero renderer errors, and clean agent-browser leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "git-publish-dialog-current",
+      "observedAt": "2026-08-17T21:55:22+09:00",
+      "commit": "1839162ae75d310a90fd7ae28077fb15b8b3b500",
+      "codeCommit": "d021c4b54878b1038422fe3a1bb9e7b695218469",
+      "codeState": "commit",
+      "label": "Git Publish provider-step parity",
+      "narrative": "The Lynx Publish wizard now uses reliable column utilities, two explicit provider rows, an explicit first-label class, authority-sized steps, providers, footer controls, and 14px/20px description typography. Browser geometry converges exactly at a 576x364 popup, 574x142 header, 526x49 step strip, 574x159 body, 526x110 provider grid, 574x61 footer, three 170x49 steps, and four 258x50 provider cards. Exact-bundle Native independently measures the same geometry, authenticated GitHub active, main sequence 11 to 12, real backdrop dismissal, zero renderer errors, and disposed isolated state. The stale iframe Page screenshots are explicitly rejected, so Browser and Native material remain unknown.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The before and after Browser structural evidence shares one immutable database, Web bundle, route, selected thread, theme, viewport, provider readiness, and shipping pointer inputs. Exact Native corroborates the final staged bundle. Screenshot compositor loss is excluded rather than converted into a pixel delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/git-publish-dialog-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "840916439fa2910422d4d2d20e40a6336ee6bd83733882014eb146df21af0672"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["git-publish-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "git-publish-provider-step-content",
+              "source": "Title, description, three step states, four provider labels, and provider readiness match exactly"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "git-publish-popup-step-provider-geometry",
+              "source": "Popup, header, body, footer, steps, and provider card rectangles match the Web authority"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "git-publish-typography-contract",
+              "source": "Title, description, step, provider, and footer typography match the authority contract"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-publish-open-dismiss",
+              "source": "Shipping pointer triggers open both provider steps and fullscreen backdrop taps dismiss both"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-publish-readiness",
+              "source": "Discovery-complete provider readiness matches, console errors are zero, and every agent-browser leak gate is clean"
+            }
+          }
+        },
+        {
+          "states": ["git-publish-dialog"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-git-publish-content",
+              "source": "Publish title and description, three steps, four provider cards, and authenticated GitHub active match the canonical provider step"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "native-git-publish-geometry",
+              "source": "Exact Native popup, sections, three steps, four providers, Header action, and fullscreen dismiss rectangles match"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-git-publish-typography",
+              "source": "Exact Native title and description resolve to 20px/20px and 14px/20px with the expected weights"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-publish-open-dismiss",
+              "source": "Measured Native trigger tap opens the provider step and measured fullscreen backdrop tap dismisses it"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-publish-readiness",
               "source": "Exact bundle, main sequence 11 to 12, zero renderer errors, disposed isolated state, and zero owned/orphaned agent-browser processes"
             }
           }
