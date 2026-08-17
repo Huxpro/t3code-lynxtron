@@ -35,6 +35,10 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.logic";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
+import {
+  resolveCurrentWorkspaceLabel,
+  resolveEnvModeLabel,
+} from "../../../../web/src/components/BranchToolbar.logic";
 interface ComposerProps {
   disabled: boolean;
   busy: boolean;
@@ -128,6 +132,24 @@ export function Composer({
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
+  useEffect(() => {
+    if (!viewport.testResize) return;
+    const emitter = lynx.getJSModule?.("GlobalEventEmitter") as
+      | {
+          addListener?: (eventName: string, listener: (value: unknown) => void) => void;
+        }
+      | undefined;
+    emitter?.addListener?.("t3:workspace-menu-test", (value: unknown) => {
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        "open" in value &&
+        typeof value.open === "boolean"
+      ) {
+        setWorkspaceMenuOpen(value.open);
+      }
+    });
+  }, [viewport.testResize]);
   const handleModelOptionMenuWheel = (event: MainThread.WheelEvent) => {
     "main thread";
     const nextOffset = Math.max(0, modelOptionMenuWheelRef.current.offset + event.deltaY);
@@ -239,10 +261,13 @@ export function Composer({
   const interactionModePresentation = getComposerInteractionModePresentation(interactionMode);
   const context = projectComposerContext({
     branch,
-    worktreePath: workspaceMode === "worktree" ? (worktreePath ?? "pending") : null,
+    worktreePath: worktreePath ?? null,
     workspaceModeLocked,
   });
-
+  const checkoutLabel =
+    !workspaceModeLocked && workspaceMode === "worktree" && !worktreePath
+      ? resolveEnvModeLabel("worktree")
+      : context.checkoutLabel;
   const card = (
     <view className="composer-stack">
       <view
@@ -725,7 +750,7 @@ export function Composer({
                   className="composer-context-icon composer-context-icon--checkout"
                 />
                 <text className="composer-context-label composer-context-label--checkout">
-                  {context.checkoutLabel}
+                  {checkoutLabel}
                 </text>
                 {!workspaceModeLocked ? (
                   <Icon
@@ -739,46 +764,50 @@ export function Composer({
               {workspaceMenuOpen ? (
                 <>
                   <view
-                    className="composer-workspace-menu-dismiss"
-                    bindtap={() => setWorkspaceMenuOpen(false)}
-                  />
-                  <view
                     className={`composer-workspace-menu${
                       workspaceMode === "worktree" ? " composer-workspace-menu--worktree" : ""
                     }`}
                     aria-label="Workspace"
                     data-composer-workspace-menu
                     data-floating-popup="composer-workspace-menu"
+                    data-floating-side="top"
+                    data-floating-align="start"
+                    data-floating-side-offset="4"
+                    style={{
+                      width: "158px",
+                    }}
+                    catchtap={() => undefined}
                   >
                     <text className="composer-workspace-menu__eyebrow">Workspace</text>
-                    <view
-                      className={`composer-workspace-menu__item${
-                        workspaceMode === "local" ? " composer-workspace-menu__item--active" : ""
-                      }`}
-                      bindtap={() => {
-                        onWorkspaceModeChange("local");
-                        setWorkspaceMenuOpen(false);
-                      }}
-                    >
-                      <Icon name="folder" size={14} color="#818181" />
-                      <view className="composer-workspace-menu__copy">
-                        <text className="composer-workspace-menu__label">Local checkout</text>
-                        <text className="composer-workspace-menu__description">
-                          Work directly in the project folder.
+                    <view className="composer-workspace-menu__list">
+                      <view
+                        className={`composer-workspace-menu__item${
+                          workspaceMode === "local" ? " composer-workspace-menu__item--active" : ""
+                        } composer-workspace-menu__item--local`}
+                        bindtap={() => {
+                          onWorkspaceModeChange("local");
+                          setWorkspaceMenuOpen(false);
+                        }}
+                      >
+                        <Icon name="folder" size={14} color="#818181" />
+                        <text className="composer-workspace-menu__label">
+                          {resolveCurrentWorkspaceLabel(worktreePath ?? null)}
                         </text>
                       </view>
-                    </view>
-                    <view
-                      className={`composer-workspace-menu__item${
-                        workspaceMode === "worktree" ? " composer-workspace-menu__item--active" : ""
-                      }`}
-                      bindtap={() => onWorkspaceModeChange("worktree")}
-                    >
-                      <Icon name="git-branch" size={14} color="#818181" />
-                      <view className="composer-workspace-menu__copy">
-                        <text className="composer-workspace-menu__label">New worktree</text>
-                        <text className="composer-workspace-menu__description">
-                          Create an isolated worktree from {branch ?? "the selected branch"}.
+                      <view
+                        className={`composer-workspace-menu__item${
+                          workspaceMode === "worktree"
+                            ? " composer-workspace-menu__item--active"
+                            : ""
+                        } composer-workspace-menu__item--worktree`}
+                        bindtap={() => {
+                          onWorkspaceModeChange("worktree");
+                          setWorkspaceMenuOpen(false);
+                        }}
+                      >
+                        <Icon name="git-branch" size={14} color="#818181" />
+                        <text className="composer-workspace-menu__label">
+                          {resolveEnvModeLabel("worktree")}
                         </text>
                       </view>
                     </view>
@@ -806,6 +835,10 @@ export function Composer({
                       </view>
                     ) : null}
                   </view>
+                  <view
+                    className="composer-workspace-menu-dismiss"
+                    bindtap={() => setWorkspaceMenuOpen(false)}
+                  />
                 </>
               ) : null}
             </view>
