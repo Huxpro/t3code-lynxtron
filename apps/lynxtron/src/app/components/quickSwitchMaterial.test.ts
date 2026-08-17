@@ -32,4 +32,19 @@ describe("Quick Switch material", () => {
     expect(footer).toContain("font-weight: 500;");
     expect(footer).toContain("line-height: 20px;");
   });
+
+  it("matches the Web File Picker height without changing command modes", () => {
+    const source = readFileSync(path.resolve(import.meta.dirname, "QuickSwitch.tsx"), "utf8");
+    const filesPanel = rule(".palette-panel--files");
+    const filesResults = rule(".qs-results--files");
+
+    expect(filesPanel).toContain("max-height: 418px;");
+    expect(filesPanel).not.toContain("box-sizing: border-box;");
+    expect(filesResults).toContain("height: 330px;");
+    expect(filesResults).toContain("max-height: 330px;");
+    expect(rule(".palette-panel")).toContain("max-height: 448px;");
+    expect(source).toContain('"palette-panel palette-panel--files"');
+    expect(source).toContain('"qs-results qs-results--files"');
+    expect(overrides).not.toContain('.palette-panel[data-search-overlay-mode="files"]');
+  });
 });
