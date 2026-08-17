@@ -309,6 +309,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "connectorDiagnostics?.commandResults?.some");
     assert.include(source, '({ method }) => method === "readVcsStatus"');
     assert.include(source, '({ method }) => method === "discoverSourceControl"');
+    assert.include(source, "const gitPublishDiscoveryReady =");
+    assert.include(source, "gitPublishDiscoveryReady &&");
     assert.include(source, "webGitPublishOpenAttempts < 2");
     assert.include(source, "lynxGitPublishOpenAttempts < 2");
     assert.include(source, "async function dispatchOverlayOpeningPointerClick");

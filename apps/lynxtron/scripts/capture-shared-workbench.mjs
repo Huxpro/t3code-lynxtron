@@ -3093,6 +3093,11 @@ async function captureCell({
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
+    const gitPublishDiscoveryReady =
+      !isGitPublishDialogState ||
+      state?.lynx?.connectorDiagnostics?.commandResults?.some(
+        ({ method }) => method === "discoverSourceControl",
+      ) === true;
     const shortcutInputReady =
       !requiresShortcutInput ||
       (webOverlayInputSent &&
@@ -3152,6 +3157,7 @@ async function captureCell({
       sessionProjectionReady &&
       stageIdentityReady &&
       headerGitActionReady &&
+      gitPublishDiscoveryReady &&
       gitPublishDialogReady &&
       shortcutInputReady &&
       sidebarSearchReady &&
