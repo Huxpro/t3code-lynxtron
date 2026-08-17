@@ -140,6 +140,39 @@ describe("Lynx Settings route projection", () => {
     expect(unavailableBlock).toContain("opacity: 0.48;");
   });
 
+  it("renders server keybindings as a read-only Lynx table", () => {
+    const keybindings = readFileSync(
+      path.resolve(import.meta.dirname, "components/KeybindingsSettings.tsx"),
+      "utf8",
+    );
+    const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
+
+    expect(keybindings).toContain('buildKeybindingRows(keybindings, "")');
+    expect(keybindings).toContain("serverConfig?.keybindings ?? []");
+    expect(keybindings).toContain('id="keybindings"');
+    expect(keybindings).toContain("rows.map((row, index) =>");
+    expect(keybindings).toContain("formatKeybindingShortcutLabel(row.binding.shortcut, platform)");
+    expect(keybindings).toContain("data-keybinding-conflicts={JSON.stringify(row.conflicts)}");
+    expect(keybindings).toContain('name="triangle-alert"');
+    expect(keybindings).toContain("Keybindings are read-only on Lynxtron");
+    expect(keybindings).not.toContain("Keyboard support is limited on Lynxtron.");
+    expect(overrides).toContain(".settings-panel--keybindings {");
+    expect(overrides).toContain("max-width: 948px;");
+    expect(overrides).toContain(".keybindings-table__row {");
+    expect(keybindings).toContain("<SettingsSection");
+    expect(overrides).toContain(".keybindings-table__command {\n  width: 319px;");
+    expect(overrides).toContain(".keybindings-table__key {\n  width: 247px;");
+    expect(overrides).toContain(".keybindings-table__when {\n  width: 290px;");
+    expect(overrides).toContain(".keybindings-table__status {\n  width: 60px;");
+    const tableStart = overrides.indexOf(".keybindings-table__header,");
+    const tableContract = overrides.slice(
+      tableStart,
+      overrides.indexOf(".keybindings-table__command {", tableStart),
+    );
+    expect(tableContract).toContain("display: flex;");
+    expect(tableContract).not.toContain("grid-template-columns");
+  });
+
   it("renders portable Sidebar v2 auto-settle controls in Lynx", () => {
     const settings = readFileSync(
       path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),

@@ -358,6 +358,16 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(scenarios, 'displayName: "T3 Code (Alpha)"');
   });
 
+  it("routes Keybindings discovery through the Settings bootstrap scenario", () => {
+    assert.include(source, '"settings-keybindings": "settings-general"');
+    assert.include(source, "function keybindingsSettingsContentMatches");
+    assert.include(source, "function keybindingsSettingsGeometryMatches");
+    assert.include(source, "JSON.stringify(canonical(webRows))");
+    assert.include(source, "!rectDeltaWithin(webHeader, lynxHeader, 2)");
+    assert.include(source, "const sharedColumnGeometry");
+    assert.include(source, "if (columnIndex !== 3) return true");
+  });
+
   it("reopens thread-scoped model picker states after selecting the seeded thread", () => {
     assert.include(source, '"model-picker-selected",');
     assert.include(source, 'overlay === "model-picker"');

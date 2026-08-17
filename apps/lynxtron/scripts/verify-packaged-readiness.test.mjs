@@ -404,6 +404,18 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "betaMutation");
   });
 
+  it("verifies the Native read-only Keybindings table", () => {
+    assert.include(source, 'route === "/settings/keybindings"');
+    assert.include(source, 'selector: ".settings-content--keybindings"');
+    assert.include(source, 'selector: "[data-keybindings-table-header]"');
+    assert.include(source, 'readSelectorMeasurements(client, ".keybindings-table__row")');
+    assert.include(source, "rows.length !== 45");
+    assert.include(source, "conflicts.length !== 18");
+    assert.include(source, 'first?.attributes["data-keybinding-command"] !== "chat.new"');
+    assert.include(source, 'last?.attributes["data-keybinding-command"] !== "thread.previous"');
+    assert.include(source, 'scrollInteraction: "pending-user-session"');
+  });
+
   it("verifies Native Archive unarchive, rearchive, and cold restart", () => {
     assert.include(source, "async function verifyArchiveMutation");
     assert.include(source, "async function openArchiveSettings");

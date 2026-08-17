@@ -430,6 +430,67 @@ function appearanceSettingsContentMatches(webMetrics, lynxMetrics) {
   });
 }
 
+function keybindingsSettingsContentMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "settings-keybindings") return true;
+  const webRows = webMetrics?.keybindings?.rows ?? [];
+  const lynxRows = lynxMetrics?.keybindings?.rows ?? [];
+  const canonical = (rows) =>
+    rows.map(({ command, shortcut, when, source, conflicts }) => ({
+      command,
+      shortcut,
+      when,
+      source,
+      conflicts,
+    }));
+  return (
+    webRows.length > 0 &&
+    JSON.stringify(webMetrics?.navigationLabels ?? []) ===
+      JSON.stringify(lynxMetrics?.navigationLabels ?? []) &&
+    JSON.stringify(webMetrics?.sectionTitles ?? []) ===
+      JSON.stringify(lynxMetrics?.sectionTitles ?? []) &&
+    JSON.stringify(canonical(webRows)) === JSON.stringify(canonical(lynxRows)) &&
+    (webMetrics?.errorTexts?.length ?? 0) === 0 &&
+    (lynxMetrics?.errorTexts?.length ?? 0) === 0
+  );
+}
+
+function keybindingsSettingsGeometryMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "settings-keybindings") return true;
+  const webHeader = webMetrics?.keybindings?.header;
+  const lynxHeader = lynxMetrics?.keybindings?.header;
+  const webRows = webMetrics?.keybindings?.rows ?? [];
+  const lynxRows = lynxMetrics?.keybindings?.rows ?? [];
+  if (
+    !rectDeltaWithin(webHeader, lynxHeader, 2) ||
+    webRows.length === 0 ||
+    webRows.length !== lynxRows.length
+  ) {
+    return false;
+  }
+  return webRows.every((webRow, index) => {
+    const lynxRow = lynxRows[index];
+    if (
+      !rectDeltaWithin(webRow.box, lynxRow?.box, 2) ||
+      webRow.columns.length !== 4 ||
+      lynxRow?.columns.length !== 4
+    ) {
+      return false;
+    }
+    return webRow.columns.every((webColumn, columnIndex) => {
+      const webRect = webColumn.box?.rect;
+      const lynxRect = lynxRow.columns[columnIndex]?.box?.rect;
+      if (!webRect || !lynxRect) return false;
+      const sharedColumnGeometry =
+        Math.abs(webRect.x - lynxRect.x) <= 2 && Math.abs(webRect.width - lynxRect.width) <= 2;
+      if (!sharedColumnGeometry) return false;
+      if (columnIndex !== 3) return true;
+      return (
+        Math.abs(webRect.y - lynxRect.y) <= 2 && Math.abs(webRect.height - lynxRect.height) <= 2
+      );
+    });
+  });
+}
+
 function generalSettingsGeometryMatches(webMetrics, lynxMetrics) {
   if (stateId !== "settings-general") return true;
   const webSections = webMetrics?.geometry?.sections ?? [];
@@ -1669,6 +1730,7 @@ async function captureCell({
     "workspace-menu-open": "existing-thread",
     "settings-general": "settings-general",
     "settings-appearance": "settings-general",
+    "settings-keybindings": "settings-general",
     "settings-connections": "settings-general",
     "settings-source-control": "settings-general",
     "settings-source-control-loading": "settings-general",
@@ -3436,6 +3498,7 @@ async function captureCell({
           ((state?.web?.settingsMetrics?.rowIds ?? []).includes("source-control") &&
             (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
   const finalSettingsGeometryReady =
+    keybindingsSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
     connectionsSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
     archiveSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
     betaSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
@@ -3574,45 +3637,50 @@ async function captureCell({
             state?.web?.settingsMetrics,
             state?.lynx?.settingsMetrics,
           )
-        : stateId === "settings-connections"
-          ? connectionsSettingsContentMatches(
+        : stateId === "settings-keybindings"
+          ? keybindingsSettingsContentMatches(
               state?.web?.settingsMetrics,
               state?.lynx?.settingsMetrics,
             )
-          : stateId === "settings-source-control-loading"
-            ? state?.web?.settingsMetrics?.loading === true &&
-              state?.lynx?.settingsMetrics?.loading === true &&
-              JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-              JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
-            : stateId === "settings-source-control-error"
-              ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+          : stateId === "settings-connections"
+            ? connectionsSettingsContentMatches(
+                state?.web?.settingsMetrics,
+                state?.lynx?.settingsMetrics,
+              )
+            : stateId === "settings-source-control-loading"
+              ? state?.web?.settingsMetrics?.loading === true &&
+                state?.lynx?.settingsMetrics?.loading === true &&
                 JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
                   JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0 &&
-                (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
-              : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                  (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                  JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
+                JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                  JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
+              : stateId === "settings-source-control-error"
+                ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                  (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0 &&
+                  (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
+                : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
+                  JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                  ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                    (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                    JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
 
   const layout = await evaluate(
     cdp,

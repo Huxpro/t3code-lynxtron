@@ -59,6 +59,7 @@ const SETTINGS_ANCHOR_BY_ROUTE = {
     "environment-identification",
     "word-wrap",
   ],
+  "settings-keybindings": ["keybindings"],
   "settings-connections": ["remote-environments"],
   "settings-source-control": ["source-control"],
   "settings-beta": ["sidebar-v2"],
@@ -192,6 +193,32 @@ function readSettingsRows(root, ids) {
       },
     ];
   });
+}
+
+function readKeybindingsMetrics(root) {
+  const header = root?.querySelector("[data-keybindings-table-header]") ?? null;
+  const rows = [
+    ...(root?.querySelectorAll("[data-keybinding-command][data-keybinding-shortcut]") ?? []),
+  ];
+  return {
+    header: readElementBox(header),
+    headerColumns: [...(header?.children ?? [])].map((item) => ({
+      text: item.textContent?.trim() ?? "",
+      box: readElementBox(item),
+    })),
+    rows: rows.map((row) => ({
+      command: row.getAttribute("data-keybinding-command"),
+      shortcut: row.getAttribute("data-keybinding-shortcut"),
+      when: row.getAttribute("data-keybinding-when"),
+      source: row.getAttribute("data-keybinding-source"),
+      conflicts: JSON.parse(row.getAttribute("data-keybinding-conflicts") ?? "[]"),
+      box: readElementBox(row),
+      columns: [...row.children].map((item) => ({
+        text: item.textContent?.trim().replace(/\s+/g, " ") ?? "",
+        box: readElementBox(item),
+      })),
+    })),
+  };
 }
 
 function readSidebarStageIdentity(root) {
@@ -1244,6 +1271,10 @@ function readLynxPane() {
               ].map((item) => item.textContent?.trim()),
               rowIds: settingsRowIds.filter((id) => root?.getElementById(id)),
               rows: readSettingsRows(root, settingsRowIds),
+              keybindings:
+                expectedSemanticRoute === "settings-keybindings"
+                  ? readKeybindingsMetrics(root)
+                  : null,
               sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
                 (item) => item.textContent?.trim(),
               ),
@@ -2070,6 +2101,10 @@ function readWebPane() {
                 .filter((label) => SETTINGS_NAV_LABELS.includes(label)),
               rowIds: settingsRowIds.filter((id) => doc.getElementById(id)),
               rows: readSettingsRows(doc, settingsRowIds),
+              keybindings:
+                expectedSemanticRoute === "settings-keybindings"
+                  ? readKeybindingsMetrics(doc)
+                  : null,
               sectionTitles: [
                 ...(settingsPanel?.querySelectorAll(":scope > section > div:first-child h2") ?? []),
               ].map((item) => item.textContent?.trim()),

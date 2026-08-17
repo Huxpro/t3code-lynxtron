@@ -6040,6 +6040,7 @@ async function verifySettingsRouteBehavior({
 }) {
   const observed = [];
   let appearance = null;
+  let keybindings = null;
   let sourceControl = null;
   await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
   observed.push(
@@ -6238,6 +6239,83 @@ async function verifySettingsRouteBehavior({
           name: "native-settings-appearance-unavailable.png",
         }),
       };
+    } else if (route === "/settings/keybindings") {
+      const keybindingsPanel = await waitForMeasurement({
+        child,
+        client,
+        selector: ".settings-content--keybindings",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.text.includes("Keybindings") === true &&
+          measurement.text.includes("Keybindings are read-only on Lynxtron") &&
+          measurement.text.includes("Command") &&
+          measurement.text.includes("Keybinding") &&
+          measurement.text.includes("When") &&
+          measurement.text.includes("Status"),
+      });
+      const header = await waitForMeasurement({
+        child,
+        client,
+        selector: "[data-keybindings-table-header]",
+        timeoutMs,
+        predicate: (measurement) => measurement?.text.includes("Command") === true,
+      });
+      const rows = await readSelectorMeasurements(client, ".keybindings-table__row");
+      const conflicts = rows.filter(
+        (row) =>
+          typeof row.attributes["data-keybinding-conflicts"] === "string" &&
+          row.attributes["data-keybinding-conflicts"] !== "[]",
+      );
+      const conflictIndicators = await readSelectorMeasurements(
+        client,
+        ".keybindings-table__status--conflict",
+      );
+      const first = rows[0];
+      const last = rows.at(-1);
+      if (
+        rows.length !== 45 ||
+        conflicts.length !== 18 ||
+        conflictIndicators.length !== conflicts.length ||
+        !header.rect ||
+        Math.abs(header.rect.x - 294) > 1 ||
+        Math.abs(header.rect.width - 948) > 1 ||
+        Math.abs(header.rect.height - 34) > 1 ||
+        rows.some((row, index) => {
+          const expectedHeight = index === rows.length - 1 ? 40 : 41;
+          return (
+            !row.rect ||
+            Math.abs(row.rect.x - 294) > 1 ||
+            Math.abs(row.rect.width - 948) > 1 ||
+            Math.abs(row.rect.height - expectedHeight) > 1
+          );
+        }) ||
+        first?.attributes["data-keybinding-command"] !== "chat.new" ||
+        first.attributes["data-keybinding-shortcut"] !== "⌘N" ||
+        first.attributes["data-keybinding-when"] !== "!terminalFocus" ||
+        last?.attributes["data-keybinding-command"] !== "thread.previous" ||
+        last.attributes["data-keybinding-shortcut"] !== "⇧⌘[" ||
+        last.attributes["data-keybinding-when"] !== "Always"
+      ) {
+        throw new Error(
+          `Keybindings read-only table drifted: ${JSON.stringify({
+            conflicts,
+            conflictIndicators,
+            first,
+            header,
+            last,
+            rowCount: rows.length,
+          })}`,
+        );
+      }
+      keybindings = {
+        panel: keybindingsPanel.rect,
+        header,
+        rows,
+        conflictCount: conflicts.length,
+        first,
+        last,
+        scrollInteraction: "pending-user-session",
+      };
     } else if (route === "/settings/source-control") {
       const sourceControlPanel = await waitForMeasurement({
         child,
@@ -6315,6 +6393,7 @@ async function verifySettingsRouteBehavior({
       screenshot: generalScreenshot,
     },
     appearance,
+    keybindings,
     sourceControl,
     resync: { beforeSeq: beforeResync.lastSeq, afterSeq: afterResync.lastSeq },
     observed,

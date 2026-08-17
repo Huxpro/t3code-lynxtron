@@ -96,4 +96,16 @@ describe("shared workbench Composer metrics", () => {
       assert.include(source, `"${anchor}"`);
     }
   });
+
+  it("measures the Keybindings section by its stable search anchor", () => {
+    assert.include(source, '"settings-keybindings": ["keybindings"]');
+    assert.include(source, "function readKeybindingsMetrics(root)");
+    assert.include(source, 'root?.querySelector("[data-keybindings-table-header]")');
+    assert.include(source, '"[data-keybinding-command][data-keybinding-shortcut]"');
+    assert.include(
+      source,
+      'conflicts: JSON.parse(row.getAttribute("data-keybinding-conflicts") ?? "[]")',
+    );
+    assert.include(source, "keybindings:");
+  });
 });

@@ -29,7 +29,7 @@ export function KeybindingsSettings() {
             Keybindings are read-only on Lynxtron until renderer keyboard capture is verified.
           </text>
         </view>
-        <view className="keybindings-table__header">
+        <view className="keybindings-table__header" data-keybindings-table-header="true">
           <text className="keybindings-table__header-command">Command</text>
           <text className="keybindings-table__header-key">Keybinding</text>
           <text className="keybindings-table__header-when">When</text>
@@ -43,6 +43,11 @@ export function KeybindingsSettings() {
                 ? "keybindings-table__row keybindings-table__row--last"
                 : "keybindings-table__row"
             }
+            data-keybinding-command={row.command}
+            data-keybinding-shortcut={formatKeybindingShortcutLabel(row.binding.shortcut, platform)}
+            data-keybinding-when={row.when || "Always"}
+            data-keybinding-source={row.source}
+            data-keybinding-conflicts={JSON.stringify(row.conflicts)}
           >
             <text className="keybindings-table__command">{commandLabel(row.command)}</text>
             <text className="keybindings-table__key">
