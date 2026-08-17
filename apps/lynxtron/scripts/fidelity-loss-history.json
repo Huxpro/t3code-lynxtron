@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-17T18:48:00+09:00",
+  "updatedAt": "2026-08-17T19:20:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -8231,6 +8231,137 @@
               "confidence": 0.99,
               "method": "native-workspace-readiness",
               "source": "Exact staged bundle, main transport sequence 2 to 3, zero renderer errors, and disposed isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-picker-default-baseline",
+      "observedAt": "2026-08-17T19:04:25+09:00",
+      "commit": "b957b2d2bef0008836512d7ed1ae807a5db2b6d3",
+      "codeState": "working-tree",
+      "label": "File Picker default baseline",
+      "narrative": "A previously unmodeled File Picker overlay was captured on one immutable dark 1280x820 snapshot with the same idle thread, 65 file rows, empty query, Web bundle, and zero-error console. Both panes opened through their shipping Meta-P channels and already matched content, search geometry, first-row geometry, footer typography, and row typography. The product loss was structural: Web used a 576x420 dialog with a 330px visible results allocation and footer at y=461, while Lynx inherited the generic Quick Switch 448px content-box limit and 384px results viewport, producing a 576x450 shell and footer at y=515. Full-frame pixel residual was 0.258757 and the authority panel residual was 0.523056. The older Native Files browser evidence covers a different right-panel surface and receives no File Picker update.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds a new same-snapshot overlay state before the product fix. It keeps Native overlay cells unknown and records the existing Browser content strengths alongside the real geometry and material loss."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/file-picker-default-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "611ad00c8eb698604805a76e631e9bc4ff083483b3a2544860e8810d08a66550"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-row-identity",
+              "source": "Both panes render the same 65 file rows and empty query"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 30, 0, 0, 0, 0, 0, 54, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "file-picker-shell-search-footer-row-geometry",
+              "source": "Panel height differs by 30px and footer y by 54px; search and first row already match"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-row-footer-typography",
+              "source": "Both panes use 14px/400/20 rows and 14px/500/20 footer typography"
+            },
+            "material": {
+              "residual": 0.258757,
+              "confidence": 0.99,
+              "method": "full-frame-pixel-residual",
+              "source": "MAE 4.452329 and 3.5236% significant pixels; panel residual is 0.523056"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.9,
+              "method": "shipping-meta-p-open",
+              "source": "Web opens through CDP Meta-P and Lynx through the host keyboard Meta-P packet"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-file-picker-readiness",
+              "source": "Same snapshot, route, thread, theme, query, row count, overlay identity, and zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-picker-default-current",
+      "observedAt": "2026-08-17T19:18:11+09:00",
+      "commit": "5816ede6acaf935dbf649a4c380469017787703a",
+      "codeCommit": "ae98e45309ea092396302da5d9105af8a05494ab",
+      "codeState": "commit",
+      "label": "File Picker shell geometry parity",
+      "narrative": "File Picker now uses explicit Lynx-safe mode classes instead of an unsupported attribute selector. Its content-box panel limit is 418px so the one-pixel borders produce the Web 420px outer shell, and its dedicated results scroll viewport is 330px. On the same immutable Browser snapshot, Web and Lynx now both measure a 576x420 panel at 352,82, a 574x48 search row, a 574x330 visible results allocation, a 574x40 footer at y=461, and a 558x48 first row with 65 matching files. Full-frame residual improves from 0.258757 to 0.238936 and panel residual from 0.523056 to 0.482236. Two intermediate implementations are excluded: the Lynx compiler removed the attribute selector, and border-box sizing shrank the panel width while leaving footer overflow. Exact-bundle Native verifies the separate right-panel Files browser remains functional, but File Picker Native overlay cells remain explicit debt.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after Browser captures share one immutable snapshot, Web bundle, content set, query, state, theme, viewport, and shipping open inputs. Only the File Picker mode-specific Lynx sizing changes; the Native regression is a separate surface and is not allocated."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/file-picker-default-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "611ad00c8eb698604805a76e631e9bc4ff083483b3a2544860e8810d08a66550"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-row-identity",
+              "source": "Both panes retain the same 65 file rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "file-picker-shell-search-footer-row-geometry",
+              "source": "Panel, search, visible results allocation, footer, and first row all match"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-row-footer-typography",
+              "source": "Row and footer typography remain aligned"
+            },
+            "material": {
+              "residual": 0.238936,
+              "confidence": 0.99,
+              "method": "full-frame-pixel-residual",
+              "source": "MAE 4.078535 and 3.2912% significant pixels; panel residual is 0.482236"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.9,
+              "method": "shipping-meta-p-open",
+              "source": "Both shipping keyboard paths still open the File Picker state"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-file-picker-readiness",
+              "source": "Same identity, 65 rows, zero console errors, and clean leak gates"
             }
           }
         }

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-17T19:18:11+09:00",
+  "productCommit": "ae98e45309ea092396302da5d9105af8a05494ab",
+  "testCommit": "5816ede6acaf935dbf649a4c380469017787703a",
+  "stateId": "file-picker-default",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "file-picker",
+    "query": "",
+    "surface": "File Picker default shell, search, visible results viewport, rows, footer, and material"
+  },
+  "fixture": {
+    "snapshotSha256": "fd403a55674e0031d4cc0f8e97d5f1339f76cc5e53866fae2a477aa0a218e647",
+    "source": "/tmp/t3-model-selection-ready-dark-20260817/userdata/state.sqlite",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "modelLabel": "Claude Fable 5",
+    "fileRows": 65
+  },
+  "classification": {
+    "productLoss": [
+      "The first valid same-snapshot pair had identical File Picker content, search geometry, first-row geometry, and footer anatomy, but Lynx inherited the generic Quick Switch 448px content-box panel and 384px result viewport.",
+      "The resulting Lynx shell measured 576x450 instead of Web's 576x420, and its footer started at y=515 instead of y=461.",
+      "A first fix used an attribute selector that the Lynx CSS compiler removed. A second border-box fix reached 420px but shrank the outer width to 574 and left the 384px results viewport and footer overflow intact. Both are excluded as failed implementation samples."
+    ],
+    "harnessMismatch": [
+      "No previous same-snapshot Browser File Picker capture existed. The older Files browser evidence is a separate right-panel surface and cannot satisfy this overlay state.",
+      "Web DevTool reports the un-clipped command-list intrinsic height of 3164px; the accepted geometry compares the 420px panel, 48px search, 330px visible result allocation implied by the panel/footer, 40px footer, and 48px first row instead of treating the intrinsic list height as the visible viewport.",
+      "The first hash-print helper had a shell quoting error. It did not change captures or product state and is excluded."
+    ],
+    "evidenceBoundary": "Browser before and after use one immutable snapshot, route, thread, theme, viewport, Web bundle, query, 65-row content set, and zero-error console. Both panes open through their shipping Meta-P keyboard channels. The exact Native run verifies the separate right-panel Files browser as regression-only; it does not fill File Picker overlay content, geometry, typography, material, interaction, or runtime cells."
+  },
+  "browser": {
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameWebBundle": true,
+    "contentMatch": true,
+    "rowCountMatch": true,
+    "inputChannels": {
+      "web": "cdp-meta-p",
+      "lynx": "lynx-host-keyboard-packet:meta-p"
+    },
+    "before": {
+      "status": "pass-with-product-loss",
+      "head": "b957b2d2bef0008836512d7ed1ae807a5db2b6d3",
+      "readyMs": 2234,
+      "rendererErrors": 0,
+      "bundles": {
+        "web": "1a87ffa5b9d872a5d9f689297ef12152aa3dc6e61983a06c109f6652d2d7fe1a",
+        "lynx": "a6a57110d10b6015a553b4747d74d85d563132c3601111bef56a1b06cd4874f7"
+      },
+      "reportSha256": "7278f8db126135218d276dde13fbc0c3438123cb65e9acd99d48fca90980d790",
+      "screenshots": {
+        "web": "4aa22e40a50962fcd51fadd7da43fd66d238ce110d636f296d2635872c8ef2f5",
+        "lynx": "f3ec4c360c8d1bedd4444216d84f0703d1d68617e3d98b4cb0e0598236fb99f7"
+      },
+      "geometry": {
+        "webPanel": { "x": 352, "y": 82, "width": 576, "height": 420 },
+        "lynxPanel": { "x": 352, "y": 82, "width": 576, "height": 450 },
+        "webSearch": { "x": 353, "y": 83, "width": 574, "height": 48 },
+        "lynxSearch": { "x": 353, "y": 83, "width": 574, "height": 48 },
+        "webFooter": { "x": 353, "y": 461, "width": 574, "height": 40 },
+        "lynxFooter": { "x": 353, "y": 515, "width": 574, "height": 40 },
+        "webFirstRow": { "x": 361, "y": 167, "width": 558, "height": 48 },
+        "lynxFirstRow": { "x": 361, "y": 167, "width": 558, "height": 48 },
+        "lynxVisibleResultsHeight": 384
+      },
+      "typography": {
+        "webRow": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+        "lynxRow": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 }
+      },
+      "material": {
+        "pixelMetric": {
+          "threshold": "max RGB channel delta >= 16",
+          "fullFrame": { "mae": 4.452329, "significantShare": 0.035236 },
+          "panel": { "mae": 8.921449, "significantShare": 0.072127 }
+        },
+        "fullFrameResidual": 0.258757,
+        "panelResidual": 0.523056
+      }
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "codeState": "working-tree-product-change",
+      "head": "b957b2d2bef0008836512d7ed1ae807a5db2b6d3",
+      "readyMs": 2282,
+      "rendererErrors": 0,
+      "agentBrowserLeakPreflight": 0,
+      "agentBrowserLeakPostflight": 0,
+      "bundles": {
+        "web": "1a87ffa5b9d872a5d9f689297ef12152aa3dc6e61983a06c109f6652d2d7fe1a",
+        "lynx": "df27fc4b97a3e804496037f9454451ecff52e8bc756b48bb20a395950bbf5b82"
+      },
+      "reportSha256": "62af659e5c0350e7cadc581b1e92d62dd4d6bc0c7d265e4a4c7794c5f1ac3d7b",
+      "screenshots": {
+        "web": "7464de6c05f2c372e6d42d92827c0a0a757cbdee7f0ca72a85a161a4b2b08637",
+        "lynx": "31fb1e23ebb6e79a9f626216fd7b8d16f853a81b97734e537d93eba5b365d480"
+      },
+      "geometry": {
+        "webPanel": { "x": 352, "y": 82, "width": 576, "height": 420 },
+        "lynxPanel": { "x": 352, "y": 82, "width": 576, "height": 420 },
+        "webSearch": { "x": 353, "y": 83, "width": 574, "height": 48 },
+        "lynxSearch": { "x": 353, "y": 83, "width": 574, "height": 48 },
+        "webFooter": { "x": 353, "y": 461, "width": 574, "height": 40 },
+        "lynxFooter": { "x": 353, "y": 461, "width": 574, "height": 40 },
+        "webFirstRow": { "x": 361, "y": 167, "width": 558, "height": 48 },
+        "lynxFirstRow": { "x": 361, "y": 167, "width": 558, "height": 48 },
+        "lynxVisibleResultsHeight": 330,
+        "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        "anchorScale": 576
+      },
+      "typography": {
+        "webRow": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+        "lynxRow": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 }
+      },
+      "material": {
+        "pixelMetric": {
+          "threshold": "max RGB channel delta >= 16",
+          "fullFrame": { "mae": 4.078535, "significantShare": 0.032912 },
+          "panel": { "mae": 8.075978, "significantShare": 0.068208 }
+        },
+        "fullFrameResidual": 0.238936,
+        "panelResidual": 0.482236
+      }
+    }
+  },
+  "nativeRegression": {
+    "allocation": "regression-only",
+    "status": "pass",
+    "head": "b957b2d2bef0008836512d7ed1ae807a5db2b6d3",
+    "bundle": {
+      "bytes": 4537958,
+      "sha256": "0d39038cbb5d1cb12ac4a7d7c93dd300b512fe5141148b531d311d6a678bcee9"
+    },
+    "reportSha256": "c7584f8ed3b21c704478d1c5af1efcadaf34825d943001c60d366dcb28d32323",
+    "surface": "right-panel Files browser, not File Picker overlay",
+    "filesBrowser": {
+      "toolbar": { "x": 741, "y": 52, "width": 539, "height": 40 },
+      "refresh": { "x": 749, "y": 58, "width": 28, "height": 28 },
+      "search": { "x": 809, "y": 58, "width": 455, "height": 28 },
+      "browser": { "x": 741, "y": 92, "width": 539, "height": 728 },
+      "firstVisibleRow": { "x": 745, "y": 96, "width": 531, "height": 24 },
+      "fileSelectionPath": "docs/PORT_WORKFLOW.md"
+    },
+    "transport": { "kind": "main", "beforeSeq": 2, "afterSeq": 4 },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": "31/31",
+    "typecheck": "pass",
+    "browserBuild": "pass with existing asset-size and Effect import.meta warnings",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "agentBrowserLeakGate": "Every completed loop reported owned=0 orphaned=0.",
+    "trackedScreenshotsAdded": 0
+  },
+  "fidelityImpact": {
+    "fixedDenominator": {
+      "statesBefore": 41,
+      "statesAfter": 42,
+      "cellsBefore": 468,
+      "cellsAfter": 480,
+      "totalWeightBefore": 155.4,
+      "totalWeightAfter": 159.4,
+      "formulaChanged": false,
+      "existingStateWeightsChanged": false
+    },
+    "milestones": {
+      "before": 129,
+      "baseline": 130,
+      "after": 131
+    },
+    "totalLoss": {
+      "newScopeBaseline": 0.409107,
+      "after": 0.409061,
+      "productDelta": -0.000046
+    },
+    "after": {
+      "observedResidual": 0.014992,
+      "evidenceDebt": 0.400067
+    },
+    "nativeOverlayDebt": "unchanged and explicit"
+  },
+  "remainingRisk": [
+    "The matched Browser frame retains full-frame residual 0.238936 and panel residual 0.482236 after exact geometry alignment.",
+    "Native File Picker overlay pixels, search input, row selection, and dismissal remain unknown; the right-panel Files regression run does not satisfy those cells.",
+    "Physical keyboard focus and query typing remain pending-user-session beyond the verified shipping Meta-P open packet."
+  ]
+}
