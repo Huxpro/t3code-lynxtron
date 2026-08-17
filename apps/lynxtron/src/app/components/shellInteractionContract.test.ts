@@ -243,8 +243,8 @@ describe("desktop shell interaction contract", () => {
     expect(publish).toContain('className="git-publish-header flex flex-col"');
     expect(publish).toContain('className="git-publish-heading flex flex-col"');
     expect(publish).toContain('className="git-publish-body flex flex-col"');
-    expect(publish).toContain("const providerRows = useMemo");
-    expect(publish).toContain('className="git-publish-provider-row flex flex-row"');
+    expect(publish).not.toContain("providerRows");
+    expect(publish).toContain("providerOptions.map");
     expect(publish).toContain('className="git-publish-label git-publish-label--first">Provider');
     expect(publish).not.toContain(
       '<text className="git-publish-provider-card__host">{item.host}</text>',
@@ -252,7 +252,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).not.toContain("flex-flow: row wrap;");
     expect(overrides).not.toContain(".git-publish-label:first-child");
     expect(overrides).toContain(".git-publish-label--first {");
-    expect(overrides).toContain(".git-publish-provider-row {");
+    expect(overrides).toContain("grid-template-columns: 258px 258px;");
     expect(overrides).toContain("width: 526px;");
     expect(overrides).toContain("height: 49px;");
     expect(overrides).toContain("margin-top: 8px;");
