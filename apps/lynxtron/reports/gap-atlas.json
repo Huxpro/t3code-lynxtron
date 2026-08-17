@@ -1,12 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-04T11:42:06.131Z",
-  "reconciledAt": "2026-08-12",
-  "evidenceDisposition": "Historical gap ordering reconciled with the final5 planning manifest. Reuse/style metrics remain historical inputs; required evidence cells are current.",
+  "generatedAt": "2026-08-17T20:33:35.450Z",
   "sources": {
     "manifest": "apps/lynxtron/evidence/manifests/main-shell.json",
-    "reuse": "apps/lynxtron/reports/reuse/plan11c.json",
-    "style": "apps/lynxtron/reports/style/plan11c.json",
+    "reuse": "apps/lynxtron/reports/reuse/current.json",
+    "style": "historical values retained from apps/lynxtron/reports/gap-atlas.json",
     "compatibility": "apps/lynxtron/docs/compat-matrix.md"
   },
   "incompleteRequiredCells": [
@@ -34,17 +32,11 @@
     {
       "id": "GAP-002",
       "surface": "Main shell / Sidebar / Composer",
-      "states": [
-        "all primary states"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["all primary states"],
+      "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P0",
-      "userImpact": "6.2% module / 4.7% LOC reuse keeps the most visible product surfaces on divergent implementations and makes every fidelity fix expensive.",
+      "userImpact": "6.7% module / 4.8% LOC reuse keeps the most visible product surfaces on divergent implementations and makes every fidelity fix expensive.",
       "frequency": 5,
       "trustImpact": 5,
       "evidenceConfidence": 3,
@@ -57,14 +49,11 @@
       "platformRisk": 2,
       "nativeRequirement": "Native smoke per extracted slice",
       "disposition": "open",
-      "evidence": [
-        "reports/reuse/plan11c.json",
-        "docs/harness/h5-reuse-style-audit.md"
-      ],
+      "evidence": ["reports/reuse/current.json", "docs/harness/h5-reuse-style-audit.md"],
       "screen": "app-shell-sidebar",
       "reuse": {
-        "modules": 6.2,
-        "lines": 4.7
+        "modules": 6.7,
+        "lines": 4.8
       },
       "weightedStyleRiskOccurrences": 4769,
       "priorityScore": 66
@@ -72,13 +61,8 @@
     {
       "id": "GAP-004",
       "surface": "All ordinary UI",
-      "states": [
-        "all"
-      ],
-      "clients": [
-        "lynx",
-        "native"
-      ],
+      "states": ["all"],
+      "clients": ["lynx", "native"],
       "category": "MATERIAL",
       "severity": "P1",
       "userImpact": "The initial weighted style contract exposed broad utility drift; the first high-frequency Native-safe slice is now patched.",
@@ -94,14 +78,11 @@
       "platformRisk": 3,
       "nativeRequirement": "Native specimen batch after Browser calibration",
       "disposition": "closed",
-      "evidence": [
-        "reports/style/plan11c.json",
-        "docs/harness/h5-reuse-style-audit.md"
-      ],
+      "evidence": ["reports/gap-atlas.json", "docs/harness/h5-reuse-style-audit.md"],
       "screen": "new-thread-empty",
       "reuse": {
-        "modules": 16.4,
-        "lines": 21.2
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 61
@@ -109,21 +90,11 @@
     {
       "id": "GAP-005",
       "surface": "Composer",
-      "states": [
-        "hero",
-        "docked",
-        "sendable",
-        "working",
-        "disabled"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["hero", "docked", "sendable", "working", "disabled"],
+      "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P1",
-      "userImpact": "The primary input surface has only 14.8% module / 21.5% LOC reuse at product-surface scope.",
+      "userImpact": "The primary input surface has only 5.9% module / 6.8% LOC reuse at product-surface scope.",
       "frequency": 5,
       "trustImpact": 5,
       "evidenceConfidence": 3,
@@ -136,13 +107,11 @@
       "platformRisk": 4,
       "nativeRequirement": "Native textarea/input/focus remains a bounded hard leaf",
       "disposition": "open",
-      "evidence": [
-        "reports/reuse/plan11c.json"
-      ],
+      "evidence": ["reports/reuse/current.json"],
       "screen": "composer",
       "reuse": {
-        "modules": 14.8,
-        "lines": 21.5
+        "modules": 5.9,
+        "lines": 6.8
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 58
@@ -150,36 +119,33 @@
     {
       "id": "GAP-009",
       "surface": "Light theme",
-      "states": [
-        "all primary surfaces"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["all primary surfaces"],
+      "clients": ["web", "lynx", "native"],
       "category": "RUNTIME_CAPABILITY",
       "severity": "P1",
-      "userImpact": "Web supports light/dark/system while the Lynx renderer is historically dark-only.",
+      "userImpact": "Closed: Web and Lynx support light/dark/system through generated dual token sets and the host-driven root theme class.",
       "frequency": 4,
       "trustImpact": 4,
       "evidenceConfidence": 3,
       "sourceOwner": "generated Lynx tokens and runtime theme host",
-      "likelyRootCause": "Only the effective dark token set is emitted at build time.",
-      "fixClass": "engine correction",
+      "likelyRootCause": "The historical atlas predated the dual token generator, system-theme host, and exact-bundle light/dark evidence.",
+      "fixClass": "product pipeline",
       "reuseLeverage": 5,
       "crossSurfaceLeverage": 5,
       "implementationCost": 4,
       "platformRisk": 3,
-      "nativeRequirement": "required two-theme Native batch",
-      "disposition": "open",
+      "nativeRequirement": "completed exact-bundle light/dark Native evidence",
+      "disposition": "closed",
       "evidence": [
-        "compat-matrix.md#R13"
+        "compat-matrix.md#R13",
+        "evidence/2026-08-15/fidelity/new-thread-hero-light-current-metrics.json",
+        "evidence/2026-08-16/fidelity/existing-thread-working-light-responsive-current-metrics.json",
+        "evidence/2026-08-18/fidelity/page-config-capabilities-current.json"
       ],
       "screen": "new-thread-empty",
       "reuse": {
-        "modules": 16.4,
-        "lines": 21.2
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 56
@@ -187,21 +153,11 @@
     {
       "id": "GAP-006",
       "surface": "Model Picker",
-      "states": [
-        "default",
-        "provider rail",
-        "query",
-        "empty",
-        "selected"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["default", "provider rail", "query", "empty", "selected"],
+      "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P1",
-      "userImpact": "Model selection is high-frequency and currently has 2.9% module / 3.5% LOC reuse.",
+      "userImpact": "Model selection is high-frequency and currently has 2.9% module / 3.1% LOC reuse.",
       "frequency": 4,
       "trustImpact": 5,
       "evidenceConfidence": 3,
@@ -215,13 +171,13 @@
       "nativeRequirement": "Native overlay/tap/focus batch",
       "disposition": "open",
       "evidence": [
-        "reports/reuse/plan11c.json",
+        "reports/reuse/current.json",
         "evidence/manifests/main-shell.json#model-picker-default"
       ],
       "screen": "model-picker",
       "reuse": {
         "modules": 2.9,
-        "lines": 3.5
+        "lines": 3.1
       },
       "weightedStyleRiskOccurrences": 4557,
       "priorityScore": 55
@@ -229,19 +185,8 @@
     {
       "id": "GAP-008",
       "surface": "Existing thread / Transcript",
-      "states": [
-        "idle",
-        "working",
-        "completed",
-        "failed",
-        "approval",
-        "question"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["idle", "working", "completed", "failed", "approval", "question"],
+      "clients": ["web", "lynx", "native"],
       "category": "INTERACTION",
       "severity": "P1",
       "userImpact": "The main user journey lacks strict same-thread state evidence; Native list scroll/follow remains unverified.",
@@ -263,8 +208,8 @@
       ],
       "screen": "existing-thread-transcript",
       "reuse": {
-        "modules": 16.4,
-        "lines": 21.2
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 55
@@ -272,15 +217,8 @@
     {
       "id": "GAP-011",
       "surface": "Native keyboard/focus",
-      "states": [
-        "New Thread",
-        "Quick Switch",
-        "Settings",
-        "Composer"
-      ],
-      "clients": [
-        "native"
-      ],
+      "states": ["New Thread", "Quick Switch", "Settings", "Composer"],
+      "clients": ["native"],
       "category": "RUNTIME_CAPABILITY",
       "severity": "P1",
       "userImpact": "Core keyboard workflows remain pending-user-session and cannot be certified headlessly.",
@@ -296,34 +234,20 @@
       "platformRisk": 5,
       "nativeRequirement": "required authorized real OS input session",
       "disposition": "blocked-runtime",
-      "evidence": [
-        "compat-matrix.md#R5"
-      ],
+      "evidence": ["compat-matrix.md#R5"],
       "screen": "quick-switch",
-      "reuse": {
-        "modules": 3.2,
-        "lines": 2.7
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 3854,
       "priorityScore": 52
     },
     {
       "id": "GAP-007",
       "surface": "Quick Switch",
-      "states": [
-        "default",
-        "query",
-        "actions-only",
-        "empty"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["default", "query", "actions-only", "empty"],
+      "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P1",
-      "userImpact": "The global navigation overlay has 3.2% module / 2.7% LOC reuse; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.",
+      "userImpact": "The global navigation overlay has unavailable reuse metrics; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.",
       "frequency": 4,
       "trustImpact": 4,
       "evidenceConfidence": 3,
@@ -337,31 +261,19 @@
       "nativeRequirement": "Native visible-control path and keyboard boundary",
       "disposition": "open",
       "evidence": [
-        "reports/reuse/plan11c.json",
+        "reports/reuse/current.json",
         "evidence/manifests/main-shell.json#quick-switch-default"
       ],
       "screen": "quick-switch",
-      "reuse": {
-        "modules": 3.2,
-        "lines": 2.7
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 3854,
       "priorityScore": 51
     },
     {
       "id": "GAP-010",
       "surface": "Review / Changed Files",
-      "states": [
-        "checkpoint",
-        "tree",
-        "diff",
-        "empty"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["checkpoint", "tree", "diff", "empty"],
+      "clients": ["web", "lynx", "native"],
       "category": "RUNTIME_CAPABILITY",
       "severity": "P1",
       "userImpact": "Completed work cannot reach full patch review parity; current product-surface reuse is 3.3% / 3.0%.",
@@ -377,35 +289,20 @@
       "platformRisk": 5,
       "nativeRequirement": "required explicit fallback or host-backed patch renderer",
       "disposition": "open",
-      "evidence": [
-        "reports/reuse/plan11c.json",
-        "compat-matrix.md#R10"
-      ],
+      "evidence": ["reports/reuse/current.json", "compat-matrix.md#R10"],
       "screen": "review-changed-files",
-      "reuse": {
-        "modules": 3.3,
-        "lines": 3
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 4085,
       "priorityScore": 50
     },
     {
       "id": "GAP-003",
       "surface": "Settings Connections / Source Control / Beta / Archive",
-      "states": [
-        "default",
-        "loading",
-        "error",
-        "mutation"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["default", "loading", "error", "mutation"],
+      "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P2",
-      "userImpact": "Corrected production roots report 3.4% module / 3.5% LOC reuse for Connections, 4% module / 4.6% LOC reuse for Source Control, 3.6% module / 4% LOC reuse for Beta, and 3.8% module / 4.1% LOC reuse for Archive; route owners remain split despite meaningful shared anatomy.",
+      "userImpact": "Corrected production roots report unavailable reuse metrics for Connections, unavailable reuse metrics for Source Control, unavailable reuse metrics for Beta, and unavailable reuse metrics for Archive; route owners remain split despite meaningful shared anatomy.",
       "frequency": 3,
       "trustImpact": 4,
       "evidenceConfidence": 3,
@@ -418,31 +315,17 @@
       "platformRisk": 2,
       "nativeRequirement": "Native route/navigation/mutation batch",
       "disposition": "open",
-      "evidence": [
-        "reports/reuse/plan11c.json"
-      ],
+      "evidence": ["reports/reuse/current.json"],
       "screen": "settings-connections",
-      "reuse": {
-        "modules": 3.4,
-        "lines": 3.5
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 4335,
       "priorityScore": 45
     },
     {
       "id": "GAP-012",
       "surface": "Settings Appearance",
-      "states": [
-        "General appearance",
-        "theme",
-        "wrap",
-        "identification"
-      ],
-      "clients": [
-        "web",
-        "lynx",
-        "native"
-      ],
+      "states": ["General appearance", "theme", "wrap", "identification"],
+      "clients": ["web", "lynx", "native"],
       "category": "INTERACTION",
       "severity": "P2",
       "userImpact": "Appearance composition exists but controls remain labeled unavailable and have no strict state matrix.",
@@ -458,28 +341,17 @@
       "platformRisk": 3,
       "nativeRequirement": "theme/wrap persistence and restart",
       "disposition": "open",
-      "evidence": [
-        "reports/reuse/plan11c.json",
-        "compat-matrix.md#R13"
-      ],
+      "evidence": ["reports/reuse/current.json", "compat-matrix.md#R13"],
       "screen": "settings-appearance",
-      "reuse": {
-        "modules": 3.1,
-        "lines": 3.3
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 4821,
       "priorityScore": 39
     },
     {
       "id": "GAP-001",
       "surface": "Main shell / New Thread",
-      "states": [
-        "new-thread-hero"
-      ],
-      "clients": [
-        "web",
-        "lynx"
-      ],
+      "states": ["new-thread-hero"],
+      "clients": ["web", "lynx"],
       "category": "HARNESS_INVALID",
       "severity": "P3",
       "userImpact": "The old Harness read the wrong Web selector and falsely reported a model-content gap.",
@@ -502,8 +374,8 @@
       ],
       "screen": "new-thread-empty",
       "reuse": {
-        "modules": 16.4,
-        "lines": 21.2
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 21

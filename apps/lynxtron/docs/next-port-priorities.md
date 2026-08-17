@@ -1,26 +1,26 @@
-# Next Port Top 10
+# Next Port Priorities
 
 Generated from: historical `reports/gap-atlas.json` ordering
-Evidence reconciled: 2026-08-12
+Evidence reconciled: 2026-08-18
 Status: prioritization input; parent gaps and final5 certification are not complete
 
-This list excludes the two closed residuals, GAP-001 and GAP-004. A bounded
-Browser or shared-surface slice is progress only. A row becomes `completed`
-only when every success criterion below is proven by the strict manifest,
-production-resolver audit, focused tests, and Native evidence where required.
+This list excludes the closed residuals GAP-001, GAP-004, and GAP-009. A
+bounded Browser or shared-surface slice is progress only. A row becomes
+`completed` only when every success criterion below is proven by the strict
+manifest, production-resolver audit, focused tests, and Native evidence where
+required.
 
 | Rank | Gap     | Surface                         | Score | Current status                                                                           |
 | ---: | ------- | ------------------------------- | ----: | ---------------------------------------------------------------------------------------- |
 |    1 | GAP-002 | Main shell / Sidebar / Composer |    66 | open                                                                                     |
 |    2 | GAP-005 | Composer                        |    58 | open; Stop is proven, physical input/focus is R5                                         |
-|    3 | GAP-009 | Light theme                     |    56 | open; Native runtime theme matrix absent                                                 |
-|    4 | GAP-006 | Model Picker                    |    55 | open                                                                                     |
-|    5 | GAP-008 | Existing thread / Transcript    |    55 | open; Browser state matrix retained, Native list interaction absent                      |
-|    6 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
-|    7 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
-|    8 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
-|    9 | GAP-003 | Settings sections               |    45 | open                                                                                     |
-|   10 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
+|    3 | GAP-006 | Model Picker                    |    55 | open                                                                                     |
+|    4 | GAP-008 | Existing thread / Transcript    |    55 | open; Browser state matrix retained, Native list interaction absent                      |
+|    5 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
+|    6 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
+|    7 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
+|    8 | GAP-003 | Settings sections               |    45 | open                                                                                     |
+|    9 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
 
 ## Baselines
 
@@ -90,17 +90,16 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - Native textarea focus, input, send, and Stop use real input channels;
   - the editor remains a named, bounded Native leaf.
 
-## 3 — GAP-009 Light Theme
+## Closed — GAP-009 Light Theme
 
-- Goal: emit and switch both semantic token sets at runtime.
-- Success:
-  - light/dark state echoes match on Web and Lynx at 1280 and 1440 widths;
-  - retained Native light/dark frames exist at both standard outer sizes;
-  - restart preserves the selected theme;
-  - no unregistered large-area material difference remains;
-  - R13 closes.
+- Closed by the generated `.theme-light` / `.theme-dark` token sets, the
+  host-driven system theme, and runtime root-class switching.
+- Exact-bundle light Native evidence and responsive light working-thread
+  evidence are retained.
+- The pageConfig probe shows generic color-variable re-resolution remains
+  incomplete, but the product pipeline does not depend on it. R13 is closed.
 
-## 4 — GAP-006 Model Picker
+## 3 — GAP-006 Model Picker
 
 - Goal: share provider rail, search, model rows, selected state, and empty
   anatomy with bounded platform input/menu leaves.
@@ -112,7 +111,7 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - overlay geometry, query, empty, select, and dismiss pass;
   - Native open/select/dismiss uses real taps; keyboard claims require R5.
 
-## 5 — GAP-008 Existing Thread / Transcript
+## 4 — GAP-008 Existing Thread / Transcript
 
 - Goal: prove identical thread content across lifecycle states and real Native
   list behavior.
@@ -125,7 +124,7 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - native list recycling is measured;
   - Browser evidence never substitutes for Native list interaction.
 
-## 6 — GAP-011 Native Keyboard / Focus
+## 5 — GAP-011 Native Keyboard / Focus
 
 - Goal: certify New Thread, Composer, Quick Switch, and Settings keyboard paths.
 - Current blocker: fresh H8 runtime probe shows
@@ -136,7 +135,7 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - no tap-equivalent or renderer-state injection substitutes for keyboard;
   - either R5 closes or remains explicitly blocked by current runtime evidence.
 
-## 7 — GAP-007 Quick Switch
+## 6 — GAP-007 Quick Switch
 
 - Goal: compile Command Palette composition with a Lynx platform primitive.
 - Success:
@@ -145,7 +144,7 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - visible open/select/dismiss and overlay geometry pass on Native;
   - keyboard behavior is claimed only after GAP-011 passes.
 
-## 8 — GAP-010 Review / Changed Files
+## 7 — GAP-010 Review / Changed Files
 
 - Goal: share checkpoint, changed-file tree, empty state, and an explicit patch
   renderer boundary.
@@ -161,7 +160,7 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - Native interaction and content claims are retained;
   - R10 closes or remains an approved hard island.
 
-## 9 — GAP-003 Settings Sections
+## 8 — GAP-003 Settings Sections
 
 - Goal: share Connections, Source Control, Beta, and Archive route owners while
   keeping platform capabilities in named host slots.
@@ -173,7 +172,7 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - Native route stability, Back, mutation, and persistence pass;
   - no control is a silent no-op; unsupported capabilities are explicit.
 
-## 10 — GAP-012 Settings Appearance
+## 9 — GAP-012 Settings Appearance
 
 - Goal: make theme and wrapping controls functional and persistent.
 - Success:
