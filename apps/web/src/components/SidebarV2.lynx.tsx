@@ -14,6 +14,7 @@ import {
   resolveWorkingStartedAt,
   resolveSettledTimestamp,
   formatWorkingDurationLabel,
+  searchSidebarThreadsByTitle,
   sortScopedProjectsForSidebar,
   sortSettledThreadsForSidebarV2,
   sortThreadsForSidebarV2,
@@ -351,6 +352,7 @@ export default function SidebarV2() {
   const threads = useThreadShells();
   const viewport = useViewportSnapshot();
   const [threadSearchQuery, setThreadSearchQuery] = useState("");
+  const [activeSearchResultIndex, setActiveSearchResultIndex] = useState(0);
   const [projectScopeKey, setProjectScopeKey] = useState<string | null>(null);
   const [projectScopeMenuOpen, setProjectScopeMenuOpen] = useState(false);
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
@@ -391,19 +393,22 @@ export default function SidebarV2() {
       settledThreads: sortSettledThreadsForSidebarV2(settled),
     };
   }, [projectScopeKey, serverConfig, threads]);
-  const visibleActiveThreads = useMemo(() => {
-    const query = threadSearchQuery.trim().toLowerCase();
-    return query.length === 0
-      ? activeThreads
-      : activeThreads.filter((thread) => thread.title.toLowerCase().includes(query));
-  }, [activeThreads, threadSearchQuery]);
+  const searchableThreads = useMemo(
+    () => [...activeThreads, ...settledThreads],
+    [activeThreads, settledThreads],
+  );
+  const threadSearchResults = useMemo(
+    () => searchSidebarThreadsByTitle(searchableThreads, threadSearchQuery),
+    [searchableThreads, threadSearchQuery],
+  );
+  const visibleActiveThreads = threadSearchQuery.trim() ? [] : activeThreads;
   const visibleSettledThreads = useMemo(() => {
-    const query = threadSearchQuery.trim().toLowerCase();
-    if (query.length > 0) {
-      return settledThreads.filter((thread) => thread.title.toLowerCase().includes(query));
-    }
+    if (threadSearchQuery.trim()) return [];
     return settledShelfExpanded ? settledThreads : [];
   }, [settledShelfExpanded, settledThreads, threadSearchQuery]);
+  useEffect(() => {
+    setActiveSearchResultIndex(0);
+  }, [threadSearchQuery]);
   useEffect(() => {
     if (!viewport.testResize) return;
     (
@@ -453,6 +458,7 @@ export default function SidebarV2() {
               bindinput={(event: { detail?: { value?: unknown } }) => {
                 if (typeof event.detail?.value === "string") {
                   setThreadSearchQuery(event.detail.value);
+                  setActiveSearchResultIndex(0);
                 }
               }}
             />
@@ -460,7 +466,10 @@ export default function SidebarV2() {
               <view
                 className="sidebar-inline-search__clear"
                 aria-label="Clear thread search"
-                bindtap={() => setThreadSearchQuery("")}
+                bindtap={() => {
+                  setThreadSearchQuery("");
+                  setActiveSearchResultIndex(0);
+                }}
               >
                 <Icon name="x" size={12} color="#a1a1aa" />
               </view>
@@ -490,6 +499,45 @@ export default function SidebarV2() {
         onNewProjectClick: () => uiActions.openQuickSwitch("command"),
       }}
       rows={[
+        ...threadSearchResults.map((thread, index) => {
+          const project = projectById.get(thread.projectId) ?? null;
+          const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
+          const highlighted = index === activeSearchResultIndex;
+          return (
+            <view
+              key={`search:${thread.id}`}
+              id={`sidebar-thread-search-result-${index}`}
+              {...({
+                role: "option",
+                "aria-selected": highlighted ? "true" : "false",
+                "aria-current": thread.id === activeThreadId ? "page" : undefined,
+              } as object)}
+              className={
+                highlighted || thread.id === activeThreadId
+                  ? "sidebar-v2-search-result sidebar-v2-search-result--highlighted"
+                  : "sidebar-v2-search-result"
+              }
+              data-sidebar-search-result={thread.id}
+              bindtap={() => {
+                setThreadSearchQuery("");
+                setActiveSearchResultIndex(0);
+                t3ClientActions.selectThread(thread.id);
+              }}
+            >
+              <ProjectFavicon
+                environmentId={thread.environmentId}
+                cwd={project?.workspaceRoot ?? ""}
+                className="sidebar-v2-search-result__favicon size-4 shrink-0"
+              />
+              <HostText className="sidebar-v2-search-result__title min-w-0 flex-1 truncate">
+                {thread.title}
+              </HostText>
+              <HostText className="sidebar-v2-search-result__time">
+                {compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
+              </HostText>
+            </view>
+          );
+        }),
         ...visibleActiveThreads.map((thread) => {
           const status = resolveSidebarV2Status(thread);
           const isActive = thread.id === activeThreadId;
@@ -715,7 +763,12 @@ export default function SidebarV2() {
           );
         }),
       ]}
-      rowCount={visibleActiveThreads.length + visibleSettledThreads.length}
+      rowCount={
+        threadSearchQuery.trim()
+          ? threadSearchResults.length
+          : visibleActiveThreads.length + visibleSettledThreads.length
+      }
+      listId={threadSearchQuery ? "sidebar-thread-search-results" : undefined}
       listRole={threadSearchQuery ? "listbox" : "list"}
       listAriaLabel={threadSearchQuery ? "Thread search results" : undefined}
       emptyState={

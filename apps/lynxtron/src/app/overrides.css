@@ -1113,6 +1113,40 @@
   font-size: 12px;
   text-align: center;
 }
+.sidebar-v2-search-result {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  gap: 10px;
+  border-radius: 6px;
+  color: rgba(var(--sidebar-muted-foreground-rgb), 0.75);
+  box-sizing: border-box;
+}
+.sidebar-v2-search-result--highlighted {
+  color: var(--sidebar-foreground);
+  background-color: var(--sidebar-row-active);
+}
+.sidebar-v2-search-result__favicon {
+  flex-shrink: 0;
+}
+.sidebar-v2-search-result__title {
+  flex-grow: 1;
+  width: 0;
+  color: inherit;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+}
+.sidebar-v2-search-result__time {
+  flex-shrink: 0;
+  color: rgba(var(--sidebar-muted-foreground-rgb), 0.55);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+}
 .sidebar-v2-project-scope-trigger {
   width: 100%;
   height: 32px;
