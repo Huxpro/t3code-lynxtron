@@ -1025,8 +1025,8 @@ function persistModelSelectionMutation(input: {
   const mutation = bridge?.setModelSelection
     ? bridge.setModelSelection({ threadId: input.threadId, selection: input.selection })
     : Promise.reject(new Error("Model selection updates are unavailable."));
-  void mutation.then(
-    () => {
+  void mutation
+    .then(() => {
       if (
         shouldRollbackModelSelectionMutation({
           currentSequence: modelSelectionMutationSequence,
@@ -1035,8 +1035,8 @@ function persistModelSelectionMutation(input: {
       ) {
         patchState({ modelSelectionError: null, modelSelectionPending: false });
       }
-    },
-    (error: unknown) => {
+    })
+    .catch((error: unknown) => {
       if (
         !shouldRollbackModelSelectionMutation({
           currentSequence: modelSelectionMutationSequence,
@@ -1053,8 +1053,7 @@ function persistModelSelectionMutation(input: {
         threads: input.previous.threads,
       });
       setPref("modelSelection", input.previous.selection ?? null);
-    },
-  );
+    });
 }
 
 function setModelSelection(model: ModelInfo): void {
