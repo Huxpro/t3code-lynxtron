@@ -7,23 +7,21 @@ import { fileURLToPath } from "node:url";
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.resolve(scriptDirectory, "..");
 const repoRoot = path.resolve(appRoot, "../..");
-const reuse = JSON.parse(
-  await readFile(path.join(appRoot, "reports/reuse/plan11c.json"), "utf8"),
-);
-const style = JSON.parse(
-  await readFile(path.join(appRoot, "reports/style/plan11c.json"), "utf8"),
-);
+const reuse = JSON.parse(await readFile(path.join(appRoot, "reports/reuse/current.json"), "utf8"));
 const manifest = JSON.parse(
   await readFile(path.join(appRoot, "evidence/manifests/main-shell.json"), "utf8"),
+);
+const previousAtlas = JSON.parse(
+  await readFile(path.join(appRoot, "reports/gap-atlas.json"), "utf8"),
 );
 
 const reuseByScreen = new Map(
   reuse.screens.map((screen) => [screen.id, screen.graphs.productSurface]),
 );
-const styleRisk = (screen) =>
-  style.highestRisk
-    .filter((row) => row.screens.includes(screen))
-    .reduce((sum, row) => sum + row.occurrences, 0);
+const historicalStyleRiskByScreen = new Map(
+  previousAtlas.gaps.map((gap) => [gap.screen, gap.weightedStyleRiskOccurrences]),
+);
+const styleRisk = (screen) => historicalStyleRiskByScreen.get(screen) ?? 0;
 const reuseMetrics = (screen) => {
   const graph = reuseByScreen.get(screen);
   return graph
@@ -66,9 +64,9 @@ const gaps = [
     evidence: [
       "evidence/manifests/main-shell.json#new-thread-hero",
       "evidence/2026-08-04/H3/main-shell/1280x820/web-assertions.json",
-      "evidence/2026-08-04/H3/main-shell/1280x820/lynx-assertions.json"
+      "evidence/2026-08-04/H3/main-shell/1280x820/lynx-assertions.json",
     ],
-    screen: "new-thread-empty"
+    screen: "new-thread-empty",
   },
   {
     id: "GAP-002",
@@ -77,8 +75,7 @@ const gaps = [
     clients: ["web", "lynx", "native"],
     category: "SOURCE_REUSE",
     severity: "P0",
-    userImpact:
-      `${reuseLabel("app-shell-sidebar")} keeps the most visible product surfaces on divergent implementations and makes every fidelity fix expensive.`,
+    userImpact: `${reuseLabel("app-shell-sidebar")} keeps the most visible product surfaces on divergent implementations and makes every fidelity fix expensive.`,
     frequency: 5,
     trustImpact: 5,
     evidenceConfidence: 3,
@@ -92,8 +89,8 @@ const gaps = [
     platformRisk: 2,
     nativeRequirement: "Native smoke per extracted slice",
     disposition: "open",
-    evidence: ["reports/reuse/plan11c.json", "docs/harness/h5-reuse-style-audit.md"],
-    screen: "app-shell-sidebar"
+    evidence: ["reports/reuse/current.json", "docs/harness/h5-reuse-style-audit.md"],
+    screen: "app-shell-sidebar",
   },
   {
     id: "GAP-003",
@@ -102,8 +99,7 @@ const gaps = [
     clients: ["web", "lynx", "native"],
     category: "SOURCE_REUSE",
     severity: "P2",
-    userImpact:
-      `Corrected production roots report ${reuseLabel("settings-connections")} for Connections, ${reuseLabel("settings-source-control")} for Source Control, ${reuseLabel("settings-beta")} for Beta, and ${reuseLabel("settings-archive")} for Archive; route owners remain split despite meaningful shared anatomy.`,
+    userImpact: `Corrected production roots report ${reuseLabel("settings-connections")} for Connections, ${reuseLabel("settings-source-control")} for Source Control, ${reuseLabel("settings-beta")} for Beta, and ${reuseLabel("settings-archive")} for Archive; route owners remain split despite meaningful shared anatomy.`,
     frequency: 3,
     trustImpact: 4,
     evidenceConfidence: 3,
@@ -117,8 +113,8 @@ const gaps = [
     platformRisk: 2,
     nativeRequirement: "Native route/navigation/mutation batch",
     disposition: "open",
-    evidence: ["reports/reuse/plan11c.json"],
-    screen: "settings-connections"
+    evidence: ["reports/reuse/current.json"],
+    screen: "settings-connections",
   },
   {
     id: "GAP-004",
@@ -142,8 +138,8 @@ const gaps = [
     platformRisk: 3,
     nativeRequirement: "Native specimen batch after Browser calibration",
     disposition: "closed",
-    evidence: ["reports/style/plan11c.json", "docs/harness/h5-reuse-style-audit.md"],
-    screen: "new-thread-empty"
+    evidence: ["reports/gap-atlas.json", "docs/harness/h5-reuse-style-audit.md"],
+    screen: "new-thread-empty",
   },
   {
     id: "GAP-005",
@@ -152,13 +148,13 @@ const gaps = [
     clients: ["web", "lynx", "native"],
     category: "SOURCE_REUSE",
     severity: "P1",
-    userImpact:
-      `The primary input surface has only ${reuseLabel("composer")} at product-surface scope.`,
+    userImpact: `The primary input surface has only ${reuseLabel("composer")} at product-surface scope.`,
     frequency: 5,
     trustImpact: 5,
     evidenceConfidence: 3,
     sourceOwner: "ChatComposer / Composer shared composition",
-    likelyRootCause: "The Web ChatComposer route owner and draft/store graph remain separate from the Lynx host.",
+    likelyRootCause:
+      "The Web ChatComposer route owner and draft/store graph remain separate from the Lynx host.",
     fixClass: "shared composition",
     reuseLeverage: 5,
     crossSurfaceLeverage: 4,
@@ -166,8 +162,8 @@ const gaps = [
     platformRisk: 4,
     nativeRequirement: "Native textarea/input/focus remains a bounded hard leaf",
     disposition: "open",
-    evidence: ["reports/reuse/plan11c.json"],
-    screen: "composer"
+    evidence: ["reports/reuse/current.json"],
+    screen: "composer",
   },
   {
     id: "GAP-006",
@@ -176,13 +172,13 @@ const gaps = [
     clients: ["web", "lynx", "native"],
     category: "SOURCE_REUSE",
     severity: "P1",
-    userImpact:
-      `Model selection is high-frequency and currently has ${reuseLabel("model-picker")}.`,
+    userImpact: `Model selection is high-frequency and currently has ${reuseLabel("model-picker")}.`,
     frequency: 4,
     trustImpact: 5,
     evidenceConfidence: 3,
     sourceOwner: "ProviderModelPicker / ModelPicker composition",
-    likelyRootCause: "Shared catalog/ranking exists but the route-level picker anatomy remains split.",
+    likelyRootCause:
+      "Shared catalog/ranking exists but the route-level picker anatomy remains split.",
     fixClass: "shared composition",
     reuseLeverage: 4,
     crossSurfaceLeverage: 3,
@@ -190,8 +186,11 @@ const gaps = [
     platformRisk: 2,
     nativeRequirement: "Native overlay/tap/focus batch",
     disposition: "open",
-    evidence: ["reports/reuse/plan11c.json", "evidence/manifests/main-shell.json#model-picker-default"],
-    screen: "model-picker"
+    evidence: [
+      "reports/reuse/current.json",
+      "evidence/manifests/main-shell.json#model-picker-default",
+    ],
+    screen: "model-picker",
   },
   {
     id: "GAP-007",
@@ -200,13 +199,13 @@ const gaps = [
     clients: ["web", "lynx", "native"],
     category: "SOURCE_REUSE",
     severity: "P1",
-    userImpact:
-      `The global navigation overlay has ${reuseLabel("quick-switch")}; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.`,
+    userImpact: `The global navigation overlay has ${reuseLabel("quick-switch")}; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.`,
     frequency: 4,
     trustImpact: 4,
     evidenceConfidence: 3,
     sourceOwner: "CommandPalette composition / QuickSwitch host",
-    likelyRootCause: "Ranking semantics are shared but the Web palette composition is not compiled by Lynx.",
+    likelyRootCause:
+      "Ranking semantics are shared but the Web palette composition is not compiled by Lynx.",
     fixClass: "shared composition",
     reuseLeverage: 4,
     crossSurfaceLeverage: 3,
@@ -214,8 +213,11 @@ const gaps = [
     platformRisk: 3,
     nativeRequirement: "Native visible-control path and keyboard boundary",
     disposition: "open",
-    evidence: ["reports/reuse/plan11c.json", "evidence/manifests/main-shell.json#quick-switch-default"],
-    screen: "quick-switch"
+    evidence: [
+      "reports/reuse/current.json",
+      "evidence/manifests/main-shell.json#quick-switch-default",
+    ],
+    screen: "quick-switch",
   },
   {
     id: "GAP-008",
@@ -230,7 +232,8 @@ const gaps = [
     trustImpact: 5,
     evidenceConfidence: 2,
     sourceOwner: "MessagesTimeline shared rows and Native list host",
-    likelyRootCause: "Browser state identity and Native list interaction were historically tested in separate runs.",
+    likelyRootCause:
+      "Browser state identity and Native list interaction were historically tested in separate runs.",
     fixClass: "platform primitive",
     reuseLeverage: 4,
     crossSurfaceLeverage: 4,
@@ -239,7 +242,7 @@ const gaps = [
     nativeRequirement: "required: real list wheel/drag/follow and state switching",
     disposition: "open",
     evidence: ["evidence/manifests/main-shell.json#existing-thread-idle", "compat-matrix.md#R12"],
-    screen: "existing-thread-transcript"
+    screen: "existing-thread-transcript",
   },
   {
     id: "GAP-009",
@@ -248,21 +251,28 @@ const gaps = [
     clients: ["web", "lynx", "native"],
     category: "RUNTIME_CAPABILITY",
     severity: "P1",
-    userImpact: "Web supports light/dark/system while the Lynx renderer is historically dark-only.",
+    userImpact:
+      "Closed: Web and Lynx support light/dark/system through generated dual token sets and the host-driven root theme class.",
     frequency: 4,
     trustImpact: 4,
     evidenceConfidence: 3,
     sourceOwner: "generated Lynx tokens and runtime theme host",
-    likelyRootCause: "Only the effective dark token set is emitted at build time.",
-    fixClass: "engine correction",
+    likelyRootCause:
+      "The historical atlas predated the dual token generator, system-theme host, and exact-bundle light/dark evidence.",
+    fixClass: "product pipeline",
     reuseLeverage: 5,
     crossSurfaceLeverage: 5,
     implementationCost: 4,
     platformRisk: 3,
-    nativeRequirement: "required two-theme Native batch",
-    disposition: "open",
-    evidence: ["compat-matrix.md#R13"],
-    screen: "new-thread-empty"
+    nativeRequirement: "completed exact-bundle light/dark Native evidence",
+    disposition: "closed",
+    evidence: [
+      "compat-matrix.md#R13",
+      "evidence/2026-08-15/fidelity/new-thread-hero-light-current-metrics.json",
+      "evidence/2026-08-16/fidelity/existing-thread-working-light-responsive-current-metrics.json",
+      "evidence/2026-08-18/fidelity/page-config-capabilities-current.json",
+    ],
+    screen: "new-thread-empty",
   },
   {
     id: "GAP-010",
@@ -277,7 +287,8 @@ const gaps = [
     trustImpact: 5,
     evidenceConfidence: 3,
     sourceOwner: "DiffPanel / changed-files composition and R10 renderer island",
-    likelyRootCause: "DOM/Worker patch renderer is unavailable and surrounding review composition remains split.",
+    likelyRootCause:
+      "DOM/Worker patch renderer is unavailable and surrounding review composition remains split.",
     fixClass: "hard island",
     reuseLeverage: 4,
     crossSurfaceLeverage: 3,
@@ -285,8 +296,8 @@ const gaps = [
     platformRisk: 5,
     nativeRequirement: "required explicit fallback or host-backed patch renderer",
     disposition: "open",
-    evidence: ["reports/reuse/plan11c.json", "compat-matrix.md#R10"],
-    screen: "review-changed-files"
+    evidence: ["reports/reuse/current.json", "compat-matrix.md#R10"],
+    screen: "review-changed-files",
   },
   {
     id: "GAP-011",
@@ -295,7 +306,8 @@ const gaps = [
     clients: ["native"],
     category: "RUNTIME_CAPABILITY",
     severity: "P1",
-    userImpact: "Core keyboard workflows remain pending-user-session and cannot be certified headlessly.",
+    userImpact:
+      "Core keyboard workflows remain pending-user-session and cannot be certified headlessly.",
     frequency: 5,
     trustImpact: 4,
     evidenceConfidence: 3,
@@ -309,7 +321,7 @@ const gaps = [
     nativeRequirement: "required authorized real OS input session",
     disposition: "blocked-runtime",
     evidence: ["compat-matrix.md#R5"],
-    screen: "quick-switch"
+    screen: "quick-switch",
   },
   {
     id: "GAP-012",
@@ -332,9 +344,9 @@ const gaps = [
     platformRisk: 3,
     nativeRequirement: "theme/wrap persistence and restart",
     disposition: "open",
-    evidence: ["reports/reuse/plan11c.json", "compat-matrix.md#R13"],
-    screen: "settings-appearance"
-  }
+    evidence: ["reports/reuse/current.json", "compat-matrix.md#R13"],
+    screen: "settings-appearance",
+  },
 ];
 
 const severityScore = { P0: 5, P1: 4, P2: 2, P3: 1 };
@@ -352,8 +364,7 @@ for (const gap of gaps) {
     gap.platformRisk;
 }
 gaps.sort(
-  (left, right) =>
-    right.priorityScore - left.priorityScore || left.id.localeCompare(right.id),
+  (left, right) => right.priorityScore - left.priorityScore || left.id.localeCompare(right.id),
 );
 
 const report = {
@@ -361,9 +372,9 @@ const report = {
   generatedAt: new Date().toISOString(),
   sources: {
     manifest: "apps/lynxtron/evidence/manifests/main-shell.json",
-    reuse: "apps/lynxtron/reports/reuse/plan11c.json",
-    style: "apps/lynxtron/reports/style/plan11c.json",
-    compatibility: "apps/lynxtron/docs/compat-matrix.md"
+    reuse: "apps/lynxtron/reports/reuse/current.json",
+    style: "historical values retained from apps/lynxtron/reports/gap-atlas.json",
+    compatibility: "apps/lynxtron/docs/compat-matrix.md",
   },
   incompleteRequiredCells: manifest.states.flatMap((state) =>
     state.requiredClients
@@ -378,7 +389,7 @@ const report = {
         blockerId: state.evidence[client].blockerId,
       })),
   ),
-  gaps
+  gaps,
 };
 const openGaps = gaps.filter((gap) => gap.disposition !== "closed");
 
@@ -413,7 +424,8 @@ ${gap.evidence.map((entry) => `  - \`${entry}\``).join("\n")}
 `,
   )
   .join("\n");
-const markdown = `# Plan 11C residual atlas
+const markdown =
+  `# Plan 11C residual atlas
 
 Generated: ${report.generatedAt}
 
@@ -434,8 +446,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | --- | --- | --- | --- | ---: | --- | --- |
 ${rows}
 
-${details}
-`;
+${details}`.trimEnd() + "\n";
 await mkdir(path.join(appRoot, "docs"), { recursive: true });
 await writeFile(path.join(appRoot, "docs/gap-atlas.md"), markdown);
 console.log(
@@ -447,8 +458,8 @@ console.log(
       top: openGaps.slice(0, 10).map((gap) => ({
         id: gap.id,
         score: gap.priorityScore,
-        surface: gap.surface
-      }))
+        surface: gap.surface,
+      })),
     },
     null,
     2,
