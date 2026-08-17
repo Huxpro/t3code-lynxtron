@@ -127,6 +127,7 @@ if (
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
+const isFilesBrowserState = stateId === "files-browser";
 const composerExpectationByStateId = {
   "composer-hero": {
     layout: "hero",
@@ -856,6 +857,63 @@ function gitPublishDialogMatches(state) {
   );
 }
 
+function filesBrowserReady(state) {
+  if (!isFilesBrowserState) return true;
+  const web = state?.web?.filesBrowserMetrics;
+  const lynx = state?.lynx?.filesBrowserMetrics;
+  const comparableRows =
+    (web?.rows ?? []).length > 0 &&
+    (web?.rows ?? []).length === (lynx?.rows ?? []).length &&
+    web.rows.every((row, index) => {
+      const lynxRow = lynx.rows[index];
+      const webTypography = row.name?.style ?? row.box?.style;
+      const lynxTypography = lynxRow?.name?.style ?? lynxRow?.box?.style;
+      return (
+        row.text === lynxRow?.text &&
+        rectDeltaWithin(row.box, lynxRow?.box, 1) &&
+        [
+          "borderTopLeftRadius",
+          "borderTopRightRadius",
+          "borderBottomRightRadius",
+          "borderBottomLeftRadius",
+        ].every((key) => row.box?.style?.[key] === "5px" && lynxRow?.box?.style?.[key] === "5px") &&
+        webTypography?.fontSize === "12px" &&
+        lynxTypography?.fontSize === "12px" &&
+        webTypography?.fontFamily?.includes("DM Sans") === true &&
+        lynxTypography?.fontFamily?.includes("DM Sans") === true
+      );
+    });
+  return (
+    web?.present === true &&
+    state?.lynx?.reviewMetrics?.activeKind === "files" &&
+    lynx?.present === true &&
+    web.rowCount > 0 &&
+    web.rowCount === lynx.rowCount &&
+    rectDeltaWithin(web.surface, lynx.surface, 1) &&
+    rectDeltaWithin(web.toolbar, lynx.toolbar, 1) &&
+    rectDeltaWithin(web.refresh, lynx.refresh, 1) &&
+    rectDeltaWithin(web.search, lynx.search, 1) &&
+    rectDeltaWithin(web.browser, lynx.browser, 1) &&
+    web.toolbar?.rect?.height === 40 &&
+    web.refresh?.rect?.width === 24 &&
+    web.refresh?.rect?.height === 24 &&
+    web.search?.rect?.height === 28 &&
+    web.browser?.rect?.height === 736 &&
+    comparableRows
+  );
+}
+
+function filesBrowserSemanticReady(state) {
+  if (!isFilesBrowserState) return true;
+  return (
+    state?.web?.filesBrowserMetrics?.present === true &&
+    state?.lynx?.reviewMetrics?.activeKind === "files" &&
+    state?.lynx?.filesBrowserMetrics?.present === true &&
+    (state?.web?.filesBrowserMetrics?.rowCount ?? 0) > 0 &&
+    state?.web?.filesBrowserMetrics?.rowCount === state?.lynx?.filesBrowserMetrics?.rowCount
+  );
+}
+
 async function dispatchPointerClick(cdp, sessionId, point) {
   await cdp.send(
     "Input.dispatchMouseEvent",
@@ -1418,6 +1476,7 @@ async function main() {
     "existing-thread-failed",
     "existing-thread-approval",
     "existing-thread-question",
+    "files-browser",
     "git-publish-dialog",
     "composer-docked",
     "composer-working",
@@ -1845,6 +1904,7 @@ async function captureCell({
     "review-tree": "existing-thread",
     "review-diff": "existing-thread",
     "review-empty": "existing-thread",
+    "files-browser": "existing-thread",
   };
   const scenario = scenarioByStateId[stateId] ?? "existing-thread";
   const params = new URLSearchParams({
@@ -1901,6 +1961,7 @@ async function captureCell({
   let transcriptReadyPolls = stateId.startsWith("existing-thread-") ? 0 : 3;
   let pendingRequestReadyPolls =
     stateId === "existing-thread-approval" || stateId === "existing-thread-question" ? 0 : 3;
+  let filesBrowserReadyPolls = isFilesBrowserState ? 0 : 3;
   let composerInputSent = composerInput.length === 0;
   let composerInputChannel = composerInput.length === 0 ? "not-required" : "pending";
   let webReviewPanelInputSent =
@@ -1942,6 +2003,10 @@ async function captureCell({
   let lastReviewTimelineKey = "";
   let ownedServerTerminated = false;
   let reachedTargetState = false;
+  let webFilesBrowserInputSent = !isFilesBrowserState;
+  let lynxFilesBrowserInputSent = !isFilesBrowserState;
+  const filesBrowserInteractionTimeline = [];
+  let lastFilesBrowserTimelineKey = "";
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -2180,6 +2245,69 @@ async function captureCell({
           ...JSON.parse(timelineKey),
         });
         lastProviderTimelineKey = timelineKey;
+      }
+    }
+    if (isFilesBrowserState && threadReadyForReview(state, expectThread)) {
+      const timelineKey = JSON.stringify({
+        web: {
+          activeKind: state?.web?.reviewMetrics?.activeKind ?? null,
+          present: state?.web?.filesBrowserMetrics?.present ?? false,
+          rowCount: state?.web?.filesBrowserMetrics?.rowCount ?? 0,
+        },
+        lynx: {
+          activeKind: state?.lynx?.reviewMetrics?.activeKind ?? null,
+          present: state?.lynx?.filesBrowserMetrics?.present ?? false,
+          rowCount: state?.lynx?.filesBrowserMetrics?.rowCount ?? 0,
+        },
+      });
+      if (timelineKey !== lastFilesBrowserTimelineKey) {
+        filesBrowserInteractionTimeline.push({
+          elapsedMs: Date.now() - readyStart,
+          ...JSON.parse(timelineKey),
+        });
+        lastFilesBrowserTimelineKey = timelineKey;
+      }
+      if (state?.web?.filesBrowserMetrics?.present === true) webFilesBrowserInputSent = true;
+      if (state?.lynx?.reviewMetrics?.activeKind === "files") lynxFilesBrowserInputSent = true;
+      if (!webFilesBrowserInputSent || !lynxFilesBrowserInputSent) {
+        const filesPoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const panel = root?.querySelector(
+                '[data-right-panel-open="true"], [data-preview-panel-mode]'
+              );
+              const target = panel
+                ? root?.querySelector('[data-right-panel-action="files"]')
+                : root?.querySelector('[aria-label="Toggle right panel"]');
+              if (!frame || !target || target.getAttribute('aria-disabled') === 'true') return null;
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+              };
+            };
+            return {
+              web: pointFor('web-pane', false),
+              lynx: pointFor('lynx-pane', true),
+            };
+          })()`,
+        ).catch(() => null);
+        if (!webFilesBrowserInputSent && filesPoints?.web) {
+          await dispatchPointerClick(cdp, sessionId, filesPoints.web);
+          await delay(100);
+          continue;
+        }
+        if (!lynxFilesBrowserInputSent && filesPoints?.lynx) {
+          await dispatchPointerClick(cdp, sessionId, filesPoints.lynx);
+          await delay(100);
+          continue;
+        }
       }
     }
     if (
@@ -3297,6 +3425,8 @@ async function captureCell({
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
+    const filesBrowserStateReady = filesBrowserSemanticReady(state);
+    filesBrowserReadyPolls = filesBrowserStateReady ? filesBrowserReadyPolls + 1 : 0;
     const gitPublishDiscoveryReady =
       !isGitPublishDialogState ||
       state?.lynx?.connectorDiagnostics?.commandResults?.some(
@@ -3365,6 +3495,7 @@ async function captureCell({
       headerGitActionReady &&
       gitPublishDiscoveryReady &&
       gitPublishDialogReady &&
+      filesBrowserReadyPolls >= 3 &&
       shortcutInputReady &&
       sidebarSearchReady &&
       sidebarStateReady &&
@@ -3572,6 +3703,7 @@ async function captureCell({
   );
   const finalHeaderGitActionReady = headerGitActionMatches(state);
   const finalGitPublishDialogReady = gitPublishDialogMatches(state);
+  let finalFilesBrowserReady = filesBrowserReady(state);
   if (isGitPublishDialogState && !finalGitPublishDialogReady) {
     throw new Error(
       `Git Publish dialog changed before the compositor gate: ${JSON.stringify({
@@ -3876,6 +4008,7 @@ async function captureCell({
       sessionId,
       `(() => { const w = window.__T3_WORKBENCH__; return w ? w.read() : null; })()`,
     ).catch(() => null)) ?? state;
+  finalFilesBrowserReady = filesBrowserReady(state);
   if (
     overlay &&
     (state?.web?.productState?.overlay !== overlay ||
@@ -4075,6 +4208,7 @@ async function captureCell({
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
+    finalFilesBrowserReady &&
     gitPublishDismissed &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
@@ -4103,6 +4237,7 @@ async function captureCell({
       finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
+      finalFilesBrowserReady,
       gitPublishDismissed,
       finalReviewReady,
       finalSettingsAsyncReady,
@@ -4134,6 +4269,7 @@ async function captureCell({
           composerMetrics: state?.web?.composerMetrics ?? null,
           timelineMetrics: state?.web?.timelineMetrics ?? null,
           reviewMetrics: state?.web?.reviewMetrics ?? null,
+          filesBrowserMetrics: state?.web?.filesBrowserMetrics ?? null,
           pendingRequestMetrics: state?.web?.pendingRequestMetrics ?? null,
           settingsMetrics: state?.web?.settingsMetrics ?? null,
         },
@@ -4158,6 +4294,7 @@ async function captureCell({
           composerMetrics: state?.lynx?.composerMetrics ?? null,
           timelineMetrics: state?.lynx?.timelineMetrics ?? null,
           reviewMetrics: state?.lynx?.reviewMetrics ?? null,
+          filesBrowserMetrics: state?.lynx?.filesBrowserMetrics ?? null,
           pendingRequestMetrics: state?.lynx?.pendingRequestMetrics ?? null,
           settingsMetrics: state?.lynx?.settingsMetrics ?? null,
           rendererErrors: state?.lynx?.rendererErrors ?? [],
@@ -4259,6 +4396,15 @@ async function captureCell({
         postconditionTimeline: gitPublishPostconditionTimeline,
         web: gitPublishDialogEvidence?.web ?? null,
         lynx: gitPublishDialogEvidence?.lynx ?? null,
+      },
+      filesBrowser: {
+        match: finalFilesBrowserReady,
+        interactionChannel: isFilesBrowserState
+          ? "web-pointer-click|lynx-pointer-click"
+          : "not-required",
+        timeline: filesBrowserInteractionTimeline,
+        web: state?.web?.filesBrowserMetrics ?? null,
+        lynx: state?.lynx?.filesBrowserMetrics ?? null,
       },
       expectProject,
       webState,

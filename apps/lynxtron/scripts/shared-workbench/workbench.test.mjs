@@ -89,6 +89,15 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'lynxQuery.set("sidebarWidth"');
   });
 
+  it("records Files browser anatomy and rows for both renderers", () => {
+    assert.include(source, "function readFilesBrowserMetrics(root)");
+    assert.include(source, '"[data-file-browser-panel], .files-panel"');
+    assert.include(source, "const composedElements = []");
+    assert.include(source, "if (child.shadowRoot) visit(child.shadowRoot)");
+    assert.include(source, "\"button[data-type='item']\"");
+    assert.include(source, "filesBrowserMetrics: readFilesBrowserMetrics");
+  });
+
   it("measures the Git Publish popup rather than the fullscreen Lynx overlay", () => {
     assert.include(
       source,

@@ -627,6 +627,54 @@ function readPendingRequestMetrics(root) {
   return null;
 }
 
+function readFilesBrowserMetrics(root) {
+  const surface = root?.querySelector("[data-file-browser-panel], .files-panel");
+  const toolbar = surface?.querySelector("[data-surface-subheader], .files-panel__toolbar");
+  const refresh = surface?.querySelector('[aria-label="Refresh workspace files"]');
+  const searchInput = surface?.querySelector('[placeholder="Search files"]');
+  const search =
+    searchInput?.closest(".files-panel__search, [data-slot='input-group']") ?? searchInput;
+  const composedElements = [];
+  const visit = (node) => {
+    for (const child of node?.children ?? []) {
+      composedElements.push(child);
+      visit(child);
+      if (child.shadowRoot) visit(child.shadowRoot);
+    }
+  };
+  visit(surface);
+  const shadowRows = composedElements.filter((element) =>
+    element.matches?.("button[data-type='item']"),
+  );
+  const lightRows = [...(surface?.querySelectorAll(".file-tree-row") ?? [])];
+  const rows = shadowRows.length > 0 ? shadowRows : lightRows;
+  const browser =
+    surface?.querySelector(".files-panel__browser") ??
+    shadowRows[0]?.getRootNode()?.host ??
+    composedElements.find((element) => element.getAttribute("role") === "tree");
+  return {
+    present: Boolean(surface),
+    surface: readElementBox(surface),
+    toolbar: readElementBox(toolbar),
+    refresh: readElementBox(refresh),
+    search: readElementBox(search),
+    browser: readElementBox(browser),
+    rowCount: rows.length,
+    rows: rows.slice(0, 8).map((row) => {
+      const name = row.querySelector?.(".file-tree-row__name") ?? null;
+      return {
+        text:
+          row.getAttribute("aria-label") ??
+          name?.textContent?.trim() ??
+          row.textContent?.trim().replace(/\s+/g, " ") ??
+          "",
+        box: readElementBox(row),
+        name: readElementBox(name),
+      };
+    }),
+  };
+}
+
 const webPane = /** @type {HTMLIFrameElement} */ (document.getElementById("web-pane"));
 const lynxPane = /** @type {HTMLIFrameElement} */ (document.getElementById("lynx-pane"));
 for (const frame of [webPane, lynxPane]) {
@@ -1317,6 +1365,7 @@ function readLynxPane() {
       },
       gitPublishDialog: readGitPublishDialog(root),
       reviewMetrics: readReviewMetrics(root),
+      filesBrowserMetrics: readFilesBrowserMetrics(root),
       pendingRequestMetrics,
       settingsMetrics: settingsRoute
         ? (() => {
@@ -2024,6 +2073,7 @@ function readWebPane() {
       },
       gitPublishDialog: readGitPublishDialog(doc),
       reviewMetrics: readReviewMetrics(doc),
+      filesBrowserMetrics: readFilesBrowserMetrics(doc),
       pendingRequestMetrics: readPendingRequestMetrics(doc),
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(doc),

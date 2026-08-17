@@ -76,6 +76,22 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "sidebarControlGeometry:");
   });
 
+  it("opens the Files browser through shipping right-panel actions", () => {
+    assert.include(source, 'const isFilesBrowserState = stateId === "files-browser"');
+    assert.include(source, "function filesBrowserReady(state)");
+    assert.include(source, "function filesBrowserSemanticReady(state)");
+    assert.include(source, "'[data-right-panel-open=\"true\"], [data-preview-panel-mode]'");
+    assert.include(source, "'[data-right-panel-action=\"files\"]'");
+    assert.include(source, "'[aria-label=\"Toggle right panel\"]'");
+    assert.include(source, "filesBrowserInteractionTimeline");
+    assert.include(source, "rectDeltaWithin(web.toolbar, lynx.toolbar, 1)");
+    assert.include(source, 'webTypography?.fontSize === "12px"');
+    assert.include(source, 'row.box?.style?.[key] === "5px"');
+    assert.include(source, "filesBrowserReadyPolls >= 3");
+    assert.include(source, "finalFilesBrowserReady = filesBrowserReady(state)");
+    assert.include(source, "finalFilesBrowserReady");
+  });
+
   it("rejects wrapped or overflowing Sidebar Working metadata", () => {
     assert.include(source, "function sidebarWorkingGeometryMatches(state, expectedThreadFixture)");
     assert.include(source, "Math.abs(card.height - 78) <= 2");

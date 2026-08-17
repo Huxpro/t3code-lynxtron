@@ -25,6 +25,10 @@ const connectorSource = readFileSync(
   path.resolve(import.meta.dirname, "../../main/desktop/connector.ts"),
   "utf8",
 );
+const browserPreviewSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
+  "utf8",
+);
 
 describe("desktop shell interaction contract", () => {
   it("keeps the anchored model picker dismissible without modal dimming", () => {
@@ -173,6 +177,22 @@ describe("desktop shell interaction contract", () => {
     expect(files).not.toContain('className="files-panel__preview"');
     expect(files).not.toContain('className="files-panel__info"');
     expect(overrides).toContain(".files-panel__toolbar {");
+    expect(browserPreviewSource).toContain(
+      '".files-panel{" +\n      "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:100%;min-height:0;}"',
+    );
+    expect(browserPreviewSource).toContain(
+      '".files-panel__browser{" +\n      "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:0;min-height:0;}"',
+    );
+    expect(browserPreviewSource).toContain(
+      '".files-panel__refresh{width:24px!important;height:24px!important;}"',
+    );
+    expect(browserPreviewSource).toContain(
+      '".files-panel__tree{" +\n      "display:flex;flex-direction:column;width:100%;padding:0 16px!important;box-sizing:border-box;}"',
+    );
+    expect(browserPreviewSource).toContain(
+      '".files-panel .file-tree-children{row-gap:0!important;column-gap:0!important;}"',
+    );
+    expect(browserPreviewSource).toContain("x-input.files-panel__search-input::part(input)");
     expect(overrides).toContain("height: 40px;");
     expect(overrides).toContain(".files-panel__search--focused {");
     expect(overrides).not.toContain(".files-panel__search:focus-within {");
