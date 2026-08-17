@@ -1,4 +1,5 @@
 import { defineConfig } from "@lynx-js/rspeedy";
+import { pluginLynxConfig } from "@lynx-js/config-rsbuild-plugin";
 import { pluginRspeedyDevReady } from "@lynx-js/lynxtron-dev-plugins/rspeedy";
 import { pluginReactLynx } from "@lynx-js/react-rsbuild-plugin";
 import { tanstackRouter } from "@tanstack/router-plugin/rspack";
@@ -9,6 +10,7 @@ import path from "node:path";
 const require = createRequire(import.meta.url);
 const probeEntry = process.env.T3_LYNXTRON_PROBE_ENTRY?.trim();
 const probeOutput = process.env.T3_LYNXTRON_PROBE_OUTPUT?.trim();
+const probePageConfig = process.env.T3_LYNXTRON_PROBE_PAGE_CONFIG?.trim();
 const webPreview = process.env.T3_LYNXTRON_WEB_PREVIEW === "1";
 
 if ((probeEntry === undefined) !== (probeOutput === undefined)) {
@@ -16,6 +18,16 @@ if ((probeEntry === undefined) !== (probeOutput === undefined)) {
     "T3_LYNXTRON_PROBE_ENTRY and T3_LYNXTRON_PROBE_OUTPUT must be provided together.",
   );
 }
+
+if (probePageConfig !== undefined && probeEntry === undefined) {
+  throw new Error("T3_LYNXTRON_PROBE_PAGE_CONFIG requires an env-gated probe entry.");
+}
+
+const parsedProbePageConfig =
+  probePageConfig === undefined
+    ? undefined
+    : (JSON.parse(probePageConfig) as Record<string, unknown>);
+const probePageConfigKeys = parsedProbePageConfig ? Object.keys(parsedProbePageConfig) : [];
 
 // Polyfill globals that TanStack Router and url-search-params-polyfill
 // expect. The Lynx runtime does not provide window, self, document, etc.
@@ -280,6 +292,14 @@ export default defineConfig({
     pluginReactLynx({
       enableCSSInheritance: true,
     }),
+    ...(parsedProbePageConfig
+      ? [
+          pluginLynxConfig(parsedProbePageConfig, {
+            configKeys: probePageConfigKeys,
+            validate: (input) => input as never,
+          }),
+        ]
+      : []),
     pluginRspeedyDevReady(),
   ],
 });

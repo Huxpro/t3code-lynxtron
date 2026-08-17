@@ -1,0 +1,164 @@
+@font-face {
+  font-family: "Issue2 Probe Font";
+  src: url("../assets/dm-sans.woff2");
+}
+
+.page-config-probe {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #111318;
+}
+
+.page-config-probe__section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+  padding: 12px;
+  border: 1px solid #353943;
+  border-radius: 8px;
+  background-color: #1a1d24;
+}
+
+.page-config-probe__title {
+  margin-bottom: 8px;
+  color: #f4f6fb;
+  font-size: 17px;
+}
+
+.page-config-probe__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.mouse-probe-target {
+  width: 180px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: #315efb;
+}
+
+.mouse-probe-outside {
+  width: 120px;
+  height: 64px;
+  background-color: #2a2d35;
+}
+
+.theme-probe-light {
+  --probe-theme-color: #dbeafe;
+  --probe-theme-width: 90px;
+}
+
+.theme-probe-dark {
+  --probe-theme-color: #7c3aed;
+  --probe-theme-width: 150px;
+}
+
+.theme-probe-class-value {
+  width: var(--probe-theme-width);
+  height: 42px;
+  background-color: var(--probe-theme-color);
+}
+
+.theme-probe-set-root {
+  --probe-set-color: #f59e0b;
+  --probe-set-width: 100px;
+}
+
+.theme-probe-set-value {
+  width: var(--probe-set-width);
+  height: 42px;
+  background-color: var(--probe-set-color);
+}
+
+.grid-probe-basic {
+  display: grid;
+  grid-template-columns: 100px 1fr 80px;
+  grid-template-rows: 40px 60px;
+  column-gap: 10px;
+  row-gap: 8px;
+  width: 400px;
+}
+
+.grid-probe-span {
+  display: grid;
+  grid-template-columns: 100px 100px 100px;
+  grid-template-rows: 44px 44px;
+  grid-auto-flow: row;
+  gap: 6px;
+  width: 312px;
+}
+
+.grid-probe-span__wide {
+  grid-column-span: 2;
+}
+
+.grid-probe-column-flow {
+  display: grid;
+  grid-template-columns: 80px 80px;
+  grid-template-rows: 36px 36px;
+  grid-auto-flow: column;
+  gap: 5px;
+  width: 165px;
+}
+
+.grid-probe-arbitrary {
+  display: grid;
+  grid-template-columns:
+    minmax(190px, 1.1fr) minmax(220px, 0.85fr) minmax(210px, 1fr)
+    60px;
+  column-gap: 8px;
+  width: 760px;
+}
+
+.grid-probe-cell {
+  min-height: 32px;
+  background-color: #334155;
+}
+
+.grid-probe-cell--alt {
+  background-color: #475569;
+}
+
+.transform-probe-stage {
+  position: relative;
+  width: 220px;
+  height: 100px;
+  background-color: #262a32;
+}
+
+.transform-probe-box {
+  position: absolute;
+  left: 60px;
+  top: 30px;
+  width: 80px;
+  height: 40px;
+  transform: scaleX(2);
+  background-color: #22c55e;
+}
+
+.transform-probe-left {
+  transform-origin: left center;
+}
+
+.transform-probe-center {
+  transform-origin: center center;
+}
+
+.font-probe-face,
+.font-probe-fallback {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.font-probe-face {
+  font-family: "Issue2 Probe Font";
+}
+
+.font-probe-fallback {
+  font-family: sans-serif;
+}
