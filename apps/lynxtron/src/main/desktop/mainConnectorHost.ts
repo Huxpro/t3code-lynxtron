@@ -53,6 +53,7 @@ export async function settleMainConnectorHandler(
 
 export interface ConnectorLike {
   connect(): Promise<unknown>;
+  recoverTransport?(): Promise<void>;
   dispose(): void;
   [method: string]: unknown;
 }
@@ -220,7 +221,12 @@ export class MainConnectorHost {
       this.options.onLog?.(
         `[main-connector] ${request.method} hit a stale transport; reconnecting once`,
       );
-      await this.reconnect();
+      const connector = this.connector;
+      if (connector?.recoverTransport) {
+        await connector.recoverTransport();
+      } else {
+        await this.reconnect();
+      }
       return dispatch();
     }
   }

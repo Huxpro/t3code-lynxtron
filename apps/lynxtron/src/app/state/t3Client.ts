@@ -66,6 +66,7 @@ import { getClientSettingsState, getPref, setPref, updateClientSettingsState } f
 import {
   callBridge,
   startMainConnectorTransport,
+  type BridgeCallResult,
   type BridgeCallModule,
   type GlobalEventListenerRegistry,
   type MainConnectorTransport,
@@ -1002,6 +1003,31 @@ function projectThreadModelSelection(
   );
 }
 
+function settleModelSelectionMutation(input: {
+  readonly threadId: string | undefined;
+  readonly selection: ModelSelection;
+}): Promise<BridgeCallResult> {
+  if (mainTransport) {
+    return mainTransport.invokeSettled("setModelSelection", input);
+  }
+  const bridge = getBridge();
+  if (!bridge?.setModelSelection) {
+    return Promise.resolve({ ok: false, error: "Model selection updates are unavailable." });
+  }
+  try {
+    return bridge.setModelSelection(input).then(
+      (value) => ({ ok: true, value }) as const,
+      (error: unknown) =>
+        ({
+          ok: false,
+          error: modelSelectionMutationError(error),
+        }) as const,
+    );
+  } catch (error) {
+    return Promise.resolve({ ok: false, error: modelSelectionMutationError(error) });
+  }
+}
+
 function persistModelSelectionMutation(input: {
   readonly previous: {
     readonly selectedModel: ModelInfo | undefined;
@@ -1012,7 +1038,6 @@ function persistModelSelectionMutation(input: {
   readonly selection: ModelSelection;
   readonly threadId: string | undefined;
 }): void {
-  const bridge = getBridge();
   const sequence = ++modelSelectionMutationSequence;
   patchState({
     selectedModel: input.selectedModel,
@@ -1022,21 +1047,12 @@ function persistModelSelectionMutation(input: {
     threads: projectThreadModelSelection(input.previous.threads, input.threadId, input.selection),
   });
   setPref("modelSelection", input.selection);
-  const mutation = bridge?.setModelSelection
-    ? bridge.setModelSelection({ threadId: input.threadId, selection: input.selection })
-    : Promise.reject(new Error("Model selection updates are unavailable."));
-  void mutation
-    .then(() => {
-      if (
-        shouldRollbackModelSelectionMutation({
-          currentSequence: modelSelectionMutationSequence,
-          failedSequence: sequence,
-        })
-      ) {
-        patchState({ modelSelectionError: null, modelSelectionPending: false });
-      }
-    })
-    .catch((error: unknown) => {
+  const mutation = settleModelSelectionMutation({
+    threadId: input.threadId,
+    selection: input.selection,
+  });
+  void mutation.then((result) => {
+    try {
       if (
         !shouldRollbackModelSelectionMutation({
           currentSequence: modelSelectionMutationSequence,
@@ -1045,15 +1061,22 @@ function persistModelSelectionMutation(input: {
       ) {
         return;
       }
+      if (result.ok) {
+        patchState({ modelSelectionError: null, modelSelectionPending: false });
+        return;
+      }
       patchState({
         selectedModel: input.previous.selectedModel,
         modelSelection: input.previous.selection,
-        modelSelectionError: modelSelectionMutationError(error),
+        modelSelectionError: result.error,
         modelSelectionPending: false,
         threads: input.previous.threads,
       });
       setPref("modelSelection", input.previous.selection ?? null);
-    });
+    } catch (error) {
+      console.error("[t3-client] failed to settle model selection state", { error });
+    }
+  });
 }
 
 function setModelSelection(model: ModelInfo): void {

@@ -188,6 +188,7 @@ export class T3Connector {
   private ready = false;
   private serverExited = false;
   private disposed = false;
+  private transportRecoveryPromise: Promise<void> | undefined;
 
   constructor(events: ConnectorEvents) {
     this.events = events;
@@ -291,29 +292,7 @@ export class T3Connector {
     const bearer = JSON.parse(exchange.body).access_token as string;
     this.bearer = bearer;
 
-    // Get a websocket ticket.
-    const ticketRes = await httpRequest(
-      this.host,
-      this.port,
-      "/api/auth/websocket-ticket",
-      "POST",
-      {
-        authorization: "Bearer " + bearer,
-        "content-type": "application/json",
-        "content-length": "2",
-      },
-      "{}",
-    );
-    if (ticketRes.status !== 200) {
-      throw new Error(`ws ticket failed (${ticketRes.status}): ${ticketRes.body.slice(0, 200)}`);
-    }
-    const wsTicket = JSON.parse(ticketRes.body).ticket as string;
-
-    const socketUrl = `ws://${this.host}:${this.port}/ws?wsTicket=${encodeURIComponent(wsTicket)}`;
-    this.log(`[connector] socketUrl ${socketUrl}`);
-
-    // Build the Effect RPC client over the WS.
-    const config = await this.openRpc(socketUrl);
+    const config = await this.openRpc(await this.issueSocketUrl());
     this.setServerConfig(config, {
       version: 1,
       type: "snapshot",
@@ -343,6 +322,76 @@ export class T3Connector {
       config,
       cwd: config.cwd,
     };
+  }
+
+  private async issueSocketUrl(): Promise<string> {
+    if (!this.bearer) throw new Error("not connected");
+    const ticketRes = await httpRequest(
+      this.host,
+      this.port,
+      "/api/auth/websocket-ticket",
+      "POST",
+      {
+        authorization: `Bearer ${this.bearer}`,
+        "content-type": "application/json",
+        "content-length": "2",
+      },
+      "{}",
+    );
+    if (ticketRes.status !== 200) {
+      throw new Error(`ws ticket failed (${ticketRes.status}): ${ticketRes.body.slice(0, 200)}`);
+    }
+    const wsTicket = JSON.parse(ticketRes.body).ticket as string;
+    const socketUrl = `ws://${this.host}:${this.port}/ws?wsTicket=${encodeURIComponent(wsTicket)}`;
+    this.log(`[connector] socketUrl ${socketUrl}`);
+    return socketUrl;
+  }
+
+  async recoverTransport(): Promise<void> {
+    if (this.disposed) throw new Error("connector is disposed");
+    if (this.serverExited || !this.child) throw new Error("t3 server is not running");
+    if (this.transportRecoveryPromise) return this.transportRecoveryPromise;
+    const recovery = this.rebuildRpcTransport();
+    const tracked = recovery.finally(() => {
+      if (this.transportRecoveryPromise === tracked) {
+        this.transportRecoveryPromise = undefined;
+      }
+    });
+    this.transportRecoveryPromise = tracked;
+    return tracked;
+  }
+
+  private async rebuildRpcTransport(): Promise<void> {
+    this.ready = false;
+    this.events.onStatus("reconnecting", "Restoring backend connection…");
+    const selectedThreadIds = [...this.threadFibers.keys()];
+    for (const fiber of this.threadFibers.values()) {
+      Effect.runFork(Fiber.interrupt(fiber));
+    }
+    this.threadFibers.clear();
+    const previousScope = this.appScope;
+    this.client = undefined;
+    this.protocolContext = undefined;
+    this.appScope = undefined;
+    if (previousScope) {
+      await Effect.runPromise(Scope.close(previousScope, undefined as any));
+    }
+
+    const config = await this.openRpc(await this.issueSocketUrl());
+    this.setServerConfig(config, {
+      version: 1,
+      type: "snapshot",
+      config,
+    });
+    this.reconcileModelSelection(config);
+    this.subscribeConfig();
+    this.subscribeAuthAccess();
+    this.subscribeShell();
+    for (const threadId of selectedThreadIds) {
+      this.selectThread(threadId);
+    }
+    this.ready = true;
+    this.events.onStatus("ready", undefined);
   }
 
   private setServerConfig(config: ServerConfig, event: ServerConfigStreamEvent): void {

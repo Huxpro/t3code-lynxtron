@@ -43,6 +43,7 @@ export interface MainConnectorTransport {
   readonly kind: "main";
   readonly lastSeq: number;
   invoke(method: ConnectorCommandName, params?: unknown): Promise<unknown>;
+  invokeSettled(method: ConnectorCommandName, params?: unknown): Promise<BridgeCallResult>;
   /** Force a full resync; used by tests and the DevTool hook. */
   resync(): Promise<void>;
   dispose(): void;
@@ -51,12 +52,16 @@ export interface MainConnectorTransport {
 const DEFAULT_READY_TIMEOUT_MS = 3_000;
 const BRIDGE_ERROR_KEY = "__t3BridgeError";
 
-export function callBridge(
+export type BridgeCallResult =
+  | { readonly ok: true; readonly value: unknown }
+  | { readonly ok: false; readonly error: string };
+
+export function callBridgeSettled(
   bridge: BridgeCallModule,
   method: string,
   params: Record<string, unknown>,
-): Promise<unknown> {
-  return new Promise((resolve, reject) => {
+): Promise<BridgeCallResult> {
+  return new Promise((resolve) => {
     let settled = false;
     const settle = (value: unknown) => {
       if (settled) return;
@@ -66,10 +71,18 @@ export function callBridge(
         value !== null &&
         typeof (value as Record<string, unknown>)[BRIDGE_ERROR_KEY] === "string"
       ) {
-        reject(new Error((value as Record<string, string>)[BRIDGE_ERROR_KEY]));
+        resolve({
+          ok: false,
+          error: (value as Record<string, string>)[BRIDGE_ERROR_KEY]!,
+        });
         return;
       }
-      resolve(value);
+      resolve({ ok: true, value });
+    };
+    const settleError = (error: unknown) => {
+      if (settled) return;
+      settled = true;
+      resolve({ ok: false, error: error instanceof Error ? error.message : String(error) });
     };
     try {
       const returned = bridge.call(method, params, (...args: unknown[]) => {
@@ -80,12 +93,22 @@ export function callBridge(
         (typeof returned === "object" || typeof returned === "function") &&
         typeof (returned as { then?: unknown }).then === "function"
       ) {
-        (returned as Promise<unknown>).then(settle, reject);
+        (returned as Promise<unknown>).then(settle, settleError);
       }
     } catch (error) {
-      reject(error instanceof Error ? error : new Error(String(error)));
+      settleError(error);
     }
   });
+}
+
+export async function callBridge(
+  bridge: BridgeCallModule,
+  method: string,
+  params: Record<string, unknown>,
+): Promise<unknown> {
+  const result = await callBridgeSettled(bridge, method, params);
+  if (!result.ok) throw new Error(result.error);
+  return result.value;
 }
 
 /**
@@ -104,11 +127,19 @@ export async function startMainConnectorTransport(
 
   const log = (line: string) => options.onLog?.(line);
   let lastSeq = 0;
-  let resyncInFlight = false;
+  let resyncPromise: Promise<void> | undefined;
   let disposed = false;
 
   const invoke = (method: ConnectorCommandName, params?: unknown): Promise<unknown> =>
     callBridge(bridgeModule, T3_CONNECTOR_METHODS.command, {
+      method,
+      ...(params === undefined ? {} : { params: params as Record<string, unknown> }),
+    } as Record<string, unknown>);
+  const invokeSettled = (
+    method: ConnectorCommandName,
+    params?: unknown,
+  ): Promise<BridgeCallResult> =>
+    callBridgeSettled(bridgeModule, T3_CONNECTOR_METHODS.command, {
       method,
       ...(params === undefined ? {} : { params: params as Record<string, unknown> }),
     } as Record<string, unknown>);
@@ -133,14 +164,17 @@ export async function startMainConnectorTransport(
     }
   }
 
-  async function resync(): Promise<void> {
-    if (resyncInFlight || disposed) return;
-    resyncInFlight = true;
-    try {
+  function resync(): Promise<void> {
+    if (disposed) return Promise.resolve();
+    if (resyncPromise) return resyncPromise;
+    const pending = (async () => {
       await requestSync(T3_CONNECTOR_METHODS.resync);
-    } finally {
-      resyncInFlight = false;
-    }
+    })();
+    const tracked = pending.finally(() => {
+      if (resyncPromise === tracked) resyncPromise = undefined;
+    });
+    resyncPromise = tracked;
+    return tracked;
   }
 
   const listener = (...args: unknown[]) => {
@@ -190,6 +224,7 @@ export async function startMainConnectorTransport(
       return lastSeq;
     },
     invoke,
+    invokeSettled,
     resync,
     dispose: () => {
       if (disposed) return;
