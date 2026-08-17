@@ -802,10 +802,20 @@ async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentI
     client,
     ".sidebar-v2-row-item--active .sidebar-v2-row-status",
   );
+  const activeCard = await readOptionalMeasurement(
+    client,
+    ".sidebar-v2-row-item--active .sidebar-v2-row-card",
+  );
+  const activeStatusContent = await readOptionalMeasurement(
+    client,
+    ".sidebar-v2-row-item--active .sidebar-v2-row-status-content",
+  );
   const workingDuration = await readOptionalMeasurement(
     client,
     ".sidebar-v2-row-item--active .sidebar-v2-working-duration",
   );
+  const projectScopeHost = await readOptionalMeasurement(client, ".sidebar-v2-project-scope-host");
+  const newProject = await readOptionalMeasurement(client, ".sidebar-v2-new-project");
   if (!sidebar || !threadList || rows.length === 0 || rows.length !== cards.length) {
     throw new Error(
       `Sidebar geometry is incomplete: ${JSON.stringify({ sidebar, threadList, rows, cards })}`,
@@ -857,10 +867,11 @@ async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentI
   const workingVisible = activeStatus?.text.includes("Working") === true;
   const durationText = workingDuration?.text.trim() ?? "";
   const durationVisible = /^(?:\d+s|\d+m|\d+h \d+m)$/u.test(durationText);
+  const statusDurationVisible = /Working (?:\d+s|\d+m|\d+h \d+m)/u.test(activeStatus?.text ?? "");
   if (
     workingVisible !== workingExpected ||
     durationVisible !== workingExpected ||
-    (workingExpected && !activeStatus?.text.includes(durationText))
+    statusDurationVisible !== workingExpected
   ) {
     throw new Error(
       `Sidebar Working label disagrees with the active session: ${JSON.stringify({
@@ -870,11 +881,60 @@ async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentI
         pendingApprovals: clientState?.activeThread?.hasPendingApprovals ?? null,
         pendingUserInput: clientState?.activeThread?.hasPendingUserInput ?? null,
         sessionStatus,
+        statusDurationVisible,
         workingDuration,
         workingExpected,
         workingVisible,
       })}`,
     );
+  }
+  if (workingExpected) {
+    const statusRect = activeStatusContent?.rect;
+    const durationRect = workingDuration?.rect;
+    const cardRect = activeCard?.rect;
+    const cardRight = (cardRect?.x ?? 0) + (cardRect?.width ?? 0);
+    if (
+      !cardRect ||
+      !statusRect ||
+      !durationRect ||
+      statusRect.height > 20 ||
+      durationRect.height > 20 ||
+      Math.abs(statusRect.y - durationRect.y) > 2 ||
+      Math.abs(cardRight - (statusRect.x + statusRect.width) - 10) > 2 ||
+      durationRect.x < statusRect.x ||
+      durationRect.x + durationRect.width > statusRect.x + statusRect.width + 1
+    ) {
+      throw new Error(
+        `Sidebar Working metadata escaped its card anchor: ${JSON.stringify({
+          activeCard,
+          activeStatusContent,
+          workingDuration,
+        })}`,
+      );
+    }
+  }
+  if (projectScopeHost?.rect && newProject?.rect) {
+    const newProjectRightInset = sidebarRight - (newProject.rect.x + newProject.rect.width);
+    const controlGap = newProject.rect.x - (projectScopeHost.rect.x + projectScopeHost.rect.width);
+    const projectScopeCenterY = projectScopeHost.rect.y + projectScopeHost.rect.height / 2;
+    const newProjectCenterY = newProject.rect.y + newProject.rect.height / 2;
+    if (
+      Math.abs(newProjectRightInset - 8) > 2 ||
+      Math.abs(controlGap - 4) > 2 ||
+      Math.abs(projectScopeCenterY - newProjectCenterY) > 1
+    ) {
+      throw new Error(
+        `Sidebar project controls drifted from the Sidebar rail: ${JSON.stringify({
+          controlGap,
+          newProject,
+          newProjectCenterY,
+          newProjectRightInset,
+          projectScopeCenterY,
+          projectScopeHost,
+          sidebar,
+        })}`,
+      );
+    }
   }
   if (!brand?.rect || Math.abs(brand.rect.x - 130) > 1 || !brand.text.includes("Code")) {
     throw new Error(
@@ -917,13 +977,17 @@ async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentI
     environmentIdentificationMode: expectedEnvironmentIdentificationMode ?? null,
     insets: { left: leftInset, right: rightInset },
     statusProjection: {
+      activeStatusContent,
       durationText,
       durationVisible,
       sessionStatus,
+      statusDurationVisible,
       workingExpected,
       workingVisible,
       text: activeStatus?.text ?? null,
+      workingDuration,
     },
+    projectControls: { projectScopeHost, newProject },
   };
 }
 
@@ -3026,9 +3090,11 @@ async function verifyComposerStopBehavior({
   child,
   client,
   devToolCli,
+  expectedEnvironmentIdentificationMode,
   outputDirectory,
   projectId,
   timeoutMs,
+  viewportWidth,
 }) {
   const modelSelection = {
     instanceId: "opencode",
@@ -3090,6 +3156,10 @@ async function verifyComposerStopBehavior({
       state?.activeThreadId === created.threadId &&
       (state?.sessionStatus === "starting" || state?.sessionStatus === "running"),
   });
+  const runningSidebarGeometry =
+    runningState.sessionStatus === "running"
+      ? await verifySidebarGeometry(client, viewportWidth, expectedEnvironmentIdentificationMode)
+      : null;
   const screenshotPath = path.join(outputDirectory, "native-working.png");
   const screenshot = spawnSync(
     process.execPath,
@@ -3182,6 +3252,7 @@ async function verifyComposerStopBehavior({
     },
     selectedState,
     runningState,
+    runningSidebarGeometry,
     before: {
       state: beforeStop.attributes["data-composer-primary-state"] ?? null,
       ariaLabel: beforeStop.attributes["aria-label"] ?? null,
@@ -7240,9 +7311,11 @@ async function runOnce({
           child,
           client,
           devToolCli,
+          expectedEnvironmentIdentificationMode,
           outputDirectory,
           projectId: fixtureManifestProjectId,
           timeoutMs,
+          viewportWidth: width,
         })
       : undefined;
     const composerWorkingState = shouldVerifyComposerWorkingState

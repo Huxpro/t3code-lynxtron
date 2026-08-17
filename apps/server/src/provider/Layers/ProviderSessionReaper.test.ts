@@ -1,3 +1,4 @@
+import { CommandId } from "@t3tools/contracts";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import {
   ProjectId,
@@ -7,6 +8,7 @@ import {
   ProviderInstanceId,
 } from "@t3tools/contracts";
 import * as Clock from "effect/Clock";
+import * as Crypto from "effect/Crypto";
 import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
@@ -18,6 +20,10 @@ import * as Stream from "effect/Stream";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 
 import { ProjectionSnapshotQuery } from "../../orchestration/Services/ProjectionSnapshotQuery.ts";
+import {
+  OrchestrationEngineService,
+  type OrchestrationEngineShape,
+} from "../../orchestration/Services/OrchestrationEngine.ts";
 import { SqlitePersistenceMemory } from "../../persistence/Layers/Sqlite.ts";
 import * as ProviderSessionRuntime from "../../persistence/ProviderSessionRuntime.ts";
 import { ProviderValidationError } from "../Errors.ts";
@@ -142,6 +148,7 @@ describe("ProviderSessionReaper", () => {
     }) => ReturnType<ProviderServiceShape["stopSession"]>;
   }) {
     const stoppedThreadIds = new Set<ThreadId>();
+    const dispatchedCommands: Parameters<OrchestrationEngineShape["dispatch"]>[0][] = [];
     const stopSession = vi.fn<ProviderServiceShape["stopSession"]>(
       (request) =>
         (input.stopSessionImplementation
@@ -191,6 +198,24 @@ describe("ProviderSessionReaper", () => {
       Layer.provideMerge(runtimeRepositoryLayer),
       Layer.provideMerge(Layer.succeed(ProviderService, providerService)),
       Layer.provideMerge(
+        Layer.succeed(OrchestrationEngineService, {
+          readEvents: () => Stream.empty,
+          dispatch: (command) =>
+            Effect.sync(() => {
+              dispatchedCommands.push(command);
+              return { sequence: dispatchedCommands.length };
+            }),
+          streamDomainEvents: Stream.empty,
+          latestSequence: Effect.succeed(0),
+        } satisfies OrchestrationEngineShape),
+      ),
+      Layer.provideMerge(
+        Layer.succeed(Crypto.Crypto, {
+          randomBytes: () => Effect.die("unused"),
+          randomUUIDv4: Effect.succeed("00000000-0000-4000-8000-000000000001"),
+        } as never),
+      ),
+      Layer.provideMerge(
         Layer.succeed(ProjectionSnapshotQuery, {
           getCommandReadModel: () => Effect.die("unused"),
           getSnapshot: () => Effect.die("unused"),
@@ -219,8 +244,64 @@ describe("ProviderSessionReaper", () => {
     );
 
     runtime = ManagedRuntime.make(layer);
-    return { stopSession, stoppedThreadIds };
+    return { dispatchedCommands, stopSession, stoppedThreadIds };
   }
+
+  it("reconciles a stopped runtime binding with a stale running projection", async () => {
+    const threadId = ThreadId.make("thread-reaper-stopped-runtime");
+    const turnId = TurnId.make("turn-reaper-stale-projection");
+    const harness = await createHarness({
+      readModel: makeReadModel([
+        {
+          id: threadId,
+          session: {
+            threadId,
+            status: "running",
+            providerName: "claudeAgent",
+            runtimeMode: "full-access",
+            activeTurnId: turnId,
+            lastError: null,
+            updatedAt: "2026-01-01T00:00:00.000Z",
+          },
+        },
+      ]),
+    });
+    const repository = await runtime!.runPromise(
+      Effect.service(ProviderSessionRuntime.ProviderSessionRuntimeRepository),
+    );
+    await runtime!.runPromise(
+      repository.upsert({
+        threadId,
+        providerName: "claudeAgent",
+        providerInstanceId: ProviderInstanceId.make("claudeAgent"),
+        adapterKey: "claudeAgent",
+        runtimeMode: "full-access",
+        status: "stopped",
+        lastSeenAt: "2026-01-01T00:00:00.000Z",
+        resumeCursor: null,
+        runtimePayload: { activeTurnId: null },
+      }),
+    );
+
+    const reaper = await runtime!.runPromise(Effect.service(ProviderSessionReaper));
+    scope = await Effect.runPromise(Scope.make("sequential"));
+    await Effect.runPromise(reaper.start().pipe(Scope.provide(scope)));
+    await waitFor(() => harness.dispatchedCommands.length === 1);
+
+    expect(harness.stopSession).not.toHaveBeenCalled();
+    expect(harness.dispatchedCommands[0]).toMatchObject({
+      type: "thread.session.set",
+      threadId,
+      session: {
+        status: "stopped",
+        activeTurnId: null,
+        lastError: null,
+      },
+    });
+    expect(harness.dispatchedCommands[0]?.commandId).toBe(
+      CommandId.make("server:provider-session-reconcile:00000000-0000-4000-8000-000000000001"),
+    );
+  });
 
   it("reaps stale persisted sessions without active turns", async () => {
     const threadId = ThreadId.make("thread-reaper-stale");

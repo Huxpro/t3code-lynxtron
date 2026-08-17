@@ -27,6 +27,13 @@ const expectThread = url.searchParams.get("expectThread") || null;
 const expectedSemanticRoute = url.searchParams.get("semanticRoute") ?? "new-thread";
 const theme = url.searchParams.get("theme") === "light" ? "light" : "dark";
 const expectedOverlay = url.searchParams.get("overlay") || null;
+const requestedSidebarWidthRaw = url.searchParams.get("sidebarWidth");
+const requestedSidebarWidthValue =
+  requestedSidebarWidthRaw === null ? Number.NaN : Number(requestedSidebarWidthRaw);
+const requestedSidebarWidth =
+  Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
+    ? requestedSidebarWidthValue
+    : null;
 const environmentIdentificationMode = "none";
 const SETTINGS_NAV_LABELS = [
   "General",
@@ -132,6 +139,83 @@ function readElementBox(element) {
       letterSpacing: style.letterSpacing,
       opacity: style.opacity,
     },
+  };
+}
+
+function readSidebarThreadMetrics(item) {
+  const rect = item.getBoundingClientRect();
+  const child = item.querySelector('[role="button"]');
+  const childRect = child?.getBoundingClientRect();
+  const content = item.querySelector("[data-sidebar-card-content]");
+  const contentRect = content?.getBoundingClientRect();
+  const childStyle = child ? getComputedStyle(child) : null;
+  const contentStyle = content ? getComputedStyle(content) : null;
+  return {
+    tagName: item.tagName,
+    id: item.id || null,
+    threadId: item.getAttribute("data-thread-id"),
+    active: item.getAttribute("data-thread-active"),
+    status: item.querySelector('[role="status"]')?.textContent?.trim() ?? null,
+    className: item.getAttribute("class"),
+    text: item.textContent?.trim().slice(0, 160) ?? "",
+    rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+    child:
+      child && childRect
+        ? {
+            tagName: child.tagName,
+            role: child.getAttribute("role"),
+            className: child.getAttribute("class"),
+            rect: {
+              x: childRect.x,
+              y: childRect.y,
+              width: childRect.width,
+              height: childRect.height,
+            },
+            backgroundColor: childStyle?.backgroundColor ?? null,
+            style: child
+              ? {
+                  boxSizing: childStyle?.boxSizing ?? null,
+                  display: childStyle?.display ?? null,
+                  height: childStyle?.height ?? null,
+                  minHeight: childStyle?.minHeight ?? null,
+                  maxHeight: childStyle?.maxHeight ?? null,
+                  overflow: childStyle?.overflow ?? null,
+                  paddingTop: childStyle?.paddingTop ?? null,
+                  paddingRight: childStyle?.paddingRight ?? null,
+                  paddingBottom: childStyle?.paddingBottom ?? null,
+                  paddingLeft: childStyle?.paddingLeft ?? null,
+                }
+              : null,
+            content:
+              content && contentRect
+                ? {
+                    rect: {
+                      x: contentRect.x,
+                      y: contentRect.y,
+                      width: contentRect.width,
+                      height: contentRect.height,
+                    },
+                    backgroundColor: contentStyle?.backgroundColor ?? null,
+                    style: {
+                      boxSizing: contentStyle?.boxSizing ?? null,
+                      display: contentStyle?.display ?? null,
+                      height: contentStyle?.height ?? null,
+                      minHeight: contentStyle?.minHeight ?? null,
+                      maxHeight: contentStyle?.maxHeight ?? null,
+                      overflow: contentStyle?.overflow ?? null,
+                      paddingTop: contentStyle?.paddingTop ?? null,
+                      paddingRight: contentStyle?.paddingRight ?? null,
+                      paddingBottom: contentStyle?.paddingBottom ?? null,
+                      paddingLeft: contentStyle?.paddingLeft ?? null,
+                    },
+                  }
+                : null,
+          }
+        : null,
+    statusSlot: readElementBox(item.querySelector(".sidebar-v2-row-status-slot")),
+    statusBox: readElementBox(item.querySelector(".sidebar-v2-row-status")),
+    statusContent: readElementBox(item.querySelector(".sidebar-v2-row-status-content")),
+    workingDuration: readElementBox(item.querySelector(".sidebar-v2-working-duration")),
   };
 }
 
@@ -558,6 +642,12 @@ const webHash = pairingToken ? `#token=${encodeURIComponent(pairingToken)}` : ""
 const webEntry = pairingToken ? `/pair${webHash}` : `/`;
 webPane.srcdoc = `<!doctype html><script>
 localStorage.setItem("t3code:theme", ${JSON.stringify(theme)});
+if (${JSON.stringify(requestedSidebarWidth)} !== null) {
+  localStorage.setItem(
+    "chat_thread_sidebar_width",
+    JSON.stringify(${JSON.stringify(requestedSidebarWidth)}),
+  );
+}
 localStorage.setItem(
   "t3code:client-settings:v1",
   JSON.stringify({
@@ -578,6 +668,9 @@ const lynxQuery = new URLSearchParams({
   theme,
   environmentIdentificationMode,
 });
+if (requestedSidebarWidth !== null) {
+  lynxQuery.set("sidebarWidth", String(requestedSidebarWidth));
+}
 if (socketUrl) {
   lynxQuery.set("live", "1");
   lynxQuery.set("socket", socketUrl);
@@ -905,14 +998,24 @@ function readLynxPane() {
           root
             ?.querySelector('[data-slot="sidebar-wrapper"]')
             ?.getAttribute("data-sidebar-state") ?? null,
+        width: readElementBox(
+          root?.querySelector('[data-slot="sidebar-container"]') ??
+            root?.querySelector("[data-app-sidebar]"),
+        )?.rect.width,
         chrome: {
           sidebar: readElementBox(root?.querySelector("[data-app-sidebar]")),
+          resizeRail: readElementBox(root?.querySelector(".sidebar-resize-rail")),
           header: readElementBox(root?.querySelector(".lynx-sidebar-chrome-header")),
           brand: readElementBox(root?.querySelector(".sidebar-brand")),
           search: readElementBox(root?.querySelector('[aria-label="Search threads"]')),
+          projectScopeRow: readElementBox(
+            root?.querySelector(".sidebar-v2-project-scope-host")?.parentElement,
+          ),
+          projectScopeHost: readElementBox(root?.querySelector(".sidebar-v2-project-scope-host")),
           projectScope: readElementBox(
             root?.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]'),
           ),
+          newProject: readElementBox(root?.querySelector(".sidebar-v2-new-project")),
         },
         search: (() => {
           const host = root?.querySelector('[aria-label="Search threads"]');
@@ -938,52 +1041,9 @@ function readLynxPane() {
             rows,
           };
         })(),
-        threads: [...(root?.querySelectorAll("[data-thread-id]") ?? [])].map((item) => {
-          const rect = item.getBoundingClientRect();
-          const child = item.querySelector('[role="button"]');
-          const childRect = child?.getBoundingClientRect();
-          const content = item.querySelector("[data-sidebar-card-content]");
-          const contentRect = content?.getBoundingClientRect();
-          const childStyle = child ? getComputedStyle(child) : null;
-          const contentStyle = content ? getComputedStyle(content) : null;
-          return {
-            tagName: item.tagName,
-            id: item.id || null,
-            threadId: item.getAttribute("data-thread-id"),
-            active: item.getAttribute("data-thread-active"),
-            status: item.querySelector('[role="status"]')?.textContent?.trim() ?? null,
-            className: item.getAttribute("class"),
-            text: item.textContent?.trim().slice(0, 160) ?? "",
-            rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
-            child:
-              child && childRect
-                ? {
-                    tagName: child.tagName,
-                    role: child.getAttribute("role"),
-                    className: child.getAttribute("class"),
-                    rect: {
-                      x: childRect.x,
-                      y: childRect.y,
-                      width: childRect.width,
-                      height: childRect.height,
-                    },
-                    backgroundColor: childStyle?.backgroundColor ?? null,
-                    content:
-                      content && contentRect
-                        ? {
-                            rect: {
-                              x: contentRect.x,
-                              y: contentRect.y,
-                              width: contentRect.width,
-                              height: contentRect.height,
-                            },
-                            backgroundColor: contentStyle?.backgroundColor ?? null,
-                          }
-                        : null,
-                  }
-                : null,
-          };
-        }),
+        threads: [...(root?.querySelectorAll("[data-thread-id]") ?? [])].map(
+          readSidebarThreadMetrics,
+        ),
         diffs: [...(root?.querySelectorAll("[data-sidebar-diff='true']") ?? [])].map((item) => ({
           insertions: Number(item.getAttribute("data-sidebar-diff-insertions") ?? "0"),
           deletions: Number(item.getAttribute("data-sidebar-diff-deletions") ?? "0"),
@@ -1970,14 +2030,24 @@ function readWebPane() {
         state:
           doc.querySelector('[data-slot="sidebar-wrapper"]')?.getAttribute("data-sidebar-state") ??
           null,
+        width: readElementBox(
+          doc.querySelector('[data-slot="sidebar-container"]') ??
+            doc.querySelector("[data-app-sidebar]"),
+        )?.rect.width,
         chrome: {
           sidebar: readElementBox(doc.querySelector("[data-app-sidebar]")),
+          resizeRail: readElementBox(doc.querySelector(".sidebar-resize-rail")),
           header: readElementBox(doc.querySelector(".lynx-sidebar-chrome-header")),
           brand: readElementBox(doc.querySelector(".sidebar-brand")),
           search: readElementBox(doc.querySelector('[aria-label="Search threads"]')),
+          projectScopeRow: readElementBox(
+            doc.querySelector(".sidebar-v2-project-scope-host")?.parentElement,
+          ),
+          projectScopeHost: readElementBox(doc.querySelector(".sidebar-v2-project-scope-host")),
           projectScope: readElementBox(
             doc.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]'),
           ),
+          newProject: readElementBox(doc.querySelector(".sidebar-v2-new-project")),
         },
         search: (() => {
           const input = doc.querySelector('[aria-label="Search threads"]');
@@ -1991,52 +2061,7 @@ function readWebPane() {
             rows,
           };
         })(),
-        threads: [...doc.querySelectorAll("[data-thread-id]")].map((item) => {
-          const rect = item.getBoundingClientRect();
-          const child = item.querySelector('[role="button"]');
-          const childRect = child?.getBoundingClientRect();
-          const content = item.querySelector("[data-sidebar-card-content]");
-          const contentRect = content?.getBoundingClientRect();
-          const childStyle = child ? getComputedStyle(child) : null;
-          const contentStyle = content ? getComputedStyle(content) : null;
-          return {
-            tagName: item.tagName,
-            id: item.id || null,
-            threadId: item.getAttribute("data-thread-id"),
-            active: item.getAttribute("data-thread-active"),
-            status: item.querySelector('[role="status"]')?.textContent?.trim() ?? null,
-            className: item.getAttribute("class"),
-            text: item.textContent?.trim().slice(0, 160) ?? "",
-            rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
-            child:
-              child && childRect
-                ? {
-                    tagName: child.tagName,
-                    role: child.getAttribute("role"),
-                    className: child.getAttribute("class"),
-                    rect: {
-                      x: childRect.x,
-                      y: childRect.y,
-                      width: childRect.width,
-                      height: childRect.height,
-                    },
-                    backgroundColor: childStyle?.backgroundColor ?? null,
-                    content:
-                      content && contentRect
-                        ? {
-                            rect: {
-                              x: contentRect.x,
-                              y: contentRect.y,
-                              width: contentRect.width,
-                              height: contentRect.height,
-                            },
-                            backgroundColor: contentStyle?.backgroundColor ?? null,
-                          }
-                        : null,
-                  }
-                : null,
-          };
-        }),
+        threads: [...doc.querySelectorAll("[data-thread-id]")].map(readSidebarThreadMetrics),
         diffs: [...doc.querySelectorAll("[data-sidebar-diff='true']")].map((item) => ({
           insertions: Number(item.getAttribute("data-sidebar-diff-insertions") ?? "0"),
           deletions: Number(item.getAttribute("data-sidebar-diff-deletions") ?? "0"),

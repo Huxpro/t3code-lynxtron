@@ -95,6 +95,11 @@ const providerId = argValue("--provider-id", "");
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
+const requestedSidebarWidthValue = Number(argValue("--sidebar-width", ""));
+const requestedSidebarWidth =
+  Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
+    ? requestedSidebarWidthValue
+    : null;
 const explicitChangedFilesTargetState = argValue("--changed-files-state", "");
 const expandTurnId = argValue("--expand-turn-id", "");
 const explicitExpectedThreadId = argValue("--expect-thread", "");
@@ -752,6 +757,72 @@ function sidebarStageIdentityMatches(state) {
   );
 }
 
+function sidebarControlGeometryMatches(state) {
+  if (requestedSidebarWidth === null) return true;
+  const expectedScopeWidth = requestedSidebarWidth - 53;
+  const measurements = [state?.web?.sidebarDiagnostics, state?.lynx?.sidebarDiagnostics];
+  const geometry = measurements.map((diagnostics) => {
+    const sidebar = diagnostics?.chrome?.sidebar?.rect;
+    const row = diagnostics?.chrome?.projectScopeRow?.rect;
+    const host = diagnostics?.chrome?.projectScopeHost?.rect;
+    const trigger = diagnostics?.chrome?.projectScope?.rect;
+    const newProject = diagnostics?.chrome?.newProject?.rect;
+    if (!sidebar || !row || !host || !trigger || !newProject) return null;
+    return {
+      width: diagnostics?.width,
+      scopeWidth: trigger.width,
+      hostWidth: host.width,
+      rowRightInset: sidebar.x + sidebar.width - (row.x + row.width),
+      newProjectRightInset: sidebar.x + sidebar.width - (newProject.x + newProject.width),
+      controlGap: newProject.x - (host.x + host.width),
+    };
+  });
+  if (geometry.some((entry) => entry === null)) return false;
+  return geometry.every(
+    (entry) =>
+      Math.abs(entry.width - requestedSidebarWidth) <= 1 &&
+      Math.abs(entry.scopeWidth - expectedScopeWidth) <= 2 &&
+      Math.abs(entry.hostWidth - expectedScopeWidth) <= 2 &&
+      Math.abs(entry.rowRightInset - 8) <= 2 &&
+      Math.abs(entry.newProjectRightInset - 8) <= 2 &&
+      Math.abs(entry.controlGap - 4) <= 2,
+  );
+}
+
+function sidebarWorkingGeometryMatches(state, expectedThreadFixture) {
+  if (stateId !== "composer-working" && stateId !== "existing-thread-working") return true;
+  const expectedThreadId = expectedThreadFixture?.id;
+  const measurements = [state?.web?.sidebarDiagnostics, state?.lynx?.sidebarDiagnostics].map(
+    (diagnostics) =>
+      diagnostics?.threads?.find((thread) => thread.threadId === expectedThreadId) ?? null,
+  );
+  if (measurements.some((entry) => entry === null)) return false;
+  return measurements.every((thread) => {
+    const card = thread.child?.rect;
+    const slot = thread.statusSlot?.rect;
+    const status = thread.statusBox?.rect;
+    const content = thread.statusContent?.rect;
+    const duration = thread.workingDuration?.rect;
+    if (!card || !slot || !status || !content || !duration) return false;
+    const cardRight = card.x + card.width;
+    return (
+      thread.status === "Working" &&
+      Math.abs(card.height - 78) <= 2 &&
+      slot.y >= card.y &&
+      slot.y + slot.height <= card.y + card.height &&
+      slot.x + slot.width <= cardRight &&
+      status.height <= 20 &&
+      content.height <= 20 &&
+      duration.height <= 20 &&
+      Math.abs(duration.y - content.y) <= 2 &&
+      duration.x >= content.x &&
+      duration.x + duration.width <= content.x + content.width + 1 &&
+      content.x + content.width <= cardRight &&
+      Math.abs(cardRight - (content.x + content.width) - 10) <= 2
+    );
+  });
+}
+
 function headerGitActionMatches(state) {
   const webAction = state?.web?.headerMetrics?.actionItems?.find((item) => item.id === "commit");
   const lynxAction = state?.lynx?.headerMetrics?.actionItems?.find((item) => item.id === "commit");
@@ -1157,7 +1228,9 @@ async function hashFile(filePath) {
 }
 
 async function prepareStateFixture({ seed, expectedThreadFixture }) {
-  if (stateId !== "model-picker-selected") {
+  const requiresRunningRuntime =
+    stateId === "composer-working" || stateId === "existing-thread-working";
+  if (stateId !== "model-picker-selected" && !requiresRunningRuntime) {
     return {
       kind: "pristine-seed",
       sourceSha256: seed?.snapshotSha256 ?? null,
@@ -1167,18 +1240,37 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
 
   const threadId = expectedThreadFixture?.id;
   if (!threadId) {
-    throw new Error("Selected-model fixture preparation requires a seeded thread");
+    throw new Error(`${stateId} fixture preparation requires a seeded thread`);
   }
 
   const databasePath = path.join(baseDir, "userdata", "state.sqlite");
   const escapedThreadId = threadId.replaceAll("'", "''");
-  const sql = `UPDATE projection_threads
+  const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
+  const sql = requiresRunningRuntime
+    ? (() => {
+        const activeTurnId = expectedThreadFixture?.activeTurnId;
+        if (!activeTurnId) {
+          throw new Error(`${stateId} fixture requires an active turn id`);
+        }
+        const escapedActiveTurnId = activeTurnId.replaceAll("'", "''");
+        const fixtureTimestamp = expectedThreadFixture.updatedAt.replaceAll("'", "''");
+        return `UPDATE provider_session_runtime
+SET status = 'running',
+    last_seen_at = '${fixtureTimestamp}',
+    runtime_payload_json = json_set(
+      coalesce(runtime_payload_json, '{}'),
+      '$.activeTurnId', '${escapedActiveTurnId}',
+      '$.lastRuntimeEvent', 'fidelity.fixture.running',
+      '$.lastRuntimeEventAt', '${fixtureTimestamp}'
+    )
+WHERE thread_id = '${escapedThreadId}';`;
+      })()
+    : `UPDATE projection_threads
 SET model_selection_json = json_object(
   'instanceId', '${selectedModelFixture.instanceId}',
   'model', '${selectedModelFixture.model}'
 )
 WHERE thread_id = '${escapedThreadId}';`;
-  const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
   const mutation = spawnSync(
     process.env.T3_NODE_BIN?.trim() || "node",
     [sqliteStateScript, "exec", "--base-dir", baseDir, "--sql", sql],
@@ -1194,43 +1286,53 @@ WHERE thread_id = '${escapedThreadId}';`;
 
   const mutationReport = JSON.parse(mutation.stdout);
   try {
+    const verificationSql = requiresRunningRuntime
+      ? `SELECT status, json_extract(runtime_payload_json, '$.activeTurnId') AS active_turn_id
+FROM provider_session_runtime
+WHERE thread_id = '${escapedThreadId}'`
+      : `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`;
     const query = spawnSync(
       process.env.T3_NODE_BIN?.trim() || "node",
-      [
-        sqliteStateScript,
-        "query",
-        "--base-dir",
-        baseDir,
-        "--sql",
-        `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`,
-      ],
+      [sqliteStateScript, "query", "--base-dir", baseDir, "--sql", verificationSql],
       { encoding: "utf8", cwd: repoRoot },
     );
     if (query.status !== 0) {
       throw new Error(
-        `Selected-model fixture verification failed: ${query.stderr || query.stdout || "unknown"}`,
+        `${stateId} fixture verification failed: ${query.stderr || query.stdout || "unknown"}`,
       );
     }
     const queryReport = JSON.parse(query.stdout);
-    const expectedSelection = JSON.stringify(selectedModelFixture);
-    if (
-      queryReport.rows?.length !== 1 ||
-      queryReport.rows[0]?.model_selection_json !== expectedSelection
-    ) {
+    const fixtureMatches = requiresRunningRuntime
+      ? queryReport.rows?.length === 1 &&
+        queryReport.rows[0]?.status === "running" &&
+        queryReport.rows[0]?.active_turn_id === expectedThreadFixture.activeTurnId
+      : queryReport.rows?.length === 1 &&
+        queryReport.rows[0]?.model_selection_json === JSON.stringify(selectedModelFixture);
+    if (!fixtureMatches) {
       throw new Error(
-        `Selected-model fixture verification mismatch: ${JSON.stringify(queryReport.rows ?? [])}`,
+        `${stateId} fixture verification mismatch: ${JSON.stringify(queryReport.rows ?? [])}`,
       );
     }
 
     const prepared = await hashFile(databasePath);
-    return {
-      kind: "thread-model-selection",
-      sourceSha256: seed?.snapshotSha256 ?? null,
-      preparedSha256: prepared.sha256,
-      threadId,
-      modelSelection: selectedModelFixture,
-      backupRemoved: true,
-    };
+    return requiresRunningRuntime
+      ? {
+          kind: "provider-runtime-running",
+          sourceSha256: seed?.snapshotSha256 ?? null,
+          preparedSha256: prepared.sha256,
+          threadId,
+          activeTurnId: expectedThreadFixture.activeTurnId,
+          runtimeStatus: "running",
+          backupRemoved: true,
+        }
+      : {
+          kind: "thread-model-selection",
+          sourceSha256: seed?.snapshotSha256 ?? null,
+          preparedSha256: prepared.sha256,
+          threadId,
+          modelSelection: selectedModelFixture,
+          backupRemoved: true,
+        };
   } finally {
     await rm(mutationReport.backup, { force: true });
   }
@@ -1561,6 +1663,7 @@ async function main() {
         providerId,
         composerInput,
         sidebarQuery,
+        requestedSidebarWidth,
         terminateOwnedServer: isLifecycleFaultState
           ? () => {
               if (!child.killed) child.kill("SIGTERM");
@@ -1663,6 +1766,7 @@ async function captureCell({
   providerId,
   composerInput,
   sidebarQuery,
+  requestedSidebarWidth: expectedSidebarWidth,
   terminateOwnedServer,
 }) {
   const { width, height } = viewport;
@@ -1755,6 +1859,7 @@ async function captureCell({
     ...(overlay ? { overlay } : {}),
     expectProject,
     ...(expectThread ? { expectThread } : {}),
+    ...(expectedSidebarWidth === null ? {} : { sidebarWidth: String(expectedSidebarWidth) }),
   });
   await cdp.send("Page.navigate", { url: `${origin}/__workbench?${params.toString()}` }, sessionId);
 
@@ -3188,6 +3293,8 @@ async function captureCell({
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
+    const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
+    const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
     const gitPublishDiscoveryReady =
@@ -3253,6 +3360,8 @@ async function captureCell({
       composerReady &&
       sessionProjectionReady &&
       stageIdentityReady &&
+      sidebarControlGeometryReady &&
+      sidebarWorkingGeometryReady &&
       headerGitActionReady &&
       gitPublishDiscoveryReady &&
       gitPublishDialogReady &&
@@ -3456,6 +3565,11 @@ async function captureCell({
     composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
+  const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
+  const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
+    state,
+    expectedThreadFixture,
+  );
   const finalHeaderGitActionReady = headerGitActionMatches(state);
   const finalGitPublishDialogReady = gitPublishDialogMatches(state);
   if (isGitPublishDialogState && !finalGitPublishDialogReady) {
@@ -3957,6 +4071,8 @@ async function captureCell({
     finalComposerReady &&
     finalSessionProjectionReady &&
     finalStageIdentityReady &&
+    finalSidebarControlGeometryReady &&
+    finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
     gitPublishDismissed &&
@@ -3983,6 +4099,8 @@ async function captureCell({
       finalComposerReady,
       finalSessionProjectionReady,
       finalStageIdentityReady,
+      finalSidebarControlGeometryReady,
+      finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
       gitPublishDismissed,
@@ -4102,6 +4220,24 @@ async function captureCell({
         match: finalStageIdentityReady,
         web: state?.web?.sidebarDiagnostics?.stageIdentity ?? null,
         lynx: state?.lynx?.sidebarDiagnostics?.stageIdentity ?? null,
+      },
+      sidebarControlGeometry: {
+        match: finalSidebarControlGeometryReady,
+        requestedWidth: expectedSidebarWidth,
+        web: state?.web?.sidebarDiagnostics ?? null,
+        lynx: state?.lynx?.sidebarDiagnostics ?? null,
+      },
+      sidebarWorkingGeometry: {
+        match: finalSidebarWorkingGeometryReady,
+        threadId: expectedThreadFixture?.id ?? null,
+        web:
+          state?.web?.sidebarDiagnostics?.threads?.find(
+            (thread) => thread.threadId === expectedThreadFixture?.id,
+          ) ?? null,
+        lynx:
+          state?.lynx?.sidebarDiagnostics?.threads?.find(
+            (thread) => thread.threadId === expectedThreadFixture?.id,
+          ) ?? null,
       },
       headerGitAction: {
         match: finalHeaderGitActionReady,

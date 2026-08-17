@@ -47,8 +47,17 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'activeStatus?.text.includes("Working") === true');
     assert.include(source, '".sidebar-v2-row-item--active .sidebar-v2-working-duration"');
     assert.include(source, "/^(?:\\d+s|\\d+m|\\d+h \\d+m)$/u.test(durationText)");
-    assert.include(source, "activeStatus?.text.includes(durationText)");
+    assert.include(source, "/Working (?:\\d+s|\\d+m|\\d+h \\d+m)/u.test");
+    assert.notInclude(source, "activeStatus?.text.includes(durationText)");
     assert.include(source, "Sidebar Working label disagrees with the active session");
+    assert.include(source, "Sidebar Working metadata escaped its card anchor");
+    assert.include(source, "Math.abs(cardRight - (statusRect.x + statusRect.width) - 10) > 2");
+    assert.include(source, "Sidebar project controls drifted from the Sidebar rail");
+    assert.include(source, "Math.abs(newProjectRightInset - 8) > 2");
+    assert.include(source, "Math.abs(projectScopeCenterY - newProjectCenterY) > 1");
+    assert.include(source, "const runningSidebarGeometry =");
+    assert.include(source, 'runningState.sessionStatus === "running"');
+    assert.include(source, "runningSidebarGeometry,");
   });
 
   it("verifies Native Sidebar inline search rows and real-tap selection", () => {

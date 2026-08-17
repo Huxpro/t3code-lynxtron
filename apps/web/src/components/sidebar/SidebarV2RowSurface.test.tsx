@@ -118,6 +118,8 @@ describe("SidebarV2RowSurface", () => {
     expect(markup.indexOf("Working")).toBeLessThan(markup.indexOf("Port Lynxtron"));
     expect(markup.indexOf("Port Lynxtron")).toBeLessThan(markup.indexOf("feature/lynx"));
     expect(markup).toContain("sidebar-v2-row-status");
+    expect(markup).toContain("sidebar-v2-row-status-content");
+    expect(markup).toContain("whitespace-nowrap");
     expect(markup).toContain("sidebar-v2-row-actions");
   });
 

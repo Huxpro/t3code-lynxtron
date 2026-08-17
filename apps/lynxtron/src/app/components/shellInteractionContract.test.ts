@@ -262,6 +262,24 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("flex-shrink: 0;");
   });
 
+  it("anchors Sidebar project controls to the live Sidebar width", () => {
+    expect(sidebarControlsSource).toContain("readonly projectScopePopupWidth?: number;");
+    expect(sidebarControlsSource).not.toContain("projectScopeControlWidth");
+    expect(sidebarControlsSource).toContain(
+      'SidebarGroup className="sidebar-v2-control-group px-2 pb-2 pt-0"',
+    );
+    expect(sidebarControlsSource).toContain(
+      "sidebar-v2-project-scope-host relative min-w-0 flex-1",
+    );
+    expect(sidebarControlsSource).not.toContain("maxWidth: `${props.projectScopePopupWidth}px`");
+    expect(overrides).toContain(
+      ".sidebar-v2-project-scope-host {\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;\n  min-width: 0;\n}",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-control-group {\n  width: 100%;\n  box-sizing: border-box;\n}",
+    );
+  });
+
   it("keeps the authority brand on the shared titlebar inset", () => {
     expect(overrides).toContain(".sidebar-brand-host {\n  position: absolute;\n  left: 130px;");
     expect(overrides).toContain(".viewport-responsive .sidebar-brand-host {\n  left: 130px;\n}");
@@ -288,8 +306,28 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".sidebar-v2-row-item--active {");
     expect(overrides).toContain("background-color: rgba(241, 243, 247, 0.11);");
     expect(overrides).toContain(".theme-light .sidebar-v2-row-item--active {");
-    expect(overrides).toContain(".sidebar-v2-row-card__content {\n  width: 100%;\n  height: 78px;");
+    expect(overrides).toContain(
+      ".sidebar-v2-row-card {\n  display: flex;\n  flex-direction: column;",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-row-card__content {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 78px;",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-row-project-line,\n.sidebar-v2-row-title-line,\n.sidebar-v2-row-metadata-line {\n  width: 100%;\n}",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-row-project-line {\n  padding-right: 132px;\n  box-sizing: border-box;\n}",
+    );
     expect(overrides).not.toContain(".sidebar-v2-row-card:hover .sidebar-v2-row-actions,");
+    expect(overrides).toContain(
+      ".sidebar-v2-row-project-title {\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;\n  min-width: 0;\n}",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-row-card .sidebar-v2-row-status-slot {\n  position: absolute;\n  top: 8px;\n  right: 0;\n  width: 128px;\n  flex-shrink: 0;\n}",
+    );
+    expect(overrides).toContain(
+      ".lynx-web-preview .sidebar-v2-row-card .sidebar-v2-row-status-slot {\n  right: 10px;\n}",
+    );
     expect(faviconSource).toContain('name="folder"');
     expect(faviconSource).not.toContain("background-color");
   });
@@ -417,7 +455,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".sidebar-v2-project-scope-host--open {");
     expect(overrides).toContain(".sidebar-v2-scope-popup .lynx-menu-radio-item {");
     expect(overrides).toContain("height: 32px;");
-    expect(sidebarSource).toContain("projectScopeControlWidth: sidebarWidth - 53");
+    expect(sidebarSource).toContain("projectScopePopupWidth: sidebarWidth - 53");
     expect(menuSource).toContain('trigger.invoke("boundingClientRect"');
     expect(menuSource).toContain("resolveFloatingAnchorPoint(context.anchorRect");
     expect(menuSource).toContain('position: "fixed"');

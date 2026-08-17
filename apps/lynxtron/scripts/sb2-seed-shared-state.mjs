@@ -91,6 +91,7 @@ function summarize(dbPath) {
         p.title as projectTitle,
         t.updated_at as updatedAt,
         s.status as sessionStatus,
+        s.active_turn_id as activeTurnId,
         (
           select state
           from projection_turns latest_turn

@@ -97,6 +97,13 @@ const requestedRoute = previewUrl.searchParams.get("route") ?? scenario.route;
 const requestedTheme = previewUrl.searchParams.get("theme") === "light" ? "light" : "dark";
 const requestedEnvironmentIdentificationMode =
   previewUrl.searchParams.get("environmentIdentificationMode") === "none" ? "none" : "artwork";
+const requestedSidebarWidthRaw = previewUrl.searchParams.get("sidebarWidth");
+const requestedSidebarWidthValue =
+  requestedSidebarWidthRaw === null ? Number.NaN : Number(requestedSidebarWidthRaw);
+const requestedSidebarWidth =
+  Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
+    ? requestedSidebarWidthValue
+    : null;
 const scenarioClientSettings =
   (
     scenario.preferences as {
@@ -109,6 +116,7 @@ const themedScenario = {
     ...scenario.preferences,
     initialRoute: requestedRoute,
     themePreference: requestedTheme,
+    ...(requestedSidebarWidth !== null ? { chat_thread_sidebar_width: requestedSidebarWidth } : {}),
     clientSettings: {
       ...scenarioClientSettings,
       environmentIdentificationMode: requestedEnvironmentIdentificationMode,

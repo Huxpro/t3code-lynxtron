@@ -66,6 +66,29 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "rows,");
   });
 
+  it("records matching Sidebar status geometry for both renderers", () => {
+    assert.include(source, "function readSidebarThreadMetrics(item)");
+    assert.include(source, "statusSlot: readElementBox");
+    assert.include(source, "statusBox: readElementBox");
+    assert.include(source, "statusContent: readElementBox");
+    assert.include(source, "workingDuration: readElementBox");
+    assert.include(source, "map(readSidebarThreadMetrics)");
+  });
+
+  it("records Sidebar project controls relative to their row in both renderers", () => {
+    assert.include(source, "width: readElementBox");
+    assert.include(source, "resizeRail: readElementBox");
+    assert.include(source, "projectScopeRow: readElementBox");
+    assert.include(source, "projectScopeHost: readElementBox");
+    assert.include(source, "newProject: readElementBox");
+  });
+
+  it("cold-starts both panes with the requested Sidebar width", () => {
+    assert.include(source, 'url.searchParams.get("sidebarWidth")');
+    assert.include(source, '"chat_thread_sidebar_width"');
+    assert.include(source, 'lynxQuery.set("sidebarWidth"');
+  });
+
   it("measures the Git Publish popup rather than the fullscreen Lynx overlay", () => {
     assert.include(
       source,

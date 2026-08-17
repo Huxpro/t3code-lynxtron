@@ -54,6 +54,37 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "process.env.T3_PLAN11C_SEED_SOURCE");
   });
 
+  it("synchronizes the provider runtime for real working-state captures", () => {
+    assert.include(
+      source,
+      'stateId === "composer-working" || stateId === "existing-thread-working"',
+    );
+    assert.include(source, 'kind: "provider-runtime-running"');
+    assert.include(source, "UPDATE provider_session_runtime");
+    assert.include(source, "'$.activeTurnId'");
+    assert.include(source, 'runtimeStatus: "running"');
+  });
+
+  it("cold-starts both renderers at the requested Sidebar width and gates control geometry", () => {
+    assert.include(
+      source,
+      'const requestedSidebarWidthValue = Number(argValue("--sidebar-width", ""))',
+    );
+    assert.include(source, "function sidebarControlGeometryMatches(state)");
+    assert.include(source, "const expectedScopeWidth = requestedSidebarWidth - 53");
+    assert.include(source, "finalSidebarControlGeometryReady");
+    assert.include(source, "sidebarControlGeometry:");
+  });
+
+  it("rejects wrapped or overflowing Sidebar Working metadata", () => {
+    assert.include(source, "function sidebarWorkingGeometryMatches(state, expectedThreadFixture)");
+    assert.include(source, "Math.abs(card.height - 78) <= 2");
+    assert.include(source, "duration.x + duration.width <= content.x + content.width + 1");
+    assert.include(source, "Math.abs(cardRight - (content.x + content.width) - 10) <= 2");
+    assert.include(source, "finalSidebarWorkingGeometryReady");
+    assert.include(source, "sidebarWorkingGeometry:");
+  });
+
   it("uses the administrative desktop grant for comparable Connections panes", () => {
     assert.include(source, "function webCredentialForState");
     assert.include(source, 'targetStateId === "settings-connections"');
