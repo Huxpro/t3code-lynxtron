@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-17T23:53:56+09:00",
+  "productCommit": "63f21463ba50fb371b326cc365b3e14381c07b4f",
+  "verifierCommit": "b6832cc687a836e80090a78afa8a3724ad7bb386",
+  "stateId": "settings-keybindings",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "route": "/settings/keybindings",
+    "surface": "Keybindings inventory, conflict status, table geometry, truthful capability boundary, and Native route lifecycle"
+  },
+  "fixture": {
+    "browserSource": "/tmp/t3-settings-appearance-state2-20260817",
+    "browserSnapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "nativeSource": "/tmp/t3-git-publish-native-fixture",
+    "nativeSnapshotSha256": "645e88495f1663bcbec6d47fe072ca9c2d5faa7605debaf358172df43f05b35c",
+    "bindingCount": 45,
+    "conflictCount": 18
+  },
+  "classification": {
+    "productLoss": [
+      "The valid baseline Web authority rendered all 45 resolved server keybindings while Lynx replaced the entire inventory with a 140px empty capability card.",
+      "Read-only command, shortcut, when-clause, source, and conflict information was already available in serverConfig and the shared pure projection, so hiding it was not required by the unverified keyboard-capture boundary.",
+      "The first table implementation exposed a Native layout defect: unsupported CSS Grid and a non-authoritative row wrapper placed the 45 rows horizontally outside the 948px section.",
+      "The first complete table omitted the 18 conflict indicators already derived by buildKeybindingRows."
+    ],
+    "harnessLoss": [
+      "The discovery harness initially had no Keybindings bootstrap mapping or stable section anchor.",
+      "The generic Settings gate compared concatenated renderer text, including Web hover Edit copy and Lynx capability copy, instead of canonical binding records.",
+      "One diagnostic rebuilt only the Lynx Browser artifact after adding conflict metadata, so Web appeared to have zero conflicts. That stale-bundle capture was rejected.",
+      "Empty string data attributes are not serialized consistently by Lynx; the verifier now uses explicit true and canonical JSON attributes."
+    ],
+    "intentionalPlatformDelta": [
+      "Lynx keeps Add, edit, remove, reset, Open keybindings.json, and physical keyboard capture unavailable until the renderer keyboard API is verified.",
+      "Web renders interactive 28px key and when controls; Lynx renders read-only 20px text while preserving the same column x and width allocation.",
+      "Lynx shows a read-only capability notice while Web shows a browser-shortcut warning."
+    ],
+    "acceptedRenderingNoise": [
+      "Web and Lynx header origins differ by 1.5px and table row origins by 1px.",
+      "Web uses fractional Grid columns 319.171875/246.65625/290.171875/60 while Lynx uses explicit Native-safe flex widths 319/247/290/60."
+    ],
+    "evidenceBoundary": "Browser before and after use one immutable snapshot, dark theme, 1280x820 viewport, Alpha branding, identical route, clean console, and owned leak gates. The current strict cell requires 45 canonical command/shortcut/when/source/conflict records plus header, row, and column geometry. Exact-bundle Native independently proves 45 rows, 18 conflict indicators, first and last records, route navigation, two Back cycles, renderer health, and isolated cleanup. Physical Native scrolling and keyboard focus remain pending-user-session."
+  },
+  "browser": {
+    "sameSnapshot": true,
+    "sameRoute": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "baseline": {
+      "status": "pass-with-product-loss",
+      "commit": "f69e0508df3c17263a667a3f43c2714834f44d8b",
+      "reportSha256": "af80a8ef924f9aa03b6b85b0e4e5ed8202d9d1743b045a2423bac264dc6dbed8",
+      "readyMs": 1322,
+      "rendererErrors": 0,
+      "webPanel": { "x": 294, "y": 88, "width": 948, "height": 1966 },
+      "lynxPanel": { "x": 320, "y": 88, "width": 896, "height": 140 },
+      "webContent": "45 resolved keybindings with Command, Keybinding, When, and Status columns",
+      "lynxContent": "Keyboard support is limited on Lynxtron empty card",
+      "material": {
+        "mae": 6.443167,
+        "significantShare": 0.060658
+      }
+    },
+    "current": {
+      "status": "pass",
+      "commit": "b6832cc687a836e80090a78afa8a3724ad7bb386",
+      "reportSha256": "74c6afbb719609971cec5fd52985ddc49c63614b782a64b3a9cf1f5a7ab84e98",
+      "readyMs": 1448,
+      "rendererErrors": 0,
+      "bundles": {
+        "web": {
+          "bytes": 3508226,
+          "sha256": "facd17074d38e075ed8d17566f286043af3007b6c374cbb88b14fcd902f768b7"
+        },
+        "lynx": {
+          "bytes": 4432553,
+          "sha256": "a16956547d3a64334d22a233da70562c08f84b765cc026156da7ee2d2d1eff4e"
+        }
+      },
+      "canonical": {
+        "bindingCount": 45,
+        "conflictCount": 18,
+        "first": {
+          "command": "chat.new",
+          "shortcut": "⌘N",
+          "when": "!terminalFocus",
+          "source": "Default"
+        },
+        "last": {
+          "command": "thread.previous",
+          "shortcut": "⇧⌘[",
+          "when": "Always",
+          "source": "Default"
+        }
+      },
+      "geometry": {
+        "webHeader": { "x": 294, "y": 176.5, "width": 948, "height": 33.5 },
+        "lynxHeader": { "x": 294, "y": 175, "width": 948, "height": 34 },
+        "webFirstRow": { "x": 294, "y": 210, "width": 948, "height": 41 },
+        "lynxFirstRow": { "x": 294, "y": 209, "width": 948, "height": 41 },
+        "webLastRow": { "x": 294, "y": 2014, "width": 948, "height": 40 },
+        "lynxLastRow": { "x": 294, "y": 2013, "width": 948, "height": 40 },
+        "webColumnWidths": [319.171875, 246.65625, 290.171875, 60],
+        "lynxColumnWidths": [319, 247, 290, 60]
+      },
+      "material": {
+        "mae": 6.05905,
+        "significantShare": 0.062087,
+        "webSha256": "fd733cfa3f382fe3ebb9b493f215fb72cbd1a8e5cd7480549410b703255e00b5",
+        "lynxSha256": "9d59c45719ea2f33f564f45503b7394fdbd36ed3f4d10e21c4fa05e5200e1369",
+        "retention": "diagnostic PNGs remain in /tmp and are not tracked"
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "b6832cc687a836e80090a78afa8a3724ad7bb386",
+    "reportSha256": "217ef5c0a0e2aea2a5c103da9b53f142735d09a95f643fc4f2896e9b1cd6b5bf",
+    "bundle": {
+      "bytes": 4565645,
+      "sha256": "2fd1bb4d1a7810452101f4460ef803b1383ef885d662b1b3eefe9dd218e0fe2f"
+    },
+    "viewport": { "width": 1280, "height": 820 },
+    "theme": "light",
+    "header": { "x": 294, "y": 175, "width": 948, "height": 34 },
+    "bindingCount": 45,
+    "conflictCount": 18,
+    "first": {
+      "command": "chat.new",
+      "shortcut": "⌘N",
+      "when": "!terminalFocus",
+      "row": { "x": 294, "y": 209, "width": 948, "height": 41 }
+    },
+    "last": {
+      "command": "thread.previous",
+      "shortcut": "⇧⌘[",
+      "when": "Always",
+      "row": { "x": 294, "y": 2013, "width": 948, "height": 40 }
+    },
+    "transport": { "before": 13, "after": 14 },
+    "observedSettingsRoutes": 8,
+    "repeatedBackCycles": 2,
+    "finalRoute": "/",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "scrollInteraction": "pending-user-session"
+  },
+  "validation": {
+    "focusedTests": "100/100 across Web logic, Lynx Settings, workbench, and Native verifier suites",
+    "typecheck": "Lynx app and main passed",
+    "browserBuild": "pass with existing asset-size and Effect import.meta warnings",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "agentBrowserLeakGate": "Every completed loop reported owned=0 orphaned=0.",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "fidelityImpact": {
+    "fixedDenominator": {
+      "statesBefore": 45,
+      "statesAfter": 46,
+      "cellsBefore": 516,
+      "cellsAfter": 528,
+      "totalWeightBefore": 170.4,
+      "totalWeightAfter": 174.4,
+      "formulaChanged": false,
+      "existingStateWeightsChanged": false
+    },
+    "milestones": {
+      "before": 136,
+      "baseline": 137,
+      "after": 138
+    },
+    "totalLoss": {
+      "newScopeBaseline": 0.410378,
+      "after": 0.400884,
+      "productDelta": -0.009494
+    },
+    "componentContribution": {
+      "state": "settings-keybindings",
+      "baselineLoss": 0.766597,
+      "afterLoss": 0.352658,
+      "delta": -0.413939
+    },
+    "after": {
+      "observedResidual": 0.015821,
+      "evidenceDebt": 0.391254,
+      "confidence": 0.608746
+    }
+  },
+  "remainingRisk": [
+    "Physical Native scrolling and keyboard focus traversal remain pending-user-session.",
+    "Lynx keybinding mutation and key capture remain intentionally unavailable.",
+    "Full-frame significant pixel share increased slightly because the repaired Lynx surface now renders the missing inventory; material convergence remains a separate residual."
+  ]
+}

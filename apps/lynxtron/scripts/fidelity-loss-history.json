@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-17T22:52:00+09:00",
+  "updatedAt": "2026-08-17T23:54:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -8767,6 +8767,158 @@
               "confidence": 0.99,
               "method": "shared-server-appearance-readiness",
               "source": "Same immutable snapshot, Alpha branding, route, dark theme, 1280x820 viewport, zero console errors, and clean agent-browser leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-keybindings-baseline",
+      "observedAt": "2026-08-17T23:09:29+09:00",
+      "commit": "f69e0508df3c17263a667a3f43c2714834f44d8b",
+      "codeState": "commit",
+      "label": "Settings Keybindings missing-inventory baseline",
+      "narrative": "A previously unmodeled dark 1280x820 Keybindings route was captured on one immutable snapshot with matching route, theme, viewport, Alpha branding, and zero-error console. Web rendered the complete 45-binding authority table with Command, Keybinding, When, and Status columns. Lynx rendered only a 140px capability card saying keyboard support was limited, even though serverConfig already carried the resolved bindings and the shared pure projection could build the rows. The keyboard-capture limitation did not require hiding read-only inventory, so this is a P1 content and geometry loss rather than an intentional platform delta.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds a valid same-snapshot state before the product repair. Harness bootstrap and identity fixes are separated from the observed missing inventory."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/settings-keybindings-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d05d2b1d090ef25faa3ef7edabcd8b29f8ff24d6c848366e0d8c5e293615712c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "keybindings-inventory-content",
+              "source": "Web renders 45 resolved bindings while Lynx renders only a capability notice"
+            },
+            "geometry": {
+              "anchorDeltas": [26, 0, 52, 1826],
+              "anchorScale": 948,
+              "confidence": 0.99,
+              "method": "keybindings-panel-geometry",
+              "source": "Web 948x1966 inventory panel versus Lynx 896x140 empty card at the same Settings origin"
+            },
+            "material": {
+              "pixel": {
+                "mae": 6.443167,
+                "significantShare": 0.060658
+              },
+              "confidence": 0.99,
+              "method": "keybindings-full-frame-pixel",
+              "source": "Current same-snapshot 1280x820 dark Browser baseline"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybindings-read-only-state",
+              "source": "This state requires route access and inventory inspection; editing and keyboard capture are separate unsupported capabilities"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-keybindings-readiness",
+              "source": "Same snapshot, route, theme, viewport, zero console errors, and clean agent-browser leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-keybindings-current",
+      "observedAt": "2026-08-17T23:53:56+09:00",
+      "commit": "b6832cc687a836e80090a78afa8a3724ad7bb386",
+      "codeCommit": "63f21463ba50fb371b326cc365b3e14381c07b4f",
+      "codeState": "commit",
+      "label": "Settings Keybindings inventory parity",
+      "narrative": "Lynx now projects the real server keybindings through the shared buildKeybindingRows and renderer-neutral shortcut formatter, then renders a truthful read-only four-column table instead of hiding the data. The strict Browser cell requires the same 45 command, shortcut, when, source, and conflict records, 18 conflict sets, a 948x34 header, 948x41 rows with a 40px final row, and matched column x and width allocation. Explicit flex widths avoid unsupported Native CSS Grid. Exact-bundle Native independently proves 45 rows, 18 conflict indicators, canonical first and last records, all eight Settings routes, two Back cycles, sequence 13 to 14, zero renderer errors, and disposed isolated state. Physical scrolling remains pending-user-session and keybinding mutation remains intentionally unavailable.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The before and after Browser captures share one immutable snapshot, route, theme, viewport, and Web authority. Exact-bundle Native corroborates the final committed product and verifier. Stale single-bundle diagnostics are excluded."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/settings-keybindings-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d05d2b1d090ef25faa3ef7edabcd8b29f8ff24d6c848366e0d8c5e293615712c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybindings-canonical-records",
+              "source": "45 command, shortcut, when, source, and conflict records match exactly, including 18 conflict sets"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 1.5, 0, 0.5, 0, 1, 0, 0, 0, 1, 0, 0, 0.171875, 0.34375, 0.171875, 0
+              ],
+              "anchorScale": 948,
+              "confidence": 0.99,
+              "method": "keybindings-header-row-column-geometry",
+              "source": "Header, first and last rows, and four column widths converge within fractional Browser grid rounding"
+            },
+            "material": {
+              "pixel": {
+                "mae": 6.05905,
+                "significantShare": 0.062087
+              },
+              "confidence": 0.99,
+              "method": "keybindings-full-frame-pixel",
+              "source": "Same-snapshot 1280x820 dark current Browser comparison; significant share remains explicit after restoring missing text"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybindings-read-only-state",
+              "source": "Both renderers remain on the same ready route and expose the full inventory; mutation is intentionally unavailable in Lynx"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-keybindings-readiness",
+              "source": "Same immutable snapshot, strict canonical gate, zero console errors, and clean agent-browser leak gates"
+            }
+          }
+        },
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-keybindings-canonical-records",
+              "source": "Exact Native exposes 45 rows, 18 conflict indicators, Chat New first, and Thread Previous last with canonical shortcuts and when clauses"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 948,
+              "confidence": 0.99,
+              "method": "native-keybindings-table-geometry",
+              "source": "Exact Native measures the 948x34 header, 44 948x41 rows, and 948x40 final row at the expected x origin"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-keybindings-readiness",
+              "source": "Exact bundle, all eight Settings routes, two Back cycles, main sequence 13 to 14, zero renderer errors, disposed state, and clean leak gates"
             }
           }
         }
