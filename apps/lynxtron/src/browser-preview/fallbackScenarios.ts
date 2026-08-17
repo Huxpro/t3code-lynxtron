@@ -118,8 +118,20 @@ const provider: ServerProvider = {
   checkedAt: NOW,
   models: [
     { slug: MODEL, name: MODEL_NAME, isCustom: false, isDefault: true, capabilities: {} },
-    { slug: "gpt-5.6-luna", name: "GPT-5.6 Luna", isCustom: false, isDefault: false, capabilities: {} },
-    { slug: "gpt-5.6-mini", name: "GPT-5.6 Mini", isCustom: false, isDefault: false, capabilities: {} },
+    {
+      slug: "gpt-5.6-luna",
+      name: "GPT-5.6 Luna",
+      isCustom: false,
+      isDefault: false,
+      capabilities: {},
+    },
+    {
+      slug: "gpt-5.6-mini",
+      name: "GPT-5.6 Mini",
+      isCustom: false,
+      isDefault: false,
+      capabilities: {},
+    },
   ],
   slashCommands: [],
   skills: [],
@@ -136,8 +148,20 @@ const claudeProvider: ServerProvider = {
   auth: { status: "authenticated" },
   checkedAt: NOW,
   models: [
-    { slug: "claude-fable-5", name: "Claude Fable 5", isCustom: false, isDefault: true, capabilities: {} },
-    { slug: "claude-sonnet-4-5", name: "Claude Sonnet 4.5", isCustom: false, isDefault: false, capabilities: {} },
+    {
+      slug: "claude-fable-5",
+      name: "Claude Fable 5",
+      isCustom: false,
+      isDefault: true,
+      capabilities: {},
+    },
+    {
+      slug: "claude-sonnet-4-5",
+      name: "Claude Sonnet 4.5",
+      isCustom: false,
+      isDefault: false,
+      capabilities: {},
+    },
   ],
   slashCommands: [],
   skills: [],
@@ -318,8 +342,8 @@ const access: AuthAccessPresentation = {
 
 const branding: DesktopAppBranding = {
   baseName: "T3 Code",
-  stageLabel: "Nightly",
-  displayName: "T3 Code (Nightly)",
+  stageLabel: "Alpha",
+  displayName: "T3 Code (Alpha)",
 };
 
 const preferences: Readonly<Record<string, unknown>> = {
@@ -467,8 +491,7 @@ export const WORKBENCH_SCENARIOS: Readonly<Record<WorkbenchScenarioId, Workbench
           {
             id: MessageId.make("browser-preview-assistant-message-2"),
             role: "assistant",
-            text:
-              "Implemented the formatter and kept the API small.\n\n```ts title=\"src/formatStatus.ts\"\nexport function formatStatus(value: string): string {\n  return value.trim().toLowerCase();\n}\n```\n\nThe focused tests pass.",
+            text: 'Implemented the formatter and kept the API small.\n\n```ts title="src/formatStatus.ts"\nexport function formatStatus(value: string): string {\n  return value.trim().toLowerCase();\n}\n```\n\nThe focused tests pass.',
             turnId: SECOND_TURN_ID,
             streaming: false,
             createdAt: FOLLOW_UP_COMPLETED,

@@ -53,6 +53,12 @@ const SETTINGS_ANCHOR_BY_ROUTE = {
     "text-generation-model",
     "diagnostics",
   ],
+  "settings-appearance": [
+    "theme",
+    "setting-glass-opacity",
+    "environment-identification",
+    "word-wrap",
+  ],
   "settings-connections": ["remote-environments"],
   "settings-source-control": ["source-control"],
   "settings-beta": ["sidebar-v2"],
@@ -152,6 +158,40 @@ function readElementAncestors(element, depth = 4) {
     current = current.parentElement;
   }
   return ancestors;
+}
+
+function readSettingsRows(root, ids) {
+  return ids.flatMap((id) => {
+    const row = root?.getElementById(id);
+    if (!row) return [];
+    const title = row.querySelector(".settings-row__title, h3");
+    const description = row.querySelector(".settings-row__desc, p");
+    const lynxText = row.querySelector(".settings-row__text");
+    const webGrid = lynxText ? null : row.firstElementChild;
+    const webText = webGrid?.firstElementChild ?? null;
+    const status =
+      row.querySelector(".settings-row__status") ??
+      (webText && webText.children.length > 2 ? webText.children[2] : null);
+    const control =
+      row.querySelector(".settings-row__control") ??
+      (webGrid && webGrid.children.length > 1 ? webGrid.children[1] : null);
+    return [
+      {
+        id,
+        title: title?.textContent?.trim().replace(/\s+/g, " ") ?? "",
+        description: description?.textContent?.trim().replace(/\s+/g, " ") ?? "",
+        status: status?.textContent?.trim().replace(/\s+/g, " ") ?? "",
+        controlText: control?.textContent?.trim().replace(/\s+/g, " ") ?? "",
+        ariaDisabled: row.getAttribute("aria-disabled"),
+        unavailable: row.getAttribute("data-settings-unavailable"),
+        box: readElementBox(row),
+        titleBox: readElementBox(title),
+        descriptionBox: readElementBox(description),
+        statusBox: readElementBox(status),
+        controlBox: readElementBox(control),
+      },
+    ];
+  });
 }
 
 function readSidebarStageIdentity(root) {
@@ -1197,13 +1237,13 @@ function readLynxPane() {
             const settingsPanel =
               root?.querySelector(".settings-content--source-control > .source-control-panel") ??
               root?.querySelector(".settings-panel");
+            const settingsRowIds = SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? [];
             return {
               navigationLabels: [
                 ...(root?.querySelectorAll(".settings-nav__item-label") ?? []),
               ].map((item) => item.textContent?.trim()),
-              rowIds: (SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? []).filter((id) =>
-                root?.getElementById(id),
-              ),
+              rowIds: settingsRowIds.filter((id) => root?.getElementById(id)),
+              rows: readSettingsRows(root, settingsRowIds),
               sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
                 (item) => item.textContent?.trim(),
               ),
@@ -2019,6 +2059,7 @@ function readWebPane() {
         ? (() => {
             const settingsPanel = doc.querySelector(".settings-page-scroll-fade > div");
             const settingsContent = settingsPanel;
+            const settingsRowIds = SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? [];
             return {
               navigationLabels: [
                 ...(doc.querySelectorAll(
@@ -2027,9 +2068,8 @@ function readWebPane() {
               ]
                 .map((item) => item.textContent?.trim())
                 .filter((label) => SETTINGS_NAV_LABELS.includes(label)),
-              rowIds: (SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? []).filter((id) =>
-                doc.getElementById(id),
-              ),
+              rowIds: settingsRowIds.filter((id) => doc.getElementById(id)),
+              rows: readSettingsRows(doc, settingsRowIds),
               sectionTitles: [
                 ...(settingsPanel?.querySelectorAll(":scope > section > div:first-child h2") ?? []),
               ].map((item) => item.textContent?.trim()),

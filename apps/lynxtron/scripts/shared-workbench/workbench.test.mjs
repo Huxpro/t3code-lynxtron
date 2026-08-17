@@ -79,4 +79,21 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "firstProvider?.parentElement");
     assert.include(source, "providerGrid: readElementBox(providerGrid)");
   });
+
+  it("measures every Appearance settings row anchor", () => {
+    assert.include(source, '"settings-appearance"');
+    assert.include(source, "function readSettingsRows(root, ids)");
+    assert.include(source, "rows: readSettingsRows(root, settingsRowIds)");
+    assert.include(source, "rows: readSettingsRows(doc, settingsRowIds)");
+    assert.include(source, 'ariaDisabled: row.getAttribute("aria-disabled")');
+    assert.include(source, 'unavailable: row.getAttribute("data-settings-unavailable")');
+    for (const anchor of [
+      "theme",
+      "setting-glass-opacity",
+      "environment-identification",
+      "word-wrap",
+    ]) {
+      assert.include(source, `"${anchor}"`);
+    }
+  });
 });

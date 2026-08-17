@@ -345,6 +345,19 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "findFirst(WEB_DIST, /assets\\/.*\\.js$/)");
   });
 
+  it("routes Appearance captures through the Settings bootstrap scenario", () => {
+    assert.include(source, '"settings-appearance": "settings-general"');
+    assert.include(source, "function appearanceSettingsContentMatches");
+    assert.include(source, 'lynxRow.status === "Not yet available in Lynxtron."');
+    assert.include(source, 'lynxRow.box?.style?.opacity === "0.48"');
+    const scenarios = readFileSync(
+      path.join(import.meta.dirname, "../src/browser-preview/fallbackScenarios.ts"),
+      "utf8",
+    );
+    assert.include(scenarios, 'stageLabel: "Alpha"');
+    assert.include(scenarios, 'displayName: "T3 Code (Alpha)"');
+  });
+
   it("reopens thread-scoped model picker states after selecting the seeded thread", () => {
     assert.include(source, '"model-picker-selected",');
     assert.include(source, 'overlay === "model-picker"');
