@@ -120,6 +120,35 @@ export interface ConnectorConnectResult {
   cwd?: string;
 }
 
+interface OpenRpcTransport {
+  readonly appScope: Scope.Closeable;
+  readonly client: any;
+  readonly config: ServerConfig;
+  readonly protocolContext: Context.Context<Scope.Scope | RpcClient.Protocol>;
+}
+
+export async function retryRpcTransportOpen<A>(options: {
+  readonly open: () => Promise<A>;
+  readonly onFailure: (attempt: number, error: unknown) => void;
+  readonly wait: (milliseconds: number) => Promise<void>;
+  readonly attempts?: number;
+}): Promise<A> {
+  const attempts = options.attempts ?? 3;
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await options.open();
+    } catch (error) {
+      lastError = error;
+      options.onFailure(attempt, error);
+      if (attempt < attempts) {
+        await options.wait(attempt * 250);
+      }
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
+}
+
 export function materializeTurnBootstrap(
   bootstrap: ThreadTurnStartBootstrap | undefined,
   randomId: () => string = crypto.randomUUID,
@@ -188,6 +217,7 @@ export class T3Connector {
   private ready = false;
   private serverExited = false;
   private disposed = false;
+  private rpcTransportGeneration = 0;
   private transportRecoveryPromise: Promise<void> | undefined;
 
   constructor(events: ConnectorEvents) {
@@ -370,6 +400,7 @@ export class T3Connector {
     }
     this.threadFibers.clear();
     const previousScope = this.appScope;
+    this.rpcTransportGeneration += 1;
     this.client = undefined;
     this.protocolContext = undefined;
     this.appScope = undefined;
@@ -377,7 +408,17 @@ export class T3Connector {
       await Effect.runPromise(Scope.close(previousScope, undefined as any));
     }
 
-    const config = await this.openRpc(await this.issueSocketUrl());
+    const config = await retryRpcTransportOpen({
+      open: async () => this.openRpc(await this.issueSocketUrl()),
+      onFailure: (attempt, error) => {
+        this.log(
+          `[connector] RPC transport recovery attempt ${attempt}/3 failed: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+        );
+      },
+      wait: (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+    });
     this.setServerConfig(config, {
       version: 1,
       type: "snapshot",
@@ -392,6 +433,31 @@ export class T3Connector {
     }
     this.ready = true;
     this.events.onStatus("ready", undefined);
+  }
+
+  private handleRpcDisconnect(generation: number): void {
+    if (
+      this.disposed ||
+      this.serverExited ||
+      !this.ready ||
+      generation !== this.rpcTransportGeneration
+    ) {
+      return;
+    }
+    this.ready = false;
+    this.log(`[connector] RPC transport generation ${generation} disconnected; recovering`);
+    queueMicrotask(() => {
+      if (this.disposed || this.serverExited || generation !== this.rpcTransportGeneration) {
+        return;
+      }
+      void this.recoverTransport().catch((error: unknown) => {
+        const detail = error instanceof Error ? error.message : String(error);
+        this.log(`[connector] RPC transport recovery failed: ${detail}`);
+        if (!this.disposed && !this.serverExited) {
+          this.events.onStatus("error", detail);
+        }
+      });
+    });
   }
 
   private setServerConfig(config: ServerConfig, event: ServerConfigStreamEvent): void {
@@ -476,6 +542,8 @@ export class T3Connector {
 
   private openRpc(socketUrl: string): Promise<ServerConfig> {
     const self = this;
+    const generation = ++this.rpcTransportGeneration;
+    let pendingScope: Scope.Closeable | undefined;
     const buildProgram = Effect.gen(function* () {
       // Node 22 exposes a global WebSocket that satisfies the constructor.
       const wsCtor = Socket.WebSocketConstructor.of(
@@ -492,30 +560,67 @@ export class T3Connector {
           retryTransientErrors: false,
           retryPolicy: Schedule.recurs(0),
         }),
-      ).pipe(Layer.provide(Layer.mergeAll(socketLayer, RpcSerialization.layerJson)));
+      ).pipe(
+        Layer.provide(
+          Layer.mergeAll(
+            socketLayer,
+            RpcSerialization.layerJson,
+            Layer.succeed(
+              RpcClient.ConnectionHooks,
+              RpcClient.ConnectionHooks.of({
+                onConnect: Effect.void,
+                onDisconnect: Effect.sync(() => self.handleRpcDisconnect(generation)),
+              }),
+            ),
+          ),
+        ),
+      );
 
       // A scope that stays open for the whole connection lifetime. All client
       // calls (which need the protocol context) run provided with this context;
       // the scope is only closed in dispose().
       const appScope = yield* Scope.make();
-      self.appScope = appScope;
+      pendingScope = appScope;
       const builtContext = yield* Layer.buildWithScope(protocolLayer, appScope);
       // Merge the long-lived Scope into the context so RpcClient.make (which
       // allocates scoped resources) and every later client call resolve the
       // ambient Scope service instead of failing with "Service not found".
       const protocolContext = Context.add(builtContext, Scope.Scope, appScope);
-      self.protocolContext = protocolContext;
       const client = yield* RpcClient.make(WsRpcGroup).pipe(Effect.provide(protocolContext));
-      self.client = client;
       const cfg = yield* client[WS_METHODS.serverGetConfig]({}).pipe(
         Effect.provide(protocolContext),
       );
-      return cfg;
+      return {
+        appScope,
+        client,
+        config: cfg,
+        protocolContext,
+      } satisfies OpenRpcTransport;
     });
 
     // Run the build without an enclosing Effect.scoped so the appScope we made
     // is NOT auto-closed when this promise resolves.
-    return Effect.runPromise(buildProgram as Effect.Effect<ServerConfig, unknown, never>);
+    return Effect.runPromise(buildProgram as Effect.Effect<OpenRpcTransport, unknown, never>).then(
+      ({ appScope, client, config, protocolContext }) => {
+        if (self.disposed || generation !== self.rpcTransportGeneration) {
+          return Effect.runPromise(Scope.close(appScope, undefined as any)).then(() => {
+            throw new Error("RPC transport was superseded while opening");
+          });
+        }
+        self.appScope = appScope;
+        self.protocolContext = protocolContext;
+        self.client = client;
+        pendingScope = undefined;
+        return config;
+      },
+      async (error: unknown) => {
+        if (pendingScope) {
+          await Effect.runPromise(Scope.close(pendingScope, undefined as any));
+          pendingScope = undefined;
+        }
+        throw error;
+      },
+    );
   }
 
   /** Run a client Effect within the persistent protocol context. */
@@ -524,6 +629,15 @@ export class T3Connector {
     return Effect.runPromise(
       Effect.provide(effect, this.protocolContext) as Effect.Effect<A, unknown, never>,
     );
+  }
+
+  private async awaitRecoveredTransport(): Promise<void> {
+    if (this.transportRecoveryPromise) {
+      await this.transportRecoveryPromise;
+    }
+    if (!this.client || !this.protocolContext) {
+      throw new Error("not connected");
+    }
   }
 
   /** Fork a long-lived client Effect (e.g. a stream) within the context. */
@@ -1065,7 +1179,8 @@ export class T3Connector {
   async setModelSelection(input: { threadId?: string; selection: ModelSelection }): Promise<void> {
     this.modelSelection = input.selection;
     this.log(`[connector] model selection changed: ${JSON.stringify(input.selection)}`);
-    if (!input.threadId || !this.client) return;
+    if (!input.threadId) return;
+    await this.awaitRecoveredTransport();
     this.pendingThreadModelSelections.set(input.threadId, input.selection);
     try {
       await this.runClient(
@@ -1162,6 +1277,7 @@ export class T3Connector {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.rpcTransportGeneration += 1;
     for (const fiber of this.threadFibers.values()) {
       Effect.runFork(Fiber.interrupt(fiber));
     }
