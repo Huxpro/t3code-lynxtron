@@ -60,7 +60,12 @@ interface ActionItem {
   run: () => void;
 }
 
-export function QuickSwitch({ mode = "command", projects, threads, activeThreadId }: QuickSwitchProps) {
+export function QuickSwitch({
+  mode = "command",
+  projects,
+  threads,
+  activeThreadId,
+}: QuickSwitchProps) {
   const [query, setQuery] = useState("");
   const [filePicker, setFilePicker] = useState<FilePickerState>(EMPTY_FILE_PICKER_STATE);
   const { createThread, selectThread } = t3ClientActions;
@@ -223,7 +228,7 @@ export function QuickSwitch({ mode = "command", projects, threads, activeThreadI
     <>
       <view className="palette-backdrop" bindtap={close} />
       <view
-        className="palette-panel"
+        className={fileMode ? "palette-panel palette-panel--files" : "palette-panel"}
         data-search-overlay-mode={mode}
         bindtap={(event: unknown) => {
           if (typeof event === "object" && event !== null && "stopPropagation" in event) {
@@ -244,99 +249,114 @@ export function QuickSwitch({ mode = "command", projects, threads, activeThreadI
           }
         />
 
-        <scroll-view scroll-orientation="vertical" className="qs-results">
+        <scroll-view
+          scroll-orientation="vertical"
+          className={fileMode ? "qs-results qs-results--files" : "qs-results"}
+        >
           <PaletteResultsSurface empty={fileMode ? filteredFiles.length === 0 : isEmpty}>
-          {fileMode ? (
-            <view className="qs-section" data-quick-switch-mode="files">
-              <PaletteSectionSurface label={activeProject?.title ?? "Files"} />
-              {filteredFiles.map((entry) => (
-                <PaletteRowSurface
-                  key={entry.path}
-                  semanticClassName="quick-switch-file-row quick-switch-file-row--detailed"
-                  icon={<Icon name="file-json" size={16} color="#a1a1aa" className="qs-row__icon-img" />}
-                  title={entry.name}
-                  description={entry.path}
-                  onSelect={() => handleFileTap(entry.path)}
-                />
-              ))}
-              {filteredFiles.length === 0 ? (
-                <PaletteEmptySurface
-                  message={
-                    filePicker.pending
-                      ? "Indexing workspace files…"
-                      : filePicker.error
-                        ? "Unable to load workspace files."
-                        : query.trim()
-                          ? "No matching files."
-                          : "No files found."
-                  }
-                />
-              ) : null}
-            </view>
-          ) : (
-            <>
-          {/* Actions */}
-          {filteredActions.length > 0 ? (
-            <view className="qs-section">
-              <PaletteSectionSurface label="Actions" />
-              {filteredActions.map((a) => (
-                <PaletteRowSurface
-                  key={a.id}
-                  semanticClassName="quick-switch-action-row"
-                  icon={
-                    <Icon name={a.icon} size={16} color="#a1a1aa" className="qs-row__icon-img" />
-                  }
-                  title={a.label}
-                  onSelect={a.run}
-                />
-              ))}
-            </view>
-          ) : null}
-
-          {/* Recent threads */}
-          {filteredThreads.length > 0 ? (
-            <view className="qs-section">
-              <PaletteSectionSurface label="Recent Threads" />
-              {filteredThreads.map((t) => {
-                const isCurrent = t.id === activeThreadId;
-                const threadProjectName = projectTitleById.get(t.projectId) ?? projectName;
-                return (
+            {fileMode ? (
+              <view className="qs-section" data-quick-switch-mode="files">
+                <PaletteSectionSurface label={activeProject?.title ?? "Files"} />
+                {filteredFiles.map((entry) => (
                   <PaletteRowSurface
-                    key={t.id}
-                    semanticClassName={
-                      isCurrent
-                        ? "quick-switch-thread-row quick-switch-thread-row--current"
-                        : "quick-switch-thread-row quick-switch-thread-row--other"
-                    }
+                    key={entry.path}
+                    semanticClassName="quick-switch-file-row quick-switch-file-row--detailed"
                     icon={
                       <Icon
-                        name="message-square"
+                        name="file-json"
                         size={16}
                         color="#a1a1aa"
                         className="qs-row__icon-img"
                       />
                     }
-                    title={t.title || "Untitled thread"}
-                    description={`${threadProjectName} · ${t.branch ? `#${t.branch}` : "No branch"}${isCurrent ? " · Current thread" : ""}`}
-                    timestamp={formatRelativeTimeLabel(t.updatedAt, Date.now())}
-                    onSelect={() => handleThreadTap(t.id)}
+                    title={entry.name}
+                    description={entry.path}
+                    onSelect={() => handleFileTap(entry.path)}
                   />
-                );
-              })}
-            </view>
-          ) : null}
+                ))}
+                {filteredFiles.length === 0 ? (
+                  <PaletteEmptySurface
+                    message={
+                      filePicker.pending
+                        ? "Indexing workspace files…"
+                        : filePicker.error
+                          ? "Unable to load workspace files."
+                          : query.trim()
+                            ? "No matching files."
+                            : "No files found."
+                    }
+                  />
+                ) : null}
+              </view>
+            ) : (
+              <>
+                {/* Actions */}
+                {filteredActions.length > 0 ? (
+                  <view className="qs-section">
+                    <PaletteSectionSurface label="Actions" />
+                    {filteredActions.map((a) => (
+                      <PaletteRowSurface
+                        key={a.id}
+                        semanticClassName="quick-switch-action-row"
+                        icon={
+                          <Icon
+                            name={a.icon}
+                            size={16}
+                            color="#a1a1aa"
+                            className="qs-row__icon-img"
+                          />
+                        }
+                        title={a.label}
+                        onSelect={a.run}
+                      />
+                    ))}
+                  </view>
+                ) : null}
 
-          {isEmpty ? (
-            <PaletteEmptySurface
-              message={
-                actionsOnly
-                  ? "No matching actions."
-                  : "No matching commands, projects, or threads."
-              }
-            />
-          ) : null}
-            </>
-          )}
+                {/* Recent threads */}
+                {filteredThreads.length > 0 ? (
+                  <view className="qs-section">
+                    <PaletteSectionSurface label="Recent Threads" />
+                    {filteredThreads.map((t) => {
+                      const isCurrent = t.id === activeThreadId;
+                      const threadProjectName = projectTitleById.get(t.projectId) ?? projectName;
+                      return (
+                        <PaletteRowSurface
+                          key={t.id}
+                          semanticClassName={
+                            isCurrent
+                              ? "quick-switch-thread-row quick-switch-thread-row--current"
+                              : "quick-switch-thread-row quick-switch-thread-row--other"
+                          }
+                          icon={
+                            <Icon
+                              name="message-square"
+                              size={16}
+                              color="#a1a1aa"
+                              className="qs-row__icon-img"
+                            />
+                          }
+                          title={t.title || "Untitled thread"}
+                          description={`${threadProjectName} · ${t.branch ? `#${t.branch}` : "No branch"}${isCurrent ? " · Current thread" : ""}`}
+                          timestamp={formatRelativeTimeLabel(t.updatedAt, Date.now())}
+                          onSelect={() => handleThreadTap(t.id)}
+                        />
+                      );
+                    })}
+                  </view>
+                ) : null}
+
+                {isEmpty ? (
+                  <PaletteEmptySurface
+                    message={
+                      actionsOnly
+                        ? "No matching actions."
+                        : "No matching commands, projects, or threads."
+                    }
+                  />
+                ) : null}
+              </>
+            )}
           </PaletteResultsSurface>
         </scroll-view>
         <PaletteFooterSurface>

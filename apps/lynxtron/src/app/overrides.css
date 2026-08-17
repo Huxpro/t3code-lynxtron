@@ -7399,6 +7399,9 @@
   overflow: hidden;
   z-index: 51;
 }
+.palette-panel--files {
+  max-height: 418px;
+}
 .palette-search {
   display: flex;
   flex-direction: row;
@@ -7429,6 +7432,10 @@
   flex-direction: column;
   max-height: 384px;
   flex-shrink: 1;
+}
+.qs-results--files {
+  height: 330px;
+  max-height: 330px;
 }
 .qs-section {
   display: flex;
