@@ -65,4 +65,18 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "titleBox: readElementBox(title)");
     assert.include(source, "rows,");
   });
+
+  it("measures the Git Publish popup rather than the fullscreen Lynx overlay", () => {
+    assert.include(
+      source,
+      "\"[data-slot='dialog-popup'][data-git-publish-dialog='true'], .git-publish-dialog\"",
+    );
+    assert.notInclude(
+      source,
+      "const dialog = root?.querySelector(\"[data-git-publish-dialog='true']\")",
+    );
+    assert.include(source, "firstStep?.parentElement");
+    assert.include(source, "firstProvider?.parentElement");
+    assert.include(source, "providerGrid: readElementBox(providerGrid)");
+  });
 });

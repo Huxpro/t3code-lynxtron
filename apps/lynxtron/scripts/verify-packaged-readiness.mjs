@@ -4796,6 +4796,8 @@ async function verifyGitInitialize({
 }
 
 async function verifyGitPublishDialog({ child, client, timeoutMs }) {
+  const approximately = (actual, expected, tolerance = 1) =>
+    typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
   let headerAction;
   try {
     headerAction = await waitForMeasurement({
@@ -4847,11 +4849,58 @@ async function verifyGitPublishDialog({ child, client, timeoutMs }) {
       measurement?.attributes["data-git-publish-provider"] === "github" &&
       measurement.attributes["data-git-publish-provider-ready"] === "true",
   });
+  const anatomy = {
+    header: await readOptionalMeasurement(client, ".git-publish-header"),
+    title: await readOptionalMeasurement(client, ".git-publish-title"),
+    description: await readOptionalMeasurement(client, ".git-publish-description"),
+    steps: await readOptionalMeasurement(client, ".git-publish-steps"),
+    body: await readOptionalMeasurement(client, ".git-publish-body"),
+    providerGrid: await readOptionalMeasurement(client, ".git-publish-provider-grid"),
+    footer: await readOptionalMeasurement(client, ".git-publish-footer"),
+  };
   const steps = await readSelectorRects(client, "[data-git-publish-step-label]");
   const providers = await readSelectorRects(client, "[data-git-publish-provider]");
-  if (steps.length !== 3 || providers.length !== 4) {
+  const dismiss = await waitForMeasurement({
+    child,
+    client,
+    selector: ".git-publish-dismiss",
+    timeoutMs,
+    predicate: (measurement) =>
+      approximately(measurement?.rect?.x, 0) &&
+      approximately(measurement?.rect?.y, 0) &&
+      approximately(measurement?.rect?.width, 1280) &&
+      approximately(measurement?.rect?.height, 820),
+  });
+  const expectedSteps = [
+    { x: 377, y: 309, width: 170, height: 49 },
+    { x: 555, y: 309, width: 170, height: 49 },
+    { x: 733, y: 309, width: 170, height: 49 },
+  ];
+  const expectedProviders = [
+    { x: 377, y: 399, width: 258, height: 50 },
+    { x: 645, y: 399, width: 258, height: 50 },
+    { x: 377, y: 459, width: 258, height: 50 },
+    { x: 645, y: 459, width: 258, height: 50 },
+  ];
+  const geometryMatches = (rect, expected) =>
+    Object.entries(expected).every(([key, value]) => approximately(rect?.[key], value));
+  if (
+    !geometryMatches(dialog.rect, { x: 352, y: 228, width: 576, height: 364 }) ||
+    steps.length !== 3 ||
+    providers.length !== 4 ||
+    !steps.every((rect, index) => geometryMatches(rect, expectedSteps[index])) ||
+    !providers.every((rect, index) => geometryMatches(rect, expectedProviders[index]))
+  ) {
     throw new Error(
-      `Native Publish wizard anatomy drifted: ${JSON.stringify({ steps, providers })}`,
+      `Native Publish wizard anatomy drifted: ${JSON.stringify({
+        dialog: dialog.rect,
+        dismiss: dismiss.rect,
+        anatomy: Object.fromEntries(
+          Object.entries(anatomy).map(([key, measurement]) => [key, measurement?.rect ?? null]),
+        ),
+        steps,
+        providers,
+      })}`,
     );
   }
   await tapSelector({
@@ -4873,7 +4922,9 @@ async function verifyGitPublishDialog({ child, client, timeoutMs }) {
     input: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selectors",
     headerAction,
     dialog,
+    dismiss,
     activeProvider,
+    anatomy,
     steps,
     providers,
     sequence: { beforeOpen: beforeOpen.lastSeq, afterOpen: afterOpen.lastSeq },

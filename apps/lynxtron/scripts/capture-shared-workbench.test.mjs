@@ -294,13 +294,23 @@ describe("shared workbench lifecycle fault capture", () => {
       "utf8",
     );
     assert.include(workbench, "function readGitPublishDialog");
-    assert.include(workbench, "\"[data-git-publish-dialog='true']\"");
+    assert.include(
+      workbench,
+      "\"[data-slot='dialog-popup'][data-git-publish-dialog='true'], .git-publish-dialog\"",
+    );
     assert.include(workbench, '"[data-git-publish-step-label]"');
     assert.include(workbench, '"[data-git-publish-provider]"');
     assert.include(source, 'const isGitPublishDialogState = stateId === "git-publish-dialog"');
     assert.include(source, "function gitPublishDialogMatches");
     assert.include(source, "webGitPublishInputSent");
     assert.include(source, "lynxGitPublishInputSent");
+    assert.include(source, "let webGitPublishOpenAttempts = 0");
+    assert.include(source, "let lynxGitPublishOpenAttempts = 0");
+    assert.include(source, "connectorDiagnostics?.commandResults?.some");
+    assert.include(source, '({ method }) => method === "readVcsStatus"');
+    assert.include(source, '({ method }) => method === "discoverSourceControl"');
+    assert.include(source, "webGitPublishOpenAttempts < 2");
+    assert.include(source, "lynxGitPublishOpenAttempts < 2");
     assert.include(source, "async function dispatchOverlayOpeningPointerClick");
     assert.include(
       source,
@@ -314,6 +324,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "await dispatchPointerClick(cdp, sessionId, dismissPoints.lynx)");
     assert.include(source, "gitPublishDismissed = true");
     assert.include(source, "finalGitPublishDialogReady");
+    assert.include(source, "frameWindow.requestAnimationFrame(() => {");
+    assert.include(
+      source,
+      "Git Publish panes did not commit two compositor frames before capture.",
+    );
+    assert.include(source, "Git Publish dialog changed before the compositor gate");
+    assert.include(source, "const gitPublishDialogEvidence = finalGitPublishDialogReady");
+    assert.include(source, "web: gitPublishDialogEvidence?.web ?? null");
+    assert.include(source, "lynx: gitPublishDialogEvidence?.lynx ?? null");
     assert.include(source, "gitPublishDialog: {");
   });
 

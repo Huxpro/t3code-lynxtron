@@ -217,7 +217,25 @@ describe("desktop shell interaction contract", () => {
     expect(publish).toContain(".publishRepository({");
     expect(publish).toContain('aria-label="Dismiss Publish repository"');
     expect(publish).toContain('aria-label="Close Publish repository"');
-    expect(publish).toContain('className="git-publish-dialog" catchtap');
+    expect(publish).toContain('className="git-publish-dialog flex flex-col" catchtap');
+    expect(publish).toContain('className="git-publish-header flex flex-col"');
+    expect(publish).toContain('className="git-publish-heading flex flex-col"');
+    expect(publish).toContain('className="git-publish-body flex flex-col"');
+    expect(publish).toContain("const providerRows = useMemo");
+    expect(publish).toContain('className="git-publish-provider-row flex flex-row"');
+    expect(publish).toContain('className="git-publish-label git-publish-label--first">Provider');
+    expect(publish).not.toContain(
+      '<text className="git-publish-provider-card__host">{item.host}</text>',
+    );
+    expect(overrides).not.toContain("flex-flow: row wrap;");
+    expect(overrides).not.toContain(".git-publish-label:first-child");
+    expect(overrides).toContain(".git-publish-label--first {");
+    expect(overrides).toContain(".git-publish-provider-row {");
+    expect(overrides).toContain("width: 526px;");
+    expect(overrides).toContain("height: 49px;");
+    expect(overrides).toContain("margin-top: 8px;");
+    expect(overrides).toContain("height: 28px;");
+    expect(overrides).toContain("padding: 0 9px;");
     expect(app).toContain("<GitPublishDialog");
     expect(app).toContain("onClose={uiActions.closeGitPublishDialog}");
     expect(uiState).toContain('Atom.withLabel("lynx-git-publish-dialog-open")');

@@ -328,6 +328,7 @@ describe("packaged readiness Sidebar geometry", () => {
 
   it("verifies the Native Publish wizard and backdrop dismissal", () => {
     assert.include(source, "async function verifyGitPublishDialog");
+    assert.include(source, "const approximately = (actual, expected, tolerance = 1) =>");
     assert.include(source, '"--verify-git-publish-dialog"');
     assert.include(source, 'selector: ".action-btn--commit"');
     assert.include(
@@ -336,10 +337,20 @@ describe("packaged readiness Sidebar geometry", () => {
     );
     assert.include(source, 'selector: ".git-publish-dialog"');
     assert.include(source, 'selector: ".git-publish-provider-card--active"');
+    assert.include(source, 'header: await readOptionalMeasurement(client, ".git-publish-header")');
+    assert.include(source, 'footer: await readOptionalMeasurement(client, ".git-publish-footer")');
     assert.include(source, 'measurement?.attributes["data-git-publish-provider"] === "github"');
     assert.include(source, 'readSelectorRects(client, "[data-git-publish-step-label]")');
     assert.include(source, 'readSelectorRects(client, "[data-git-publish-provider]")');
     assert.include(source, 'selector: ".git-publish-dismiss"');
+    assert.include(source, "const expectedSteps = [");
+    assert.include(source, "const expectedProviders = [");
+    assert.include(
+      source,
+      "geometryMatches(dialog.rect, { x: 352, y: 228, width: 576, height: 364 })",
+    );
+    assert.include(source, "approximately(measurement?.rect?.width, 1280)");
+    assert.include(source, "approximately(measurement?.rect?.height, 820)");
     assert.include(source, "steps.length !== 3");
     assert.include(source, "providers.length !== 4");
     assert.include(source, "dismissed: true");

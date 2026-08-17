@@ -249,14 +249,46 @@ function readHeaderActionItems(elements, ids = []) {
 }
 
 function readGitPublishDialog(root) {
-  const dialog = root?.querySelector("[data-git-publish-dialog='true']") ?? null;
+  const dialog =
+    root?.querySelector(
+      "[data-slot='dialog-popup'][data-git-publish-dialog='true'], .git-publish-dialog",
+    ) ?? null;
   if (!dialog) return null;
+  const firstStep = dialog.querySelector("[data-git-publish-step-label]");
+  const firstProvider = dialog.querySelector("[data-git-publish-provider]");
+  const providerGrid =
+    dialog.querySelector("[data-git-publish-providers='true']") ?? firstProvider?.parentElement;
   return {
     rect: readElementBox(dialog),
     title: readComposedText(dialog.querySelector("[data-slot='dialog-title'], .git-publish-title")),
     description: readComposedText(
       dialog.querySelector("[data-slot='dialog-description'], .git-publish-description"),
     ),
+    anatomy: {
+      header: readElementBox(
+        dialog.querySelector("[data-slot='dialog-header'], .git-publish-header"),
+      ),
+      heading: readElementBox(dialog.querySelector(".git-publish-heading")),
+      steps: readElementBox(
+        dialog.querySelector("[data-git-publish-step], [data-git-publish-steps]") ??
+          firstStep?.parentElement,
+      ),
+      body: readElementBox(dialog.querySelector("[data-slot='dialog-panel'], .git-publish-body")),
+      providerGrid: readElementBox(providerGrid),
+      providerLabel: readElementBox(dialog.querySelector(".git-publish-label")),
+      footer: readElementBox(
+        dialog.querySelector("[data-slot='dialog-footer'], .git-publish-footer"),
+      ),
+      footerButtons: [
+        ...dialog.querySelectorAll(
+          "[data-slot='dialog-footer'] button, .git-publish-footer .git-publish-button",
+        ),
+      ].map((button) => readElementBox(button)),
+      title: readElementBox(dialog.querySelector("[data-slot='dialog-title'], .git-publish-title")),
+      description: readElementBox(
+        dialog.querySelector("[data-slot='dialog-description'], .git-publish-description"),
+      ),
+    },
     steps: [...dialog.querySelectorAll("[data-git-publish-step-label]")].map((step) => ({
       label: step.getAttribute("data-git-publish-step-label"),
       state: step.getAttribute("data-git-publish-step-state"),

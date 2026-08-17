@@ -1730,6 +1730,8 @@ async function captureCell({
   let lynxChangedFilesClickCount = 0;
   let webGitPublishInputSent = !isGitPublishDialogState;
   let lynxGitPublishInputSent = !isGitPublishDialogState;
+  let webGitPublishOpenAttempts = 0;
+  let lynxGitPublishOpenAttempts = 0;
   let gitPublishDismissed = !isGitPublishDialogState;
   let gitPublishThreadReadyPolls = isGitPublishDialogState ? 0 : 3;
   const gitPublishPostconditionTimeline = [];
@@ -1779,12 +1781,32 @@ async function captureCell({
       isGitPublishDialogState &&
       gitPublishThreadReadyPolls >= 3 &&
       headerGitActionMatches(state) &&
-      (!webGitPublishInputSent || !lynxGitPublishInputSent)
+      state?.lynx?.connectorDiagnostics?.commandResults?.some(
+        ({ method }) => method === "readVcsStatus",
+      ) === true
     ) {
-      const publishPoints = await evaluate(
-        cdp,
-        sessionId,
-        `(() => {
+      const discoveryCompleted =
+        state?.lynx?.connectorDiagnostics?.commandResults?.some(
+          ({ method }) => method === "discoverSourceControl",
+        ) === true;
+      const shouldOpenWebGitPublish =
+        !webGitPublishInputSent ||
+        (discoveryCompleted &&
+          state?.web?.gitPublishDialog === null &&
+          webGitPublishOpenAttempts < 2);
+      const shouldOpenLynxGitPublish =
+        !lynxGitPublishInputSent ||
+        (discoveryCompleted &&
+          state?.lynx?.gitPublishDialog === null &&
+          lynxGitPublishOpenAttempts < 2);
+      if (!shouldOpenWebGitPublish && !shouldOpenLynxGitPublish) {
+        // Both renderers are either open or have exhausted their one
+        // discovery-complete reopen attempt.
+      } else {
+        const publishPoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
           const pointFor = (frameId, shadow) => {
             const frame = document.getElementById(frameId);
             const doc = frame?.contentWindow?.document;
@@ -1806,18 +1828,21 @@ async function captureCell({
             lynx: pointFor('lynx-pane', true),
           };
         })()`,
-      ).catch(() => null);
-      if (!webGitPublishInputSent && publishPoints?.web) {
-        await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.web);
-        webGitPublishInputSent = true;
-        await delay(100);
-        continue;
-      }
-      if (!lynxGitPublishInputSent && publishPoints?.lynx) {
-        await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.lynx);
-        lynxGitPublishInputSent = true;
-        await delay(100);
-        continue;
+        ).catch(() => null);
+        if (shouldOpenWebGitPublish && publishPoints?.web) {
+          await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.web);
+          webGitPublishInputSent = true;
+          webGitPublishOpenAttempts += 1;
+          await delay(100);
+          continue;
+        }
+        if (shouldOpenLynxGitPublish && publishPoints?.lynx) {
+          await dispatchOverlayOpeningPointerClick(cdp, sessionId, publishPoints.lynx);
+          lynxGitPublishInputSent = true;
+          lynxGitPublishOpenAttempts += 1;
+          await delay(100);
+          continue;
+        }
       }
     }
     if (expandTurnId && threadReadyForReview(state, expectThread)) {
@@ -3237,6 +3262,27 @@ async function captureCell({
   await delay(
     overlay === "model-picker" && (providerId.length > 0 || query.length > 0) ? 1800 : 400,
   );
+  if (isGitPublishDialogState) {
+    const paintCommitted = await evaluate(
+      cdp,
+      sessionId,
+      `Promise.all(
+        ['web-pane', 'lynx-pane'].map((frameId) => new Promise((resolve) => {
+          const frameWindow = document.getElementById(frameId)?.contentWindow;
+          if (!frameWindow?.requestAnimationFrame) {
+            resolve(false);
+            return;
+          }
+          frameWindow.requestAnimationFrame(() => {
+            frameWindow.requestAnimationFrame(() => resolve(true));
+          });
+        }))
+      ).then((values) => values.every(Boolean))`,
+    ).catch(() => false);
+    if (!paintCommitted) {
+      throw new Error("Git Publish panes did not commit two compositor frames before capture.");
+    }
+  }
   state =
     (await evaluate(
       cdp,
@@ -3309,6 +3355,22 @@ async function captureCell({
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalHeaderGitActionReady = headerGitActionMatches(state);
   const finalGitPublishDialogReady = gitPublishDialogMatches(state);
+  if (isGitPublishDialogState && !finalGitPublishDialogReady) {
+    throw new Error(
+      `Git Publish dialog changed before the compositor gate: ${JSON.stringify({
+        web: state?.web?.gitPublishDialog ?? null,
+        lynx: state?.lynx?.gitPublishDialog ?? null,
+      })}`,
+    );
+  }
+  const gitPublishDialogEvidence = finalGitPublishDialogReady
+    ? JSON.parse(
+        JSON.stringify({
+          web: state?.web?.gitPublishDialog ?? null,
+          lynx: state?.lynx?.gitPublishDialog ?? null,
+        }),
+      )
+    : null;
   const finalReviewReady =
     reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
     sidebarDiffPairMatches(
@@ -3945,8 +4007,8 @@ async function captureCell({
           : "not-required",
         dismissed: gitPublishDismissed,
         postconditionTimeline: gitPublishPostconditionTimeline,
-        web: state?.web?.gitPublishDialog ?? null,
-        lynx: state?.lynx?.gitPublishDialog ?? null,
+        web: gitPublishDialogEvidence?.web ?? null,
+        lynx: gitPublishDialogEvidence?.lynx ?? null,
       },
       expectProject,
       webState,
