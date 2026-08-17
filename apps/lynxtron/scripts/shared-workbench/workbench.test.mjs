@@ -53,4 +53,16 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'root?.querySelector(\".composer-workspace-menu__description\")');
     assert.include(source, "description: null");
   });
+
+  it("reads dedicated Lynx Sidebar search rows before legacy cards", () => {
+    assert.include(source, "[data-sidebar-search-result]");
+    assert.include(source, ".sidebar-v2-search-result__title");
+    assert.include(source, "dedicatedResults.length > 0 ? dedicatedResults : legacyResults");
+    assert.include(source, "function readSidebarSearchRows");
+    assert.include(source, 'ariaSelected: row.getAttribute("aria-selected")');
+    assert.include(source, 'ariaCurrent: row.getAttribute("aria-current")');
+    assert.include(source, "box: readElementBox(row)");
+    assert.include(source, "titleBox: readElementBox(title)");
+    assert.include(source, "rows,");
+  });
 });

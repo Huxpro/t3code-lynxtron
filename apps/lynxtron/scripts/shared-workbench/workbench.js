@@ -202,6 +202,27 @@ function readModelPickerRows(elements) {
   }));
 }
 
+function readSidebarSearchRows(elements) {
+  return [...elements].map((row) => {
+    const title =
+      row.querySelector(".sidebar-v2-search-result__title") ??
+      row.querySelector(".sidebar-v2-row-title") ??
+      row.querySelector("[data-sidebar-search-result-title]") ??
+      row.querySelector(".truncate");
+    return {
+      id:
+        row.getAttribute("data-sidebar-search-result") ??
+        row.getAttribute("data-thread-id") ??
+        row.getAttribute("data-value"),
+      title: title?.textContent?.trim() ?? "",
+      ariaSelected: row.getAttribute("aria-selected"),
+      ariaCurrent: row.getAttribute("aria-current"),
+      box: readElementBox(row),
+      titleBox: readElementBox(title),
+    };
+  });
+}
+
 function readHeaderActionItems(elements, ids = []) {
   return [...elements].map((item, index) => ({
     id: item.getAttribute("data-header-action") ?? ids[index] ?? String(index),
@@ -796,20 +817,26 @@ function readLynxPane() {
         },
         search: (() => {
           const host = root?.querySelector('[aria-label="Search threads"]');
+          const dedicatedResults = [
+            ...(root?.querySelectorAll(
+              '[aria-label="Thread search results"] [data-sidebar-search-result]',
+            ) ?? []),
+          ];
+          const legacyResults = [
+            ...(root?.querySelectorAll('[aria-label="Thread search results"] [data-thread-id]') ??
+              []),
+          ];
+          const results = dedicatedResults.length > 0 ? dedicatedResults : legacyResults;
+          const rows = readSidebarSearchRows(results);
           return {
             value:
               host?.shadowRoot?.querySelector("input")?.value ??
               host?.value ??
               host?.getAttribute("value") ??
               "",
-            resultIds: [
-              ...(root?.querySelectorAll('[aria-label="Thread search results"] [data-thread-id]') ??
-                []),
-            ].map((item) => item.getAttribute("data-thread-id")),
-            resultTitles: [
-              ...(root?.querySelectorAll('[aria-label="Thread search results"] [data-thread-id]') ??
-                []),
-            ].map((item) => item.querySelector(".sidebar-v2-row-title")?.textContent?.trim() ?? ""),
+            resultIds: rows.map((row) => row.id),
+            resultTitles: rows.map((row) => row.title),
+            rows,
           };
         })(),
         threads: [...(root?.querySelectorAll("[data-thread-id]") ?? [])].map((item) => {
@@ -1851,14 +1878,14 @@ function readWebPane() {
         },
         search: (() => {
           const input = doc.querySelector('[aria-label="Search threads"]');
+          const rows = readSidebarSearchRows(
+            doc.querySelectorAll('[aria-label="Thread search results"] [role="option"]'),
+          );
           return {
             value: input?.value ?? input?.getAttribute("value") ?? "",
-            resultIds: [
-              ...doc.querySelectorAll('[aria-label="Thread search results"] [data-thread-id]'),
-            ].map((item) => item.getAttribute("data-thread-id")),
-            resultTitles: [
-              ...doc.querySelectorAll('[aria-label="Thread search results"] [role="option"]'),
-            ].map((item) => item.querySelector(".truncate")?.textContent?.trim() ?? ""),
+            resultIds: rows.map((row) => row.id),
+            resultTitles: rows.map((row) => row.title),
+            rows,
           };
         })(),
         threads: [...doc.querySelectorAll("[data-thread-id]")].map((item) => {

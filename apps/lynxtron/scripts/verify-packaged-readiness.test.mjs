@@ -51,6 +51,27 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar Working label disagrees with the active session");
   });
 
+  it("verifies Native Sidebar inline search rows and real-tap selection", () => {
+    assert.include(source, "async function verifySidebarInlineSearch");
+    assert.include(source, '"--verify-sidebar-inline-search"');
+    assert.include(source, "__T3_LYNXTRON_SIDEBAR_SEARCH_PROBE__");
+    assert.include(source, 'row.attributes["data-sidebar-search-result"]');
+    assert.include(source, 'readSelectorMeasurements(client, ".sidebar-v2-search-result")');
+    assert.include(
+      source,
+      'sourceContract: \'listId="sidebar-thread-search-results" role="listbox"\'',
+    );
+    assert.include(source, 'rows.some((row) => row.attributes.role !== "option")');
+    assert.include(source, "Math.abs((row.rect?.height ?? 0) - 36) <= 1");
+    assert.include(source, 'rows[0]?.attributes["aria-selected"] === "true"');
+    assert.include(source, 'attribute: "data-sidebar-search-result"');
+    assert.include(source, "state?.activeThreadId === targetThreadId");
+    assert.include(source, 'selector: ".sidebar-inline-search__input"');
+    assert.include(source, "queryCleared:");
+    assert.include(source, 'keyboard: "pending-user-session"');
+    assert.include(outcomeChecksSource, "sidebarInlineSearch");
+  });
+
   it("verifies floating surfaces through trigger relations instead of viewport coordinates", () => {
     assert.include(source, '"--verify-floating-relations"');
     assert.include(source, "measureFloatingRelation(anchor, popup, placement)");
@@ -160,7 +181,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'name: "native-composer-send-material.png"');
     assert.include(
       source,
-      "shouldVerifyModelOptionMenuMutation || shouldVerifyComposerSendMaterial",
+      "shouldVerifyModelOptionMenuMutation ||\n      shouldVerifyComposerSendMaterial ||\n      shouldVerifySidebarInlineSearch",
     );
     assert.include(outcomeChecksSource, "composerSendMaterial");
   });
@@ -187,7 +208,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyModelSelectionMutation");
     assert.include(source, '"--verify-model-selection-mutation"');
     assert.include(source, 'selector: ".model-picker-row--unselected"');
-    assert.include(source, 'measurement?.attributes["data-model-picker-key"]');
+    assert.include(source, 'const key = row.attributes["data-model-picker-key"]');
+    assert.include(source, 'row.attributes["data-model-picker-disabled"] !== "true"');
     assert.include(source, 'attribute: "data-model-picker-key"');
     assert.include(source, "value: targetKey");
     assert.include(source, "waitForSequenceAdvance");
@@ -195,7 +217,12 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "state?.modelSelectionPending === false");
     assert.include(source, "state?.modelSelectionError === null");
     assert.include(source, '"--verify-model-selection-socket-recovery"');
+    assert.include(source, '"--verify-model-selection-running-session"');
     assert.include(source, "T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE");
+    assert.include(source, 'state?.sessionStatus === "running"');
+    assert.include(source, "state?.activeThread?.session != null");
+    assert.include(source, 'typeof state?.activeTurnId === "string"');
+    assert.include(source, 'sessionState: requireRunningSession ? "running" : "sessionless-idle"');
     assert.include(
       source,
       '"[main-connector] setModelSelection hit a stale transport; reconnecting once"',

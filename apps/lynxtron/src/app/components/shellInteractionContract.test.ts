@@ -107,6 +107,17 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
   });
 
+  it("consumes model-selection bridge failures with a terminal rejection handler", () => {
+    const mutationStart = clientSource.indexOf("function persistModelSelectionMutation");
+    const mutationEnd = clientSource.indexOf("\nfunction setModelSelection", mutationStart);
+    const mutation = clientSource.slice(mutationStart, mutationEnd);
+
+    expect(mutation).toContain("void mutation");
+    expect(mutation).toContain(".then(() => {");
+    expect(mutation).toContain(".catch((error: unknown) => {");
+    expect(mutation).not.toContain("void mutation.then(");
+  });
+
   it("uses the Web shadow on the rounded Composer frame rather than the outer stack", () => {
     expect(overrides).toContain("box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.4);");
     const shellStart = overrides.indexOf(".composer-shell {");
@@ -392,5 +403,15 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarControlsSource).not.toContain('top: "140px"');
     expect(sidebarControlsSource).not.toContain('left: "8px"');
     expect(sidebarControlsSource).toContain('relationId="sidebar-project-scope"');
+  });
+
+  it("uses compact dedicated rows for Lynx Sidebar search results", () => {
+    expect(sidebarSource).toContain("searchSidebarThreadsByTitle");
+    expect(sidebarSource).toContain('className="sidebar-v2-search-result');
+    expect(sidebarSource).toContain("data-sidebar-search-result={thread.id}");
+    expect(sidebarSource).toContain('listId={threadSearchQuery ? "sidebar-thread-search-results"');
+    expect(overrides).toContain(
+      ".sidebar-v2-search-result {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: 100%;\n  height: 36px;",
+    );
   });
 });

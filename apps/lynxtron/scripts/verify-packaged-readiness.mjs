@@ -2066,16 +2066,27 @@ async function verifyModelSelectionMutation({
   client,
   devToolCli,
   expectSocketRecovery,
+  requireRunningSession,
   log,
   outputDirectory,
   timeoutMs,
 }) {
-  const beforeState = await selectSessionlessFixtureThread({
-    baseDir,
-    child,
-    client,
-    timeoutMs,
-  });
+  const beforeState = requireRunningSession
+    ? await waitForClientState({
+        child,
+        client,
+        timeoutMs,
+        predicate: (state) =>
+          state?.sessionStatus === "running" &&
+          state?.activeThread?.session != null &&
+          typeof state?.activeTurnId === "string",
+      })
+    : await selectSessionlessFixtureThread({
+        baseDir,
+        child,
+        client,
+        timeoutMs,
+      });
   const threadId = beforeState?.activeThreadId;
   const beforeSelection = beforeState?.activeThread?.modelSelection;
   if (
@@ -2114,27 +2125,37 @@ async function verifyModelSelectionMutation({
     predicate: (measurement) =>
       typeof measurement?.attributes["data-model-picker-selected-provider"] === "string",
   });
-  const target = await waitForMeasurement({
-    child,
-    client,
-    selector: ".model-picker-row--unselected",
-    timeoutMs,
-    predicate: (measurement) => {
-      const key = measurement?.attributes["data-model-picker-key"];
-      return typeof key === "string" && key.includes(":");
-    },
-  });
+  const targetDeadline = Date.now() + timeoutMs;
+  let target = null;
+  while (Date.now() < targetDeadline && target === null) {
+    const rows = await readSelectorMeasurements(client, ".model-picker-row--unselected");
+    target =
+      rows.find((row) => {
+        const key = row.attributes["data-model-picker-key"];
+        return (
+          typeof key === "string" &&
+          key.includes(":") &&
+          row.attributes["data-model-picker-disabled"] !== "true"
+        );
+      }) ?? null;
+    if (target === null) await waitForChildExit(child, 100);
+  }
+  if (target === null) {
+    throw new Error("Timed out waiting for an enabled unselected model row.");
+  }
   const targetKey = target.attributes["data-model-picker-key"];
   const separator = targetKey.indexOf(":");
   const targetSelection = {
     instanceId: targetKey.slice(0, separator),
     model: targetKey.slice(separator + 1),
   };
-  await tapSelector({
+  await tapSelectorByAttribute({
+    attribute: "data-model-picker-key",
     child,
     client,
     selector: ".model-picker-row--unselected",
     timeoutMs,
+    value: targetKey,
   });
   await waitForMeasurement({
     child,
@@ -2195,6 +2216,7 @@ async function verifyModelSelectionMutation({
   return {
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on measured model trigger and row",
+    sessionState: requireRunningSession ? "running" : "sessionless-idle",
     threadId,
     panel: panel.rect,
     activeProvider: content.attributes["data-model-picker-selected-provider"],
@@ -2221,6 +2243,115 @@ async function verifyModelSelectionMutation({
     overlayDismissed: true,
     socketRecovery: expectSocketRecovery ? "reconnected-and-retried-once" : "not-injected",
     screenshot,
+  };
+}
+
+async function verifySidebarInlineSearch({ child, client, timeoutMs }) {
+  const beforeState = await readClientState(client);
+  const beforeThreadId = beforeState?.activeThreadId;
+  if (typeof beforeThreadId !== "string") {
+    throw new Error(`Sidebar search baseline has no active thread: ${JSON.stringify(beforeState)}`);
+  }
+  const beforeSequence = await readRendererReadiness(client);
+  const probeResponse = await client.runCdp("Runtime.evaluate", {
+    expression:
+      'typeof globalThis.__T3_LYNXTRON_SIDEBAR_SEARCH_PROBE__ === "function" && (globalThis.__T3_LYNXTRON_SIDEBAR_SEARCH_PROBE__("New"), true)',
+    returnByValue: true,
+  });
+  if (probeResponse?.exceptionDetails || commandResult(probeResponse)?.value !== true) {
+    throw new Error(`Sidebar search probe failed: ${JSON.stringify(probeResponse)}`);
+  }
+
+  const deadline = Date.now() + timeoutMs;
+  let rows = [];
+  while (Date.now() < deadline) {
+    rows = await readSelectorMeasurements(client, ".sidebar-v2-search-result");
+    if (
+      rows.length >= 2 &&
+      rows.every((row) => Math.abs((row.rect?.height ?? 0) - 36) <= 1) &&
+      rows[0]?.attributes.role === "option" &&
+      rows[0]?.attributes["aria-selected"] === "true"
+    ) {
+      break;
+    }
+    await waitForChildExit(child, 100);
+  }
+  if (
+    rows.length < 2 ||
+    rows.some((row) => Math.abs((row.rect?.height ?? 0) - 36) > 1) ||
+    rows.some((row) => row.attributes.role !== "option") ||
+    rows[0]?.attributes["aria-selected"] !== "true"
+  ) {
+    throw new Error(
+      `Sidebar search rows did not reach the expected state: ${JSON.stringify(rows)}`,
+    );
+  }
+  const target = rows[1];
+  const targetThreadId = target.attributes["data-sidebar-search-result"];
+  if (typeof targetThreadId !== "string" || targetThreadId === beforeThreadId) {
+    throw new Error(`Sidebar search target is invalid: ${JSON.stringify(target)}`);
+  }
+  await tapSelectorByAttribute({
+    attribute: "data-sidebar-search-result",
+    child,
+    client,
+    selector: ".sidebar-v2-search-result",
+    timeoutMs,
+    value: targetThreadId,
+  });
+  const afterState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeThreadId === targetThreadId,
+  });
+  const afterSequence = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeSequence,
+    timeoutMs,
+  });
+  const clearedSearch = await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-inline-search__input",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement !== null &&
+      (measurement.attributes.value === "" || measurement.attributes.value === undefined),
+  });
+  const remainingRows = await readSelectorMeasurements(client, ".sidebar-v2-search-result");
+  if (remainingRows.length !== 0) {
+    throw new Error(
+      `Sidebar search rows remained after selection: ${JSON.stringify(remainingRows)}`,
+    );
+  }
+
+  return {
+    status: "pass",
+    queryInput: "Dev-only state probe; physical keyboard remains pending-user-session",
+    selectionInput: "DevTool Input.emulateTouchFromMouseEvent on the measured second result",
+    list: {
+      sourceContract: 'listId="sidebar-thread-search-results" role="listbox"',
+      runtimeSemantics: "option rows",
+    },
+    rows: rows.map((row) => ({
+      threadId: row.attributes["data-sidebar-search-result"],
+      title: row.text.trim(),
+      rect: row.rect,
+      ariaSelected: row.attributes["aria-selected"],
+      ariaCurrent: row.attributes["aria-current"] ?? null,
+    })),
+    selection: {
+      before: beforeThreadId,
+      target: targetThreadId,
+      after: afterState.activeThreadId,
+      queryValue: clearedSearch.attributes.value ?? "",
+      queryCleared: (clearedSearch.attributes.value ?? "") === "",
+      rowsDismissed: true,
+    },
+    sequence: { before: beforeSequence.lastSeq, after: afterSequence.lastSeq },
+    keyboard: "pending-user-session",
   };
 }
 
@@ -6631,6 +6762,7 @@ async function runOnce({
   idleFixture,
   verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
+  verifySidebarInlineSearch: shouldVerifySidebarInlineSearch,
   verifyFloatingRelations: shouldVerifyFloatingRelations,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
@@ -6638,6 +6770,7 @@ async function runOnce({
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
   verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
+  verifyModelSelectionRunningSession: shouldVerifyModelSelectionRunningSession,
   verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
   verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,
   verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
@@ -6697,7 +6830,9 @@ async function runOnce({
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
       ...(shouldVerifyConnectionsMutation ? { T3CODE_HOST: "0.0.0.0" } : {}),
-      ...(shouldVerifyModelOptionMenuMutation || shouldVerifyComposerSendMaterial
+      ...(shouldVerifyModelOptionMenuMutation ||
+      shouldVerifyComposerSendMaterial ||
+      shouldVerifySidebarInlineSearch
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
@@ -6807,6 +6942,9 @@ async function runOnce({
         : undefined;
     const sidebarGeometry = shouldVerifySidebarGeometry
       ? await verifySidebarGeometry(client, width, expectedEnvironmentIdentificationMode)
+      : undefined;
+    const sidebarInlineSearch = shouldVerifySidebarInlineSearch
+      ? await verifySidebarInlineSearch({ child, client, timeoutMs })
       : undefined;
     const floatingRelations = shouldVerifyFloatingRelations
       ? await verifyFloatingRelations({
@@ -6934,6 +7072,7 @@ async function runOnce({
           client,
           devToolCli,
           expectSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
+          requireRunningSession: shouldVerifyModelSelectionRunningSession,
           log,
           outputDirectory,
           timeoutMs,
@@ -7177,6 +7316,7 @@ async function runOnce({
     const outcomeChecks = [
       sidebarScope,
       sidebarGeometry,
+      sidebarInlineSearch,
       floatingRelations,
       composerGeometry,
       composerSendMaterial,
@@ -7226,6 +7366,7 @@ async function runOnce({
       lifecycleRecovery,
       sidebarScope,
       sidebarGeometry,
+      sidebarInlineSearch,
       floatingRelations,
       composerGeometry,
       composerSendMaterial,
@@ -7306,6 +7447,7 @@ const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-compo
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
+const shouldVerifySidebarInlineSearch = process.argv.includes("--verify-sidebar-inline-search");
 const shouldVerifyFloatingRelations = process.argv.includes("--verify-floating-relations");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
@@ -7316,6 +7458,9 @@ const shouldVerifyModelSelectionMutation = process.argv.includes(
 );
 const shouldVerifyModelSelectionSocketRecovery = process.argv.includes(
   "--verify-model-selection-socket-recovery",
+);
+const shouldVerifyModelSelectionRunningSession = process.argv.includes(
+  "--verify-model-selection-running-session",
 );
 const shouldVerifyRuntimeMenuDismiss = process.argv.includes("--verify-runtime-menu-dismiss");
 const shouldVerifyWorkspaceMenu = process.argv.includes("--verify-workspace-menu");
@@ -7390,6 +7535,11 @@ if (shouldVerifyHeroComposerState && !expectedModelLabel) {
 if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutation) {
   throw new Error(
     "--verify-model-selection-socket-recovery requires --verify-model-selection-mutation.",
+  );
+}
+if (shouldVerifyModelSelectionRunningSession && !shouldVerifyModelSelectionMutation) {
+  throw new Error(
+    "--verify-model-selection-running-session requires --verify-model-selection-mutation.",
   );
 }
 if (verifyPlan11SemanticOutcomes && runs !== 3) {
@@ -7583,6 +7733,7 @@ for (let index = 1; index <= runs; index += 1) {
       idleFixture,
       verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
+      verifySidebarInlineSearch: shouldVerifySidebarInlineSearch,
       verifyFloatingRelations: shouldVerifyFloatingRelations,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
@@ -7590,6 +7741,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
       verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
+      verifyModelSelectionRunningSession: shouldVerifyModelSelectionRunningSession,
       verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
       verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,
       verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
