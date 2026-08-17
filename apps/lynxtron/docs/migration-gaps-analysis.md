@@ -25,15 +25,15 @@ Environment for all findings: `@lynx-js/lynxtron` 0.0.8, `@lynx-js/react`
 | G4  | Custom fonts silently fail: `@font-face` and `lynx.addFont` no-op without error (R2) | UI/text       | lynx     | P1       | S (diagnostics) / M (fix) | **Yes** (error surfacing) | unfiled |
 | G5  | No renderer keyboard events, no `globalShortcut` (R5)                | Events/shell  | lynxtron | P0       | M      | No           | filed [#149]      |
 | G6  | SVG (inline and data-URI) rasterizes blank (R1)                      | UI element    | lynx     | P0       | M–L    | No           | unfiled           |
-| G7  | `:hover` / `:focus-visible` / `group-hover` pseudo-classes unsupported (R6) | CSS           | lynx     | P1       | M      | Partially    | unfiled           |
+| G7  | `:hover` / `:focus-visible` / `group-hover` pseudo-classes unsupported (R6) | CSS           | lynx     | P1       | M      | Partially    | **re-probe first** — Lynx 3.8 documents full mouse events (see below) |
 | G8  | `oklch()` / `color-mix()` rejected by CSS parser (R9)                | CSS           | lynx     | P1       | M      | Partially    | unfiled           |
 | G9  | `position: fixed` / `sticky` / overflow semantics diverge (R7)       | CSS layout    | lynx     | P0       | L      | No           | unfiled           |
 | G10 | DevTool input emulation tap-only; `Input.dispatchKeyEvent` unimplemented; screencast wedges (R12) | Tooling       | lynxtron | P1       | M      | Partially    | filed [#151]      |
 | G11 | No preload→UI push channel; preload is an isolated realm (R3)        | IPC/shell     | lynxtron | P1       | M      | No           | filed [#150]      |
 | G12 | TanStack `RouterProvider` async transition remount crashes BackgroundSnapshot (R4) | ReactLynx     | lynx     | P1       | M      | No           | unfiled           |
 | G13 | Selection API absent — no text selection or copy (R8)                | UI element    | lynx     | P1       | L      | No           | unfiled           |
-| G14 | No runtime theme switching / `prefers-color-scheme`; dark-only pipeline (R13) | CSS           | lynx     | P1       | M      | No           | unfiled           |
-| G15 | `display: grid` unsupported (55 sites)                               | CSS layout    | lynx     | P2       | XL     | No           | unfiled           |
+| G14 | No runtime theme switching / `prefers-color-scheme`; dark-only pipeline (R13) | CSS           | lynx     | P1       | M      | **Maybe**    | **re-probe first** — runtime CSS-variable switching is the documented theming path |
+| G15 | `display: grid` unsupported (55 sites)                               | CSS layout    | lynx     | P2       | XL     | **Maybe**    | **re-probe first** — `display: grid` is documented and typed in Lynx 3.8 |
 | G16 | `backdrop-filter` unsupported (16 sites)                             | CSS           | lynx     | P2       | L      | No           | unfiled           |
 | G17 | No DOM/Worker environment for rendering islands (diff renderer) (R10) | Capability    | lynx     | P2       | XL     | No           | unfiled (frame as question) |
 | G18 | `::view-transition` / `@custom-variant` (Tailwind v4 syntax) dropped | CSS           | lynx     | P2       | —      | —            | not worth filing  |
@@ -148,6 +148,57 @@ each one currently fails **silently**, which is the worst failure mode:
 3. **Every gap row should carry its remove-when condition** (as
    `compat-matrix.md` already does), so upstream fixes can be adopted and the
    adapter deleted mechanically.
+
+## 2026-08-17 addendum: pageConfig switches and classification corrections
+
+A review of engine `pageConfig` flags and current lynxjs.org docs shows several
+of our `runtime-gap`/`rewrite` classifications were recorded against defaults
+or stale support tables, not against the engine's actual ceiling. Before filing
+G4/G7/G14/G15 upstream, run the probes below — filing a gap the engine already
+covers burns credibility for the asks that are real.
+
+Current build state: `lynx.config.ts` passes only
+`pluginReactLynx({ enableCSSInheritance: true })`. No other pageConfig flag is
+set anywhere in the repo. `@lynx-js/react-rsbuild-plugin` 0.16.3 typings expose:
+`customCSSInheritanceList`, `defaultDisplayLinear`, `enableAccessibilityElement`,
+`enableCSSInheritance`, `enableCSSInvalidation`, `enableCSSSelector`,
+`enableNewGesture`, `enableRemoveCSSScope`, `enableSSR`,
+`removeDescendantSelectorScope`, `targetSdkVersion`.
+
+| Switch | Verified? | Bears on | Verdict |
+| --- | --- | --- | --- |
+| `enableCSSInheritance` | already enabled by us | theming, text styles | No change; consider `customCSSInheritanceList` for remaining explicit-inheritance overrides. |
+| `alignMouseEventWithW3C` | yes — documented, Lynx 3.8+, set via `pluginReactLynx` pageConfig | G7 (hover) | The flag itself only aligns `button`/`buttons` semantics. The larger find is the page documenting it: Lynx 3.8 supports `mousedown/up/move/enter/leave/over`. Our hover adapters assumed tap-only input. **Probe whether Lynxtron desktop dispatches mouse events**; if yes, a single shared `bindmouseenter/leave` hover adapter replaces per-component state hacks, and the upstream ask narrows to CSS `:hover` sugar. Not in 0.16.3 plugin typings — may need a plugin upgrade or untyped passthrough. |
+| `enableCSSInlineVariables` | referenced in official Vue-Lynx docs (`--*` in inline styles / `:style` runtime variable sets) | G14/R13 (theme) | Runtime CSS-variable switching (`setProperty`, class-based token swap) is the **documented** Lynx theming path. R13 is therefore likely our pipeline's gap, not the engine's: emit both token sets as variables (still build-resolving oklch/color-mix per G8) and flip a root class at runtime. Probe on Lynxtron desktop; if variables re-resolve, close R13 ourselves and drop G14 from the filing list. |
+| `enableCSSRule` | **not found** in public lynxjs.org docs or 0.16.3 typings (reported as SDK 4.0+, default false, gating `@media`/`@supports`/`@keyframes`/`@font-face`/`@layer` unified parsing) | G4 (fonts), theming | Cannot confirm from public sources at our SDK level (types 3.8.0). Note `@font-face` **is** documented as supported in stable docs (with no `font-style`/`font-weight`/`font-variant` descriptors), which strengthens the case that R2's silent failure is a Lynxtron-desktop bug rather than a missing engine feature — but any R2 issue must state which SDK and whether this flag existed/was set, or the report risks being closed as misconfiguration. Re-probe after any SDK 4.0 upgrade. |
+| `enableNewTransformOrigin` | flag not found in public docs/typings; `transform-origin` itself is a documented supported property | (new) | The port ledger has **no recorded transform-origin failure** — if the top-left-origin symptom came from the standalone prototype, reproduce it on the current stack and confirm which algorithm path desktop takes before drafting anything. |
+
+Corrections to the gap list:
+
+- **G15 (grid) is likely not an engine gap.** `display: grid` is documented,
+  `@lynx-js/types` 3.8.0 types the full property set (`grid-template-columns/rows`,
+  `grid-auto-*`, `grid-*-span/start/end`, gaps, `grid-auto-flow`), and
+  `@lynx-js/tailwind-preset` ships grid utilities. Our audit counted 55 `grid`
+  sites as unsupported from a static support table, and the flex rewrites were
+  done without a recorded runtime probe. Action: runtime-probe grid on Lynxtron
+  desktop (including the audit's arbitrary-value templates using `minmax()`/`fr`);
+  update the audit's support table; the residual upstream ask, if any, is
+  "document/complete the grid value subset (`minmax`, `fr`, `auto-fill`,
+  `grid-template-areas`)", effort M, not XL.
+- **G14 (theme) downgrades to probe-first** per `enableCSSInlineVariables` above.
+  `prefers-color-scheme` remains unverified — the stable at-rules page lists
+  only `@font-face`/`@import`/`@keyframes` — but on desktop the OS theme can
+  be delivered by the main process anyway, so the media query is a
+  nice-to-have, not the blocker.
+- **G7 (hover) narrows.** With mouse events available the product-side cost of
+  the state-driven workaround drops sharply; keep the `:hover`/`:focus-visible`
+  ask but re-frame it as ergonomics (CSS parity for shared Tailwind styles)
+  rather than a hard capability gap. `:focus-visible` stays coupled to G5's
+  focus model.
+- **New probe checklist before the next filing round:** desktop mouse-event
+  dispatch; CSS variables runtime re-resolution (+ inline `--*` with the flag);
+  grid incl. `minmax()`/`fr`; transform-origin on desktop; `@font-face` with
+  the SDK-4.0 rule path if/when available.
 
 ## Suggested filing order
 
