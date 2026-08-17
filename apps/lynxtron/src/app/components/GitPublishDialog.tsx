@@ -91,6 +91,10 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
       }),
     [providers],
   );
+  const providerRows = useMemo(
+    () => [providerOptions.slice(0, 2), providerOptions.slice(2, 4)],
+    [providerOptions],
+  );
 
   const publish = () => {
     if (!canPublish) return;
@@ -122,9 +126,9 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
         aria-label="Dismiss Publish repository"
         bindtap={onClose}
       />
-      <view className="git-publish-dialog" catchtap={() => undefined}>
-        <view className="git-publish-header">
-          <view className="git-publish-heading">
+      <view className="git-publish-dialog flex flex-col" catchtap={() => undefined}>
+        <view className="git-publish-header flex flex-col">
+          <view className="git-publish-heading flex flex-col">
             <text className="git-publish-title">Publish repository</text>
             <text className="git-publish-description">
               Pick where to host it, then point us at a repo to push to.
@@ -137,7 +141,10 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
           >
             <text>×</text>
           </view>
-          <view className="git-publish-steps" data-git-publish-step={String(wizardStep)}>
+          <view
+            className="git-publish-steps flex flex-row"
+            data-git-publish-step={String(wizardStep)}
+          >
             {(["Provider", "Repository", "Summary"] as const).map((label, index) => {
               const complete = index < wizardStep;
               const active = index === wizardStep;
@@ -176,32 +183,41 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
             <text className="git-publish-success__description">{success}</text>
           </view>
         ) : wizardStep === 0 ? (
-          <view className="git-publish-body">
-            <text className="git-publish-label">Provider</text>
-            <view className="git-publish-provider-grid" data-git-publish-providers="true">
-              {providerOptions.map((item) => {
-                const ready = providers.includes(item.kind);
-                const selected = item.kind === provider && ready;
-                return (
-                  <view
-                    key={item.kind}
-                    className={`git-publish-provider-card${
-                      selected ? " git-publish-provider-card--active" : ""
-                    }${ready ? "" : " git-publish-provider-card--disabled"}`}
-                    data-git-publish-provider={item.kind}
-                    data-git-publish-provider-ready={ready ? "true" : "false"}
-                    bindtap={ready ? () => setProvider(item.kind) : undefined}
-                  >
-                    <view className="git-publish-provider-card__copy">
-                      <text className="git-publish-provider-card__label">{item.label}</text>
-                      <text className="git-publish-provider-card__host">{item.host}</text>
-                    </view>
-                    {!ready ? (
-                      <text className="git-publish-provider-card__setup">Setup Required</text>
-                    ) : null}
-                  </view>
-                );
-              })}
+          <view className="git-publish-body flex flex-col">
+            <text className="git-publish-label git-publish-label--first">Provider</text>
+            <view
+              className="git-publish-provider-grid flex flex-col"
+              data-git-publish-providers="true"
+            >
+              {providerRows.map((row, rowIndex) => (
+                <view
+                  key={`git-publish-provider-row:${rowIndex}`}
+                  className="git-publish-provider-row flex flex-row"
+                >
+                  {row.map((item) => {
+                    const ready = providers.includes(item.kind);
+                    const selected = item.kind === provider && ready;
+                    return (
+                      <view
+                        key={item.kind}
+                        className={`git-publish-provider-card${
+                          selected ? " git-publish-provider-card--active" : ""
+                        }${ready ? "" : " git-publish-provider-card--disabled"}`}
+                        data-git-publish-provider={item.kind}
+                        data-git-publish-provider-ready={ready ? "true" : "false"}
+                        bindtap={ready ? () => setProvider(item.kind) : undefined}
+                      >
+                        <view className="git-publish-provider-card__copy">
+                          <text className="git-publish-provider-card__label">{item.label}</text>
+                        </view>
+                        {!ready ? (
+                          <text className="git-publish-provider-card__setup">Setup Required</text>
+                        ) : null}
+                      </view>
+                    );
+                  })}
+                </view>
+              ))}
             </view>
             {!loading && providers.length === 0 ? (
               <text className="git-publish-warning">
@@ -211,7 +227,7 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
             ) : null}
           </view>
         ) : (
-          <view className="git-publish-body">
+          <view className="git-publish-body flex flex-col">
             <text className="git-publish-label">Repository</text>
             <input
               className="git-publish-input"
@@ -264,7 +280,7 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
         )}
 
         {error ? <text className="git-publish-error">{error}</text> : null}
-        <view className="git-publish-footer">
+        <view className="git-publish-footer flex flex-row">
           <view
             className="git-publish-button"
             bindtap={wizardStep === 0 || wizardStep === 2 ? onClose : () => setWizardStep(0)}

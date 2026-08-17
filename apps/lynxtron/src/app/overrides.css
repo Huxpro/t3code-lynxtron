@@ -7027,20 +7027,23 @@
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
-  border-radius: 14px;
-  background-color: var(--popover);
-  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+  border-radius: 18px;
+  background-color: rgba(10, 10, 10, 0.8);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 72px -20px rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
 }
 .git-publish-header {
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 24px;
+  padding: 24px 24px 12px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: rgba(var(--border-rgb), 0.7);
-  background-color: rgba(var(--foreground-rgb), 0.025);
+  background-color: transparent;
   box-sizing: border-box;
 }
 .git-publish-heading {
@@ -7056,7 +7059,7 @@
 }
 .git-publish-description {
   display: block;
-  margin-top: 4px;
+  margin-top: 8px;
   color: var(--muted-foreground);
   font-size: 13px;
   line-height: 19px;
@@ -7078,20 +7081,21 @@
   display: flex;
   flex-direction: row;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 8px;
 }
 .git-publish-step {
   display: flex;
   flex: 1;
   flex-direction: row;
   min-width: 0;
-  height: 58px;
+  width: 170px;
+  height: 49px;
   padding: 8px 12px;
   gap: 8px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   background-color: rgba(var(--foreground-rgb), 0.025);
   box-sizing: border-box;
 }
@@ -7146,29 +7150,36 @@
 .git-publish-body {
   display: flex;
   flex-direction: column;
-  padding: 20px 24px;
+  padding: 4px 24px 20px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: rgba(var(--border-rgb), 0.7);
-  background-color: rgba(var(--muted-rgb), 0.2);
+  background-color: transparent;
   box-sizing: border-box;
 }
 .git-publish-provider-grid {
   display: flex;
-  flex-flow: row wrap;
+  flex-direction: column;
+  gap: 10px;
+}
+.git-publish-provider-row {
+  display: flex;
+  flex-direction: row;
+  width: 526px;
+  height: 50px;
   gap: 10px;
 }
 .git-publish-provider-card {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 254px;
+  width: 258px;
   height: 50px;
-  padding: 10px 12px;
+  padding: 12px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   background-color: var(--background);
   box-sizing: border-box;
 }
@@ -7211,13 +7222,13 @@
 }
 .git-publish-label {
   margin-top: 14px;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   color: var(--foreground);
   font-size: 13px;
   font-weight: 600;
   line-height: 18px;
 }
-.git-publish-label:first-child {
+.git-publish-label--first {
   margin-top: 0;
 }
 .git-publish-options {
@@ -7307,21 +7318,24 @@
   justify-content: flex-end;
   gap: 8px;
   padding: 16px 24px;
-  background-color: rgba(var(--muted-rgb), 0.72);
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: rgba(var(--border-rgb), 0.7);
+  background-color: transparent;
   box-sizing: border-box;
 }
 .git-publish-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 82px;
-  height: 34px;
-  padding: 0 14px;
+  min-width: 0;
+  height: 28px;
+  padding: 0 9px;
   border-radius: 8px;
   background-color: var(--secondary);
   color: var(--foreground);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   box-sizing: border-box;
 }
 .git-publish-button--primary {
