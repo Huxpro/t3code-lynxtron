@@ -91,10 +91,6 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
       }),
     [providers],
   );
-  const providerRows = useMemo(
-    () => [providerOptions.slice(0, 2), providerOptions.slice(2, 4)],
-    [providerOptions],
-  );
 
   const publish = () => {
     if (!canPublish) return;
@@ -185,39 +181,29 @@ export function GitPublishDialog({ cwd, onClose }: GitPublishDialogProps) {
         ) : wizardStep === 0 ? (
           <view className="git-publish-body flex flex-col">
             <text className="git-publish-label git-publish-label--first">Provider</text>
-            <view
-              className="git-publish-provider-grid flex flex-col"
-              data-git-publish-providers="true"
-            >
-              {providerRows.map((row, rowIndex) => (
-                <view
-                  key={`git-publish-provider-row:${rowIndex}`}
-                  className="git-publish-provider-row flex flex-row"
-                >
-                  {row.map((item) => {
-                    const ready = providers.includes(item.kind);
-                    const selected = item.kind === provider && ready;
-                    return (
-                      <view
-                        key={item.kind}
-                        className={`git-publish-provider-card${
-                          selected ? " git-publish-provider-card--active" : ""
-                        }${ready ? "" : " git-publish-provider-card--disabled"}`}
-                        data-git-publish-provider={item.kind}
-                        data-git-publish-provider-ready={ready ? "true" : "false"}
-                        bindtap={ready ? () => setProvider(item.kind) : undefined}
-                      >
-                        <view className="git-publish-provider-card__copy">
-                          <text className="git-publish-provider-card__label">{item.label}</text>
-                        </view>
-                        {!ready ? (
-                          <text className="git-publish-provider-card__setup">Setup Required</text>
-                        ) : null}
-                      </view>
-                    );
-                  })}
-                </view>
-              ))}
+            <view className="git-publish-provider-grid" data-git-publish-providers="true">
+              {providerOptions.map((item) => {
+                const ready = providers.includes(item.kind);
+                const selected = item.kind === provider && ready;
+                return (
+                  <view
+                    key={item.kind}
+                    className={`git-publish-provider-card${
+                      selected ? " git-publish-provider-card--active" : ""
+                    }${ready ? "" : " git-publish-provider-card--disabled"}`}
+                    data-git-publish-provider={item.kind}
+                    data-git-publish-provider-ready={ready ? "true" : "false"}
+                    bindtap={ready ? () => setProvider(item.kind) : undefined}
+                  >
+                    <view className="git-publish-provider-card__copy">
+                      <text className="git-publish-provider-card__label">{item.label}</text>
+                    </view>
+                    {!ready ? (
+                      <text className="git-publish-provider-card__setup">Setup Required</text>
+                    ) : null}
+                  </view>
+                );
+              })}
             </view>
             {!loading && providers.length === 0 ? (
               <text className="git-publish-warning">
