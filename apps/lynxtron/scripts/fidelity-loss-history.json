@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-17T19:20:00+09:00",
+  "updatedAt": "2026-08-17T20:36:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -8362,6 +8362,174 @@
               "confidence": 0.99,
               "method": "shared-server-file-picker-readiness",
               "source": "Same identity, 65 rows, zero console errors, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-inline-search-baseline",
+      "observedAt": "2026-08-17T20:18:00+09:00",
+      "commit": "c49abc7a5facf5c8842974c145bcc2ba295aa5d9",
+      "codeState": "working-tree",
+      "label": "Sidebar inline search baseline",
+      "narrative": "A previously unmodeled Sidebar inline-search state used one immutable dark 1280x820 snapshot, the same selected thread, the same New query, two matching New thread identities, an unchanged Web bundle, and zero renderer errors. Web rendered dedicated 36px option rows; Lynx reused complete 82px thread rows and 91px cards with status content. The result-region pixel residual saturated at 1.0 from MAE 29.511979 and 75.2461% significant pixels. Adding this state expands the fixed denominator from 42 to 43 states, 480 to 492 cells, and 159.4 to 163.4 total weight without changing the formula or any existing state weight. The initial after capture that read legacy cards is classified as selector drift and receives no update.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds a previously unmodeled same-snapshot search state before the product fix. It records the compact-row loss instead of folding it into general Sidebar scores or filtering the high-residual result region."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/sidebar-inline-search-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "775edeb22547eb237d623bf96c6639ed27b9b8abf18fcafe2ed49d61e5ab136e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-inline-search"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "sidebar-search-row-anatomy",
+              "source": "Thread titles match, but Lynx includes complete card and status content instead of dedicated result-row anatomy"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 46, 0, 46],
+              "anchorScale": 82,
+              "confidence": 0.99,
+              "method": "sidebar-search-row-height",
+              "source": "Two Lynx 82px rows differ from two Web 36px rows; Lynx card height is 91px"
+            },
+            "typography": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "sidebar-search-row-typography-contract",
+              "source": "Web uses compact result typography while Lynx retains thread-card title, status, and metadata hierarchy"
+            },
+            "material": {
+              "pixel": {
+                "mae": 29.511979,
+                "significantShare": 0.752461
+              },
+              "confidence": 0.99,
+              "method": "sidebar-search-result-region-pixel",
+              "source": "Result-region residual 1.0 under the unchanged fixed pixel formula"
+            },
+            "interaction": {
+              "residual": 1,
+              "confidence": 0.6,
+              "method": "browser-query-only",
+              "source": "Browser input reaches the query state but does not prove a real Native result tap or query clearing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-sidebar-search-readiness",
+              "source": "Same snapshot, route, query, result identities, theme, viewport, zero renderer errors, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-inline-search-current",
+      "observedAt": "2026-08-17T20:35:34+09:00",
+      "commit": "8d84b42edc7fa7bbbd44ea2e44d078eb2a658990",
+      "codeCommit": "6a2a56be87d418924f58eedbed295a24bfc1d02c",
+      "codeState": "commit",
+      "label": "Sidebar inline search parity and Native selection",
+      "narrative": "Lynx now uses dedicated 36px Sidebar search-result rows with favicon, title, time, option semantics, first-row highlight, and active-thread current state instead of complete thread cards. On the immutable Browser pair, full-frame MAE improves from 2.577335 to 1.459682, Sidebar MAE from 9.290588 to 3.801548, and the result-region residual from 1.0 to 0.569599. Exact-bundle Native renders two 241x36 option rows, marks the first selected/current, uses a real measured tap on the second result, switches the active thread, clears the query, removes the result rows, advances main sequence 11 to 12, reports zero renderer errors, and disposes isolated state. Physical keyboard navigation and Native typography/material remain explicit debt. The model-switch rejection fix is separately committed; running-session attempts blocked by local socket and DevTool routing are recorded as harness loss rather than product failure.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Browser before and after share one immutable snapshot, Web bundle, query, result identities, route, theme, viewport, and zero-error console. Exact Native independently proves real-tap selection and cleanup on the staged bundle. Selector and device-routing failures are excluded."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/sidebar-inline-search-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "775edeb22547eb237d623bf96c6639ed27b9b8abf18fcafe2ed49d61e5ab136e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-inline-search"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-search-row-identity",
+              "source": "Both panes render the same two New thread results with dedicated result-row anatomy"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 36,
+              "confidence": 0.99,
+              "method": "sidebar-search-row-height",
+              "source": "Both result rows are 36px high in Web and Lynx"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-search-row-typography-contract",
+              "source": "Dedicated Lynx result titles use the compact 14px/20px contract"
+            },
+            "material": {
+              "pixel": {
+                "mae": 8.875846,
+                "significantShare": 0.088164
+              },
+              "confidence": 0.99,
+              "method": "sidebar-search-result-region-pixel",
+              "source": "Result-region residual 0.569599; full-frame MAE is 1.459682 and Sidebar MAE is 3.801548"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.75,
+              "method": "browser-query-and-highlight-state",
+              "source": "Both Browser renderers reach the same query and highlighted result state; Native carries the real tap proof"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-sidebar-search-readiness",
+              "source": "Same snapshot, result identities, zero console errors, and clean agent-browser leak gates"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-inline-search"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-sidebar-search-content",
+              "source": "Two expected thread IDs render as option rows with the first selected and current"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 241,
+              "confidence": 0.99,
+              "method": "native-sidebar-search-row-geometry",
+              "source": "Two 241x36 rows render at y=141 and y=178"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-measured-sidebar-result-tap",
+              "source": "Measured DevTool tap selects the second result, changes activeThreadId, clears query, and dismisses rows"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-sidebar-search-readiness",
+              "source": "Exact bundle, main sequence 11 to 12, zero renderer errors, disposed isolated state, and zero owned/orphaned agent-browser processes"
             }
           }
         }
