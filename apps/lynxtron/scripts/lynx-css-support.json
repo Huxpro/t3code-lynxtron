@@ -8,12 +8,11 @@
     ":focus-visible": "state-adapter",
     "position: fixed": "probe",
     "position: sticky": "probe",
-    "display: grid": "rewrite",
+    "display: grid": "supported",
     "backdrop-filter": "drop"
   },
   "unsupportedUtilityPatterns": [
     "^(hover|focus|focus-visible|group-hover):",
-    "^grid($|-)",
     "^fixed$",
     "^sticky$",
     "^backdrop-",
