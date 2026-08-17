@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-17T18:41:46+09:00",
+  "productCommit": "01bd03b9c3168db3d8a628dcf464ff0b8ec6b828",
+  "verifierCommit": "012233c897cfb96f17c8ba86fa39922cea52b90e",
+  "stateId": "workspace-menu-open",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "browserTheme": "dark",
+    "nativeTheme": "light",
+    "semanticRoute": "existing-thread",
+    "overlay": "workspace-menu",
+    "surface": "Composer Workspace menu content, relation, geometry, material, selection, and dismissal"
+  },
+  "fixture": {
+    "browser": {
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "projectTitle": "t3code-lynxtron",
+      "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+      "modelLabel": "gpt-5.6-sol"
+    },
+    "native": {
+      "source": "/tmp/t3-model-selection-ready-dark-20260817",
+      "snapshotId": "d44aebabb960c1980a1a8fbe690f5caadc12f4d53c4e0f7765044ef14a4c80c0",
+      "projectTitle": "t3code-lynxtron",
+      "threadTitle": "New thread",
+      "modelSelection": {
+        "instanceId": "claudeAgent",
+        "model": "claude-fable-5"
+      }
+    }
+  },
+  "classification": {
+    "productLoss": [
+      "The first valid same-snapshot Browser pair showed different content: Web rendered Current checkout and New worktree while Lynx rendered Local checkout and New worktree.",
+      "Lynx placed a 310x124 panel 54px above its trigger and collapsed the first 56px row into a 142.390625x112 horizontal layout; Web used a 157.75x96 panel at top/start/+4 with a 147.75x29 first row.",
+      "Native real taps exposed additional behavior loss hidden by the Browser probe: the empty transcript intercepted the Workspace trigger, draft worktree state was represented as a fake pending path, selection did not close symmetrically, and the fullscreen dismiss layer lost hit testing to later siblings."
+    ],
+    "harnessMismatch": [
+      "A normal existing thread correctly locked Workspace selection. The accepted Browser cell uses the same sessionless idle thread in both renderers.",
+      "Opening Web before Lynx let iframe blur close the Web Select; the accepted sequence drives Lynx first.",
+      "Lynx-for-Web physical CDP click did not reach this ReactLynx node, so Browser evidence records the viewport-test-only global-event probe and does not claim real interaction.",
+      "One Native run used a staged bundle older than the rebuilt output and is excluded after output and dist hashes were made equal.",
+      "One Native run lost its temporary DevTool client before product assertions and is excluded as a transport harness failure.",
+      "Lynx DOM.innerText returned empty strings for absolutely positioned text nodes; the verifier now falls back to raw-text in DOM.getOuterHTML without weakening content assertions.",
+      "The first outside-dismiss probe used the bottom-right window edge. The accepted proof taps the fullscreen layer center, outside the menu rectangle, to avoid edge hit-test noise."
+    ],
+    "evidenceBoundary": "Browser before and after use one immutable snapshot, route, thread, theme, viewport, and Web bundle. Browser supplies product pixels, content, geometry, styles, relation, and console evidence. Exact-bundle Native separately proves real trigger and row taps, selection, reopen, Start from origin content, fullscreen outside dismissal, retained value, main transport, zero renderer errors, and isolated cleanup. Native material parity is not inferred."
+  },
+  "browser": {
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameWebBundle": true,
+    "inputChannel": "lynx-workbench-probe:workspace-menu",
+    "before": {
+      "status": "pass-with-product-loss",
+      "head": "591327ecc51ca6dee591ee14cf97f71295516137",
+      "readyMs": 2431,
+      "rendererErrors": 0,
+      "bundles": {
+        "web": "1a87ffa5b9d872a5d9f689297ef12152aa3dc6e61983a06c109f6652d2d7fe1a",
+        "lynx": "922f478ac1803abfa0a0f3b865a0a24d23de96277c4a150dfcc4a0138f603135"
+      },
+      "reportSha256": "c1a6519321fa4de9ca56c5b5a597944317b3ab97a4620a41f030ccde34eaa7f4",
+      "screenshots": {
+        "web": "db734a302c0147810184f3a7daaa0f8565ec61d55a89b757cf3445f63593a6e3",
+        "lynx": "e7922db380fd3a925cbcefe8efaa475c5a4b8fa9dc01761c112f2b1d0ec7c94a"
+      },
+      "content": {
+        "web": ["Current checkout", "New worktree"],
+        "lynx": ["Local checkout", "New worktree"]
+      },
+      "geometry": {
+        "webPanel": { "x": 410, "y": 672, "width": 157.75, "height": 96 },
+        "lynxPanel": { "x": 410, "y": 594, "width": 310, "height": 124 },
+        "webFirstRow": { "x": 415, "y": 705, "width": 147.75, "height": 29 },
+        "lynxFirstRow": {
+          "x": 503.375,
+          "y": 600,
+          "width": 142.390625,
+          "height": 112
+        },
+        "webRelation": { "side": "top", "align": "start", "sideOffset": 4 },
+        "lynxSideGap": 54
+      },
+      "typography": {
+        "web": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+        "lynx": { "fontSize": 13, "fontWeight": 500, "lineHeight": 18 }
+      },
+      "material": {
+        "pixelMetric": {
+          "threshold": "max RGB channel delta >= 16",
+          "fullFrame": { "mae": 4.438068, "significantShare": 0.048715 },
+          "menuEnvelope": { "mae": 19.728884, "significantShare": 0.384168 }
+        },
+        "fullFrameResidual": 0.298704,
+        "menuEnvelopeResidual": 1
+      }
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "codeState": "working-tree-product-change",
+      "head": "591327ecc51ca6dee591ee14cf97f71295516137",
+      "readyMs": 2422,
+      "rendererErrors": 0,
+      "agentBrowserLeakPreflight": 0,
+      "agentBrowserLeakPostflight": 0,
+      "bundles": {
+        "web": "1a87ffa5b9d872a5d9f689297ef12152aa3dc6e61983a06c109f6652d2d7fe1a",
+        "lynx": "76f1b3d64a2b27e0be08992aa01046965c15435c68411de06de524359109de01"
+      },
+      "reportSha256": "7a1b1832065cb70e8425e168bdd3ac20a4a4094422c7f4e811c796fa6dd8c94c",
+      "screenshots": {
+        "web": "cd88aae5587330e92ce73cc60f7cc9c316cbbb3279a2d2e2d9bc9e1ad432559a",
+        "lynx": "9c7550e2ddd2c958ea0d00b605059338ffa997008fe6546f38bd3638bd56ab84"
+      },
+      "content": {
+        "web": ["Current checkout", "New worktree"],
+        "lynx": ["Current checkout", "New worktree"]
+      },
+      "geometry": {
+        "webPanel": { "x": 410, "y": 672, "width": 157.75, "height": 96 },
+        "lynxPanel": { "x": 410, "y": 672, "width": 158, "height": 96 },
+        "webFirstRow": { "x": 415, "y": 705, "width": 147.75, "height": 29 },
+        "lynxFirstRow": { "x": 415, "y": 705, "width": 148, "height": 29 },
+        "relation": {
+          "web": { "side": "top", "align": "start", "sideOffset": 4 },
+          "lynx": { "side": "top", "align": "start", "sideOffset": 4 },
+          "residual": 0
+        },
+        "anchorDeltas": [0, 0, 0.25, 0, 0, 0, 0.25, 0],
+        "anchorScale": 158
+      },
+      "typography": {
+        "web": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+        "lynx": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 }
+      },
+      "material": {
+        "pixelMetric": {
+          "threshold": "max RGB channel delta >= 16",
+          "fullFrame": { "mae": 3.717651, "significantShare": 0.031648 },
+          "menuEnvelope": { "mae": 7.091472, "significantShare": 0.067872 }
+        },
+        "fullFrameResidual": 0.222738,
+        "menuEnvelopeResidual": 0.447385
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "012233c897cfb96f17c8ba86fa39922cea52b90e",
+    "bundle": {
+      "bytes": 4537489,
+      "sha256": "b9440a0690f1bfe3c1a28672cebc0226f67805c9f80d58af60085b0578c5d995"
+    },
+    "reportSha256": "7d9877ac5aa7e36c31eb8de9cd5cabf144dc00db3c2d96eac34bd0baf3b311b3",
+    "transport": {
+      "kind": "main",
+      "beforeSeq": 2,
+      "afterSeq": 3
+    },
+    "workspaceMenu": {
+      "trigger": { "x": 410, "y": 771, "width": 145, "height": 24 },
+      "panel": { "x": 410, "y": 671, "width": 158, "height": 96 },
+      "rows": [
+        {
+          "rect": { "x": 415, "y": 704, "width": 148, "height": 29 },
+          "text": "Current checkout"
+        },
+        {
+          "rect": { "x": 415, "y": 733, "width": 148, "height": 29 },
+          "text": "New worktree"
+        }
+      ],
+      "relation": {
+        "side": "top",
+        "align": "start",
+        "sideOffset": 4,
+        "residual": 0
+      },
+      "selectedLabel": "New worktree",
+      "worktreePanel": { "x": 410, "y": 617, "width": 158, "height": 150 },
+      "dismissLayer": { "x": 0, "y": 0, "width": 1280, "height": 820 },
+      "outsideTapClosed": true,
+      "valueRetainedAfterDismiss": true
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": "119/119",
+    "typecheck": {
+      "lynxtron": "pass",
+      "browserPreview": "pass"
+    },
+    "build": "production staged output/dist hashes matched; existing unsupported-property and Effect import.meta warnings remain",
+    "agentBrowserLeakGate": "Every completed loop reported owned=0 orphaned=0; external live sessions were informational and were not touched.",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "fidelityImpact": {
+    "fixedDenominator": {
+      "statesBefore": 40,
+      "statesAfter": 41,
+      "cellsBefore": 456,
+      "cellsAfter": 468,
+      "totalWeightBefore": 151.4,
+      "totalWeightAfter": 155.4,
+      "formulaChanged": false,
+      "existingStateWeightsChanged": false
+    },
+    "milestones": {
+      "before": 127,
+      "baseline": 128,
+      "after": 129
+    },
+    "totalLoss": {
+      "previous40StateLatest": 0.408999,
+      "newScopeBaseline": 0.419319,
+      "after": 0.403517,
+      "scopeExpansionDelta": 0.01032,
+      "productDelta": -0.015802,
+      "netDelta": -0.005482
+    },
+    "after": {
+      "observedResidual": 0.014677,
+      "evidenceDebt": 0.394632
+    }
+  },
+  "remainingRisk": [
+    "The matched dark Browser frame retains full-frame residual 0.222738 and menu-envelope residual 0.447385, primarily material and raster differences rather than geometry.",
+    "Native interaction, content, geometry, relation, runtime, and cleanup are verified; Native-to-Web material pixels are not inferred.",
+    "Keyboard focus and Escape dismissal remain pending-user-session and are not claimed by measured touch evidence."
+  ]
+}

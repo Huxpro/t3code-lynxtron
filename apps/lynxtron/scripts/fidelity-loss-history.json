@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-17T03:28:35+09:00",
+  "updatedAt": "2026-08-17T18:48:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -8066,6 +8066,171 @@
               "confidence": 0.99,
               "method": "native-vcs-init-readiness",
               "source": "Exact bundle, main transport, unborn-repository status recovery, next-action projection, zero renderer errors, 2560x1640 screenshot, and disposed isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-menu-open-baseline",
+      "observedAt": "2026-08-17T17:24:20+09:00",
+      "commit": "591327ecc51ca6dee591ee14cf97f71295516137",
+      "codeState": "working-tree",
+      "label": "Workspace menu open baseline",
+      "narrative": "The next uncovered overlay cell used one immutable dark 1280x820 snapshot and the same sessionless idle thread in Web and Lynx. It exposed a real Workspace menu product gap instead of reusing an existing overlay score: Web rendered Current checkout and New worktree in a 157.75x96 panel at top/start/+4, while Lynx rendered Local checkout in a 310x124 panel with a 54px side gap and a 112px first-row box. Full-frame pixel residual was 0.298704 and the 310x174 menu envelope saturated the conservative pixel formula at 1.0. Invalid locked-thread, iframe-blur, and physical-click samples are classified as harness mismatches and receive no update. Adding this state expands the fixed denominator from 40 to 41 states, 456 to 468 cells, and 151.4 to 155.4 total weight without changing any formula or existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds a previously unmodeled same-snapshot overlay state before the product fix. The denominator expands and the observed loss is recorded rather than filtered or folded into another overlay."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/workspace-menu-open-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "7c0d0dcf564514673b0e5159e8d89ac05f9ac159cec0ab05200aa1c48a664a86"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["workspace-menu-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "workspace-row-label-identity",
+              "source": "One of two row labels differs: Web Current checkout versus Lynx Local checkout"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 78, 152.25, 28, 88.375, 105, 5.359375, 83],
+              "relationResiduals": [1],
+              "anchorScale": 158,
+              "confidence": 0.99,
+              "method": "workspace-panel-row-and-relation-geometry",
+              "source": "Panel, first-row, and trigger relation differ; Lynx side gap is 54px instead of 4px"
+            },
+            "typography": {
+              "residual": 0.75,
+              "confidence": 0.99,
+              "method": "workspace-row-typography-contract",
+              "source": "Web row uses 14px/400/20 while Lynx uses 13px/500/18"
+            },
+            "material": {
+              "residual": 0.298704,
+              "confidence": 0.99,
+              "method": "full-frame-pixel-residual",
+              "source": "MAE 4.438068 and 4.8715% significant pixels; menu-envelope residual is 1.0"
+            },
+            "interaction": {
+              "residual": 1,
+              "confidence": 0.6,
+              "method": "browser-probe-only",
+              "source": "Browser probe opens the state but does not prove a real Lynx tap, selection, or dismissal"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-workspace-readiness",
+              "source": "Same snapshot, route, thread, theme, viewport, overlay identity, and zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-menu-open-current",
+      "observedAt": "2026-08-17T18:41:46+09:00",
+      "commit": "012233c897cfb96f17c8ba86fa39922cea52b90e",
+      "codeCommit": "01bd03b9c3168db3d8a628dcf464ff0b8ec6b828",
+      "codeState": "commit",
+      "label": "Workspace menu parity and Native interaction",
+      "narrative": "The Workspace menu now reuses Web workspace labels, matches the compact Select anatomy, and is positioned relative to its trigger. Browser content becomes exact, the panel contracts from 310x124 to 158x96, the first row becomes 148x29, and both renderers measure top/start/+4 with zero relation residual; full-frame pixel residual improves from 0.298704 to 0.222738 and the menu-envelope residual from 1.0 to 0.447385. Fresh Native verification then exposed and closed behavior that Browser probes could not certify: the empty transcript intercepted the trigger, draft worktree state used a fake pending path, New worktree did not close symmetrically, and later context siblings intercepted fullscreen dismissal. Exact-bundle Native now proves real trigger and row taps, New worktree selection, reopen with Start from origin, centered outside dismissal on a 1280x820 layer, retained value, main transport 2 to 3, zero renderer errors, and disposed isolated state. Native typography and material remain unknown rather than inferred from Browser evidence.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Browser before and after pair keeps one immutable snapshot, route, thread, theme, viewport, and Web bundle. Exact Native independently proves real selection and dismissal on the staged bundle. Invalid harness samples are explicitly excluded."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/workspace-menu-open-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "7c0d0dcf564514673b0e5159e8d89ac05f9ac159cec0ab05200aa1c48a664a86"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["workspace-menu-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "workspace-row-label-identity",
+              "source": "Both renderers show Current checkout and New worktree"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.25, 0, 0, 0, 0.25, 0],
+              "relationResiduals": [0],
+              "anchorScale": 158,
+              "confidence": 0.99,
+              "method": "workspace-panel-row-and-relation-geometry",
+              "source": "Panel and row differ only by 0.25px width; both use top/start/+4"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "workspace-row-typography-contract",
+              "source": "Both rows use DM Sans 14px/400/20"
+            },
+            "material": {
+              "residual": 0.222738,
+              "confidence": 0.99,
+              "method": "full-frame-pixel-residual",
+              "source": "MAE 3.717651 and 3.1648% significant pixels; menu-envelope residual is 0.447385"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.75,
+              "method": "browser-state-probe",
+              "source": "Viewport-test-only probe opens the Lynx-for-Web Workspace state; Native carries the real tap proof"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-workspace-readiness",
+              "source": "Same snapshot identity, overlay state, zero console errors, and clean agent-browser leak gates"
+            }
+          }
+        },
+        {
+          "states": ["workspace-menu-open"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-workspace-content",
+              "source": "Current checkout, New worktree, and Start from origin are present in the expected states"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "relationResiduals": [0],
+              "anchorScale": 158,
+              "confidence": 0.99,
+              "method": "native-workspace-geometry-and-relation",
+              "source": "158x96 panel, two 148x29 rows, and top/start/+4 relation residual 0"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-measured-workspace-taps",
+              "source": "Measured trigger and row taps select New worktree; fullscreen center outside tap closes the reopened panel while retaining value"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-workspace-readiness",
+              "source": "Exact staged bundle, main transport sequence 2 to 3, zero renderer errors, and disposed isolated state"
             }
           }
         }

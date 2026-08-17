@@ -997,7 +997,7 @@ button,select{font:inherit}.page{width:min(1540px,calc(100% - 40px));margin:0 au
     <div>
       <p class="kicker">T3 Code · Lynxtron fidelity accounting</p>
       <h1>Loss falls only when evidence earns it.</h1>
-      <p class="lede">A fixed 39-state denominator reconstructs the port from archived geometry, strict gates, pixel metrics, runtime logs, and Git anchors. Missing or stale evidence remains visible as debt instead of disappearing from the score.</p>
+      <p class="lede">A fixed ${data.model.stateCount}-state denominator reconstructs the port from archived geometry, strict gates, pixel metrics, runtime logs, and Git anchors. Missing or stale evidence remains visible as debt instead of disappearing from the score.</p>
     </div>
     <aside class="formula">
       <code>L = Σ w · [c·r + (1−c)·1] / Σ w</code>
@@ -1051,7 +1051,7 @@ button,select{font:inherit}.page{width:min(1540px,calc(100% - 40px));margin:0 au
   </section>
   <section class="section">
     <div class="section-head">
-      <div><p class="kicker">Fixed denominator</p><h2>39-state loss register</h2></div>
+      <div><p class="kicker">Fixed denominator</p><h2>${data.model.stateCount}-state loss register</h2></div>
       <div class="controls"><label>Group<select id="groupFilter"><option value="all">All</option></select></label></div>
     </div>
     <div class="table-wrap"><table><thead><tr><th>State</th><th>Group</th><th>Weight</th><th>Loss</th><th>Observed residual</th><th>Evidence debt</th></tr></thead><tbody id="stateRows"></tbody></table></div>
