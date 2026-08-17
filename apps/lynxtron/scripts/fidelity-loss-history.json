@@ -8923,6 +8923,191 @@
           }
         }
       ]
+    },
+    {
+      "id": "files-browser-baseline",
+      "observedAt": "2026-08-18T01:38:45+09:00",
+      "commit": "0d38cf1170caf6e4baac55a8d9d0b3de08be602a",
+      "codeState": "commit",
+      "label": "Files Browser horizontal-allocation baseline",
+      "narrative": "A previously unmodeled light 1280x820 right-panel Files state was opened through both shipping pointer paths on one immutable snapshot. Content already matched at 25 indexed rows, but Lynx-for-Web physically arranged the zero-height Files subtree horizontally: the 40px toolbar occupied the left 293px and the tree occupied the right 246px, while Web used a 539x776 column with a full-width toolbar and 736px independent browser. The Web runtime ignored the encoded native-redundant column token, so this is a P1 Browser renderer loss rather than a Native product regression.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds a valid same-snapshot state before repair. Panel-marker, shadow-row, helper-shape, and final-snapshot verifier defects are separated from the measured horizontal Files allocation."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-18/fidelity/files-browser-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a7ed512b7f80c699cae2e335c4c4d2b05076fa1ed74bb33521d535447a69a110"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["files-browser"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "files-browser-indexed-row-content",
+              "source": "Both shipping Files surfaces expose the same 25 indexed entries and the same first eight semantic labels"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 776, 0, 0, 245.875, 0, 0, 2, 4, 4, 778, 50.5, 493, 26, 293.125, 40,
+                293.125, 736, 281.140625, 36, 269.15625, 0, 281.140625, 36, 269.15625, 0,
+                281.140625, 34, 269.15625, 0, 281.140625, 32, 269.15625, 0, 281.140625, 30,
+                269.15625, 0, 281.140625, 28, 269.15625, 0, 281.140625, 26, 269.15625, 0,
+                281.140625, 26, 269.15625, 0
+              ],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "files-browser-surface-toolbar-controls-scroll-rows",
+              "source": "Surface, toolbar, refresh, search, browser, and first eight row x/y/width/height deltas against Web"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "files-browser-row-typography",
+              "source": "The semantic row-name leaves already resolve to 12px DM Sans with 5px row corners"
+            },
+            "material": {
+              "pixel": {
+                "mae": 6.013042,
+                "significantShare": 0.050564
+              },
+              "confidence": 0.99,
+              "method": "files-browser-full-frame-pixel",
+              "source": "Same-snapshot 1280x820 light full-frame comparison before Browser Preview conditioning"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-files-open",
+              "source": "Measured shipping right-panel toggle and Files action pointer input opens both surfaces"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-files-readiness",
+              "source": "Same snapshot, selected thread, 25-row data, zero console errors, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "files-browser-current",
+      "observedAt": "2026-08-18T02:28:44+09:00",
+      "commit": "5f3d360399697dc1fbd3a7f8b986823442737c0b",
+      "codeCommit": "213068ce30b6a6b2a8388e83fe27f754045a0042",
+      "codeState": "commit",
+      "label": "Files Browser matched Browser parity",
+      "narrative": "The Browser Preview shadow-root compatibility layer now restores the Native column allocation that Lynx-for-Web needs, while leaving the exact Native bundle unchanged. The strict Browser cell requires identical 539x776 surfaces, 539x40 toolbars, 24x24 refresh controls, 495x28 searches, 539x736 independent browser viewports, 25 semantic rows, and the same first eight 507x24 row rectangles with 5px corners and 12px DM Sans names. Exact-bundle Native independently proves the existing 540px Files panel, real file selection to docs/PORT_WORKFLOW.md, main transport, zero renderer errors, and disposed isolated state. Physical keyboard search remains pending-user-session.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after Browser evidence shares one immutable snapshot, selected thread, theme, viewport, Web authority, 25-row content set, and shipping pointer inputs. Exact Native confirms no product regression."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-18/fidelity/files-browser-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a7ed512b7f80c699cae2e335c4c4d2b05076fa1ed74bb33521d535447a69a110"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["files-browser"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "files-browser-indexed-row-content",
+              "source": "Both renderers expose 25 entries and the strict gate matches the first eight semantic labels in order"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.015625, 0, 0.03125, 0,
+                0.015625, 0, 0.03125, 0, 0.015625, 0, 0.03125, 0, 0.015625, 0, 0.03125, 0, 0.015625,
+                0, 0.03125, 0, 0.015625, 0, 0.03125, 0, 0.015625, 0, 0.03125, 0, 0.015625, 0,
+                0.03125, 0
+              ],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "files-browser-surface-toolbar-controls-scroll-rows",
+              "source": "Surface, toolbar, controls, browser, and first eight row rectangles converge within fractional Web rounding"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "files-browser-row-typography",
+              "source": "Strict gate requires 12px DM Sans row names and four 5px corner longhands on both renderers"
+            },
+            "material": {
+              "pixel": {
+                "mae": 5.329735,
+                "significantShare": 0.045277
+              },
+              "confidence": 0.99,
+              "method": "files-browser-full-frame-pixel",
+              "source": "Same-snapshot 1280x820 light current full-frame comparison; remaining pixels stay explicit"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-files-open",
+              "source": "Shipping pointer paths open both Files surfaces and the strict state remains stable for three semantic polls"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-files-readiness",
+              "source": "Same immutable snapshot, strict final-snapshot gate, zero console errors, and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["files-browser"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-files-browser-content",
+              "source": "Exact Native lists the canonical workspace entries and opens docs/PORT_WORKFLOW.md from the measured file row"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "native-files-browser-geometry",
+              "source": "Exact Native retains the certified 540px panel, 40px toolbar, 28px controls, 728px browser, and 531x24 first row"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-files-row-typography",
+              "source": "Exact Native first row resolves to 12px DM Sans and four 5px corner longhands"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-files-open-select",
+              "source": "Measured Native touch opens Files and selects docs/PORT_WORKFLOW.md into a file surface"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-files-readiness",
+              "source": "Exact bundle, main sequence 2 to 3, zero renderer errors, disposed isolated state, and clean leak gates"
+            }
+          }
+        }
+      ]
     }
   ]
 }
