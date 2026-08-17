@@ -7061,8 +7061,8 @@
   display: block;
   margin-top: 8px;
   color: var(--muted-foreground);
-  font-size: 13px;
-  line-height: 19px;
+  font-size: 14px;
+  line-height: 20px;
 }
 .git-publish-close {
   position: absolute;
