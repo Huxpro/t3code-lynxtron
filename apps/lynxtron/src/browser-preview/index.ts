@@ -456,6 +456,19 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".right-panel__tabs{height:44px!important;min-height:44px!important;box-sizing:border-box;}" +
       ".right-panel__content{" +
       "display:flex;flex:1 1 0%;flex-direction:column;height:0;margin-left:1px;width:calc(100% - 1px);}" +
+      ".files-panel{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:100%;min-height:0;}" +
+      ".files-panel__toolbar{" +
+      "display:flex;flex:none;flex-direction:row;width:100%;height:40px;box-sizing:border-box;}" +
+      ".files-panel__refresh{width:24px!important;height:24px!important;}" +
+      ".files-panel__browser{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:0;min-height:0;}" +
+      ".files-panel__inner{display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
+      ".files-panel__tree{" +
+      "display:flex;flex-direction:column;width:100%;padding:0 16px!important;box-sizing:border-box;}" +
+      ".files-panel .file-tree-children{row-gap:0!important;column-gap:0!important;}" +
+      ".files-panel__search{" +
+      "display:flex;flex:1 1 0%;flex-direction:row;width:0;height:28px;box-sizing:border-box;}" +
       ".diff-panel{display:flex;flex:1 1 0%;flex-direction:column;height:0;}" +
       ".diff-panel-subheader{" +
       "flex:none;height:40px;min-height:40px;max-height:40px;box-sizing:border-box;}" +
@@ -542,6 +555,10 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "x-input.picker-search__input::part(input){" +
       "flex:1 1 auto!important;width:auto!important;height:26px!important;margin-left:8px!important;" +
       "font-size:14px!important;line-height:26px!important;}" +
+      "x-input.files-panel__search-input::part(input){" +
+      "display:block!important;flex:1 1 auto!important;width:100%!important;height:28px!important;" +
+      "border:0!important;padding:0!important;font-size:12px!important;line-height:28px!important;" +
+      "background:transparent!important;}" +
       "x-textarea.composer__input::part(textarea){" +
       "display:block!important;width:100%!important;height:70px!important;border:0!important;" +
       "padding:0!important;font-size:14px!important;line-height:23px!important;background:transparent!important;}" +

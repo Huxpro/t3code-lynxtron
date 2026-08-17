@@ -138,5 +138,5 @@ export function FileTreeFileRowSurface({
 
 /** Children container for expanded directory contents. */
 export function FileTreeChildrenSurface({ children }: { readonly children: ReactNode }) {
-  return <HostView className="flex flex-col gap-0.5">{children}</HostView>;
+  return <HostView className="file-tree-children flex flex-col gap-0.5">{children}</HostView>;
 }
