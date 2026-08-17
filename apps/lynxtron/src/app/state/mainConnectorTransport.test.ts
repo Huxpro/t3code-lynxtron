@@ -228,6 +228,25 @@ describe("main connector transport", () => {
     );
   });
 
+  it("keeps settled command errors fulfilled for Lynx mutation consumers", async () => {
+    const harness = createHarness();
+    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 0, snapshot: makeSnapshot("t1") });
+    harness.replyWith(T3_CONNECTOR_METHODS.command, {
+      __t3BridgeError: 'SocketOpenError: timeout waiting for "open"',
+    });
+    const transport = await startHarness(harness);
+
+    const result = await transport!.invokeSettled("setModelSelection", {
+      threadId: "t1",
+      selection: { instanceId: "codex", model: "gpt-5.6-sol" },
+    });
+
+    assert.deepEqual(result, {
+      ok: false,
+      error: 'SocketOpenError: timeout waiting for "open"',
+    });
+  });
+
   it("stops listening after dispose", async () => {
     const harness = createHarness();
     harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 0, snapshot: makeSnapshot("t1") });

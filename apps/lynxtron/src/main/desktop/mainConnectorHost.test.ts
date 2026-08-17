@@ -426,6 +426,50 @@ describe("main connector host", () => {
     assert.equal(calls.filter((call) => call.method === "sendPrompt").length, 1);
   });
 
+  it("recovers the owned RPC transport without restarting its connector server", async () => {
+    const handlers = new Map<string, (params: unknown) => unknown>();
+    const calls: string[] = [];
+    let recovered = false;
+    let connectorCount = 0;
+    const host = new MainConnectorHost({
+      window: { sendGlobalEvent: () => true },
+      registerHandler: (method, handler) => {
+        handlers.set(method, handler as (params: unknown) => unknown);
+      },
+      createConnector: (events) => {
+        connectorCount += 1;
+        return {
+          ...events,
+          connect: () => Promise.resolve({ status: "ready" }),
+          dispose: () => calls.push("dispose"),
+          recoverTransport: async () => {
+            calls.push("recoverTransport");
+            recovered = true;
+          },
+          setModelSelection: () => {
+            calls.push("setModelSelection");
+            return recovered
+              ? Promise.resolve()
+              : Promise.reject(new Error('SocketOpenError: timeout waiting for "open"'));
+          },
+        };
+      },
+    });
+    host.attach();
+    await host.connect();
+
+    await handlers.get(T3_CONNECTOR_METHODS.command)!({
+      method: "setModelSelection",
+      params: {
+        threadId: "t1",
+        selection: { instanceId: "codex", model: "gpt-5.6-sol" },
+      },
+    });
+
+    assert.equal(connectorCount, 1);
+    assert.deepEqual(calls, ["setModelSelection", "recoverTransport", "setModelSelection"]);
+  });
+
   it("injects the SocketOpenError only for the first thread model mutation", async () => {
     const handlers = new Map<string, (params: unknown) => unknown>();
     const logs: string[] = [];

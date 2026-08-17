@@ -107,15 +107,17 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
   });
 
-  it("consumes model-selection bridge failures with a terminal rejection handler", () => {
+  it("keeps model-selection bridge failures on a fulfilled settled-result path", () => {
     const mutationStart = clientSource.indexOf("function persistModelSelectionMutation");
     const mutationEnd = clientSource.indexOf("\nfunction setModelSelection", mutationStart);
     const mutation = clientSource.slice(mutationStart, mutationEnd);
 
-    expect(mutation).toContain("void mutation");
-    expect(mutation).toContain(".then(() => {");
-    expect(mutation).toContain(".catch((error: unknown) => {");
-    expect(mutation).not.toContain("void mutation.then(");
+    expect(clientSource).toContain("function settleModelSelectionMutation");
+    expect(clientSource).toContain('mainTransport.invokeSettled("setModelSelection", input)');
+    expect(mutation).toContain("void mutation.then((result) => {");
+    expect(mutation).toContain("if (result.ok) {");
+    expect(mutation).not.toContain(".catch(");
+    expect(mutation).not.toContain("Promise.reject(");
   });
 
   it("uses the Web shadow on the rounded Composer frame rather than the outer stack", () => {
@@ -323,7 +325,8 @@ describe("desktop shell interaction contract", () => {
   it("keeps model selection visible while the canonical shell catches up", () => {
     expect(clientSource).toContain("function persistModelSelectionMutation");
     expect(clientSource).toContain("modelSelectionPending: true");
-    expect(clientSource).toContain("modelSelectionError: modelSelectionMutationError(error)");
+    expect(clientSource).toContain("modelSelectionError: result.error");
+    expect(clientSource).toContain("error: modelSelectionMutationError(error)");
     expect(clientSource).toContain("shouldRollbackModelSelectionMutation");
     expect(clientSource).toContain("projectThreadModelSelection(");
     expect(clientSource).not.toContain("[t3-client] failed to set model selection");
