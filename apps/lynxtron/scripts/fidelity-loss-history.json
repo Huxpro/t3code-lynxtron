@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-17T21:56:00+09:00",
+  "updatedAt": "2026-08-17T22:52:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -8696,6 +8696,77 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-publish-readiness",
               "source": "Exact bundle, main sequence 11 to 12, zero renderer errors, disposed isolated state, and zero owned/orphaned agent-browser processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-appearance-browser-current",
+      "observedAt": "2026-08-17T22:48:32+09:00",
+      "commit": "c560d1b0d6fe1ab433454b7e1613e8321c29d997",
+      "codeState": "commit",
+      "label": "Settings Appearance Browser classification",
+      "narrative": "A previously unmodeled dark 1280x820 Appearance route now has valid same-snapshot Browser evidence. The first capture was invalid because the Lynx fallback identified Nightly while the production Web fallback identified Alpha, exposing a fourth Environment identification row only on Lynx; the strict gate also compared renderer-specific concatenated text and measured rows only through the Lynx settings-row class. The current harness aligns Alpha branding, reads every row by stable anchor, and compares shared navigation, section, row IDs, titles, and descriptions while requiring truthful Lynx unavailable semantics. Theme, Glass opacity, and Word wrap share 896px rows, x=336 title and description origins, 576px description allocation, and 20px title height. Lynx's extra status copy and 0.48 opacity for unsupported Glass opacity and Word wrap are intentional platform deltas, so their explanatory panel height is not counted as geometry loss. Full-frame material residual remains explicit at MAE 2.528668 and significant share 0.034984. Current dark Alpha Native evidence is absent and remains unknown debt.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point admits a new same-snapshot Settings state without a product change. It separates branding and selector harness loss from intentional capability differences, preserves measured material residual, and leaves unmeasured Native cells unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-17/fidelity/settings-appearance-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "76e31a824265530b6a846a958b719530748e15ad1a93510fd76ecd557b846cc9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-appearance"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "appearance-row-semantic-contract",
+              "source": "Navigation, Appearance section, three visible row IDs, titles, and descriptions match; unavailable status and control differences are explicit platform capability deltas"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0.265625, 0, 0, 2, 0, 0.15625, 0, 0, 0, 0, 1.359375, 0, 0, 2, 0, 0.3125,
+                0, 0, 0, 0, 0.609375, 0, 0, 2, 0, 0.15625
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "appearance-shared-row-title-description-geometry",
+              "source": "Three shared row x and width values plus row-local title and description x, y, width, and height deltas; status-only explanatory height and downstream absolute y are excluded as intentional capability deltas"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "appearance-shared-text-box-contract",
+              "source": "All shared titles resolve to 20px boxes and descriptions to 19px or 38px boxes with identical copy and 576px allocation"
+            },
+            "material": {
+              "pixel": {
+                "mae": 2.528668,
+                "significantShare": 0.034984
+              },
+              "confidence": 0.99,
+              "method": "appearance-full-frame-pixel",
+              "source": "Current 1280x820 dark same-snapshot full-frame Browser comparison; residual includes intentional unavailable opacity and status copy"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "appearance-read-only-state",
+              "source": "No mutation is required for this state; both renderers remain on the same ready Appearance route"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-appearance-readiness",
+              "source": "Same immutable snapshot, Alpha branding, route, dark theme, 1280x820 viewport, zero console errors, and clean agent-browser leak gates"
             }
           }
         }
