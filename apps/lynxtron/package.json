@@ -44,6 +44,7 @@
     "verify:packaged-readiness": "node scripts/verify-packaged-readiness.mjs",
     "verify:mts-product": "node scripts/verify-mts-product-controls.mjs",
     "verify:mts-runtime": "node scripts/verify-mts-runtime-contract.mjs",
+    "verify:page-config": "node scripts/verify-page-config-capabilities.mjs",
     "verify:plan11-semantics": "node scripts/verify-packaged-readiness.mjs --verify-plan11-semantic-outcomes",
     "visual:metrics": "node scripts/compare-visual-measurements.mjs",
     "visual:prepare": "node scripts/prepare-visual-state.mjs",
