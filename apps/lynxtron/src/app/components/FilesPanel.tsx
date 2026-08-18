@@ -49,6 +49,13 @@ function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+function editorLineTone(line: string): "heading" | "code" | "strong" | "plain" {
+  if (/^#{1,6}\s/u.test(line)) return "heading";
+  if (/^\s*(?:[-*+]|\d+[.)])\s/u.test(line) || /`[^`]+`/u.test(line)) return "code";
+  if (/\*\*[^*]+\*\*/u.test(line) || /^\s*\|/u.test(line)) return "strong";
+  return "plain";
+}
+
 function EditableFilePreview({
   cwd,
   path,
@@ -59,6 +66,7 @@ function EditableFilePreview({
   result: ProjectReadFileResult;
 }) {
   const [contents, setContents] = useState(result.contents);
+  const [editing, setEditing] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"saved" | "pending" | "error">("saved");
   const [saveError, setSaveError] = useState<string | null>(null);
   const coordinator = useMemo(
@@ -117,12 +125,38 @@ function EditableFilePreview({
 
   return (
     <view className="file-panel__editor-surface">
-      <textarea
-        className="files-panel__editor"
-        {...({ value: contents } as object)}
-        bindinput={handleInput}
-        bindblur={flush}
-      />
+      {editing ? (
+        <textarea
+          className="files-panel__editor"
+          data-file-editor-mode="editing"
+          {...({ value: contents } as object)}
+          bindinput={handleInput}
+          bindblur={() => {
+            flush();
+            setEditing(false);
+          }}
+        />
+      ) : (
+        <scroll-view
+          className="file-editor-preview"
+          data-file-editor-mode="preview"
+          scroll-orientation="vertical"
+          bindtap={() => setEditing(true)}
+        >
+          <view className="file-editor-preview__content">
+            {contents.split("\n").map((line, index) => (
+              <view key={`${index}:${line}`} className="file-editor-line">
+                <text className="file-editor-line__number">{index + 1}</text>
+                <text
+                  className={`file-editor-line__content file-editor-line__content--${editorLineTone(line)}`}
+                >
+                  {line || " "}
+                </text>
+              </view>
+            ))}
+          </view>
+        </scroll-view>
+      )}
       {saveStatus !== "saved" || saveError ? (
         <view className="file-panel__statusbar">
           <text
