@@ -467,7 +467,39 @@ describe("desktop shell interaction contract", () => {
       "const pendingSelection = this.pendingThreadModelSelections.get(thread.id);",
     );
     expect(connectorSource).toContain(
-      "return pendingSelection ? { ...thread, modelSelection: pendingSelection } : thread;",
+      "...(pendingSelection ? { modelSelection: pendingSelection } : {}),",
+    );
+  });
+
+  it("keeps thread mode controls visible while commands settle", () => {
+    expect(clientSource).toContain(
+      "projectThreadRuntimeMode(state.threads, threadId, runtimeMode)",
+    );
+    expect(clientSource).toContain(
+      "projectThreadInteractionMode(state.threads, threadId, interactionMode)",
+    );
+    expect(clientSource).toContain("rollbackThreadModeMutation(");
+    expect(clientSource).toContain("const pendingThreadRuntimeModes = new Map");
+    expect(clientSource).toContain("const pendingThreadInteractionModes = new Map");
+    expect(clientSource).toContain("let threads = canonicalThreads;");
+    expect(clientSource).toContain(
+      "threads = projectThreadInteractionMode(threads, threadId, interactionMode);",
+    );
+    expect(clientSource).toContain(".setThreadRuntimeMode({ threadId, runtimeMode }).catch");
+    expect(clientSource).toContain(
+      ".setThreadInteractionMode({ threadId, interactionMode }).catch",
+    );
+    expect(connectorSource).toContain("private pendingThreadRuntimeModes");
+    expect(connectorSource).toContain("private pendingThreadInteractionModes");
+    expect(connectorSource).toContain(
+      "if (thread?.runtimeMode === runtimeMode) this.pendingThreadRuntimeModes.delete(threadId);",
+    );
+    expect(connectorSource).toContain("if (thread?.interactionMode === interactionMode) {");
+    expect(connectorSource).toContain(
+      "this.pendingThreadRuntimeModes.set(input.threadId, input.runtimeMode);",
+    );
+    expect(connectorSource).toContain(
+      "this.pendingThreadInteractionModes.set(input.threadId, input.interactionMode);",
     );
   });
 

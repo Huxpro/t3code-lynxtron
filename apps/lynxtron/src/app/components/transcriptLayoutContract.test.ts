@@ -58,6 +58,9 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain('aria-label="More composer controls"');
     expect(composerSource).toContain("data-composer-compact-controls-menu");
     expect(composerSource).toContain('className="composer-compact-controls-dismiss"');
+    expect(composerSource.indexOf('className="composer-compact-controls-menu"')).toBeLessThan(
+      composerSource.indexOf('className="composer-compact-controls-dismiss"'),
+    );
     expect(composerSource).toContain('className="composer-compact-controls-menu__scroll"');
     expect(composerSource).toContain('scroll-orientation="vertical"');
     expect(composerSource).toContain('mode === "default" ? "Chat" : "Plan"');
