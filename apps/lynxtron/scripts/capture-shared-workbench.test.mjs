@@ -230,6 +230,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, ":scope > .settings-section");
     assert.include(workbench, "sectionTexts:");
     assert.include(source, "settingsMetrics?.sectionTexts");
+    assert.include(workbench, 'navigation: readElementBox(root?.querySelector(".settings-nav"))');
+    assert.include(workbench, 'navigation: readElementBox(doc.querySelector(".settings-nav"))');
     assert.include(source, "function archiveSettingsGeometryMatches");
     assert.include(source, 'stateId !== "settings-archive"');
     assert.include(source, 'lynxEmptyRow?.title === "No archived threads"');

@@ -1505,6 +1505,9 @@ function readLynxPane() {
                 (item) => item.textContent?.trim().replace(/\s+/g, " ") ?? "",
               ),
               geometry: {
+                root: readElementBox(root?.querySelector(".settings-root")),
+                navigation: readElementBox(root?.querySelector(".settings-nav")),
+                main: readElementBox(root?.querySelector(".settings-main")),
                 content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
                 sourceControlEmpty: readElementBox(root?.querySelector(".source-control-empty")),
@@ -2336,6 +2339,9 @@ function readWebPane() {
                 (item) => item.textContent?.trim().replace(/\s+/g, " ") ?? "",
               ),
               geometry: {
+                root: readElementBox(doc.querySelector(".settings-root")),
+                navigation: readElementBox(doc.querySelector(".settings-nav")),
+                main: readElementBox(doc.querySelector(".settings-main")),
                 content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
                 sourceControlEmpty: readElementBox(
