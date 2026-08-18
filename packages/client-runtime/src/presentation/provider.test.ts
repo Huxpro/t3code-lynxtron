@@ -10,6 +10,7 @@ import {
   resolveSelectableProviderInstance,
   resolveProviderDriverKindForInstanceSelection,
   getProviderSummary,
+  projectProviderStatusNotice,
 } from "./provider.ts";
 
 function provider(input: {
@@ -131,6 +132,60 @@ describe("getProviderSummary", () => {
       detail: null,
     });
     expect(getProviderSummary({ ...snapshot, enabled: false }).headline).toBe("Disabled");
+  });
+});
+
+describe("projectProviderStatusNotice", () => {
+  it("projects actionable unauthenticated guidance with a stable dismissal key", () => {
+    const snapshot = {
+      ...provider({
+        provider: ProviderDriverKind.make("claudeAgent"),
+        instanceId: "claudeAgent",
+        status: "error",
+        displayName: "Claude",
+      }),
+      auth: { status: "unauthenticated" as const },
+      message: "Claude Agent CLI is not authenticated. Run `claude auth login` and try again.",
+    };
+
+    expect(projectProviderStatusNotice(snapshot)).toEqual({
+      key: [
+        "claudeAgent",
+        "error",
+        "unauthenticated",
+        "Claude Agent CLI is not authenticated. Run `claude auth login` and try again.",
+      ].join("\u0000"),
+      title: "Claude is unauthenticated",
+      message: "Claude Agent CLI is not authenticated. Run `claude auth login` and try again.",
+      tone: "error",
+    });
+  });
+
+  it("hides ready providers and projects warnings without renderer-owned copy", () => {
+    expect(
+      projectProviderStatusNotice(
+        provider({
+          provider: ProviderDriverKind.make("opencode"),
+          instanceId: "opencode",
+        }),
+      ),
+    ).toBeNull();
+
+    expect(
+      projectProviderStatusNotice({
+        ...provider({
+          provider: ProviderDriverKind.make("codex"),
+          instanceId: "codex",
+          status: "warning",
+          displayName: "Codex",
+        }),
+        message: "Provider is temporarily degraded.",
+      }),
+    ).toMatchObject({
+      title: "Codex provider status",
+      message: "Provider is temporarily degraded.",
+      tone: "warning",
+    });
   });
 });
 

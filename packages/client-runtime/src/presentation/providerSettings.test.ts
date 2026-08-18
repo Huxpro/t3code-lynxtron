@@ -7,7 +7,12 @@ import {
 import { describe, expect, it } from "vite-plus/test";
 
 import { deriveProviderInstanceEntries } from "./provider.ts";
-import { buildProviderInstanceEnabledPatch } from "./providerSettings.ts";
+import {
+  buildProviderInstanceCreatePatch,
+  buildProviderInstanceDeletePatch,
+  buildProviderInstanceEnabledPatch,
+  withProviderCustomModels,
+} from "./providerSettings.ts";
 
 function provider(instanceId: string, driver = "codex"): ServerProvider {
   return {
@@ -77,6 +82,50 @@ describe("buildProviderInstanceEnabledPatch", () => {
     expect(patch.providerInstances?.[instanceId]).toEqual({
       ...settings.providerInstances[instanceId],
       enabled: false,
+    });
+  });
+});
+
+describe("provider instance lifecycle patches", () => {
+  it("creates and deletes a custom server provider instance", () => {
+    const instanceId = ProviderInstanceId.make("claude_work");
+    const instance = {
+      driver: ProviderDriverKind.make("claudeAgent"),
+      displayName: "Work Claude",
+    };
+    const created = buildProviderInstanceCreatePatch({
+      settings: DEFAULT_SERVER_SETTINGS,
+      instanceId,
+      instance,
+    });
+    expect(created.providerInstances?.[instanceId]).toEqual(instance);
+
+    const deleted = buildProviderInstanceDeletePatch({
+      settings: {
+        ...DEFAULT_SERVER_SETTINGS,
+        providerInstances: { [instanceId]: instance },
+      },
+      instanceId,
+    });
+    expect(deleted.providerInstances).toEqual({});
+  });
+
+  it("updates custom models while preserving opaque provider config", () => {
+    expect(
+      withProviderCustomModels(
+        {
+          driver: ProviderDriverKind.make("codex"),
+          config: { binaryPath: "/opt/codex", forkOwned: true },
+        },
+        [" custom-model ", "custom-model"],
+      ),
+    ).toEqual({
+      driver: "codex",
+      config: {
+        binaryPath: "/opt/codex",
+        forkOwned: true,
+        customModels: ["custom-model"],
+      },
     });
   });
 });

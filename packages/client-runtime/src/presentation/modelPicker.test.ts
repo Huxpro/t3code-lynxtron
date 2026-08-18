@@ -212,7 +212,7 @@ describe("shared model picker presentation", () => {
     });
   });
 
-  it("does not carry a disabled or unavailable instance model into the fallback provider", () => {
+  it("preserves an explicit unavailable instance instead of silently switching providers", () => {
     const projection = deriveProviderModelSelectionProjection(
       {
         providers: [
@@ -241,8 +241,38 @@ describe("shared model picker presentation", () => {
       [{ instanceId: CLAUDE_ID, model: "claude-fable-5" }],
     );
 
-    expect(projection.selectedEntry).toBeUndefined();
-    expect(projection.selection).toBeUndefined();
+    expect(projection.selectedEntry?.instanceId).toBe(CLAUDE_ID);
+    expect(projection.selectedModel).toEqual(
+      expect.objectContaining({
+        instanceId: CLAUDE_ID,
+        slug: "claude-fable-5",
+      }),
+    );
+    expect(projection.selection).toEqual({
+      instanceId: CLAUDE_ID,
+      model: "claude-fable-5",
+    });
+  });
+
+  it("falls back only when the explicit provider instance no longer exists", () => {
+    const projection = deriveProviderModelSelectionProjection(
+      {
+        providers: [
+          provider({
+            instanceId: "codex",
+            models: [{ slug: "gpt-5.6", isDefault: true }],
+          }),
+        ],
+        settings: DEFAULT_SERVER_SETTINGS,
+      },
+      [{ instanceId: CLAUDE_ID, model: "claude-fable-5" }],
+    );
+
+    expect(projection.selectedEntry?.instanceId).toBe("codex");
+    expect(projection.selection).toEqual({
+      instanceId: ProviderInstanceId.make("codex"),
+      model: "gpt-5.6",
+    });
   });
 
   it("prefers a ready fallback with models over warning and empty providers", () => {

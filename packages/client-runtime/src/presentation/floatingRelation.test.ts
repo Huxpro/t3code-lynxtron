@@ -4,7 +4,7 @@ import {
   floatingRelationResidual,
   measureFloatingRelation,
   resolveFloatingAnchorPoint,
-} from "./floatingRelation";
+} from "./floatingRelation.ts";
 
 describe("floating relation", () => {
   const anchor = { x: 8, y: 120, width: 240, height: 78 };

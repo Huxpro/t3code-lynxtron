@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { isTransportConnectionErrorMessage, sanitizeThreadErrorMessage } from "./transport.ts";
+import {
+  isTransportConnectionErrorMessage,
+  presentThreadCommandErrorMessage,
+  sanitizeThreadErrorMessage,
+} from "./transport.ts";
 
 describe("isTransportConnectionErrorMessage", () => {
   it("returns true for SocketCloseError", () => {
@@ -68,5 +72,19 @@ describe("sanitizeThreadErrorMessage", () => {
   it("returns null for null/undefined", () => {
     expect(sanitizeThreadErrorMessage(null)).toBeNull();
     expect(sanitizeThreadErrorMessage(undefined)).toBeNull();
+  });
+});
+
+describe("presentThreadCommandErrorMessage", () => {
+  it("turns transport failures into actionable retry guidance", () => {
+    expect(presentThreadCommandErrorMessage('SocketOpenError: timeout waiting for "open"')).toBe(
+      "Connection was interrupted. Reconnect and try again.",
+    );
+  });
+
+  it("preserves business-logic failures", () => {
+    expect(presentThreadCommandErrorMessage("Provider is unauthenticated")).toBe(
+      "Provider is unauthenticated",
+    );
   });
 });

@@ -21,6 +21,10 @@ const clientSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/t3Client.ts"),
   "utf8",
 );
+const modelSelectionLogicSource = readFileSync(
+  path.resolve(import.meta.dirname, "../state/modelSelection.logic.ts"),
+  "utf8",
+);
 const connectorSource = readFileSync(
   path.resolve(import.meta.dirname, "../../main/desktop/connector.ts"),
   "utf8",
@@ -82,6 +86,51 @@ describe("desktop shell interaction contract", () => {
     expect(source).toContain("modelPicker !== undefined");
     expect(overrides).toContain(".composer-runtime-menu-dismiss-layer {");
     expect(overrides).toContain(".composer-runtime-control-wrap {");
+  });
+
+  it("shows provider recovery guidance in hero and thread layouts", () => {
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(chatView).toContain("projectProviderStatusNotice(activeProviderStatus)");
+    expect(chatView).toContain(": visibleProviderStatusNotice ? (");
+    expect(chatView).not.toContain("visibleProviderStatusNotice && !hero");
+    expect(chatView).toContain(".refreshProviders(activeProviderStatus?.instanceId)");
+    expect(chatView).toContain('label={providersRefreshPending ? "Refreshing…" : "Refresh"}');
+  });
+
+  it("keeps shared Lynx buttons accessible to provider recovery controls", () => {
+    const button = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/button.lynx.tsx"),
+      "utf8",
+    );
+    const input = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/input.lynx.tsx"),
+      "utf8",
+    );
+    const textarea = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/textarea.lynx.tsx"),
+      "utf8",
+    );
+
+    expect(button).toContain('"aria-label": ariaLabel');
+    expect(button).toContain("aria-label={ariaLabel}");
+    expect(button).toContain('aria-disabled={disabled ? "true" : undefined}');
+    expect(input).toContain("aria-label={ariaLabel}");
+    expect(input).toContain('aria-disabled={disabled ? "true" : undefined}');
+    expect(textarea).toContain("aria-label={ariaLabel}");
+    expect(textarea).toContain('aria-disabled={disabled ? "true" : undefined}');
+  });
+
+  it("renders shared provider connection fields, environment, refresh, and update actions", () => {
+    const providers = componentSource("ProviderSettings.tsx");
+
+    expect(providers).toContain("deriveProviderSettingsFields(schema)");
+    expect(providers).toContain("CodexSettings");
+    expect(providers).toContain("ClaudeSettings");
+    expect(providers).toContain("ProviderEnvironmentFields");
+    expect(providers).toContain("updateProviderInstance(instanceId, instance)");
+    expect(providers).toContain("updateProvider(instanceId)");
+    expect(providers).toContain('label="Refresh provider status"');
   });
 
   it("renders server-declared model options in a dismissible menu", () => {
@@ -393,6 +442,27 @@ describe("desktop shell interaction contract", () => {
     );
     expect(connectorSource).toContain(
       "return pendingSelection ? { ...thread, modelSelection: pendingSelection } : thread;",
+    );
+  });
+
+  it("settles prompt dispatch failures without leaking an unhandled rejection", () => {
+    expect(clientSource).toContain("presentThreadCommandErrorMessage");
+    expect(clientSource).toContain(".sendPrompt({");
+    expect(clientSource).toContain(".then(() => true)");
+    expect(clientSource).toContain(".catch((error: unknown) => {");
+    expect(clientSource).toContain("sessionError: presentThreadCommandErrorMessage(");
+    const composerSource = componentSource("Composer.tsx");
+    expect(composerSource).toContain("if (await current.onSend(text))");
+    expect(composerSource).toContain('setValue("");');
+  });
+
+  it("seeds and synchronizes the saved model selection before creating new chats", () => {
+    expect(clientSource).toContain("patchState({ modelSelection: saved })");
+    expect(clientSource).toContain(
+      'transport.invokeSettled("setModelSelection", { selection: saved })',
+    );
+    expect(modelSelectionLogicSource).toContain(
+      "return [currentSelection, projects[0]?.defaultModelSelection]",
     );
   });
 

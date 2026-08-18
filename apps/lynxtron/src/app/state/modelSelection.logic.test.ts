@@ -52,22 +52,17 @@ function provider(
 }
 
 describe("project model selection candidates", () => {
-  it("prefers the first project default for a new thread", () => {
+  it("prefers the current explicit selection over the project default", () => {
+    const currentSelection = {
+      instanceId: ProviderInstanceId.make("opencode"),
+      model: "opencode/big-pickle",
+    };
     const candidates = projectModelSelectionCandidates({
-      currentSelection: {
-        instanceId: ProviderInstanceId.make("opencode"),
-        model: "opencode/big-pickle",
-      },
+      currentSelection,
       projects: [project],
     });
 
-    assert.deepEqual(candidates, [
-      project.defaultModelSelection,
-      {
-        instanceId: ProviderInstanceId.make("opencode"),
-        model: "opencode/big-pickle",
-      },
-    ]);
+    assert.deepEqual(candidates, [currentSelection, project.defaultModelSelection]);
   });
 
   it("finds only an exact model for an active thread selection", () => {
