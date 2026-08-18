@@ -7209,8 +7209,7 @@
   flex-shrink: 0;
   width: 34px;
   padding-right: 8px;
-  color: rgba(var(--foreground-rgb), 0.32);
-  background-color: rgba(var(--foreground-rgb), 0.018);
+  color: rgba(var(--foreground-rgb), 0.4);
   font-family: var(--font-mono);
   font-size: 11px;
   line-height: 19px;
@@ -7228,9 +7227,6 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
-.theme-light .file-editor-line__number {
-  background-color: rgba(var(--foreground-rgb), 0.025);
-}
 .file-editor-line__content--heading {
   color: #f97360;
   font-weight: 600;
@@ -7240,15 +7236,6 @@
 }
 .file-editor-line__content--strong {
   color: #f2c94c;
-}
-.theme-light .file-editor-line__content--heading {
-  color: #b42318;
-}
-.theme-light .file-editor-line__content--code {
-  color: #16794f;
-}
-.theme-light .file-editor-line__content--strong {
-  color: #946200;
 }
 .file-panel__statusbar {
   display: flex;
