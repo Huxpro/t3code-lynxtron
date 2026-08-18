@@ -227,6 +227,8 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('className="file-panel__editor-surface"');
     expect(files).toContain('className="file-panel__explorer"');
     expect(files).toContain("<FilesPanel selectedPath={path} />");
+    expect(files).toContain('data-file-editor-mode="preview"');
+    expect(files).toContain('data-file-editor-mode="editing"');
     expect(files).not.toContain('aria-label="Back to workspace files"');
     expect(files).not.toContain('className="files-panel__preview"');
     expect(files).not.toContain('className="files-panel__info"');
@@ -252,6 +254,8 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain(
       "x-textarea.files-panel__editor, textarea.files-panel__editor",
     );
+    expect(browserPreviewSource).toContain('".file-editor-line{" +');
+    expect(browserPreviewSource).toContain('".file-editor-line__content{" +');
     expect(overrides).toContain("height: 40px;");
     expect(overrides).toContain(".files-panel__search--focused {");
     expect(overrides).not.toContain(".files-panel__search:focus-within {");
@@ -262,6 +266,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("font-size: 12px;");
     expect(overrides).toContain(".file-panel__explorer {");
     expect(overrides).toContain("width: 256px;");
+    expect(overrides).toContain(".file-editor-line__number {");
+    expect(overrides).toContain(".file-editor-line__content--heading {");
     expect(overrides).toContain(".file-panel__statusbar {");
     expect(overrides).toContain("border-radius: 0;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");

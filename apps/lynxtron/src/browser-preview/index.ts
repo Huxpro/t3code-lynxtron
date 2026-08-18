@@ -483,6 +483,15 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "display:flex;flex:none;flex-direction:column;width:256px;min-width:256px;height:100%;min-height:0;}" +
       ".file-panel__editor-surface{" +
       "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:0;min-height:0;}" +
+      ".file-editor-preview{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:0;min-height:0;}" +
+      ".file-editor-preview__content{" +
+      "display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
+      ".file-editor-line{" +
+      "display:flex;flex:none;flex-direction:row;width:100%;min-height:19px;box-sizing:border-box;}" +
+      ".file-editor-line__number{display:block;flex:none;width:34px;box-sizing:border-box;}" +
+      ".file-editor-line__content{" +
+      "display:block;flex:1 1 0%;width:auto!important;min-width:0;box-sizing:border-box;}" +
       ".files-panel__editor{" +
       "display:block;flex:1 1 0%;width:100%;height:0;min-height:0;box-sizing:border-box;}" +
       ".file-panel__statusbar{display:flex;flex:none;width:100%;min-height:28px;box-sizing:border-box;}" +

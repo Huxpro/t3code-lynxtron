@@ -683,6 +683,7 @@ function readFileEditorMetrics(root) {
     webBreadcrumbs?.closest("[data-surface-subheader]");
   const editor =
     lynxSurface?.querySelector(".files-panel__editor") ??
+    lynxSurface?.querySelector(".file-editor-preview") ??
     root?.querySelector(".file-preview-virtualizer");
   const editorInner =
     editor?.shadowRoot?.querySelector("textarea") ??
