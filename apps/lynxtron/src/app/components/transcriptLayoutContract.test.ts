@@ -72,6 +72,9 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain("height: 535px;");
     expect(overrides).toContain("width: 148px;");
     expect(overrides).toContain(".composer-compact-controls-menu__section-label--divided {");
+    expect(overrides).toContain(".theme-light .composer-compact-controls-menu {");
+    expect(overrides).toContain("background-color: rgba(255, 255, 255, 0.836);");
+    expect(overrides).toContain("box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);");
     expect(composerSource).toContain("!compactFooter && !questionMode");
   });
 
