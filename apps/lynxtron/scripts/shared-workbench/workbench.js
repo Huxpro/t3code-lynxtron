@@ -287,6 +287,52 @@ function readSettingsRows(root, ids) {
   });
 }
 
+function readSettingsNavigationChrome(root) {
+  const back =
+    root?.querySelector(".settings-nav__back") ??
+    [...(root?.querySelectorAll("button") ?? [])].find(
+      (element) =>
+        readComposedText(element) === "Back" && element.closest("[data-app-sidebar]") !== null,
+    ) ??
+    null;
+  return {
+    footer: readElementBox(root?.querySelector(".settings-nav__footer") ?? back?.parentElement),
+    back: readElementBox(back),
+  };
+}
+
+function readSettingsNavigationItems(root) {
+  const lynxItems = [...(root?.querySelectorAll(".settings-nav__item") ?? [])];
+  const webItems =
+    lynxItems.length > 0
+      ? []
+      : [...(root?.querySelectorAll("[data-app-sidebar] button") ?? [])].filter((element) =>
+          SETTINGS_NAV_LABELS.includes(readComposedText(element)),
+        );
+  return (lynxItems.length > 0 ? lynxItems : webItems).map((item) => {
+    const label =
+      item.querySelector(".settings-nav__item-label")?.textContent?.trim() ??
+      readComposedText(item);
+    const box = readElementBox(item);
+    const backgroundColor = box?.style?.backgroundColor ?? "";
+    const active =
+      item.getAttribute("data-active") === "true" ||
+      item.classList.contains("settings-nav__item--active");
+    return {
+      label,
+      active,
+      visuallySelected:
+        active ||
+        (backgroundColor !== "" &&
+          backgroundColor !== "transparent" &&
+          backgroundColor !== "rgba(0, 0, 0, 0)" &&
+          backgroundColor !== "rgba(0,0,0,0)"),
+      className: item.getAttribute("class") ?? "",
+      box,
+    };
+  });
+}
+
 function readKeybindingsMetrics(root) {
   const header = root?.querySelector("[data-keybindings-table-header]") ?? null;
   const rows = [
@@ -1166,6 +1212,8 @@ function readLynxPane() {
           header: readElementBox(root?.querySelector(".lynx-sidebar-chrome-header")),
           brand: readElementBox(root?.querySelector(".sidebar-brand")),
           footer: readElementBox(root?.querySelector("[data-sidebar='footer']")),
+          settingsFooter: readSettingsNavigationChrome(root).footer,
+          settingsBack: readSettingsNavigationChrome(root).back,
           settingsRow: readElementBox(root?.querySelector(".sidebar-settings-row")),
           settingsAuthority: readElementBox(root?.querySelector(".sidebar-settings-authority")),
           search: readElementBox(root?.querySelector('[aria-label="Search threads"]')),
@@ -1492,6 +1540,7 @@ function readLynxPane() {
               navigationLabels: [
                 ...(root?.querySelectorAll(".settings-nav__item-label") ?? []),
               ].map((item) => item.textContent?.trim()),
+              navigationItems: readSettingsNavigationItems(root),
               rowIds: settingsRowIds.filter((id) => root?.getElementById(id)),
               rows: readSettingsRows(root, settingsRowIds),
               keybindings:
@@ -2239,6 +2288,8 @@ function readWebPane() {
           header: readElementBox(doc.querySelector(".lynx-sidebar-chrome-header")),
           brand: readElementBox(doc.querySelector(".sidebar-brand")),
           footer: readElementBox(doc.querySelector("[data-sidebar='footer']")),
+          settingsFooter: readSettingsNavigationChrome(doc).footer,
+          settingsBack: readSettingsNavigationChrome(doc).back,
           settingsRow: readElementBox(doc.querySelector(".sidebar-settings-row")),
           settingsAuthority: readElementBox(doc.querySelector(".sidebar-settings-authority")),
           search: readElementBox(doc.querySelector('[aria-label="Search threads"]')),
@@ -2326,6 +2377,7 @@ function readWebPane() {
               ]
                 .map((item) => item.textContent?.trim())
                 .filter((label) => SETTINGS_NAV_LABELS.includes(label)),
+              navigationItems: readSettingsNavigationItems(doc),
               rowIds: settingsRowIds.filter((id) => doc.getElementById(id)),
               rows: readSettingsRows(doc, settingsRowIds),
               keybindings:

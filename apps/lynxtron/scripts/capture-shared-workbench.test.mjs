@@ -79,6 +79,9 @@ describe("shared workbench lifecycle fault capture", () => {
   it("rejects the dark authority footer in light theme", () => {
     assert.include(source, "function sidebarFooterThemeMatches(state)");
     assert.include(source, 'if (theme !== "light") return true;');
+    assert.include(source, 'if (semanticRoute.startsWith("settings-"))');
+    assert.include(source, "chrome?.settingsFooter?.rect?.height > 0");
+    assert.include(source, "chrome?.settingsBack?.rect?.height > 0");
     assert.include(source, "finalSidebarFooterThemeReady");
     assert.include(source, "sidebarFooterTheme:");
   });
@@ -230,6 +233,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, ":scope > .settings-section");
     assert.include(workbench, "sectionTexts:");
     assert.include(source, "settingsMetrics?.sectionTexts");
+    assert.include(workbench, "function readSettingsNavigationChrome");
+    assert.include(workbench, "function readSettingsNavigationItems");
+    assert.include(workbench, "visuallySelected:");
+    assert.include(workbench, "settingsFooter: readSettingsNavigationChrome");
+    assert.include(workbench, "settingsBack: readSettingsNavigationChrome");
     assert.include(workbench, 'navigation: readElementBox(root?.querySelector(".settings-nav"))');
     assert.include(workbench, 'navigation: readElementBox(doc.querySelector(".settings-nav"))');
     assert.include(source, "function archiveSettingsGeometryMatches");
@@ -243,6 +251,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'lynxMetrics?.rowIds?.includes("remote-environments")');
     assert.include(source, "rect.y >= previous.y + previous.height");
     assert.include(source, "function betaSettingsGeometryMatches");
+    assert.include(source, "function settingsNavigationStateMatches(state)");
+    assert.include(source, "visuallySelectedItems.length === 1");
+    assert.include(source, "finalSettingsNavigationReady");
     assert.include(source, '"model-picker-empty": "model-picker"');
     assert.include(source, '"model-picker-selected": "model-picker"');
     assert.include(source, '"model-picker-empty": "__t3_no_models__"');

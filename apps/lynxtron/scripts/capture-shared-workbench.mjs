@@ -392,6 +392,35 @@ function betaSettingsGeometryMatches(webMetrics, lynxMetrics) {
   );
 }
 
+function settingsNavigationStateMatches(state) {
+  if (!semanticRoute.startsWith("settings-")) return true;
+  const expectedLabel =
+    semanticRoute === "settings-source-control-loading" ||
+    semanticRoute === "settings-source-control-error"
+      ? "Source Control"
+      : {
+          "settings-general": "General",
+          "settings-appearance": "Appearance",
+          "settings-keybindings": "Keybindings",
+          "settings-connections": "Connections",
+          "settings-source-control": "Source Control",
+          "settings-beta": "Beta",
+          "settings-archive": "Archive",
+        }[semanticRoute];
+  if (!expectedLabel) return true;
+  return [state?.web, state?.lynx].every((client) => {
+    const items = client?.settingsMetrics?.navigationItems ?? [];
+    const activeItems = items.filter((item) => item.active);
+    const visuallySelectedItems = items.filter((item) => item.visuallySelected);
+    return (
+      activeItems.length === 1 &&
+      activeItems[0]?.label === expectedLabel &&
+      visuallySelectedItems.length === 1 &&
+      visuallySelectedItems[0]?.label === expectedLabel
+    );
+  });
+}
+
 function generalSettingsContentMatches(webMetrics, lynxMetrics) {
   if (stateId !== "settings-general") return true;
   const webRowIds = webMetrics?.rowIds ?? [];
@@ -806,6 +835,15 @@ function sidebarFooterThemeMatches(state) {
       color === "rgba(0, 0, 0, 1)" ||
       color === "#000" ||
       color === "#000000");
+  if (semanticRoute.startsWith("settings-")) {
+    return [web, lynx].every(
+      (chrome) =>
+        chrome?.settingsFooter?.rect?.height > 0 &&
+        chrome?.settingsBack?.rect?.height > 0 &&
+        !isNearBlack(chrome.settingsFooter.style?.backgroundColor) &&
+        chrome.settingsBack.style?.opacity === "1",
+    );
+  }
   return (
     web?.footer?.rect?.height > 0 &&
     lynx?.footer?.rect?.height > 0 &&
@@ -3649,8 +3687,11 @@ async function captureCell({
           state?.web?.settingsMetrics,
           state?.lynx?.settingsMetrics,
         ));
+    const settingsNavigationReady = settingsNavigationStateMatches(state);
     settingsAsyncReadyPolls =
-      settingsAsyncReady && settingsGeometryReady ? settingsAsyncReadyPolls + 1 : 0;
+      settingsAsyncReady && settingsGeometryReady && settingsNavigationReady
+        ? settingsAsyncReadyPolls + 1
+        : 0;
     const webTimelineRows = state?.web?.timelineMetrics?.rows ?? [];
     const lynxTimelineRows = state?.lynx?.timelineMetrics?.rows ?? [];
     const transcriptReady =
@@ -4045,6 +4086,7 @@ async function captureCell({
         state?.web?.settingsMetrics,
         state?.lynx?.settingsMetrics,
       ));
+  const finalSettingsNavigationReady = settingsNavigationStateMatches(state);
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
     state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&
@@ -4581,6 +4623,7 @@ async function captureCell({
     finalReviewReady &&
     finalSettingsAsyncReady &&
     finalSettingsGeometryReady &&
+    finalSettingsNavigationReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
     settingsContentMatch !== false &&
@@ -4614,6 +4657,7 @@ async function captureCell({
       finalReviewReady,
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
+      finalSettingsNavigationReady,
       finalTranscriptReady,
       finalPendingRequestReady,
       settingsContentMatch,
