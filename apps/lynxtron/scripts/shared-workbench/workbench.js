@@ -77,6 +77,14 @@ function readElementBox(element) {
   if (!element) return null;
   const rect = element.getBoundingClientRect();
   const style = getComputedStyle(element);
+  if (
+    style.display === "none" ||
+    style.visibility === "hidden" ||
+    rect.width <= 0 ||
+    rect.height <= 0
+  ) {
+    return null;
+  }
   return {
     tagName: element.tagName.toLowerCase(),
     lynxComputedDisplay: element.getAttribute("lynx-computed-display"),

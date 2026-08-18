@@ -49,7 +49,8 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain("compactFooter && !questionMode");
     expect(composerSource).toContain("shouldUseCompactComposerFooter(availableWidth");
     expect(composerSource).toContain("separators={!compactFooter}");
-    expect(composerSource).toContain("Math.min(537, Math.max(220, viewport.height - 160))");
+    expect(composerSource).toContain("const compactControlsContentHeight =");
+    expect(composerSource).toContain("Math.max(160, viewport.height - 140)");
     expect(composerSource).toContain("compactControlsMenuHeight - 2");
     expect(composerSource).toContain("__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__");
     expect(composerSource).toContain(
@@ -69,8 +70,9 @@ describe("transcript layout contract", () => {
       composerSource.indexOf("Mode\n                                      </view>"),
     ).toBeLessThan(composerSource.indexOf("Access\n                                  </view>"));
     expect(overrides).toContain(".composer-compact-controls-menu__scroll {");
-    expect(overrides).toContain("height: 535px;");
-    expect(overrides).toContain("width: 148px;");
+    expect(overrides).toContain("max-height: calc(100vh - 142px);");
+    expect(overrides).toContain("width: 184px;");
+    expect(overrides).toContain("left: -8px;");
     expect(overrides).toContain(".composer-compact-controls-menu__section-label--divided {");
     expect(overrides).toContain(".theme-light .composer-compact-controls-menu {");
     expect(overrides).toContain("background-color: rgba(255, 255, 255, 0.836);");

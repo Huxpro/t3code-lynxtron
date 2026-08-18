@@ -1417,6 +1417,10 @@ async function readOptionalMeasurement(client, selector) {
   }
 }
 
+function measurementVisible(measurement) {
+  return (measurement?.rect.width ?? 0) > 0 && (measurement?.rect.height ?? 0) > 0;
+}
+
 async function waitForMeasurement({ child, client, predicate, selector, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
@@ -4551,7 +4555,14 @@ async function verifyShellInteractions({ child, client, timeoutMs }) {
   };
 }
 
-async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, timeoutMs }) {
+async function verifyFilesBrowser({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+  verifyFileSheetBack,
+}) {
   if ((await readOptionalMeasurement(client, ".right-panel")) !== null) {
     await tapSelector({
       child,
@@ -4714,7 +4725,7 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
   const filePath = await waitForMeasurement({
     child,
     client,
-    selector: ".file-panel__path",
+    selector: ".file-panel__breadcrumb--current",
     timeoutMs,
     predicate: (measurement) => measurement?.text.trim().length > 0,
   });
@@ -4722,7 +4733,7 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
     readOptionalMeasurement(client, ".files-panel"),
     readOptionalMeasurement(client, ".files-panel__preview"),
   ]);
-  if (remainingTree || legacyInlinePreview) {
+  if (measurementVisible(remainingTree) || measurementVisible(legacyInlinePreview)) {
     throw new Error(
       `Native Files selection did not replace the tree with a file surface: ${JSON.stringify({
         filePanel,
@@ -4738,6 +4749,54 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
     outputDirectory,
     name: "native-file-surface.png",
   });
+  let fileSheetBack;
+  if (verifyFileSheetBack) {
+    const [back, explorer] = await Promise.all([
+      waitForMeasurement({
+        child,
+        client,
+        selector: ".file-panel__back",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["aria-label"] === "Back to workspace files" &&
+          Math.abs((measurement?.rect.width ?? 0) - 28) <= 0.5 &&
+          Math.abs((measurement?.rect.height ?? 0) - 28) <= 0.5,
+      }),
+      readOptionalMeasurement(client, ".file-panel__explorer"),
+    ]);
+    if (measurementVisible(explorer)) {
+      throw new Error(
+        `Native file sheet kept the desktop explorer visible: ${JSON.stringify(explorer)}`,
+      );
+    }
+    await tapSelector({
+      child,
+      client,
+      selector: ".file-panel__back",
+      timeoutMs,
+    });
+    const returnedPanel = await waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["data-right-panel-active-kind"] === "files",
+    });
+    const returnedBrowser = await waitForMeasurement({
+      child,
+      client,
+      selector: ".files-panel__browser",
+      timeoutMs,
+      predicate: (measurement) => (measurement?.rect.height ?? 0) > 0,
+    });
+    fileSheetBack = {
+      back: back.rect,
+      explorerHidden: true,
+      returnedPanel: returnedPanel.rect,
+      returnedBrowser: returnedBrowser.rect,
+    };
+  }
 
   return {
     status: "pass",
@@ -4764,9 +4823,10 @@ async function verifyFilesBrowser({ child, client, devToolCli, outputDirectory, 
       selectedRow: fileRow,
       panel: filePanel.rect,
       path: filePath.text.trim(),
-      treeReplaced: remainingTree === null,
-      legacyInlinePreview: legacyInlinePreview === null,
+      treeReplaced: !measurementVisible(remainingTree),
+      legacyInlinePreview: !measurementVisible(legacyInlinePreview),
     },
+    fileSheetBack,
     screenshots: {
       tree: treeScreenshot,
       file: fileScreenshot,
@@ -6989,6 +7049,7 @@ async function runOnce({
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
   verifyFilesBrowser: shouldVerifyFilesBrowser,
+  verifyFileSheetBack,
   verifyGitInitialize: shouldVerifyGitInitialize,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyBetaMutation: shouldVerifyBetaMutation,
@@ -7414,6 +7475,7 @@ async function runOnce({
           devToolCli,
           outputDirectory,
           timeoutMs,
+          verifyFileSheetBack,
         })
       : undefined;
     const gitInitialize = shouldVerifyGitInitialize
@@ -7691,6 +7753,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
+const shouldVerifyFileSheetBack = process.argv.includes("--verify-file-sheet-back");
 const shouldVerifyGitInitialize = process.argv.includes("--verify-git-initialize");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
@@ -7739,6 +7802,9 @@ if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutat
   throw new Error(
     "--verify-model-selection-socket-recovery requires --verify-model-selection-mutation.",
   );
+}
+if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
+  throw new Error("--verify-file-sheet-back requires --verify-files-browser.");
 }
 if (shouldVerifyModelSelectionRunningSession && !shouldVerifyModelSelectionMutation) {
   throw new Error(
@@ -7924,7 +7990,8 @@ for (let index = 1; index <= runs; index += 1) {
         !heroOnlyEmptyFixture &&
         !sourceControlLoadingOnlyEmptyFixture &&
         !sourceControlErrorOnlyEmptyFixture &&
-        !gitInitializeOnlyEmptyFixture,
+        !gitInitializeOnlyEmptyFixture &&
+        !shouldVerifyFileSheetBack,
       timeoutMs,
       verifySettingsNavigation,
       verifySourceControlLoading: shouldVerifySourceControlLoading,
@@ -7962,6 +8029,7 @@ for (let index = 1; index <= runs; index += 1) {
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
       verifyFilesBrowser: shouldVerifyFilesBrowser,
+      verifyFileSheetBack: shouldVerifyFileSheetBack,
       verifyGitInitialize: shouldVerifyGitInitialize,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyBetaMutation: shouldVerifyBetaMutation,

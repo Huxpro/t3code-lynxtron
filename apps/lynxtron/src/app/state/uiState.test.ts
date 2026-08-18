@@ -126,6 +126,24 @@ describe("applyRightPanelAction", () => {
     });
   });
 
+  it("returns from a file detail to the Files browser without hiding the panel", () => {
+    const withFile = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
+      type: "open",
+      surface: file,
+    });
+
+    expect(
+      applyRightPanelAction(withFile, {
+        type: "return-files",
+        surface: files,
+      }),
+    ).toEqual({
+      isOpen: true,
+      activeSurfaceId: files.id,
+      surfaces: [files],
+    });
+  });
+
   it("reopens a hidden panel without duplicating its existing surface", () => {
     const opened = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
       type: "open",

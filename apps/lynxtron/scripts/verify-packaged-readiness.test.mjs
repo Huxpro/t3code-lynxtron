@@ -326,12 +326,22 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'rowFontSize !== "12px"');
     assert.include(source, 'selector: ".files-panel .file-tree-row--file"');
     assert.include(source, 'measurement?.attributes["data-right-panel-active-kind"] === "file"');
-    assert.include(source, 'selector: ".file-panel__path"');
+    assert.include(source, 'selector: ".file-panel__breadcrumb--current"');
     assert.include(source, 'readOptionalMeasurement(client, ".files-panel__preview")');
     assert.include(source, "Native Files selection did not replace the tree with a file surface");
+    assert.include(source, "function measurementVisible(measurement)");
+    assert.include(source, "measurementVisible(remainingTree)");
+    assert.include(source, "measurementVisible(explorer)");
     assert.include(source, 'typing: "pending-user-session"');
     assert.include(source, 'name: "native-files-browser.png"');
     assert.include(source, 'name: "native-file-surface.png"');
+    assert.include(source, '"--verify-file-sheet-back"');
+    assert.include(source, 'selector: ".file-panel__back"');
+    assert.include(source, 'measurement?.attributes["aria-label"] === "Back to workspace files"');
+    assert.include(source, "Native file sheet kept the desktop explorer visible");
+    assert.include(source, "!shouldVerifyFileSheetBack,");
+    assert.include(source, 'measurement?.attributes["data-right-panel-active-kind"] === "files"');
+    assert.include(source, "fileSheetBack");
     assert.include(outcomeChecksSource, "filesBrowser");
   });
 

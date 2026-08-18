@@ -231,7 +231,8 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("<FilesPanel selectedPath={path} />");
     expect(files).toContain('data-file-editor-mode="preview"');
     expect(files).toContain('data-file-editor-mode="editing"');
-    expect(files).not.toContain('aria-label="Back to workspace files"');
+    expect(files).toContain('aria-label="Back to workspace files"');
+    expect(files).toContain("bindtap={uiActions.returnToFilesSurface}");
     expect(files).not.toContain('className="files-panel__preview"');
     expect(files).not.toContain('className="files-panel__info"');
     expect(overrides).toContain(".files-panel__toolbar {");
@@ -262,6 +263,10 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain(
       '".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +',
     );
+    expect(browserPreviewSource).toContain('".composer-context-strip{" +');
+    expect(browserPreviewSource).not.toContain(
+      ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-stack",
+    );
     expect(overrides).toContain("height: 40px;");
     expect(overrides).toContain(".files-panel__search--focused {");
     expect(overrides).not.toContain(".files-panel__search:focus-within {");
@@ -272,13 +277,28 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("font-size: 12px;");
     expect(overrides).toContain(".file-panel__explorer {");
     expect(overrides).toContain("width: 256px;");
+    expect(overrides).toContain(".right-panel--sheet .file-panel__explorer {");
+    expect(overrides).toContain(".right-panel--sheet .file-panel__back {");
+    expect(overrides).toContain(".file-panel__back {");
     expect(overrides).toContain(".file-editor-line__number {");
     expect(overrides).toContain(".file-editor-line__content--heading {");
+    expect(overrides).toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
     expect(overrides).toContain(".file-panel__statusbar {");
     expect(overrides).toContain("border-radius: 0;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");
     expect(panel).toContain('case "file":');
     expect(panel).toContain("<FilePanel path={surface.path} />");
+  });
+
+  it("restores the Settings rail allocation in Lynx-for-Web", () => {
+    expect(browserPreviewSource).toContain(
+      '".settings-root{display:flex;flex:1 1 0%;flex-direction:row;width:100%;height:100%;min-width:0;}"',
+    );
+    expect(browserPreviewSource).toContain('".settings-nav{" +');
+    expect(browserPreviewSource).toContain(
+      '".settings-nav__items{display:flex;flex:1 1 0%;flex-direction:column;width:100%;}"',
+    );
+    expect(browserPreviewSource).toContain('".settings-main{" +');
   });
 
   it("projects and opens the real repository Publish flow", () => {

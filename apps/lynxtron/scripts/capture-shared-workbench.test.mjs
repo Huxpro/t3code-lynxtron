@@ -157,6 +157,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelector(".file-preview-virtualizer")');
     assert.include(workbench, 'lynxSurface?.querySelector(".file-panel__explorer")');
     assert.include(workbench, 'lynxSurface?.querySelector(".file-editor-preview")');
+    assert.include(workbench, 'style.display === "none"');
+    assert.include(workbench, "rect.width <= 0");
     assert.include(workbench, "editorValueLength:");
   });
 
