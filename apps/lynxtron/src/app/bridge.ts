@@ -33,6 +33,7 @@ import type {
   ProviderUserInputAnswers,
   TurnId,
   ProviderInteractionMode,
+  ProviderDriverKind,
   ProviderInstanceId,
   ProjectListEntriesInput,
   ProjectListEntriesResult,
@@ -157,6 +158,11 @@ export interface T3ConnectorCommandBridge {
     threadId: string;
     interactionMode: ProviderInteractionMode;
   }): Promise<void>;
+  refreshProviders(input?: { instanceId?: ProviderInstanceId }): Promise<ServerConfig>;
+  updateProvider(input: {
+    provider: ProviderDriverKind;
+    instanceId?: ProviderInstanceId;
+  }): Promise<ServerConfig>;
   setProviderEnabled(input: {
     instanceId: ProviderInstanceId;
     enabled: boolean;

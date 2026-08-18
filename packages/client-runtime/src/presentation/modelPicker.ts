@@ -124,33 +124,38 @@ function resolveModelForEntry(
  *
  * Candidate order is significant: initial hydration can prefer a saved local
  * selection, while later config updates can prefer the active selection. A
- * valid candidate keeps its instance and falls back to that instance's own
- * default when the requested model disappeared. Invalid instances never leak
- * their model slug into the deterministic ready/non-error provider fallback.
+ * candidate whose instance still exists keeps that instance even while it is
+ * disabled or unavailable, allowing clients to present the real provider
+ * status instead of silently switching providers. If only its model
+ * disappeared, the projection uses that instance's own default. Only a
+ * missing instance falls through to the deterministic ready/non-error
+ * provider fallback, and its stale model slug never leaks into that fallback.
  */
 export function deriveProviderModelSelectionProjection(
   input: ProviderModelCatalogInput,
   selectionCandidates: ReadonlyArray<ModelSelection | null | undefined> = [],
 ): ProviderModelSelectionProjection {
   const catalog = deriveProviderModelCatalog(input);
+  const displayModels = deriveModelPickerModels(catalog.entries, { includeDisabled: true });
 
   for (const candidate of selectionCandidates) {
     if (!candidate) continue;
-    const entry = resolveSelectableProviderInstanceEntry(catalog.entries, candidate.instanceId);
-    if (entry?.instanceId !== candidate.instanceId) continue;
-    const selectedModel = resolveModelForEntry(catalog.models, entry, candidate.model);
-    if (!selectedModel) continue;
+    const entry = catalog.entries.find((item) => item.instanceId === candidate.instanceId);
+    if (!entry) continue;
+    const selectedModel = resolveModelForEntry(displayModels, entry, candidate.model);
     return {
       ...catalog,
       selectedEntry: entry,
       selectedModel,
-      selection: {
-        instanceId: selectedModel.instanceId,
-        model: selectedModel.slug,
-        ...(candidate.model === selectedModel.slug && candidate.options
-          ? { options: candidate.options }
-          : {}),
-      },
+      selection: selectedModel
+        ? {
+            instanceId: selectedModel.instanceId,
+            model: selectedModel.slug,
+            ...(candidate.model === selectedModel.slug && candidate.options
+              ? { options: candidate.options }
+              : {}),
+          }
+        : candidate,
     };
   }
 
@@ -189,15 +194,9 @@ export function describeUnavailableProviderInstance(entry: ProviderInstanceEntry
     return null;
   }
   const kind =
-    entry.status === "error"
-      ? "Unavailable"
-      : entry.status === "warning"
-        ? "Limited"
-        : "Not ready";
+    entry.status === "error" ? "Unavailable" : entry.status === "warning" ? "Limited" : "Not ready";
   const message = entry.snapshot.message?.trim();
-  return message
-    ? `${entry.displayName} — ${kind}. ${message}`
-    : `${entry.displayName} — ${kind}.`;
+  return message ? `${entry.displayName} — ${kind}. ${message}` : `${entry.displayName} — ${kind}.`;
 }
 
 export function providerInstanceLockedReason(
@@ -210,8 +209,7 @@ export function providerInstanceLockedReason(
   if (lock.driverKind === null) return null;
   if (
     entry.driverKind === lock.driverKind &&
-    (!lock.continuationGroupKey ||
-      entry.continuationGroupKey === lock.continuationGroupKey)
+    (!lock.continuationGroupKey || entry.continuationGroupKey === lock.continuationGroupKey)
   ) {
     return null;
   }

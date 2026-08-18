@@ -37,3 +37,9 @@ export function isTransportConnectionErrorMessage(message: string | null | undef
 export function sanitizeThreadErrorMessage(message: string | null | undefined): string | null {
   return isTransportConnectionErrorMessage(message) ? null : (message ?? null);
 }
+
+export function presentThreadCommandErrorMessage(message: string | null | undefined): string {
+  return (
+    sanitizeThreadErrorMessage(message) ?? "Connection was interrupted. Reconnect and try again."
+  );
+}

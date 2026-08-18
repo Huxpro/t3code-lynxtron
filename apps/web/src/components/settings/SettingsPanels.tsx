@@ -74,7 +74,10 @@ import {
   deriveProviderInstanceEntries,
   sortProviderInstanceEntries,
 } from "@t3tools/client-runtime/presentation/provider";
-import { buildProviderInstanceUpdatePatch } from "@t3tools/client-runtime/presentation/provider-settings";
+import {
+  buildProviderInstanceDeletePatch,
+  buildProviderInstanceUpdatePatch,
+} from "@t3tools/client-runtime/presentation/provider-settings";
 import { readLocalApi } from "../../localApi";
 import {
   primaryServerObservabilityAtom,
@@ -586,7 +589,7 @@ export function ProviderSettingsPanel() {
 
   const deleteProviderInstance = (id: ProviderInstanceId) => {
     updateSettings({
-      providerInstances: withoutProviderInstanceKey(settings.providerInstances, id),
+      ...buildProviderInstanceDeletePatch({ settings, instanceId: id }),
       providerModelPreferences: withoutProviderInstanceKey(settings.providerModelPreferences, id),
       favorites: withoutProviderInstanceFavorites(settings.favorites ?? [], id),
     });

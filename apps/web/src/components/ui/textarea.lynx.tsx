@@ -19,6 +19,7 @@ export interface TextareaProps {
 }
 
 export function Textarea({
+  "aria-label": ariaLabel,
   className,
   disabled = false,
   onBlur,
@@ -37,6 +38,8 @@ export function Textarea({
 
   return (
     <textarea
+      aria-label={ariaLabel}
+      aria-disabled={disabled ? "true" : undefined}
       className={[
         unstyled ? "ui-textarea ui-textarea--unstyled" : "ui-textarea",
         `ui-textarea--${String(size)}`,

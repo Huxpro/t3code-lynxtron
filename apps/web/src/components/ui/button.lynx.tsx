@@ -47,6 +47,7 @@ export function buttonVariants({
 }
 
 export function Button({
+  "aria-label": ariaLabel,
   children,
   className,
   disabled = false,
@@ -66,7 +67,12 @@ export function Button({
   const approvalLabel = resolveApprovalLabelAsset(className);
 
   return (
-    <view className={resolvedClassName} bindtap={handleTap}>
+    <view
+      aria-label={ariaLabel}
+      aria-disabled={disabled ? "true" : undefined}
+      className={resolvedClassName}
+      bindtap={handleTap}
+    >
       <text
         className={`ui-button__label${approvalLabel ? " ui-button__label--authority-hidden" : ""}`}
         text-maxline="1"
@@ -95,9 +101,7 @@ export function Button({
 
 function resolveApprovalLabelAsset(
   className: string | undefined,
-):
-  | { readonly edgeSrc?: string; readonly src: string; readonly width: number }
-  | undefined {
+): { readonly edgeSrc?: string; readonly src: string; readonly width: number } | undefined {
   if (className?.includes("composer-approval-action--cancel")) {
     return { src: approvalCancelLabelUrl, width: 97 };
   }

@@ -127,6 +127,10 @@
       "types": "./src/presentation/providerSettings.ts",
       "default": "./src/presentation/providerSettings.ts"
     },
+    "./presentation/provider-settings-fields": {
+      "types": "./src/presentation/providerSettingsFields.ts",
+      "default": "./src/presentation/providerSettingsFields.ts"
+    },
     "./presentation/proposed-plan": {
       "types": "./src/presentation/proposedPlan.ts",
       "default": "./src/presentation/proposedPlan.ts"

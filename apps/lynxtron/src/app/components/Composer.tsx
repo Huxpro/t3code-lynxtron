@@ -67,7 +67,7 @@ interface ComposerProps {
   questionActions?: ReactNode;
   questionCustomAnswer?: string;
   onQuestionCustomAnswerChange?: (value: string) => void;
-  onSend: (text: string) => void;
+  onSend: (text: string) => Promise<boolean>;
   onStop: () => void;
   onModelTap?: () => void;
   modelPicker?: ReactNode;
@@ -224,7 +224,7 @@ export function Composer({
     [onQuestionCustomAnswerChange, questionMode],
   );
 
-  const handleSend = useCallback(() => {
+  const handleSend = useCallback(async () => {
     const current = primaryActionRef.current;
     const diagnosticsGlobal = globalThis as {
       __T3_LYNXTRON_COMPOSER_PRIMARY_ACTION__?: {
@@ -246,8 +246,9 @@ export function Composer({
     if (current.disabled) return;
     const text = current.trimmedPrompt;
     if (!text) return;
-    current.onSend(text);
-    setValue("");
+    if (await current.onSend(text)) {
+      setValue("");
+    }
   }, []);
 
   const editorValue = questionMode ? (questionCustomAnswer ?? "") : value;

@@ -28,6 +28,7 @@ import {
   type PendingUserInputDraftAnswer,
 } from "@t3tools/client-runtime/presentation/pending-user-input";
 import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
+import { projectProviderStatusNotice } from "@t3tools/client-runtime/presentation/provider";
 import {
   EMPTY_TRANSCRIPT_PLACEHOLDER,
   shouldShowEmptyTranscript,
@@ -47,6 +48,7 @@ import { MessagesTimeline } from "./MessagesTimeline";
 import { Composer } from "./Composer";
 import { ModelPicker } from "./ModelPicker";
 import { RightPanel } from "./RightPanel";
+import { SmallButton } from "./SettingsControls";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import {
   resolveConnectionScopedValue,
@@ -92,6 +94,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     models,
     providers,
     providerEntries,
+    providersRefreshPending,
     modelSelection,
     modelSelectionError,
     serverConfig,
@@ -183,6 +186,26 @@ export function ChatView({ threadId }: ChatViewProps) {
   const activeProviderEntry = providerEntries.find(
     (entry) => entry.instanceId === activeProviderInstanceId,
   );
+  const activeProviderStatus =
+    providers.find(
+      (provider) =>
+        provider.instanceId === (activeProviderInstanceId ?? presentedModelSelection?.instanceId),
+    ) ?? null;
+  const providerStatusNotice = projectProviderStatusNotice(activeProviderStatus);
+  const providerStatusNoticeKey = providerStatusNotice?.key ?? null;
+  const [dismissedProviderStatusNoticeKey, setDismissedProviderStatusNoticeKey] = useState<
+    string | null
+  >(null);
+  useEffect(() => {
+    if (
+      dismissedProviderStatusNoticeKey !== null &&
+      providerStatusNoticeKey !== dismissedProviderStatusNoticeKey
+    ) {
+      setDismissedProviderStatusNoticeKey(null);
+    }
+  }, [dismissedProviderStatusNoticeKey, providerStatusNoticeKey]);
+  const visibleProviderStatusNotice =
+    providerStatusNotice?.key === dismissedProviderStatusNoticeKey ? null : providerStatusNotice;
   const lockedProvider = activeThread?.session ? (activeProviderEntry?.driverKind ?? null) : null;
   const lockedContinuationGroupKey = activeThread?.session
     ? (activeProviderEntry?.continuationGroupKey ?? null)
@@ -367,9 +390,9 @@ export function ChatView({ threadId }: ChatViewProps) {
   );
 
   const handleSend = useCallback(
-    (text: string) => {
+    (text: string): Promise<boolean> => {
       if (workspaceMode === "worktree" && !workspaceModeLocked && activeProject && checkoutBranch) {
-        sendPrompt(text, {
+        return sendPrompt(text, {
           prepareWorktree: {
             projectCwd: activeProject.workspaceRoot,
             baseBranch: checkoutBranch,
@@ -377,12 +400,11 @@ export function ChatView({ threadId }: ChatViewProps) {
           },
           runSetupScript: true,
         });
-        return;
       }
       if (workspaceMode === "worktree" && !workspaceModeLocked && !checkoutBranch) {
-        return;
+        return Promise.resolve(false);
       }
-      sendPrompt(text);
+      return sendPrompt(text);
     },
     [
       activeProject,
@@ -468,6 +490,37 @@ export function ChatView({ threadId }: ChatViewProps) {
             description={sessionError ?? modelSelectionError}
             icon={<Icon name="circle-alert" size={16} color="#ef4444" />}
           />
+        ) : visibleProviderStatusNotice ? (
+          <ThreadErrorBannerSurface
+            description={`${visibleProviderStatusNotice.title}. ${visibleProviderStatusNotice.message}`}
+            icon={
+              <Icon
+                name="circle-alert"
+                size={16}
+                color={visibleProviderStatusNotice.tone === "warning" ? "#f59e0b" : "#ef4444"}
+              />
+            }
+            action={
+              <view className="provider-status-banner__actions">
+                <SmallButton
+                  label={providersRefreshPending ? "Refreshing…" : "Refresh"}
+                  onTap={
+                    providersRefreshPending
+                      ? undefined
+                      : () => {
+                          void t3ClientActions
+                            .refreshProviders(activeProviderStatus?.instanceId)
+                            .catch(() => undefined);
+                        }
+                  }
+                />
+                <SmallButton
+                  label="Dismiss"
+                  onTap={() => setDismissedProviderStatusNoticeKey(visibleProviderStatusNotice.key)}
+                />
+              </view>
+            }
+          />
         ) : shouldRenderConnectionLifecycleBanner({ hero }) ? (
           <ConnectionLifecycleBannerSurface
             presentation={connectionLifecycle}
@@ -502,7 +555,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           messages={messages}
           activities={activities}
           sessionStatus={sessionStatus}
-          hasTopBanner={Boolean(sessionError || modelSelectionError)}
+          hasTopBanner={Boolean(sessionError || modelSelectionError || visibleProviderStatusNotice)}
           cwd={cwd}
           latestTurn={latestTurn}
           proposedPlans={proposedPlans}

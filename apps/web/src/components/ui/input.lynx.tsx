@@ -24,6 +24,7 @@ export interface InputProps {
 }
 
 export function Input({
+  "aria-label": ariaLabel,
   className,
   disabled = false,
   onBlur,
@@ -53,6 +54,8 @@ export function Input({
 
   return (
     <input
+      aria-label={ariaLabel}
+      aria-disabled={disabled ? "true" : undefined}
       className={resolvedClassName}
       {...({ value } as object)}
       placeholder={placeholder}

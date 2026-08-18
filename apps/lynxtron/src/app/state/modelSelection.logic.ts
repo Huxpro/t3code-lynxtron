@@ -18,7 +18,7 @@ export function projectModelSelectionCandidates({
   readonly currentSelection: ModelSelection | undefined;
   readonly projects: ReadonlyArray<ProjectModelSelectionSource>;
 }): ReadonlyArray<ModelSelection | null | undefined> {
-  return [projects[0]?.defaultModelSelection, currentSelection];
+  return [currentSelection, projects[0]?.defaultModelSelection];
 }
 
 export function availableThreadModels(options: {

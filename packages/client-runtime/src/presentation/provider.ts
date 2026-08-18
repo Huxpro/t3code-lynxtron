@@ -435,6 +435,39 @@ export function getProviderSummary(provider: ServerProvider | undefined): {
   };
 }
 
+export interface ProviderStatusNotice {
+  readonly key: string;
+  readonly title: string;
+  readonly message: string;
+  readonly tone: "warning" | "error";
+}
+
+export function projectProviderStatusNotice(
+  provider: ServerProvider | null | undefined,
+): ProviderStatusNotice | null {
+  if (!provider || provider.status === "ready" || provider.status === "disabled") {
+    return null;
+  }
+  const providerName =
+    provider.displayName?.trim() || formatProviderDriverKindLabel(provider.driver);
+  const unauthenticated = provider.status === "error" && provider.auth.status === "unauthenticated";
+  return {
+    key: [provider.instanceId, provider.status, provider.auth.status, provider.message ?? ""].join(
+      "\u0000",
+    ),
+    title: unauthenticated
+      ? `${providerName} is unauthenticated`
+      : `${providerName} provider status`,
+    message: unauthenticated
+      ? (provider.message ?? "Sign in via the CLI to authenticate again.")
+      : (provider.message ??
+        (provider.status === "error"
+          ? `${providerName} provider is unavailable.`
+          : `${providerName} provider has limited availability.`)),
+    tone: provider.status === "warning" ? "warning" : "error",
+  };
+}
+
 export function getProviderVersionLabel(version: string | null | undefined): string | null {
   if (!version) return null;
   return version.startsWith("v") ? version : `v${version}`;

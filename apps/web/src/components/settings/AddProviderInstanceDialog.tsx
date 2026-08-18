@@ -12,6 +12,7 @@ import {
 import { usePrimarySettings, useUpdatePrimarySettings } from "../../hooks/useSettings";
 import { cn } from "../../lib/utils";
 import { normalizeProviderAccentColor } from "@t3tools/client-runtime/presentation/provider";
+import { buildProviderInstanceCreatePatch } from "@t3tools/client-runtime/presentation/provider-settings";
 import { Button } from "../ui/button";
 import { ACPRegistryIcon, Gemini, GithubCopilotIcon, PiAgentIcon, type Icon } from "../Icons";
 import {
@@ -143,8 +144,8 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
   const driverOption = DRIVER_OPTION_BY_VALUE[driver] ?? DEFAULT_DRIVER_OPTION;
   const instanceId = instanceIdOverride ?? deriveInstanceId(driver, label);
   const driverSettingsFields = useMemo(
-    () => deriveProviderSettingsFields(driverOption),
-    [driverOption],
+    () => deriveProviderSettingsFields(driverOption.settingsSchema),
+    [driverOption.settingsSchema],
   );
   const instanceIdError = validateInstanceId(instanceId, existingIds);
   const showInstanceIdError = hasAttemptedSubmit && instanceIdError !== null;
@@ -199,12 +200,14 @@ export function AddProviderInstanceDialog({ open, onOpenChange }: AddProviderIns
     // keeps the type boundary honest and guards against any future drift in
     // the slug rules.
     const brandedId = ProviderInstanceId.make(instanceId);
-    const nextMap = {
-      ...settings.providerInstances,
-      [brandedId]: nextInstance,
-    };
     try {
-      updateSettings({ providerInstances: nextMap });
+      updateSettings(
+        buildProviderInstanceCreatePatch({
+          settings,
+          instanceId: brandedId,
+          instance: nextInstance,
+        }),
+      );
       toastManager.add({
         type: "success",
         title: "Provider instance added",

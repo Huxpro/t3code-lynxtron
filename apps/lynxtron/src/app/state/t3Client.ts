@@ -1,6 +1,7 @@
 import { useAtomValue } from "@effect/atom-react";
 import { useEffect } from "@lynx-js/react";
 import { Atom } from "effect/unstable/reactivity";
+import { presentThreadCommandErrorMessage } from "@t3tools/client-runtime/errors";
 import {
   deriveModelPickerModels,
   deriveProviderModelSelectionProjection,
@@ -11,6 +12,11 @@ import {
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
   projectPortableGeneralSettingsRestore,
 } from "@t3tools/client-runtime/presentation/settings";
+import {
+  buildProviderInstanceCreatePatch,
+  buildProviderInstanceDeletePatch,
+  buildProviderInstanceUpdatePatch,
+} from "@t3tools/client-runtime/presentation/provider-settings";
 import type {
   ApprovalRequestId,
   EditorId,
@@ -28,6 +34,7 @@ import type {
   ProjectScript,
   ProjectReadFileResult,
   ProjectWriteFileResult,
+  ProviderInstanceConfig,
   ProviderInstanceId,
   ServerConfig,
   ServerProvider,
@@ -127,6 +134,7 @@ export interface T3ClientState {
   readonly settings?: ServerSettings;
   readonly authAccess: AuthAccessPresentation;
   readonly providerEntries: ReadonlyArray<ProviderInstanceEntry>;
+  readonly providersRefreshPending: boolean;
   readonly providerUpdatePending: ProviderInstanceId | null;
   readonly providerSettingsError: string | null;
   readonly settingsUpdatePending: boolean;
@@ -164,6 +172,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
     hasEntries: false,
   },
   providerEntries: [],
+  providersRefreshPending: false,
   providerUpdatePending: null,
   providerSettingsError: null,
   settingsUpdatePending: false,
@@ -538,12 +547,17 @@ function installTransportDevToolHook(): void {
       selectedProvider?: {
         instanceId: string;
         showInteractionModeToggle: boolean | undefined;
+        status: ServerProvider["status"];
+        authStatus: ServerProvider["auth"]["status"];
+        message: string | null;
       };
       modelCount: number;
       modelSelectionError: string | null;
       modelSelectionPending: boolean;
       providerCount: number;
       providerEntryCount: number;
+      providersRefreshPending: boolean;
+      providerSettingsError: string | null;
       vcsStatus: VcsStatusResult | null;
       vcsStatusCwd: string | null;
       vcsStatusPending: boolean;
@@ -614,6 +628,8 @@ function installTransportDevToolHook(): void {
       modelSelectionPending: state.modelSelectionPending,
       providerCount: state.providers.length,
       providerEntryCount: state.providerEntries.length,
+      providersRefreshPending: state.providersRefreshPending,
+      providerSettingsError: state.providerSettingsError,
       vcsStatus: state.vcsStatus,
       vcsStatusCwd: state.vcsStatusCwd,
       vcsStatusPending: state.vcsStatusPending,
@@ -624,6 +640,9 @@ function installTransportDevToolHook(): void {
             selectedProvider: {
               instanceId: selectedProvider.instanceId,
               showInteractionModeToggle: selectedProvider.snapshot.showInteractionModeToggle,
+              status: selectedProvider.snapshot.status,
+              authStatus: selectedProvider.snapshot.auth.status,
+              message: selectedProvider.snapshot.message ?? null,
             },
           }
         : {}),
@@ -669,6 +688,9 @@ async function bootstrapT3Client(): Promise<void> {
     eventRegistry = undefined;
   }
   const saved = getPref<ModelSelection | null>("modelSelection", null);
+  if (saved) {
+    patchState({ modelSelection: saved });
+  }
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
     bridge: NativeModules?.bridge,
@@ -696,6 +718,12 @@ async function bootstrapT3Client(): Promise<void> {
   mainTransport = transport;
   mainCommandBridge = buildMainCommandBridge(transport);
   patchState({ connectorCommandsReady: true });
+  if (saved) {
+    const result = await transport.invokeSettled("setModelSelection", { selection: saved });
+    if (!result.ok) {
+      patchState({ modelSelectionError: result.error });
+    }
+  }
   refreshVcsStatusProjection();
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   if (activeThreadId) {
@@ -764,17 +792,38 @@ function reconnect(): Promise<void> {
   return bridge.reconnect();
 }
 
-function sendPrompt(text: string, bootstrap?: ThreadTurnStartBootstrap): void {
+function sendPrompt(text: string, bootstrap?: ThreadTurnStartBootstrap): Promise<boolean> {
   const trimmed = text.trim();
   const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const bridge = getBridge();
-  if (!trimmed || !threadId || !bridge?.sendPrompt) return;
-  patchState({ draftHeroThreadId: undefined });
-  void bridge.sendPrompt({
-    threadId,
-    text: trimmed,
-    ...(bootstrap ? { bootstrap } : {}),
-  });
+  if (!trimmed || !threadId || !bridge?.sendPrompt) return Promise.resolve(false);
+  patchState({ draftHeroThreadId: undefined, sessionError: null });
+  try {
+    return bridge
+      .sendPrompt({
+        threadId,
+        text: trimmed,
+        ...(bootstrap ? { bootstrap } : {}),
+      })
+      .then(() => true)
+      .catch((error: unknown) => {
+        if (appAtomRegistry.get(t3ClientStateAtom).activeThreadId === threadId) {
+          patchState({
+            sessionError: presentThreadCommandErrorMessage(
+              error instanceof Error ? error.message : String(error),
+            ),
+          });
+        }
+        return false;
+      });
+  } catch (error) {
+    patchState({
+      sessionError: presentThreadCommandErrorMessage(
+        error instanceof Error ? error.message : String(error),
+      ),
+    });
+    return Promise.resolve(false);
+  }
 }
 
 function interrupt(): void {
@@ -1155,6 +1204,124 @@ function setProviderEnabled(instanceId: ProviderInstanceId, enabled: boolean): v
     });
 }
 
+function updateProviderInstance(
+  instanceId: ProviderInstanceId,
+  instance: ProviderInstanceConfig,
+): Promise<ServerConfig> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const entry = state.providerEntries.find((candidate) => candidate.instanceId === instanceId);
+  if (!state.settings || !entry) {
+    return Promise.reject(new Error(`Provider instance is unavailable: ${instanceId}`));
+  }
+  patchState({
+    providerUpdatePending: instanceId,
+    providerSettingsError: null,
+  });
+  const patch = buildProviderInstanceUpdatePatch({
+    settings: state.settings,
+    instanceId,
+    instance,
+    driver: entry.driverKind,
+    isDefault: entry.isDefault,
+  });
+  return updateServerSettings(patch)
+    .catch((error: unknown) => {
+      patchState({
+        providerSettingsError: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    })
+    .finally(() => {
+      patchState({ providerUpdatePending: null });
+    });
+}
+
+function createProviderInstance(
+  instanceId: ProviderInstanceId,
+  instance: ProviderInstanceConfig,
+): Promise<ServerConfig> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  if (!state.settings) return Promise.reject(new Error("Provider settings are unavailable."));
+  if (state.settings.providerInstances[instanceId]) {
+    return Promise.reject(new Error(`Provider instance already exists: ${instanceId}`));
+  }
+  return updateServerSettings(
+    buildProviderInstanceCreatePatch({
+      settings: state.settings,
+      instanceId,
+      instance,
+    }),
+  );
+}
+
+function deleteProviderInstance(instanceId: ProviderInstanceId): Promise<ServerConfig> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  if (!state.settings) return Promise.reject(new Error("Provider settings are unavailable."));
+  return updateServerSettings(
+    buildProviderInstanceDeletePatch({
+      settings: state.settings,
+      instanceId,
+    }),
+  );
+}
+
+function refreshProviders(instanceId?: ProviderInstanceId): Promise<ServerConfig> {
+  const bridge = getBridge();
+  if (!bridge?.refreshProviders) {
+    return Promise.reject(new Error("Provider refresh is unavailable."));
+  }
+  patchState({
+    providersRefreshPending: true,
+    providerSettingsError: null,
+  });
+  return bridge
+    .refreshProviders(instanceId ? { instanceId } : undefined)
+    .then((config) => {
+      applyServerConfig(config);
+      return config;
+    })
+    .catch((error: unknown) => {
+      patchState({
+        providerSettingsError: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    })
+    .finally(() => {
+      patchState({ providersRefreshPending: false });
+    });
+}
+
+function updateProvider(instanceId: ProviderInstanceId): Promise<ServerConfig> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const provider = state.providers.find((candidate) => candidate.instanceId === instanceId);
+  const bridge = getBridge();
+  if (!provider || !bridge?.updateProvider) {
+    return Promise.reject(new Error(`Provider update is unavailable: ${instanceId}`));
+  }
+  patchState({
+    providerUpdatePending: instanceId,
+    providerSettingsError: null,
+  });
+  return bridge
+    .updateProvider({
+      provider: provider.driver,
+      instanceId,
+    })
+    .then((config) => {
+      applyServerConfig(config);
+      return config;
+    })
+    .catch((error: unknown) => {
+      patchState({
+        providerSettingsError: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    })
+    .finally(() => {
+      patchState({ providerUpdatePending: null });
+    });
+}
+
 function updateServerSettings(patch: ServerSettingsPatch): Promise<ServerConfig> {
   const bridge = getBridge();
   if (!bridge?.updateServerSettings) {
@@ -1198,8 +1365,10 @@ async function restoreGeneralSettingsDefaults(): Promise<ReadonlyArray<string>> 
 export const t3ClientActions = {
   archiveThread,
   createPairingCredential,
+  createProviderInstance,
   createThread,
   deleteThread,
+  deleteProviderInstance,
   discoverSourceControl,
   getTurnDiff,
   initializeRepository,
@@ -1207,6 +1376,7 @@ export const t3ClientActions = {
   listProjectEntries,
   openInEditor,
   publishRepository,
+  refreshProviders,
   readProjectFile,
   readProjectBranch,
   readVcsStatus,
@@ -1229,6 +1399,8 @@ export const t3ClientActions = {
   setThreadInteractionMode,
   setThreadRuntimeMode,
   updateServerSettings,
+  updateProviderInstance,
+  updateProvider,
   updateProjectScripts,
   writeProjectFile,
 } as const;

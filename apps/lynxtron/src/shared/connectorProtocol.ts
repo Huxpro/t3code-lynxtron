@@ -136,6 +136,8 @@ export const CONNECTOR_COMMAND_NAMES = [
   "setModelSelection",
   "setThreadRuntimeMode",
   "setThreadInteractionMode",
+  "refreshProviders",
+  "updateProvider",
   "setProviderEnabled",
   "updateServerSettings",
   "deleteThread",

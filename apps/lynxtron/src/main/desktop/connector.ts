@@ -24,7 +24,9 @@ import {
   projectAuthAccess,
   type AuthAccessPresentation,
 } from "@t3tools/client-runtime/presentation/connections";
+import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
 import { projectThreadTurnDispatchState } from "@t3tools/client-runtime/operations/thread-dispatch";
+import { deriveProviderModelSelectionProjection } from "@t3tools/client-runtime/presentation/model-picker";
 import { applyShellStreamEvent } from "@t3tools/client-runtime/state/shell";
 import {
   applyAuthAccessStreamEvent,
@@ -40,12 +42,6 @@ import {
   deriveActivePlanState,
   findLatestProposedPlan,
 } from "@t3tools/client-runtime/presentation/thread";
-import {
-  applyProviderInstanceSettings,
-  deriveProviderInstanceEntries,
-  resolveSelectableProviderInstanceEntry,
-  type ProviderInstanceEntry,
-} from "@t3tools/client-runtime/presentation/provider";
 import { buildProviderInstanceEnabledPatch } from "@t3tools/client-runtime/presentation/provider-settings";
 import {
   WsRpcGroup,
@@ -65,6 +61,7 @@ import {
   type OrchestrationThread,
   type OrchestrationThreadShell,
   type ProviderInteractionMode,
+  type ProviderDriverKind,
   type ProviderApprovalDecision,
   type ProviderUserInputAnswers,
   type OrchestrationThreadStreamItem,
@@ -147,6 +144,25 @@ export async function retryRpcTransportOpen<A>(options: {
     }
   }
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
+}
+
+export async function dispatchWithTransportRecovery<Command, Result>(options: {
+  readonly command: Command;
+  readonly dispatch: (command: Command) => Promise<Result>;
+  readonly recover: () => Promise<void>;
+  readonly onRetry?: (error: Error) => void;
+}): Promise<Result> {
+  try {
+    return await options.dispatch(options.command);
+  } catch (error) {
+    const cause = error instanceof Error ? error : new Error(String(error));
+    if (!isTransportConnectionErrorMessage(cause.message)) {
+      throw cause;
+    }
+    options.onRetry?.(cause);
+    await options.recover();
+    return options.dispatch(options.command);
+  }
 }
 
 export function materializeTurnBootstrap(
@@ -503,41 +519,10 @@ export class T3Connector {
     this.forkClient(consume);
   }
 
-  private configuredProviderEntries(config: ServerConfig): ReadonlyArray<ProviderInstanceEntry> {
-    return applyProviderInstanceSettings(
-      deriveProviderInstanceEntries(config.providers),
-      config.settings,
-    );
-  }
-
   private reconcileModelSelection(config: ServerConfig): void {
-    const entry = resolveSelectableProviderInstanceEntry(
-      this.configuredProviderEntries(config),
-      this.modelSelection?.instanceId,
-    );
-    if (!entry) {
-      this.modelSelection = undefined;
-      return;
-    }
-
-    const currentModel =
-      this.modelSelection?.instanceId === entry.instanceId
-        ? entry.models.find((model) => model.slug === this.modelSelection?.model)
-        : undefined;
-    const model =
-      currentModel ??
-      entry.models.find((candidate) => candidate.isDefault && !candidate.isCustom) ??
-      entry.models.find((candidate) => !candidate.isCustom) ??
-      entry.models[0];
-    this.modelSelection = model
-      ? {
-          instanceId: entry.instanceId,
-          model: model.slug,
-          ...(currentModel && this.modelSelection?.options
-            ? { options: this.modelSelection.options }
-            : {}),
-        }
-      : undefined;
+    this.modelSelection = deriveProviderModelSelectionProjection(config, [
+      this.modelSelection,
+    ]).selection;
   }
 
   private openRpc(socketUrl: string): Promise<ServerConfig> {
@@ -638,6 +623,21 @@ export class T3Connector {
     if (!this.client || !this.protocolContext) {
       throw new Error("not connected");
     }
+  }
+
+  private async dispatchOrchestrationCommand(command: unknown): Promise<void> {
+    await this.awaitRecoveredTransport();
+    await dispatchWithTransportRecovery({
+      command,
+      dispatch: (currentCommand) =>
+        this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](currentCommand)),
+      recover: () => this.recoverTransport(),
+      onRetry: (error) => {
+        this.log(
+          `[connector] orchestration command hit a stale transport; recovering once: ${error.message}`,
+        );
+      },
+    });
   }
 
   /** Fork a long-lived client Effect (e.g. a stream) within the context. */
@@ -820,7 +820,7 @@ export class T3Connector {
       createdAt: new Date().toISOString(),
     };
     try {
-      await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command));
+      await this.dispatchOrchestrationCommand(command);
       this.defaultProjectId = projectId;
       this.log(`[connector] created project ${projectId} at ${workspaceRoot}`);
     } catch (e: any) {
@@ -829,7 +829,7 @@ export class T3Connector {
   }
 
   async createThread(input: { projectId?: string; title?: string }): Promise<{ threadId: string }> {
-    if (!this.client) throw new Error("not connected");
+    await this.awaitRecoveredTransport();
     const threadId = crypto.randomUUID();
     const projectId = input.projectId ?? this.defaultProjectId;
     if (!projectId) throw new Error("no project available");
@@ -846,7 +846,7 @@ export class T3Connector {
       worktreePath: null,
       createdAt: new Date().toISOString(),
     };
-    await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command));
+    await this.dispatchOrchestrationCommand(command);
     this.selectThread(threadId);
     return { threadId };
   }
@@ -856,7 +856,7 @@ export class T3Connector {
     text: string;
     bootstrap?: ThreadTurnStartBootstrap;
   }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
+    await this.awaitRecoveredTransport();
     const thread =
       this.shellSnapshot?.threads.find((candidate) => candidate.id === input.threadId) ??
       this.threadSnapshots.get(input.threadId);
@@ -882,11 +882,11 @@ export class T3Connector {
       ...(bootstrap ? { bootstrap } : {}),
       createdAt: new Date().toISOString(),
     };
-    await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command));
+    await this.dispatchOrchestrationCommand(command);
   }
 
   async interrupt(input: { threadId: string; turnId?: TurnId }): Promise<void> {
-    if (!this.client) return;
+    await this.awaitRecoveredTransport();
     const command = {
       type: "thread.turn.interrupt",
       commandId: crypto.randomUUID(),
@@ -898,7 +898,7 @@ export class T3Connector {
       `[connector] interrupt dispatch thread=${input.threadId} turn=${input.turnId ?? "active"}`,
     );
     try {
-      await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command));
+      await this.dispatchOrchestrationCommand(command);
       this.log(
         `[connector] interrupt acknowledged thread=${input.threadId} turn=${input.turnId ?? "active"}`,
       );
@@ -917,17 +917,14 @@ export class T3Connector {
     requestId: ApprovalRequestId;
     decision: ProviderApprovalDecision;
   }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.approval.respond",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-        requestId: input.requestId,
-        decision: input.decision,
-        createdAt: new Date().toISOString(),
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.approval.respond",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      requestId: input.requestId,
+      decision: input.decision,
+      createdAt: new Date().toISOString(),
+    });
   }
 
   async respondToUserInput(input: {
@@ -935,28 +932,22 @@ export class T3Connector {
     requestId: ApprovalRequestId;
     answers: ProviderUserInputAnswers;
   }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.user-input.respond",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-        requestId: input.requestId,
-        answers: input.answers,
-        createdAt: new Date().toISOString(),
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.user-input.respond",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      requestId: input.requestId,
+      answers: input.answers,
+      createdAt: new Date().toISOString(),
+    });
   }
 
   async deleteThread(input: { threadId: string }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.delete",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.delete",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+    });
     this.threadFibers.get(input.threadId) &&
       Effect.runFork(Fiber.interrupt(this.threadFibers.get(input.threadId)!));
     this.threadFibers.delete(input.threadId);
@@ -966,66 +957,51 @@ export class T3Connector {
   }
 
   async archiveThread(input: { threadId: string; unarchive?: boolean }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: input.unarchive ? "thread.unarchive" : "thread.archive",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: input.unarchive ? "thread.unarchive" : "thread.archive",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+    });
   }
 
   async settleThread(input: { threadId: string }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.settle",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.settle",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+    });
   }
 
   async unsettleThread(input: { threadId: string }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.unsettle",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-        reason: "user",
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.unsettle",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      reason: "user",
+    });
   }
 
   async renameThread(input: { threadId: string; title: string }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
     const title = input.title.trim();
     if (!title) return;
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.meta.update",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-        title,
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.meta.update",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      title,
+    });
   }
 
   async updateProjectScripts(input: {
     projectId: string;
     scripts: ReadonlyArray<ProjectScript>;
   }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "project.meta.update",
-        commandId: crypto.randomUUID(),
-        projectId: input.projectId,
-        scripts: input.scripts,
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "project.meta.update",
+      commandId: crypto.randomUUID(),
+      projectId: input.projectId,
+      scripts: input.scripts,
+    });
   }
 
   async openInEditor(input: { cwd: string; editor: EditorId }): Promise<void> {
@@ -1183,14 +1159,12 @@ export class T3Connector {
     await this.awaitRecoveredTransport();
     this.pendingThreadModelSelections.set(input.threadId, input.selection);
     try {
-      await this.runClient(
-        this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-          type: "thread.meta.update",
-          commandId: crypto.randomUUID(),
-          threadId: input.threadId,
-          modelSelection: input.selection,
-        }),
-      );
+      await this.dispatchOrchestrationCommand({
+        type: "thread.meta.update",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+        modelSelection: input.selection,
+      });
     } catch (error) {
       this.pendingThreadModelSelections.delete(input.threadId);
       throw error;
@@ -1198,32 +1172,26 @@ export class T3Connector {
   }
 
   async setThreadRuntimeMode(input: { threadId: string; runtimeMode: RuntimeMode }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.runtime-mode.set",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-        runtimeMode: input.runtimeMode,
-        createdAt: new Date().toISOString(),
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.runtime-mode.set",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      runtimeMode: input.runtimeMode,
+      createdAt: new Date().toISOString(),
+    });
   }
 
   async setThreadInteractionMode(input: {
     threadId: string;
     interactionMode: ProviderInteractionMode;
   }): Promise<void> {
-    if (!this.client) throw new Error("not connected");
-    await this.runClient(
-      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
-        type: "thread.interaction-mode.set",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-        interactionMode: input.interactionMode,
-        createdAt: new Date().toISOString(),
-      }),
-    );
+    await this.dispatchOrchestrationCommand({
+      type: "thread.interaction-mode.set",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      interactionMode: input.interactionMode,
+      createdAt: new Date().toISOString(),
+    });
   }
 
   async updateServerSettings(input: { patch: ServerSettingsPatch }): Promise<ServerConfig> {
@@ -1248,6 +1216,51 @@ export class T3Connector {
     return this.serverConfig;
   }
 
+  async refreshProviders(input?: { instanceId?: ProviderInstanceId }): Promise<ServerConfig> {
+    if (!this.client || !this.serverConfig) {
+      throw new Error("not connected");
+    }
+    const result = await this.runClient<{ providers: ServerConfig["providers"] }>(
+      this.client[WS_METHODS.serverRefreshProviders](
+        input?.instanceId ? { instanceId: input.instanceId } : {},
+      ),
+    );
+    const config = {
+      ...this.serverConfig,
+      providers: result.providers,
+    };
+    this.setServerConfig(config, {
+      version: 1,
+      type: "providerStatuses",
+      payload: { providers: result.providers },
+    });
+    this.reconcileModelSelection(config);
+    return config;
+  }
+
+  async updateProvider(input: {
+    provider: ProviderDriverKind;
+    instanceId?: ProviderInstanceId;
+  }): Promise<ServerConfig> {
+    if (!this.client || !this.serverConfig) {
+      throw new Error("not connected");
+    }
+    const result = await this.runClient<{ providers: ServerConfig["providers"] }>(
+      this.client[WS_METHODS.serverUpdateProvider](input),
+    );
+    const config = {
+      ...this.serverConfig,
+      providers: result.providers,
+    };
+    this.setServerConfig(config, {
+      version: 1,
+      type: "providerStatuses",
+      payload: { providers: result.providers },
+    });
+    this.reconcileModelSelection(config);
+    return config;
+  }
+
   async setProviderEnabled(input: {
     instanceId: ProviderInstanceId;
     enabled: boolean;
@@ -1255,7 +1268,7 @@ export class T3Connector {
     if (!this.client || !this.serverConfig) {
       throw new Error("not connected");
     }
-    const entry = this.configuredProviderEntries(this.serverConfig).find(
+    const entry = deriveProviderModelSelectionProjection(this.serverConfig).entries.find(
       (candidate) => candidate.instanceId === input.instanceId,
     );
     if (!entry) {
