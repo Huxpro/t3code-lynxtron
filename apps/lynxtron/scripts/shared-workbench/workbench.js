@@ -813,7 +813,9 @@ function readLynxPane() {
             ? "project-scope"
             : root?.querySelector(".composer-workspace-menu") !== null
               ? "workspace-menu"
-              : null;
+              : root?.querySelector(".composer-compact-controls-menu") !== null
+                ? "compact-controls"
+                : null;
     const overlayElement =
       overlay === "quick-switch" || overlay === "file-picker"
         ? paletteElement
@@ -823,7 +825,9 @@ function readLynxPane() {
             ? root?.querySelector(".sidebar-v2-scope-popup")
             : overlay === "workspace-menu"
               ? root?.querySelector(".composer-workspace-menu")
-              : null;
+              : overlay === "compact-controls"
+                ? root?.querySelector(".composer-compact-controls-menu")
+                : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -848,6 +852,8 @@ function readLynxPane() {
     const projectScopeTriggerElement =
       root?.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]') ?? null;
     const workspaceTriggerElement = root?.querySelector(".composer-workspace-control-wrap") ?? null;
+    const compactControlsTriggerElement =
+      root?.querySelector(".composer-compact-controls-trigger") ?? null;
     const settingsRoute = expectedSemanticRoute.startsWith("settings-");
     const quickSwitchInput = root?.querySelector(".qs-search__input") ?? null;
     const modelPickerInput = root?.querySelector(".picker-search__input") ?? null;
@@ -909,7 +915,9 @@ function readLynxPane() {
         ? projectScopeTriggerElement
         : overlay === "workspace-menu"
           ? workspaceTriggerElement
-          : modelTriggerElement;
+          : overlay === "compact-controls"
+            ? compactControlsTriggerElement
+            : modelTriggerElement;
     const modelTriggerRect = overlayTriggerElement
       ? (() => {
           const rect = overlayTriggerElement.getBoundingClientRect();
@@ -999,7 +1007,26 @@ function readLynxPane() {
                       root?.querySelector(".composer-workspace-menu__description"),
                     ),
                   }
-                : null,
+                : overlay === "compact-controls"
+                  ? {
+                      panel: readElementBox(overlayElement),
+                      scroll: readElementBox(
+                        root?.querySelector(".composer-compact-controls-menu__scroll"),
+                      ),
+                      content: readElementBox(
+                        root?.querySelector(".composer-compact-controls-menu__content"),
+                      ),
+                      sectionLabel: readElementBox(
+                        root?.querySelector(".composer-compact-controls-menu__section-label"),
+                      ),
+                      row: readElementBox(
+                        root?.querySelector(".composer-compact-controls-menu__item"),
+                      ),
+                      dismiss: readElementBox(
+                        root?.querySelector(".composer-compact-controls-dismiss"),
+                      ),
+                    }
+                  : null,
         query:
           overlay === "quick-switch" || overlay === "file-picker"
             ? lynxInputValue(quickSwitchInput)
@@ -1089,7 +1116,15 @@ function readLynxPane() {
                       (row) =>
                         row.querySelector(".composer-workspace-menu__label")?.textContent?.trim(),
                     )
-                  : [],
+                  : overlay === "compact-controls"
+                    ? [
+                        ...(root?.querySelectorAll(".composer-compact-controls-menu__item") ?? []),
+                      ].map((row) =>
+                        row
+                          .querySelector(".composer-compact-controls-menu__label")
+                          ?.textContent?.trim(),
+                      )
+                    : [],
         modelPickerRows:
           overlay === "model-picker"
             ? readModelPickerRows(root?.querySelectorAll(".model-picker-row") ?? [])
@@ -1103,7 +1138,9 @@ function readLynxPane() {
                 ? (root?.querySelectorAll(".lynx-menu-radio-item").length ?? 0)
                 : overlay === "workspace-menu"
                   ? (root?.querySelectorAll(".composer-workspace-menu__item").length ?? 0)
-                  : 0,
+                  : overlay === "compact-controls"
+                    ? (root?.querySelectorAll(".composer-compact-controls-menu__item").length ?? 0)
+                    : 0,
       },
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(root),
@@ -1589,13 +1626,17 @@ function readWebPane() {
             ? "project-scope"
             : doc.querySelector('[data-floating-popup="composer-workspace-menu"]') !== null
               ? "workspace-menu"
-              : null;
+              : doc.querySelector('[data-floating-popup="composer-compact-controls-menu"]') !== null
+                ? "compact-controls"
+                : null;
     const modelTriggerElement =
       doc.querySelector('[data-chat-provider-model-picker="true"]') ?? null;
     const projectScopeTriggerElement =
       doc.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]') ?? null;
     const workspaceTriggerElement =
       doc.querySelector('[data-floating-anchor="composer-workspace-menu"]') ?? null;
+    const compactControlsTriggerElement =
+      doc.querySelector('[data-floating-anchor="composer-compact-controls-menu"]') ?? null;
     const quickSwitchTriggerElement =
       doc.querySelector(".sidebar-v2-search") ??
       doc.querySelector('[data-testid="command-palette-trigger"]') ??
@@ -1606,7 +1647,9 @@ function readWebPane() {
         ? projectScopeTriggerElement
         : overlay === "workspace-menu"
           ? workspaceTriggerElement
-          : modelTriggerElement;
+          : overlay === "compact-controls"
+            ? compactControlsTriggerElement
+            : modelTriggerElement;
     const modelTriggerRect = overlayTriggerElement
       ? (() => {
           const rect = overlayTriggerElement.getBoundingClientRect();
@@ -1627,7 +1670,9 @@ function readWebPane() {
             ? doc.querySelector(".sidebar-v2-scope-popup")
             : overlay === "workspace-menu"
               ? doc.querySelector('[data-floating-popup="composer-workspace-menu"]')
-              : null;
+              : overlay === "compact-controls"
+                ? doc.querySelector('[data-floating-popup="composer-compact-controls-menu"]')
+                : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -1839,7 +1884,20 @@ function readWebPane() {
                     ),
                     description: null,
                   }
-                : null,
+                : overlay === "compact-controls"
+                  ? {
+                      panel: readElementBox(overlayElement),
+                      scroll: readElementBox(overlayElement?.firstElementChild),
+                      content: readElementBox(overlayElement?.firstElementChild),
+                      sectionLabel: readElementBox(
+                        overlayElement?.querySelector('[data-slot="menu-label"]'),
+                      ),
+                      row: readElementBox(
+                        overlayElement?.querySelector('[data-slot="menu-radio-item"]'),
+                      ),
+                      dismiss: null,
+                    }
+                  : null,
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
             ? [...doc.querySelectorAll('[data-command-palette="true"] [role="option"]')].map(
@@ -1863,7 +1921,13 @@ function readWebPane() {
                         '[data-floating-popup="composer-workspace-menu"] [data-slot="select-item"]',
                       ),
                     ].map((row) => row.textContent?.trim())
-                  : [],
+                  : overlay === "compact-controls"
+                    ? [
+                        ...doc.querySelectorAll(
+                          '[data-floating-popup="composer-compact-controls-menu"] [data-slot="menu-radio-item"]',
+                        ),
+                      ].map((row) => row.textContent?.trim())
+                    : [],
         modelPickerRows:
           overlay === "model-picker"
             ? readModelPickerRows(
@@ -1883,7 +1947,11 @@ function readWebPane() {
                   ? doc.querySelectorAll(
                       '[data-floating-popup="composer-workspace-menu"] [data-slot="select-item"]',
                     ).length
-                  : 0,
+                  : overlay === "compact-controls"
+                    ? doc.querySelectorAll(
+                        '[data-floating-popup="composer-compact-controls-menu"] [data-slot="menu-radio-item"]',
+                      ).length
+                    : 0,
       },
       composerMetrics: composerFrame
         ? {

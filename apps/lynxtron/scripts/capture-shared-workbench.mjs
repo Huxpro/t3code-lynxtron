@@ -77,6 +77,7 @@ const requestedWebRoute = argValue(
 );
 const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
+  "composer-compact-controls-open": "compact-controls",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
   "workspace-menu-open": "workspace-menu",
@@ -131,7 +132,8 @@ const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isFilesBrowserState = stateId === "files-browser";
 const isFileEditorState = stateId === "file-editor-detail";
-const isFilesSurfaceState = isFilesBrowserState || isFileEditorState;
+const isCompactControlsState = stateId === "composer-compact-controls-open";
+const isFilesSurfaceState = isFilesBrowserState || isFileEditorState || isCompactControlsState;
 const composerExpectationByStateId = {
   "composer-hero": {
     layout: "hero",
@@ -817,6 +819,48 @@ function sidebarFooterThemeMatches(state) {
   );
 }
 
+function compactControlsEvidenceReady(state) {
+  if (!isCompactControlsState) return true;
+  return [state?.web, state?.lynx].every((client) => {
+    const footer = client?.composerMetrics?.anatomy?.footer;
+    const context = client?.composerMetrics?.anatomy?.context;
+    const panel = client?.reviewMetrics?.panelRect;
+    const overlayMetrics = client?.overlayMetrics;
+    const anatomy = overlayMetrics?.anatomy;
+    return (
+      client?.productState?.overlay === "compact-controls" &&
+      footer?.attributes?.["data-chat-composer-footer-compact"] === "true" &&
+      context?.rect?.width > 0 &&
+      panel?.rect?.width > 0 &&
+      overlayMetrics?.triggerRect?.width > 0 &&
+      anatomy?.panel?.rect?.width > 0 &&
+      anatomy?.panel?.rect?.height > 0 &&
+      anatomy?.scroll?.rect?.height > 0 &&
+      anatomy?.content?.rect?.height > 0 &&
+      anatomy?.row?.rect?.height > 0 &&
+      overlayMetrics?.rowCount > 0
+    );
+  });
+}
+
+function compactControlsContainment(state) {
+  const read = (client) => {
+    const context = client?.composerMetrics?.anatomy?.context?.rect;
+    const panel = client?.reviewMetrics?.panelRect?.rect;
+    if (!context || !panel) return null;
+    return {
+      context,
+      panel,
+      overlap: Math.max(0, context.x + context.width - panel.x),
+      contained: context.x + context.width <= panel.x,
+    };
+  };
+  return {
+    web: read(state?.web),
+    lynx: read(state?.lynx),
+  };
+}
+
 function sidebarWorkingGeometryMatches(state, expectedThreadFixture) {
   if (stateId !== "composer-working" && stateId !== "existing-thread-working") return true;
   const expectedThreadId = expectedThreadFixture?.id;
@@ -932,6 +976,14 @@ function filesBrowserReady(state) {
 
 function filesBrowserSemanticReady(state) {
   if (!isFilesSurfaceState) return true;
+  if (isCompactControlsState) {
+    return (
+      state?.web?.reviewMetrics?.panelOpen === true &&
+      state?.lynx?.reviewMetrics?.panelOpen === true &&
+      state?.web?.filesBrowserMetrics?.present === true &&
+      state?.lynx?.filesBrowserMetrics?.present === true
+    );
+  }
   if (isFileEditorState) {
     return (
       state?.web?.filesBrowserMetrics?.present === true &&
@@ -1569,6 +1621,7 @@ async function main() {
     "git-publish-dialog",
     "composer-docked",
     "composer-working",
+    "composer-compact-controls-open",
     "composer-connecting",
     "composer-disabled",
     "workspace-menu-open",
@@ -1978,6 +2031,7 @@ async function captureCell({
     "composer-sendable": "new-thread",
     "composer-docked": "existing-thread",
     "composer-working": "existing-thread",
+    "composer-compact-controls-open": "existing-thread",
     "composer-disabled": "existing-thread",
     "workspace-menu-open": "existing-thread",
     "settings-general": "settings-general",
@@ -3065,7 +3119,9 @@ async function captureCell({
               ? '[data-testid="sidebar-v2-project-scope-trigger"]'
               : overlay === "workspace-menu"
                 ? '[data-floating-anchor="composer-workspace-menu"]'
-                : '[data-composer-control="model"]';
+                : overlay === "compact-controls"
+                  ? '[data-floating-anchor="composer-compact-controls-menu"]'
+                  : '[data-composer-control="model"]';
       const point = triggerSelector
         ? await evaluate(
             cdp,
@@ -3173,6 +3229,7 @@ async function captureCell({
     if (
       (overlay === "project-scope" ||
         overlay === "workspace-menu" ||
+        overlay === "compact-controls" ||
         overlay === "quick-switch" ||
         overlay === "file-picker" ||
         overlay === "model-picker") &&
@@ -3225,7 +3282,9 @@ async function captureCell({
             ? '[data-testid="sidebar-v2-project-scope-trigger"]'
             : overlay === "workspace-menu"
               ? '[aria-label="Workspace"]:not([data-composer-workspace-menu])'
-              : '[data-composer-control="model"]';
+              : overlay === "compact-controls"
+                ? ".composer-compact-controls-trigger"
+                : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -3259,7 +3318,8 @@ async function captureCell({
       (overlay === "quick-switch" ||
         overlay === "file-picker" ||
         overlay === "model-picker" ||
-        overlay === "workspace-menu") &&
+        overlay === "workspace-menu" ||
+        overlay === "compact-controls") &&
       lynxOverlayInputSent &&
       state?.lynx?.productState?.overlay !== overlay
     ) {
@@ -3640,6 +3700,7 @@ async function captureCell({
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
     const sidebarFooterThemeReady = sidebarFooterThemeMatches(state);
+    const compactControlsReady = compactControlsEvidenceReady(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
@@ -3712,6 +3773,7 @@ async function captureCell({
       stageIdentityReady &&
       sidebarControlGeometryReady &&
       sidebarFooterThemeReady &&
+      compactControlsReady &&
       sidebarWorkingGeometryReady &&
       headerGitActionReady &&
       gitPublishDiscoveryReady &&
@@ -3920,6 +3982,7 @@ async function captureCell({
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
   const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state);
+  const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
     state,
     expectedThreadFixture,
@@ -4507,6 +4570,7 @@ async function captureCell({
     finalStageIdentityReady &&
     finalSidebarControlGeometryReady &&
     finalSidebarFooterThemeReady &&
+    finalCompactControlsReady &&
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
@@ -4539,6 +4603,7 @@ async function captureCell({
       finalStageIdentityReady,
       finalSidebarControlGeometryReady,
       finalSidebarFooterThemeReady,
+      finalCompactControlsReady,
       finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
@@ -4677,6 +4742,22 @@ async function captureCell({
         match: finalSidebarFooterThemeReady,
         web: state?.web?.sidebarDiagnostics?.chrome ?? null,
         lynx: state?.lynx?.sidebarDiagnostics?.chrome ?? null,
+      },
+      compactControls: {
+        match: finalCompactControlsReady,
+        containment: compactControlsContainment(state),
+        web: {
+          overlay: state?.web?.overlayMetrics ?? null,
+          footer: state?.web?.composerMetrics?.anatomy?.footer ?? null,
+          context: state?.web?.composerMetrics?.anatomy?.context ?? null,
+          rightPanel: state?.web?.reviewMetrics?.panelRect ?? null,
+        },
+        lynx: {
+          overlay: state?.lynx?.overlayMetrics ?? null,
+          footer: state?.lynx?.composerMetrics?.anatomy?.footer ?? null,
+          context: state?.lynx?.composerMetrics?.anatomy?.context ?? null,
+          rightPanel: state?.lynx?.reviewMetrics?.panelRect ?? null,
+        },
       },
       sidebarWorkingGeometry: {
         match: finalSidebarWorkingGeometryReady,

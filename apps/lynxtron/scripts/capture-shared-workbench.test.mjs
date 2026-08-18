@@ -83,6 +83,32 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "sidebarFooterTheme:");
   });
 
+  it("captures the real compact Composer menu beside an inline right panel", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, '"composer-compact-controls-open": "compact-controls"');
+    assert.include(
+      source,
+      'const isCompactControlsState = stateId === "composer-compact-controls-open"',
+    );
+    assert.include(source, "function compactControlsEvidenceReady(state)");
+    assert.include(source, "function compactControlsContainment(state)");
+    assert.include(source, '[data-floating-anchor="composer-compact-controls-menu"]');
+    assert.include(source, '".composer-compact-controls-trigger"');
+    assert.include(source, "finalCompactControlsReady");
+    assert.include(source, "compactControls:");
+    assert.include(workbench, ': root?.querySelector(".composer-compact-controls-menu") !== null');
+    assert.include(
+      workbench,
+      "doc.querySelector('[data-floating-popup=\"composer-compact-controls-menu\"]') !== null",
+    );
+    assert.include(workbench, "composer-compact-controls-menu__scroll");
+    assert.include(workbench, "composer-compact-controls-dismiss");
+  });
+
   it("opens the Files browser through shipping right-panel actions", () => {
     assert.include(source, 'const isFilesBrowserState = stateId === "files-browser"');
     assert.include(source, "function filesBrowserReady(state)");

@@ -82,7 +82,9 @@ describe("desktop shell interaction contract", () => {
     expect(source).toContain('className="composer-runtime-menu-dismiss-layer"');
     expect(source).toContain('aria-label="Dismiss runtime mode"');
     expect(source).toContain("bindtap={() => setRuntimeModeMenuOpen(false)}");
-    expect(source).toContain("modelOptionMenuOpen || runtimeModeMenuOpen");
+    expect(source).toContain("modelOptionMenuOpen ||");
+    expect(source).toContain("runtimeModeMenuOpen ||");
+    expect(source).toContain("compactControlsMenuOpen");
     expect(source).toContain("modelPicker !== undefined");
     expect(overrides).toContain(".composer-runtime-menu-dismiss-layer {");
     expect(overrides).toContain(".composer-runtime-control-wrap {");
@@ -257,6 +259,9 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain('".file-editor-line{" +');
     expect(browserPreviewSource).toContain('".file-editor-line__content{" +');
     expect(browserPreviewSource).toContain('".theme-light .sidebar-settings-authority{" +');
+    expect(browserPreviewSource).toContain(
+      '".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +',
+    );
     expect(overrides).toContain("height: 40px;");
     expect(overrides).toContain(".files-panel__search--focused {");
     expect(overrides).not.toContain(".files-panel__search:focus-within {");
