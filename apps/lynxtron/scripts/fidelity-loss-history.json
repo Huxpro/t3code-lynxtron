@@ -9125,7 +9125,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "3b6e25c875989b061524b25419a0c00758d7a08303545f1b3a9bf69f92f27b71"
+          "sha256": "caaa158453b1b5cbb0b211a6355fb2bc72262c2ad71782ff00658378694b95ba"
         }
       ],
       "updates": [
@@ -9173,7 +9173,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "3b6e25c875989b061524b25419a0c00758d7a08303545f1b3a9bf69f92f27b71"
+          "sha256": "caaa158453b1b5cbb0b211a6355fb2bc72262c2ad71782ff00658378694b95ba"
         }
       ],
       "updates": [
@@ -9257,6 +9257,44 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-file-readiness",
               "source": "Exact staged bundle, main transport seq 14, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-detail-material-current",
+      "observedAt": "2026-08-19T03:28:28+09:00",
+      "commit": "2e821b562",
+      "codeCommit": "3111c0184",
+      "codeState": "commit",
+      "label": "File Editor Native-safe material preview",
+      "narrative": "The structurally matched Lynx file editor still rendered a plain textarea while Web showed a guttered syntax-highlighted editor. A Native-safe preview now adds line numbers and coarse Markdown token colors without replacing the editable kernel: tapping the preview enters the real textarea, and the persistent explorer still switches files. Full-frame MAE falls from 11.599605 to 8.555532, right-panel MAE from 23.105218 to 15.889638, and full-frame significant pixels from 10.7389% to 9.8056%. The remaining difference stays explicit because Web still owns richer per-token highlighting, gutter utilities, and line selection.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use the same immutable snapshot, file, route, dark theme, viewport, Web bundle, editor/explorer geometry, and file-switch interaction. Two visually invalid nested-text experiments were rejected and receive no update."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "caaa158453b1b5cbb0b211a6355fb2bc72262c2ad71782ff00658378694b95ba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "pixel": {
+                "mae": 8.555532,
+                "significantShare": 0.098056
+              },
+              "confidence": 0.99,
+              "method": "file-detail-native-safe-preview-pixel",
+              "source": "Same-snapshot 1280x820 dark full-frame comparison after adding the validated gutter/token preview"
             }
           }
         }

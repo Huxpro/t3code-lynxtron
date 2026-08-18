@@ -3,6 +3,8 @@
   "observedAt": "2026-08-19T03:06:58+09:00",
   "productCommit": "638c2ff8e57723ae8b40b65e29f074d97b5ed922",
   "testCommit": "2b46478f47f505ee4f8b72dbb97c3736679eb956",
+  "materialProductCommit": "3111c0184",
+  "materialTestCommit": "2e821b562",
   "stateId": "file-editor-detail",
   "scope": {
     "authority": "web",
@@ -140,6 +142,26 @@
           }
         },
         "remainingDifference": "Web retains syntax highlighting, line gutter, and richer editor primitives; Lynx retains a plain editable textarea."
+      },
+      "materialAfter": {
+        "pixelMetric": {
+          "threshold": "max RGB channel delta >= 16",
+          "fullFrame": {
+            "mae": 8.555532,
+            "significantShare": 0.098056
+          },
+          "rightPanel": {
+            "mae": 15.889638,
+            "significantShare": 0.160845
+          }
+        },
+        "delta": {
+          "fullFrameMae": -3.044073,
+          "fullFrameSignificantShare": -0.009333,
+          "rightPanelMae": -7.21558,
+          "rightPanelSignificantShare": -0.02212
+        },
+        "behavior": "Native-safe gutter and coarse Markdown token colors render by default; tapping the preview enters the real editable textarea."
       }
     }
   },
@@ -159,6 +181,8 @@
       "openFile": "docs/PORT_WORKFLOW.md",
       "switchFile": "docs/PORTING_STRATEGY.md",
       "channel": "lynx-devtool-touch",
+      "previewMode": true,
+      "editingMode": true,
       "passed": true
     },
     "transport": {
@@ -166,9 +190,9 @@
       "sequence": 14
     },
     "screenshot": {
-      "path": "/tmp/t3-native-file-editor-final.png",
+      "path": "/tmp/t3-native-file-material-preview.png",
       "bytesScale": "2560x1640",
-      "sha256": "676adc7c28cd356c6376eef113ab328aa942ecfc4b0ce5d76aacf12a6d79472f"
+      "sha256": "5ef049253d129d619d845bfe4334432fbb20ed234b641bdb68ffe01c1446b5db"
     },
     "rendererErrors": 0,
     "isolatedStateDisposed": true
@@ -189,6 +213,16 @@
       "baseline": 0.351776,
       "current": 0.239497,
       "delta": -0.112279
+    },
+    "materialResidual": {
+      "beforePreview": 0.720903,
+      "afterPreview": 0.588264,
+      "delta": -0.132639
+    },
+    "materialTotalLoss": {
+      "before": 0.388652,
+      "after": 0.388491,
+      "delta": -0.000161
     },
     "expectedStateCount": {
       "before": 47,
@@ -216,7 +250,7 @@
     "agentBrowserLeakGate": "owned=0 orphaned=0"
   },
   "remainingRisk": [
-    "The current file-detail material residual is higher than the pre-fix invalid frame because the repaired Lynx editor now renders real content. Syntax highlighting, gutter utilities, and line selection remain open rather than hidden.",
+    "The Native-safe preview reduces the measured material residual but remains coarser than the Web Pierre editor; per-token syntax coverage, gutter utilities, and line selection remain open rather than hidden.",
     "Web tree opening required a composed-shadow-tree DOM click fallback after a measured CDP pointer did not activate Pierre selection; this is classified as harness input mismatch.",
     "Native physical keyboard editing, selection, and save confirmation remain pending-user-session."
   ]

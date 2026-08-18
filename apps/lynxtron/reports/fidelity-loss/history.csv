@@ -141,3 +141,4 @@ files-browser-baseline,2026-08-18T01:38:45+09:00,0d38cf1170caf6e4baac55a8d9d0b3d
 files-browser-current,2026-08-18T02:28:44+09:00,5f3d360399697dc1fbd3a7f8b986823442737c0b,commit,Files Browser matched Browser parity,0.407662,0.407662,0.015943,0.398066,0.601934,0.57859
 file-editor-detail-baseline,2026-08-19T02:27:32+09:00,47a56c02bb108ec26636ebf783420595b3f0bf38,working-tree,File Editor detail baseline,0.403426,0.403426,0.016847,0.393203,0.606797,0.582826
 file-editor-detail-current,2026-08-19T03:06:58+09:00,2b46478f47f505ee4f8b72dbb97c3736679eb956,commit,File Editor detail structural parity,0.388652,0.388652,0.016842,0.378179,0.621821,0.5976
+file-editor-detail-material-current,2026-08-19T03:28:28+09:00,2e821b562,commit,File Editor Native-safe material preview,0.388491,0.388491,0.016583,0.378179,0.621821,0.597761
