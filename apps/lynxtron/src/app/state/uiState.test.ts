@@ -109,6 +109,19 @@ describe("applyRightPanelAction", () => {
     });
   });
 
+  it("keeps the Files explorer available while a file surface is open", () => {
+    const withFiles = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
+      type: "open",
+      surface: files,
+    });
+
+    expect(applyRightPanelAction(withFiles, { type: "open", surface: file })).toEqual({
+      isOpen: true,
+      activeSurfaceId: file.id,
+      surfaces: [files, file],
+    });
+  });
+
   it("reopens a hidden panel without duplicating its existing surface", () => {
     const opened = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
       type: "open",

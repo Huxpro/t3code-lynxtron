@@ -223,6 +223,11 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('fileIcon={<Icon name="file-json" size={14}');
     expect(files).toContain("uiActions.openFileSurface(path)");
     expect(files).toContain("export function FilePanel");
+    expect(files).toContain('aria-label="Back to workspace files"');
+    expect(files).toContain('uiActions.openRightPanelSurface("files")');
+    expect(files).toContain('className="file-panel__toolbar" data-surface-subheader');
+    expect(files).toContain('className="file-panel__editor-surface"');
+    expect(files).not.toContain("withoutExplorer");
     expect(files).not.toContain('className="files-panel__preview"');
     expect(files).not.toContain('className="files-panel__info"');
     expect(overrides).toContain(".files-panel__toolbar {");
@@ -250,6 +255,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("border-radius: 5px;");
     expect(overrides).toContain("font-family: var(--font-sans);");
     expect(overrides).toContain("font-size: 12px;");
+    expect(overrides).toContain(".file-panel__back {");
+    expect(overrides).toContain(".file-panel__statusbar {");
+    expect(overrides).toContain("border-radius: 0;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");
     expect(panel).toContain('case "file":');
     expect(panel).toContain("<FilePanel path={surface.path} />");

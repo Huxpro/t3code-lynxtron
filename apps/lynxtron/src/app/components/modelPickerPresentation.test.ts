@@ -157,6 +157,38 @@ describe("Lynx model picker presentation", () => {
     expect(grok?.disabledReason).toBe("Grok — Unavailable. Sign in to continue.");
   });
 
+  it("keeps warning provider rails and models selectable while probing", () => {
+    const warningProvider = provider({
+      instanceId: "claudeAgent",
+      driverKind: "claudeAgent",
+      displayName: "Claude",
+      status: "warning",
+      message: "Claude provider status has not been checked in this session yet.",
+      models: ["claude-fable-5", "claude-opus-4-6"],
+    });
+    const warningEntries = deriveProviderInstanceEntries([warningProvider]);
+    const warningModels = deriveModelPickerModels(warningEntries, { includeDisabled: true });
+    const warningContext = {
+      ...context(),
+      providers: [warningProvider],
+      providerEntries: warningEntries,
+    };
+
+    expect(
+      projectModelPickerProviders(warningEntries, warningContext)[0]?.disabledReason,
+    ).toBeNull();
+    expect(
+      projectModelPickerRows({
+        models: warningModels,
+        selectedProviderId: ProviderInstanceId.make("claudeAgent"),
+        search: "",
+        favoriteModelKeys: new Set(),
+        instanceOrder: [ProviderInstanceId.make("claudeAgent")],
+        context: warningContext,
+      }).map((row) => row.disabledReason),
+    ).toEqual([null, null]);
+  });
+
   it("disables unavailable provider models when search reveals them", () => {
     const grok = models.find((model) => model.instanceId === "grok")!;
     expect(modelPickerRowDisabledReason(grok, context())).toBe(

@@ -115,7 +115,7 @@ describe("shared model picker presentation", () => {
     ]);
   });
 
-  it("excludes not-ready provider models from the interactive picker catalog", () => {
+  it("keeps warning provider models selectable while their probe is pending", () => {
     const entries = deriveProviderInstanceEntries([
       provider({
         instanceId: "claudeAgent",
@@ -135,7 +135,7 @@ describe("shared model picker presentation", () => {
       deriveModelPickerModels(entries).map((model) =>
         providerModelKey(model.instanceId, model.slug),
       ),
-    ).toEqual(["opencode:opencode/big-pickle"]);
+    ).toEqual(["claudeAgent:claude-fable-5", "opencode:opencode/big-pickle"]);
   });
 
   it("retains not-ready provider models for non-picker display lookup", () => {

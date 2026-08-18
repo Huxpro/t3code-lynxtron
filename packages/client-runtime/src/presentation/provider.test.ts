@@ -5,6 +5,7 @@ import {
   deriveProviderInstanceEntries,
   getDefaultProviderInstanceModel,
   isProviderInstancePickerReady,
+  isProviderInstancePickerSelectable,
   isProviderInstancePickerVisible,
   resolveDefaultProviderModelSelection,
   resolveSelectableProviderInstance,
@@ -67,6 +68,36 @@ describe("isProviderInstancePickerReady", () => {
     ]);
 
     expect(entry && isProviderInstancePickerReady(entry)).toBe(true);
+  });
+});
+
+describe("isProviderInstancePickerSelectable", () => {
+  it("allows warning snapshots while a current-session probe is pending", () => {
+    const [entry] = deriveProviderInstanceEntries([
+      provider({
+        provider: ProviderDriverKind.make("claudeAgent"),
+        instanceId: "claudeAgent",
+        status: "warning",
+      }),
+    ]);
+
+    expect(entry && isProviderInstancePickerSelectable(entry)).toBe(true);
+  });
+
+  it.each([
+    { enabled: false },
+    { status: "error" as const },
+    { availability: "unavailable" as const },
+  ])("blocks explicitly unavailable instances", (providerState) => {
+    const [entry] = deriveProviderInstanceEntries([
+      provider({
+        provider: ProviderDriverKind.make("claudeAgent"),
+        instanceId: "claudeAgent",
+        ...providerState,
+      }),
+    ]);
+
+    expect(entry && isProviderInstancePickerSelectable(entry)).toBe(false);
   });
 });
 
