@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T06:03:30+09:00",
+  "updatedAt": "2026-08-19T06:26:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -6081,7 +6081,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-empty-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "ed165b6ad19f81e351073c015e4daeee54654c11c85791c8e3ce8eaa7d0b17e0"
+          "sha256": "ee7c3c42b6fd5bdb84c3ae068e0a2161804bddf9a863e1a959fcc701bb07bd3b"
         }
       ],
       "updates": [
@@ -6134,7 +6134,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-empty-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "ed165b6ad19f81e351073c015e4daeee54654c11c85791c8e3ce8eaa7d0b17e0"
+          "sha256": "ee7c3c42b6fd5bdb84c3ae068e0a2161804bddf9a863e1a959fcc701bb07bd3b"
         }
       ],
       "updates": [
@@ -9824,6 +9824,112 @@
               "confidence": 0.99,
               "method": "compact-controls-light-current-pixel",
               "source": "Matched 1280x820 light full-frame pair after light-only material calibration"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "review-empty-typography-current",
+      "observedAt": "2026-08-19T06:26:00+09:00",
+      "commit": "2616dfa93",
+      "codeCommit": "e156e4ee8",
+      "codeState": "commit",
+      "label": "Review Empty typography and material parity",
+      "narrative": "A fresh current-head same-snapshot Review Empty pair confirms the shared 2x2 card geometry remains exact and localizes the remaining hotspot to Lynx text inheritance and missing dark inset-ring material. Shared semantic leaves now let Lynx resolve the section and card title/description hierarchy to Web's 14px/500/20 and 12px/400/19.5 contracts, while the card receives the authority 5% white inset ring. Web authority pixels remain byte-identical. Full-frame MAE falls from 3.409735 to 2.774741, panel MAE from 3.695481 to 2.190309, empty-grid MAE from 8.543846 to 5.079059, and first-card MAE from 6.485131 to 4.302317. Exact Native proves disabled Browser leaves the empty state unchanged and Files opens the real surface.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share one immutable snapshot, route, dark theme, viewport, panel state, action keys, geometry, Web bundle, and byte-identical Web authority pixels. The only product changes are shared semantic leaves and Lynx typography/material adapters."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-16/fidelity/review-empty-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ee7c3c42b6fd5bdb84c3ae068e0a2161804bddf9a863e1a959fcc701bb07bd3b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.125,
+              "confidence": 0.99,
+              "method": "review-empty-truthful-placeholder-content",
+              "source": "All action keys and implemented labels align; Browser keeps its explicit unavailable reason on Lynxtron"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 241.5,
+              "confidence": 0.99,
+              "method": "review-empty-panel-grid-card-geometry",
+              "source": "Current same-snapshot panel, empty surface, and four 241.5x112 cards remain exact"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "review-empty-semantic-typography",
+              "source": "Section and card titles/descriptions resolve to 14px/500/20 and 12px/400/19.5"
+            },
+            "material": {
+              "pixel": {
+                "mae": 2.774741,
+                "significantShare": 0.041818
+              },
+              "confidence": 0.99,
+              "method": "review-empty-current-full-frame-pixel",
+              "source": "Matched current-head dark full-frame pair after typography and inset-ring repair"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-review-empty-disabled-and-files-actions",
+              "source": "Disabled Browser touch preserves empty state and Files touch opens the real Files surface"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "review-empty-current-readiness",
+              "source": "Strict Browser current gate, exact Native bundle, main transport, zero renderer errors, cleanup, and leak gate zero"
+            }
+          }
+        },
+        {
+          "states": ["review-empty"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.125,
+              "confidence": 0.99,
+              "method": "native-review-empty-truthful-content",
+              "source": "Exact Native exposes the four action keys and keeps Browser's honest unavailable reason"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 215,
+              "confidence": 0.99,
+              "method": "native-review-empty-current-geometry",
+              "source": "Exact Native preserves the current empty-state and card grid geometry at the owned viewport"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-review-empty-typography",
+              "source": "Computed Native section and card typography resolves to the shared 14px and 12px contracts"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-review-empty-actions",
+              "source": "Measured Browser disabled touch is inert; measured Files touch transitions active kind to files"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-review-empty-exact-bundle",
+              "source": "Exact bundle, main transport seq 17, zero renderer errors, disposed state, and leak gate zero"
             }
           }
         }

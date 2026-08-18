@@ -3,6 +3,8 @@
   "observedAt": "2026-08-16T07:15:36+09:00",
   "productCommit": "f69627d31940cefc6ab6a02715447abe6bc50825",
   "harnessCommit": "02b431c039bc362261ad594228318d0fcbad9474",
+  "typographyProductCommit": "e156e4ee8",
+  "typographyTestCommit": "2616dfa93",
   "stateId": "review-empty",
   "scope": {
     "authority": "web",
@@ -81,7 +83,70 @@
       "reportSha256": "dbc572e776c8b02ac8c5f1aad697c684490bf8d804466a6d6e31be5c01ecf6cb",
       "webScreenshotSha256": "f28ab4cf0bf270e3e9e6a1a6b7c9e6bd9b53e1dc8b7a8db50e490902dfb977a4",
       "lynxScreenshotSha256": "f724026922e65c2a4514a58bfe1b7e952b93062debf747177d31e70959a73b0b"
+    },
+    "current": {
+      "status": "pass-with-residual",
+      "head": "2616dfa93",
+      "productCommit": "e156e4ee8",
+      "readyMs": 1647,
+      "webAuthorityByteIdentical": true,
+      "rendererErrors": 0,
+      "reportSha256": "f82658118a9c27a4152718db4d2713fd2674544099d722ed2f523f9f9b276b13",
+      "webScreenshotSha256": "98717e15c6511da073bd5b6c7a6c61a7ebdcc2e07310d5667fcbe97c78dfbdb0",
+      "lynxScreenshotSha256": "4485191778bd0c8c817b9f76cbd3def6debeeb3cf5cfa9cadfcf99140b8215c3",
+      "geometry": {
+        "panel": [739, 0, 541, 820],
+        "empty": [741, 44, 539, 776],
+        "cardSize": [241.5, 112],
+        "residual": 0
+      },
+      "typography": {
+        "sectionTitle": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 },
+        "sectionDescription": { "fontSize": 12, "fontWeight": 400, "lineHeight": 19.5 },
+        "cardTitle": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 },
+        "cardDescription": { "fontSize": 12, "fontWeight": 400, "lineHeight": 19.5 }
+      },
+      "material": {
+        "cardInsetRing": "rgba(255,255,255,0.05)"
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "before": {
+          "fullFrame": { "mae": 3.409735, "significantShare": 0.043667 },
+          "panel": { "mae": 3.695481, "significantShare": 0.031944 },
+          "emptyGrid": { "mae": 8.543846, "significantShare": 0.075446 },
+          "firstCard": { "mae": 6.485131, "significantShare": 0.096333 }
+        },
+        "after": {
+          "fullFrame": { "mae": 2.774741, "significantShare": 0.041818 },
+          "panel": { "mae": 2.190309, "significantShare": 0.027561 },
+          "emptyGrid": { "mae": 5.079059, "significantShare": 0.067308 },
+          "firstCard": { "mae": 4.302317, "significantShare": 0.089507 }
+        }
+      }
     }
+  },
+  "native": {
+    "status": "pass",
+    "bundleSha256": "2cb62ef6634fff008bed004f42a92718817193db1512e3c85f3fcccac71cb068",
+    "sectionTypography": "14px/500/20 and 12px/400/19.5",
+    "cardTypography": "14px/500/20 and 12px/400/19.5",
+    "cardInsetRing": "5% white",
+    "disabledBrowserTapPreservedEmptyState": true,
+    "filesTapOpenedFilesSurface": true,
+    "transport": { "kind": "main", "lastSeq": 17 },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "fidelityImpact": {
+    "denominatorChanged": false,
+    "previousCheckpoint": 0.371793,
+    "current": 0.363738,
+    "delta": -0.008055,
+    "evidenceDebtBefore": 0.360585,
+    "evidenceDebtAfter": 0.352307,
+    "existingWeightsChanged": false,
+    "existingScopeReduced": false
   },
   "validation": {
     "productTests": "12/12",
@@ -92,7 +157,7 @@
     "screenshotBudget": "32/100"
   },
   "remainingRisk": [
-    "Full-frame material residual remains 0.118471.",
+    "The remaining full-frame MAE is 2.774741 and includes truthful Browser placeholder-copy divergence plus icon-raster differences.",
     "Browser description intentionally differs because embedded browser preview is not implemented on Lynxtron.",
     "Terminal is an honest placeholder and must not be counted as a running shell.",
     "Native-to-Web material parity is not claimed."

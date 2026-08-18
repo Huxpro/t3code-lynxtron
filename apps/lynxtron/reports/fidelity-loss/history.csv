@@ -151,3 +151,4 @@ composer-compact-controls-open-current,2026-08-19T05:36:00+09:00,b8ca7385634b143
 composer-compact-controls-light-baseline,2026-08-19T05:49:10+09:00,409bab3d812d85a77464fe3d15e52f4ca0e95b61,working-tree,Compact Composer light material baseline,0.382334,0.382334,0.017869,0.371097,0.628903,0.604767
 composer-compact-controls-light-native-certification,2026-08-19T06:00:31+09:00,e1f5dd41d,commit,Compact Composer light Native certification,0.371823,0.371823,0.017575,0.360585,0.639415,0.615278
 composer-compact-controls-light-current,2026-08-19T06:03:30+09:00,e1f5dd41d,commit,Compact Composer light material parity,0.371793,0.371793,0.017528,0.360585,0.639415,0.615308
+review-empty-typography-current,2026-08-19T06:26:00+09:00,2616dfa93,commit,Review Empty typography and material parity,0.363738,0.363738,0.017649,0.352307,0.647693,0.623363
