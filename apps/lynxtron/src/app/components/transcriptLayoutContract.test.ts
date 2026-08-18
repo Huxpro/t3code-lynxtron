@@ -94,6 +94,11 @@ describe("transcript layout contract", () => {
     expect(block).toContain("height: 112px;");
     expect(block).toContain("min-height: 112px;");
     expect(block).toContain("max-height: 112px;");
+    expect(block).toContain("box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);");
+    expect(overrides).toContain(".right-panel-empty-card__title {");
+    expect(overrides).toContain(".right-panel-empty-card__description {");
+    expect(overrides).toContain("font-size: 14px;");
+    expect(overrides).toContain("font-size: 12px;");
   });
 
   it("stretches assistant rows across the native list item before sizing review cards", () => {

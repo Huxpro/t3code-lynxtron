@@ -116,6 +116,11 @@ describe("RightPanelEmptySurface", () => {
     expect(markup).toContain("right-panel-empty-grid");
     expect(markup).toContain("right-panel-empty-row");
     expect(markup).toContain("right-panel-empty-card");
+    expect(markup).toContain("right-panel-empty__title");
+    expect(markup).toContain("right-panel-empty__description");
+    expect(markup).toContain("right-panel-empty-card__icon");
+    expect(markup).toContain("right-panel-empty-card__title");
+    expect(markup).toContain("right-panel-empty-card__description");
   });
 
   it("marks disabled cards with aria-disabled and the muted treatment", () => {
