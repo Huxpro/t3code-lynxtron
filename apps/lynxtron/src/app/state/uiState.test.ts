@@ -10,7 +10,7 @@ import {
 } from "./uiState";
 
 const plan: RightPanelSurface = { id: "plan:1", kind: "plan", label: "Plan" };
-const files: RightPanelSurface = { id: "files:2", kind: "files", label: "Files" };
+const files = { id: "files:2", kind: "files", label: "Files" } satisfies RightPanelSurface;
 const file: RightPanelSurface = {
   id: "file:AGENTS.md",
   kind: "file",

@@ -46,6 +46,12 @@ export type RightPanelSurface =
 
 export type RightPanelState = PanelSurfaceState<RightPanelSurface>;
 
+type FilesRightPanelSurface = {
+  readonly id: string;
+  readonly kind: "files";
+  readonly label: string;
+};
+
 export interface ModelPickerNavigationState {
   readonly scopeKey: string | null;
   readonly provider: ProviderInstanceId | "favorites";
@@ -89,7 +95,7 @@ export type RightPanelAction =
   | { readonly type: "open"; readonly surface: RightPanelSurface }
   | {
       readonly type: "return-files";
-      readonly surface: Extract<RightPanelSurface, { kind: "files" }>;
+      readonly surface: FilesRightPanelSurface;
     }
   | { readonly type: "close-surface"; readonly surfaceId: string }
   | { readonly type: "activate"; readonly surfaceId: string }
