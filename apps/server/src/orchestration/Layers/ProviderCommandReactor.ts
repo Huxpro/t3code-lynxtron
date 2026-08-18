@@ -7,6 +7,7 @@ import {
   ProviderDriverKind,
   type ProjectId,
   type OrchestrationSession,
+  type ServerProvider,
   ThreadId,
   type ProviderSession,
   type RuntimeMode,
@@ -159,6 +160,32 @@ export function providerErrorLabelFromInstanceHint(input: {
   return providerErrorLabel(
     input.instanceId ?? input.modelSelectionInstanceId ?? input.sessionProvider,
   );
+}
+
+function providerTurnStartUnavailableDetail(provider: ServerProvider): string | undefined {
+  if (provider.availability === "unavailable") {
+    return (
+      provider.unavailableReason ??
+      provider.message ??
+      `Provider instance '${provider.instanceId}' is unavailable in this build.`
+    );
+  }
+  if (provider.enabled === false) {
+    return provider.message ?? `Provider instance '${provider.instanceId}' is disabled.`;
+  }
+  if (provider.installed === false) {
+    return provider.message ?? `Provider instance '${provider.instanceId}' is not installed.`;
+  }
+  if (provider.auth.status === "unauthenticated") {
+    return (
+      provider.message ??
+      `Provider instance '${provider.instanceId}' is not authenticated. Sign in and try again.`
+    );
+  }
+  if (provider.status === "error") {
+    return provider.message ?? `Provider instance '${provider.instanceId}' is not ready.`;
+  }
+  return undefined;
 }
 
 function canReplaceThreadTitle(currentTitle: string, titleSeed?: string): boolean {
@@ -492,6 +519,18 @@ const make = Effect.gen(function* () {
       });
     }
     const preferredProvider: ProviderDriverKind = desiredDriverKind;
+    const providers = yield* providerRegistry.getProviders;
+    const desiredProvider = providers.find((provider) => provider.instanceId === desiredInstanceId);
+    const providerUnavailableDetail = desiredProvider
+      ? providerTurnStartUnavailableDetail(desiredProvider)
+      : undefined;
+    if (providerUnavailableDetail) {
+      return yield* new ProviderAdapterRequestError({
+        provider: preferredProvider,
+        method: "thread.turn.start",
+        detail: providerUnavailableDetail,
+      });
+    }
     if (options?.pendingTurnStart === true && thread.session?.status !== "running") {
       yield* setThreadSession({
         threadId,

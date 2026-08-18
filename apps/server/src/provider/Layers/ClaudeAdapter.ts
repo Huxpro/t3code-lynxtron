@@ -297,6 +297,25 @@ function isClaudeInterruptedCause(cause: Cause.Cause<ProviderAdapterProcessError
   );
 }
 
+function isClaudeAuthenticationFailureMessage(message: string): boolean {
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("failed to authenticate") ||
+    normalized.includes("authentication failed") ||
+    normalized.includes("oauth session expired") ||
+    normalized.includes("not logged in")
+  );
+}
+
+const CLAUDE_AUTHENTICATION_REQUIRED_MESSAGE =
+  "Claude authentication expired. Run `claude auth login` and try again.";
+
+function normalizeClaudeFailureMessage(message: string): string {
+  return isClaudeAuthenticationFailureMessage(message)
+    ? CLAUDE_AUTHENTICATION_REQUIRED_MESSAGE
+    : message;
+}
+
 function resultErrorsText(result: SDKResultMessage): string {
   return "errors" in result && Array.isArray(result.errors)
     ? result.errors.join(" ").toLowerCase()
@@ -995,7 +1014,7 @@ const buildUserMessageEffect = Effect.fn("buildUserMessageEffect")(function* (
 });
 
 function turnStatusFromResult(result: SDKResultMessage): ProviderRuntimeTurnStatus {
-  if (result.subtype === "success") {
+  if (result.subtype === "success" && result.is_error !== true) {
     return "completed";
   }
 
@@ -1687,6 +1706,7 @@ export const makeClaudeAdapter = Effect.fn("makeClaudeAdapter")(function* (
     context: ClaudeSessionContext,
     message: string,
     cause?: unknown,
+    errorClass: "provider_error" | "authentication_error" = "provider_error",
   ) {
     if (cause !== undefined) {
       void cause;
@@ -1702,7 +1722,7 @@ export const makeClaudeAdapter = Effect.fn("makeClaudeAdapter")(function* (
       ...(turnState ? { turnId: asCanonicalTurnId(turnState.turnId) } : {}),
       payload: {
         message,
-        class: "provider_error",
+        class: errorClass,
         ...(cause !== undefined ? { detail: cause } : {}),
       },
       providerRefs: nativeProviderRefs(context),
@@ -2058,12 +2078,13 @@ export const makeClaudeAdapter = Effect.fn("makeClaudeAdapter")(function* (
 
     const updatedAt = yield* nowIso;
     context.turnState = undefined;
+    const { lastError: _lastError, ...sessionWithoutLastError } = context.session;
     context.session = {
-      ...context.session,
-      status: "ready",
+      ...sessionWithoutLastError,
+      status: status === "failed" ? "error" : "ready",
       activeTurnId: undefined,
       updatedAt,
-      ...(status === "failed" && errorMessage ? { lastError: errorMessage } : {}),
+      ...(status === "failed" ? { lastError: errorMessage ?? "Claude turn failed." } : {}),
     };
     yield* updateResumeCursor(context);
   });
@@ -2465,6 +2486,17 @@ export const makeClaudeAdapter = Effect.fn("makeClaudeAdapter")(function* (
       return;
     }
 
+    const apiErrorMetadata = message as typeof message & {
+      readonly is_api_error_message?: boolean;
+    };
+    const apiErrorMessage =
+      apiErrorMetadata.is_api_error_message === true
+        ? extractAssistantTextBlocks(message).join("\n").trim()
+        : "";
+    if (apiErrorMessage.length > 0) {
+      return;
+    }
+
     // Auto-start a synthetic turn for assistant messages that arrive without
     // an active turn (e.g., background agent/subagent responses between user prompts).
     if (!context.turnState) {
@@ -2554,10 +2586,26 @@ export const makeClaudeAdapter = Effect.fn("makeClaudeAdapter")(function* (
     }
 
     const status = turnStatusFromResult(message);
-    const errorMessage = message.subtype === "success" ? undefined : message.errors[0];
+    const errorMessage =
+      message.subtype === "success"
+        ? message.is_error === true && typeof message.result === "string"
+          ? message.result
+          : undefined
+        : message.errors[0];
 
     if (status === "failed") {
-      yield* emitRuntimeError(context, errorMessage ?? "Claude turn failed.");
+      const rawFailureMessage = errorMessage ?? "Claude turn failed.";
+      const failureMessage = normalizeClaudeFailureMessage(rawFailureMessage);
+      yield* emitRuntimeError(
+        context,
+        failureMessage,
+        failureMessage === rawFailureMessage ? undefined : { providerMessage: rawFailureMessage },
+        isClaudeAuthenticationFailureMessage(rawFailureMessage)
+          ? "authentication_error"
+          : "provider_error",
+      );
+      yield* completeTurn(context, status, failureMessage, message);
+      return;
     }
 
     yield* completeTurn(context, status, errorMessage, message);

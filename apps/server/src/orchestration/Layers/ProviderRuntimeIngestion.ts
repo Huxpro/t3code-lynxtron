@@ -9,6 +9,7 @@ import {
   type OrchestrationProposedPlanId,
   CheckpointRef,
   isToolLifecycleItemType,
+  type ProviderInstanceId,
   ThreadId,
   type ThreadTokenUsageSnapshot,
   TurnId,
@@ -29,6 +30,7 @@ import * as Stream from "effect/Stream";
 import { makeDrainableWorker } from "@t3tools/shared/DrainableWorker";
 
 import { ProviderService } from "../../provider/Services/ProviderService.ts";
+import { ProviderRegistry } from "../../provider/Services/ProviderRegistry.ts";
 import { ProjectionTurnRepository } from "../../persistence/Services/ProjectionTurns.ts";
 import { ProjectionTurnRepositoryLive } from "../../persistence/Layers/ProjectionTurns.ts";
 import { isGitRepository } from "../../git/Utils.ts";
@@ -695,6 +697,7 @@ const make = Effect.gen(function* () {
   const orchestrationEngine = yield* OrchestrationEngineService;
   const projectionSnapshotQuery = yield* ProjectionSnapshotQuery;
   const providerService = yield* ProviderService;
+  const providerRegistry = yield* ProviderRegistry;
   const projectionTurnRepository = yield* ProjectionTurnRepository;
   const serverSettingsService = yield* ServerSettingsService;
   const providerCommandId = (event: ProviderRuntimeEvent, tag: string) =>
@@ -1896,8 +1899,30 @@ const make = Effect.gen(function* () {
 
   const processDomainEvent = (_event: TurnStartRequestedDomainEvent) => Effect.void;
 
+  const providerRefreshWorker = yield* makeDrainableWorker((instanceId: ProviderInstanceId) =>
+    providerRegistry.refreshInstance(instanceId).pipe(
+      Effect.asVoid,
+      Effect.catchCause((cause) =>
+        Effect.logWarning("provider auth refresh failed after runtime authentication error", {
+          instanceId,
+          cause: Cause.pretty(cause),
+        }),
+      ),
+    ),
+  );
+
   const processInput = (input: RuntimeIngestionInput) =>
-    input.source === "runtime" ? processRuntimeEvent(input.event) : processDomainEvent(input.event);
+    input.source === "runtime"
+      ? processRuntimeEvent(input.event).pipe(
+          Effect.andThen(
+            input.event.type === "runtime.error" &&
+              input.event.payload.class === "authentication_error" &&
+              input.event.providerInstanceId !== undefined
+              ? providerRefreshWorker.enqueue(input.event.providerInstanceId)
+              : Effect.void,
+          ),
+        )
+      : processDomainEvent(input.event);
 
   const processInputSafely = (input: RuntimeIngestionInput) =>
     processInput(input).pipe(
@@ -1935,7 +1960,7 @@ const make = Effect.gen(function* () {
 
   return {
     start,
-    drain: worker.drain,
+    drain: worker.drain.pipe(Effect.andThen(providerRefreshWorker.drain)),
   } satisfies ProviderRuntimeIngestionShape;
 });
 
