@@ -33,6 +33,13 @@ const browserPreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
   "utf8",
 );
+const settingsNavigationSource = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/settings/settingsNavigationHost.lynx.tsx",
+  ),
+  "utf8",
+);
 
 describe("desktop shell interaction contract", () => {
   it("keeps the anchored model picker dismissible without modal dimming", () => {
@@ -299,6 +306,8 @@ describe("desktop shell interaction contract", () => {
       '".settings-nav__items{display:flex;flex:1 1 0%;flex-direction:column;width:100%;}"',
     );
     expect(browserPreviewSource).toContain('".settings-main{" +');
+    expect(settingsNavigationSource).not.toContain('isActive || item.to === "/settings/providers"');
+    expect(overrides).not.toContain(".settings-nav__item--providers {");
   });
 
   it("projects and opens the real repository Publish flow", () => {
