@@ -201,7 +201,7 @@ export function Composer({
     hasWideActions: Boolean(approvalActions || questionActions),
   });
   const compactControlsContentHeight =
-    8 +
+    33 +
     modelOptionSections.reduce((height, section) => height + 24 + section.items.length * 28, 0) +
     (showInteractionModeToggle ? 88 : 0) +
     144;
