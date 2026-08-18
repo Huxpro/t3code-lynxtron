@@ -436,10 +436,6 @@ export function Composer({
                         {compactControlsMenuOpen ? (
                           <>
                             <view
-                              className="composer-compact-controls-dismiss"
-                              bindtap={() => setCompactControlsMenuOpen(false)}
-                            />
-                            <view
                               className="composer-compact-controls-menu"
                               aria-label="More composer controls"
                               data-composer-compact-controls-menu
@@ -544,6 +540,10 @@ export function Composer({
                                 </view>
                               </scroll-view>
                             </view>
+                            <view
+                              className="composer-compact-controls-dismiss"
+                              bindtap={() => setCompactControlsMenuOpen(false)}
+                            />
                           </>
                         ) : null}
                       </view>

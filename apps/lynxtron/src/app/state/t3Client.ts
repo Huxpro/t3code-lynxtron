@@ -88,6 +88,11 @@ import {
   shouldRollbackModelSelectionMutation,
 } from "./modelSelection.logic";
 import { shouldReportVcsStatusReadFailure } from "./vcsStatusProjection.logic";
+import {
+  projectThreadInteractionMode,
+  projectThreadRuntimeMode,
+  rollbackThreadModeMutation,
+} from "./threadModeMutation.logic";
 import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
@@ -197,6 +202,8 @@ let mainCommandBridge: Partial<PollBridge> | null = null;
 let mtsProviderFixture: ServerProvider | undefined;
 let vcsStatusRequestSequence = 0;
 let modelSelectionMutationSequence = 0;
+const pendingThreadRuntimeModes = new Map<string, RuntimeMode>();
+const pendingThreadInteractionModes = new Map<string, ProviderInteractionMode>();
 
 function getPreloadBridge(): Partial<PollBridge> | undefined {
   "background only";
@@ -389,7 +396,24 @@ function applyShellPayload(shell: ShellEventPayload): void {
   const nextFingerprint = JSON.stringify(shell);
   if (nextFingerprint === shellFingerprint) return;
   shellFingerprint = nextFingerprint;
-  const threads = shell.threads ?? [];
+  const canonicalThreads = shell.threads ?? [];
+  for (const [threadId, runtimeMode] of pendingThreadRuntimeModes) {
+    const thread = canonicalThreads.find((candidate) => candidate.id === threadId);
+    if (thread?.runtimeMode === runtimeMode) pendingThreadRuntimeModes.delete(threadId);
+  }
+  for (const [threadId, interactionMode] of pendingThreadInteractionModes) {
+    const thread = canonicalThreads.find((candidate) => candidate.id === threadId);
+    if (thread?.interactionMode === interactionMode) {
+      pendingThreadInteractionModes.delete(threadId);
+    }
+  }
+  let threads = canonicalThreads;
+  for (const [threadId, runtimeMode] of pendingThreadRuntimeModes) {
+    threads = projectThreadRuntimeMode(threads, threadId, runtimeMode);
+  }
+  for (const [threadId, interactionMode] of pendingThreadInteractionModes) {
+    threads = projectThreadInteractionMode(threads, threadId, interactionMode);
+  }
   const stateBeforeShell = appAtomRegistry.get(t3ClientStateAtom);
   const activeThread = threads.find((thread) => thread.id === stateBeforeShell.activeThreadId);
   const projects = shell.projects ?? [];
@@ -1169,17 +1193,49 @@ function setModelOptions(options: NonNullable<ModelSelection["options"]>): void 
 }
 
 function setThreadRuntimeMode(runtimeMode: RuntimeMode): void {
-  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const threadId = state.activeThreadId;
   const bridge = getBridge();
   if (!threadId || !bridge?.setThreadRuntimeMode) return;
-  void bridge.setThreadRuntimeMode({ threadId, runtimeMode });
+  pendingThreadRuntimeModes.set(threadId, runtimeMode);
+  patchState({ threads: projectThreadRuntimeMode(state.threads, threadId, runtimeMode) });
+  void bridge.setThreadRuntimeMode({ threadId, runtimeMode }).catch((error: unknown) => {
+    pendingThreadRuntimeModes.delete(threadId);
+    patchState({
+      threads: rollbackThreadModeMutation(
+        appAtomRegistry.get(t3ClientStateAtom).threads,
+        state.threads,
+        threadId,
+        "runtimeMode",
+        runtimeMode,
+      ),
+    });
+    console.error("[t3-client] failed to set runtime mode", { error });
+  });
 }
 
 function setThreadInteractionMode(interactionMode: ProviderInteractionMode): void {
-  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const threadId = state.activeThreadId;
   const bridge = getBridge();
   if (!threadId || !bridge?.setThreadInteractionMode) return;
-  void bridge.setThreadInteractionMode({ threadId, interactionMode });
+  pendingThreadInteractionModes.set(threadId, interactionMode);
+  patchState({
+    threads: projectThreadInteractionMode(state.threads, threadId, interactionMode),
+  });
+  void bridge.setThreadInteractionMode({ threadId, interactionMode }).catch((error: unknown) => {
+    pendingThreadInteractionModes.delete(threadId);
+    patchState({
+      threads: rollbackThreadModeMutation(
+        appAtomRegistry.get(t3ClientStateAtom).threads,
+        state.threads,
+        threadId,
+        "interactionMode",
+        interactionMode,
+      ),
+    });
+    console.error("[t3-client] failed to set interaction mode", { error });
+  });
 }
 
 function setProviderEnabled(instanceId: ProviderInstanceId, enabled: boolean): void {

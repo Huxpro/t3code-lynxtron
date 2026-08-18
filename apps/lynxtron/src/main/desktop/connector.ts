@@ -226,6 +226,8 @@ export class T3Connector {
   private threadFibers = new Map<string, Fiber.Fiber<unknown, unknown>>();
   private modelSelection: ModelSelection | undefined;
   private pendingThreadModelSelections = new Map<string, ModelSelection>();
+  private pendingThreadRuntimeModes = new Map<string, RuntimeMode>();
+  private pendingThreadInteractionModes = new Map<string, ProviderInteractionMode>();
   private serverConfig: ServerConfig | undefined;
   private authAccessSnapshot: AuthAccessSnapshot = EMPTY_AUTH_ACCESS_SNAPSHOT;
   private configProjection: Option.Option<ServerConfigProjection> = Option.none();
@@ -695,6 +697,16 @@ export class T3Connector {
         this.pendingThreadModelSelections.delete(threadId);
       }
     }
+    for (const [threadId, runtimeMode] of this.pendingThreadRuntimeModes) {
+      const thread = this.shellSnapshot?.threads.find((candidate) => candidate.id === threadId);
+      if (thread?.runtimeMode === runtimeMode) this.pendingThreadRuntimeModes.delete(threadId);
+    }
+    for (const [threadId, interactionMode] of this.pendingThreadInteractionModes) {
+      const thread = this.shellSnapshot?.threads.find((candidate) => candidate.id === threadId);
+      if (thread?.interactionMode === interactionMode) {
+        this.pendingThreadInteractionModes.delete(threadId);
+      }
+    }
     // Archive/unarchive/delete all surface here as plain upserts/removes, so
     // refresh the (stream-excluded) archived snapshot on every shell item.
     this.refreshArchived();
@@ -714,7 +726,16 @@ export class T3Connector {
       "updated_at",
     ).map((thread) => {
       const pendingSelection = this.pendingThreadModelSelections.get(thread.id);
-      return pendingSelection ? { ...thread, modelSelection: pendingSelection } : thread;
+      const pendingRuntimeMode = this.pendingThreadRuntimeModes.get(thread.id);
+      const pendingInteractionMode = this.pendingThreadInteractionModes.get(thread.id);
+      return pendingSelection || pendingRuntimeMode || pendingInteractionMode
+        ? {
+            ...thread,
+            ...(pendingSelection ? { modelSelection: pendingSelection } : {}),
+            ...(pendingRuntimeMode ? { runtimeMode: pendingRuntimeMode } : {}),
+            ...(pendingInteractionMode ? { interactionMode: pendingInteractionMode } : {}),
+          }
+        : thread;
     });
     const archivedThreads = this.archivedThreads
       .slice()
@@ -954,6 +975,8 @@ export class T3Connector {
     this.threadSnapshots.delete(input.threadId);
     this.threadSequences.delete(input.threadId);
     this.pendingThreadModelSelections.delete(input.threadId);
+    this.pendingThreadRuntimeModes.delete(input.threadId);
+    this.pendingThreadInteractionModes.delete(input.threadId);
   }
 
   async archiveThread(input: { threadId: string; unarchive?: boolean }): Promise<void> {
@@ -1172,26 +1195,40 @@ export class T3Connector {
   }
 
   async setThreadRuntimeMode(input: { threadId: string; runtimeMode: RuntimeMode }): Promise<void> {
-    await this.dispatchOrchestrationCommand({
-      type: "thread.runtime-mode.set",
-      commandId: crypto.randomUUID(),
-      threadId: input.threadId,
-      runtimeMode: input.runtimeMode,
-      createdAt: new Date().toISOString(),
-    });
+    await this.awaitRecoveredTransport();
+    this.pendingThreadRuntimeModes.set(input.threadId, input.runtimeMode);
+    try {
+      await this.dispatchOrchestrationCommand({
+        type: "thread.runtime-mode.set",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+        runtimeMode: input.runtimeMode,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      this.pendingThreadRuntimeModes.delete(input.threadId);
+      throw error;
+    }
   }
 
   async setThreadInteractionMode(input: {
     threadId: string;
     interactionMode: ProviderInteractionMode;
   }): Promise<void> {
-    await this.dispatchOrchestrationCommand({
-      type: "thread.interaction-mode.set",
-      commandId: crypto.randomUUID(),
-      threadId: input.threadId,
-      interactionMode: input.interactionMode,
-      createdAt: new Date().toISOString(),
-    });
+    await this.awaitRecoveredTransport();
+    this.pendingThreadInteractionModes.set(input.threadId, input.interactionMode);
+    try {
+      await this.dispatchOrchestrationCommand({
+        type: "thread.interaction-mode.set",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+        interactionMode: input.interactionMode,
+        createdAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      this.pendingThreadInteractionModes.delete(input.threadId);
+      throw error;
+    }
   }
 
   async updateServerSettings(input: { patch: ServerSettingsPatch }): Promise<ServerConfig> {
