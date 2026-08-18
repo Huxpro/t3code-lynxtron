@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T04:15:40+09:00",
+  "updatedAt": "2026-08-19T05:36:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -9461,6 +9461,203 @@
               "confidence": 0.99,
               "method": "file-detail-light-footer-repair-pixel",
               "source": "Same-snapshot 1280x820 light full-frame comparison after hiding the dark authority raster and restoring the real footer row"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-open-baseline",
+      "observedAt": "2026-08-19T04:40:02+09:00",
+      "commit": "9d9f9f3c8082d7bcb61e03075f864651931d7939",
+      "codeState": "working-tree",
+      "label": "Compact Composer controls baseline",
+      "narrative": "A newly admitted dark 1280x820 responsive state opens the real Files panel, lets the shared sub-620px Composer rule collapse controls into the ellipsis menu, and uses real renderer triggers. Web rendered one 146x537 column with fourteen canonical rows; Lynx rendered a 232x320 two-column card with thirteen rows, omitted separate Chat and Plan choices, and showed one Build toggle. The menu crop had 21.069368 MAE and 23.3349% significant pixels. The stale Web build, DevTool -1 sentinel, Sidebar outside-tap coordinate, and inner-file-surface containment check are rejected as harness mismatches.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point expands the fixed denominator with a previously unmeasured real responsive interaction state. No existing weight changes, no state is overwritten, and the high residual remains admitted."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/composer-compact-controls-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ea5ac13b511120fc8698ffe5ef66a9d0d665e6c2f305d2169cee34a7d8e8d666"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "compact-controls-row-content-divergence",
+              "source": "Web has fourteen rows including separate Chat and Plan choices; Lynx has thirteen rows and replaces those choices with one Build row"
+            },
+            "geometry": {
+              "anchorDeltas": [191.609375, 215, 85.78125, 217, 8.734375, 0, 2, 0],
+              "anchorScale": 537,
+              "confidence": 0.99,
+              "method": "compact-controls-panel-trigger-geometry",
+              "source": "Same-snapshot panel and trigger rectangles before the one-column responsive repair"
+            },
+            "typography": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "compact-controls-typography-divergence",
+              "source": "Lynx section labels collapsed into tall inline blocks and menu copy used 12px rows while Web used compact 14px menu rows"
+            },
+            "material": {
+              "pixel": {
+                "mae": 7.742365,
+                "significantShare": 0.087794
+              },
+              "confidence": 0.99,
+              "method": "compact-controls-full-frame-pixel",
+              "source": "Same-snapshot 1280x820 dark full-frame comparison before repair"
+            },
+            "interaction": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "compact-controls-selection-scroll-dismiss-baseline",
+              "source": "Menu opened but lacked canonical Plan selection and had no proven short-viewport scroll or selected-state persistence"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-responsive-readiness",
+              "source": "Same immutable snapshot, shared server, compact footer state, clean console, and leak pre/post zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-open-native-certification",
+      "observedAt": "2026-08-19T05:34:18+09:00",
+      "commit": "b8ca7385634b143f2ab6f2a1edaa7fe27710367a",
+      "codeCommit": "c835a270d",
+      "codeState": "commit",
+      "label": "Compact Composer controls Native certification",
+      "narrative": "A fresh current-bundle 1280x600 Native run proves responsive overflow instead of clipping: the panel is 438px high around 466px of content, all fourteen rows remain present, and the test-only main-thread scroll seam applies offset 120. A measured Plan row touch changes interaction mode from default to plan, advances main transport from 14 to 16, remains selected after reopen, and the fullscreen dismiss layer closes from an outside touch. Exact bundle identity, zero renderer errors, context containment, and isolated cleanup pass. Native material remains unknown because the screenshot is representative rather than a matched Web pixel pair.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point adds exact Native content, geometry, typography, interaction, and runtime coverage without assigning a Native pixel residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/composer-compact-controls-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ea5ac13b511120fc8698ffe5ef66a9d0d665e6c2f305d2169cee34a7d8e8d666"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-open"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-controls-content",
+              "source": "Exact Native exposes all fourteen canonical compact-control rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 438,
+              "confidence": 0.99,
+              "method": "native-compact-controls-responsive-geometry",
+              "source": "Exact Native uses a 438px viewport for 466px content at 1280x600, preserving panel and context containment"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-controls-typography",
+              "source": "Exact Native preserves one-column section labels, 14px rows, and selected/default copy"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-controls-scroll-select-dismiss",
+              "source": "Scroll offset 120 applies, Plan mutates and remains selected, and outside touch dismisses the fullscreen layer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-controls-exact-bundle-readiness",
+              "source": "Exact bundle, main transport sequence 14 to 16, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-open-current",
+      "observedAt": "2026-08-19T05:36:00+09:00",
+      "commit": "b8ca7385634b143f2ab6f2a1edaa7fe27710367a",
+      "codeCommit": "05239a93d",
+      "codeState": "commit",
+      "label": "Compact Composer controls responsive parity",
+      "narrative": "Lynx now matches Web's single-column compact menu anatomy, fourteen canonical rows, separate Chat and Plan selection, default badges, trigger-relative placement, viewport-derived scrolling, and selected-state persistence. The inline Files panel remains a root-level sibling while both context strips end before the outer panel boundary with zero overlap. Panel relation converges to 0.609375px x, 2px y, 1.78125px width, and zero height delta. Full-frame MAE falls from 7.742365 to 6.339572, Composer/context MAE from 10.979785 to 6.216030, and menu-envelope significant pixels from 23.3349% to 15.1789%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share one immutable snapshot, thread, theme, viewport, right-panel width, Web authority bundle, real menu trigger, and clean console. Invalid harness samples are excluded and Native behavior is proven separately."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/composer-compact-controls-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ea5ac13b511120fc8698ffe5ef66a9d0d665e6c2f305d2169cee34a7d8e8d666"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-canonical-row-content",
+              "source": "Both renderers expose fourteen canonical rows in the same section order"
+            },
+            "geometry": {
+              "anchorDeltas": [0.609375, 2, 1.78125, 0, 0.265625, 0, 0, 0],
+              "anchorScale": 537,
+              "confidence": 0.99,
+              "method": "compact-controls-panel-trigger-containment",
+              "source": "Panel, trigger, and outer right-panel containment converge to fractional Browser/Lynx rounding"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-row-typography",
+              "source": "Both render one-column 14px rows with compact section labels and selected/default copy"
+            },
+            "material": {
+              "pixel": {
+                "mae": 6.339572,
+                "significantShare": 0.073328
+              },
+              "confidence": 0.99,
+              "method": "compact-controls-current-full-frame-pixel",
+              "source": "Same-snapshot 1280x820 dark full-frame comparison after responsive repair"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-open-scroll-select-dismiss",
+              "source": "Real triggers open the menu; exact Native proves scroll, Plan selection, selected reopen, and outside dismissal"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-compact-controls-readiness",
+              "source": "Strict Browser final gate, exact Native bundle, clean consoles, and leak pre/post zero"
             }
           }
         }
