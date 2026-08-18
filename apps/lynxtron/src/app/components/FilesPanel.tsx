@@ -123,25 +123,20 @@ function EditableFilePreview({
         bindinput={handleInput}
         bindblur={flush}
       />
-      <view className="file-panel__statusbar">
-        <text
-          className={`files-panel__preview-status${
-            saveStatus === "error" ? " files-panel__preview-status--error" : ""
-          }`}
-        >
-          {saveError ??
-            (saveStatus === "pending"
-              ? "Unsaved changes"
-              : saveStatus === "error"
-                ? "Save failed"
-                : "Saved")}
-        </text>
-        {saveStatus !== "saved" ? (
+      {saveStatus !== "saved" || saveError ? (
+        <view className="file-panel__statusbar">
+          <text
+            className={`files-panel__preview-status${
+              saveStatus === "error" ? " files-panel__preview-status--error" : ""
+            }`}
+          >
+            {saveError ?? (saveStatus === "pending" ? "Unsaved changes" : "Save failed")}
+          </text>
           <view className="files-panel__save" bindtap={flush}>
             <text className="files-panel__save-label">Save now</text>
           </view>
-        ) : null}
-      </view>
+        </view>
+      ) : null}
     </view>
   );
 }
@@ -199,7 +194,9 @@ function renderTreeNode(
   );
 }
 
-export function FilesPanel() {
+export function FilesPanel({
+  selectedPath = null,
+}: { readonly selectedPath?: string | null } = {}) {
   const { activeThreadId, projects, threads } = useT3ClientState();
   const [listing, setListing] = useState<ListingState>(EMPTY_LISTING);
   const [refreshVersion, setRefreshVersion] = useState(0);
@@ -319,7 +316,7 @@ export function FilesPanel() {
                         0,
                         hasDirectoryNodes,
                         expandedDirectories,
-                        null,
+                        selectedPath,
                         toggleDirectory,
                         selectFile,
                       ),
@@ -390,19 +387,9 @@ export function FilePanel({ path }: { readonly path: string }) {
   return (
     <view className="file-panel">
       <view className="file-panel__toolbar" data-surface-subheader>
-        <view
-          className="file-panel__back"
-          aria-label="Back to workspace files"
-          bindtap={() => uiActions.openRightPanelSurface("files")}
-        >
-          <Icon name="arrow-left" size={14} color="#818181" />
-        </view>
         <scroll-view className="file-panel__breadcrumbs" scroll-orientation="horizontal">
           <view className="file-panel__breadcrumb-list">
-            <text
-              className="file-panel__breadcrumb file-panel__breadcrumb--project"
-              bindtap={() => uiActions.openRightPanelSurface("files")}
-            >
+            <text className="file-panel__breadcrumb file-panel__breadcrumb--project">
               {project?.title ?? "Files"}
             </text>
             {directoryParts.map((part, index) => (
@@ -421,22 +408,27 @@ export function FilePanel({ path }: { readonly path: string }) {
         </scroll-view>
       </view>
       <view className="file-panel__content">
-        {preview.pending ? (
-          <view className="file-panel__message">
-            <text className="files-panel__preview-status">Loading file…</text>
-          </view>
-        ) : preview.error ? (
-          <view className="file-panel__message">
-            <text className="files-panel__preview-error">{preview.error}</text>
-          </view>
-        ) : preview.result && cwd ? (
-          <EditableFilePreview
-            key={`${cwd}:${path}`}
-            cwd={cwd}
-            path={path}
-            result={preview.result}
-          />
-        ) : null}
+        <view className="file-panel__editor-column">
+          {preview.pending ? (
+            <view className="file-panel__message">
+              <text className="files-panel__preview-status">Loading file…</text>
+            </view>
+          ) : preview.error ? (
+            <view className="file-panel__message">
+              <text className="files-panel__preview-error">{preview.error}</text>
+            </view>
+          ) : preview.result && cwd ? (
+            <EditableFilePreview
+              key={`${cwd}:${path}`}
+              cwd={cwd}
+              path={path}
+              result={preview.result}
+            />
+          ) : null}
+        </view>
+        <view className="file-panel__explorer">
+          <FilesPanel selectedPath={path} />
+        </view>
       </view>
     </view>
   );

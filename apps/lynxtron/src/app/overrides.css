@@ -6969,27 +6969,12 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  padding: 0 8px;
-  gap: 4px;
+  padding: 0 12px;
+  gap: 8px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: var(--border);
   box-sizing: border-box;
-}
-.file-panel__back {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-}
-.file-panel__back:hover {
-  background-color: var(--accent);
-}
-.file-panel__back:active {
-  background-color: rgba(var(--foreground-rgb), 0.12);
 }
 .file-panel__breadcrumbs {
   display: flex;
@@ -7033,10 +7018,31 @@
 }
 .file-panel__content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-grow: 1;
   height: 0;
   min-height: 0;
+  box-sizing: border-box;
+}
+.file-panel__editor-column {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 0;
+  min-width: 0;
+  min-height: 0;
+}
+.file-panel__explorer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 256px;
+  min-width: 256px;
+  height: 100%;
+  min-height: 0;
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: var(--border);
   box-sizing: border-box;
 }
 .file-panel__message {

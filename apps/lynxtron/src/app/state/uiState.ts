@@ -312,6 +312,11 @@ export const uiActions = {
   openFileSurface(path: string): void {
     const trimmedPath = path.trim();
     if (!trimmedPath) return;
+    const current = appAtomRegistry.get(rightPanelStateAtom);
+    appAtomRegistry.set(rightPanelStateAtom, {
+      ...current,
+      surfaces: current.surfaces.filter((surface) => surface.kind !== "files"),
+    });
     updateRightPanel({
       type: "open",
       surface: {
