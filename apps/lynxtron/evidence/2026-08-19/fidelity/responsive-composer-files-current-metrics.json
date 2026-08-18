@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T07:37:46+09:00",
+  "productCommits": ["c8024af85", "1bb6e957e", "27c794da4"],
+  "testCommits": ["d268d9bb8", "2e9b4adba", "78245a28f"],
+  "states": [
+    "composer-compact-controls-open",
+    "file-editor-detail",
+    "file-editor-detail-light",
+    "settings-connections"
+  ],
+  "classification": {
+    "productLoss": [
+      "Lynx-for-Web hard-coded 768px and 444px Composer descendants independently of the live chat column, so the Composer card and context strip could diverge when the right panel opened.",
+      "The compact Composer menu used a fixed 537px height even when its current content was shorter, and an intermediate 184px width experiment was rejected because it drifted from the 146px Web authority.",
+      "The narrow right-panel sheet hid the file explorer without exposing a reverse navigation action, leaving users trapped in a file detail.",
+      "The file preview retained the Native-safe gutter and coarse syntax presentation but did not consistently resolve the bundled JetBrains Mono face.",
+      "Lynx-for-Web stripped the Settings shell flex allocation, allowing the navigation composition to collapse into a horizontal row."
+    ],
+    "harnessMismatch": [
+      "The 760x820 dual-renderer workbench run selected different thread states and is rejected as invalid visual evidence.",
+      "The workbench initially treated display:none and zero-area nodes as visible affordances; the measurement helper now returns null for those nodes without shrinking the captured screen.",
+      "The packaged verifier still targeted the removed .file-panel__path selector and treated zero-area hidden Files and explorer nodes as visible. It now measures the current breadcrumb and requires nonzero geometry.",
+      "Dark compact and file-detail Browser frames include an external Claude update notification on Web only. Their content and geometry gates remain valid, but those full-frame pixels are not attributed as a product material change."
+    ],
+    "intentionalPlatformDelta": [
+      "The narrow Lynx right panel is a 340px sheet with its desktop explorer hidden; the explicit Back action restores the Files browser instead of forcing a two-column editor into the sheet.",
+      "The Lynx editor remains a Native-safe preview plus textarea rather than the Web Pierre editor. Fine-grained tokenization, gutter utilities, line selection, and physical keyboard editing are not claimed equivalent."
+    ],
+    "evidenceBoundary": "All retained Browser cells use shipping Web and Lynx-for-Web artifacts, explicit 1280x820 dimensions, strict final gates, and zero renderer errors. Exact Native uses the final 78c7ed61 bundle at 760x820 with one PID-owned process, main transport sequence advance, measured DevTool touches, zero renderer errors, and disposed isolated state. The invalid 760 dual-renderer capture and notification-polluted dark material pixels receive no loss credit."
+  },
+  "browser": {
+    "composerCompactControls": {
+      "status": "pass-with-residual",
+      "report": "/tmp/t3-current-compact-controls-final/workbench-report.json",
+      "stateId": "composer-compact-controls-open",
+      "viewport": "1280x820",
+      "theme": "dark",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "bundles": {
+        "web": "aae47f8fc5af",
+        "lynx": "22f6a2ecd5d2"
+      },
+      "geometry": {
+        "webPanel": [435, 184, 146.21875, 537],
+        "lynxPanel": [434.890625, 182, 148, 537],
+        "webTrigger": [434.65625, 725, 30, 28],
+        "lynxTrigger": [434.890625, 725, 30, 28],
+        "webContext": [298, 752, 400, 48],
+        "lynxContext": [298, 752, 399, 48]
+      },
+      "content": {
+        "webRows": 14,
+        "lynxRows": 14
+      },
+      "pixelMetric": {
+        "status": "excluded",
+        "reason": "The Web frame contains an external update notification absent from Lynx."
+      },
+      "screenshots": {
+        "webSha256": "56d330f4cf12fc1c2e76055e40d365e7fe18d0b09b8c6b804ff6bb250b25eeda",
+        "lynxSha256": "884250630b8ff9e151163734d4a91c77d1d9eca99e9011e81de3ecca9ce07349"
+      }
+    },
+    "fileDetailDark": {
+      "status": "pass-with-residual",
+      "report": "/tmp/t3-current-file-detail-certified/workbench-report.json",
+      "stateId": "file-editor-detail",
+      "viewport": "1280x820",
+      "theme": "dark",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "geometry": {
+        "web": {
+          "surface": [741, 44, 539, 776],
+          "toolbar": [741, 44, 539, 40],
+          "editor": [741, 84, 283, 736],
+          "explorer": [1025, 84, 255, 736],
+          "back": null
+        },
+        "lynx": {
+          "surface": [741, 44, 539, 776],
+          "toolbar": [741, 44, 539, 40],
+          "editor": [741, 84, 283, 736],
+          "explorer": [1024, 84, 256, 736],
+          "back": null
+        }
+      },
+      "content": {
+        "currentFile": "PORT_WORKFLOW.md",
+        "tabCount": 1,
+        "secondFileSwitchPassed": true
+      },
+      "pixelMetric": {
+        "status": "excluded",
+        "reason": "The Web frame contains an external update notification absent from Lynx."
+      }
+    },
+    "fileDetailLight": {
+      "status": "pass-with-residual",
+      "report": "/tmp/t3-current-file-detail-light-final/workbench-report.json",
+      "stateId": "file-editor-detail-light",
+      "viewport": "1280x820",
+      "theme": "light",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "geometry": {
+        "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        "anchorScale": 736
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 7.809368,
+          "significantShare": 0.080671
+        },
+        "rightPanel": {
+          "mae": 15.333395,
+          "significantShare": 0.158711
+        },
+        "editor": {
+          "mae": 22.110634,
+          "significantShare": 0.203574
+        }
+      },
+      "screenshots": {
+        "webSha256": "4472606e7e379e565903695f4ea8dd71de62815acc7d331794b82ddb7c41a677",
+        "lynxSha256": "c999da80e588e46b2eb47a385b3a46872750fa9706c2a7a82b99a3e0f540f005"
+      }
+    },
+    "settingsConnections": {
+      "status": "pass-with-residual",
+      "report": "/tmp/t3-current-settings-final/workbench-report.json",
+      "stateId": "settings-connections",
+      "viewport": "1280x820",
+      "theme": "dark",
+      "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+      "navigationLabelsMatch": true,
+      "geometry": {
+        "webRoot": [256, 0, 1024, 820],
+        "lynxRoot": [256, 0, 1024, 820],
+        "webMain": [256, 0, 1024, 820],
+        "lynxMain": [256, 0, 1024, 820],
+        "webFirstSection": [320, 88, 896, 129.6875],
+        "lynxFirstSection": [320, 88, 896, 132],
+        "webRemoteSection": [320, 265.6875, 896, 276],
+        "lynxRemoteSection": [320, 268, 896, 136]
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 2.953962,
+          "significantShare": 0.040423
+        }
+      },
+      "screenshots": {
+        "webSha256": "afafbf407b52c75bc876c87834ca89325eab5c7822f55fb39a313ea684ca8e32",
+        "lynxSha256": "30ad97c18e8d1cc72e7dd91d02039c8c2047a7ab2595d52e2011d54042adf8df"
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "report": "/tmp/t3-file-sheet-back-native-final/report.json",
+    "viewport": "760x820",
+    "bundle": {
+      "bytes": 4601217,
+      "sha256": "78c7ed618b4e6869febb96bad61cdb3490e86ecd55dd660623f17500a6f7f0ea"
+    },
+    "fixtureSnapshotSha256": "841e7579b3195df0e9920f9d15b8046889a1bded1ddfeb8f320717aac85b904e",
+    "interaction": {
+      "input": "DevTool touch on measured right-panel controls, first file row, and Back action",
+      "fileSheet": [420, 0, 340, 820],
+      "back": [429, 58, 28, 28],
+      "explorerHidden": true,
+      "returnedFilesBrowser": [421, 92, 339, 728]
+    },
+    "transport": {
+      "kind": "main",
+      "beforeSeq": 3,
+      "afterSeq": 4
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "screenshots": {
+      "filesBrowserSha256": "d927c6e819ffea0d5636c6846eb2021f287da6b273edae7cdcbc7cd61b625a49",
+      "fileSurfaceSha256": "036d80e6f6c1c07a6cdffa6a0736f4ea13198a3b7be09fecbe91eae3a43c9705"
+    }
+  },
+  "validation": {
+    "focusedTests": "115/115 plus 47/47, 40/40, 33/33, and final 31/31 targeted reruns",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "browserPreviewBuild": "pass",
+    "productionBuild": "pass",
+    "browserStrictCells": [
+      "/tmp/t3-current-compact-controls-final/workbench-report.json",
+      "/tmp/t3-current-file-detail-certified/workbench-report.json",
+      "/tmp/t3-current-file-detail-light-final/workbench-report.json",
+      "/tmp/t3-current-settings-final/workbench-report.json"
+    ],
+    "nativeReport": "/tmp/t3-file-sheet-back-native-final/report.json",
+    "screenshotBudget": "32/100",
+    "agentBrowserLeakGate": "owned=0 orphaned=0"
+  }
+}

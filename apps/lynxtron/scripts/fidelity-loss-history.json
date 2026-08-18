@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T06:26:00+09:00",
+  "updatedAt": "2026-08-19T07:37:46+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -9930,6 +9930,213 @@
               "confidence": 0.99,
               "method": "native-review-empty-exact-bundle",
               "source": "Exact bundle, main transport seq 17, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsive-composer-files-current",
+      "observedAt": "2026-08-19T07:37:46+09:00",
+      "commit": "27c794da4",
+      "codeCommit": "c8024af85",
+      "codeState": "commit",
+      "label": "Responsive Composer and Files navigation fidelity",
+      "narrative": "A current-head fidelity loop closes three user-visible responsive regressions without weakening the fixed denominator. The Browser compact Composer keeps fourteen canonical rows and restores the Web authority width: Web is 146.21875x537 at x=435 y=184 and Lynx is 148x537 at x=434.890625 y=182; the Composer context strip remains inside the center column at x=298 with zero right-panel overlap. File detail remains one tab with a 539x776 surface, 40px toolbar, 283px editor, and 255/256px explorer on desktop; the bundled JetBrains Mono face is restored. At 760x820 exact Native switches to the 340px sheet, hides the explorer, exposes a 28x28 Back action, and a measured touch restores the 339x728 Files browser. Settings Connections again preserves the shared 256px shell boundary and 1024x820 main allocation, with eight matching navigation labels and both content sections at x=320 width=896. A wider 184px compact menu and light gutter tint experiment were rejected after authority comparison or pixel regression. The invalid 760 dual-renderer fixture and notification-polluted dark material frames receive no loss credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Retained Browser cells use strict shipping-artifact gates at fixed state, theme, viewport, and snapshot; exact Native uses the final 78c7ed61 bundle, PID-owned lifecycle, measured touch postconditions, main transport, zero renderer errors, and disposed state. Invalid fixture and external-notification pixels are excluded explicitly."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/responsive-composer-files-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "88b0f132cfadfa5b3b253f01516d51c76b8a7b30387b41c8b6ade72fda0e2b6b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-current-row-content",
+              "source": "Both renderers expose fourteen canonical rows in the same section order"
+            },
+            "geometry": {
+              "anchorDeltas": [0.109375, 2, 1.78125, 0, 0.234375, 0, 1, 0],
+              "anchorScale": 537,
+              "confidence": 0.99,
+              "method": "compact-controls-authority-width-and-context",
+              "source": "Current Web/Lynx panel, trigger, and context-strip anchors retain authority width and center-column containment"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-current-typography",
+              "source": "Both retain one-column section labels and 14px canonical rows"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-current-open-and-scroll-contract",
+              "source": "Real triggers open the current menu and the viewport-derived scroll seam remains source- and test-locked; no stale Native short-viewport geometry is claimed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-current-browser-readiness",
+              "source": "Strict current Browser gate, clean console, and agent-browser leak gate zero"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-current-content",
+              "source": "Both renderers load PORT_WORKFLOW.md and switch to PORTING_STRATEGY.md"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-detail-current-desktop-geometry",
+              "source": "Surface, toolbar, editor, explorer, single tab, and hidden Back match within one pixel"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-bundled-mono-contract",
+              "source": "Current Lynx preview and textarea resolve through the bundled T3 JetBrains Mono readiness class at 12px/19px"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-file-open-switch-current",
+              "source": "Both shipping renderers open the first file and switch to a second file from the persistent desktop explorer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-current-browser-readiness",
+              "source": "Strict current dark Browser cell passes with zero renderer errors; notification-polluted material is excluded"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-current-content",
+              "source": "Current light cell loads and switches the same two files"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-detail-light-current-geometry",
+              "source": "Current light surface, toolbar, editor, explorer, tabs, and hidden Back match within one pixel"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-bundled-mono-contract",
+              "source": "Current light preview retains the bundled JetBrains Mono 12px/19px contract"
+            },
+            "material": {
+              "pixel": {
+                "mae": 7.809368,
+                "significantShare": 0.080671
+              },
+              "confidence": 0.99,
+              "method": "file-detail-light-current-pixel",
+              "source": "Current 1280x820 light full-frame comparison after rejecting the regressive gutter tint and token overrides"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-current-open-switch",
+              "source": "Both light renderers open and switch files through the desktop explorer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-current-readiness",
+              "source": "Strict current light Browser cell, clean console, and leak gate zero"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-sheet-current-content",
+              "source": "Exact Native opens PORT_WORKFLOW.md from the Files browser and restores the directory surface"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-sheet-back-touch",
+              "source": "Measured DevTool touch opens the file sheet, confirms the explorer is hidden, taps the 28x28 Back action, and restores the 339x728 Files browser"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-sheet-final-bundle-readiness",
+              "source": "Final 78c7ed61 bundle, main transport sequence 3 to 4, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        },
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-connections-current-content",
+              "source": "Eight navigation labels, This environment, Remote environments, Network access copy, and empty-state identity match"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.3125, 0, 2.3125, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-shell-main-and-section-geometry",
+              "source": "Both roots and mains begin at x=256 with 1024x820 allocation; both sections begin at x=320 width=896 with only 2.3125px vertical rounding"
+            },
+            "material": {
+              "pixel": {
+                "mae": 2.953962,
+                "significantShare": 0.040423
+              },
+              "confidence": 0.99,
+              "method": "settings-connections-current-full-frame-pixel",
+              "source": "Current same-snapshot dark 1280x820 full-frame pair after restoring Browser Preview shell allocation"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-connections-current-navigation",
+              "source": "Connections route is selected through the shipping navigation and remains stable through capture"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-connections-current-readiness",
+              "source": "Strict administrative-session Browser gate, zero renderer errors, and leak gate zero"
             }
           }
         }
