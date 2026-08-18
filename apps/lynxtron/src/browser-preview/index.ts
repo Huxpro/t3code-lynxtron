@@ -422,26 +422,26 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".flex-auto{flex:1 1 auto;}" +
       ".flex-none{flex:none;}" +
       ".flex-initial{flex:0 1 auto;}" +
+      ".settings-root{display:flex;flex:1 1 0%;flex-direction:row;width:100%;height:100%;min-width:0;}" +
+      ".settings-nav{" +
+      "display:flex;flex:none;flex-direction:column;width:232px;min-width:232px;height:100%;}" +
+      ".settings-nav__items{display:flex;flex:1 1 0%;flex-direction:column;width:100%;}" +
+      ".settings-nav__footer{display:flex;flex:none;flex-direction:column;width:100%;}" +
+      ".settings-main{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;width:0;min-width:0;height:100%;}" +
       // overrides.css custom layout classes whose flex-direction/grow the Lynx
       // pipeline strips as native-redundant; re-supply for the browser proxy.
       ".hero{flex-direction:column;flex-grow:1;}" +
       ".hero__inner{flex-direction:column;}" +
-      ".composer-overlay{flex-direction:column;}" +
+      ".composer-overlay{flex-direction:column;width:100%;}" +
       ".composer-settled-banner__copy{display:flex;flex-direction:column;flex-grow:1;}" +
-      ".composer-stack{display:flex;flex-direction:column;width:768px;max-width:768px;min-width:0;}" +
-      ".composer-shell{display:block;width:768px;max-width:768px;min-width:0;}" +
-      ".composer-frame{display:block;width:768px;max-width:768px;}" +
-      ".composer-surface{display:flex;flex-direction:column;width:766px;max-width:766px;}" +
-      ".composer-editor-area{display:block;width:766px;max-width:766px;}" +
-      ".composer-footer{width:766px;max-width:766px;}" +
-      ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-stack," +
-      ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-shell," +
-      ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-frame{" +
-      "width:444px;max-width:444px;}" +
-      ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-surface," +
-      ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-editor-area," +
-      ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-footer{" +
-      "width:442px;max-width:442px;}" +
+      ".composer-stack,.composer-shell,.composer-frame{" +
+      "display:flex;flex-direction:column;width:100%;max-width:768px;min-width:0;box-sizing:border-box;}" +
+      ".composer-surface,.composer-editor-area,.composer-footer{" +
+      "width:100%;max-width:100%;min-width:0;box-sizing:border-box;}" +
+      ".composer-surface{display:flex;flex-direction:column;}" +
+      ".composer-context-strip{" +
+      "align-self:center;width:calc(100% - 44px);max-width:724px;min-width:0;box-sizing:border-box;}" +
       ".composer-footer,.composer-toolbar-row,.composer-primary-actions{display:flex;flex-direction:row;}" +
       ".composer-compact-controls-menu,.composer-compact-controls-menu__scroll," +
       ".composer-compact-controls-menu__content,.composer-compact-controls-menu__section{" +

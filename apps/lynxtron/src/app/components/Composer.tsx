@@ -200,7 +200,15 @@ export function Composer({
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
-  const compactControlsMenuHeight = Math.min(537, Math.max(220, viewport.height - 160));
+  const compactControlsContentHeight =
+    8 +
+    modelOptionSections.reduce((height, section) => height + 24 + section.items.length * 28, 0) +
+    (showInteractionModeToggle ? 88 : 0) +
+    144;
+  const compactControlsMenuHeight = Math.min(
+    compactControlsContentHeight,
+    Math.max(160, viewport.height - 140),
+  );
   const sendState = deriveComposerSendState({
     prompt: value,
     imageCount: 0,

@@ -87,6 +87,10 @@ export function syncModelPickerProvider(
 
 export type RightPanelAction =
   | { readonly type: "open"; readonly surface: RightPanelSurface }
+  | {
+      readonly type: "return-files";
+      readonly surface: Extract<RightPanelSurface, { kind: "files" }>;
+    }
   | { readonly type: "close-surface"; readonly surfaceId: string }
   | { readonly type: "activate"; readonly surfaceId: string }
   | { readonly type: "close-panel" }
@@ -128,6 +132,13 @@ export function applyRightPanelAction(
         };
       }
       return openPanelSurface(state, existing ?? action.surface);
+    }
+    case "return-files": {
+      const surfaces = state.surfaces.filter(
+        (surface) => surface.id !== state.activeSurfaceId || surface.kind !== "file",
+      );
+      const existing = surfaces.find((surface) => surface.kind === "files");
+      return openPanelSurface({ ...state, surfaces }, existing ?? action.surface);
     }
     case "close-surface":
       return closePanelSurface(state, action.surfaceId);
@@ -324,6 +335,16 @@ export const uiActions = {
         kind: "file",
         label: trimmedPath.split("/").at(-1) ?? trimmedPath,
         path: trimmedPath,
+      },
+    });
+  },
+  returnToFilesSurface(): void {
+    updateRightPanel({
+      type: "return-files",
+      surface: {
+        id: `files:${nextSurfaceId++}`,
+        kind: "files",
+        label: kindLabel("files"),
       },
     });
   },

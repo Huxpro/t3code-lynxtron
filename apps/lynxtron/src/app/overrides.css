@@ -2499,14 +2499,13 @@
 }
 .composer-compact-controls-menu {
   position: absolute;
-  left: 0;
+  left: -8px;
   bottom: 34px;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  width: 148px;
-  height: 537px;
-  max-height: 537px;
+  width: 184px;
+  max-height: calc(100vh - 140px);
   padding: 0;
   border-width: 1px;
   border-style: solid;
@@ -2521,8 +2520,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 535px;
-  max-height: 535px;
+  max-height: calc(100vh - 142px);
 }
 .composer-compact-controls-menu__content {
   display: flex;
@@ -7030,6 +7028,23 @@
   border-bottom-color: var(--border);
   box-sizing: border-box;
 }
+.file-panel__back {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin-left: -4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.file-panel__back:hover {
+  background-color: var(--accent);
+}
+.file-panel__back:active {
+  background-color: rgba(var(--foreground-rgb), 0.12);
+}
 .file-panel__breadcrumbs {
   display: flex;
   flex-direction: row;
@@ -7098,6 +7113,12 @@
   border-left-style: solid;
   border-left-color: var(--border);
   box-sizing: border-box;
+}
+.right-panel--sheet .file-panel__explorer {
+  display: none;
+}
+.right-panel--sheet .file-panel__back {
+  display: flex;
 }
 .file-panel__message {
   display: flex;
@@ -7171,6 +7192,12 @@
   padding-bottom: 24px;
   box-sizing: border-box;
 }
+.t3-jetbrains-mono-ready .files-panel__preview-content,
+.t3-jetbrains-mono-ready .files-panel__editor,
+.t3-jetbrains-mono-ready .file-editor-line__number,
+.t3-jetbrains-mono-ready .file-editor-line__content {
+  font-family: "T3 JetBrains Mono", var(--font-mono);
+}
 .file-editor-line {
   display: flex;
   flex-direction: row;
@@ -7182,7 +7209,8 @@
   flex-shrink: 0;
   width: 34px;
   padding-right: 8px;
-  color: rgba(var(--foreground-rgb), 0.4);
+  color: rgba(var(--foreground-rgb), 0.32);
+  background-color: rgba(var(--foreground-rgb), 0.018);
   font-family: var(--font-mono);
   font-size: 11px;
   line-height: 19px;
@@ -7200,6 +7228,9 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+.theme-light .file-editor-line__number {
+  background-color: rgba(var(--foreground-rgb), 0.025);
+}
 .file-editor-line__content--heading {
   color: #f97360;
   font-weight: 600;
@@ -7209,6 +7240,15 @@
 }
 .file-editor-line__content--strong {
   color: #f2c94c;
+}
+.theme-light .file-editor-line__content--heading {
+  color: #b42318;
+}
+.theme-light .file-editor-line__content--code {
+  color: #16794f;
+}
+.theme-light .file-editor-line__content--strong {
+  color: #946200;
 }
 .file-panel__statusbar {
   display: flex;

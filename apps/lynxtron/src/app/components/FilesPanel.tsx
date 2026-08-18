@@ -421,6 +421,13 @@ export function FilePanel({ path }: { readonly path: string }) {
   return (
     <view className="file-panel">
       <view className="file-panel__toolbar" data-surface-subheader>
+        <view
+          className="file-panel__back"
+          aria-label="Back to workspace files"
+          bindtap={uiActions.returnToFilesSurface}
+        >
+          <Icon name="arrow-left" size={14} color="#71717a" />
+        </view>
         <scroll-view className="file-panel__breadcrumbs" scroll-orientation="horizontal">
           <view className="file-panel__breadcrumb-list">
             <text className="file-panel__breadcrumb file-panel__breadcrumb--project">
