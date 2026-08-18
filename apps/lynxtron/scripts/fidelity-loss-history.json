@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-17T23:54:00+09:00",
+  "updatedAt": "2026-08-19T03:06:58+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -9104,6 +9104,159 @@
               "confidence": 0.99,
               "method": "native-exact-bundle-files-readiness",
               "source": "Exact bundle, main sequence 2 to 3, zero renderer errors, disposed isolated state, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-detail-baseline",
+      "observedAt": "2026-08-19T02:27:32+09:00",
+      "commit": "47a56c02bb108ec26636ebf783420595b3f0bf38",
+      "codeState": "working-tree",
+      "label": "File Editor detail baseline",
+      "narrative": "A new dark 1280x820 same-snapshot file-detail state separates harness failures from a real structural loss. Web retained one file tab, a 283px editor, and a 255px persistent explorer. Lynx used an additional Files tab, a full-width editor, no explorer, and a permanent 28px Saved bar. The first bridge-blocked and pointer-invalid captures are excluded; initial material pixels remain unknown because the Browser Preview textarea value was not rendered.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point expands the denominator by one real state without changing any existing weight or filtering the high-residual result. Invalid bridge and input samples receive no product update."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "3b6e25c875989b061524b25419a0c00758d7a08303545f1b3a9bf69f92f27b71"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 256, 28, 255, 736, 1, 28],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-detail-surface-editor-explorer-tabs-status",
+              "source": "Same-snapshot structural deltas for surface, toolbar, editor, explorer, tab count, and permanent status bar"
+            },
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "file-detail-navigation-divergence",
+              "source": "Both open the target file, but Lynx lacked the authority persistent explorer and used a separate Files tab/back path"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-file-readiness",
+              "source": "Same file identity, clean console after the read-only bridge repair, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-detail-current",
+      "observedAt": "2026-08-19T03:06:58+09:00",
+      "commit": "2b46478f47f505ee4f8b72dbb97c3736679eb956",
+      "codeCommit": "638c2ff8e57723ae8b40b65e29f074d97b5ed922",
+      "codeState": "commit",
+      "label": "File Editor detail structural parity",
+      "narrative": "Lynx now matches the Web file-detail anatomy with one file tab, a 283px editor, a 255px persistent explorer, a 40px breadcrumb toolbar, and no permanent Saved bar. Both renderers load the same non-empty file and switch to a second file. Exact-bundle Native proves the same structure and real touch flow. Material remains explicitly high because Web has syntax highlighting and gutter utilities while Lynx retains a plain editable textarea.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share one immutable snapshot, file, route, dark theme, viewport, authority bundle, and exact interaction target. Bridge, selector, pointer, and experimental-renderer failures are classified separately."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "3b6e25c875989b061524b25419a0c00758d7a08303545f1b3a9bf69f92f27b71"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-content-identity",
+              "source": "Both editors load non-empty PORT_WORKFLOW.md content and switch to PORTING_STRATEGY.md"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-detail-surface-toolbar-editor-explorer",
+              "source": "Surface, toolbar, editor, explorer, tabs, and status allocation match within one pixel"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-editor-typography",
+              "source": "Lynx editor resolves to 12px JetBrains Mono with 19px line height"
+            },
+            "material": {
+              "pixel": {
+                "mae": 11.599605,
+                "significantShare": 0.107389
+              },
+              "confidence": 0.99,
+              "method": "file-detail-full-frame-pixel",
+              "source": "Same-snapshot 1280x820 dark full-frame comparison; syntax highlighting and gutter residual remains explicit"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-file-open-switch",
+              "source": "Both open PORT_WORKFLOW.md and switch to PORTING_STRATEGY.md through the persistent explorer; Web shadow DOM fallback is harness-only"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-file-detail-readiness",
+              "source": "Strict final gate, same bundle identities, zero console errors, and leak pre/post zero"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-detail-content",
+              "source": "Exact Native loads PORT_WORKFLOW.md content"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 727,
+              "confidence": 0.99,
+              "method": "native-file-detail-geometry",
+              "source": "Exact Native measures one file tab, 539px surface, 40px toolbar, 283px editor column, and 256px explorer"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-detail-typography",
+              "source": "Exact Native resolves 12px JetBrains Mono with 19px line height"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-devtool-file-open-switch",
+              "source": "Measured Native touch opens PORT_WORKFLOW.md and switches to PORTING_STRATEGY.md"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-exact-bundle-file-readiness",
+              "source": "Exact staged bundle, main transport seq 14, zero renderer errors, disposed state, and leak gate zero"
             }
           }
         }

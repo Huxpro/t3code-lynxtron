@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T03:06:58+09:00",
+  "productCommit": "638c2ff8e57723ae8b40b65e29f074d97b5ed922",
+  "testCommit": "2b46478f47f505ee4f8b72dbb97c3736679eb956",
+  "stateId": "file-editor-detail",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "surface": "Right-panel file detail toolbar, breadcrumb, editable source surface, persistent explorer, single file tab, and second-file selection"
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "source": "read-only VACUUM INTO from ~/.t3-lynxtron/userdata/state.sqlite",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "initialFile": "docs/PORT_WORKFLOW.md",
+    "switchedFile": "docs/PORTING_STRATEGY.md"
+  },
+  "classification": {
+    "productLoss": [
+      "Before the repair, Web rendered one file tab with a 283px editor beside a persistent 255px explorer. Lynx rendered an additional Files tab, a full-width editor, no explorer, and a permanent 28px Saved bar.",
+      "Lynx-for-Web also collapsed the file-detail subtree before Browser Preview compatibility supplied explicit column, toolbar, editor, and explorer allocation.",
+      "The structural repair does not close the remaining material gap: Web uses a guttered syntax-highlighted editor while Lynx uses a plain editable textarea. The current full-frame material residual remains explicitly measured."
+    ],
+    "harnessMismatch": [
+      "The first discovery run was rejected because the live Browser Preview bridge blocked readProjectFile; listProjectEntries was available but file contents could not reach the Lynx pane.",
+      "The Web Pierre tree row did not react to outer CDP pointer dispatch even at the measured row center. The retained Web path records one failed pointer attempt and a composed-shadow-tree DOM click fallback; Lynx-for-Web and Native use real pointer or touch input.",
+      "Early detail captures were rejected because file-detail readiness reused the Files-browser activeKind=files gate after the product correctly transitioned to activeKind=file.",
+      "A proposed nested-text syntax preview rendered as zero-height columns in Lynx-for-Web and was reverted. It contributes no product or ledger improvement."
+    ],
+    "intentionalPlatformDelta": [
+      "Native uses a textarea kernel rather than the Web Pierre DOM/Worker editor island. Editing remains functional, but syntax highlighting, gutter utilities, and line selection are not claimed equivalent."
+    ],
+    "acceptedRenderingNoise": [
+      "One-pixel editor/explorer allocation quantization is accepted by the strict geometry gate.",
+      "Web and Lynx breadcrumb internals use different scroll primitives; the outer 539x40 toolbar and file identity are the comparable contract."
+    ],
+    "evidenceBoundary": "Browser before and after use one immutable snapshot, route, selected thread, dark theme, 1280x820 viewport, Web authority bundle, target files, and clean console. Exact-bundle Native independently proves the final single-tab editor/explorer structure and real file switching. Browser material pixels remain an explicit residual; Native material is not inferred."
+  },
+  "browser": {
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameWebBundle": true,
+    "inputChannels": {
+      "web": "cdp-pointer-failed|composed-shadow-dom-click-fallback",
+      "lynx": "cdp-pointer",
+      "switch": "web-explorer-pointer|lynx-explorer-pointer"
+    },
+    "before": {
+      "status": "pass-with-product-loss",
+      "codeState": "working-tree",
+      "head": "47a56c02bb108ec26636ebf783420595b3f0bf38",
+      "reportSha256": "e86f4613aeb6b09a60c20e89b205a5916ebfb4e76e99210e8ff12802b75dd85e",
+      "screenshots": {
+        "web": "a558e180390a55bdaa820d10f45e7a46f2604d5000a4bf732fc7a059bb2ff97a",
+        "lynx": "68d2f9b2e2a54ba989c33aa50eb7074ce82d236fe9b3fc131f680d4af3e0c793"
+      },
+      "geometry": {
+        "web": {
+          "surface": [741, 44, 539, 776],
+          "toolbar": [741, 44, 539, 40],
+          "editor": [741, 84, 283, 736],
+          "explorer": [1025, 84, 255, 736],
+          "tabs": ["PORT_WORKFLOW.md"],
+          "statusbar": null
+        },
+        "lynx": {
+          "surface": [741, 44, 539, 776],
+          "toolbar": [741, 44, 539, 40],
+          "editor": [741, 84, 539, 708],
+          "explorer": null,
+          "tabs": ["Files", "PORT_WORKFLOW.md"],
+          "statusbar": [741, 792, 539, 28]
+        }
+      },
+      "material": {
+        "status": "unknown",
+        "reason": "The initial Lynx-for-Web textarea attribute was not synchronized to its rendered value property, so the before pixel frame is not admitted as a product material measurement."
+      }
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "codeState": "commit",
+      "head": "2b46478f47f505ee4f8b72dbb97c3736679eb956",
+      "productCommit": "638c2ff8e57723ae8b40b65e29f074d97b5ed922",
+      "readyMs": 2153,
+      "rendererErrors": 0,
+      "agentBrowserLeakPreflight": 0,
+      "agentBrowserLeakPostflight": 0,
+      "bundles": {
+        "web": "c4b0edba70d423b8e5f86f7ff04c92bfd824086e150e49446584e95610635244",
+        "lynx": "2bcb5b45b68d8731edcd0de88d9970f0ea71045da41c14b662205789c7b2e910"
+      },
+      "reportSha256": "bc9686fe1160cfb2caa142f3f118855ac2513d446bc03ed9aab2bb05837a3bcd",
+      "screenshots": {
+        "web": "a558e180390a55bdaa820d10f45e7a46f2604d5000a4bf732fc7a059bb2ff97a",
+        "lynx": "3541058be5c8dfc64855c9da0570172112fef57a61a25967fa44afdc38c5ed71"
+      },
+      "geometry": {
+        "web": {
+          "surface": [741, 44, 539, 776],
+          "toolbar": [741, 44, 539, 40],
+          "editor": [741, 84, 283, 736],
+          "explorer": [1025, 84, 255, 736],
+          "tabs": ["PORT_WORKFLOW.md"],
+          "statusbar": null
+        },
+        "lynx": {
+          "surface": [741, 44, 539, 776],
+          "toolbar": [741, 44, 539, 40],
+          "editor": [741, 84, 283, 736],
+          "explorer": [1024, 84, 256, 736],
+          "tabs": ["PORT_WORKFLOW.md"],
+          "statusbar": null
+        },
+        "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        "anchorScale": 736
+      },
+      "content": {
+        "initialFileLoaded": true,
+        "initialFileNonEmpty": true,
+        "secondFileSwitchPassed": true
+      },
+      "material": {
+        "pixelMetric": {
+          "threshold": "max RGB channel delta >= 16",
+          "fullFrame": {
+            "mae": 11.599605,
+            "significantShare": 0.107389
+          },
+          "rightPanel": {
+            "mae": 23.105218,
+            "significantShare": 0.182965
+          }
+        },
+        "remainingDifference": "Web retains syntax highlighting, line gutter, and richer editor primitives; Lynx retains a plain editable textarea."
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundle": {
+      "sha256": "3dde5c920cb47a7a072a50eec62814ad935acdff017020a19902404f0df1e30c"
+    },
+    "geometry": {
+      "surface": [741, 52, 539, 768],
+      "toolbar": [741, 52, 539, 40],
+      "editorColumn": [741, 93, 283, 727],
+      "editor": [741, 93, 251, 689],
+      "explorer": [1024, 93, 256, 727]
+    },
+    "interaction": {
+      "openFile": "docs/PORT_WORKFLOW.md",
+      "switchFile": "docs/PORTING_STRATEGY.md",
+      "channel": "lynx-devtool-touch",
+      "passed": true
+    },
+    "transport": {
+      "kind": "main",
+      "sequence": 14
+    },
+    "screenshot": {
+      "path": "/tmp/t3-native-file-editor-final.png",
+      "bytesScale": "2560x1640",
+      "sha256": "676adc7c28cd356c6376eef113ab328aa942ecfc4b0ce5d76aacf12a6d79472f"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "fidelityImpact": {
+    "modelChange": "Add file-editor-detail as state 48 with Lynx and Native clients.",
+    "totalLoss": {
+      "baseline": 0.403426,
+      "current": 0.388652,
+      "delta": -0.014774
+    },
+    "stateContribution": {
+      "baseline": 0.80681,
+      "current": 0.133134,
+      "delta": -0.673676
+    },
+    "reviewGroupContribution": {
+      "baseline": 0.351776,
+      "current": 0.239497,
+      "delta": -0.112279
+    },
+    "expectedStateCount": {
+      "before": 47,
+      "after": 48
+    },
+    "expectedCellCount": {
+      "before": 540,
+      "after": 552
+    },
+    "expectedTotalWeight": {
+      "before": 178.4,
+      "after": 182.4
+    },
+    "existingWeightsChanged": false,
+    "existingScopeReduced": false
+  },
+  "validation": {
+    "focusedTests": "87/87",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "productionBuild": "pass",
+    "browserStrictReport": "/tmp/t3-file-editor-detail-certified/workbench-report.json",
+    "nativeScreenshot": "/tmp/t3-native-file-editor-final.png",
+    "screenshotBudget": "32/100",
+    "agentBrowserLeakGate": "owned=0 orphaned=0"
+  },
+  "remainingRisk": [
+    "The current file-detail material residual is higher than the pre-fix invalid frame because the repaired Lynx editor now renders real content. Syntax highlighting, gutter utilities, and line selection remain open rather than hidden.",
+    "Web tree opening required a composed-shadow-tree DOM click fallback after a measured CDP pointer did not activate Pierre selection; this is classified as harness input mismatch.",
+    "Native physical keyboard editing, selection, and save confirmation remain pending-user-session."
+  ]
+}
