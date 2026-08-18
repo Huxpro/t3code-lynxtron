@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T07:37:46+09:00",
+  "updatedAt": "2026-08-19T08:11:30+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10137,6 +10137,120 @@
               "confidence": 0.99,
               "method": "settings-connections-current-readiness",
               "source": "Strict administrative-session Browser gate, zero renderer errors, and leak gate zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-beta-archive-light-baseline",
+      "observedAt": "2026-08-19T08:11:30+09:00",
+      "commit": "87e298e63",
+      "codeState": "working-tree",
+      "label": "Settings Beta and Archive light baseline",
+      "narrative": "Two previously unmodeled light-theme Settings cells expand the fixed denominator before repair. Both use one immutable loopback snapshot, shipping 1280x820 Web and Lynx-for-Web artifacts, canonical routes, matching content identity, and clean consoles. Beta full-frame MAE is 2.669838 and Archive is 1.534366. The new hard gate exposes the highest localized real loss: Web shows exactly one visual selection for the current route, while Lynx gives Providers a selected background and foreground on every Settings route in addition to the real Beta or Archive item. The first Beta capture failed only because the light gate looked for the chat Sidebar footer; the corrected harness measures the Settings footer and Back action and receives no product credit.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds two real light-theme states with the same weight as their dark counterparts, raises the denominator from 51 to 53 states without changing existing weights, and retains the false navigation selection as measured loss before product repair."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/settings-beta-archive-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a33677c01d8f6f8a15a1bfeb9aa491732cdd3520af7c23c33c6796fddd0d1e5f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-light-content",
+              "source": "Navigation labels, Beta features title, and all three portable Beta rows match"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.53125],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-beta-light-geometry",
+              "source": "Content origin, 896px section and row widths, and first-row height match within fractional rounding"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "settings-beta-light-typography",
+              "source": "Titles and descriptions use the shared 14px and 13px hierarchy with fractional font metric differences"
+            },
+            "material": {
+              "pixel": {
+                "mae": 2.669838,
+                "significantShare": 0.027772
+              },
+              "confidence": 0.99,
+              "method": "settings-beta-light-full-frame-pixel",
+              "source": "Current 1280x820 light full-frame comparison before navigation repair"
+            },
+            "interaction": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "settings-beta-light-false-visual-selection",
+              "source": "Route state is Beta, but Lynx visually selects Providers and Beta simultaneously"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-light-readiness",
+              "source": "Canonical route, same snapshot, clean console, Settings footer gate, and zero agent-browser leaks"
+            }
+          }
+        },
+        {
+          "states": ["settings-archive-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-archive-light-content",
+              "source": "Navigation labels, Archived threads section, and No archived threads empty copy match"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.15625],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-archive-light-geometry",
+              "source": "Content origin, section, empty row, and text allocation match within fractional rounding"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "settings-archive-light-typography",
+              "source": "Empty title and description preserve the shared hierarchy with fractional font metric differences"
+            },
+            "material": {
+              "pixel": {
+                "mae": 1.534366,
+                "significantShare": 0.012485
+              },
+              "confidence": 0.99,
+              "method": "settings-archive-light-full-frame-pixel",
+              "source": "Current 1280x820 light full-frame comparison before navigation repair"
+            },
+            "interaction": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "settings-archive-light-false-visual-selection",
+              "source": "Route state is Archive, but Lynx visually selects Providers and Archive simultaneously"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-archive-light-readiness",
+              "source": "Canonical route, same snapshot, clean console, Settings footer gate, and zero agent-browser leaks"
             }
           }
         }
