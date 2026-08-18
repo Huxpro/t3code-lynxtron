@@ -134,8 +134,10 @@ export function RightPanelEmptySurface({
     >
       <HostView className="w-full max-w-xl">
         <HostView className="mb-5 flex flex-col items-center">
-          <HostText className="text-sm font-medium text-foreground">Open a surface</HostText>
-          <HostText className="mt-1 text-xs text-muted-foreground">
+          <HostText className="right-panel-empty__title text-sm font-medium text-foreground">
+            Open a surface
+          </HostText>
+          <HostText className="right-panel-empty__description mt-1 text-xs text-muted-foreground">
             Choose what to show in the right panel.
           </HostText>
         </HostView>
@@ -160,9 +162,11 @@ export function RightPanelEmptySurface({
                         : "transition hover:border-border hover:bg-accent/60 dark:border-transparent dark:shadow-none dark:inset-ring-1 dark:inset-ring-white/5",
                     )}
                   >
-                    <HostView className="mb-3">{action.icon}</HostView>
-                    <HostText className="text-sm font-medium">{action.label}</HostText>
-                    <HostText className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    <HostView className="right-panel-empty-card__icon mb-3">{action.icon}</HostView>
+                    <HostText className="right-panel-empty-card__title text-sm font-medium">
+                      {action.label}
+                    </HostText>
+                    <HostText className="right-panel-empty-card__description mt-1 text-xs leading-relaxed text-muted-foreground">
                       {action.description}
                     </HostText>
                   </HostButton>
