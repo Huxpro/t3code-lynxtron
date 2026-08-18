@@ -4545,9 +4545,6 @@
 .settings-nav__item--active {
   background-color: var(--sidebar-row-selected);
 }
-.settings-nav__item--providers {
-  background-color: var(--sidebar-row-selected);
-}
 .settings-nav__item-label {
   color: var(--sidebar-muted-80);
   font-size: 14px;
