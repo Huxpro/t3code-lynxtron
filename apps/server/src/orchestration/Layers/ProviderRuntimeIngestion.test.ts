@@ -40,6 +40,8 @@ import {
   ProviderService,
   type ProviderServiceShape,
 } from "../../provider/Services/ProviderService.ts";
+import { ProviderRegistry } from "../../provider/Services/ProviderRegistry.ts";
+import { makeProviderRegistryMock } from "../../provider/testUtils/providerRegistryMock.ts";
 import * as RepositoryIdentityResolver from "../../project/RepositoryIdentityResolver.ts";
 import { OrchestrationEngineLive } from "./OrchestrationEngine.ts";
 import { OrchestrationProjectionPipelineLive } from "./ProjectionPipeline.ts";
@@ -222,6 +224,15 @@ describe("ProviderRuntimeIngestion", () => {
     const workspaceRoot = makeTempDir("t3-provider-project-");
     NodeFS.mkdirSync(NodePath.join(workspaceRoot, ".git"));
     const provider = createProviderServiceHarness();
+    const refreshedProviderInstances: ProviderInstanceId[] = [];
+    const providerRegistry = {
+      ...makeProviderRegistryMock(),
+      refreshInstance: (instanceId: ProviderInstanceId) =>
+        Effect.sync(() => {
+          refreshedProviderInstances.push(instanceId);
+          return [];
+        }),
+    };
     const orchestrationLayer = OrchestrationEngineLive.pipe(
       Layer.provide(OrchestrationProjectionSnapshotQueryLive),
       Layer.provide(OrchestrationProjectionPipelineLive),
@@ -239,6 +250,7 @@ describe("ProviderRuntimeIngestion", () => {
       Layer.provideMerge(projectionSnapshotLayer),
       Layer.provideMerge(SqlitePersistenceMemory),
       Layer.provideMerge(Layer.succeed(ProviderService, provider.service)),
+      Layer.provideMerge(Layer.succeed(ProviderRegistry, providerRegistry)),
       Layer.provideMerge(makeTestServerSettingsLayer(options?.serverSettings)),
       Layer.provideMerge(ServerConfig.layerTest(process.cwd(), process.cwd())),
       Layer.provideMerge(NodeServices.layer),
@@ -315,6 +327,7 @@ describe("ProviderRuntimeIngestion", () => {
       readModel: () => Effect.runPromise(snapshotQuery.getSnapshot()),
       emit: provider.emit,
       setProviderSession: provider.setSession,
+      refreshedProviderInstances,
       drain,
     };
   }
@@ -2791,6 +2804,37 @@ describe("ProviderRuntimeIngestion", () => {
     );
     expect(thread.session?.status).toBe("error");
     expect(thread.session?.lastError).toBe("runtime exploded");
+  });
+
+  it("refreshes the affected provider instance after an authentication error", async () => {
+    const harness = await createHarness();
+    const now = "2026-01-01T00:00:00.000Z";
+    const claudeInstanceId = ProviderInstanceId.make("claude-work");
+
+    harness.emit({
+      type: "runtime.error",
+      eventId: asEventId("evt-runtime-authentication-error"),
+      provider: ProviderDriverKind.make("claudeAgent"),
+      providerInstanceId: claudeInstanceId,
+      createdAt: now,
+      threadId: asThreadId("thread-1"),
+      payload: {
+        message: "Claude authentication expired. Run `claude auth login` and try again.",
+        class: "authentication_error",
+      },
+    });
+
+    await harness.drain();
+
+    expect(harness.refreshedProviderInstances).toEqual([claudeInstanceId]);
+    const thread = await waitForThread(
+      harness.readModel,
+      (entry) =>
+        entry.session?.status === "error" &&
+        entry.session?.lastError ===
+          "Claude authentication expired. Run `claude auth login` and try again.",
+    );
+    expect(thread.session?.providerInstanceId).toBe(claudeInstanceId);
   });
 
   it("records runtime.error activities from the typed payload message", async () => {

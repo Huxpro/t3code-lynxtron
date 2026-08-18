@@ -1445,6 +1445,105 @@ describe("ClaudeAdapterLive", () => {
     );
   });
 
+  it.effect(
+    "treats Claude authentication API messages as failed turns, not assistant replies",
+    () => {
+      const harness = makeHarness();
+      return Effect.gen(function* () {
+        const adapter = yield* ClaudeAdapter;
+        const runtimeEventsFiber = yield* Stream.take(adapter.streamEvents, 7).pipe(
+          Stream.runCollect,
+          Effect.forkChild,
+        );
+
+        const session = yield* adapter.startSession({
+          threadId: THREAD_ID,
+          provider: ProviderDriverKind.make("claudeAgent"),
+          runtimeMode: "full-access",
+        });
+
+        const turn = yield* adapter.sendTurn({
+          threadId: session.threadId,
+          input: "hello",
+          attachments: [],
+        });
+
+        const authenticationError =
+          "Failed to authenticate: OAuth session expired and could not be refreshed";
+        const actionableAuthenticationError =
+          "Claude authentication expired. Run `claude auth login` and try again.";
+        harness.query.emit({
+          type: "assistant",
+          message: {
+            id: "assistant-auth-error",
+            model: "<synthetic>",
+            role: "assistant",
+            type: "message",
+            content: [{ type: "text", text: authenticationError }],
+          },
+          parent_tool_use_id: null,
+          session_id: "sdk-session-auth-error",
+          uuid: "assistant-auth-error-uuid",
+          error: "authentication_failed",
+          is_api_error_message: true,
+        } as unknown as SDKMessage);
+        harness.query.emit({
+          type: "result",
+          subtype: "success",
+          is_error: true,
+          errors: [],
+          result: authenticationError,
+          terminal_reason: "api_error",
+          session_id: "sdk-session-auth-error",
+          uuid: "result-auth-error",
+        } as unknown as SDKMessage);
+
+        const runtimeEvents = Array.from(yield* Fiber.join(runtimeEventsFiber));
+        assert.deepEqual(
+          runtimeEvents.map((event) => event.type),
+          [
+            "session.started",
+            "session.configured",
+            "session.state.changed",
+            "turn.started",
+            "thread.started",
+            "runtime.error",
+            "turn.completed",
+          ],
+        );
+        assert.isFalse(
+          runtimeEvents.some(
+            (event) =>
+              event.type === "content.delta" ||
+              (event.type === "item.completed" && event.payload.itemType === "assistant_message"),
+          ),
+        );
+
+        const runtimeError = runtimeEvents.find((event) => event.type === "runtime.error");
+        assert.equal(runtimeError?.type, "runtime.error");
+        if (runtimeError?.type === "runtime.error") {
+          assert.equal(runtimeError.payload.message, actionableAuthenticationError);
+          assert.equal(runtimeError.payload.class, "authentication_error");
+        }
+
+        const turnCompleted = runtimeEvents[runtimeEvents.length - 1];
+        assert.equal(turnCompleted?.type, "turn.completed");
+        if (turnCompleted?.type === "turn.completed") {
+          assert.equal(String(turnCompleted.turnId), String(turn.turnId));
+          assert.equal(turnCompleted.payload.state, "failed");
+          assert.equal(turnCompleted.payload.errorMessage, actionableAuthenticationError);
+        }
+
+        const sessions = yield* adapter.listSessions();
+        assert.equal(sessions[0]?.status, "error");
+        assert.equal(sessions[0]?.lastError, actionableAuthenticationError);
+      }).pipe(
+        Effect.provideService(Random.Random, makeDeterministicRandomService()),
+        Effect.provide(harness.layer),
+      );
+    },
+  );
+
   it.effect("closes the session when the Claude stream aborts after a turn starts", () => {
     const harness = makeHarness();
     return Effect.gen(function* () {
