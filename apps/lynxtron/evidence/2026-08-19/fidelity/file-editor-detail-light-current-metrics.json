@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T04:15:40+09:00",
+  "productCommit": "98cf82dbf47d21207d9f37711553d95697e34e34",
+  "testCommit": "02aba17efcd2e746ecf49f49ceec8114e18d5859",
+  "stateId": "file-editor-detail-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "surface": "Light file detail plus Sidebar Settings footer, Native-safe editor preview, editable textarea, persistent explorer, and second-file selection"
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "source": "read-only VACUUM INTO from ~/.t3-lynxtron/userdata/state.sqlite",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "initialFile": "docs/PORT_WORKFLOW.md",
+    "switchedFile": "docs/PORTING_STRATEGY.md"
+  },
+  "classification": {
+    "productLoss": [
+      "The first valid light Browser pair exposed a dark 239x32 Sidebar Settings authority raster over the real light footer row.",
+      "The Browser Preview compatibility layer now suppresses that dark authority raster only in light theme and restores the real Settings icon and label.",
+      "The remaining light full-frame residual stays explicit; this repair does not claim that the full file editor is pixel-identical to Web."
+    ],
+    "harnessMismatch": [
+      "A concurrent Native Runtime probe returned no response while another DevTool request targeted the same owned client. All retained Native commands were rerun serially against the process-owned port.",
+      "The first hand-written light launcher resolved @lynx-js/lynxtron from the repository root and failed before spawning a process. The retained run resolves from apps/lynxtron and records its exact PID, port, bundle, state directory, and theme.",
+      "Web file opening still records one measured outer CDP pointer failure followed by the existing composed-shadow-tree fallback. Lynx-for-Web and Native use real pointer or touch."
+    ],
+    "intentionalPlatformDelta": [
+      "The product change is Browser Preview-only because shared Native CSS already hides the light authority raster. Native evidence is correlation and regression coverage, not attribution of a Native product change.",
+      "Native uses a textarea editing kernel behind the Native-safe syntax preview rather than the Web Pierre editor island."
+    ],
+    "acceptedRenderingNoise": [
+      "Native reports the 539px toolbar content box as 515px because its 12px horizontal padding is excluded from the content measurement; the outer file surface and 40px toolbar allocation remain correct.",
+      "The Native explorer is 255px by content width and spans 256px including its one-pixel divider."
+    ],
+    "evidenceBoundary": "Browser before and after use one immutable snapshot, route, selected thread, light theme, 1280x820 viewport, Web authority pixels, target files, and zero-error console. The Lynx application bundle and Web authority bundle hashes are unchanged; the changed Browser Preview host compatibility code supplies the product delta. Exact-bundle Native independently proves light footer semantics and file preview/edit/switch behavior. Native pixels are representative and are not used as a Web parity residual."
+  },
+  "browser": {
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameWebBundle": true,
+    "sameLynxApplicationBundle": true,
+    "inputChannels": {
+      "web": "cdp-pointer-failed|composed-shadow-dom-click-fallback",
+      "lynx": "cdp-pointer",
+      "switch": "web-explorer-pointer|lynx-explorer-pointer"
+    },
+    "bundles": {
+      "web": "c4b0edba70d423b8e5f86f7ff04c92bfd824086e150e49446584e95610635244",
+      "lynxApplication": "f5b06e78333020ad429e24736e54755b86c6cdc499f86eff0adfef2eae8448fc"
+    },
+    "before": {
+      "status": "pass-with-product-loss",
+      "codeState": "working-tree",
+      "head": "8e133688b9c2334de4d591a7ee2dcaabbcf846de",
+      "readyMs": 2210,
+      "reportSha256": "4d0ce59388dc378058d1813d4830fd62d9435524c82a0b993241dfbbab587fee",
+      "screenshots": {
+        "web": "26bfa67661fa682d35af23016c4f1e64dbb3e8ca7b5f795b9768c2b6d5d6c1d8",
+        "lynx": "916c8ff6cb1b4eb7bc081452080cd87915e0d80f29d6aa1b9c70e214d0b8a7ee"
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 9.438575,
+          "significantShare": 0.086956
+        },
+        "sidebarFooter": {
+          "rect": [0, 780, 256, 40],
+          "mae": 174.679199,
+          "significantShare": 0.746875
+        }
+      },
+      "loss": "The Lynx-for-Web footer rendered the dark authority raster in light theme."
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "codeState": "commit",
+      "head": "02aba17efcd2e746ecf49f49ceec8114e18d5859",
+      "productCommit": "98cf82dbf47d21207d9f37711553d95697e34e34",
+      "readyMs": 2148,
+      "reportSha256": "617784c73a3b1f88a6951d63c09875bdc4e04bc25db3892bd75e56f3ec54e27c",
+      "screenshots": {
+        "web": "26bfa67661fa682d35af23016c4f1e64dbb3e8ca7b5f795b9768c2b6d5d6c1d8",
+        "lynx": "46498bb435954d7cef8427e4acc3fb1b4a648501bb804a7761baa20e1e6d6da1"
+      },
+      "strictGates": {
+        "finalMatch": true,
+        "stateIdentityMatch": true,
+        "sidebarFooterThemeMatch": true,
+        "fileEditorMatch": true,
+        "secondFileSwitchPassed": true,
+        "rendererErrors": 0,
+        "agentBrowserLeakPreflight": 0,
+        "agentBrowserLeakPostflight": 0
+      },
+      "sidebarFooter": {
+        "web": {
+          "rect": [0, 772, 255, 48],
+          "settingsRow": [8, 780, 239, 32],
+          "settingsAuthority": null
+        },
+        "lynx": {
+          "rect": [0, 772, 256, 48],
+          "settingsRowOpacity": "1",
+          "settingsAuthorityDisplay": "none",
+          "settingsAuthorityRect": [0, 0]
+        }
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 7.797678,
+          "significantShare": 0.080396
+        },
+        "sidebarFooter": {
+          "rect": [0, 780, 256, 40],
+          "mae": 6.487207,
+          "significantShare": 0.074512
+        },
+        "delta": {
+          "fullFrameMae": -1.640897,
+          "fullFrameSignificantShare": -0.00656,
+          "sidebarFooterMae": -168.191992,
+          "sidebarFooterSignificantShare": -0.672363
+        }
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "theme": "light",
+    "bundle": {
+      "sha256": "55a778da44c769d8817c011c877eb8f4b8b389268090ebd9f65e5d8600e09acf"
+    },
+    "identity": {
+      "ownedProcessId": 88976,
+      "ownedDevToolPort": 8903,
+      "sessionId": 1,
+      "exactBundleMatched": true
+    },
+    "sidebarFooter": {
+      "settingsAuthority": {
+        "display": "none",
+        "width": 0,
+        "height": 0
+      },
+      "settingsRow": {
+        "display": "flex",
+        "opacity": "1",
+        "color": "rgba(113,113,122,0.8)",
+        "width": 225,
+        "height": 21.5
+      }
+    },
+    "fileEditor": {
+      "initialFile": "PORT_WORKFLOW.md",
+      "initialLineCount": 114,
+      "surface": [741, 52, 539, 768],
+      "editorColumn": [741, 93, 283, 727],
+      "explorer": [1024, 93, 256, 727],
+      "previewMode": true,
+      "editingNode": "TEXTAREA",
+      "editingSize": [251, 661],
+      "switchedFile": "PORTING_STRATEGY.md",
+      "switchedLineCount": 4,
+      "channel": "lynx-devtool-touch",
+      "passed": true
+    },
+    "transport": {
+      "kind": "main",
+      "sequence": 14
+    },
+    "screenshot": {
+      "path": "/tmp/t3-native-file-light-preview.png",
+      "dimensions": "2560x1640",
+      "sha256": "8045d754e3f056f879858f90bd80bb683e2951845274d4cb4e809f6d4b94446d"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "ownedProcessStopped": true
+  },
+  "fidelityImpact": {
+    "modelChange": "Add file-editor-detail-light as state 49 with Lynx and Native clients.",
+    "lossAccounting": {
+      "previousCheckpointUnderExpandedDenominator": 0.401613,
+      "lightBaselineAfterLynxEvidence": 0.393812,
+      "afterNativeCoverage": 0.38285,
+      "afterProductRepair": 0.382759,
+      "productRepairDelta": -0.000091,
+      "evidenceDebtAfter": 0.372063,
+      "boundary": "The former 48-state 0.388491 checkpoint is not directly comparable after denominator expansion. Coverage gain and measured product gain are separate ledger points."
+    },
+    "expectedStateCount": {
+      "before": 48,
+      "after": 49
+    },
+    "expectedCellCount": {
+      "before": 552,
+      "after": 564
+    },
+    "expectedTotalWeight": {
+      "before": 182.4,
+      "after": 186.4
+    },
+    "existingWeightsChanged": false,
+    "existingScopeReduced": false,
+    "darkResidualOverwritten": false
+  },
+  "validation": {
+    "focusedTests": "57/57",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "browserStrictReport": "/tmp/t3-file-editor-light-fixed/workbench-report.json",
+    "nativeScreenshot": "/tmp/t3-native-file-light-preview.png",
+    "screenshotBudget": "32/100",
+    "agentBrowserLeakGate": "owned=0 orphaned=0"
+  },
+  "remainingRisk": [
+    "The light full-frame material residual remains 7.797678 MAE and 8.0396% significant pixels; only the measured footer hotspot is attributed to this repair.",
+    "Native physical keyboard editing, selection, and save confirmation remain pending-user-session.",
+    "The Web Pierre tree still needs a composed-shadow-tree fallback after measured outer CDP pointer input fails."
+  ]
+}

@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T03:06:58+09:00",
+  "updatedAt": "2026-08-19T04:15:40+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -9295,6 +9295,172 @@
               "confidence": 0.99,
               "method": "file-detail-native-safe-preview-pixel",
               "source": "Same-snapshot 1280x820 dark full-frame comparison after adding the validated gutter/token preview"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-detail-light-baseline",
+      "observedAt": "2026-08-19T03:43:01+09:00",
+      "commit": "8e133688b9c2334de4d591a7ee2dcaabbcf846de",
+      "codeState": "working-tree",
+      "label": "File Editor light footer baseline",
+      "narrative": "A newly admitted light 1280x820 file-detail state preserves the already certified editor and explorer anatomy but exposes a dark 239x32 Sidebar Settings authority raster over the real light footer. Same-snapshot pixels localize the loss: the footer crop has 174.679199 MAE and 74.6875% significant pixels, while the full frame has 9.438575 MAE and 8.6956% significant pixels. The failed concurrent DevTool request and root-resolved launcher attempt are classified as harness mismatches and receive no product update.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point expands the fixed denominator with a previously unmeasured light-theme state. It changes no existing weight, does not overwrite the dark file-editor state, and retains the high measured residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "255ee3f38c5dbf9053f808a88bd53c7e0d0c39ee6b1711ecd4dbcfc86be95743"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-content-identity",
+              "source": "Both editors load non-empty PORT_WORKFLOW.md content and switch to PORTING_STRATEGY.md"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-detail-light-surface-toolbar-editor-explorer",
+              "source": "Surface, toolbar, editor, explorer, tabs, and status allocation match within one pixel"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-editor-typography",
+              "source": "The light Lynx preview retains the certified 12px JetBrains Mono and 19px line-height contract"
+            },
+            "material": {
+              "pixel": {
+                "mae": 9.438575,
+                "significantShare": 0.086956
+              },
+              "confidence": 0.99,
+              "method": "file-detail-light-full-frame-pixel",
+              "source": "Same-snapshot 1280x820 light full-frame comparison before the Sidebar footer repair"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-light-file-open-switch",
+              "source": "Both renderers open PORT_WORKFLOW.md and switch to PORTING_STRATEGY.md through the persistent explorer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-light-file-readiness",
+              "source": "Same immutable snapshot, strict file identity, zero console errors, and leak pre/post zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-detail-light-native-certification",
+      "observedAt": "2026-08-19T04:10:12+09:00",
+      "commit": "02aba17efcd2e746ecf49f49ceec8114e18d5859",
+      "codeCommit": "98cf82dbf47d21207d9f37711553d95697e34e34",
+      "codeState": "commit",
+      "label": "File Editor light Native certification",
+      "narrative": "A fresh exact-bundle Native light run proves that shared Native CSS already hides the authority raster, exposes the real Settings row at light muted contrast, and preserves the file-detail interaction chain. The retained process loads the exact 55a778da bundle, renders 114 preview lines in PORT_WORKFLOW.md, enters a real TEXTAREA on touch, switches to PORTING_STRATEGY.md, advances through main transport sequence 14, reports zero renderer errors, and disposes its isolated state. Native material remains unknown because the representative screenshot is not a same-snapshot Web pixel comparison.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point adds exact Native content, geometry, typography, interaction, and runtime coverage without assigning a Native pixel residual or claiming a Native product change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "255ee3f38c5dbf9053f808a88bd53c7e0d0c39ee6b1711ecd4dbcfc86be95743"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-file-detail-content",
+              "source": "Exact Native loads PORT_WORKFLOW.md and switches to PORTING_STRATEGY.md"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 727,
+              "confidence": 0.99,
+              "method": "native-light-file-detail-geometry",
+              "source": "Exact Native measures a 539px surface, 40px toolbar, 283px editor column, and 255/256px explorer"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-file-detail-typography",
+              "source": "Exact Native loads JetBrains Mono and the Native-safe syntax preview"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-devtool-file-open-edit-switch",
+              "source": "Measured Native touch opens PORT_WORKFLOW.md, enters a real TEXTAREA, and switches to PORTING_STRATEGY.md"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-exact-bundle-readiness",
+              "source": "Exact staged bundle, light theme, main transport seq 14, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-detail-light-current",
+      "observedAt": "2026-08-19T04:15:40+09:00",
+      "commit": "02aba17efcd2e746ecf49f49ceec8114e18d5859",
+      "codeCommit": "98cf82dbf47d21207d9f37711553d95697e34e34",
+      "codeState": "commit",
+      "label": "File Editor light Sidebar footer repair",
+      "narrative": "The Browser Preview light compatibility layer now suppresses the dark Sidebar Settings authority raster and restores the real light Settings icon and label. On one immutable snapshot with the same route, selected thread, viewport, Web bundle, Lynx application bundle, files, and clean console, footer MAE falls from 174.679199 to 6.487207 and footer significant pixels fall from 74.6875% to 7.4512%. Full-frame MAE falls from 9.438575 to 7.797678 and significant pixels fall from 8.6956% to 8.0396%. The remaining editor and shell material difference stays explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share one immutable snapshot, route, light theme, viewport, Web authority pixels, file identities, and interaction targets. The strict footer gate records the authority node as absent or zero-sized and the real row at opacity one."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "255ee3f38c5dbf9053f808a88bd53c7e0d0c39ee6b1711ecd4dbcfc86be95743"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "pixel": {
+                "mae": 7.797678,
+                "significantShare": 0.080396
+              },
+              "confidence": 0.99,
+              "method": "file-detail-light-footer-repair-pixel",
+              "source": "Same-snapshot 1280x820 light full-frame comparison after hiding the dark authority raster and restoring the real footer row"
             }
           }
         }
