@@ -76,6 +76,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "sidebarControlGeometry:");
   });
 
+  it("rejects the dark authority footer in light theme", () => {
+    assert.include(source, "function sidebarFooterThemeMatches(state)");
+    assert.include(source, 'if (theme !== "light") return true;');
+    assert.include(source, "finalSidebarFooterThemeReady");
+    assert.include(source, "sidebarFooterTheme:");
+  });
+
   it("opens the Files browser through shipping right-panel actions", () => {
     assert.include(source, 'const isFilesBrowserState = stateId === "files-browser"');
     assert.include(source, "function filesBrowserReady(state)");
@@ -363,6 +370,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "textLeaves:");
     assert.include(workbench, "icons:");
     assert.include(workbench, "actionItems: readHeaderActionItems(");
+    assert.include(workbench, "settingsAuthority: readElementBox");
     assert.include(source, "function headerGitActionMatches");
     assert.include(source, 'method === "readVcsStatus"');
     assert.include(source, "headerGitActionReady");

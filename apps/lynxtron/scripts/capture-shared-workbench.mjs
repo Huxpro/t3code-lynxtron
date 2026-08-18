@@ -794,6 +794,29 @@ function sidebarControlGeometryMatches(state) {
   );
 }
 
+function sidebarFooterThemeMatches(state) {
+  if (theme !== "light") return true;
+  const web = state?.web?.sidebarDiagnostics?.chrome;
+  const lynx = state?.lynx?.sidebarDiagnostics?.chrome;
+  const isNearBlack = (color) =>
+    typeof color === "string" &&
+    (color === "rgb(0, 0, 0)" ||
+      color === "rgba(0, 0, 0, 1)" ||
+      color === "#000" ||
+      color === "#000000");
+  return (
+    web?.footer?.rect?.height > 0 &&
+    lynx?.footer?.rect?.height > 0 &&
+    !isNearBlack(web.footer.style?.backgroundColor) &&
+    !isNearBlack(lynx.footer.style?.backgroundColor) &&
+    lynx.settingsRow?.style?.opacity === "1" &&
+    (lynx.settingsAuthority === null ||
+      lynx.settingsAuthority.style?.display === "none" ||
+      lynx.settingsAuthority.style?.opacity === "0" ||
+      (lynx.settingsAuthority.rect?.width === 0 && lynx.settingsAuthority.rect?.height === 0))
+  );
+}
+
 function sidebarWorkingGeometryMatches(state, expectedThreadFixture) {
   if (stateId !== "composer-working" && stateId !== "existing-thread-working") return true;
   const expectedThreadId = expectedThreadFixture?.id;
@@ -3616,6 +3639,7 @@ async function captureCell({
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
+    const sidebarFooterThemeReady = sidebarFooterThemeMatches(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
@@ -3687,6 +3711,7 @@ async function captureCell({
       sessionProjectionReady &&
       stageIdentityReady &&
       sidebarControlGeometryReady &&
+      sidebarFooterThemeReady &&
       sidebarWorkingGeometryReady &&
       headerGitActionReady &&
       gitPublishDiscoveryReady &&
@@ -3894,6 +3919,7 @@ async function captureCell({
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
+  const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
     state,
     expectedThreadFixture,
@@ -4480,6 +4506,7 @@ async function captureCell({
     finalSessionProjectionReady &&
     finalStageIdentityReady &&
     finalSidebarControlGeometryReady &&
+    finalSidebarFooterThemeReady &&
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
@@ -4511,6 +4538,7 @@ async function captureCell({
       finalSessionProjectionReady,
       finalStageIdentityReady,
       finalSidebarControlGeometryReady,
+      finalSidebarFooterThemeReady,
       finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
@@ -4644,6 +4672,11 @@ async function captureCell({
         requestedWidth: expectedSidebarWidth,
         web: state?.web?.sidebarDiagnostics ?? null,
         lynx: state?.lynx?.sidebarDiagnostics ?? null,
+      },
+      sidebarFooterTheme: {
+        match: finalSidebarFooterThemeReady,
+        web: state?.web?.sidebarDiagnostics?.chrome ?? null,
+        lynx: state?.lynx?.sidebarDiagnostics?.chrome ?? null,
       },
       sidebarWorkingGeometry: {
         match: finalSidebarWorkingGeometryReady,

@@ -256,6 +256,7 @@ describe("desktop shell interaction contract", () => {
     );
     expect(browserPreviewSource).toContain('".file-editor-line{" +');
     expect(browserPreviewSource).toContain('".file-editor-line__content{" +');
+    expect(browserPreviewSource).toContain('".theme-light .sidebar-settings-authority{" +');
     expect(overrides).toContain("height: 40px;");
     expect(overrides).toContain(".files-panel__search--focused {");
     expect(overrides).not.toContain(".files-panel__search:focus-within {");

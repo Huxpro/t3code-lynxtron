@@ -1120,6 +1120,9 @@ function readLynxPane() {
           resizeRail: readElementBox(root?.querySelector(".sidebar-resize-rail")),
           header: readElementBox(root?.querySelector(".lynx-sidebar-chrome-header")),
           brand: readElementBox(root?.querySelector(".sidebar-brand")),
+          footer: readElementBox(root?.querySelector("[data-sidebar='footer']")),
+          settingsRow: readElementBox(root?.querySelector(".sidebar-settings-row")),
+          settingsAuthority: readElementBox(root?.querySelector(".sidebar-settings-authority")),
           search: readElementBox(root?.querySelector('[aria-label="Search threads"]')),
           projectScopeRow: readElementBox(
             root?.querySelector(".sidebar-v2-project-scope-host")?.parentElement,
@@ -2156,6 +2159,9 @@ function readWebPane() {
           resizeRail: readElementBox(doc.querySelector(".sidebar-resize-rail")),
           header: readElementBox(doc.querySelector(".lynx-sidebar-chrome-header")),
           brand: readElementBox(doc.querySelector(".sidebar-brand")),
+          footer: readElementBox(doc.querySelector("[data-sidebar='footer']")),
+          settingsRow: readElementBox(doc.querySelector(".sidebar-settings-row")),
+          settingsAuthority: readElementBox(doc.querySelector(".sidebar-settings-authority")),
           search: readElementBox(doc.querySelector('[aria-label="Search threads"]')),
           projectScopeRow: readElementBox(
             doc.querySelector(".sidebar-v2-project-scope-host")?.parentElement,
