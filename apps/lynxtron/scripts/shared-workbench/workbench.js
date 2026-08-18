@@ -675,6 +675,70 @@ function readFilesBrowserMetrics(root) {
   };
 }
 
+function readFileEditorMetrics(root) {
+  const lynxSurface = root?.querySelector(".file-panel");
+  const webBreadcrumbs = root?.querySelector("[data-file-breadcrumbs]");
+  const toolbar =
+    lynxSurface?.querySelector(".file-panel__toolbar") ??
+    webBreadcrumbs?.closest("[data-surface-subheader]");
+  const editor =
+    lynxSurface?.querySelector(".files-panel__editor") ??
+    root?.querySelector(".file-preview-virtualizer");
+  const editorInner =
+    editor?.shadowRoot?.querySelector("textarea") ??
+    editor?.querySelector?.("textarea, [data-line]") ??
+    null;
+  const explorer =
+    root?.querySelector("[data-file-browser-panel]") ??
+    lynxSurface?.querySelector(".file-panel__explorer") ??
+    lynxSurface?.querySelector(".files-panel__browser");
+  const tabs = [
+    ...(root?.querySelectorAll(
+      ".right-panel__tab-list [aria-label], [data-active-tab] [aria-label]",
+    ) ?? []),
+  ]
+    .map((item) => item.getAttribute("aria-label"))
+    .filter((label) => label && !label.startsWith("Close "));
+  const breadcrumbText = readComposedText(
+    lynxSurface?.querySelector(".file-panel__breadcrumbs") ?? webBreadcrumbs,
+  )
+    .replace(/\s+/g, " ")
+    .trim();
+  const currentFile =
+    lynxSurface?.querySelector(".file-panel__breadcrumb--current")?.textContent?.trim() ??
+    webBreadcrumbs?.querySelector("[data-current-file-crumb='true']")?.textContent?.trim() ??
+    null;
+  return {
+    present: Boolean(lynxSurface || webBreadcrumbs),
+    surface: readElementBox(
+      lynxSurface ??
+        webBreadcrumbs?.closest(".flex.min-h-0.flex-1.flex-col.overflow-hidden") ??
+        toolbar?.parentElement,
+    ),
+    toolbar: readElementBox(toolbar),
+    breadcrumbs: readElementBox(
+      lynxSurface?.querySelector(".file-panel__breadcrumbs") ?? webBreadcrumbs,
+    ),
+    breadcrumbText,
+    currentFile,
+    editor: readElementBox(editor),
+    editorInner: readElementBox(editorInner),
+    editorValueLength:
+      typeof editor?.value === "string"
+        ? editor.value.length
+        : typeof editorInner?.value === "string"
+          ? editorInner.value.length
+          : readComposedText(editor).length,
+    explorer: readElementBox(explorer),
+    back: readElementBox(
+      lynxSurface?.querySelector('[aria-label="Back to workspace files"]') ??
+        root?.querySelector('.right-panel__tab-list [aria-label="Files"]'),
+    ),
+    statusbar: readElementBox(lynxSurface?.querySelector(".file-panel__statusbar")),
+    tabs,
+  };
+}
+
 const webPane = /** @type {HTMLIFrameElement} */ (document.getElementById("web-pane"));
 const lynxPane = /** @type {HTMLIFrameElement} */ (document.getElementById("lynx-pane"));
 for (const frame of [webPane, lynxPane]) {
@@ -1366,6 +1430,7 @@ function readLynxPane() {
       gitPublishDialog: readGitPublishDialog(root),
       reviewMetrics: readReviewMetrics(root),
       filesBrowserMetrics: readFilesBrowserMetrics(root),
+      fileEditorMetrics: readFileEditorMetrics(root),
       pendingRequestMetrics,
       settingsMetrics: settingsRoute
         ? (() => {
@@ -2074,6 +2139,7 @@ function readWebPane() {
       gitPublishDialog: readGitPublishDialog(doc),
       reviewMetrics: readReviewMetrics(doc),
       filesBrowserMetrics: readFilesBrowserMetrics(doc),
+      fileEditorMetrics: readFileEditorMetrics(doc),
       pendingRequestMetrics: readPendingRequestMetrics(doc),
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(doc),

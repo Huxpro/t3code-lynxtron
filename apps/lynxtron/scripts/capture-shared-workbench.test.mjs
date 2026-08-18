@@ -92,6 +92,40 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "finalFilesBrowserReady");
   });
 
+  it("opens one real file and verifies the detail surface and return paths", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, 'const isFileEditorState = stateId === "file-editor-detail"');
+    assert.include(source, 'const filePath = argValue("--file-path", "docs/PORT_WORKFLOW.md")');
+    assert.include(source, '"file-editor-detail",');
+    assert.include(source, '"file-editor-detail": "existing-thread"');
+    assert.include(source, "function fileEditorReady(state)");
+    assert.include(source, "function fileEditorSemanticReady(state)");
+    assert.include(source, "const fileEditorStateReady = fileEditorReady(state)");
+    assert.include(source, "web.editorValueLength > 0");
+    assert.include(source, "lynx.editorValueLength > 0");
+    assert.include(source, "webFileEditorInputSent");
+    assert.include(source, "lynxFileEditorInputSent");
+    assert.include(source, "webFileEditorDomFallbackUsed");
+    assert.include(source, "cdp-pointer-failed|shadow-dom-click-fallback");
+    assert.include(source, "finalFileEditorReady = fileEditorReady(state)");
+    assert.include(source, "fileEditorSwitched");
+    assert.include(source, "web-explorer-pointer|lynx-explorer-pointer");
+    assert.include(source, "fileEditorMetrics: state?.web?.fileEditorMetrics ?? null");
+    assert.include(source, "fileEditorMetrics: state?.lynx?.fileEditorMetrics ?? null");
+    assert.include(workbench, "function readFileEditorMetrics");
+    assert.include(workbench, "fileEditorMetrics: readFileEditorMetrics(root)");
+    assert.include(workbench, "fileEditorMetrics: readFileEditorMetrics(doc)");
+    assert.include(workbench, 'root?.querySelector(".file-panel")');
+    assert.include(workbench, 'root?.querySelector("[data-file-breadcrumbs]")');
+    assert.include(workbench, 'root?.querySelector(".file-preview-virtualizer")');
+    assert.include(workbench, 'lynxSurface?.querySelector(".file-panel__explorer")');
+    assert.include(workbench, "editorValueLength:");
+  });
+
   it("rejects wrapped or overflowing Sidebar Working metadata", () => {
     assert.include(source, "function sidebarWorkingGeometryMatches(state, expectedThreadFixture)");
     assert.include(source, "Math.abs(card.height - 78) <= 2");

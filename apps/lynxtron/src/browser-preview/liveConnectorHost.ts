@@ -37,6 +37,7 @@ import {
   type OrchestrationThread,
   type OrchestrationThreadStreamItem,
   type ProjectListEntriesResult,
+  type ProjectReadFileResult,
   type ProjectSearchEntriesResult,
   type ServerConfig,
   type ServerSettings,
@@ -135,7 +136,6 @@ export interface LiveConnectorDiagnostics {
 
 /** Commands the isolated browser pane cannot satisfy (no local fs/shell). */
 const UNSUPPORTED_COMMANDS = new Set([
-  "readProjectFile",
   "writeProjectFile",
   "createPairingCredential",
   "revokePairingLink",
@@ -543,6 +543,15 @@ export class LiveConnectorHost {
       const params = request.params as { cwd: string };
       return this.#runClient<ProjectListEntriesResult>(
         this.#client[WS_METHODS.projectsListEntries]({ cwd: params.cwd }),
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "readProjectFile") {
+      const params = request.params as { cwd: string; relativePath: string };
+      return this.#runClient<ProjectReadFileResult>(
+        this.#client[WS_METHODS.projectsReadFile](params),
       ).then((value) => {
         this.#recordCommandResult(request.method, value);
         return value;

@@ -61,7 +61,22 @@ describe("LiveConnectorHost", () => {
       () =>
         host.handleNativeCall(
           T3_CONNECTOR_METHODS.command,
-          { method: "readProjectFile", params: { path: "/etc/passwd" } },
+          {
+            method: "readProjectFile",
+            params: { cwd: "/tmp/project", relativePath: "README.md" },
+          },
+          "bridge",
+        ),
+      /not connected/,
+    );
+    assert.throws(
+      () =>
+        host.handleNativeCall(
+          T3_CONNECTOR_METHODS.command,
+          {
+            method: "writeProjectFile",
+            params: { cwd: "/tmp/project", relativePath: "README.md", contents: "unsafe" },
+          },
           "bridge",
         ),
       /unavailable in the isolated browser preview/,

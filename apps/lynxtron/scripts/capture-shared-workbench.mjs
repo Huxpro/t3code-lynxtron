@@ -102,6 +102,8 @@ const requestedSidebarWidth =
     : null;
 const explicitChangedFilesTargetState = argValue("--changed-files-state", "");
 const expandTurnId = argValue("--expand-turn-id", "");
+const filePath = argValue("--file-path", "docs/PORT_WORKFLOW.md");
+const switchFilePath = argValue("--switch-file-path", "docs/PORTING_STRATEGY.md");
 const explicitExpectedThreadId = argValue("--expect-thread", "");
 const explicitSeedSource = argValue("--seed-source", "");
 const expandThinking = hasFlag("--expand-thinking");
@@ -128,6 +130,8 @@ const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "comp
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isFilesBrowserState = stateId === "files-browser";
+const isFileEditorState = stateId === "file-editor-detail";
+const isFilesSurfaceState = isFilesBrowserState || isFileEditorState;
 const composerExpectationByStateId = {
   "composer-hero": {
     layout: "hero",
@@ -904,13 +908,65 @@ function filesBrowserReady(state) {
 }
 
 function filesBrowserSemanticReady(state) {
-  if (!isFilesBrowserState) return true;
+  if (!isFilesSurfaceState) return true;
+  if (isFileEditorState) {
+    return (
+      state?.web?.filesBrowserMetrics?.present === true &&
+      state?.lynx?.reviewMetrics?.activeKind === "file" &&
+      state?.lynx?.filesBrowserMetrics?.present === true &&
+      (state?.web?.filesBrowserMetrics?.rowCount ?? 0) > 0 &&
+      state?.web?.filesBrowserMetrics?.rowCount === state?.lynx?.filesBrowserMetrics?.rowCount
+    );
+  }
   return (
     state?.web?.filesBrowserMetrics?.present === true &&
     state?.lynx?.reviewMetrics?.activeKind === "files" &&
     state?.lynx?.filesBrowserMetrics?.present === true &&
     (state?.web?.filesBrowserMetrics?.rowCount ?? 0) > 0 &&
     state?.web?.filesBrowserMetrics?.rowCount === state?.lynx?.filesBrowserMetrics?.rowCount
+  );
+}
+
+function fileEditorReady(state) {
+  if (!isFileEditorState) return true;
+  const web = state?.web?.fileEditorMetrics;
+  const lynx = state?.lynx?.fileEditorMetrics;
+  const fileName = filePath.split("/").at(-1);
+  return (
+    web?.present === true &&
+    lynx?.present === true &&
+    web.currentFile === fileName &&
+    lynx.currentFile === fileName &&
+    web.breadcrumbText.includes(fileName) &&
+    lynx.breadcrumbText.includes(fileName) &&
+    web.toolbar?.rect?.height === 40 &&
+    lynx.toolbar?.rect?.height === 40 &&
+    web.editor?.rect?.height > 0 &&
+    lynx.editor?.rect?.height > 0 &&
+    web.editorValueLength > 0 &&
+    lynx.editorValueLength > 0 &&
+    web.explorer?.rect?.width > 0 &&
+    lynx.explorer?.rect?.width > 0 &&
+    Math.abs(web.editor.rect.width - lynx.editor.rect.width) <= 1 &&
+    Math.abs(web.explorer.rect.width - lynx.explorer.rect.width) <= 1 &&
+    Math.abs(web.editor.rect.height - lynx.editor.rect.height) <= 1 &&
+    web.tabs.length === 1 &&
+    lynx.tabs.length === 1 &&
+    web.tabs.includes(fileName) &&
+    lynx.tabs.includes(fileName) &&
+    web.back === null &&
+    lynx.back === null &&
+    web.statusbar === null &&
+    lynx.statusbar === null
+  );
+}
+
+function fileEditorSemanticReady(state) {
+  if (!isFileEditorState) return true;
+  const fileName = filePath.split("/").at(-1);
+  return (
+    state?.web?.fileEditorMetrics?.currentFile === fileName &&
+    state?.lynx?.fileEditorMetrics?.currentFile === fileName
   );
 }
 
@@ -925,6 +981,15 @@ async function dispatchPointerClick(cdp, sessionId, point) {
     { type: "mouseReleased", ...point, button: "left", clickCount: 1 },
     sessionId,
   );
+}
+
+async function dispatchPointerClickWithMove(cdp, sessionId, point) {
+  await cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mouseMoved", ...point, button: "none" },
+    sessionId,
+  );
+  await dispatchPointerClick(cdp, sessionId, point);
 }
 
 async function dispatchOverlayOpeningPointerClick(cdp, sessionId, point) {
@@ -1477,6 +1542,7 @@ async function main() {
     "existing-thread-approval",
     "existing-thread-question",
     "files-browser",
+    "file-editor-detail",
     "git-publish-dialog",
     "composer-docked",
     "composer-working",
@@ -1905,6 +1971,7 @@ async function captureCell({
     "review-diff": "existing-thread",
     "review-empty": "existing-thread",
     "files-browser": "existing-thread",
+    "file-editor-detail": "existing-thread",
   };
   const scenario = scenarioByStateId[stateId] ?? "existing-thread";
   const params = new URLSearchParams({
@@ -1961,7 +2028,8 @@ async function captureCell({
   let transcriptReadyPolls = stateId.startsWith("existing-thread-") ? 0 : 3;
   let pendingRequestReadyPolls =
     stateId === "existing-thread-approval" || stateId === "existing-thread-question" ? 0 : 3;
-  let filesBrowserReadyPolls = isFilesBrowserState ? 0 : 3;
+  let filesBrowserReadyPolls = isFilesSurfaceState ? 0 : 3;
+  let fileEditorReadyPolls = isFileEditorState ? 0 : 3;
   let composerInputSent = composerInput.length === 0;
   let composerInputChannel = composerInput.length === 0 ? "not-required" : "pending";
   let webReviewPanelInputSent =
@@ -2003,8 +2071,15 @@ async function captureCell({
   let lastReviewTimelineKey = "";
   let ownedServerTerminated = false;
   let reachedTargetState = false;
-  let webFilesBrowserInputSent = !isFilesBrowserState;
-  let lynxFilesBrowserInputSent = !isFilesBrowserState;
+  let webFilesBrowserInputSent = !isFilesSurfaceState;
+  let lynxFilesBrowserInputSent = !isFilesSurfaceState;
+  let webFileEditorInputSent = !isFileEditorState;
+  let lynxFileEditorInputSent = !isFileEditorState;
+  let webFileEditorOpenAttempts = 0;
+  let lynxFileEditorOpenAttempts = 0;
+  let webFileEditorDomFallbackUsed = false;
+  let fileEditorSwitched = !isFileEditorState;
+  const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
   while (Date.now() < deadline) {
@@ -2247,7 +2322,7 @@ async function captureCell({
         lastProviderTimelineKey = timelineKey;
       }
     }
-    if (isFilesBrowserState && threadReadyForReview(state, expectThread)) {
+    if (isFilesSurfaceState && threadReadyForReview(state, expectThread)) {
       const timelineKey = JSON.stringify({
         web: {
           activeKind: state?.web?.reviewMetrics?.activeKind ?? null,
@@ -2306,6 +2381,125 @@ async function captureCell({
         if (!lynxFilesBrowserInputSent && filesPoints?.lynx) {
           await dispatchPointerClick(cdp, sessionId, filesPoints.lynx);
           await delay(100);
+          continue;
+        }
+      }
+      if (state?.web?.fileEditorMetrics?.currentFile === filePath.split("/").at(-1)) {
+        webFileEditorInputSent = true;
+      }
+      if (state?.lynx?.fileEditorMetrics?.currentFile === filePath.split("/").at(-1)) {
+        lynxFileEditorInputSent = true;
+      }
+      if (
+        isFileEditorState &&
+        state?.web?.filesBrowserMetrics?.present === true &&
+        state?.lynx?.filesBrowserMetrics?.present === true &&
+        (!webFileEditorInputSent || !lynxFileEditorInputSent)
+      ) {
+        const targetName = filePath.split("/").at(-1);
+        const filePoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const surface = root?.querySelector('[data-file-browser-panel], .files-panel');
+              const exactWebTarget = surface?.querySelector(
+                ${JSON.stringify(`[data-item-path="${filePath}"]`)}
+              );
+              const candidates = [];
+              const visit = (node) => {
+                for (const child of node?.children ?? []) {
+                  candidates.push(child);
+                  visit(child);
+                  if (child.shadowRoot) visit(child.shadowRoot);
+                }
+              };
+              visit(surface);
+              const target =
+                exactWebTarget ??
+                candidates.find((item) => {
+                  const label = item.getAttribute?.('aria-label') ?? '';
+                  const text = item.textContent?.trim().replace(/\s+/g, ' ') ?? '';
+                  return (
+                    item.matches?.("button[data-type='item'], .file-tree-row--file") &&
+                    (label === ${JSON.stringify(targetName)} ||
+                      label.endsWith('/' + ${JSON.stringify(targetName)}) ||
+                      text === ${JSON.stringify(targetName)})
+                  );
+                });
+              if (!frame || !target) return null;
+              target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+                label: target.getAttribute('aria-label') ?? target.textContent?.trim() ?? '',
+              };
+            };
+            return {
+              web: pointFor('web-pane', false),
+              lynx: pointFor('lynx-pane', true),
+            };
+          })()`,
+        ).catch(() => null);
+        let clicked = false;
+        if (!webFileEditorInputSent && webFileEditorOpenAttempts < 3 && filePoints?.web) {
+          await dispatchPointerClickWithMove(cdp, sessionId, filePoints.web);
+          webFileEditorOpenAttempts += 1;
+          clicked = true;
+        }
+        if (!lynxFileEditorInputSent && lynxFileEditorOpenAttempts < 3 && filePoints?.lynx) {
+          await dispatchPointerClickWithMove(cdp, sessionId, filePoints.lynx);
+          lynxFileEditorOpenAttempts += 1;
+          clicked = true;
+        }
+        if (
+          !webFileEditorInputSent &&
+          webFileEditorOpenAttempts >= 1 &&
+          !webFileEditorDomFallbackUsed
+        ) {
+          webFileEditorDomFallbackUsed = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const doc = document.getElementById('web-pane')?.contentWindow?.document;
+              const surface = doc?.querySelector('[data-file-browser-panel]');
+              const candidates = [];
+              const visit = (node) => {
+                for (const child of node?.children ?? []) {
+                  candidates.push(child);
+                  visit(child);
+                  if (child.shadowRoot) visit(child.shadowRoot);
+                }
+              };
+              visit(surface);
+              const target = candidates.find(
+                (item) =>
+                  item.getAttribute?.('data-item-path') === ${JSON.stringify(filePath)}
+              );
+              if (!target) return false;
+              target.click();
+              return true;
+            })()`,
+          ).catch(() => false);
+          clicked = webFileEditorDomFallbackUsed || clicked;
+        }
+        if (clicked) {
+          fileEditorInteractionTimeline.push({
+            elapsedMs: Date.now() - readyStart,
+            webCurrentFile: state?.web?.fileEditorMetrics?.currentFile ?? null,
+            lynxCurrentFile: state?.lynx?.fileEditorMetrics?.currentFile ?? null,
+            attempts: {
+              web: webFileEditorOpenAttempts,
+              lynx: lynxFileEditorOpenAttempts,
+            },
+            points: filePoints,
+          });
+          await delay(150);
           continue;
         }
       }
@@ -3427,6 +3621,8 @@ async function captureCell({
     const gitPublishDialogReady = gitPublishDialogMatches(state);
     const filesBrowserStateReady = filesBrowserSemanticReady(state);
     filesBrowserReadyPolls = filesBrowserStateReady ? filesBrowserReadyPolls + 1 : 0;
+    const fileEditorStateReady = fileEditorReady(state);
+    fileEditorReadyPolls = fileEditorStateReady ? fileEditorReadyPolls + 1 : 0;
     const gitPublishDiscoveryReady =
       !isGitPublishDialogState ||
       state?.lynx?.connectorDiagnostics?.commandResults?.some(
@@ -3496,6 +3692,7 @@ async function captureCell({
       gitPublishDiscoveryReady &&
       gitPublishDialogReady &&
       filesBrowserReadyPolls >= 3 &&
+      fileEditorReadyPolls >= 3 &&
       shortcutInputReady &&
       sidebarSearchReady &&
       sidebarStateReady &&
@@ -3704,6 +3901,7 @@ async function captureCell({
   const finalHeaderGitActionReady = headerGitActionMatches(state);
   const finalGitPublishDialogReady = gitPublishDialogMatches(state);
   let finalFilesBrowserReady = filesBrowserReady(state);
+  let finalFileEditorReady = fileEditorReady(state);
   if (isGitPublishDialogState && !finalGitPublishDialogReady) {
     throw new Error(
       `Git Publish dialog changed before the compositor gate: ${JSON.stringify({
@@ -4009,6 +4207,7 @@ async function captureCell({
       `(() => { const w = window.__T3_WORKBENCH__; return w ? w.read() : null; })()`,
     ).catch(() => null)) ?? state;
   finalFilesBrowserReady = filesBrowserReady(state);
+  finalFileEditorReady = fileEditorReady(state);
   if (
     overlay &&
     (state?.web?.productState?.overlay !== overlay ||
@@ -4168,6 +4367,82 @@ async function captureCell({
     }
   }
 
+  if (isFileEditorState && finalFileEditorReady) {
+    const switchPoints = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId, shadow) => {
+          const frame = document.getElementById(frameId);
+          const doc = frame?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const explorer = root?.querySelector('[data-file-browser-panel], .file-panel__explorer');
+          const candidates = [];
+          const visit = (node) => {
+            for (const child of node?.children ?? []) {
+              candidates.push(child);
+              visit(child);
+              if (child.shadowRoot) visit(child.shadowRoot);
+            }
+          };
+          visit(explorer);
+          const targetName = ${JSON.stringify(switchFilePath.split("/").at(-1))};
+          const target = candidates.find((item) => {
+            const path = item.getAttribute?.('data-item-path') ?? '';
+            const label = item.getAttribute?.('aria-label') ?? '';
+            const text = item.textContent?.trim().replace(/\s+/g, ' ') ?? '';
+            return (
+              path === ${JSON.stringify(switchFilePath)} ||
+              label === targetName ||
+              text === targetName
+            );
+          });
+          if (!frame || !target) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
+          return {
+            x: frameRect.x + rect.x + rect.width / 2,
+            y: frameRect.y + rect.y + rect.height / 2,
+          };
+        };
+        return {
+          web: pointFor('web-pane', false),
+          lynx: pointFor('lynx-pane', true),
+        };
+      })()`,
+    ).catch(() => null);
+    if (switchPoints?.web) await dispatchPointerClickWithMove(cdp, sessionId, switchPoints.web);
+    if (switchPoints?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, switchPoints.lynx);
+    const switchDeadline = Date.now() + 3_000;
+    while (Date.now() < switchDeadline) {
+      const switched = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const web = document.getElementById('web-pane')?.contentWindow?.document;
+          const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+            ?.getElementById('t3-lynx-preview')?.shadowRoot;
+          const targetName = ${JSON.stringify(switchFilePath.split("/").at(-1))};
+          return {
+            web:
+              web
+                ?.querySelector("[data-current-file-crumb='true']")
+                ?.textContent?.trim() === targetName,
+            lynx:
+              lynx
+                ?.querySelector(".file-panel__breadcrumb--current")
+                ?.textContent?.trim() === targetName,
+          };
+        })()`,
+      ).catch(() => null);
+      if (switched?.web && switched?.lynx) {
+        fileEditorSwitched = true;
+        break;
+      }
+      await delay(100);
+    }
+  }
+
   await browserCdp.send("Target.closeTarget", { targetId }).catch(() => undefined);
 
   // Shared-server identity gate: both panes rendered the seeded project.
@@ -4209,6 +4484,8 @@ async function captureCell({
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
     finalFilesBrowserReady &&
+    finalFileEditorReady &&
+    fileEditorSwitched &&
     gitPublishDismissed &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
@@ -4238,6 +4515,8 @@ async function captureCell({
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
       finalFilesBrowserReady,
+      finalFileEditorReady,
+      fileEditorSwitched,
       gitPublishDismissed,
       finalReviewReady,
       finalSettingsAsyncReady,
@@ -4270,6 +4549,7 @@ async function captureCell({
           timelineMetrics: state?.web?.timelineMetrics ?? null,
           reviewMetrics: state?.web?.reviewMetrics ?? null,
           filesBrowserMetrics: state?.web?.filesBrowserMetrics ?? null,
+          fileEditorMetrics: state?.web?.fileEditorMetrics ?? null,
           pendingRequestMetrics: state?.web?.pendingRequestMetrics ?? null,
           settingsMetrics: state?.web?.settingsMetrics ?? null,
         },
@@ -4295,6 +4575,7 @@ async function captureCell({
           timelineMetrics: state?.lynx?.timelineMetrics ?? null,
           reviewMetrics: state?.lynx?.reviewMetrics ?? null,
           filesBrowserMetrics: state?.lynx?.filesBrowserMetrics ?? null,
+          fileEditorMetrics: state?.lynx?.fileEditorMetrics ?? null,
           pendingRequestMetrics: state?.lynx?.pendingRequestMetrics ?? null,
           settingsMetrics: state?.lynx?.settingsMetrics ?? null,
           rendererErrors: state?.lynx?.rendererErrors ?? [],
@@ -4405,6 +4686,31 @@ async function captureCell({
         timeline: filesBrowserInteractionTimeline,
         web: state?.web?.filesBrowserMetrics ?? null,
         lynx: state?.lynx?.filesBrowserMetrics ?? null,
+      },
+      fileEditor: {
+        match: finalFileEditorReady,
+        filePath,
+        switchFilePath,
+        openedBy: isFileEditorState ? "web-pointer-click|lynx-pointer-click" : "not-required",
+        openInputChannels: isFileEditorState
+          ? {
+              web: webFileEditorDomFallbackUsed
+                ? "cdp-pointer-failed|shadow-dom-click-fallback"
+                : "cdp-pointer",
+              lynx: "cdp-pointer",
+            }
+          : null,
+        switchedBy: isFileEditorState
+          ? "web-explorer-pointer|lynx-explorer-pointer"
+          : "not-required",
+        switched: fileEditorSwitched,
+        openAttempts: {
+          web: webFileEditorOpenAttempts,
+          lynx: lynxFileEditorOpenAttempts,
+        },
+        timeline: fileEditorInteractionTimeline,
+        web: state?.web?.fileEditorMetrics ?? null,
+        lynx: state?.lynx?.fileEditorMetrics ?? null,
       },
       expectProject,
       webState,

@@ -109,16 +109,20 @@ describe("applyRightPanelAction", () => {
     });
   });
 
-  it("keeps the Files explorer available while a file surface is open", () => {
+  it("replaces the Files tab with one file surface while the detail owns its explorer", () => {
     const withFiles = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
       type: "open",
       surface: files,
     });
+    const withoutExplorer = {
+      ...withFiles,
+      surfaces: withFiles.surfaces.filter((surface) => surface.kind !== "files"),
+    };
 
-    expect(applyRightPanelAction(withFiles, { type: "open", surface: file })).toEqual({
+    expect(applyRightPanelAction(withoutExplorer, { type: "open", surface: file })).toEqual({
       isOpen: true,
       activeSurfaceId: file.id,
-      surfaces: [files, file],
+      surfaces: [file],
     });
   });
 

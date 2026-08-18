@@ -223,11 +223,11 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('fileIcon={<Icon name="file-json" size={14}');
     expect(files).toContain("uiActions.openFileSurface(path)");
     expect(files).toContain("export function FilePanel");
-    expect(files).toContain('aria-label="Back to workspace files"');
-    expect(files).toContain('uiActions.openRightPanelSurface("files")');
     expect(files).toContain('className="file-panel__toolbar" data-surface-subheader');
     expect(files).toContain('className="file-panel__editor-surface"');
-    expect(files).not.toContain("withoutExplorer");
+    expect(files).toContain('className="file-panel__explorer"');
+    expect(files).toContain("<FilesPanel selectedPath={path} />");
+    expect(files).not.toContain('aria-label="Back to workspace files"');
     expect(files).not.toContain('className="files-panel__preview"');
     expect(files).not.toContain('className="files-panel__info"');
     expect(overrides).toContain(".files-panel__toolbar {");
@@ -247,6 +247,11 @@ describe("desktop shell interaction contract", () => {
       '".files-panel .file-tree-children{row-gap:0!important;column-gap:0!important;}"',
     );
     expect(browserPreviewSource).toContain("x-input.files-panel__search-input::part(input)");
+    expect(browserPreviewSource).toContain("x-textarea.files-panel__editor::part(textarea)");
+    expect(browserPreviewSource).toContain("synchronizeTextareaValues");
+    expect(browserPreviewSource).toContain(
+      "x-textarea.files-panel__editor, textarea.files-panel__editor",
+    );
     expect(overrides).toContain("height: 40px;");
     expect(overrides).toContain(".files-panel__search--focused {");
     expect(overrides).not.toContain(".files-panel__search:focus-within {");
@@ -255,7 +260,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("border-radius: 5px;");
     expect(overrides).toContain("font-family: var(--font-sans);");
     expect(overrides).toContain("font-size: 12px;");
-    expect(overrides).toContain(".file-panel__back {");
+    expect(overrides).toContain(".file-panel__explorer {");
+    expect(overrides).toContain("width: 256px;");
     expect(overrides).toContain(".file-panel__statusbar {");
     expect(overrides).toContain("border-radius: 0;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");

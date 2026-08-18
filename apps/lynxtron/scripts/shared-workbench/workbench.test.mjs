@@ -96,6 +96,7 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "if (child.shadowRoot) visit(child.shadowRoot)");
     assert.include(source, "\"button[data-type='item']\"");
     assert.include(source, "filesBrowserMetrics: readFilesBrowserMetrics");
+    assert.include(source, "fileEditorMetrics: readFileEditorMetrics");
   });
 
   it("measures the Git Publish popup rather than the fullscreen Lynx overlay", () => {

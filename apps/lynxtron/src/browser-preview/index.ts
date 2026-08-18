@@ -469,6 +469,23 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".files-panel .file-tree-children{row-gap:0!important;column-gap:0!important;}" +
       ".files-panel__search{" +
       "display:flex;flex:1 1 0%;flex-direction:row;width:0;height:28px;box-sizing:border-box;}" +
+      ".file-panel{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:100%;min-height:0;}" +
+      ".file-panel__toolbar{" +
+      "display:flex;flex:none;flex-direction:row;width:100%;height:40px;min-height:40px;" +
+      "max-height:40px;box-sizing:border-box;}" +
+      ".file-panel__breadcrumbs{display:flex;flex:1 1 0%;width:0;height:40px;min-height:40px;}" +
+      ".file-panel__content{" +
+      "display:flex;flex:1 1 0%;flex-direction:row;width:100%;height:0;min-height:0;}" +
+      ".file-panel__editor-column{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;width:0;min-width:0;min-height:0;}" +
+      ".file-panel__explorer{" +
+      "display:flex;flex:none;flex-direction:column;width:256px;min-width:256px;height:100%;min-height:0;}" +
+      ".file-panel__editor-surface{" +
+      "display:flex;flex:1 1 0%;flex-direction:column;width:100%;height:0;min-height:0;}" +
+      ".files-panel__editor{" +
+      "display:block;flex:1 1 0%;width:100%;height:0;min-height:0;box-sizing:border-box;}" +
+      ".file-panel__statusbar{display:flex;flex:none;width:100%;min-height:28px;box-sizing:border-box;}" +
       ".diff-panel{display:flex;flex:1 1 0%;flex-direction:column;height:0;}" +
       ".diff-panel-subheader{" +
       "flex:none;height:40px;min-height:40px;max-height:40px;box-sizing:border-box;}" +
@@ -562,6 +579,10 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "x-textarea.composer__input::part(textarea){" +
       "display:block!important;width:100%!important;height:70px!important;border:0!important;" +
       "padding:0!important;font-size:14px!important;line-height:23px!important;background:transparent!important;}" +
+      "x-textarea.files-panel__editor::part(textarea){" +
+      "display:block!important;width:100%!important;height:100%!important;border:0!important;" +
+      "padding:14px 16px 24px!important;font-family:inherit!important;font-size:12px!important;" +
+      "line-height:19px!important;color:inherit!important;background:transparent!important;}" +
       "x-input::part(input),x-input::part(form),x-textarea::part(textarea),x-textarea::part(form){" +
       "box-sizing:inherit;width:inherit;height:inherit;border:inherit;border-radius:inherit;" +
       "align-self:inherit;justify-self:inherit;text-align:inherit;direction:inherit;" +
@@ -607,13 +628,26 @@ const observeProductRender = (): void => {
     return;
   }
   injectLynxLayoutDefaults(shadowRoot);
+  const synchronizeTextareaValues = () => {
+    for (const textarea of shadowRoot.querySelectorAll<HTMLElement & { value: string }>(
+      "x-textarea.files-panel__editor, textarea.files-panel__editor",
+    )) {
+      const value = textarea.getAttribute("value");
+      if (value !== null && textarea.value !== value) textarea.value = value;
+    }
+  };
   const observer = new MutationObserver(() => {
+    synchronizeTextareaValues();
     updateReadiness();
-    if (diagnostics.semanticReady) observer.disconnect();
   });
-  observer.observe(shadowRoot, { childList: true, subtree: true });
+  observer.observe(shadowRoot, {
+    attributes: true,
+    attributeFilter: ["value"],
+    childList: true,
+    subtree: true,
+  });
+  synchronizeTextareaValues();
   updateReadiness();
-  if (diagnostics.semanticReady) observer.disconnect();
 };
 observeProductRender();
 
