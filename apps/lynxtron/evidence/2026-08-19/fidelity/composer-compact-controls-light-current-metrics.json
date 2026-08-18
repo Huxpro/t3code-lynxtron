@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T06:03:30+09:00",
+  "productCommit": "083c8c1ba",
+  "testCommit": "e1f5dd41d",
+  "stateId": "composer-compact-controls-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "surface": "Light compact Composer menu material, inline Files panel, context containment, mode selection, selected reopen, and outside dismissal"
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "rightPanelSurface": "Files",
+    "rightPanelWidth": 540
+  },
+  "classification": {
+    "productLoss": [
+      "The first valid light cell had correct geometry, content, and behavior, but Lynx used an opaque white panel, solid #e4e4e7 border, and 32% shadow while Web used 83.6% white glass, a 10% foreground border, and a 55% shadow with -18px spread.",
+      "The selected Lynx row used opaque #f4f4f5 while Web used the foreground at 8% alpha."
+    ],
+    "harnessMismatch": [
+      "The first observed before/after pair was rejected for attribution because Web's external Claude update notification changed from v1.2.34 to v1.2.35 between captures.",
+      "The retained pair temporarily removes only the light material selectors, captures, restores the exact selectors, and captures again. Its Web authority PNG is byte-identical across before and after.",
+      "Dark Web screenshots changed because the external notification changed. Dark Lynx screenshots are byte-identical, which is the valid product regression check for a light-only selector."
+    ],
+    "intentionalPlatformDelta": [
+      "Native Lynx has no backdrop-filter blur equivalent in this menu. The repair matches the authority tint, border alpha, selected fill, and shadow while retaining a transparent compositing surface."
+    ],
+    "acceptedRenderingNoise": [
+      "Lynx quantizes 0.836 alpha to 0.835294, 0.1 border alpha to 0.0980392, and 0.55 shadow alpha to 0x8c.",
+      "Final panel geometry remains within the dark state tolerances: 0.609375px x, 2px y, 1.78125px width, and zero height delta."
+    ],
+    "evidenceBoundary": "The matched Browser pair uses one immutable snapshot, thread, light theme, viewport, right-panel width, Web bundle, menu state, and byte-identical Web authority PNG. Exact-bundle Native proves resolved light tokens, fourteen rows, Plan mutation, selected reopen, outside dismissal, sequence advancement, zero renderer errors, and cleanup. Dark Lynx pixels remain byte-identical."
+  },
+  "browser": {
+    "sameSnapshot": true,
+    "sameState": true,
+    "sameTheme": true,
+    "sameViewport": true,
+    "sameWebBundle": true,
+    "webAuthorityByteIdentical": true,
+    "webBundle": "0ecd5e2b57cff65d6c9f07bc00d46c25086fd3a608798a7886d69f7a4ca5f915",
+    "before": {
+      "status": "pass-with-product-loss",
+      "reportSha256": "88d76808bc698599817029b2b93d44301abfd1103f9905f3ef7ec0605d197c36",
+      "screenshots": {
+        "web": "6cc8995e357e5f86ae4d864aaa90ca27d1930b8a65b48f52c98edc6887469379",
+        "lynx": "1cced62228d45439499f25654e44dfdfd86bcdb0744fc0f3d34f733addda6da0"
+      },
+      "material": {
+        "panelBackground": "rgb(255,255,255)",
+        "panelBorder": "rgb(228,228,231)",
+        "panelShadow": "rgba(0,0,0,0.32) 0 16px 42px",
+        "selectedRow": "rgb(244,244,245)"
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 5.672341,
+          "significantShare": 0.074852
+        },
+        "composerContext": {
+          "mae": 6.663632,
+          "significantShare": 0.11211
+        },
+        "menuEnvelope": {
+          "mae": 15.876737,
+          "significantShare": 0.286211
+        },
+        "context": {
+          "mae": 2.129442,
+          "significantShare": 0.018962
+        }
+      }
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "head": "e1f5dd41d",
+      "productCommit": "083c8c1ba",
+      "reportSha256": "93f5a1855d12b324367f1a9c54e7f01a7c1c1fd67741269efea713a0ccca532c",
+      "screenshots": {
+        "web": "6cc8995e357e5f86ae4d864aaa90ca27d1930b8a65b48f52c98edc6887469379",
+        "lynx": "d0801990e89fee3ad8f32a5cda549fa6a4d6da87b11c9bc2fff3e764f55871b4"
+      },
+      "material": {
+        "panelBackground": "rgba(255,255,255,0.835)",
+        "panelBorder": "rgba(39,39,42,0.1)",
+        "panelShadow": "rgba(0,0,0,0.55) 0 16px 40px -18px",
+        "selectedRow": "rgba(39,39,42,0.08)"
+      },
+      "geometry": {
+        "panelDeltas": {
+          "x": 0.609375,
+          "y": 2,
+          "width": 1.78125,
+          "height": 0
+        },
+        "rowCount": {
+          "web": 14,
+          "lynx": 14
+        },
+        "contextOverlap": {
+          "web": 0,
+          "lynx": 0
+        }
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 5.239258,
+          "significantShare": 0.070955
+        },
+        "composerContext": {
+          "mae": 5.254329,
+          "significantShare": 0.098913
+        },
+        "menuEnvelope": {
+          "mae": 13.526169,
+          "significantShare": 0.26734
+        },
+        "context": {
+          "mae": 1.176416,
+          "significantShare": 0.018962
+        },
+        "delta": {
+          "fullFrameMae": -0.433083,
+          "fullFrameSignificantShare": -0.003897,
+          "composerContextMae": -1.409303,
+          "composerContextSignificantShare": -0.013197,
+          "menuEnvelopeMae": -2.350568,
+          "menuEnvelopeSignificantShare": -0.018871,
+          "contextMae": -0.953026
+        }
+      }
+    },
+    "darkRegression": {
+      "lynxByteIdentical": true,
+      "sha256": "1aa499c53fe51048bf2df786d5382f68503eca103059bee4c8ec0e0ef0178f73",
+      "webChangedExternally": true,
+      "classification": "external update-notification content, not product"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "theme": "light",
+    "bundleSha256": "f17be9358ba9a1aff62ea1eecc30ba17a267aa328f15261768eebeb7d17224c0",
+    "computedStyle": {
+      "backgroundColor": "rgba(255,255,255,0.835294)",
+      "borderTopColor": "rgba(39,39,42,0.0980392)",
+      "boxShadow": "0 16px 40px -18px #0000008c"
+    },
+    "interaction": {
+      "rowCount": 14,
+      "before": {
+        "sequence": 18,
+        "interactionMode": "default"
+      },
+      "after": {
+        "sequence": 20,
+        "interactionMode": "plan"
+      },
+      "planSelectedOnReopen": true,
+      "outsideDismissPoint": [900, 300],
+      "outsideDismissed": true
+    },
+    "screenshot": {
+      "path": "/tmp/t3-compact-light-native.png",
+      "sha256": "c3b928d7ccea741681260419b89fbe6c1df9b7633d51f966ae3b4ce684c87965"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "ownedProcessStopped": true
+  },
+  "fidelityImpact": {
+    "modelChange": "Add composer-compact-controls-light as state 51 with Lynx and Native clients.",
+    "lossAccounting": {
+      "previousCheckpointUnderExpandedDenominator": 0.390002,
+      "lightBaselineAfterLynxEvidence": 0.382334,
+      "afterNativeCoverage": 0.371823,
+      "afterProductRepair": 0.371793,
+      "productRepairDelta": -0.00003,
+      "evidenceDebtAfter": 0.360585,
+      "boundary": "The former 50-state 0.377187 checkpoint is not directly comparable after denominator expansion. Coverage gain and measured product gain are separate ledger points."
+    },
+    "expectedStateCount": {
+      "before": 50,
+      "after": 51
+    },
+    "expectedCellCount": {
+      "before": 576,
+      "after": 588
+    },
+    "expectedTotalWeight": {
+      "before": 190.4,
+      "after": 194.4
+    },
+    "existingWeightsChanged": false,
+    "existingScopeReduced": false,
+    "darkResidualOverwritten": false
+  },
+  "validation": {
+    "focusedTests": "32/32",
+    "lynxTypecheck": "pass",
+    "productionBuild": "pass",
+    "browserStrictReport": "/tmp/t3-compact-light-matched-after/workbench-report.json",
+    "nativeScreenshot": "/tmp/t3-compact-light-native.png",
+    "screenshotBudget": "32/100",
+    "agentBrowserLeakGate": "owned=0 orphaned=0"
+  },
+  "remainingRisk": [
+    "Backdrop blur itself remains an intentional Native platform delta; tint, border, selected fill, and shadow match the authority material.",
+    "The external provider-update notification remains an uncontrolled Web visual; matched attribution requires byte-identical Web PNGs as used here."
+  ]
+}

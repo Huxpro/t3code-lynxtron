@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T05:36:00+09:00",
+  "updatedAt": "2026-08-19T06:03:30+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -9658,6 +9658,172 @@
               "confidence": 0.99,
               "method": "shared-server-compact-controls-readiness",
               "source": "Strict Browser final gate, exact Native bundle, clean consoles, and leak pre/post zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-light-baseline",
+      "observedAt": "2026-08-19T05:49:10+09:00",
+      "commit": "409bab3d812d85a77464fe3d15e52f4ca0e95b61",
+      "codeState": "working-tree",
+      "label": "Compact Composer light material baseline",
+      "narrative": "A new light-theme counterpart preserves the certified fourteen-row compact menu, trigger relation, inline Files panel, context containment, and interaction behavior, but exposes a real material gap. Web uses an 83.6% white glass tint, 10% foreground border, 55% shadow with -18px spread, and 8% foreground selected fill. Lynx used opaque white, solid #e4e4e7, a 32% shadow without spread, and opaque #f4f4f5 selection. The retained pixel pair has byte-identical Web authority; an earlier provider-update notification drift is rejected as harness/external-state mismatch.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point expands the fixed denominator with a real light-theme state, preserves the dark state, and retains the measured material residual without changing any existing weight."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/composer-compact-controls-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d36455530e9df8aa2ef231ad14738f55d644496f395e582f1e510455211a5fba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-light-row-content",
+              "source": "Both renderers expose fourteen canonical rows in the same section order"
+            },
+            "geometry": {
+              "anchorDeltas": [0.609375, 2, 1.78125, 0, 0.265625, 0, 0, 0],
+              "anchorScale": 537,
+              "confidence": 0.99,
+              "method": "compact-controls-light-panel-trigger-containment",
+              "source": "Panel, trigger, and outer right-panel containment match within fractional rounding"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-light-typography",
+              "source": "Both render one-column 14px rows with compact section labels and selected/default copy"
+            },
+            "material": {
+              "pixel": {
+                "mae": 5.672341,
+                "significantShare": 0.074852
+              },
+              "confidence": 0.99,
+              "method": "compact-controls-light-baseline-pixel",
+              "source": "Matched 1280x820 light full-frame pair with byte-identical Web authority"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-light-open-select-dismiss",
+              "source": "Real triggers open the menu and the certified interaction contract remains intact"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-light-browser-readiness",
+              "source": "Same immutable snapshot, strict final gate, clean console, and leak pre/post zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-light-native-certification",
+      "observedAt": "2026-08-19T06:00:31+09:00",
+      "commit": "e1f5dd41d",
+      "codeCommit": "083c8c1ba",
+      "codeState": "commit",
+      "label": "Compact Composer light Native certification",
+      "narrative": "A fresh exact-bundle Native light run resolves the material to rgba(255,255,255,0.835294), rgba(39,39,42,0.0980392), and 0 16px 40px -18px #0000008c. It retains fourteen rows, mutates Plan from sequence 18 to 20, keeps Plan selected after reopen, dismisses from an outside touch, reports zero renderer errors, and disposes isolated state. Dark Lynx pixels remain byte-identical. Native material pixels are representative rather than a Web parity residual.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point adds exact Native content, geometry, typography, interaction, and runtime coverage without assigning a Native pixel residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/composer-compact-controls-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d36455530e9df8aa2ef231ad14738f55d644496f395e582f1e510455211a5fba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-compact-controls-content",
+              "source": "Exact Native exposes all fourteen canonical rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 537,
+              "confidence": 0.99,
+              "method": "native-light-compact-controls-geometry",
+              "source": "Exact Native retains the certified panel, trigger, and context containment geometry"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-compact-controls-typography",
+              "source": "Exact Native retains one-column section labels and 14px row copy"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-compact-controls-select-dismiss",
+              "source": "Plan mutates and remains selected after reopen; outside touch dismisses the fullscreen layer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-compact-controls-readiness",
+              "source": "Exact bundle, main transport sequence 18 to 20, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-light-current",
+      "observedAt": "2026-08-19T06:03:30+09:00",
+      "commit": "e1f5dd41d",
+      "codeCommit": "083c8c1ba",
+      "codeState": "commit",
+      "label": "Compact Composer light material parity",
+      "narrative": "The light-only compact menu now matches Web's glass tint, border alpha, selected fill, and shadow while leaving dark Lynx pixels byte-identical. On a matched pair with byte-identical Web authority, full-frame MAE falls from 5.672341 to 5.239258, Composer/context MAE from 6.663632 to 5.254329, menu-envelope MAE from 15.876737 to 13.526169, and context MAE from 2.129442 to 1.176416. Geometry, content, and interaction remain unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share one immutable snapshot, thread, light theme, viewport, right-panel width, menu state, bundle identities, and byte-identical Web pixels. Only Lynx light material selectors change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/composer-compact-controls-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d36455530e9df8aa2ef231ad14738f55d644496f395e582f1e510455211a5fba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "pixel": {
+                "mae": 5.239258,
+                "significantShare": 0.070955
+              },
+              "confidence": 0.99,
+              "method": "compact-controls-light-current-pixel",
+              "source": "Matched 1280x820 light full-frame pair after light-only material calibration"
             }
           }
         }
