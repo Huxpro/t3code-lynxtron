@@ -6139,6 +6139,49 @@ function assertSettingsTopOrigin(label, rect, expectedY) {
   }
 }
 
+async function assertSettingsNavigationSelection(client, expectedSuffix) {
+  const items = await readSelectorMeasurements(client, ".settings-nav__item");
+  const backgrounds = await readSelectorStyleValues(
+    client,
+    ".settings-nav__item",
+    "background-color",
+  );
+  const expectedClass = `settings-nav__item--${expectedSuffix}`;
+  const activeItems = items.filter((item) =>
+    item.attributes.class?.split(/\s+/u).includes("settings-nav__item--active"),
+  );
+  const visuallySelectedItems = items.filter((item, index) => {
+    const background = backgrounds[index] ?? "";
+    return (
+      activeItems.includes(item) ||
+      (background !== "" &&
+        background !== "transparent" &&
+        background !== "rgba(0, 0, 0, 0)" &&
+        background !== "rgba(0,0,0,0)")
+    );
+  });
+  if (
+    activeItems.length !== 1 ||
+    !activeItems[0]?.attributes.class?.split(/\s+/u).includes(expectedClass) ||
+    visuallySelectedItems.length !== 1 ||
+    !visuallySelectedItems[0]?.attributes.class?.split(/\s+/u).includes(expectedClass)
+  ) {
+    throw new Error(
+      `Settings navigation selection is not truthful: ${JSON.stringify({
+        expectedClass,
+        activeItems,
+        visuallySelectedItems,
+        backgrounds,
+      })}`,
+    );
+  }
+  return {
+    expectedClass,
+    activeClass: activeItems[0].attributes.class,
+    visuallySelectedClass: visuallySelectedItems[0].attributes.class,
+  };
+}
+
 async function waitForRouteChange({ child, client, initialRoute, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
@@ -6170,6 +6213,7 @@ async function verifySettingsRouteBehavior({
   timeoutMs,
 }) {
   const observed = [];
+  const navigationSelections = [];
   let appearance = null;
   let keybindings = null;
   let sourceControl = null;
@@ -6183,6 +6227,7 @@ async function verifySettingsRouteBehavior({
       timeoutMs,
     }),
   );
+  navigationSelections.push(await assertSettingsNavigationSelection(client, "general"));
   const generalPanel = await waitForMeasurement({
     child,
     client,
@@ -6283,6 +6328,9 @@ async function verifySettingsRouteBehavior({
       timeoutMs,
     });
     observed.push(await waitForRoutePanel({ child, client, panel, route, timeoutMs }));
+    navigationSelections.push(
+      await assertSettingsNavigationSelection(client, route.slice("/settings/".length)),
+    );
     if (route === "/settings/appearance") {
       const appearancePanel = await waitForMeasurement({
         child,
@@ -6527,6 +6575,7 @@ async function verifySettingsRouteBehavior({
     keybindings,
     sourceControl,
     resync: { beforeSeq: beforeResync.lastSeq, afterSeq: afterResync.lastSeq },
+    navigationSelections,
     observed,
     repeatedCycles: 2,
     finalRoute: "/",

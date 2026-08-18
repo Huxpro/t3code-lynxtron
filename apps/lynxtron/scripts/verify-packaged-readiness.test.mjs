@@ -571,6 +571,10 @@ describe("packaged readiness Sidebar geometry", () => {
   });
 
   it("captures Native General Settings content and geometry before route cycling", () => {
+    assert.include(source, "async function assertSettingsNavigationSelection");
+    assert.include(source, "Settings navigation selection is not truthful");
+    assert.include(source, "visuallySelectedItems.length !== 1");
+    assert.include(source, "navigationSelections.push");
     assert.include(source, 'selector: ".settings-content--general"');
     assert.include(source, 'measurement.text.includes("Project grouping")');
     assert.include(source, 'measurement.text.includes("Diagnostics")');
