@@ -11,6 +11,7 @@ import * as FileSystem from "effect/FileSystem";
 import * as Option from "effect/Option";
 import * as Path from "effect/Path";
 import * as Result from "effect/Result";
+import * as Schema from "effect/Schema";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import {
   createModelCapabilities,
@@ -33,6 +34,7 @@ import {
   buildSelectOptionDescriptor,
   buildServerProvider,
   DEFAULT_TIMEOUT_MS,
+  extractAuthBoolean,
   isCommandMissingCause,
   parseGenericCliVersion,
   providerModelsFromSettings,
@@ -55,6 +57,7 @@ const MINIMUM_CLAUDE_OPUS_5_VERSION = "2.1.219";
 const MINIMUM_CLAUDE_FABLE_5_VERSION = "2.1.169";
 const MINIMUM_CLAUDE_OPUS_4_8_VERSION = "2.1.154";
 const MINIMUM_CLAUDE_OPUS_4_7_VERSION = "2.1.111";
+const decodeClaudeAuthStatus = Schema.decodeUnknownOption(Schema.UnknownFromJsonString);
 
 const BUILT_IN_MODELS: ReadonlyArray<ServerProviderModel> = [
   {
@@ -778,6 +781,25 @@ const runClaudeCommand = Effect.fn("runClaudeCommand")(function* (
   return yield* spawnAndCollect(claudeSettings.binaryPath, command);
 });
 
+type ClaudeAuthStatusProbe = {
+  readonly loggedIn: boolean | undefined;
+  readonly authMethod: string | undefined;
+  readonly apiProvider: string | undefined;
+};
+
+function parseClaudeAuthStatus(output: string): ClaudeAuthStatusProbe | undefined {
+  const decoded = Option.getOrUndefined(decodeClaudeAuthStatus(output.trim()));
+  if (!decoded || typeof decoded !== "object" || Array.isArray(decoded)) {
+    return undefined;
+  }
+  const record = decoded as Record<string, unknown>;
+  return {
+    loggedIn: extractAuthBoolean(record),
+    authMethod: typeof record.authMethod === "string" ? record.authMethod : undefined,
+    apiProvider: typeof record.apiProvider === "string" ? record.apiProvider : undefined,
+  };
+}
+
 export const checkClaudeProviderStatus = Effect.fn("checkClaudeProviderStatus")(function* (
   claudeSettings: ClaudeSettings,
   resolveCapabilities?: (
@@ -900,9 +922,44 @@ export const checkClaudeProviderStatus = Effect.fn("checkClaudeProviderStatus")(
   const capabilities = resolveCapabilities
     ? yield* resolveCapabilities(claudeSettings).pipe(Effect.orElseSucceed(() => undefined))
     : undefined;
+  const authStatusResult =
+    capabilities?.apiProvider === "bedrock"
+      ? undefined
+      : yield* runClaudeCommand(claudeSettings, ["auth", "status"], resolvedEnvironment).pipe(
+          Effect.timeoutOption(DEFAULT_TIMEOUT_MS),
+          Effect.result,
+        );
+  const authStatus =
+    authStatusResult !== undefined &&
+    Result.isSuccess(authStatusResult) &&
+    Option.isSome(authStatusResult.success)
+      ? parseClaudeAuthStatus(
+          `${authStatusResult.success.value.stdout}\n${authStatusResult.success.value.stderr}`,
+        )
+      : undefined;
   const skills = yield* discoverClaudeSkills(claudeSettings, cwd, resolvedEnvironment);
   const slashCommands = capabilities?.slashCommands ?? [];
   const dedupedSlashCommands = dedupeSlashCommands(slashCommands);
+  const apiProvider = authStatus?.apiProvider ?? capabilities?.apiProvider;
+  const usesExternalAuthentication = apiProvider === "bedrock";
+
+  if (authStatus?.loggedIn === false && !usesExternalAuthentication) {
+    return buildServerProvider({
+      presentation: CLAUDE_PRESENTATION,
+      enabled: claudeSettings.enabled,
+      checkedAt,
+      models,
+      slashCommands: dedupedSlashCommands,
+      skills,
+      probe: {
+        installed: true,
+        version: parsedVersion,
+        status: "error",
+        auth: { status: "unauthenticated" },
+        message: "Claude Agent CLI is not authenticated. Run `claude auth login` and try again.",
+      },
+    });
+  }
 
   if (!capabilities) {
     return buildServerProvider({
@@ -925,8 +982,8 @@ export const checkClaudeProviderStatus = Effect.fn("checkClaudeProviderStatus")(
   const authMetadata =
     claudeAuthMetadata({
       subscriptionType: capabilities.subscriptionType,
-      authMethod: capabilities.tokenSource,
-    }) ?? apiProviderAuthMetadata(capabilities.apiProvider);
+      authMethod: capabilities.tokenSource ?? authStatus?.authMethod,
+    }) ?? apiProviderAuthMetadata(apiProvider);
   return buildServerProvider({
     presentation: CLAUDE_PRESENTATION,
     enabled: claudeSettings.enabled,
