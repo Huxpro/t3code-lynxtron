@@ -130,6 +130,7 @@ export function Composer({
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
   const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
+  const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
   useEffect(() => {
@@ -164,10 +165,22 @@ export function Composer({
     event.preventDefault?.();
     event.stopPropagation?.();
   };
+  const scrollCompactControlsMenu = (offset: number) => {
+    "main thread";
+    const target =
+      compactControlsMenuScrollRef.current ??
+      lynx.querySelector(".composer-compact-controls-menu__scroll");
+    if (!target) return false;
+    const nextOffset = Math.max(0, offset);
+    target.setAttribute("data-scroll-offset", `${nextOffset}`);
+    target.invoke("scrollTo", { offset: nextOffset, smooth: false });
+    return true;
+  };
   useEffect(() => {
     const diagnosticsGlobal = globalThis as {
       __T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?: (value: string) => boolean;
       __T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
+      __T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?: (offset: number) => Promise<unknown>;
     };
     if (!viewport.testResize) return;
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__ = (nextValue) => {
@@ -176,14 +189,18 @@ export function Composer({
     };
     diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__ = (deltaY) =>
       runOnMainThread(handleModelOptionMenuWheel)({ deltaY } as MainThread.WheelEvent);
+    diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__ = (offset) =>
+      runOnMainThread(scrollCompactControlsMenu)(offset);
     return () => {
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__;
+      delete diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__;
     };
   }, [viewport.testResize]);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
+  const compactControlsMenuHeight = Math.min(537, Math.max(220, viewport.height - 160));
   const sendState = deriveComposerSendState({
     prompt: value,
     imageCount: 0,
@@ -370,8 +387,12 @@ export function Composer({
               approvalActions ? null : (
                 <ComposerToolbarRow
                   overlayOpen={
-                    modelPicker !== undefined || modelOptionMenuOpen || runtimeModeMenuOpen
+                    modelPicker !== undefined ||
+                    modelOptionMenuOpen ||
+                    runtimeModeMenuOpen ||
+                    compactControlsMenuOpen
                   }
+                  separators={!compactFooter}
                   items={[
                     <view
                       key="model"
@@ -422,11 +443,20 @@ export function Composer({
                               className="composer-compact-controls-menu"
                               aria-label="More composer controls"
                               data-composer-compact-controls-menu
+                              style={{
+                                height: `${compactControlsMenuHeight}px`,
+                                maxHeight: `${compactControlsMenuHeight}px`,
+                              }}
                               catchtap={() => undefined}
                             >
                               <scroll-view
                                 className="composer-compact-controls-menu__scroll"
                                 scroll-orientation="vertical"
+                                main-thread:ref={compactControlsMenuScrollRef}
+                                style={{
+                                  height: `${compactControlsMenuHeight - 2}px`,
+                                  maxHeight: `${compactControlsMenuHeight - 2}px`,
+                                }}
                               >
                                 <view className="composer-compact-controls-menu__content">
                                   {modelOptionSections.map((section) => (
@@ -454,11 +484,42 @@ export function Composer({
                                           <text className="composer-compact-controls-menu__label">
                                             {item.label}
                                           </text>
+                                          {item.selected ? (
+                                            <text className="composer-compact-controls-menu__badge">
+                                              Default
+                                            </text>
+                                          ) : null}
                                         </view>
                                       ))}
                                     </view>
                                   ))}
-                                  <view className="composer-compact-controls-menu__section-label">
+                                  {showInteractionModeToggle ? (
+                                    <>
+                                      <view className="composer-compact-controls-menu__section-label composer-compact-controls-menu__section-label--divided">
+                                        Mode
+                                      </view>
+                                      {(["default", "plan"] as const).map((mode) => (
+                                        <view
+                                          key={mode}
+                                          className={`composer-compact-controls-menu__item${
+                                            interactionMode === mode
+                                              ? " composer-compact-controls-menu__item--active"
+                                              : ""
+                                          }`}
+                                          aria-checked={interactionMode === mode ? "true" : "false"}
+                                          bindtap={() => {
+                                            if (interactionMode !== mode) onInteractionModeTap();
+                                            setCompactControlsMenuOpen(false);
+                                          }}
+                                        >
+                                          <text className="composer-compact-controls-menu__label">
+                                            {mode === "default" ? "Chat" : "Plan"}
+                                          </text>
+                                        </view>
+                                      ))}
+                                    </>
+                                  ) : null}
+                                  <view className="composer-compact-controls-menu__section-label composer-compact-controls-menu__section-label--divided">
                                     Access
                                   </view>
                                   {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
@@ -475,39 +536,11 @@ export function Composer({
                                         setCompactControlsMenuOpen(false);
                                       }}
                                     >
-                                      <Icon
-                                        name={RUNTIME_MODE_ICONS[option.mode]}
-                                        size={14}
-                                        color="#818181"
-                                      />
                                       <text className="composer-compact-controls-menu__label">
                                         {option.label}
                                       </text>
                                     </view>
                                   ))}
-                                  {showInteractionModeToggle ? (
-                                    <>
-                                      <view className="composer-compact-controls-menu__section-label">
-                                        Mode
-                                      </view>
-                                      <view
-                                        className="composer-compact-controls-menu__item"
-                                        bindtap={() => {
-                                          onInteractionModeTap();
-                                          setCompactControlsMenuOpen(false);
-                                        }}
-                                      >
-                                        <Icon
-                                          name={interactionMode === "plan" ? "pencil-line" : "bot"}
-                                          size={14}
-                                          color="#818181"
-                                        />
-                                        <text className="composer-compact-controls-menu__label">
-                                          {interactionModePresentation.label}
-                                        </text>
-                                      </view>
-                                    </>
-                                  ) : null}
                                 </view>
                               </scroll-view>
                             </view>

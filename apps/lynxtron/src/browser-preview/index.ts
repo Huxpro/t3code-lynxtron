@@ -443,6 +443,11 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-footer{" +
       "width:442px;max-width:442px;}" +
       ".composer-footer,.composer-toolbar-row,.composer-primary-actions{display:flex;flex-direction:row;}" +
+      ".composer-compact-controls-menu,.composer-compact-controls-menu__scroll," +
+      ".composer-compact-controls-menu__content,.composer-compact-controls-menu__section{" +
+      "display:flex;flex-direction:column;}" +
+      ".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +
+      ".composer-compact-controls-menu__label{display:block;flex:1 1 0%;min-width:0;}" +
       ".composer__input{height:70px!important;}" +
       ".transcript-user-outer{padding-bottom:16px;box-sizing:border-box;}" +
       ".transcript-user-meta-spacer{height:40px!important;}" +
