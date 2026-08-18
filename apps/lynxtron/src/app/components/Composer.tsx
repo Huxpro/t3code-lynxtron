@@ -413,91 +413,105 @@ export function Composer({
                           <Icon name="ellipsis" size={16} color="#818181" />
                         </view>
                         {compactControlsMenuOpen ? (
-                          <view
-                            className="composer-compact-controls-menu"
-                            aria-label="More composer controls"
-                            data-composer-compact-controls-menu
-                          >
-                            {modelOptionSections.map((section) => (
-                              <view
-                                key={section.id}
-                                className="composer-compact-controls-menu__section"
+                          <>
+                            <view
+                              className="composer-compact-controls-dismiss"
+                              bindtap={() => setCompactControlsMenuOpen(false)}
+                            />
+                            <view
+                              className="composer-compact-controls-menu"
+                              aria-label="More composer controls"
+                              data-composer-compact-controls-menu
+                              catchtap={() => undefined}
+                            >
+                              <scroll-view
+                                className="composer-compact-controls-menu__scroll"
+                                scroll-orientation="vertical"
                               >
-                                <text className="composer-compact-controls-menu__section-label">
-                                  {section.label}
-                                </text>
-                                {section.items.map((item) => (
-                                  <view
-                                    key={item.id}
-                                    className={`composer-compact-controls-menu__item${
-                                      item.selected
-                                        ? " composer-compact-controls-menu__item--active"
-                                        : ""
-                                    }`}
-                                    aria-checked={item.selected ? "true" : "false"}
-                                    bindtap={() => {
-                                      onSelectModelOption?.(section.id, item.value);
-                                      setCompactControlsMenuOpen(false);
-                                    }}
-                                  >
-                                    <text className="composer-compact-controls-menu__label">
-                                      {item.label}
-                                    </text>
+                                <view className="composer-compact-controls-menu__content">
+                                  {modelOptionSections.map((section) => (
+                                    <view
+                                      key={section.id}
+                                      className="composer-compact-controls-menu__section"
+                                    >
+                                      <text className="composer-compact-controls-menu__section-label">
+                                        {section.label}
+                                      </text>
+                                      {section.items.map((item) => (
+                                        <view
+                                          key={item.id}
+                                          className={`composer-compact-controls-menu__item${
+                                            item.selected
+                                              ? " composer-compact-controls-menu__item--active"
+                                              : ""
+                                          }`}
+                                          aria-checked={item.selected ? "true" : "false"}
+                                          bindtap={() => {
+                                            onSelectModelOption?.(section.id, item.value);
+                                            setCompactControlsMenuOpen(false);
+                                          }}
+                                        >
+                                          <text className="composer-compact-controls-menu__label">
+                                            {item.label}
+                                          </text>
+                                        </view>
+                                      ))}
+                                    </view>
+                                  ))}
+                                  <view className="composer-compact-controls-menu__section-label">
+                                    Access
                                   </view>
-                                ))}
-                              </view>
-                            ))}
-                            <view className="composer-compact-controls-menu__section-label">
-                              Access
+                                  {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
+                                    <view
+                                      key={option.mode}
+                                      className={`composer-compact-controls-menu__item${
+                                        option.mode === runtimeMode
+                                          ? " composer-compact-controls-menu__item--active"
+                                          : ""
+                                      }`}
+                                      aria-checked={option.mode === runtimeMode ? "true" : "false"}
+                                      bindtap={() => {
+                                        onRuntimeModeChange(option.mode);
+                                        setCompactControlsMenuOpen(false);
+                                      }}
+                                    >
+                                      <Icon
+                                        name={RUNTIME_MODE_ICONS[option.mode]}
+                                        size={14}
+                                        color="#818181"
+                                      />
+                                      <text className="composer-compact-controls-menu__label">
+                                        {option.label}
+                                      </text>
+                                    </view>
+                                  ))}
+                                  {showInteractionModeToggle ? (
+                                    <>
+                                      <view className="composer-compact-controls-menu__section-label">
+                                        Mode
+                                      </view>
+                                      <view
+                                        className="composer-compact-controls-menu__item"
+                                        bindtap={() => {
+                                          onInteractionModeTap();
+                                          setCompactControlsMenuOpen(false);
+                                        }}
+                                      >
+                                        <Icon
+                                          name={interactionMode === "plan" ? "pencil-line" : "bot"}
+                                          size={14}
+                                          color="#818181"
+                                        />
+                                        <text className="composer-compact-controls-menu__label">
+                                          {interactionModePresentation.label}
+                                        </text>
+                                      </view>
+                                    </>
+                                  ) : null}
+                                </view>
+                              </scroll-view>
                             </view>
-                            {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
-                              <view
-                                key={option.mode}
-                                className={`composer-compact-controls-menu__item${
-                                  option.mode === runtimeMode
-                                    ? " composer-compact-controls-menu__item--active"
-                                    : ""
-                                }`}
-                                aria-checked={option.mode === runtimeMode ? "true" : "false"}
-                                bindtap={() => {
-                                  onRuntimeModeChange(option.mode);
-                                  setCompactControlsMenuOpen(false);
-                                }}
-                              >
-                                <Icon
-                                  name={RUNTIME_MODE_ICONS[option.mode]}
-                                  size={14}
-                                  color="#818181"
-                                />
-                                <text className="composer-compact-controls-menu__label">
-                                  {option.label}
-                                </text>
-                              </view>
-                            ))}
-                            {showInteractionModeToggle ? (
-                              <>
-                                <view className="composer-compact-controls-menu__section-label">
-                                  Mode
-                                </view>
-                                <view
-                                  className="composer-compact-controls-menu__item"
-                                  bindtap={() => {
-                                    onInteractionModeTap();
-                                    setCompactControlsMenuOpen(false);
-                                  }}
-                                >
-                                  <Icon
-                                    name={interactionMode === "plan" ? "pencil-line" : "bot"}
-                                    size={14}
-                                    color="#818181"
-                                  />
-                                  <text className="composer-compact-controls-menu__label">
-                                    {interactionModePresentation.label}
-                                  </text>
-                                </view>
-                              </>
-                            ) : null}
-                          </view>
+                          </>
                         ) : null}
                       </view>
                     ) : !questionMode &&

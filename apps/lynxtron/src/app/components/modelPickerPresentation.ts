@@ -5,8 +5,8 @@ import type {
   ServerProvider,
 } from "@t3tools/contracts";
 import {
-  describeUnavailableProviderInstance,
   providerInstanceLockedReason,
+  providerInstanceSelectionBlockedReason,
   providerModelKey,
   rankModelPickerSearchResults,
   sortModelPickerItems,
@@ -55,7 +55,7 @@ export function projectModelPickerProviders(
     .map((entry) => ({
       entry,
       disabledReason:
-        describeUnavailableProviderInstance(entry) ??
+        providerInstanceSelectionBlockedReason(entry) ??
         providerInstanceLockedReason(entry, {
           driverKind: context.lockedProvider,
           continuationGroupKey: context.lockedContinuationGroupKey,
@@ -71,7 +71,7 @@ export function modelPickerRowDisabledReason(
     (entry) => entry.instanceId === model.instanceId,
   );
   if (providerEntry) {
-    const unavailableReason = describeUnavailableProviderInstance(providerEntry);
+    const unavailableReason = providerInstanceSelectionBlockedReason(providerEntry);
     if (unavailableReason) return unavailableReason;
   }
   const entry = context.providers.find((provider) => provider.instanceId === model.instanceId);

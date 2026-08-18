@@ -11,6 +11,7 @@ import {
   applyProviderInstanceSettings,
   deriveProviderInstanceEntries,
   isProviderInstancePickerReady,
+  isProviderInstancePickerSelectable,
   isProviderInstancePickerVisible,
   resolveSelectableProviderInstanceEntry,
   sortProviderInstanceEntries,
@@ -70,7 +71,7 @@ export function deriveModelPickerModels(
   return entries.flatMap((entry) => {
     if (
       options?.includeDisabled !== true &&
-      (!isProviderInstancePickerVisible(entry) || !isProviderInstancePickerReady(entry))
+      (!isProviderInstancePickerVisible(entry) || !isProviderInstancePickerSelectable(entry))
     ) {
       return [];
     }
@@ -197,6 +198,14 @@ export function describeUnavailableProviderInstance(entry: ProviderInstanceEntry
     entry.status === "error" ? "Unavailable" : entry.status === "warning" ? "Limited" : "Not ready";
   const message = entry.snapshot.message?.trim();
   return message ? `${entry.displayName} — ${kind}. ${message}` : `${entry.displayName} — ${kind}.`;
+}
+
+export function providerInstanceSelectionBlockedReason(
+  entry: ProviderInstanceEntry,
+): string | null {
+  return isProviderInstancePickerSelectable(entry)
+    ? null
+    : describeUnavailableProviderInstance(entry);
 }
 
 export function providerInstanceLockedReason(

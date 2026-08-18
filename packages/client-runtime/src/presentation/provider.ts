@@ -70,6 +70,20 @@ export function isProviderInstancePickerReady(entry: ProviderInstanceEntry): boo
   return entry.enabled && entry.isAvailable && entry.status === "ready";
 }
 
+/**
+ * Whether an instance may be chosen before its current-session probe settles.
+ *
+ * Warning snapshots can retain a cached model inventory while a fresh probe is
+ * pending. They remain selectable so the picker does not trap users on their
+ * previous provider. Explicitly disabled, unavailable, or errored instances
+ * stay visible but cannot become a new selection.
+ */
+export function isProviderInstancePickerSelectable(entry: ProviderInstanceEntry): boolean {
+  return (
+    entry.enabled && entry.isAvailable && entry.status !== "disabled" && entry.status !== "error"
+  );
+}
+
 /** Picker rails contain configured, enabled instances only. */
 export function isProviderInstancePickerVisible(entry: ProviderInstanceEntry): boolean {
   return entry.enabled;

@@ -102,37 +102,47 @@ function EditableFilePreview({
 
   if (result.truncated) {
     return (
-      <>
-        <text className="files-panel__preview-content">{result.contents}</text>
-        <text className="files-panel__preview-status">
-          Preview truncated by the server. Editing is disabled to protect the complete file.
-        </text>
-      </>
+      <view className="file-panel__editor-surface">
+        <scroll-view className="file-panel__source-scroll" scroll-orientation="vertical">
+          <text className="files-panel__preview-content">{result.contents}</text>
+        </scroll-view>
+        <view className="file-panel__statusbar">
+          <text className="files-panel__preview-status">
+            Preview truncated. Editing is disabled to protect the complete file.
+          </text>
+        </view>
+      </view>
     );
   }
 
   return (
-    <>
-      <view className="files-panel__editor-toolbar">
-        <text className="files-panel__preview-status">
-          {saveStatus === "pending"
-            ? "Unsaved changes"
-            : saveStatus === "error"
-              ? "Save failed"
-              : "Saved"}
-        </text>
-        <view className="files-panel__save" bindtap={flush}>
-          <text className="files-panel__save-label">Save now</text>
-        </view>
-      </view>
+    <view className="file-panel__editor-surface">
       <textarea
         className="files-panel__editor"
         {...({ value: contents } as object)}
         bindinput={handleInput}
         bindblur={flush}
       />
-      {saveError ? <text className="files-panel__preview-error">{saveError}</text> : null}
-    </>
+      <view className="file-panel__statusbar">
+        <text
+          className={`files-panel__preview-status${
+            saveStatus === "error" ? " files-panel__preview-status--error" : ""
+          }`}
+        >
+          {saveError ??
+            (saveStatus === "pending"
+              ? "Unsaved changes"
+              : saveStatus === "error"
+                ? "Save failed"
+                : "Saved")}
+        </text>
+        {saveStatus !== "saved" ? (
+          <view className="files-panel__save" bindtap={flush}>
+            <text className="files-panel__save-label">Save now</text>
+          </view>
+        ) : null}
+      </view>
+    </view>
   );
 }
 
@@ -351,6 +361,9 @@ export function FilePanel({ path }: { readonly path: string }) {
   const project =
     projects.find((candidate) => candidate.id === activeThread?.projectId) ?? projects[0] ?? null;
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
+  const pathParts = path.split("/").filter(Boolean);
+  const fileName = pathParts.at(-1) ?? path;
+  const directoryParts = pathParts.slice(0, -1);
 
   useEffect(() => {
     if (!cwd) {
@@ -375,13 +388,47 @@ export function FilePanel({ path }: { readonly path: string }) {
   }, [cwd, path]);
 
   return (
-    <scroll-view className="file-panel" scroll-y scroll-orientation="vertical">
+    <view className="file-panel">
+      <view className="file-panel__toolbar" data-surface-subheader>
+        <view
+          className="file-panel__back"
+          aria-label="Back to workspace files"
+          bindtap={() => uiActions.openRightPanelSurface("files")}
+        >
+          <Icon name="arrow-left" size={14} color="#818181" />
+        </view>
+        <scroll-view className="file-panel__breadcrumbs" scroll-orientation="horizontal">
+          <view className="file-panel__breadcrumb-list">
+            <text
+              className="file-panel__breadcrumb file-panel__breadcrumb--project"
+              bindtap={() => uiActions.openRightPanelSurface("files")}
+            >
+              {project?.title ?? "Files"}
+            </text>
+            {directoryParts.map((part, index) => (
+              <view key={`${part}:${index}`} className="file-panel__breadcrumb-part">
+                <Icon name="chevron-right" size={12} color="#818181" />
+                <text className="file-panel__breadcrumb">{part}</text>
+              </view>
+            ))}
+            <view className="file-panel__breadcrumb-part">
+              <Icon name="chevron-right" size={12} color="#818181" />
+              <text className="file-panel__breadcrumb file-panel__breadcrumb--current">
+                {fileName}
+              </text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
       <view className="file-panel__content">
-        <text className="file-panel__path">{path}</text>
         {preview.pending ? (
-          <text className="files-panel__preview-status">Loading file…</text>
+          <view className="file-panel__message">
+            <text className="files-panel__preview-status">Loading file…</text>
+          </view>
         ) : preview.error ? (
-          <text className="files-panel__preview-error">{preview.error}</text>
+          <view className="file-panel__message">
+            <text className="files-panel__preview-error">{preview.error}</text>
+          </view>
         ) : preview.result && cwd ? (
           <EditableFilePreview
             key={`${cwd}:${path}`}
@@ -391,6 +438,6 @@ export function FilePanel({ path }: { readonly path: string }) {
           />
         ) : null}
       </view>
-    </scroll-view>
+    </view>
   );
 }
