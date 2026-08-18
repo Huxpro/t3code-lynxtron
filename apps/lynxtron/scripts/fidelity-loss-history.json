@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T08:11:30+09:00",
+  "updatedAt": "2026-08-19T08:30:24+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10158,7 +10158,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-19/fidelity/settings-beta-archive-light-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "a33677c01d8f6f8a15a1bfeb9aa491732cdd3520af7c23c33c6796fddd0d1e5f"
+          "sha256": "1d83cf997a96f6eeb3f44b5b0ab958b1f003206f20057a3d4060d57c70b5157f"
         }
       ],
       "updates": [
@@ -10251,6 +10251,107 @@
               "confidence": 0.99,
               "method": "settings-archive-light-readiness",
               "source": "Canonical route, same snapshot, clean console, Settings footer gate, and zero agent-browser leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-beta-archive-light-current",
+      "observedAt": "2026-08-19T08:30:24+09:00",
+      "commit": "89ad06f9d",
+      "codeCommit": "362c29cbe",
+      "codeState": "commit",
+      "label": "Settings light navigation state parity",
+      "narrative": "The light-theme Beta and Archive baselines exposed one systemic state-truth loss: Lynx applied selected background and foreground to Providers on every Settings route, so Beta and Archive each showed two visual selections despite having one semantic active route. The product removes both the permanent Providers CSS fill and the Providers-only icon/text emphasis. With byte-identical Web authority pixels and unchanged page-body geometry, Beta full-frame MAE improves from 2.669838 to 2.594960 and navigation MAE from 5.201223 to 4.779385; Archive improves from 1.534366 to 1.459488 and navigation MAE from 5.249682 to 4.827845. The main-region residual is unchanged within 0.001 MAE. Exact Native light verification traverses all eight routes, proving one semantic and one computed visual selection for the current route on every step, including Beta and Archive, with transport 15 to 16, zero renderer errors, two repeated cycles, and disposed isolated state.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after Browser pairs share one immutable snapshot, route, light theme, 1280x820 viewport, bundle authority, content, and byte-identical Web pixels. Only the Lynx navigation emphasis selectors change. Exact Native separately proves all eight route selections on the final production bundle."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/settings-beta-archive-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1d83cf997a96f6eeb3f44b5b0ab958b1f003206f20057a3d4060d57c70b5157f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "pixel": {
+                "mae": 2.59496,
+                "significantShare": 0.027694
+              },
+              "confidence": 0.99,
+              "method": "settings-beta-light-current-pixel",
+              "source": "Matched light full-frame after removing the false Providers selection"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-light-truthful-selection",
+              "source": "Web and Lynx each expose exactly one semantic and visual selection: Beta"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-light-current-readiness",
+              "source": "Strict Browser hard gate passes with clean console and zero leaks"
+            }
+          }
+        },
+        {
+          "states": ["settings-archive-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "pixel": {
+                "mae": 1.459488,
+                "significantShare": 0.012408
+              },
+              "confidence": 0.99,
+              "method": "settings-archive-light-current-pixel",
+              "source": "Matched light full-frame after removing the false Providers selection"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-archive-light-truthful-selection",
+              "source": "Web and Lynx each expose exactly one semantic and visual selection: Archive"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-archive-light-current-readiness",
+              "source": "Strict Browser hard gate passes with clean console and zero leaks"
+            }
+          }
+        },
+        {
+          "states": ["settings-beta-light", "settings-archive-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-settings-route-content",
+              "source": "Exact Native traverses all eight Settings routes including Beta and Archive"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-settings-truthful-selection",
+              "source": "Every route has exactly one semantic active item and one computed visual selection, both equal to the current route"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-settings-final-bundle",
+              "source": "Final 0a67ef3a bundle, main transport sequence 15 to 16, zero renderer errors, repeated cycles, and disposed state"
             }
           }
         }

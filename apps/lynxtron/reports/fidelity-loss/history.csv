@@ -154,3 +154,4 @@ composer-compact-controls-light-current,2026-08-19T06:03:30+09:00,e1f5dd41d,comm
 review-empty-typography-current,2026-08-19T06:26:00+09:00,2616dfa93,commit,Review Empty typography and material parity,0.382787,0.382787,0.017649,0.371699,0.628301,0.6047
 responsive-composer-files-current,2026-08-19T07:37:46+09:00,27c794da4,commit,Responsive Composer and Files navigation fidelity,0.381366,0.381366,0.01724,0.370513,0.629487,0.606121
 settings-beta-archive-light-baseline,2026-08-19T08:11:30+09:00,87e298e63,working-tree,Settings Beta and Archive light baseline,0.370944,0.370944,0.019158,0.358657,0.641343,0.616543
+settings-beta-archive-light-current,2026-08-19T08:30:24+09:00,89ad06f9d,commit,Settings light navigation state parity,0.36015,0.36015,0.017047,0.349053,0.650947,0.627337

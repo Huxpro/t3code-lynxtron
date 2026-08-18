@@ -74,6 +74,36 @@
     "screenshots": {
       "webSha256": "4d82f44d946abd9e6f314a4c6d520aef29a4c87f5cf6c87f333aa69b68326932",
       "lynxSha256": "d3e108ae58d7b0c867ef0135f1ac0d361d4039053dd9a67f3767e478921b08d7"
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "report": "/tmp/t3-settings-beta-light-after/workbench-report.json",
+      "navigation": {
+        "webActive": ["Beta"],
+        "webVisuallySelected": ["Beta"],
+        "lynxActive": ["Beta"],
+        "lynxVisuallySelected": ["Beta"]
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 2.59496,
+          "significantShare": 0.027694
+        },
+        "navigation": {
+          "mae": 4.779385,
+          "significantShare": 0.040213
+        },
+        "main": {
+          "mae": 1.907323,
+          "significantShare": 0.0239
+        }
+      },
+      "webAuthorityByteIdentical": true,
+      "screenshots": {
+        "webSha256": "4d82f44d946abd9e6f314a4c6d520aef29a4c87f5cf6c87f333aa69b68326932",
+        "lynxSha256": "aa1824a6841c2f7926246c6fe266e4a0b8540665853be639b3f555f3d1b5f491"
+      }
     }
   },
   "archive": {
@@ -119,10 +149,76 @@
     "screenshots": {
       "webSha256": "b25836d20e2181542293bdeb5d4763a6f0e7305887be803a5237e1eb38f55fb8",
       "lynxSha256": "dc1b8dbc424b59bc4cc762822742905426e6adf7781f6cc6674489182215e914"
+    },
+    "after": {
+      "status": "pass-with-residual",
+      "report": "/tmp/t3-settings-archive-light-after/workbench-report.json",
+      "navigation": {
+        "webActive": ["Archive"],
+        "webVisuallySelected": ["Archive"],
+        "lynxActive": ["Archive"],
+        "lynxVisuallySelected": ["Archive"]
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 1.459488,
+          "significantShare": 0.012408
+        },
+        "navigation": {
+          "mae": 4.827845,
+          "significantShare": 0.040365
+        },
+        "main": {
+          "mae": 0.477345,
+          "significantShare": 0.004758
+        }
+      },
+      "webAuthorityByteIdentical": true,
+      "screenshots": {
+        "webSha256": "b25836d20e2181542293bdeb5d4763a6f0e7305887be803a5237e1eb38f55fb8",
+        "lynxSha256": "38187edbfb5d8731c040ab4416d0e2b631db7a2f2c9bc202be04f55c9a79e3dd"
+      }
     }
   },
+  "native": {
+    "status": "pass",
+    "report": "/tmp/t3-settings-light-navigation-native/report.json",
+    "viewport": "1280x820",
+    "theme": "light",
+    "bundle": {
+      "bytes": 4601102,
+      "sha256": "0a67ef3acc8bd343b52a7d760c5d9f5515ace2928a4768b2103dac0fb50edd27"
+    },
+    "fixtureSnapshotSha256": "841e7579b3195df0e9920f9d15b8046889a1bded1ddfeb8f320717aac85b904e",
+    "navigationSelections": [
+      "General",
+      "Appearance",
+      "Keybindings",
+      "Providers",
+      "Connections",
+      "Source Control",
+      "Beta",
+      "Archive"
+    ],
+    "selectionContract": "Every route has exactly one semantic active item and exactly one computed visual selection, both equal to the current route.",
+    "transport": {
+      "kind": "main",
+      "beforeSeq": 15,
+      "afterSeq": 16
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "repeatedSettingsCycles": 2
+  },
   "validation": {
-    "hardGate": "Both current products fail only finalSettingsNavigationReady.",
+    "hardGateBefore": "Both baselines fail only finalSettingsNavigationReady.",
+    "hardGateAfter": "Both light-theme Browser cells pass the full strict gate.",
+    "focusedTests": "60/60, 38/38, 40/40, 33/33, and 11/11 targeted runs",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "browserPreviewBuild": "pass",
+    "productionBuild": "pass",
     "rendererErrors": 0,
     "agentBrowserLeakGate": "owned=0 orphaned=0",
     "screenshotBudget": "32/100"
