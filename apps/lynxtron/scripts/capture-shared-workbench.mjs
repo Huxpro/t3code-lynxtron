@@ -4017,7 +4017,11 @@ async function captureCell({
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
     const filesBrowserStateReady = filesBrowserSemanticReady(state);
-    filesBrowserReadyPolls = filesBrowserStateReady ? filesBrowserReadyPolls + 1 : 0;
+    filesBrowserReadyPolls = filesBrowserStateReady
+      ? filesBrowserReadyPolls + 1
+      : isFileEditorState
+        ? filesBrowserReadyPolls
+        : 0;
     const fileEditorStateReady = fileEditorReady(state);
     fileEditorReadyPolls = fileEditorStateReady ? fileEditorReadyPolls + 1 : 0;
     const gitPublishDiscoveryReady =
