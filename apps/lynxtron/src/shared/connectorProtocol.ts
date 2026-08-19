@@ -146,6 +146,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "unsettleThread",
   "renameThread",
   "updateProjectScripts",
+  "upsertKeybinding",
   "openInEditor",
   "listProjectEntries",
   "searchProjectEntries",

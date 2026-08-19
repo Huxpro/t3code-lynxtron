@@ -74,6 +74,8 @@ import {
   type ProjectWriteFileResult,
   type ServerConfig,
   type ServerConfigStreamEvent,
+  type ServerUpsertKeybindingInput,
+  type ServerUpsertKeybindingResult,
   type ServerSettings,
   type ServerSettingsPatch,
   type SourceControlDiscoveryResult,
@@ -1025,6 +1027,15 @@ export class T3Connector {
       projectId: input.projectId,
       scripts: input.scripts,
     });
+  }
+
+  async upsertKeybinding(
+    input: ServerUpsertKeybindingInput,
+  ): Promise<ServerUpsertKeybindingResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<ServerUpsertKeybindingResult>(
+      this.client[WS_METHODS.serverUpsertKeybinding](input),
+    );
   }
 
   async openInEditor(input: { cwd: string; editor: EditorId }): Promise<void> {

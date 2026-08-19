@@ -40,6 +40,8 @@ import type {
   ServerProvider,
   ServerSettings,
   ServerSettingsPatch,
+  ServerUpsertKeybindingInput,
+  ServerUpsertKeybindingResult,
   SourceControlDiscoveryResult,
   SourceControlPublishRepositoryInput,
   SourceControlPublishRepositoryResult,
@@ -582,6 +584,7 @@ function installTransportDevToolHook(): void {
       providerEntryCount: number;
       providersRefreshPending: boolean;
       providerSettingsError: string | null;
+      keybindingCommands: ReadonlyArray<string>;
       vcsStatus: VcsStatusResult | null;
       vcsStatusCwd: string | null;
       vcsStatusPending: boolean;
@@ -654,6 +657,7 @@ function installTransportDevToolHook(): void {
       providerEntryCount: state.providerEntries.length,
       providersRefreshPending: state.providersRefreshPending,
       providerSettingsError: state.providerSettingsError,
+      keybindingCommands: state.serverConfig?.keybindings.map((binding) => binding.command) ?? [],
       vcsStatus: state.vcsStatus,
       vcsStatusCwd: state.vcsStatusCwd,
       vcsStatusPending: state.vcsStatusPending,
@@ -930,6 +934,16 @@ async function updateProjectScripts(
     return Promise.reject(new Error("Project action saving is unavailable."));
   }
   await bridge.updateProjectScripts({ projectId, scripts });
+}
+
+async function upsertKeybinding(
+  input: ServerUpsertKeybindingInput,
+): Promise<ServerUpsertKeybindingResult> {
+  const bridge = getBridge();
+  if (!bridge?.upsertKeybinding) {
+    return Promise.reject(new Error("Keybinding saving is unavailable."));
+  }
+  return bridge.upsertKeybinding(input);
 }
 
 async function openInEditor(cwd: string, editor: EditorId): Promise<void> {
@@ -1458,5 +1472,6 @@ export const t3ClientActions = {
   updateProviderInstance,
   updateProvider,
   updateProjectScripts,
+  upsertKeybinding,
   writeProjectFile,
 } as const;

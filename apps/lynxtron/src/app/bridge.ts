@@ -45,6 +45,8 @@ import type {
   ProjectWriteFileInput,
   ProjectWriteFileResult,
   ServerConfig,
+  ServerUpsertKeybindingInput,
+  ServerUpsertKeybindingResult,
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
   SourceControlPublishRepositoryInput,
@@ -177,6 +179,7 @@ export interface T3ConnectorCommandBridge {
     projectId: string;
     scripts: ReadonlyArray<ProjectScript>;
   }): Promise<void>;
+  upsertKeybinding(input: ServerUpsertKeybindingInput): Promise<ServerUpsertKeybindingResult>;
   openInEditor(input: { cwd: string; editor: EditorId }): Promise<void>;
   listProjectEntries(input: ProjectListEntriesInput): Promise<ProjectListEntriesResult>;
   searchProjectEntries(input: ProjectSearchEntriesInput): Promise<ProjectSearchEntriesResult>;

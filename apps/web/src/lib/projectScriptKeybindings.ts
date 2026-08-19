@@ -4,6 +4,7 @@ import {
   type KeybindingRule,
   type ResolvedKeybindingsConfig,
 } from "@t3tools/contracts";
+import { parseKeybindingShortcut } from "@t3tools/shared/keybindings";
 import * as Schema from "effect/Schema";
 
 export const PROJECT_SCRIPT_KEYBINDING_INVALID_MESSAGE = "Invalid keybinding.";
@@ -23,6 +24,9 @@ export function decodeProjectScriptKeybindingRule(input: {
 }): KeybindingRule | null {
   const normalizedKey = normalizeProjectScriptKeybindingInput(input.keybinding);
   if (!normalizedKey) return null;
+  if (!parseKeybindingShortcut(normalizedKey)) {
+    throw new Error(PROJECT_SCRIPT_KEYBINDING_INVALID_MESSAGE);
+  }
 
   const decoded = decodeKeybindingRule({
     key: normalizedKey,

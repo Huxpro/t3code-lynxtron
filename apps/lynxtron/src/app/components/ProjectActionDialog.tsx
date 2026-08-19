@@ -4,7 +4,12 @@ import type { ProjectSummary } from "../bridge";
 
 import { uiActions } from "../state/uiState";
 import { t3ClientActions } from "../state/t3Client";
-import { buildProjectScript, nextProjectScriptId } from "../../../../web/src/projectScripts";
+import {
+  buildProjectScript,
+  commandForProjectScript,
+  nextProjectScriptId,
+} from "../../../../web/src/projectScripts";
+import { decodeProjectScriptKeybindingRule } from "../../../../web/src/lib/projectScriptKeybindings";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { Icon, type IconName } from "./Icon";
 
@@ -54,6 +59,16 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
       trimmedName,
       project.scripts.map((script) => script.id),
     );
+    let keybindingRule: ReturnType<typeof decodeProjectScriptKeybindingRule>;
+    try {
+      keybindingRule = decodeProjectScriptKeybindingRule({
+        keybinding,
+        command: commandForProjectScript(id),
+      });
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Invalid keybinding.");
+      return;
+    }
     const script = buildProjectScript(id, {
       name: trimmedName,
       command: trimmedCommand,
@@ -66,20 +81,13 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
     setError(null);
     void t3ClientActions
       .updateProjectScripts(project.id, [...project.scripts, script])
+      .then(() => (keybindingRule ? t3ClientActions.upsertKeybinding(keybindingRule) : undefined))
       .then(close)
       .catch((cause) => {
         setError(cause instanceof Error ? cause.message : String(cause));
       })
       .finally(() => setSaving(false));
-  }, [
-    autoOpenPreview,
-    command,
-    icon,
-    name,
-    previewUrl,
-    project,
-    runOnWorktreeCreate,
-  ]);
+  }, [autoOpenPreview, command, icon, keybinding, name, previewUrl, project, runOnWorktreeCreate]);
   const fillForTest = useCallback(
     (input: {
       readonly name?: string;
