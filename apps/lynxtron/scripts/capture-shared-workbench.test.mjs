@@ -179,6 +179,11 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(source, "(!shouldClearWebNotification || webProviderNotificationCleared)");
     assert.include(source, "function diffScopeMenuReady(state)");
+    assert.include(source, 'triggerLabel === "Latest turn"');
+    assert.include(source, "checkpointDiffPoints?.web");
+    assert.include(source, "checkpointDiffPoints?.lynx");
+    assert.include(source, "'[data-review-checkpoint-card] [data-review-open-diff]'");
+    assert.include(source, "!isDiffScopeMenuState &&");
     assert.include(source, "webRows.length > 0");
     assert.include(source, "lynxRows.length > 0");
     assert.notInclude(
@@ -195,6 +200,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, '[data-floating-popup="diff-scope-menu"]');
     assert.include(workbench, '".diff-panel-header__scope-item"');
     assert.include(workbench, '[data-slot="menu-sub-trigger"]');
+    assert.include(workbench, "triggerLabel: overlayTriggerElement?.textContent?.trim() ?? null");
   });
 
   it("opens the Files browser through shipping right-panel actions", () => {

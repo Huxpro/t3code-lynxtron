@@ -995,6 +995,8 @@ function diffScopeMenuReady(state) {
     state?.lynx?.productState?.overlay === "diff-scope-menu" &&
     state?.web?.overlayMetrics?.triggerRect?.width > 0 &&
     state?.lynx?.overlayMetrics?.triggerRect?.width > 0 &&
+    state?.web?.overlayMetrics?.triggerLabel === "Latest turn" &&
+    state?.lynx?.overlayMetrics?.triggerLabel === "Latest turn" &&
     state?.web?.overlayMetrics?.rect?.width > 0 &&
     state?.lynx?.overlayMetrics?.rect?.width > 0 &&
     webRows.length > 0 &&
@@ -2315,7 +2317,10 @@ async function captureCell({
     reviewExpectation === "tree" ||
     reviewExpectation === "diff";
   let lynxReviewPanelInputSent =
-    !isReviewState || reviewExpectation === "checkpoint" || reviewExpectation === "tree";
+    !isReviewState ||
+    reviewExpectation === "checkpoint" ||
+    reviewExpectation === "tree" ||
+    (reviewExpectation === "diff" && isDiffScopeMenuState);
   let webReviewDiffInputSent =
     !isReviewState ||
     reviewExpectation === "checkpoint" ||
@@ -3253,34 +3258,53 @@ async function captureCell({
       const shouldOpenDiff = reviewExpectation === "diff";
       if (
         shouldOpenDiff &&
-        !webReviewDiffInputSent &&
-        !reviewDiffHasExpectedPatch(state?.web?.reviewMetrics?.diff)
+        ((!webReviewDiffInputSent &&
+          !reviewDiffHasExpectedPatch(state?.web?.reviewMetrics?.diff)) ||
+          (isDiffScopeMenuState &&
+            !lynxReviewDiffInputSent &&
+            !reviewDiffHasExpectedPatch(state?.lynx?.reviewMetrics?.diff)))
       ) {
-        const checkpointDiffPoint = await evaluate(
+        const checkpointDiffPoints = await evaluate(
           cdp,
           sessionId,
           `(() => {
-            const frame = document.getElementById('web-pane');
-            const doc = frame?.contentWindow?.document;
-            const target = doc?.querySelector('[data-review-checkpoint-card] [data-review-open-diff]');
-            if (!frame || !target) return null;
-            const frameRect = frame.getBoundingClientRect();
-            const rect = target.getBoundingClientRect();
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const target = root?.querySelector(
+                '[data-review-checkpoint-card] [data-review-open-diff]'
+              );
+              if (!frame || !target) return null;
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+              };
+            };
             return {
-              x: frameRect.x + rect.x + rect.width / 2,
-              y: frameRect.y + rect.y + rect.height / 2,
+              web: pointFor('web-pane', false),
+              lynx: pointFor('lynx-pane', true),
             };
           })()`,
         ).catch(() => null);
-        if (checkpointDiffPoint) {
-          await dispatchPointerClick(cdp, sessionId, checkpointDiffPoint);
+        if (!webReviewDiffInputSent && checkpointDiffPoints?.web) {
+          await dispatchPointerClick(cdp, sessionId, checkpointDiffPoints.web);
           webReviewDiffInputSent = true;
+          await delay(100);
+          continue;
+        }
+        if (isDiffScopeMenuState && !lynxReviewDiffInputSent && checkpointDiffPoints?.lynx) {
+          await dispatchPointerClick(cdp, sessionId, checkpointDiffPoints.lynx);
+          lynxReviewDiffInputSent = true;
           await delay(100);
           continue;
         }
       }
       if (
         shouldOpenDiff &&
+        !isDiffScopeMenuState &&
         state?.web?.reviewMetrics?.panelOpen &&
         state?.lynx?.reviewMetrics?.panelOpen
       ) {

@@ -1165,6 +1165,7 @@ function readLynxPane() {
       overlayMetrics: {
         rect: overlayRect,
         triggerRect: modelTriggerRect,
+        triggerLabel: overlayTriggerElement?.textContent?.trim() ?? null,
         anatomy:
           overlay === "quick-switch" || overlay === "file-picker"
             ? {
@@ -2075,6 +2076,7 @@ function readWebPane() {
       overlayMetrics: {
         rect: overlayRect,
         triggerRect: modelTriggerRect,
+        triggerLabel: overlayTriggerElement?.textContent?.trim() ?? null,
         query:
           overlay === "quick-switch" || overlay === "file-picker"
             ? (doc.querySelector('[data-command-palette="true"] [data-slot="autocomplete-input"]')
