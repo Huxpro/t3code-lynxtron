@@ -329,6 +329,9 @@ describe("desktop shell interaction contract", () => {
       '".right-panel__tab-list>[data-active-tab]{min-width:100px;max-width:176px;box-sizing:border-box;}" +',
     );
     expect(browserPreviewSource).toContain(
+      '".right-panel__tab-scroll{flex:none;width:max-content!important;max-width:calc(100% - 132px);}" +',
+    );
+    expect(browserPreviewSource).toContain(
       '".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:118px;height:28px;}" +',
     );
     expect(browserPreviewSource).toContain('".composer-context-strip{" +');
