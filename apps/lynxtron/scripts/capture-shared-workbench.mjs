@@ -78,6 +78,7 @@ const requestedWebRoute = argValue(
 const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
   "composer-compact-controls-open": "compact-controls",
+  "composer-compact-controls-inline-files-narrow": "compact-controls",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
   "project-action-dialog": "project-action-dialog",
@@ -138,7 +139,9 @@ const isProjectActionDialogState = stateId === "project-action-dialog";
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
 const isFileEditorState = stateId === "file-editor-detail";
-const isCompactControlsState = stateId === "composer-compact-controls-open";
+const isCompactControlsState =
+  stateId === "composer-compact-controls-open" ||
+  stateId === "composer-compact-controls-inline-files-narrow";
 const isFilesSurfaceState = isFilesBrowserState || isFileEditorState || isCompactControlsState;
 const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState;
 const composerExpectationByStateId = {
@@ -1726,6 +1729,7 @@ async function main() {
     "composer-docked",
     "composer-working",
     "composer-compact-controls-open",
+    "composer-compact-controls-inline-files-narrow",
     "composer-connecting",
     "composer-disabled",
     "workspace-menu-open",
@@ -2142,6 +2146,7 @@ async function captureCell({
     "composer-docked": "existing-thread",
     "composer-working": "existing-thread",
     "composer-compact-controls-open": "existing-thread",
+    "composer-compact-controls-inline-files-narrow": "existing-thread",
     "settled-banner-inline-files-narrow": "existing-thread",
     "composer-disabled": "existing-thread",
     "workspace-menu-open": "existing-thread",
