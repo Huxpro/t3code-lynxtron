@@ -211,6 +211,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "webFileEditorDomFallbackUsed");
     assert.include(source, "cdp-pointer-failed|shadow-dom-click-fallback");
     assert.include(source, "finalFileEditorReady = fileEditorReady(state)");
+    assert.include(source, 'stateId === "file-editor-detail-narrow-inline" ? 1 : 3');
     assert.include(source, "fileEditorSwitched");
     assert.include(source, "fileEditorReturnedToBrowser");
     assert.include(source, "web-explorer-pointer|lynx-explorer-pointer");

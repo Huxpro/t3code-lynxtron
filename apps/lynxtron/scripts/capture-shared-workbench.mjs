@@ -4093,7 +4093,7 @@ async function captureCell({
       gitPublishDiscoveryReady &&
       gitPublishDialogReady &&
       filesBrowserReadyPolls >= 3 &&
-      fileEditorReadyPolls >= 3 &&
+      fileEditorReadyPolls >= (stateId === "file-editor-detail-narrow-inline" ? 1 : 3) &&
       shortcutInputReady &&
       sidebarSearchReady &&
       sidebarStateReady &&
