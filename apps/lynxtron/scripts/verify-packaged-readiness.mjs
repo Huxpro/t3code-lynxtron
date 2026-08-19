@@ -1809,7 +1809,14 @@ async function verifyIdleThreadState({
   };
 }
 
-async function verifyQuickSwitchDefault({ child, client, timeoutMs }) {
+async function verifyQuickSwitchDefault({
+  child,
+  client,
+  devToolCli,
+  expectedTheme,
+  outputDirectory,
+  timeoutMs,
+}) {
   const panel = await waitForMeasurement({
     child,
     client,
@@ -1836,7 +1843,11 @@ async function verifyQuickSwitchDefault({ child, client, timeoutMs }) {
     !results ||
     !footer ||
     rows.length !== expectedLabels.length ||
-    JSON.stringify(labels) !== JSON.stringify(expectedLabels)
+    JSON.stringify(labels) !== JSON.stringify(expectedLabels) ||
+    !footer.text.includes("Enter") ||
+    !footer.text.includes("Select") ||
+    footer.text.includes("⌘P") ||
+    footer.text.includes("Files")
   ) {
     throw new Error(
       `Quick Switch default anatomy drifted: ${JSON.stringify({
@@ -1844,11 +1855,18 @@ async function verifyQuickSwitchDefault({ child, client, timeoutMs }) {
         search: search?.rect,
         results: results?.rect,
         footer: footer?.rect,
+        footerText: footer?.text,
         rows,
         labels,
       })}`,
     );
   }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-quick-switch-${expectedTheme ?? "system"}.png`,
+  });
   await tapSelector({
     child,
     client,
@@ -1870,8 +1888,10 @@ async function verifyQuickSwitchDefault({ child, client, timeoutMs }) {
     search: search.rect,
     results: results.rect,
     footer: footer.rect,
+    footerText: footer.text,
     rows,
     labels,
+    screenshot,
     dismissed: true,
   };
 }
@@ -7324,7 +7344,14 @@ async function runOnce({
         })
       : undefined;
     const quickSwitchDefault = shouldVerifyQuickSwitchDefault
-      ? await verifyQuickSwitchDefault({ child, client, timeoutMs })
+      ? await verifyQuickSwitchDefault({
+          child,
+          client,
+          devToolCli,
+          expectedTheme,
+          outputDirectory,
+          timeoutMs,
+        })
       : undefined;
     const composerThemeScreenshot =
       shouldVerifyComposerGeometry && expectedTheme

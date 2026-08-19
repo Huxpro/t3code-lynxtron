@@ -575,6 +575,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".palette-panel"');
     assert.include(source, 'readSelectorRects(client, ".palette-row")');
     assert.include(source, '"Quick Switch idle thread"');
+    assert.include(source, '!footer.text.includes("Enter")');
+    assert.include(source, '!footer.text.includes("Select")');
+    assert.include(source, 'footer.text.includes("⌘P")');
+    assert.include(source, 'footer.text.includes("Files")');
+    assert.include(source, "native-quick-switch-${expectedTheme ??");
     assert.include(source, 'selector: ".palette-backdrop"');
     assert.include(source, "initialOverlay product state plus measured DevTool outside tap");
   });

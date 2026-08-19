@@ -19,6 +19,19 @@ describe("Quick Switch material", () => {
     expect(rule(".palette-panel")).toContain("border-color: rgba(var(--foreground-rgb), 0.08);");
   });
 
+  it("matches the light glass authority without changing dark material", () => {
+    const lightPanel = rule(".theme-light .palette-panel");
+    const lightFooter = rule(".theme-light .palette-footer");
+    const lightKbd = rule(".theme-light .quick-switch-footer-group .lynx-kbd");
+
+    expect(lightPanel).toContain("border-color: rgba(39, 39, 42, 0.1);");
+    expect(lightPanel).toContain("border-radius: 18px;");
+    expect(lightPanel).toContain("background-color: rgba(252, 252, 252, 0.8);");
+    expect(lightPanel).toContain("0 24px 64px -24px rgba(0, 0, 0, 0.65);");
+    expect(lightFooter).toContain("background-color: rgba(39, 39, 42, 0.025);");
+    expect(lightKbd).toContain("background-color: rgba(39, 39, 42, 0.08);");
+  });
+
   it("matches the authority footer typography and lower edge", () => {
     const footer = rule(".palette-footer");
 
@@ -46,5 +59,14 @@ describe("Quick Switch material", () => {
     expect(source).toContain('"palette-panel palette-panel--files"');
     expect(source).toContain('"qs-results qs-results--files"');
     expect(overrides).not.toContain('.palette-panel[data-search-overlay-mode="files"]');
+  });
+
+  it("keeps command and file-mode footer actions truthful", () => {
+    const source = readFileSync(path.resolve(import.meta.dirname, "QuickSwitch.tsx"), "utf8");
+
+    expect(source).toContain('{fileMode ? "⌘K" : "Enter"}');
+    expect(source).toContain('{fileMode ? "Commands" : "Select"}');
+    expect(source).not.toContain('{fileMode ? "⌘K" : "⌘P"}');
+    expect(source).not.toContain('{fileMode ? "Commands" : "Files"}');
   });
 });
