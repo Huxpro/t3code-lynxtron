@@ -2323,7 +2323,7 @@ async function captureCell({
   let webFileEditorOpenAttempts = 0;
   let lynxFileEditorOpenAttempts = 0;
   let webFileEditorDomFallbackUsed = false;
-  let fileEditorSwitched = !isFileEditorState;
+  let fileEditorSwitched = !isFileEditorState || stateId === "file-editor-detail-narrow-inline";
   let fileEditorReturnedToBrowser =
     !isFileEditorState || stateId !== "file-editor-detail-narrow-inline";
   let webFileEditorReturnedToBrowser =
@@ -4724,7 +4724,7 @@ async function captureCell({
     }
   }
 
-  if (isFileEditorState && finalFileEditorReady) {
+  if (isFileEditorState && stateId !== "file-editor-detail-narrow-inline" && finalFileEditorReady) {
     const switchPoints = await evaluate(
       cdp,
       sessionId,
@@ -5154,9 +5154,10 @@ async function captureCell({
               lynx: "cdp-pointer",
             }
           : null,
-        switchedBy: isFileEditorState
-          ? "web-explorer-pointer|lynx-explorer-pointer"
-          : "not-required",
+        switchedBy:
+          isFileEditorState && stateId !== "file-editor-detail-narrow-inline"
+            ? "web-explorer-pointer|lynx-explorer-pointer"
+            : "not-required",
         switched: fileEditorSwitched,
         returnedBy:
           isFileEditorState && stateId === "file-editor-detail-narrow-inline"
