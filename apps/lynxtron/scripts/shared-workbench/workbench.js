@@ -1205,24 +1205,31 @@ function readLynxPane() {
                     ),
                   }
                 : overlay === "compact-controls"
-                  ? {
-                      panel: readElementBox(overlayElement),
-                      scroll: readElementBox(
-                        root?.querySelector(".composer-compact-controls-menu__scroll"),
-                      ),
-                      content: readElementBox(
-                        root?.querySelector(".composer-compact-controls-menu__content"),
-                      ),
-                      sectionLabel: readElementBox(
-                        root?.querySelector(".composer-compact-controls-menu__section-label"),
-                      ),
-                      row: readElementBox(
-                        root?.querySelector(".composer-compact-controls-menu__item"),
-                      ),
-                      dismiss: readElementBox(
-                        root?.querySelector(".composer-compact-controls-dismiss"),
-                      ),
-                    }
+                  ? (() => {
+                      const rows = [
+                        ...(root?.querySelectorAll(".composer-compact-controls-menu__item") ?? []),
+                      ];
+                      return {
+                        panel: readElementBox(overlayElement),
+                        scroll: readElementBox(
+                          root?.querySelector(".composer-compact-controls-menu__scroll"),
+                        ),
+                        content: readElementBox(
+                          root?.querySelector(".composer-compact-controls-menu__content"),
+                        ),
+                        sectionLabel: readElementBox(
+                          root?.querySelector(".composer-compact-controls-menu__section-label"),
+                        ),
+                        row: readElementBox(
+                          root?.querySelector(".composer-compact-controls-menu__item"),
+                        ),
+                        firstRow: readElementBox(rows[0]),
+                        lastRow: readElementBox(rows.at(-1)),
+                        dismiss: readElementBox(
+                          root?.querySelector(".composer-compact-controls-dismiss"),
+                        ),
+                      };
+                    })()
                   : overlay === "right-panel-add-menu"
                     ? {
                         panel: readElementBox(overlayElement),
@@ -2170,18 +2177,26 @@ function readWebPane() {
                     description: null,
                   }
                 : overlay === "compact-controls"
-                  ? {
-                      panel: readElementBox(overlayElement),
-                      scroll: readElementBox(overlayElement?.firstElementChild),
-                      content: readElementBox(overlayElement?.firstElementChild),
-                      sectionLabel: readElementBox(
-                        overlayElement?.querySelector('[data-slot="menu-label"]'),
-                      ),
-                      row: readElementBox(
-                        overlayElement?.querySelector('[data-slot="menu-radio-item"]'),
-                      ),
-                      dismiss: null,
-                    }
+                  ? (() => {
+                      const rows = [
+                        ...(overlayElement?.querySelectorAll('[data-slot="menu-radio-item"]') ??
+                          []),
+                      ];
+                      return {
+                        panel: readElementBox(overlayElement),
+                        scroll: readElementBox(overlayElement?.firstElementChild),
+                        content: readElementBox(overlayElement?.firstElementChild),
+                        sectionLabel: readElementBox(
+                          overlayElement?.querySelector('[data-slot="menu-label"]'),
+                        ),
+                        row: readElementBox(
+                          overlayElement?.querySelector('[data-slot="menu-radio-item"]'),
+                        ),
+                        firstRow: readElementBox(rows[0]),
+                        lastRow: readElementBox(rows.at(-1)),
+                        dismiss: null,
+                      };
+                    })()
                   : overlay === "right-panel-add-menu"
                     ? {
                         panel: readElementBox(overlayElement),

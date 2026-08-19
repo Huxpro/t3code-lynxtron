@@ -126,6 +126,9 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(workbench, "composer-compact-controls-menu__scroll");
     assert.include(workbench, "composer-compact-controls-dismiss");
+    assert.include(workbench, "lastRow:");
+    assert.include(source, "lastRowBottom <= scrollBottom + 1");
+    assert.include(source, '=== "Full access"');
   });
 
   it("captures the right-panel add menu after opening an inline Files surface", () => {

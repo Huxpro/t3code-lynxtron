@@ -455,6 +455,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".composer-compact-controls-menu__content"');
     assert.include(source, 'selector: ".composer-compact-controls-dismiss"');
     assert.include(source, "const requiredTail = [");
+    assert.include(source, "lastRowBottom > scrollBottom + 1");
+    assert.include(source, "lastRowVisible:");
     assert.include(source, '"Plan",');
     assert.include(source, '"Full access"');
     assert.include(source, "const traitLabels = rowLabels.slice(0, -requiredTail.length)");

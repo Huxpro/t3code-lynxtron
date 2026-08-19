@@ -5140,8 +5140,12 @@ async function verifyCompactControls({
   const rowLabels = rows.map(({ text }) => text.replace(/\s*Default\s*$/u, "").trim());
   const tailLabels = rowLabels.slice(-requiredTail.length);
   const traitLabels = rowLabels.slice(0, -requiredTail.length);
+  const lastRow = rows.at(-1);
   const panelRight = panel.rect.x + panel.rect.width;
   const contextRight = context.rect.x + context.rect.width;
+  const scrollBottom = scroll.rect.y + scroll.rect.height;
+  const lastRowBottom =
+    (lastRow?.rect?.y ?? Number.POSITIVE_INFINITY) + (lastRow?.rect?.height ?? 0);
   if (
     JSON.stringify(tailLabels) !== JSON.stringify(requiredTail) ||
     traitLabels.length === 0 ||
@@ -5152,6 +5156,8 @@ async function verifyCompactControls({
     scroll.rect.x + scroll.rect.width > panelRight + 1 ||
     scroll.rect.y + scroll.rect.height > panel.rect.y + panel.rect.height + 1 ||
     content.rect.height < rows.length * 28 ||
+    !lastRow?.rect ||
+    lastRowBottom > scrollBottom + 1 ||
     panelRight > rightPanel.rect.x + 1 ||
     contextRight > rightPanel.rect.x + 1
   ) {
@@ -5223,6 +5229,8 @@ async function verifyCompactControls({
     content: content.rect,
     dismiss: dismiss.rect,
     rowLabels,
+    lastRow: lastRow?.rect ?? null,
+    lastRowVisible: lastRowBottom <= scrollBottom + 1,
     traitLabels,
     containment: {
       panelRight,

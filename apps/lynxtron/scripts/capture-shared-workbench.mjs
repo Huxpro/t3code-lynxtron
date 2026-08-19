@@ -906,6 +906,10 @@ function compactControlsEvidenceReady(state) {
     const panel = client?.reviewMetrics?.panelRect;
     const overlayMetrics = client?.overlayMetrics;
     const anatomy = overlayMetrics?.anatomy;
+    const scrollBottom = (anatomy?.scroll?.rect?.y ?? 0) + (anatomy?.scroll?.rect?.height ?? 0);
+    const lastRowBottom =
+      (anatomy?.lastRow?.rect?.y ?? Number.POSITIVE_INFINITY) +
+      (anatomy?.lastRow?.rect?.height ?? 0);
     return (
       client?.productState?.overlay === "compact-controls" &&
       footer?.attributes?.["data-chat-composer-footer-compact"] === "true" &&
@@ -917,6 +921,12 @@ function compactControlsEvidenceReady(state) {
       anatomy?.scroll?.rect?.height > 0 &&
       anatomy?.content?.rect?.height > 0 &&
       anatomy?.row?.rect?.height > 0 &&
+      anatomy?.lastRow?.rect?.height > 0 &&
+      lastRowBottom <= scrollBottom + 1 &&
+      overlayMetrics?.rowLabels
+        ?.at(-1)
+        ?.replace(/\s*Default\s*$/u, "")
+        .trim() === "Full access" &&
       overlayMetrics?.rowCount > 0
     );
   });
