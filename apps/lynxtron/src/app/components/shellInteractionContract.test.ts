@@ -10,6 +10,20 @@ const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
 );
+const sidebarCompositionSource = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/sidebar/SidebarV2CompositionSurface.tsx",
+  ),
+  "utf8",
+);
+const sidebarRowSource = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/sidebar/SidebarV2RowSurface.tsx",
+  ),
+  "utf8",
+);
 const sidebarControlsSource = readFileSync(
   path.resolve(
     import.meta.dirname,
@@ -65,19 +79,26 @@ describe("desktop shell interaction contract", () => {
 
     expect(source).toContain('className="model-picker-dismiss-layer"');
     expect(source).toContain('aria-label="Dismiss model picker"');
-    expect(source).toContain("bindtap={onClose}");
+    expect(source).toContain("event-through");
     expect(source).toContain("catchtap={handlePanelTap}");
     expect(source).toContain('className="model-picker-close"');
     expect(source).toContain("bindtap={onClose}");
     expect(source.indexOf('className="model-picker-panel"')).toBeLessThan(
       source.indexOf('className="model-picker-dismiss-layer"'),
     );
+    expect(componentSource("ChatView.tsx")).toContain(
+      "onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}",
+    );
     expect(overrides).toContain(".model-picker-dismiss-layer {");
     expect(overrides).toContain("background-color: transparent;");
     expect(overrides).toContain("background-color: var(--popover);");
     const dismissStart = overrides.indexOf(".model-picker-dismiss-layer {");
     const dismissBlock = overrides.slice(dismissStart, overrides.indexOf("}", dismissStart));
+    expect(dismissBlock).toContain("z-index: 0;");
     expect(dismissBlock).not.toContain("var(--overlay-backdrop)");
+    const panelStart = overrides.indexOf(".model-picker-panel {");
+    const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
+    expect(panelBlock).toContain("z-index: 1;");
   });
 
   it("keeps the model picker scroll chain constrained to the content column", () => {
@@ -285,7 +306,9 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain('".file-editor-line{" +');
     expect(browserPreviewSource).toContain('".file-editor-line__content{" +');
     expect(browserPreviewSource).toContain('".theme-light .sidebar-settings-authority{" +');
-    expect(sidebarSource).toContain("viewport.width === 1280 && viewport.height === 820");
+    expect(sidebarSource).toContain(
+      "viewport.width === 1280 && viewport.height === 820 && sidebarWidth === 256",
+    );
     expect(sidebarSource).toContain(
       '<image className="sidebar-settings-authority" src={settingsRowUrl} />',
     );
@@ -478,7 +501,7 @@ describe("desktop shell interaction contract", () => {
       ".sidebar-v2-row-card__content {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 78px;",
     );
     expect(overrides).toContain(
-      ".sidebar-v2-row-project-line,\n.sidebar-v2-row-title-line,\n.sidebar-v2-row-metadata-line {\n  width: 100%;\n}",
+      ".sidebar-v2-row-project-line,\n.sidebar-v2-row-title-line,\n.sidebar-v2-row-metadata-line {\n  width: 100%;\n  box-sizing: border-box;\n}",
     );
     expect(overrides).toContain(
       ".sidebar-v2-row-project-line {\n  padding-right: 132px;\n  box-sizing: border-box;\n}",
@@ -656,12 +679,37 @@ describe("desktop shell interaction contract", () => {
 
   it("uses the shared Sidebar inset without shrinking the thread list twice", () => {
     const listBlocks = overrides.match(/\.sidebar-v2-thread-list \{[^}]+\}/g);
+    const groupBlock = overrides.match(/\.sidebar-v2-thread-group \{[^}]+\}/)?.[0] ?? "";
 
     expect(listBlocks).not.toBeNull();
     for (const block of listBlocks ?? []) {
       expect(block).toContain("width: 100%;");
       expect(block).not.toContain("calc(100% - 16px)");
     }
+    expect(sidebarCompositionSource).toContain(
+      'SidebarGroup className="sidebar-v2-thread-group px-2 pb-1 pt-0"',
+    );
+    expect(groupBlock).toContain("width: 100%;");
+    expect(groupBlock).toContain("padding-right: 8px;");
+    expect(groupBlock).toContain("padding-left: 8px;");
+    expect(groupBlock).toContain("box-sizing: border-box;");
+    expect(sidebarRowSource).toContain(
+      'className="sidebar-v2-row-card__content relative z-10 h-[4.875rem] px-2.5 py-2"',
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-row-card__content {\n  display: flex;\n  flex-direction: column;",
+    );
+    expect(browserPreviewSource).toContain(
+      '".sidebar-v2-row-card__content{display:flex;flex-direction:column;}"',
+    );
+    const titleBlock = overrides.match(/\.sidebar-v2-row-title \{[^}]+\}/)?.[0] ?? "";
+    expect(titleBlock).toContain("width: 100%;");
+    expect(titleBlock).toContain("height: 20px;");
+    expect(titleBlock).toContain("line-height: 20px;");
+    expect(titleBlock).toContain("overflow: hidden;");
+    const settledShelfBlock =
+      overrides.match(/\.sidebar-v2-settled-shelf-toggle \{[^}]+\}/)?.[0] ?? "";
+    expect(settledShelfBlock).toContain("margin-top: 0;");
   });
 
   it("keeps the project scope popup related to its measured Sidebar trigger", () => {

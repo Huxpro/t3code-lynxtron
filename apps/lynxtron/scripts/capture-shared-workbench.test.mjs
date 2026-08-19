@@ -443,6 +443,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "icons:");
     assert.include(workbench, "actionItems: readHeaderActionItems(");
     assert.include(workbench, "settingsAuthority: readElementBox");
+    assert.include(
+      workbench,
+      'projectTitle: readElementBox(item.querySelector(".sidebar-v2-row-project-title"))',
+    );
+    assert.include(workbench, 'title: readElementBox(item.querySelector(".sidebar-v2-row-title"))');
     assert.include(source, "function headerGitActionMatches");
     assert.include(source, 'method === "readVcsStatus"');
     assert.include(source, "headerGitActionReady");
