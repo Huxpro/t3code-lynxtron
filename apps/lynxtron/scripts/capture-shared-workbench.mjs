@@ -2340,6 +2340,8 @@ async function captureCell({
     !isFileEditorState || stateId !== "file-editor-detail-narrow-inline";
   let lynxFileEditorReturnedToBrowser =
     !isFileEditorState || stateId !== "file-editor-detail-narrow-inline";
+  let rightPanelAddMenuDismissed = !isRightPanelAddMenuState;
+  let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState;
   const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
@@ -4738,6 +4740,143 @@ async function captureCell({
     }
   }
 
+  if (isRightPanelAddMenuState && finalRightPanelAddMenuReady) {
+    const outsidePoints = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId) => {
+          const frame = document.getElementById(frameId);
+          if (!frame) return null;
+          const rect = frame.getBoundingClientRect();
+          return { x: rect.x + 400, y: rect.y + 300 };
+        };
+        return {
+          web: pointFor('web-pane'),
+          lynx: pointFor('lynx-pane'),
+        };
+      })()`,
+    ).catch(() => null);
+    if (outsidePoints?.web) await dispatchPointerClickWithMove(cdp, sessionId, outsidePoints.web);
+    if (outsidePoints?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, outsidePoints.lynx);
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const dismissed = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const web = document.getElementById('web-pane')?.contentWindow?.document;
+          const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+            ?.getElementById('t3-lynx-preview')?.shadowRoot;
+          return {
+            web: web?.querySelector('[data-floating-popup="right-panel-add-menu"]') === null,
+            lynx: lynx?.querySelector('.right-panel__add-menu') === null,
+          };
+        })()`,
+      ).catch(() => null);
+      if (dismissed?.web && dismissed?.lynx) {
+        rightPanelAddMenuDismissed = true;
+        break;
+      }
+      await delay(100);
+    }
+
+    if (rightPanelAddMenuDismissed) {
+      const triggerPoints = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pointFor = (frameId, shadow) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const trigger = root?.querySelector('[data-floating-anchor="right-panel-add-menu"], .right-panel__add-btn');
+            if (!frame || !trigger) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = trigger.getBoundingClientRect();
+            return {
+              x: frameRect.x + rect.x + rect.width / 2,
+              y: frameRect.y + rect.y + rect.height / 2,
+            };
+          };
+          return {
+            web: pointFor('web-pane', false),
+            lynx: pointFor('lynx-pane', true),
+          };
+        })()`,
+      ).catch(() => null);
+      if (triggerPoints?.web) {
+        await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.web);
+      }
+      if (triggerPoints?.lynx) {
+        await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.lynx);
+      }
+      await delay(100);
+      const terminalPoints = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pointFor = (frameId, shadow) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const rows = [
+              ...(root?.querySelectorAll(
+                '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"], [data-right-panel-add-kind]'
+              ) ?? []),
+            ];
+            const target = rows.find((row) =>
+              row.getAttribute('data-right-panel-add-kind') === 'terminal' ||
+              row.textContent?.trim() === 'Terminal'
+            );
+            if (!frame || !target) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
+            return {
+              x: frameRect.x + rect.x + rect.width / 2,
+              y: frameRect.y + rect.y + rect.height / 2,
+            };
+          };
+          return {
+            web: pointFor('web-pane', false),
+            lynx: pointFor('lynx-pane', true),
+          };
+        })()`,
+      ).catch(() => null);
+      if (terminalPoints?.web)
+        await dispatchPointerClickWithMove(cdp, sessionId, terminalPoints.web);
+      if (terminalPoints?.lynx) {
+        await dispatchPointerClickWithMove(cdp, sessionId, terminalPoints.lynx);
+      }
+      for (let attempt = 0; attempt < 30; attempt += 1) {
+        const selected = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const web = document.getElementById('web-pane')?.contentWindow?.document;
+            const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            return {
+              web:
+                web?.querySelector('[data-active-tab="true"] [aria-label="Terminal"]') !== null &&
+                web?.querySelector('[data-floating-popup="right-panel-add-menu"]') === null,
+              lynx:
+                lynx
+                  ?.querySelector('[data-right-panel-open="true"]')
+                  ?.getAttribute('data-right-panel-active-kind') === 'terminal' &&
+                lynx?.querySelector('[data-terminal-placeholder="true"]') !== null &&
+                lynx?.querySelector('.right-panel__add-menu') === null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (selected?.web && selected?.lynx) {
+          rightPanelAddMenuTerminalSelected = true;
+          break;
+        }
+        await delay(100);
+      }
+    }
+  }
+
   if (isFileEditorState && stateId !== "file-editor-detail-narrow-inline" && finalFileEditorReady) {
     const switchPoints = await evaluate(
       cdp,
@@ -4920,6 +5059,8 @@ async function captureCell({
     finalCompactControlsReady &&
     finalProjectActionDialogReady &&
     finalRightPanelAddMenuReady &&
+    rightPanelAddMenuDismissed &&
+    rightPanelAddMenuTerminalSelected &&
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
@@ -4956,6 +5097,9 @@ async function captureCell({
       finalSidebarFooterThemeReady,
       finalCompactControlsReady,
       finalProjectActionDialogReady,
+      finalRightPanelAddMenuReady,
+      rightPanelAddMenuDismissed,
+      rightPanelAddMenuTerminalSelected,
       finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
@@ -5112,6 +5256,19 @@ async function captureCell({
           context: state?.lynx?.composerMetrics?.anatomy?.context ?? null,
           rightPanel: state?.lynx?.reviewMetrics?.panelRect ?? null,
         },
+      },
+      rightPanelAddMenu: {
+        match: finalRightPanelAddMenuReady,
+        dismissedBy: isRightPanelAddMenuState
+          ? "web-outside-pointer|lynx-dismiss-layer-pointer"
+          : "not-required",
+        dismissed: rightPanelAddMenuDismissed,
+        selectedBy: isRightPanelAddMenuState
+          ? "web-terminal-row-pointer|lynx-terminal-row-pointer"
+          : "not-required",
+        terminalSelected: rightPanelAddMenuTerminalSelected,
+        web: state?.web?.overlayMetrics ?? null,
+        lynx: state?.lynx?.overlayMetrics ?? null,
       },
       sidebarWorkingGeometry: {
         match: finalSidebarWorkingGeometryReady,
