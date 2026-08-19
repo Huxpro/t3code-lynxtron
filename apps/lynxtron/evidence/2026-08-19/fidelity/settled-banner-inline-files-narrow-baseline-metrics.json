@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T11:24:00+09:00",
+  "harnessCommit": "2e55943ff",
+  "productHead": "f70ed046e",
+  "stateId": "settled-banner-inline-files-narrow",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "rightPanelSurface": "Files",
+    "rightPanelWidth": 540,
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "activeTurnId": "019f9b5e-c44d-7ac1-8d9a-6f4971770461",
+    "surface": "Settled status banner above the narrow inline-Files Composer"
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "projectTitle": "t3code-lynxtron",
+    "threadTitle": "New thread",
+    "sessionStatus": "running",
+    "latestTurnState": "running",
+    "messageCount": 1
+  },
+  "classification": {
+    "productLoss": [
+      "Web expands the 188px-wide settled banner to 268px so its title, description, and Un-settle action finish 8px above the Composer. Lynx keeps a 68px banner while its copy needs 122px, so content escapes the banner and overlaps the Composer.",
+      "The Lynx Un-settle action collapses to 32.390625px versus Web's 70.0625px and wraps its label.",
+      "The 228x320 center crop measures 11.005135 MAE and 10.2001% significant pixels."
+    ],
+    "harnessMismatch": [
+      "A prior Native screenshot used two threads with the same title and could not prove which thread was active. The baseline uses the explicit thread ID and active turn, and both Browser renderers match that identity."
+    ],
+    "intentionalPlatformDelta": [],
+    "evidenceBoundary": "One immutable snapshot, explicit thread ID and active turn, selected project, dark theme, 1024x820 viewport, 540px inline Files panel, shipping Web and Lynx-for-Web artifacts, matching message and Files content, matching Composer state, zero console errors, and clean leak gates. The hard gate fails only Composer status-banner anatomy. Native remains unobserved at baseline."
+  },
+  "browser": {
+    "status": "fail-with-product-loss",
+    "report": {
+      "path": "/tmp/t3-settled-banner-narrow-baseline/workbench-report.json",
+      "sha256": "d64179706c63614d8c998a37bd0d3eee2e57d53d37e8eb966e89eace3f84e061"
+    },
+    "bundles": {
+      "web": "a75cf8d54748",
+      "lynx": "c707c8fb4a0f"
+    },
+    "readyMs": 30034,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "filesBrowserMatch": true,
+    "rendererErrors": 0,
+    "failedGates": ["reachedTargetState", "finalComposerReady"],
+    "geometry": {
+      "web": {
+        "statusBanner": [276, 352, 188, 268],
+        "statusCopy": [315, 365, 55.9375, 242],
+        "statusTitle": [315, 365, 55.9375, 80],
+        "statusDescription": [315, 447, 55.9375, 160],
+        "statusAction": [378.9375, 474, 70.0625, 24],
+        "composer": [276, 628, 188, 140],
+        "bannerComposerGap": 8
+      },
+      "lynx": {
+        "statusBanner": [276, 552, 187, 68],
+        "statusCopy": [313, 525, 94.609375, 122],
+        "statusTitle": [313, 525, 94.609375, 40],
+        "statusDescription": [313, 567, 94.609375, 80],
+        "statusAction": [415.609375, 574, 32.390625, 24],
+        "composer": [276, 628, 187, 140],
+        "copyOverflowAbove": 27,
+        "copyOverflowBelow": 27
+      }
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "centerCrop": [256, 320, 228, 320],
+      "mae": 11.005135,
+      "significantShare": 0.102001,
+      "formulaResidual": 0.684305
+    },
+    "screenshots": {
+      "webSha256": "5cf0b12d23f12e7e660aa61bb1bfcc1a7abc05dc90f4169f0be6ab245f6c44b9",
+      "lynxSha256": "c775ae3ed6aa2b2c08001946c9040de5a24c75d184bc50ffc100b97c86740400"
+    }
+  },
+  "native": {
+    "status": "unobserved"
+  },
+  "validation": {
+    "harnessFocusedTests": "33/33",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}

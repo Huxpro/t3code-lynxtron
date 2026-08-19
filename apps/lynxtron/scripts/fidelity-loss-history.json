@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T11:05:41+09:00",
+  "updatedAt": "2026-08-19T11:24:47+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10880,6 +10880,75 @@
               "confidence": 0.99,
               "method": "native-responsive-sidebar-footer-readiness",
               "source": "Bundle 4a9bb60d, expected and actual dark theme, main sequence 3 to 4, zero renderer errors, disposed state, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settled-banner-inline-files-narrow-baseline",
+      "observedAt": "2026-08-19T11:24:47+09:00",
+      "commit": "2e55943ff",
+      "codeCommit": "f70ed046e",
+      "codeState": "commit",
+      "label": "Narrow inline Files settled banner baseline",
+      "narrative": "A newly modeled 1024x820 dark state selects the explicit running thread and active turn, then opens the 540px Files panel while retaining the settled-state Composer banner. Web expands the 188px-wide banner to 268px so its 242px copy and 70px Un-settle action finish 8px above the Composer. Lynx keeps a 68px banner while its copy needs 122px, overflows 27px above and below, collapses the action to 32.390625px, and covers the Composer. The 228x320 center crop measures 11.005135 MAE with 10.2001% significant pixels. Both panes otherwise match snapshot, thread, turn, message, Files rows, Composer state, route, theme, and zero-error readiness. A prior title-only Native screenshot is classified as identity ambiguity and receives no product credit; Native remains unknown.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds one real responsive Composer status state before repair. Existing states and weights are unchanged. The new state uses weight 4 with Lynx and Native clients; all unobserved Native cells remain conservative unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/settled-banner-inline-files-narrow-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "066dd3c7e6613fad5dd3a62b96c1cb7889a5047099199eef36c7a8f0e7b73aa5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settled-banner-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.35,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-overflow-content",
+              "source": "Title and description exist, but escaped copy covers the Composer and the Un-settle label collapses"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 200, 2, 160, 38.671875, 120, 36.671875, 100, 37.671875, 0, 0, 1],
+              "anchorScale": 268,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-anatomy",
+              "source": "Status banner, copy, title, description, action, and Composer anchors from the explicit-thread paired capture"
+            },
+            "typography": {
+              "residual": 0.35,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-legibility",
+              "source": "The 122px copy escapes a 68px host and the 32px action wraps its label"
+            },
+            "material": {
+              "pixel": {
+                "mae": 11.005135,
+                "significantShare": 0.102001
+              },
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-center-crop",
+              "source": "Same-snapshot 228x320 center-column crop around the status banner and Composer"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-files-interaction",
+              "source": "Both renderers open the same Files panel and preserve the same explicit thread selection"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-readiness",
+              "source": "Same thread and active turn, matching session projection, zero console errors, and clean leak gates"
             }
           }
         }
