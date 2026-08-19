@@ -4610,6 +4610,192 @@ async function verifyShellInteractions({ child, client, timeoutMs }) {
   };
 }
 
+async function verifyRightPanelAddMenu({
+  child,
+  client,
+  devToolCli,
+  height,
+  outputDirectory,
+  timeoutMs,
+  width,
+}) {
+  if ((await readOptionalMeasurement(client, ".right-panel")) !== null) {
+    await tapSelector({
+      child,
+      client,
+      selector: ".right-panel__layout-control--close",
+      timeoutMs,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+  }
+  await tapSelector({
+    child,
+    client,
+    selector: ".topbar__toggle--terminal",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-right-panel-active-kind"] === "terminal",
+  });
+
+  const openMenu = async () => {
+    await tapSelector({
+      child,
+      client,
+      selector: ".right-panel__add-btn",
+      timeoutMs,
+    });
+    return waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel__add-menu",
+      timeoutMs,
+      predicate: (measurement) =>
+        Math.abs((measurement?.rect.width ?? 0) - 128) <= 0.5 &&
+        Math.abs((measurement?.rect.height ?? 0) - 122) <= 0.5,
+    });
+  };
+
+  const menu = await openMenu();
+  const dismissLayer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel__add-menu-dismiss",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.width ?? 0) - width) <= 1 &&
+      Math.abs((measurement?.rect.height ?? 0) - height) <= 1,
+  });
+  const rows = await readSelectorMeasurements(client, ".right-panel__add-item");
+  const expectedRows = [
+    { kind: "browser", label: "Browser" },
+    { kind: "terminal", label: "Terminal" },
+    { kind: "files", label: "Files" },
+    { kind: "diff", label: "Diff" },
+  ];
+  if (
+    rows.length !== expectedRows.length ||
+    rows.some(
+      (row, index) =>
+        row.attributes["data-right-panel-add-kind"] !== expectedRows[index].kind ||
+        row.text.trim() !== expectedRows[index].label ||
+        Math.abs((row.rect?.width ?? 0) - 118) > 0.5 ||
+        Math.abs((row.rect?.height ?? 0) - 28) > 0.5,
+    )
+  ) {
+    throw new Error(`Native right-panel add menu rows drifted: ${JSON.stringify(rows)}`);
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-right-panel-add-menu.png",
+  });
+
+  await tapSelector({
+    child,
+    client,
+    point: "bottom-right",
+    selector: ".right-panel__add-menu-dismiss",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel__add-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  await openMenu();
+  await tapSelectorByAttribute({
+    attribute: "data-right-panel-add-kind",
+    child,
+    client,
+    selector: ".right-panel__add-item",
+    timeoutMs,
+    value: "files",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-right-panel-active-kind"] === "files",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel__add-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  await openMenu();
+  await tapSelectorByAttribute({
+    attribute: "data-right-panel-add-kind",
+    child,
+    client,
+    selector: ".right-panel__add-item",
+    timeoutMs,
+    value: "terminal",
+  });
+  const terminalPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-right-panel-active-kind"] === "terminal",
+  });
+  const terminal = await waitForMeasurement({
+    child,
+    client,
+    selector: ".terminal-placeholder",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Terminal sessions are not connected yet") === true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel__add-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    input: "DevTool touch on measured add-menu trigger, dismiss layer, Files row, and Terminal row",
+    menu: menu.rect,
+    dismissLayer: dismissLayer.rect,
+    rows: rows.map((row) => ({
+      kind: row.attributes["data-right-panel-add-kind"],
+      label: row.text.trim(),
+      rect: row.rect,
+    })),
+    screenshot,
+    dismissed: true,
+    filesSelected: true,
+    terminalSelected: true,
+    terminal: {
+      panel: terminalPanel.rect,
+      placeholder: terminal.rect,
+    },
+  };
+}
+
 async function verifyFilesBrowser({
   child,
   client,
@@ -7904,6 +8090,7 @@ async function runOnce({
   verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
+  verifyRightPanelAddMenu: shouldVerifyRightPanelAddMenu,
   verifyFilesBrowser: shouldVerifyFilesBrowser,
   verifyFileSheetBack,
   verifyCompactControls: shouldVerifyCompactControls,
@@ -8367,6 +8554,17 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const rightPanelAddMenu = shouldVerifyRightPanelAddMenu
+      ? await verifyRightPanelAddMenu({
+          child,
+          client,
+          devToolCli,
+          height,
+          outputDirectory,
+          timeoutMs,
+          width,
+        })
+      : undefined;
     const filesBrowser = shouldVerifyFilesBrowser
       ? await verifyFilesBrowser({
           child,
@@ -8550,6 +8748,7 @@ async function runOnce({
       reviewDiffState,
       reviewCheckpointStates,
       shellInteractions,
+      rightPanelAddMenu,
       filesBrowser,
       compactControls,
       gitInitialize,
@@ -8605,6 +8804,7 @@ async function runOnce({
       reviewDiffState,
       reviewCheckpointStates,
       shellInteractions,
+      rightPanelAddMenu,
       filesBrowser,
       compactControls,
       gitInitialize,
@@ -8702,6 +8902,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
   "--verify-review-checkpoint-states",
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
+const shouldVerifyRightPanelAddMenu = process.argv.includes("--verify-right-panel-add-menu");
 const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
 const shouldVerifyFileSheetBack = process.argv.includes("--verify-file-sheet-back");
 const shouldVerifyCompactControls = process.argv.includes("--verify-compact-controls");
@@ -9009,6 +9210,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyReviewCheckpointStates: shouldVerifyReviewCheckpointStates,
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
+      verifyRightPanelAddMenu: shouldVerifyRightPanelAddMenu,
       verifyFilesBrowser: shouldVerifyFilesBrowser,
       verifyFileSheetBack: shouldVerifyFileSheetBack,
       verifyCompactControls: shouldVerifyCompactControls,

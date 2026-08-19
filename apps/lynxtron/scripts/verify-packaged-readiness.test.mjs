@@ -354,6 +354,28 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar action menu rows collapsed");
   });
 
+  it("verifies the Native right-panel add menu dismissal and surface selection", () => {
+    assert.include(source, "async function verifyRightPanelAddMenu");
+    assert.include(source, '"--verify-right-panel-add-menu"');
+    assert.include(source, 'selector: ".right-panel__add-btn"');
+    assert.include(source, 'selector: ".right-panel__add-menu"');
+    assert.include(source, 'selector: ".right-panel__add-menu-dismiss"');
+    assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - width) <= 1");
+    assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - height) <= 1");
+    assert.include(source, 'readSelectorMeasurements(client, ".right-panel__add-item")');
+    assert.include(source, '{ kind: "browser", label: "Browser" }');
+    assert.include(source, 'value: "files"');
+    assert.include(source, 'value: "terminal"');
+    assert.include(source, 'name: "native-right-panel-add-menu.png"');
+    assert.include(
+      source,
+      'measurement?.attributes["data-right-panel-active-kind"] === "terminal"',
+    );
+    assert.include(source, 'selector: ".terminal-placeholder"');
+    assert.include(source, "terminalSelected: true");
+    assert.include(outcomeChecksSource, "rightPanelAddMenu");
+  });
+
   it("verifies the compact Native Files browser without overstating keyboard evidence", () => {
     assert.include(source, "async function verifyFilesBrowser");
     assert.include(source, '"--verify-files-browser"');
