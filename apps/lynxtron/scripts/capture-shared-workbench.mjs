@@ -828,10 +828,30 @@ function sidebarControlGeometryMatches(state) {
   );
 }
 
-function sidebarFooterThemeMatches(state) {
-  if (theme !== "light") return true;
+function sidebarFooterThemeMatches(state, viewportWidth, viewportHeight) {
   const web = state?.web?.sidebarDiagnostics?.chrome;
   const lynx = state?.lynx?.sidebarDiagnostics?.chrome;
+  const responsiveViewport = viewportWidth !== 1280 || viewportHeight !== 820;
+  if (responsiveViewport) {
+    const responsiveFooterReady = [web, lynx].every((chrome) => {
+      const footer = chrome?.footer?.rect;
+      const row = chrome?.settingsRow?.rect;
+      return (
+        footer?.height === 48 &&
+        row?.height === 32 &&
+        row.y >= footer.y &&
+        row.y + row.height <= footer.y + footer.height
+      );
+    });
+    const authority = lynx?.settingsAuthority;
+    const responsiveAuthorityHidden =
+      authority === null ||
+      authority?.style?.display === "none" ||
+      authority?.style?.opacity === "0" ||
+      (authority?.rect?.width === 0 && authority?.rect?.height === 0);
+    if (!responsiveFooterReady || !responsiveAuthorityHidden) return false;
+  }
+  if (theme !== "light") return true;
   const isNearBlack = (color) =>
     typeof color === "string" &&
     (color === "rgb(0, 0, 0)" ||
@@ -3749,7 +3769,7 @@ async function captureCell({
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
-    const sidebarFooterThemeReady = sidebarFooterThemeMatches(state);
+    const sidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
@@ -4031,7 +4051,7 @@ async function captureCell({
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
-  const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state);
+  const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
     state,

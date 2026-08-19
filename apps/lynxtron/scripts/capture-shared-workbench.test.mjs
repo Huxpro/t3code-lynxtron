@@ -77,11 +77,23 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("rejects the dark authority footer in light theme", () => {
-    assert.include(source, "function sidebarFooterThemeMatches(state)");
+    assert.include(
+      source,
+      "function sidebarFooterThemeMatches(state, viewportWidth, viewportHeight)",
+    );
+    assert.include(
+      source,
+      "const responsiveViewport = viewportWidth !== 1280 || viewportHeight !== 820",
+    );
+    assert.include(source, "footer?.height === 48");
+    assert.include(source, "row?.height === 32");
+    assert.include(source, "row.y + row.height <= footer.y + footer.height");
+    assert.include(source, "responsiveAuthorityHidden");
     assert.include(source, 'if (theme !== "light") return true;');
     assert.include(source, 'if (semanticRoute.startsWith("settings-"))');
     assert.include(source, "chrome?.settingsFooter?.rect?.height > 0");
     assert.include(source, "chrome?.settingsBack?.rect?.height > 0");
+    assert.include(source, "sidebarFooterThemeMatches(state, width, height)");
     assert.include(source, "finalSidebarFooterThemeReady");
     assert.include(source, "sidebarFooterTheme:");
   });
