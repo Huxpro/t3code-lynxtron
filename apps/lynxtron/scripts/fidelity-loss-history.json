@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T06:00:54+09:00",
+  "updatedAt": "2026-08-20T06:55:57+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12997,6 +12997,110 @@
           "dimensions": ["geometry", "interaction"],
           "factor": 0,
           "reason": "The previous gate hard-coded inline-panel geometry and did not prove Back return at the sheet breakpoint."
+        }
+      ]
+    },
+    {
+      "id": "responsive-composer-file-detail-coverage-current",
+      "observedAt": "2026-08-20T06:55:57+09:00",
+      "commit": "e3653c0d5df4f5e6ef61b8eb46fd01bbc85cf3df",
+      "codeCommit": "92553103f71384f387debfa3daee1a5878e0d1f5",
+      "codeState": "commit",
+      "label": "Responsive Composer and file-detail convergence",
+      "narrative": "The reopened responsive coverage now passes without changing the fixed denominator. At 1024x820 with a user-resized 344px Sidebar, Web and Lynx-for-Web use one shared compact-menu placement policy, flip the popup left, and keep both popup and checkout context fully inside the center Composer allocation before Files. The Web popup right edge moves from the broken x=669.21875 to x=552.21875; Lynx ends at x=552.890625. File detail is now reversible at every measured width: 960px sheet and 1024px narrow layouts use editor-first detail with 28x28 Back, while 1280px split detail keeps its 255/256px explorer and also exposes Back. Real dual-client pointers restore Files in dark and light cells. Web and Lynx-for-Web both measure SF Mono 13px/20px source with 48.796875px and 49px gutters. Exact Native on bundle b526d725 independently measures a 49px gutter, SF Mono 13px/20px, six token tones, a 28x28 Back action, main transport 3 to 4, zero renderer errors, and disposed state. The first Native attempt is excluded as a DevTool box-model mismatch because computed width reported the 39px content box after padding while the measured gutter rectangle was correctly 49px. Material and full editor-feature residuals remain conservative.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Browser before/current runs hold snapshot, project, thread, route, viewport, theme, requested Sidebar/right-panel widths, and Web authority constant while changing the shared product bundle. Exact Native uses the final production bundle, disposable state, explicit viewport/theme, PID-owned DevTool identity, measured touches, main transport, zero renderer errors, and disposed state. No state weights, filters, or denominator entries change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/responsive-composer-file-detail-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f249437bed1bfc6c47cded438e4a236446fc7a60555fd04ae5edc782e23056ce"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [1.109375, 0, 1.78125, 0, 0, 0, 1, 0, 1, 0, 1, 0],
+              "anchorScale": 664,
+              "confidence": 0.99,
+              "method": "resized-sidebar-compact-containment",
+              "source": "Popup, context, Composer, and Files-boundary geometry at Sidebar 344px; both popup and context have zero overlap with Files"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "resized-sidebar-compact-trigger-containment",
+              "source": "Real Browser triggers open both menus with end alignment and the bounds-aware gate rejects any popup or checkout context crossing into Files"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail-narrow-inline"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0.203125, 0],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "responsive-file-detail-geometry",
+              "source": "1024px narrow retains exact 359x736 editor and 28px Back geometry; 960px sheet is separately admitted by editor-first ownership rather than false fixed-width parity"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "responsive-file-editor-typography",
+              "source": "Web and Lynx-for-Web both measure SF Mono 13px/20px source with 48.796875px and 49px gutters; residual preserves the lightweight tokenizer"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-file-detail-back",
+              "source": "Real Web and Lynx-for-Web pointers restore Files from 960px sheet, 1024px narrow, and 1280px split detail"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail-narrow-inline"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-responsive-file-content",
+              "source": "Exact Native opens config.toml through the real Files browser and renders non-empty six-tone source"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 728,
+              "confidence": 0.99,
+              "method": "native-responsive-file-geometry",
+              "source": "Exact Native measures a 359x727 preview, 49x20 gutter, hidden explorer, and 28x28 Back action"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "native-responsive-file-typography",
+              "source": "Exact Native measures SF Mono 13px/20px and six token tones; residual preserves platform rasterization and the lightweight tokenizer"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-responsive-file-back",
+              "source": "Measured DevTool touches open the file and Back restores the 359x728 Files browser"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-responsive-file-readiness",
+              "source": "Exact b526d725 bundle uses main transport sequence 3 to 4, reports zero renderer errors, and disposes isolated state"
+            }
+          }
         }
       ]
     }

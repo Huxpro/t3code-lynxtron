@@ -187,3 +187,4 @@ composer-compact-controls-inline-files-short-current,2026-08-20T03:10:59+09:00,d
 file-editor-inline-flow-current,2026-08-20T03:44:48+09:00,183079748,commit,File editor inline flow convergence,0.334159,0.334159,0.026469,0.316056,0.683944,0.65553
 file-editor-editing-save-registration,2026-08-20T03:56:55+09:00,45400aa87a15dc972d5720015333e186cc8540db,commit,File editor editing and save registration,0.334159,0.334159,0.026469,0.316056,0.683944,0.65553
 responsive-composer-file-detail-coverage-reopen,2026-08-20T06:00:54+09:00,868c9696a738a392e4a034b5f32b260e7e20e91f,commit,Responsive Composer and file-detail coverage reopened,0.339355,0.334159,0.02665,0.321267,0.678733,0.650334
+responsive-composer-file-detail-coverage-current,2026-08-20T06:55:57+09:00,e3653c0d5df4f5e6ef61b8eb46fd01bbc85cf3df,commit,Responsive Composer and file-detail convergence,0.334098,0.334098,0.02638,0.316056,0.683944,0.655591
