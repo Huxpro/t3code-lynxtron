@@ -108,7 +108,9 @@ describe("shared workbench lifecycle fault capture", () => {
 
     assert.include(source, '"composer-compact-controls-open": "compact-controls"');
     assert.include(source, '"composer-compact-controls-inline-files-narrow": "compact-controls"');
+    assert.include(source, '"composer-compact-controls-inline-files-short": "compact-controls"');
     assert.include(source, 'stateId === "composer-compact-controls-inline-files-narrow"');
+    assert.include(source, 'stateId === "composer-compact-controls-inline-files-short"');
     assert.include(source, "function compactControlsEvidenceReady(state)");
     assert.include(source, "function compactControlsContainment(state)");
     assert.include(source, '"workspace-menu",');
@@ -128,6 +130,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "composer-compact-controls-dismiss");
     assert.include(workbench, "lastRow:");
     assert.include(source, "lastRowBottom <= scrollBottom + 1");
+    assert.include(source, "lastRowBottom > scrollBottom + 1");
+    assert.include(source, "context.x >= composer.x");
+    assert.include(source, "contextRight <= composerRight");
+    assert.include(source, 'type: "mouseWheel"');
+    assert.include(source, "shortCompactControlsScrolled");
+    assert.include(source, "shortCompactControlsDismissed");
+    assert.include(source, "shortCompactControlsScrollDiagnostics");
+    assert.include(source, "dataScrollOffset: scroll.getAttribute('data-scroll-offset')");
+    assert.include(source, "web-wheel|lynx-wheel|outside-pointer");
     assert.include(source, '=== "Full access"');
   });
 

@@ -79,6 +79,7 @@ const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
   "composer-compact-controls-open": "compact-controls",
   "composer-compact-controls-inline-files-narrow": "compact-controls",
+  "composer-compact-controls-inline-files-short": "compact-controls",
   "diff-scope-menu": "diff-scope-menu",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
@@ -151,7 +152,9 @@ const isFileEditorState =
   stateId === "file-editor-detail" || stateId === "file-editor-detail-narrow-inline";
 const isCompactControlsState =
   stateId === "composer-compact-controls-open" ||
-  stateId === "composer-compact-controls-inline-files-narrow";
+  stateId === "composer-compact-controls-inline-files-narrow" ||
+  stateId === "composer-compact-controls-inline-files-short";
+const isShortCompactControlsState = stateId === "composer-compact-controls-inline-files-short";
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
 const isFilesSurfaceState =
@@ -912,6 +915,9 @@ function compactControlsEvidenceReady(state) {
     const lastRowBottom =
       (anatomy?.lastRow?.rect?.y ?? Number.POSITIVE_INFINITY) +
       (anatomy?.lastRow?.rect?.height ?? 0);
+    const initialVisibilityReady = isShortCompactControlsState
+      ? lastRowBottom > scrollBottom + 1
+      : lastRowBottom <= scrollBottom + 1;
     return (
       client?.productState?.overlay === "compact-controls" &&
       footer?.attributes?.["data-chat-composer-footer-compact"] === "true" &&
@@ -924,7 +930,7 @@ function compactControlsEvidenceReady(state) {
       anatomy?.content?.rect?.height > 0 &&
       anatomy?.row?.rect?.height > 0 &&
       anatomy?.lastRow?.rect?.height > 0 &&
-      lastRowBottom <= scrollBottom + 1 &&
+      initialVisibilityReady &&
       overlayMetrics?.rowLabels
         ?.at(-1)
         ?.replace(/\s*Default\s*$/u, "")
@@ -1009,13 +1015,18 @@ function diffScopeMenuReady(state) {
 function compactControlsContainment(state) {
   const read = (client) => {
     const context = client?.composerMetrics?.anatomy?.context?.rect;
+    const composer = client?.composerMetrics?.rect?.rect;
     const panel = client?.reviewMetrics?.panelRect?.rect;
-    if (!context || !panel) return null;
+    if (!context || !composer || !panel) return null;
+    const contextRight = context.x + context.width;
+    const composerRight = composer.x + composer.width;
     return {
       context,
+      composer,
       panel,
-      overlap: Math.max(0, context.x + context.width - panel.x),
-      contained: context.x + context.width <= panel.x,
+      overlap: Math.max(0, contextRight - panel.x),
+      contained:
+        context.x >= composer.x && contextRight <= composerRight && contextRight <= panel.x,
     };
   };
   return {
@@ -1238,6 +1249,19 @@ async function dispatchPointerClickWithMove(cdp, sessionId, point) {
     sessionId,
   );
   await dispatchPointerClick(cdp, sessionId, point);
+}
+
+async function dispatchMouseWheel(cdp, sessionId, point, deltaY) {
+  await cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mouseMoved", ...point, button: "none" },
+    sessionId,
+  );
+  await cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mouseWheel", ...point, deltaX: 0, deltaY },
+    sessionId,
+  );
 }
 
 async function dispatchOverlayOpeningPointerClick(cdp, sessionId, point) {
@@ -1800,6 +1824,7 @@ async function main() {
     "composer-working",
     "composer-compact-controls-open",
     "composer-compact-controls-inline-files-narrow",
+    "composer-compact-controls-inline-files-short",
     "right-panel-add-menu",
     "diff-scope-menu",
     "composer-connecting",
@@ -2223,6 +2248,7 @@ async function captureCell({
     "composer-working": "existing-thread",
     "composer-compact-controls-open": "existing-thread",
     "composer-compact-controls-inline-files-narrow": "existing-thread",
+    "composer-compact-controls-inline-files-short": "existing-thread",
     "right-panel-add-menu": "existing-thread",
     "diff-scope-menu": "existing-thread",
     "settled-banner-inline-files-narrow": "existing-thread",
@@ -2371,6 +2397,9 @@ async function captureCell({
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState;
   let diffScopeMenuDismissed = !isDiffScopeMenuState;
   let diffScopeWorkingTreeSelected = !isDiffScopeMenuState;
+  let shortCompactControlsScrolled = !isShortCompactControlsState;
+  let shortCompactControlsDismissed = !isShortCompactControlsState;
+  let shortCompactControlsScrollDiagnostics = null;
   const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
@@ -4752,6 +4781,141 @@ async function captureCell({
     diff = dff.ok ? path.relative(repoRoot, diffPath) : { error: dff.reason };
   }
 
+  if (isShortCompactControlsState && finalCompactControlsReady) {
+    const scrollPoints = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId, shadow) => {
+          const frame = document.getElementById(frameId);
+          const doc = frame?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const scroll = root?.querySelector(
+            '.composer-compact-controls-menu__scroll, [data-floating-popup="composer-compact-controls-menu"] > div'
+          );
+          if (!frame || !scroll) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = scroll.getBoundingClientRect();
+          return {
+            x: frameRect.x + rect.x + rect.width / 2,
+            y: frameRect.y + rect.y + rect.height / 2,
+          };
+        };
+        return {
+          web: pointFor('web-pane', false),
+          lynx: pointFor('lynx-pane', true),
+        };
+      })()`,
+    ).catch(() => null);
+    if (scrollPoints?.web) await dispatchMouseWheel(cdp, sessionId, scrollPoints.web, 600);
+    if (scrollPoints?.lynx) await dispatchMouseWheel(cdp, sessionId, scrollPoints.lynx, 600);
+    const scrollDeadline = Date.now() + 3_000;
+    while (Date.now() < scrollDeadline) {
+      const scrolled = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const read = (root) => {
+            const scroll = root?.querySelector(
+              '.composer-compact-controls-menu__scroll, [data-floating-popup="composer-compact-controls-menu"] > div'
+            );
+            const rows = [
+              ...(root?.querySelectorAll(
+                '.composer-compact-controls-menu__item, [data-floating-popup="composer-compact-controls-menu"] [data-slot="menu-radio-item"]'
+              ) ?? []),
+            ];
+            const last = rows.at(-1);
+            if (!scroll || !last) return null;
+            const scrollRect = scroll.getBoundingClientRect();
+            const lastRect = last.getBoundingClientRect();
+            return {
+              lastLabel: last.textContent?.trim().replace(/\\s*Default\\s*$/u, '') ?? '',
+              lastVisible:
+                lastRect.y >= scrollRect.y - 1 &&
+                lastRect.y + lastRect.height <= scrollRect.y + scrollRect.height + 1,
+              lastRect: {
+                x: lastRect.x,
+                y: lastRect.y,
+                width: lastRect.width,
+                height: lastRect.height,
+              },
+              scrollRect: {
+                x: scrollRect.x,
+                y: scrollRect.y,
+                width: scrollRect.width,
+                height: scrollRect.height,
+              },
+              scrollTop: typeof scroll.scrollTop === 'number' ? scroll.scrollTop : null,
+              dataScrollOffset: scroll.getAttribute('data-scroll-offset'),
+            };
+          };
+          const web = document.getElementById('web-pane')?.contentWindow?.document;
+          const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+            ?.getElementById('t3-lynx-preview')?.shadowRoot;
+          return { web: read(web), lynx: read(lynx) };
+        })()`,
+      ).catch(() => null);
+      shortCompactControlsScrollDiagnostics = scrolled;
+      if (
+        scrolled?.web?.lastLabel === "Full access" &&
+        scrolled?.web?.lastVisible === true &&
+        scrolled?.lynx?.lastLabel === "Full access" &&
+        scrolled?.lynx?.lastVisible === true
+      ) {
+        shortCompactControlsScrolled = true;
+        break;
+      }
+      await delay(100);
+    }
+
+    if (shortCompactControlsScrolled) {
+      const outsidePoints = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pointFor = (frameId) => {
+            const frame = document.getElementById(frameId);
+            if (!frame) return null;
+            const rect = frame.getBoundingClientRect();
+            return { x: rect.x + rect.width - 24, y: rect.y + 300 };
+          };
+          return {
+            web: pointFor('web-pane'),
+            lynx: pointFor('lynx-pane'),
+          };
+        })()`,
+      ).catch(() => null);
+      if (outsidePoints?.web) {
+        await dispatchPointerClickWithMove(cdp, sessionId, outsidePoints.web);
+      }
+      if (outsidePoints?.lynx) {
+        await dispatchPointerClickWithMove(cdp, sessionId, outsidePoints.lynx);
+      }
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        const dismissed = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const web = document.getElementById('web-pane')?.contentWindow?.document;
+            const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            return {
+              web:
+                web?.querySelector('[data-floating-popup="composer-compact-controls-menu"]') ===
+                null,
+              lynx: lynx?.querySelector('.composer-compact-controls-menu') === null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (dismissed?.web && dismissed?.lynx) {
+          shortCompactControlsDismissed = true;
+          break;
+        }
+        await delay(100);
+      }
+    }
+  }
+
   if (isGitPublishDialogState && finalGitPublishDialogReady) {
     const dismissPoints = await evaluate(
       cdp,
@@ -5275,6 +5439,8 @@ async function captureCell({
     rightPanelAddMenuTerminalSelected &&
     diffScopeMenuDismissed &&
     diffScopeWorkingTreeSelected &&
+    shortCompactControlsScrolled &&
+    shortCompactControlsDismissed &&
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
@@ -5317,6 +5483,8 @@ async function captureCell({
       rightPanelAddMenuTerminalSelected,
       diffScopeMenuDismissed,
       diffScopeWorkingTreeSelected,
+      shortCompactControlsScrolled,
+      shortCompactControlsDismissed,
       finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
@@ -5460,16 +5628,26 @@ async function captureCell({
       },
       compactControls: {
         match: finalCompactControlsReady,
+        shortViewport: isShortCompactControlsState
+          ? {
+              scrolled: shortCompactControlsScrolled,
+              dismissed: shortCompactControlsDismissed,
+              input: "web-wheel|lynx-wheel|outside-pointer",
+              diagnostics: shortCompactControlsScrollDiagnostics,
+            }
+          : null,
         containment: compactControlsContainment(state),
         web: {
           overlay: state?.web?.overlayMetrics ?? null,
           footer: state?.web?.composerMetrics?.anatomy?.footer ?? null,
+          composer: state?.web?.composerMetrics?.rect ?? null,
           context: state?.web?.composerMetrics?.anatomy?.context ?? null,
           rightPanel: state?.web?.reviewMetrics?.panelRect ?? null,
         },
         lynx: {
           overlay: state?.lynx?.overlayMetrics ?? null,
           footer: state?.lynx?.composerMetrics?.anatomy?.footer ?? null,
+          composer: state?.lynx?.composerMetrics?.rect ?? null,
           context: state?.lynx?.composerMetrics?.anatomy?.context ?? null,
           rightPanel: state?.lynx?.reviewMetrics?.panelRect ?? null,
         },
