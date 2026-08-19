@@ -518,6 +518,113 @@ function readGitPublishDialog(root) {
   };
 }
 
+function readProjectActionControl(element) {
+  if (!element) return null;
+  const input = element.matches?.("input, textarea")
+    ? element
+    : (element.shadowRoot?.querySelector("input, textarea") ?? null);
+  return {
+    box: readElementBox(element),
+    value: input?.value ?? element.getAttribute("value") ?? "",
+    placeholder: input?.placeholder ?? element.getAttribute("placeholder") ?? null,
+    readOnly: input?.readOnly ?? element.hasAttribute("readonly"),
+    disabled: input?.disabled ?? element.getAttribute("aria-disabled") === "true",
+  };
+}
+
+function readProjectActionDialog(root) {
+  const lynxDialog = root?.querySelector(".project-action-dialog") ?? null;
+  const webDialog = [...(root?.querySelectorAll("[data-slot='dialog-popup']") ?? [])].find(
+    (dialog) =>
+      readComposedText(dialog.querySelector("[data-slot='dialog-title']")) === "Add Action",
+  );
+  const dialog = lynxDialog ?? webDialog ?? null;
+  if (!dialog) return null;
+  const lynxFields = [...dialog.querySelectorAll(".project-action-field")];
+  const field = (webId, lynxIndex, lynxSelector) =>
+    readProjectActionControl(
+      dialog.querySelector(`#${webId}`) ??
+        lynxFields[lynxIndex]?.querySelector(lynxSelector) ??
+        null,
+    );
+  const lynxOptions = [...dialog.querySelectorAll(".project-action-option")];
+  const webOptions = [...dialog.querySelectorAll("label")].filter((label) => {
+    const text = readComposedText(label);
+    return (
+      text === "Run automatically on worktree creation" ||
+      text === "Open preview automatically when this action runs"
+    );
+  });
+  const options = (lynxOptions.length > 0 ? lynxOptions : webOptions).map((option) => {
+    const control =
+      option.querySelector("[aria-checked]") ??
+      option.querySelector("[data-slot='switch']") ??
+      option.querySelector("button");
+    return {
+      label: readComposedText(
+        option.querySelector(".project-action-option__label") ?? option.querySelector("span"),
+      ),
+      box: readElementBox(option),
+      checked: control?.getAttribute("aria-checked") === "true",
+      disabled:
+        option.classList.contains("project-action-option--disabled") ||
+        control?.getAttribute("aria-disabled") === "true" ||
+        control?.disabled === true,
+    };
+  });
+  const footer =
+    dialog.querySelector("[data-slot='dialog-footer']") ??
+    dialog.querySelector(".project-action-dialog__footer");
+  return {
+    rect: readElementBox(dialog),
+    title: readComposedText(
+      dialog.querySelector("[data-slot='dialog-title'], .project-action-dialog__title"),
+    ),
+    description: readComposedText(
+      dialog.querySelector("[data-slot='dialog-description'], .project-action-dialog__description"),
+    ),
+    anatomy: {
+      backdrop: readElementBox(
+        root.querySelector("[data-slot='dialog-backdrop'], .project-action-overlay"),
+      ),
+      header: readElementBox(
+        dialog.querySelector("[data-slot='dialog-header'], .project-action-dialog__header"),
+      ),
+      title: readElementBox(
+        dialog.querySelector("[data-slot='dialog-title'], .project-action-dialog__title"),
+      ),
+      description: readElementBox(
+        dialog.querySelector(
+          "[data-slot='dialog-description'], .project-action-dialog__description",
+        ),
+      ),
+      body: readElementBox(
+        dialog.querySelector("[data-slot='dialog-panel'], .project-action-dialog__body"),
+      ),
+      footer: readElementBox(footer),
+      close: readElementBox(dialog.querySelector("[aria-label='Close']")),
+    },
+    fieldLabels: [...dialog.querySelectorAll("label, .project-action-field__label")]
+      .map((label) => readComposedText(label))
+      .filter((label) =>
+        ["Name", "Keybinding", "Command", "Preview URL (optional)"].includes(label),
+      ),
+    fields: {
+      name: field("script-name", 0, ".project-action-field__input--name"),
+      keybinding: field("script-keybinding", 1, ".project-action-field__input"),
+      command: field("script-command", 2, ".project-action-field__textarea"),
+      previewUrl: field("script-preview-url", 3, ".project-action-field__input"),
+    },
+    options,
+    footerButtons: [...(footer?.querySelectorAll("button, .project-action-dialog__button") ?? [])]
+      .map((button) => ({
+        label: readComposedText(button),
+        box: readElementBox(button),
+      }))
+      .filter(({ label }) => label),
+  };
+}
+
 function readComposedText(element) {
   if (!element) return "";
   const text = [];
@@ -861,6 +968,7 @@ function readLynxPane() {
     const heroPresent = Boolean(root?.querySelector(".hero__headline"));
     const paletteElement = root?.querySelector(".palette-panel");
     const paletteMode = paletteElement?.getAttribute("data-search-overlay-mode") ?? null;
+    const projectActionDialog = readProjectActionDialog(root);
     const overlay =
       paletteElement !== null
         ? paletteMode === "files"
@@ -874,7 +982,9 @@ function readLynxPane() {
               ? "workspace-menu"
               : root?.querySelector(".composer-compact-controls-menu") !== null
                 ? "compact-controls"
-                : null;
+                : projectActionDialog !== null
+                  ? "project-action-dialog"
+                  : null;
     const overlayElement =
       overlay === "quick-switch" || overlay === "file-picker"
         ? paletteElement
@@ -886,7 +996,9 @@ function readLynxPane() {
               ? root?.querySelector(".composer-workspace-menu")
               : overlay === "compact-controls"
                 ? root?.querySelector(".composer-compact-controls-menu")
-                : null;
+                : overlay === "project-action-dialog"
+                  ? root?.querySelector(".project-action-dialog")
+                  : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -1085,7 +1197,9 @@ function readLynxPane() {
                         root?.querySelector(".composer-compact-controls-dismiss"),
                       ),
                     }
-                  : null,
+                  : overlay === "project-action-dialog"
+                    ? projectActionDialog
+                    : null,
         query:
           overlay === "quick-switch" || overlay === "file-picker"
             ? lynxInputValue(quickSwitchInput)
@@ -1199,7 +1313,9 @@ function readLynxPane() {
                   ? (root?.querySelectorAll(".composer-workspace-menu__item").length ?? 0)
                   : overlay === "compact-controls"
                     ? (root?.querySelectorAll(".composer-compact-controls-menu__item").length ?? 0)
-                    : 0,
+                    : overlay === "project-action-dialog"
+                      ? (projectActionDialog?.fieldLabels.length ?? 0)
+                      : 0,
       },
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(root),
@@ -1680,6 +1796,7 @@ function readWebPane() {
       commandPaletteElement?.getAttribute("data-search-overlay-mode") ??
       commandPaletteElement?.getAttribute("data-palette-mode") ??
       null;
+    const projectActionDialog = readProjectActionDialog(doc);
     const overlay =
       commandPaletteElement !== null
         ? commandPaletteMode === "files"
@@ -1693,7 +1810,9 @@ function readWebPane() {
               ? "workspace-menu"
               : doc.querySelector('[data-floating-popup="composer-compact-controls-menu"]') !== null
                 ? "compact-controls"
-                : null;
+                : projectActionDialog !== null
+                  ? "project-action-dialog"
+                  : null;
     const modelTriggerElement =
       doc.querySelector('[data-chat-provider-model-picker="true"]') ?? null;
     const projectScopeTriggerElement =
@@ -1737,7 +1856,15 @@ function readWebPane() {
               ? doc.querySelector('[data-floating-popup="composer-workspace-menu"]')
               : overlay === "compact-controls"
                 ? doc.querySelector('[data-floating-popup="composer-compact-controls-menu"]')
-                : null;
+                : overlay === "project-action-dialog"
+                  ? projectActionDialog?.rect
+                    ? [...doc.querySelectorAll("[data-slot='dialog-popup']")].find(
+                        (dialog) =>
+                          readComposedText(dialog.querySelector("[data-slot='dialog-title']")) ===
+                          "Add Action",
+                      )
+                    : null
+                  : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -1962,7 +2089,9 @@ function readWebPane() {
                       ),
                       dismiss: null,
                     }
-                  : null,
+                  : overlay === "project-action-dialog"
+                    ? projectActionDialog
+                    : null,
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
             ? [...doc.querySelectorAll('[data-command-palette="true"] [role="option"]')].map(
@@ -2016,7 +2145,9 @@ function readWebPane() {
                     ? doc.querySelectorAll(
                         '[data-floating-popup="composer-compact-controls-menu"] [data-slot="menu-radio-item"]',
                       ).length
-                    : 0,
+                    : overlay === "project-action-dialog"
+                      ? (projectActionDialog?.fieldLabels.length ?? 0)
+                      : 0,
       },
       composerMetrics: composerFrame
         ? {

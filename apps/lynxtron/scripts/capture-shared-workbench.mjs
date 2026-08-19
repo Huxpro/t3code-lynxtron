@@ -80,6 +80,7 @@ const defaultOverlayByStateId = {
   "composer-compact-controls-open": "compact-controls",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
+  "project-action-dialog": "project-action-dialog",
   "workspace-menu-open": "workspace-menu",
   "quick-switch-default": "quick-switch",
   "quick-switch-query": "quick-switch",
@@ -133,6 +134,7 @@ if (
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
+const isProjectActionDialogState = stateId === "project-action-dialog";
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
 const isFileEditorState = stateId === "file-editor-detail";
@@ -901,6 +903,41 @@ function compactControlsEvidenceReady(state) {
       anatomy?.content?.rect?.height > 0 &&
       anatomy?.row?.rect?.height > 0 &&
       overlayMetrics?.rowCount > 0
+    );
+  });
+}
+
+function projectActionDialogReady(state) {
+  if (!isProjectActionDialogState) return true;
+  const expectedFieldLabels = ["Name", "Keybinding", "Command", "Preview URL (optional)"];
+  const expectedOptionLabels = [
+    "Run automatically on worktree creation",
+    "Open preview automatically when this action runs",
+  ];
+  const expectedFooterButtons = ["Cancel", "Save action"];
+  const expectedPlaceholders = {
+    name: "Test",
+    keybinding: "Press shortcut",
+    command: "bun test",
+    previewUrl: "http://localhost:5173",
+  };
+  return [state?.web, state?.lynx].every((client) => {
+    const dialog = client?.overlayMetrics?.anatomy;
+    return (
+      client?.productState?.overlay === "project-action-dialog" &&
+      dialog?.title === "Add Action" &&
+      dialog?.description ===
+        "Actions are project-scoped commands you can run from the top bar or keybindings." &&
+      JSON.stringify(dialog?.fieldLabels ?? []) === JSON.stringify(expectedFieldLabels) &&
+      JSON.stringify((dialog?.options ?? []).map(({ label }) => label)) ===
+        JSON.stringify(expectedOptionLabels) &&
+      dialog?.options?.[0]?.disabled === false &&
+      dialog?.options?.[1]?.disabled === true &&
+      JSON.stringify((dialog?.footerButtons ?? []).map(({ label }) => label)) ===
+        JSON.stringify(expectedFooterButtons) &&
+      Object.entries(expectedPlaceholders).every(
+        ([field, placeholder]) => dialog?.fields?.[field]?.placeholder === placeholder,
+      )
     );
   });
 }
@@ -1684,6 +1721,7 @@ async function main() {
     "settled-banner-inline-files-narrow",
     "file-editor-detail",
     "git-publish-dialog",
+    "project-action-dialog",
     "composer-docked",
     "composer-working",
     "composer-compact-controls-open",
@@ -2081,6 +2119,7 @@ async function captureCell({
     "existing-thread-idle": "existing-thread",
     "existing-thread-working": "existing-thread",
     "git-publish-dialog": "existing-thread",
+    "project-action-dialog": "existing-thread",
     "existing-thread-completed": "existing-thread",
     "existing-thread-failed": "existing-thread",
     "sidebar-resize": "existing-thread",
@@ -2148,6 +2187,9 @@ async function captureCell({
   let webRouteInputSent = webRoute === "/";
   let webOverlayInputSent = false;
   let webOverlayWaitPolls = 0;
+  let webProjectActionMenuOpened = false;
+  let webProjectActionTriggerDiagnostics = null;
+  let webProviderNotificationCleared = false;
   let webQuickSwitchKeyboardSent = false;
   let webShortcutInputChannel = requiresShortcutInput ? "pending" : "not-required";
   let lynxOverlayInputSent = overlay.length === 0;
@@ -3176,12 +3218,77 @@ async function captureCell({
     }
     if (
       overlay &&
+      !webProviderNotificationCleared &&
+      state?.web?.connected === true &&
+      state?.web?.productState?.overlay === null
+    ) {
+      const notificationPoint = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pane = document.getElementById('web-pane');
+          const doc = pane?.contentWindow?.document;
+          const dismiss = doc?.querySelector('button[aria-label="Dismiss notification"]');
+          if (!pane || !dismiss) return { present: false };
+          const paneRect = pane.getBoundingClientRect();
+          const rect = dismiss.getBoundingClientRect();
+          return {
+            present: true,
+            point: {
+              x: paneRect.x + rect.x + rect.width / 2,
+              y: paneRect.y + rect.y + rect.height / 2,
+            },
+          };
+        })()`,
+      ).catch(() => null);
+      if (notificationPoint?.present === false) {
+        webProviderNotificationCleared = true;
+      } else if (notificationPoint?.point) {
+        await dispatchPointerClickWithMove(cdp, sessionId, notificationPoint.point);
+        await delay(350);
+        continue;
+      }
+    }
+    if (
+      overlay &&
       !webOverlayInputSent &&
+      webProviderNotificationCleared &&
       state?.web?.connected === true &&
       state?.web?.productState?.selectedProject === expectProject &&
       (overlay !== "workspace-menu" || state?.lynx?.productState?.overlay === overlay) &&
       state?.web?.productState?.overlay !== overlay
     ) {
+      if (overlay === "project-action-dialog") {
+        webProjectActionTriggerDiagnostics = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const frame = document.getElementById('web-pane');
+            const doc = frame?.contentWindow?.document;
+            const actions = doc?.querySelector('[data-chat-header-actions]');
+            const host = actions?.firstElementChild;
+            const describe = (element) => {
+              if (!element) return null;
+              const rect = element.getBoundingClientRect();
+              return {
+                tagName: element.tagName,
+                text: element.textContent?.trim() ?? '',
+                attributes: Object.fromEntries(
+                  element.getAttributeNames().map((name) => [name, element.getAttribute(name)])
+                ),
+                rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+              };
+            };
+            return {
+              selectedProject: window.__T3_WORKBENCH__?.read()?.web?.productState?.selectedProject ?? null,
+              actions: describe(actions),
+              host: describe(host),
+              buttons: [...(actions?.querySelectorAll('button') ?? [])].map(describe),
+              menuItems: [...(doc?.querySelectorAll('[data-slot="menu-item"]') ?? [])].map(describe),
+            };
+          })()`,
+        ).catch((error) => ({ error: String(error) }));
+      }
       const triggerSelector =
         overlay === "quick-switch"
           ? ""
@@ -3193,12 +3300,56 @@ async function captureCell({
                 ? '[data-floating-anchor="composer-workspace-menu"]'
                 : overlay === "compact-controls"
                   ? '[data-floating-anchor="composer-compact-controls-menu"]'
-                  : '[data-composer-control="model"]';
-      const point = triggerSelector
-        ? await evaluate(
-            cdp,
-            sessionId,
-            `(() => {
+                  : overlay === "project-action-dialog"
+                    ? '[aria-label="Add action"]'
+                    : '[data-composer-control="model"]';
+      const point =
+        overlay === "project-action-dialog"
+          ? await evaluate(
+              cdp,
+              sessionId,
+              `(() => {
+                const frame = document.getElementById('web-pane');
+                const doc = frame?.contentWindow?.document;
+                const actionHost = doc?.querySelector('[data-chat-header-actions] > :first-child');
+                const menuItem = [...(doc?.querySelectorAll('[data-slot="menu-item"]') ?? [])].find(
+                  (item) => item.textContent?.trim() === 'Add action'
+                );
+                const direct = actionHost?.matches('button[aria-label="Add action"]')
+                  ? actionHost
+                  : actionHost?.querySelector('button[aria-label="Add action"]');
+                const menuTrigger = actionHost?.matches(
+                  'button[aria-label="Project actions"], button[aria-label="Script actions"]'
+                )
+                  ? actionHost
+                  : actionHost?.querySelector(
+                      'button[aria-label="Project actions"], button[aria-label="Script actions"]'
+                    );
+                const fallback = actionHost?.matches('button')
+                  ? actionHost
+                  : actionHost?.querySelector('button');
+                const target = menuItem ?? direct ?? menuTrigger ?? fallback;
+                if (!frame || !target) return null;
+                const fr = frame.getBoundingClientRect();
+                const r = target.getBoundingClientRect();
+                return {
+                  x: fr.x + r.x + r.width / 2,
+                  y: fr.y + r.y + r.height / 2,
+                  stage: menuItem
+                    ? 'menu-item'
+                    : direct
+                      ? 'direct'
+                      : menuTrigger
+                        ? 'menu-trigger'
+                        : 'host-fallback',
+                };
+              })()`,
+            ).catch(() => null)
+          : triggerSelector
+            ? await evaluate(
+                cdp,
+                sessionId,
+                `(() => {
           const frame = document.getElementById('web-pane');
           const doc = frame && frame.contentWindow && frame.contentWindow.document;
           const target = doc && doc.querySelector(${JSON.stringify(triggerSelector)});
@@ -3207,8 +3358,8 @@ async function captureCell({
           const r = target.getBoundingClientRect();
           return { x: fr.x + r.x + r.width / 2, y: fr.y + r.y + r.height / 2 };
         })()`,
-          ).catch(() => null)
-        : null;
+              ).catch(() => null)
+            : null;
       if (point) {
         await cdp.send(
           "Input.dispatchMouseEvent",
@@ -3220,7 +3371,14 @@ async function captureCell({
           { type: "mouseReleased", x: point.x, y: point.y, button: "left", clickCount: 1 },
           sessionId,
         );
-        webOverlayInputSent = true;
+        if (
+          overlay === "project-action-dialog" &&
+          (point.stage === "menu-trigger" || point.stage === "host-fallback")
+        ) {
+          webProjectActionMenuOpened = true;
+        } else {
+          webOverlayInputSent = true;
+        }
         webOverlayWaitPolls = 0;
       } else if (
         (overlay === "quick-switch" || overlay === "file-picker") &&
@@ -3304,7 +3462,8 @@ async function captureCell({
         overlay === "compact-controls" ||
         overlay === "quick-switch" ||
         overlay === "file-picker" ||
-        overlay === "model-picker") &&
+        overlay === "model-picker" ||
+        overlay === "project-action-dialog") &&
       !lynxOverlayInputSent &&
       state?.lynx?.connected === true &&
       state?.lynx?.productState?.overlay !== overlay
@@ -3356,7 +3515,9 @@ async function captureCell({
               ? '[aria-label="Workspace"]:not([data-composer-workspace-menu])'
               : overlay === "compact-controls"
                 ? ".composer-compact-controls-trigger"
-                : '[data-composer-control="model"]';
+                : overlay === "project-action-dialog"
+                  ? '[aria-label="Add action"]'
+                  : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -3391,7 +3552,8 @@ async function captureCell({
         overlay === "file-picker" ||
         overlay === "model-picker" ||
         overlay === "workspace-menu" ||
-        overlay === "compact-controls") &&
+        overlay === "compact-controls" ||
+        overlay === "project-action-dialog") &&
       lynxOverlayInputSent &&
       state?.lynx?.productState?.overlay !== overlay
     ) {
@@ -3776,6 +3938,7 @@ async function captureCell({
     const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
     const sidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
+    const projectActionReady = projectActionDialogReady(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
@@ -3849,6 +4012,7 @@ async function captureCell({
       sidebarControlGeometryReady &&
       sidebarFooterThemeReady &&
       compactControlsReady &&
+      projectActionReady &&
       sidebarWorkingGeometryReady &&
       headerGitActionReady &&
       gitPublishDiscoveryReady &&
@@ -4058,6 +4222,7 @@ async function captureCell({
   const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
   const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
+  const finalProjectActionDialogReady = projectActionDialogReady(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
     state,
     expectedThreadFixture,
@@ -4300,68 +4465,12 @@ async function captureCell({
       return { devicePixelRatio, webPane: { x: web.x, y: web.y, width: web.width, height: web.height }, lynxPane: { x: lynx.x, y: lynx.y, width: lynx.width, height: lynx.height } };
     })()`,
   );
-  if (!overlay) {
-    for (let attempt = 0; attempt < 5; attempt += 1) {
-      const dismissNotificationPoint = await evaluate(
-        cdp,
-        sessionId,
-        `(() => {
-          const pane = document.getElementById("web-pane");
-          const doc = pane?.contentWindow?.document;
-          const dismiss = doc?.querySelector('button[aria-label="Dismiss notification"]');
-          if (!dismiss || !pane) return null;
-          const paneRect = pane.getBoundingClientRect();
-          const rect = dismiss.getBoundingClientRect();
-          return {
-            x: paneRect.x + rect.x + rect.width / 2,
-            y: paneRect.y + rect.y + rect.height / 2,
-          };
-        })()`,
-      );
-      if (!dismissNotificationPoint) break;
-      await cdp.send(
-        "Input.dispatchMouseEvent",
-        {
-          type: "mouseMoved",
-          x: dismissNotificationPoint.x,
-          y: dismissNotificationPoint.y,
-          button: "none",
-        },
-        sessionId,
-      );
-      await cdp.send(
-        "Input.dispatchMouseEvent",
-        {
-          type: "mousePressed",
-          x: dismissNotificationPoint.x,
-          y: dismissNotificationPoint.y,
-          button: "left",
-          clickCount: 1,
-        },
-        sessionId,
-      );
-      await cdp.send(
-        "Input.dispatchMouseEvent",
-        {
-          type: "mouseReleased",
-          x: dismissNotificationPoint.x,
-          y: dismissNotificationPoint.y,
-          button: "left",
-          clickCount: 1,
-        },
-        sessionId,
-      );
-      await delay(350);
-    }
-  }
-  const notificationDismissed =
-    overlay.length > 0 ||
-    (await evaluate(
-      cdp,
-      sessionId,
-      `!document.getElementById("web-pane")?.contentWindow?.document
+  const notificationDismissed = await evaluate(
+    cdp,
+    sessionId,
+    `!document.getElementById("web-pane")?.contentWindow?.document
         ?.querySelector('button[aria-label="Dismiss notification"]')`,
-    ));
+  );
   if (!notificationDismissed) {
     throw new Error("Web provider-update notification did not dismiss before capture.");
   }
@@ -4404,7 +4513,14 @@ async function captureCell({
               });
             })()`,
           ).catch((error) => ({ error: String(error) }))
-        : null;
+        : overlay === "project-action-dialog"
+          ? {
+              trigger: webProjectActionTriggerDiagnostics,
+              expectedProject: expectProject,
+              webProject: state?.web?.productState?.selectedProject ?? null,
+              webProjectActionMenuOpened,
+            }
+          : null;
     throw new Error(
       `Overlay ${overlay} closed before screenshot capture: ${JSON.stringify({
         overlayDiagnostics,
@@ -4692,6 +4808,7 @@ async function captureCell({
     finalSidebarControlGeometryReady &&
     finalSidebarFooterThemeReady &&
     finalCompactControlsReady &&
+    finalProjectActionDialogReady &&
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
@@ -4727,6 +4844,7 @@ async function captureCell({
       finalSidebarControlGeometryReady,
       finalSidebarFooterThemeReady,
       finalCompactControlsReady,
+      finalProjectActionDialogReady,
       finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
@@ -4966,6 +5084,7 @@ async function captureCell({
           (state?.lynx?.overlayMetrics?.semanticKeys?.length ?? 0)
         : state?.web?.overlayMetrics?.rowCount === state?.lynx?.overlayMetrics?.rowCount,
       webProjectSelectionStage,
+      webProjectActionMenuOpened,
       webShortcutInputChannel,
       lynxShortcutInputChannel,
       sidebarQuery,

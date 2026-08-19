@@ -294,7 +294,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"quick-switch-empty": "zzzz-no-result"');
     assert.include(source, 'stateId !== "model-picker-empty"');
     assert.include(source, "webMetrics.emptyText === lynxMetrics?.emptyText");
-    assert.include(source, "if (!overlay) {");
+    assert.include(source, "const notificationDismissed = await evaluate(");
+    assert.notInclude(source, "overlay.length > 0 ||");
     assert.include(source, "Overlay ${overlay} closed before screenshot capture:");
     assert.include(source, 'stateId !== "settings-beta"');
     assert.include(source, '"Auto-settle inactive threads"');
@@ -503,6 +504,25 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "web: gitPublishDialogEvidence?.web ?? null");
     assert.include(source, "lynx: gitPublishDialogEvidence?.lynx ?? null");
     assert.include(source, "gitPublishDialog: {");
+  });
+
+  it("captures the Add Action dialog through both real header triggers", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(source, '"project-action-dialog": "project-action-dialog"');
+    assert.include(source, '"project-action-dialog": "existing-thread"');
+    assert.include(source, '"project-action-dialog",');
+    assert.include(source, 'overlay === "project-action-dialog"');
+    assert.include(source, '[aria-label=\"Add action\"]');
+    assert.include(source, "function projectActionDialogReady(state)");
+    assert.include(source, "finalProjectActionDialogReady");
+    assert.include(workbench, "function readProjectActionDialog(root)");
+    assert.include(workbench, "\"[data-slot='dialog-popup']\"");
+    assert.include(workbench, 'root?.querySelector(".project-action-dialog")');
+    assert.include(workbench, 'field("script-keybinding", 1');
+    assert.include(workbench, "projectActionDialog?.fieldLabels.length");
   });
 
   it("hashes the Web entry bundle declared by index.html", () => {
