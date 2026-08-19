@@ -426,8 +426,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "tokenToneCount");
     assert.include(source, 'readOptionalMeasurement(client, ".file-panel__explorer")');
     assert.include(source, 'const panelMode = filePanel.attributes["data-right-panel-mode"]');
-    assert.include(source, 'panelMode === "inline"');
-    assert.include(source, 'panelMode === "sheet"');
+    assert.include(source, "projectFileDetailLayout(filePanel.rect.width)");
+    assert.include(source, "detailLayout.showExplorer");
+    assert.include(source, "!detailLayout.showExplorer && explorerVisible");
     assert.include(source, "Native file detail explorer ownership drifted");
     assert.include(source, "function measurementVisible(measurement)");
     assert.include(source, "const explorerVisible = measurementVisible(explorer)");

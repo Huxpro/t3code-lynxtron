@@ -30,6 +30,7 @@ import {
   floatingRelationResidual,
   measureFloatingRelation,
 } from "../../../packages/client-runtime/src/presentation/floatingRelation.ts";
+import { projectFileDetailLayout } from "../../../packages/client-runtime/src/presentation/files.ts";
 
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const REPO_ROOT = path.resolve(APP_ROOT, "../..");
@@ -4965,16 +4966,18 @@ async function verifyFilesBrowser({
   ]);
   const panelMode = filePanel.attributes["data-right-panel-mode"];
   const explorerVisible = measurementVisible(explorer);
+  const detailLayout = projectFileDetailLayout(filePanel.rect.width);
   if (
     measurementVisible(legacyInlinePreview) ||
-    (panelMode === "inline" &&
+    (detailLayout.showExplorer &&
       (!explorerVisible || Math.abs((explorer?.rect.width ?? 0) - 256) > 0.5)) ||
-    (panelMode === "sheet" && explorerVisible)
+    (!detailLayout.showExplorer && explorerVisible)
   ) {
     throw new Error(
       `Native file detail explorer ownership drifted: ${JSON.stringify({
         explorer,
         explorerVisible,
+        detailLayout,
         filePanel,
         filePath,
         legacyInlinePreview,
@@ -5061,6 +5064,7 @@ async function verifyFilesBrowser({
       },
       explorer: explorer?.rect ?? null,
       explorerVisible,
+      detailLayout,
       panelMode,
       legacyInlinePreview: !measurementVisible(legacyInlinePreview),
     },
