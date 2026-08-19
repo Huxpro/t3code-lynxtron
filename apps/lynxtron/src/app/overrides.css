@@ -7267,12 +7267,47 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
-.file-editor-line__content--heading {
+.file-editor-token {
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
+}
+.file-editor-token--muted {
+  color: rgba(var(--foreground-rgb), 0.5);
+}
+.file-editor-token--heading,
+.file-editor-token--keyword {
   color: #f97360;
   font-weight: 600;
 }
-.file-editor-line__content--code {
+.file-editor-token--string,
+.file-editor-token--link {
   color: #62c073;
+}
+.file-editor-token--number {
+  color: #9d8cff;
+}
+.file-editor-token--property {
+  color: #f2c94c;
+}
+.theme-light .file-editor-token--muted {
+  color: rgba(39, 39, 42, 0.52);
+}
+.theme-light .file-editor-token--heading,
+.theme-light .file-editor-token--keyword {
+  color: #c24132;
+}
+.theme-light .file-editor-token--string,
+.theme-light .file-editor-token--link {
+  color: #267a3e;
+}
+.theme-light .file-editor-token--number {
+  color: #6d55b3;
+}
+.theme-light .file-editor-token--property {
+  color: #946200;
 }
 .file-panel__statusbar {
   display: flex;

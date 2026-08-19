@@ -129,6 +129,139 @@ export function buildProjectEntryTree(
 
 export const isMarkdownPreviewFile = (path: string): boolean => /\.(?:md|mdx)$/i.test(path);
 
+export type ProjectFileTokenTone =
+  | "plain"
+  | "muted"
+  | "heading"
+  | "keyword"
+  | "string"
+  | "number"
+  | "property"
+  | "link";
+
+export interface ProjectFileLineToken {
+  readonly text: string;
+  readonly tone: ProjectFileTokenTone;
+}
+
+interface TokenPattern {
+  readonly expression: RegExp;
+  readonly tone: ProjectFileTokenTone;
+}
+
+const STRING_PATTERN = /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'/gu;
+const NUMBER_PATTERN = /\b\d+(?:\.\d+)?\b/gu;
+const CODE_KEYWORD_PATTERN =
+  /\b(?:async|await|break|case|catch|class|const|continue|default|else|export|extends|false|finally|for|from|function|if|implements|import|in|instanceof|interface|let|new|null|of|return|switch|throw|true|try|type|typeof|undefined|var|while)\b/gu;
+
+function pushFileToken(
+  tokens: ProjectFileLineToken[],
+  text: string,
+  tone: ProjectFileTokenTone,
+): void {
+  if (!text) return;
+  const previous = tokens[tokens.length - 1];
+  if (previous?.tone === tone) {
+    tokens[tokens.length - 1] = { text: `${previous.text}${text}`, tone };
+    return;
+  }
+  tokens.push({ text, tone });
+}
+
+function tokenizeLineWithPatterns(
+  line: string,
+  patterns: ReadonlyArray<TokenPattern>,
+): ProjectFileLineToken[] {
+  const tokens: ProjectFileLineToken[] = [];
+  let cursor = 0;
+
+  while (cursor < line.length) {
+    let selected:
+      | {
+          readonly index: number;
+          readonly text: string;
+          readonly tone: ProjectFileTokenTone;
+        }
+      | undefined;
+
+    for (const pattern of patterns) {
+      pattern.expression.lastIndex = cursor;
+      const match = pattern.expression.exec(line);
+      if (!match?.[0]) continue;
+      if (!selected || match.index < selected.index) {
+        selected = { index: match.index, text: match[0], tone: pattern.tone };
+      }
+    }
+
+    if (!selected) {
+      pushFileToken(tokens, line.slice(cursor), "plain");
+      break;
+    }
+    if (selected.index > cursor) {
+      pushFileToken(tokens, line.slice(cursor, selected.index), "plain");
+    }
+    pushFileToken(tokens, selected.text, selected.tone);
+    cursor = selected.index + selected.text.length;
+  }
+
+  return tokens.length > 0 ? tokens : [{ text: line || " ", tone: "plain" }];
+}
+
+function markdownLineTokens(line: string): ProjectFileLineToken[] {
+  if (/^\s*#{1,6}\s/u.test(line)) return [{ text: line, tone: "heading" }];
+  return tokenizeLineWithPatterns(line, [
+    { expression: /`[^`]*`/gu, tone: "string" },
+    { expression: /https?:\/\/[^\s)>]+/gu, tone: "link" },
+    { expression: /(?:\*\*|__)(?=\S)(?:.*?\S)?(?:\*\*|__)/gu, tone: "property" },
+    { expression: /^\s*(?:[-*+]|\d+\.)\s+/gu, tone: "muted" },
+  ]);
+}
+
+function tomlLineTokens(line: string): ProjectFileLineToken[] {
+  if (/^\s*\[\[?.+\]?\]\s*$/u.test(line)) return [{ text: line, tone: "heading" }];
+  const equalsIndex = line.indexOf("=");
+  const patterns: TokenPattern[] = [
+    { expression: STRING_PATTERN, tone: "string" },
+    { expression: /\b(?:false|true)\b/gu, tone: "keyword" },
+    { expression: NUMBER_PATTERN, tone: "number" },
+    { expression: /#.*$/gu, tone: "muted" },
+  ];
+  if (equalsIndex < 0) return tokenizeLineWithPatterns(line, patterns);
+
+  const keyStart = line.search(/\S/u);
+  const keyEnd = line.slice(0, equalsIndex).trimEnd().length;
+  const tokens: ProjectFileLineToken[] = [];
+  if (keyStart > 0) pushFileToken(tokens, line.slice(0, keyStart), "plain");
+  if (keyStart >= 0 && keyEnd > keyStart) {
+    pushFileToken(tokens, line.slice(keyStart, keyEnd), "property");
+  }
+  const remainderStart = Math.max(keyEnd, 0);
+  for (const token of tokenizeLineWithPatterns(line.slice(remainderStart), patterns)) {
+    pushFileToken(tokens, token.text, token.tone);
+  }
+  return tokens;
+}
+
+function codeLineTokens(line: string, json: boolean): ProjectFileLineToken[] {
+  return tokenizeLineWithPatterns(line, [
+    ...(json ? [{ expression: /"(?:\\.|[^"\\])*"(?=\s*:)/gu, tone: "property" as const }] : []),
+    { expression: STRING_PATTERN, tone: "string" },
+    { expression: CODE_KEYWORD_PATTERN, tone: "keyword" },
+    { expression: NUMBER_PATTERN, tone: "number" },
+    { expression: /(?:\/\/|#).*$/gu, tone: "muted" },
+  ]);
+}
+
+export function projectFileLineTokens(path: string, line: string): ProjectFileLineToken[] {
+  if (isMarkdownPreviewFile(path)) return markdownLineTokens(line);
+  if (/\.toml$/iu.test(path)) return tomlLineTokens(line);
+  if (/\.jsonc?$/iu.test(path)) return codeLineTokens(line, true);
+  if (/\.(?:[cm]?[jt]sx?|css|scss|rs|go|py|rb|sh|ya?ml)$/iu.test(path)) {
+    return codeLineTokens(line, false);
+  }
+  return [{ text: line || " ", tone: "plain" }];
+}
+
 export function setMarkdownTaskChecked(
   markdown: string,
   markerOffset: number,

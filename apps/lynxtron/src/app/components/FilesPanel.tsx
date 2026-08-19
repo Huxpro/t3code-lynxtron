@@ -1,5 +1,6 @@
 import {
   buildProjectEntryTree,
+  projectFileLineTokens,
   type ProjectEntryTreeNode,
 } from "@t3tools/client-runtime/presentation/files";
 import { getProjectFilePickerMatches } from "@t3tools/client-runtime/presentation/file-picker";
@@ -47,12 +48,6 @@ const FILE_SAVE_SCHEDULER = {
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
-}
-
-function editorLineTone(line: string): "heading" | "code" | "plain" {
-  if (/^#{1,6}\s/u.test(line)) return "heading";
-  if (/^\s*```/u.test(line) || /^\s{4}\S/u.test(line)) return "code";
-  return "plain";
 }
 
 function EditableFilePreview({
@@ -146,10 +141,15 @@ function EditableFilePreview({
             {contents.split("\n").map((line, index) => (
               <view key={`${index}:${line}`} className="file-editor-line">
                 <text className="file-editor-line__number">{index + 1}</text>
-                <text
-                  className={`file-editor-line__content file-editor-line__content--${editorLineTone(line)}`}
-                >
-                  {line || " "}
+                <text className="file-editor-line__content">
+                  {projectFileLineTokens(path, line).map((token, tokenIndex) => (
+                    <text
+                      key={`${tokenIndex}:${token.tone}:${token.text}`}
+                      className={`file-editor-token file-editor-token--${token.tone}`}
+                    >
+                      {token.text}
+                    </text>
+                  ))}
                 </text>
               </view>
             ))}

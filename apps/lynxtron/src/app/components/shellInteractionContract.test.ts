@@ -343,7 +343,14 @@ describe("desktop shell interaction contract", () => {
     expect(fileBackBlock).toContain("display: flex;");
     expect(overrides).not.toContain(".right-panel--sheet .file-panel__back {");
     expect(overrides).toContain(".file-editor-line__number {");
-    expect(overrides).toContain(".file-editor-line__content--heading {");
+    expect(files).toContain("projectFileLineTokens(path, line)");
+    expect(files).toContain("file-editor-token file-editor-token--${token.tone}");
+    expect(overrides).toContain(".file-editor-token--heading,");
+    expect(overrides).toContain(".file-editor-token--string,");
+    expect(overrides).toContain(".file-editor-token--property {");
+    expect(overrides).toContain(".theme-light .file-editor-token--heading,");
+    expect(overrides).toContain(".theme-light .file-editor-token--string,");
+    expect(overrides).toContain(".theme-light .file-editor-token--property {");
     expect(overrides).toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
     expect(overrides).toContain(".file-panel__statusbar {");
     expect(overrides).toContain("border-radius: 0;");

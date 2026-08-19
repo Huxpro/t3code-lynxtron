@@ -4,6 +4,7 @@ import {
   buildProjectEntryTree,
   fileContentRevision,
   isMarkdownPreviewFile,
+  projectFileLineTokens,
   projectFileCacheKey,
   projectFileEditorCacheKey,
   setMarkdownTaskChecked,
@@ -112,6 +113,43 @@ describe("file preview presentation", () => {
     expect(setMarkdownTaskChecked(markdown, 2, true)).toBe("- [x] First\n- [x] Second\n");
     expect(setMarkdownTaskChecked(markdown, 14, false)).toBe("- [ ] First\n- [ ] Second\n");
     expect(setMarkdownTaskChecked(markdown, 200, true)).toBe(markdown);
+  });
+
+  it("projects Markdown source into editor-like inline tones", () => {
+    expect(projectFileLineTokens("README.md", "- **Source**: `apps/server`")).toEqual([
+      { text: "- ", tone: "muted" },
+      { text: "**Source**", tone: "property" },
+      { text: ": ", tone: "plain" },
+      { text: "`apps/server`", tone: "string" },
+    ]);
+    expect(projectFileLineTokens("README.md", "## Port Contract")).toEqual([
+      { text: "## Port Contract", tone: "heading" },
+    ]);
+  });
+
+  it("projects TOML keys, strings, booleans, numbers, and comments", () => {
+    expect(projectFileLineTokens("config.toml", "enabled = true # local")).toEqual([
+      { text: "enabled", tone: "property" },
+      { text: " = ", tone: "plain" },
+      { text: "true", tone: "keyword" },
+      { text: " ", tone: "plain" },
+      { text: "# local", tone: "muted" },
+    ]);
+    expect(projectFileLineTokens("config.toml", 'command = "npx"')).toEqual([
+      { text: "command", tone: "property" },
+      { text: " = ", tone: "plain" },
+      { text: '"npx"', tone: "string" },
+    ]);
+  });
+
+  it("projects JSON properties separately from values", () => {
+    expect(projectFileLineTokens("package.json", '  "private": true,')).toEqual([
+      { text: "  ", tone: "plain" },
+      { text: '"private"', tone: "property" },
+      { text: ": ", tone: "plain" },
+      { text: "true", tone: "keyword" },
+      { text: ",", tone: "plain" },
+    ]);
   });
 
   it("uses content, path, and workspace to produce stable editor revisions", () => {
