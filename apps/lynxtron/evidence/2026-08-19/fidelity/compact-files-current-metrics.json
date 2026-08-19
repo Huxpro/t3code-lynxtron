@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T18:48:52+09:00",
+  "evidenceCommit": "e663aa5b3",
+  "productCommits": ["cb2738ad6", "e663aa5b3"],
+  "states": [
+    "composer-compact-controls-inline-files-narrow",
+    "file-editor-detail",
+    "file-editor-detail-light"
+  ],
+  "classification": {
+    "closedProductLoss": [
+      "The compact Composer menu now derives its intrinsic height from the rendered section labels, divider chrome, and row count. At 1024x820 the 504px panel contains the 502px scroll/content surface with no empty tail.",
+      "At 1024x600 the same menu remains capped at 460px, keeps 502px of content, scrolls to offset 120, and dismisses through the fullscreen layer.",
+      "The Lynx file preview now consumes a shared file-token projection and renders nested token tones for Markdown, TOML, JSON, JavaScript/TypeScript, CSS, YAML, and common source files instead of applying one coarse color to each whole line.",
+      "Exact Native TOML evidence resolves 27 inline tokens across six tones while preserving T3 JetBrains Mono at 12px/19px, the numbered gutter, inline explorer ownership, and the sheet Back path."
+    ],
+    "remainingProductLoss": [
+      "The Lynx token projection is intentionally lighter than Web Pierre/Shiki: it does not provide full TextMate grammar coverage, line selection, gutter utilities, or bracket matching.",
+      "The same-snapshot 1024x820 editor crop remains at 21.377878 MAE and 17.4435% significant pixels, improved from 28.322451 MAE and 20.8761%.",
+      "The Web compact-controls portal still closes in the dual-iframe workbench before a same-state combination screenshot can be retained. The Lynx-for-Web cell for the newly modeled combination remains conservative unknown."
+    ],
+    "harnessCorrections": [
+      "The Native file verifier now distinguishes inline detail, where the 256px explorer must remain visible, from sheet detail, where the explorer must be hidden and Back restores the Files browser.",
+      "The file verifier now requires at least one token and at least two token-tone classes in addition to the existing font, line-height, gutter, geometry, and content gates.",
+      "Four invalid compact Browser-pair attempts remain classified as capture lifecycle blockers and receive no product credit."
+    ],
+    "evidenceBoundary": "Browser file-detail evidence uses one immutable snapshot, selected thread, dark theme, 1024x820 viewport, exact Web and Lynx-for-Web bundles, real file open and switch interactions, and zero console errors. Native evidence uses one generated isolated fixture, exact ced67863 production bundle, explicit dark/light themes and 1024x820/1024x600/760x820 viewports, measured DevTool touches, main transport, zero renderer errors, disposed state, and clean leak gates."
+  },
+  "compactControls": {
+    "baseline": {
+      "reportSha256": "1c08de38b8a7b67b41e407f904dbce1f2452d059aa9d432a020dc8c6ac186385",
+      "bundleSha256": "fa6142fbcfbf98c0fed95d305bed5d8280bf62f9d60c9c6c97ab1f93e7380cc8",
+      "viewport": "1024x820",
+      "panel": [298, 154, 148, 565],
+      "scroll": [299, 155, 146, 563],
+      "content": [299, 155, 146, 502],
+      "emptyTail": 63
+    },
+    "current": {
+      "report": "/tmp/t3-combined-postcommit/report.json",
+      "reportSha256": "5b2fd57ad185422d2e7ca7ca309260fcc56f8b993f31069d28516a8d3cceca4e",
+      "bundleSha256": "ced678639f3f0fda1a1911eb2463694279e7386a85aae54fbf4a85dcd71f3f9d",
+      "fixtureSnapshotId": "ed2dccd1ab7c78634adbdaef2290514db646de0d259c643b66dc48d6e12fef51",
+      "viewport": "1024x820",
+      "panel": [298, 215, 148, 504],
+      "scroll": [299, 216, 146, 502],
+      "content": [299, 216, 146, 502],
+      "emptyTail": 0,
+      "panelRight": 446,
+      "contextRight": 442,
+      "rightPanelLeft": 484,
+      "rowCount": 15,
+      "dismissed": true,
+      "screenshotSha256": "fbfc615cfe068da03245483523fb7f1d3ab66d788b499b747f09beb04ba94577"
+    },
+    "shortViewportRegression": {
+      "report": "/tmp/t3-compact-postcommit-600/report.json",
+      "reportSha256": "4b9350b6d275952facfd778f13716dd6d53740fbe8c9d74158d2b06d8b91d47a",
+      "viewport": "1024x600",
+      "panel": [298, 39, 148, 460],
+      "scroll": [299, 40, 146, 458],
+      "content": [299, 40, 146, 502],
+      "scrollOffset": 120,
+      "dismissed": true,
+      "screenshotSha256": "fae9bd5e18cf2d1693d1b27ae212685fc1bce3806b5e2a94d4bde7da52ac2cd8"
+    }
+  },
+  "fileDetail": {
+    "browser": {
+      "report": "/tmp/t3-file-detail-postcommit/workbench-report.json",
+      "reportSha256": "752f4046c2b33c8141defb53b5f67032e9d819c99ad132f3c571d269845fb54c",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "commit": "e663aa5b317c340794e3629065730310d08f5035",
+      "viewport": "1024x820",
+      "theme": "dark",
+      "webBundle": "8df48884381d",
+      "lynxBundle": "56c24ce5205a",
+      "hardGates": {
+        "sameSnapshot": true,
+        "sameState": true,
+        "sameTheme": true,
+        "sameViewport": true,
+        "fileOpened": true,
+        "fileSwitched": true,
+        "lynxBackReturnedToBrowser": true,
+        "rendererErrors": 0
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "baseline": {
+          "fullFrame": {
+            "mae": 12.27936,
+            "significantShare": 0.121628
+          },
+          "rightPanel": {
+            "mae": 19.378381,
+            "significantShare": 0.163105
+          },
+          "editor": {
+            "mae": 28.322451,
+            "significantShare": 0.208761
+          }
+        },
+        "current": {
+          "fullFrame": {
+            "mae": 10.550627,
+            "significantShare": 0.113084
+          },
+          "rightPanel": {
+            "mae": 16.100191,
+            "significantShare": 0.146902
+          },
+          "editor": {
+            "mae": 21.377878,
+            "significantShare": 0.174435
+          }
+        }
+      },
+      "screenshots": {
+        "webSha256": "405780e7067638568b018b087669063935edc8b5705d06970efc92ae4af9d3be",
+        "lynxSha256": "7a9fe8e5814250b3c9e45e4c71f62be109454890ee07a6019563e6464beb8b2d",
+        "sideBySideSha256": "3b7c0f4b52d67b93c1ec32f4467d7da5f0ce34c212fb5771f061186f42ccdd3a"
+      }
+    },
+    "nativeDark": {
+      "report": "/tmp/t3-file-detail-postcommit-native/report.json",
+      "reportSha256": "1b517fc986f635898abdef973cb4e2a1c7d60be64e7ae57fb18a743b1d5a1ea1",
+      "bundleSha256": "ced678639f3f0fda1a1911eb2463694279e7386a85aae54fbf4a85dcd71f3f9d",
+      "viewport": "1024x820",
+      "theme": "dark",
+      "editor": [485, 93, 283, 727],
+      "explorer": [768, 93, 256, 727],
+      "fontFamily": "T3 JetBrains Mono",
+      "fontSize": "12px",
+      "lineHeight": "19px",
+      "tokenCount": 27,
+      "tokenToneCount": 6,
+      "screenshotSha256": "7fb9d593e9df1e2b77595ff0d9f1d7305240b44cc4d59e26221fe50335698e58"
+    },
+    "nativeLight": {
+      "report": "/tmp/t3-file-detail-token-light-final/report.json",
+      "reportSha256": "ed2d273de7219d849bdf2eca5e6a3aff5bd888209e35aff485071b6d561adede",
+      "viewport": "1024x820",
+      "theme": "light",
+      "tokenCount": 27,
+      "tokenToneCount": 6,
+      "screenshotSha256": "fabc23d189b1867767d14c6a9e9744e375142b8fde7ad4c6e38f4f2a460d2275"
+    },
+    "nativeSheetBack": {
+      "report": "/tmp/t3-file-detail-token-sheet/report.json",
+      "reportSha256": "3f690436d22b7c783bbdcf5ca08b03459bd50c3a4edb5f2c05880501fdf223d8",
+      "viewport": "760x820",
+      "theme": "dark",
+      "editor": [421, 93, 339, 727],
+      "back": [429, 58, 28, 28],
+      "explorerHidden": true,
+      "returnedBrowser": [421, 92, 339, 728],
+      "tokenCount": 27,
+      "tokenToneCount": 6,
+      "screenshotSha256": "676c7faf00ef9c409b2739e092b37cca9b09d53c4c9bf0ae560d76653e50e4e1"
+    }
+  },
+  "fidelityImpact": {
+    "fixedDenominator": {
+      "states": 60,
+      "cells": 684,
+      "weight": 222.2
+    },
+    "baseline": {
+      "totalLoss": 0.346155,
+      "compactStateLoss": 0.41748,
+      "compactStateObservedResidual": 0.019327,
+      "composerGroupLoss": 0.289455,
+      "fileStateLoss": 0.12578,
+      "fileLightStateLoss": 0.121467,
+      "reviewGroupLoss": 0.165658
+    },
+    "afterCompactRepair": {
+      "totalLoss": 0.345948,
+      "compactStateLoss": 0.406,
+      "compactStateObservedResidual": 0,
+      "composerGroupLoss": 0.288351
+    },
+    "current": {
+      "totalLoss": 0.344238,
+      "fileStateLoss": 0.091589,
+      "fileLightStateLoss": 0.060641,
+      "reviewGroupLoss": 0.152084
+    },
+    "delta": {
+      "totalLoss": -0.001917,
+      "compactRepairTotalLoss": -0.000207,
+      "compactStateLoss": -0.01148,
+      "composerGroupLoss": -0.001104,
+      "fileRepairTotalLoss": -0.00171,
+      "fileStateLoss": -0.034191,
+      "fileLightStateLoss": -0.060826,
+      "reviewGroupLoss": -0.013574
+    },
+    "remainingCompactStateLossBoundary": "The 0.406 compact state loss is entirely conservative Lynx-for-Web evidence debt from the unresolved Web portal capture blocker; Native observed residual is zero.",
+    "existingWeightsChanged": false,
+    "existingScopeReduced": false
+  },
+  "validation": {
+    "focusedTests": "47/47 plus verifier 44/44",
+    "lynxTypecheck": "pass",
+    "clientRuntimeTypecheck": "pass with one pre-existing Effect suggestion",
+    "productionBuild": "pass with existing unsupported CSS and Effect warnings",
+    "browserPreviewBuild": "pass with existing asset-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  }
+}

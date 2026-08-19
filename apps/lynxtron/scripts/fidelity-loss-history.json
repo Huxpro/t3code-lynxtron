@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T18:02:56+09:00",
+  "updatedAt": "2026-08-19T18:48:52+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11761,6 +11761,227 @@
               "confidence": 0.99,
               "method": "native-compact-inline-files-readiness",
               "source": "Exact fa6142fb bundle uses main transport, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-inline-files-current",
+      "observedAt": "2026-08-19T18:46:13+09:00",
+      "commit": "e663aa5b3",
+      "codeCommit": "cb2738ad6",
+      "codeState": "commit",
+      "label": "Compact Composer controls intrinsic-height convergence",
+      "narrative": "The exact Native compact Composer combination now fits its rendered content instead of preserving a stale estimated panel height. At 1024x820 the panel shrinks from 565px to 504px around a 502px scroll/content surface, removing the 63px empty tail while retaining fifteen dynamic rows, a 148px single column, context and panel containment before the Files boundary, fullscreen outside dismissal, main transport, and zero renderer errors. At 1024x600 the same final bundle remains capped at 460px around 502px of content and applies a real 120px scroll offset, so intrinsic sizing does not regress short-height scrolling. The Web Base UI portal remains a dual-iframe capture blocker for this combination, so the Lynx-for-Web cell stays conservative unknown and no transient Browser pixels receive credit. The fixed denominator remains 60 states, 684 cells, and weight 222.2.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Baseline and current Native runs use the same generated isolated fixture, 1024px width, dark theme, exact production lifecycle, dynamic row set, measured touch, main transport, and clean error/leak gates. The current 820 and 600 runs use the final ced67863 bundle."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/compact-files-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "01c1c8d1acdbfe6bca0e3295aeb07e9824513652bcaeb0a063563c5a80903154"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-inline-files-narrow"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-current-content",
+              "source": "All nine dynamic trait rows plus Chat, Plan, and four Access rows remain present without duplicates"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 504,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-intrinsic-fit",
+              "source": "The 504px panel contains the 502px scroll/content surface with border-only difference and remains before the x=484 Files boundary"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-current-rows",
+              "source": "All current rows remain one-column, unwrapped, and independently legible"
+            },
+            "material": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-no-empty-tail",
+              "source": "The visible 63px empty panel tail is removed; no Browser material residual is inferred"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-current-scroll-dismiss",
+              "source": "820px opens and dismisses through measured touch; 600px applies offset 120 and dismisses without clipping the content contract"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-current-readiness",
+              "source": "Final ced67863 bundle, main transport, zero renderer errors, disposed isolated states, and zero agent-browser leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-token-current",
+      "observedAt": "2026-08-19T18:47:11+09:00",
+      "commit": "e663aa5b3",
+      "codeCommit": "e663aa5b3",
+      "codeState": "commit",
+      "label": "File editor token presentation convergence",
+      "narrative": "The Lynx file detail now projects common source lines into nested token tones instead of coloring each whole line as heading, code, or plain text. A shared client-runtime projection covers Markdown, TOML, JSON, JavaScript/TypeScript, CSS, YAML, and common source files while Web retains its full Pierre/Shiki editor. Exact dark Native TOML evidence renders 27 tokens across six tones with T3 JetBrains Mono at 12px/19px, a numbered gutter, the 283px editor, and the persistent 256px inline explorer. Exact light Native keeps the same token and geometry contract with a deeper cold-white palette. At 760x820 the sheet hides the explorer, exposes the 28x28 Back action, and restores the 339x728 Files browser through measured touch. On one immutable 1024x820 Browser pair, the editor crop improves from 28.322451 to 21.377878 MAE and from 20.8761% to 17.4435% significant pixels; the full frame improves from 12.279360 to 10.550627 MAE. A real residual remains because the Native projection is lighter than full TextMate grammar, line selection, gutter utilities, and bracket matching.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Browser before/current comparison holds Web pixels, snapshot, route, file, theme, viewport, and authority bundle constant while changing only the Lynx bundle. Exact Native dark, light, and sheet runs use the final ced67863 bundle, one generated fixture, measured touch, main transport, zero renderer errors, and disposed state."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/compact-files-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "01c1c8d1acdbfe6bca0e3295aeb07e9824513652bcaeb0a063563c5a80903154"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-token-content",
+              "source": "The same PORT_WORKFLOW source, breadcrumb, single tab, and persistent explorer remain visible"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-detail-token-geometry",
+              "source": "Surface, toolbar, editor, explorer, and tab geometry remain within one pixel of Web"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "file-detail-token-typography",
+              "source": "Lynx matches JetBrains Mono 12px/19px, gutter, and six semantic tones but retains a lighter tokenizer than Web TextMate"
+            },
+            "material": {
+              "pixel": {
+                "mae": 21.377878,
+                "significantShare": 0.174435
+              },
+              "confidence": 0.99,
+              "method": "file-detail-token-editor-crop",
+              "source": "Same-snapshot 284x736 editor crop after shared token projection; full TextMate and editor-utility residual remains"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-token-open-switch-back",
+              "source": "Paired Browser opens and switches files; exact Native sheet opens a file and restores the Files browser through Back"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-token-current-readiness",
+              "source": "Post-commit Browser pair and final Native dark/sheet runs pass with zero renderer errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-token-content",
+              "source": "Exact Native opens non-empty TOML source and exposes 27 inline tokens across six tones"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 727,
+              "confidence": 0.99,
+              "method": "native-file-token-geometry",
+              "source": "Inline editor/explorer and sheet editor/Back/browser geometry remain on their responsive contracts"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "native-file-token-typography",
+              "source": "T3 JetBrains Mono 12px/19px, numbered gutter, and six tones are measured; full TextMate grammar is not claimed"
+            },
+            "material": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "native-file-token-material-boundary",
+              "source": "Theme-specific semantic token colors materially improve source scanning while preserving explicit residual for missing full editor utilities"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-token-back",
+              "source": "Measured sheet Back touch restores the Files browser; inline mode retains the persistent explorer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-token-final-readiness",
+              "source": "Final ced67863 dark bundle uses main transport, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-file-token-content",
+              "source": "Exact light Native renders the same 27 TOML tokens across six tones"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 727,
+              "confidence": 0.99,
+              "method": "native-light-file-token-geometry",
+              "source": "Light editor, explorer, toolbar, gutter, and line geometry retain the dark responsive contract"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "native-light-file-token-typography",
+              "source": "Light retains JetBrains Mono 12px/19px with deeper theme-specific semantic tones"
+            },
+            "material": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "native-light-file-token-material-boundary",
+              "source": "Cold-white token palette remains readable while preserving residual for missing full TextMate grammar and utilities"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-file-token-interaction",
+              "source": "Light file selection, inline explorer ownership, and preview readiness all pass"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-file-token-readiness",
+              "source": "Expected and actual light theme, final ced67863 bundle, main transport, zero renderer errors, and disposed state"
             }
           }
         }
