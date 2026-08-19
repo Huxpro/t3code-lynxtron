@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T23:40:33+09:00",
+  "stateId": "diff-scope-menu",
+  "classification": {
+    "missingCoverage": [
+      "The Diff scope menu is a distinct user-reachable overlay inside the right-panel Diff surface and is absent from the fixed denominator.",
+      "Web exposes Working tree, Branch changes, Latest turn, and a Turn submenu populated from checkpoint history.",
+      "Lynx exposes only ready checkpoints and labels the newest checkpoint Latest turn. It does not project Working tree, Branch changes, or the Web Turn submenu contract.",
+      "Web uses its menu primitive with outside dismissal. Lynx owns local open state and currently renders no dismiss layer."
+    ],
+    "notYetAttributed": [
+      "No same-snapshot Browser or exact Native capture has been retained for this state yet.",
+      "Source differences establish reachability and justify denominator registration, but they do not establish geometry, typography, material, or runtime residual values.",
+      "All twelve new client-by-dimension cells remain conservative unknown until matched evidence is collected."
+    ],
+    "evidenceBoundary": "Registration uses current tracked Web authority and Lynx product source only. It changes no existing state weight, client weight, dimension weight, filter, or historical observation."
+  },
+  "source": {
+    "web": {
+      "path": "apps/web/src/components/DiffPanel.tsx",
+      "sha256": "0177b4c99956a02e129a38e8caa7496da3e3bf2f92bd6908a4091149bafc3c7b",
+      "anchor": "data-floating-popup=\"diff-scope-menu\"",
+      "authorityItems": ["Working tree", "Branch changes", "Latest turn", "Turn"]
+    },
+    "lynx": {
+      "path": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+      "sha256": "9bc466c50447cabdcf79730fef11d8f641810a31a9f512ccfa8e39b2d440043a",
+      "anchor": "data-floating-popup=\"diff-scope-menu\"",
+      "currentProjection": "ordered ready checkpoints only",
+      "outsideDismissLayer": false
+    }
+  },
+  "denominatorChange": {
+    "before": {
+      "states": 62,
+      "cells": 708,
+      "weight": 230.2
+    },
+    "after": {
+      "states": 63,
+      "cells": 720,
+      "weight": 234.2
+    },
+    "newState": {
+      "id": "diff-scope-menu",
+      "label": "Diff · Scope Menu",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    }
+  },
+  "validation": {
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}

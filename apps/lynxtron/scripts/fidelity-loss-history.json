@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T23:28:39+09:00",
+  "updatedAt": "2026-08-19T23:40:33+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12535,6 +12535,27 @@
               "source": "Final 12086295 bundle uses main transport sequence 3 to 4, reports zero renderer errors, disposes isolated state, and passes leak pre/post gates"
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "diff-scope-menu-registration",
+      "observedAt": "2026-08-19T23:40:33+09:00",
+      "commit": "75df734bb6483560cfbc8e40d1d7d8bcf3c6c0d0",
+      "codeCommit": "75df734bb6483560cfbc8e40d1d7d8bcf3c6c0d0",
+      "codeState": "commit",
+      "label": "Diff scope menu denominator registration",
+      "narrative": "A distinct user-reachable overlay enters the fixed denominator before repair: the scope menu inside the right-panel Diff surface. Current tracked source proves the authority contract includes Working tree, Branch changes, Latest turn, and a Turn submenu, while Lynx currently projects only ready checkpoints and owns no outside-dismiss layer. This source audit establishes reachability and a likely content/interaction gap, but no same-snapshot Browser or exact Native frame is retained yet. All twelve new Lynx-for-Web and Native dimension cells therefore remain conservative unknown. The denominator expands from 62 states, 708 cells, and weight 230.2 to 63 states, 720 cells, and weight 234.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It admits a separately triggered overlay before product repair, records current tracked authority/candidate source hashes, and assigns no measured residual or confidence to the new cells."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/diff-scope-menu-registration.json",
+          "classification": "tracked-current",
+          "sha256": "d027329c841a6a5b318c3625b9c2b9167a8d3e1d3e506b00441ee79a02f9482d"
         }
       ]
     }
