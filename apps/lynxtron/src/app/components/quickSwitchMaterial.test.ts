@@ -30,6 +30,7 @@ describe("Quick Switch material", () => {
     expect(lightPanel).toContain("0 24px 64px -24px rgba(0, 0, 0, 0.65);");
     expect(lightFooter).toContain("background-color: rgba(39, 39, 42, 0.025);");
     expect(lightKbd).toContain("background-color: rgba(39, 39, 42, 0.08);");
+    expect(rule(".quick-switch-footer-group .lynx-kbd")).toContain("box-sizing: border-box;");
   });
 
   it("matches the authority footer typography and lower edge", () => {
