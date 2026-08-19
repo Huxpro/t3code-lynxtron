@@ -1920,17 +1920,33 @@ function readWebPane() {
       : null;
     const rightPanelAddRows =
       overlay === "right-panel-add-menu"
-        ? [...doc.querySelectorAll('[data-slot="menu-item"]')].filter((row) => {
-            const panelRect = overlayElement?.getBoundingClientRect();
-            const rowRect = row.getBoundingClientRect();
-            return (
-              panelRect &&
-              rowRect.x >= panelRect.x &&
-              rowRect.y >= panelRect.y &&
-              rowRect.x + rowRect.width <= panelRect.x + panelRect.width &&
-              rowRect.y + rowRect.height <= panelRect.y + panelRect.height
-            );
-          })
+        ? ["Browser", "Terminal", "Files", "Diff"]
+            .map((label) => {
+              const panelRect = overlayElement?.getBoundingClientRect();
+              const candidates = [
+                ...doc.querySelectorAll(
+                  '[data-slot="menu-item"], [data-slot="tooltip-trigger"], [role="menuitem"]',
+                ),
+              ].filter((row) => {
+                const rowRect = row.getBoundingClientRect();
+                return (
+                  panelRect &&
+                  row.textContent?.trim() === label &&
+                  rowRect.width > 0 &&
+                  rowRect.height > 0 &&
+                  rowRect.x >= panelRect.x &&
+                  rowRect.y >= panelRect.y &&
+                  rowRect.x + rowRect.width <= panelRect.x + panelRect.width &&
+                  rowRect.y + rowRect.height <= panelRect.y + panelRect.height
+                );
+              });
+              return candidates.sort((left, right) => {
+                const leftRect = left.getBoundingClientRect();
+                const rightRect = right.getBoundingClientRect();
+                return leftRect.width * leftRect.height - rightRect.width * rightRect.height;
+              })[0];
+            })
+            .filter(Boolean)
         : [];
     const modelPickerContent =
       overlay === "model-picker" ? doc.querySelector("[data-model-picker-content]") : null;
@@ -2161,7 +2177,8 @@ function readWebPane() {
                           label: row.textContent?.trim() ?? "",
                           disabled:
                             row.getAttribute("data-disabled") !== null ||
-                            row.getAttribute("aria-disabled") === "true",
+                            row.getAttribute("aria-disabled") === "true" ||
+                            row.querySelector("[data-disabled], [aria-disabled='true']") !== null,
                           rect: readElementBox(row),
                         })),
                       }

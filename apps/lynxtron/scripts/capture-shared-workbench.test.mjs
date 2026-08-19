@@ -138,6 +138,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"right-panel-add-menu": "existing-thread"');
     assert.include(source, '"right-panel-add-menu",');
     assert.include(source, "function rightPanelAddMenuReady(state)");
+    assert.include(source, "rect?.rect?.width > 0");
     assert.include(
       source,
       '["workspace-menu", "compact-controls", "right-panel-add-menu"].includes(overlay)',

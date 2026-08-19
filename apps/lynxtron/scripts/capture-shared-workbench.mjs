@@ -963,8 +963,8 @@ function rightPanelAddMenuReady(state) {
     JSON.stringify(lynxRows.map(({ label }) => label)) === JSON.stringify(expectedLabels) &&
     JSON.stringify(webRows.map(({ disabled }) => disabled)) ===
       JSON.stringify(lynxRows.map(({ disabled }) => disabled)) &&
-    webRows.every(({ rect }) => rect?.width > 0 && rect?.height > 0) &&
-    lynxRows.every(({ rect }) => rect?.width > 0 && rect?.height > 0)
+    webRows.every(({ rect }) => rect?.rect?.width > 0 && rect?.rect?.height > 0) &&
+    lynxRows.every(({ rect }) => rect?.rect?.width > 0 && rect?.rect?.height > 0)
   );
 }
 
