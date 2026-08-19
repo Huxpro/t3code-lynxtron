@@ -322,6 +322,12 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain(
       '".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +',
     );
+    expect(browserPreviewSource).toContain(
+      '".right-panel__add-menu{display:flex;flex-direction:column;width:128px;height:122px;}" +',
+    );
+    expect(browserPreviewSource).toContain(
+      '".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:118px;height:28px;}" +',
+    );
     expect(browserPreviewSource).toContain('".composer-context-strip{" +');
     expect(browserPreviewSource).not.toContain(
       ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-stack",

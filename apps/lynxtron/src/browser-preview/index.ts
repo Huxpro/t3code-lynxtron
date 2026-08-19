@@ -475,6 +475,8 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".transcript-assistant-meta-spacer--checkpoint{height:26px;}" +
       ".right-panel{display:flex;flex-direction:column;}" +
       ".right-panel__tabs{height:44px!important;min-height:44px!important;box-sizing:border-box;}" +
+      ".right-panel__add-menu{display:flex;flex-direction:column;width:128px;height:122px;}" +
+      ".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:118px;height:28px;}" +
       ".right-panel__content{" +
       "display:flex;flex:1 1 0%;flex-direction:column;height:0;margin-left:1px;width:calc(100% - 1px);}" +
       ".files-panel{" +
