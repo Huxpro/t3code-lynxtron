@@ -312,6 +312,16 @@ describe("desktop shell interaction contract", () => {
     );
     expect(browserPreviewSource).toContain('".file-editor-line{" +');
     expect(browserPreviewSource).toContain('".file-editor-line__content{" +');
+    expect(browserPreviewSource).toContain('".file-editor-line__content>.file-editor-token," +');
+    expect(browserPreviewSource).toContain(
+      '".file-editor-line__content>lynx-wrapper>.file-editor-token{display:inline!important;}" +',
+    );
+    expect(browserPreviewSource).toContain(
+      '".file-editor-line__content>.file-editor-token::part(inner-box)," +',
+    );
+    expect(browserPreviewSource).toContain(
+      '".file-editor-line__content>lynx-wrapper>.file-editor-token::part(inner-box){" +',
+    );
     expect(browserPreviewSource).toContain('".theme-light .sidebar-settings-authority{" +');
     expect(sidebarSource).toContain(
       "viewport.width === 1280 && viewport.height === 820 && sidebarWidth === 256",

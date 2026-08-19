@@ -569,6 +569,11 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".md-paragraph>.md-inline{display:inline;}" +
       ".md-paragraph>.md-inline::part(inner-box){display:contents!important;}" +
       ".md-paragraph>.md-inline-code{display:inline-flex;}" +
+      ".file-editor-line__content>.file-editor-token," +
+      ".file-editor-line__content>lynx-wrapper>.file-editor-token{display:inline!important;}" +
+      ".file-editor-line__content>.file-editor-token::part(inner-box)," +
+      ".file-editor-line__content>lynx-wrapper>.file-editor-token::part(inner-box){" +
+      "display:contents!important;}" +
       ".md-code-block{display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
       ".md-code-header{display:flex;flex-direction:row;width:100%;min-height:32px;box-sizing:border-box;}" +
       ".md-code-text{display:block;width:100%;box-sizing:border-box;}" +
