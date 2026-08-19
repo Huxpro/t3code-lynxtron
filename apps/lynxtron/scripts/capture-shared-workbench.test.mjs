@@ -163,7 +163,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "rectDeltaWithin(web.toolbar, lynx.toolbar, 1)");
     assert.include(source, 'webTypography?.fontSize === "12px"');
     assert.include(source, 'row.box?.style?.[key] === "5px"');
-    assert.include(source, "filesBrowserReadyPolls >= 3");
+    assert.include(source, "filesBrowserReadyPolls >= (isFileEditorState ? 1 : 3)");
     assert.include(source, "finalFilesBrowserReady = filesBrowserReady(state)");
     assert.include(source, "finalFilesBrowserReady");
     assert.include(
