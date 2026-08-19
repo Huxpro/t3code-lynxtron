@@ -4796,6 +4796,187 @@ async function verifyRightPanelAddMenu({
   };
 }
 
+async function verifyDiffScopeMenu({
+  child,
+  client,
+  devToolCli,
+  height,
+  outputDirectory,
+  reviewFixture,
+  timeoutMs,
+  width,
+}) {
+  const checkpoint = reviewFixture.checkpoint;
+  const expectedFile = checkpoint.files[0];
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === reviewFixture.threadId && state?.latestTurn?.state === "completed",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".turn-diff-card",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-review-checkpoint-status"] === "ready" &&
+      measurement?.attributes["data-review-turn-id"] === checkpoint.turnId &&
+      measurement.text.includes(expectedFile.path),
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: "[data-review-open-diff]",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-right-panel-active-kind"] === "diff",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".diff-code-file",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-review-file-path"] === expectedFile.path &&
+      measurement.text.includes("original review fixture") &&
+      measurement.text.includes("updated by T3 review fixture"),
+  });
+
+  const openMenu = async () => {
+    await tapSelector({
+      child,
+      client,
+      selector: '[data-floating-anchor="diff-scope-menu"]',
+      timeoutMs,
+    });
+    return waitForMeasurement({
+      child,
+      client,
+      selector: ".diff-panel-header__scope-menu",
+      timeoutMs,
+      predicate: (measurement) =>
+        Math.abs((measurement?.rect.width ?? 0) - 240) <= 0.5 &&
+        Math.abs((measurement?.rect.height ?? 0) - 122) <= 0.5,
+    });
+  };
+
+  const trigger = await waitForMeasurement({
+    child,
+    client,
+    selector: '[data-floating-anchor="diff-scope-menu"]',
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Latest turn",
+  });
+  const menu = await openMenu();
+  const dismissLayer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".diff-panel-header__scope-dismiss",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.width ?? 0) - width) <= 1 &&
+      Math.abs((measurement?.rect.height ?? 0) - height) <= 1,
+  });
+  const rows = await readSelectorMeasurements(client, ".diff-panel-header__scope-item");
+  const expectedRows = [
+    { scope: "working-tree", label: "Working tree" },
+    { scope: "branch", label: "Branch changes" },
+    { scope: "latest-turn", label: "Latest turn" },
+    { scope: "turn", label: "Turn" },
+  ];
+  if (
+    rows.length !== expectedRows.length ||
+    rows.some(
+      (row, index) =>
+        row.attributes["data-diff-scope"] !== expectedRows[index].scope ||
+        row.text.trim() !== expectedRows[index].label ||
+        Math.abs((row.rect?.width ?? 0) - 230) > 0.5 ||
+        Math.abs((row.rect?.height ?? 0) - 28) > 0.5,
+    )
+  ) {
+    throw new Error(`Native Diff scope menu rows drifted: ${JSON.stringify(rows)}`);
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-diff-scope-menu.png",
+  });
+
+  await tapSelector({
+    child,
+    client,
+    point: "bottom-right",
+    selector: ".diff-panel-header__scope-dismiss",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".diff-panel-header__scope-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  await openMenu();
+  await tapSelectorByAttribute({
+    attribute: "data-diff-scope",
+    child,
+    client,
+    selector: ".diff-panel-header__scope-item",
+    timeoutMs,
+    value: "working-tree",
+  });
+  const workingTreeTrigger = await waitForMeasurement({
+    child,
+    client,
+    selector: '[data-floating-anchor="diff-scope-menu"]',
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Working tree",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".diff-panel-header__scope-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    input:
+      "DevTool touch on measured checkpoint Open diff, scope trigger, fullscreen dismiss layer, and Working tree row",
+    fixture: {
+      threadId: reviewFixture.threadId,
+      turnId: checkpoint.turnId,
+      file: expectedFile,
+    },
+    trigger: {
+      initial: trigger.rect,
+      initialLabel: "Latest turn",
+      selected: workingTreeTrigger.rect,
+      selectedLabel: "Working tree",
+    },
+    menu: menu.rect,
+    dismissLayer: dismissLayer.rect,
+    rows: rows.map((row) => ({
+      scope: row.attributes["data-diff-scope"],
+      label: row.text.trim(),
+      rect: row.rect,
+    })),
+    screenshot,
+    dismissed: true,
+    workingTreeSelected: true,
+  };
+}
+
 async function verifyFilesBrowser({
   child,
   client,
@@ -8091,6 +8272,7 @@ async function runOnce({
   reviewFixture,
   verifyShellInteractions: shouldVerifyShellInteractions,
   verifyRightPanelAddMenu: shouldVerifyRightPanelAddMenu,
+  verifyDiffScopeMenu: shouldVerifyDiffScopeMenu,
   verifyFilesBrowser: shouldVerifyFilesBrowser,
   verifyFileSheetBack,
   verifyCompactControls: shouldVerifyCompactControls,
@@ -8565,6 +8747,18 @@ async function runOnce({
           width,
         })
       : undefined;
+    const diffScopeMenu = shouldVerifyDiffScopeMenu
+      ? await verifyDiffScopeMenu({
+          child,
+          client,
+          devToolCli,
+          height,
+          outputDirectory,
+          reviewFixture,
+          timeoutMs,
+          width,
+        })
+      : undefined;
     const filesBrowser = shouldVerifyFilesBrowser
       ? await verifyFilesBrowser({
           child,
@@ -8749,6 +8943,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       rightPanelAddMenu,
+      diffScopeMenu,
       filesBrowser,
       compactControls,
       gitInitialize,
@@ -8805,6 +9000,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       rightPanelAddMenu,
+      diffScopeMenu,
       filesBrowser,
       compactControls,
       gitInitialize,
@@ -8903,6 +9099,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
 );
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const shouldVerifyRightPanelAddMenu = process.argv.includes("--verify-right-panel-add-menu");
+const shouldVerifyDiffScopeMenu = process.argv.includes("--verify-diff-scope-menu");
 const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
 const shouldVerifyFileSheetBack = process.argv.includes("--verify-file-sheet-back");
 const shouldVerifyCompactControls = process.argv.includes("--verify-compact-controls");
@@ -9052,7 +9249,9 @@ if (
 }
 const reviewFixture = fixtureManifest.reviewFixture;
 if (
-  (shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates) &&
+  (shouldVerifyReviewDiffState ||
+    shouldVerifyReviewCheckpointStates ||
+    shouldVerifyDiffScopeMenu) &&
   (typeof reviewFixture?.threadId !== "string" ||
     typeof reviewFixture?.title !== "string" ||
     reviewFixture.latestTurnState !== "completed" ||
@@ -9081,7 +9280,9 @@ const canonicalThreadTitle = shouldVerifyIdleThreadState
         shouldVerifyApprovalDeclineMutation ||
         shouldVerifyQuestionTranscriptState
       ? fixtureManifest.pendingRequestFixture.title
-      : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
+      : shouldVerifyReviewDiffState ||
+          shouldVerifyReviewCheckpointStates ||
+          shouldVerifyDiffScopeMenu
         ? reviewFixture.title
         : fixtureManifest.sidebarFixture?.titles?.[0];
 const lifecycleOnlyEmptyFixture =
@@ -9145,7 +9346,9 @@ const modelSelection = shouldVerifyIdleThreadState
         shouldVerifyApprovalDeclineMutation ||
         shouldVerifyQuestionTranscriptState
       ? fixtureManifest.pendingRequestFixture.modelSelection
-      : shouldVerifyReviewDiffState || shouldVerifyReviewCheckpointStates
+      : shouldVerifyReviewDiffState ||
+          shouldVerifyReviewCheckpointStates ||
+          shouldVerifyDiffScopeMenu
         ? reviewFixture.modelSelection
         : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8"))
             .modelSelection;
@@ -9220,6 +9423,7 @@ for (let index = 1; index <= runs; index += 1) {
       reviewFixture,
       verifyShellInteractions: shouldVerifyShellInteractions,
       verifyRightPanelAddMenu: shouldVerifyRightPanelAddMenu,
+      verifyDiffScopeMenu: shouldVerifyDiffScopeMenu,
       verifyFilesBrowser: shouldVerifyFilesBrowser,
       verifyFileSheetBack: shouldVerifyFileSheetBack,
       verifyCompactControls: shouldVerifyCompactControls,
