@@ -104,6 +104,13 @@ const requestedSidebarWidth =
   Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
     ? requestedSidebarWidthValue
     : null;
+const requestedRightPanelWidthRaw = previewUrl.searchParams.get("rightPanelWidth");
+const requestedRightPanelWidthValue =
+  requestedRightPanelWidthRaw === null ? Number.NaN : Number(requestedRightPanelWidthRaw);
+const requestedRightPanelWidth =
+  Number.isFinite(requestedRightPanelWidthValue) && requestedRightPanelWidthValue > 0
+    ? requestedRightPanelWidthValue
+    : null;
 const scenarioClientSettings =
   (
     scenario.preferences as {
@@ -117,6 +124,9 @@ const themedScenario = {
     initialRoute: requestedRoute,
     themePreference: requestedTheme,
     ...(requestedSidebarWidth !== null ? { chat_thread_sidebar_width: requestedSidebarWidth } : {}),
+    ...(requestedRightPanelWidth !== null
+      ? { "t3code:preview-panel-width": requestedRightPanelWidth }
+      : {}),
     clientSettings: {
       ...scenarioClientSettings,
       environmentIdentificationMode: requestedEnvironmentIdentificationMode,

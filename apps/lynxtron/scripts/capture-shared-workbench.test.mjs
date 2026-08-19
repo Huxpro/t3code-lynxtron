@@ -183,10 +183,17 @@ describe("shared workbench lifecycle fault capture", () => {
       "utf8",
     );
 
-    assert.include(source, 'const isFileEditorState = stateId === "file-editor-detail"');
+    assert.include(source, 'stateId === "file-editor-detail-narrow-inline"');
     assert.include(source, 'const filePath = argValue("--file-path", "docs/PORT_WORKFLOW.md")');
     assert.include(source, '"file-editor-detail",');
+    assert.include(source, '"file-editor-detail-narrow-inline",');
     assert.include(source, '"file-editor-detail": "existing-thread"');
+    assert.include(source, '"file-editor-detail-narrow-inline": "existing-thread"');
+    assert.include(source, 'argValue("--right-panel-width", "")');
+    assert.include(source, "rightPanelWidth: String(expectedRightPanelWidth)");
+    assert.include(workbench, 'url.searchParams.get("rightPanelWidth")');
+    assert.include(workbench, '"t3code:preview-panel-width"');
+    assert.include(workbench, 'lynxQuery.set("rightPanelWidth", String(requestedRightPanelWidth))');
     assert.include(source, "function fileEditorReady(state)");
     assert.include(source, "function fileEditorSemanticReady(state)");
     assert.include(source, "const fileEditorStateReady = fileEditorReady(state)");

@@ -34,6 +34,13 @@ const requestedSidebarWidth =
   Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
     ? requestedSidebarWidthValue
     : null;
+const requestedRightPanelWidthRaw = url.searchParams.get("rightPanelWidth");
+const requestedRightPanelWidthValue =
+  requestedRightPanelWidthRaw === null ? Number.NaN : Number(requestedRightPanelWidthRaw);
+const requestedRightPanelWidth =
+  Number.isFinite(requestedRightPanelWidthValue) && requestedRightPanelWidthValue > 0
+    ? requestedRightPanelWidthValue
+    : null;
 const environmentIdentificationMode = "none";
 const SETTINGS_NAV_LABELS = [
   "General",
@@ -927,6 +934,12 @@ if (${JSON.stringify(requestedSidebarWidth)} !== null) {
     JSON.stringify(${JSON.stringify(requestedSidebarWidth)}),
   );
 }
+if (${JSON.stringify(requestedRightPanelWidth)} !== null) {
+  localStorage.setItem(
+    "t3code:preview-panel-width",
+    JSON.stringify(${JSON.stringify(requestedRightPanelWidth)}),
+  );
+}
 localStorage.setItem(
   "t3code:client-settings:v1",
   JSON.stringify({
@@ -949,6 +962,9 @@ const lynxQuery = new URLSearchParams({
 });
 if (requestedSidebarWidth !== null) {
   lynxQuery.set("sidebarWidth", String(requestedSidebarWidth));
+}
+if (requestedRightPanelWidth !== null) {
+  lynxQuery.set("rightPanelWidth", String(requestedRightPanelWidth));
 }
 if (socketUrl) {
   lynxQuery.set("live", "1");

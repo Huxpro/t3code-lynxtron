@@ -109,6 +109,11 @@ const requestedSidebarWidth =
   Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
     ? requestedSidebarWidthValue
     : null;
+const requestedRightPanelWidthValue = Number(argValue("--right-panel-width", ""));
+const requestedRightPanelWidth =
+  Number.isFinite(requestedRightPanelWidthValue) && requestedRightPanelWidthValue > 0
+    ? requestedRightPanelWidthValue
+    : null;
 const explicitChangedFilesTargetState = argValue("--changed-files-state", "");
 const expandTurnId = argValue("--expand-turn-id", "");
 const filePath = argValue("--file-path", "docs/PORT_WORKFLOW.md");
@@ -141,7 +146,8 @@ const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
-const isFileEditorState = stateId === "file-editor-detail";
+const isFileEditorState =
+  stateId === "file-editor-detail" || stateId === "file-editor-detail-narrow-inline";
 const isCompactControlsState =
   stateId === "composer-compact-controls-open" ||
   stateId === "composer-compact-controls-inline-files-narrow";
@@ -1746,6 +1752,7 @@ async function main() {
     "files-browser",
     "settled-banner-inline-files-narrow",
     "file-editor-detail",
+    "file-editor-detail-narrow-inline",
     "git-publish-dialog",
     "project-action-dialog",
     "composer-docked",
@@ -2001,6 +2008,7 @@ async function main() {
         composerInput,
         sidebarQuery,
         requestedSidebarWidth,
+        requestedRightPanelWidth,
         terminateOwnedServer: isLifecycleFaultState
           ? () => {
               if (!child.killed) child.kill("SIGTERM");
@@ -2104,6 +2112,7 @@ async function captureCell({
   composerInput,
   sidebarQuery,
   requestedSidebarWidth: expectedSidebarWidth,
+  requestedRightPanelWidth: expectedRightPanelWidth,
   terminateOwnedServer,
 }) {
   const { width, height } = viewport;
@@ -2191,6 +2200,7 @@ async function captureCell({
     "review-empty": "existing-thread",
     "files-browser": "existing-thread",
     "file-editor-detail": "existing-thread",
+    "file-editor-detail-narrow-inline": "existing-thread",
   };
   const scenario = scenarioByStateId[stateId] ?? "existing-thread";
   const params = new URLSearchParams({
@@ -2206,6 +2216,9 @@ async function captureCell({
     expectProject,
     ...(expectThread ? { expectThread } : {}),
     ...(expectedSidebarWidth === null ? {} : { sidebarWidth: String(expectedSidebarWidth) }),
+    ...(expectedRightPanelWidth === null
+      ? {}
+      : { rightPanelWidth: String(expectedRightPanelWidth) }),
   });
   await cdp.send("Page.navigate", { url: `${origin}/__workbench?${params.toString()}` }, sessionId);
 
