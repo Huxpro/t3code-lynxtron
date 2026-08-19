@@ -3268,7 +3268,8 @@ async function captureCell({
       webProviderNotificationCleared &&
       state?.web?.connected === true &&
       state?.web?.productState?.selectedProject === expectProject &&
-      (overlay !== "workspace-menu" || state?.lynx?.productState?.overlay === overlay) &&
+      (!["workspace-menu", "compact-controls"].includes(overlay) ||
+        state?.lynx?.productState?.overlay === overlay) &&
       state?.web?.productState?.overlay !== overlay
     ) {
       if (overlay === "project-action-dialog") {

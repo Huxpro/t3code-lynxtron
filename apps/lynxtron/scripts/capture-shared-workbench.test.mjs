@@ -111,6 +111,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "composer-compact-controls-inline-files-narrow"');
     assert.include(source, "function compactControlsEvidenceReady(state)");
     assert.include(source, "function compactControlsContainment(state)");
+    assert.include(source, '["workspace-menu", "compact-controls"].includes(overlay)');
     assert.include(source, '[data-floating-anchor="composer-compact-controls-menu"]');
     assert.include(source, '".composer-compact-controls-trigger"');
     assert.include(source, "finalCompactControlsReady");
