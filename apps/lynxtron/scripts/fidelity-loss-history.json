@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T15:50:48+09:00",
+  "updatedAt": "2026-08-19T16:25:37+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11455,6 +11455,71 @@
               "confidence": 0.99,
               "method": "native-current-file-exact-bundle-readiness",
               "source": "Exact 73ef9e28 bundle, main transport sequence 3 to 4, zero renderer errors, disposed isolated state, and zero leaks"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-action-keybinding-mutation-baseline",
+      "observedAt": "2026-08-19T16:25:37+09:00",
+      "commit": "42f511014",
+      "codeCommit": "33c884748",
+      "codeState": "commit",
+      "label": "Project Action keybinding mutation baseline",
+      "narrative": "A newly modeled exact Native mutation enters the fixed denominator before repair. The real Add Action dialog receives Fidelity KB Action, printf fidelity-keybinding, and mod+shift+y, then Save closes the dialog and persists a canonical fidelity-kb-action project script. The matching script.fidelity-kb-action.run rule is absent from isolated userdata/keybindings.json, leaving the product in a truthful half-saved state: the action exists but its advertised keybinding does not. The first attempt expected an overlong untruncated script id and is excluded as a harness mismatch. Visual anatomy remains accounted by the existing Project Action dialog state and is not duplicated here. The denominator expands from 58 states, 666 cells, and weight 217 to 59 states, 672 cells, and weight 218.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This admits a distinct persistent mutation state before product repair. It measures the project projection and isolated keybindings file independently and preserves every existing state, weight, and residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/project-action-keybinding-mutation-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1906024d349ce61702c7c871c00a9d9447a635c3b6fe492f3ec376267c4fecd9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-keybinding-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-mutation-content",
+              "source": "Name, command, canonical truncated id, and keybinding text all reach the real Save path"
+            },
+            "geometry": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-mutation-reuses-dialog",
+              "source": "Mutation uses the already measured Project Action dialog and introduces no additional geometry surface"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-mutation-reuses-copy",
+              "source": "Mutation reuses the already measured Project Action labels, controls, and Save copy"
+            },
+            "material": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-mutation-no-new-material",
+              "source": "Mutation-only accounting avoids duplicating the existing dialog material residual"
+            },
+            "interaction": {
+              "residual": 0.8,
+              "confidence": 0.99,
+              "method": "native-project-action-half-save",
+              "source": "Save persists the script and dismisses the dialog, but the requested keybinding never becomes executable"
+            },
+            "runtime": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "native-project-action-keybindings-disk-miss",
+              "source": "Isolated keybindings.json remains at 45 entries with no script.fidelity-kb-action.run rule"
             }
           }
         }
