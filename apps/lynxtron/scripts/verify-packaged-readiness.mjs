@@ -4853,7 +4853,7 @@ async function verifyDiffScopeMenu({
     await tapSelector({
       child,
       client,
-      selector: '[data-floating-anchor="diff-scope-menu"]',
+      selector: ".diff-panel-header__scope",
       timeoutMs,
     });
     return waitForMeasurement({
@@ -4870,7 +4870,7 @@ async function verifyDiffScopeMenu({
   const trigger = await waitForMeasurement({
     child,
     client,
-    selector: '[data-floating-anchor="diff-scope-menu"]',
+    selector: ".diff-panel-header__scope",
     timeoutMs,
     predicate: (measurement) => measurement?.text.trim() === "Latest turn",
   });
@@ -4885,6 +4885,7 @@ async function verifyDiffScopeMenu({
       Math.abs((measurement?.rect.height ?? 0) - height) <= 1,
   });
   const rows = await readSelectorMeasurements(client, ".diff-panel-header__scope-item");
+  const rowLabels = await readSelectorMeasurements(client, ".diff-panel-header__scope-item-label");
   const expectedRows = [
     { scope: "working-tree", label: "Working tree" },
     { scope: "branch", label: "Branch changes" },
@@ -4893,15 +4894,19 @@ async function verifyDiffScopeMenu({
   ];
   if (
     rows.length !== expectedRows.length ||
+    rowLabels.length !== expectedRows.length ||
     rows.some(
       (row, index) =>
         row.attributes["data-diff-scope"] !== expectedRows[index].scope ||
-        row.text.trim() !== expectedRows[index].label ||
         Math.abs((row.rect?.width ?? 0) - 230) > 0.5 ||
         Math.abs((row.rect?.height ?? 0) - 28) > 0.5,
+    ) ||
+    rowLabels.some(
+      (label, index) =>
+        (label.text.trim() || label.attributes.text?.trim()) !== expectedRows[index].label,
     )
   ) {
-    throw new Error(`Native Diff scope menu rows drifted: ${JSON.stringify(rows)}`);
+    throw new Error(`Native Diff scope menu rows drifted: ${JSON.stringify({ rows, rowLabels })}`);
   }
   const screenshot = captureNativeScreenshot({
     client,
@@ -4937,7 +4942,7 @@ async function verifyDiffScopeMenu({
   const workingTreeTrigger = await waitForMeasurement({
     child,
     client,
-    selector: '[data-floating-anchor="diff-scope-menu"]',
+    selector: ".diff-panel-header__scope",
     timeoutMs,
     predicate: (measurement) => measurement?.text.trim() === "Working tree",
   });
@@ -4966,9 +4971,9 @@ async function verifyDiffScopeMenu({
     },
     menu: menu.rect,
     dismissLayer: dismissLayer.rect,
-    rows: rows.map((row) => ({
+    rows: rows.map((row, index) => ({
       scope: row.attributes["data-diff-scope"],
-      label: row.text.trim(),
+      label: rowLabels[index]?.text.trim() || rowLabels[index]?.attributes.text?.trim() || "",
       rect: row.rect,
     })),
     screenshot,

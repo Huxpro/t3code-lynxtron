@@ -381,12 +381,22 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyDiffScopeMenu");
     assert.include(source, '"--verify-diff-scope-menu"');
     assert.include(source, 'selector: "[data-review-open-diff]"');
-    assert.include(source, "selector: '[data-floating-anchor=\"diff-scope-menu\"]'");
+    assert.include(source, 'selector: ".diff-panel-header__scope"');
     assert.include(source, 'selector: ".diff-panel-header__scope-menu"');
     assert.include(source, 'selector: ".diff-panel-header__scope-dismiss"');
     assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - 240) <= 0.5");
     assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 122) <= 0.5");
     assert.include(source, 'readSelectorMeasurements(client, ".diff-panel-header__scope-item")');
+    assert.include(source, 'client,\n    ".diff-panel-header__scope-item-label",');
+    assert.include(source, "rowLabels.length !== expectedRows.length");
+    assert.include(
+      source,
+      "(label.text.trim() || label.attributes.text?.trim()) !== expectedRows[index].label",
+    );
+    assert.include(
+      source,
+      'rowLabels[index]?.text.trim() || rowLabels[index]?.attributes.text?.trim() || ""',
+    );
     assert.include(source, '{ scope: "working-tree", label: "Working tree" }');
     assert.include(source, '{ scope: "branch", label: "Branch changes" }');
     assert.include(source, '{ scope: "latest-turn", label: "Latest turn" }');
