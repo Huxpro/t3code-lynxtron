@@ -12941,6 +12941,27 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-editing-save-registration",
+      "observedAt": "2026-08-20T03:56:55+09:00",
+      "commit": "45400aa87a15dc972d5720015333e186cc8540db",
+      "codeCommit": "45400aa87a15dc972d5720015333e186cc8540db",
+      "codeState": "commit",
+      "label": "File editor editing and save registration",
+      "narrative": "A distinct P1 data-integrity state enters the fixed denominator before integrated capture or repair: changing file contents through the editor, observing pending state, confirming or failing the project write, leaving before the debounce expires, returning to Files, and reopening the file. Existing dark, light, and narrow file-detail states certify static preview content, geometry, source styling, file switching, and Back navigation only. Web authority uses Pierre contentEditable with the shared FileSaveCoordinator; Lynx uses a native textarea with the same coordinator abstraction and project write RPC. Coordinator unit tests cover debounce serialization in isolation, but no Browser or exact Native evidence currently proves input wiring, pending/error feedback, lifecycle flush, server persistence, or reopen identity. All twelve new Lynx-for-Web and Native dimension cells remain conservative unknown. The denominator expands from 64 states, 732 cells, and weight 238.2 to 65 states, 744 cells, and weight 243.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. The editing and save lifecycle is user-reachable, data-loss-sensitive, and not represented by static file-detail states. It records current source contracts and missing integrated coverage, preserves all existing residuals and weights, and assigns no product-repair credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/file-editor-editing-save-registration.json",
+          "classification": "tracked-current",
+          "sha256": "610f249865a4cdca236688dc8ba084fb62cfab331e97db99d6627a3b1d0b4168"
+        }
+      ]
     }
   ]
 }
