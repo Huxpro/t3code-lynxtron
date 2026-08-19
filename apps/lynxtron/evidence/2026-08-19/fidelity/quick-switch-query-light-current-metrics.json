@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T10:25:00+09:00",
+  "productCommit": "c83b00c05",
+  "verifierCommit": "6d3828437",
+  "stateId": "quick-switch-query-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch",
+    "query": "settings",
+    "result": "Open settings"
+  },
+  "classification": {
+    "productChange": [
+      "The light Lynx panel now matches the Web authority's 80% cold-white material, 10% neutral border, 18px radius, and 65% black 24px/64px shadow.",
+      "Command mode now says Enter Select instead of the incorrect Command-P Files hint. File mode retains Command-K Commands.",
+      "The unobscured footer crop improves from 12.866499 to 9.191771 MAE and from 16.4269% to 15.1662% significant pixels. The measured residual remains explicit rather than being zeroed."
+    ],
+    "harnessMismatch": [
+      "Provider-update notification contamination remains excluded from baseline material attribution. Full and panel after pixels are retained as diagnostics, not as a clean isolated material claim.",
+      "Native Input.dispatchKeyEvent remains unsupported. Native default-overlay material and dismissal evidence does not claim physical keyboard query input."
+    ],
+    "intentionalPlatformDelta": [
+      "Web uses backdrop-filter compositing. Lynx uses the matching alpha, border, radius, and shadow without claiming Native blur parity."
+    ],
+    "evidenceBoundary": "Browser proves the real Meta-K and query paths, matching query content, exact anatomy, and paired pixels. Exact-bundle Native light and dark runs prove explicit theme identity, truthful footer content, outside dismissal, main transport advancement, zero renderer errors, and isolated cleanup for the same Quick Switch component."
+  },
+  "browser": {
+    "status": "pass-with-rendering-residual",
+    "report": {
+      "path": "/tmp/t3-quick-switch-query-light-after2/workbench-report.json",
+      "sha256": "af1954dec4c1d8202c06a9aefad2e91a3e9abaf0a44f5f5de328524eb3120d9d"
+    },
+    "fixture": {
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "projectTitle": "t3code-lynxtron",
+      "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+    },
+    "readyMs": 2801,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "inputChannels": {
+      "webOpen": "cdp-meta-k",
+      "lynxOpen": "lynx-host-keyboard-packet:meta-k",
+      "query": "web-cdp-pointer+key-char|lynx-dom-focus+key-char:true"
+    },
+    "semantic": {
+      "query": "settings",
+      "webRows": ["Open settings"],
+      "lynxRows": ["Open settings"],
+      "rowCount": 1,
+      "commandFooter": "Enter Select"
+    },
+    "geometry": {
+      "web": {
+        "panel": [352, 82, 576, 166],
+        "search": [353, 83, 574, 48],
+        "results": [353, 131, 574, 76],
+        "section": [361, 139, 558, 60],
+        "row": [361, 167, 558, 32],
+        "footer": [353, 207, 574, 40]
+      },
+      "lynx": {
+        "panel": [352, 82, 576, 166],
+        "search": [353, 83, 574, 48],
+        "results": [353, 131, 574, 76],
+        "section": [361, 139, 558, 60],
+        "row": [361, 167, 558, 32],
+        "footer": [353, 207, 574, 40]
+      }
+    },
+    "styles": {
+      "webPanel": {
+        "backgroundColor": "color(srgb 0.989332 0.989513 0.98953 / 0.8)",
+        "borderColor": "color(srgb 0.152872 0.152897 0.165785 / 0.1)",
+        "borderRadius": 18,
+        "boxShadow": "rgba(0, 0, 0, 0.65) 0px 24px 64px -24px"
+      },
+      "lynxPanel": {
+        "backgroundColor": "rgba(252, 252, 252, 0.8)",
+        "borderColor": "rgba(39, 39, 42, 0.1)",
+        "borderRadius": 18,
+        "boxShadow": "rgba(0, 0, 0, 0.65) 0px 24px 64px -24px"
+      },
+      "webFooterBackground": "oklab(0.274 0.00165715 -0.00576662 / 0.025)",
+      "lynxFooterBackground": "rgba(39, 39, 42, 0.024)"
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "before": {
+        "fullFrame": { "mae": 3.214283, "significantShare": 0.053916 },
+        "panel": { "mae": 5.19723, "significantShare": 0.065627 },
+        "footer": { "mae": 12.866499, "significantShare": 0.164269 }
+      },
+      "after": {
+        "fullFrame": { "mae": 2.018538, "significantShare": 0.027702 },
+        "panel": { "mae": 4.181608, "significantShare": 0.062479 },
+        "footer": { "mae": 9.191771, "significantShare": 0.151662 }
+      },
+      "footerFormulaResidual": {
+        "before": 0.892286,
+        "after": 0.765967
+      }
+    },
+    "screenshots": {
+      "webSha256": "dced5b43044dae511e6945db97f5639ad7dc8ee78206cbd9efefad1467549c38",
+      "lynxSha256": "952247247cde85b76b7b4770459cc4410bea5a9dbeb9da08e022bf1ee572ed10"
+    }
+  },
+  "darkRegression": {
+    "status": "pass",
+    "reportSha256": "ac8f75a91fd7a26a769a85f4d7e51cc8ca45230e2a53ce0252e10387e5b43b72",
+    "webScreenshotSha256": "a48fab301a4247e96f1cc851cff645bfdc54b9741cdcd122ee550419b3b4aabb",
+    "lynxScreenshotSha256": "feccd4b1b36b2a85162b841b3186c09cdb22ec0576e1687d9240f82266aa7816"
+  },
+  "native": {
+    "status": "pass",
+    "bundle": {
+      "bytes": 4601789,
+      "sha256": "06fdb8865d57188802b6a5e63e370b10240b3f7605bcb601e9b81aeb718b452d",
+      "reproducedAtVerifierCommit": true
+    },
+    "fixture": {
+      "snapshotId": "9b8a897855f6e443a5d5752e0865b298cb025e5f86917a365a5f3d99a5999f7c",
+      "projectTitle": "t3-hero-claude-workspace",
+      "threadTitle": "Quick Switch idle thread",
+      "modelSelection": {
+        "instanceId": "claudeAgent",
+        "model": "claude-fable-5"
+      }
+    },
+    "light": {
+      "reportSha256": "0f7cc216c5b27871d287ee0f8aaf4ed3d0a69932e84a484ccef07beb37322f8a",
+      "screenshotSha256": "9324b1b69a189983a981c9209346c84eb9a6b7e4788d150b1c5c0cfb0f78c079",
+      "theme": "light",
+      "transportSequence": [3, 4],
+      "footerText": "Up Down Navigate Enter Select Esc Close",
+      "dismissed": true,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "dark": {
+      "reportSha256": "c294c8445523ae85ecfc99b5bdf82bb137966c1dc8cc851e33b1690b214f6547",
+      "screenshotSha256": "e74197fa5ebc51fe4da126ba31a9ef417f78e1ee1f71377896054d3e91ae76b2",
+      "theme": "dark",
+      "transportSequence": [3, 4],
+      "footerText": "Up Down Navigate Enter Select Esc Close",
+      "dismissed": true,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "geometry": {
+      "panel": [353, 82, 574, 398],
+      "search": [354, 83, 572, 48],
+      "results": [354, 131, 572, 308],
+      "footer": [354, 439, 572, 40],
+      "rowCount": 7
+    },
+    "queryKeyboard": "pending-user-session"
+  },
+  "validation": {
+    "focusedTests": "79/79 plus verifier rerun 46/46",
+    "productionBuild": "pass",
+    "bundleReproducibility": "06fdb886 at working tree and verifier commit 6d3828437",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every Native run",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "remainingRisk": [
+    "The clean footer crop retains formula residual 0.765967 after material and copy convergence.",
+    "Native query typing and Escape dismissal remain pending a user-authorized Computer Use session because Input.dispatchKeyEvent is unsupported.",
+    "Native material is visually inspected but is not substituted for the paired Browser pixel metric."
+  ]
+}

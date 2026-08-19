@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T09:57:42+09:00",
+  "updatedAt": "2026-08-19T10:25:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10642,6 +10642,75 @@
               "confidence": 0.99,
               "method": "quick-switch-light-browser-readiness",
               "source": "Same snapshot and state identity, zero console errors, and zero owned or orphaned agent-browser processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-query-light-current",
+      "observedAt": "2026-08-19T10:25:00+09:00",
+      "commit": "6d3828437",
+      "codeCommit": "c83b00c05",
+      "codeState": "commit",
+      "label": "Quick Switch Query light material fidelity",
+      "narrative": "The same 1280x820 light Quick Switch Query state retains exact panel, search, results, section, row, and footer geometry while the Lynx panel converges to the Web authority's 80% cold-white material, 10% neutral border, 18px radius, and 65% black 24px/64px shadow. Command mode now truthfully says Enter Select instead of Command-P Files. The unobscured footer crop improves from 12.866499 to 9.191771 MAE and from 16.4269% to 15.1662% significant pixels; the remaining rendering residual stays explicit. Browser real Meta-K and query input pass with zero errors. Exact production Native light and dark runs on reproducible bundle 06fdb886 prove explicit themes, truthful footer, outside dismissal, main sequence 3 to 4, zero renderer errors, and disposed isolated state, but do not claim unsupported Native query typing.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Browser before and after use the same snapshot, project, thread, route, light theme, viewport, query, authority pixels, and shipping artifacts. Existing denominator and weights are unchanged. Native evidence is retained as same-component regression evidence and receives no Query cell credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/quick-switch-query-light-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b1bbaf9b971c575c7bf808250c15c0cb9e9fa546601aa426a8cae1a4ddaef4fb"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-truthful-footer",
+              "source": "The settings query and Open settings result still match, and command mode now says Enter Select"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-light-current-anatomy",
+              "source": "Panel, search, results, section, row, and footer rectangles remain exact"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "quick-switch-light-bundled-type-scale",
+              "source": "Sizes, weights, and line heights match; Web uses DM Sans Variable while Lynx uses bundled DM Sans"
+            },
+            "material": {
+              "pixel": {
+                "mae": 9.191771,
+                "significantShare": 0.151662
+              },
+              "confidence": 0.99,
+              "method": "quick-switch-light-current-footer-crop",
+              "source": "Unobscured after footer crop; remaining rendering residual is retained"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-current-shortcut-query",
+              "source": "Both Browser renderers open through Meta-K and accept the settings query through measured input paths"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-current-readiness",
+              "source": "Same Browser state identity, zero console errors, clean leak gates, and exact-bundle Native light/dark regression passes"
             }
           }
         }

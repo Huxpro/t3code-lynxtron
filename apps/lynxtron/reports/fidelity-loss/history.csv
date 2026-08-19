@@ -158,3 +158,4 @@ settings-beta-archive-light-current,2026-08-19T08:30:24+09:00,89ad06f9d,commit,S
 composer-inline-files-narrow-baseline,2026-08-19T08:40:03+09:00,7ce1ce3cc,working-tree,Narrow inline Files Composer baseline,0.37137,0.37137,0.019207,0.35906,0.64094,0.616457
 responsive-inline-files-navigation-current,2026-08-19T09:14:00+09:00,efa58ace9,commit,Responsive inline Files and navigation fidelity,0.370034,0.370034,0.017123,0.35906,0.64094,0.617793
 quick-switch-query-light-baseline,2026-08-19T09:57:42+09:00,8daff3504,commit,Quick Switch Query light baseline,0.36355,0.36355,0.018778,0.35137,0.64863,0.624277
+quick-switch-query-light-current,2026-08-19T10:25:00+09:00,6d3828437,commit,Quick Switch Query light material fidelity,0.363207,0.363207,0.018248,0.35137,0.64863,0.62462
