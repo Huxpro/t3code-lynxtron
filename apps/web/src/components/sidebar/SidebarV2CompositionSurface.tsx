@@ -50,7 +50,7 @@ export function SidebarV2CompositionSurface(props: SidebarV2CompositionSurfacePr
         className="gap-0"
         fixedHeader={<SidebarV2ControlsSurface {...props.controls} />}
       >
-        <SidebarGroup className="px-2 pb-1 pt-0">
+        <SidebarGroup className="sidebar-v2-thread-group px-2 pb-1 pt-0">
           <TooltipProvider
             key="sidebar-thread-tooltips-150"
             delay={150}

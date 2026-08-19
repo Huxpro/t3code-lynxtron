@@ -121,6 +121,7 @@
 .sidebar-v2-row-title-line,
 .sidebar-v2-row-metadata-line {
   width: 100%;
+  box-sizing: border-box;
 }
 .sidebar-v2-row-project-line {
   padding-right: 132px;
@@ -153,6 +154,18 @@
   flex-shrink: 1;
   width: 0;
   min-width: 0;
+}
+.sidebar-v2-row-title-line {
+  height: 20px;
+}
+.sidebar-v2-row-title {
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
+  min-width: 0;
+  height: 20px;
+  line-height: 20px;
+  overflow: hidden;
 }
 .sidebar-v2-row-card .sidebar-v2-row-status-slot {
   position: absolute;
@@ -1245,13 +1258,20 @@
   min-width: 0;
   box-sizing: border-box;
 }
+.sidebar-v2-thread-group {
+  width: 100%;
+  padding-right: 8px;
+  padding-bottom: 4px;
+  padding-left: 8px;
+  box-sizing: border-box;
+}
 .sidebar-v2-settled-shelf-toggle {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
   height: 28px;
-  margin-top: 7px;
+  margin-top: 0;
   margin-bottom: 4px;
   padding-right: 10px;
   padding-left: 10px;
