@@ -4951,17 +4951,26 @@ async function verifyFilesBrowser({
       })}`,
     );
   }
-  const [remainingTree, legacyInlinePreview] = await Promise.all([
-    readOptionalMeasurement(client, ".files-panel"),
+  const [explorer, legacyInlinePreview] = await Promise.all([
+    readOptionalMeasurement(client, ".file-panel__explorer"),
     readOptionalMeasurement(client, ".files-panel__preview"),
   ]);
-  if (measurementVisible(remainingTree) || measurementVisible(legacyInlinePreview)) {
+  const panelMode = filePanel.attributes["data-right-panel-mode"];
+  const explorerVisible = measurementVisible(explorer);
+  if (
+    measurementVisible(legacyInlinePreview) ||
+    (panelMode === "inline" &&
+      (!explorerVisible || Math.abs((explorer?.rect.width ?? 0) - 256) > 0.5)) ||
+    (panelMode === "sheet" && explorerVisible)
+  ) {
     throw new Error(
-      `Native Files selection did not replace the tree with a file surface: ${JSON.stringify({
+      `Native file detail explorer ownership drifted: ${JSON.stringify({
+        explorer,
+        explorerVisible,
         filePanel,
         filePath,
         legacyInlinePreview,
-        remainingTree,
+        panelMode,
       })}`,
     );
   }
@@ -4973,7 +4982,7 @@ async function verifyFilesBrowser({
   });
   let fileSheetBack;
   if (verifyFileSheetBack) {
-    const [back, explorer] = await Promise.all([
+    const [back, sheetExplorer] = await Promise.all([
       waitForMeasurement({
         child,
         client,
@@ -4986,9 +4995,9 @@ async function verifyFilesBrowser({
       }),
       readOptionalMeasurement(client, ".file-panel__explorer"),
     ]);
-    if (measurementVisible(explorer)) {
+    if (measurementVisible(sheetExplorer)) {
       throw new Error(
-        `Native file sheet kept the desktop explorer visible: ${JSON.stringify(explorer)}`,
+        `Native file sheet kept the desktop explorer visible: ${JSON.stringify(sheetExplorer)}`,
       );
     }
     await tapSelector({
@@ -5036,7 +5045,9 @@ async function verifyFilesBrowser({
         fontSize: editorFontSize,
         lineHeight: editorLineHeight,
       },
-      treeReplaced: !measurementVisible(remainingTree),
+      explorer: explorer?.rect ?? null,
+      explorerVisible,
+      panelMode,
       legacyInlinePreview: !measurementVisible(legacyInlinePreview),
     },
     fileSheetBack,

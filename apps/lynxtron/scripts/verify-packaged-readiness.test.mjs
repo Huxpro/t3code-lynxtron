@@ -421,11 +421,14 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'editorFontSize !== "12px"');
     assert.include(source, 'editorLineHeight !== "19px"');
     assert.include(source, "Native file editor typography drifted");
-    assert.include(source, 'readOptionalMeasurement(client, ".files-panel__preview")');
-    assert.include(source, "Native Files selection did not replace the tree with a file surface");
+    assert.include(source, 'readOptionalMeasurement(client, ".file-panel__explorer")');
+    assert.include(source, 'const panelMode = filePanel.attributes["data-right-panel-mode"]');
+    assert.include(source, 'panelMode === "inline"');
+    assert.include(source, 'panelMode === "sheet"');
+    assert.include(source, "Native file detail explorer ownership drifted");
     assert.include(source, "function measurementVisible(measurement)");
-    assert.include(source, "measurementVisible(remainingTree)");
-    assert.include(source, "measurementVisible(explorer)");
+    assert.include(source, "const explorerVisible = measurementVisible(explorer)");
+    assert.include(source, "measurementVisible(sheetExplorer)");
     assert.include(source, 'typing: "pending-user-session"');
     assert.include(source, 'name: "native-files-browser.png"');
     assert.include(source, 'name: "native-file-surface.png"');
