@@ -4690,6 +4690,19 @@ async function verifyFilesBrowser({
             readFirstSelectorStyleValue(client, ".sidebar-settings-row", "box-sizing"),
           ]);
           if (
+            !measurementVisible(footer) &&
+            !measurementVisible(settingsRow) &&
+            !measurementVisible(settingsAuthority)
+          ) {
+            return {
+              mode: "sidebar-hidden",
+              footer: null,
+              settingsRow: null,
+              settingsRowBoxSizing: null,
+              settingsAuthorityHidden: true,
+            };
+          }
+          if (
             !footer ||
             !settingsRow ||
             Math.abs(footer.rect.height - 48) > 0.5 ||
@@ -4896,6 +4909,48 @@ async function verifyFilesBrowser({
     timeoutMs,
     predicate: (measurement) => measurement?.text.trim().length > 0,
   });
+  const editorPreview = await waitForMeasurement({
+    child,
+    client,
+    selector: ".file-editor-preview",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-file-editor-mode"] === "preview" &&
+      (measurement?.rect.height ?? 0) > 0,
+  });
+  const editorLine = await waitForMeasurement({
+    child,
+    client,
+    selector: ".file-editor-line",
+    timeoutMs,
+    predicate: (measurement) => (measurement?.rect.height ?? 0) > 0,
+  });
+  const editorLineNumber = await waitForMeasurement({
+    child,
+    client,
+    selector: ".file-editor-line__number",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "1",
+  });
+  const [editorFontFamily, editorFontSize, editorLineHeight] = await Promise.all([
+    readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-family"),
+    readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-size"),
+    readFirstSelectorStyleValue(client, ".file-editor-line__content", "line-height"),
+  ]);
+  if (
+    typeof editorFontFamily !== "string" ||
+    editorFontFamily.length === 0 ||
+    editorFontSize !== "12px" ||
+    editorLineHeight !== "19px"
+  ) {
+    throw new Error(
+      `Native file editor typography drifted: ${JSON.stringify({
+        editorFontFamily,
+        editorFontSize,
+        editorLineHeight,
+      })}`,
+    );
+  }
   const [remainingTree, legacyInlinePreview] = await Promise.all([
     readOptionalMeasurement(client, ".files-panel"),
     readOptionalMeasurement(client, ".files-panel__preview"),
@@ -4973,6 +5028,14 @@ async function verifyFilesBrowser({
       selectedRow: fileRow,
       panel: filePanel.rect,
       path: filePath.text.trim(),
+      editor: {
+        preview: editorPreview.rect,
+        firstLine: editorLine.rect,
+        firstLineNumber: editorLineNumber.rect,
+        fontFamily: editorFontFamily,
+        fontSize: editorFontSize,
+        lineHeight: editorLineHeight,
+      },
       treeReplaced: !measurementVisible(remainingTree),
       legacyInlinePreview: !measurementVisible(legacyInlinePreview),
     },
@@ -4981,6 +5044,169 @@ async function verifyFilesBrowser({
       tree: treeScreenshot,
       file: fileScreenshot,
     },
+  };
+}
+
+async function verifyCompactControls({
+  child,
+  client,
+  devToolCli,
+  height,
+  outputDirectory,
+  timeoutMs,
+  width,
+}) {
+  const rightPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-right-panel-active-kind"] === "files",
+  });
+  const context = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-context-strip",
+    timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement),
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-compact-controls-trigger",
+    timeoutMs,
+  });
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-compact-controls-menu",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurementVisible(measurement) && Math.abs((measurement?.rect.width ?? 0) - 148) <= 1,
+  });
+  const scroll = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-compact-controls-menu__scroll",
+    timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement),
+  });
+  const content = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-compact-controls-menu__content",
+    timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement),
+  });
+  const dismiss = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-compact-controls-dismiss",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement !== null &&
+      Math.abs((measurement.rect?.x ?? -1) - 0) <= 1 &&
+      Math.abs((measurement.rect?.y ?? -1) - 0) <= 1 &&
+      Math.abs((measurement.rect?.width ?? 0) - width) <= 1 &&
+      Math.abs((measurement.rect?.height ?? 0) - height) <= 1,
+  });
+  const rows = await readSelectorMeasurements(client, ".composer-compact-controls-menu__item");
+  const requiredTail = ["Chat", "Plan", "Supervised", "Auto-accept edits", "Auto", "Full access"];
+  const rowLabels = rows.map(({ text }) => text.replace(/\s*Default\s*$/u, "").trim());
+  const tailLabels = rowLabels.slice(-requiredTail.length);
+  const traitLabels = rowLabels.slice(0, -requiredTail.length);
+  const panelRight = panel.rect.x + panel.rect.width;
+  const contextRight = context.rect.x + context.rect.width;
+  if (
+    JSON.stringify(tailLabels) !== JSON.stringify(requiredTail) ||
+    traitLabels.length === 0 ||
+    new Set(rowLabels).size !== rowLabels.length ||
+    rows.some(({ rect }) => !rect || rect.height < 27 || rect.height > 29) ||
+    scroll.rect.x < panel.rect.x ||
+    scroll.rect.y < panel.rect.y ||
+    scroll.rect.x + scroll.rect.width > panelRight + 1 ||
+    scroll.rect.y + scroll.rect.height > panel.rect.y + panel.rect.height + 1 ||
+    content.rect.height < rows.length * 28 ||
+    panelRight > rightPanel.rect.x + 1 ||
+    contextRight > rightPanel.rect.x + 1
+  ) {
+    throw new Error(
+      `Native compact Composer controls drifted: ${JSON.stringify({
+        content,
+        context,
+        panel,
+        requiredTail,
+        rightPanel,
+        rowLabels,
+        rows,
+        scroll,
+      })}`,
+    );
+  }
+
+  let scrollEvidence = { status: "not-required" };
+  if (content.rect.height > scroll.rect.height) {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression:
+        "globalThis.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?.(120).then((value) => JSON.stringify(value ?? null))",
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    const result = commandResult(response);
+    if (response?.exceptionDetails || typeof result?.value !== "string") {
+      throw new Error(`Native compact controls scroll probe failed: ${JSON.stringify(response)}`);
+    }
+    const scrolled = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-compact-controls-menu__scroll",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-scroll-offset"] === "120",
+    });
+    scrollEvidence = {
+      status: "pass",
+      requestedOffset: 120,
+      appliedOffset: Number(scrolled.attributes["data-scroll-offset"]),
+    };
+  }
+
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-compact-controls.png",
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-compact-controls-dismiss",
+    point: "top-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-compact-controls-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  return {
+    status: "pass",
+    input: "DevTool touch on the measured ellipsis trigger and fullscreen dismiss layer",
+    panel: panel.rect,
+    scroll: scroll.rect,
+    content: content.rect,
+    dismiss: dismiss.rect,
+    rowLabels,
+    traitLabels,
+    containment: {
+      panelRight,
+      contextRight,
+      rightPanelLeft: rightPanel.rect.x,
+    },
+    scrollEvidence,
+    screenshot,
+    dismissed: true,
   };
 }
 
@@ -7362,6 +7588,7 @@ async function runOnce({
   verifyShellInteractions: shouldVerifyShellInteractions,
   verifyFilesBrowser: shouldVerifyFilesBrowser,
   verifyFileSheetBack,
+  verifyCompactControls: shouldVerifyCompactControls,
   verifyGitInitialize: shouldVerifyGitInitialize,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyProjectActionDialog: shouldVerifyProjectActionDialog,
@@ -7411,7 +7638,8 @@ async function runOnce({
       ...(shouldVerifyConnectionsMutation ? { T3CODE_HOST: "0.0.0.0" } : {}),
       ...(shouldVerifyModelOptionMenuMutation ||
       shouldVerifyComposerSendMaterial ||
-      shouldVerifySidebarInlineSearch
+      shouldVerifySidebarInlineSearch ||
+      shouldVerifyCompactControls
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
@@ -7833,6 +8061,17 @@ async function runOnce({
           width,
         })
       : undefined;
+    const compactControls = shouldVerifyCompactControls
+      ? await verifyCompactControls({
+          child,
+          client,
+          devToolCli,
+          height,
+          outputDirectory,
+          timeoutMs,
+          width,
+        })
+      : undefined;
     const gitInitialize = shouldVerifyGitInitialize
       ? await verifyGitInitialize({
           child,
@@ -7972,6 +8211,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       filesBrowser,
+      compactControls,
       gitInitialize,
       gitPublishDialog,
       projectActionDialog,
@@ -8025,6 +8265,7 @@ async function runOnce({
       reviewCheckpointStates,
       shellInteractions,
       filesBrowser,
+      compactControls,
       gitInitialize,
       gitPublishDialog,
       projectActionDialog,
@@ -8121,6 +8362,7 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
 const shouldVerifyFileSheetBack = process.argv.includes("--verify-file-sheet-back");
+const shouldVerifyCompactControls = process.argv.includes("--verify-compact-controls");
 const shouldVerifyResponsiveSidebarFooter = process.argv.includes(
   "--verify-responsive-sidebar-footer",
 );
@@ -8179,6 +8421,9 @@ if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutat
 }
 if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-file-sheet-back requires --verify-files-browser.");
+}
+if (shouldVerifyCompactControls && !shouldVerifyFilesBrowser) {
+  throw new Error("--verify-compact-controls requires --verify-files-browser.");
 }
 if (shouldVerifyResponsiveSidebarFooter && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-responsive-sidebar-footer requires --verify-files-browser.");
@@ -8421,6 +8666,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyShellInteractions: shouldVerifyShellInteractions,
       verifyFilesBrowser: shouldVerifyFilesBrowser,
       verifyFileSheetBack: shouldVerifyFileSheetBack,
+      verifyCompactControls: shouldVerifyCompactControls,
       verifyGitInitialize: shouldVerifyGitInitialize,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyProjectActionDialog: shouldVerifyProjectActionDialog,

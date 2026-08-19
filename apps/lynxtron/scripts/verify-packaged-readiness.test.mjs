@@ -352,6 +352,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Math.abs(settingsRow.rect.height - 32) > 0.5");
     assert.include(source, 'settingsRowBoxSizing !== "border-box"');
     assert.include(source, "measurementVisible(settingsAuthority)");
+    assert.include(source, 'mode: "sidebar-hidden"');
+    assert.include(source, "!measurementVisible(footer)");
+    assert.include(source, "!measurementVisible(settingsRow)");
     assert.include(source, "Native responsive Sidebar footer drifted");
     assert.include(source, "responsiveSidebarFooter,");
     assert.include(source, '"--verify-responsive-settled-banner"');
@@ -386,6 +389,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".files-panel .file-tree-row--file"');
     assert.include(source, 'measurement?.attributes["data-right-panel-active-kind"] === "file"');
     assert.include(source, 'selector: ".file-panel__breadcrumb--current"');
+    assert.include(source, 'selector: ".file-editor-preview"');
+    assert.include(source, 'selector: ".file-editor-line"');
+    assert.include(source, 'selector: ".file-editor-line__number"');
+    assert.include(source, 'measurement?.attributes["data-file-editor-mode"] === "preview"');
+    assert.include(source, 'editorFontSize !== "12px"');
+    assert.include(source, 'editorLineHeight !== "19px"');
+    assert.include(source, "Native file editor typography drifted");
     assert.include(source, 'readOptionalMeasurement(client, ".files-panel__preview")');
     assert.include(source, "Native Files selection did not replace the tree with a file surface");
     assert.include(source, "function measurementVisible(measurement)");
@@ -402,6 +412,29 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'measurement?.attributes["data-right-panel-active-kind"] === "files"');
     assert.include(source, "fileSheetBack");
     assert.include(outcomeChecksSource, "filesBrowser");
+  });
+
+  it("verifies compact Composer controls stay scrollable and inside the center column", () => {
+    assert.include(source, "async function verifyCompactControls");
+    assert.include(source, '"--verify-compact-controls"');
+    assert.include(source, '"--verify-compact-controls requires --verify-files-browser."');
+    assert.include(source, 'selector: ".composer-compact-controls-trigger"');
+    assert.include(source, 'selector: ".composer-compact-controls-menu"');
+    assert.include(source, 'selector: ".composer-compact-controls-menu__scroll"');
+    assert.include(source, 'selector: ".composer-compact-controls-menu__content"');
+    assert.include(source, 'selector: ".composer-compact-controls-dismiss"');
+    assert.include(source, "const requiredTail = [");
+    assert.include(source, '"Plan",');
+    assert.include(source, '"Full access"');
+    assert.include(source, "const traitLabels = rowLabels.slice(0, -requiredTail.length)");
+    assert.include(source, "new Set(rowLabels).size !== rowLabels.length");
+    assert.include(source, "panelRight > rightPanel.rect.x + 1");
+    assert.include(source, "contextRight > rightPanel.rect.x + 1");
+    assert.include(source, "__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?.(120)");
+    assert.include(source, 'measurement?.attributes["data-scroll-offset"] === "120"');
+    assert.include(source, "Native compact Composer controls drifted");
+    assert.include(source, 'name: "native-compact-controls.png"');
+    assert.include(outcomeChecksSource, "compactControls");
   });
 
   it("verifies the Native Publish wizard and backdrop dismissal", () => {
