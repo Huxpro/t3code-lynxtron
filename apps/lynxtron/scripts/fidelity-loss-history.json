@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T23:40:33+09:00",
+  "updatedAt": "2026-08-20T00:16:18+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12556,6 +12556,75 @@
           "path": "apps/lynxtron/evidence/2026-08-19/fidelity/diff-scope-menu-registration.json",
           "classification": "tracked-current",
           "sha256": "d027329c841a6a5b318c3625b9c2b9167a8d3e1d3e506b00441ee79a02f9482d"
+        }
+      ]
+    },
+    {
+      "id": "diff-scope-menu-baseline",
+      "observedAt": "2026-08-20T00:16:18+09:00",
+      "commit": "90fef0ddceaaf55ea422902459974b1a0fbe31a6",
+      "codeCommit": "b635e93c4282dbe16cc77dc5f67da06dbaada15c",
+      "codeState": "commit",
+      "label": "Diff scope menu baseline",
+      "narrative": "A matched dark Browser baseline confirms the newly registered P1 product loss. Web exposes Working tree, Branch changes, Latest turn, and Turn in a 240x122 glass menu with four 230x28 rows at 14px/20px. Lynx exposes only Latest turn in a 190x40 menu with one 77.578125x30 row at 16px. The same-snapshot 260x140 menu envelope measures 20.578956 MAE and 28.4560% significant pixels. Both shipping renderers load the same completed turn, compute the real review-fixture.txt checkpoint patch through the server, identify Latest turn as active, open the menu through the real trigger, and report zero console errors. The retained report's aggregate gate remains diagnostic false because unrelated core and Composer parity compare a disabled Web Composer with an idle Lynx Composer; strict state identity, Diff patch, overlay, row, geometry, image, and console sub-gates pass. Codex fixture generation was externally blocked by usage limits and Claude by unchecked provider status, so a disposable direct-projection visual fixture creates real Git checkpoint refs and canonical projection rows without claiming provider, projector, or backend business behavior. Native remains conservative unknown.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The retained pair holds canonicalized snapshot, project, thread, completed turn, real hidden Git refs, checkpoint patch, route, dark theme, viewport, trigger path, shipping artifacts, and zero-error readiness constant. Invalid ordinary-seed and provider-blocked attempts receive no product attribution."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/diff-scope-menu-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "7e0b39dfb7d4006e0a84620467fe49c27e42c759edb767560ba594da3bed547f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["diff-scope-menu"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.75,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-authority-content",
+              "source": "Lynx renders one of four authority rows: Latest turn is present, while Working tree, Branch changes, and Turn are absent"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 1, 50, 82, 0, 1, 152.421875, 2],
+              "anchorScale": 240,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-panel-row-geometry",
+              "source": "Panel and representative Latest turn row x/y/width/height deltas compare the Web authority with Lynx-for-Web"
+            },
+            "typography": {
+              "residual": 0.142857,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-type-scale",
+              "source": "Lynx row resolves at 16px instead of the Web authority's 14px/20px"
+            },
+            "material": {
+              "pixel": {
+                "mae": 20.578956,
+                "significantShare": 0.28456
+              },
+              "confidence": 0.99,
+              "method": "diff-scope-menu-envelope",
+              "source": "Same-snapshot 260x140 envelope covering the complete authority menu and the one-row Lynx candidate"
+            },
+            "interaction": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-open-only",
+              "source": "Both real triggers open their menus; outside dismissal and scope selection are not yet exercised"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-baseline-readiness",
+              "source": "Both shipping renderers retain the same completed checkpoint state, render the real patch, and report zero console errors"
+            }
+          }
         }
       ]
     }
