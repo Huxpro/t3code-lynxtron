@@ -896,7 +896,7 @@ export default function FilePreviewPanel({
               type="button"
               variant="ghost"
               size="icon-xs"
-              className="-ml-1 shrink-0"
+              className="-ml-1 size-7! shrink-0"
               aria-label="Back to workspace files"
               onClick={onBackToFiles}
             >
