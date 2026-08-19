@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T19:41:24+09:00",
+  "updatedAt": "2026-08-19T20:17:30+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12051,6 +12051,75 @@
               "confidence": 0.99,
               "method": "quick-switch-light-keycap-readiness",
               "source": "Post-commit Browser pair and final Native light/dark runs pass with zero errors, disposed state, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "right-panel-add-menu-baseline",
+      "observedAt": "2026-08-19T20:17:30+09:00",
+      "commit": "0815c4174",
+      "codeCommit": "0815c4174",
+      "codeState": "commit",
+      "label": "Right panel add-surface menu baseline",
+      "narrative": "A distinct user-reachable overlay enters the fixed denominator before repair: the add-surface menu on an inline Files panel. One immutable 1280x820 dark snapshot proves matching Browser, Terminal, Files, and Diff labels, matching Browser-disabled semantics, real trigger activation, and zero renderer errors. The Web authority anchors a 128x122 menu below its 28x28 trigger, with 118x28 rows at 14px/20px, 83.6% #191919 glass, a 10% light border, 10px radius, and an 80% shadow. Lynx-for-Web opens a 142x146 opaque menu to the trigger's left, with 140x34 rows at 16px, an 8% border, 8px radius, and no shadow. The 360x165 menu envelope measures 22.709175 MAE and 50.9815% significant pixels. Three earlier attempts are rejected as harness mismatches because the disabled Tooltip-wrapped row was omitted or the gate read the wrong geometry field. Native remains conservative unknown. The denominator expands from 60 states, 684 cells, and weight 222.2 to 61 states, 696 cells, and weight 226.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This admits a distinct overlay before repair. The retained Browser pair holds snapshot, project, thread, route, dark theme, viewport, surface, trigger path, labels, disabled semantics, and zero-error readiness constant; invalid harness attempts receive no product attribution."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/right-panel-add-menu-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "fa75127ca38dab28347dd768f7a2390409d774160c530c5b3fbbbce0ed77571a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-add-menu"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-content",
+              "source": "Both render Browser, Terminal, Files, and Diff in the same order with matching Browser-disabled semantics"
+            },
+            "geometry": {
+              "anchorDeltas": [215, 1.5, 14, 24, 219, 1.5, 22, 6],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-geometry",
+              "source": "Panel and representative row x/y/width/height deltas compare the Web authority with Lynx-for-Web"
+            },
+            "typography": {
+              "residual": 0.142857,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-type-scale",
+              "source": "Lynx rows resolve at 16px instead of the Web authority's 14px"
+            },
+            "material": {
+              "pixel": {
+                "mae": 22.709175,
+                "significantShare": 0.509815
+              },
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-envelope",
+              "source": "Same-snapshot 360x165 envelope covering both trigger/menu positions"
+            },
+            "interaction": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-open-only",
+              "source": "The real add-surface trigger opens both menus; selection and outside dismissal were not exercised in this baseline"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-readiness",
+              "source": "Both Browser renderers retain the selected project/thread, matching surface state, and zero renderer errors"
             }
           }
         }
