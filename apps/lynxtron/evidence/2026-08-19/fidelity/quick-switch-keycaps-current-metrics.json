@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T19:41:24+09:00",
+  "evidenceCommit": "019b6be39",
+  "productCommit": "019b6be39",
+  "stateId": "quick-switch-query-light",
+  "classification": {
+    "closedProductLoss": [
+      "Lynx Quick Switch keycaps now use border-box sizing, so a 20px minimum width includes the 4px horizontal padding instead of expanding the arrow keycaps to 28px.",
+      "The first footer group shrinks from 126.359375px to 110.359375px against Web's 109.65625px; later groups remain within 1.5px cumulative x drift.",
+      "The same-snapshot footer crop improves from 8.695746 to 4.765026 MAE and from 13.6193% to 5.9713% significant pixels on the current product baseline."
+    ],
+    "remainingProductLoss": [
+      "Web uses DM Sans Variable while Lynx uses bundled DM Sans. Footer group widths retain 0.67px to 0.73px text-shaping differences and are treated as rendering residual rather than compensated with arbitrary tracking."
+    ],
+    "harnessCorrections": [
+      "The quick-switch-query-light state is now explicitly registered for its overlay, settings query, thread fixture, and existing-thread scenario. The first current attempt used the background-only fixture and was rejected before attribution.",
+      "Workbench evidence now records footer groups and their keycap/label children for both Web and Lynx, localizing the residual to keycap box sizing instead of panel material."
+    ],
+    "evidenceBoundary": "Browser evidence uses one immutable snapshot, selected project and thread, light theme, 1280x820 viewport, real Meta-K paths, the settings query, one Open settings row, matching state identity, exact footer geometry, and zero console errors. Exact Native light and dark evidence uses a generated single-thread fixture, initial Quick Switch product state, final dba7e980 bundle, measured outside dismissal, main transport, zero renderer errors, and disposed state. Native default-overlay evidence does not claim query typing."
+  },
+  "browser": {
+    "report": {
+      "path": "/tmp/t3-quick-switch-kbd-postcommit/workbench-report.json",
+      "sha256": "4a0e3c8dc5f66c87eb2f432e11193e46fa440b6b98f3a0b3005547a350777d7d"
+    },
+    "commit": "019b6be3974498d593cd5c5da8bcbf58f8f0586c",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "viewport": "1280x820",
+    "theme": "light",
+    "query": "settings",
+    "result": "Open settings",
+    "webBundle": "8df48884381d",
+    "lynxBundle": "5e41772cdf0e",
+    "geometry": {
+      "webGroups": [
+        [369, 217, 109.65625, 20],
+        [490.65625, 217, 85.5625, 20],
+        [588.21875, 217, 71.0625, 20]
+      ],
+      "lynxGroups": [
+        [369, 217, 110.359375, 20],
+        [491.359375, 217, 86.296875, 20],
+        [589.65625, 217, 71.734375, 20]
+      ],
+      "arrowKeycaps": {
+        "web": [20, 20],
+        "lynxBefore": [28, 28],
+        "lynxCurrent": [20, 20]
+      }
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "beforeCurrentSlice": {
+        "fullFrame": {
+          "mae": 1.00804,
+          "significantShare": 0.013618
+        },
+        "panel": {
+          "mae": 3.381613,
+          "significantShare": 0.047513
+        },
+        "footer": {
+          "mae": 8.695746,
+          "significantShare": 0.136193
+        }
+      },
+      "current": {
+        "fullFrame": {
+          "mae": 0.922055,
+          "significantShare": 0.011945
+        },
+        "panel": {
+          "mae": 2.437741,
+          "significantShare": 0.029148
+        },
+        "footer": {
+          "mae": 4.765026,
+          "significantShare": 0.059713,
+          "formulaResidual": 0.342937
+        }
+      }
+    },
+    "screenshots": {
+      "webSha256": "0520d968990b963edf4a1c6d41cf87b45bbabdcf260ae706c2a8f420e06bb109",
+      "lynxSha256": "c6ecca2ab54cf5bc2e1fe0218af41512f1123aa2807df604542cc4ad2f832527"
+    },
+    "rendererErrors": 0
+  },
+  "native": {
+    "bundleSha256": "dba7e9808a5e47f0b9a1354f74e1c507912a20df7db7ed35710b52798de7bc11",
+    "fixtureSnapshotId": "046b9d39372e56d48909a7bf6473f7d2068216c2b62197f6c0ac767bce5acb74",
+    "light": {
+      "report": "/tmp/t3-quick-switch-native-light-postcommit/report.json",
+      "reportSha256": "bdc4fe6efc6bd4aa2a386ea1aefb6bc364fafa65998050febd3514dde0e56cbb",
+      "theme": "light",
+      "footerText": "Up Down Navigate Enter Select Esc Close",
+      "dismissed": true,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true,
+      "screenshotSha256": "24eee1cf0c511cd693bdadf5053f2e164a073ebb9e55644e01107cf1a6f42986"
+    },
+    "dark": {
+      "report": "/tmp/t3-quick-switch-native-dark-postcommit/report.json",
+      "reportSha256": "bce320c633ad134622c014f270e46e8964de18a8e8399fa5f40b0424ccdb4f3f",
+      "theme": "dark",
+      "footerText": "Up Down Navigate Enter Select Esc Close",
+      "dismissed": true,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true,
+      "screenshotSha256": "61744197978cd97452d4b06f6281898dc9228aa4ad09259faa8c7c09f0602ba7"
+    },
+    "queryTyping": "pending-user-session"
+  },
+  "fidelityImpact": {
+    "fixedDenominator": {
+      "states": 60,
+      "cells": 684,
+      "weight": 222.2
+    },
+    "baseline": {
+      "totalLoss": 0.344238,
+      "stateLoss": 0.648366,
+      "stateObservedResidual": 0.112035,
+      "overlayGroupLoss": 0.420992
+    },
+    "current": {
+      "totalLoss": 0.343816,
+      "stateLoss": 0.624962,
+      "stateObservedResidual": 0.052935,
+      "overlayGroupLoss": 0.419296
+    },
+    "delta": {
+      "totalLoss": -0.000422,
+      "stateLoss": -0.023404,
+      "stateObservedResidual": -0.0591,
+      "overlayGroupLoss": -0.001696
+    },
+    "remainingStateLossBoundary": "The state retains 0.604 evidence debt because Native query typing is unobserved. Browser-observed residual is limited to 0.052935 after keycap convergence.",
+    "existingWeightsChanged": false,
+    "existingScopeReduced": false
+  },
+  "validation": {
+    "focusedTests": "67/67",
+    "lynxTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect warnings",
+    "browserPreviewBuild": "pass with existing asset-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  }
+}

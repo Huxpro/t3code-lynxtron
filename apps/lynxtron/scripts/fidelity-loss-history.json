@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T18:48:52+09:00",
+  "updatedAt": "2026-08-19T19:41:24+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11982,6 +11982,75 @@
               "confidence": 0.99,
               "method": "native-light-file-token-readiness",
               "source": "Expected and actual light theme, final ced67863 bundle, main transport, zero renderer errors, and disposed state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-query-light-keycaps-current",
+      "observedAt": "2026-08-19T19:41:24+09:00",
+      "commit": "019b6be39",
+      "codeCommit": "019b6be39",
+      "codeState": "commit",
+      "label": "Quick Switch Query light keycap geometry convergence",
+      "narrative": "Current same-snapshot evidence localizes the remaining Quick Switch light footer residual to Lynx keycap box sizing rather than panel material. Web's two arrow keycaps are 20x20. Lynx declared a 20px minimum width but resolved content-box, so 4px horizontal padding expanded each arrow keycap to 28px and made the first footer group 126.359375px instead of 109.65625px, shifting every later group. The Quick Switch-specific selector now enforces border-box: arrow keycaps resolve to 20x20, footer groups differ from Web by only 0.67px to 0.73px text shaping, and the footer crop improves from 8.695746 to 4.765026 MAE and from 13.6193% to 5.9713% significant pixels. Panel, query, result, footer copy, theme, and geometry remain unchanged. Exact final-bundle Native light and dark runs verify truthful footer content, outside dismissal, main transport, zero renderer errors, and disposed isolated state; Native query typing remains pending-user-session and receives no Query interaction credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Browser before/current frames hold snapshot, project, thread, route, light theme, viewport, query, Web authority pixels, and all non-keycap product state constant. The exact geometry measurements identify the 8px-per-arrow expansion, and final Native light/dark runs use the post-commit dba7e980 bundle."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/quick-switch-keycaps-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "07bda8cf03b9a53dfd79b87a3ad05501658fd8bd10c4f16189ab7c999103ce42"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-keycap-content",
+              "source": "The settings query, Open settings row, and Enter Select footer remain truthful"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.703125, 0, 0.703125, 0, 0.734375, 0, 1.4375, 0, 0.671875, 0],
+              "anchorScale": 574,
+              "confidence": 0.99,
+              "method": "quick-switch-light-footer-group-geometry",
+              "source": "Three group x/y/width/height deltas after arrow keycaps shrink from 28px to Web's 20px"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "quick-switch-light-bundled-type-scale",
+              "source": "Sizes, weights, and line heights match; subpixel group width differences remain from DM Sans Variable versus bundled DM Sans"
+            },
+            "material": {
+              "pixel": {
+                "mae": 4.765026,
+                "significantShare": 0.059713
+              },
+              "confidence": 0.99,
+              "method": "quick-switch-light-keycap-footer-crop",
+              "source": "Same-snapshot 574x40 footer crop after border-box keycap sizing"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-current-shortcut-query",
+              "source": "Both Browser renderers open through Meta-K and accept the settings query; Native default overlay dismisses through measured outside touch"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-keycap-readiness",
+              "source": "Post-commit Browser pair and final Native light/dark runs pass with zero errors, disposed state, and clean leak gates"
             }
           }
         }

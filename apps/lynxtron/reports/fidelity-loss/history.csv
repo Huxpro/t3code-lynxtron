@@ -174,3 +174,4 @@ project-action-dialog-current,2026-08-19T17:28:28+09:00,089dae232,commit,Project
 composer-compact-controls-inline-files-baseline,2026-08-19T18:02:56+09:00,71088389d,commit,Compact Composer controls with inline Files baseline,0.346155,0.346155,0.019976,0.332827,0.667173,0.64256
 composer-compact-controls-inline-files-current,2026-08-19T18:46:13+09:00,e663aa5b3,commit,Compact Composer controls intrinsic-height convergence,0.345948,0.345948,0.019667,0.332827,0.667173,0.642767
 file-editor-token-current,2026-08-19T18:47:11+09:00,e663aa5b3,commit,File editor token presentation convergence,0.344238,0.344238,0.021494,0.329833,0.670167,0.644477
+quick-switch-query-light-keycaps-current,2026-08-19T19:41:24+09:00,019b6be39,commit,Quick Switch Query light keycap geometry convergence,0.343816,0.343816,0.020865,0.329833,0.670167,0.644899
