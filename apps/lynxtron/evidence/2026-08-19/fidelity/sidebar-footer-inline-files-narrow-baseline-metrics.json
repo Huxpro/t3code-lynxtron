@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T10:43:20+09:00",
+  "harnessCommit": "cbb9f156a",
+  "productHead": "af6591b98",
+  "stateId": "sidebar-footer-inline-files-narrow",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "rightPanelSurface": "Files",
+    "rightPanelWidth": 540,
+    "surface": "Responsive Sidebar Settings footer while Files is inline"
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "classification": {
+    "productLoss": [
+      "Web renders one 239x32 Settings row inside the 255x48 Sidebar footer. Lynx renders the real Settings row at 239x44 and also keeps the 239x32 dark calibration sprite visible, producing duplicate Settings content.",
+      "The Lynx row extends 4px below the 48px footer because it resolves as content-box while retaining 6px vertical padding.",
+      "The 256x48 footer crop measures 4.771891 MAE and 5.3874% significant pixels."
+    ],
+    "harnessMismatch": [],
+    "intentionalPlatformDelta": [],
+    "evidenceBoundary": "The paired capture uses one immutable snapshot, selected project and thread, dark theme, 1024x820 viewport, 540px inline Files panel, shipping Web and Lynx-for-Web artifacts, matching Files rows, matching route identity, zero console errors, and clean leak gates. The new responsive footer gate fails only the Settings row and calibration-sprite conditions. Native remains unobserved at baseline."
+  },
+  "browser": {
+    "status": "fail-with-product-loss",
+    "report": {
+      "path": "/tmp/t3-sidebar-footer-responsive-baseline/workbench-report.json",
+      "sha256": "7e0af47034c0ac4008b14f8c08e0fc6c9720daba51179a59607f538bebf20fa6"
+    },
+    "bundles": {
+      "web": "a75cf8d54748",
+      "lynx": "f230f21e85da"
+    },
+    "readyMs": 30012,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "filesBrowserMatch": true,
+    "rendererErrors": 0,
+    "failedGates": ["reachedTargetState", "finalSidebarFooterThemeReady"],
+    "geometry": {
+      "web": {
+        "footer": [0, 772, 255, 48],
+        "settingsRow": [8, 780, 239, 32],
+        "settingsAuthority": null
+      },
+      "lynx": {
+        "footer": [0, 772, 255, 48],
+        "settingsRow": [9.5, 780, 239, 44],
+        "settingsAuthority": [8, 780, 239, 32],
+        "settingsAuthorityDisplay": "flex"
+      }
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "crop": [0, 772, 256, 48],
+      "mae": 4.771891,
+      "significantShare": 0.053874,
+      "formulaResidual": 0.325655
+    },
+    "screenshots": {
+      "webSha256": "2a2c2cf370da7619a630bcb0752f42d2d9b9d0ab0937307f822948afcdc93295",
+      "lynxSha256": "4b7b14f6a37e67ee6622a843085070947f0d54a36a893a000b50ed42f24e7091"
+    }
+  },
+  "native": {
+    "status": "unobserved"
+  },
+  "validation": {
+    "harnessFocusedTests": "33/33",
+    "workbenchBuild": "pass with existing bundle-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}

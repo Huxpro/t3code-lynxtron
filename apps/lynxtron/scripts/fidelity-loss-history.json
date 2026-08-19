@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T10:25:00+09:00",
+  "updatedAt": "2026-08-19T10:43:20+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10711,6 +10711,75 @@
               "confidence": 0.99,
               "method": "quick-switch-light-current-readiness",
               "source": "Same Browser state identity, zero console errors, clean leak gates, and exact-bundle Native light/dark regression passes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-footer-inline-files-narrow-baseline",
+      "observedAt": "2026-08-19T10:43:20+09:00",
+      "commit": "cbb9f156a",
+      "codeCommit": "af6591b98",
+      "codeState": "commit",
+      "label": "Responsive Sidebar footer duplicate baseline",
+      "narrative": "A newly modeled 1024x820 dark state keeps the 540px Files panel inline while measuring the responsive Sidebar footer independently from the already-certified Composer allocation. Web renders one 239x32 Settings row inside the 255x48 footer. Lynx renders its real row at 239x44 and also leaves the 239x32 dark calibration sprite visible, producing duplicate Settings content and a row that extends 4px below the footer. The 256x48 footer crop measures 4.771891 MAE with 5.3874% significant pixels. Both panes otherwise share the same snapshot, route, project, thread, Files rows, and zero-error readiness; the new hard gate fails only the responsive footer conditions. Native remains unknown and receives no Browser credit.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds one real responsive shell state before repair. Existing states and weights are unchanged. The new state uses the secondary shell weight of 3 and retains all unobserved Native cells as conservative unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/sidebar-footer-inline-files-narrow-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "6d2cd0ba1b11503892768da52db80b304336c93300883073e4bde935f96f73b6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-footer-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.5,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-duplicate",
+              "source": "Lynx shows the real Settings row and the calibration sprite while Web shows one Settings row"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 1.5, 0, 0, 12, 0, 0, 0, 0],
+              "anchorScale": 48,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-anatomy",
+              "source": "Footer geometry matches, but the real Lynx row is 44px instead of 32px and the 239x32 sprite remains visible"
+            },
+            "typography": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-legibility",
+              "source": "Two offset Settings renderings reduce label and icon clarity"
+            },
+            "material": {
+              "pixel": {
+                "mae": 4.771891,
+                "significantShare": 0.053874
+              },
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-crop",
+              "source": "Same-snapshot 256x48 footer crop at 1024x820"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-interaction",
+              "source": "The real Settings row remains present and pointer-enabled while Files opens through paired pointer input"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-readiness",
+              "source": "Both panes reach the same Files state with matching identity, zero console errors, and clean leak gates"
             }
           }
         }

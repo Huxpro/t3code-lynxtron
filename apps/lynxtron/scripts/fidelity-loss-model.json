@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 55,
-  "expectedCellCount": 630,
-  "expectedTotalWeight": 206,
+  "expectedStateCount": 56,
+  "expectedCellCount": 642,
+  "expectedTotalWeight": 209,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -110,6 +110,13 @@
       "label": "Sidebar · Resize Interaction",
       "group": "shell",
       "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "sidebar-footer-inline-files-narrow",
+      "label": "Sidebar Footer · Inline Files · Narrow",
+      "group": "shell",
+      "weight": 3,
       "clients": ["lynx", "native"]
     },
     {
