@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T14:29:00+09:00",
+  "harnessCommit": "ac2b91b80",
+  "stateId": "project-action-dialog",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "project-action-dialog"
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "classification": {
+    "productLoss": [
+      "Lynx lays the dialog header, body, and footer out as three horizontal columns that each consume the full 662px dialog height instead of matching Web's vertical 104px, 500px, and 65px stack.",
+      "The Name, Keybinding, and Preview URL inputs have no visible box in Lynx; only the Command textarea remains visible at 104px wide instead of Web's 460px.",
+      "Title and description text are squeezed into narrow columns and wrap vertically, while footer buttons appear at the top-right instead of the bottom-right.",
+      "The 560x680 dialog crop measures 18.422823 MAE and 10.9821% significant pixels."
+    ],
+    "harnessMismatch": [
+      "Five rejected attempts used the background-only Web snapshot because the new state was not yet in the thread fixture set; Lynx opened a project dialog while Web correctly had no active project.",
+      "One valid structural pair retained an unrelated Web provider-update notification and was excluded from material evidence.",
+      "One cleanup attempt dismissed the notification after opening overlays and disturbed the transient Lynx dialog; cleanup now occurs before either overlay opens."
+    ],
+    "intentionalPlatformDelta": [
+      "Web keybinding input is read-only and captures physical keyboard shortcuts. Lynx keybinding mutation remains unverified and is not scored as a baseline content mismatch."
+    ],
+    "evidenceBoundary": "The retained pair uses one immutable snapshot, project, idle thread, route, dark theme, 1280x820 viewport, shipping Web and Lynx-for-Web artifacts, real Header pointer triggers, no provider notification, matching dialog text and disabled-option semantics, zero console errors, and clean leak gates. Native is unobserved and remains conservative unknown."
+  },
+  "browser": {
+    "status": "pass-with-product-loss",
+    "report": {
+      "path": "/tmp/t3-project-action-baseline-postcommit/workbench-report.json",
+      "sha256": "f2ab4c0c8ff849fa1512e2e631e9a4c8355c7e48df0e7b5960e157620b92f37e"
+    },
+    "bundles": {
+      "web": "df1e5677adc8bc1b302cda55389a68f009395896dbb9f8d66ad0e67e21a354be",
+      "lynxForWeb": "491b3efd3cf7093cebf332e6e536b5d7b068bd25ddb3eac0f81e1d231995d8ba"
+    },
+    "readyMs": 3359,
+    "stateIdentityMatch": true,
+    "overlayContentMatch": true,
+    "rendererErrors": 0,
+    "geometry": {
+      "web": {
+        "dialog": [384, 74.5, 512, 671],
+        "header": [385, 75.5, 510, 104],
+        "body": [385, 179.5, 510, 500],
+        "footer": [385, 679.5, 510, 65],
+        "name": [454, 210.5, 416, 30],
+        "keybinding": [410, 284.5, 460, 30],
+        "command": [410, 380.5, 460, 70],
+        "previewUrl": [410, 494.5, 460, 30],
+        "options": [
+          [409, 563.5, 462, 38],
+          [409, 617.5, 462, 38]
+        ]
+      },
+      "lynx": {
+        "dialog": [388, 78, 504, 664],
+        "header": [389, 79, 224.546875, 662],
+        "body": [613.546875, 79, 221.078125, 662],
+        "footer": [834.625, 79, 188.78125, 662],
+        "name": null,
+        "keybinding": null,
+        "command": [706.65625, 269, 103.96875, 72],
+        "previewUrl": null,
+        "options": [
+          [637.546875, 543, 173.078125, 50],
+          [637.546875, 599, 173.078125, 66]
+        ]
+      }
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "fullFrame": {
+        "mae": 10.755501,
+        "significantShare": 0.054077
+      },
+      "dialogCrop": {
+        "crop": [360, 70, 560, 680],
+        "mae": 18.422823,
+        "significantShare": 0.109821,
+        "formulaResidual": 0.879464
+      }
+    },
+    "screenshots": {
+      "webSha256": "dd1c261e107ff77df90c79d6d37a39ec3461f190cea96f00b64b0e70eefa2266",
+      "lynxSha256": "94bab432985778095b839f0d83b96003b8923a8bad89a7bebc4d850dcb2503c8"
+    }
+  },
+  "native": {
+    "status": "unobserved"
+  },
+  "denominatorChange": {
+    "before": {
+      "states": 57,
+      "cells": 654,
+      "weight": 213
+    },
+    "after": {
+      "states": 58,
+      "cells": 666,
+      "weight": 217
+    },
+    "reason": "This is a real user-reachable root overlay opened from the production Header and was absent from the fixed model."
+  },
+  "validation": {
+    "focusedTests": "46/46",
+    "browserPreviewTypecheck": "pass",
+    "workbenchBuild": "pass with existing bundle-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after",
+    "screenshotBudget": "32/100"
+  }
+}

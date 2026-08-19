@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T13:35:33+09:00",
+  "updatedAt": "2026-08-19T14:29:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11253,6 +11253,74 @@
               "confidence": 0.99,
               "method": "native-model-picker-root-dismiss-readiness",
               "source": "Exact 73ef9e28 bundle uses main transport, persists the selected Codex model, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-action-dialog-baseline",
+      "observedAt": "2026-08-19T14:29:00+09:00",
+      "commit": "ac2b91b80",
+      "codeCommit": "74f655c48",
+      "codeState": "commit",
+      "label": "Project Add Action dialog baseline",
+      "narrative": "A newly modeled dark 1280x820 root overlay opens the project-scoped Add Action dialog from both production Header controls on one immutable idle-thread snapshot. Title, description, four field labels and placeholders, two option labels and disabled semantics, and Cancel/Save action labels agree. The first valid same-state frame exposes a P1 Lynx layout failure: the dialog's column declaration is not applied physically, so its header, body, and footer become three horizontal columns that each consume the full 662px height. Name, Keybinding, and Preview URL have no visible boxes, Command shrinks from 460px to 103.96875px, title and description wrap vertically, and footer buttons move to the top-right. The 560x680 dialog crop measures 18.422823 MAE with 10.9821% significant pixels. Five earlier runs are excluded as snapshot/trigger harness mismatches, and one notification-contaminated frame plus one post-open cleanup attempt are excluded from material evidence. Native remains unknown. The fixed denominator expands from 57 states, 654 cells, weight 213 to 58 states, 666 cells, weight 217 before any repair.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This admits a real user-reachable Header overlay before repair. It preserves the measured P1 Browser loss, retains all Native cells as conservative unknown, and does not change any existing state weight."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/project-action-dialog-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "56191264850fbcbc957c3d38ca6ae782ed335f0254b4ea3c72e0802657b65ec5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "project-action-dialog-visible-content",
+              "source": "All semantic labels and placeholders agree, but three of four controls have no visible box in Lynx"
+            },
+            "geometry": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "project-action-dialog-baseline-anatomy",
+              "source": "Header, body, and footer lay out horizontally at full dialog height; Name, Keybinding, and Preview URL boxes are absent"
+            },
+            "typography": {
+              "residual": 0.65,
+              "confidence": 0.99,
+              "method": "project-action-dialog-wrapped-copy",
+              "source": "Title, description, hints, and option labels wrap through narrow horizontal columns instead of Web's full-width vertical rhythm"
+            },
+            "material": {
+              "pixel": {
+                "mae": 18.422823,
+                "significantShare": 0.109821
+              },
+              "confidence": 0.99,
+              "method": "project-action-dialog-crop",
+              "source": "Same-snapshot 560x680 dialog crop after provider-notification cleanup"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-real-trigger",
+              "source": "Both dialogs open through production Header pointer input and preserve disabled preview-option semantics"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-shared-readiness",
+              "source": "Same snapshot, project, idle thread, route, theme, viewport, zero console errors, and zero owned or orphaned agent-browser processes"
             }
           }
         }

@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 57,
-  "expectedCellCount": 654,
-  "expectedTotalWeight": 213,
+  "expectedStateCount": 58,
+  "expectedCellCount": 666,
+  "expectedTotalWeight": 217,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -220,6 +220,13 @@
     {
       "id": "git-publish-dialog",
       "label": "Git Publish · Provider Step",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "project-action-dialog",
+      "label": "Project Action · Add Dialog",
       "group": "overlays",
       "weight": 4,
       "clients": ["lynx", "native"]
