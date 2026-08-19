@@ -366,8 +366,8 @@ export function QuickSwitch({
             <text>Navigate</text>
           </KbdGroup>
           <KbdGroup className="quick-switch-footer-group">
-            <Kbd>{fileMode ? "⌘K" : "⌘P"}</Kbd>
-            <text>{fileMode ? "Commands" : "Files"}</text>
+            <Kbd>{fileMode ? "⌘K" : "Enter"}</Kbd>
+            <text>{fileMode ? "Commands" : "Select"}</text>
           </KbdGroup>
           <KbdGroup className="quick-switch-footer-group">
             <Kbd>Esc</Kbd>

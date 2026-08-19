@@ -7982,6 +7982,12 @@
   overflow: hidden;
   z-index: 51;
 }
+.theme-light .palette-panel {
+  border-color: rgba(39, 39, 42, 0.1);
+  border-radius: 18px;
+  background-color: rgba(252, 252, 252, 0.8);
+  box-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.65);
+}
 .palette-panel--files {
   max-height: 418px;
 }
@@ -8106,6 +8112,12 @@
   font-size: 12px;
   line-height: 20px;
   text-align: center;
+}
+.theme-light .palette-footer {
+  background-color: rgba(39, 39, 42, 0.025);
+}
+.theme-light .quick-switch-footer-group .lynx-kbd {
+  background-color: rgba(39, 39, 42, 0.08);
 }
 .model-picker-anchor {
   position: relative;
