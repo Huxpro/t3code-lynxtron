@@ -5552,6 +5552,139 @@ async function verifyProjectActionDialog({ child, client, height, timeoutMs, wid
   };
 }
 
+async function verifyProjectActionKeybindingMutation({ baseDir, child, client, timeoutMs }) {
+  const actionName = "Fidelity KB Action";
+  const actionId = "fidelity-kb-action";
+  const actionCommand = "printf fidelity-keybinding";
+  const keybinding = "mod+shift+y";
+  const keybindingCommand = `script.${actionId}.run`;
+  const keybindingsPath = path.join(baseDir, "userdata", "keybindings.json");
+  const beforeState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.activeProject?.id === "string" && Array.isArray(state?.activeProject?.scripts),
+  });
+  const beforeScripts = beforeState.activeProject.scripts;
+  const beforeKeybindings = JSON.parse(readFileSync(keybindingsPath, "utf8"));
+  if (
+    beforeScripts.some((script) => script.id === actionId) ||
+    beforeKeybindings.some((binding) => binding.command === keybindingCommand)
+  ) {
+    throw new Error(
+      `Project Action mutation fixture is not pristine: ${JSON.stringify({
+        actionId,
+        beforeKeybindings,
+        beforeScripts,
+      })}`,
+    );
+  }
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".action-btn--add",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".project-action-dialog",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("Add Action"),
+  });
+  const fixtureResponse = await client.runCdp("Runtime.evaluate", {
+    expression: `String(globalThis.__T3_LYNXTRON_PROJECT_ACTION_PROBE__?.(${JSON.stringify({
+      name: actionName,
+      command: actionCommand,
+      keybinding,
+    })}))`,
+    returnByValue: true,
+  });
+  const fixtureResult = commandResult(fixtureResponse);
+  if (fixtureResponse?.exceptionDetails || fixtureResult?.value !== "undefined") {
+    throw new Error(
+      `Native Project Action mutation fixture failed: ${JSON.stringify(fixtureResponse)}`,
+    );
+  }
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".project-action-field__input--name",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes.value === actionName,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".project-action-field__textarea",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes.value === actionCommand,
+  });
+  const keybindingInputs = await readSelectorMeasurements(client, ".project-action-field__input");
+  const keybindingInput = keybindingInputs[1];
+  if (keybindingInput?.attributes.value !== keybinding) {
+    throw new Error(
+      `Native Project Action keybinding fixture did not render: ${JSON.stringify({
+        keybinding,
+        keybindingInput,
+      })}`,
+    );
+  }
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".project-action-dialog__button--primary",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".project-action-dialog",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const afterState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeProject?.scripts?.some(
+        (script) =>
+          script.id === actionId && script.name === actionName && script.command === actionCommand,
+      ) === true,
+  });
+  const afterScripts = afterState.activeProject.scripts;
+  const afterKeybindings = JSON.parse(readFileSync(keybindingsPath, "utf8"));
+  const persistedBinding = afterKeybindings.find(
+    (binding) => binding.command === keybindingCommand,
+  );
+  if (persistedBinding?.key !== keybinding) {
+    throw new Error(
+      `Native Project Action saved the script without its keybinding: ${JSON.stringify({
+        actionId,
+        afterKeybindings,
+        afterScripts,
+        expected: {
+          key: keybinding,
+          command: keybindingCommand,
+        },
+        persistedBinding: persistedBinding ?? null,
+      })}`,
+    );
+  }
+  return {
+    status: "pass",
+    input: "Runtime fixture values and DevTool touch on the measured Save action",
+    projectId: afterState.activeProject.id,
+    script: afterScripts.find((script) => script.id === actionId),
+    keybinding: persistedBinding,
+    keybindingsPath,
+  };
+}
+
 function readIsolatedClientSettings(baseDir) {
   const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
   const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
@@ -7592,6 +7725,7 @@ async function runOnce({
   verifyGitInitialize: shouldVerifyGitInitialize,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyProjectActionDialog: shouldVerifyProjectActionDialog,
+  verifyProjectActionKeybindingMutation: shouldVerifyProjectActionKeybindingMutation,
   verifyBetaMutation: shouldVerifyBetaMutation,
   verifyArchiveMutation: shouldVerifyArchiveMutation,
   verifyConnectionsMutation: shouldVerifyConnectionsMutation,
@@ -7639,7 +7773,8 @@ async function runOnce({
       ...(shouldVerifyModelOptionMenuMutation ||
       shouldVerifyComposerSendMaterial ||
       shouldVerifySidebarInlineSearch ||
-      shouldVerifyCompactControls
+      shouldVerifyCompactControls ||
+      shouldVerifyProjectActionKeybindingMutation
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
@@ -8098,6 +8233,14 @@ async function runOnce({
           width,
         })
       : undefined;
+    const projectActionKeybindingMutation = shouldVerifyProjectActionKeybindingMutation
+      ? await verifyProjectActionKeybindingMutation({
+          baseDir,
+          child,
+          client,
+          timeoutMs,
+        })
+      : undefined;
     let betaMutation;
     if (shouldVerifyBetaMutation) {
       const betaVerification = await verifyBetaMutation({
@@ -8215,6 +8358,7 @@ async function runOnce({
       gitInitialize,
       gitPublishDialog,
       projectActionDialog,
+      projectActionKeybindingMutation,
       betaMutation,
       archiveMutation,
       connectionsMutation,
@@ -8269,6 +8413,7 @@ async function runOnce({
       gitInitialize,
       gitPublishDialog,
       projectActionDialog,
+      projectActionKeybindingMutation,
       betaMutation,
       archiveMutation,
       connectionsMutation,
@@ -8372,6 +8517,9 @@ const shouldVerifyResponsiveSettledBanner = process.argv.includes(
 const shouldVerifyGitInitialize = process.argv.includes("--verify-git-initialize");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyProjectActionDialog = process.argv.includes("--verify-project-action-dialog");
+const shouldVerifyProjectActionKeybindingMutation = process.argv.includes(
+  "--verify-project-action-keybinding-mutation",
+);
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
 const shouldVerifyArchiveMutation = process.argv.includes("--verify-archive-mutation");
 const shouldVerifyConnectionsMutation = process.argv.includes("--verify-connections-mutation");
@@ -8670,6 +8818,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyGitInitialize: shouldVerifyGitInitialize,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyProjectActionDialog: shouldVerifyProjectActionDialog,
+      verifyProjectActionKeybindingMutation: shouldVerifyProjectActionKeybindingMutation,
       verifyBetaMutation: shouldVerifyBetaMutation,
       verifyArchiveMutation: shouldVerifyArchiveMutation,
       verifyConnectionsMutation: shouldVerifyConnectionsMutation,

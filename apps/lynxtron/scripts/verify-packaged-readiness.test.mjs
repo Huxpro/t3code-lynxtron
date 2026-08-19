@@ -112,6 +112,20 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "projectActionDialog");
   });
 
+  it("verifies Project Action keybindings persist beside the saved script", () => {
+    assert.include(source, "async function verifyProjectActionKeybindingMutation");
+    assert.include(source, '"--verify-project-action-keybinding-mutation"');
+    assert.include(source, "__T3_LYNXTRON_PROJECT_ACTION_PROBE__");
+    assert.include(source, 'const keybinding = "mod+shift+y"');
+    assert.include(source, "const keybindingCommand = `script.${actionId}.run`");
+    assert.include(source, 'path.join(baseDir, "userdata", "keybindings.json")');
+    assert.include(source, 'selector: ".project-action-dialog__button--primary"');
+    assert.include(source, "state?.activeProject?.scripts?.some");
+    assert.include(source, "Native Project Action saved the script without its keybinding");
+    assert.include(source, "projectActionKeybindingMutation,");
+    assert.include(outcomeChecksSource, "projectActionKeybindingMutation");
+  });
+
   it("verifies titlebar branding artwork and none modes without moving the brand", () => {
     assert.include(source, '"--expected-environment-identification-mode"');
     assert.include(source, '".sidebar__brand-bg"');
