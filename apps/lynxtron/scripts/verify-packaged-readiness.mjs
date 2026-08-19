@@ -4932,6 +4932,7 @@ async function verifyFilesBrowser({
     timeoutMs,
     predicate: (measurement) => measurement?.text.trim() === "1",
   });
+  const editorTokens = await readSelectorMeasurements(client, ".file-editor-token");
   const [editorFontFamily, editorFontSize, editorLineHeight] = await Promise.all([
     readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-family"),
     readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-size"),
@@ -4941,13 +4942,20 @@ async function verifyFilesBrowser({
     typeof editorFontFamily !== "string" ||
     editorFontFamily.length === 0 ||
     editorFontSize !== "12px" ||
-    editorLineHeight !== "19px"
+    editorLineHeight !== "19px" ||
+    editorTokens.length === 0 ||
+    new Set(
+      editorTokens
+        .map(({ attributes }) => attributes.class)
+        .filter((className) => className?.includes("file-editor-token--")),
+    ).size < 2
   ) {
     throw new Error(
       `Native file editor typography drifted: ${JSON.stringify({
         editorFontFamily,
         editorFontSize,
         editorLineHeight,
+        editorTokens: editorTokens.slice(0, 12),
       })}`,
     );
   }
@@ -5044,6 +5052,12 @@ async function verifyFilesBrowser({
         fontFamily: editorFontFamily,
         fontSize: editorFontSize,
         lineHeight: editorLineHeight,
+        tokenCount: editorTokens.length,
+        tokenToneCount: new Set(
+          editorTokens
+            .map(({ attributes }) => attributes.class)
+            .filter((className) => className?.includes("file-editor-token--")),
+        ).size,
       },
       explorer: explorer?.rect ?? null,
       explorerVisible,

@@ -417,10 +417,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".file-editor-preview"');
     assert.include(source, 'selector: ".file-editor-line"');
     assert.include(source, 'selector: ".file-editor-line__number"');
+    assert.include(source, 'readSelectorMeasurements(client, ".file-editor-token")');
     assert.include(source, 'measurement?.attributes["data-file-editor-mode"] === "preview"');
     assert.include(source, 'editorFontSize !== "12px"');
     assert.include(source, 'editorLineHeight !== "19px"');
     assert.include(source, "Native file editor typography drifted");
+    assert.include(source, "editorTokens.length === 0");
+    assert.include(source, "tokenToneCount");
     assert.include(source, 'readOptionalMeasurement(client, ".file-panel__explorer")');
     assert.include(source, 'const panelMode = filePanel.attributes["data-right-panel-mode"]');
     assert.include(source, 'panelMode === "inline"');
