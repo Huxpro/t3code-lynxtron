@@ -292,8 +292,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"quick-switch-default": "quick-switch"');
     assert.include(source, '"quick-switch-query": "quick-switch"');
     assert.include(source, '"quick-switch-query": "settings"');
+    assert.include(source, '"quick-switch-query-light": "quick-switch"');
+    assert.include(source, '"quick-switch-query-light": "settings"');
+    assert.include(source, '"quick-switch-query-light": "existing-thread"');
     assert.include(source, '"quick-switch-default",');
     assert.include(source, '"quick-switch-query",');
+    assert.include(source, '"quick-switch-query-light",');
     assert.include(source, '"quick-switch-actions-only",');
     assert.include(source, '"quick-switch-empty",');
     assert.include(source, '"quick-switch-actions-only": "quick-switch"');

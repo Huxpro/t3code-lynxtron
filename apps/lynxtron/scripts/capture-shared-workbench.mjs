@@ -85,12 +85,14 @@ const defaultOverlayByStateId = {
   "workspace-menu-open": "workspace-menu",
   "quick-switch-default": "quick-switch",
   "quick-switch-query": "quick-switch",
+  "quick-switch-query-light": "quick-switch",
   "quick-switch-actions-only": "quick-switch",
   "quick-switch-empty": "quick-switch",
 };
 const defaultQueryByStateId = {
   "model-picker-empty": "__t3_no_models__",
   "quick-switch-query": "settings",
+  "quick-switch-query-light": "settings",
   "quick-switch-actions-only": ">",
   "quick-switch-empty": "zzzz-no-result",
 };
@@ -1745,6 +1747,7 @@ async function main() {
     "model-picker-selected",
     "quick-switch-default",
     "quick-switch-query",
+    "quick-switch-query-light",
     "quick-switch-actions-only",
     "quick-switch-empty",
   ]);
@@ -2132,6 +2135,7 @@ async function captureCell({
     "lifecycle-error": "lifecycle-error",
     "quick-switch-default": "existing-thread",
     "quick-switch-query": "existing-thread",
+    "quick-switch-query-light": "existing-thread",
     "quick-switch-actions-only": "existing-thread",
     "quick-switch-empty": "existing-thread",
     "file-picker-default": "existing-thread",
