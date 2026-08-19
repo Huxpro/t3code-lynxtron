@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T08:30:24+09:00",
+  "updatedAt": "2026-08-19T09:14:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10352,6 +10352,227 @@
               "confidence": 0.99,
               "method": "native-light-settings-final-bundle",
               "source": "Final 0a67ef3a bundle, main transport sequence 15 to 16, zero renderer errors, repeated cycles, and disposed state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-inline-files-narrow-baseline",
+      "observedAt": "2026-08-19T08:40:03+09:00",
+      "commit": "7ce1ce3cc",
+      "codeState": "working-tree",
+      "label": "Narrow inline Files Composer baseline",
+      "narrative": "A newly modeled 1024x820 dark state keeps the 540px Files panel inline, leaving a 188px Composer and a 144px context strip. The shared Web workspace and branch controls overlap by 79.21875px and overflow the context strip by 7.59375px; Lynx overlaps by 33px. The context crop measures 5.364063 MAE with 9.5524% significant pixels. A separate compact-menu attempt is retained only as diagnostic evidence because Web closes before capture while Lynx remains open; its valid Lynx geometry shows the menu extending into the right-panel allocation.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds one real 1024x820 inline-panel state with the same Composer weight as the existing compact states. Existing weights and states are unchanged, and the measured overlap is admitted before repair."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/responsive-inline-files-navigation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4fb16894dc7994e08955fae4acbe56eb674cf6beacb0ce2cc2fcc870614235ab"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "narrow-context-control-collision",
+              "source": "Both workspace and branch remain present, but labels and controls collide inside the 143px strip"
+            },
+            "geometry": {
+              "anchorDeltas": [33, 0, 0, 0, 1, 0, 1, 0],
+              "anchorScale": 143,
+              "confidence": 0.99,
+              "method": "narrow-inline-files-context-overlap",
+              "source": "Lynx workspace and branch controls overlap by 33px while Composer, context, and right-panel boundaries otherwise align within one pixel"
+            },
+            "typography": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "narrow-context-legibility",
+              "source": "Overlapping 12px workspace and branch labels are not independently legible"
+            },
+            "material": {
+              "pixel": {
+                "mae": 5.364063,
+                "significantShare": 0.095524
+              },
+              "confidence": 0.99,
+              "method": "narrow-context-crop-pixel",
+              "source": "Same-snapshot 1024x820 context crop before responsive allocation repair"
+            },
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "narrow-context-hit-target-collision",
+              "source": "Overlapping context controls make the intended workspace and branch target ambiguous"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-inline-files-readiness",
+              "source": "Both shipping renderers reach the same Files state with zero console errors and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsive-inline-files-navigation-current",
+      "observedAt": "2026-08-19T09:14:00+09:00",
+      "commit": "efa58ace9",
+      "codeCommit": "46f881897",
+      "codeState": "commit",
+      "label": "Responsive inline Files and navigation fidelity",
+      "narrative": "The 1024x820 inline Files state now keeps both context controls inside the center column: Web allocates 64px to each control and Lynx reduces workspace to an icon while preserving the branch target, with zero overlap and zero right overflow. Lynx's compact menu aligns its trailing edge at x=464.890625 before the x=483 right-panel boundary. Context MAE falls from 5.364063 to 1.781302 and significant pixels from 9.5524% to 3.4381%. File detail in dark and light keeps one tab, a persistent desktop explorer, JetBrains Mono code anatomy, and a visible 28x28 Lynx Back action. Paired Browser runs open and switch files, then a real Lynx Back pointer restores the directory. Exact production Native dark and light runs at 760x820 prove the sheet hides the explorer, Back restores the 339x728 browser, themes match explicit expectations, transport advances 3 to 4, renderer errors are zero, and isolated state is disposed. Two earlier identical light screenshots requested as dark and light are classified as harness mismatch and receive no product credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The narrow Browser before and after use one immutable snapshot, route, dark theme, 1024x820 viewport, 540px inline Files panel, shipping artifacts, and clean consoles. Exact Native separately proves dark and light file-sheet Back behavior on the final bundle. Material residuals for the existing file-detail states are not changed because Web authority pixels changed between captures."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/responsive-inline-files-navigation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4fb16894dc7994e08955fae4acbe56eb674cf6beacb0ce2cc2fcc870614235ab"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-context-adaptive-content",
+              "source": "Workspace and branch remain distinct; workspace adapts to an icon at the narrowest Lynx allocation"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 1, 0, 1, 0],
+              "anchorScale": 143,
+              "confidence": 0.99,
+              "method": "narrow-inline-files-contained-geometry",
+              "source": "Workspace, branch, context strip, Composer, and right-panel boundaries have zero overlap with one-pixel renderer rounding"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-context-independent-legibility",
+              "source": "The branch remains readable and the workspace icon remains a distinct semantic target without label collision"
+            },
+            "material": {
+              "pixel": {
+                "mae": 1.781302,
+                "significantShare": 0.034381
+              },
+              "confidence": 0.99,
+              "method": "narrow-context-current-pixel",
+              "source": "Same-snapshot 1024x820 context crop after responsive allocation repair"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-context-distinct-targets",
+              "source": "Workspace and branch controls occupy non-overlapping hit targets and the compact menu remains before the right-panel boundary"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-inline-files-current-readiness",
+              "source": "Strict paired Browser state passes with zero console errors and zero owned or orphaned agent-browser processes"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-current-neutral-prose",
+              "source": "Ordinary Markdown prose stays neutral while headings and real code lines retain coarse Native-safe emphasis"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-open-switch-back",
+              "source": "The dark paired run opens PORT_WORKFLOW, switches to PORTING_STRATEGY, and a real Lynx Back pointer restores the directory"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-current-dark-readiness",
+              "source": "Dark paired Browser run passes with zero renderer errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-neutral-prose",
+              "source": "Light file detail preserves neutral prose, headings, code anatomy, explorer, and Back without dark-mode-only selectors"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-light-open-switch-back",
+              "source": "The light paired run opens and switches files, then restores the directory through the real Lynx Back target"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-detail-current-light-readiness",
+              "source": "Light paired Browser run passes with zero renderer errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dark-file-sheet-back",
+              "source": "Exact dark Native touch opens the first file, confirms the explorer is hidden, taps the 28x28 Back action, and restores the 339x728 browser"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dark-file-sheet-theme-readiness",
+              "source": "Bundle 5457a201, expected and actual dark theme, main sequence 3 to 4, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-file-sheet-back",
+              "source": "Exact light Native touch opens the first file, confirms the explorer is hidden, taps the 28x28 Back action, and restores the 339x728 browser"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-file-sheet-theme-readiness",
+              "source": "Bundle 5457a201, expected and actual light theme, main sequence 3 to 4, zero renderer errors, disposed state, and leak gate zero"
             }
           }
         }

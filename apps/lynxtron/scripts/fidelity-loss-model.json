@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 53,
-  "expectedCellCount": 612,
-  "expectedTotalWeight": 200.4,
+  "expectedStateCount": 54,
+  "expectedCellCount": 618,
+  "expectedTotalWeight": 202,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -426,6 +426,13 @@
       "group": "composer",
       "weight": 4,
       "clients": ["lynx", "native"]
+    },
+    {
+      "id": "composer-inline-files-narrow",
+      "label": "Composer · Inline Files · Narrow",
+      "group": "composer",
+      "weight": 4,
+      "clients": ["lynx"]
     },
     {
       "id": "settings-beta-light",
