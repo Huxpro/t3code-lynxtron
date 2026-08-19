@@ -327,6 +327,22 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".files-panel__browser"');
     assert.include(source, 'selector: ".files-panel .file-tree-row"');
     assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 24) <= 0.5");
+    assert.include(source, 'readOptionalMeasurement(client, ".sidebar-footer")');
+    assert.include(source, 'readOptionalMeasurement(client, ".sidebar-settings-row")');
+    assert.include(source, 'readOptionalMeasurement(client, ".sidebar-settings-authority")');
+    assert.include(
+      source,
+      'readFirstSelectorStyleValue(client, ".sidebar-settings-row", "box-sizing")',
+    );
+    assert.include(source, "Math.abs(settingsRow.rect.height - 32) > 0.5");
+    assert.include(source, 'settingsRowBoxSizing !== "border-box"');
+    assert.include(source, "measurementVisible(settingsAuthority)");
+    assert.include(source, "Native responsive Sidebar footer drifted");
+    assert.include(source, "responsiveSidebarFooter,");
+    assert.include(source, '"--verify-responsive-sidebar-footer"');
+    assert.include(source, '"--verify-responsive-sidebar-footer requires --verify-files-browser."');
+    assert.include(source, "if (verifyResponsiveSidebarFooterOnly)");
+    assert.include(source, 'fileSelection: "not-required"');
     assert.include(source, '"border-top-left-radius"');
     assert.include(source, '"border-top-right-radius"');
     assert.include(source, '"border-bottom-right-radius"');

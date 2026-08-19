@@ -4594,9 +4594,12 @@ async function verifyFilesBrowser({
   child,
   client,
   devToolCli,
+  height,
   outputDirectory,
   timeoutMs,
   verifyFileSheetBack,
+  verifyResponsiveSidebarFooterOnly,
+  width,
 }) {
   if ((await readOptionalMeasurement(client, ".right-panel")) !== null) {
     await tapSelector({
@@ -4656,6 +4659,44 @@ async function verifyFilesBrowser({
     timeoutMs,
     predicate: (measurement) => measurement?.attributes["data-right-panel-active-kind"] === "files",
   });
+  const responsiveSidebarFooter =
+    width === 1280 && height === 820
+      ? { mode: "authority-viewport" }
+      : await (async () => {
+          const [footer, settingsRow, settingsAuthority, settingsRowBoxSizing] = await Promise.all([
+            readOptionalMeasurement(client, ".sidebar-footer"),
+            readOptionalMeasurement(client, ".sidebar-settings-row"),
+            readOptionalMeasurement(client, ".sidebar-settings-authority"),
+            readFirstSelectorStyleValue(client, ".sidebar-settings-row", "box-sizing"),
+          ]);
+          if (
+            !footer ||
+            !settingsRow ||
+            Math.abs(footer.rect.height - 48) > 0.5 ||
+            Math.abs(settingsRow.rect.height - 32) > 0.5 ||
+            settingsRowBoxSizing !== "border-box" ||
+            settingsRow.rect.y < footer.rect.y ||
+            settingsRow.rect.y + settingsRow.rect.height >
+              footer.rect.y + footer.rect.height + 0.5 ||
+            measurementVisible(settingsAuthority)
+          ) {
+            throw new Error(
+              `Native responsive Sidebar footer drifted: ${JSON.stringify({
+                footer,
+                settingsAuthority,
+                settingsRow,
+                settingsRowBoxSizing,
+              })}`,
+            );
+          }
+          return {
+            mode: "responsive",
+            footer: footer.rect,
+            settingsRow: settingsRow.rect,
+            settingsRowBoxSizing,
+            settingsAuthorityHidden: true,
+          };
+        })();
   const toolbar = await waitForMeasurement({
     child,
     client,
@@ -4737,6 +4778,38 @@ async function verifyFilesBrowser({
     outputDirectory,
     name: "native-files-browser.png",
   });
+  const browserEvidence = {
+    status: "pass",
+    input: "DevTool touch on measured right-panel controls; search typing pending-user-session",
+    panel: panel.rect,
+    responsiveSidebarFooter,
+    toolbar: toolbar.rect,
+    refresh: refresh.rect,
+    search: {
+      rect: search.rect,
+      placeholder: search.attributes.placeholder,
+      filtering: "source-contract",
+      typing: "pending-user-session",
+    },
+    browser: browser.rect,
+    firstVisibleRow: {
+      rect: row.rect,
+      text: row.text,
+      borderRadii: rowRadii,
+      fontFamily: rowFontFamily,
+      fontSize: rowFontSize,
+    },
+  };
+  if (verifyResponsiveSidebarFooterOnly) {
+    return {
+      ...browserEvidence,
+      fileSelection: "not-required",
+      fileSheetBack: undefined,
+      screenshots: {
+        tree: treeScreenshot,
+      },
+    };
+  }
   const fileRow = await waitForMeasurement({
     child,
     client,
@@ -4834,26 +4907,9 @@ async function verifyFilesBrowser({
   }
 
   return {
-    status: "pass",
+    ...browserEvidence,
     input:
       "DevTool touch on measured right-panel controls and the first file row; search typing pending-user-session",
-    panel: panel.rect,
-    toolbar: toolbar.rect,
-    refresh: refresh.rect,
-    search: {
-      rect: search.rect,
-      placeholder: search.attributes.placeholder,
-      filtering: "source-contract",
-      typing: "pending-user-session",
-    },
-    browser: browser.rect,
-    firstVisibleRow: {
-      rect: row.rect,
-      text: row.text,
-      borderRadii: rowRadii,
-      fontFamily: rowFontFamily,
-      fontSize: rowFontSize,
-    },
     fileSelection: {
       selectedRow: fileRow,
       panel: filePanel.rect,
@@ -7573,9 +7629,12 @@ async function runOnce({
           child,
           client,
           devToolCli,
+          height,
           outputDirectory,
           timeoutMs,
           verifyFileSheetBack,
+          verifyResponsiveSidebarFooterOnly: shouldVerifyResponsiveSidebarFooter,
+          width,
         })
       : undefined;
     const gitInitialize = shouldVerifyGitInitialize
@@ -7855,6 +7914,9 @@ const shouldVerifyReviewCheckpointStates = process.argv.includes(
 const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-interactions");
 const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
 const shouldVerifyFileSheetBack = process.argv.includes("--verify-file-sheet-back");
+const shouldVerifyResponsiveSidebarFooter = process.argv.includes(
+  "--verify-responsive-sidebar-footer",
+);
 const shouldVerifyGitInitialize = process.argv.includes("--verify-git-initialize");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
@@ -7906,6 +7968,9 @@ if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutat
 }
 if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-file-sheet-back requires --verify-files-browser.");
+}
+if (shouldVerifyResponsiveSidebarFooter && !shouldVerifyFilesBrowser) {
+  throw new Error("--verify-responsive-sidebar-footer requires --verify-files-browser.");
 }
 if (shouldVerifyModelSelectionRunningSession && !shouldVerifyModelSelectionMutation) {
   throw new Error(

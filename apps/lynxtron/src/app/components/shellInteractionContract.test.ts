@@ -285,6 +285,17 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain('".file-editor-line{" +');
     expect(browserPreviewSource).toContain('".file-editor-line__content{" +');
     expect(browserPreviewSource).toContain('".theme-light .sidebar-settings-authority{" +');
+    expect(sidebarSource).toContain("viewport.width === 1280 && viewport.height === 820");
+    expect(sidebarSource).toContain(
+      '<image className="sidebar-settings-authority" src={settingsRowUrl} />',
+    );
+    const settingsRowStart = overrides.indexOf(".sidebar-settings-row {");
+    const settingsRowBlock = overrides.slice(
+      settingsRowStart,
+      overrides.indexOf("}", settingsRowStart),
+    );
+    expect(settingsRowBlock).toContain("height: 32px;");
+    expect(settingsRowBlock).toContain("box-sizing: border-box;");
     expect(browserPreviewSource).toContain(
       '".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +',
     );
