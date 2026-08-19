@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T09:57:42+09:00",
+  "harnessCommit": "8daff3504",
+  "productHead": "5f4253fb6",
+  "stateId": "quick-switch-query-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch",
+    "query": "settings",
+    "result": "Open settings"
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "classification": {
+    "productLoss": [
+      "Panel, search, result, section, row, footer, query, and result geometry are exact, but the light Lynx panel uses opaque rgb(252,252,252), 12px radii, and a 90% black shadow while Web uses 80% white glass, 18px radii, and a 65% black shadow.",
+      "The Lynx footer's middle hint says Command-P Files while the Web command-mode authority says Enter Select.",
+      "The clean footer crop measures 12.866499 MAE and 16.4269% significant pixels."
+    ],
+    "harnessMismatch": [
+      "Three initial attempts routed Quick Switch Query through the default SB2 fixture because the state was missing from the thread-state registry. The selected-project identity precondition therefore prevented Web input while Lynx opened; those one-sided frames are invalid.",
+      "Quick Switch default/query/actions-only/empty now use the same copied thread fixture as the existing chat, Files, and model-picker states. A dark control passes before this light baseline.",
+      "The Web full-frame and panel crops include an external provider-update notification. They remain diagnostic only and are excluded from material attribution; the footer crop is unobscured."
+    ],
+    "intentionalPlatformDelta": [
+      "Web uses backdrop-filter blur and Base UI dialog compositing. Lynx uses Native-safe alpha, border, inset highlight, and shadow equivalents without claiming blur parity."
+    ],
+    "evidenceBoundary": "One immutable snapshot, selected project and thread, light theme, 1280x820 viewport, shipping Web and Lynx-for-Web bundles, real Meta-K input packets, query text input, one matching result, exact geometry, zero console errors, and zero owned or orphaned agent-browser processes. Native remains unobserved at baseline."
+  },
+  "browser": {
+    "status": "pass-with-product-loss",
+    "report": {
+      "path": "/tmp/t3-quick-switch-query-light-baseline2/workbench-report.json",
+      "sha256": "03ff6b5c7f0abbf6f69d42b7a5e270d4cd610949ed680ca7bb359ecc0dddb72f"
+    },
+    "bundles": {
+      "web": "a75cf8d54748",
+      "lynx": "9cac35a8a5b8"
+    },
+    "readyMs": 2505,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "inputChannels": {
+      "webOpen": "cdp-meta-k",
+      "lynxOpen": "lynx-host-keyboard-packet:meta-k",
+      "query": "web-cdp-pointer+key-char|lynx-dom-focus+key-char:true"
+    },
+    "semantic": {
+      "query": "settings",
+      "webRows": ["Open settings"],
+      "lynxRows": ["Open settings"],
+      "rowCount": 1
+    },
+    "geometry": {
+      "web": {
+        "panel": [352, 82, 576, 166],
+        "search": [353, 83, 574, 48],
+        "results": [353, 131, 574, 76],
+        "section": [361, 139, 558, 60],
+        "row": [361, 167, 558, 32],
+        "footer": [353, 207, 574, 40]
+      },
+      "lynx": {
+        "panel": [352, 82, 576, 166],
+        "search": [353, 83, 574, 48],
+        "results": [353, 131, 574, 76],
+        "section": [361, 139, 558, 60],
+        "row": [361, 167, 558, 32],
+        "footer": [353, 207, 574, 40]
+      }
+    },
+    "styles": {
+      "webPanel": {
+        "backgroundColor": "color(srgb 0.989332 0.989513 0.98953 / 0.8)",
+        "borderColor": "color(srgb 0.152872 0.152897 0.165785 / 0.1)",
+        "borderRadius": 18,
+        "boxShadow": "rgba(0, 0, 0, 0.65) 0px 24px 64px -24px"
+      },
+      "lynxPanel": {
+        "backgroundColor": "rgb(252, 252, 252)",
+        "borderColor": "rgba(39, 39, 42, 0.08)",
+        "borderRadius": 12,
+        "boxShadow": "rgba(39, 39, 42, 0.04) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.9) 0px 24px 72px -20px"
+      },
+      "webFooter": {
+        "hints": ["Up Down Navigate", "Enter Select", "Esc Close"],
+        "fontFamily": "DM Sans Variable",
+        "fontSize": 14,
+        "fontWeight": 500,
+        "lineHeight": 20
+      },
+      "lynxFooter": {
+        "hints": ["Up Down Navigate", "Command-P Files", "Esc Close"],
+        "fontFamily": "DM Sans",
+        "fontSize": 14,
+        "fontWeight": 500,
+        "lineHeight": 20
+      }
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "footer": {
+        "mae": 12.866499,
+        "significantShare": 0.164269
+      },
+      "excluded": {
+        "fullFrame": {
+          "mae": 3.214283,
+          "significantShare": 0.053916
+        },
+        "panel": {
+          "mae": 5.19723,
+          "significantShare": 0.065627
+        },
+        "reason": "External provider-update notification overlaps the Web panel."
+      }
+    }
+  },
+  "native": {
+    "status": "unobserved"
+  },
+  "validation": {
+    "harnessFocusedTests": "33/33",
+    "darkControl": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  }
+}

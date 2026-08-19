@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 54,
-  "expectedCellCount": 618,
-  "expectedTotalWeight": 202,
+  "expectedStateCount": 55,
+  "expectedCellCount": 630,
+  "expectedTotalWeight": 206,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -157,6 +157,13 @@
     {
       "id": "quick-switch-query",
       "label": "Quick Switch · Query",
+      "group": "overlays",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "quick-switch-query-light",
+      "label": "Quick Switch · Query · Light",
       "group": "overlays",
       "weight": 4,
       "clients": ["lynx", "native"]

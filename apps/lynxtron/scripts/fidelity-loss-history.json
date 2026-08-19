@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T09:14:00+09:00",
+  "updatedAt": "2026-08-19T09:57:42+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10573,6 +10573,75 @@
               "confidence": 0.99,
               "method": "native-light-file-sheet-theme-readiness",
               "source": "Bundle 5457a201, expected and actual light theme, main sequence 3 to 4, zero renderer errors, disposed state, and leak gate zero"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-query-light-baseline",
+      "observedAt": "2026-08-19T09:57:42+09:00",
+      "commit": "8daff3504",
+      "codeCommit": "5f4253fb6",
+      "codeState": "commit",
+      "label": "Quick Switch Query light baseline",
+      "narrative": "A previously unmodeled 1280x820 light Quick Switch Query state expands the fixed denominator before product repair. Both shipping renderers open through real Meta-K packets, accept the settings query, expose exactly one Open settings result, and match panel, search, results, section, row, and footer geometry exactly. The highest real losses are light material and footer truth: Web uses 80% white glass, 18px radii, and a 65% shadow while Lynx uses opaque #fcfcfc, 12px radii, and a 90% shadow; Lynx also says Command-P Files where Web says Enter Select. The unobscured footer crop measures 12.866499 MAE with 16.4269% significant pixels. Three one-sided attempts caused by missing Quick Switch fixture routing are classified as harness mismatch, and provider-notification-contaminated full/panel pixels are excluded.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds one real light-theme state with the same weight and clients as the existing dark Query state. Existing weights are unchanged; product losses are admitted before repair, while invalid one-sided and notification-contaminated evidence receives no credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/quick-switch-query-light-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "5d1d66c1c165eafb79088e14f7e6c86c019d2cca516b9b00800b91cc54c5e59a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.15,
+              "confidence": 0.99,
+              "method": "quick-switch-light-footer-content",
+              "source": "Query and Open settings result match, but Lynx footer says Command-P Files instead of Enter Select"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-light-exact-anatomy",
+              "source": "Panel, search, results, section, row, and footer rectangles are exact"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "quick-switch-light-shared-type-scale",
+              "source": "Row and footer sizes, weights, and line heights match; Web uses DM Sans Variable while Lynx uses bundled DM Sans"
+            },
+            "material": {
+              "pixel": {
+                "mae": 12.866499,
+                "significantShare": 0.164269
+              },
+              "confidence": 0.99,
+              "method": "quick-switch-light-footer-crop",
+              "source": "Unobscured footer crop; provider-notification-contaminated full and panel pixels are excluded"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-shortcut-query",
+              "source": "Both renderers open through Meta-K and accept the settings query through the measured input path"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-light-browser-readiness",
+              "source": "Same snapshot and state identity, zero console errors, and zero owned or orphaned agent-browser processes"
             }
           }
         }
