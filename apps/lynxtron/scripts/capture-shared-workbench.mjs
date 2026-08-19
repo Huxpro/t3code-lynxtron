@@ -4666,6 +4666,7 @@ async function captureCell({
     ).catch(() => null)) ?? state;
   finalFilesBrowserReady = filesBrowserReady(state);
   finalFileEditorReady = fileEditorReady(state);
+  reachedTargetState ||= isFileEditorState && finalFileEditorReady;
   if (
     overlay &&
     (state?.web?.productState?.overlay !== overlay ||
