@@ -12872,6 +12872,75 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-inline-flow-current",
+      "observedAt": "2026-08-20T03:44:48+09:00",
+      "commit": "183079748",
+      "codeCommit": "228a17ef0714d08a28c6913bc4482d69168fd793",
+      "codeState": "commit",
+      "label": "File editor inline flow convergence",
+      "narrative": "The narrow file editor keeps its admitted 359px editor-first geometry and real dual-client Back return while fixing a Lynx-for-Web text-layout regression. Semantic token x-text hosts and their inner boxes now participate in the parent text inline formatting context instead of breaking each token into a separate visual block. The same immutable dark authority frame remains byte-identical; the repaired Lynx candidate renders continuous source lines, matching 359x736 editor and 28x28 Back geometry, and the final aggregate workbench passes after its final compositor gate preserves the already-proven detail state across the Back transition. Light 1024x820 and wide 1280x820 regressions retain editor-first and split-explorer policies respectively. Exact Native remains unchanged and independently passes a 34px gutter, T3 JetBrains Mono 12px/19px, six token tones, measured Back return, main transport 3 to 4, zero renderer errors, and isolated cleanup. Raw pixel MAE increases because the repaired candidate paints substantially more real source text where the broken candidate left background pixels; material residual therefore receives no improvement credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Browser before/current evidence holds snapshot, project, thread, file, route, viewport, panel width, theme, Web authority pixels, and Lynx product bundle constant while changing only the Browser Preview host compatibility layer. Dark, light, and wide captures use shipping artifacts and real pointers. Exact Native proves the unchanged production bundle remains healthy. No state weights, filters, or denominator entries change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/file-editor-inline-flow-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "fc8c74c09803ab721785e8c9598744fdf0f54e7eafecab562729033a59b9ad56"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-narrow-inline"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-inline-flow-content",
+              "source": "Both render the same non-empty PORT_WORKFLOW.md source, breadcrumb, editor-first surface, and Back action"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "narrow-file-inline-flow-geometry",
+              "source": "Web and Lynx-for-Web surface, 359x736 editor, hidden explorer, and 28px Back geometry remain exact"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "narrow-file-inline-token-typography",
+              "source": "Token hosts now share one continuous inline formatting context; residual preserves the lightweight six-tone tokenizer instead of the Web Pierre/TextMate grammar"
+            },
+            "material": {
+              "pixel": {
+                "mae": 25.897203,
+                "significantShare": 0.219825
+              },
+              "confidence": 0.99,
+              "method": "narrow-file-inline-editor-crop",
+              "source": "Same-snapshot 359x736 editor crop after inline-flow repair; the higher raw delta reflects newly painted source text and receives no material improvement credit"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-inline-dual-back",
+              "source": "Real Web and Lynx-for-Web pointers open the file and both Back controls restore Files; the final aggregate workbench now passes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-inline-current-readiness",
+              "source": "Dark and light narrow captures, wide regression, unchanged exact Native, zero errors, and clean leak gates pass"
+            }
+          }
+        }
+      ]
     }
   ]
 }
