@@ -168,6 +168,16 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"diff-scope-menu": "existing-thread"');
     assert.include(source, 'stateId === "diff-scope-menu"');
     assert.include(source, 'stateId.startsWith("review-") || isDiffScopeMenuState');
+    assert.include(source, "Boolean(overlay) || isFilesSurfaceState || isReviewState");
+    assert.isBelow(
+      source.indexOf(
+        'const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;',
+      ),
+      source.indexOf(
+        "const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState || isReviewState;",
+      ),
+    );
+    assert.include(source, "(!shouldClearWebNotification || webProviderNotificationCleared)");
     assert.include(source, "function diffScopeMenuReady(state)");
     assert.include(source, "webRows.length > 0");
     assert.include(source, "lynxRows.length > 0");

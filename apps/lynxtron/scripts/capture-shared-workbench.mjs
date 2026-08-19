@@ -156,7 +156,6 @@ const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
-const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState;
 const composerExpectationByStateId = {
   "composer-hero": {
     layout: "hero",
@@ -197,6 +196,7 @@ const composerExpectationByStateId = {
 };
 const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
+const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState || isReviewState;
 const reviewExpectation =
   stateId === "review-empty"
     ? "panel-empty"
@@ -3195,7 +3195,11 @@ async function captureCell({
         }
       }
     }
-    if (isReviewState && threadReadyForReview(state, expectThread)) {
+    if (
+      isReviewState &&
+      (!shouldClearWebNotification || webProviderNotificationCleared) &&
+      threadReadyForReview(state, expectThread)
+    ) {
       const reviewTimelineKey = JSON.stringify({
         web: state?.web?.reviewMetrics ?? null,
         lynx: state?.lynx?.reviewMetrics ?? null,
