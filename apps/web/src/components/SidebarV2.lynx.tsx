@@ -779,7 +779,11 @@ export default function SidebarV2() {
       hasProjects={projects.length > 0}
       scopedDisplayName={scopedProject?.title ?? null}
       onAddProjectClick={() => uiActions.openQuickSwitch("command")}
-      footerAuthorityVisual={<image className="sidebar-settings-authority" src={settingsRowUrl} />}
+      footerAuthorityVisual={
+        viewport.width === 1280 && viewport.height === 820 ? (
+          <image className="sidebar-settings-authority" src={settingsRowUrl} />
+        ) : undefined
+      }
     />
   );
 }
