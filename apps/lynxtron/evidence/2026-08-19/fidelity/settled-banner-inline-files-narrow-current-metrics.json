@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T11:54:43+09:00",
+  "productCommit": "548c5b4bf",
+  "verifierCommit": "8fdfcc31f",
+  "stateId": "settled-banner-inline-files-narrow",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "rightPanelSurface": "Files",
+    "rightPanelWidth": 540,
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "activeTurnId": "019f9b5e-c44d-7ac1-8d9a-6f4971770461"
+  },
+  "classification": {
+    "productChange": [
+      "The settled banner now uses auto height with a 68px minimum, so wide layouts keep their compact height while the 188px narrow layout grows to 268px.",
+      "The copy uses a zero flex basis and the Un-settle action is locked to 70px, preventing action collapse and keeping all copy inside the banner.",
+      "The center crop improves from 11.005135 to 4.475694 MAE and from 10.2001% to 5.8936% significant pixels."
+    ],
+    "harnessMismatch": [
+      "The first Native attempt selected by duplicated thread title and could not prove the active thread.",
+      "The second Native attempt selected the explicit thread ID but reused a list-first canonical title reader. The final verifier gates activeThreadId, active thread title, and model selection directly."
+    ],
+    "evidenceBoundary": "Paired Browser uses the same snapshot, explicit thread and active turn, Files panel, route, theme, viewport, and authority pixels. Exact production Native uses a copied snapshot with the target thread uniquely renamed and settled, selects by thread ID, opens Files through measured touch, validates contained banner/copy/action and an 8px Composer gap, advances main transport, records zero renderer errors, and disposes isolated state."
+  },
+  "browser": {
+    "status": "pass-with-rendering-residual",
+    "reportSha256": "a8ba2fee28cb3f1f9e069f826b56b22336ecec77beb4b04c177b1fb96753acda",
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "filesBrowserMatch": true,
+    "rendererErrors": 0,
+    "geometry": {
+      "web": {
+        "statusBanner": [276, 352, 188, 268],
+        "statusCopy": [315, 365, 55.9375, 242],
+        "statusAction": [378.9375, 474, 70.0625, 24],
+        "composer": [276, 628, 188, 140],
+        "composerGap": 8
+      },
+      "lynx": {
+        "statusBanner": [276, 352, 187, 268],
+        "statusCopy": [315, 365, 55, 242],
+        "statusAction": [378, 474, 70, 24],
+        "composer": [276, 628, 187, 140],
+        "composerGap": 8
+      }
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "crop": [256, 320, 228, 320],
+      "before": {
+        "mae": 11.005135,
+        "significantShare": 0.102001,
+        "formulaResidual": 0.684305
+      },
+      "after": {
+        "mae": 4.475694,
+        "significantShare": 0.058936,
+        "formulaResidual": 0.33066
+      }
+    },
+    "authorityRegression": {
+      "reportSha256": "e777c252b5897037525e1b09507fbeab02f0026ddb99df4b1cec5e00f5b82c97",
+      "viewport": "1280x820",
+      "webBanner": [276, 532, 444, 88],
+      "lynxBanner": [276, 532, 443, 88],
+      "status": "pass"
+    },
+    "lightRegression": {
+      "reportSha256": "ba281b134bb5f02f14def3020588eb9d4795a8c0fb4866fe7dad52e1a450511a",
+      "viewport": "1024x820",
+      "webBanner": [276, 352, 188, 268],
+      "lynxBanner": [276, 352, 187, 268],
+      "status": "pass"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundle": {
+      "bytes": 4602023,
+      "sha256": "33f4907f4104fd990066b658fbb40ab3ee6ef5a8cf256441d22b8c2dbbee9c27",
+      "reproducedAtVerifierCommit": true
+    },
+    "fixture": {
+      "sourceSnapshotId": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "preparedSnapshotId": "bd45f067fb9b0eff040e27046b9f2d8756684d483390fbfe38b6964743b175c0",
+      "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+      "title": "Native narrow settled banner",
+      "activeTurnId": "019f9b5e-c44d-7ac1-8d9a-6f4971770461"
+    },
+    "final": {
+      "reportSha256": "8081a2ad339a2ca0625de0bfeb4c50bde2a31f959cbddaa1b868f227c3aed16e",
+      "screenshotSha256": "14a24e15a03cf3b255fa03496f982c8d3a491f213d7899753c58d300315a3a1c",
+      "transportSequence": [3, 4],
+      "filesPanel": [484, 0, 540, 820],
+      "statusBanner": [276, 372, 188, 248],
+      "statusCopy": [315, 385, 56, 222],
+      "statusAction": [379, 484, 70, 24],
+      "composer": [276, 628, 188, 140],
+      "composerGap": 8,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "excludedHarnessRuns": [
+      {
+        "reportSha256": "1f1492ef21150c218d1bc4a99bae1ff893c8df34864ea64e5d62fb2d39496602",
+        "reason": "Duplicated title could not prove active thread identity."
+      },
+      {
+        "reportSha256": "3980c6cea7861365bef4ea3272bbd66cd0f36bc4aab09faf2dabe6ff34449586",
+        "reason": "Explicit ID selection passed, but canonical UI still read the first Sidebar title."
+      }
+    ]
+  },
+  "validation": {
+    "focusedTests": "38/38 plus verifier 41/41",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "workbenchBuild": "pass with existing bundle warnings",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every run",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "remainingRisk": [
+    "The center crop retains formula residual 0.330660 after geometry convergence.",
+    "Native Files search typing remains pending-user-session."
+  ]
+}

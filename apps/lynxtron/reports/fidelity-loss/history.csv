@@ -162,3 +162,4 @@ quick-switch-query-light-current,2026-08-19T10:25:00+09:00,6d3828437,commit,Quic
 sidebar-footer-inline-files-narrow-baseline,2026-08-19T10:43:20+09:00,cbb9f156a,commit,Responsive Sidebar footer duplicate baseline,0.379506,0.379506,0.019588,0.367109,0.632891,0.608721
 sidebar-footer-inline-files-narrow-current,2026-08-19T11:05:41+09:00,de09d5adf,commit,Responsive Sidebar footer convergence,0.3726,0.3726,0.018279,0.360918,0.639082,0.615627
 settled-banner-inline-files-narrow-baseline,2026-08-19T11:24:47+09:00,2e55943ff,commit,Narrow inline Files settled banner baseline,0.366979,0.366979,0.020876,0.353482,0.646518,0.621248
+settled-banner-inline-files-narrow-current,2026-08-19T11:54:43+09:00,8fdfcc31f,commit,Narrow inline Files settled banner convergence,0.357254,0.357254,0.018368,0.345227,0.654773,0.630973

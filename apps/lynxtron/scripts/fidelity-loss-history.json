@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T11:24:47+09:00",
+  "updatedAt": "2026-08-19T11:54:43+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10949,6 +10949,106 @@
               "confidence": 0.99,
               "method": "narrow-settled-banner-readiness",
               "source": "Same thread and active turn, matching session projection, zero console errors, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settled-banner-inline-files-narrow-current",
+      "observedAt": "2026-08-19T11:54:43+09:00",
+      "commit": "8fdfcc31f",
+      "codeCommit": "548c5b4bf",
+      "codeState": "commit",
+      "label": "Narrow inline Files settled banner convergence",
+      "narrative": "The 1024x820 dark settled-banner state now keeps all content inside the banner and preserves an 8px gap above the Composer. The banner uses auto height with a 68px minimum, the copy uses zero flex basis, and the Un-settle action is locked to 70x24. Web measures 188x268 and Lynx 187x268 with matching 242px copy and 70px action; the center crop improves from 11.005135 to 4.475694 MAE and from 10.2001% to 5.8936% significant pixels. The 1280x820 dark control remains 88px tall and the 1024 light counterpart also passes. Exact production Native selects an explicit thread ID from a uniquely prepared copied fixture, opens the 540px Files panel, measures a contained 188x248 banner, 222px copy, 70x24 action, and 8px Composer gap, advances main transport 3 to 4, reports zero renderer errors, and disposes isolated state. Two title-related Native attempts are classified as harness mismatch and receive no product credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Browser before and after use the same source snapshot, explicit thread and active turn, route, dark theme, 1024x820 viewport, 540px Files panel, byte-identical Web authority, and clean consoles. Exact Native proves the final containment on a reproducible production bundle. Denominator remains 57 states, 654 cells, and weight 213."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/settled-banner-inline-files-narrow-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "5364142c0fa29ceaeca0361d14fa9f36fc1749584b9cfac33cc8eef823f29609"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settled-banner-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-contained-content",
+              "source": "Title, description, and full Un-settle label are visible inside the banner"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0.9375, 0, 0, 0, 0.9375, 0, 0, 0, 1],
+              "anchorScale": 268,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-current-anatomy",
+              "source": "Banner, copy, title, description, action, Composer, and gap align within one pixel"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-current-legibility",
+              "source": "Copy remains inside its host and the action label no longer wraps"
+            },
+            "material": {
+              "pixel": {
+                "mae": 4.475694,
+                "significantShare": 0.058936
+              },
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-current-center-crop",
+              "source": "Same-snapshot 228x320 after crop; remaining font and icon rendering residual is retained"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-current-files-interaction",
+              "source": "Both renderers open the same Files panel and preserve the explicit thread selection"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-settled-banner-current-readiness",
+              "source": "Same thread and active turn, matching session projection, zero console errors, and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["settled-banner-inline-files-narrow"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-narrow-settled-banner-contained-content",
+              "source": "Exact Native shows the complete title, description, and Un-settle label"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 248,
+              "confidence": 0.99,
+              "method": "native-narrow-settled-banner-geometry",
+              "source": "Banner and copy are contained, action is 70x24, and Composer gap is 8px"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-narrow-settled-banner-files-open",
+              "source": "Explicit thread ID selection and DevTool touch open the 540px Files panel"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-narrow-settled-banner-readiness",
+              "source": "Bundle 33f4907f, explicit thread identity, main sequence 3 to 4, zero renderer errors, disposed state, and clean leak gates"
             }
           }
         }
