@@ -1138,6 +1138,7 @@ function fileEditorReady(state) {
   const web = state?.web?.fileEditorMetrics;
   const lynx = state?.lynx?.fileEditorMetrics;
   const fileName = filePath.split("/").at(-1);
+  const narrow = stateId === "file-editor-detail-narrow-inline";
   return (
     web?.present === true &&
     lynx?.present === true &&
@@ -1151,18 +1152,26 @@ function fileEditorReady(state) {
     lynx.editor?.rect?.height > 0 &&
     web.editorValueLength > 0 &&
     lynx.editorValueLength > 0 &&
-    web.explorer?.rect?.width > 0 &&
-    lynx.explorer?.rect?.width > 0 &&
     Math.abs(web.editor.rect.width - lynx.editor.rect.width) <= 1 &&
-    Math.abs(web.explorer.rect.width - lynx.explorer.rect.width) <= 1 &&
     Math.abs(web.editor.rect.height - lynx.editor.rect.height) <= 1 &&
     web.tabs.length === 1 &&
     lynx.tabs.length === 1 &&
     web.tabs.includes(fileName) &&
     lynx.tabs.includes(fileName) &&
-    web.back === null &&
-    lynx.back?.rect?.width === 28 &&
-    lynx.back?.rect?.height === 28 &&
+    (narrow
+      ? web.editor?.rect?.width >= 320 &&
+        lynx.editor?.rect?.width >= 320 &&
+        web.explorer === null &&
+        lynx.explorer === null &&
+        web.back?.rect?.width === 28 &&
+        web.back?.rect?.height === 28 &&
+        lynx.back?.rect?.width === 28 &&
+        lynx.back?.rect?.height === 28
+      : web.explorer?.rect?.width >= 255 &&
+        lynx.explorer?.rect?.width >= 255 &&
+        Math.abs(web.explorer.rect.width - lynx.explorer.rect.width) <= 1 &&
+        web.back === null &&
+        lynx.back === null) &&
     web.statusbar === null &&
     lynx.statusbar === null
   );
@@ -2315,7 +2324,12 @@ async function captureCell({
   let lynxFileEditorOpenAttempts = 0;
   let webFileEditorDomFallbackUsed = false;
   let fileEditorSwitched = !isFileEditorState;
-  let fileEditorReturnedToBrowser = !isFileEditorState;
+  let fileEditorReturnedToBrowser =
+    !isFileEditorState || stateId !== "file-editor-detail-narrow-inline";
+  let webFileEditorReturnedToBrowser =
+    !isFileEditorState || stateId !== "file-editor-detail-narrow-inline";
+  let lynxFileEditorReturnedToBrowser =
+    !isFileEditorState || stateId !== "file-editor-detail-narrow-inline";
   const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
@@ -4785,44 +4799,64 @@ async function captureCell({
       await delay(100);
     }
   }
-  if (isFileEditorState && fileEditorSwitched) {
-    const backPoint = await evaluate(
+  if (isFileEditorState && stateId === "file-editor-detail-narrow-inline" && fileEditorSwitched) {
+    const backPoints = await evaluate(
       cdp,
       sessionId,
       `(() => {
-        const frame = document.getElementById('lynx-pane');
-        const root = frame?.contentWindow?.document
-          ?.getElementById('t3-lynx-preview')?.shadowRoot;
-        const back = root?.querySelector('[aria-label="Back to workspace files"]');
-        if (!frame || !back) return null;
-        const frameRect = frame.getBoundingClientRect();
-        const rect = back.getBoundingClientRect();
+        const pointFor = (frameId, shadow) => {
+          const frame = document.getElementById(frameId);
+          const doc = frame?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const back = root?.querySelector('[aria-label="Back to workspace files"]');
+          if (!frame || !back) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = back.getBoundingClientRect();
+          return {
+            x: frameRect.x + rect.x + rect.width / 2,
+            y: frameRect.y + rect.y + rect.height / 2,
+          };
+        };
         return {
-          x: frameRect.x + rect.x + rect.width / 2,
-          y: frameRect.y + rect.y + rect.height / 2,
+          web: pointFor('web-pane', false),
+          lynx: pointFor('lynx-pane', true),
         };
       })()`,
     ).catch(() => null);
-    if (backPoint) {
-      await dispatchPointerClickWithMove(cdp, sessionId, backPoint);
+    if (backPoints?.web) await dispatchPointerClickWithMove(cdp, sessionId, backPoints.web);
+    if (backPoints?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, backPoints.lynx);
+    if (backPoints?.web && backPoints?.lynx) {
       for (let attempt = 0; attempt < 20; attempt += 1) {
         const returned = await evaluate(
           cdp,
           sessionId,
           `(() => {
-            const frame = document.getElementById('lynx-pane');
-            const root = frame?.contentWindow?.document
+            const web = document.getElementById('web-pane')?.contentWindow?.document;
+            const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
               ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            const read = (root) => ({
+              browserPresent: root?.querySelector('[data-file-browser-panel], .files-panel') !== null,
+              filePresent:
+                root?.querySelector('[data-file-breadcrumbs], .file-panel') !== null,
+            });
             return {
-              kind: root
-                ?.querySelector('[data-right-panel-open="true"]')
-                ?.getAttribute('data-right-panel-active-kind') ?? null,
-              browserPresent: root?.querySelector('.files-panel') !== null,
-              filePresent: root?.querySelector('.file-panel') !== null,
+              web: read(web),
+              lynx: {
+                ...read(lynx),
+                kind: lynx
+                  ?.querySelector('[data-right-panel-open="true"]')
+                  ?.getAttribute('data-right-panel-active-kind') ?? null,
+              },
             };
           })()`,
         ).catch(() => null);
-        if (returned?.kind === "files" && returned.browserPresent && !returned.filePresent) {
+        webFileEditorReturnedToBrowser =
+          returned?.web?.browserPresent === true && returned.web.filePresent === false;
+        lynxFileEditorReturnedToBrowser =
+          returned?.lynx?.kind === "files" &&
+          returned.lynx.browserPresent === true &&
+          returned.lynx.filePresent === false;
+        if (webFileEditorReturnedToBrowser && lynxFileEditorReturnedToBrowser) {
           fileEditorReturnedToBrowser = true;
           break;
         }
@@ -5124,8 +5158,15 @@ async function captureCell({
           ? "web-explorer-pointer|lynx-explorer-pointer"
           : "not-required",
         switched: fileEditorSwitched,
-        returnedBy: isFileEditorState ? "lynx-back-pointer" : "not-required",
+        returnedBy:
+          isFileEditorState && stateId === "file-editor-detail-narrow-inline"
+            ? "web-back-pointer|lynx-back-pointer"
+            : "not-required",
         returnedToBrowser: fileEditorReturnedToBrowser,
+        returnedClients: {
+          web: webFileEditorReturnedToBrowser,
+          lynx: lynxFileEditorReturnedToBrowser,
+        },
         openAttempts: {
           web: webFileEditorOpenAttempts,
           lynx: lynxFileEditorOpenAttempts,

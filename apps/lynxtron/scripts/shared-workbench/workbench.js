@@ -904,10 +904,7 @@ function readFileEditorMetrics(root) {
           ? editorInner.value.length
           : readComposedText(editor).length,
     explorer: readElementBox(explorer),
-    back: readElementBox(
-      lynxSurface?.querySelector('[aria-label="Back to workspace files"]') ??
-        root?.querySelector('.right-panel__tab-list [aria-label="Files"]'),
-    ),
+    back: readElementBox(root?.querySelector('[aria-label="Back to workspace files"]')),
     statusbar: readElementBox(lynxSurface?.querySelector(".file-panel__statusbar")),
     tabs,
   };
