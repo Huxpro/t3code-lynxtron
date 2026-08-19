@@ -91,6 +91,24 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain("!compactFooter && !questionMode");
   });
 
+  it("lets the settled Composer banner grow without collapsing its action", () => {
+    const bannerStart = overrides.indexOf(".composer-settled-banner {");
+    const bannerBlock = overrides.slice(bannerStart, overrides.indexOf("}", bannerStart));
+    const copyStart = overrides.indexOf(".composer-settled-banner__copy {");
+    const copyBlock = overrides.slice(copyStart, overrides.indexOf("}", copyStart));
+    const actionStart = overrides.indexOf(".composer-settled-banner__action {");
+    const actionBlock = overrides.slice(actionStart, overrides.indexOf("}", actionStart));
+
+    expect(bannerBlock).toContain("height: auto;");
+    expect(bannerBlock).toContain("min-height: 68px;");
+    expect(bannerBlock).not.toContain("\n  height: 68px;");
+    expect(copyBlock).toContain("flex-basis: 0;");
+    expect(copyBlock).toContain("width: 0;");
+    expect(actionBlock).toContain("width: 70px;");
+    expect(actionBlock).toContain("min-width: 70px;");
+    expect(actionBlock).toContain("max-width: 70px;");
+  });
+
   it("stretches Review checkpoint cards across the transcript column", () => {
     const start = overrides.indexOf(".turn-diff-card {");
     const block = overrides.slice(start, overrides.indexOf("}", start));
