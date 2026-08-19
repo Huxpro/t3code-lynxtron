@@ -518,8 +518,8 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".file-editor-preview__content{" +
       "display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
       ".file-editor-line{" +
-      "display:flex;flex:none;flex-direction:row;width:100%;min-height:19px;box-sizing:border-box;}" +
-      ".file-editor-line__number{display:block;flex:none;width:34px;box-sizing:border-box;}" +
+      "display:flex;flex:none;flex-direction:row;width:100%;min-height:20px;box-sizing:border-box;}" +
+      ".file-editor-line__number{display:block;flex:none;width:49px;box-sizing:border-box;}" +
       ".file-editor-line__content{" +
       "display:block;flex:1 1 0%;width:auto!important;min-width:0;box-sizing:border-box;}" +
       ".theme-light .sidebar-settings-authority{" +
@@ -631,8 +631,8 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "padding:0!important;font-size:14px!important;line-height:23px!important;background:transparent!important;}" +
       "x-textarea.files-panel__editor::part(textarea){" +
       "display:block!important;width:100%!important;height:100%!important;border:0!important;" +
-      "padding:14px 16px 24px!important;font-family:inherit!important;font-size:12px!important;" +
-      "line-height:19px!important;color:inherit!important;background:transparent!important;}" +
+      "padding:14px 16px 24px!important;font-family:inherit!important;font-size:13px!important;" +
+      "line-height:20px!important;color:inherit!important;background:transparent!important;}" +
       "x-input::part(input),x-input::part(form),x-textarea::part(textarea),x-textarea::part(form){" +
       "box-sizing:inherit;width:inherit;height:inherit;border:inherit;border-radius:inherit;" +
       "align-self:inherit;justify-self:inherit;text-align:inherit;direction:inherit;" +

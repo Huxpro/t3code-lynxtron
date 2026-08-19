@@ -85,9 +85,8 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".composer-compact-controls-menu__scroll {");
     expect(overrides).toContain("max-height: calc(100vh - 142px);");
     expect(overrides).toContain("width: 148px;");
-    expect(composerSource).toMatch(
-      /compactFooter && availableWidth < 300[^]*composer-compact-controls-menu--narrow/,
-    );
+    expect(composerSource).toContain("resolveCompactComposerControlsAlign(availableWidth)");
+    expect(composerSource).toContain('compactControlsAlign === "end"');
     expect(overrides).toContain(".composer-compact-controls-menu--narrow {");
     expect(overrides).toContain("right: 0;");
     expect(overrides).toContain("left: auto;");

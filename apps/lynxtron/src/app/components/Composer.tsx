@@ -8,7 +8,10 @@ import {
   type ReactNode,
 } from "@lynx-js/react";
 import type { MainThread } from "@lynx-js/types";
-import { shouldUseCompactComposerFooter } from "../../../../web/src/components/composerFooterLayout";
+import {
+  resolveCompactComposerControlsAlign,
+  shouldUseCompactComposerFooter,
+} from "../../../../web/src/components/composerFooterLayout";
 import {
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
   type ComposerTraitsMenuSectionPresentation,
@@ -233,6 +236,7 @@ export function Composer({
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
+  const compactControlsAlign = resolveCompactComposerControlsAlign(availableWidth);
   const compactControlsEstimatedContentHeight = compactControlsContentHeight(
     modelOptionSections,
     showInteractionModeToggle,
@@ -480,7 +484,7 @@ export function Composer({
                           <>
                             <view
                               className={`composer-compact-controls-menu${
-                                compactFooter && availableWidth < 300
+                                compactControlsAlign === "end"
                                   ? " composer-compact-controls-menu--narrow"
                                   : ""
                               }`}

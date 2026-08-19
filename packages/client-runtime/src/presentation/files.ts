@@ -31,7 +31,7 @@ export interface ProjectFileDetailLayout {
 export function projectFileDetailLayout(panelWidth: number | null): ProjectFileDetailLayout {
   const narrow = panelWidth !== null && panelWidth < FILE_DETAIL_INLINE_EXPLORER_MIN_WIDTH;
   return {
-    showBackToFiles: narrow,
+    showBackToFiles: true,
     showExplorer: !narrow,
   };
 }

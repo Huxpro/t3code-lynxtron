@@ -14,6 +14,7 @@ import {
 
 export const CompactComposerControlsMenu = memo(function CompactComposerControlsMenu(props: {
   activePlan: boolean;
+  align: "start" | "end";
   interactionMode: ProviderInteractionMode;
   planSidebarLabel: string;
   planSidebarOpen: boolean;
@@ -39,7 +40,7 @@ export const CompactComposerControlsMenu = memo(function CompactComposerControls
       >
         <EllipsisIcon aria-hidden="true" className="size-4" />
       </MenuTrigger>
-      <MenuPopup align="start" relationId="composer-compact-controls-menu">
+      <MenuPopup align={props.align} relationId="composer-compact-controls-menu">
         {props.traitsMenuContent ? (
           <>
             {props.traitsMenuContent}

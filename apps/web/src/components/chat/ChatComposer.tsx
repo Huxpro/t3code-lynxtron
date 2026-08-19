@@ -88,6 +88,7 @@ import { ComposerPendingElementContexts } from "./ComposerPendingElementContexts
 import { ComposerPendingReviewComments } from "./ComposerPendingReviewComments";
 import { ComposerPreviewAnnotationCards } from "./ComposerPreviewAnnotationCards";
 import {
+  resolveCompactComposerControlsAlign,
   shouldUseCompactComposerPrimaryActions,
   shouldUseCompactComposerFooter,
 } from "../composerFooterLayout";
@@ -963,6 +964,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     null,
   );
   const [isDragOverComposer, setIsDragOverComposer] = useState(false);
+  const [composerFormWidth, setComposerFormWidth] = useState<number | null>(null);
   const [isComposerFooterCompact, setIsComposerFooterCompact] = useState(false);
   const [isComposerPrimaryActionsCompact, setIsComposerPrimaryActionsCompact] = useState(false);
   const [isComposerModelPickerOpen, setIsComposerModelPickerOpen] = useState(false);
@@ -1452,12 +1454,15 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     };
 
     const initialCompactness = measureFooterCompactness();
+    setComposerFormWidth(measureComposerFormWidth());
     setIsComposerPrimaryActionsCompact(initialCompactness.primaryActionsCompact);
     setIsComposerFooterCompact(initialCompactness.footerCompact);
     if (typeof ResizeObserver === "undefined") return;
 
     const observer = new ResizeObserver(() => {
+      const nextWidth = measureComposerFormWidth();
       const nextCompactness = measureFooterCompactness();
+      setComposerFormWidth((previous) => (previous === nextWidth ? previous : nextWidth));
       setIsComposerPrimaryActionsCompact((previous) =>
         previous === nextCompactness.primaryActionsCompact
           ? previous
@@ -3185,6 +3190,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                   isComposerFooterCompact ? (
                     <CompactComposerControlsMenu
                       activePlan={showPlanSidebarToggle}
+                      align={resolveCompactComposerControlsAlign(composerFormWidth)}
                       interactionMode={interactionMode}
                       planSidebarLabel={planSidebarLabel}
                       planSidebarOpen={planSidebarOpen}

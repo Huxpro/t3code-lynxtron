@@ -103,13 +103,13 @@ describe("project entries presentation", () => {
 });
 
 describe("file preview presentation", () => {
-  it("switches narrow file details to an editor-first return flow", () => {
+  it("keeps file details reversible while switching narrow layouts to editor-first", () => {
     expect(projectFileDetailLayout(null)).toEqual({
-      showBackToFiles: false,
+      showBackToFiles: true,
       showExplorer: true,
     });
     expect(projectFileDetailLayout(512)).toEqual({
-      showBackToFiles: false,
+      showBackToFiles: true,
       showExplorer: true,
     });
     expect(projectFileDetailLayout(511)).toEqual({
