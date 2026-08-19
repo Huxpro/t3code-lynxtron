@@ -5471,6 +5471,13 @@ async function verifyCompactControls({
     timeoutMs,
     predicate: (measurement) => measurementVisible(measurement),
   });
+  const composer = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-frame",
+    timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement),
+  });
   await tapSelector({
     child,
     client,
@@ -5519,9 +5526,12 @@ async function verifyCompactControls({
   const lastRow = rows.at(-1);
   const panelRight = panel.rect.x + panel.rect.width;
   const contextRight = context.rect.x + context.rect.width;
+  const composerRight = composer.rect.x + composer.rect.width;
   const scrollBottom = scroll.rect.y + scroll.rect.height;
   const lastRowBottom =
     (lastRow?.rect?.y ?? Number.POSITIVE_INFINITY) + (lastRow?.rect?.height ?? 0);
+  const contentOverflows = content.rect.height > scroll.rect.height;
+  const initialLastRowVisible = lastRowBottom <= scrollBottom + 1;
   if (
     JSON.stringify(tailLabels) !== JSON.stringify(requiredTail) ||
     traitLabels.length === 0 ||
@@ -5533,13 +5543,16 @@ async function verifyCompactControls({
     scroll.rect.y + scroll.rect.height > panel.rect.y + panel.rect.height + 1 ||
     content.rect.height < rows.length * 28 ||
     !lastRow?.rect ||
-    lastRowBottom > scrollBottom + 1 ||
+    (!contentOverflows && !initialLastRowVisible) ||
     panelRight > rightPanel.rect.x + 1 ||
+    context.rect.x < composer.rect.x - 1 ||
+    contextRight > composerRight + 1 ||
     contextRight > rightPanel.rect.x + 1
   ) {
     throw new Error(
       `Native compact Composer controls drifted: ${JSON.stringify({
         content,
+        composer,
         context,
         panel,
         requiredTail,
@@ -5552,7 +5565,8 @@ async function verifyCompactControls({
   }
 
   let scrollEvidence = { status: "not-required" };
-  if (content.rect.height > scroll.rect.height) {
+  let finalLastRow = lastRow;
+  if (contentOverflows) {
     const response = await client.runCdp("Runtime.evaluate", {
       expression:
         "globalThis.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?.(120).then((value) => JSON.stringify(value ?? null))",
@@ -5570,10 +5584,34 @@ async function verifyCompactControls({
       timeoutMs,
       predicate: (measurement) => measurement?.attributes["data-scroll-offset"] === "120",
     });
+    const scrolledRows = await readSelectorMeasurements(
+      client,
+      ".composer-compact-controls-menu__item",
+    );
+    finalLastRow = scrolledRows.at(-1);
+    const finalLastRowBottom =
+      (finalLastRow?.rect?.y ?? Number.POSITIVE_INFINITY) + (finalLastRow?.rect?.height ?? 0);
+    if (
+      !finalLastRow?.rect ||
+      finalLastRow.rect.y >= lastRow.rect.y ||
+      finalLastRowBottom > scrollBottom + 1
+    ) {
+      throw new Error(
+        `Native compact controls did not reveal the final row after scrolling: ${JSON.stringify({
+          before: lastRow,
+          after: finalLastRow,
+          scroll,
+        })}`,
+      );
+    }
     scrollEvidence = {
       status: "pass",
+      input: "main-thread scroll seam; physical wheel pending-user-session",
       requestedOffset: 120,
       appliedOffset: Number(scrolled.attributes["data-scroll-offset"]),
+      beforeLastRowY: lastRow.rect.y,
+      afterLastRowY: finalLastRow.rect.y,
+      finalLastRowVisible: true,
     };
   }
 
@@ -5603,14 +5641,16 @@ async function verifyCompactControls({
     panel: panel.rect,
     scroll: scroll.rect,
     content: content.rect,
+    composer: composer.rect,
     dismiss: dismiss.rect,
     rowLabels,
-    lastRow: lastRow?.rect ?? null,
-    lastRowVisible: lastRowBottom <= scrollBottom + 1,
+    lastRow: finalLastRow?.rect ?? null,
+    initialLastRowVisible,
     traitLabels,
     containment: {
       panelRight,
       contextRight,
+      composerRight,
       rightPanelLeft: rightPanel.rect.x,
     },
     scrollEvidence,

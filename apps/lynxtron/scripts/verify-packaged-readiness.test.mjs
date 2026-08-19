@@ -387,7 +387,10 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - 240) <= 0.5");
     assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 122) <= 0.5");
     assert.include(source, 'readSelectorMeasurements(client, ".diff-panel-header__scope-item")');
-    assert.include(source, 'client,\n    ".diff-panel-header__scope-item-label",');
+    assert.include(
+      source,
+      'readSelectorMeasurements(client, ".diff-panel-header__scope-item-label")',
+    );
     assert.include(source, "rowLabels.length !== expectedRows.length");
     assert.include(
       source,
@@ -509,16 +512,22 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".composer-compact-controls-menu__content"');
     assert.include(source, 'selector: ".composer-compact-controls-dismiss"');
     assert.include(source, "const requiredTail = [");
-    assert.include(source, "lastRowBottom > scrollBottom + 1");
-    assert.include(source, "lastRowVisible:");
+    assert.include(source, "const contentOverflows = content.rect.height > scroll.rect.height");
+    assert.include(source, "const initialLastRowVisible = lastRowBottom <= scrollBottom + 1");
+    assert.include(source, "(!contentOverflows && !initialLastRowVisible)");
     assert.include(source, '"Plan",');
     assert.include(source, '"Full access"');
     assert.include(source, "const traitLabels = rowLabels.slice(0, -requiredTail.length)");
     assert.include(source, "new Set(rowLabels).size !== rowLabels.length");
     assert.include(source, "panelRight > rightPanel.rect.x + 1");
+    assert.include(source, "context.rect.x < composer.rect.x - 1");
+    assert.include(source, "contextRight > composerRight + 1");
     assert.include(source, "contextRight > rightPanel.rect.x + 1");
     assert.include(source, "__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?.(120)");
     assert.include(source, 'measurement?.attributes["data-scroll-offset"] === "120"');
+    assert.include(source, "finalLastRow.rect.y >= lastRow.rect.y");
+    assert.include(source, "Native compact controls did not reveal the final row after scrolling");
+    assert.include(source, 'input: "main-thread scroll seam; physical wheel pending-user-session"');
     assert.include(source, "Native compact Composer controls drifted");
     assert.include(source, 'name: "native-compact-controls.png"');
     assert.include(outcomeChecksSource, "compactControls");
