@@ -82,7 +82,9 @@ function vacuumInto(sourcePath, destPath) {
 function summarize(dbPath) {
   const code = `
     const db = new (require('bun:sqlite').Database)(${JSON.stringify(dbPath)}, { readonly: true });
-    const projects = db.query('select project_id as id, title from projection_projects order by title').all();
+    const projects = db.query(
+      'select project_id as id, title, workspace_root as workspaceRoot from projection_projects order by title'
+    ).all();
     const threads = db.query(\`
       select
         t.thread_id as id,

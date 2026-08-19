@@ -858,14 +858,44 @@ function readFileEditorMetrics(root) {
     lynxSurface?.querySelector(".files-panel__editor") ??
     lynxSurface?.querySelector(".file-editor-preview") ??
     root?.querySelector(".file-preview-virtualizer");
+  const composedElements = [];
+  const visit = (node) => {
+    for (const child of node?.children ?? []) {
+      composedElements.push(child);
+      visit(child);
+      if (child.shadowRoot) visit(child.shadowRoot);
+    }
+  };
+  visit(editor);
+  const contentEditable =
+    composedElements.find((element) =>
+      element.matches?.('[contenteditable="true"], [contenteditable="plaintext-only"]'),
+    ) ?? null;
   const editorInner =
     editor?.shadowRoot?.querySelector("textarea") ??
-    editor?.querySelector?.("textarea, [data-line]") ??
+    editor?.querySelector?.("textarea") ??
+    contentEditable ??
+    editor?.querySelector?.("[data-line]") ??
     null;
+  const projectedLines = [...(lynxSurface?.querySelectorAll(".file-editor-line__content") ?? [])];
+  const projectedLineNumbers = [
+    ...(lynxSurface?.querySelectorAll(".file-editor-line__number") ?? []),
+  ];
+  const editorValue =
+    typeof editor?.value === "string"
+      ? editor.value
+      : typeof editorInner?.value === "string"
+        ? editorInner.value
+        : (contentEditable?.innerText ??
+          (projectedLines.length > 0
+            ? projectedLines.map((line) => readComposedText(line)).join("\n")
+            : readComposedText(editor)));
   const explorer =
     root?.querySelector("[data-file-browser-panel]") ??
     lynxSurface?.querySelector(".file-panel__explorer") ??
     lynxSurface?.querySelector(".files-panel__browser");
+  const activeTab = root?.querySelector('[data-active-tab="true"]');
+  const statusbar = lynxSurface?.querySelector(".file-panel__statusbar");
   const tabs = [
     ...(root?.querySelectorAll(
       ".right-panel__tab-list [aria-label], [data-active-tab] [aria-label]",
@@ -882,6 +912,13 @@ function readFileEditorMetrics(root) {
     lynxSurface?.querySelector(".file-panel__breadcrumb--current")?.textContent?.trim() ??
     webBreadcrumbs?.querySelector("[data-current-file-crumb='true']")?.textContent?.trim() ??
     null;
+  const editorBox = readElementBox(editor);
+  const editorInnerBox = readElementBox(editorInner);
+  const firstLineNumberBox = readElementBox(projectedLineNumbers[0]);
+  const firstLineContentBox = readElementBox(projectedLines[0]);
+  const gutterWidth =
+    firstLineNumberBox?.rect?.width ??
+    (editorBox?.rect && editorInnerBox?.rect ? editorInnerBox.rect.x - editorBox.rect.x : null);
   return {
     present: Boolean(lynxSurface || webBreadcrumbs),
     surface: readElementBox(
@@ -895,17 +932,25 @@ function readFileEditorMetrics(root) {
     ),
     breadcrumbText,
     currentFile,
-    editor: readElementBox(editor),
-    editorInner: readElementBox(editorInner),
-    editorValueLength:
-      typeof editor?.value === "string"
-        ? editor.value.length
-        : typeof editorInner?.value === "string"
-          ? editorInner.value.length
-          : readComposedText(editor).length,
+    editor: editorBox,
+    editorInner: editorInnerBox,
+    firstLineNumber: firstLineNumberBox,
+    firstLineContent: firstLineContentBox ?? editorInnerBox,
+    gutterWidth,
+    editorKernel:
+      editorInner?.tagName?.toLowerCase() ??
+      (contentEditable?.isContentEditable ? "contenteditable" : null),
+    editorMode:
+      editor?.getAttribute("data-file-editor-mode") ??
+      (contentEditable?.isContentEditable ? "editing" : "preview"),
+    editorValueLength: editorValue.length,
+    editorValueIncludesFidelitySentinel: editorValue.includes("T3_FILE_SAVE_FIDELITY_SENTINEL"),
+    editorValueTail: editorValue.slice(-256),
     explorer: readElementBox(explorer),
     back: readElementBox(root?.querySelector('[aria-label="Back to workspace files"]')),
-    statusbar: readElementBox(lynxSurface?.querySelector(".file-panel__statusbar")),
+    pending: activeTab?.getAttribute("data-pending-tab") === "true",
+    statusbar: readElementBox(statusbar),
+    statusbarText: readComposedText(statusbar),
     tabs,
   };
 }

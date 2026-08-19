@@ -13,4 +13,8 @@ describe("shared-state snapshot seeding", () => {
     assert.include(source, "if (!existsSync(destPath))");
     assert.include(source, "VACUUM INTO did not create");
   });
+
+  it("records the source workspace needed for disposable write fixtures", () => {
+    assert.include(source, "workspace_root as workspaceRoot");
+  });
 });

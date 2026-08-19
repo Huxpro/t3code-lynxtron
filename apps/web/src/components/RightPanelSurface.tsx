@@ -68,6 +68,7 @@ export function RightPanelTabSurface({
   return (
     <HostView
       data-active-tab={active}
+      data-pending-tab={pending}
       {...(onMouseDown ? { onMouseDown } : {})}
       {...(onAuxClick ? { onAuxClick } : {})}
       {...(onContextMenu ? { onContextMenu } : {})}

@@ -1664,10 +1664,17 @@ const makeWsRpcLayer = (
             ),
             { "rpc.aggregate": "workspace" },
           ),
-        [WS_METHODS.projectsWriteFile]: (input) =>
-          observeRpcEffect(
+        [WS_METHODS.projectsWriteFile]: (input) => {
+          const configuredDelay = Number(
+            globalThis.process.env.T3_TEST_PROJECT_WRITE_DELAY_MS ?? 0,
+          );
+          const write = workspaceFileSystem.writeFile(input);
+          return observeRpcEffect(
             WS_METHODS.projectsWriteFile,
-            workspaceFileSystem.writeFile(input).pipe(
+            (Number.isFinite(configuredDelay) && configuredDelay > 0
+              ? write.pipe(Effect.delay(Duration.millis(configuredDelay)))
+              : write
+            ).pipe(
               Effect.mapError(
                 (cause) =>
                   new ProjectWriteFileError({
@@ -1679,7 +1686,8 @@ const makeWsRpcLayer = (
               ),
             ),
             { "rpc.aggregate": "workspace" },
-          ),
+          );
+        },
         [WS_METHODS.shellOpenInEditor]: (input) =>
           observeRpcEffect(WS_METHODS.shellOpenInEditor, externalLauncher.launchEditor(input), {
             "rpc.aggregate": "workspace",

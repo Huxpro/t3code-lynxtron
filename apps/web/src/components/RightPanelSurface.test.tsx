@@ -68,6 +68,7 @@ describe("RightPanelTabSurface", () => {
     );
     expect(markup).toContain("size-2 rounded-full bg-current");
     expect(markup).toContain("data-pending-close");
+    expect(markup).toContain('data-pending-tab="true"');
     expect(markup).not.toContain("data-close-icon");
   });
 

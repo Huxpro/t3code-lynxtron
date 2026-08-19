@@ -97,6 +97,21 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "\"button[data-type='item']\"");
     assert.include(source, "filesBrowserMetrics: readFilesBrowserMetrics");
     assert.include(source, "fileEditorMetrics: readFileEditorMetrics");
+    assert.include(source, "contentEditable?.innerText ??");
+    assert.include(source, ": readComposedText(editor));");
+    assert.include(source, 'querySelectorAll(".file-editor-line__content")');
+    assert.include(source, 'projectedLines.map((line) => readComposedText(line)).join("\\n")');
+    assert.include(source, "composedElements.find((element)");
+    assert.include(source, 'editor?.getAttribute("data-file-editor-mode")');
+    assert.include(source, "root?.querySelector('[data-active-tab=\"true\"]')");
+    assert.include(source, 'getAttribute("data-pending-tab") === "true"');
+    assert.include(source, "editorValueIncludesFidelitySentinel: editorValue.includes(");
+    assert.include(source, "editorValueTail: editorValue.slice(-256)");
+    assert.include(source, "firstLineNumber: firstLineNumberBox");
+    assert.include(source, "firstLineContent: firstLineContentBox ?? editorInnerBox");
+    assert.include(source, "gutterWidth,");
+    assert.include(source, "editorInnerBox.rect.x - editorBox.rect.x");
+    assert.include(source, "statusbarText: readComposedText(statusbar)");
   });
 
   it("measures the Git Publish popup rather than the fullscreen Lynx overlay", () => {
