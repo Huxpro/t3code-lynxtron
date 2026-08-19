@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T16:25:37+09:00",
+  "updatedAt": "2026-08-19T17:12:53+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11520,6 +11520,71 @@
               "confidence": 0.99,
               "method": "native-project-action-keybindings-disk-miss",
               "source": "Isolated keybindings.json remains at 45 entries with no script.fidelity-kb-action.run rule"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-action-keybinding-mutation-current",
+      "observedAt": "2026-08-19T17:12:53+09:00",
+      "commit": "dc027aec5",
+      "codeCommit": "4ca9d3928",
+      "codeState": "commit",
+      "label": "Project Action keybinding mutation convergence",
+      "narrative": "The exact Native Project Action save flow now matches the Web authority's persistent semantics. Shared validation rejects mod+shift before mutation, keeps the dialog open with Invalid keybinding., and leaves both project scripts and keybindings.json untouched. A valid Fidelity KB Action saves the canonical fidelity-kb-action script, then dispatches a typed server.upsertKeybinding command for mod+shift+y and script.fidelity-kb-action.run. The current renderer config receives the new command, isolated keybindings.json contains the rule, and both script and keybinding survive a cold restart. The original dialog geometry and outside dismissal remain intact, while Lynx truthfully declares a canonical-text shortcut input because physical keyboard capture is not certified. The fixed denominator remains 59 states, 672 cells, and weight 218.2; no material residual or existing weight changes.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Baseline and current runs use the same immutable fixture, project, theme, viewport, exact Native lifecycle, and isolated keybindings path. The current run adds shared validation, typed bridge and connector coverage, current config projection, disk persistence, invalid no-op behavior, and cold restart without changing scope."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/project-action-keybinding-mutation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "9302944707338916e9dfd324d3c92f8f373d90fe1f61276e5842f4a539a6fd65"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-keybinding-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-current-content",
+              "source": "Canonical name, command, id, shortcut text, and script command all reach the final save path"
+            },
+            "geometry": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-current-dialog-regression",
+              "source": "The original 502x662 dialog, fields, footer, fullscreen backdrop, and outside dismissal remain intact"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-current-shortcut-guidance",
+              "source": "Lynx truthfully labels canonical shortcut text with a concrete mod+shift+y example"
+            },
+            "material": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-mutation-no-new-material",
+              "source": "Mutation-only accounting continues to avoid duplicating the existing dialog material residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-valid-invalid-save",
+              "source": "Invalid input is a no-op with visible error; valid input persists both script and keybinding and closes the dialog"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-config-disk-restart",
+              "source": "Current renderer config, isolated keybindings.json, and cold restart all contain script.fidelity-kb-action.run on exact bundle fa6142fb"
             }
           }
         }
