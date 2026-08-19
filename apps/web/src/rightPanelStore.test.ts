@@ -170,6 +170,22 @@ describe("rightPanelStore", () => {
     });
   });
 
+  it("returns from peer file surfaces to one Files browser surface", () => {
+    useRightPanelStore.getState().open(refA, "diff");
+    useRightPanelStore.getState().openFile(refA, "src/index.ts");
+    useRightPanelStore.getState().openFile(refA, "README.md");
+    useRightPanelStore.getState().returnToFiles(refA);
+
+    expect(selectThreadRightPanelState(useRightPanelStore.getState().byThreadKey, refA)).toEqual({
+      isOpen: true,
+      activeSurfaceId: "files",
+      surfaces: [
+        { id: "diff", kind: "diff" },
+        { id: "files", kind: "files" },
+      ],
+    });
+  });
+
   it("updates line reveal requests when reopening a file surface", () => {
     useRightPanelStore.getState().openFile(refA, "src/index.ts", 42);
     useRightPanelStore.getState().openFile(refA, "src/index.ts", 87);

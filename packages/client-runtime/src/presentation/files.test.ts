@@ -4,6 +4,7 @@ import {
   buildProjectEntryTree,
   fileContentRevision,
   isMarkdownPreviewFile,
+  projectFileDetailLayout,
   projectFileLineTokens,
   projectFileCacheKey,
   projectFileEditorCacheKey,
@@ -102,6 +103,21 @@ describe("project entries presentation", () => {
 });
 
 describe("file preview presentation", () => {
+  it("switches narrow file details to an editor-first return flow", () => {
+    expect(projectFileDetailLayout(null)).toEqual({
+      showBackToFiles: false,
+      showExplorer: true,
+    });
+    expect(projectFileDetailLayout(512)).toEqual({
+      showBackToFiles: false,
+      showExplorer: true,
+    });
+    expect(projectFileDetailLayout(511)).toEqual({
+      showBackToFiles: true,
+      showExplorer: false,
+    });
+  });
+
   it("recognizes Markdown files case-insensitively", () => {
     expect(isMarkdownPreviewFile("README.md")).toBe(true);
     expect(isMarkdownPreviewFile("docs/guide.MDX")).toBe(true);

@@ -21,6 +21,21 @@ export interface ProjectEntryTreeFileNode {
 
 export type ProjectEntryTreeNode = ProjectEntryTreeDirectoryNode | ProjectEntryTreeFileNode;
 
+export const FILE_DETAIL_INLINE_EXPLORER_MIN_WIDTH = 512;
+
+export interface ProjectFileDetailLayout {
+  readonly showBackToFiles: boolean;
+  readonly showExplorer: boolean;
+}
+
+export function projectFileDetailLayout(panelWidth: number | null): ProjectFileDetailLayout {
+  const narrow = panelWidth !== null && panelWidth < FILE_DETAIL_INLINE_EXPLORER_MIN_WIDTH;
+  return {
+    showBackToFiles: narrow,
+    showExplorer: !narrow,
+  };
+}
+
 interface MutableDirectoryNode {
   name: string;
   path: string;

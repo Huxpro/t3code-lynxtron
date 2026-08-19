@@ -1,5 +1,6 @@
 import {
   buildProjectEntryTree,
+  projectFileDetailLayout,
   projectFileLineTokens,
   type ProjectEntryTreeNode,
 } from "@t3tools/client-runtime/presentation/files";
@@ -381,6 +382,7 @@ export function FilesPanel({
 
 export function FilePanel({ path }: { readonly path: string }) {
   const { activeThreadId, projects, threads } = useT3ClientState();
+  const [panelWidth, setPanelWidth] = useState<number | null>(null);
   const [preview, setPreview] = useState<PreviewState>({
     path,
     result: null,
@@ -394,6 +396,7 @@ export function FilePanel({ path }: { readonly path: string }) {
   const pathParts = path.split("/").filter(Boolean);
   const fileName = pathParts.at(-1) ?? path;
   const directoryParts = pathParts.slice(0, -1);
+  const detailLayout = projectFileDetailLayout(panelWidth);
 
   useEffect(() => {
     if (!cwd) {
@@ -418,15 +421,26 @@ export function FilePanel({ path }: { readonly path: string }) {
   }, [cwd, path]);
 
   return (
-    <view className="file-panel">
+    <view
+      className="file-panel"
+      data-file-detail-layout={detailLayout.showExplorer ? "split" : "editor"}
+      bindlayoutchange={(event: { detail?: { width?: unknown } }) => {
+        const width = event.detail?.width;
+        if (typeof width === "number" && Number.isFinite(width) && width > 0) {
+          setPanelWidth((current) => (current === width ? current : width));
+        }
+      }}
+    >
       <view className="file-panel__toolbar" data-surface-subheader>
-        <view
-          className="file-panel__back"
-          aria-label="Back to workspace files"
-          bindtap={uiActions.returnToFilesSurface}
-        >
-          <Icon name="arrow-left" size={14} color="#71717a" />
-        </view>
+        {detailLayout.showBackToFiles ? (
+          <view
+            className="file-panel__back"
+            aria-label="Back to workspace files"
+            bindtap={uiActions.returnToFilesSurface}
+          >
+            <Icon name="arrow-left" size={14} color="#71717a" />
+          </view>
+        ) : null}
         <scroll-view className="file-panel__breadcrumbs" scroll-orientation="horizontal">
           <view className="file-panel__breadcrumb-list">
             <text className="file-panel__breadcrumb file-panel__breadcrumb--project">
@@ -466,9 +480,11 @@ export function FilePanel({ path }: { readonly path: string }) {
             />
           ) : null}
         </view>
-        <view className="file-panel__explorer">
-          <FilesPanel selectedPath={path} />
-        </view>
+        {detailLayout.showExplorer ? (
+          <view className="file-panel__explorer">
+            <FilesPanel selectedPath={path} />
+          </view>
+        ) : null}
       </view>
     </view>
   );

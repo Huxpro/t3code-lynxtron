@@ -11,6 +11,7 @@ import { EditProvider, File, type FileOptions, Virtualizer } from "@pierre/diffs
 import {
   isMarkdownPreviewFile,
   projectFileCacheKey,
+  projectFileDetailLayout,
   projectFileEditorCacheKey,
   setMarkdownTaskChecked,
 } from "@t3tools/client-runtime/presentation/files";
@@ -19,7 +20,15 @@ import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
-import { ChevronRight, Code2, Eye, FolderTree, Globe2, LoaderCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Code2,
+  Eye,
+  FolderTree,
+  Globe2,
+  LoaderCircle,
+} from "lucide-react";
 import * as Schema from "effect/Schema";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -27,6 +36,7 @@ import { isBrowserPreviewFile, openFileInPreview } from "~/browser/openFileInPre
 import { useAssetUrlState } from "~/assets/assetUrls";
 import ChatMarkdown from "~/components/ChatMarkdown";
 import { OpenInPicker } from "~/components/chat/OpenInPicker";
+import { Button } from "~/components/ui/button";
 import { useClientSettings } from "~/hooks/useSettings";
 import { useTheme } from "~/hooks/useTheme";
 import { getLocalStorageItem, setLocalStorageItem, useLocalStorage } from "~/hooks/useLocalStorage";
@@ -79,6 +89,7 @@ interface FilePreviewPanelProps {
   availableEditors: ReadonlyArray<EditorId>;
   revealLine: number | null;
   revealRequestId: number;
+  onBackToFiles: () => void;
   onOpenFile: (relativePath: string) => void;
   onPendingChange: (relativePath: string, pending: boolean) => void;
 }
@@ -765,6 +776,7 @@ export default function FilePreviewPanel({
   availableEditors,
   revealLine,
   revealRequestId,
+  onBackToFiles,
   onOpenFile,
   onPendingChange,
 }: FilePreviewPanelProps) {
@@ -780,6 +792,8 @@ export default function FilePreviewPanel({
   });
   const isImage = relativePath !== null && isWorkspaceImagePreviewPath(relativePath);
   const file = useProjectFileQuery(environmentId, cwd, relativePath, !isImage);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [panelWidth, setPanelWidth] = useState<number | null>(null);
   const [explorerOpen, setExplorerOpen] = useState(initialExplorerOpen);
   // Reading markdown rendered is a preference, not a property of one file. Keeping
   // it on the panel meant a thread switch dropped it and forced source back.
@@ -796,6 +810,7 @@ export default function FilePreviewPanel({
   );
   const breadcrumbRef = useRef<HTMLDivElement>(null);
   const isMarkdown = relativePath ? isMarkdownPreviewFile(relativePath) : false;
+  const detailLayout = projectFileDetailLayout(panelWidth);
   // A reveal still wins over the preference: the line only exists in the source.
   const renderMarkdown =
     isMarkdown &&
@@ -817,6 +832,20 @@ export default function FilePreviewPanel({
     );
     currentCrumb?.scrollIntoView({ block: "nearest", inline: "end" });
   }, [relativePath]);
+
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+    const updateWidth = () => {
+      const nextWidth = panel.clientWidth;
+      setPanelWidth((current) => (current === nextWidth ? current : nextWidth));
+    };
+    updateWidth();
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(panel);
+    return () => observer.disconnect();
+  }, []);
 
   const toggleExplorer = () => {
     setExplorerOpen((current) => {
@@ -855,9 +884,25 @@ export default function FilePreviewPanel({
   }, [absolutePath, createAssetUrl, environmentHttpBaseUrl, openPreview, threadRef]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
+    <div
+      ref={panelRef}
+      className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background"
+      data-file-detail-layout={detailLayout.showExplorer ? "split" : "editor"}
+    >
       {relativePath ? (
         <div className="surface-subheader gap-2 px-3" data-surface-subheader>
+          {detailLayout.showBackToFiles ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              className="-ml-1 shrink-0"
+              aria-label="Back to workspace files"
+              onClick={onBackToFiles}
+            >
+              <ArrowLeft className="size-3.5" />
+            </Button>
+          ) : null}
           <ScrollArea
             ref={breadcrumbRef}
             hideScrollbars
@@ -1049,7 +1094,7 @@ export default function FilePreviewPanel({
             )
           ) : null}
         </div>
-        {explorerOpen || relativePath === null ? (
+        {(detailLayout.showExplorer && explorerOpen) || relativePath === null ? (
           <aside
             className={cn(
               "flex min-h-0 shrink-0 bg-background",

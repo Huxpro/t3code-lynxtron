@@ -62,6 +62,7 @@ interface RightPanelStoreState {
   open: (ref: ScopedThreadRef, kind: Exclude<RightPanelKind, "file" | "terminal">) => void;
   openBrowser: (ref: ScopedThreadRef, tabId: string | null) => void;
   openFile: (ref: ScopedThreadRef, relativePath: string, line?: number) => void;
+  returnToFiles: (ref: ScopedThreadRef) => void;
   openTerminal: (ref: ScopedThreadRef, terminalId: string) => void;
   splitTerminal: (
     ref: ScopedThreadRef,
@@ -276,6 +277,19 @@ export const useRightPanelStore = create<RightPanelStoreState>()(
                     entry.id === surface.id ? surface : entry,
                   )
                 : [...withoutStandaloneExplorer, surface],
+            };
+          }),
+        })),
+      returnToFiles: (ref) =>
+        set((state) => ({
+          byThreadKey: updateThread(state.byThreadKey, scopedThreadKey(ref), (current) => {
+            const withoutFileSurfaces = current.surfaces.filter(
+              (surface) => surface.kind !== "file" && surface.kind !== "files",
+            );
+            return {
+              isOpen: true,
+              activeSurfaceId: "files",
+              surfaces: [...withoutFileSurfaces, singletonSurface("files")],
             };
           }),
         })),

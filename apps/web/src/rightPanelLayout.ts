@@ -1,11 +1,16 @@
-export const RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY = "(max-width: 980px)";
+export const RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY = "(max-width: 1023px)";
 export const RIGHT_PANEL_WIDTH_STORAGE_KEY = "t3code:preview-panel-width";
 export const RIGHT_PANEL_DEFAULT_WIDTH = 540;
 export const RIGHT_PANEL_MIN_WIDTH = 360;
 export const RIGHT_PANEL_MAX_WIDTH_FRACTION = 0.7;
+export const RIGHT_PANEL_MIN_CHAT_COLUMN_WIDTH = 408;
+export const RIGHT_PANEL_SIDEBAR_RESERVE_WIDTH = 256;
 
 export function resolveRightPanelMaximumWidth(viewportWidth: number): number {
-  return Math.floor(viewportWidth * RIGHT_PANEL_MAX_WIDTH_FRACTION);
+  const fractionalMaximum = Math.floor(viewportWidth * RIGHT_PANEL_MAX_WIDTH_FRACTION);
+  const chatReservedMaximum =
+    viewportWidth - RIGHT_PANEL_SIDEBAR_RESERVE_WIDTH - RIGHT_PANEL_MIN_CHAT_COLUMN_WIDTH;
+  return Math.max(RIGHT_PANEL_MIN_WIDTH, Math.min(fractionalMaximum, chatReservedMaximum));
 }
 
 export const RIGHT_PANEL_SHEET_CLASS_NAME =
