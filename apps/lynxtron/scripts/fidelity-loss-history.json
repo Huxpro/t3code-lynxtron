@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T22:03:17+09:00",
+  "updatedAt": "2026-08-19T23:28:39+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12421,6 +12421,118 @@
               "confidence": 0.99,
               "method": "responsive-composer-current-readiness",
               "source": "Canonical Browser ownership capture and exact Native final-bundle run pass with zero errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "right-panel-add-menu-current",
+      "observedAt": "2026-08-19T23:28:39+09:00",
+      "commit": "343139150a19c97cb79dde72ce5e339f460e7fc5",
+      "codeCommit": "d598baca65aa8f6885b3d7ad18555a932e6da581",
+      "codeState": "commit",
+      "label": "Right panel add-surface menu convergence",
+      "narrative": "The registered right-panel add-surface menu now converges without changing its fixed denominator. Web and Lynx-for-Web render the same Browser, Terminal, Files, and Diff rows, Browser-disabled semantics, 128x122 panel, 118x28 rows, 14px/20px type scale, translucent theme material, 10px radius, and deep shadow. Their dark panel geometry differs by only 1px horizontally and 0.5px vertically; light mode independently preserves the same geometry and cold-white glass. Real outside pointers dismiss both menus, and real Terminal row pointers close the menu and activate the honest Terminal placeholder. The same-snapshot 145x135 dark menu crop improves from 22.709175 MAE and 50.9815% significant pixels to 15.380553 MAE and 15.7139% significant pixels; this material residual remains explicit for variable-font shaping and glass rasterization. Exact Native on final bundle 12086295 independently proves a 128x122 menu, four 118x28 rows, fullscreen 1280x820 dismissal, Files and Terminal selection, main transport sequence 3 to 4, zero renderer errors, and disposed isolated state. The first Native attempt loaded stale bundle 8973cafd and is rejected as invalid evidence.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Dark and light Browser runs hold snapshot, route, viewport, row set, disabled semantics, authority artifact, and pointer paths constant. Exact Native uses a disposable fixture, explicit logical viewport and theme, PID-owned bundle identity, measured touches, a recorded 2x export size, main transport advancement, zero renderer errors, and disposed state. No state weights, filters, or denominator entries change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/right-panel-add-menu-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "929e20eff80137b7905b85c7d9910a6db3021d0087882cb740f497599c8b6b91"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-add-menu"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-current-content",
+              "source": "Dark and light Browser pairs render Browser, Terminal, Files, and Diff in authority order with matching Browser-disabled semantics"
+            },
+            "geometry": {
+              "anchorDeltas": [1, 0.5, 0, 0, 1, 0.5, 0, 0],
+              "anchorScale": 128,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-current-geometry",
+              "source": "Panel and representative row x/y/width/height deltas compare the final Web authority and Lynx-for-Web geometry"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-current-type-scale",
+              "source": "Both use 14px/20px labels; residual preserves bundled DM Sans versus Web variable-font shaping"
+            },
+            "material": {
+              "pixel": {
+                "mae": 15.380553,
+                "significantShare": 0.157139
+              },
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-current-envelope",
+              "source": "Same-snapshot 145x135 dark menu crop after geometry, glass, border, radius, shadow, and disabled opacity convergence"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-current-dismiss-select",
+              "source": "Real outside pointers dismiss both Browser menus; reopening and selecting Terminal closes each menu and activates Terminal"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "right-panel-add-menu-current-readiness",
+              "source": "Dark and light shipping-artifact pairs retain state identity, pass menu postconditions, report zero console errors, and clean their owned processes"
+            }
+          }
+        },
+        {
+          "states": ["right-panel-add-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-content",
+              "source": "Exact Native renders the four authority labels in order and preserves Browser as the unavailable row"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 128,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-geometry",
+              "source": "Final bundle measures a 128x122 panel, four 118x28 rows, and a fullscreen 1280x820 dismiss layer"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-typography",
+              "source": "Native uses the shared 14px label contract; residual preserves platform font rasterization"
+            },
+            "material": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-material-boundary",
+              "source": "The inspected 2560x1640 export verifies glass, radius, shadow, and disabled hierarchy while retaining conservative residual because Browser pixels are not reused as Native material evidence"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-dismiss-select",
+              "source": "Measured DevTool touches dismiss fullscreen, select Files, reopen the menu, select Terminal, close the menu, and expose the Terminal placeholder"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-final-bundle",
+              "source": "Final 12086295 bundle uses main transport sequence 3 to 4, reports zero renderer errors, disposes isolated state, and passes leak pre/post gates"
             }
           }
         }

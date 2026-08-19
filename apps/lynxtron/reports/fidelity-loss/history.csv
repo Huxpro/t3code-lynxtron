@@ -178,3 +178,4 @@ quick-switch-query-light-keycaps-current,2026-08-19T19:41:24+09:00,019b6be39,com
 right-panel-add-menu-baseline,2026-08-19T20:17:30+09:00,0815c4174,commit,Right panel add-surface menu baseline,0.361749,0.361749,0.02372,0.346242,0.653758,0.627358
 file-editor-detail-narrow-inline-baseline,2026-08-19T20:46:47+09:00,bf3616a29,commit,Narrow inline file-detail baseline,0.356848,0.356848,0.026471,0.339361,0.660639,0.632259
 responsive-composer-file-detail-current,2026-08-19T22:03:17+09:00,b55b1c091,commit,Responsive Composer and file-detail convergence,0.340043,0.340043,0.026384,0.322158,0.677842,0.649064
+right-panel-add-menu-current,2026-08-19T23:28:39+09:00,343139150a19c97cb79dde72ce5e339f460e7fc5,commit,Right panel add-surface menu convergence,0.328914,0.328914,0.024816,0.311837,0.688163,0.660193
