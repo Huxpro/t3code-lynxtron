@@ -170,3 +170,4 @@ project-action-dialog-baseline,2026-08-19T14:29:00+09:00,ac2b91b80,commit,Projec
 responsive-composer-files-native-refresh,2026-08-19T15:50:48+09:00,8585aef17,commit,Responsive Composer and Files Native refresh,0.36186,0.36186,0.023811,0.346295,0.653705,0.626648
 project-action-keybinding-mutation-baseline,2026-08-19T16:25:37+09:00,42f511014,commit,Project Action keybinding mutation baseline,0.357722,0.357722,0.025596,0.34085,0.65915,0.630786
 project-action-keybinding-mutation-current,2026-08-19T17:12:53+09:00,dc027aec5,commit,Project Action keybinding mutation convergence,0.356415,0.356415,0.023614,0.34085,0.65915,0.632093
+project-action-dialog-current,2026-08-19T17:28:28+09:00,089dae232,commit,Project Action dialog convergence,0.344847,0.344847,0.019987,0.331486,0.668514,0.643661

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T17:28:28+09:00",
+  "evidenceCommit": "089dae232",
+  "productCommit": "4c87a4bd5",
+  "stateId": "project-action-dialog",
+  "scope": {
+    "authority": "web",
+    "candidates": ["lynx", "native"],
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "project-action-dialog"
+  },
+  "fixture": {
+    "browserSnapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "nativeSnapshotId": "c464acab1b45417d3afe337b84b5222fb0103f4818bde7611d05ac4bc1c9136f"
+  },
+  "classification": {
+    "closedProductLoss": [
+      "Lynx now stacks the header, body, and footer vertically, matching the Web dialog anatomy instead of laying them out as three full-height horizontal columns.",
+      "All four fields render as visible controls at the expected full body width, and the two option rows and footer actions occupy their intended vertical positions.",
+      "Title and description preserve Web's 20px title and 14px/20px description hierarchy without the baseline narrow-column wrapping."
+    ],
+    "remainingProductLoss": [
+      "Web uses a translucent glass surface, backdrop treatment, inset highlight, and deep shadow while Lynx uses a more opaque system material.",
+      "Control and button materials retain small raster differences. The same-snapshot 560x680 dialog crop measures 17.040914 MAE with 14.1757% significant pixels."
+    ],
+    "intentionalPlatformDelta": [
+      "Web uses DM Sans Variable while Lynx resolves the platform sans stack. Typography scoring closes the matched hierarchy and line metrics only; it does not claim identical font rasterization.",
+      "Web captures physical keyboard shortcuts. Native truthfully exposes validated canonical shortcut text because physical keyboard capture is not certified by DevTool."
+    ],
+    "evidenceBoundary": "Browser material is measured only between same-snapshot Web and Lynx-for-Web frames. Native evidence independently proves exact-bundle anatomy, fields, fullscreen backdrop, outside dismissal, main transport, and zero renderer errors; Browser pixels are not used as Native material evidence."
+  },
+  "browser": {
+    "status": "pass-with-material-residual",
+    "report": {
+      "path": "/tmp/t3-project-action-current-browser/workbench-report.json",
+      "sha256": "762f6e7f06fe7c1dccc66353418152203ceeb61e2cf21eace44f2c127f15376a"
+    },
+    "commit": "089dae23252c4b2549ca8d58e5d2b1ff15cdd408",
+    "bundles": {
+      "web": {
+        "path": "apps/web/dist/assets/index-CFz1J6Fa.js",
+        "sha256": "8df48884381dcacb6d1146eae98e2be438e25ab432f78436914ff8df0aa4a24a"
+      },
+      "lynxForWeb": {
+        "path": "apps/lynxtron/output/browser-preview/lynx/main.web.bundle",
+        "sha256": "e3a460f972ce91e19b372b31b269cb7363220589081ce25c27242145f180e4c8"
+      }
+    },
+    "readyMs": 5562,
+    "stateIdentityMatch": true,
+    "overlayContentMatch": true,
+    "rendererErrors": 0,
+    "geometry": {
+      "web": {
+        "dialog": [384, 74.5, 512, 671],
+        "title": [409, 99.5, 462, 20],
+        "description": [409, 127.5, 462, 40],
+        "body": [385, 179.5, 510, 500],
+        "footer": [385, 679.5, 510, 65]
+      },
+      "lynx": {
+        "dialog": [388, 78, 504, 664],
+        "title": [413, 103, 426, 20],
+        "description": [413, 131, 426, 40],
+        "body": [389, 183, 502, 491],
+        "footer": [389, 674, 502, 67]
+      },
+      "absoluteAnchorDeltas": [
+        4, 3.5, 8, 7, 4, 3.5, 36, 0, 4, 3.5, 36, 0, 4, 3.5, 8, 9, 4, 5.5, 8, 2
+      ],
+      "anchorScale": 680
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "fullFrame": {
+        "mae": 9.974692,
+        "significantShare": 0.063636
+      },
+      "dialogCrop": {
+        "crop": [360, 70, 560, 680],
+        "mae": 17.040914,
+        "significantShare": 0.141757
+      }
+    },
+    "screenshots": {
+      "webSha256": "f27b914bc12a4ffec26219c5eb1841e25143444f0ce4fa1e3f3d0d975a447a17",
+      "lynxSha256": "27b6f72e33b3db5e5ceb625bacfd807ee9a597300a70e0c83084901303eced52",
+      "sideBySideSha256": "85c8b3a184db5fa886cb97daffdc5036edf8b003e842fa878758c11db164d487"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "evidenceCommit": "dc027aec5",
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "sha256": "fa6142fbcfbf98c0fed95d305bed5d8280bf62f9d60c9c6c97ab1f93e7380cc8"
+    },
+    "report": {
+      "path": "/tmp/t3-project-action-final-head/report.json",
+      "sha256": "e69f4289c5f21f77d5d5b46e60be6952e9013ba1fc1b32aba39678c5ad7b7bd9"
+    },
+    "dialog": [389, 79, 502, 662],
+    "backdrop": [0, 0, 1280, 820],
+    "anatomy": {
+      "header": [390, 80, 500, 104],
+      "title": [414, 104, 424, 20],
+      "description": [414, 132, 424, 40],
+      "body": [390, 184, 500, 491],
+      "footer": [390, 675, 500, 65]
+    },
+    "fieldsVisible": 4,
+    "optionsVisible": 2,
+    "buttonsVisible": 2,
+    "outsideDismissed": true,
+    "transport": {
+      "kind": "main",
+      "lastSeqBeforeProbe": 3,
+      "lastSeqAfterProbe": 5
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "fidelityImpact": {
+    "fixedDenominator": {
+      "states": 59,
+      "cells": 672,
+      "weight": 218.2
+    },
+    "baseline": {
+      "totalLoss": 0.356415,
+      "stateLoss": 0.780665,
+      "stateObservedResidual": 0.446125,
+      "overlayGroupLoss": 0.46672
+    },
+    "current": {
+      "totalLoss": 0.344847,
+      "stateLoss": 0.149621,
+      "stateObservedResidual": 0.062261,
+      "overlayGroupLoss": 0.420992
+    },
+    "delta": {
+      "totalLoss": -0.011568,
+      "stateLoss": -0.631044,
+      "stateObservedResidual": -0.383864,
+      "overlayGroupLoss": -0.045728
+    },
+    "existingWeightsChanged": false,
+    "existingScopeReduced": false
+  },
+  "validation": {
+    "focusedTests": "114/114",
+    "lynxTypecheck": "pass",
+    "webTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect warnings",
+    "browserHardGates": "pass",
+    "nativeDialogAndMutation": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  }
+}

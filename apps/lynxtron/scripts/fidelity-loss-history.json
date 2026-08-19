@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T17:12:53+09:00",
+  "updatedAt": "2026-08-19T17:28:28+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11585,6 +11585,116 @@
               "confidence": 0.99,
               "method": "native-project-action-config-disk-restart",
               "source": "Current renderer config, isolated keybindings.json, and cold restart all contain script.fidelity-kb-action.run on exact bundle fa6142fb"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-action-dialog-current",
+      "observedAt": "2026-08-19T17:28:28+09:00",
+      "commit": "089dae232",
+      "codeCommit": "4c87a4bd5",
+      "codeState": "commit",
+      "label": "Project Action dialog convergence",
+      "narrative": "A current same-snapshot Browser pair and exact Native run close the stale pre-fix Project Action layout accounting. Lynx now stacks its header, body, and footer vertically, exposes all four full-width controls, preserves the 20px title and 14px/20px description hierarchy, and places both option rows and footer actions in the same semantic anatomy as Web. Across dialog, title, description, body, and footer anchors, the remaining geometry deltas are small relative to the 680px dialog crop. Exact Native independently confirms a 502x662 dialog, fullscreen 1280x820 backdrop, four fields, two option rows, two footer actions, outside dismissal, main transport, and zero renderer errors. A real material residual remains: Web uses translucent glass, an inset highlight, a deep shadow, and variable DM Sans while Lynx uses a more opaque system surface and platform sans raster. The same-snapshot 560x680 crop measures 17.040914 MAE and 14.1757% significant pixels. Browser pixels are not reused as Native material evidence, so Native material remains conservative unknown. The fixed denominator stays 59 states, 672 cells, and weight 218.2.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Browser pair uses one immutable snapshot, project, thread, route, dark theme, 1280x820 viewport, exact Web and Lynx-for-Web bundles, matching overlay identity, and zero console errors. Native independently uses the exact production bundle, measured DevTool touch, main transport, disposed isolated state, and zero renderer errors."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/project-action-dialog-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1840680c122d0da684e6d4bff96e4147c028e861013ca33d8f0da9fc2e92ea54"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-visible-content",
+              "source": "Title, description, all four labels and visible controls, both option labels, and Cancel/Save action agree"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                4, 3.5, 8, 7, 4, 3.5, 36, 0, 4, 3.5, 36, 0, 4, 3.5, 8, 9, 4, 5.5, 8, 2
+              ],
+              "anchorScale": 680,
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-anatomy",
+              "source": "Absolute same-snapshot dialog, title, description, body, and footer x/y/width/height deltas"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-hierarchy",
+              "source": "Both render a 20px title and a two-line 14px/20px description without baseline narrow-column wrapping; font raster differences remain in material"
+            },
+            "material": {
+              "pixel": {
+                "mae": 17.040914,
+                "significantShare": 0.141757
+              },
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-crop",
+              "source": "Same-snapshot 560x680 dialog crop preserves the real glass, shadow, control, button, and font-raster residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-trigger-and-semantics",
+              "source": "Production Header trigger opens the dialog and preserves disabled preview-option semantics"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-shared-readiness",
+              "source": "Same snapshot, project, thread, route, theme, viewport, matching overlay identity, zero console errors, and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-current-content",
+              "source": "Exact Native exposes the title, description, four fields, two options, and two footer actions"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                5, 4.5, 10, 9, 5, 4.5, 38, 0, 5, 4.5, 38, 0, 5, 4.5, 10, 9, 5, 4.5, 10, 0
+              ],
+              "anchorScale": 680,
+              "confidence": 0.99,
+              "method": "native-project-action-current-anatomy",
+              "source": "Exact Native dialog, title, description, body, and footer geometry correlated against the Web authority anchors"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-current-hierarchy",
+              "source": "Exact Native preserves the 20px title and 14px/20px two-line description hierarchy without wrapped-column regression"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-current-dismiss",
+              "source": "Measured Add action touch opens the dialog and fullscreen outside touch dismisses it"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-action-current-readiness",
+              "source": "Exact fa6142fb bundle uses main transport, reports zero renderer errors, and disposes isolated state"
             }
           }
         }
