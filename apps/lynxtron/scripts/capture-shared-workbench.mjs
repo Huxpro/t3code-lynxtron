@@ -2369,6 +2369,8 @@ async function captureCell({
     !isFileEditorState || stateId !== "file-editor-detail-narrow-inline";
   let rightPanelAddMenuDismissed = !isRightPanelAddMenuState;
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState;
+  let diffScopeMenuDismissed = !isDiffScopeMenuState;
+  let diffScopeWorkingTreeSelected = !isDiffScopeMenuState;
   const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
@@ -4945,6 +4947,147 @@ async function captureCell({
     }
   }
 
+  if (isDiffScopeMenuState && finalDiffScopeMenuReady) {
+    const outsidePoints = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId) => {
+          const frame = document.getElementById(frameId);
+          if (!frame) return null;
+          const rect = frame.getBoundingClientRect();
+          return { x: rect.x + 400, y: rect.y + 300 };
+        };
+        return {
+          web: pointFor('web-pane'),
+          lynx: pointFor('lynx-pane'),
+        };
+      })()`,
+    ).catch(() => null);
+    if (outsidePoints?.web) await dispatchPointerClickWithMove(cdp, sessionId, outsidePoints.web);
+    if (outsidePoints?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, outsidePoints.lynx);
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      const dismissed = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const web = document.getElementById('web-pane')?.contentWindow?.document;
+          const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+            ?.getElementById('t3-lynx-preview')?.shadowRoot;
+          return {
+            web: web?.querySelector('[data-floating-popup="diff-scope-menu"]') === null,
+            lynx: lynx?.querySelector('.diff-panel-header__scope-menu') === null,
+          };
+        })()`,
+      ).catch(() => null);
+      if (dismissed?.web && dismissed?.lynx) {
+        diffScopeMenuDismissed = true;
+        break;
+      }
+      await delay(100);
+    }
+
+    if (diffScopeMenuDismissed) {
+      const triggerPoints = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pointFor = (frameId, shadow) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const trigger = root?.querySelector('[data-floating-anchor="diff-scope-menu"]');
+            if (!frame || !trigger) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = trigger.getBoundingClientRect();
+            return {
+              x: frameRect.x + rect.x + rect.width / 2,
+              y: frameRect.y + rect.y + rect.height / 2,
+            };
+          };
+          return {
+            web: pointFor('web-pane', false),
+            lynx: pointFor('lynx-pane', true),
+          };
+        })()`,
+      ).catch(() => null);
+      if (triggerPoints?.web) await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.web);
+      if (triggerPoints?.lynx)
+        await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.lynx);
+      let workingTreePoints = null;
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        workingTreePoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const rows = [
+                ...(root?.querySelectorAll(
+                  '[data-floating-popup="diff-scope-menu"] [data-slot="menu-item"], [data-diff-scope]'
+                ) ?? []),
+              ];
+              const target = rows.find((row) =>
+                row.getAttribute('data-diff-scope') === 'working-tree' ||
+                row.textContent?.trim() === 'Working tree'
+              );
+              if (!frame || !target) return null;
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+              };
+            };
+            return {
+              web: pointFor('web-pane', false),
+              lynx: pointFor('lynx-pane', true),
+            };
+          })()`,
+        ).catch(() => null);
+        if (workingTreePoints?.web && workingTreePoints?.lynx) break;
+        await delay(100);
+      }
+      if (workingTreePoints?.web)
+        await dispatchPointerClickWithMove(cdp, sessionId, workingTreePoints.web);
+      if (workingTreePoints?.lynx)
+        await dispatchPointerClickWithMove(cdp, sessionId, workingTreePoints.lynx);
+      for (let attempt = 0; attempt < 30; attempt += 1) {
+        const selected = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const read = (root) => ({
+              label:
+                root
+                  ?.querySelector('[data-floating-anchor="diff-scope-menu"]')
+                  ?.textContent?.trim() ?? null,
+              menuOpen:
+                root?.querySelector('[data-floating-popup="diff-scope-menu"]') !== null ||
+                root?.querySelector('.diff-panel-header__scope-menu') !== null,
+            });
+            const web = document.getElementById('web-pane')?.contentWindow?.document;
+            const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            return { web: read(web), lynx: read(lynx) };
+          })()`,
+        ).catch(() => null);
+        if (
+          selected?.web?.label === "Working tree" &&
+          selected?.lynx?.label === "Working tree" &&
+          selected.web.menuOpen === false &&
+          selected.lynx.menuOpen === false
+        ) {
+          diffScopeWorkingTreeSelected = true;
+          break;
+        }
+        await delay(100);
+      }
+    }
+  }
+
   if (isFileEditorState && stateId !== "file-editor-detail-narrow-inline" && finalFileEditorReady) {
     const switchPoints = await evaluate(
       cdp,
@@ -5130,6 +5273,8 @@ async function captureCell({
     finalDiffScopeMenuReady &&
     rightPanelAddMenuDismissed &&
     rightPanelAddMenuTerminalSelected &&
+    diffScopeMenuDismissed &&
+    diffScopeWorkingTreeSelected &&
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
@@ -5170,6 +5315,8 @@ async function captureCell({
       finalDiffScopeMenuReady,
       rightPanelAddMenuDismissed,
       rightPanelAddMenuTerminalSelected,
+      diffScopeMenuDismissed,
+      diffScopeWorkingTreeSelected,
       finalSidebarWorkingGeometryReady,
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
@@ -5342,6 +5489,14 @@ async function captureCell({
       },
       diffScopeMenu: {
         match: finalDiffScopeMenuReady,
+        dismissedBy: isDiffScopeMenuState
+          ? "web-outside-pointer|lynx-dismiss-layer-pointer"
+          : "not-required",
+        dismissed: diffScopeMenuDismissed,
+        selectedBy: isDiffScopeMenuState
+          ? "web-working-tree-row-pointer|lynx-working-tree-row-pointer"
+          : "not-required",
+        workingTreeSelected: diffScopeWorkingTreeSelected,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
       },

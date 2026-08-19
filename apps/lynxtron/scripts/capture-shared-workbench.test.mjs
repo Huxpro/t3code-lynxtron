@@ -195,6 +195,11 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(source, '[data-floating-anchor="diff-scope-menu"]');
     assert.include(source, "finalDiffScopeMenuReady");
+    assert.include(source, "diffScopeMenuDismissed");
+    assert.include(source, "diffScopeWorkingTreeSelected");
+    assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
+    assert.include(source, "web-working-tree-row-pointer|lynx-working-tree-row-pointer");
+    assert.include(source, "data-diff-scope') === 'working-tree'");
     assert.include(source, "diffScopeMenu:");
     assert.include(workbench, '".diff-panel-header__scope-menu") !== null');
     assert.include(workbench, '[data-floating-popup="diff-scope-menu"]');
