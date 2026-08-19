@@ -24,6 +24,7 @@ export function ChatRouteSurface({
   afterChatColumn,
   rightPanel,
   overlays,
+  onClick,
 }: {
   /** Layout controls rendered ahead of the column (Web: inline right-panel mode). */
   readonly layoutControls?: ReactNode;
@@ -43,9 +44,14 @@ export function ChatRouteSurface({
   readonly rightPanel?: ReactNode;
   /** Root-level overlays (Web: expanded image dialog; Lynx: root overlay host). */
   readonly overlays?: ReactNode;
+  /** Optional renderer-owned route tap handler (Lynx: outside-overlay dismissal). */
+  readonly onClick?: () => void;
 }) {
   return (
-    <HostView className="chat-view-surface-reference relative flex min-h-0 min-w-0 flex-1 overflow-hidden bg-background">
+    <HostView
+      className="chat-view-surface-reference relative flex min-h-0 min-w-0 flex-1 overflow-hidden bg-background"
+      onClick={onClick}
+    >
       {layoutControls}
       <HostView
         className={cn(

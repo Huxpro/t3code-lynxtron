@@ -470,6 +470,7 @@ export function ChatView({ threadId }: ChatViewProps) {
 
   return (
     <ChatRouteSurface
+      onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}
       layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}
       header={
         <ChatHeader

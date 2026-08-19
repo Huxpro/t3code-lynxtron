@@ -479,7 +479,7 @@ export function ModelPicker({
       <view
         className="model-picker-dismiss-layer"
         aria-label="Dismiss model picker"
-        bindtap={onClose}
+        event-through
       />
     </>
   );
