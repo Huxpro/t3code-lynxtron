@@ -505,7 +505,9 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies compact Composer controls stay scrollable and inside the center column", () => {
     assert.include(source, "async function verifyCompactControls");
     assert.include(source, '"--verify-compact-controls"');
-    assert.include(source, '"--verify-compact-controls requires --verify-files-browser."');
+    assert.notInclude(source, '"--verify-compact-controls requires --verify-files-browser."');
+    assert.include(source, 'value: "files"');
+    assert.include(source, 'selector: ".right-panel__add-btn"');
     assert.include(source, 'selector: ".composer-compact-controls-trigger"');
     assert.include(source, 'selector: ".composer-compact-controls-menu"');
     assert.include(source, 'selector: ".composer-compact-controls-menu__scroll"');

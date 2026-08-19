@@ -5457,13 +5457,54 @@ async function verifyCompactControls({
   timeoutMs,
   width,
 }) {
-  const rightPanel = await waitForMeasurement({
-    child,
-    client,
-    selector: ".right-panel",
-    timeoutMs,
-    predicate: (measurement) => measurement?.attributes["data-right-panel-active-kind"] === "files",
-  });
+  let rightPanel = await readOptionalMeasurement(client, ".right-panel");
+  if (rightPanel?.attributes["data-right-panel-active-kind"] !== "files") {
+    if (!rightPanel) {
+      await tapSelector({
+        child,
+        client,
+        selector: ".topbar__toggle--terminal",
+        timeoutMs,
+      });
+      rightPanel = await waitForMeasurement({
+        child,
+        client,
+        selector: ".right-panel",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["data-right-panel-active-kind"] === "terminal",
+      });
+    }
+    await tapSelector({
+      child,
+      client,
+      selector: ".right-panel__add-btn",
+      timeoutMs,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel__add-menu",
+      timeoutMs,
+      predicate: (measurement) => measurementVisible(measurement),
+    });
+    await tapSelectorByAttribute({
+      attribute: "data-right-panel-add-kind",
+      child,
+      client,
+      selector: ".right-panel__add-item",
+      timeoutMs,
+      value: "files",
+    });
+    rightPanel = await waitForMeasurement({
+      child,
+      client,
+      selector: ".right-panel",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["data-right-panel-active-kind"] === "files",
+    });
+  }
   const context = await waitForMeasurement({
     child,
     client,
@@ -9209,9 +9250,6 @@ if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutat
 }
 if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-file-sheet-back requires --verify-files-browser.");
-}
-if (shouldVerifyCompactControls && !shouldVerifyFilesBrowser) {
-  throw new Error("--verify-compact-controls requires --verify-files-browser.");
 }
 if (shouldVerifyResponsiveSidebarFooter && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-responsive-sidebar-footer requires --verify-files-browser.");
