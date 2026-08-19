@@ -111,10 +111,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "composer-compact-controls-inline-files-narrow"');
     assert.include(source, "function compactControlsEvidenceReady(state)");
     assert.include(source, "function compactControlsContainment(state)");
-    assert.include(
-      source,
-      '["workspace-menu", "compact-controls", "right-panel-add-menu"].includes(overlay)',
-    );
+    assert.include(source, '"workspace-menu",');
+    assert.include(source, '"compact-controls",');
+    assert.include(source, '"right-panel-add-menu",');
+    assert.include(source, '"diff-scope-menu",');
     assert.include(source, '[data-floating-anchor="composer-compact-controls-menu"]');
     assert.include(source, '".composer-compact-controls-trigger"');
     assert.include(source, "finalCompactControlsReady");
@@ -142,10 +142,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"right-panel-add-menu",');
     assert.include(source, "function rightPanelAddMenuReady(state)");
     assert.include(source, "rect?.rect?.width > 0");
-    assert.include(
-      source,
-      '["workspace-menu", "compact-controls", "right-panel-add-menu"].includes(overlay)',
-    );
+    assert.include(source, '"workspace-menu",');
+    assert.include(source, '"compact-controls",');
+    assert.include(source, '"right-panel-add-menu",');
+    assert.include(source, '"diff-scope-menu",');
     assert.include(source, '[data-floating-anchor="right-panel-add-menu"]');
     assert.include(source, '".right-panel__add-btn"');
     assert.include(workbench, ': root?.querySelector(".right-panel__add-menu") !== null');
@@ -156,6 +156,35 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
     assert.include(source, "web-terminal-row-pointer|lynx-terminal-row-pointer");
     assert.include(source, "data-terminal-placeholder");
+  });
+
+  it("captures the Diff scope menu without requiring pre-repair row parity", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, '"diff-scope-menu": "diff-scope-menu"');
+    assert.include(source, '"diff-scope-menu": "existing-thread"');
+    assert.include(source, 'stateId === "diff-scope-menu"');
+    assert.include(source, 'stateId.startsWith("review-") || isDiffScopeMenuState');
+    assert.include(source, "function diffScopeMenuReady(state)");
+    assert.include(source, "webRows.length > 0");
+    assert.include(source, "lynxRows.length > 0");
+    assert.notInclude(
+      source.slice(
+        source.indexOf("function diffScopeMenuReady(state)"),
+        source.indexOf("function compactControlsContainment(state)"),
+      ),
+      "JSON.stringify(webRows) === JSON.stringify(lynxRows)",
+    );
+    assert.include(source, '[data-floating-anchor="diff-scope-menu"]');
+    assert.include(source, "finalDiffScopeMenuReady");
+    assert.include(source, "diffScopeMenu:");
+    assert.include(workbench, '".diff-panel-header__scope-menu") !== null');
+    assert.include(workbench, '[data-floating-popup="diff-scope-menu"]');
+    assert.include(workbench, '".diff-panel-header__scope-item"');
+    assert.include(workbench, '[data-slot="menu-sub-trigger"]');
   });
 
   it("opens the Files browser through shipping right-panel actions", () => {

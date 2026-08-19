@@ -79,6 +79,7 @@ const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
   "composer-compact-controls-open": "compact-controls",
   "composer-compact-controls-inline-files-narrow": "compact-controls",
+  "diff-scope-menu": "diff-scope-menu",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
   "project-action-dialog": "project-action-dialog",
@@ -152,6 +153,7 @@ const isCompactControlsState =
   stateId === "composer-compact-controls-open" ||
   stateId === "composer-compact-controls-inline-files-narrow";
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
+const isDiffScopeMenuState = stateId === "diff-scope-menu";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
 const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState;
@@ -194,7 +196,7 @@ const composerExpectationByStateId = {
   },
 };
 const composerExpectation = composerExpectationByStateId[stateId] ?? null;
-const isReviewState = stateId.startsWith("review-");
+const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
 const reviewExpectation =
   stateId === "review-empty"
     ? "panel-empty"
@@ -202,7 +204,7 @@ const reviewExpectation =
       ? "checkpoint"
       : stateId === "review-tree"
         ? "tree"
-        : stateId === "review-diff"
+        : stateId === "review-diff" || isDiffScopeMenuState
           ? "diff"
           : null;
 const changedFilesTargetState =
@@ -979,6 +981,24 @@ function rightPanelAddMenuReady(state) {
     JSON.stringify(lynxRows.map(({ label }) => label)) === JSON.stringify(expectedLabels) &&
     JSON.stringify(webRows.map(({ disabled }) => disabled)) ===
       JSON.stringify(lynxRows.map(({ disabled }) => disabled)) &&
+    webRows.every(({ rect }) => rect?.rect?.width > 0 && rect?.rect?.height > 0) &&
+    lynxRows.every(({ rect }) => rect?.rect?.width > 0 && rect?.rect?.height > 0)
+  );
+}
+
+function diffScopeMenuReady(state) {
+  if (!isDiffScopeMenuState) return true;
+  const webRows = state?.web?.overlayMetrics?.anatomy?.rows ?? [];
+  const lynxRows = state?.lynx?.overlayMetrics?.anatomy?.rows ?? [];
+  return (
+    state?.web?.productState?.overlay === "diff-scope-menu" &&
+    state?.lynx?.productState?.overlay === "diff-scope-menu" &&
+    state?.web?.overlayMetrics?.triggerRect?.width > 0 &&
+    state?.lynx?.overlayMetrics?.triggerRect?.width > 0 &&
+    state?.web?.overlayMetrics?.rect?.width > 0 &&
+    state?.lynx?.overlayMetrics?.rect?.width > 0 &&
+    webRows.length > 0 &&
+    lynxRows.length > 0 &&
     webRows.every(({ rect }) => rect?.rect?.width > 0 && rect?.rect?.height > 0) &&
     lynxRows.every(({ rect }) => rect?.rect?.width > 0 && rect?.rect?.height > 0)
   );
@@ -1779,6 +1799,7 @@ async function main() {
     "composer-compact-controls-open",
     "composer-compact-controls-inline-files-narrow",
     "right-panel-add-menu",
+    "diff-scope-menu",
     "composer-connecting",
     "composer-disabled",
     "workspace-menu-open",
@@ -2201,6 +2222,7 @@ async function captureCell({
     "composer-compact-controls-open": "existing-thread",
     "composer-compact-controls-inline-files-narrow": "existing-thread",
     "right-panel-add-menu": "existing-thread",
+    "diff-scope-menu": "existing-thread",
     "settled-banner-inline-files-narrow": "existing-thread",
     "composer-disabled": "existing-thread",
     "workspace-menu-open": "existing-thread",
@@ -3333,7 +3355,9 @@ async function captureCell({
       webProviderNotificationCleared &&
       state?.web?.connected === true &&
       state?.web?.productState?.selectedProject === expectProject &&
-      (!["workspace-menu", "compact-controls", "right-panel-add-menu"].includes(overlay) ||
+      (!["workspace-menu", "compact-controls", "right-panel-add-menu", "diff-scope-menu"].includes(
+        overlay,
+      ) ||
         state?.lynx?.productState?.overlay === overlay) &&
       state?.web?.productState?.overlay !== overlay
     ) {
@@ -3381,9 +3405,11 @@ async function captureCell({
                   ? '[data-floating-anchor="composer-compact-controls-menu"]'
                   : overlay === "right-panel-add-menu"
                     ? '[data-floating-anchor="right-panel-add-menu"]'
-                    : overlay === "project-action-dialog"
-                      ? '[aria-label="Add action"]'
-                      : '[data-composer-control="model"]';
+                    : overlay === "diff-scope-menu"
+                      ? '[data-floating-anchor="diff-scope-menu"]'
+                      : overlay === "project-action-dialog"
+                        ? '[aria-label="Add action"]'
+                        : '[data-composer-control="model"]';
       const point =
         overlay === "project-action-dialog"
           ? await evaluate(
@@ -3542,6 +3568,7 @@ async function captureCell({
         overlay === "workspace-menu" ||
         overlay === "compact-controls" ||
         overlay === "right-panel-add-menu" ||
+        overlay === "diff-scope-menu" ||
         overlay === "quick-switch" ||
         overlay === "file-picker" ||
         overlay === "model-picker" ||
@@ -3599,9 +3626,11 @@ async function captureCell({
                 ? ".composer-compact-controls-trigger"
                 : overlay === "right-panel-add-menu"
                   ? ".right-panel__add-btn"
-                  : overlay === "project-action-dialog"
-                    ? '[aria-label="Add action"]'
-                    : '[data-composer-control="model"]';
+                  : overlay === "diff-scope-menu"
+                    ? '[data-floating-anchor="diff-scope-menu"]'
+                    : overlay === "project-action-dialog"
+                      ? '[aria-label="Add action"]'
+                      : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -3638,6 +3667,7 @@ async function captureCell({
         overlay === "workspace-menu" ||
         overlay === "compact-controls" ||
         overlay === "right-panel-add-menu" ||
+        overlay === "diff-scope-menu" ||
         overlay === "project-action-dialog") &&
       lynxOverlayInputSent &&
       state?.lynx?.productState?.overlay !== overlay
@@ -4025,6 +4055,7 @@ async function captureCell({
     const compactControlsReady = compactControlsEvidenceReady(state);
     const projectActionReady = projectActionDialogReady(state);
     const rightPanelAddMenuStateReady = rightPanelAddMenuReady(state);
+    const diffScopeMenuStateReady = diffScopeMenuReady(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
@@ -4104,6 +4135,7 @@ async function captureCell({
       compactControlsReady &&
       projectActionReady &&
       rightPanelAddMenuStateReady &&
+      diffScopeMenuStateReady &&
       sidebarWorkingGeometryReady &&
       headerGitActionReady &&
       gitPublishDiscoveryReady &&
@@ -4315,6 +4347,7 @@ async function captureCell({
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalProjectActionDialogReady = projectActionDialogReady(state);
   const finalRightPanelAddMenuReady = rightPanelAddMenuReady(state);
+  const finalDiffScopeMenuReady = diffScopeMenuReady(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
     state,
     expectedThreadFixture,
@@ -5066,6 +5099,7 @@ async function captureCell({
     finalCompactControlsReady &&
     finalProjectActionDialogReady &&
     finalRightPanelAddMenuReady &&
+    finalDiffScopeMenuReady &&
     rightPanelAddMenuDismissed &&
     rightPanelAddMenuTerminalSelected &&
     finalSidebarWorkingGeometryReady &&
@@ -5105,6 +5139,7 @@ async function captureCell({
       finalCompactControlsReady,
       finalProjectActionDialogReady,
       finalRightPanelAddMenuReady,
+      finalDiffScopeMenuReady,
       rightPanelAddMenuDismissed,
       rightPanelAddMenuTerminalSelected,
       finalSidebarWorkingGeometryReady,
@@ -5274,6 +5309,11 @@ async function captureCell({
           ? "web-terminal-row-pointer|lynx-terminal-row-pointer"
           : "not-required",
         terminalSelected: rightPanelAddMenuTerminalSelected,
+        web: state?.web?.overlayMetrics ?? null,
+        lynx: state?.lynx?.overlayMetrics ?? null,
+      },
+      diffScopeMenu: {
+        match: finalDiffScopeMenuReady,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
       },
