@@ -4810,38 +4810,42 @@ async function captureCell({
       if (triggerPoints?.lynx) {
         await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.lynx);
       }
-      await delay(100);
-      const terminalPoints = await evaluate(
-        cdp,
-        sessionId,
-        `(() => {
-          const pointFor = (frameId, shadow) => {
-            const frame = document.getElementById(frameId);
-            const doc = frame?.contentWindow?.document;
-            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
-            const rows = [
-              ...(root?.querySelectorAll(
-                '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"], [data-right-panel-add-kind]'
-              ) ?? []),
-            ];
-            const target = rows.find((row) =>
-              row.getAttribute('data-right-panel-add-kind') === 'terminal' ||
-              row.textContent?.trim() === 'Terminal'
-            );
-            if (!frame || !target) return null;
-            const frameRect = frame.getBoundingClientRect();
-            const rect = target.getBoundingClientRect();
-            return {
-              x: frameRect.x + rect.x + rect.width / 2,
-              y: frameRect.y + rect.y + rect.height / 2,
+      let terminalPoints = null;
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        terminalPoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const rows = [
+                ...(root?.querySelectorAll(
+                  '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"], [data-right-panel-add-kind]'
+                ) ?? []),
+              ];
+              const target = rows.find((row) =>
+                row.getAttribute('data-right-panel-add-kind') === 'terminal' ||
+                row.textContent?.trim() === 'Terminal'
+              );
+              if (!frame || !target) return null;
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+              };
             };
-          };
-          return {
-            web: pointFor('web-pane', false),
-            lynx: pointFor('lynx-pane', true),
-          };
-        })()`,
-      ).catch(() => null);
+            return {
+              web: pointFor('web-pane', false),
+              lynx: pointFor('lynx-pane', true),
+            };
+          })()`,
+        ).catch(() => null);
+        if (terminalPoints?.web && terminalPoints?.lynx) break;
+        await delay(100);
+      }
       if (terminalPoints?.web)
         await dispatchPointerClickWithMove(cdp, sessionId, terminalPoints.web);
       if (terminalPoints?.lynx) {
@@ -4857,7 +4861,10 @@ async function captureCell({
               ?.getElementById('t3-lynx-preview')?.shadowRoot;
             return {
               web:
-                web?.querySelector('[data-active-tab="true"] [aria-label="Terminal"]') !== null &&
+                web
+                  ?.querySelector('[data-active-tab="true"]')
+                  ?.textContent?.trim()
+                  .includes('Terminal') === true &&
                 web?.querySelector('[data-floating-popup="right-panel-add-menu"]') === null,
               lynx:
                 lynx
