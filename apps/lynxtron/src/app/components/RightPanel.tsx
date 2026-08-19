@@ -246,37 +246,47 @@ export function RightPanel({
             <Icon name="plus" size={16} color="#818181" />
           </view>
           {showAddMenu ? (
-            <view className="right-panel__add-menu" data-floating-popup="right-panel-add-menu">
-              {ADDABLE_SURFACES.map((item) => (
-                <view
-                  key={item.kind}
-                  className={`right-panel__add-item${item.disabled ? " right-panel__add-item--disabled" : ""}`}
-                  data-right-panel-add-kind={item.kind}
-                  {...(item.disabled
-                    ? {}
-                    : {
-                        bindtap: () => {
-                          if (
-                            item.kind === "files" ||
-                            item.kind === "diff" ||
-                            item.kind === "plan" ||
-                            item.kind === "terminal"
-                          ) {
-                            handleAddSurface(item.kind);
-                          }
-                        },
-                      })}
-                >
-                  <Icon
-                    name={ADDABLE_ICONS[item.kind]}
-                    size={14}
-                    color="#818181"
-                    className="right-panel__add-item-icon"
-                  />
-                  <text className="right-panel__add-item-label">{item.label}</text>
-                </view>
-              ))}
-            </view>
+            <>
+              <view
+                className="right-panel__add-menu-dismiss"
+                bindtap={() => setShowAddMenu(false)}
+              />
+              <view
+                className="right-panel__add-menu"
+                data-floating-popup="right-panel-add-menu"
+                catchtap={() => undefined}
+              >
+                {ADDABLE_SURFACES.map((item) => (
+                  <view
+                    key={item.kind}
+                    className={`right-panel__add-item${item.disabled ? " right-panel__add-item--disabled" : ""}`}
+                    data-right-panel-add-kind={item.kind}
+                    {...(item.disabled
+                      ? {}
+                      : {
+                          bindtap: () => {
+                            if (
+                              item.kind === "files" ||
+                              item.kind === "diff" ||
+                              item.kind === "plan" ||
+                              item.kind === "terminal"
+                            ) {
+                              handleAddSurface(item.kind);
+                            }
+                          },
+                        })}
+                  >
+                    <Icon
+                      name={ADDABLE_ICONS[item.kind]}
+                      size={14}
+                      color="#818181"
+                      className="right-panel__add-item-icon"
+                    />
+                    <text className="right-panel__add-item-label">{item.label}</text>
+                  </view>
+                ))}
+              </view>
+            </>
           ) : null}
         </view>
         <view className="right-panel__layout-controls lynx-titlebar-no-drag">
