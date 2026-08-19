@@ -177,3 +177,4 @@ file-editor-token-current,2026-08-19T18:47:11+09:00,e663aa5b3,commit,File editor
 quick-switch-query-light-keycaps-current,2026-08-19T19:41:24+09:00,019b6be39,commit,Quick Switch Query light keycap geometry convergence,0.36662,0.36662,0.020865,0.353123,0.646877,0.622487
 right-panel-add-menu-baseline,2026-08-19T20:17:30+09:00,0815c4174,commit,Right panel add-surface menu baseline,0.361749,0.361749,0.02372,0.346242,0.653758,0.627358
 file-editor-detail-narrow-inline-baseline,2026-08-19T20:46:47+09:00,bf3616a29,commit,Narrow inline file-detail baseline,0.356848,0.356848,0.026471,0.339361,0.660639,0.632259
+responsive-composer-file-detail-current,2026-08-19T22:03:17+09:00,b55b1c091,commit,Responsive Composer and file-detail convergence,0.340043,0.340043,0.026384,0.322158,0.677842,0.649064

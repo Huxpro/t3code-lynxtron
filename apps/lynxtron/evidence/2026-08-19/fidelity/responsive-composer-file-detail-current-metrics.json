@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T22:03:17+09:00",
+  "productCommits": ["db1024e42", "985e7fc90", "c2c4e2f4f", "b55b1c091"],
+  "harnessCommits": ["4834420f7", "2f3ec0386", "dffd49960", "a140b06be", "f273015ad", "8bbabed8d"],
+  "states": ["file-editor-detail-narrow-inline", "composer-compact-controls-inline-files-narrow"],
+  "classification": {
+    "productRepair": [
+      "The shared right-panel policy now switches to sheet below 1024px and caps a 1024px inline panel at 360px, preserving a 367/368px Composer instead of the previous 187/188px column.",
+      "Web and Lynx file details now use one shared width policy: below 512px the 255/256px explorer is removed, source receives the full 359px panel, and both render a 28px Back action that restores the Files browser.",
+      "Wide 1280x820 file details retain the 283px editor beside the 255/256px explorer and do not render a redundant Back action.",
+      "Compact controls measure their rendered content after the safe first frame. The Browser fixture converges to a 500px panel around 498px of content; exact Native converges to 504px around 502px of content.",
+      "The compact menu's last Full access row is now visible in Browser and exact Native, the panel and checkout context remain before the right-panel boundary, and fullscreen outside dismissal succeeds."
+    ],
+    "harnessMismatch": [
+      "The narrow file-detail workbench reaches matching 359px editors, no explorers, matching 28px Back actions, real dual-client Back recovery, and zero console errors, but its aggregate reachedTargetState bookkeeping still reports false after the detail-to-browser transition. The frame is retained as strict diagnostic evidence, not admitted as a canonical matrix pass.",
+      "The earlier compact menu harness omitted last-row visibility and counted hidden DOM rows as success. Browser and Native verifiers now require the final Full access row to end inside the scroll viewport.",
+      "Early compact controls evidence used estimated panel height only. Dynamic provider row sets exposed both a clipped 476px Browser fixture and a 528px Native empty tail; only the final rendered-content measurements receive current credit."
+    ],
+    "remainingProductResidual": [
+      "The narrow Lynx editor keeps a lightweight six-tone source projection instead of the Web Pierre/TextMate editor, so typography and material residual remain explicit.",
+      "The compact Web authority panel is 146.21875x537 while Lynx-for-Web is 148x500. Content, tail visibility, containment, and interaction converge, but section chrome and glass/material pixels are not exact."
+    ],
+    "evidenceBoundary": "One immutable Browser snapshot is used for dark narrow Files, light narrow Files, wide dark Files, 1024 ownership, and compact controls. Exact Native uses a disposable generated snapshot, the final production bundle, explicit 1024x820 dark viewport, measured DevTool touch, main transport advancement, zero renderer errors, and disposed isolated state. No tracked screenshots are added."
+  },
+  "browser": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "narrowFileDetail": {
+      "status": "strict-product-gates-pass-harness-bookkeeping-mismatch",
+      "report": {
+        "path": "/tmp/t3-file-narrow-certified2/workbench-report.json",
+        "sha256": "5426e0d58cf500f31e6ce559b5e7b5039b80c79f559d6fbe434d660834536f12"
+      },
+      "viewport": "1024x820",
+      "rightPanelWidth": 360,
+      "theme": "dark",
+      "bundles": {
+        "web": "252f3f4debce",
+        "lynxForWeb": "c0a6ff241911"
+      },
+      "web": {
+        "surface": [665, 44, 359, 776],
+        "editor": [665, 84, 359, 736],
+        "explorer": null,
+        "back": [673, 49.5, 28, 28]
+      },
+      "lynx": {
+        "surface": [665, 44, 359, 776],
+        "editor": [665, 84, 359, 736],
+        "explorer": null,
+        "back": [673, 49.5, 28, 28]
+      },
+      "interaction": {
+        "opened": true,
+        "returnedClients": {
+          "web": true,
+          "lynx": true
+        }
+      },
+      "pixelMetric": {
+        "fullFrame": {
+          "mae": 8.902243,
+          "significantShare": 0.093332
+        },
+        "panel": {
+          "crop": [665, 44, 359, 776],
+          "mae": 19.686237,
+          "significantShare": 0.164769
+        },
+        "editor": {
+          "crop": [665, 84, 359, 736],
+          "mae": 19.731247,
+          "significantShare": 0.165931
+        }
+      },
+      "screenshots": {
+        "webSha256": "9a80f329be4dabbade3b02505c744eb00aa5efc28e304ea211a7a9c5113f35e5",
+        "lynxSha256": "789ac6f0bfc595265a3b602fbe8e9e6e6648d6a50d431fb3a4fa1f1f74ea3227"
+      },
+      "rendererErrors": 0
+    },
+    "narrowFileDetailLight": {
+      "status": "strict-product-gates-pass-harness-bookkeeping-mismatch",
+      "reportSha256": "dde40e11916dd5a8ca416b041ddc35696778736fd8b264483a67504ab5c62645",
+      "theme": {
+        "web": "light",
+        "lynx": "light"
+      },
+      "editorWidth": {
+        "web": 359,
+        "lynx": 359
+      },
+      "back": {
+        "web": [673, 49.5, 28, 28],
+        "lynx": [673, 49.5, 28, 28]
+      },
+      "returnedClients": {
+        "web": true,
+        "lynx": true
+      },
+      "rendererErrors": 0
+    },
+    "wideFileDetailRegression": {
+      "status": "pass",
+      "reportSha256": "2c82daaea55b084ce58a73a2b5bf7f1eeae87b2a0cdc21b24677a47b31575896",
+      "viewport": "1280x820",
+      "web": {
+        "editor": [741, 84, 283, 736],
+        "explorer": [1025, 84, 255, 736],
+        "back": null
+      },
+      "lynx": {
+        "editor": [741, 84, 283, 736],
+        "explorer": [1024, 84, 256, 736],
+        "back": null
+      },
+      "fileSwitchPassed": true,
+      "rendererErrors": 0
+    },
+    "composerOwnership": {
+      "status": "pass",
+      "reportSha256": "7a71a27d4a54e8e30e2fdb5f754df6873b0416e7b49ab12da0ad780f59d22d60",
+      "requestedRightPanelWidth": 540,
+      "web": {
+        "rightPanel": [664, 0, 360, 820],
+        "composer": [276, 628, 368, 140],
+        "context": [298, 752, 324, 48]
+      },
+      "lynx": {
+        "rightPanel": [663, 0, 361, 820],
+        "composer": [276, 628, 367, 140],
+        "context": [298, 752, 323, 48]
+      },
+      "contextCrossesRightPanel": false,
+      "rendererErrors": 0
+    },
+    "compactControls": {
+      "status": "pass",
+      "report": {
+        "path": "/tmp/t3-compact-measured-final/workbench-report.json",
+        "sha256": "2540cf886a3bf370bf8d02010bdf65a6fa6c989c5382aa991f4930185d62851d"
+      },
+      "viewport": "1024x820",
+      "bundles": {
+        "web": "252f3f4debce",
+        "lynxForWeb": "bdce97ab197e"
+      },
+      "web": {
+        "panel": [435, 184, 146.21875, 537],
+        "scroll": [436, 185, 144.21875, 535],
+        "content": [436, 185, 144.21875, 535],
+        "lastRow": [440, 688, 136.21875, 28]
+      },
+      "lynx": {
+        "panel": [434.890625, 219, 148, 500],
+        "scroll": [435.890625, 220, 146, 498],
+        "content": [435.890625, 220, 146, 498],
+        "lastRow": [439.890625, 686, 138, 28]
+      },
+      "lastRowLabel": "Full access",
+      "lastRowVisible": true,
+      "pixelMetric": {
+        "fullFrame": {
+          "mae": 6.464515,
+          "significantShare": 0.075056
+        },
+        "menuEnvelope": {
+          "crop": [400, 170, 190, 560],
+          "mae": 14.421964,
+          "significantShare": 0.11906
+        }
+      },
+      "screenshots": {
+        "webSha256": "d38a297f1ede6c98d35b3001b0a1011e7948dd30b2cf7e6895a660f48c04199d",
+        "lynxSha256": "31ed70cdff38dbd09c34a1e9f23577e356aba86477a03c86baa2edc49e7590b3"
+      },
+      "rendererErrors": 0
+    }
+  },
+  "native": {
+    "status": "pass",
+    "report": {
+      "path": "/tmp/t3-native-responsive-measured-final/report.json",
+      "sha256": "fcb9c01d70f98971a90f7cf228cef00cf792eb8298af25eef92c21d44d91c250"
+    },
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "sha256": "8973cafda4673b792ba82c2ce756bbc3ca825e2f118e9d6163d611a0d638f282"
+    },
+    "fixtureSnapshotId": "95ea425db8c6ecea9d8a33b7a52944317792942518abf8d2d72db962e0895324",
+    "viewport": "1024x820",
+    "theme": {
+      "expected": "dark",
+      "actual": "dark"
+    },
+    "fileDetail": {
+      "panel": [664, 0, 360, 820],
+      "editor": [665, 93, 359, 727],
+      "explorer": null,
+      "back": [673, 58, 28, 28],
+      "returnedBrowser": [665, 92, 359, 728],
+      "font": "T3 JetBrains Mono 12px/19px",
+      "tokenCount": 27,
+      "tokenToneCount": 6,
+      "screenshotSha256": "789b9f35cd067d13f71096ecbc793704e462852817e68db6f67bc77dc5c9d670"
+    },
+    "compactControls": {
+      "panel": [445, 215, 148, 504],
+      "scroll": [446, 216, 146, 502],
+      "content": [446, 216, 146, 502],
+      "lastRow": [450, 686, 138, 28],
+      "lastRowLabel": "Full access",
+      "lastRowVisible": true,
+      "contextRight": 622,
+      "rightPanelLeft": 664,
+      "dismissed": true,
+      "screenshotSha256": "ef99a0aa8381463bceb0d4965a37a549294eb7240504aface479320c01de4211"
+    },
+    "transport": {
+      "kind": "main",
+      "lastSeqBeforeProbe": 3,
+      "lastSeqAfterProbe": 5
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "webTests": "32/32",
+    "clientRuntimeTests": "12/12",
+    "lynxContractTests": "63/63",
+    "compactMenuTests": "8/8",
+    "browserAndNativeVerifierTests": "79/79 plus final verifier 44/44",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "clientRuntimeTypecheck": "pass with one pre-existing Effect suggestion",
+    "productionBuild": "pass with existing unsupported CSS and Effect import.meta warnings",
+    "browserPreviewBuild": "pass with existing asset-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}

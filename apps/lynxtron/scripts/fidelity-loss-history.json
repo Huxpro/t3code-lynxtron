@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T20:46:47+09:00",
+  "updatedAt": "2026-08-19T22:03:17+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12189,6 +12189,238 @@
               "confidence": 0.99,
               "method": "narrow-file-detail-readiness",
               "source": "Same isolated snapshot, persisted panel width, selected project/thread, shipping Browser artifacts, and zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsive-composer-file-detail-current",
+      "observedAt": "2026-08-19T22:03:17+09:00",
+      "commit": "b55b1c091",
+      "codeCommit": "b55b1c091",
+      "codeState": "commit",
+      "label": "Responsive Composer and file-detail convergence",
+      "narrative": "The 1024x820 responsive shell now preserves the center column instead of allowing a 540px inline panel to squeeze Composer to 187/188px: both renderers clamp the panel to 360/361px, Composer resolves to 367/368px, and the checkout/branch context ends 42px before the right panel. A shared file-detail policy switches sub-512px surfaces to an editor-first view. Web and Lynx-for-Web each render a 359px editor with no fixed explorer and a matching 28px Back action; real pointer input restores the Files browser in both clients. Exact Native independently opens a file, renders a 359px JetBrains Mono tokenized editor, hides the explorer, and restores Files through Back. Wide 1280x820 retains the 283px editor plus 255/256px explorer and no redundant Back. Compact controls now fit rendered content rather than a stale section estimate: Browser Lynx-for-Web resolves to 500px around 498px content, exact Native to 504px around 502px content, Full access is visible, there is no empty tail, and outside dismissal passes. Browser compact menu MAE improves from 16.600301 to 14.421964 and significant pixels from 16.5573% to 11.9060%. The narrow file-detail aggregate workbench still reports a reachedTargetState bookkeeping mismatch after the successful detail-to-browser transition; its strict geometry and behavior sub-gates plus exact Native receive product credit, while the aggregate matrix cell remains diagnostic.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Browser compact before/current frames hold snapshot, route, dark theme, 1024x820 viewport, requested right-panel width, Web authority bundle, and row set constant. Narrow dark/light and wide regression frames use the same snapshot and shipping artifacts. Exact Native uses the final 8973cafd bundle, a disposable generated snapshot, explicit viewport/theme, measured DevTool touch, main transport, zero renderer errors, and disposed state."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/responsive-composer-file-detail-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "41c31a839f587728b89390fedfe81db11b1e18c44250bf1274bfae36b3e085cf"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-narrow-inline"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-editor-first-content",
+              "source": "Both render the same non-empty file, breadcrumb, full-width source surface, and Back action"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-full-width-geometry",
+              "source": "Web and Lynx-for-Web surface, editor, hidden explorer, and 28px Back geometry match exactly at 1024x820"
+            },
+            "typography": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-token-typography",
+              "source": "Lynx keeps T3 JetBrains Mono 12px/19px and six semantic tones; full Pierre/TextMate grammar remains absent"
+            },
+            "material": {
+              "pixel": {
+                "mae": 19.731247,
+                "significantShare": 0.165931
+              },
+              "confidence": 0.99,
+              "method": "narrow-file-detail-full-editor-crop",
+              "source": "Same-snapshot 359x736 editor crop after shared responsive allocation; editor-engine material residual remains"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-dual-back",
+              "source": "Real Web and Lynx-for-Web Back pointers restore Files; exact Native Back restores the 359x728 browser"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-current-readiness",
+              "source": "Dark and light strict sub-gates, wide regression, exact Native main transport, zero errors, and clean leak gates pass"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail-narrow-inline"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-narrow-file-content",
+              "source": "Exact Native opens config.toml and renders 27 tokens across six tones"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 727,
+              "confidence": 0.99,
+              "method": "native-narrow-file-editor-first-geometry",
+              "source": "359px editor, hidden explorer, 28px Back, and returned 359x728 Files browser match the responsive contract"
+            },
+            "typography": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "native-narrow-file-token-typography",
+              "source": "T3 JetBrains Mono 12px/19px and six tones pass; full TextMate grammar remains out of scope"
+            },
+            "material": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "native-narrow-file-material-boundary",
+              "source": "Representative Native screenshot verifies readability while preserving residual for the lightweight tokenizer and editor utilities"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-narrow-file-back",
+              "source": "Measured DevTool touch opens the file and Back restores the Files browser"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-narrow-file-final-bundle",
+              "source": "Final 8973cafd bundle, main transport sequence 3 to 5, zero renderer errors, and disposed isolated state"
+            }
+          }
+        },
+        {
+          "states": ["composer-compact-controls-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-inline-files-visible-tail-content",
+              "source": "All fourteen authority rows are present in order and the final Full access row is visibly inside the scroll viewport"
+            },
+            "geometry": {
+              "anchorDeltas": [0.109375, 35, 1.78125, 37, 1, 0, 1, 0],
+              "anchorScale": 820,
+              "confidence": 0.99,
+              "method": "compact-inline-files-rendered-content-geometry",
+              "source": "Panel, Composer, context, and right-panel boundaries after content-fit and center-column reservation"
+            },
+            "typography": {
+              "residual": 0.05,
+              "confidence": 0.99,
+              "method": "compact-inline-files-readable-rows",
+              "source": "14px/28px rows are independently legible; DM Sans variable versus bundled shaping remains"
+            },
+            "material": {
+              "pixel": {
+                "mae": 14.421964,
+                "significantShare": 0.11906
+              },
+              "confidence": 0.99,
+              "method": "compact-inline-files-menu-envelope",
+              "source": "Same-snapshot 190x560 envelope after Full access becomes visible and the center column expands"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-inline-files-open-dismiss",
+              "source": "Real trigger opens the menu and exact Native fullscreen outside touch dismisses it"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-inline-files-current-readiness",
+              "source": "Canonical Browser pair and exact Native final bundle pass with zero errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["composer-compact-controls-inline-files-narrow"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-visible-tail",
+              "source": "All fifteen dynamic rows including Full access are visible without duplicates"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 504,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-measured-fit",
+              "source": "504px panel contains the measured 502px content with border-only difference and remains before the right panel"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-readable-rows",
+              "source": "All dynamic trait, Mode, and Access rows remain one-column and legible"
+            },
+            "material": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-no-tail-loss",
+              "source": "Measured content fit removes both clipping and the previous empty panel tail"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-dismiss",
+              "source": "Measured trigger opens and fullscreen outside touch dismisses the panel"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-final-bundle",
+              "source": "Final 8973cafd bundle, main transport, zero renderer errors, and disposed state"
+            }
+          }
+        },
+        {
+          "states": ["composer-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-composer-owned-content",
+              "source": "Composer controls and checkout/branch context remain in the center column beside Files"
+            },
+            "geometry": {
+              "anchorDeltas": [1, 0, 1, 0, 0, 0, 0, 0],
+              "anchorScale": 820,
+              "confidence": 0.99,
+              "method": "responsive-composer-right-panel-reserve",
+              "source": "367/368px Composer and 323/324px context end before the 663/664px right-panel boundary"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-composer-distinct-targets",
+              "source": "Compact controls and workspace/branch targets remain independently reachable without crossing into Files"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-composer-current-readiness",
+              "source": "Canonical Browser ownership capture and exact Native final-bundle run pass with zero errors"
             }
           }
         }
