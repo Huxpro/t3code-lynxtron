@@ -105,7 +105,10 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '".project-action-dialog__body"');
     assert.include(source, '".project-action-dialog__footer"');
     assert.include(source, '".project-action-field__input--name"');
-    assert.include(source, "fields.keybinding?.attributes.readonly === undefined");
+    assert.include(
+      source,
+      'fields.keybinding?.attributes["data-keybinding-input-mode"] !== "canonical-text"',
+    );
     assert.include(source, 'point: "bottom-right"');
     assert.include(source, "buttons.length !== 2");
     assert.include(source, "projectActionDialog,");
@@ -120,8 +123,16 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "const keybindingCommand = `script.${actionId}.run`");
     assert.include(source, 'path.join(baseDir, "userdata", "keybindings.json")');
     assert.include(source, 'selector: ".project-action-dialog__button--primary"');
+    assert.include(source, 'keybinding: "mod+shift"');
+    assert.include(source, 'selector: ".project-action-dialog__error"');
+    assert.include(source, 'measurement?.text.trim() === "Invalid keybinding."');
+    assert.include(source, "Invalid Project Action keybinding changed persisted state");
     assert.include(source, "state?.activeProject?.scripts?.some");
+    assert.include(source, "state?.keybindingCommands?.includes(keybindingCommand) === true");
     assert.include(source, "Native Project Action saved the script without its keybinding");
+    assert.include(source, "Project Action cold restart did not return an owned process id");
+    assert.include(source, "Project Action keybinding changed across cold restart");
+    assert.include(source, "projectActionKeybindingVerification.outcome");
     assert.include(source, "projectActionKeybindingMutation,");
     assert.include(outcomeChecksSource, "projectActionKeybindingMutation");
   });

@@ -5488,7 +5488,7 @@ async function verifyProjectActionDialog({ child, client, height, timeoutMs, wid
     !measurementVisible(fields.keybinding) ||
     !measurementVisible(fields.command) ||
     !measurementVisible(fields.previewUrl) ||
-    fields.keybinding?.attributes.readonly === undefined ||
+    fields.keybinding?.attributes["data-keybinding-input-mode"] !== "canonical-text" ||
     options.length !== 2 ||
     options[0]?.attributes.class?.includes("project-action-option--disabled") === true ||
     options[1]?.attributes.class?.includes("project-action-option--disabled") !== true ||
@@ -5552,7 +5552,19 @@ async function verifyProjectActionDialog({ child, client, height, timeoutMs, wid
   };
 }
 
-async function verifyProjectActionKeybindingMutation({ baseDir, child, client, timeoutMs }) {
+async function verifyProjectActionKeybindingMutation({
+  baseDir,
+  bundle,
+  child,
+  client,
+  desktopDir,
+  devToolCli,
+  executable,
+  height,
+  projectCwd,
+  timeoutMs,
+  width,
+}) {
   const actionName = "Fidelity KB Action";
   const actionId = "fidelity-kb-action";
   const actionCommand = "printf fidelity-keybinding";
@@ -5594,6 +5606,46 @@ async function verifyProjectActionKeybindingMutation({ baseDir, child, client, t
     timeoutMs,
     predicate: (measurement) => measurement?.text.includes("Add Action"),
   });
+  const invalidResponse = await client.runCdp("Runtime.evaluate", {
+    expression: `String(globalThis.__T3_LYNXTRON_PROJECT_ACTION_PROBE__?.(${JSON.stringify({
+      name: actionName,
+      command: actionCommand,
+      keybinding: "mod+shift",
+    })}))`,
+    returnByValue: true,
+  });
+  const invalidResult = commandResult(invalidResponse);
+  if (invalidResponse?.exceptionDetails || invalidResult?.value !== "undefined") {
+    throw new Error(
+      `Native Project Action invalid fixture failed: ${JSON.stringify(invalidResponse)}`,
+    );
+  }
+  await tapSelector({
+    child,
+    client,
+    selector: ".project-action-dialog__button--primary",
+    timeoutMs,
+  });
+  const invalidError = await waitForMeasurement({
+    child,
+    client,
+    selector: ".project-action-dialog__error",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Invalid keybinding.",
+  });
+  const invalidState = await readClientState(client);
+  const invalidKeybindings = JSON.parse(readFileSync(keybindingsPath, "utf8"));
+  if (
+    invalidState?.activeProject?.scripts?.some((script) => script.id === actionId) ||
+    invalidKeybindings.some((binding) => binding.command === keybindingCommand)
+  ) {
+    throw new Error(
+      `Invalid Project Action keybinding changed persisted state: ${JSON.stringify({
+        invalidKeybindings,
+        invalidState,
+      })}`,
+    );
+  }
   const fixtureResponse = await client.runCdp("Runtime.evaluate", {
     expression: `String(globalThis.__T3_LYNXTRON_PROJECT_ACTION_PROBE__?.(${JSON.stringify({
       name: actionName,
@@ -5654,7 +5706,7 @@ async function verifyProjectActionKeybindingMutation({ baseDir, child, client, t
       state?.activeProject?.scripts?.some(
         (script) =>
           script.id === actionId && script.name === actionName && script.command === actionCommand,
-      ) === true,
+      ) === true && state?.keybindingCommands?.includes(keybindingCommand) === true,
   });
   const afterScripts = afterState.activeProject.scripts;
   const afterKeybindings = JSON.parse(readFileSync(keybindingsPath, "utf8"));
@@ -5675,14 +5727,110 @@ async function verifyProjectActionKeybindingMutation({ baseDir, child, client, t
       })}`,
     );
   }
-  return {
-    status: "pass",
-    input: "Runtime fixture values and DevTool touch on the measured Save action",
-    projectId: afterState.activeProject.id,
-    script: afterScripts.find((script) => script.id === actionId),
-    keybinding: persistedBinding,
-    keybindingsPath,
-  };
+  const initialProcessId = child.pid;
+  const initialClient = client.identity;
+  const initialRendererErrors = readRendererErrors({
+    clientId: client.identity.clientId,
+    devToolCli,
+    sessionId: client.identity.sessionId,
+  });
+  if (initialRendererErrors) {
+    throw new Error(
+      `Renderer errors before Project Action cold restart:\n${initialRendererErrors}`,
+    );
+  }
+  await client.close();
+  await stopOwnedProcess(child);
+
+  const restartedChild = spawn(executable, [desktopDir], {
+    cwd: APP_ROOT,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      T3_LYNXTRON_BASE_DIR: baseDir,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
+      T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      T3_LYNXTRON_VIEWPORT_PROBE: "1",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!Number.isInteger(restartedChild.pid) || restartedChild.pid <= 0) {
+    throw new Error("Project Action cold restart did not return an owned process id.");
+  }
+  const restartedLog = createLogCapture(restartedChild);
+  let restartedClient;
+  try {
+    restartedClient = await waitForOwnedSession({
+      child: restartedChild,
+      devToolCli,
+      expectedBundleUrl: pathToFileURL(bundle).href,
+      timeoutMs,
+    });
+    await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
+    const restartTransport = await waitForMainTransport({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const restartedState = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeProject?.scripts?.some(
+          (script) =>
+            script.id === actionId &&
+            script.name === actionName &&
+            script.command === actionCommand,
+        ) === true && state?.keybindingCommands?.includes(keybindingCommand) === true,
+    });
+    const restartedKeybindings = JSON.parse(readFileSync(keybindingsPath, "utf8"));
+    const restartedBinding = restartedKeybindings.find(
+      (binding) => binding.command === keybindingCommand,
+    );
+    if (restartedBinding?.key !== keybinding) {
+      throw new Error(
+        `Project Action keybinding changed across cold restart: ${JSON.stringify({
+          expected: { key: keybinding, command: keybindingCommand },
+          restartedBinding: restartedBinding ?? null,
+          restartedKeybindings,
+          restartedState,
+        })}`,
+      );
+    }
+    return {
+      outcome: {
+        status: "pass",
+        input: "Runtime fixture values and DevTool touch on the measured Save action",
+        projectId: afterState.activeProject.id,
+        invalid: {
+          error: invalidError.text.trim(),
+          scriptPersisted: false,
+          keybindingPersisted: false,
+        },
+        script: afterScripts.find((script) => script.id === actionId),
+        keybinding: persistedBinding,
+        keybindingsPath,
+        coldRestart: {
+          initialProcessId,
+          initialClient,
+          restartedProcessId: restartedChild.pid,
+          restartedClient: restartedClient.identity,
+          transport: restartTransport,
+          script: restartedState.activeProject.scripts.find((script) => script.id === actionId),
+          keybinding: restartedBinding,
+        },
+      },
+      child: restartedChild,
+      client: restartedClient,
+      log: restartedLog,
+    };
+  } catch (error) {
+    await restartedClient?.close();
+    await stopOwnedProcess(restartedChild);
+    throw error;
+  }
 }
 
 function readIsolatedClientSettings(baseDir) {
@@ -8233,14 +8381,26 @@ async function runOnce({
           width,
         })
       : undefined;
-    const projectActionKeybindingMutation = shouldVerifyProjectActionKeybindingMutation
-      ? await verifyProjectActionKeybindingMutation({
-          baseDir,
-          child,
-          client,
-          timeoutMs,
-        })
-      : undefined;
+    let projectActionKeybindingMutation;
+    if (shouldVerifyProjectActionKeybindingMutation) {
+      const projectActionKeybindingVerification = await verifyProjectActionKeybindingMutation({
+        baseDir,
+        bundle,
+        child,
+        client,
+        desktopDir,
+        devToolCli,
+        executable,
+        height,
+        projectCwd,
+        timeoutMs,
+        width,
+      });
+      projectActionKeybindingMutation = projectActionKeybindingVerification.outcome;
+      child = projectActionKeybindingVerification.child;
+      client = projectActionKeybindingVerification.client;
+      log = projectActionKeybindingVerification.log;
+    }
     let betaMutation;
     if (shouldVerifyBetaMutation) {
       const betaVerification = await verifyBetaMutation({

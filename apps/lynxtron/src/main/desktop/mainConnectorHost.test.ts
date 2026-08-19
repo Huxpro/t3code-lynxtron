@@ -642,6 +642,29 @@ describe("dispatchConnectorCommand", () => {
     assert.deepEqual(calls, [params]);
   });
 
+  it("forwards canonical keybinding upserts without reshaping the payload", async () => {
+    const calls: unknown[] = [];
+    const connector = {
+      connect: () => Promise.resolve(),
+      dispose: () => {},
+      upsertKeybinding: (input: unknown) => {
+        calls.push(input);
+        return Promise.resolve({ keybindings: [], issues: [] });
+      },
+    } as ConnectorLike;
+    const params = {
+      key: "mod+shift+y",
+      command: "script.fidelity-kb-action.run",
+    };
+
+    await dispatchConnectorCommand(connector, {
+      method: "upsertKeybinding",
+      params,
+    });
+
+    assert.deepEqual(calls, [params]);
+  });
+
   it("throws a clear error for missing connector methods", () => {
     const connector = { connect: () => Promise.resolve(), dispose: () => {} } as ConnectorLike;
     assert.throws(

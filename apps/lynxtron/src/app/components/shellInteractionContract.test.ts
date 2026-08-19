@@ -361,6 +361,22 @@ describe("desktop shell interaction contract", () => {
     );
   });
 
+  it("persists Project Action keybindings after the script update", () => {
+    const dialog = componentSource("ProjectActionDialog.tsx");
+
+    expect(dialog).toContain("decodeProjectScriptKeybindingRule");
+    expect(dialog).toContain("commandForProjectScript(id)");
+    expect(dialog).toContain("keybindingRule ? t3ClientActions.upsertKeybinding");
+    expect(dialog).toContain('data-keybinding-input-mode="canonical-text"');
+    expect(dialog).toContain("Enter a shortcut such as mod+shift+y.");
+    expect(dialog.indexOf(".updateProjectScripts(")).toBeLessThan(
+      dialog.indexOf("t3ClientActions.upsertKeybinding"),
+    );
+    expect(dialog).toContain(
+      'setError(cause instanceof Error ? cause.message : "Invalid keybinding.")',
+    );
+  });
+
   it("restores the Settings rail allocation in Lynx-for-Web", () => {
     expect(browserPreviewSource).toContain(
       '".settings-root{display:flex;flex:1 1 0%;flex-direction:row;width:100%;height:100%;min-width:0;}"',

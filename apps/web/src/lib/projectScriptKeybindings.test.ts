@@ -39,6 +39,15 @@ describe("projectScriptKeybindings", () => {
     ).toThrowError(PROJECT_SCRIPT_KEYBINDING_INVALID_MESSAGE);
   });
 
+  it("rejects keybinding values without a key token", () => {
+    expect(() =>
+      decodeProjectScriptKeybindingRule({
+        keybinding: "mod+shift",
+        command: commandForProjectScript("lint"),
+      }),
+    ).toThrowError(PROJECT_SCRIPT_KEYBINDING_INVALID_MESSAGE);
+  });
+
   it("rejects invalid commands", () => {
     expect(() =>
       decodeProjectScriptKeybindingRule({
