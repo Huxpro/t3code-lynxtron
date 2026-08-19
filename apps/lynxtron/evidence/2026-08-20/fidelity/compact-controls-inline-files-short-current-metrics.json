@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-20T03:10:59+09:00",
+  "stateId": "composer-compact-controls-inline-files-short",
+  "productCommit": "f82d1cb83dd86638af699d7d03d9855d3c8e9a3c",
+  "browserVerifierCommit": "49df3984b7d1b122c320a66a2d5083c70d7ce05f",
+  "nativeVerifierCommit": "885d44e8cb45345ea612f2258add0ec8de7a97d9",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x600",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "surface": "Scrollable compact Composer controls beside inline Files"
+  },
+  "classification": {
+    "productLossClosed": [
+      "The short Native-safe menu now uses the same collision budget as the Web authority: both panels start at y=4 and are 497px tall with 495px scroll viewports.",
+      "The Native menu now includes the missing section rhythm and labels, preserves all model-derived trait rows, and keeps the fixed Chat, Plan, and access tail reachable.",
+      "The initial Full access row is intentionally clipped because content overflows; Browser wheel scrolling and the Native main-thread scroll seam move the content and make the final row fully visible.",
+      "The checkout context remains owned by the center Composer allocation when Files is open. Browser context ends at x=622 before Files starts at x=664; Native context ends at x=622 before Files starts at x=664.",
+      "The fullscreen dismiss surface closes the menu in Browser and Native."
+    ],
+    "remainingResidual": [
+      "The dark 210x545 menu envelope retains 10.565464 MAE and 10.3617% significant pixels after geometry and semantic convergence.",
+      "Browser overlayContentMatch remains false because the immutable Browser fixture exposes provider-derived label variants such as Default markers that are not present in the Native fixture. Row count, section order, fixed tail, and final-row reachability match.",
+      "Physical Native wheel input remains pending-user-session. DevTool proves main-thread scroll mechanics and final geometry but does not provide physical wheel evidence."
+    ],
+    "harnessMismatch": [
+      "The first Native attempt was rejected before app launch because the fresh visual-state fixture lacked sidebarFixture.titles.",
+      "The second Native attempt was rejected before app launch because visual:prepare and visual:prepare-sidebar do not create the lynxtron-prefs.json required by packaged readiness.",
+      "The admitted run adds the canonical saved model preference only inside the disposable fixture; neither rejected run receives product credit."
+    ],
+    "evidenceBoundary": "Browser evidence uses one immutable snapshot, shipping Web and Lynx-for-Web artifacts, dark and light 1024x600 captures, a dark 1024x820 regression, real overlay triggers, browser wheel input, outside dismissal, matching state identity, and zero console errors. Native evidence uses one generated isolated project/sidebar fixture, explicit 1024x600 viewport and dark theme, exact production bundle, measured DevTool touch, main transport, the main-thread scroll seam, fullscreen dismissal, zero renderer errors, disposed state, and clean leak gates."
+  },
+  "browser": {
+    "baseline": {
+      "report": "/tmp/t3-compact-short-discovery/workbench-report.json",
+      "reportSha256": "705a1a04d2b6504a48d997cd3ec43302ce0e431f9f4edf90e89890f59a7cc28f",
+      "menuEnvelope": {
+        "crop": [400, 0, 210, 545],
+        "mae": 13.858928,
+        "significantShare": 0.125636
+      }
+    },
+    "currentDark": {
+      "report": "/tmp/t3-compact-short-final4/workbench-report.json",
+      "reportSha256": "bbeb4f1698746c8719d71cd328e66e4d065f807f7b3e8cf9177d4ed82e9afab0",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "viewport": [1024, 600],
+      "theme": "dark",
+      "geometry": {
+        "web": {
+          "panel": [435, 4, 146.21875, 497],
+          "scroll": [436, 5, 144.21875, 495],
+          "composer": [276, 408, 368, 140],
+          "contextRight": 622,
+          "rightPanelLeft": 664
+        },
+        "lynx": {
+          "panel": [434.890625, 4, 148, 497],
+          "scroll": [435.890625, 5, 146, 495],
+          "composer": [276, 408, 367, 140],
+          "contextRight": 621,
+          "rightPanelLeft": 663
+        }
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "mae": 7.348587,
+          "significantShare": 0.093397
+        },
+        "menuEnvelope": {
+          "crop": [400, 0, 210, 545],
+          "mae": 10.565464,
+          "significantShare": 0.103617
+        },
+        "composer": {
+          "crop": [260, 395, 400, 190],
+          "mae": 3.72868,
+          "significantShare": 0.044092
+        },
+        "context": {
+          "crop": [285, 525, 350, 60],
+          "mae": 2.78746,
+          "significantShare": 0.042619
+        }
+      },
+      "interaction": {
+        "initialLastRowVisible": false,
+        "wheelScrollTop": {
+          "web": 40,
+          "lynx": 40
+        },
+        "finalLastRowVisible": true,
+        "outsideDismissed": true
+      },
+      "screenshots": {
+        "webSha256": "837ca50fa0cbc98d49c25050cb1c946262943610e227c8f86b27d35ed0e9b5e8",
+        "lynxSha256": "0fbdcf2e346576844b0affbf595385bef2de75b28178ac4109f769007b02b7f0",
+        "sideBySideSha256": "4d9d25704fe6ac9a736085f01e162200f2333a500b10c6440076c66d960df4f8"
+      },
+      "stateIdentityMatch": true,
+      "overlayRowCountMatch": true,
+      "overlayContentMatch": false,
+      "rendererErrors": 0
+    },
+    "lightRegression": {
+      "report": "/tmp/t3-compact-short-light/workbench-report.json",
+      "reportSha256": "1afa3e3b630b22698d25bc30944bc40425f2955764361a692fa581e3a3db555d",
+      "viewport": [1024, 600],
+      "theme": "light",
+      "status": "pass",
+      "rendererErrors": 0
+    },
+    "contentFitRegression": {
+      "report": "/tmp/t3-compact-820-regression/workbench-report.json",
+      "reportSha256": "e3e02c5f0677469e3d2e208bd856a03de871085053f282845f097de2b0b683fb",
+      "viewport": [1024, 820],
+      "theme": "dark",
+      "status": "pass",
+      "rendererErrors": 0
+    }
+  },
+  "native": {
+    "status": "pass",
+    "report": "/tmp/t3-compact-short-native/report.json",
+    "reportSha256": "14093fb0e37c13c6e13f1c23b35f47c4f320869953d6d494ab9ef8cd60804c07",
+    "head": "885d44e8cb45345ea612f2258add0ec8de7a97d9",
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "bytes": 4624954,
+      "sha256": "b5896c75e353a4db00454e0c303cda6387c9746272a7676beb5af26879057f57"
+    },
+    "fixture": {
+      "snapshotId": "52d5ab4ebc1d972aa4072eaf0e0c904988ff55760b9a99d5d4c6acdb6c2b4869",
+      "projectTitle": "t3code-archaeology-verify3",
+      "canonicalThreadTitle": "Finish the in-monorepo Lynxtron UI migration",
+      "modelSelection": {
+        "instanceId": "codex",
+        "model": "gpt-5.6-sol"
+      }
+    },
+    "viewport": [1024, 600],
+    "theme": "dark",
+    "transport": {
+      "kind": "main",
+      "sequence": [3, 5]
+    },
+    "geometry": {
+      "panel": [445, 4, 148, 497],
+      "scroll": [446, 5, 146, 495],
+      "content": [446, 5, 146, 563],
+      "composer": [276, 408, 368, 140],
+      "contextRight": 622,
+      "composerRight": 644,
+      "rightPanelLeft": 664
+    },
+    "interaction": {
+      "initialLastRowVisible": false,
+      "scrollEvidence": {
+        "input": "main-thread scroll seam; physical wheel pending-user-session",
+        "requestedOffset": 120,
+        "appliedOffset": 120,
+        "beforeLastRowY": 536,
+        "afterLastRowY": 468,
+        "finalLastRowVisible": true
+      },
+      "fullscreenDismissed": true
+    },
+    "screenshot": {
+      "path": "/tmp/t3-compact-short-native/native-compact-controls.png",
+      "sha256": "f014bfe8e78a987f8ab3793af698b64ffa06cc5a973b351067a4f7a14900584a"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedProductTests": "73/73",
+    "nativeVerifierTests": "46/46",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "workbenchBuild": "pass with existing Effect import.meta and asset-size warnings",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every admitted loop",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "fidelityAccounting": {
+    "states": 64,
+    "cells": 732,
+    "totalWeight": 238.2,
+    "denominatorChanged": false,
+    "existingWeightsChanged": false
+  }
+}
