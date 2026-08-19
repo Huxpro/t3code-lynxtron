@@ -5219,7 +5219,7 @@ async function verifyProjectActionDialog({ child, client, height, timeoutMs, wid
   await tapSelector({
     child,
     client,
-    selector: ".action-btn--add .action-btn__primary",
+    selector: ".action-btn--add",
     timeoutMs,
   });
   const dialog = await waitForMeasurement({
@@ -5266,7 +5266,9 @@ async function verifyProjectActionDialog({ child, client, height, timeoutMs, wid
     options.length !== 2 ||
     options[0]?.attributes.class?.includes("project-action-option--disabled") === true ||
     options[1]?.attributes.class?.includes("project-action-option--disabled") !== true ||
-    buttons.map(({ text }) => text.trim()).join("|") !== "Cancel|Save action"
+    buttons.length !== 2 ||
+    !buttons[0]?.attributes.class?.includes("project-action-dialog__button") ||
+    !buttons[1]?.attributes.class?.includes("project-action-dialog__button--primary")
   ) {
     throw new Error(
       `Native Project Action dialog anatomy drifted: ${JSON.stringify({

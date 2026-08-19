@@ -524,7 +524,7 @@ function readProjectActionControl(element) {
     ? element
     : (element.shadowRoot?.querySelector("input, textarea") ?? null);
   return {
-    box: readElementBox(element),
+    box: readElementBox(input) ?? readElementBox(element),
     value: input?.value ?? element.getAttribute("value") ?? "",
     placeholder: input?.placeholder ?? element.getAttribute("placeholder") ?? null,
     readOnly: input?.readOnly ?? element.hasAttribute("readonly"),

@@ -100,13 +100,14 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies the Native Project Action dialog layout and dismissal", () => {
     assert.include(source, "async function verifyProjectActionDialog");
     assert.include(source, '"--verify-project-action-dialog"');
-    assert.include(source, '".action-btn--add .action-btn__primary"');
+    assert.include(source, '".action-btn--add"');
     assert.include(source, '".project-action-dialog__header"');
     assert.include(source, '".project-action-dialog__body"');
     assert.include(source, '".project-action-dialog__footer"');
     assert.include(source, '".project-action-field__input--name"');
     assert.include(source, "fields.keybinding?.attributes.readonly === undefined");
     assert.include(source, 'point: "bottom-right"');
+    assert.include(source, "buttons.length !== 2");
     assert.include(source, "projectActionDialog,");
     assert.include(outcomeChecksSource, "projectActionDialog");
   });
