@@ -66,6 +66,8 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("cold-starts both renderers at the requested Sidebar width and gates control geometry", () => {
+    assert.include(source, '"sidebar-resize",');
+    assert.include(source, '"sidebar-resize": "existing-thread"');
     assert.include(
       source,
       'const requestedSidebarWidthValue = Number(argValue("--sidebar-width", ""))',
