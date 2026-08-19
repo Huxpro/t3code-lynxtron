@@ -326,6 +326,9 @@ describe("desktop shell interaction contract", () => {
       '".right-panel__add-menu{display:flex;flex-direction:column;width:128px;height:122px;}" +',
     );
     expect(browserPreviewSource).toContain(
+      '".right-panel__tab-list>[data-active-tab]{min-width:100px;max-width:176px;box-sizing:border-box;}" +',
+    );
+    expect(browserPreviewSource).toContain(
       '".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:118px;height:28px;}" +',
     );
     expect(browserPreviewSource).toContain('".composer-context-strip{" +');
@@ -371,6 +374,8 @@ describe("desktop shell interaction contract", () => {
     expect(addMenuBlock).toContain("height: 122px;");
     expect(addMenuBlock).toContain("border-radius: 10px;");
     expect(addMenuBlock).toContain("background-color: rgba(var(--popover-rgb), 0.836);");
+    expect(overrides).toContain(".right-panel__tab-list > [data-active-tab] {");
+    expect(overrides).toContain("min-width: 100px;");
     const addItemBlock = overrides.match(/\.right-panel__add-item \{[^}]+\}/)?.[0] ?? "";
     expect(addItemBlock).toContain("width: 118px;");
     expect(addItemBlock).toContain("height: 28px;");

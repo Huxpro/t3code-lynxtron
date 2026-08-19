@@ -6263,6 +6263,11 @@
   height: 52px;
   -x-app-region: drag;
 }
+.right-panel__tab-list > [data-active-tab] {
+  min-width: 100px;
+  max-width: 176px;
+  box-sizing: border-box;
+}
 
 /* surface: right panel tabs (glyph leaves); gap: R1 (raster icon set does not
    cover surface-kind glyphs); remove-when: glyphs move to the raster icon
