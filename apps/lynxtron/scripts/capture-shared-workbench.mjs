@@ -133,7 +133,8 @@ if (
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
-const isFilesBrowserState = stateId === "files-browser";
+const isFilesBrowserState =
+  stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
 const isFileEditorState = stateId === "file-editor-detail";
 const isCompactControlsState = stateId === "composer-compact-controls-open";
 const isFilesSurfaceState = isFilesBrowserState || isFileEditorState || isCompactControlsState;
@@ -1679,6 +1680,7 @@ async function main() {
     "existing-thread-approval",
     "existing-thread-question",
     "files-browser",
+    "settled-banner-inline-files-narrow",
     "file-editor-detail",
     "git-publish-dialog",
     "composer-docked",
@@ -2098,6 +2100,7 @@ async function captureCell({
     "composer-docked": "existing-thread",
     "composer-working": "existing-thread",
     "composer-compact-controls-open": "existing-thread",
+    "settled-banner-inline-files-narrow": "existing-thread",
     "composer-disabled": "existing-thread",
     "workspace-menu-open": "existing-thread",
     "settings-general": "settings-general",

@@ -125,7 +125,9 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("opens the Files browser through shipping right-panel actions", () => {
-    assert.include(source, 'const isFilesBrowserState = stateId === "files-browser"');
+    assert.include(source, 'stateId === "settled-banner-inline-files-narrow"');
+    assert.include(source, '"settled-banner-inline-files-narrow",');
+    assert.include(source, '"settled-banner-inline-files-narrow": "existing-thread"');
     assert.include(source, "function filesBrowserReady(state)");
     assert.include(source, "function filesBrowserSemanticReady(state)");
     assert.include(source, "'[data-right-panel-open=\"true\"], [data-preview-panel-mode]'");
