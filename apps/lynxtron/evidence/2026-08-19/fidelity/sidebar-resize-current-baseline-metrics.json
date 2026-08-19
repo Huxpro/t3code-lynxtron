@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T12:12:00+09:00",
+  "harnessCommit": "a9a200767",
+  "stateId": "sidebar-resize",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "sidebarWidth": 320
+  },
+  "fixture": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "projectTitle": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "classification": {
+    "productLoss": [
+      "Web keeps the resized thread list at x=8 width=303 inside the 320px Sidebar. Lynx rows remain width319 from x=8 and extend 7px past the Sidebar edge.",
+      "Lynx retains fixed-width authority content inside the active card after resize, clipping the project title and thread title instead of using the additional width.",
+      "The responsive footer still overlays the old authority sprite on the real Settings row at the resized width.",
+      "The 320x820 Sidebar crop measures 7.492165 MAE and 11.4482% significant pixels."
+    ],
+    "harnessMismatch": [],
+    "evidenceBoundary": "One immutable snapshot, selected project/thread, 1280x820 viewport, explicit 320px cold-start Sidebar width, shipping Web and Lynx-for-Web bundles, matching control geometry and state identity, zero console errors, and clean leak gates. Native interaction remains covered by the earlier physical-drag evidence and is not inferred from this Browser baseline."
+  },
+  "browser": {
+    "status": "pass-with-product-loss",
+    "reportSha256": "7764e84101d7374bede4cfa3648b74c274652b52f5e10f4809af17e186a8f1df",
+    "readyMs": 1352,
+    "stateIdentityMatch": true,
+    "controlGeometryMatch": true,
+    "rendererErrors": 0,
+    "geometry": {
+      "web": {
+        "sidebar": [0, 0, 320, 820],
+        "projectScopeRow": [8, 104, 303, 32],
+        "projectScope": [8, 104, 267, 32],
+        "newProject": [279, 104, 32, 32],
+        "activeThreadRow": [8, 144, 303, 82],
+        "settledThreadRow": [8, 260, 303, 36],
+        "settingsRow": [8, 780, 303, 32]
+      },
+      "lynx": {
+        "sidebar": [0, 0, 320, 820],
+        "projectScopeRow": [8, 104, 303, 32],
+        "projectScope": [9, 106, 267, 32],
+        "newProject": [279, 104, 32, 32],
+        "activeThreadRow": [8, 144, 319, 82],
+        "settledThreadRow": [8, 267, 319, 36],
+        "settingsRow": [9.5, 780, 303, 32]
+      }
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "crop": [0, 0, 320, 820],
+      "mae": 7.492165,
+      "significantShare": 0.114482,
+      "formulaResidual": 0.600989
+    },
+    "screenshots": {
+      "webSha256": "844c70dafc9897ed2fa314e883fca4811d18832ca27ae7b3b34790d24abe1e38",
+      "lynxSha256": "ac0a6704fb0dfafc915a787cfb12f6b5602ca2b184be740c687bd094f110f668"
+    }
+  },
+  "native": {
+    "status": "previously-certified",
+    "source": "apps/lynxtron/evidence/2026-08-14/fidelity/sidebar-resize-interaction-metrics.json"
+  },
+  "validation": {
+    "harnessFocusedTests": "33/33",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after",
+    "screenshotBudget": "32/100"
+  }
+}

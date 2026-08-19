@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T11:54:43+09:00",
+  "updatedAt": "2026-08-19T12:12:00+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11049,6 +11049,75 @@
               "confidence": 0.99,
               "method": "native-narrow-settled-banner-readiness",
               "source": "Bundle 33f4907f, explicit thread identity, main sequence 3 to 4, zero renderer errors, disposed state, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-resize-current-baseline",
+      "observedAt": "2026-08-19T12:12:00+09:00",
+      "commit": "a9a200767",
+      "codeCommit": "39b111f7b",
+      "codeState": "commit",
+      "label": "Current resized Sidebar baseline",
+      "narrative": "The existing Sidebar Resize state now has a current 320px paired Browser baseline in addition to its historical Native drag evidence. Web keeps rows, project controls, and the Settings footer inside a 320px Sidebar with 303px content width. Lynx project controls resize correctly, but active and settled rows remain 319px wide from x=8, escape the rail by 7px, retain fixed authority content that clips labels, and overlay the old footer sprite on the real Settings row. The full Sidebar crop measures 7.492165 MAE with 11.4482% significant pixels. State identity, control geometry, runtime, and leak gates pass; this records current product loss without changing the denominator.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This updates the already-modeled sidebar-resize state with current paired Browser evidence. Existing state count, cell count, total weight, and historical Native interaction evidence remain unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/sidebar-resize-current-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "314c5b7fd23db37cd4096cb9565a184af314b3d1c72651922047f486ff599a07"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-resize"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.3,
+              "confidence": 0.99,
+              "method": "resized-sidebar-clipped-content",
+              "source": "Fixed authority content clips project/thread labels and the footer shows both sprite and real Settings content"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 16, 7, 16, 7, 0, 0],
+              "anchorScale": 320,
+              "confidence": 0.99,
+              "method": "resized-sidebar-current-geometry",
+              "source": "Sidebar and controls align, but active and settled rows are 16px too wide and the settled row is 7px low"
+            },
+            "typography": {
+              "residual": 0.15,
+              "confidence": 0.99,
+              "method": "resized-sidebar-label-legibility",
+              "source": "Clipped authority labels do not use the additional width"
+            },
+            "material": {
+              "pixel": {
+                "mae": 7.492165,
+                "significantShare": 0.114482
+              },
+              "confidence": 0.99,
+              "method": "resized-sidebar-full-crop",
+              "source": "Same-snapshot 320x820 Sidebar crop"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "resized-sidebar-cold-start-width",
+              "source": "Both renderers cold-start at 320px and preserve responsive project controls"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "resized-sidebar-current-readiness",
+              "source": "Same state identity, zero console errors, and clean leak gates"
             }
           }
         }
