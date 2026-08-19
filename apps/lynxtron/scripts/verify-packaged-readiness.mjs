@@ -9119,12 +9119,20 @@ const gitInitializeOnlyEmptyFixture =
   !verifyComposerBranding &&
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
+const rightPanelAddMenuOnlyEmptyFixture =
+  shouldVerifyRightPanelAddMenu &&
+  !verifySettingsNavigation &&
+  !verifySidebarScope &&
+  !verifyComposerBranding &&
+  !shouldVerifyModelPickerFidelity &&
+  !verifyPlan11SemanticOutcomes;
 if (
   !lifecycleOnlyEmptyFixture &&
   !heroOnlyEmptyFixture &&
   !sourceControlLoadingOnlyEmptyFixture &&
   !sourceControlErrorOnlyEmptyFixture &&
   !gitInitializeOnlyEmptyFixture &&
+  !rightPanelAddMenuOnlyEmptyFixture &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
@@ -9173,6 +9181,7 @@ for (let index = 1; index <= runs; index += 1) {
         !sourceControlLoadingOnlyEmptyFixture &&
         !sourceControlErrorOnlyEmptyFixture &&
         !gitInitializeOnlyEmptyFixture &&
+        !rightPanelAddMenuOnlyEmptyFixture &&
         !shouldVerifyFileSheetBack,
       timeoutMs,
       verifySettingsNavigation,

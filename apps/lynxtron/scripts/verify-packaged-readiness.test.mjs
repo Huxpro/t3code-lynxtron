@@ -373,6 +373,7 @@ describe("packaged readiness Sidebar geometry", () => {
     );
     assert.include(source, 'selector: ".terminal-placeholder"');
     assert.include(source, "terminalSelected: true");
+    assert.include(source, "rightPanelAddMenuOnlyEmptyFixture");
     assert.include(outcomeChecksSource, "rightPanelAddMenu");
   });
 
