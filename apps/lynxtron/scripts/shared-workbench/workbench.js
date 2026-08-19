@@ -1918,6 +1918,20 @@ function readWebPane() {
           };
         })()
       : null;
+    const rightPanelAddRows =
+      overlay === "right-panel-add-menu"
+        ? [...doc.querySelectorAll('[data-slot="menu-item"]')].filter((row) => {
+            const panelRect = overlayElement?.getBoundingClientRect();
+            const rowRect = row.getBoundingClientRect();
+            return (
+              panelRect &&
+              rowRect.x >= panelRect.x &&
+              rowRect.y >= panelRect.y &&
+              rowRect.x + rowRect.width <= panelRect.x + panelRect.width &&
+              rowRect.y + rowRect.height <= panelRect.y + panelRect.height
+            );
+          })
+        : [];
     const modelPickerContent =
       overlay === "model-picker" ? doc.querySelector("[data-model-picker-content]") : null;
     const commandInput = commandPaletteElement?.querySelector('[data-slot="autocomplete-input"]');
@@ -2142,9 +2156,7 @@ function readWebPane() {
                   : overlay === "right-panel-add-menu"
                     ? {
                         panel: readElementBox(overlayElement),
-                        rows: [
-                          ...(overlayElement?.querySelectorAll('[data-slot="menu-item"]') ?? []),
-                        ].map((row) => ({
+                        rows: rightPanelAddRows.map((row) => ({
                           kind: row.textContent?.trim().toLowerCase() ?? "",
                           label: row.textContent?.trim() ?? "",
                           disabled:
@@ -2186,11 +2198,7 @@ function readWebPane() {
                         ),
                       ].map((row) => row.textContent?.trim())
                     : overlay === "right-panel-add-menu"
-                      ? [
-                          ...doc.querySelectorAll(
-                            '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"]',
-                          ),
-                        ].map((row) => row.textContent?.trim())
+                      ? rightPanelAddRows.map((row) => row.textContent?.trim())
                       : [],
         modelPickerRows:
           overlay === "model-picker"
@@ -2216,9 +2224,7 @@ function readWebPane() {
                         '[data-floating-popup="composer-compact-controls-menu"] [data-slot="menu-radio-item"]',
                       ).length
                     : overlay === "right-panel-add-menu"
-                      ? doc.querySelectorAll(
-                          '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"]',
-                        ).length
+                      ? rightPanelAddRows.length
                       : overlay === "project-action-dialog"
                         ? (projectActionDialog?.fieldLabels.length ?? 0)
                         : 0,
