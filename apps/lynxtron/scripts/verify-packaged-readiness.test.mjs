@@ -173,6 +173,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Composer Footer icon geometry drifted");
   });
 
+  it("treats the requested theme as a packaged-run precondition", () => {
+    assert.include(source, "async function verifyExpectedTheme");
+    assert.include(source, 'selector: ".app-theme-root"');
+    assert.include(source, 'measurement?.attributes["data-theme"] === expectedTheme');
+    assert.include(source, "themePreference: expectedTheme");
+    assert.include(source, "const theme = await verifyExpectedTheme");
+    assert.include(source, "theme,");
+  });
+
   it("verifies the exact Native Send material without submitting a turn", () => {
     assert.include(source, "async function verifyComposerSendMaterial");
     assert.include(source, '"--verify-composer-send-material"');

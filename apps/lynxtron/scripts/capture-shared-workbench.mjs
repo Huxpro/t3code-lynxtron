@@ -1068,7 +1068,8 @@ function fileEditorReady(state) {
     web.tabs.includes(fileName) &&
     lynx.tabs.includes(fileName) &&
     web.back === null &&
-    lynx.back === null &&
+    lynx.back?.rect?.width === 28 &&
+    lynx.back?.rect?.height === 28 &&
     web.statusbar === null &&
     lynx.statusbar === null
   );
@@ -2194,6 +2195,7 @@ async function captureCell({
   let lynxFileEditorOpenAttempts = 0;
   let webFileEditorDomFallbackUsed = false;
   let fileEditorSwitched = !isFileEditorState;
+  let fileEditorReturnedToBrowser = !isFileEditorState;
   const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
@@ -4573,6 +4575,51 @@ async function captureCell({
       await delay(100);
     }
   }
+  if (isFileEditorState && fileEditorSwitched) {
+    const backPoint = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const frame = document.getElementById('lynx-pane');
+        const root = frame?.contentWindow?.document
+          ?.getElementById('t3-lynx-preview')?.shadowRoot;
+        const back = root?.querySelector('[aria-label="Back to workspace files"]');
+        if (!frame || !back) return null;
+        const frameRect = frame.getBoundingClientRect();
+        const rect = back.getBoundingClientRect();
+        return {
+          x: frameRect.x + rect.x + rect.width / 2,
+          y: frameRect.y + rect.y + rect.height / 2,
+        };
+      })()`,
+    ).catch(() => null);
+    if (backPoint) {
+      await dispatchPointerClickWithMove(cdp, sessionId, backPoint);
+      for (let attempt = 0; attempt < 20; attempt += 1) {
+        const returned = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const frame = document.getElementById('lynx-pane');
+            const root = frame?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            return {
+              kind: root
+                ?.querySelector('[data-right-panel-open="true"]')
+                ?.getAttribute('data-right-panel-active-kind') ?? null,
+              browserPresent: root?.querySelector('.files-panel') !== null,
+              filePresent: root?.querySelector('.file-panel') !== null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (returned?.kind === "files" && returned.browserPresent && !returned.filePresent) {
+          fileEditorReturnedToBrowser = true;
+          break;
+        }
+        await delay(100);
+      }
+    }
+  }
 
   await browserCdp.send("Target.closeTarget", { targetId }).catch(() => undefined);
 
@@ -4619,6 +4666,7 @@ async function captureCell({
     finalFilesBrowserReady &&
     finalFileEditorReady &&
     fileEditorSwitched &&
+    fileEditorReturnedToBrowser &&
     gitPublishDismissed &&
     finalReviewReady &&
     finalSettingsAsyncReady &&
@@ -4653,6 +4701,7 @@ async function captureCell({
       finalFilesBrowserReady,
       finalFileEditorReady,
       fileEditorSwitched,
+      fileEditorReturnedToBrowser,
       gitPublishDismissed,
       finalReviewReady,
       finalSettingsAsyncReady,
@@ -4862,6 +4911,8 @@ async function captureCell({
           ? "web-explorer-pointer|lynx-explorer-pointer"
           : "not-required",
         switched: fileEditorSwitched,
+        returnedBy: isFileEditorState ? "lynx-back-pointer" : "not-required",
+        returnedToBrowser: fileEditorReturnedToBrowser,
         openAttempts: {
           web: webFileEditorOpenAttempts,
           lynx: lynxFileEditorOpenAttempts,

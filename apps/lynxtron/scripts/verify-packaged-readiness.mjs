@@ -348,6 +348,21 @@ async function waitForMainTransport({ child, client, timeoutMs }) {
   throw new Error(`Renderer did not expose a main transport: ${JSON.stringify({ latest })}`);
 }
 
+async function verifyExpectedTheme({ child, client, expectedTheme, timeoutMs }) {
+  if (!expectedTheme) return null;
+  const themeRoot = await waitForMeasurement({
+    child,
+    client,
+    selector: ".app-theme-root",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-theme"] === expectedTheme,
+  });
+  return {
+    expected: expectedTheme,
+    actual: themeRoot.attributes["data-theme"],
+  };
+}
+
 async function invokeSemanticAdvance(client, modelSelection) {
   const response = await client.runCdp("Runtime.evaluate", {
     expression: `globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.invoke("setModelSelection", ${JSON.stringify(
@@ -7113,7 +7128,7 @@ async function runOnce({
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
   const baseDir = path.join(runRoot, "state");
   cpSync(fixtureDir, baseDir, { recursive: true });
-  if (expectedEnvironmentIdentificationMode) {
+  if (expectedEnvironmentIdentificationMode || expectedTheme) {
     const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
     const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
     writeFileSync(
@@ -7121,9 +7136,12 @@ async function runOnce({
       `${JSON.stringify(
         {
           ...prefs,
+          ...(expectedTheme ? { themePreference: expectedTheme } : {}),
           clientSettings: {
             ...prefs.clientSettings,
-            environmentIdentificationMode: expectedEnvironmentIdentificationMode,
+            ...(expectedEnvironmentIdentificationMode
+              ? { environmentIdentificationMode: expectedEnvironmentIdentificationMode }
+              : {}),
           },
         },
         null,
@@ -7172,6 +7190,12 @@ async function runOnce({
     });
     await waitForLogText(child, log, "T3 Code server is ready", timeoutMs);
     const beforeProbe = await waitForMainTransport({ child, client, timeoutMs });
+    const theme = await verifyExpectedTheme({
+      child,
+      client,
+      expectedTheme,
+      timeoutMs,
+    });
     // Same-value, no-thread selection is an isolated-state no-op. It still
     // crosses renderer -> main and emits the connector log back through the
     // sequenced main -> renderer channel, proving both transport legs.
@@ -7676,6 +7700,7 @@ async function runOnce({
       serverPort: Number(log.read().match(/Listening on http:\/\/127\.0\.0\.1:(\d+)/u)?.[1]),
       client: client.identity,
       transport,
+      theme,
       canonicalState,
       lifecycleRecovery,
       sidebarScope,
