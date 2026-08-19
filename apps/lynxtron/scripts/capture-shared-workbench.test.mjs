@@ -265,6 +265,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"model-picker-empty": "model-picker"');
     assert.include(source, '"model-picker-selected": "model-picker"');
     assert.include(source, '"model-picker-empty": "__t3_no_models__"');
+    assert.include(source, '"quick-switch-default": "quick-switch"');
+    assert.include(source, '"quick-switch-query": "quick-switch"');
+    assert.include(source, '"quick-switch-query": "settings"');
+    assert.include(source, '"quick-switch-default",');
+    assert.include(source, '"quick-switch-query",');
+    assert.include(source, '"quick-switch-actions-only",');
+    assert.include(source, '"quick-switch-empty",');
     assert.include(source, '"quick-switch-actions-only": "quick-switch"');
     assert.include(source, '"quick-switch-empty": "quick-switch"');
     assert.include(source, '"quick-switch-actions-only": ">"');

@@ -81,11 +81,14 @@ const defaultOverlayByStateId = {
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
   "workspace-menu-open": "workspace-menu",
+  "quick-switch-default": "quick-switch",
+  "quick-switch-query": "quick-switch",
   "quick-switch-actions-only": "quick-switch",
   "quick-switch-empty": "quick-switch",
 };
 const defaultQueryByStateId = {
   "model-picker-empty": "__t3_no_models__",
+  "quick-switch-query": "settings",
   "quick-switch-actions-only": ">",
   "quick-switch-empty": "zzzz-no-result",
 };
@@ -1674,6 +1677,10 @@ async function main() {
     "model-picker-query",
     "model-picker-empty",
     "model-picker-selected",
+    "quick-switch-default",
+    "quick-switch-query",
+    "quick-switch-actions-only",
+    "quick-switch-empty",
   ]);
   const seedSource =
     explicitSeedSource ||
