@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T12:12:00+09:00",
+  "updatedAt": "2026-08-19T13:35:33+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11118,6 +11118,141 @@
               "confidence": 0.99,
               "method": "resized-sidebar-current-readiness",
               "source": "Same state identity, zero console errors, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-resize-current",
+      "observedAt": "2026-08-19T13:35:33+09:00",
+      "commit": "15b52d003",
+      "codeCommit": "a47ae4485",
+      "codeState": "commit",
+      "label": "Resized Sidebar convergence",
+      "narrative": "The existing 1280x820 dark Sidebar Resize state now keeps both active and settled rows inside the 320px rail, uses the resized card width for project and title lines, removes the 7px settled-row offset, and suppresses the fixed Settings authority sprite outside its exact 256px calibration width. Web and Lynx both measure the active row at 8,144,303,82, its card at 8,146,303,78, the project and title lines at width 283, and the settled row at 8,260,303,36. The full 320x820 Sidebar crop improves from 7.492165 to 7.105655 MAE and from 11.4482% to 11.0823% significant pixels; remaining font and icon raster differences stay explicit. The 256px authority control passes. Exact production Native drags 256 to 320 and back with zero error at all 20 retained geometry samples, moves the details popover exactly 64px with its resized anchor, keeps all floating-relation residuals at zero, advances main transport, reports zero renderer errors, and disposes isolated state. Denominator remains 57 states, 654 cells, and weight 213.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Browser before and after use the same snapshot, route, theme, viewport, explicit Sidebar width, and byte-identical Web authority. Browser-proxy conditioning is classified separately from product layout. Exact Native independently verifies the final resize interaction and anchor relation on the post-commit production bundle."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/sidebar-resize-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4f3ec9f9d71d604c2383346f5737a0c61f19fc7e006df65041240faa4bb08c68"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-resize"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "resized-sidebar-contained-content",
+              "source": "Project and thread titles use the resized card lines and the duplicate Settings authority sprite is absent"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 320,
+              "confidence": 0.99,
+              "method": "resized-sidebar-final-geometry",
+              "source": "Active row, active card, project line, title line, settled row, and settled title align with Web"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "resized-sidebar-label-legibility",
+              "source": "The active project and thread labels remain on separate full-width lines without clipping"
+            },
+            "material": {
+              "pixel": {
+                "mae": 7.105655,
+                "significantShare": 0.110823
+              },
+              "confidence": 0.99,
+              "method": "resized-sidebar-final-crop",
+              "source": "Same-snapshot 320x820 Sidebar crop; remaining font and icon raster residual is retained"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "resized-sidebar-cold-start-width",
+              "source": "Both renderers cold-start at 320px and preserve matching row and control geometry"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "resized-sidebar-final-readiness",
+              "source": "Post-commit state identity, zero console errors, and zero owned or orphaned agent-browser processes"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-resize"],
+          "clients": ["native"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 320,
+              "confidence": 0.99,
+              "method": "native-sidebar-resize-anchor-relation",
+              "source": "The 239px row anchor grows to 303px and its 272px details popup moves from x=251 to x=315 with zero relation residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-sidebar-physical-drag",
+              "source": "Real DevTool pointer input widens 256 to 320 and restores 256 with zero error at ten retained samples per direction"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-sidebar-postcommit-readiness",
+              "source": "Exact 73ef9e28 bundle uses main transport, reports zero renderer errors and no host-frequency warning, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-dismiss-root-native-current",
+      "observedAt": "2026-08-19T13:35:33+09:00",
+      "commit": "15b52d003",
+      "codeCommit": "f2166c513",
+      "codeState": "commit",
+      "label": "Model Picker route-root outside dismissal",
+      "narrative": "A current production-bundle run closes the model-picker outside-dismiss regression without reintroducing panel row failures. The fullscreen transparent semantic surface remains 1280x820 with rgba(0,0,0,0), passes touch input to a route-root dismissal owner, and the panel continues to catch internal taps. Close and bottom-right outside interaction both dismiss the picker. A separate exact-bundle run selects Codex GPT-5.6-Sol from a Claude Fable 5 thread, updates the Composer, persists the selection in isolated SQLite, advances sequence 12 to 16, and closes the overlay with no pending error. Existing Browser panel and full-frame material residuals are unchanged. Three excluded pre-fix trials retained fullscreen geometry but failed outside dismissal and receive no product credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The passing dismissal and selection runs use the same canonical snapshot, 1280x820 dark existing-thread state, exact post-commit bundle, real measured touch input, main transport, zero renderer errors, and disposed isolated state."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/model-picker-dismiss-root-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "904c40a0b08360341b7815ca8c7399e3acadd5390ef69853725c6de2db140696"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-default"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-picker-root-dismiss",
+              "source": "Measured Close, fullscreen outside tap, and model-row touch all reach their distinct postconditions"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-picker-root-dismiss-readiness",
+              "source": "Exact 73ef9e28 bundle uses main transport, persists the selected Codex model, reports zero renderer errors, and disposes isolated state"
             }
           }
         }

@@ -164,3 +164,5 @@ sidebar-footer-inline-files-narrow-current,2026-08-19T11:05:41+09:00,de09d5adf,c
 settled-banner-inline-files-narrow-baseline,2026-08-19T11:24:47+09:00,2e55943ff,commit,Narrow inline Files settled banner baseline,0.366979,0.366979,0.020876,0.353482,0.646518,0.621248
 settled-banner-inline-files-narrow-current,2026-08-19T11:54:43+09:00,8fdfcc31f,commit,Narrow inline Files settled banner convergence,0.357254,0.357254,0.018368,0.345227,0.654773,0.630973
 sidebar-resize-current-baseline,2026-08-19T12:12:00+09:00,a9a200767,commit,Current resized Sidebar baseline,0.350996,0.350996,0.019942,0.33779,0.66221,0.637231
+sidebar-resize-current,2026-08-19T13:35:33+09:00,15b52d003,commit,Resized Sidebar convergence,0.3504,0.3504,0.019068,0.337772,0.662228,0.637827
+model-picker-dismiss-root-native-current,2026-08-19T13:35:33+09:00,15b52d003,commit,Model Picker route-root outside dismissal,0.3504,0.3504,0.019068,0.337772,0.662228,0.637827
