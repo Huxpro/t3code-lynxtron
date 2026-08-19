@@ -99,4 +99,23 @@ describe("resolveBrowserPreviewViewportContract", () => {
     );
     assert.include(source, '".diff-code-files,.diff-code-file,.diff-code-file__body{"');
   });
+
+  it("restores the Native Project Action dialog column layout in the browser proxy", () => {
+    const source = readFileSync(path.join(scriptDir, "index.ts"), "utf8");
+
+    assert.include(
+      source,
+      '".project-action-dialog,.project-action-dialog__header,.project-action-field{"',
+    );
+    assert.include(source, '"display:flex;flex-direction:column;}"');
+    assert.include(
+      source,
+      '".project-action-dialog__body{display:block;flex:1 1 0%;width:100%;min-height:0;}"',
+    );
+    assert.include(source, '".project-action-dialog__footer{"');
+    assert.include(
+      source,
+      '"display:flex;flex:none;flex-direction:row;width:100%;box-sizing:border-box;}"',
+    );
+  });
 });
