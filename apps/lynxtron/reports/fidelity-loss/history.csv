@@ -181,3 +181,4 @@ responsive-composer-file-detail-current,2026-08-19T22:03:17+09:00,b55b1c091,comm
 right-panel-add-menu-current,2026-08-19T23:28:39+09:00,343139150a19c97cb79dde72ce5e339f460e7fc5,commit,Right panel add-surface menu convergence,0.340376,0.340376,0.024816,0.32359,0.67641,0.648917
 diff-scope-menu-registration,2026-08-19T23:40:33+09:00,75df734bb6483560cfbc8e40d1d7d8bcf3c6c0d0,commit,Diff scope menu denominator registration,0.340376,0.340376,0.024816,0.32359,0.67641,0.648917
 diff-scope-menu-baseline,2026-08-20T00:16:18+09:00,90fef0ddceaaf55ea422902459974b1a0fbe31a6,commit,Diff scope menu baseline,0.336468,0.336468,0.02875,0.316827,0.683173,0.652825
+diff-scope-menu-current,2026-08-20T01:30:35+09:00,7236037fc6d7460693af23ba8e21f7e515a9945a,commit,Diff scope menu convergence,0.324288,0.324288,0.025394,0.306682,0.693318,0.665005

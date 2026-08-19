@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T00:16:18+09:00",
+  "updatedAt": "2026-08-20T01:30:35+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12623,6 +12623,118 @@
               "confidence": 0.99,
               "method": "diff-scope-menu-baseline-readiness",
               "source": "Both shipping renderers retain the same completed checkpoint state, render the real patch, and report zero console errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "diff-scope-menu-current",
+      "observedAt": "2026-08-20T01:30:35+09:00",
+      "commit": "7236037fc6d7460693af23ba8e21f7e515a9945a",
+      "codeCommit": "23f9f66191eb2a337a9c5d729b7747b09d1f2bf7",
+      "codeState": "commit",
+      "label": "Diff scope menu convergence",
+      "narrative": "The registered Diff scope menu now converges without changing its fixed denominator. Web and Lynx-for-Web expose Working tree, Branch changes, Latest turn, and Turn through real typed review diff paths, render the same 240x122 panel and four 230x28 rows, and preserve Latest turn as the active checkpoint scope. Their dark geometry differs by only 1px vertically; light mode independently preserves the same geometry and cold-white glass. Real outside pointers dismiss both Browser menus, and real Working tree row pointers close each menu and update both triggers. The same-snapshot 260x140 dark menu envelope improves from 20.578956 MAE and 28.4560% significant pixels to 7.506603 MAE and 11.3901% significant pixels; light measures 7.381712 and 11.9945%. Exact Native on bundle a2ac4854 independently enters Diff from the completed checkpoint, measures the same panel and rows, dismisses fullscreen, selects Working tree, advances main transport from 3 to 5, reports zero renderer errors, and disposes isolated state. Browser aggregate reports remain diagnostic false only because the direct-projection fixture compares a disabled Web Composer with an idle Lynx Composer; Diff-specific gates pass.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Dark and light Browser runs hold canonicalized snapshot, project, thread, completed turn, real hidden Git refs, checkpoint patch, route, viewport, authority artifact, and state identity constant. Exact Native uses a disposable copy, explicit logical viewport and theme, PID-owned exact bundle identity, measured touches, main transport advancement, zero renderer errors, disposed state, and clean leak gates. No state weights, filters, or denominator entries change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/diff-scope-menu-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f366dc03a7ebaa57684030fdc090393e80aa844db52fad780e844605f86e8a97"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["diff-scope-menu"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-current-content",
+              "source": "Both Browser renderers expose Working tree, Branch changes, Latest turn, and Turn in authority order through real typed diff sources"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 1, 0, 0, 0, 1, 0, 0],
+              "anchorScale": 240,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-current-geometry",
+              "source": "Panel and representative row x/y/width/height deltas compare the final Web authority and Lynx-for-Web geometry"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-current-type-scale",
+              "source": "Both use the shared 14px/20px label contract; residual preserves bundled DM Sans versus Web variable-font shaping"
+            },
+            "material": {
+              "pixel": {
+                "mae": 7.506603,
+                "significantShare": 0.113901
+              },
+              "confidence": 0.99,
+              "method": "diff-scope-menu-current-envelope",
+              "source": "Same-snapshot 260x140 dark menu crop after content, geometry, glass, border, radius, shadow, and active-state convergence"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-current-dismiss-select",
+              "source": "Real outside pointers dismiss both menus; reopening and selecting Working tree closes each menu and updates both visible triggers"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "diff-scope-menu-current-readiness",
+              "source": "Dark and light shipping-artifact pairs retain checkpoint state identity, report zero console errors, and clean their owned processes"
+            }
+          }
+        },
+        {
+          "states": ["diff-scope-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-diff-scope-menu-content",
+              "source": "Exact Native renders all four authority scope labels in order and identifies Latest turn before selection"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 240,
+              "confidence": 0.99,
+              "method": "native-diff-scope-menu-geometry",
+              "source": "Final bundle measures a 240x122 panel, four 230x28 rows, and a fullscreen 1280x820 dismiss layer"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "native-diff-scope-menu-typography",
+              "source": "Native uses the shared 14px/20px label contract; residual preserves platform font rasterization"
+            },
+            "material": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "native-diff-scope-menu-material-boundary",
+              "source": "The inspected 2560x1640 export verifies glass, radius, shadow, and active hierarchy while retaining conservative residual because Browser pixels are not reused as Native material evidence"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-diff-scope-menu-dismiss-select",
+              "source": "Measured DevTool touches enter the real checkpoint Diff, dismiss fullscreen, reopen the menu, select Working tree, close the menu, and update the visible trigger"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-diff-scope-menu-final-bundle",
+              "source": "Exact a2ac4854 bundle uses main transport sequence 3 to 5, reports zero renderer errors, disposes isolated state, and passes leak pre/post gates"
             }
           }
         }
