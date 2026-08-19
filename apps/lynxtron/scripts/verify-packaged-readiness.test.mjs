@@ -339,6 +339,25 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "measurementVisible(settingsAuthority)");
     assert.include(source, "Native responsive Sidebar footer drifted");
     assert.include(source, "responsiveSidebarFooter,");
+    assert.include(source, '"--verify-responsive-settled-banner"');
+    assert.include(source, '"--verify-responsive-settled-banner requires --verify-files-browser."');
+    assert.include(source, 'readOptionalMeasurement(client, ".composer-settled-banner")');
+    assert.include(source, 'readOptionalMeasurement(client, ".composer-settled-banner__copy")');
+    assert.include(source, 'readOptionalMeasurement(client, ".composer-settled-banner__action")');
+    assert.include(source, "banner.rect.y + banner.rect.height > composer.rect.y - 7.5");
+    assert.include(source, "Native responsive settled banner drifted");
+    assert.include(source, "responsiveSettledBanner,");
+    assert.include(source, "const settledBannerFixture = fixtureManifest.settledBannerFixture");
+    assert.include(
+      source,
+      '"--verify-responsive-settled-banner requires a settledBannerFixture with explicit thread and turn identity."',
+    );
+    assert.include(source, "if (settledBannerFixture)");
+    assert.include(source, "__T3_LYNXTRON_SELECT_THREAD__");
+    assert.include(source, "state?.activeThreadId === settledBannerFixture.threadId");
+    assert.include(source, "async function waitForExplicitThreadState");
+    assert.include(source, "candidate?.activeThread?.title === fixture.title");
+    assert.include(source, ": settledBannerFixture");
     assert.include(source, '"--verify-responsive-sidebar-footer"');
     assert.include(source, '"--verify-responsive-sidebar-footer requires --verify-files-browser."');
     assert.include(source, "if (verifyResponsiveSidebarFooterOnly)");

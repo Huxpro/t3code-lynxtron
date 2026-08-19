@@ -595,6 +595,25 @@ async function waitForCanonicalState({ canonicalThreadTitle, child, client, time
   );
 }
 
+async function waitForExplicitThreadState({ child, client, fixture, timeoutMs }) {
+  const state = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (candidate) =>
+      candidate?.activeThreadId === fixture.threadId &&
+      candidate?.activeThread?.title === fixture.title &&
+      typeof candidate?.activeThread?.modelSelection?.instanceId === "string" &&
+      typeof candidate?.activeThread?.modelSelection?.model === "string",
+  });
+  return {
+    canonicalThreadTitle: fixture.title,
+    threadId: state.activeThreadId,
+    threadText: state.activeThread.title,
+    modelSelection: state.activeThread.modelSelection,
+  };
+}
+
 async function readSidebarScopeLayout(client, includePopup) {
   const anchors = [
     { id: "sidebar", lynx: ".sidebar" },
@@ -4599,6 +4618,7 @@ async function verifyFilesBrowser({
   timeoutMs,
   verifyFileSheetBack,
   verifyResponsiveSidebarFooterOnly,
+  verifyResponsiveSettledBanner,
   width,
 }) {
   if ((await readOptionalMeasurement(client, ".right-panel")) !== null) {
@@ -4778,11 +4798,50 @@ async function verifyFilesBrowser({
     outputDirectory,
     name: "native-files-browser.png",
   });
+  let responsiveSettledBanner;
+  if (verifyResponsiveSettledBanner) {
+    const [banner, copy, action, composer] = await Promise.all([
+      readOptionalMeasurement(client, ".composer-settled-banner"),
+      readOptionalMeasurement(client, ".composer-settled-banner__copy"),
+      readOptionalMeasurement(client, ".composer-settled-banner__action"),
+      readOptionalMeasurement(client, ".composer-frame"),
+    ]);
+    if (
+      !banner ||
+      !copy ||
+      !action ||
+      !composer ||
+      banner.rect.y + banner.rect.height > composer.rect.y - 7.5 ||
+      copy.rect.y < banner.rect.y ||
+      copy.rect.y + copy.rect.height > banner.rect.y + banner.rect.height ||
+      Math.abs(action.rect.width - 70) > 0.5 ||
+      Math.abs(action.rect.height - 24) > 0.5 ||
+      action.rect.x < banner.rect.x ||
+      action.rect.x + action.rect.width > banner.rect.x + banner.rect.width
+    ) {
+      throw new Error(
+        `Native responsive settled banner drifted: ${JSON.stringify({
+          action,
+          banner,
+          composer,
+          copy,
+        })}`,
+      );
+    }
+    responsiveSettledBanner = {
+      banner: banner.rect,
+      copy: copy.rect,
+      action: action.rect,
+      composer: composer.rect,
+      composerGap: composer.rect.y - (banner.rect.y + banner.rect.height),
+    };
+  }
   const browserEvidence = {
     status: "pass",
     input: "DevTool touch on measured right-panel controls; search typing pending-user-session",
     panel: panel.rect,
     responsiveSidebarFooter,
+    responsiveSettledBanner,
     toolbar: toolbar.rect,
     refresh: refresh.rect,
     search: {
@@ -7199,6 +7258,7 @@ async function runOnce({
   composerStopEvidence,
   verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
   verifyPlan11SemanticOutcomes,
+  settledBannerFixture,
   width,
 }) {
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
@@ -7272,6 +7332,20 @@ async function runOnce({
       expectedTheme,
       timeoutMs,
     });
+    if (settledBannerFixture) {
+      await client.runCdp("Runtime.evaluate", {
+        expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(
+          settledBannerFixture.threadId,
+        )})`,
+        returnByValue: true,
+      });
+      await waitForClientState({
+        child,
+        client,
+        timeoutMs,
+        predicate: (state) => state?.activeThreadId === settledBannerFixture.threadId,
+      });
+    }
     // Same-value, no-thread selection is an isolated-state no-op. It still
     // crosses renderer -> main and emits the connector log back through the
     // sequenced main -> renderer channel, proving both transport legs.
@@ -7328,19 +7402,26 @@ async function runOnce({
                       ? approvalFixture.activeTurnId
                       : questionFixture.activeTurnId))),
           })
-        : requireCanonicalThread
-          ? await waitForCanonicalState({
-              canonicalThreadTitle,
+        : settledBannerFixture
+          ? await waitForExplicitThreadState({
               child,
               client,
+              fixture: settledBannerFixture,
               timeoutMs,
             })
-          : {
-              canonicalThreadTitle: null,
-              threadText: null,
-              modelText: null,
-              skipped: "Lifecycle-only empty fixture.",
-            };
+          : requireCanonicalThread
+            ? await waitForCanonicalState({
+                canonicalThreadTitle,
+                child,
+                client,
+                timeoutMs,
+              })
+            : {
+                canonicalThreadTitle: null,
+                threadText: null,
+                modelText: null,
+                skipped: "Lifecycle-only empty fixture.",
+              };
     const runPlan11Outcomes = verifyPlan11SemanticOutcomes && isFinalRun;
     const cleanupOutcome = () => restoreOutcomeSurface({ child, client, timeoutMs });
     const sidebarScope = runPlan11Outcomes
@@ -7634,6 +7715,7 @@ async function runOnce({
           timeoutMs,
           verifyFileSheetBack,
           verifyResponsiveSidebarFooterOnly: shouldVerifyResponsiveSidebarFooter,
+          verifyResponsiveSettledBanner: shouldVerifyResponsiveSettledBanner,
           width,
         })
       : undefined;
@@ -7917,6 +7999,9 @@ const shouldVerifyFileSheetBack = process.argv.includes("--verify-file-sheet-bac
 const shouldVerifyResponsiveSidebarFooter = process.argv.includes(
   "--verify-responsive-sidebar-footer",
 );
+const shouldVerifyResponsiveSettledBanner = process.argv.includes(
+  "--verify-responsive-settled-banner",
+);
 const shouldVerifyGitInitialize = process.argv.includes("--verify-git-initialize");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
@@ -7972,6 +8057,9 @@ if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
 if (shouldVerifyResponsiveSidebarFooter && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-responsive-sidebar-footer requires --verify-files-browser.");
 }
+if (shouldVerifyResponsiveSettledBanner && !shouldVerifyFilesBrowser) {
+  throw new Error("--verify-responsive-settled-banner requires --verify-files-browser.");
+}
 if (shouldVerifyModelSelectionRunningSession && !shouldVerifyModelSelectionMutation) {
   throw new Error(
     "--verify-model-selection-running-session requires --verify-model-selection-mutation.",
@@ -7988,6 +8076,17 @@ for (const requiredPath of [fixtureDir, projectCwd, desktopDir, bundle, devToolC
 const fixtureManifest = JSON.parse(
   readFileSync(path.join(fixtureDir, "visual-state.json"), "utf8"),
 );
+const settledBannerFixture = fixtureManifest.settledBannerFixture;
+if (
+  shouldVerifyResponsiveSettledBanner &&
+  (typeof settledBannerFixture?.threadId !== "string" ||
+    typeof settledBannerFixture?.title !== "string" ||
+    typeof settledBannerFixture?.activeTurnId !== "string")
+) {
+  throw new Error(
+    "--verify-responsive-settled-banner requires a settledBannerFixture with explicit thread and turn identity.",
+  );
+}
 const idleFixture = fixtureManifest.idleThreadFixture;
 if (
   shouldVerifyIdleThreadState &&
@@ -8205,6 +8304,7 @@ for (let index = 1; index <= runs; index += 1) {
       composerStopEvidence,
       verifyRuntimeCapabilities: shouldVerifyRuntimeCapabilities,
       verifyPlan11SemanticOutcomes,
+      settledBannerFixture: shouldVerifyResponsiveSettledBanner ? settledBannerFixture : undefined,
       width,
     }),
   );
