@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-20T03:56:55+09:00",
+  "stateId": "file-editor-editing-save",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "surface": "File editor after a real content change, through pending, confirmed or failed save, navigation, and reopen"
+  },
+  "classification": {
+    "newScope": [
+      "The existing file-editor-detail states certify preview content, editor geometry, source styling, file switching, and Back navigation. They do not certify a real content mutation or any persistence lifecycle.",
+      "Web authority edits through the Pierre contentEditable surface and a shared FileSaveCoordinator. Lynx enters a native textarea from the preview and uses the same coordinator abstraction plus the project write RPC.",
+      "A user can change file contents, observe pending state, leave the editor before the debounce expires, encounter a write failure, retry, return to Files, and reopen the file. These are distinct state and interaction contracts from a static preview.",
+      "The state is P1 because a false saved state, dropped final revision, or missing failure feedback can lose user work."
+    ],
+    "missingCoverage": [
+      "Current Browser workbench file-detail flows open and return but never send text input to either editor.",
+      "Current Native packaged readiness verifies preview-to-textarea mode, typography, token tones, and Back, but not physical typing, write persistence, status feedback, or reopen identity.",
+      "FileSaveCoordinator unit tests prove debounce serialization in isolation. They do not prove Web or Lynx input wiring, host lifecycle ordering, server persistence, or visual status semantics.",
+      "Existing evidence explicitly labels Native physical keyboard editing, selection, and save confirmation pending-user-session."
+    ],
+    "productLoss": [],
+    "harnessMismatch": [],
+    "intentionalPlatformDelta": [
+      "Web uses a Pierre contentEditable editor while Lynx uses a native textarea kernel. The state compares changed contents, save lifecycle, feedback, navigation safety, and persistence rather than identical editor internals."
+    ],
+    "evidenceBoundary": "Registration is denominator-only. It is grounded in current source contracts, the existing static file-detail captures, the shared coordinator unit suite, and the absence of any integrated text-input/write/reopen evidence. No product-repair credit is assigned; all twelve new Lynx-for-Web and Native dimension cells remain conservative unknown."
+  },
+  "authorityContract": {
+    "web": {
+      "editor": "Pierre contentEditable File surface",
+      "saveCoordinator": "FileSaveCoordinator with debounced projectEnvironment.writeFile",
+      "pendingSignal": "onPendingChange(relativePath, pending)",
+      "confirmedSignal": "confirmProjectFileQueryData"
+    },
+    "lynx": {
+      "editor": "Native textarea entered by tapping the tokenized preview",
+      "saveCoordinator": "FileSaveCoordinator with t3ClientActions.writeProjectFile",
+      "pendingText": "Unsaved changes",
+      "errorText": "write error or Save failed",
+      "manualAction": "Save now",
+      "blurBehavior": "flush then return to preview"
+    },
+    "wire": {
+      "input": "ProjectWriteFileInput",
+      "success": "ProjectWriteFileResult",
+      "error": "ProjectWriteFileError"
+    }
+  },
+  "knownEvidence": {
+    "sharedCoordinatorTests": [
+      "debounces edits and persists only the latest contents",
+      "keeps pending until an edit made during an in-flight write is saved",
+      "leaves pending when the latest write fails",
+      "flushes the latest revision before debounce expiry",
+      "does not rewrite a confirmed revision on dispose"
+    ],
+    "integratedBrowser": "unobserved",
+    "integratedNative": "unobserved",
+    "physicalNativeTyping": "pending-user-session"
+  },
+  "denominatorChange": {
+    "before": {
+      "states": 64,
+      "cells": 732,
+      "weight": 238.2
+    },
+    "after": {
+      "states": 65,
+      "cells": 744,
+      "weight": 243.2
+    },
+    "reason": "Editing and save lifecycle is user-reachable, data-loss-sensitive, and not represented by the existing static preview, theme, or responsive file-detail states."
+  },
+  "validation": {
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
