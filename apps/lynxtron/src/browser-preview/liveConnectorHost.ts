@@ -39,6 +39,8 @@ import {
   type ProjectListEntriesResult,
   type ProjectReadFileResult,
   type ProjectSearchEntriesResult,
+  type ProjectWriteFileInput,
+  type ProjectWriteFileResult,
   type ServerConfig,
   type ServerSettings,
   type ServerSettingsPatch,
@@ -136,7 +138,6 @@ export interface LiveConnectorDiagnostics {
 
 /** Commands the isolated browser pane cannot satisfy (no local fs/shell). */
 const UNSUPPORTED_COMMANDS = new Set([
-  "writeProjectFile",
   "createPairingCredential",
   "revokePairingLink",
   "revokeClientSession",
@@ -552,6 +553,15 @@ export class LiveConnectorHost {
       const params = request.params as { cwd: string; relativePath: string };
       return this.#runClient<ProjectReadFileResult>(
         this.#client[WS_METHODS.projectsReadFile](params),
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "writeProjectFile") {
+      const params = request.params as ProjectWriteFileInput;
+      return this.#runClient<ProjectWriteFileResult>(
+        this.#client[WS_METHODS.projectsWriteFile](params),
       ).then((value) => {
         this.#recordCommandResult(request.method, value);
         return value;

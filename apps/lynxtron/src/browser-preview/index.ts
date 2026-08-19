@@ -645,12 +645,15 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
     "input",
     (event) => {
       const target = event.target;
-      if (
-        !(target instanceof HTMLTextAreaElement) ||
-        !target.matches('[data-composer-editor="true"]')
-      ) {
+      if (!(target instanceof HTMLTextAreaElement)) {
         return;
       }
+      const composer = target.matches('[data-composer-editor="true"]');
+      const fileEditor =
+        target.matches(".files-panel__editor") ||
+        (target.getRootNode() instanceof ShadowRoot &&
+          (target.getRootNode() as ShadowRoot).host.matches("x-textarea.files-panel__editor"));
+      if (!composer && !fileEditor) return;
       target.dispatchEvent(
         new CustomEvent("lynxinput", {
           bubbles: false,

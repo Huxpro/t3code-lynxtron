@@ -75,11 +75,11 @@ describe("LiveConnectorHost", () => {
           T3_CONNECTOR_METHODS.command,
           {
             method: "writeProjectFile",
-            params: { cwd: "/tmp/project", relativePath: "README.md", contents: "unsafe" },
+            params: { cwd: "/tmp/project", relativePath: "README.md", contents: "safe" },
           },
           "bridge",
         ),
-      /unavailable in the isolated browser preview/,
+      /not connected/,
     );
     assert.throws(
       () =>
@@ -128,6 +128,7 @@ describe("LiveConnectorHost", () => {
     assert.include(source, "this.diagnostics.commandResults.push(result)");
     assert.include(source, "this.diagnostics.commandResults.length > 32");
     assert.include(source, "this.#recordCommandResult(request.method, context)");
+    assert.include(source, "this.#client[WS_METHODS.projectsWriteFile](params)");
   });
 
   it("rejects unknown modules and commands", () => {
