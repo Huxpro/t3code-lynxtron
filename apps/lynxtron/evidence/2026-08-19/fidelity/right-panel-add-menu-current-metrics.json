@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T23:28:39+09:00",
+  "productCommits": ["2ab3fe212", "d598baca6"],
+  "browserCompatibilityCommits": ["b532c58f2", "b0246e06e"],
+  "harnessCommits": ["46f53617e", "53a637e5b", "51f91416b", "b2ce25012"],
+  "stateId": "right-panel-add-menu",
+  "classification": {
+    "productRepair": [
+      "Lynx now renders the same Browser, Terminal, Files, and Diff rows as Web in a 128x122 menu with 118x28 rows, 14px/20px labels, Browser disabled at 0.64 opacity, a 10px radius, translucent theme material, and a deep shadow.",
+      "The menu follows its 28x28 add trigger instead of opening to the trigger's left. At 1280x820 the Web panel is [853,42,128,122] and Lynx-for-Web is [852,41.5,128,122].",
+      "Outside pointer input dismisses both Browser menus. Reopening and selecting Terminal closes the menu, activates the Terminal surface, and leaves the honest placeholder visible.",
+      "Exact Native independently proves fullscreen dismissal plus Files and Terminal row selection through measured DevTool touches."
+    ],
+    "harnessMismatch": [
+      "The first post-repair Browser run laid menu rows horizontally because Lynx-for-Web did not preserve the native flex-direction token; explicit Browser Preview compatibility was added without changing exact Native layout.",
+      "A later Browser run placed the trigger 101px left because the preview tab-scroll collapsed to zero intrinsic width; the compatibility layer now preserves a 100px minimum tab and intrinsic scroll width.",
+      "The first exact Native attempt loaded the stale 8973cafd bundle and correctly exposed its old 140x130 menu. That run is invalid evidence for the current product. The production artifact was rebuilt and the final run loaded 12086295.",
+      "The earlier Terminal-selection Browser failure came from checking a nested aria element before the row existed. The final harness waits for both measured rows and asserts the active surface plus closed menu."
+    ],
+    "remainingProductResidual": [
+      "The same-snapshot dark 145x135 menu crop still measures 15.380553 MAE and 15.7139% significant pixels. Most remaining pixels are bundled DM Sans versus Web variable-font shaping and subtle glass rasterization.",
+      "Dark and light geometry, colors, borders, radius, shadow intent, row order, disabled semantics, and behavior converge; material residual is retained rather than zeroed.",
+      "Native material remains conservatively estimated because Browser pixels are not reused as Native material evidence."
+    ],
+    "evidenceBoundary": "Dark and light Browser captures use one immutable snapshot, selected project/thread, route, 1280x820 viewport, shipping Web and Lynx-for-Web artifacts, matching menu state, real pointer input, and zero console errors. Exact Native uses a disposable empty-thread project fixture, explicit 1280x820 dark viewport, final production bundle 12086295, PID-owned DevTool identity, measured touch, main transport advancement, zero renderer errors, disposed state, and clean leak gates. No tracked screenshots are added."
+  },
+  "browser": {
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "dark": {
+      "status": "pass",
+      "report": {
+        "path": "/tmp/t3-right-panel-add-current/workbench-report.json",
+        "sha256": "ff1cc84c54241465fb9a052074984428d32be1717cc61bf3c619dc74b4e805aa"
+      },
+      "commit": "53a637e5ba1d563ba7a32e814bbb6fcbf89f84e8",
+      "viewport": "1280x820",
+      "theme": "dark",
+      "bundles": {
+        "web": "252f3f4debce2b422d82ad9ef2be9b173ddae145976af1ba8ed1faea5a4491d3",
+        "lynxForWeb": "32f468aab65f18ffc609e9aae7c63b520bc5a38dbd3d726f11cc3d44a8edfa44"
+      },
+      "geometry": {
+        "web": {
+          "trigger": [853, 8, 28, 28],
+          "panel": [853, 42, 128, 122],
+          "rows": [
+            [858, 47, 118, 28],
+            [858, 75, 118, 28],
+            [858, 103, 118, 28],
+            [858, 131, 118, 28]
+          ]
+        },
+        "lynx": {
+          "trigger": [852, 7.5, 28, 28],
+          "panel": [852, 41.5, 128, 122],
+          "rows": [
+            [857, 46.5, 118, 28],
+            [857, 74.5, 118, 28],
+            [857, 102.5, 118, 28],
+            [857, 130.5, 118, 28]
+          ]
+        }
+      },
+      "semantic": {
+        "labels": ["Browser", "Terminal", "Files", "Diff"],
+        "disabled": [true, false, false, false],
+        "outsideDismissed": true,
+        "terminalSelected": true
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "fullFrame": {
+          "crop": [0, 0, 1280, 820],
+          "mae": 3.937144,
+          "significantShare": 0.050532
+        },
+        "menuEnvelope": {
+          "crop": [845, 35, 145, 135],
+          "mae": 15.380553,
+          "significantShare": 0.157139
+        }
+      },
+      "screenshots": {
+        "webSha256": "e7eb86d9754bb064f5189edcba73abb35993d22675fe25aa58b49c5434b2872d",
+        "lynxSha256": "f50d685a25de806dbb7504b689bf62b3778a588818ded6ac37500a6a536aaf00",
+        "sideBySideSha256": "9d165b8fe5cdf70fb8699cfccfa1a92c1dbb9b942ae1afce5f3bc53b3a1bde25"
+      },
+      "rendererErrors": 0
+    },
+    "light": {
+      "status": "pass",
+      "report": {
+        "path": "/tmp/t3-right-panel-add-light/workbench-report.json",
+        "sha256": "6135dbc65eff20ec4d018e67ce80321c399b14094b52e9b80c9f8a492d114d9b"
+      },
+      "commit": "53a637e5ba1d563ba7a32e814bbb6fcbf89f84e8",
+      "viewport": "1280x820",
+      "theme": "light",
+      "geometry": {
+        "webPanel": [853, 42, 128, 122],
+        "lynxPanel": [852, 41.5, 128, 122]
+      },
+      "styles": {
+        "web": {
+          "backgroundColor": "color(srgb 1 1 1 / 0.836)",
+          "borderColor": "color(srgb 0.152872 0.152897 0.165785 / 0.1)",
+          "borderRadius": "10px",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 16px 40px -18px"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(255, 255, 255, 0.835)",
+          "borderColor": "rgba(39, 39, 42, 0.1)",
+          "borderRadius": "10px",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 18px 44px -18px"
+        }
+      },
+      "outsideDismissed": true,
+      "terminalSelected": true,
+      "screenshots": {
+        "webSha256": "53c2d2e5f17066bf7a6a941c992bb60917ec501280ddce47772b3adc2d242aa7",
+        "lynxSha256": "b3838198213f0936e9e871115b61373e2a9c1b1eff34c4ed48b2028d1ce040e1",
+        "sideBySideSha256": "8f9804cece6fe776a2a256187d3fd51810614428b8f3b04e0aba4c6d19e4bb0f"
+      },
+      "rendererErrors": 0
+    }
+  },
+  "native": {
+    "status": "pass",
+    "report": {
+      "path": "/tmp/t3-right-panel-add-native/report.json",
+      "sha256": "3a8873f882ae0cad1f5d885c69ccbaee12e170e28f19e9e981d3311e4fa56278"
+    },
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "bytes": 4616398,
+      "sha256": "12086295b91f30a63895cfa9bb7675e0771141e5e6f3e4ad7d70b863b08beea2"
+    },
+    "fixtureSnapshotId": "49853ab5c95497b550d99a71434d0829126af57de1980e3a53a219f59212c7d8",
+    "viewport": {
+      "logical": [1280, 820],
+      "exportedPixels": [2560, 1640],
+      "devicePixelRatio": 2
+    },
+    "theme": {
+      "expected": "dark",
+      "actual": "dark"
+    },
+    "menu": [1144, 46, 128, 122],
+    "dismissLayer": [0, 0, 1280, 820],
+    "rows": [
+      ["browser", "Browser", 1149, 51, 118, 28],
+      ["terminal", "Terminal", 1149, 79, 118, 28],
+      ["files", "Files", 1149, 107, 118, 28],
+      ["diff", "Diff", 1149, 135, 118, 28]
+    ],
+    "interaction": {
+      "outsideDismissed": true,
+      "filesSelected": true,
+      "terminalSelected": true,
+      "terminalPanel": [740, 0, 540, 820],
+      "terminalPlaceholder": [741, 52, 539, 768]
+    },
+    "screenshot": {
+      "path": "/tmp/t3-right-panel-add-native/native-right-panel-add-menu.png",
+      "sha256": "ef2b8e2bb7977c3fb3ebf7fe0332e25ea15bf591b838d9259f825f7278ed58b2"
+    },
+    "transport": {
+      "kind": "main",
+      "lastSeqBeforeProbe": 3,
+      "lastSeqAfterProbe": 4
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "browserCaptureContractTests": "35/35",
+    "nativeVerifierTests": "45/45",
+    "lynxTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
