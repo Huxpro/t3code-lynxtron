@@ -5213,6 +5213,117 @@ async function verifyGitPublishDialog({ child, client, timeoutMs }) {
   };
 }
 
+async function verifyProjectActionDialog({ child, client, height, timeoutMs, width }) {
+  const approximately = (actual, expected, tolerance = 2) =>
+    typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
+  await tapSelector({
+    child,
+    client,
+    selector: ".action-btn--add .action-btn__primary",
+    timeoutMs,
+  });
+  const dialog = await waitForMeasurement({
+    child,
+    client,
+    selector: ".project-action-dialog",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Add Action") &&
+      measurement.text.includes("Actions are project-scoped commands"),
+  });
+  const anatomy = {
+    backdrop: await readOptionalMeasurement(client, ".project-action-overlay"),
+    header: await readOptionalMeasurement(client, ".project-action-dialog__header"),
+    title: await readOptionalMeasurement(client, ".project-action-dialog__title"),
+    description: await readOptionalMeasurement(client, ".project-action-dialog__description"),
+    body: await readOptionalMeasurement(client, ".project-action-dialog__body"),
+    footer: await readOptionalMeasurement(client, ".project-action-dialog__footer"),
+  };
+  const inputMeasurements = await readSelectorMeasurements(client, ".project-action-field__input");
+  const fields = {
+    name: await readOptionalMeasurement(client, ".project-action-field__input--name"),
+    keybinding: inputMeasurements[1],
+    command: await readOptionalMeasurement(client, ".project-action-field__textarea"),
+    previewUrl: inputMeasurements[2],
+  };
+  const options = await readSelectorMeasurements(client, ".project-action-option");
+  const buttons = await readSelectorMeasurements(client, ".project-action-dialog__button");
+  if (
+    !approximately(dialog.rect?.width, 504) ||
+    !approximately(dialog.rect?.height, 664) ||
+    !approximately(anatomy.backdrop?.rect?.width, width) ||
+    !approximately(anatomy.backdrop?.rect?.height, height) ||
+    !approximately(anatomy.header?.rect?.width, 502) ||
+    !approximately(anatomy.header?.rect?.height, 104) ||
+    !approximately(anatomy.body?.rect?.width, 502) ||
+    !approximately(anatomy.footer?.rect?.width, 502) ||
+    !approximately(anatomy.footer?.rect?.height, 66) ||
+    !measurementVisible(fields.name) ||
+    !measurementVisible(fields.keybinding) ||
+    !measurementVisible(fields.command) ||
+    !measurementVisible(fields.previewUrl) ||
+    fields.keybinding?.attributes.readonly === undefined ||
+    options.length !== 2 ||
+    options[0]?.attributes.class?.includes("project-action-option--disabled") === true ||
+    options[1]?.attributes.class?.includes("project-action-option--disabled") !== true ||
+    buttons.map(({ text }) => text.trim()).join("|") !== "Cancel|Save action"
+  ) {
+    throw new Error(
+      `Native Project Action dialog anatomy drifted: ${JSON.stringify({
+        dialog: dialog.rect,
+        anatomy: Object.fromEntries(
+          Object.entries(anatomy).map(([key, measurement]) => [key, measurement?.rect ?? null]),
+        ),
+        fields: Object.fromEntries(
+          Object.entries(fields).map(([key, measurement]) => [
+            key,
+            {
+              rect: measurement?.rect ?? null,
+              attributes: measurement?.attributes ?? null,
+            },
+          ]),
+        ),
+        options,
+        buttons,
+      })}`,
+    );
+  }
+  await tapSelector({
+    child,
+    client,
+    selector: ".project-action-overlay",
+    point: "bottom-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".project-action-dialog",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  return {
+    status: "pass",
+    input: "DevTool touch on measured Add action trigger and fullscreen outside dismiss",
+    dialog: dialog.rect,
+    anatomy: Object.fromEntries(
+      Object.entries(anatomy).map(([key, measurement]) => [key, measurement?.rect ?? null]),
+    ),
+    fields: Object.fromEntries(
+      Object.entries(fields).map(([key, measurement]) => [
+        key,
+        {
+          rect: measurement?.rect ?? null,
+          attributes: measurement?.attributes ?? null,
+        },
+      ]),
+    ),
+    options: options.map(({ attributes, rect, text }) => ({ attributes, rect, text })),
+    buttons: buttons.map(({ rect, text }) => ({ rect, text })),
+    dismissed: true,
+  };
+}
+
 function readIsolatedClientSettings(baseDir) {
   const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
   const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
@@ -7251,6 +7362,7 @@ async function runOnce({
   verifyFileSheetBack,
   verifyGitInitialize: shouldVerifyGitInitialize,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
+  verifyProjectActionDialog: shouldVerifyProjectActionDialog,
   verifyBetaMutation: shouldVerifyBetaMutation,
   verifyArchiveMutation: shouldVerifyArchiveMutation,
   verifyConnectionsMutation: shouldVerifyConnectionsMutation,
@@ -7736,6 +7848,15 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const projectActionDialog = shouldVerifyProjectActionDialog
+      ? await verifyProjectActionDialog({
+          child,
+          client,
+          height,
+          timeoutMs,
+          width,
+        })
+      : undefined;
     let betaMutation;
     if (shouldVerifyBetaMutation) {
       const betaVerification = await verifyBetaMutation({
@@ -7851,6 +7972,7 @@ async function runOnce({
       filesBrowser,
       gitInitialize,
       gitPublishDialog,
+      projectActionDialog,
       betaMutation,
       archiveMutation,
       connectionsMutation,
@@ -7903,6 +8025,7 @@ async function runOnce({
       filesBrowser,
       gitInitialize,
       gitPublishDialog,
+      projectActionDialog,
       betaMutation,
       archiveMutation,
       connectionsMutation,
@@ -8004,6 +8127,7 @@ const shouldVerifyResponsiveSettledBanner = process.argv.includes(
 );
 const shouldVerifyGitInitialize = process.argv.includes("--verify-git-initialize");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
+const shouldVerifyProjectActionDialog = process.argv.includes("--verify-project-action-dialog");
 const shouldVerifyBetaMutation = process.argv.includes("--verify-beta-mutation");
 const shouldVerifyArchiveMutation = process.argv.includes("--verify-archive-mutation");
 const shouldVerifyConnectionsMutation = process.argv.includes("--verify-connections-mutation");
@@ -8297,6 +8421,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyFileSheetBack: shouldVerifyFileSheetBack,
       verifyGitInitialize: shouldVerifyGitInitialize,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
+      verifyProjectActionDialog: shouldVerifyProjectActionDialog,
       verifyBetaMutation: shouldVerifyBetaMutation,
       verifyArchiveMutation: shouldVerifyArchiveMutation,
       verifyConnectionsMutation: shouldVerifyConnectionsMutation,

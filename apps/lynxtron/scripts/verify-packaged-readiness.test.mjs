@@ -97,6 +97,20 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "floatingRelations");
   });
 
+  it("verifies the Native Project Action dialog layout and dismissal", () => {
+    assert.include(source, "async function verifyProjectActionDialog");
+    assert.include(source, '"--verify-project-action-dialog"');
+    assert.include(source, '".action-btn--add .action-btn__primary"');
+    assert.include(source, '".project-action-dialog__header"');
+    assert.include(source, '".project-action-dialog__body"');
+    assert.include(source, '".project-action-dialog__footer"');
+    assert.include(source, '".project-action-field__input--name"');
+    assert.include(source, "fields.keybinding?.attributes.readonly === undefined");
+    assert.include(source, 'point: "bottom-right"');
+    assert.include(source, "projectActionDialog,");
+    assert.include(outcomeChecksSource, "projectActionDialog");
+  });
+
   it("verifies titlebar branding artwork and none modes without moving the brand", () => {
     assert.include(source, '"--expected-environment-identification-mode"');
     assert.include(source, '".sidebar__brand-bg"');
