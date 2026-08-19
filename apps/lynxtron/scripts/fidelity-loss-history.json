@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T20:17:30+09:00",
+  "updatedAt": "2026-08-19T20:46:47+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12120,6 +12120,75 @@
               "confidence": 0.99,
               "method": "right-panel-add-menu-readiness",
               "source": "Both Browser renderers retain the selected project/thread, matching surface state, and zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-detail-narrow-inline-baseline",
+      "observedAt": "2026-08-19T20:46:47+09:00",
+      "commit": "bf3616a29",
+      "codeCommit": "bf3616a29",
+      "codeState": "commit",
+      "label": "Narrow inline file-detail baseline",
+      "narrative": "A distinct user-reachable responsive combination enters the fixed denominator before repair: a 360px inline Files detail panel at 1024x820. Both shipping Browser renderers keep a fixed 255/256px explorer beside the source surface, leaving only 103px for the editor inside a 359px content surface. Source wraps into one- or two-character fragments and is not usable. Web exposes no direct Back control because the explorer remains technically present; Lynx exposes a 28x28 Back action but still sacrifices the editor to the fixed explorer. Both renderers genuinely open PORT_WORKFLOW.md, switch to PORTING_STRATEGY.md, and Lynx Back restores the Files browser with zero console errors. The first report passed only because the old parity gate compared equal outer geometry and did not require a readable editor width or mutually exclusive narrow layout. Native remains conservative unknown. The denominator expands from 61 states, 696 cells, and weight 226.2 to 62 states, 708 cells, and weight 230.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This admits a distinct responsive combination before repair. The retained Browser pair holds snapshot, project, thread, route, dark theme, 1024x820 viewport, persisted 360px panel width, target files, and zero-error readiness constant while recording the established Web shadow-DOM input fallback."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/file-editor-detail-narrow-inline-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "223f7dc86d1ebfd0986a025799062ba8750688e6aaa634257f71f006bf5dde49"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-narrow-inline"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-content",
+              "source": "Both render the same selected file, breadcrumb, non-empty source, and explorer rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 256, 0, 0, 0, 0, 0],
+              "anchorScale": 359,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-readable-allocation",
+              "source": "The shared responsive failure leaves only 103px for source while the fixed explorer consumes 255/256px of the 359px surface"
+            },
+            "typography": {
+              "residual": 0.75,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-wrapped-source",
+              "source": "Editor text wraps into one- or two-character fragments at 103px and cannot preserve source-line scanning"
+            },
+            "material": {
+              "pixel": {
+                "mae": 15.352883,
+                "significantShare": 0.133561
+              },
+              "confidence": 0.99,
+              "method": "narrow-file-detail-editor-crop",
+              "source": "Same-snapshot 103x736 editor crop; shared allocation loss remains primary"
+            },
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-open-switch-back",
+              "source": "Both open and switch files; Lynx Back restores the browser, while Web lacks an equivalent direct narrow-state return path"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "narrow-file-detail-readiness",
+              "source": "Same isolated snapshot, persisted panel width, selected project/thread, shipping Browser artifacts, and zero renderer errors"
             }
           }
         }

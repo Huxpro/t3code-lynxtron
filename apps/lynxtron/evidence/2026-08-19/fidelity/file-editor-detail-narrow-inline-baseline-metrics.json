@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T20:46:47+09:00",
+  "harnessCommit": "bf3616a29",
+  "stateId": "file-editor-detail-narrow-inline",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "rightPanelMode": "inline",
+    "rightPanelWidth": 360,
+    "surface": "Narrow inline Files detail after opening PORT_WORKFLOW.md"
+  },
+  "classification": {
+    "sharedProductLoss": [
+      "Both renderers keep a fixed 255/256px explorer beside the editor inside a 359px content surface, leaving only 103px for source.",
+      "The resulting source column wraps ordinary code and prose into one- or two-character fragments and is not a usable editor.",
+      "Web has no direct Back control in this narrow state because the explorer remains technically present; Lynx exposes Back but still sacrifices the editor to the fixed explorer.",
+      "The previous parity gate compared equal outer geometry and therefore treated the same broken allocation in both renderers as a pass."
+    ],
+    "productBehaviorPassing": [
+      "Both renderers open docs/PORT_WORKFLOW.md through the shipping Files browser.",
+      "Both switch to docs/PORTING_STRATEGY.md through the visible explorer.",
+      "Lynx Back restores the Files browser without closing the right panel.",
+      "The same project, thread, theme, route, panel width, and snapshot remain selected with zero console errors."
+    ],
+    "harnessMismatch": [
+      "The Web Pierre tree did not react to the first outer CDP pointer event; the retained run uses the established composed-shadow DOM click fallback and records that input channel.",
+      "The initial report passed because the file-detail gate did not assert a readable editor width or mutually exclusive narrow layout. This is a gate omission, not evidence that the product state was acceptable."
+    ],
+    "evidenceBoundary": "One immutable snapshot, selected project and thread, dark theme, 1024x820 viewport, explicit 360px persisted inline panel width on both renderers, freshly built shipping Web and Lynx-for-Web artifacts, real file open and switch actions, real Lynx Back action, zero console errors, clean process leak gates, and screenshot budget below 100. Native remains unobserved and conservative unknown."
+  },
+  "browser": {
+    "status": "pass-with-shared-product-loss",
+    "report": {
+      "path": "/tmp/t3-file-narrow-baseline/workbench-report.json",
+      "sha256": "84a4671dff48260fd159fbdce5639152c9de167eda0007c6f6fe58b6bb16588d"
+    },
+    "commit": "bf3616a29c21653b640bc311ce5cfb67f5624761",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "bundles": {
+      "web": "8df48884381d",
+      "lynxForWeb": "5e41772cdf0e"
+    },
+    "readyMs": 6502,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "geometry": {
+      "web": {
+        "surface": [665, 44, 359, 776],
+        "editor": [665, 84, 103, 736],
+        "explorer": [769, 84, 255, 736],
+        "back": null
+      },
+      "lynx": {
+        "surface": [665, 44, 359, 776],
+        "editor": [665, 84, 103, 736],
+        "explorer": [768, 84, 256, 736],
+        "back": [673, 49.5, 28, 28]
+      }
+    },
+    "interaction": {
+      "openedBy": "web-pointer-click|lynx-pointer-click",
+      "openInputChannels": {
+        "web": "cdp-pointer-failed|shadow-dom-click-fallback",
+        "lynx": "cdp-pointer"
+      },
+      "switchedBy": "web-explorer-pointer|lynx-explorer-pointer",
+      "switched": true,
+      "returnedBy": "lynx-back-pointer",
+      "returnedToBrowser": true
+    },
+    "pixelMetric": {
+      "threshold": "max RGB channel delta >= 16",
+      "fullFrame": {
+        "mae": 6.734219,
+        "significantShare": 0.082343
+      },
+      "panel": {
+        "crop": [665, 44, 359, 776],
+        "mae": 13.151598,
+        "significantShare": 0.131648
+      },
+      "editor": {
+        "crop": [665, 84, 103, 736],
+        "mae": 15.352883,
+        "significantShare": 0.133561
+      }
+    },
+    "screenshots": {
+      "webSha256": "c287f0501d1e24496570fa8a3faa13650625c92fbe80523ba4b3ca2d992342f6",
+      "lynxSha256": "ea53147e39e6192c01065349723f8ed52c7d7f4f4181017038304ad6ef8e4940",
+      "sideBySideSha256": "de06fea27c1712095aff39e076bb79d89901709d37fe6000eb9300fdf7b2cb1c"
+    }
+  },
+  "native": {
+    "status": "unobserved"
+  },
+  "denominatorChange": {
+    "before": {
+      "states": 61,
+      "cells": 696,
+      "weight": 226.2
+    },
+    "after": {
+      "states": 62,
+      "cells": 708,
+      "weight": 230.2
+    },
+    "reason": "A narrow inline file-detail panel is a distinct user-reachable combination whose responsive allocation and return path are not represented by the existing 539px desktop detail or 340px sheet states."
+  },
+  "validation": {
+    "captureContractTests": "35/35",
+    "browserPreviewTypecheck": "pass",
+    "workbenchBuild": "pass with existing bundle-size and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "ownedPortsReleased": true
+  }
+}
