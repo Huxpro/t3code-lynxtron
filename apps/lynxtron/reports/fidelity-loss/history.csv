@@ -167,3 +167,4 @@ sidebar-resize-current-baseline,2026-08-19T12:12:00+09:00,a9a200767,commit,Curre
 sidebar-resize-current,2026-08-19T13:35:33+09:00,15b52d003,commit,Resized Sidebar convergence,0.362374,0.362374,0.019068,0.349979,0.650021,0.62607
 model-picker-dismiss-root-native-current,2026-08-19T13:35:33+09:00,15b52d003,commit,Model Picker route-root outside dismissal,0.362374,0.362374,0.019068,0.349979,0.650021,0.62607
 project-action-dialog-baseline,2026-08-19T14:29:00+09:00,ac2b91b80,commit,Project Add Action dialog baseline,0.358331,0.358331,0.023811,0.34268,0.65732,0.630113
+responsive-composer-files-native-refresh,2026-08-19T15:50:48+09:00,8585aef17,commit,Responsive Composer and Files Native refresh,0.358331,0.358331,0.023811,0.34268,0.65732,0.630113

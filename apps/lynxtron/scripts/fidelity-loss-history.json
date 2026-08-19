@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T14:29:00+09:00",
+  "updatedAt": "2026-08-19T15:50:48+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11321,6 +11321,140 @@
               "confidence": 0.99,
               "method": "project-action-dialog-shared-readiness",
               "source": "Same snapshot, project, idle thread, route, theme, viewport, zero console errors, and zero owned or orphaned agent-browser processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsive-composer-files-native-refresh",
+      "observedAt": "2026-08-19T15:50:48+09:00",
+      "commit": "8585aef17",
+      "codeCommit": "46f881897",
+      "codeState": "commit",
+      "label": "Responsive Composer and Files Native refresh",
+      "narrative": "Current exact production-bundle evidence closes the reported compact-menu, center-column ownership, and file-navigation regressions without changing product code or the fixed denominator. At 1024x600 the Native compact Composer renders one 148px column with all fifteen current model-derived rows, applies a real 120px scroll offset, keeps the menu and context at x=446 and x=442 before the Files panel at x=484, and dismisses through the fullscreen outside layer. Dark and light 1024x820 runs retain identical geometry and correct theme material. At 760x820 the file sheet waits for a real source preview, resolves T3 JetBrains Mono at 12px/19px with a 34px gutter, exposes a 28x28 Back action, hides the desktop explorer, and returns to the 339x728 Files browser. The existing Web-versus-Lynx file-editor material residual remains explicit; a visually regressive sibling-token experiment and invalid loading, notification, iframe-focus, and stale-row harness samples receive no product credit.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point refreshes exact Native evidence on bundle 73ef9e28 with real measured touch, current dynamic model traits, dark and light themes, short-viewport scrolling, main transport, zero renderer errors, disposed isolated state, and clean leak gates. It changes no product pixels, state weights, or denominator."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/responsive-composer-files-native-refresh-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "9b418d70a025acce12713eb53acdad343e1f16ab23f6831bef68ddefd27f2ba7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-open"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-dynamic-compact-content",
+              "source": "Exact Native exposes nine non-duplicated current model trait rows followed by Chat, Plan, and four Access rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 460,
+              "confidence": 0.99,
+              "method": "native-current-compact-center-containment",
+              "source": "At 1024x600 the 148x460 menu and context end at x=446 and x=442 before the Files panel starts at x=484"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-compact-readable-rows",
+              "source": "All current rows remain one-column, unwrapped, and independently legible in the retained dark and light frames"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-compact-scroll-dismiss",
+              "source": "Real ellipsis touch opens the menu, the main-thread seam applies offset 120 at short height, and the fullscreen outside touch dismisses"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-compact-exact-bundle-readiness",
+              "source": "Exact 73ef9e28 bundle, main transport sequence 3 to 4, zero renderer errors, disposed isolated state, and zero agent-browser leaks"
+            }
+          }
+        },
+        {
+          "states": ["composer-compact-controls-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-current-dynamic-compact-content",
+              "source": "Light Native exposes the same current dynamic trait, Mode, and Access rows as dark Native"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 565,
+              "confidence": 0.99,
+              "method": "native-light-current-compact-containment",
+              "source": "Light Native retains the 148x565 menu, fullscreen dismiss surface, and center-column boundaries from dark Native"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-current-compact-readable-rows",
+              "source": "Cold-white light material preserves the same unwrapped one-column row hierarchy"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-current-compact-dismiss",
+              "source": "Real ellipsis and fullscreen outside touches open and dismiss the light menu"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-current-compact-readiness",
+              "source": "Expected and actual light theme, exact 73ef9e28 bundle, main transport, zero renderer errors, disposed state, and zero leaks"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-file-source-ready",
+              "source": "The retained Native frame waits for a real non-empty source preview rather than accepting the prior Loading file placeholder"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 727,
+              "confidence": 0.99,
+              "method": "native-current-file-sheet-editor-and-back",
+              "source": "The 339x727 preview, 34x19 first-line gutter, 28x28 Back action, hidden explorer, and restored 339x728 browser are all measured"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-file-editor-typography",
+              "source": "Exact Native resolves T3 JetBrains Mono at 12px with 19px line height and a visible numbered gutter"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-file-open-and-back",
+              "source": "Measured touch opens the first file, verifies source readiness, taps Back, and restores the Files browser"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-file-exact-bundle-readiness",
+              "source": "Exact 73ef9e28 bundle, main transport sequence 3 to 4, zero renderer errors, disposed isolated state, and zero leaks"
             }
           }
         }

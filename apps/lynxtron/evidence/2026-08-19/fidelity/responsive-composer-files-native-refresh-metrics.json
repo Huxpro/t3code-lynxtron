@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T15:50:48+09:00",
+  "evidenceCommit": "8585aef17",
+  "productCodeState": "unchanged",
+  "states": [
+    "composer-compact-controls-open",
+    "composer-compact-controls-light",
+    "composer-inline-files-narrow",
+    "file-editor-detail"
+  ],
+  "classification": {
+    "productLossClosed": [
+      "The current production Native compact Composer menu is a single 148px column rather than the old two-column card.",
+      "At 1024x600 the menu exposes all fifteen current model-derived rows, scrolls by 120px through the main-thread scroll seam, and dismisses through the fullscreen outside layer.",
+      "At 1024x820 the compact menu and Composer context end at x=446 and x=442, before the inline Files panel begins at x=484.",
+      "At 760x820 the file sheet hides the desktop explorer, exposes a 28x28 Back action, and returns to the 339x728 Files browser through real DevTool touch."
+    ],
+    "remainingProductLoss": [
+      "The Native-safe file preview uses a real gutter, bundled JetBrains Mono at 12px/19px, and coarse source coloring, but it remains materially less rich than the Web Pierre editor.",
+      "The paired Browser file-detail residual remains explicit; this evidence refresh does not overwrite material pixels or claim editor token parity."
+    ],
+    "harnessMismatch": [
+      "The initial file screenshot was captured while the file still said Loading file. The verifier now waits for the preview, first source line, line number, and resolved typography before retaining a frame.",
+      "The first 760px Files run incorrectly required a visible desktop Sidebar footer. The verifier now records sidebar-hidden only when footer, Settings row, and authority sprite are all absent; any partially visible desktop footer still fails.",
+      "A 1024px compact run initially hard-coded the older fourteen-row model menu. The retained verifier accepts dynamic non-duplicated trait rows and locks the fixed Chat, Plan, and Access tail.",
+      "Three paired Browser compact attempts were rejected because the Web portal closed during sibling-iframe focus or late provider-notification settlement."
+    ],
+    "rejectedExperiment": [
+      "A sibling-token file preview experiment produced free token wrapping and visibly damaged source-line flow. It was fully reverted and receives no product or ledger credit."
+    ]
+  },
+  "browser": {
+    "fileDetail": {
+      "report": "/tmp/t3-file-detail-current2/workbench-report.json",
+      "reportSha256": "e878938b09cde23ab87af7fbb90d128ac6cdc4b2f867041f50a4964bc3bf0423",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "viewport": "1024x820",
+      "theme": "dark",
+      "webPngSha256": "a67c0cc99dbb0f1216897ac45ae0c0ef282708704406c5544ce64cbd37a22bb8",
+      "lynxPngSha256": "ebb1c98f0538e9c8dce9b40856558e70af679c0eae37440a182759ba739863b0",
+      "hardGates": {
+        "sameSnapshot": true,
+        "sameState": true,
+        "sameTheme": true,
+        "sameViewport": true,
+        "fileOpened": true,
+        "fileSwitched": true,
+        "lynxBackReturnedToBrowser": true,
+        "rendererErrors": 0
+      }
+    }
+  },
+  "native": {
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "sha256": "73ef9e28040ab9b0c3d866b262d073e254f167f968f38e54c65726ada0458573"
+    },
+    "fileSheet": {
+      "report": "/tmp/t3-native-files-sheet-current3/report.json",
+      "reportSha256": "da15da4a68a95c0ccc19d3221ecfb425c617ecec94699cde33abd96051513b6b",
+      "screenshot": "/tmp/t3-native-files-sheet-current3/native-file-surface.png",
+      "screenshotSha256": "949f1dd2ee431e85b8206d5a210a77a0751a883fabaedca29a70c8c1f079a5a6",
+      "viewport": "760x820",
+      "theme": "dark",
+      "editor": {
+        "preview": [421, 93, 339, 727],
+        "firstLine": [421, 101, 339, 19],
+        "gutter": [421, 101, 34, 19],
+        "fontFamily": "T3 JetBrains Mono",
+        "fontSize": "12px",
+        "lineHeight": "19px"
+      },
+      "back": {
+        "rect": [429, 58, 28, 28],
+        "explorerHidden": true,
+        "returnedBrowser": [421, 92, 339, 728]
+      }
+    },
+    "compactShort": {
+      "report": "/tmp/t3-native-compact-current2/report.json",
+      "reportSha256": "00d4f92a82321b76123f94cf4648c52edaa3638ed3e92849ca3724c4a8614af8",
+      "screenshot": "/tmp/t3-native-compact-current2/native-compact-controls.png",
+      "screenshotSha256": "0d5f09e7915d5d85c3dd65db770d76e69f87a0e65049a379c121fab25c3a29c0",
+      "viewport": "1024x600",
+      "theme": "dark",
+      "panel": [298, 39, 148, 460],
+      "scroll": [299, 40, 146, 458],
+      "content": [299, 40, 146, 502],
+      "rowCount": 15,
+      "scrollOffset": 120,
+      "panelRight": 446,
+      "contextRight": 442,
+      "rightPanelLeft": 484,
+      "outsideDismissed": true
+    },
+    "compactDark": {
+      "report": "/tmp/t3-native-compact-current820/report.json",
+      "reportSha256": "4686fc035bb5e2c28bbd5b64f7116fa0ffd438eeb2757110d857a2512a780fd7",
+      "screenshot": "/tmp/t3-native-compact-current820/native-compact-controls.png",
+      "screenshotSha256": "81e53b13087bf3c4d011164cc4be918cfe5fea6f2e34ca4fa69fd59ebd205425",
+      "viewport": "1024x820",
+      "theme": "dark",
+      "panel": [298, 154, 148, 565],
+      "rowCount": 15,
+      "outsideDismissed": true
+    },
+    "compactLight": {
+      "report": "/tmp/t3-native-compact-light-current/report.json",
+      "reportSha256": "46c4a89c4c87dd1ac1d314777255f3358f242e175fa24f1e303ceec0d56b7e85",
+      "screenshot": "/tmp/t3-native-compact-light-current/native-compact-controls.png",
+      "screenshotSha256": "dc23befb9b3777eb03e7569973092c7ec4d8743cf35d70ad4dd29b55c9637379",
+      "viewport": "1024x820",
+      "theme": "light",
+      "panel": [298, 154, 148, 565],
+      "rowCount": 15,
+      "outsideDismissed": true
+    },
+    "transport": {
+      "kind": "main",
+      "minimumSequenceAdvance": "3 to 4"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": "86/86",
+    "productionBuild": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  },
+  "fidelityAccounting": {
+    "expectedStateCount": 58,
+    "expectedCellCount": 666,
+    "expectedTotalWeight": 217,
+    "denominatorChanged": false,
+    "existingWeightsChanged": false,
+    "materialResidualChanged": false
+  }
+}
