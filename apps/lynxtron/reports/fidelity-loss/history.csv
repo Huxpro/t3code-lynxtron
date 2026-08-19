@@ -160,3 +160,4 @@ responsive-inline-files-navigation-current,2026-08-19T09:14:00+09:00,efa58ace9,c
 quick-switch-query-light-baseline,2026-08-19T09:57:42+09:00,8daff3504,commit,Quick Switch Query light baseline,0.372686,0.372686,0.018778,0.360681,0.639319,0.615316
 quick-switch-query-light-current,2026-08-19T10:25:00+09:00,6d3828437,commit,Quick Switch Query light material fidelity,0.372347,0.372347,0.018248,0.360681,0.639319,0.615655
 sidebar-footer-inline-files-narrow-baseline,2026-08-19T10:43:20+09:00,cbb9f156a,commit,Responsive Sidebar footer duplicate baseline,0.367631,0.367631,0.019588,0.354997,0.645003,0.620371
+sidebar-footer-inline-files-narrow-current,2026-08-19T11:05:41+09:00,de09d5adf,commit,Responsive Sidebar footer convergence,0.360592,0.360592,0.018279,0.348687,0.651313,0.62741

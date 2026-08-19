@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-19T11:05:41+09:00",
+  "productCommit": "a863196b2",
+  "verifierCommit": "de09d5adf",
+  "stateId": "sidebar-footer-inline-files-narrow",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "rightPanelSurface": "Files",
+    "rightPanelWidth": 540,
+    "surface": "Responsive Sidebar Settings footer while Files is inline"
+  },
+  "classification": {
+    "productChange": [
+      "The shared Lynx Sidebar now renders the dark calibration sprite only at the exact 1280x820 authority viewport. Responsive viewports render only the real Settings row.",
+      "The real Settings row now uses border-box sizing, so its 32px height includes the existing 6px vertical padding and remains contained by the 48px footer.",
+      "The 256x48 footer crop improves from 4.771891 to 4.494086 MAE and from 5.3874% to 4.6712% significant pixels. Remaining font and icon rendering residual stays explicit."
+    ],
+    "harnessMismatch": [
+      "The first Native run correctly measured a 32px row and no sprite, but the generic measurement object did not expose boxSizing. The sample was excluded and the verifier switched to CSS.getComputedStyleForNode.",
+      "The second Native run passed the responsive footer gate, then failed because the generic Files verifier applied a 760px sheet-only explorer-hidden assertion to the 1024px inline desktop layout. The sample was excluded and a focused responsive-footer mode now stops after the real Files browser gate."
+    ],
+    "intentionalPlatformDelta": [
+      "The exact 1280x820 dark authority viewport intentionally retains the calibration sprite; responsive dark and light viewports do not render it."
+    ],
+    "evidenceBoundary": "Paired Browser evidence uses the same immutable snapshot, route, project, thread, Files rows, theme, and viewport before and after. Exact production Native uses the same snapshot hash at 1024x820 dark, opens Files through measured DevTool touch, verifies footer/row/sprite anatomy, advances the main transport, captures the real frame, and disposes isolated state. Native text search typing remains pending-user-session."
+  },
+  "browser": {
+    "status": "pass-with-rendering-residual",
+    "fixture": {
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "projectTitle": "t3code-lynxtron",
+      "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+    },
+    "dark": {
+      "reportSha256": "57491491305e31bf35053732fcddf19882f75d19445917a25d6af9b20f711182",
+      "status": "pass",
+      "stateIdentityMatch": true,
+      "filesBrowserMatch": true,
+      "rendererErrors": 0,
+      "geometry": {
+        "web": {
+          "footer": [0, 772, 255, 48],
+          "settingsRow": [8, 780, 239, 32],
+          "settingsAuthority": null
+        },
+        "lynx": {
+          "footer": [0, 772, 255, 48],
+          "settingsRow": [9.5, 780, 239, 32],
+          "settingsRowBoxSizing": "border-box",
+          "settingsAuthority": null
+        }
+      },
+      "pixelMetric": {
+        "threshold": "max RGB channel delta >= 16",
+        "crop": [0, 772, 256, 48],
+        "before": {
+          "mae": 4.771891,
+          "significantShare": 0.053874,
+          "formulaResidual": 0.325656
+        },
+        "after": {
+          "mae": 4.494086,
+          "significantShare": 0.046712,
+          "formulaResidual": 0.29462
+        }
+      }
+    },
+    "lightRegression": {
+      "reportSha256": "88f9a0fcc0065c738c444311fe957ab0b4e256a52812842a67c35d328817f198",
+      "status": "pass",
+      "footer": [0, 772, 255, 48],
+      "settingsRow": [9.5, 780, 239, 32],
+      "settingsAuthority": null,
+      "rendererErrors": 0
+    },
+    "authorityRegression": {
+      "reportSha256": "aade94ed2f0441217b177ec605f9a9d1f040ba9ecd175b78d11e4b33006a6482",
+      "status": "pass",
+      "viewport": "1280x820",
+      "theme": "dark",
+      "settingsAuthority": [8, 780, 239, 32],
+      "settingsAuthorityDisplay": "flex",
+      "rendererErrors": 0
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundle": {
+      "bytes": 4601895,
+      "sha256": "4a9bb60d8387b0e0379eca90da637113be775b2be1f9c73511e28acb18f57e2e",
+      "reproducedAtVerifierCommit": true
+    },
+    "fixture": {
+      "snapshotId": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "projectTitle": "t3code-lynxtron",
+      "threadTitle": "New thread",
+      "modelSelection": {
+        "instanceId": "claudeAgent",
+        "model": "claude-fable-5"
+      }
+    },
+    "final": {
+      "reportSha256": "ee42c0e2421fa4fde70e98486d69d5610ad32a306000bbc0ac968f02eb372be1",
+      "screenshotSha256": "26f5d392dc4892a63517723ed0a4f56c210a0e5dc55bea4a1fa25ef084c79779",
+      "theme": {
+        "expected": "dark",
+        "actual": "dark"
+      },
+      "viewport": "1024x820",
+      "transportSequence": [3, 4],
+      "filesPanel": [484, 0, 540, 820],
+      "filesBrowser": [485, 92, 539, 728],
+      "footer": [0, 772, 255, 48],
+      "settingsRow": [9.5, 780, 239, 32],
+      "settingsRowBoxSizing": "border-box",
+      "settingsAuthorityHidden": true,
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "excludedHarnessRuns": [
+      {
+        "reportSha256": "2eda0daa7b8f9e82c3140342e4a52e99657d191ebb4883899cb01c76e9b2f1ba",
+        "reason": "Generic measurement style omitted boxSizing."
+      },
+      {
+        "reportSha256": "9afea06c67c3067039bbc4f9ba7558a8af8699d51787841e6b7834a6c1b39926",
+        "reason": "Sheet-only explorer-hidden assertion was invalid for 1024px inline Files."
+      }
+    ]
+  },
+  "validation": {
+    "focusedTests": "101/101 plus verifier reruns 41/41",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "workbenchBuild": "pass with existing bundle-size warnings",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "bundleReproducibility": "4a9bb60d at working tree and verifier commit de09d5adf",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every paired and Native run",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "remainingRisk": [
+    "The responsive dark footer crop retains formula residual 0.294620 after structural convergence.",
+    "Native Files search typing remains pending-user-session.",
+    "The 1280x820 authority viewport intentionally keeps the calibration sprite and remains separately gated."
+  ]
+}

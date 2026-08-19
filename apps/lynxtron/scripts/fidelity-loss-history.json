@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T10:43:20+09:00",
+  "updatedAt": "2026-08-19T11:05:41+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -10733,7 +10733,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-19/fidelity/sidebar-footer-inline-files-narrow-baseline-metrics.json",
           "classification": "tracked-current",
-          "sha256": "6d2cd0ba1b11503892768da52db80b304336c93300883073e4bde935f96f73b6"
+          "sha256": "a781eafe38e7bace5362c53382dc7ca6f25df2aad8db3daceca72c367a2b242e"
         }
       ],
       "updates": [
@@ -10780,6 +10780,106 @@
               "confidence": 0.99,
               "method": "responsive-sidebar-footer-readiness",
               "source": "Both panes reach the same Files state with matching identity, zero console errors, and clean leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-footer-inline-files-narrow-current",
+      "observedAt": "2026-08-19T11:05:41+09:00",
+      "commit": "de09d5adf",
+      "codeCommit": "a863196b2",
+      "codeState": "commit",
+      "label": "Responsive Sidebar footer convergence",
+      "narrative": "The 1024x820 dark inline-Files state now renders exactly one responsive Settings row. The shared Lynx Sidebar keeps the calibration sprite only at the exact 1280x820 authority viewport, and the real row uses border-box sizing so its 32px height remains contained by the 48px footer. The 256x48 crop improves from 4.771891 to 4.494086 MAE and from 5.3874% to 4.6712% significant pixels while the remaining font/icon rendering residual stays explicit. Paired Browser dark and light runs pass, and the 1280 dark authority control retains its sprite. Exact production Native at 1024x820 dark opens the 540px Files panel, measures the 32px border-box row with no sprite, advances main transport 3 to 4, reports zero renderer errors, and disposes isolated state. Two excluded Native attempts are classified as harness mismatches: missing boxSizing in the generic measurement object and a sheet-only explorer assertion applied to inline Files.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Browser before and after use the same snapshot, route, selected project and thread, dark theme, 1024x820 viewport, 540px Files panel, authority bundle, and clean consoles. Exact Native proves the final responsive footer on a reproducible production bundle. The denominator remains 56 states, 642 cells, and total weight 209."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/sidebar-footer-inline-files-narrow-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "7d47d4305e75ba54ab0b57893086d1a6ed33aa92ed553d53e9f15c5bc7569e33"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-footer-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-single-content",
+              "source": "Responsive Lynx renders one real Settings row and no calibration sprite"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 1.5, 0, 0, 0],
+              "anchorScale": 48,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-contained-geometry",
+              "source": "Footer heights match; the 32px border-box row is contained with only a 1.5px optical x offset"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-single-label",
+              "source": "One Settings label and icon remain independently legible"
+            },
+            "material": {
+              "pixel": {
+                "mae": 4.494086,
+                "significantShare": 0.046712
+              },
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-current-crop",
+              "source": "Same-snapshot 256x48 after crop; remaining font and icon rendering residual is retained"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-current-interaction",
+              "source": "The real Settings row remains pointer-enabled while Files opens through paired pointer input"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "responsive-sidebar-footer-current-readiness",
+              "source": "Dark and light paired runs pass with same identity, zero console errors, and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-footer-inline-files-narrow"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-responsive-sidebar-footer-single-content",
+              "source": "Exact Native measures one Settings row with no calibration sprite"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 48,
+              "confidence": 0.99,
+              "method": "native-responsive-sidebar-footer-geometry",
+              "source": "Native footer is 255x48 and the 239x32 border-box row is fully contained"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-responsive-sidebar-footer-files-open",
+              "source": "DevTool touch opens the 540px Files panel and preserves the responsive footer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-responsive-sidebar-footer-readiness",
+              "source": "Bundle 4a9bb60d, expected and actual dark theme, main sequence 3 to 4, zero renderer errors, disposed state, and clean leak gates"
             }
           }
         }
