@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-19T17:28:28+09:00",
+  "updatedAt": "2026-08-19T18:02:56+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -11607,7 +11607,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-19/fidelity/project-action-dialog-current-metrics.json",
           "classification": "tracked-current",
-          "sha256": "1840680c122d0da684e6d4bff96e4147c028e861013ca33d8f0da9fc2e92ea54"
+          "sha256": "4c5d3d8ad126738607f877e8154b4e7f2ec009396a2444c9345c623a773b9552"
         }
       ],
       "updates": [
@@ -11694,6 +11694,72 @@
               "residual": 0,
               "confidence": 0.99,
               "method": "native-project-action-current-readiness",
+              "source": "Exact fa6142fb bundle uses main transport, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-inline-files-baseline",
+      "observedAt": "2026-08-19T18:02:56+09:00",
+      "commit": "71088389d",
+      "codeCommit": "71088389d",
+      "codeState": "commit",
+      "label": "Compact Composer controls with inline Files baseline",
+      "narrative": "A newly modeled 1024x820 dark combination enters the fixed denominator before repair: a 188px center column, 540px inline Files panel, compact Composer controls open, and checkout/branch context visible. Exact Native keeps the 148px menu and context inside the center column, exposes fifteen dynamic rows, dismisses through a fullscreen layer, uses main transport, reports zero renderer errors, and disposes isolated state. The retained visual exposes a real geometry loss: a 565px panel wraps 502px of content and leaves 63px of empty material below Full access, making the overflow menu feel like a tall modal. Four Web-pair attempts are rejected because the Base UI portal closes after dual-pane readiness and before final capture; failed or transient pixels receive no product credit, and Lynx-for-Web remains conservative unknown. The denominator expands from 59 states, 672 cells, and weight 218.2 to 60 states, 684 cells, and weight 222.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This admits a distinct user-reachable combination before repair. Exact Native evidence uses one generated isolated fixture, explicit viewport and theme, exact production bundle, measured touch, main transport, zero renderer errors, disposed state, and clean leak gates. Browser portal instability is retained as missing coverage."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-19/fidelity/composer-compact-controls-inline-files-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "526a8b57530d0c56954a4fd109ea9025c86cef80b3e0f992e770927729d5cd00"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-inline-files-narrow"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-content",
+              "source": "Exact Native exposes all nine dynamic trait rows plus Chat, Plan, and four Access rows without duplicates"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 63, 0, 0],
+              "anchorScale": 565,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-panel-fit",
+              "source": "Panel, context, and Files boundaries are contained, but the 565px panel exceeds its 502px content by 63px"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-readable-rows",
+              "source": "All fifteen rows remain one-column, unwrapped, and independently legible"
+            },
+            "material": {
+              "residual": 0.111504,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-empty-material",
+              "source": "The visible empty panel tail is 63 of 565px; no Browser pixel residual is inferred"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-open-dismiss",
+              "source": "Measured ellipsis touch opens the menu and fullscreen outside touch dismisses it"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-compact-inline-files-readiness",
               "source": "Exact fa6142fb bundle uses main transport, reports zero renderer errors, and disposes isolated state"
             }
           }
