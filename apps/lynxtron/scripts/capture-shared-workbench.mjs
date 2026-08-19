@@ -140,6 +140,7 @@ const isFilesBrowserState =
 const isFileEditorState = stateId === "file-editor-detail";
 const isCompactControlsState = stateId === "composer-compact-controls-open";
 const isFilesSurfaceState = isFilesBrowserState || isFileEditorState || isCompactControlsState;
+const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState;
 const composerExpectationByStateId = {
   "composer-hero": {
     layout: "hero",
@@ -2190,6 +2191,7 @@ async function captureCell({
   let webProjectActionMenuOpened = false;
   let webProjectActionTriggerDiagnostics = null;
   let webProviderNotificationCleared = false;
+  let webProviderNotificationAbsentPolls = 0;
   let webQuickSwitchKeyboardSent = false;
   let webShortcutInputChannel = requiresShortcutInput ? "pending" : "not-required";
   let lynxOverlayInputSent = overlay.length === 0;
@@ -2513,7 +2515,11 @@ async function captureCell({
         lastProviderTimelineKey = timelineKey;
       }
     }
-    if (isFilesSurfaceState && threadReadyForReview(state, expectThread)) {
+    if (
+      isFilesSurfaceState &&
+      webProviderNotificationCleared &&
+      threadReadyForReview(state, expectThread)
+    ) {
       const timelineKey = JSON.stringify({
         web: {
           activeKind: state?.web?.reviewMetrics?.activeKind ?? null,
@@ -3217,7 +3223,7 @@ async function captureCell({
       }
     }
     if (
-      overlay &&
+      shouldClearWebNotification &&
       !webProviderNotificationCleared &&
       state?.web?.connected === true &&
       state?.web?.productState?.overlay === null
@@ -3242,8 +3248,10 @@ async function captureCell({
         })()`,
       ).catch(() => null);
       if (notificationPoint?.present === false) {
-        webProviderNotificationCleared = true;
+        webProviderNotificationAbsentPolls += 1;
+        webProviderNotificationCleared = webProviderNotificationAbsentPolls >= 30;
       } else if (notificationPoint?.point) {
+        webProviderNotificationAbsentPolls = 0;
         await dispatchPointerClickWithMove(cdp, sessionId, notificationPoint.point);
         await delay(350);
         continue;

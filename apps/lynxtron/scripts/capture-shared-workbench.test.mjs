@@ -142,6 +142,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "filesBrowserReadyPolls >= 3");
     assert.include(source, "finalFilesBrowserReady = filesBrowserReady(state)");
     assert.include(source, "finalFilesBrowserReady");
+    assert.include(
+      source,
+      "const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState",
+    );
+    assert.include(source, "shouldClearWebNotification &&");
+    assert.include(source, "webProviderNotificationAbsentPolls >= 30");
+    assert.include(source, "isFilesSurfaceState &&");
+    assert.include(source, "webProviderNotificationCleared &&");
+    assert.include(source, "threadReadyForReview(state, expectThread)");
   });
 
   it("opens one real file and verifies the detail surface and return paths", () => {
