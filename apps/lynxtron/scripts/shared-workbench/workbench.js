@@ -207,6 +207,7 @@ function readSidebarThreadMetrics(item) {
                     style: {
                       boxSizing: contentStyle?.boxSizing ?? null,
                       display: contentStyle?.display ?? null,
+                      flexDirection: contentStyle?.flexDirection ?? null,
                       height: contentStyle?.height ?? null,
                       minHeight: contentStyle?.minHeight ?? null,
                       maxHeight: contentStyle?.maxHeight ?? null,
@@ -224,6 +225,10 @@ function readSidebarThreadMetrics(item) {
     statusBox: readElementBox(item.querySelector(".sidebar-v2-row-status")),
     statusContent: readElementBox(item.querySelector(".sidebar-v2-row-status-content")),
     workingDuration: readElementBox(item.querySelector(".sidebar-v2-working-duration")),
+    projectLine: readElementBox(item.querySelector(".sidebar-v2-row-project-line")),
+    projectTitle: readElementBox(item.querySelector(".sidebar-v2-row-project-title")),
+    titleLine: readElementBox(item.querySelector(".sidebar-v2-row-title-line")),
+    title: readElementBox(item.querySelector(".sidebar-v2-row-title")),
   };
 }
 

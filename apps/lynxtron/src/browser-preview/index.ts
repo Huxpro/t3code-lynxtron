@@ -405,8 +405,8 @@ view.addEventListener("error", (event) => {
 // carry the `.flex-1/.flex-auto/.flex-none` shorthands to Lynx-for-Web, where
 // `x-view` otherwise follows the CSS defaults (`row`, `flex-grow:0`). Bare
 // `flex`/`.flex-row` (row) already compile correctly, so only the dropped
-// column/grow utilities and the two custom hero/composer classes need
-// re-supplying. Scoped to explicit classes; row surfaces are untouched.
+// column/grow utilities and explicit custom layout classes need re-supplying.
+// Browser-proxy conditioning only, scoped to classes with known Native layout.
 // Browser-proxy conditioning, not product code.
 let injectedLynxLayoutDefaults = false;
 function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
@@ -448,6 +448,7 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "display:flex;flex-direction:column;}" +
       ".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +
       ".composer-compact-controls-menu__label{display:block;flex:1 1 0%;min-width:0;}" +
+      ".sidebar-v2-row-card__content{display:flex;flex-direction:column;}" +
       ".composer__input{height:70px!important;}" +
       ".transcript-user-outer{padding-bottom:16px;box-sizing:border-box;}" +
       ".transcript-user-meta-spacer{height:40px!important;}" +
