@@ -131,6 +131,9 @@ export function Composer({
   const [runtimeModeMenuOpen, setRuntimeModeMenuOpen] = useState(false);
   const [modelOptionMenuOpen, setModelOptionMenuOpen] = useState(false);
   const [compactControlsMenuOpen, setCompactControlsMenuOpen] = useState(false);
+  const [compactControlsMeasuredContentHeight, setCompactControlsMeasuredContentHeight] = useState<
+    number | null
+  >(null);
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
   const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
@@ -204,8 +207,15 @@ export function Composer({
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
+  const compactControlsEstimatedContentHeight = compactControlsContentHeight(
+    modelOptionSections,
+    showInteractionModeToggle,
+  );
+  useEffect(() => {
+    setCompactControlsMeasuredContentHeight(null);
+  }, [compactControlsEstimatedContentHeight]);
   const compactControlsMenuHeight = compactControlsPanelHeight({
-    contentHeight: compactControlsContentHeight(modelOptionSections, showInteractionModeToggle),
+    contentHeight: compactControlsMeasuredContentHeight ?? compactControlsEstimatedContentHeight,
     viewportHeight: viewport.height,
   });
   const sendState = deriveComposerSendState({
@@ -465,7 +475,21 @@ export function Composer({
                                   maxHeight: `${compactControlsMenuHeight - 2}px`,
                                 }}
                               >
-                                <view className="composer-compact-controls-menu__content">
+                                <view
+                                  className="composer-compact-controls-menu__content"
+                                  bindlayoutchange={(event: { detail?: { height?: unknown } }) => {
+                                    const height = event.detail?.height;
+                                    if (
+                                      typeof height === "number" &&
+                                      Number.isFinite(height) &&
+                                      height > 0
+                                    ) {
+                                      setCompactControlsMeasuredContentHeight((current) =>
+                                        current === height ? current : height,
+                                      );
+                                    }
+                                  }}
+                                >
                                   {modelOptionSections.map((section) => (
                                     <view
                                       key={section.id}

@@ -50,7 +50,12 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain("shouldUseCompactComposerFooter(availableWidth");
     expect(composerSource).toContain("separators={!compactFooter}");
     expect(composerSource).toContain("compactControlsPanelHeight({");
-    expect(composerSource).toContain("contentHeight: compactControlsContentHeight(");
+    expect(composerSource).toContain("const compactControlsEstimatedContentHeight");
+    expect(composerSource).toContain(
+      "compactControlsMeasuredContentHeight ?? compactControlsEstimatedContentHeight",
+    );
+    expect(composerSource).toContain('className="composer-compact-controls-menu__content"');
+    expect(composerSource).toContain("setCompactControlsMeasuredContentHeight");
     expect(composerSource).toContain("compactControlsMenuHeight - 2");
     expect(composerSource).toContain("__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__");
     expect(composerSource).toContain(
