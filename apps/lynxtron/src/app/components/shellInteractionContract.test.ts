@@ -40,6 +40,24 @@ const settingsNavigationSource = readFileSync(
   ),
   "utf8",
 );
+const branchToolbarSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/BranchToolbar.tsx"),
+  "utf8",
+);
+const branchToolbarEnvModeSource = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/BranchToolbarEnvModeSelector.tsx",
+  ),
+  "utf8",
+);
+const branchToolbarBranchSource = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/BranchToolbarBranchSelector.tsx",
+  ),
+  "utf8",
+);
 
 describe("desktop shell interaction contract", () => {
   it("keeps the anchored model picker dismissible without modal dimming", () => {
@@ -285,8 +303,11 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".file-panel__explorer {");
     expect(overrides).toContain("width: 256px;");
     expect(overrides).toContain(".right-panel--sheet .file-panel__explorer {");
-    expect(overrides).toContain(".right-panel--sheet .file-panel__back {");
     expect(overrides).toContain(".file-panel__back {");
+    const fileBackStart = overrides.indexOf(".file-panel__back {");
+    const fileBackBlock = overrides.slice(fileBackStart, overrides.indexOf("}", fileBackStart));
+    expect(fileBackBlock).toContain("display: flex;");
+    expect(overrides).not.toContain(".right-panel--sheet .file-panel__back {");
     expect(overrides).toContain(".file-editor-line__number {");
     expect(overrides).toContain(".file-editor-line__content--heading {");
     expect(overrides).toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
@@ -295,6 +316,15 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");
     expect(panel).toContain('case "file":');
     expect(panel).toContain("<FilePanel path={surface.path} />");
+    expect(branchToolbarSource).toContain('className="min-w-0 flex-1 justify-end md:ml-auto"');
+    expect(branchToolbarSource).not.toContain("md:flex-none");
+    expect(branchToolbarEnvModeSource).toContain(
+      'className="min-w-0 max-w-full flex-1 font-medium"',
+    );
+    expect(branchToolbarBranchSource).toContain('className="flex min-w-0 flex-1"');
+    expect(branchToolbarBranchSource).toContain(
+      'className="min-w-0 w-full max-w-full text-muted-foreground/70',
+    );
   });
 
   it("restores the Settings rail allocation in Lynx-for-Web", () => {
@@ -599,9 +629,14 @@ describe("desktop shell interaction contract", () => {
     expect(emptyTimelineBlock).toContain("pointer-events: none;");
     expect(composerOverlayBlock).toContain("position: relative;");
     expect(composerOverlayBlock).toContain("z-index: 20;");
-    expect(overrides).toContain(
-      ".composer-workspace-control-wrap {\n  position: relative;\n  display: flex;\n  z-index: 52;",
-    );
+    const workspaceControlBlock =
+      overrides.match(/\.composer-workspace-control-wrap \{[^}]+\}/)?.[0] ?? "";
+    expect(workspaceControlBlock).toContain("position: relative;");
+    expect(workspaceControlBlock).toContain("display: flex;");
+    expect(workspaceControlBlock).toContain("flex-grow: 1;");
+    expect(workspaceControlBlock).toContain("width: 0;");
+    expect(workspaceControlBlock).toContain("min-width: 0;");
+    expect(workspaceControlBlock).toContain("z-index: 52;");
     expect(overrides).toContain("composer-workspace-menu-dismiss {\n  position: fixed;");
     expect(workspaceBlock).toContain("z-index: 3;");
     expect(overrides).toContain("composer-workspace-menu-dismiss {\n  position: fixed;");

@@ -72,10 +72,22 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".composer-compact-controls-menu__scroll {");
     expect(overrides).toContain("max-height: calc(100vh - 142px);");
     expect(overrides).toContain("width: 148px;");
+    expect(composerSource).toMatch(
+      /compactFooter && availableWidth < 300[^]*composer-compact-controls-menu--narrow/,
+    );
+    expect(overrides).toContain(".composer-compact-controls-menu--narrow {");
+    expect(overrides).toContain("right: 0;");
+    expect(overrides).toContain("left: auto;");
     expect(overrides).toContain(".composer-compact-controls-menu__section-label--divided {");
     expect(overrides).toContain(".theme-light .composer-compact-controls-menu {");
     expect(overrides).toContain("background-color: rgba(255, 255, 255, 0.836);");
     expect(overrides).toContain("box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);");
+    expect(overrides).toContain(".composer-context-item {\n  position: relative;\n  min-width: 0;");
+    expect(overrides).toContain(".composer-context-control--checkout {\n  width: 100%;");
+    expect(overrides).toContain(
+      ".composer-context-label--checkout,\n.composer-context-label--branch {",
+    );
+    expect(overrides).toContain("text-overflow: ellipsis;");
     expect(composerSource).toContain("!compactFooter && !questionMode");
   });
 
