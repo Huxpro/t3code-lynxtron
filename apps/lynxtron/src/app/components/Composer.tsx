@@ -138,6 +138,7 @@ export function Composer({
   const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
   const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
+  const compactControlsMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
   useEffect(() => {
@@ -160,7 +161,12 @@ export function Composer({
   }, [viewport.testResize]);
   const handleModelOptionMenuWheel = (event: MainThread.WheelEvent) => {
     "main thread";
-    const nextOffset = Math.max(0, modelOptionMenuWheelRef.current.offset + event.deltaY);
+    const eventWithDetail = event as MainThread.WheelEvent & {
+      detail?: { deltaY?: number };
+    };
+    const deltaY = eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0;
+    if (!Number.isFinite(deltaY) || deltaY === 0) return;
+    const nextOffset = Math.max(0, modelOptionMenuWheelRef.current.offset + deltaY);
     modelOptionMenuWheelRef.current = { offset: nextOffset };
     const target =
       modelOptionMenuScrollRef.current ??
@@ -179,9 +185,29 @@ export function Composer({
       lynx.querySelector(".composer-compact-controls-menu__scroll");
     if (!target) return false;
     const nextOffset = Math.max(0, offset);
+    compactControlsMenuWheelRef.current = { offset: nextOffset };
     target.setAttribute("data-scroll-offset", `${nextOffset}`);
     target.invoke("scrollTo", { offset: nextOffset, smooth: false });
     return true;
+  };
+  const handleCompactControlsMenuWheel = (event: MainThread.WheelEvent) => {
+    "main thread";
+    const eventWithDetail = event as MainThread.WheelEvent & {
+      detail?: { deltaY?: number };
+    };
+    const deltaY = eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0;
+    if (!Number.isFinite(deltaY) || deltaY === 0) return;
+    const nextOffset = Math.max(0, compactControlsMenuWheelRef.current.offset + deltaY);
+    const target =
+      compactControlsMenuScrollRef.current ??
+      event.currentTarget ??
+      lynx.querySelector(".composer-compact-controls-menu__scroll");
+    if (!target) return;
+    compactControlsMenuWheelRef.current = { offset: nextOffset };
+    target.setAttribute("data-scroll-offset", `${nextOffset}`);
+    target.invoke("scrollTo", { offset: nextOffset, smooth: false });
+    event.preventDefault?.();
+    event.stopPropagation?.();
   };
   useEffect(() => {
     const diagnosticsGlobal = globalThis as {
@@ -470,6 +496,8 @@ export function Composer({
                                 className="composer-compact-controls-menu__scroll"
                                 scroll-orientation="vertical"
                                 main-thread:ref={compactControlsMenuScrollRef}
+                                main-thread:global-bindwheel={handleCompactControlsMenuWheel}
+                                scroll-y
                                 style={{
                                   height: `${compactControlsMenuHeight - 2}px`,
                                   maxHeight: `${compactControlsMenuHeight - 2}px`,
@@ -490,43 +518,48 @@ export function Composer({
                                     }
                                   }}
                                 >
-                                  {modelOptionSections.map((section) => (
-                                    <view
-                                      key={section.id}
-                                      className="composer-compact-controls-menu__section"
-                                    >
-                                      <text className="composer-compact-controls-menu__section-label">
-                                        {section.label}
-                                      </text>
-                                      {section.items.map((item) => (
-                                        <view
-                                          key={item.id}
-                                          className={`composer-compact-controls-menu__item${
-                                            item.selected
-                                              ? " composer-compact-controls-menu__item--active"
-                                              : ""
-                                          }`}
-                                          aria-checked={item.selected ? "true" : "false"}
-                                          bindtap={() => {
-                                            onSelectModelOption?.(section.id, item.value);
-                                            setCompactControlsMenuOpen(false);
-                                          }}
-                                        >
-                                          <text className="composer-compact-controls-menu__label">
-                                            {item.label}
-                                          </text>
-                                          {item.selected ? (
-                                            <text className="composer-compact-controls-menu__badge">
-                                              Default
+                                  {modelOptionSections.map((section, index) => (
+                                    <view key={section.id}>
+                                      {index > 0 ? (
+                                        <view className="composer-compact-controls-menu__separator" />
+                                      ) : null}
+                                      <view className="composer-compact-controls-menu__section">
+                                        <text className="composer-compact-controls-menu__section-label">
+                                          {section.label}
+                                        </text>
+                                        {section.items.map((item) => (
+                                          <view
+                                            key={item.id}
+                                            className={`composer-compact-controls-menu__item${
+                                              item.selected
+                                                ? " composer-compact-controls-menu__item--active"
+                                                : ""
+                                            }`}
+                                            aria-checked={item.selected ? "true" : "false"}
+                                            bindtap={() => {
+                                              onSelectModelOption?.(section.id, item.value);
+                                              setCompactControlsMenuOpen(false);
+                                            }}
+                                          >
+                                            <text className="composer-compact-controls-menu__label">
+                                              {item.label}
                                             </text>
-                                          ) : null}
-                                        </view>
-                                      ))}
+                                            {item.selected ? (
+                                              <text className="composer-compact-controls-menu__badge">
+                                                Default
+                                              </text>
+                                            ) : null}
+                                          </view>
+                                        ))}
+                                      </view>
                                     </view>
                                   ))}
+                                  {modelOptionSections.length > 0 ? (
+                                    <view className="composer-compact-controls-menu__separator" />
+                                  ) : null}
                                   {showInteractionModeToggle ? (
                                     <>
-                                      <view className="composer-compact-controls-menu__section-label composer-compact-controls-menu__section-label--divided">
+                                      <view className="composer-compact-controls-menu__group-label">
                                         Mode
                                       </view>
                                       {(["default", "plan"] as const).map((mode) => (
@@ -548,9 +581,10 @@ export function Composer({
                                           </text>
                                         </view>
                                       ))}
+                                      <view className="composer-compact-controls-menu__separator" />
                                     </>
                                   ) : null}
-                                  <view className="composer-compact-controls-menu__section-label composer-compact-controls-menu__section-label--divided">
+                                  <view className="composer-compact-controls-menu__group-label">
                                     Access
                                   </view>
                                   {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (

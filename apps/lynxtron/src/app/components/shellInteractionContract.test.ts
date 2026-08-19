@@ -184,6 +184,7 @@ describe("desktop shell interaction contract", () => {
   it("renders server-declared model options in a dismissible menu", () => {
     const composer = componentSource("Composer.tsx");
     const chatView = componentSource("ChatView.tsx");
+    const modelPicker = componentSource("ModelPicker.tsx");
 
     expect(composer).toContain('className="composer-model-option-menu-dismiss-layer"');
     expect(composer).toContain('aria-label="Dismiss model options"');
@@ -206,6 +207,12 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("background-color: rgba(var(--primary-rgb), 0.9);");
     expect(composer).toContain('name={busy ? "square" : "send-arrow"}');
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
+    expect(composer).toContain("eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0");
+    expect(modelPicker).toContain("eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0");
+    expect(modelPicker).toContain("if (!Number.isFinite(deltaY) || deltaY === 0) return;");
+    expect(browserPreviewSource).toContain(
+      '".composer-compact-controls-menu__scroll{overflow-y:auto;}" +',
+    );
   });
 
   it("keeps model-selection bridge failures on a fulfilled settled-result path", () => {

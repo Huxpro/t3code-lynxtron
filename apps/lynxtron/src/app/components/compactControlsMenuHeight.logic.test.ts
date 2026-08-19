@@ -12,15 +12,15 @@ describe("compact controls menu height", () => {
   ];
 
   it("matches the rendered row and divider anatomy", () => {
-    expect(compactControlsContentHeight(sections, true)).toBe(526);
-    expect(compactControlsPanelHeight({ contentHeight: 526, viewportHeight: 820 })).toBe(528);
+    expect(compactControlsContentHeight(sections, true)).toBe(563);
+    expect(compactControlsPanelHeight({ contentHeight: 563, viewportHeight: 820 })).toBe(565);
   });
 
   it("caps the panel at the short viewport and preserves scroll overflow", () => {
-    expect(compactControlsPanelHeight({ contentHeight: 526, viewportHeight: 600 })).toBe(460);
+    expect(compactControlsPanelHeight({ contentHeight: 563, viewportHeight: 600 })).toBe(497);
   });
 
   it("omits Mode rows when the provider does not expose the toggle", () => {
-    expect(compactControlsContentHeight(sections, false)).toBe(446);
+    expect(compactControlsContentHeight(sections, false)).toBe(470);
   });
 });

@@ -199,7 +199,12 @@ export function ModelPicker({
       wheelStateRef.current.key === scrollStateKey
         ? wheelStateRef.current
         : { key: scrollStateKey, offset: 0 };
-    const nextOffset = Math.max(0, state.offset + event.deltaY);
+    const eventWithDetail = event as MainThread.WheelEvent & {
+      detail?: { deltaY?: number };
+    };
+    const deltaY = eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0;
+    if (!Number.isFinite(deltaY) || deltaY === 0) return;
+    const nextOffset = Math.max(0, state.offset + deltaY);
     wheelStateRef.current = { key: scrollStateKey, offset: nextOffset };
     const target =
       listScrollRef.current ?? event.currentTarget ?? lynx.querySelector(".picker-list");

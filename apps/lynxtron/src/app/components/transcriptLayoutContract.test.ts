@@ -68,6 +68,14 @@ describe("transcript layout contract", () => {
       composerSource.indexOf('className="composer-compact-controls-dismiss"'),
     );
     expect(composerSource).toContain('className="composer-compact-controls-menu__scroll"');
+    expect(composerSource).toContain(
+      "main-thread:global-bindwheel={handleCompactControlsMenuWheel}",
+    );
+    expect(composerSource).toContain(
+      "eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0",
+    );
+    expect(composerSource).toContain("if (!Number.isFinite(deltaY) || deltaY === 0) return;");
+    expect(composerSource).toContain('target.setAttribute("data-scroll-offset", `${nextOffset}`)');
     expect(composerSource).toContain('scroll-orientation="vertical"');
     expect(composerSource).toContain('mode === "default" ? "Chat" : "Plan"');
     expect(composerSource).toContain("composer-compact-controls-menu__badge");
@@ -83,7 +91,8 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".composer-compact-controls-menu--narrow {");
     expect(overrides).toContain("right: 0;");
     expect(overrides).toContain("left: auto;");
-    expect(overrides).toContain(".composer-compact-controls-menu__section-label--divided {");
+    expect(overrides).toContain(".composer-compact-controls-menu__group-label {");
+    expect(overrides).toContain(".composer-compact-controls-menu__separator {");
     expect(overrides).toContain(".theme-light .composer-compact-controls-menu {");
     expect(overrides).toContain("background-color: rgba(255, 255, 255, 0.836);");
     expect(overrides).toContain("box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);");
