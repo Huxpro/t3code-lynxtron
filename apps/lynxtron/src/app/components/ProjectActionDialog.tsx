@@ -164,12 +164,13 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
             <text className="project-action-field__label">Keybinding</text>
             <input
               className="project-action-field__input"
+              data-keybinding-input-mode="canonical-text"
               placeholder="Press shortcut"
               {...({ value: keybinding } as object)}
               bindinput={handleInput(setKeybinding)}
             />
             <text className="project-action-field__hint">
-              Press a shortcut. Use Backspace to clear.
+              Enter a shortcut such as mod+shift+y. Use Backspace to clear.
             </text>
           </view>
           <view className="project-action-field">
