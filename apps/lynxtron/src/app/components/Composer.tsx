@@ -36,6 +36,10 @@ import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.lo
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
 import {
+  compactControlsContentHeight,
+  compactControlsPanelHeight,
+} from "./compactControlsMenuHeight.logic";
+import {
   resolveCurrentWorkspaceLabel,
   resolveEnvModeLabel,
 } from "../../../../web/src/components/BranchToolbar.logic";
@@ -200,15 +204,10 @@ export function Composer({
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
-  const compactControlsContentHeight =
-    33 +
-    modelOptionSections.reduce((height, section) => height + 24 + section.items.length * 28, 0) +
-    (showInteractionModeToggle ? 88 : 0) +
-    144;
-  const compactControlsMenuHeight = Math.min(
-    compactControlsContentHeight,
-    Math.max(160, viewport.height - 140),
-  );
+  const compactControlsMenuHeight = compactControlsPanelHeight({
+    contentHeight: compactControlsContentHeight(modelOptionSections, showInteractionModeToggle),
+    viewportHeight: viewport.height,
+  });
   const sendState = deriveComposerSendState({
     prompt: value,
     imageCount: 0,

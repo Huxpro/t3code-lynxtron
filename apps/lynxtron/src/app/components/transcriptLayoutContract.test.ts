@@ -49,8 +49,8 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain("compactFooter && !questionMode");
     expect(composerSource).toContain("shouldUseCompactComposerFooter(availableWidth");
     expect(composerSource).toContain("separators={!compactFooter}");
-    expect(composerSource).toContain("const compactControlsContentHeight =");
-    expect(composerSource).toContain("Math.max(160, viewport.height - 140)");
+    expect(composerSource).toContain("compactControlsPanelHeight({");
+    expect(composerSource).toContain("contentHeight: compactControlsContentHeight(");
     expect(composerSource).toContain("compactControlsMenuHeight - 2");
     expect(composerSource).toContain("__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__");
     expect(composerSource).toContain(
