@@ -49,10 +49,9 @@ function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-function editorLineTone(line: string): "heading" | "code" | "strong" | "plain" {
+function editorLineTone(line: string): "heading" | "code" | "plain" {
   if (/^#{1,6}\s/u.test(line)) return "heading";
-  if (/^\s*(?:[-*+]|\d+[.)])\s/u.test(line) || /`[^`]+`/u.test(line)) return "code";
-  if (/\*\*[^*]+\*\*/u.test(line) || /^\s*\|/u.test(line)) return "strong";
+  if (/^\s*```/u.test(line) || /^\s{4}\S/u.test(line)) return "code";
   return "plain";
 }
 

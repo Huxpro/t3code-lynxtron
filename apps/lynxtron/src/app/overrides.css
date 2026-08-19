@@ -2516,6 +2516,10 @@
   overflow: hidden;
   box-sizing: border-box;
 }
+.composer-compact-controls-menu--narrow {
+  right: 0;
+  left: auto;
+}
 .composer-compact-controls-menu__scroll {
   display: flex;
   flex-direction: column;
@@ -2649,11 +2653,19 @@
 /* surface: composer context strip labels; gap: none (token passthrough);
    remove-when: label typography compiles from the shared composition. */
 .composer-context-label {
+  display: block;
+  min-width: 0;
   color: rgba(var(--muted-foreground-rgb), 0.7);
   font-size: 12px;
   font-weight: 500;
   font-family: var(--font-sans);
   line-height: 16px;
+}
+.composer-context-label--checkout,
+.composer-context-label--branch {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .composer-context-label--checkout {
   font-family: "T3 DM Sans", var(--font-sans);
@@ -3036,10 +3048,15 @@
 }
 .composer-context-item {
   position: relative;
+  min-width: 0;
+  overflow: hidden;
 }
 .composer-workspace-control-wrap {
   position: relative;
   display: flex;
+  flex-grow: 1;
+  width: 0;
+  min-width: 0;
   z-index: 52;
 }
 .composer-workspace-menu-dismiss {
@@ -3186,11 +3203,14 @@
   box-sizing: border-box;
 }
 .composer-context-control--checkout {
+  width: 100%;
+  min-width: 0;
   padding-right: 7px;
   padding-left: 10px;
 }
 .composer-context-control--branch {
   margin-left: auto;
+  min-width: 0;
   padding-right: 7px;
   padding-left: 7px;
 }
@@ -7026,7 +7046,7 @@
   box-sizing: border-box;
 }
 .file-panel__back {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
@@ -7113,9 +7133,6 @@
 }
 .right-panel--sheet .file-panel__explorer {
   display: none;
-}
-.right-panel--sheet .file-panel__back {
-  display: flex;
 }
 .file-panel__message {
   display: flex;
@@ -7230,9 +7247,6 @@
 }
 .file-editor-line__content--code {
   color: #62c073;
-}
-.file-editor-line__content--strong {
-  color: #f2c94c;
 }
 .file-panel__statusbar {
   display: flex;

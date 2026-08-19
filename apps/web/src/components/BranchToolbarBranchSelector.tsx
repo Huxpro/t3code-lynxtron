@@ -740,12 +740,12 @@ export function BranchToolbarBranchSelector({
             pointer-events-none, so the trigger itself never sees right-clicks
             while refs are loading or a branch action is pending. */}
         <span
-          className="flex min-w-0"
+          className="flex min-w-0 flex-1"
           onContextMenu={(event) => handleBranchContextMenu(event, resolvedActiveBranch)}
         >
           <ComboboxTrigger
             render={<Button variant="ghost" size="xs" />}
-            className="min-w-0 max-w-full text-muted-foreground/70 hover:text-foreground/80"
+            className="min-w-0 w-full max-w-full text-muted-foreground/70 hover:text-foreground/80"
             disabled={isInitialBranchesLoadPending || isBranchActionPending}
           >
             <GitBranchIcon className="size-3 shrink-0 opacity-70" />

@@ -444,7 +444,11 @@ export function Composer({
                         {compactControlsMenuOpen ? (
                           <>
                             <view
-                              className="composer-compact-controls-menu"
+                              className={`composer-compact-controls-menu${
+                                compactFooter && availableWidth < 300
+                                  ? " composer-compact-controls-menu--narrow"
+                                  : ""
+                              }`}
                               aria-label="More composer controls"
                               data-composer-compact-controls-menu
                               style={{
