@@ -22,6 +22,8 @@ import type {
   OrchestrationCheckpointSummary,
   OrchestrationGetTurnDiffInput,
   OrchestrationGetTurnDiffResult,
+  ReviewDiffPreviewInput,
+  ReviewDiffPreviewResult,
   OrchestrationProjectShell,
   OrchestrationProposedPlan,
   OrchestrationSessionStatus,
@@ -186,6 +188,7 @@ export interface T3ConnectorCommandBridge {
   readProjectFile(input: ProjectReadFileInput): Promise<ProjectReadFileResult>;
   writeProjectFile(input: ProjectWriteFileInput): Promise<ProjectWriteFileResult>;
   getTurnDiff(input: OrchestrationGetTurnDiffInput): Promise<OrchestrationGetTurnDiffResult>;
+  getDiffPreview(input: ReviewDiffPreviewInput): Promise<ReviewDiffPreviewResult>;
   readProjectBranch(input: { cwd: string }): Promise<ProjectRepoContext>;
   readVcsStatus(input: { cwd: string }): Promise<VcsStatusResult>;
   initializeRepository(input: VcsInitInput): Promise<void>;

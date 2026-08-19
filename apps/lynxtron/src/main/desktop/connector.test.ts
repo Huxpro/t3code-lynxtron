@@ -1,4 +1,6 @@
 import { assert, describe, it } from "vite-plus/test";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 import {
   dispatchWithTransportRecovery,
@@ -41,6 +43,15 @@ describe("materializeTurnBootstrap", () => {
     } as const;
     assert.deepEqual(materializeTurnBootstrap(explicit), explicit);
     assert.equal(materializeTurnBootstrap(undefined), undefined);
+  });
+});
+
+describe("Diff preview connector surface", () => {
+  it("routes the renderer command through the canonical review RPC", () => {
+    const source = readFileSync(path.join(import.meta.dirname, "connector.ts"), "utf8");
+
+    assert.include(source, "async getDiffPreview(input: ReviewDiffPreviewInput)");
+    assert.include(source, "this.client[WS_METHODS.reviewGetDiffPreview](input)");
   });
 });
 

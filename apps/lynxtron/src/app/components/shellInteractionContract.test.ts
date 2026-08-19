@@ -334,6 +334,13 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain(
       '".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:118px;height:28px;}" +',
     );
+    expect(browserPreviewSource).toContain(
+      '".diff-panel-header__scope-menu,.diff-panel-header__scope-submenu{" +',
+    );
+    expect(browserPreviewSource).toContain('".diff-panel-header__scope-item{" +');
+    expect(browserPreviewSource).toContain(
+      '"display:flex;flex:none;flex-direction:row;width:230px;height:28px;}" +',
+    );
     expect(browserPreviewSource).toContain('".composer-context-strip{" +');
     expect(browserPreviewSource).not.toContain(
       ".chat-view-surface-reference:has(>.right-panel:not(.right-panel--sheet)) .composer-stack",
@@ -396,6 +403,29 @@ describe("desktop shell interaction contract", () => {
     expect(branchToolbarBranchSource).toContain(
       'className="min-w-0 w-full max-w-full text-muted-foreground/70',
     );
+  });
+
+  it("projects every authority Diff scope through real typed data sources", () => {
+    const diff = componentSource("DiffPanel.tsx");
+    const bridge = readFileSync(path.join(import.meta.dirname, "../bridge.ts"), "utf8");
+    const client = readFileSync(path.join(import.meta.dirname, "../state/t3Client.ts"), "utf8");
+
+    expect(diff).toContain('data-diff-scope="working-tree"');
+    expect(diff).toContain('data-diff-scope="branch"');
+    expect(diff).toContain('data-diff-scope="latest-turn"');
+    expect(diff).toContain('data-diff-scope="turn"');
+    expect(diff).toContain(".getDiffPreview({");
+    expect(diff).toContain("t3ClientActions.getTurnDiff");
+    expect(diff).toContain('className="diff-panel-header__scope-dismiss"');
+    expect(diff).toContain('className="diff-panel-header__scope-submenu"');
+    expect(bridge).toContain("getDiffPreview(input: ReviewDiffPreviewInput)");
+    expect(client).toContain("bridge.getDiffPreview(input)");
+    expect(overrides).toContain(".diff-panel-header__scope-dismiss {");
+    expect(overrides).toContain("width: 240px;");
+    expect(overrides).toContain("height: 122px;");
+    expect(overrides).toContain("width: 230px;");
+    expect(overrides).toContain("height: 28px;");
+    expect(overrides).toContain(".theme-light .diff-panel-header__scope-menu,");
   });
 
   it("persists Project Action keybindings after the script update", () => {

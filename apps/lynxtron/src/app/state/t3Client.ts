@@ -24,6 +24,8 @@ import type {
   OrchestrationCheckpointSummary,
   OrchestrationGetTurnDiffInput,
   OrchestrationGetTurnDiffResult,
+  ReviewDiffPreviewInput,
+  ReviewDiffPreviewResult,
   OrchestrationLatestTurn,
   OrchestrationProposedPlan,
   ProviderInteractionMode,
@@ -1004,6 +1006,14 @@ function getTurnDiff(
   return bridge.getTurnDiff(input);
 }
 
+function getDiffPreview(input: ReviewDiffPreviewInput): Promise<ReviewDiffPreviewResult> {
+  const bridge = getBridge();
+  if (!bridge?.getDiffPreview) {
+    return Promise.reject(new Error("Diff preview loading is unavailable."));
+  }
+  return bridge.getDiffPreview(input);
+}
+
 function readProjectBranch(cwd: string): Promise<ProjectRepoContext | null> {
   const bridge = getBridge();
   if (!bridge?.readProjectBranch) {
@@ -1440,6 +1450,7 @@ export const t3ClientActions = {
   deleteThread,
   deleteProviderInstance,
   discoverSourceControl,
+  getDiffPreview,
   getTurnDiff,
   initializeRepository,
   interrupt,

@@ -153,6 +153,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "readProjectFile",
   "writeProjectFile",
   "getTurnDiff",
+  "getDiffPreview",
   "readProjectBranch",
   "readVcsStatus",
   "initializeRepository",

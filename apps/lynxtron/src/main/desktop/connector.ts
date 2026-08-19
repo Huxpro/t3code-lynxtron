@@ -58,6 +58,8 @@ import {
   type OrchestrationShellStreamItem,
   type OrchestrationGetTurnDiffInput,
   type OrchestrationGetTurnDiffResult,
+  type ReviewDiffPreviewInput,
+  type ReviewDiffPreviewResult,
   type OrchestrationThread,
   type OrchestrationThreadShell,
   type ProviderInteractionMode,
@@ -1085,6 +1087,13 @@ export class T3Connector {
     if (!this.client) throw new Error("not connected");
     return this.runClient<OrchestrationGetTurnDiffResult>(
       this.client[ORCHESTRATION_WS_METHODS.getTurnDiff](input),
+    );
+  }
+
+  async getDiffPreview(input: ReviewDiffPreviewInput): Promise<ReviewDiffPreviewResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<ReviewDiffPreviewResult>(
+      this.client[WS_METHODS.reviewGetDiffPreview](input),
     );
   }
 

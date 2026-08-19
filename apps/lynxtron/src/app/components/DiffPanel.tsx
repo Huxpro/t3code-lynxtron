@@ -9,6 +9,13 @@ import { useT3ClientState } from "../state/t3Client";
 import { t3ClientActions } from "../state/t3Client";
 import { Icon } from "./Icon";
 import { LynxChangedFilesTree } from "./LynxChangedFilesTree";
+import {
+  diffScopeLabel,
+  initialDiffScope,
+  selectedDiffCheckpoint,
+  selectedDiffPreviewSource,
+  type LynxDiffScope,
+} from "./diffScope.logic";
 import { parseUnifiedDiff, type UnifiedDiffFile } from "./unifiedDiff";
 
 type DiffRenderMode = "stacked" | "split";
@@ -32,10 +39,11 @@ export function DiffPanel({
   readonly turnId?: TurnId | null;
   readonly filePath?: string | null;
 }) {
-  const { activeThreadId, checkpoints, sessionStatus } = useT3ClientState();
+  const { activeThreadId, checkpoints, projects, sessionStatus, threads } = useT3ClientState();
   const orderedCheckpoints = useMemo(() => latestFirst(checkpoints), [checkpoints]);
-  const [selectedTurnId, setSelectedTurnId] = useState<TurnId | null>(turnId ?? null);
+  const [scope, setScope] = useState<LynxDiffScope>(() => initialDiffScope(turnId));
   const [scopeMenuOpen, setScopeMenuOpen] = useState(false);
+  const [turnMenuOpen, setTurnMenuOpen] = useState(false);
   const [diffRenderMode, setDiffRenderMode] = useState<DiffRenderMode>("stacked");
   const [wordWrap, setWordWrap] = useState(false);
   const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
@@ -44,16 +52,23 @@ export function DiffPanel({
   const [patchStatus, setPatchStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
   const [patchError, setPatchError] = useState<string | null>(null);
   useEffect(() => {
-    if (turnId !== null && turnId !== undefined) setSelectedTurnId(turnId);
+    if (turnId !== null && turnId !== undefined) {
+      setScope({ kind: "turn", turnId });
+    }
   }, [turnId]);
-  const selectedCheckpoint =
-    orderedCheckpoints.find((checkpoint) => checkpoint.turnId === selectedTurnId) ??
-    orderedCheckpoints[0];
-  const total = useMemo(
-    () => summarizeChangedFiles(selectedCheckpoint?.files ?? []),
-    [selectedCheckpoint],
-  );
+  const selectedCheckpoint = selectedDiffCheckpoint(orderedCheckpoints, scope);
+  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const activeProject =
+    projects.find((project) => project.id === activeThread?.projectId) ?? projects[0];
+  const activeCwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;
   const parsedFiles = useMemo(() => parseUnifiedDiff(patch), [patch]);
+  const total = useMemo(
+    () => ({
+      additions: parsedFiles.reduce((sum, file) => sum + file.additions, 0),
+      deletions: parsedFiles.reduce((sum, file) => sum + file.deletions, 0),
+    }),
+    [parsedFiles],
+  );
   const orderedFiles = useMemo(() => {
     if (!filePath) return parsedFiles;
     return [...parsedFiles].sort((left, right) => {
@@ -64,7 +79,7 @@ export function DiffPanel({
   }, [filePath, parsedFiles]);
 
   useEffect(() => {
-    if (!activeThreadId || !selectedCheckpoint) {
+    if (!activeThreadId || (scope.kind === "turn" ? !selectedCheckpoint : !activeCwd)) {
       setPatch("");
       setPatchStatus("idle");
       setPatchError(null);
@@ -73,32 +88,48 @@ export function DiffPanel({
     let cancelled = false;
     setPatchStatus("loading");
     setPatchError(null);
-    void t3ClientActions
-      .getTurnDiff({
-        threadId: activeThreadId as ThreadId,
-        fromTurnCount: Math.max(0, selectedCheckpoint.checkpointTurnCount - 1),
-        toTurnCount: selectedCheckpoint.checkpointTurnCount,
-        ignoreWhitespace,
-      })
-      .then(
-        (result) => {
-          if (cancelled) return;
-          setPatch(result.diff);
-          setPatchStatus("ready");
-        },
-        (error) => {
-          if (cancelled) return;
-          setPatch("");
-          setPatchStatus("error");
-          setPatchError(error instanceof Error ? error.message : String(error));
-        },
-      );
+    const request =
+      scope.kind === "turn" && selectedCheckpoint
+        ? t3ClientActions.getTurnDiff({
+            threadId: activeThreadId as ThreadId,
+            fromTurnCount: Math.max(0, selectedCheckpoint.checkpointTurnCount - 1),
+            toTurnCount: selectedCheckpoint.checkpointTurnCount,
+            ignoreWhitespace,
+          })
+        : t3ClientActions
+            .getDiffPreview({
+              cwd: activeCwd!,
+              ignoreWhitespace,
+            })
+            .then(
+              (result) =>
+                selectedDiffPreviewSource(
+                  result.sources,
+                  scope as Extract<LynxDiffScope, { kind: "unstaged" | "branch" }>,
+                )?.diff ?? "",
+            );
+    void request.then(
+      (result) => {
+        if (cancelled) return;
+        setPatch(typeof result === "string" ? result : result.diff);
+        setPatchStatus("ready");
+      },
+      (error) => {
+        if (cancelled) return;
+        setPatch("");
+        setPatchStatus("error");
+        setPatchError(error instanceof Error ? error.message : String(error));
+      },
+    );
     return () => {
       cancelled = true;
     };
   }, [
     activeThreadId,
+    activeCwd,
     ignoreWhitespace,
+    scope.kind,
+    scope.kind === "turn" ? scope.turnId : null,
     selectedCheckpoint?.checkpointTurnCount,
     selectedCheckpoint?.turnId,
   ]);
@@ -118,12 +149,12 @@ export function DiffPanel({
       return next;
     });
   };
-  const selectedScopeLabel =
-    selectedCheckpoint === orderedCheckpoints[0]
-      ? "Latest turn"
-      : selectedCheckpoint
-        ? `Turn ${selectedCheckpoint.checkpointTurnCount}`
-        : "Latest turn";
+  const selectedScopeLabel = diffScopeLabel(orderedCheckpoints, scope);
+  const selectScope = (nextScope: LynxDiffScope) => {
+    setScope(nextScope);
+    setScopeMenuOpen(false);
+    setTurnMenuOpen(false);
+  };
 
   const header = (
     <>
@@ -140,27 +171,79 @@ export function DiffPanel({
           <Icon name="chevron-down" size={14} color="#818181" />
         </view>
         {scopeMenuOpen ? (
-          <view className="diff-panel-header__scope-menu" data-floating-popup="diff-scope-menu">
-            {orderedCheckpoints.map((checkpoint, index) => {
-              const active = checkpoint.turnId === selectedCheckpoint?.turnId;
-              return (
-                <view
-                  key={checkpoint.turnId}
-                  className={`diff-panel-header__scope-item${
-                    active ? " diff-panel-header__scope-item--active" : ""
-                  }`}
-                  bindtap={() => {
-                    setSelectedTurnId(checkpoint.turnId);
-                    setScopeMenuOpen(false);
-                  }}
-                >
-                  <text className="diff-panel-header__scope-item-label">
-                    {index === 0 ? "Latest turn" : `Turn ${checkpoint.checkpointTurnCount}`}
-                  </text>
+          <>
+            <view
+              className="diff-panel-header__scope-dismiss"
+              bindtap={() => {
+                setScopeMenuOpen(false);
+                setTurnMenuOpen(false);
+              }}
+            />
+            <view className="diff-panel-header__scope-menu" data-floating-popup="diff-scope-menu">
+              <view
+                className={`diff-panel-header__scope-item${
+                  scope.kind === "unstaged" ? " diff-panel-header__scope-item--active" : ""
+                }`}
+                data-diff-scope="working-tree"
+                bindtap={() => selectScope({ kind: "unstaged" })}
+              >
+                <text className="diff-panel-header__scope-item-label">Working tree</text>
+              </view>
+              <view
+                className={`diff-panel-header__scope-item${
+                  scope.kind === "branch" ? " diff-panel-header__scope-item--active" : ""
+                }`}
+                data-diff-scope="branch"
+                bindtap={() => selectScope({ kind: "branch" })}
+              >
+                <text className="diff-panel-header__scope-item-label">Branch changes</text>
+              </view>
+              <view
+                className={`diff-panel-header__scope-item${
+                  scope.kind === "turn" && selectedCheckpoint === orderedCheckpoints[0]
+                    ? " diff-panel-header__scope-item--active"
+                    : ""
+                }`}
+                data-diff-scope="latest-turn"
+                bindtap={() => {
+                  const latest = orderedCheckpoints[0];
+                  if (latest) selectScope({ kind: "turn", turnId: latest.turnId });
+                }}
+              >
+                <text className="diff-panel-header__scope-item-label">Latest turn</text>
+              </view>
+              <view
+                className={`diff-panel-header__scope-item diff-panel-header__scope-item--submenu${
+                  turnMenuOpen ? " diff-panel-header__scope-item--active" : ""
+                }`}
+                data-diff-scope="turn"
+                bindtap={() => setTurnMenuOpen((open) => !open)}
+              >
+                <text className="diff-panel-header__scope-item-label">Turn</text>
+                <Icon name="chevron-right" size={14} color="#818181" />
+              </view>
+              {turnMenuOpen ? (
+                <view className="diff-panel-header__scope-submenu">
+                  {orderedCheckpoints.map((checkpoint) => (
+                    <view
+                      key={checkpoint.turnId}
+                      className={`diff-panel-header__scope-item${
+                        scope.kind === "turn" && checkpoint.turnId === selectedCheckpoint?.turnId
+                          ? " diff-panel-header__scope-item--active"
+                          : ""
+                      }`}
+                      data-diff-scope-turn={String(checkpoint.checkpointTurnCount)}
+                      bindtap={() => selectScope({ kind: "turn", turnId: checkpoint.turnId })}
+                    >
+                      <text className="diff-panel-header__scope-item-label">
+                        Turn {checkpoint.checkpointTurnCount}
+                      </text>
+                    </view>
+                  ))}
                 </view>
-              );
-            })}
-          </view>
+              ) : null}
+            </view>
+          </>
         ) : null}
       </view>
       <view className="diff-panel-header__controls lynx-titlebar-no-drag">
@@ -228,7 +311,7 @@ export function DiffPanel({
       header={header}
       reviewCheckpointCount={orderedCheckpoints.length}
       reviewSelectedTurn={selectedCheckpoint?.turnId ?? ""}
-      reviewFileCount={selectedCheckpoint?.files.length ?? 0}
+      reviewFileCount={orderedFiles.length}
     >
       <scroll-view
         className="diff-panel"
@@ -236,7 +319,7 @@ export function DiffPanel({
         data-review-selected-file={filePath ?? ""}
       >
         <view className="diff-panel__inner">
-          {orderedCheckpoints.length > 0 ? (
+          {scope.kind !== "turn" || orderedCheckpoints.length > 0 ? (
             <>
               {patchStatus === "loading" ? (
                 <view className="diff-code-state" data-review-patch-loading>
@@ -267,17 +350,22 @@ export function DiffPanel({
                   <view className="diff-panel__summary">
                     <view className="diff-panel__summary-copy">
                       <text className="diff-panel__summary-title">
-                        {selectedCheckpoint?.files.length ?? 0} changed{" "}
-                        {selectedCheckpoint?.files.length === 1 ? "file" : "files"}
+                        {scope.kind === "turn" ? (selectedCheckpoint?.files.length ?? 0) : 0}{" "}
+                        changed{" "}
+                        {scope.kind === "turn" && selectedCheckpoint?.files.length === 1
+                          ? "file"
+                          : "files"}
                       </text>
                       <text className="diff-panel__summary-note">
-                        Checkpoint for turn {selectedCheckpoint?.checkpointTurnCount}
+                        {scope.kind === "turn"
+                          ? `Checkpoint for turn ${selectedCheckpoint?.checkpointTurnCount}`
+                          : selectedScopeLabel}
                       </text>
                     </view>
                     <DiffStatLabel additions={total.additions} deletions={total.deletions} />
                   </view>
                   <LynxChangedFilesTree
-                    files={selectedCheckpoint?.files ?? []}
+                    files={scope.kind === "turn" ? (selectedCheckpoint?.files ?? []) : []}
                     allDirectoriesExpanded
                     selectedPath={filePath}
                   />
