@@ -12760,6 +12760,118 @@
           "sha256": "fe8a41798c38ca62f73f2a726d0b7fe9a961e0cdc68f1dbb0d7e198e524dd2b0"
         }
       ]
+    },
+    {
+      "id": "composer-compact-controls-inline-files-short-current",
+      "observedAt": "2026-08-20T03:10:59+09:00",
+      "commit": "d5e2d8a8a5e02c30a02c180d84a42060ba6b6cd6",
+      "codeCommit": "f82d1cb83dd86638af699d7d03d9855d3c8e9a3c",
+      "codeState": "commit",
+      "label": "Short compact controls convergence",
+      "narrative": "The registered 1024x600 compact Composer state now converges without changing its fixed denominator. Web and Lynx-for-Web open at y=4 with 497px panels and 495px scroll viewports, preserve the same dynamic trait groups and fixed Chat, Plan, and access tail, scroll both panes to Full access through real Browser wheel input, dismiss outside, and keep checkout context inside the center column before Files. The dark 210x545 menu envelope improves from 13.858928 MAE and 12.5636% significant pixels to 10.565464 MAE and 10.3617%; light 1024x600 and dark 1024x820 regressions pass. Exact Native on bundle b5896c75 independently opens Files and the compact menu, moves Full access from y=536 to y=468 through the main-thread scroll seam, dismisses fullscreen, keeps context x=622 before Files x=664, advances main transport from 3 to 5, reports zero renderer errors, and disposes isolated state. Native interaction retains a conservative residual because physical wheel input remains pending-user-session. Two pre-launch attempts are excluded as fixture-contract mismatches.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Browser before/current runs hold snapshot, project, thread, route, viewport, theme, authority bundle, and state identity constant while changing the Lynx product bundle. Exact Native uses a fresh disposable project/sidebar fixture, explicit logical viewport and theme, PID-owned exact bundle identity, measured touch, main transport, zero renderer errors, disposed state, and clean leak gates. No state weights, filters, or denominator entries change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/compact-controls-inline-files-short-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "65d5d0bc0318ef4c0f7022dbbaf742a1727fb4ecd077e6f45d05893df4e7368a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-inline-files-short"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "short-compact-current-content",
+              "source": "Both Browser renderers preserve the same dynamic trait groups, fixed Chat and Plan rows, access ordering, and final Full access identity; provider-derived Default markers are fixture-specific"
+            },
+            "geometry": {
+              "anchorDeltas": [0.109375, 0, 1.78125, 0, 0.109375, 0, 1.78125, 0, 0, 0, 1, 0],
+              "anchorScale": 497,
+              "confidence": 0.99,
+              "method": "short-compact-current-geometry",
+              "source": "Panel, scroll viewport, and Composer x/y/width/height deltas compare the final Web authority and Lynx-for-Web geometry"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "short-compact-current-typography",
+              "source": "Both use the shared compact-menu type scale; residual preserves bundled DM Sans versus Web variable-font shaping"
+            },
+            "material": {
+              "pixel": {
+                "mae": 10.565464,
+                "significantShare": 0.103617
+              },
+              "confidence": 0.99,
+              "method": "short-compact-current-envelope",
+              "source": "Same-snapshot 210x545 dark envelope after collision height, anchor, section rhythm, labels, border, radius, shadow, and active-state convergence"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "short-compact-current-wheel-dismiss",
+              "source": "Real Browser wheel input moves both scroll panes to offset 40, exposes Full access, and real outside pointers dismiss both menus"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "short-compact-current-readiness",
+              "source": "Dark, light, and content-fit regression pairs retain state identity, report zero console errors, and clean owned processes"
+            }
+          }
+        },
+        {
+          "states": ["composer-compact-controls-inline-files-short"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-short-compact-content",
+              "source": "Exact Native exposes all dynamic trait rows and the fixed Chat, Plan, and access tail in canonical order, ending with Full access"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 1.78125, 0, 0, 0, 1.78125, 0, 0, 0, 0, 0],
+              "anchorScale": 497,
+              "confidence": 0.99,
+              "method": "native-short-compact-geometry",
+              "source": "Exact Native matches authority panel and scroll y/height, preserves the 4px top collision gap, and keeps checkout context before the Files boundary"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "native-short-compact-typography",
+              "source": "Native uses the shared compact-menu type scale; residual preserves platform font rasterization"
+            },
+            "material": {
+              "residual": 0.14,
+              "confidence": 0.99,
+              "method": "native-short-compact-material-boundary",
+              "source": "The inspected 2048x1200 export verifies glass, section rhythm, radius, shadow, active hierarchy, and clipping while retaining conservative residual because Browser pixels are not reused as Native material evidence"
+            },
+            "interaction": {
+              "residual": 0.15,
+              "confidence": 0.99,
+              "method": "native-short-compact-scroll-dismiss-boundary",
+              "source": "Measured DevTool touch opens and dismisses the menu; the main-thread seam moves Full access into view, while physical wheel input remains pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-short-compact-final-bundle",
+              "source": "Exact b5896c75 bundle uses main transport sequence 3 to 5, reports zero renderer errors, disposes isolated state, and passes leak pre/post gates"
+            }
+          }
+        }
+      ]
     }
   ]
 }
