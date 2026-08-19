@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T01:30:35+09:00",
+  "updatedAt": "2026-08-20T01:48:02+09:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -12737,6 +12737,27 @@
               "source": "Exact a2ac4854 bundle uses main transport sequence 3 to 5, reports zero renderer errors, disposes isolated state, and passes leak pre/post gates"
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "composer-compact-controls-inline-files-short-registration",
+      "observedAt": "2026-08-20T01:48:02+09:00",
+      "commit": "415afaa1ef25d1b8c7384238e0272007ad2c5462",
+      "codeCommit": "95419d656e9724abeb4d576b15a3be7243d8d8c0",
+      "codeState": "commit",
+      "label": "Short compact controls denominator registration",
+      "narrative": "A distinct user-reachable responsive combination enters the fixed denominator before repair: compact Composer controls beside an inline Files panel at 1024x600. The existing 1024x820 state explicitly certifies a content-fit menu whose final Full access row is initially visible; the short viewport instead requires scrolling and a different top anchor. Web opens a 146.21875x497 panel at y=4 with a 495px scroll viewport, while Lynx opens a 148x460 panel at y=39 with a 458px scroll viewport. The 210x545 menu envelope measures 13.858928 MAE and 12.5636% significant pixels. Both expose fourteen canonical row identities and keep checkout context inside the center column before Files. The current harness fails because its old last-row-visible gate models only no-scroll content fit; no repair credit is assigned. Native remains conservative unknown. The denominator expands from 63 states, 720 cells, and weight 234.2 to 64 states, 732 cells, and weight 238.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It admits the 1024x600 scrollable overlay before product repair, records the current diagnostic Browser identity and pixels, preserves all existing weights and residuals, and leaves all twelve new Lynx-for-Web and Native dimension cells conservative unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/compact-controls-inline-files-short-registration.json",
+          "classification": "tracked-current",
+          "sha256": "fe8a41798c38ca62f73f2a726d0b7fe9a961e0cdc68f1dbb0d7e198e524dd2b0"
         }
       ]
     }
