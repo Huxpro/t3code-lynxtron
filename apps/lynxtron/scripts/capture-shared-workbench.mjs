@@ -82,6 +82,7 @@ const defaultOverlayByStateId = {
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
   "project-action-dialog": "project-action-dialog",
+  "right-panel-add-menu": "right-panel-add-menu",
   "workspace-menu-open": "workspace-menu",
   "quick-switch-default": "quick-switch",
   "quick-switch-query": "quick-switch",
@@ -144,7 +145,9 @@ const isFileEditorState = stateId === "file-editor-detail";
 const isCompactControlsState =
   stateId === "composer-compact-controls-open" ||
   stateId === "composer-compact-controls-inline-files-narrow";
-const isFilesSurfaceState = isFilesBrowserState || isFileEditorState || isCompactControlsState;
+const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
+const isFilesSurfaceState =
+  isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
 const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState;
 const composerExpectationByStateId = {
   "composer-hero": {
@@ -948,6 +951,23 @@ function projectActionDialogReady(state) {
   });
 }
 
+function rightPanelAddMenuReady(state) {
+  if (!isRightPanelAddMenuState) return true;
+  const expectedLabels = ["Browser", "Terminal", "Files", "Diff"];
+  const webRows = state?.web?.overlayMetrics?.anatomy?.rows ?? [];
+  const lynxRows = state?.lynx?.overlayMetrics?.anatomy?.rows ?? [];
+  return (
+    state?.web?.productState?.overlay === "right-panel-add-menu" &&
+    state?.lynx?.productState?.overlay === "right-panel-add-menu" &&
+    JSON.stringify(webRows.map(({ label }) => label)) === JSON.stringify(expectedLabels) &&
+    JSON.stringify(lynxRows.map(({ label }) => label)) === JSON.stringify(expectedLabels) &&
+    JSON.stringify(webRows.map(({ disabled }) => disabled)) ===
+      JSON.stringify(lynxRows.map(({ disabled }) => disabled)) &&
+    webRows.every(({ rect }) => rect?.width > 0 && rect?.height > 0) &&
+    lynxRows.every(({ rect }) => rect?.width > 0 && rect?.height > 0)
+  );
+}
+
 function compactControlsContainment(state) {
   const read = (client) => {
     const context = client?.composerMetrics?.anatomy?.context?.rect;
@@ -1732,6 +1752,7 @@ async function main() {
     "composer-working",
     "composer-compact-controls-open",
     "composer-compact-controls-inline-files-narrow",
+    "right-panel-add-menu",
     "composer-connecting",
     "composer-disabled",
     "workspace-menu-open",
@@ -2151,6 +2172,7 @@ async function captureCell({
     "composer-working": "existing-thread",
     "composer-compact-controls-open": "existing-thread",
     "composer-compact-controls-inline-files-narrow": "existing-thread",
+    "right-panel-add-menu": "existing-thread",
     "settled-banner-inline-files-narrow": "existing-thread",
     "composer-disabled": "existing-thread",
     "workspace-menu-open": "existing-thread",
@@ -3272,7 +3294,7 @@ async function captureCell({
       webProviderNotificationCleared &&
       state?.web?.connected === true &&
       state?.web?.productState?.selectedProject === expectProject &&
-      (!["workspace-menu", "compact-controls"].includes(overlay) ||
+      (!["workspace-menu", "compact-controls", "right-panel-add-menu"].includes(overlay) ||
         state?.lynx?.productState?.overlay === overlay) &&
       state?.web?.productState?.overlay !== overlay
     ) {
@@ -3318,9 +3340,11 @@ async function captureCell({
                 ? '[data-floating-anchor="composer-workspace-menu"]'
                 : overlay === "compact-controls"
                   ? '[data-floating-anchor="composer-compact-controls-menu"]'
-                  : overlay === "project-action-dialog"
-                    ? '[aria-label="Add action"]'
-                    : '[data-composer-control="model"]';
+                  : overlay === "right-panel-add-menu"
+                    ? '[data-floating-anchor="right-panel-add-menu"]'
+                    : overlay === "project-action-dialog"
+                      ? '[aria-label="Add action"]'
+                      : '[data-composer-control="model"]';
       const point =
         overlay === "project-action-dialog"
           ? await evaluate(
@@ -3478,6 +3502,7 @@ async function captureCell({
       (overlay === "project-scope" ||
         overlay === "workspace-menu" ||
         overlay === "compact-controls" ||
+        overlay === "right-panel-add-menu" ||
         overlay === "quick-switch" ||
         overlay === "file-picker" ||
         overlay === "model-picker" ||
@@ -3533,9 +3558,11 @@ async function captureCell({
               ? '[aria-label="Workspace"]:not([data-composer-workspace-menu])'
               : overlay === "compact-controls"
                 ? ".composer-compact-controls-trigger"
-                : overlay === "project-action-dialog"
-                  ? '[aria-label="Add action"]'
-                  : '[data-composer-control="model"]';
+                : overlay === "right-panel-add-menu"
+                  ? ".right-panel__add-btn"
+                  : overlay === "project-action-dialog"
+                    ? '[aria-label="Add action"]'
+                    : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -3571,6 +3598,7 @@ async function captureCell({
         overlay === "model-picker" ||
         overlay === "workspace-menu" ||
         overlay === "compact-controls" ||
+        overlay === "right-panel-add-menu" ||
         overlay === "project-action-dialog") &&
       lynxOverlayInputSent &&
       state?.lynx?.productState?.overlay !== overlay
@@ -3957,6 +3985,7 @@ async function captureCell({
     const sidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
     const projectActionReady = projectActionDialogReady(state);
+    const rightPanelAddMenuStateReady = rightPanelAddMenuReady(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
     const headerGitActionReady = headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
@@ -4031,6 +4060,7 @@ async function captureCell({
       sidebarFooterThemeReady &&
       compactControlsReady &&
       projectActionReady &&
+      rightPanelAddMenuStateReady &&
       sidebarWorkingGeometryReady &&
       headerGitActionReady &&
       gitPublishDiscoveryReady &&
@@ -4241,6 +4271,7 @@ async function captureCell({
   const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalProjectActionDialogReady = projectActionDialogReady(state);
+  const finalRightPanelAddMenuReady = rightPanelAddMenuReady(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
     state,
     expectedThreadFixture,
@@ -4827,6 +4858,7 @@ async function captureCell({
     finalSidebarFooterThemeReady &&
     finalCompactControlsReady &&
     finalProjectActionDialogReady &&
+    finalRightPanelAddMenuReady &&
     finalSidebarWorkingGeometryReady &&
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&

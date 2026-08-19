@@ -982,9 +982,11 @@ function readLynxPane() {
               ? "workspace-menu"
               : root?.querySelector(".composer-compact-controls-menu") !== null
                 ? "compact-controls"
-                : projectActionDialog !== null
-                  ? "project-action-dialog"
-                  : null;
+                : root?.querySelector(".right-panel__add-menu") !== null
+                  ? "right-panel-add-menu"
+                  : projectActionDialog !== null
+                    ? "project-action-dialog"
+                    : null;
     const overlayElement =
       overlay === "quick-switch" || overlay === "file-picker"
         ? paletteElement
@@ -996,9 +998,11 @@ function readLynxPane() {
               ? root?.querySelector(".composer-workspace-menu")
               : overlay === "compact-controls"
                 ? root?.querySelector(".composer-compact-controls-menu")
-                : overlay === "project-action-dialog"
-                  ? root?.querySelector(".project-action-dialog")
-                  : null;
+                : overlay === "right-panel-add-menu"
+                  ? root?.querySelector(".right-panel__add-menu")
+                  : overlay === "project-action-dialog"
+                    ? root?.querySelector(".project-action-dialog")
+                    : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -1025,6 +1029,7 @@ function readLynxPane() {
     const workspaceTriggerElement = root?.querySelector(".composer-workspace-control-wrap") ?? null;
     const compactControlsTriggerElement =
       root?.querySelector(".composer-compact-controls-trigger") ?? null;
+    const rightPanelAddTriggerElement = root?.querySelector(".right-panel__add-btn") ?? null;
     const settingsRoute = expectedSemanticRoute.startsWith("settings-");
     const quickSwitchInput = root?.querySelector(".qs-search__input") ?? null;
     const modelPickerInput = root?.querySelector(".picker-search__input") ?? null;
@@ -1088,7 +1093,9 @@ function readLynxPane() {
           ? workspaceTriggerElement
           : overlay === "compact-controls"
             ? compactControlsTriggerElement
-            : modelTriggerElement;
+            : overlay === "right-panel-add-menu"
+              ? rightPanelAddTriggerElement
+              : modelTriggerElement;
     const modelTriggerRect = overlayTriggerElement
       ? (() => {
           const rect = overlayTriggerElement.getBoundingClientRect();
@@ -1203,9 +1210,24 @@ function readLynxPane() {
                         root?.querySelector(".composer-compact-controls-dismiss"),
                       ),
                     }
-                  : overlay === "project-action-dialog"
-                    ? projectActionDialog
-                    : null,
+                  : overlay === "right-panel-add-menu"
+                    ? {
+                        panel: readElementBox(overlayElement),
+                        rows: [...(root?.querySelectorAll(".right-panel__add-item") ?? [])].map(
+                          (row) => ({
+                            kind: row.getAttribute("data-right-panel-add-kind"),
+                            label:
+                              row
+                                .querySelector(".right-panel__add-item-label")
+                                ?.textContent?.trim() ?? "",
+                            disabled: row.classList.contains("right-panel__add-item--disabled"),
+                            rect: readElementBox(row),
+                          }),
+                        ),
+                      }
+                    : overlay === "project-action-dialog"
+                      ? projectActionDialog
+                      : null,
         query:
           overlay === "quick-switch" || overlay === "file-picker"
             ? lynxInputValue(quickSwitchInput)
@@ -1303,7 +1325,11 @@ function readLynxPane() {
                           .querySelector(".composer-compact-controls-menu__label")
                           ?.textContent?.trim(),
                       )
-                    : [],
+                    : overlay === "right-panel-add-menu"
+                      ? [...(root?.querySelectorAll(".right-panel__add-item") ?? [])].map((row) =>
+                          row.querySelector(".right-panel__add-item-label")?.textContent?.trim(),
+                        )
+                      : [],
         modelPickerRows:
           overlay === "model-picker"
             ? readModelPickerRows(root?.querySelectorAll(".model-picker-row") ?? [])
@@ -1319,9 +1345,11 @@ function readLynxPane() {
                   ? (root?.querySelectorAll(".composer-workspace-menu__item").length ?? 0)
                   : overlay === "compact-controls"
                     ? (root?.querySelectorAll(".composer-compact-controls-menu__item").length ?? 0)
-                    : overlay === "project-action-dialog"
-                      ? (projectActionDialog?.fieldLabels.length ?? 0)
-                      : 0,
+                    : overlay === "right-panel-add-menu"
+                      ? (root?.querySelectorAll(".right-panel__add-item").length ?? 0)
+                      : overlay === "project-action-dialog"
+                        ? (projectActionDialog?.fieldLabels.length ?? 0)
+                        : 0,
       },
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(root),
@@ -1816,9 +1844,11 @@ function readWebPane() {
               ? "workspace-menu"
               : doc.querySelector('[data-floating-popup="composer-compact-controls-menu"]') !== null
                 ? "compact-controls"
-                : projectActionDialog !== null
-                  ? "project-action-dialog"
-                  : null;
+                : doc.querySelector('[data-floating-popup="right-panel-add-menu"]') !== null
+                  ? "right-panel-add-menu"
+                  : projectActionDialog !== null
+                    ? "project-action-dialog"
+                    : null;
     const modelTriggerElement =
       doc.querySelector('[data-chat-provider-model-picker="true"]') ?? null;
     const projectScopeTriggerElement =
@@ -1827,6 +1857,8 @@ function readWebPane() {
       doc.querySelector('[data-floating-anchor="composer-workspace-menu"]') ?? null;
     const compactControlsTriggerElement =
       doc.querySelector('[data-floating-anchor="composer-compact-controls-menu"]') ?? null;
+    const rightPanelAddTriggerElement =
+      doc.querySelector('[data-floating-anchor="right-panel-add-menu"]') ?? null;
     const quickSwitchTriggerElement =
       doc.querySelector(".sidebar-v2-search") ??
       doc.querySelector('[data-testid="command-palette-trigger"]') ??
@@ -1839,7 +1871,9 @@ function readWebPane() {
           ? workspaceTriggerElement
           : overlay === "compact-controls"
             ? compactControlsTriggerElement
-            : modelTriggerElement;
+            : overlay === "right-panel-add-menu"
+              ? rightPanelAddTriggerElement
+              : modelTriggerElement;
     const modelTriggerRect = overlayTriggerElement
       ? (() => {
           const rect = overlayTriggerElement.getBoundingClientRect();
@@ -1862,15 +1896,17 @@ function readWebPane() {
               ? doc.querySelector('[data-floating-popup="composer-workspace-menu"]')
               : overlay === "compact-controls"
                 ? doc.querySelector('[data-floating-popup="composer-compact-controls-menu"]')
-                : overlay === "project-action-dialog"
-                  ? projectActionDialog?.rect
-                    ? [...doc.querySelectorAll("[data-slot='dialog-popup']")].find(
-                        (dialog) =>
-                          readComposedText(dialog.querySelector("[data-slot='dialog-title']")) ===
-                          "Add Action",
-                      )
-                    : null
-                  : null;
+                : overlay === "right-panel-add-menu"
+                  ? doc.querySelector('[data-floating-popup="right-panel-add-menu"]')
+                  : overlay === "project-action-dialog"
+                    ? projectActionDialog?.rect
+                      ? [...doc.querySelectorAll("[data-slot='dialog-popup']")].find(
+                          (dialog) =>
+                            readComposedText(dialog.querySelector("[data-slot='dialog-title']")) ===
+                            "Add Action",
+                        )
+                      : null
+                    : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -2103,9 +2139,23 @@ function readWebPane() {
                       ),
                       dismiss: null,
                     }
-                  : overlay === "project-action-dialog"
-                    ? projectActionDialog
-                    : null,
+                  : overlay === "right-panel-add-menu"
+                    ? {
+                        panel: readElementBox(overlayElement),
+                        rows: [
+                          ...(overlayElement?.querySelectorAll('[data-slot="menu-item"]') ?? []),
+                        ].map((row) => ({
+                          kind: row.textContent?.trim().toLowerCase() ?? "",
+                          label: row.textContent?.trim() ?? "",
+                          disabled:
+                            row.getAttribute("data-disabled") !== null ||
+                            row.getAttribute("aria-disabled") === "true",
+                          rect: readElementBox(row),
+                        })),
+                      }
+                    : overlay === "project-action-dialog"
+                      ? projectActionDialog
+                      : null,
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
             ? [...doc.querySelectorAll('[data-command-palette="true"] [role="option"]')].map(
@@ -2135,7 +2185,13 @@ function readWebPane() {
                           '[data-floating-popup="composer-compact-controls-menu"] [data-slot="menu-radio-item"]',
                         ),
                       ].map((row) => row.textContent?.trim())
-                    : [],
+                    : overlay === "right-panel-add-menu"
+                      ? [
+                          ...doc.querySelectorAll(
+                            '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"]',
+                          ),
+                        ].map((row) => row.textContent?.trim())
+                      : [],
         modelPickerRows:
           overlay === "model-picker"
             ? readModelPickerRows(
@@ -2159,9 +2215,13 @@ function readWebPane() {
                     ? doc.querySelectorAll(
                         '[data-floating-popup="composer-compact-controls-menu"] [data-slot="menu-radio-item"]',
                       ).length
-                    : overlay === "project-action-dialog"
-                      ? (projectActionDialog?.fieldLabels.length ?? 0)
-                      : 0,
+                    : overlay === "right-panel-add-menu"
+                      ? doc.querySelectorAll(
+                          '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"]',
+                        ).length
+                      : overlay === "project-action-dialog"
+                        ? (projectActionDialog?.fieldLabels.length ?? 0)
+                        : 0,
       },
       composerMetrics: composerFrame
         ? {

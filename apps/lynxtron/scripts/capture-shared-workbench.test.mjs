@@ -111,7 +111,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "composer-compact-controls-inline-files-narrow"');
     assert.include(source, "function compactControlsEvidenceReady(state)");
     assert.include(source, "function compactControlsContainment(state)");
-    assert.include(source, '["workspace-menu", "compact-controls"].includes(overlay)');
+    assert.include(
+      source,
+      '["workspace-menu", "compact-controls", "right-panel-add-menu"].includes(overlay)',
+    );
     assert.include(source, '[data-floating-anchor="composer-compact-controls-menu"]');
     assert.include(source, '".composer-compact-controls-trigger"');
     assert.include(source, "finalCompactControlsReady");
@@ -123,6 +126,27 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(workbench, "composer-compact-controls-menu__scroll");
     assert.include(workbench, "composer-compact-controls-dismiss");
+  });
+
+  it("captures the right-panel add menu after opening an inline Files surface", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, '"right-panel-add-menu": "right-panel-add-menu"');
+    assert.include(source, '"right-panel-add-menu": "existing-thread"');
+    assert.include(source, '"right-panel-add-menu",');
+    assert.include(source, "function rightPanelAddMenuReady(state)");
+    assert.include(
+      source,
+      '["workspace-menu", "compact-controls", "right-panel-add-menu"].includes(overlay)',
+    );
+    assert.include(source, '[data-floating-anchor="right-panel-add-menu"]');
+    assert.include(source, '".right-panel__add-btn"');
+    assert.include(workbench, ': root?.querySelector(".right-panel__add-menu") !== null');
+    assert.include(workbench, '[data-floating-popup="right-panel-add-menu"]');
+    assert.include(workbench, "data-right-panel-add-kind");
   });
 
   it("opens the Files browser through shipping right-panel actions", () => {
