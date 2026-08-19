@@ -5306,16 +5306,20 @@ async function verifyFilesBrowser({
     predicate: (measurement) => measurement?.text.trim() === "1",
   });
   const editorTokens = await readSelectorMeasurements(client, ".file-editor-token");
-  const [editorFontFamily, editorFontSize, editorLineHeight] = await Promise.all([
-    readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-family"),
-    readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-size"),
-    readFirstSelectorStyleValue(client, ".file-editor-line__content", "line-height"),
-  ]);
+  const [editorFontFamily, editorFontSize, editorLineHeight, editorGutterWidth] = await Promise.all(
+    [
+      readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-family"),
+      readFirstSelectorStyleValue(client, ".file-editor-line__content", "font-size"),
+      readFirstSelectorStyleValue(client, ".file-editor-line__content", "line-height"),
+      readFirstSelectorStyleValue(client, ".file-editor-line__number", "width"),
+    ],
+  );
   if (
     typeof editorFontFamily !== "string" ||
-    editorFontFamily.length === 0 ||
-    editorFontSize !== "12px" ||
-    editorLineHeight !== "19px" ||
+    !editorFontFamily.includes("SF Mono") ||
+    editorFontSize !== "13px" ||
+    editorLineHeight !== "20px" ||
+    Math.abs(editorLineNumber.rect.width - 49) > 0.5 ||
     editorTokens.length === 0 ||
     new Set(
       editorTokens
@@ -5327,7 +5331,9 @@ async function verifyFilesBrowser({
       `Native file editor typography drifted: ${JSON.stringify({
         editorFontFamily,
         editorFontSize,
+        editorGutterWidth,
         editorLineHeight,
+        editorLineNumber: editorLineNumber.rect,
         editorTokens: editorTokens.slice(0, 12),
       })}`,
     );
@@ -5426,6 +5432,7 @@ async function verifyFilesBrowser({
         firstLineNumber: editorLineNumber.rect,
         fontFamily: editorFontFamily,
         fontSize: editorFontSize,
+        gutterWidth: editorGutterWidth,
         lineHeight: editorLineHeight,
         tokenCount: editorTokens.length,
         tokenToneCount: new Set(
