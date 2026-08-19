@@ -2167,7 +2167,8 @@
   width: 100%;
   max-width: 768px;
   min-width: 0;
-  height: 68px;
+  height: auto;
+  min-height: 68px;
   margin-bottom: 8px;
   padding: 12px 14px;
   border-width: 1px;
@@ -2201,6 +2202,8 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  flex-basis: 0;
+  width: 0;
   gap: 2px;
   min-width: 0;
 }
@@ -2224,6 +2227,8 @@
   justify-content: center;
   flex-shrink: 0;
   width: 70px;
+  min-width: 70px;
+  max-width: 70px;
   height: 24px;
   padding: 0;
   border-width: 1px;
