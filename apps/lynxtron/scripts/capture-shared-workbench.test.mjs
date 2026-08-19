@@ -338,6 +338,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, ': overlay === "quick-switch" || overlay === "file-picker"');
     assert.include(workbench, "panel: readElementBox(overlayElement)");
     assert.include(workbench, '[data-command-palette="true"] [data-slot="command-footer"]');
+    assert.include(workbench, "footerGroups: [");
+    assert.include(workbench, '[data-slot="command-footer"] [data-slot="kbd-group"]');
+    assert.include(workbench, ".palette-footer .quick-switch-footer-group");
     assert.include(workbench, "function findCommandSearchSurface");
     assert.include(
       workbench,

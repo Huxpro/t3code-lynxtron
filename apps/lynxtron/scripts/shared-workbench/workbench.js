@@ -1151,6 +1151,12 @@ function readLynxPane() {
                 empty: readElementBox(root?.querySelector(".palette-empty")),
                 emptyText: readElementBox(root?.querySelector(".palette-empty-text")),
                 footer: readElementBox(root?.querySelector(".palette-footer")),
+                footerGroups: [
+                  ...(root?.querySelectorAll(".palette-footer .quick-switch-footer-group") ?? []),
+                ].map((group) => ({
+                  box: readElementBox(group),
+                  children: [...group.children].map((child) => readElementBox(child)),
+                })),
               }
             : overlay === "model-picker"
               ? {
@@ -2066,6 +2072,14 @@ function readWebPane() {
                   footer: readElementBox(
                     doc.querySelector('[data-command-palette="true"] [data-slot="command-footer"]'),
                   ),
+                  footerGroups: [
+                    ...doc.querySelectorAll(
+                      '[data-command-palette="true"] [data-slot="command-footer"] [data-slot="kbd-group"]',
+                    ),
+                  ].map((group) => ({
+                    box: readElementBox(group),
+                    children: [...group.children].map((child) => readElementBox(child)),
+                  })),
                 }
               : overlay === "workspace-menu"
                 ? {
