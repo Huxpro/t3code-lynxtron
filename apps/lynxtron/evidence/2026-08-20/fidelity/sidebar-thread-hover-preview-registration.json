@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-20T12:50:00-07:00",
+  "stateId": "sidebar-thread-hover-preview",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "surface": "Sidebar thread details hover preview",
+    "interaction": "pointer enter, configured open delay, quick leave cancellation, anchored open, resize follow, and leave dismissal"
+  },
+  "classification": {
+    "newScope": [
+      "The existing-thread-idle state measures the static Sidebar row, transcript, and Composer. It does not certify the thread details preview that appears only after hover.",
+      "The hover preview has independent timing and reverse-state contracts: a quick pass must not open it later, a sustained hover must open after the configured delay, and leave must dismiss it.",
+      "The popup is relation-anchored to the complete thread card and must follow Sidebar resize without drifting outside the viewport.",
+      "The state is P1 because a stale delayed popup obscures the transcript and can appear under the pointer after the user has already moved elsewhere."
+    ],
+    "productLoss": [
+      "Before repair, Lynx used mousemove only to enter the hover state. Moving off the row before the 150ms timer elapsed did not report leave, so the details popup could appear later at a stale location.",
+      "Repeated mousemove events also restarted the open timer, making the trigger timing depend on pointer motion rather than sustained hover."
+    ],
+    "missingCoverage": [
+      "The existing Native floating-relation verifier opened the tooltip and checked placement and resize follow, but did not exercise quick enter/leave cancellation.",
+      "No fixed-denominator state represented hover delay, delayed-open cancellation, or leave dismissal separately from the static Sidebar row."
+    ],
+    "harnessMismatch": [
+      "A proposed exact pre-150ms Native CDP assertion was rejected because the cross-thread probe and DevTool round trip can itself consume the delay window. The exact 150ms configuration belongs to deterministic component contract evidence; Native verifies observable quick-leave cancellation, eventual open, and dismissal."
+    ],
+    "evidenceBoundary": "Registration changes only scope accounting. All twelve new Lynx-for-Web and Native dimension cells enter as conservative unknown. Repair and current evidence are admitted in a later point; no weight, filter, or existing state is reduced to offset this new scope."
+  },
+  "denominatorChange": {
+    "before": {
+      "states": 65,
+      "cells": 744,
+      "weight": 243.2
+    },
+    "after": {
+      "states": 66,
+      "cells": 756,
+      "weight": 246.2
+    },
+    "reason": "Thread hover preview is a user-reachable overlay with independent trigger timing, cancellation, anchoring, resize, and dismissal contracts not represented by the static Sidebar state."
+  },
+  "validation": {
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
