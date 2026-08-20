@@ -1275,12 +1275,12 @@ function fileEditorSemanticReady(state) {
 async function dispatchPointerClick(cdp, sessionId, point) {
   await cdp.send(
     "Input.dispatchMouseEvent",
-    { type: "mousePressed", ...point, button: "left", clickCount: 1 },
+    { type: "mousePressed", ...point, button: "left", clickCount: 1, pointerType: "mouse" },
     sessionId,
   );
   await cdp.send(
     "Input.dispatchMouseEvent",
-    { type: "mouseReleased", ...point, button: "left", clickCount: 1 },
+    { type: "mouseReleased", ...point, button: "left", clickCount: 1, pointerType: "mouse" },
     sessionId,
   );
 }
@@ -1288,7 +1288,7 @@ async function dispatchPointerClick(cdp, sessionId, point) {
 async function dispatchPointerClickWithMove(cdp, sessionId, point) {
   await cdp.send(
     "Input.dispatchMouseEvent",
-    { type: "mouseMoved", ...point, button: "none" },
+    { type: "mouseMoved", ...point, button: "none", pointerType: "mouse" },
     sessionId,
   );
   await dispatchPointerClick(cdp, sessionId, point);
@@ -1642,6 +1642,87 @@ async function focusRemoteElement(cdp, sessionId, expression) {
   }
 }
 
+function cdpKeySequenceForCharacter(character) {
+  if (character === " ") {
+    return {
+      keyDown: {
+        type: "keyDown",
+        key: " ",
+        code: "Space",
+        modifiers: 0,
+        windowsVirtualKeyCode: 32,
+        location: 0,
+        isKeypad: false,
+        text: " ",
+        unmodifiedText: " ",
+      },
+      keyUp: {
+        type: "keyUp",
+        key: " ",
+        code: "Space",
+        modifiers: 0,
+        windowsVirtualKeyCode: 32,
+        location: 0,
+        isKeypad: false,
+      },
+    };
+  }
+  if (/^[A-Za-z]$/.test(character)) {
+    const upper = character.toUpperCase();
+    const virtualKeyCode = upper.charCodeAt(0);
+    return {
+      keyDown: {
+        type: "keyDown",
+        key: character,
+        code: `Key${upper}`,
+        modifiers: 0,
+        windowsVirtualKeyCode: virtualKeyCode,
+        location: 0,
+        isKeypad: false,
+        text: character,
+        unmodifiedText: character,
+      },
+      keyUp: {
+        type: "keyUp",
+        key: character,
+        code: `Key${upper}`,
+        modifiers: 0,
+        windowsVirtualKeyCode: virtualKeyCode,
+        location: 0,
+        isKeypad: false,
+      },
+    };
+  }
+  const keyDefinition =
+    character === "_"
+      ? { code: "Minus", virtualKeyCode: 189 }
+      : /^[0-9]$/.test(character)
+        ? { code: `Digit${character}`, virtualKeyCode: character.charCodeAt(0) }
+        : { code: "", virtualKeyCode: character.charCodeAt(0) };
+  return {
+    keyDown: {
+      type: "keyDown",
+      key: character,
+      code: keyDefinition.code,
+      modifiers: 0,
+      windowsVirtualKeyCode: keyDefinition.virtualKeyCode,
+      location: 0,
+      isKeypad: false,
+      text: character,
+      unmodifiedText: character,
+    },
+    keyUp: {
+      type: "keyUp",
+      key: character,
+      code: keyDefinition.code,
+      modifiers: 0,
+      windowsVirtualKeyCode: keyDefinition.virtualKeyCode,
+      location: 0,
+      isKeypad: false,
+    },
+  };
+}
+
 function pngDimensions(buffer) {
   return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
 }
@@ -1763,6 +1844,79 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
   })()`;
 
   if (fileEditClient === "web") {
+    const inputTraceInstalled = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const editor = ${webEditorExpression};
+        if (!editor) return false;
+        const frameWindow = editor.ownerDocument?.defaultView;
+        if (!frameWindow) return false;
+        const trace = [];
+        frameWindow.__T3_FILE_EDITOR_INPUT_TRACE__ = trace;
+        const selectionSnapshot = () => {
+          const root = editor.getRootNode();
+          const selection = root.getSelection?.() ?? frameWindow.getSelection?.();
+          const anchor =
+            selection?.anchorNode?.nodeType === Node.ELEMENT_NODE
+              ? selection.anchorNode
+              : selection?.anchorNode?.parentElement;
+          return {
+            active:
+              root.activeElement === editor ||
+              editor.ownerDocument.activeElement === editor,
+            anchorLine:
+              anchor?.closest?.('[data-line]')?.getAttribute('data-line') ?? null,
+            anchorInside: Boolean(selection?.anchorNode && editor.contains(selection.anchorNode)),
+            collapsed: selection?.isCollapsed ?? null,
+          };
+        };
+        const record = (type, phase, event) => {
+          const inputType =
+            'inputType' in event && typeof event.inputType === 'string'
+              ? event.inputType
+              : null;
+          const data =
+            'data' in event && typeof event.data === 'string'
+              ? event.data
+              : null;
+          const key =
+            'key' in event && typeof event.key === 'string'
+              ? event.key
+              : null;
+          const code =
+            'code' in event && typeof event.code === 'string'
+              ? event.code
+              : null;
+          trace.push({
+            type,
+            phase,
+            data,
+            inputType,
+            key,
+            code,
+            defaultPrevented: event.defaultPrevented,
+            isTrusted: event.isTrusted,
+            targetInside: event.composedPath().some((node) => node === editor),
+            selection: selectionSnapshot(),
+          });
+        };
+        for (const type of ['pointerdown', 'pointerup', 'focus', 'keydown', 'beforeinput', 'input', 'keyup']) {
+          editor.addEventListener(
+            type,
+            (event) => record(type, 'capture', event),
+            true,
+          );
+          if (type === 'beforeinput') {
+            editor.addEventListener(type, (event) => record(type, 'bubble', event));
+          }
+        }
+        return true;
+      })()`,
+    );
+    if (!inputTraceInstalled) throw new Error("Could not install the Web editor input trace.");
+    await cdp.send("Page.bringToFront", {}, sessionId);
+    await cdp.send("Emulation.setFocusEmulationEnabled", { enabled: true }, sessionId);
     const webEditorPoint = await evaluate(
       cdp,
       sessionId,
@@ -1773,75 +1927,89 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
           const rect = line.getBoundingClientRect();
           return rect.height > 0 && rect.bottom > 84 && rect.top < 820;
         });
-        const target = visibleLines.at(-1) ?? editor;
+        const targetLine =
+          visibleLines.find((line) => line.textContent?.trim()) ??
+          visibleLines[0] ??
+          editor;
+        const visibleTokens = [...(targetLine?.querySelectorAll('span') ?? [])].filter((token) => {
+          const rect = token.getBoundingClientRect();
+          return rect.width > 0 && rect.height > 0;
+        });
+        const target = visibleTokens.at(-1) ?? targetLine;
         if (!frame || !target) return null;
         const frameRect = frame.getBoundingClientRect();
         const rect = target.getBoundingClientRect();
         return {
-          x: frameRect.x + rect.x + Math.max(1, rect.width - 4),
+          x: frameRect.x + rect.x + Math.max(1, rect.width - 1),
           y: frameRect.y + rect.y + rect.height / 2,
         };
       })()`,
     );
     if (!webEditorPoint) throw new Error("Could not locate the Web file editor.");
-    await dispatchPointerClickWithMove(cdp, sessionId, webEditorPoint);
-    const webFocused = await focusRemoteElement(cdp, sessionId, webEditorExpression);
-    if (!webFocused) throw new Error("Could not focus the Web file editor.");
-    const webCaretPlaced = await evaluate(
-      cdp,
-      sessionId,
-      `(() => {
-        const editor = ${webEditorExpression};
-        const selection = editor?.ownerDocument?.defaultView?.getSelection?.();
-        if (!editor || !selection) return false;
-        const range = editor.ownerDocument.createRange();
-        range.selectNodeContents(editor);
-        range.collapse(false);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        return true;
-      })()`,
-    );
-    if (!webCaretPlaced) throw new Error("Could not place the Web file editor caret.");
-    await cdp.send("Page.bringToFront", {}, sessionId);
-    await cdp.send("Emulation.setFocusEmulationEnabled", { enabled: true }, sessionId);
     try {
+      await dispatchPointerClickWithMove(cdp, sessionId, webEditorPoint);
+      const webCaretReady = await evaluate(
+        cdp,
+        sessionId,
+        `new Promise((resolve) => {
+          const editor = ${webEditorExpression};
+          const frameWindow = editor?.ownerDocument?.defaultView;
+          frameWindow?.requestAnimationFrame?.(() => {
+            frameWindow.requestAnimationFrame(() => {
+              const root = editor.getRootNode();
+              const selection = root.getSelection?.() ?? frameWindow.getSelection?.();
+              const anchor =
+                selection?.anchorNode?.nodeType === Node.ELEMENT_NODE
+                  ? selection.anchorNode
+                  : selection?.anchorNode?.parentElement;
+              resolve(Boolean(
+                editor &&
+                (root.activeElement === editor || editor.ownerDocument.activeElement === editor) &&
+                selection?.anchorNode &&
+                editor.contains(selection.anchorNode) &&
+                anchor?.closest?.('[data-line]')
+              ));
+            });
+          });
+        })`,
+      );
+      if (!webCaretReady) {
+        const pointerDiagnostics = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const editor = ${webEditorExpression};
+            const frameWindow = editor?.ownerDocument?.defaultView;
+            const trace = frameWindow?.__T3_FILE_EDITOR_INPUT_TRACE__ ?? [];
+            const frame = document.getElementById('web-pane');
+            const frameRect = frame?.getBoundingClientRect();
+            const localX = ${JSON.stringify(webEditorPoint.x)} - (frameRect?.x ?? 0);
+            const localY = ${JSON.stringify(webEditorPoint.y)} - (frameRect?.y ?? 0);
+            const hit = editor?.ownerDocument?.elementFromPoint(localX, localY);
+            return {
+              point: ${JSON.stringify(webEditorPoint)},
+              hit: hit
+                ? {
+                    tagName: hit.tagName,
+                    className: hit.getAttribute('class') ?? '',
+                    text: hit.textContent?.slice(0, 80) ?? '',
+                    insideEditor: editor.contains(hit),
+                  }
+                : null,
+              trace,
+            };
+          })()`,
+        );
+        throw new Error(
+          `Pointer input did not place a Pierre editor caret: ${JSON.stringify(
+            pointerDiagnostics,
+          )}`,
+        );
+      }
       for (const character of fileEditSuffix) {
-        const virtualKeyCode = character.charCodeAt(0);
-        await cdp.send(
-          "Input.dispatchKeyEvent",
-          {
-            type: "keyDown",
-            key: character,
-            text: character,
-            unmodifiedText: character,
-            windowsVirtualKeyCode: virtualKeyCode,
-            nativeVirtualKeyCode: virtualKeyCode,
-          },
-          sessionId,
-        );
-        await cdp.send(
-          "Input.dispatchKeyEvent",
-          {
-            type: "char",
-            key: character,
-            text: character,
-            unmodifiedText: character,
-            windowsVirtualKeyCode: virtualKeyCode,
-            nativeVirtualKeyCode: virtualKeyCode,
-          },
-          sessionId,
-        );
-        await cdp.send(
-          "Input.dispatchKeyEvent",
-          {
-            type: "keyUp",
-            key: character,
-            windowsVirtualKeyCode: virtualKeyCode,
-            nativeVirtualKeyCode: virtualKeyCode,
-          },
-          sessionId,
-        );
+        const sequence = cdpKeySequenceForCharacter(character);
+        await cdp.send("Input.dispatchKeyEvent", sequence.keyDown, sessionId);
+        await cdp.send("Input.dispatchKeyEvent", sequence.keyUp, sessionId);
       }
     } finally {
       await cdp
@@ -1889,6 +2057,41 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
     if (!lynxCaretPlaced) throw new Error("Could not place the Lynx file editor caret.");
     await cdp.send("Input.insertText", { text: fileEditSuffix }, sessionId);
   }
+  const webInputTrace =
+    fileEditClient === "web"
+      ? await evaluate(
+          cdp,
+          sessionId,
+          `new Promise((resolve) => {
+            const editor = ${webEditorExpression};
+            const frameWindow = editor?.ownerDocument?.defaultView;
+            frameWindow?.requestAnimationFrame?.(() => {
+              frameWindow.requestAnimationFrame(() => {
+                const trace = frameWindow.__T3_FILE_EDITOR_INPUT_TRACE__ ?? [];
+                resolve({
+                  events: trace,
+                  trustedBeforeInput: trace.filter(
+                    (event) =>
+                      event.type === 'beforeinput' &&
+                      event.isTrusted === true &&
+                      event.inputType === 'insertText'
+                  ),
+                });
+              });
+            });
+          })`,
+        )
+      : null;
+  if (
+    fileEditClient === "web" &&
+    (webInputTrace?.trustedBeforeInput?.length ?? 0) < fileEditSuffix.length
+  ) {
+    throw new Error(
+      `Web file edit did not produce trusted beforeinput for every character: ${JSON.stringify(
+        webInputTrace,
+      )}`,
+    );
+  }
   const pendingState = await waitForState(
     (candidate) =>
       candidate?.[fileEditClient]?.fileEditorMetrics?.editorValueIncludesFidelitySentinel === true,
@@ -1920,6 +2123,11 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
     fileEditClient === "web"
       ? pendingEvidenceState.web.fileEditorMetrics.pending === true
       : pendingEvidenceState.lynx.fileEditorMetrics.statusbarText.includes("Unsaved changes");
+  const pendingContentRevision =
+    pendingEvidenceState?.[fileEditClient]?.fileEditorMetrics?.contentRevision ?? null;
+  if (!pendingContentRevision) {
+    throw new Error(`${fileEditClient} pending file state did not expose a content revision.`);
+  }
   const layout = await evaluate(
     cdp,
     sessionId,
@@ -2035,8 +2243,8 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
     (candidate) =>
       candidate?.web?.fileEditorMetrics?.currentFile === filePath.split("/").at(-1) &&
       candidate?.lynx?.fileEditorMetrics?.currentFile === filePath.split("/").at(-1) &&
-      candidate?.[fileEditClient]?.fileEditorMetrics?.editorValueIncludesFidelitySentinel ===
-        true &&
+      candidate?.web?.fileEditorMetrics?.contentRevision === pendingContentRevision &&
+      candidate?.lynx?.fileEditorMetrics?.contentRevision === pendingContentRevision &&
       candidate?.[fileEditClient]?.fileEditorMetrics?.pending === false &&
       candidate?.[fileEditClient]?.fileEditorMetrics?.statusbar === null,
     `${fileEditClient} file reopen with persisted contents`,
@@ -2052,8 +2260,9 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
         client: fileEditClient,
         channel:
           fileEditClient === "web"
-            ? "CDP pointer + focus emulation + keyDown/keyUp"
+            ? "CDP pointer + Pierre caret + Playwright-style keyDown/keyUp + trusted beforeinput"
             : "DevTool-equivalent pointer + DOM.focus + CDP Input.insertText",
+        webTrace: webInputTrace,
       },
       suffix: fileEditSuffix,
       pending: {
@@ -2075,6 +2284,7 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
       },
       reopen: {
         points: reopenPoints,
+        contentRevision: pendingContentRevision,
         web: reopenedState.web.fileEditorMetrics,
         lynx: reopenedState.lynx.fileEditorMetrics,
       },

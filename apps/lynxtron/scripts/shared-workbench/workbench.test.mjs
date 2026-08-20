@@ -98,7 +98,7 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "filesBrowserMetrics: readFilesBrowserMetrics");
     assert.include(source, "fileEditorMetrics: readFileEditorMetrics");
     assert.include(source, "contentEditable?.innerText ??");
-    assert.include(source, ": readComposedText(editor));");
+    assert.include(source, "readComposedText(editor)");
     assert.include(source, 'querySelectorAll(".file-editor-line__content")');
     assert.include(source, 'projectedLines.map((line) => readComposedText(line)).join("\\n")');
     assert.include(source, "composedElements.find((element)");
@@ -107,6 +107,9 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'getAttribute("data-pending-tab") === "true"');
     assert.include(source, "editorValueIncludesFidelitySentinel: editorValue.includes(");
     assert.include(source, "editorValueTail: editorValue.slice(-256)");
+    assert.include(source, 'querySelector("[data-file-content-revision]")');
+    assert.include(source, 'editor?.closest?.("[data-file-content-revision]")');
+    assert.include(source, 'getAttribute("data-file-content-revision")');
     assert.include(source, "firstLineNumber: firstLineNumberBox");
     assert.include(source, "firstLineContent: firstLineContentBox ?? editorInnerBox");
     assert.include(source, "gutterWidth,");

@@ -896,6 +896,10 @@ function readFileEditorMetrics(root) {
     lynxSurface?.querySelector(".files-panel__browser");
   const activeTab = root?.querySelector('[data-active-tab="true"]');
   const statusbar = lynxSurface?.querySelector(".file-panel__statusbar");
+  const contentRevisionHost =
+    lynxSurface?.querySelector("[data-file-content-revision]") ??
+    editor?.closest?.("[data-file-content-revision]") ??
+    contentEditable?.closest?.("[data-file-content-revision]");
   const tabs = [
     ...(root?.querySelectorAll(
       ".right-panel__tab-list [aria-label], [data-active-tab] [aria-label]",
@@ -946,6 +950,7 @@ function readFileEditorMetrics(root) {
     editorValueLength: editorValue.length,
     editorValueIncludesFidelitySentinel: editorValue.includes("T3_FILE_SAVE_FIDELITY_SENTINEL"),
     editorValueTail: editorValue.slice(-256),
+    contentRevision: contentRevisionHost?.getAttribute("data-file-content-revision") ?? null,
     explorer: readElementBox(explorer),
     back: readElementBox(root?.querySelector('[aria-label="Back to workspace files"]')),
     pending: activeTab?.getAttribute("data-pending-tab") === "true",

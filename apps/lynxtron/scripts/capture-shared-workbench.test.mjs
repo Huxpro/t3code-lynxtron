@@ -324,6 +324,11 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("captures editing and save lifecycle only in a disposable workspace", () => {
+    const editingFlow = source.slice(
+      source.indexOf("async function runFileEditingSaveFlow"),
+      source.indexOf("async function hashFile"),
+    );
+
     assert.include(source, 'stateId === "file-editor-editing-save"');
     assert.include(source, 'argValue("--file-edit-client", "")');
     assert.include(source, "--file-edit-client must be web or lynx");
@@ -340,14 +345,42 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"Page.bringToFront"');
     assert.include(source, '"Emulation.setFocusEmulationEnabled"');
     assert.include(source, '"Input.dispatchKeyEvent"');
+    assert.include(source, "function cdpKeySequenceForCharacter(character)");
+    assert.include(source, "code: `Key${upper}`");
+    assert.include(source, "modifiers: 0");
+    assert.include(source, "location: 0");
+    assert.include(source, "isKeypad: false");
     assert.include(source, 'type: "keyDown"');
-    assert.include(source, 'type: "char"');
     assert.include(source, 'type: "keyUp"');
-    assert.include(source, "CDP pointer + focus emulation + keyDown/keyUp");
+    assert.notInclude(editingFlow, 'type: "char"');
+    assert.include(source, "__T3_FILE_EDITOR_INPUT_TRACE__");
+    assert.include(source, "Pointer input did not place a Pierre editor caret");
+    assert.include(source, "visibleTokens.at(-1) ?? targetLine");
+    assert.include(source, "insideEditor: editor.contains(hit)");
+    assert.notInclude(editingFlow, "focusRemoteElement(cdp, sessionId, webEditorExpression)");
+    assert.include(source, 'pointerType: "mouse"');
+    assert.include(source, "const root = editor.getRootNode()");
+    assert.include(source, "root.getSelection?.() ?? frameWindow.getSelection?.()");
+    assert.include(source, "root.activeElement === editor");
+    assert.include(source, "'inputType' in event");
+    assert.include(source, "'data' in event");
+    assert.include(source, "'key' in event");
+    assert.include(source, "'code' in event");
+    assert.include(source, "defaultPrevented: event.defaultPrevented");
+    assert.include(source, "record(type, 'bubble', event)");
+    assert.include(source, "trustedBeforeInput");
+    assert.include(source, "event.isTrusted === true");
+    assert.include(source, "event.inputType === 'insertText'");
+    assert.include(
+      source,
+      "CDP pointer + Pierre caret + Playwright-style keyDown/keyUp + trusted beforeinput",
+    );
     assert.include(source, "`${fileEditClient} file editor changed contents`");
     assert.include(source, "File write confirmed before the pending evidence frame");
     assert.include(source, 'fileEditClient === "web"');
     assert.include(source, "pendingEvidenceState.web.fileEditorMetrics.pending === true");
+    assert.include(source, "const pendingContentRevision");
+    assert.include(source, "pending file state did not expose a content revision");
     assert.include(source, "visible: pendingVisible");
     assert.include(source, "const pendingDeadline = Date.now() + 3_000");
     assert.include(source, "pendingEvidenceState = candidate");
@@ -358,6 +391,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "includesSentinel: true");
     assert.include(source, "lynxWriteObserved");
     assert.include(source, "`${fileEditClient} file reopen with persisted contents`");
+    assert.include(
+      source,
+      "candidate?.web?.fileEditorMetrics?.contentRevision === pendingContentRevision",
+    );
+    assert.include(
+      source,
+      "candidate?.lynx?.fileEditorMetrics?.contentRevision === pendingContentRevision",
+    );
     assert.include(source, "fileEditingSaveEvidence !== null");
     assert.include(source, "fileEditingSave: fileEditingSaveEvidence");
     assert.include(source, "fixturePreparation.disposed = true");
