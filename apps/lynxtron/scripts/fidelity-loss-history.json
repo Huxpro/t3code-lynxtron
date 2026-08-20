@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T12:45:00-07:00",
+  "updatedAt": "2026-08-20T12:52:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13148,6 +13148,27 @@
               "source": "Both runs use disposable workspaces, confirm sentinel disk hashes, reopen with pending cleared, report zero renderer errors, and leave no agent-browser process"
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-thread-hover-preview-registration",
+      "observedAt": "2026-08-20T12:50:00-07:00",
+      "commit": "a54c0936a",
+      "codeCommit": "a54c0936a",
+      "codeState": "commit",
+      "label": "Sidebar thread hover preview registration",
+      "narrative": "A distinct P1 Sidebar overlay enters the fixed denominator before repair evidence is applied. The static existing-thread state does not cover delayed hover entry, quick leave cancellation, anchored popup geometry, resize follow, or leave dismissal. Before repair, Lynx could schedule a details popup from mousemove and still open it after the pointer had left; repeated movement could also restart the timer. The new state adds twelve Lynx-for-Web and Native cells at conservative unknown, expanding the denominator from 65 states, 744 cells, and weight 243.2 to 66 states, 756 cells, and weight 246.2. No existing state, weight, residual, or filter changes.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It registers a user-reachable timing and dismissal interaction that existing static Sidebar evidence did not represent, assigns no repair credit, and does not reduce any existing denominator contribution."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/sidebar-thread-hover-preview-registration.json",
+          "classification": "tracked-current",
+          "sha256": "d3e9d1edc5954f90071c1763a29e675d6bb04442d740e0dac5d19ba83f8e11f1"
         }
       ]
     }
