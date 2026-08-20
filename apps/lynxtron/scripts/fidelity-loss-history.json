@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T06:55:57+09:00",
+  "updatedAt": "2026-08-20T12:45:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13099,6 +13099,53 @@
               "confidence": 0.99,
               "method": "native-responsive-file-readiness",
               "source": "Exact b526d725 bundle uses main transport sequence 3 to 4, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-editing-save-current",
+      "observedAt": "2026-08-20T12:42:56-07:00",
+      "commit": "4716a211ac795d50a696d307b2c165d7a58bb0d4",
+      "codeCommit": "94a7d35e3",
+      "codeState": "commit",
+      "label": "File editor save lifecycle convergence",
+      "narrative": "Current-head Browser evidence closes the successful file-save lifecycle for Lynx-for-Web without assigning Native credit. At 1024x820 dark, Web physical pointer and Playwright-style key packets place a real Pierre caret and produce 62 trusted insertText beforeinput events. Web and Lynx-for-Web each act as the sole writer in separate pristine disposable workspaces: pending state is visible before the delayed write, Back occurs before confirmation, disk bytes contain the sentinel, and both renderers reopen the same full-buffer content revision with pending cleared. Web now retains optimistic contents across temporary unmount, refuses to release them against stale refresh data, and refreshes file details so writes from Lynx become visible. The successful write path is measured; integrated failure copy, retry, additional themes and viewports, and exact Native physical keyboard/save persistence remain conservative residual or unknown.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Two current-head captures hold semantic route, viewport, theme, right-panel width, product commit, Web bundle, Lynx bundle, and sentinel contract constant while alternating the sole writer. Disk hashes and shared content revisions independently prove persistence and cross-client reopen. No weights, filters, or denominator entries change, and Browser evidence is not applied to Native cells."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/file-editor-editing-save-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "8077bfad17b8e0b6de9b88ba813b2d0266f2f6dbfd631b75dd03020a2d538f97"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-editing-save"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "bidirectional-file-content-revision",
+              "source": "Web-writer and Lynx-writer captures persist the sentinel and both renderers reopen the writer's exact shared content revision"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "successful-file-save-lifecycle",
+              "source": "Real input, pending state, Back-before-confirmation, delayed disk write, and reopen pass for both Browser writers; residual preserves unmeasured integrated failure and retry behavior"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "disposable-file-persistence",
+              "source": "Both runs use disposable workspaces, confirm sentinel disk hashes, reopen with pending cleared, report zero renderer errors, and leave no agent-browser process"
             }
           }
         }
