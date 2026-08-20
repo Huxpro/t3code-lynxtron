@@ -82,10 +82,16 @@ export function Tooltip({ children }: ElementProps) {
   const [open, setOpen] = useState(false);
   const [anchorRect, setAnchorRect] = useState<FloatingRect | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hoverInsideRef = useRef(false);
   const setHover = useCallback(
     (inside: boolean, rect?: FloatingRect) => {
-      if (timerRef.current !== null) clearTimeout(timerRef.current);
       if (inside && rect) setAnchorRect(rect);
+      if (hoverInsideRef.current === inside) return;
+      hoverInsideRef.current = inside;
+      if (timerRef.current !== null) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
       const delay = inside ? provider.delay : provider.closeDelay;
       if (delay <= 0) {
         setOpen(inside);
@@ -97,6 +103,12 @@ export function Tooltip({ children }: ElementProps) {
       }, delay);
     },
     [provider.closeDelay, provider.delay],
+  );
+  useEffect(
+    () => () => {
+      if (timerRef.current !== null) clearTimeout(timerRef.current);
+    },
+    [],
   );
   const value = useMemo(() => ({ anchorRect, open, setHover }), [anchorRect, open, setHover]);
   return <TooltipContext.Provider value={value}>{children}</TooltipContext.Provider>;
@@ -141,6 +153,10 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
     trigger.setAttribute("data-floating-anchor-rect", JSON.stringify(rect));
     runOnBackground(reportHover)(true, rect);
   };
+  const handleMouseLeave = () => {
+    "main thread";
+    runOnBackground(reportHover)(false);
+  };
   const relationId =
     props["data-floating-anchor"] ??
     (isValidElement(render) ? render.props["data-floating-anchor"] : undefined);
@@ -172,6 +188,7 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
   }, [handleMouseMove, relationId, reportHover]);
   const hoverProps = {
     "main-thread:ref": triggerRef,
+    "main-thread:bindmouseleave": handleMouseLeave,
     "main-thread:bindmousemove": handleMouseMove,
   };
   if (isValidElement(render)) {
