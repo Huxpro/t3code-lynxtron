@@ -87,7 +87,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "floatingRelationResidual(metrics, placement)");
     assert.include(source, "__T3_LYNXTRON_TOOLTIP_PROBE__");
     assert.include(source, 'invokeTooltipProbe(relationId, "hover")');
-    assert.include(source, "invokeTooltipProbe(initialCard.attributes");
+    assert.include(source, 'invokeTooltipProbe(initialRelationId, "leave")');
+    assert.include(source, "await waitWhileAlive(child, 200)");
+    assert.include(source, "opened after a hover left before the delay elapsed");
+    assert.include(
+      source,
+      'const initialRelationId = initialCard.attributes["data-floating-anchor"]',
+    );
     assert.include(source, '".sidebar-v2-details-popover"');
     assert.include(source, 'side: "right", align: "start", sideOffset: 4');
     assert.include(source, "__T3_LYNXTRON_MTS_RESIZE_PROBE__?.sidebar(256,320)");

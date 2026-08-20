@@ -216,6 +216,12 @@ function waitForChildExit(child, timeoutMs) {
   });
 }
 
+async function waitWhileAlive(child, durationMs) {
+  if (await waitForChildExit(child, durationMs)) {
+    throw new Error("Lynxtron exited while waiting for the interaction timing window.");
+  }
+}
+
 async function waitForLogText(child, log, needle, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
   while (!log.read().includes(needle)) {
@@ -1101,6 +1107,14 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     }
   };
   const initialCard = await readFirstCard();
+  const initialRelationId = initialCard.attributes["data-floating-anchor"];
+  await invokeTooltipProbe(initialRelationId, "hover");
+  await invokeTooltipProbe(initialRelationId, "leave");
+  await waitWhileAlive(child, 200);
+  if (await readOptionalMeasurement(client, ".sidebar-v2-details-popover")) {
+    throw new Error("Sidebar details opened after a hover left before the delay elapsed.");
+  }
+  await invokeTooltipProbe(initialRelationId, "hover");
   const initialPopup = await hoverCard(initialCard);
   const initialDetails = assertFloatingRelation({
     anchor: initialCard.rect,
@@ -1109,7 +1123,7 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     popup: initialPopup.rect,
     viewport,
   });
-  await invokeTooltipProbe(initialCard.attributes["data-floating-anchor"], "leave");
+  await invokeTooltipProbe(initialRelationId, "leave");
   await waitForMeasurement({
     child,
     client,

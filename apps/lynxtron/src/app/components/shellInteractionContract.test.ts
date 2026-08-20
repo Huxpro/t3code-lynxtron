@@ -387,6 +387,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
     expect(files).toContain("projectFileLineTokens(path, line)");
+    expect(files).toContain("data-file-content-revision={fileContentRevision(contents)}");
     expect(files).toContain("file-editor-token file-editor-token--${token.tone}");
     expect(overrides).toContain(".file-editor-token--heading,");
     expect(overrides).toContain(".file-editor-token--string,");
@@ -642,6 +643,14 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).not.toContain("top: 132px;");
     expect(overrides).not.toContain("left: 244px;");
     expect(overrides).not.toContain(".sidebar-v2-details-dismiss {");
+    expect(tooltipSource).toContain("const hoverInsideRef = useRef(false);");
+    expect(tooltipSource).toContain("if (hoverInsideRef.current === inside) return;");
+    expect(tooltipSource).toContain("hoverInsideRef.current = inside;");
+    expect(tooltipSource).toContain('"main-thread:bindmouseleave": handleMouseLeave');
+    expect(tooltipSource).toContain("runOnBackground(reportHover)(false);");
+    expect(tooltipSource).toContain(
+      "if (timerRef.current !== null) clearTimeout(timerRef.current);",
+    );
     expect(tooltipSource).toContain('"main-thread:bindmousemove": handleMouseMove');
     expect(tooltipSource).toContain("main-thread:global-bindmousemove={handleGlobalMouseMove}");
     expect(tooltipSource).not.toContain(

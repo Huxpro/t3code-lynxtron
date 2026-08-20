@@ -43,7 +43,19 @@ vi.mock("../ui/sidebar", () => ({
 }));
 
 vi.mock("../ui/tooltip", () => ({
-  TooltipProvider: ({ children }: { readonly children: ReactNode }) => <>{children}</>,
+  TooltipProvider: ({
+    children,
+    closeDelay,
+    delay,
+  }: {
+    readonly children: ReactNode;
+    readonly closeDelay?: number;
+    readonly delay?: number;
+  }) => (
+    <div data-tooltip-close-delay={closeDelay} data-tooltip-delay={delay}>
+      {children}
+    </div>
+  ),
 }));
 
 const controls = {
@@ -81,6 +93,8 @@ describe("SidebarV2CompositionSurface", () => {
     );
     expect(markup.indexOf("Shared row")).toBeLessThan(markup.indexOf("chrome-footer"));
     expect(markup).not.toContain("sidebar-v2-empty");
+    expect(markup).toContain('data-tooltip-delay="150"');
+    expect(markup).toContain('data-tooltip-close-delay="0"');
   });
 
   it("places the shared scoped empty state inside the list composition", () => {
