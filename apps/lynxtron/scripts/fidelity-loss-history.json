@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T13:00:00-07:00",
+  "updatedAt": "2026-08-20T13:18:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13241,6 +13241,27 @@
               "source": "Production bundle 7d7eab57 uses main transport sequence 3 to 4, reports zero renderer errors, and disposes isolated state"
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-project-command-palette-registration",
+      "observedAt": "2026-08-20T13:16:00-07:00",
+      "commit": "f119f0f87",
+      "codeCommit": "f119f0f87",
+      "codeState": "commit",
+      "label": "Sidebar project and command palette registration",
+      "narrative": "Three distinct P1 workflows enter the fixed denominator before repair evidence is applied. The current Lynx non-Settings layout hard-codes Sidebar V2 and bypasses the existing grouped-project host, so projects, empty project rows, collapse state, and per-project thread creation are absent. Both Lynx Add project entry points fail to dispatch the already shared OpenAddProject intent, making the dedicated Local folder, Git URL, provider readiness, and Setup Required source view unreachable. Lynx Quick Switch advertises Arrow navigation and Enter selection but has no highlighted index, hover projection, or keyboard activation. Thirty-six new Lynx-for-Web and Native cells remain conservative unknown, expanding the denominator from 66 states, 756 cells, and weight 246.2 to 69 states, 792 cells, and weight 258.2. The blue development artwork comparison is recorded as a snapshot/settings mismatch until both clients use the same environmentIdentificationMode.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It adds user-reachable hierarchy, nested Add Project, and navigation contracts absent from the prior static Sidebar and root-palette states, assigns no repair credit, and changes no existing weight, residual, filter, or state."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/sidebar-project-command-palette-registration.json",
+          "classification": "tracked-current",
+          "sha256": "25240389e2643730b4cd70233b6c33ec7be4e68ea24f008cb43b9694e8095794"
         }
       ]
     }
