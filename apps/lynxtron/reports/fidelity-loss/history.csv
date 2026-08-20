@@ -190,3 +190,4 @@ responsive-composer-file-detail-coverage-reopen,2026-08-20T06:00:54+09:00,868c96
 responsive-composer-file-detail-coverage-current,2026-08-20T06:55:57+09:00,e3653c0d5df4f5e6ef61b8eb46fd01bbc85cf3df,commit,Responsive Composer and file-detail convergence,0.342213,0.342213,0.02638,0.32439,0.67561,0.647602
 file-editor-editing-save-current,2026-08-20T12:42:56-07:00,4716a211ac795d50a696d307b2c165d7a58bb0d4,commit,File editor save lifecycle convergence,0.338191,0.338191,0.026684,0.320047,0.679953,0.651624
 sidebar-thread-hover-preview-registration,2026-08-20T12:50:00-07:00,a54c0936a,commit,Sidebar thread hover preview registration,0.338191,0.338191,0.026684,0.320047,0.679953,0.651624
+sidebar-thread-hover-preview-current,2026-08-20T12:55:00-07:00,4e27cda76036a8a8ed90a464b534343085d5ebf8,commit,Sidebar thread hover preview convergence,0.331559,0.331559,0.026607,0.313288,0.686712,0.658256

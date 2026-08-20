@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T12:52:00-07:00",
+  "updatedAt": "2026-08-20T13:00:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13169,6 +13169,78 @@
           "path": "apps/lynxtron/evidence/2026-08-20/fidelity/sidebar-thread-hover-preview-registration.json",
           "classification": "tracked-current",
           "sha256": "d3e9d1edc5954f90071c1763a29e675d6bb04442d740e0dac5d19ba83f8e11f1"
+        }
+      ]
+    },
+    {
+      "id": "sidebar-thread-hover-preview-current",
+      "observedAt": "2026-08-20T12:55:00-07:00",
+      "commit": "4e27cda76036a8a8ed90a464b534343085d5ebf8",
+      "codeCommit": "99b8b854c",
+      "codeState": "commit",
+      "label": "Sidebar thread hover preview convergence",
+      "narrative": "The newly registered hover-preview state now has current evidence without hiding its remaining debt. The shared Sidebar composition pins a 150ms open delay and zero close delay. Lynx tracks inside transitions, cancels pending timers on main-thread mouseleave, ignores repeated inside mousemoves, and clears timers on unmount. Exact Native on production bundle 7d7eab57 proves that hover followed by immediate leave remains closed after 200ms, sustained hover opens the details card, leave dismisses it, and the popup follows a 239px to 303px Sidebar anchor resize with zero placement residual and viewport containment. Main transport advances 3 to 4, renderer errors are zero, and isolated state is disposed. Lynx-for-Web receives only shared-contract interaction/runtime credit because no independent real-pointer Browser timing capture was retained; typography and material remain unknown for both clients.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The registration point left all twelve new cells unknown. Current evidence combines deterministic shared delay contracts with an exact-owned Native process, production bundle hash, canonical fixture, explicit viewport/theme, relation-scoped MTS hover handler, quick-leave cancellation, eventual open, dismissal, resize-follow geometry, advancing main transport, zero errors, and disposed state. No state weight, filter, or denominator entry changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/sidebar-thread-hover-preview-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "459cd1250377d5e7821c8308c54bf19534526c3716c1c8474e6bfae956e127da"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-thread-hover-preview"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.8,
+              "method": "shared-hover-state-contract",
+              "source": "Shared Sidebar composition pins delay=150 and closeDelay=0; Lynx implementation cancels mouseleave and repeated-inside timers, while independent real-pointer Browser timing remains unretained"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.8,
+              "method": "shared-tooltip-runtime-contract",
+              "source": "Shared hover state machine and focused contracts pass; Native independently proves the MTS implementation while Lynx-for-Web retains lower confidence without a separate Browser timing capture"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-thread-hover-preview"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.05,
+              "confidence": 0.99,
+              "method": "native-hover-details-content",
+              "source": "Exact Native opens the details card for the canonical thread and retains canonical project/model state"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 303,
+              "confidence": 0.99,
+              "method": "native-hover-relation-geometry",
+              "source": "Initial and resized details cards keep 4px side gap, zero align delta, zero residual, viewport containment, and exact anchor-follow movement"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-hover-delay-cancel-dismiss",
+              "source": "Quick hover and leave remains closed after 200ms; sustained hover opens; leave dismisses; resize retains the relation"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-hover-readiness",
+              "source": "Production bundle 7d7eab57 uses main transport sequence 3 to 4, reports zero renderer errors, and disposes isolated state"
+            }
+          }
         }
       ]
     }
