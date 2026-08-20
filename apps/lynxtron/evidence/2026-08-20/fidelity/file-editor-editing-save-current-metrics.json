@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-20T12:42:56-07:00",
+  "stateId": "file-editor-editing-save",
+  "productCommit": "94a7d35e3",
+  "harnessCommit": "5ffae7bcd",
+  "captureHead": "5428be9cfa1b6fb28a801ee34da70e5fe0eb83e1",
+  "scope": {
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "rightPanelWidth": 360,
+    "writerClients": ["web", "lynx"]
+  },
+  "classification": {
+    "productLossClosed": [
+      "Web physical pointer and Playwright-style key packets now place a real Pierre caret and produce one trusted insertText beforeinput for every character in the fidelity sentinel.",
+      "Web optimistic file contents survive Back and temporary editor unmount until the refreshed server query observes the confirmed bytes.",
+      "Opening or switching a non-image file refreshes the server query, so Web observes writes made by Lynx or another client instead of reopening a stale 30-second cached buffer.",
+      "Both writers expose pending state before the delayed project write, allow Back before confirmation, persist the sentinel to a disposable workspace, and reopen the same shared content revision in Web and Lynx."
+    ],
+    "harnessMismatch": [
+      "The first final run reused a stale Browser Preview artifact. The harness checks artifact existence but not source freshness; rebuilding the shipping Web and Lynx-for-Web artifacts resolved that preflight mismatch.",
+      "Pierre virtualizes its DOM, so scanning rendered innerText could not identify the complete buffer after reopen. Shared fileContentRevision attributes now expose renderer-neutral full-buffer identity.",
+      "The first revision metric searched upward from the contentEditable inside Pierre's ShadowRoot and could not cross the shadow boundary. The metric now resolves the revision from the light-DOM editor host.",
+      "The first Lynx-writer regression exposed a real Web stale-query product loss rather than a save failure: disk and Lynx had the sentinel while Web reopened the cached pre-write buffer."
+    ],
+    "intentionalPlatformDelta": [
+      "Web edits through Pierre contentEditable and records trusted beforeinput. Lynx-for-Web edits through its textarea-compatible surface with CDP Input.insertText. Evidence compares content revision, pending state, persistence, Back timing, and reopen identity rather than identical editor kernels.",
+      "Web shows the pending tab marker while Lynx shows the explicit Unsaved changes and Save now status row."
+    ],
+    "remainingResidual": [
+      "Exact Native physical keyboard input, selection, pending/save feedback, and reopen persistence remain pending-user-session. Browser Web or Lynx-for-Web evidence does not satisfy those Native-only cells.",
+      "The current evidence covers the successful save path. Integrated write failure, visible error copy, manual retry, and recovery remain separate residual coverage.",
+      "The current evidence is dark 1024x820. It does not claim independent light-theme or additional viewport save-lifecycle coverage."
+    ],
+    "evidenceBoundary": "The two Browser captures use a fresh disposable t3-file-save-workspace, the same semantic route, viewport, theme, right-panel width, capture head, Web bundle identity, and Lynx bundle identity. Each run starts from its own pristine seeded snapshot because the writer intentionally changes disk bytes; equality is established by the shared initial fixture contract and the same final sentinel, not by reusing mutated state. No Native interaction credit is assigned."
+  },
+  "webWriter": {
+    "report": "/tmp/t3-file-editing-save-web-current-head/workbench-report.json",
+    "reportSha256": "09529f96c57d3c90280dce4c53098cd844fa8c7c4c678674bae50cedf1622880",
+    "seedHash": "608b44f6ea7cc87ac0dbb7096b49b51ae1846627a7f047475032eb3795622da0",
+    "bundles": {
+      "web": "eb74ffa1d866",
+      "lynx": "03882210f453"
+    },
+    "input": {
+      "channel": "CDP pointer + Pierre caret + Playwright-style keyDown/keyUp + trusted beforeinput",
+      "trustedBeforeInputCount": 62
+    },
+    "pending": {
+      "visible": true,
+      "webPending": true,
+      "lynxPending": false,
+      "webRevision": "6291:1e389xo",
+      "lynxRevision": "6260:m9wd30",
+      "sideBySideSha256": "92445a45627e270ca205be604a1d32d3d21051cb0a0eb79f66e4f277e3b01b5a"
+    },
+    "backBeforeWriteConfirmation": true,
+    "persistence": {
+      "bytes": 6361,
+      "sha256": "8588270253b1869650fb0810ac96a309ea79e7ce89bb8fb318bd0be53b412d3c",
+      "includesSentinel": true,
+      "lynxWriteObserved": false
+    },
+    "reopen": {
+      "expectedRevision": "6291:1e389xo",
+      "webRevision": "6291:1e389xo",
+      "lynxRevision": "6291:1e389xo",
+      "webPending": false,
+      "lynxPending": false
+    },
+    "rendererErrors": 0
+  },
+  "lynxWriter": {
+    "report": "/tmp/t3-file-editing-save-lynx-current-head/workbench-report.json",
+    "reportSha256": "d49501e8af2c26b63ed7008a561acd4d1ecc04bd1a9ef659eb20a952daf124f7",
+    "seedHash": "cb1daeac30fd6e899fea6b5ac6f47471d0a2eee90207a044c2590c90954c9920",
+    "bundles": {
+      "web": "eb74ffa1d866",
+      "lynx": "03882210f453"
+    },
+    "input": {
+      "channel": "DevTool-equivalent pointer + DOM.focus + CDP Input.insertText"
+    },
+    "pending": {
+      "visible": true,
+      "webPending": false,
+      "lynxStatusbar": "Unsaved changes Save now",
+      "webRevision": "6260:m9wd30",
+      "lynxRevision": "6291:ieqepc",
+      "sideBySideSha256": "39d6ce58ae7587164cc64a2b871bff6b918f423304383096f3730a2312f83bcc"
+    },
+    "backBeforeWriteConfirmation": true,
+    "persistence": {
+      "bytes": 6361,
+      "sha256": "c1f33d96d9923aecd088576b7e95388687ecd657035cc2aa43c5a66aa6cb8920",
+      "includesSentinel": true,
+      "lynxWriteObserved": true
+    },
+    "reopen": {
+      "expectedRevision": "6291:ieqepc",
+      "webRevision": "6291:ieqepc",
+      "lynxRevision": "6291:ieqepc",
+      "webPending": false,
+      "lynxPending": false
+    },
+    "rendererErrors": 0
+  },
+  "validation": {
+    "focusedWebTests": "9/9",
+    "focusedClientRuntimeTests": "1/1",
+    "focusedHarnessTests": "49/49",
+    "focusedShellContracts": "29/29",
+    "webTypecheck": "pass",
+    "clientRuntimeTypecheck": "pass with one pre-existing Effect suggestion",
+    "lynxTypecheck": "pass",
+    "browserWorkbenchBuild": "pass with existing Effect import.meta and asset-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
