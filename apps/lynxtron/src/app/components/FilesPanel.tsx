@@ -1,5 +1,6 @@
 import {
   buildProjectEntryTree,
+  fileContentRevision,
   projectFileDetailLayout,
   projectFileLineTokens,
   type ProjectEntryTreeNode,
@@ -105,7 +106,10 @@ function EditableFilePreview({
 
   if (result.truncated) {
     return (
-      <view className="file-panel__editor-surface">
+      <view
+        className="file-panel__editor-surface"
+        data-file-content-revision={fileContentRevision(result.contents)}
+      >
         <scroll-view className="file-panel__source-scroll" scroll-orientation="vertical">
           <text className="files-panel__preview-content">{result.contents}</text>
         </scroll-view>
@@ -119,7 +123,10 @@ function EditableFilePreview({
   }
 
   return (
-    <view className="file-panel__editor-surface">
+    <view
+      className="file-panel__editor-surface"
+      data-file-content-revision={fileContentRevision(contents)}
+    >
       {editing ? (
         <textarea
           className="files-panel__editor"

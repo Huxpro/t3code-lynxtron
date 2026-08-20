@@ -46,6 +46,7 @@ export function createProjectEnvironmentAtoms<R, E>(
   const fileScheduler = createAtomCommandScheduler();
   const optimisticFileFamily = Atom.family((key: string) =>
     Atom.make<OptimisticProjectFile | null>(null).pipe(
+      Atom.setIdleTTL(5 * 60_000),
       Atom.withLabel(`environment-data:projects:optimistic-file:${key}`),
     ),
   );

@@ -9,6 +9,7 @@ import { VirtualizedFile, type SelectedLineRange } from "@pierre/diffs";
 import { Editor } from "@pierre/diffs/editor";
 import { EditProvider, File, type FileOptions, Virtualizer } from "@pierre/diffs/react";
 import {
+  fileContentRevision,
   isMarkdownPreviewFile,
   projectFileCacheKey,
   projectFileDetailLayout,
@@ -75,6 +76,7 @@ import {
   confirmProjectFileQueryData,
   getOptimisticProjectFileQueryData,
   setProjectFileQueryData,
+  shouldRefreshProjectFileDetail,
   useProjectFileQuery,
 } from "./projectFilesQueryState";
 
@@ -651,7 +653,11 @@ function EditableFileSurface({
 
   return (
     <EditProvider editor={editor}>
-      <div ref={surfaceRef} className="flex min-h-0 flex-1">
+      <div
+        ref={surfaceRef}
+        className="flex min-h-0 flex-1"
+        data-file-content-revision={fileContentRevision(contents)}
+      >
         <Virtualizer
           className="file-preview-virtualizer min-h-0 flex-1 overflow-auto"
           config={{
@@ -792,6 +798,7 @@ export default function FilePreviewPanel({
   });
   const isImage = relativePath !== null && isWorkspaceImagePreviewPath(relativePath);
   const file = useProjectFileQuery(environmentId, cwd, relativePath, !isImage);
+  const refreshFile = file.refresh;
   const panelRef = useRef<HTMLDivElement>(null);
   const [panelWidth, setPanelWidth] = useState<number | null>(null);
   const [explorerOpen, setExplorerOpen] = useState(initialExplorerOpen);
@@ -832,6 +839,11 @@ export default function FilePreviewPanel({
     );
     currentCrumb?.scrollIntoView({ block: "nearest", inline: "end" });
   }, [relativePath]);
+
+  useEffect(() => {
+    if (!shouldRefreshProjectFileDetail(relativePath, isImage)) return;
+    refreshFile();
+  }, [isImage, refreshFile, relativePath]);
 
   useEffect(() => {
     const panel = panelRef.current;
