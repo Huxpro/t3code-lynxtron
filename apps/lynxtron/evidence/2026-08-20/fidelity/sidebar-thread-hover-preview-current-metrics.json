@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-20T12:55:00-07:00",
+  "stateId": "sidebar-thread-hover-preview",
+  "productCommit": "99b8b854c",
+  "verifierCommit": "5428be9cf",
+  "captureHead": "5ffae7bcd5c646d5fb049ecdf3bfcd669fd93447",
+  "classification": {
+    "productLossClosed": [
+      "Lynx tracks hover transitions instead of treating every mousemove as a fresh entry, so sustained pointer motion no longer restarts the 150ms open delay.",
+      "The trigger now handles main-thread mouseleave before the popup mounts, cancels the pending timer, and prevents a details card from appearing after a quick pass.",
+      "Leaving after open dismisses immediately through the same state transition, and unmount clears any pending timer.",
+      "The popup remains relation-anchored to the complete thread card and follows Sidebar resize with zero measured placement residual."
+    ],
+    "harnessMismatch": [
+      "An exact pre-150ms Native CDP assertion was rejected because the cross-thread probe and DevTool round trip can consume the delay window before measurement. The deterministic component contract pins delay=150 and closeDelay=0; Native proves observable quick-leave cancellation, eventual open, and dismissal.",
+      "The current exact Native report was recorded before the product and verifier commits were pushed, so report.head is the then-current 5ffae7bcd checkout while bundle SHA and source diff identify the verified worktree artifact. The later commits contain those exact product and verifier changes without changing the built bundle."
+    ],
+    "remainingResidual": [
+      "Lynx-for-Web uses the shared tooltip composition and MTS-compatible implementation, but no independent real-pointer Browser timing capture was retained for this state.",
+      "Current exact Native evidence covers dark 1280x820. Light theme, narrow Sidebar collision behavior, keyboard focus tooltips, and pointer transitions into interactive popup content remain outside this state.",
+      "The details popup text and material are inherited from existing Sidebar/static fidelity; this evidence primarily closes timing, anchoring, resize, and dismissal behavior."
+    ],
+    "evidenceBoundary": "Exact Native uses a disposable canonical three-thread fixture, explicit 1280x820 dark viewport, production bundle identity, owned DevTool client selected from the spawned PID, main transport advancement, relation-scoped MTS hover probe, zero renderer errors, and disposed state. Component tests independently pin the shared 150ms open and zero close delay. No screenshot or Browser evidence is used to claim Native physical pointer timing."
+  },
+  "sharedContract": {
+    "provider": "SidebarV2CompositionSurface",
+    "openDelayMs": 150,
+    "closeDelayMs": 0,
+    "stateMachine": {
+      "sameInsideTransitionIgnored": true,
+      "mouseleaveCancelsPendingTimer": true,
+      "unmountClearsTimer": true
+    }
+  },
+  "native": {
+    "status": "pass",
+    "report": "/tmp/t3-hover-native-verify/report.json",
+    "reportSha256": "bb67faeb40d659b07d1746a8b4e2e9c175d80bd5a9732a411dfad56aeb66c160",
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "bytes": 4625691,
+      "sha256": "7d7eab5721af0aca1a0991cc4a36461949e6a02e71e90013eb7e9c6eca1ee0d5"
+    },
+    "fixtureSnapshotId": "81d2da5599907e8b552b9ea52465c4787ab1af89293863eec08f18f7ba13d45f",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "client": {
+      "app": "@t3tools/lynxtron",
+      "port": 8902,
+      "sessionId": 1,
+      "bundleUrl": "file:///Users/bytedance/github/t3code-archaeology-verify3/apps/lynxtron/dist/desktop/main.lynx.bundle"
+    },
+    "transport": {
+      "kind": "main",
+      "sequence": [3, 4]
+    },
+    "interaction": {
+      "quickHoverLeaveRemainsClosedAfterMs": 200,
+      "sustainedHoverOpens": true,
+      "leaveDismisses": true
+    },
+    "initialRelation": {
+      "anchor": [8, 143, 239, 78],
+      "popup": [251, 143, 272, 108],
+      "sideGap": 4,
+      "alignDelta": 0,
+      "residual": 0,
+      "contained": true
+    },
+    "resizedRelation": {
+      "anchor": [8, 143, 303, 78],
+      "popup": [315, 143, 272, 108],
+      "sideGap": 4,
+      "alignDelta": 0,
+      "residual": 0,
+      "contained": true,
+      "followedAnchor": true
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedComponentAndVerifierTests": "77/77",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
