@@ -97,6 +97,10 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "\"button[data-type='item']\"");
     assert.include(source, "filesBrowserMetrics: readFilesBrowserMetrics");
     assert.include(source, "fileEditorMetrics: readFileEditorMetrics");
+    assert.include(source, "[data-file-save-error]");
+    assert.include(source, "[data-file-save-retry]");
+    assert.include(source, "saveError: readElementBox(saveError)");
+    assert.include(source, "saveRetry: readElementBox(saveRetry)");
     assert.include(source, "contentEditable?.innerText ??");
     assert.include(source, "readComposedText(editor)");
     assert.include(source, 'querySelectorAll(".file-editor-line__content")');

@@ -42,6 +42,19 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("only requires provider notification dismissal for states that clear it", () => {
+    assert.include(source, "async function dismissWebProviderNotification");
+    assert.include(source, "let clickAttempts = 0");
+    assert.include(source, "clickAttempts < 3");
+    assert.include(source, "nextClickAt = Date.now() + 750");
+    assert.include(source, "rect.width <= 0");
+    assert.include(source, "style?.pointerEvents === 'none'");
+    assert.include(source, "Number(style?.opacity ?? 1) <= 0");
+    assert.include(
+      source,
+      "await dispatchPointerClickWithMove(cdp, sessionId, notification.point)",
+    );
+    assert.include(source, "if (notification?.present === false) return true");
+    assert.include(source, "await dismissWebProviderNotification(cdp, sessionId)");
     assert.include(source, "if (shouldClearWebNotification && !notificationDismissed)");
   });
 
@@ -372,6 +385,19 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "SET workspace_root = '${escapedWorkspace}'");
     assert.include(source, 'T3_TEST_PROJECT_WRITE_DELAY_MS: "5000"');
     assert.include(source, "runFileEditingSaveFlow");
+    assert.include(source, "const waitForRemoteElement = async");
+    assert.include(
+      source,
+      'await waitForRemoteElement(webEditorExpression, "Web file editor DOM")',
+    );
+    assert.include(source, "const restoreFileEditorTarget = async");
+    assert.include(source, "await restoreFileEditorTarget()");
+    assert.include(source, "Timed out restoring the dual file editor target");
+    assert.include(source, "action: 'select-thread'");
+    assert.include(source, "latest?.web?.productState?.selectedThread === expectedThreadId");
+    assert.include(source, "latest?.lynx?.productState?.selectedThread === expectedThreadId");
+    assert.include(source, "action = panel ? 'open-files' : 'open-panel'");
+    assert.include(source, "action = 'open-file'");
     assert.include(source, '"Input.insertText"');
     assert.include(source, '"Page.bringToFront"');
     assert.include(source, '"Emulation.setFocusEmulationEnabled"');
@@ -416,8 +442,26 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "const pendingDeadline = Date.now() + 3_000");
     assert.include(source, "pendingEvidenceState = candidate");
     assert.include(source, "capturePanePair");
-    assert.include(source, "before save confirmation");
-    assert.include(source, "Edited contents did not persist in the disposable workspace");
+    assert.include(source, "File write confirmed before the pending evidence frame");
+    assert.include(source, "failedWriteWorkspace");
+    assert.include(source, "await rename(");
+    assert.include(source, '"T3 file save failure blocker\\n"');
+    assert.include(source, "await rm(fixturePreparation.disposableWorkspace, { force: true })");
+    assert.include(source, "writeFailureActive = true");
+    assert.include(source, "inline file save failure");
+    assert.include(source, "metrics?.saveError");
+    assert.include(source, "metrics?.saveRetry");
+    assert.include(source, 'metrics?.saveRetryText === "Retry save"');
+    assert.include(source, 'prefix: "file-save-failure"');
+    assert.include(source, "Could not locate ${fileEditClient} file save retry control");
+    assert.include(source, "await dispatchPointerClickWithMove(cdp, sessionId, retryPoint)");
+    assert.include(source, "`${fileEditClient} file save recovery`");
+    assert.include(source, "Retried contents did not persist in the disposable workspace");
+    assert.include(source, "workspaceRestored:");
+    assert.include(source, "errorCleared: true");
+    assert.include(source, "pendingCleared: true");
+    assert.include(source, "dual Files return after retry confirmation");
+    assert.notInclude(source, "Edited contents did not persist in the disposable workspace");
     assert.include(source, '({ method }) => method === "writeProjectFile"');
     assert.include(source, "includesSentinel: true");
     assert.include(source, "lynxWriteObserved");
@@ -432,6 +476,9 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(source, "fileEditingSaveEvidence !== null");
     assert.include(source, "fileEditingSave: fileEditingSaveEvidence");
+    assert.include(source, "const currentStateIdentityMatches = () =>");
+    assert.include(source, "stateIdentityMatch = currentStateIdentityMatches()");
+    assert.include(source, "finalCoreGeometryReady =");
     assert.include(source, "fixturePreparation.disposed = true");
   });
 
@@ -544,7 +591,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"quick-switch-empty": "zzzz-no-result"');
     assert.include(source, 'stateId !== "model-picker-empty"');
     assert.include(source, "webMetrics.emptyText === lynxMetrics?.emptyText");
-    assert.include(source, "const notificationDismissed = await evaluate(");
+    assert.include(source, "const notificationDismissed =");
+    assert.include(source, "await dismissWebProviderNotification(cdp, sessionId)");
     assert.notInclude(source, "overlay.length > 0 ||");
     assert.include(source, "Overlay ${overlay} closed before screenshot capture:");
     assert.include(source, 'stateId !== "settings-beta"');

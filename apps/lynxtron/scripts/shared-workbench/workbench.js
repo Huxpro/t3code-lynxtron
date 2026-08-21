@@ -1000,6 +1000,12 @@ function readFileEditorMetrics(root) {
     lynxSurface?.querySelector(".files-panel__browser");
   const activeTab = root?.querySelector('[data-active-tab="true"]');
   const statusbar = lynxSurface?.querySelector(".file-panel__statusbar");
+  const saveError = root?.querySelector(
+    '[data-file-save-error]:not([data-file-save-error="false"])',
+  );
+  const saveRetry = root?.querySelector(
+    '[data-file-save-retry]:not([data-file-save-retry="false"])',
+  );
   const contentRevisionHost =
     lynxSurface?.querySelector("[data-file-content-revision]") ??
     editor?.closest?.("[data-file-content-revision]") ??
@@ -1060,6 +1066,10 @@ function readFileEditorMetrics(root) {
     pending: activeTab?.getAttribute("data-pending-tab") === "true",
     statusbar: readElementBox(statusbar),
     statusbarText: readComposedText(statusbar),
+    saveError: readElementBox(saveError),
+    saveErrorText: readComposedText(saveError),
+    saveRetry: readElementBox(saveRetry),
+    saveRetryText: readComposedText(saveRetry),
     tabs,
   };
 }

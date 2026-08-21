@@ -26,7 +26,7 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
 import { createReadStream, existsSync } from "node:fs";
-import { mkdir, readFile, rm, writeFile, stat } from "node:fs/promises";
+import { mkdir, readFile, rename, rm, writeFile, stat } from "node:fs/promises";
 import { createServer, request as httpRequestRaw } from "node:http";
 import net from "node:net";
 import path from "node:path";
@@ -1433,6 +1433,52 @@ async function dispatchPointerClickWithMove(cdp, sessionId, point) {
   await dispatchPointerClick(cdp, sessionId, point);
 }
 
+async function dismissWebProviderNotification(cdp, sessionId, timeout = 8_000) {
+  const deadline = Date.now() + timeout;
+  let clickAttempts = 0;
+  let nextClickAt = 0;
+  while (Date.now() < deadline) {
+    const notification = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pane = document.getElementById('web-pane');
+        const doc = pane?.contentWindow?.document;
+        const dismiss = doc?.querySelector('button[aria-label="Dismiss notification"]');
+        if (!pane || !dismiss) return { present: false };
+        const paneRect = pane.getBoundingClientRect();
+        const rect = dismiss.getBoundingClientRect();
+        const style = doc.defaultView?.getComputedStyle(dismiss);
+        if (
+          rect.width <= 0 ||
+          rect.height <= 0 ||
+          style?.display === 'none' ||
+          style?.visibility === 'hidden' ||
+          style?.pointerEvents === 'none' ||
+          Number(style?.opacity ?? 1) <= 0
+        ) {
+          return { present: false };
+        }
+        return {
+          present: true,
+          point: {
+            x: paneRect.x + rect.x + rect.width / 2,
+            y: paneRect.y + rect.y + rect.height / 2,
+          },
+        };
+      })()`,
+    ).catch(() => null);
+    if (notification?.present === false) return true;
+    if (notification?.point && clickAttempts < 3 && Date.now() >= nextClickAt) {
+      await dispatchPointerClickWithMove(cdp, sessionId, notification.point);
+      clickAttempts += 1;
+      nextClickAt = Date.now() + 750;
+    }
+    await delay(50);
+  }
+  return false;
+}
+
 async function openWebSettingsFromSidebar(cdp, sessionId, useDomFallback) {
   if (useDomFallback) {
     const clicked = await evaluate(
@@ -2279,7 +2325,13 @@ async function capturePanePair({ cdp, sessionId, layout, cellDir, prefix }) {
   return result;
 }
 
-async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparation }) {
+async function runFileEditingSaveFlow({
+  cdp,
+  sessionId,
+  cellDir,
+  fixturePreparation,
+  expectedThreadId,
+}) {
   if (fixturePreparation?.kind !== "file-editing-disposable-workspace") {
     throw new Error("File editing save flow requires a disposable workspace fixture.");
   }
@@ -2295,6 +2347,22 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
     while (Date.now() < deadline) {
       latest = await readState();
       if (predicate(latest)) return latest;
+      await delay(50);
+    }
+    throw new Error(
+      `Timed out waiting for ${label}: ${JSON.stringify({
+        web: latest?.web?.fileEditorMetrics ?? null,
+        lynx: latest?.lynx?.fileEditorMetrics ?? null,
+      })}`,
+    );
+  };
+  const waitForRemoteElement = async (expression, label, timeout = 8_000) => {
+    const deadline = Date.now() + timeout;
+    let latest = null;
+    while (Date.now() < deadline) {
+      const present = await evaluate(cdp, sessionId, `Boolean(${expression})`).catch(() => false);
+      if (present) return;
+      latest = await readState();
       await delay(50);
     }
     throw new Error(
@@ -2326,8 +2394,137 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
     const host = root?.querySelector('.files-panel__editor');
     return host?.shadowRoot?.querySelector('textarea') ?? host ?? null;
   })()`;
+  const restoreFileEditorTarget = async () => {
+    const deadline = Date.now() + 12_000;
+    let latest = null;
+    while (Date.now() < deadline) {
+      latest = await readState();
+      if (
+        latest?.web?.productState?.selectedThread === expectedThreadId &&
+        latest?.lynx?.productState?.selectedThread === expectedThreadId &&
+        latest?.web?.fileEditorMetrics?.currentFile === filePath.split("/").at(-1) &&
+        latest?.lynx?.fileEditorMetrics?.currentFile === filePath.split("/").at(-1)
+      ) {
+        return latest;
+      }
+      const targets = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const targetName = ${JSON.stringify(filePath.split("/").at(-1))};
+          const targetPath = ${JSON.stringify(filePath)};
+          const expectedThreadId = ${JSON.stringify(expectedThreadId)};
+          const pointFor = (frameId, shadow, currentThread, currentFile) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            if (!frame || !root) return null;
+            if (currentThread !== expectedThreadId) {
+              const target =
+                root.querySelector(
+                  '[data-thread-id="' + CSS.escape(expectedThreadId) + '"] [role="button"]'
+                ) ??
+                root.querySelector(
+                  '[data-thread-id="' + CSS.escape(expectedThreadId) + '"]'
+                );
+              if (!target) return null;
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              if (rect.width <= 0 || rect.height <= 0) return null;
+              return {
+                action: 'select-thread',
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+              };
+            }
+            if (currentFile === targetName) return null;
+            const surface = root.querySelector('[data-file-browser-panel], .files-panel');
+            let target = null;
+            let action = null;
+            if (surface) {
+              target = surface.querySelector?.(
+                '[data-item-path="' + CSS.escape(targetPath) + '"]'
+              );
+              if (!target) {
+                const candidates = [];
+                const visit = (node) => {
+                  for (const child of node?.children ?? []) {
+                    candidates.push(child);
+                    visit(child);
+                    if (child.shadowRoot) visit(child.shadowRoot);
+                  }
+                };
+                visit(surface);
+                target = candidates.find((item) => {
+                  const label = item.getAttribute?.('aria-label') ?? '';
+                  const text = item.textContent?.trim().replace(/\\s+/g, ' ') ?? '';
+                  return (
+                    item.matches?.("button[data-type='item'], .file-tree-row--file") &&
+                    (label === targetName ||
+                      label.endsWith('/' + targetName) ||
+                      text === targetName)
+                  );
+                }) ?? null;
+              }
+              action = 'open-file';
+            } else {
+              const panel = root.querySelector(
+                '[data-right-panel-open="true"], [data-preview-panel-mode]'
+              );
+              target = panel
+                ? root.querySelector('[data-right-panel-action="files"]')
+                : root.querySelector('[aria-label="Toggle right panel"]');
+              action = panel ? 'open-files' : 'open-panel';
+            }
+            if (!target || target.getAttribute?.('aria-disabled') === 'true') return null;
+            target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+            const frameRect = frame.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
+            if (rect.width <= 0 || rect.height <= 0) return null;
+            return {
+              action,
+              x: frameRect.x + rect.x + rect.width / 2,
+              y: frameRect.y + rect.y + rect.height / 2,
+            };
+          };
+          return {
+            web: pointFor(
+              'web-pane',
+              false,
+              ${JSON.stringify(latest?.web?.productState?.selectedThread ?? null)},
+              ${JSON.stringify(latest?.web?.fileEditorMetrics?.currentFile ?? null)}
+            ),
+            lynx: pointFor(
+              'lynx-pane',
+              true,
+              ${JSON.stringify(latest?.lynx?.productState?.selectedThread ?? null)},
+              ${JSON.stringify(latest?.lynx?.fileEditorMetrics?.currentFile ?? null)}
+            ),
+          };
+        })()`,
+      ).catch(() => null);
+      let inputSent = false;
+      if (targets?.web) {
+        await dispatchPointerClickWithMove(cdp, sessionId, targets.web);
+        inputSent = true;
+      }
+      if (targets?.lynx) {
+        await dispatchPointerClickWithMove(cdp, sessionId, targets.lynx);
+        inputSent = true;
+      }
+      await delay(inputSent ? 150 : 50);
+    }
+    throw new Error(
+      `Timed out restoring the dual file editor target: ${JSON.stringify({
+        web: latest?.web?.fileEditorMetrics ?? null,
+        lynx: latest?.lynx?.fileEditorMetrics ?? null,
+      })}`,
+    );
+  };
 
+  await restoreFileEditorTarget();
   if (fileEditClient === "web") {
+    await waitForRemoteElement(webEditorExpression, "Web file editor DOM");
     const inputTraceInstalled = await evaluate(
       cdp,
       sessionId,
@@ -2585,6 +2782,9 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
   if (preConfirmationContents.includes("T3_FILE_SAVE_FIDELITY_SENTINEL")) {
     throw new Error("File write confirmed before the pending evidence frame.");
   }
+  await rename(fixturePreparation.disposableWorkspace, fixturePreparation.failedWriteWorkspace);
+  await writeFile(fixturePreparation.disposableWorkspace, "T3 file save failure blocker\n");
+  fixturePreparation.writeFailureActive = true;
   let pendingEvidenceState = pendingState;
   const pendingDeadline = Date.now() + 3_000;
   while (Date.now() < pendingDeadline) {
@@ -2599,8 +2799,6 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
         ? candidate.web?.fileEditorMetrics?.pending === true
         : candidate.lynx?.fileEditorMetrics?.statusbarText?.includes("Unsaved changes") === true;
     if (visible) break;
-    const contents = await readFile(fixturePreparation.disposableFile, "utf8");
-    if (contents.includes("T3_FILE_SAVE_FIDELITY_SENTINEL")) break;
     await delay(50);
   }
   const pendingVisible =
@@ -2631,6 +2829,92 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
     cellDir,
     prefix: "file-save-pending",
   });
+  let failureEvidenceState = null;
+  let failureScreenshot = null;
+  let retryPoint = null;
+  let recoveredState = null;
+  let persistedContents = "";
+  try {
+    failureEvidenceState = await waitForState(
+      (candidate) => {
+        const metrics = candidate?.[fileEditClient]?.fileEditorMetrics;
+        return Boolean(
+          metrics?.saveError && metrics?.saveRetry && metrics?.saveRetryText === "Retry save",
+        );
+      },
+      `${fileEditClient} inline file save failure`,
+      12_000,
+    );
+    failureScreenshot = await capturePanePair({
+      cdp,
+      sessionId,
+      layout,
+      cellDir,
+      prefix: "file-save-failure",
+    });
+    await rm(fixturePreparation.disposableWorkspace, { force: true });
+    await rename(fixturePreparation.failedWriteWorkspace, fixturePreparation.disposableWorkspace);
+    fixturePreparation.writeFailureActive = false;
+    retryPoint = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const frameId = ${JSON.stringify(`${fileEditClient}-pane`)};
+        const frame = document.getElementById(frameId);
+        const doc = frame?.contentWindow?.document;
+        const root =
+          ${JSON.stringify(fileEditClient)} === 'lynx'
+            ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+            : doc;
+        const retry = root?.querySelector(
+          '[data-file-save-retry]:not([data-file-save-retry="false"])'
+        );
+        if (!frame || !retry) return null;
+        const frameRect = frame.getBoundingClientRect();
+        const rect = retry.getBoundingClientRect();
+        return {
+          x: frameRect.x + rect.x + rect.width / 2,
+          y: frameRect.y + rect.y + rect.height / 2,
+        };
+      })()`,
+    );
+    if (!retryPoint) {
+      throw new Error(`Could not locate ${fileEditClient} file save retry control.`);
+    }
+    await dispatchPointerClickWithMove(cdp, sessionId, retryPoint);
+    recoveredState = await waitForState(
+      (candidate) => {
+        const metrics = candidate?.[fileEditClient]?.fileEditorMetrics;
+        return (
+          metrics?.saveError === null &&
+          metrics?.saveRetry === null &&
+          (fileEditClient === "web" ? metrics?.pending === false : metrics?.statusbar === null)
+        );
+      },
+      `${fileEditClient} file save recovery`,
+      12_000,
+    );
+    const persistenceDeadline = Date.now() + 8_000;
+    while (Date.now() < persistenceDeadline) {
+      persistedContents = await readFile(fixturePreparation.disposableFile, "utf8");
+      if (persistedContents.includes("T3_FILE_SAVE_FIDELITY_SENTINEL")) break;
+      await delay(50);
+    }
+    if (!persistedContents.includes("T3_FILE_SAVE_FIDELITY_SENTINEL")) {
+      throw new Error("Retried contents did not persist in the disposable workspace.");
+    }
+  } finally {
+    if (fixturePreparation.writeFailureActive) {
+      await rm(fixturePreparation.disposableWorkspace, { recursive: true, force: true });
+      await rename(
+        fixturePreparation.failedWriteWorkspace,
+        fixturePreparation.disposableWorkspace,
+      ).catch((error) => {
+        if (!existsSync(fixturePreparation.disposableWorkspace)) throw error;
+      });
+      fixturePreparation.writeFailureActive = false;
+    }
+  }
 
   const backPoints = await evaluate(
     cdp,
@@ -2667,19 +2951,8 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
       candidate?.lynx?.reviewMetrics?.activeKind === "files" &&
       candidate?.lynx?.filesBrowserMetrics?.present === true &&
       candidate?.lynx?.fileEditorMetrics?.present === false,
-    "dual Files return before save confirmation",
+    "dual Files return after retry confirmation",
   );
-
-  const persistenceDeadline = Date.now() + 8_000;
-  let persistedContents = "";
-  while (Date.now() < persistenceDeadline) {
-    persistedContents = await readFile(fixturePreparation.disposableFile, "utf8");
-    if (persistedContents.includes("T3_FILE_SAVE_FIDELITY_SENTINEL")) break;
-    await delay(50);
-  }
-  if (!persistedContents.includes("T3_FILE_SAVE_FIDELITY_SENTINEL")) {
-    throw new Error("Edited contents did not persist in the disposable workspace.");
-  }
   const reopenPoints = await evaluate(
     cdp,
     sessionId,
@@ -2755,9 +3028,25 @@ async function runFileEditingSaveFlow({ cdp, sessionId, cellDir, fixturePreparat
         lynx: pendingEvidenceState.lynx.fileEditorMetrics,
         screenshot: pendingScreenshot,
       },
+      failure: {
+        injectedBy: "temporarily renaming the disposable workspace during the delayed first write",
+        workspaceRestored: fixturePreparation.writeFailureActive === false,
+        web: failureEvidenceState.web.fileEditorMetrics,
+        lynx: failureEvidenceState.lynx.fileEditorMetrics,
+        screenshot: failureScreenshot,
+      },
+      retry: {
+        client: fileEditClient,
+        channel: "CDP pointer",
+        point: retryPoint,
+        web: recoveredState.web.fileEditorMetrics,
+        lynx: recoveredState.lynx.fileEditorMetrics,
+        errorCleared: true,
+        pendingCleared: true,
+      },
       back: {
         points: backPoints,
-        beforeWriteConfirmation: true,
+        afterRetryConfirmation: true,
       },
       persistence: {
         path: fixturePreparation.disposableFile,
@@ -2810,6 +3099,7 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
       process.env.TMPDIR ?? "/tmp",
       `t3-file-save-workspace-${process.pid}-${randomBytes(6).toString("hex")}`,
     );
+    const failedWriteWorkspace = `${disposableWorkspace}-write-failure`;
     const allowedTemporaryRoots = ["/tmp/", "/var/folders/"];
     if (!allowedTemporaryRoots.some((root) => disposableWorkspace.startsWith(root))) {
       throw new Error(`Refusing non-temporary file editing workspace: ${disposableWorkspace}`);
@@ -2821,6 +3111,7 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
     }
     await mkdir(path.dirname(disposableFile), { recursive: true });
     await writeFile(disposableFile, originalContents);
+    await rm(failedWriteWorkspace, { recursive: true, force: true });
 
     const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
     const escapedProjectId = expectedThreadFixture.projectId.replaceAll("'", "''");
@@ -2861,6 +3152,7 @@ WHERE project_id = '${escapedProjectId}';`,
       threadId: expectedThreadFixture.id,
       sourceWorkspace,
       disposableWorkspace,
+      failedWriteWorkspace,
       disposableFile,
       originalSha256: createHash("sha256").update(originalContents).digest("hex"),
       originalBytes: Buffer.byteLength(originalContents),
@@ -3235,6 +3527,7 @@ async function main() {
       if (userDataDir) await rm(userDataDir, { recursive: true, force: true });
       if (fixturePreparation.kind === "file-editing-disposable-workspace") {
         await rm(fixturePreparation.disposableWorkspace, { recursive: true, force: true });
+        await rm(fixturePreparation.failedWriteWorkspace, { recursive: true, force: true });
         fixturePreparation.disposed = true;
       }
     })();
@@ -4753,6 +5046,17 @@ async function captureCell({
           if (!pane || !dismiss) return { present: false };
           const paneRect = pane.getBoundingClientRect();
           const rect = dismiss.getBoundingClientRect();
+          const style = doc.defaultView?.getComputedStyle(dismiss);
+          if (
+            rect.width <= 0 ||
+            rect.height <= 0 ||
+            style?.display === 'none' ||
+            style?.visibility === 'hidden' ||
+            style?.pointerEvents === 'none' ||
+            Number(style?.opacity ?? 1) <= 0
+          ) {
+            return { present: false };
+          }
           return {
             present: true,
             point: {
@@ -5901,7 +6205,7 @@ async function captureCell({
       lynxChangedFilesInputSent &&
       normalizedChangedFilesState(state?.web?.reviewMetrics) === changedFilesTargetState &&
       normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
-  const finalCoreGeometryReady =
+  let finalCoreGeometryReady =
     isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
   const finalComposerInputReady =
     !composerInput ||
@@ -6037,49 +6341,53 @@ async function captureCell({
           JSON.stringify(state?.lynx?.pendingRequestMetrics ?? null) &&
         state?.web?.pendingRequestMetrics?.kind ===
           (stateId === "existing-thread-approval" ? "approval" : "question");
-  const webState = state?.web?.productState ?? null;
-  const lynxState = state?.lynx?.productState ?? null;
-  const projectSettingsSnapshotIdentityMatch =
-    isProjectSettingsState &&
-    JSON.stringify(projectSettingsInteraction.webScopeLabels) ===
-      JSON.stringify(projectSettingsInteraction.lynxScopeLabels) &&
-    projectSettingsInteraction.webScopeLabels.length > 0 &&
-    projectSettingsInteraction.webScopeOptionCount ===
-      projectSettingsInteraction.lynxScopeOptionCount &&
-    webState?.selectedProject === lynxState?.selectedProject &&
-    webState?.selectedThread === lynxState?.selectedThread;
-  const commonStateIdentityMatch =
-    Boolean(webState && lynxState) &&
-    JSON.stringify({
-      route: webState.route,
-      semanticRoute: webState.semanticRoute,
-      theme: webState.theme,
-      density: webState.density,
-      selectedThread: isFlatSidebarLayoutState ? null : webState.selectedThread,
-      selectedModel: webState.selectedModel,
-      lifecycle: webState.lifecycle,
-      overlayQuery: webState.overlayQuery,
-    }) ===
+  let webState = state?.web?.productState ?? null;
+  let lynxState = state?.lynx?.productState ?? null;
+  const currentStateIdentityMatches = () => {
+    const projectSettingsSnapshotIdentityMatch =
+      isProjectSettingsState &&
+      JSON.stringify(projectSettingsInteraction.webScopeLabels) ===
+        JSON.stringify(projectSettingsInteraction.lynxScopeLabels) &&
+      projectSettingsInteraction.webScopeLabels.length > 0 &&
+      projectSettingsInteraction.webScopeOptionCount ===
+        projectSettingsInteraction.lynxScopeOptionCount &&
+      webState?.selectedProject === lynxState?.selectedProject &&
+      webState?.selectedThread === lynxState?.selectedThread;
+    const commonStateIdentityMatch =
+      Boolean(webState && lynxState) &&
       JSON.stringify({
-        route: lynxState.route,
-        semanticRoute: lynxState.semanticRoute,
-        theme: lynxState.theme,
-        density: lynxState.density,
-        selectedThread: isFlatSidebarLayoutState ? null : lynxState.selectedThread,
-        selectedModel: lynxState.selectedModel,
-        lifecycle: lynxState.lifecycle,
-        overlayQuery: lynxState.overlayQuery,
-      });
-  const stateIdentityMatch =
-    commonStateIdentityMatch &&
-    (isProjectSettingsState
-      ? projectSettingsSnapshotIdentityMatch
-      : stateId === "sidebar-project-groups"
-        ? finalSidebarProjectGroupsReady && webState?.overlay === lynxState?.overlay
-        : isFlatSidebarLayoutState
-          ? finalFlatSidebarLayoutReady && webState?.overlay === lynxState?.overlay
-          : webState?.selectedProject === lynxState?.selectedProject &&
-            webState?.overlay === lynxState?.overlay);
+        route: webState.route,
+        semanticRoute: webState.semanticRoute,
+        theme: webState.theme,
+        density: webState.density,
+        selectedThread: isFlatSidebarLayoutState ? null : webState.selectedThread,
+        selectedModel: webState.selectedModel,
+        lifecycle: webState.lifecycle,
+        overlayQuery: webState.overlayQuery,
+      }) ===
+        JSON.stringify({
+          route: lynxState.route,
+          semanticRoute: lynxState.semanticRoute,
+          theme: lynxState.theme,
+          density: lynxState.density,
+          selectedThread: isFlatSidebarLayoutState ? null : lynxState.selectedThread,
+          selectedModel: lynxState.selectedModel,
+          lifecycle: lynxState.lifecycle,
+          overlayQuery: lynxState.overlayQuery,
+        });
+    return (
+      commonStateIdentityMatch &&
+      (isProjectSettingsState
+        ? projectSettingsSnapshotIdentityMatch
+        : stateId === "sidebar-project-groups"
+          ? finalSidebarProjectGroupsReady && webState?.overlay === lynxState?.overlay
+          : isFlatSidebarLayoutState
+            ? finalFlatSidebarLayoutReady && webState?.overlay === lynxState?.overlay
+            : webState?.selectedProject === lynxState?.selectedProject &&
+              webState?.overlay === lynxState?.overlay)
+    );
+  };
+  let stateIdentityMatch = currentStateIdentityMatches();
   const overlayGeometryDelta =
     state?.web?.overlayMetrics?.rect && state?.lynx?.overlayMetrics?.rect
       ? {
@@ -6194,12 +6502,8 @@ async function captureCell({
       return { devicePixelRatio, webPane: { x: web.x, y: web.y, width: web.width, height: web.height }, lynxPane: { x: lynx.x, y: lynx.y, width: lynx.width, height: lynx.height } };
     })()`,
   );
-  const notificationDismissed = await evaluate(
-    cdp,
-    sessionId,
-    `!document.getElementById("web-pane")?.contentWindow?.document
-        ?.querySelector('button[aria-label="Dismiss notification"]')`,
-  );
+  const notificationDismissed =
+    !shouldClearWebNotification || (await dismissWebProviderNotification(cdp, sessionId));
   if (shouldClearWebNotification && !notificationDismissed) {
     throw new Error("Web provider-update notification did not dismiss before capture.");
   }
@@ -6215,6 +6519,7 @@ async function captureCell({
       sessionId,
       cellDir,
       fixturePreparation,
+      expectedThreadId: expectThread,
     });
     state = editingSave.state;
     fileEditingSaveEvidence = editingSave.evidence;
@@ -6223,6 +6528,10 @@ async function captureCell({
     webFileEditorReturnedToBrowser = true;
     lynxFileEditorReturnedToBrowser = true;
   }
+  webState = state?.web?.productState ?? null;
+  lynxState = state?.lynx?.productState ?? null;
+  stateIdentityMatch = currentStateIdentityMatches();
+  finalCoreGeometryReady = isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
   finalFilesBrowserReady = filesBrowserReady(state);
   finalFileEditorReady = fileEditorReady(state);
   reachedTargetState ||= isFileEditorState && finalFileEditorReady;
