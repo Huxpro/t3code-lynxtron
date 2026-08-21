@@ -935,6 +935,18 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '[data-composer-control="model"]');
     assert.include(source, "let lynxOverlayInputSent = overlay.length === 0");
     assert.include(source, "function modelPickerSemanticsMatch");
+    assert.include(source, '"web-cdp-pointer|lynx-cdp-pointer"');
+    assert.include(source, "providerPointerTimeline.push");
+    assert.include(source, 'stage: "before-pointer"');
+    assert.include(
+      source,
+      "!lynxOverlayInputSent &&\n      webProviderNotificationCleared &&\n      state?.lynx?.connected",
+    );
+    const providerFlow = source.slice(
+      source.indexOf('overlay === "model-picker" &&'),
+      source.indexOf("if (\n      composerInput &&"),
+    );
+    assert.notInclude(providerFlow, "target.click()");
     assert.include(source, 'stateId !== "model-picker-selected"');
     assert.include(source, "webMetrics?.selectedRowKeys?.length === 1");
     assert.include(source, "lynxMetrics?.selectedRowKeys?.length === 1");

@@ -3872,6 +3872,7 @@ async function captureCell({
   let providerInputChannel = providerId.length === 0 ? "not-required" : "pending";
   let providerInputDiagnostics = null;
   const providerPostconditionTimeline = [];
+  const providerPointerTimeline = [];
   let providerReadyPolls = providerId.length === 0 ? 3 : 0;
   let lastProviderTimelineKey = "";
   let modelPickerSemanticReadyPolls = overlay === "model-picker" ? 0 : 3;
@@ -5430,6 +5431,7 @@ async function captureCell({
         overlay === "model-picker" ||
         overlay === "project-action-dialog") &&
       !lynxOverlayInputSent &&
+      webProviderNotificationCleared &&
       state?.lynx?.connected === true &&
       state?.lynx?.productState?.overlay !== overlay
     ) {
@@ -5707,28 +5709,21 @@ async function captureCell({
       ).catch(() => null);
       if (providerPoints?.web && providerPoints?.lynx) {
         providerInputDiagnostics = {
-          web: providerPoints.web.target,
-          lynx: providerPoints.lynx.target,
+          web: providerPoints?.web?.target ?? null,
+          lynx: providerPoints?.lynx?.target ?? null,
         };
+        providerPointerTimeline.push({
+          elapsedMs: Date.now() - readyStart,
+          stage: "before-pointer",
+          webProvider: state?.web?.overlayMetrics?.selectedProviderId ?? null,
+          lynxProvider: state?.lynx?.overlayMetrics?.selectedProviderId ?? null,
+          webOverlay: state?.web?.productState?.overlay ?? null,
+          lynxOverlay: state?.lynx?.productState?.overlay ?? null,
+        });
         await dispatchPointerClick(cdp, sessionId, providerPoints.web);
-        const lynxDomClicked = await evaluate(
-          cdp,
-          sessionId,
-          `(() => {
-            const frame = document.getElementById('lynx-pane');
-            const root = frame?.contentWindow?.document
-              ?.getElementById('t3-lynx-preview')
-              ?.shadowRoot;
-            const target = root?.querySelector(
-              ${JSON.stringify(`[data-model-picker-provider="${providerId}"]`)},
-            );
-            if (!target) return false;
-            target.click();
-            return true;
-          })()`,
-        ).catch(() => false);
+        await dispatchPointerClick(cdp, sessionId, providerPoints.lynx);
         providerInputSent = true;
-        providerInputChannel = `web-cdp-pointer|lynx-dom-click:${lynxDomClicked}`;
+        providerInputChannel = "web-cdp-pointer|lynx-cdp-pointer";
       }
     }
     if (
@@ -7712,6 +7707,7 @@ async function captureCell({
       providerInputChannel,
       providerInputDiagnostics,
       providerPostconditionTimeline,
+      providerPointerTimeline,
       composerInputChannel,
       reviewInteractionTimeline,
     },
