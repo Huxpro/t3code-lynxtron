@@ -595,6 +595,29 @@ export class LiveConnectorHost {
         return value;
       });
     }
+    if (request.method === "updateProject" || request.method === "deleteProject") {
+      const params = request.params as { projectId: string; title?: string; force?: boolean };
+      const command =
+        request.method === "updateProject"
+          ? {
+              type: "project.meta.update" as const,
+              commandId: globalThis.crypto.randomUUID(),
+              projectId: params.projectId,
+              title: params.title?.trim(),
+            }
+          : {
+              type: "project.delete" as const,
+              commandId: globalThis.crypto.randomUUID(),
+              projectId: params.projectId,
+              ...(params.force === true ? { force: true } : {}),
+            };
+      return this.#runClient(this.#client[ORCHESTRATION_WS_METHODS.dispatchCommand](command)).then(
+        (value) => {
+          this.#recordCommandResult(request.method, value);
+          return value;
+        },
+      );
+    }
     if (request.method === "listProjectEntries") {
       const params = request.params as { cwd: string };
       return this.#runClient<ProjectListEntriesResult>(

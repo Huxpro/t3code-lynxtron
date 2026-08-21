@@ -3,6 +3,7 @@ import type { ScopedThreadRef } from "@t3tools/contracts";
 
 import { t3ClientActions, useT3ClientState } from "../../../../lynxtron/src/app/state/t3Client";
 import { Icon } from "../../../../lynxtron/src/app/components/Icon";
+import { ProjectSettingsDialog } from "../../../../lynxtron/src/app/components/ProjectSettingsDialog";
 import { ThreadStatusLabel } from "../ThreadStatusIndicators";
 import type {
   SidebarProjectHostRow,
@@ -29,6 +30,7 @@ export function SidebarProjectListHost({
   rows,
   onToggleProject,
   onCreateThread,
+  onOpenProjectSettings,
   onSelectThread,
   onRenameThread,
   onArchiveThread,
@@ -36,6 +38,9 @@ export function SidebarProjectListHost({
 }: SidebarProjectListHostProps) {
   const { activeThreadId } = useT3ClientState();
   const [threadMenu, setThreadMenu] = useState<ThreadMenuState>(null);
+  const [projectSettingsMembers, setProjectSettingsMembers] = useState<
+    SidebarProjectHostRow["projectMembers"] | null
+  >(null);
   const [renamingThreadKey, setRenamingThreadKey] = useState<string | null>(null);
   const [renameDraft, setRenameDraft] = useState("");
 
@@ -57,6 +62,18 @@ export function SidebarProjectListHost({
       {rows.map((row) => (
         <view key={row.key} className="lynx-sidebar-project flex flex-col">
           <view
+            {...({
+              bindcontextmenu: (event: { stopPropagation?: () => void }) => {
+                stopTapPropagation(event);
+                if (onOpenProjectSettings) onOpenProjectSettings(row.projectMembers);
+                else setProjectSettingsMembers(row.projectMembers);
+              },
+              bindlongpress: (event: { stopPropagation?: () => void }) => {
+                stopTapPropagation(event);
+                if (onOpenProjectSettings) onOpenProjectSettings(row.projectMembers);
+                else setProjectSettingsMembers(row.projectMembers);
+              },
+            } as object)}
             className="sidebar-project-row-reference lynx-sidebar-project-row flex flex-row"
             bindtap={() => {
               onToggleProject(row);
@@ -231,6 +248,12 @@ export function SidebarProjectListHost({
             </view>
           </view>
         </>
+      ) : null}
+      {projectSettingsMembers ? (
+        <ProjectSettingsDialog
+          members={projectSettingsMembers}
+          onClose={() => setProjectSettingsMembers(null)}
+        />
       ) : null}
     </view>
   );

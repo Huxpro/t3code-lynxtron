@@ -7,6 +7,7 @@ import { ProjectId } from "@t3tools/contracts";
 import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
 import { uiActions } from "../../../lynxtron/src/app/state/uiState";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
+import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
 import { formatRelativeTimeLabel } from "../timestampFormat";
 import { buildSidebarProjectSnapshots } from "../sidebarProjectGrouping";
 import { useClientSettings } from "../hooks/useSettings";
@@ -17,6 +18,7 @@ import { useProjects, useThreadShells } from "../state/entities";
 import { SettingsSidebarNav } from "./settings/SettingsSidebarNav";
 import { SidebarChromeFooter, SidebarChromeHeader } from "./sidebar/SidebarChrome";
 import { SidebarProjectsSurface } from "./sidebar/SidebarProjectsSurface";
+import type { SidebarProjectSettingsMember } from "./sidebar/SidebarProjectListHost.types";
 import { HostText, HostView } from "./ui/hostElements";
 import { SidebarMenuButton } from "./ui/sidebar";
 
@@ -36,6 +38,9 @@ export default function Sidebar() {
   const [collapsedProjectKeys, setCollapsedProjectKeys] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
+  const [projectSettingsMembers, setProjectSettingsMembers] = useState<
+    readonly SidebarProjectSettingsMember[] | null
+  >(null);
   const groupedProjects = useMemo(
     () =>
       buildSidebarProjectSnapshots({
@@ -94,6 +99,13 @@ export default function Sidebar() {
             expanded: !collapsedProjectKeys.has(projectKey),
             expansionPreferenceKeys: [projectKey],
             projectRef,
+            projectMembers: project.memberProjects.map((member) => ({
+              id: member.id,
+              environmentId: member.environmentId,
+              title: member.title,
+              workspaceRoot: member.workspaceRoot,
+              environmentLabel: member.environmentLabel,
+            })),
             threads: projectThreads.map((thread) => {
               const status = resolveThreadStatusPill({ thread });
               return {
@@ -182,6 +194,7 @@ export default function Sidebar() {
         onCreateThread={(projectRef) => {
           void t3ClientActions.createThread(projectRef.projectId);
         }}
+        onOpenProjectSettings={setProjectSettingsMembers}
         onSelectThread={(threadRef) => {
           t3ClientActions.selectThread(threadRef.threadId);
         }}
@@ -195,6 +208,12 @@ export default function Sidebar() {
           void t3ClientActions.deleteThread(threadRef.threadId);
         }}
       />
+      {projectSettingsMembers ? (
+        <ProjectSettingsDialog
+          members={projectSettingsMembers}
+          onClose={() => setProjectSettingsMembers(null)}
+        />
+      ) : null}
       <SidebarChromeFooter />
     </>
   );

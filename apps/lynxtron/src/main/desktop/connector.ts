@@ -1057,6 +1057,26 @@ export class T3Connector {
     });
   }
 
+  async updateProject(input: { projectId: string; title: string }): Promise<void> {
+    const title = input.title.trim();
+    if (!title) return;
+    await this.dispatchOrchestrationCommand({
+      type: "project.meta.update",
+      commandId: crypto.randomUUID(),
+      projectId: input.projectId,
+      title,
+    });
+  }
+
+  async deleteProject(input: { projectId: string; force?: boolean }): Promise<void> {
+    await this.dispatchOrchestrationCommand({
+      type: "project.delete",
+      commandId: crypto.randomUUID(),
+      projectId: input.projectId,
+      ...(input.force === true ? { force: true } : {}),
+    });
+  }
+
   async updateProjectScripts(input: {
     projectId: string;
     scripts: ReadonlyArray<ProjectScript>;

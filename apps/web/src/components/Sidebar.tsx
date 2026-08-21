@@ -3397,6 +3397,13 @@ export default function Sidebar() {
             expanded,
             expansionPreferenceKeys: projectExpansionPreferenceKeys(project),
             projectRef,
+            projectMembers: project.memberProjects.map((member) => ({
+              id: member.id,
+              environmentId: member.environmentId,
+              title: member.title,
+              workspaceRoot: member.workspaceRoot,
+              environmentLabel: member.environmentLabel,
+            })),
             threads,
             showEmptyThreadState: expanded && visibleProjectThreads.length === 0,
           },

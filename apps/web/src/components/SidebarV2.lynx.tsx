@@ -29,6 +29,7 @@ import settingsRowUrl from "../../../lynxtron/src/app/assets/sidebar-settings-ro
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import { clientCapabilities } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
+import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
 
 function compactSidebarTimeLabel(label: string): string {
   if (label === "just now") return "now";
@@ -355,6 +356,7 @@ export default function SidebarV2() {
   const [activeSearchResultIndex, setActiveSearchResultIndex] = useState(0);
   const [projectScopeKey, setProjectScopeKey] = useState<string | null>(null);
   const [projectScopeMenuOpen, setProjectScopeMenuOpen] = useState(false);
+  const [projectSettingsProjectId, setProjectSettingsProjectId] = useState<string | null>(null);
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
   const [actionMenuThreadId, setActionMenuThreadId] = useState<string | null>(null);
   const orderedProjects = useMemo(
@@ -441,349 +443,398 @@ export default function SidebarV2() {
         className="size-4 shrink-0"
       />
     ),
+    actions: (
+      <view
+        className="sidebar-v2-project-action"
+        data-sidebar-project-action={project.id}
+        aria-label={`Project actions for ${project.title}`}
+        bindtap={(event: { stopPropagation?: () => void }) => {
+          stopPropagation(event);
+          setProjectScopeMenuOpen(false);
+          setProjectSettingsProjectId(project.id);
+        }}
+      >
+        <Icon name="ellipsis" size={14} color="#a1a1aa" />
+      </view>
+    ),
   }));
+  const projectSettingsProject =
+    projectSettingsProjectId === null
+      ? null
+      : (orderedProjects.find((project) => project.id === projectSettingsProjectId) ?? null);
   return (
-    <SidebarV2CompositionSurface
-      isElectron
-      controls={{
-        commandPaletteShortcutLabel: null,
-        searchControl: (
-          <view className="sidebar-inline-search">
-            <Icon name="search" size={16} color="#a1a1aa" className="sidebar-inline-search__icon" />
-            <input
-              className="sidebar-inline-search__input"
-              aria-label="Search threads"
-              placeholder="Search"
-              {...({ value: threadSearchQuery } as object)}
-              bindinput={(event: { detail?: { value?: unknown } }) => {
-                if (typeof event.detail?.value === "string") {
-                  setThreadSearchQuery(event.detail.value);
-                  setActiveSearchResultIndex(0);
-                }
-              }}
+    <>
+      <SidebarV2CompositionSurface
+        isElectron
+        controls={{
+          commandPaletteShortcutLabel: null,
+          searchControl: (
+            <view className="sidebar-inline-search">
+              <Icon
+                name="search"
+                size={16}
+                color="#a1a1aa"
+                className="sidebar-inline-search__icon"
+              />
+              <input
+                className="sidebar-inline-search__input"
+                aria-label="Search threads"
+                placeholder="Search"
+                {...({ value: threadSearchQuery } as object)}
+                bindinput={(event: { detail?: { value?: unknown } }) => {
+                  if (typeof event.detail?.value === "string") {
+                    setThreadSearchQuery(event.detail.value);
+                    setActiveSearchResultIndex(0);
+                  }
+                }}
+              />
+              {threadSearchQuery ? (
+                <view
+                  className="sidebar-inline-search__clear"
+                  aria-label="Clear thread search"
+                  bindtap={() => {
+                    setThreadSearchQuery("");
+                    setActiveSearchResultIndex(0);
+                  }}
+                >
+                  <Icon name="x" size={12} color="#a1a1aa" />
+                </view>
+              ) : null}
+            </view>
+          ),
+          newThreadShortcutLabel: null,
+          newThreadDisabled: newThreadProject === null,
+          onSearchClick: () => uiActions.openQuickSwitch("command"),
+          onNewThreadClick: () => {
+            if (newThreadProject) void t3ClientActions.createThread(newThreadProject.id);
+          },
+          projectScopeOptions,
+          projectScopeKey,
+          onProjectScopeKeyChange: setProjectScopeKey,
+          projectScopeMenuOpen,
+          onProjectScopeMenuOpenChange: setProjectScopeMenuOpen,
+          projectScopePopupWidth: sidebarWidth - 53,
+          scopedFavicon: scopedProject ? (
+            <ProjectFavicon
+              environmentId={scopedProject.environmentId}
+              cwd={scopedProject.workspaceRoot}
+              className="size-4 shrink-0"
             />
-            {threadSearchQuery ? (
+          ) : null,
+          scopedDisplayName: scopedProject?.title ?? null,
+          onNewProjectClick: uiActions.openAddProject,
+        }}
+        rows={[
+          ...threadSearchResults.map((thread, index) => {
+            const project = projectById.get(thread.projectId) ?? null;
+            const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
+            const highlighted = index === activeSearchResultIndex;
+            return (
               <view
-                className="sidebar-inline-search__clear"
-                aria-label="Clear thread search"
+                key={`search:${thread.id}`}
+                id={`sidebar-thread-search-result-${index}`}
+                {...({
+                  role: "option",
+                  "aria-selected": highlighted ? "true" : "false",
+                  "aria-current": thread.id === activeThreadId ? "page" : undefined,
+                } as object)}
+                className={
+                  highlighted || thread.id === activeThreadId
+                    ? "sidebar-v2-search-result sidebar-v2-search-result--highlighted"
+                    : "sidebar-v2-search-result"
+                }
+                data-sidebar-search-result={thread.id}
                 bindtap={() => {
                   setThreadSearchQuery("");
                   setActiveSearchResultIndex(0);
+                  t3ClientActions.selectThread(thread.id);
                 }}
               >
-                <Icon name="x" size={12} color="#a1a1aa" />
-              </view>
-            ) : null}
-          </view>
-        ),
-        newThreadShortcutLabel: null,
-        newThreadDisabled: newThreadProject === null,
-        onSearchClick: () => uiActions.openQuickSwitch("command"),
-        onNewThreadClick: () => {
-          if (newThreadProject) void t3ClientActions.createThread(newThreadProject.id);
-        },
-        projectScopeOptions,
-        projectScopeKey,
-        onProjectScopeKeyChange: setProjectScopeKey,
-        projectScopeMenuOpen,
-        onProjectScopeMenuOpenChange: setProjectScopeMenuOpen,
-        projectScopePopupWidth: sidebarWidth - 53,
-        scopedFavicon: scopedProject ? (
-          <ProjectFavicon
-            environmentId={scopedProject.environmentId}
-            cwd={scopedProject.workspaceRoot}
-            className="size-4 shrink-0"
-          />
-        ) : null,
-        scopedDisplayName: scopedProject?.title ?? null,
-        onNewProjectClick: uiActions.openAddProject,
-      }}
-      rows={[
-        ...threadSearchResults.map((thread, index) => {
-          const project = projectById.get(thread.projectId) ?? null;
-          const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
-          const highlighted = index === activeSearchResultIndex;
-          return (
-            <view
-              key={`search:${thread.id}`}
-              id={`sidebar-thread-search-result-${index}`}
-              {...({
-                role: "option",
-                "aria-selected": highlighted ? "true" : "false",
-                "aria-current": thread.id === activeThreadId ? "page" : undefined,
-              } as object)}
-              className={
-                highlighted || thread.id === activeThreadId
-                  ? "sidebar-v2-search-result sidebar-v2-search-result--highlighted"
-                  : "sidebar-v2-search-result"
-              }
-              data-sidebar-search-result={thread.id}
-              bindtap={() => {
-                setThreadSearchQuery("");
-                setActiveSearchResultIndex(0);
-                t3ClientActions.selectThread(thread.id);
-              }}
-            >
-              <ProjectFavicon
-                environmentId={thread.environmentId}
-                cwd={project?.workspaceRoot ?? ""}
-                className="sidebar-v2-search-result__favicon size-4 shrink-0"
-              />
-              <HostText className="sidebar-v2-search-result__title min-w-0 flex-1 truncate">
-                {thread.title}
-              </HostText>
-              <HostText className="sidebar-v2-search-result__time">
-                {compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
-              </HostText>
-            </view>
-          );
-        }),
-        ...visibleActiveThreads.map((thread) => {
-          const status = resolveSidebarV2Status(thread);
-          const isActive = thread.id === activeThreadId;
-          const project = projectById.get(thread.projectId) ?? null;
-          const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
-          const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
-          const actionMenuOpen = actionMenuThreadId === thread.id;
-          const detailsRelationId = `sidebar-thread-details:${thread.id}`;
-          return (
-            <SidebarV2RowSurface
-              key={thread.id}
-              threadId={thread.id}
-              variant="card"
-              variantAction="settle"
-              isActive={isActive}
-              isSelected={false}
-              shouldRecede={status === "ready" && !isActive}
-              isInFlight={
-                status === "working" ||
-                status === "connecting" ||
-                status === "approval" ||
-                status === "input"
-              }
-              isUnread={false}
-              isWoke={false}
-              settlementSupported={false}
-              snoozeSupported={false}
-              showSnoozeButton={false}
-              snoozeMenuOpen={false}
-              snoozeWakeLabelText={null}
-              projectTitle={project?.title ?? null}
-              threadTitle={thread.title}
-              branch={thread.branch ?? null}
-              threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
-              settledTimeLabel=""
-              topStatus={statusPresentation(status, thread)}
-              jumpLabel={null}
-              favicon={
                 <ProjectFavicon
                   environmentId={thread.environmentId}
                   cwd={project?.workspaceRoot ?? ""}
-                  className="size-4 shrink-0"
+                  className="sidebar-v2-search-result__favicon size-4 shrink-0"
                 />
-              }
-              title={
-                <HostText
-                  className={
-                    isActive
-                      ? "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
-                      : "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-normal text-foreground/90"
-                  }
-                >
+                <HostText className="sidebar-v2-search-result__title min-w-0 flex-1 truncate">
                   {thread.title}
                 </HostText>
-              }
-              prBadge={null}
-              isRegeneratingTitle={thread.titleRegeneration != null}
-              terminalStatusIcon={null}
-              diff={null}
-              remoteIndicator={null}
-              providerIndicator={
-                <view className="sidebar-v2-provider-summary" aria-hidden="true">
-                  <ProviderBrandIcon
-                    driverKind={providerProjection.provider?.driverKind ?? null}
-                    size={14}
+                <HostText className="sidebar-v2-search-result__time">
+                  {compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
+                </HostText>
+              </view>
+            );
+          }),
+          ...visibleActiveThreads.map((thread) => {
+            const status = resolveSidebarV2Status(thread);
+            const isActive = thread.id === activeThreadId;
+            const project = projectById.get(thread.projectId) ?? null;
+            const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
+            const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
+            const actionMenuOpen = actionMenuThreadId === thread.id;
+            const detailsRelationId = `sidebar-thread-details:${thread.id}`;
+            return (
+              <SidebarV2RowSurface
+                key={thread.id}
+                threadId={thread.id}
+                variant="card"
+                variantAction="settle"
+                isActive={isActive}
+                isSelected={false}
+                shouldRecede={status === "ready" && !isActive}
+                isInFlight={
+                  status === "working" ||
+                  status === "connecting" ||
+                  status === "approval" ||
+                  status === "input"
+                }
+                isUnread={false}
+                isWoke={false}
+                settlementSupported={false}
+                snoozeSupported={false}
+                showSnoozeButton={false}
+                snoozeMenuOpen={false}
+                snoozeWakeLabelText={null}
+                projectTitle={project?.title ?? null}
+                threadTitle={thread.title}
+                branch={thread.branch ?? null}
+                threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
+                settledTimeLabel=""
+                topStatus={statusPresentation(status, thread)}
+                jumpLabel={null}
+                favicon={
+                  <ProjectFavicon
+                    environmentId={thread.environmentId}
+                    cwd={project?.workspaceRoot ?? ""}
+                    className="size-4 shrink-0"
                   />
-                </view>
-              }
-              detailsTooltip={
-                <LynxThreadDetails
-                  relationId={detailsRelationId}
-                  thread={thread}
-                  projectTitle={project?.title ?? null}
-                  provider={providerProjection.provider}
-                  instanceId={providerProjection.instanceId}
-                  modelLabel={providerProjection.modelLabel}
-                />
-              }
-              detailsRelationId={detailsRelationId}
-              detailsOverlay={
-                actionMenuOpen ? (
-                  <LynxThreadActionMenu
+                }
+                title={
+                  <HostText
+                    className={
+                      isActive
+                        ? "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
+                        : "sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-normal text-foreground/90"
+                    }
+                  >
+                    {thread.title}
+                  </HostText>
+                }
+                prBadge={null}
+                isRegeneratingTitle={thread.titleRegeneration != null}
+                terminalStatusIcon={null}
+                diff={null}
+                remoteIndicator={null}
+                providerIndicator={
+                  <view className="sidebar-v2-provider-summary" aria-hidden="true">
+                    <ProviderBrandIcon
+                      driverKind={providerProjection.provider?.driverKind ?? null}
+                      size={14}
+                    />
+                  </view>
+                }
+                detailsTooltip={
+                  <LynxThreadDetails
+                    relationId={detailsRelationId}
                     thread={thread}
-                    projectPath={project?.workspaceRoot ?? null}
-                    settled={false}
-                    settlementSupported={settlementSupported}
-                    onClose={() => setActionMenuThreadId(null)}
+                    projectTitle={project?.title ?? null}
+                    provider={providerProjection.provider}
+                    instanceId={providerProjection.instanceId}
+                    modelLabel={providerProjection.modelLabel}
                   />
-                ) : undefined
-              }
-              snoozeControl={
+                }
+                detailsRelationId={detailsRelationId}
+                detailsOverlay={
+                  actionMenuOpen ? (
+                    <LynxThreadActionMenu
+                      thread={thread}
+                      projectPath={project?.workspaceRoot ?? null}
+                      settled={false}
+                      settlementSupported={settlementSupported}
+                      onClose={() => setActionMenuThreadId(null)}
+                    />
+                  ) : undefined
+                }
+                snoozeControl={
+                  <view
+                    className="sidebar-v2-card-action-icon"
+                    data-sidebar-thread-action-trigger={thread.id}
+                    aria-label={`Thread actions for ${thread.title}`}
+                    bindtap={(event: unknown) => {
+                      stopPropagation(event);
+                      setActionMenuThreadId(actionMenuOpen ? null : thread.id);
+                    }}
+                  >
+                    <Icon name="ellipsis" size={12} color="#a1a1aa" />
+                  </view>
+                }
+                settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
+                unsettleIcon={
+                  <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
+                }
+                unsnoozeIcon={
+                  <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
+                }
+                wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
+                onClick={() => {
+                  t3ClientActions.selectThread(thread.id);
+                }}
+                onDoubleClick={() => {}}
+                onKeyDown={() => {}}
+                onContextMenu={(event) => {
+                  stopPropagation(event);
+                  setActionMenuThreadId(thread.id);
+                }}
+                onSettleClick={(event) => {
+                  stopPropagation(event);
+                  void t3ClientActions.settleThread(thread.id).catch(() => undefined);
+                }}
+                onUnsettleClick={stopPropagation}
+                onUnsnoozeClick={stopPropagation}
+              />
+            );
+          }),
+          ...(settledThreads.length > 0 && threadSearchQuery.trim().length === 0
+            ? [
                 <view
-                  className="sidebar-v2-card-action-icon"
-                  data-sidebar-thread-action-trigger={thread.id}
-                  aria-label={`Thread actions for ${thread.title}`}
-                  bindtap={(event: unknown) => {
-                    stopPropagation(event);
-                    setActionMenuThreadId(actionMenuOpen ? null : thread.id);
-                  }}
+                  key="settled-shelf-header"
+                  className="sidebar-v2-settled-shelf-toggle"
+                  data-testid="sidebar-v2-settled-shelf-toggle"
+                  aria-expanded={settledShelfExpanded ? "true" : "false"}
+                  bindtap={() => setSettledShelfExpanded((expanded) => !expanded)}
                 >
-                  <Icon name="ellipsis" size={12} color="#a1a1aa" />
-                </view>
-              }
-              settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
-              unsettleIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
-              unsnoozeIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
-              wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
-              onClick={() => {
-                t3ClientActions.selectThread(thread.id);
-              }}
-              onDoubleClick={() => {}}
-              onKeyDown={() => {}}
-              onContextMenu={(event) => {
-                stopPropagation(event);
-                setActionMenuThreadId(thread.id);
-              }}
-              onSettleClick={(event) => {
-                stopPropagation(event);
-                void t3ClientActions.settleThread(thread.id).catch(() => undefined);
-              }}
-              onUnsettleClick={stopPropagation}
-              onUnsnoozeClick={stopPropagation}
-            />
-          );
-        }),
-        ...(settledThreads.length > 0 && threadSearchQuery.trim().length === 0
-          ? [
-              <view
-                key="settled-shelf-header"
-                className="sidebar-v2-settled-shelf-toggle"
-                data-testid="sidebar-v2-settled-shelf-toggle"
-                aria-expanded={settledShelfExpanded ? "true" : "false"}
-                bindtap={() => setSettledShelfExpanded((expanded) => !expanded)}
-              >
-                <text className="sidebar-v2-settled-shelf-label">
-                  {settledShelfExpanded ? "Settled" : `Settled (${settledThreads.length})`}
-                </text>
-                <view className="sidebar-v2-settled-shelf-rule" />
-                <Icon
-                  name="chevron-down"
-                  size={12}
-                  color="#818181"
-                  className={
-                    settledShelfExpanded
-                      ? "sidebar-v2-settled-shelf-chevron sidebar-v2-settled-shelf-chevron--expanded"
-                      : "sidebar-v2-settled-shelf-chevron"
-                  }
-                />
-              </view>,
-            ]
-          : []),
-        ...visibleSettledThreads.map((thread) => {
-          const project = projectById.get(thread.projectId) ?? null;
-          const actionMenuOpen = actionMenuThreadId === thread.id;
-          return (
-            <SidebarV2RowSurface
-              key={`${thread.id}:slim`}
-              threadId={thread.id}
-              variant="slim"
-              variantAction="unsettle"
-              isActive={thread.id === activeThreadId}
-              isSelected={false}
-              shouldRecede={false}
-              isInFlight={false}
-              isUnread={false}
-              isWoke={false}
-              settlementSupported={settlementSupported}
-              snoozeSupported={false}
-              showSnoozeButton={false}
-              snoozeMenuOpen={false}
-              snoozeWakeLabelText={null}
-              projectTitle={project?.title ?? null}
-              threadTitle={thread.title}
-              branch={thread.branch ?? null}
-              threadTimeLabel=""
-              settledTimeLabel={settledTimeLabel(thread)}
-              topStatus={null}
-              jumpLabel={null}
-              favicon={<Icon name="message-square" size={16} color="#818181" className="size-4" />}
-              title={
-                <HostText className="sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground">
-                  {thread.title}
-                </HostText>
-              }
-              prBadge={null}
-              isRegeneratingTitle={thread.titleRegeneration != null}
-              terminalStatusIcon={null}
-              diff={null}
-              remoteIndicator={null}
-              providerIndicator={null}
-              detailsTooltip={null}
-              detailsRelationId={`sidebar-thread-details:${thread.id}`}
-              detailsOverlay={
-                actionMenuOpen ? (
-                  <LynxThreadActionMenu
-                    thread={thread}
-                    projectPath={project?.workspaceRoot ?? null}
-                    settled
-                    settlementSupported={settlementSupported}
-                    onClose={() => setActionMenuThreadId(null)}
+                  <text className="sidebar-v2-settled-shelf-label">
+                    {settledShelfExpanded ? "Settled" : `Settled (${settledThreads.length})`}
+                  </text>
+                  <view className="sidebar-v2-settled-shelf-rule" />
+                  <Icon
+                    name="chevron-down"
+                    size={12}
+                    color="#818181"
+                    className={
+                      settledShelfExpanded
+                        ? "sidebar-v2-settled-shelf-chevron sidebar-v2-settled-shelf-chevron--expanded"
+                        : "sidebar-v2-settled-shelf-chevron"
+                    }
                   />
-                ) : undefined
-              }
-              snoozeControl={null}
-              settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
-              unsettleIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
-              unsnoozeIcon={<Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />}
-              wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
-              onClick={() => t3ClientActions.selectThread(thread.id)}
-              onDoubleClick={() => {}}
-              onKeyDown={() => {}}
-              onContextMenu={(event) => {
-                stopPropagation(event);
-                setActionMenuThreadId(thread.id);
-              }}
-              onSettleClick={stopPropagation}
-              onUnsettleClick={(event) => {
-                stopPropagation(event);
-                void t3ClientActions.unsettleThread(thread.id).catch(() => undefined);
-              }}
-              onUnsnoozeClick={stopPropagation}
-            />
-          );
-        }),
-      ]}
-      rowCount={
-        threadSearchQuery.trim()
-          ? threadSearchResults.length
-          : visibleActiveThreads.length + visibleSettledThreads.length
-      }
-      listId={threadSearchQuery ? "sidebar-thread-search-results" : undefined}
-      listRole={threadSearchQuery ? "listbox" : "list"}
-      listAriaLabel={threadSearchQuery ? "Thread search results" : undefined}
-      emptyState={
-        threadSearchQuery ? (
-          <HostText className="sidebar-inline-search__empty">No matching threads</HostText>
-        ) : undefined
-      }
-      hasProjects={projects.length > 0}
-      scopedDisplayName={scopedProject?.title ?? null}
-      onAddProjectClick={uiActions.openAddProject}
-      footerAuthorityVisual={
-        viewport.width === 1280 && viewport.height === 820 && sidebarWidth === 256 ? (
-          <image className="sidebar-settings-authority" src={settingsRowUrl} />
-        ) : undefined
-      }
-    />
+                </view>,
+              ]
+            : []),
+          ...visibleSettledThreads.map((thread) => {
+            const project = projectById.get(thread.projectId) ?? null;
+            const actionMenuOpen = actionMenuThreadId === thread.id;
+            return (
+              <SidebarV2RowSurface
+                key={`${thread.id}:slim`}
+                threadId={thread.id}
+                variant="slim"
+                variantAction="unsettle"
+                isActive={thread.id === activeThreadId}
+                isSelected={false}
+                shouldRecede={false}
+                isInFlight={false}
+                isUnread={false}
+                isWoke={false}
+                settlementSupported={settlementSupported}
+                snoozeSupported={false}
+                showSnoozeButton={false}
+                snoozeMenuOpen={false}
+                snoozeWakeLabelText={null}
+                projectTitle={project?.title ?? null}
+                threadTitle={thread.title}
+                branch={thread.branch ?? null}
+                threadTimeLabel=""
+                settledTimeLabel={settledTimeLabel(thread)}
+                topStatus={null}
+                jumpLabel={null}
+                favicon={
+                  <Icon name="message-square" size={16} color="#818181" className="size-4" />
+                }
+                title={
+                  <HostText className="sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+                    {thread.title}
+                  </HostText>
+                }
+                prBadge={null}
+                isRegeneratingTitle={thread.titleRegeneration != null}
+                terminalStatusIcon={null}
+                diff={null}
+                remoteIndicator={null}
+                providerIndicator={null}
+                detailsTooltip={null}
+                detailsRelationId={`sidebar-thread-details:${thread.id}`}
+                detailsOverlay={
+                  actionMenuOpen ? (
+                    <LynxThreadActionMenu
+                      thread={thread}
+                      projectPath={project?.workspaceRoot ?? null}
+                      settled
+                      settlementSupported={settlementSupported}
+                      onClose={() => setActionMenuThreadId(null)}
+                    />
+                  ) : undefined
+                }
+                snoozeControl={null}
+                settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
+                unsettleIcon={
+                  <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
+                }
+                unsnoozeIcon={
+                  <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
+                }
+                wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
+                onClick={() => t3ClientActions.selectThread(thread.id)}
+                onDoubleClick={() => {}}
+                onKeyDown={() => {}}
+                onContextMenu={(event) => {
+                  stopPropagation(event);
+                  setActionMenuThreadId(thread.id);
+                }}
+                onSettleClick={stopPropagation}
+                onUnsettleClick={(event) => {
+                  stopPropagation(event);
+                  void t3ClientActions.unsettleThread(thread.id).catch(() => undefined);
+                }}
+                onUnsnoozeClick={stopPropagation}
+              />
+            );
+          }),
+        ]}
+        rowCount={
+          threadSearchQuery.trim()
+            ? threadSearchResults.length
+            : visibleActiveThreads.length + visibleSettledThreads.length
+        }
+        listId={threadSearchQuery ? "sidebar-thread-search-results" : undefined}
+        listRole={threadSearchQuery ? "listbox" : "list"}
+        listAriaLabel={threadSearchQuery ? "Thread search results" : undefined}
+        emptyState={
+          threadSearchQuery ? (
+            <HostText className="sidebar-inline-search__empty">No matching threads</HostText>
+          ) : undefined
+        }
+        hasProjects={projects.length > 0}
+        scopedDisplayName={scopedProject?.title ?? null}
+        onAddProjectClick={uiActions.openAddProject}
+        footerAuthorityVisual={
+          viewport.width === 1280 && viewport.height === 820 && sidebarWidth === 256 ? (
+            <image className="sidebar-settings-authority" src={settingsRowUrl} />
+          ) : undefined
+        }
+      />
+      {projectSettingsProject ? (
+        <ProjectSettingsDialog
+          members={[
+            {
+              id: projectSettingsProject.id,
+              environmentId: projectSettingsProject.environmentId,
+              title: projectSettingsProject.title,
+              workspaceRoot: projectSettingsProject.workspaceRoot,
+              environmentLabel: null,
+            },
+          ]}
+          onClose={() => setProjectSettingsProjectId(null)}
+        />
+      ) : null}
+    </>
   );
 }

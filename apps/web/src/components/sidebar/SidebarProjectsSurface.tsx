@@ -8,6 +8,7 @@ type SidebarProjectsSurfaceProps = Pick<
   | "rows"
   | "onToggleProject"
   | "onCreateThread"
+  | "onOpenProjectSettings"
   | "onSelectThread"
   | "onRenameThread"
   | "onArchiveThread"
@@ -32,6 +33,7 @@ export function SidebarProjectsSurface({
   rows,
   onToggleProject,
   onCreateThread,
+  onOpenProjectSettings,
   onSelectThread,
   onRenameThread,
   onArchiveThread,
@@ -69,6 +71,7 @@ export function SidebarProjectsSurface({
               rows={rows}
               onToggleProject={onToggleProject}
               onCreateThread={onCreateThread}
+              {...(onOpenProjectSettings ? { onOpenProjectSettings } : {})}
               onSelectThread={onSelectThread}
               onRenameThread={onRenameThread}
               onArchiveThread={onArchiveThread}

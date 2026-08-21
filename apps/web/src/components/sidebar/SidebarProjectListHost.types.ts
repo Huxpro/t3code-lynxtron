@@ -1,6 +1,19 @@
 import type { ReactNode } from "react";
 import type { ThreadStatusPill } from "@t3tools/client-runtime/presentation/sidebar";
-import type { ScopedProjectRef, ScopedThreadRef } from "@t3tools/contracts";
+import type {
+  EnvironmentId,
+  ProjectId,
+  ScopedProjectRef,
+  ScopedThreadRef,
+} from "@t3tools/contracts";
+
+export interface SidebarProjectSettingsMember {
+  readonly id: ProjectId;
+  readonly environmentId: EnvironmentId;
+  readonly title: string;
+  readonly workspaceRoot: string;
+  readonly environmentLabel: string | null;
+}
 
 export interface SidebarProjectHostThread {
   readonly key: string;
@@ -19,6 +32,7 @@ export interface SidebarProjectHostRow {
   readonly expanded: boolean;
   readonly expansionPreferenceKeys: readonly string[];
   readonly projectRef: ScopedProjectRef;
+  readonly projectMembers: readonly SidebarProjectSettingsMember[];
   readonly threads: readonly SidebarProjectHostThread[];
   readonly showEmptyThreadState: boolean;
 }
@@ -28,6 +42,7 @@ export interface SidebarProjectListHostProps {
   readonly children: ReactNode;
   readonly onToggleProject: (row: SidebarProjectHostRow) => void;
   readonly onCreateThread: (projectRef: ScopedProjectRef) => void;
+  readonly onOpenProjectSettings?: (members: readonly SidebarProjectSettingsMember[]) => void;
   readonly onSelectThread: (threadRef: ScopedThreadRef) => void;
   readonly onRenameThread: (threadRef: ScopedThreadRef, title: string) => void;
   readonly onArchiveThread: (threadRef: ScopedThreadRef) => void;

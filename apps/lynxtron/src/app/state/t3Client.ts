@@ -941,6 +941,22 @@ async function renameThread(threadId: string, title: string): Promise<void> {
   await bridge.renameThread({ threadId, title });
 }
 
+async function updateProject(projectId: string, title: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.updateProject) {
+    return Promise.reject(new Error("Project renaming is unavailable."));
+  }
+  await bridge.updateProject({ projectId, title });
+}
+
+async function deleteProject(projectId: string, force = false): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.deleteProject) {
+    return Promise.reject(new Error("Project removal is unavailable."));
+  }
+  await bridge.deleteProject({ projectId, ...(force ? { force: true } : {}) });
+}
+
 async function updateProjectScripts(
   projectId: string,
   scripts: ReadonlyArray<ProjectScript>,
@@ -1492,6 +1508,7 @@ export const t3ClientActions = {
   createProject,
   createProviderInstance,
   createThread,
+  deleteProject,
   deleteThread,
   deleteProviderInstance,
   discoverSourceControl,
@@ -1528,6 +1545,7 @@ export const t3ClientActions = {
   updateServerSettings,
   updateProviderInstance,
   updateProvider,
+  updateProject,
   updateProjectScripts,
   upsertKeybinding,
   writeProjectFile,
