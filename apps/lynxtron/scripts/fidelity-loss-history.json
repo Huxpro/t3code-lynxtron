@@ -13543,6 +13543,41 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-save-failure-recovery-current",
+      "observedAt": "2026-08-21T10:46:56-07:00",
+      "commit": "0b8ee867b",
+      "codeCommit": "4ac810cf3",
+      "codeState": "commit",
+      "label": "File editor save failure recovery convergence",
+      "narrative": "Current-head Browser evidence closes the measured integrated file-save failure and retry residual for Lynx-for-Web without assigning Native credit. At dark 1024x820 with a 360px right panel, Web and Lynx-for-Web each act as the sole writer in separate pristine disposable workspaces. A deterministic regular-file blocker makes the first delayed write fail, the writer keeps the unsaved revision pending, renders an inline error and Retry save control, and a real pointer retry succeeds after the workspace is restored. Error and pending state clear, disk bytes contain the sentinel, both renderers reopen the same full-buffer content revision, identity and geometry gates pass, renderer errors remain zero, and the loop leaves no agent-browser process. Exact Native failure/retry, light theme, and additional viewports remain explicit evidence debt.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The prior checkpoint explicitly retained interaction residual for unmeasured integrated failure and retry. Two current-head captures hold semantic route, viewport, theme, right-panel width, product commit, Web bundle, Lynx bundle, target file, blocker contract, and sentinel contract constant while alternating the sole writer. No state, client, weight, filter, denominator entry, or Native cell changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/file-editor-save-failure-recovery-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "3720b2b7d4fd31ea40766c37aa00e94bb4435e0622787746f4f046fc2ffb2565"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-editing-save"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "integrated-file-save-failure-retry-lifecycle",
+              "source": "Both Browser writers expose pending state, a deterministic first-write failure, inline error copy, Retry save, real pointer recovery, cleared error and pending state, persisted sentinel bytes, and matching cross-client reopen revisions; residual preserves unmeasured Native, light-theme, and additional-viewport behavior"
+            }
+          }
+        }
+      ]
     }
   ]
 }
