@@ -45,9 +45,9 @@ describe("Lynx icon raster contracts", () => {
 
   it("generates the exact active Plan mode icon", () => {
     assert.include(scriptSource, '"pencil-ruler":');
-    assert.include(scriptSource, '{ size: 14, color: "#60a5fa" }');
+    assert.include(scriptSource, '{ size: 16, color: "#60a5fa" }');
     assert.include(iconSource, '| "pencil-ruler"');
     assert.include(iconSource, '"#60a5fa"');
-    assert.include(generatedSource, '"pencil-ruler@14@#60a5fa"');
+    assert.include(generatedSource, '"pencil-ruler@16@#60a5fa"');
   });
 });
