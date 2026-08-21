@@ -229,6 +229,30 @@ describe("desktop shell interaction contract", () => {
     );
   });
 
+  it("matches the active Plan mode control from the Web authority", () => {
+    const composer = componentSource("Composer.tsx");
+    const separatorBlock =
+      overrides.match(/\.composer-interaction-mode-separator \{[^}]+\}/)?.[0] ?? "";
+    const planBlock =
+      overrides.match(/\.composer-toolbar-control--interaction-plan \{[^}]+\}/)?.[0] ?? "";
+    const planIconBlock =
+      overrides.match(
+        /\.composer-toolbar-control--interaction-plan \.pill__icon-img \{[^}]+\}/,
+      )?.[0] ?? "";
+
+    expect(composer).toContain('className="composer-interaction-mode-separator"');
+    expect(composer).toContain('" composer-toolbar-control--interaction-plan"');
+    expect(composer).toContain('name={interactionMode === "plan" ? "pencil-ruler" : "bot"}');
+    expect(composer).toContain('color={interactionMode === "plan" ? "#60a5fa" : "#818181"}');
+    expect(separatorBlock).toContain("width: 1px;");
+    expect(separatorBlock).toContain("height: 16px;");
+    expect(separatorBlock).toContain("background-color: var(--border);");
+    expect(planBlock).toContain("border-radius: 8px;");
+    expect(planBlock).toContain("background-color: rgba(59, 130, 246, 0.1);");
+    expect(planBlock).toContain("color: #60a5fa;");
+    expect(planIconBlock).toContain("opacity: 1;");
+  });
+
   it("keeps model-selection bridge failures on a fulfilled settled-result path", () => {
     const mutationStart = clientSource.indexOf("function persistModelSelectionMutation");
     const mutationEnd = clientSource.indexOf("\nfunction setModelSelection", mutationStart);
