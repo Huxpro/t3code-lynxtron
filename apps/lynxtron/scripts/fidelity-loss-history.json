@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-21T08:17:25.012Z",
+  "updatedAt": "2026-08-21T02:18:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13412,6 +13412,27 @@
               "source": "Pure active-index tests cover wrapping, disabled skipping, and activation; Browser runtime reports zero renderer errors and clean disposal"
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-project-settings-registration",
+      "observedAt": "2026-08-21T02:18:00-07:00",
+      "commit": "8bf14cc78",
+      "codeCommit": "8bf14cc78",
+      "codeState": "commit",
+      "label": "Sidebar project settings registration",
+      "narrative": "A distinct P1 project-management workflow enters the fixed denominator before repair. Existing Sidebar project-group evidence covers grouped rows, ordering, collapse, empty states, Add Project, thread creation, and thread actions, but not project rename, per-project grouping overrides, or project removal. A strict same-snapshot dark 1280x820 Browser baseline opens both shipping V2 project-scope menus through real pointers. Web exposes one trailing project action and opens a complete 576x244 Project settings dialog with Project name, Grouping rule, Remove project, and Close. Lynx renders the same canonical project row with zero project actions and remains in the scope popup. Server project.meta.update/project.delete and Lynx client-settings persistence already exist, so this is a renderer/connector product gap rather than an upstream blocker. Twelve new Lynx-for-Web and Native cells remain conservative unknown, expanding the denominator from 69 states, 792 cells, and weight 258.2 to 70 states, 804 cells, and weight 262.2. The first capture used a non-thread fixture and the second compared renderer-specific internal project keys; both are classified as harness mismatch and receive no product attribution.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It adds one user-reachable P1 workflow absent from the existing Sidebar project state, preserves every existing weight and residual, assigns no repair credit, and leaves all twelve new cells unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/sidebar-project-settings-baseline-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "6c1b9914373492b88030ef23a9024c1cb4b7b19924dc07d873d6f66c5ad49696"
         }
       ]
     }
