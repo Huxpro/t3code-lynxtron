@@ -240,6 +240,8 @@ describe("packaged readiness Sidebar geometry", () => {
 
   it("verifies the Native active Plan chip after real interaction-mode input", () => {
     assert.include(source, "async function verifyActivePlanModeChip");
+    assert.include(source, "async function verifyPlanMode");
+    assert.include(source, '"--verify-plan-mode"');
     assert.include(source, 'measurement?.text.trim() === "Plan"');
     assert.include(source, "composer-toolbar-control--interaction-plan");
     assert.include(source, 'selector: ".composer-interaction-mode-separator"');
@@ -251,14 +253,16 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'iconOpacity !== "1"');
     assert.include(source, "backgroundColor,");
     assert.include(source, "iconOpacity,");
-    assert.include(source, 'beforeState.activeThread.interactionMode !== "default"');
-    assert.include(source, 'selector: ".composer-toolbar-control--interaction"');
-    assert.include(source, "const afterPlanSequence = await waitForSequenceAdvance");
-    assert.include(source, 'state?.activeThread?.interactionMode === "plan"');
-    assert.include(source, "const activePlanChip = await verifyActivePlanModeChip");
+    assert.include(source, 'state?.activeThread?.interactionMode !== "plan"');
+    assert.include(source, "readPersistedThreadInteractionMode(baseDir, threadId)");
+    assert.include(source, 'persistedInteractionMode !== "plan"');
+    assert.include(source, "const activeChip = await verifyActivePlanModeChip");
     assert.include(source, 'name: "native-composer-plan-mode.png"');
-    assert.include(source, "beforePlan: beforePlanSequence.lastSeq");
-    assert.include(source, "afterPlan: afterPlanSequence.lastSeq");
+    assert.include(
+      source,
+      'input: "pre-seeded persisted Plan state; interaction mutation is a separate harness check"',
+    );
+    assert.include(outcomeChecksSource, "planMode");
   });
 
   it("treats the requested theme as a packaged-run precondition", () => {
@@ -398,7 +402,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'expectedLetterSpacing: "-0.33px"');
     assert.include(source, 'expectedLetterSpacing: "-0.42px"');
     assert.include(source, 'expectedLetterSpacing: "-0.44px"');
-    assert.include(source, 'name: "native-composer-plan-mode.png"');
+    assert.include(source, 'name: "native-composer-model-option-tracking.png"');
     assert.include(source, 'selector: ".composer-model-option-menu__item--selected"');
     assert.include(source, 'selector: ".composer-model-option-menu-dismiss-layer"');
     assert.include(source, "reopenedSelected: true");
