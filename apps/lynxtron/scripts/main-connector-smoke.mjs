@@ -12,7 +12,7 @@
  * behind those legs.
  */
 import { createRequire } from "node:module";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,6 +23,9 @@ import { build } from "esbuild";
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 const baseDir = mkdtempSync(join(tmpdir(), "t3code-lynxtron-mainconn-"));
+const projectWorkspace = mkdtempSync(join(tmpdir(), "t3code-lynxtron-project-"));
+const nestedProjectWorkspace = join(projectWorkspace, "associated-chat-project");
+mkdirSync(nestedProjectWorkspace);
 const previousBaseDir = process.env.T3_LYNXTRON_BASE_DIR;
 const previousServerStdio = process.env.T3_LYNXTRON_SERVER_STDIO;
 process.env.T3_LYNXTRON_BASE_DIR = baseDir;
@@ -95,8 +98,40 @@ try {
     return reply.snapshot.shell.projects[0];
   }, "canonical project shell");
 
-  // Typed command round-trips: create + select + prompt.
+  // Project lifecycle: browse -> create project -> create associated chat.
   const command = handlers.get(T3_CONNECTOR_METHODS.command);
+  const browsed = await command({
+    method: "browseFilesystem",
+    params: { partialPath: `${projectWorkspace}/` },
+  });
+  if (!browsed.entries.some((entry) => entry.fullPath === nestedProjectWorkspace)) {
+    throw new Error("filesystem browse did not return the disposable project directory");
+  }
+  const { projectId } = await command({
+    method: "createProject",
+    params: { workspaceRoot: nestedProjectWorkspace },
+  });
+  const createdProject = await waitFor(() => {
+    const reply = handlers.get(T3_CONNECTOR_METHODS.ready)({});
+    return reply.snapshot.shell.projects.find((candidate) => candidate.id === projectId);
+  }, "created project in canonical shell");
+  if (createdProject.workspaceRoot !== nestedProjectWorkspace) {
+    throw new Error("created project did not retain its workspace root");
+  }
+  const { threadId: associatedThreadId } = await command({
+    method: "createThread",
+    params: { projectId },
+  });
+  const associatedThread = await waitFor(() => {
+    const reply = handlers.get(T3_CONNECTOR_METHODS.ready)({});
+    return reply.snapshot.shell.threads.find((thread) => thread.id === associatedThreadId);
+  }, "created thread associated with the new project");
+  if (associatedThread.projectId !== projectId) {
+    throw new Error("created thread was associated with the wrong project");
+  }
+  await command({ method: "selectThread", params: associatedThreadId });
+
+  // Existing prompt round-trip on the canonical project remains intact.
   const { threadId } = await command({ method: "createThread", params: { projectId: project.id } });
   if (!threadId) throw new Error("createThread returned no threadId");
   await command({ method: "selectThread", params: threadId });
@@ -133,6 +168,8 @@ try {
       events: pushed.length,
       kinds: [...new Set(pushed.map((event) => event.kind))],
       lastSeq: resync.seq,
+      projectId,
+      associatedThreadId,
       threadId,
     }),
   );
@@ -154,4 +191,9 @@ try {
     throw new Error(`Refusing to clean unexpected smoke directory: ${baseDir}`);
   }
   rmSync(baseDir, { recursive: true, force: true });
+  const expectedProjectPrefix = `${tmpdir()}${sep}t3code-lynxtron-project-`;
+  if (!projectWorkspace.startsWith(expectedProjectPrefix)) {
+    throw new Error(`Refusing to clean unexpected project workspace: ${projectWorkspace}`);
+  }
+  rmSync(projectWorkspace, { recursive: true, force: true });
 }

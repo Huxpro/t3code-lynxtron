@@ -65,8 +65,9 @@ describe("Quick Switch material", () => {
   it("keeps command and file-mode footer actions truthful", () => {
     const source = readFileSync(path.resolve(import.meta.dirname, "QuickSwitch.tsx"), "utf8");
 
-    expect(source).toContain('{fileMode ? "⌘K" : "Enter"}');
-    expect(source).toContain('{fileMode ? "Commands" : "Select"}');
+    expect(source).toContain("<Kbd>Enter</Kbd>");
+    expect(source).toContain('"add-project-local"');
+    expect(source).toContain('"add-project-destination"');
     expect(source).not.toContain('{fileMode ? "⌘K" : "⌘P"}');
     expect(source).not.toContain('{fileMode ? "Commands" : "Files"}');
   });

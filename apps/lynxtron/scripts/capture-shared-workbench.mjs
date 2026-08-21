@@ -91,6 +91,8 @@ const defaultOverlayByStateId = {
   "quick-switch-query-light": "quick-switch",
   "quick-switch-actions-only": "quick-switch",
   "quick-switch-empty": "quick-switch",
+  "add-project-sources": "quick-switch",
+  "command-palette-navigation": "quick-switch",
 };
 const defaultQueryByStateId = {
   "model-picker-empty": "__t3_no_models__",
@@ -100,12 +102,16 @@ const defaultQueryByStateId = {
   "quick-switch-empty": "zzzz-no-result",
 };
 const overlay = argValue("--overlay", defaultOverlayByStateId[stateId] ?? "");
-const requiresShortcutInput = overlay === "quick-switch" || overlay === "file-picker";
+const requiresShortcutInput =
+  (overlay === "quick-switch" || overlay === "file-picker") && stateId !== "add-project-sources";
 const query = argValue("--query", defaultQueryByStateId[stateId] ?? "");
 const providerId = argValue("--provider-id", "");
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
+const sidebarV2Enabled =
+  argValue("--sidebar-v2", stateId === "sidebar-project-groups" ? "false" : "true") !== "false";
+const sidebarV2ConfiguredByUser = argValue("--sidebar-v2-configured", "true") !== "false";
 const requestedSidebarWidthValue = Number(argValue("--sidebar-width", ""));
 const requestedSidebarWidth =
   Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
@@ -209,7 +215,8 @@ const composerExpectationByStateId = {
 };
 const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
-const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState || isReviewState;
+const shouldClearWebNotification =
+  Boolean(overlay) || stateId === "sidebar-project-groups" || isFilesSurfaceState || isReviewState;
 const reviewExpectation =
   stateId === "review-empty"
     ? "panel-empty"
@@ -303,6 +310,51 @@ function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
     ? ["panel", "search", "results", "footer", "empty"]
     : ["panel", "search", "results", "footer", "row"];
   return keys.every((key) => rectDeltaWithin(webMetrics.anatomy[key], lynxMetrics.anatomy[key], 2));
+}
+
+function sidebarProjectGroupsMatch(state) {
+  if (stateId !== "sidebar-project-groups") return true;
+  const webGroups = state?.web?.sidebarProjectGroups?.rows ?? [];
+  const lynxGroups = state?.lynx?.sidebarProjectGroups?.rows ?? [];
+  const titlesMatch =
+    webGroups.length > 0 &&
+    JSON.stringify(webGroups.map(({ title }) => title)) ===
+      JSON.stringify(lynxGroups.map(({ title }) => title));
+  const rowsAreVertical = (groups) =>
+    groups.every((group, index) => {
+      const rect = group.box?.rect;
+      const priorRect = groups[index - 1]?.box?.rect;
+      return (
+        rect &&
+        rect.x >= 0 &&
+        rect.x + rect.width <= 256 &&
+        (index === 0 || (priorRect && rect.y >= priorRect.y + priorRect.height))
+      );
+    });
+  return (
+    state?.web?.productState?.sidebarVersion === "v1" &&
+    state?.lynx?.productState?.sidebarVersion === "v1" &&
+    titlesMatch &&
+    rowsAreVertical(webGroups) &&
+    rowsAreVertical(lynxGroups)
+  );
+}
+
+function addProjectSourcesMatch(state) {
+  if (stateId !== "add-project-sources") return true;
+  const requiredRows = ["Local folder", "Git URL"];
+  const webRows = state?.web?.overlayMetrics?.rowLabels ?? [];
+  const lynxRows = state?.lynx?.overlayMetrics?.rowLabels ?? [];
+  return (
+    state?.web?.overlayMetrics?.paletteView === "submenu" &&
+    state?.lynx?.overlayMetrics?.paletteView === "add-project-sources" &&
+    requiredRows.every(
+      (label) =>
+        webRows.some((row) => row?.includes(label)) && lynxRows.some((row) => row?.includes(label)),
+    ) &&
+    !webRows.includes("Open settings") &&
+    !lynxRows.includes("Open settings")
+  );
 }
 
 function modelPickerSemanticsMatch(webMetrics, lynxMetrics) {
@@ -1640,6 +1692,317 @@ async function focusRemoteElement(cdp, sessionId, expression) {
   } finally {
     await cdp.send("Runtime.releaseObject", { objectId }, sessionId).catch(() => undefined);
   }
+}
+
+async function dispatchKeyToRemoteElement(cdp, sessionId, expression, key, code, keyCode) {
+  const focused = await focusRemoteElement(cdp, sessionId, expression);
+  if (!focused) return false;
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    { type: "rawKeyDown", key, code, windowsVirtualKeyCode: keyCode },
+    sessionId,
+  );
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    { type: "keyUp", key, code, windowsVirtualKeyCode: keyCode },
+    sessionId,
+  );
+  return true;
+}
+
+async function readWorkbenchState(cdp, sessionId) {
+  return evaluate(cdp, sessionId, `(() => window.__T3_WORKBENCH__?.read() ?? null)()`).catch(
+    () => null,
+  );
+}
+
+async function waitForWorkbenchState(
+  cdp,
+  sessionId,
+  predicate,
+  timeoutMs = 3000,
+  label = "unknown",
+) {
+  const deadline = Date.now() + timeoutMs;
+  let state = null;
+  while (Date.now() < deadline) {
+    state = await readWorkbenchState(cdp, sessionId);
+    if (predicate(state)) return state;
+    await delay(50);
+  }
+  throw new Error(
+    `Workbench interaction postcondition timed out (${label}): ${JSON.stringify({
+      web: {
+        overlay: state?.web?.productState?.overlay ?? null,
+        view: state?.web?.overlayMetrics?.paletteView ?? null,
+        active: state?.web?.overlayMetrics?.activeRowLabels ?? [],
+      },
+      lynx: {
+        overlay: state?.lynx?.productState?.overlay ?? null,
+        view: state?.lynx?.overlayMetrics?.paletteView ?? null,
+        active: state?.lynx?.overlayMetrics?.activeRowLabels ?? [],
+      },
+    })}`,
+  );
+}
+
+async function paletteRowPoint(cdp, sessionId, client, label) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const rows = [...(root?.querySelectorAll('[data-palette-row="true"]') ?? [])];
+      const row = rows.find((item) => item.textContent?.includes(${JSON.stringify(label)}));
+      if (!frame || !row) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = row.getBoundingClientRect();
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+      };
+    })()`,
+  );
+}
+
+async function hoverPaletteRow(cdp, sessionId, client, label) {
+  const point = await paletteRowPoint(cdp, sessionId, client, label);
+  if (!point) return false;
+  await cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mouseMoved", ...point, button: "none", pointerType: "mouse" },
+    sessionId,
+  );
+  return true;
+}
+
+async function paletteRowHoverVisual(cdp, sessionId, client, label) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const rows = [...(root?.querySelectorAll('[data-palette-row="true"]') ?? [])];
+      const row = rows.find((item) => item.textContent?.includes(${JSON.stringify(label)}));
+      if (!row) return null;
+      const style = getComputedStyle(row);
+      return {
+        hovered: row.matches(':hover'),
+        backgroundColor: style.backgroundColor,
+        color: style.color,
+      };
+    })()`,
+  );
+}
+
+async function dispatchPaletteKey(cdp, sessionId, client, key, code, keyCode) {
+  const expression =
+    client === "web"
+      ? `document.getElementById('web-pane')?.contentWindow?.document
+          ?.querySelector('[data-command-palette="true"] [data-slot="autocomplete-input"]')`
+      : `(() => {
+          const frame = document.getElementById('lynx-pane');
+          const root = frame?.contentWindow?.document
+            ?.getElementById('t3-lynx-preview')?.shadowRoot;
+          const host = root?.querySelector('.qs-search__input');
+          return host?.shadowRoot?.querySelector('input') ?? host;
+        })()`;
+  return dispatchKeyToRemoteElement(cdp, sessionId, expression, key, code, keyCode);
+}
+
+async function clickSidebarSearch(cdp, sessionId, client) {
+  const point = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const target =
+        root?.querySelector('.sidebar-v2-search') ??
+        root?.querySelector('[data-testid="command-palette-trigger"]');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+      };
+    })()`,
+  );
+  if (!point) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return true;
+}
+
+async function clickLynxPaletteBackdrop(cdp, sessionId) {
+  const point = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('lynx-pane');
+      const root = frame?.contentWindow?.document
+        ?.getElementById('t3-lynx-preview')?.shadowRoot;
+      const target = root?.querySelector('.palette-backdrop');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: frameRect.x + Math.max(1, rect.x + 8),
+        y: frameRect.y + Math.max(1, rect.y + 8),
+      };
+    })()`,
+  );
+  if (!point) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return true;
+}
+
+async function runCommandPaletteNavigationFlow(cdp, sessionId) {
+  const timeline = [];
+  const active = (state, client) => state?.[client]?.overlayMetrics?.activeRowLabels?.[0] ?? "";
+  const view = (state, client) => state?.[client]?.overlayMetrics?.paletteView ?? null;
+  const overlay = (state, client) => state?.[client]?.productState?.overlay ?? null;
+
+  await hoverPaletteRow(cdp, sessionId, "web", "Add project");
+  let state = await waitForWorkbenchState(cdp, sessionId, (next) =>
+    active(next, "web").includes("Add project"),
+  );
+  timeline.push({ step: "hover-web", active: active(state, "web") });
+
+  await hoverPaletteRow(cdp, sessionId, "lynx", "Add project");
+  await delay(100);
+  const lynxHoverVisual = await paletteRowHoverVisual(cdp, sessionId, "lynx", "Add project");
+  if (lynxHoverVisual?.hovered !== true) {
+    throw new Error(
+      `Lynx-for-Web Add project row did not enter :hover: ${JSON.stringify(lynxHoverVisual)}`,
+    );
+  }
+  timeline.push({
+    step: "hover-lynx",
+    visual: lynxHoverVisual,
+    stateBridge: "browser-proxy-does-not-project-main-thread-hover",
+  });
+
+  await dispatchPaletteKey(cdp, sessionId, "web", "ArrowDown", "ArrowDown", 40);
+  state = await waitForWorkbenchState(cdp, sessionId, (next) =>
+    active(next, "web").includes("Open settings"),
+  );
+  timeline.push({
+    step: "web-arrow-down",
+    webActive: active(state, "web"),
+  });
+
+  await dispatchPaletteKey(cdp, sessionId, "web", "ArrowUp", "ArrowUp", 38);
+  state = await waitForWorkbenchState(cdp, sessionId, (next) =>
+    active(next, "web").includes("Add project"),
+  );
+  timeline.push({
+    step: "web-arrow-up",
+    webActive: active(state, "web"),
+  });
+
+  await dispatchPaletteKey(cdp, sessionId, "web", "Enter", "Enter", 13);
+  state = await waitForWorkbenchState(cdp, sessionId, (next) => view(next, "web") === "submenu");
+  timeline.push({ step: "web-enter", webView: view(state, "web") });
+
+  await dispatchPaletteKey(cdp, sessionId, "web", "Backspace", "Backspace", 8);
+  state = await waitForWorkbenchState(cdp, sessionId, (next) => view(next, "web") === "root");
+  timeline.push({
+    step: "web-backspace",
+    webView: view(state, "web"),
+  });
+
+  await dispatchPaletteKey(cdp, sessionId, "web", "Escape", "Escape", 27);
+  state = await waitForWorkbenchState(cdp, sessionId, (next) => overlay(next, "web") === null);
+  timeline.push({ step: "web-escape", webOverlay: null });
+
+  await clickLynxPaletteBackdrop(cdp, sessionId);
+  state = await waitForWorkbenchState(cdp, sessionId, (next) => overlay(next, "lynx") === null);
+  timeline.push({ step: "lynx-pointer-dismiss", lynxOverlay: null });
+
+  await evaluate(
+    cdp,
+    sessionId,
+    `document.getElementById('lynx-pane')?.contentWindow
+      ?.__T3_LYNX_WEB_PREVIEW__?.dispatchKeyboardShortcut('command') ?? false`,
+  );
+  await waitForWorkbenchState(cdp, sessionId, (next) => view(next, "lynx") === "root");
+  const webFocusPoint = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('web-pane');
+      const target =
+        frame?.contentWindow?.document?.querySelector('[data-chat-header]') ??
+        frame?.contentWindow?.document?.querySelector('.composer-frame');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+      };
+    })()`,
+  );
+  if (!webFocusPoint) throw new Error("Could not focus Web before reopening Quick Switch.");
+  await dispatchPointerClickWithMove(cdp, sessionId, webFocusPoint);
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    {
+      type: "rawKeyDown",
+      modifiers: 4,
+      key: "k",
+      code: "KeyK",
+      windowsVirtualKeyCode: 75,
+    },
+    sessionId,
+  );
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    {
+      type: "keyUp",
+      modifiers: 4,
+      key: "k",
+      code: "KeyK",
+      windowsVirtualKeyCode: 75,
+    },
+    sessionId,
+  );
+  await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => view(next, "web") === "root" && view(next, "lynx") === "root",
+  );
+  await hoverPaletteRow(cdp, sessionId, "web", "Add project");
+  await waitForWorkbenchState(cdp, sessionId, (next) =>
+    active(next, "web").includes("Add project"),
+  );
+  await hoverPaletteRow(cdp, sessionId, "lynx", "Add project");
+  await delay(100);
+  const finalLynxHoverVisual = await paletteRowHoverVisual(cdp, sessionId, "lynx", "Add project");
+  if (finalLynxHoverVisual?.hovered !== true) {
+    throw new Error(
+      `Lynx-for-Web final Add project hover was not visible: ${JSON.stringify(finalLynxHoverVisual)}`,
+    );
+  }
+  state = await readWorkbenchState(cdp, sessionId);
+  timeline.push({
+    step: "final-hover",
+    webActive: active(state, "web"),
+    lynxVisual: finalLynxHoverVisual,
+  });
+  return { state, timeline };
 }
 
 function cdpKeySequenceForCharacter(character) {
@@ -3049,6 +3412,8 @@ async function captureCell({
     semanticRoute,
     webRoute,
     theme,
+    sidebarV2Enabled: String(sidebarV2Enabled),
+    sidebarV2ConfiguredByUser: String(sidebarV2ConfiguredByUser),
     ...(overlay ? { overlay } : {}),
     expectProject,
     ...(expectThread ? { expectThread } : {}),
@@ -3092,6 +3457,9 @@ async function captureCell({
   let providerReadyPolls = providerId.length === 0 ? 3 : 0;
   let lastProviderTimelineKey = "";
   let modelPickerSemanticReadyPolls = overlay === "model-picker" ? 0 : 3;
+  let commandPaletteNavigationStage =
+    stateId === "command-palette-navigation" ? "waiting-root" : "not-required";
+  const commandPaletteNavigationTimeline = [];
   let settingsAsyncReadyPolls =
     stateId === "settings-source-control" ||
     stateId === "settings-source-control-loading" ||
@@ -4218,7 +4586,9 @@ async function captureCell({
       }
       const triggerSelector =
         overlay === "quick-switch"
-          ? ""
+          ? stateId === "add-project-sources"
+            ? '[data-testid="sidebar-add-project-trigger"], [aria-label="New project"]'
+            : ""
           : overlay === "file-picker"
             ? ""
             : overlay === "project-scope"
@@ -4401,7 +4771,10 @@ async function captureCell({
       state?.lynx?.connected === true &&
       state?.lynx?.productState?.overlay !== overlay
     ) {
-      if (overlay === "quick-switch" || overlay === "file-picker") {
+      if (
+        (overlay === "quick-switch" || overlay === "file-picker") &&
+        stateId !== "add-project-sources"
+      ) {
         const dispatched = await evaluate(
           cdp,
           sessionId,
@@ -4442,19 +4815,21 @@ async function captureCell({
           }
         }
         const triggerSelector =
-          overlay === "project-scope"
-            ? '[data-testid="sidebar-v2-project-scope-trigger"]'
-            : overlay === "workspace-menu"
-              ? '[aria-label="Workspace"]:not([data-composer-workspace-menu])'
-              : overlay === "compact-controls"
-                ? ".composer-compact-controls-trigger"
-                : overlay === "right-panel-add-menu"
-                  ? ".right-panel__add-btn"
-                  : overlay === "diff-scope-menu"
-                    ? '[data-floating-anchor="diff-scope-menu"]'
-                    : overlay === "project-action-dialog"
-                      ? '[aria-label="Add action"]'
-                      : '[data-composer-control="model"]';
+          stateId === "add-project-sources"
+            ? '[aria-label="New project"]'
+            : overlay === "project-scope"
+              ? '[data-testid="sidebar-v2-project-scope-trigger"]'
+              : overlay === "workspace-menu"
+                ? '[aria-label="Workspace"]:not([data-composer-workspace-menu])'
+                : overlay === "compact-controls"
+                  ? ".composer-compact-controls-trigger"
+                  : overlay === "right-panel-add-menu"
+                    ? ".right-panel__add-btn"
+                    : overlay === "diff-scope-menu"
+                      ? '[data-floating-anchor="diff-scope-menu"]'
+                      : overlay === "project-action-dialog"
+                        ? '[aria-label="Add action"]'
+                        : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -4485,6 +4860,7 @@ async function captureCell({
       }
     }
     if (
+      stateId !== "add-project-sources" &&
       (overlay === "quick-switch" ||
         overlay === "file-picker" ||
         overlay === "model-picker" ||
@@ -4766,6 +5142,7 @@ async function captureCell({
       (state?.web?.productState?.overlay === overlay &&
         state?.lynx?.productState?.overlay === overlay &&
         (overlay !== "quick-switch" ||
+          stateId === "add-project-sources" ||
           quickSwitchAnatomyMatches(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics)) &&
         (!query ||
           (state?.web?.productState?.overlayQuery === query &&
@@ -4875,6 +5252,8 @@ async function captureCell({
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
+    const sidebarProjectGroupsReady = sidebarProjectGroupsMatch(state);
+    const addProjectSourcesReady = addProjectSourcesMatch(state);
     const sidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
     const projectActionReady = projectActionDialogReady(state);
@@ -4955,6 +5334,8 @@ async function captureCell({
       sessionProjectionReady &&
       stageIdentityReady &&
       sidebarControlGeometryReady &&
+      sidebarProjectGroupsReady &&
+      addProjectSourcesReady &&
       sidebarFooterThemeReady &&
       compactControlsReady &&
       projectActionReady &&
@@ -4978,6 +5359,13 @@ async function captureCell({
       break;
     }
     await delay(100);
+  }
+  if (stateId === "command-palette-navigation") {
+    const navigation = await runCommandPaletteNavigationFlow(cdp, sessionId);
+    state = navigation.state;
+    commandPaletteNavigationTimeline.push(...navigation.timeline);
+    commandPaletteNavigationStage = "complete";
+    reachedTargetState = true;
   }
   const readyMs = Date.now() - readyStart;
   const targetStateReady =
@@ -5117,6 +5505,7 @@ async function captureCell({
     (state?.web?.productState?.overlay === overlay &&
       state?.lynx?.productState?.overlay === overlay &&
       (overlay !== "quick-switch" ||
+        stateId === "add-project-sources" ||
         quickSwitchAnatomyMatches(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics)) &&
       (!query ||
         (state?.web?.productState?.overlayQuery === query &&
@@ -5167,6 +5556,8 @@ async function captureCell({
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
+  const finalSidebarProjectGroupsReady = sidebarProjectGroupsMatch(state);
+  const finalAddProjectSourcesReady = addProjectSourcesMatch(state);
   const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalProjectActionDialogReady = projectActionDialogReady(state);
@@ -5421,7 +5812,7 @@ async function captureCell({
     `!document.getElementById("web-pane")?.contentWindow?.document
         ?.querySelector('button[aria-label="Dismiss notification"]')`,
   );
-  if (!notificationDismissed) {
+  if (shouldClearWebNotification && !notificationDismissed) {
     throw new Error("Web provider-update notification did not dismiss before capture.");
   }
   state =
@@ -6211,6 +6602,8 @@ async function captureCell({
     finalSessionProjectionReady &&
     finalStageIdentityReady &&
     finalSidebarControlGeometryReady &&
+    finalSidebarProjectGroupsReady &&
+    finalAddProjectSourcesReady &&
     finalSidebarFooterThemeReady &&
     finalCompactControlsReady &&
     finalProjectActionDialogReady &&
@@ -6237,6 +6630,7 @@ async function captureCell({
     finalSettingsNavigationReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
+    (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
     settingsContentMatch !== false &&
     lynxStyled &&
     consoleErrors.length === 0 &&
@@ -6256,6 +6650,8 @@ async function captureCell({
       finalSessionProjectionReady,
       finalStageIdentityReady,
       finalSidebarControlGeometryReady,
+      finalSidebarProjectGroupsReady,
+      finalAddProjectSourcesReady,
       finalSidebarFooterThemeReady,
       finalCompactControlsReady,
       finalProjectActionDialogReady,
@@ -6282,6 +6678,7 @@ async function captureCell({
       finalSettingsNavigationReady,
       finalTranscriptReady,
       finalPendingRequestReady,
+      commandPaletteNavigationStage,
       settingsContentMatch,
       lynxStyled,
       consoleClean: consoleErrors.length === 0,
@@ -6403,6 +6800,32 @@ async function captureCell({
         requestedWidth: expectedSidebarWidth,
         web: state?.web?.sidebarDiagnostics ?? null,
         lynx: state?.lynx?.sidebarDiagnostics ?? null,
+      },
+      sidebarProjectGroups: {
+        match: finalSidebarProjectGroupsReady,
+        web: state?.web?.sidebarProjectGroups ?? [],
+        lynx: state?.lynx?.sidebarProjectGroups ?? [],
+      },
+      addProjectSources: {
+        match: finalAddProjectSourcesReady,
+        web: state?.web?.overlayMetrics ?? null,
+        lynx: state?.lynx?.overlayMetrics ?? null,
+      },
+      commandPaletteNavigation: {
+        match:
+          stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete",
+        stage: commandPaletteNavigationStage,
+        timeline: commandPaletteNavigationTimeline,
+        inputChannel:
+          stateId === "command-palette-navigation"
+            ? "web-cdp-keyboard|dual-browser-pointer-hover|lynx-pointer-dismiss"
+            : "not-required",
+        lynxForWebKeyboard:
+          stateId === "command-palette-navigation"
+            ? "blocked-browser-proxy-no-main-thread-key-bridge"
+            : "not-required",
+        nativePhysicalKeyboard:
+          stateId === "command-palette-navigation" ? "pending-user-session" : "not-required",
       },
       sidebarFooterTheme: {
         match: finalSidebarFooterThemeReady,

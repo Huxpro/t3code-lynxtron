@@ -27,6 +27,9 @@ const expectThread = url.searchParams.get("expectThread") || null;
 const expectedSemanticRoute = url.searchParams.get("semanticRoute") ?? "new-thread";
 const theme = url.searchParams.get("theme") === "light" ? "light" : "dark";
 const expectedOverlay = url.searchParams.get("overlay") || null;
+const sidebarV2Enabled = url.searchParams.get("sidebarV2Enabled") !== "false";
+const sidebarV2ConfiguredByUser = url.searchParams.get("sidebarV2ConfiguredByUser") !== "false";
+const initialOverlay = url.searchParams.get("initialOverlay") || null;
 const requestedSidebarWidthRaw = url.searchParams.get("sidebarWidth");
 const requestedSidebarWidthValue =
   requestedSidebarWidthRaw === null ? Number.NaN : Number(requestedSidebarWidthRaw);
@@ -438,6 +441,21 @@ function readSidebarSearchRows(elements) {
       titleBox: readElementBox(title),
     };
   });
+}
+
+function readSidebarProjectGroups(root) {
+  const list = root?.querySelector(".lynx-sidebar-project-list");
+  const group = root?.querySelector(".lynx-sidebar-projects-group");
+  return {
+    list: readElementBox(list),
+    listParent: readElementBox(list?.parentElement),
+    group: readElementBox(group),
+    rows: [...(root?.querySelectorAll(".sidebar-project-row-reference") ?? [])].map((row) => ({
+      title: readComposedText(row.querySelector(".sidebar-project-title-reference")),
+      text: readComposedText(row),
+      box: readElementBox(row),
+    })),
+  };
 }
 
 function readHeaderActionItems(elements, ids = []) {
@@ -990,8 +1008,8 @@ if (${JSON.stringify(requestedRightPanelWidth)} !== null) {
 localStorage.setItem(
   "t3code:client-settings:v1",
   JSON.stringify({
-    sidebarV2Enabled: true,
-    sidebarV2ConfiguredByUser: true,
+    sidebarV2Enabled: ${JSON.stringify(sidebarV2Enabled)},
+    sidebarV2ConfiguredByUser: ${JSON.stringify(sidebarV2ConfiguredByUser)},
     environmentIdentificationMode: ${JSON.stringify(environmentIdentificationMode)},
   }),
 );
@@ -1006,7 +1024,12 @@ const lynxQuery = new URLSearchParams({
   height: String(height),
   theme,
   environmentIdentificationMode,
+  sidebarV2Enabled: String(sidebarV2Enabled),
+  sidebarV2ConfiguredByUser: String(sidebarV2ConfiguredByUser),
 });
+if (initialOverlay) {
+  lynxQuery.set("initialOverlay", initialOverlay);
+}
 if (requestedSidebarWidth !== null) {
   lynxQuery.set("sidebarWidth", String(requestedSidebarWidth));
 }
@@ -1211,11 +1234,17 @@ function readLynxPane() {
             : overlay === "model-picker"
               ? lynxInputValue(modelPickerInput)
               : "",
+        sidebarVersion:
+          root?.querySelector("[data-app-sidebar]")?.getAttribute("data-sidebar-version") ?? null,
       },
       overlayMetrics: {
         rect: overlayRect,
         triggerRect: modelTriggerRect,
         triggerLabel: overlayTriggerElement?.textContent?.trim() ?? null,
+        paletteView: paletteElement?.getAttribute("data-quick-switch-view") ?? null,
+        activeRowLabels: [...(root?.querySelectorAll('[data-palette-active="true"]') ?? [])].map(
+          (row) => readComposedText(row),
+        ),
         anatomy:
           overlay === "quick-switch" || overlay === "file-picker"
             ? {
@@ -1396,7 +1425,7 @@ function readLynxPane() {
             : [],
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
-            ? [...(root?.querySelectorAll(".palette-row") ?? [])].map((row) =>
+            ? [...(root?.querySelectorAll('[data-palette-row="true"]') ?? [])].map((row) =>
                 row.querySelector(".truncate")?.textContent?.trim(),
               )
             : overlay === "model-picker"
@@ -1438,7 +1467,7 @@ function readLynxPane() {
             : [],
         rowCount:
           overlay === "quick-switch" || overlay === "file-picker"
-            ? (root?.querySelectorAll(".palette-row").length ?? 0)
+            ? (root?.querySelectorAll('[data-palette-row="true"]').length ?? 0)
             : overlay === "model-picker"
               ? (root?.querySelectorAll(".model-picker-row").length ?? 0)
               : overlay === "project-scope"
@@ -1882,6 +1911,7 @@ function readLynxPane() {
           })()
         : null,
       rendererErrors: d.rendererErrors ?? [],
+      sidebarProjectGroups: readSidebarProjectGroups(root),
       nativeModuleCalls: d.nativeModuleCalls ?? [],
       connectorDiagnostics: d.connector ?? null,
       geometry: typeof d.measureGeometry === "function" ? d.measureGeometry() : null,
@@ -2122,11 +2152,20 @@ function readWebPane() {
               ? (doc.querySelector('[data-model-picker-content] [data-slot="combobox-input"]')
                   ?.value ?? "")
               : "",
+        sidebarVersion:
+          doc.querySelector("[data-app-sidebar]")?.getAttribute("data-sidebar-version") ?? null,
       },
       overlayMetrics: {
         rect: overlayRect,
         triggerRect: modelTriggerRect,
         triggerLabel: overlayTriggerElement?.textContent?.trim() ?? null,
+        paletteView:
+          commandPaletteElement
+            ?.querySelector("[data-palette-view]")
+            ?.getAttribute("data-palette-view") ?? null,
+        activeRowLabels: [
+          ...doc.querySelectorAll('[data-command-palette="true"] [data-palette-active="true"]'),
+        ].map((row) => readComposedText(row)),
         query:
           overlay === "quick-switch" || overlay === "file-picker"
             ? (doc.querySelector('[data-command-palette="true"] [data-slot="autocomplete-input"]')
@@ -2322,9 +2361,9 @@ function readWebPane() {
                         : null,
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
-            ? [...doc.querySelectorAll('[data-command-palette="true"] [role="option"]')].map(
-                (row) => row.querySelector(".truncate")?.textContent?.trim(),
-              )
+            ? [
+                ...doc.querySelectorAll('[data-command-palette="true"] [data-palette-row="true"]'),
+              ].map((row) => row.querySelector(".truncate")?.textContent?.trim())
             : overlay === "model-picker"
               ? [
                   ...doc.querySelectorAll(
@@ -2366,7 +2405,7 @@ function readWebPane() {
             : [],
         rowCount:
           overlay === "quick-switch" || overlay === "file-picker"
-            ? doc.querySelectorAll('[data-command-palette="true"] [role="option"]').length
+            ? doc.querySelectorAll('[data-command-palette="true"] [data-palette-row="true"]').length
             : overlay === "model-picker"
               ? doc.querySelectorAll('[data-model-picker-content] [data-slot="combobox-item"]')
                   .length
@@ -2651,6 +2690,7 @@ function readWebPane() {
       filesBrowserMetrics: readFilesBrowserMetrics(doc),
       fileEditorMetrics: readFileEditorMetrics(doc),
       pendingRequestMetrics: readPendingRequestMetrics(doc),
+      sidebarProjectGroups: readSidebarProjectGroups(doc),
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(doc),
         state:

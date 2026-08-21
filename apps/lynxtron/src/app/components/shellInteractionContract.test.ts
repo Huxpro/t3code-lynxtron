@@ -663,6 +663,73 @@ describe("desktop shell interaction contract", () => {
     expect(tooltipSource).toContain("data-floating-side={side}");
   });
 
+  it("keeps Sidebar versions, project groups, and Add Project intents aligned with Web", () => {
+    const sidebarLayout = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/AppSidebarLayout.lynx.tsx"),
+      "utf8",
+    );
+    const sidebarClassic = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/Sidebar.lynx.tsx"),
+      "utf8",
+    );
+    const sidebarProjectListHost = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../../web/src/components/sidebar/SidebarProjectListHost.lynx.tsx",
+      ),
+      "utf8",
+    );
+    const quickSwitch = readFileSync(path.resolve(import.meta.dirname, "QuickSwitch.tsx"), "utf8");
+    const appIndex = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
+    const settings = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/hooks/useSettings.lynx.ts"),
+      "utf8",
+    );
+
+    expect(settings).toContain("resolveSidebarV2Enabled");
+    expect(settings).toContain("sidebarV2ConfiguredByUser");
+    expect(sidebarLayout).toContain("const useSidebarV2 = sidebarV2Enabled && !isOnSettings;");
+    expect(sidebarLayout).toContain('data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}');
+    expect(sidebarClassic).toContain("buildSidebarProjectSnapshots");
+    expect(sidebarClassic).toContain("sidebarProjectGroupingMode");
+    expect(sidebarClassic).toContain("sidebarProjectGroupingOverrides");
+    expect(sidebarClassic).toContain("sortProjectsForSidebar");
+    expect(sidebarClassic).toContain("sortThreads");
+    expect(sidebarClassic).toContain("collapsedProjectKeys");
+    expect(sidebarClassic).toContain("setCollapsedProjectKeys");
+    expect(sidebarClassic).toContain("bindtap={uiActions.openAddProject}");
+    expect(sidebarSource).toContain("onNewProjectClick: uiActions.openAddProject");
+    expect(sidebarSource).toContain("onAddProjectClick={uiActions.openAddProject}");
+    expect(sidebarProjectListHost).toContain('className="lynx-sidebar-project-list flex flex-col"');
+    expect(sidebarProjectListHost).toContain(
+      'className="sidebar-project-row-reference lynx-sidebar-project-row flex flex-row"',
+    );
+    expect(quickSwitch).toContain('data-quick-switch-mode="add-project-sources"');
+    expect(quickSwitch).not.toContain('setView(\n      openIntent?.kind === "add-project"');
+    expect(quickSwitch).not.toContain("clearQuickSwitchOpenIntent");
+    expect(appIndex).toContain("if (appliedInitialRoute.current) return;");
+    expect(quickSwitch).toContain('"Local folder"');
+    expect(quickSwitch).toContain('"Git URL"');
+    expect(quickSwitch).toContain("Setup Required");
+    expect(quickSwitch).toContain("browseFilesystem");
+    expect(quickSwitch).toContain("createProject");
+    expect(quickSwitch).toContain("cloneRepository");
+    expect(quickSwitch).toContain("createThreadInProject");
+    expect(quickSwitch).toContain("onHoverStart={() => setActiveIndex");
+    expect(
+      readFileSync(
+        path.resolve(
+          import.meta.dirname,
+          "../../../../web/src/components/ui/hostElements.lynx.tsx",
+        ),
+        "utf8",
+      ),
+    ).toContain('"main-thread:bindmousemove": handleMouseEnter');
+    expect(quickSwitch).toContain('key === "ArrowDown" || key === "ArrowUp"');
+    expect(quickSwitch).toContain('key === "Backspace"');
+    expect(quickSwitch).toContain('key === "Escape"');
+  });
+
   it("keeps model selection visible while the canonical shell catches up", () => {
     expect(clientSource).toContain("function persistModelSelectionMutation");
     expect(clientSource).toContain("modelSelectionPending: true");

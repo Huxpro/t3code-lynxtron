@@ -97,6 +97,9 @@ const requestedRoute = previewUrl.searchParams.get("route") ?? scenario.route;
 const requestedTheme = previewUrl.searchParams.get("theme") === "light" ? "light" : "dark";
 const requestedEnvironmentIdentificationMode =
   previewUrl.searchParams.get("environmentIdentificationMode") === "none" ? "none" : "artwork";
+const requestedSidebarV2Enabled = previewUrl.searchParams.get("sidebarV2Enabled");
+const requestedSidebarV2ConfiguredByUser = previewUrl.searchParams.get("sidebarV2ConfiguredByUser");
+const requestedInitialOverlay = previewUrl.searchParams.get("initialOverlay");
 const requestedSidebarWidthRaw = previewUrl.searchParams.get("sidebarWidth");
 const requestedSidebarWidthValue =
   requestedSidebarWidthRaw === null ? Number.NaN : Number(requestedSidebarWidthRaw);
@@ -122,6 +125,7 @@ const themedScenario = {
   preferences: {
     ...scenario.preferences,
     initialRoute: requestedRoute,
+    ...(requestedInitialOverlay ? { initialOverlay: requestedInitialOverlay } : {}),
     themePreference: requestedTheme,
     ...(requestedSidebarWidth !== null ? { chat_thread_sidebar_width: requestedSidebarWidth } : {}),
     ...(requestedRightPanelWidth !== null
@@ -129,6 +133,12 @@ const themedScenario = {
       : {}),
     clientSettings: {
       ...scenarioClientSettings,
+      ...(requestedSidebarV2Enabled === null
+        ? {}
+        : { sidebarV2Enabled: requestedSidebarV2Enabled === "true" }),
+      ...(requestedSidebarV2ConfiguredByUser === null
+        ? {}
+        : { sidebarV2ConfiguredByUser: requestedSidebarV2ConfiguredByUser === "true" }),
       environmentIdentificationMode: requestedEnvironmentIdentificationMode,
     },
   },
@@ -154,7 +164,10 @@ const liveHost = useLive
       {
         socketUrl: liveSocketUrl as string,
         route: requestedRoute,
-        overlay: (scenario.preferences as { initialOverlay?: string }).initialOverlay ?? null,
+        overlay:
+          requestedInitialOverlay ??
+          (scenario.preferences as { initialOverlay?: string }).initialOverlay ??
+          null,
         theme: requestedTheme,
       },
       emitGlobalEvent as never,

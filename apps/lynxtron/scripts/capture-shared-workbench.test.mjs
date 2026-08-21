@@ -41,6 +41,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "className.includes('-atlas__image')");
   });
 
+  it("only requires provider notification dismissal for states that clear it", () => {
+    assert.include(source, "if (shouldClearWebNotification && !notificationDismissed)");
+  });
+
   it("does not relabel a running canonical thread as completed or failed", () => {
     assert.include(source, "seed?.dataset?.completedThread");
     assert.include(source, "seed?.dataset?.failedThread");
@@ -184,14 +188,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"diff-scope-menu": "existing-thread"');
     assert.include(source, 'stateId === "diff-scope-menu"');
     assert.include(source, 'stateId.startsWith("review-") || isDiffScopeMenuState');
-    assert.include(source, "Boolean(overlay) || isFilesSurfaceState || isReviewState");
+    assert.include(source, "Boolean(overlay) ||");
+    assert.include(source, "isFilesSurfaceState ||");
+    assert.include(source, "isReviewState;");
     assert.isBelow(
       source.indexOf(
         'const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;',
       ),
-      source.indexOf(
-        "const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState || isReviewState;",
-      ),
+      source.indexOf("const shouldClearWebNotification ="),
     );
     assert.include(source, "(!shouldClearWebNotification || webProviderNotificationCleared)");
     assert.include(source, "function diffScopeMenuReady(state)");
@@ -241,10 +245,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "isFileEditorState\n        ? filesBrowserReadyPolls");
     assert.include(source, "finalFilesBrowserReady = filesBrowserReady(state)");
     assert.include(source, "finalFilesBrowserReady");
-    assert.include(
-      source,
-      "const shouldClearWebNotification = Boolean(overlay) || isFilesSurfaceState",
-    );
+    assert.include(source, "const shouldClearWebNotification =");
     assert.include(source, "shouldClearWebNotification &&");
     assert.include(source, "webProviderNotificationAbsentPolls >= 30");
     assert.include(source, "isFilesSurfaceState &&");
@@ -640,6 +641,41 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "sidebarStageIdentity: {");
     assert.include(source, "headerMetrics: state?.web?.headerMetrics ?? null");
     assert.include(source, "headerMetrics: state?.lynx?.headerMetrics ?? null");
+  });
+
+  it("drives explicit Sidebar versions and real Add Project palette entry points", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(source, 'stateId === "sidebar-project-groups" ? "false" : "true"');
+    assert.notInclude(source, 'const initialOverlay = stateId === "add-project-sources"');
+    assert.include(source, 'stateId !== "add-project-sources"');
+    assert.include(source, '[data-testid="sidebar-add-project-trigger"]');
+    assert.include(source, '[aria-label="New project"]');
+    assert.include(workbench, "sidebarV2Enabled:");
+    assert.include(workbench, "sidebarV2ConfiguredByUser:");
+    assert.include(workbench, "data-sidebar-version");
+    assert.include(workbench, "readSidebarProjectGroups");
+    assert.include(workbench, "data-palette-active");
+    assert.include(workbench, "data-quick-switch-view");
+    assert.include(source, "function sidebarProjectGroupsMatch(state)");
+    assert.include(source, "finalSidebarProjectGroupsReady");
+    assert.include(source, "function addProjectSourcesMatch(state)");
+    assert.include(source, "finalAddProjectSourcesReady");
+    assert.include(source, 'stateId === "add-project-sources" ||');
+  });
+
+  it("records the command palette hover and keyboard causal chain", () => {
+    assert.include(source, 'stateId === "command-palette-navigation"');
+    assert.include(source, "runCommandPaletteNavigationFlow");
+    assert.include(source, '"ArrowDown", "ArrowDown", 40');
+    assert.include(source, '"ArrowUp", "ArrowUp", 38');
+    assert.include(source, '"Enter", "Enter", 13');
+    assert.include(source, '"Backspace", "Backspace", 8');
+    assert.include(source, '"Escape", "Escape", 27');
+    assert.include(source, "nativePhysicalKeyboard:");
+    assert.include(source, '"pending-user-session"');
   });
 
   it("compares Composer toolbar allocation instead of renderer-specific raw box sizing", () => {
