@@ -869,6 +869,7 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain('data-floating-side="top"');
     expect(composer).toContain('data-floating-align="start"');
     expect(composer).toContain('data-floating-side-offset="4"');
+    expect(composer).toContain('workspaceMenuOpen ? " composer-workspace-control-wrap--open" : ""');
     expect(composer).toContain("resolveCurrentWorkspaceLabel(worktreePath ?? null)");
     expect(composer).toContain('resolveEnvModeLabel("worktree")');
     expect(composer).toContain("worktreePath: worktreePath ?? null");
@@ -900,6 +901,12 @@ describe("desktop shell interaction contract", () => {
     expect(workspaceControlBlock).toContain("width: 0;");
     expect(workspaceControlBlock).toContain("min-width: 0;");
     expect(workspaceControlBlock).toContain("z-index: 52;");
+    const workspaceControlOpenBlock =
+      overrides.match(/\.composer-workspace-control-wrap--open \{[^}]+\}/)?.[0] ?? "";
+    expect(workspaceControlOpenBlock).toContain("z-index: 60;");
+    const modelOptionControlBlock =
+      overrides.match(/\.composer-model-option-control-wrap \{[^}]+\}/)?.[0] ?? "";
+    expect(modelOptionControlBlock).toContain("z-index: 52;");
     expect(overrides).toContain("composer-workspace-menu-dismiss {\n  position: fixed;");
     expect(workspaceBlock).toContain("z-index: 3;");
     expect(overrides).toContain("composer-workspace-menu-dismiss {\n  position: fixed;");
