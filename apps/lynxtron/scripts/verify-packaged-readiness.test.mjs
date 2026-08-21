@@ -269,10 +269,19 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "composerSendMaterial");
   });
 
-  it("verifies Model Picker theme colors and both dismissal paths", () => {
+  it("verifies Model Picker provider navigation, theme colors, and both dismissal paths", () => {
     assert.include(source, "async function verifyModelPickerFidelity");
+    assert.include(
+      source,
+      "await selectSessionlessFixtureThread({\n    baseDir,\n    child,\n    client,\n    timeoutMs,",
+    );
     assert.include(source, 'selector: ".model-picker-content"');
     assert.include(source, 'selector: ".model-picker-rail-scroll"');
+    assert.include(source, 'readSelectorMeasurements(client, ".model-picker-rail-item")');
+    assert.include(source, 'attribute: "data-model-picker-provider"');
+    assert.include(source, 'selector: ".model-picker-rail-item--active"');
+    assert.include(source, "Native model picker rows did not switch provider");
+    assert.include(source, "pickerRemainedOpen: true");
     assert.include(source, 'panel: "rgb(25,25,25)"');
     assert.include(source, 'panel: "rgb(255,255,255)"');
     assert.include(source, 'selector: ".model-picker-close"');

@@ -3344,6 +3344,7 @@ async function verifyComposerStopBehavior({
 }
 
 async function verifyModelPickerFidelity({
+  baseDir,
   child,
   client,
   devToolCli,
@@ -3353,6 +3354,12 @@ async function verifyModelPickerFidelity({
   viewportHeight,
   viewportWidth,
 }) {
+  await selectSessionlessFixtureThread({
+    baseDir,
+    child,
+    client,
+    timeoutMs,
+  });
   await tapSelector({
     child,
     client,
@@ -3435,6 +3442,77 @@ async function verifyModelPickerFidelity({
       measurement !== null &&
       ["Current checkout", "Local checkout"].includes(measurement.text.trim()),
   });
+  const providerItems = await readSelectorMeasurements(client, ".model-picker-rail-item");
+  const beforeProvider = content.attributes["data-model-picker-selected-provider"];
+  const targetProvider = providerItems.find(
+    (item) =>
+      item.attributes["data-model-picker-provider"] !== "favorites" &&
+      item.attributes["data-model-picker-provider"] !== beforeProvider &&
+      item.attributes["data-model-picker-provider-active"] !== "true" &&
+      item.attributes["data-model-picker-provider-disabled"] !== "true",
+  );
+  const targetProviderId = targetProvider?.attributes["data-model-picker-provider"];
+  if (!targetProvider || typeof targetProviderId !== "string") {
+    throw new Error(
+      `Native model picker has no enabled inactive provider rail: ${JSON.stringify(providerItems)}`,
+    );
+  }
+  await tapSelectorByAttribute({
+    attribute: "data-model-picker-provider",
+    child,
+    client,
+    selector: ".model-picker-rail-item",
+    timeoutMs,
+    value: targetProviderId,
+  });
+  const switchedContent = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-content",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-model-picker-selected-provider"] === targetProviderId,
+  });
+  const switchedProvider = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-rail-item--active",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-model-picker-provider"] === targetProviderId,
+  });
+  const switchedRowsDeadline = Date.now() + timeoutMs;
+  let switchedRows = [];
+  while (Date.now() < switchedRowsDeadline) {
+    switchedRows = await readSelectorMeasurements(client, ".model-picker-row");
+    if (
+      switchedRows.length > 0 &&
+      switchedRows.every((measurement) =>
+        measurement.attributes["data-model-picker-key"]?.startsWith(`${targetProviderId}:`),
+      )
+    ) {
+      break;
+    }
+    await waitForChildExit(child, 50);
+  }
+  if (
+    switchedRows.length === 0 ||
+    switchedRows.some(
+      (measurement) =>
+        !measurement.attributes["data-model-picker-key"]?.startsWith(`${targetProviderId}:`),
+    )
+  ) {
+    throw new Error(
+      `Native model picker rows did not switch provider: ${JSON.stringify(switchedRows)}`,
+    );
+  }
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
   const screenshotPath = path.join(outputDirectory, "native-model-picker.png");
   const screenshot = spawnSync(
     process.execPath,
@@ -3500,7 +3578,7 @@ async function verifyModelPickerFidelity({
   return {
     status: "pass",
     input:
-      "DevTool Input.emulateTouchFromMouseEvent on measured Native trigger, Close control, and outside dismiss layer",
+      "DevTool Input.emulateTouchFromMouseEvent on measured Native trigger, provider rail, Close control, and outside dismiss layer",
     panel: {
       rect: panel.rect,
       attributes: panel.attributes,
@@ -3511,6 +3589,14 @@ async function verifyModelPickerFidelity({
     },
     colors: resolvedColors,
     checkoutLabel: checkout.text.trim(),
+    providerNavigation: {
+      before: beforeProvider,
+      target: targetProviderId,
+      after: switchedContent.attributes["data-model-picker-selected-provider"],
+      active: switchedProvider.attributes["data-model-picker-provider"],
+      rows: switchedRows.map((row) => row.attributes["data-model-picker-key"]),
+      pickerRemainedOpen: true,
+    },
     dismissed: {
       closeButton: true,
       outsideTap: true,
@@ -8911,6 +8997,7 @@ async function runOnce({
         : undefined;
     const modelPickerFidelity = shouldVerifyModelPickerFidelity
       ? await verifyModelPickerFidelity({
+          baseDir,
           child,
           client,
           devToolCli,
