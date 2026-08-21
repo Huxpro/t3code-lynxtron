@@ -143,6 +143,25 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "projectActionKeybindingMutation");
   });
 
+  it("verifies the Native Sidebar project-settings entry, dialog, grouping, and removal confirmation", () => {
+    assert.include(source, "async function verifyProjectSettingsDialog");
+    assert.include(source, '"--verify-project-settings-dialog"');
+    assert.include(source, 'selector: ".sidebar-v2-project-scope-trigger"');
+    assert.include(source, '".sidebar-v2-project-action"');
+    assert.include(source, '".project-settings-dialog"');
+    assert.include(source, '".project-settings-name-input"');
+    assert.include(source, '".project-settings-grouping-trigger"');
+    assert.include(source, '".project-settings-grouping-option"');
+    assert.include(source, 'attribute: "data-project-grouping-option"');
+    assert.include(source, 'selector: ".project-settings-grouping-option"');
+    assert.include(source, 'value: "separate"');
+    assert.include(source, '".project-settings-remove-confirm"');
+    assert.include(source, 'point: "bottom-right"');
+    assert.include(source, 'keyboardRename: "pending-user-session"');
+    assert.include(source, "projectSettingsDialog,");
+    assert.include(outcomeChecksSource, "projectSettingsDialog");
+  });
+
   it("verifies titlebar branding artwork and none modes without moving the brand", () => {
     assert.include(source, '"--expected-environment-identification-mode"');
     assert.include(source, '".sidebar__brand-bg"');
