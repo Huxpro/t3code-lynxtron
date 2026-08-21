@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T08:02:20.236Z",
+  "states": ["sidebar-project-groups", "add-project-sources", "command-palette-navigation"],
+  "productCommit": "13d6b2e09279316c6a7c6b298cd35998d8a4676c",
+  "verifierCommit": "265ce44a000119354c03031bd605c2595a40d662",
+  "captureHead": "265ce44a000119354c03031bd605c2595a40d662",
+  "classification": {
+    "productLossClosed": [
+      "Lynx now resolves Sidebar V1/V2 from the same explicit Beta choice and build-stage defaults as Web; Alpha/Latest defaults to V1 and explicit opt-in selects V2.",
+      "V1 renders logical project groups vertically at the canonical 239x32 row geometry, preserves empty projects and collapse state, and creates threads in the selected project.",
+      "Every Add Project entry opens the dedicated source workflow. Local folder, Git URL, provider rows, disabled availability, Setup Required badges, Back, and clone destination flows are real connector-backed behavior.",
+      "Project creation, filesystem browsing, repository lookup/clone, duplicate-path reuse, thread creation, selection, and thread.projectId association are implemented through the connector boundary.",
+      "Quick Switch has one active index shared by hover and keyboard navigation, skips disabled rows, wraps, activates Enter, returns with Backspace, and dismisses with Escape."
+    ],
+    "remainingResidual": [
+      "Lynx-for-Web browser proxy does not translate CDP key events into Lynx main-thread key events. Web keyboard behavior is proven in the integrated workbench; Lynx keyboard logic is covered by pure tests and source contracts.",
+      "Native physical keyboard acceptance remains pending-user-session and receives no Browser evidence credit.",
+      "The current Browser frames are dark 1280x820. Additional themes, narrow viewports, remote-environment Add Project routing, clone failure recovery, and destructive project management remain outside these three states.",
+      "Existing titlebar authority/font reconstruction residual is unchanged and is not attributed to these Sidebar/project workflow fixes."
+    ],
+    "harnessMismatch": [
+      "The earlier titlebar artwork comparison used different environmentIdentificationMode values. Current cells force the same mode and do not classify that mismatch as Sidebar product loss.",
+      "The pre-fix aggregate Sidebar cell passed while Lynx project rows were horizontal because it did not gate logical group row geometry. The current verifier requires equal titles, vertical progression, and Sidebar containment.",
+      "The first Add Project aggregate passed the root palette because it did not gate the nested palette view. The current verifier requires Web submenu plus Lynx add-project-sources and all six source rows."
+    ],
+    "evidenceBoundary": "Browser evidence uses one isolated seeded server per cell, shipping Web and Lynx-for-Web artifacts, explicit Sidebar settings, dark 1280x820 viewport, real Sidebar Add Project pointers, real dual-renderer hover pointers, real Web CDP Arrow/Enter/Backspace/Escape, Lynx pointer dismissal, zero renderer errors, owned cleanup, and no tracked screenshots. The Lynx-for-Web key bridge is explicitly blocked; Native physical keyboard remains pending-user-session."
+  },
+  "sidebarProjectGroups": {
+    "status": "pass",
+    "report": "/tmp/t3-sidebar-current-head/sidebar-project-groups/workbench-report.json",
+    "reportSha256": "6814d5e50c54558190f102e66bec8862609401764a4b27647d602ab8b3a12cca",
+    "screenshotSha256": "ae4a8c75d70cca93be41e64745434f5dc1b76cfdeed5b7e5988c4e5d9ea4327b",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "bundles": {
+      "web": "5f3347b66dfa",
+      "lynx": "f506d52661f7"
+    },
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "rendererErrors": {
+      "web": [],
+      "lynx": []
+    },
+    "version": {
+      "web": "v1",
+      "lynx": "v1"
+    },
+    "webRows": [
+      {
+        "title": "t3code-lynxtron",
+        "rect": {
+          "x": 8,
+          "y": 132,
+          "width": 239,
+          "height": 32
+        }
+      },
+      {
+        "title": "background-only",
+        "rect": {
+          "x": 8,
+          "y": 200,
+          "width": 239,
+          "height": 32
+        }
+      }
+    ],
+    "lynxRows": [
+      {
+        "title": "t3code-lynxtron",
+        "rect": {
+          "x": 8,
+          "y": 133,
+          "width": 239,
+          "height": 32
+        }
+      },
+      {
+        "title": "background-only",
+        "rect": {
+          "x": 8,
+          "y": 197,
+          "width": 239,
+          "height": 32
+        }
+      }
+    ]
+  },
+  "addProjectSources": {
+    "status": "pass",
+    "report": "/tmp/t3-sidebar-current-head/add-project-sources/workbench-report.json",
+    "reportSha256": "c2a68968284df5cb641c93c79ece6ff7e4da52fa1b5d619b8e5f059f0a41a8ee",
+    "screenshotSha256": "efc44b4dcf5bd226141ba7f876693c6296e3041430db90d43570512b179113a3",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "bundles": {
+      "web": "5f3347b66dfa",
+      "lynx": "f506d52661f7"
+    },
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "rendererErrors": {
+      "web": [],
+      "lynx": []
+    },
+    "views": {
+      "web": "submenu",
+      "lynx": "add-project-sources"
+    },
+    "rows": {
+      "web": [
+        "Local folder",
+        "Git URL",
+        "GitHub repository",
+        "Azure DevOps repository",
+        "Bitbucket repository",
+        "GitLab repository"
+      ],
+      "lynx": [
+        "Local folder",
+        "Git URL",
+        "GitHub repository",
+        "Azure DevOps repository",
+        "Bitbucket repository",
+        "GitLab repository"
+      ]
+    },
+    "active": {
+      "web": ["Local folder Browse a folder on disk"],
+      "lynx": ["Local folder Browse a folder on disk"]
+    }
+  },
+  "commandPaletteNavigation": {
+    "status": "pass",
+    "report": "/tmp/t3-sidebar-current-head/command-palette-navigation/workbench-report.json",
+    "reportSha256": "0095bf0e2f23b7a641c3d58618d5580648e07fe417edbc06280db642989ed3b8",
+    "screenshotSha256": "849b507ca58955e3a60a967c687eca0780afda0c9fedfeecd0b5d704ad18faa9",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "bundles": {
+      "web": "5f3347b66dfa",
+      "lynx": "f506d52661f7"
+    },
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "rendererErrors": {
+      "web": [],
+      "lynx": []
+    },
+    "match": true,
+    "stage": "complete",
+    "timeline": [
+      {
+        "step": "hover-web",
+        "active": "Add project"
+      },
+      {
+        "step": "hover-lynx",
+        "visual": {
+          "hovered": true,
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(245, 245, 245)"
+        },
+        "stateBridge": "browser-proxy-does-not-project-main-thread-hover"
+      },
+      {
+        "step": "web-arrow-down",
+        "webActive": "Open settings"
+      },
+      {
+        "step": "web-arrow-up",
+        "webActive": "Add project"
+      },
+      {
+        "step": "web-enter",
+        "webView": "submenu"
+      },
+      {
+        "step": "web-backspace",
+        "webView": "root"
+      },
+      {
+        "step": "web-escape",
+        "webOverlay": null
+      },
+      {
+        "step": "lynx-pointer-dismiss",
+        "lynxOverlay": null
+      },
+      {
+        "step": "final-hover",
+        "webActive": "Add project",
+        "lynxVisual": {
+          "hovered": true,
+          "backgroundColor": "rgba(0, 0, 0, 0)",
+          "color": "rgb(245, 245, 245)"
+        }
+      }
+    ],
+    "inputChannel": "web-cdp-keyboard|dual-browser-pointer-hover|lynx-pointer-dismiss",
+    "lynxForWebKeyboard": "blocked-browser-proxy-no-main-thread-key-bridge",
+    "nativePhysicalKeyboard": "pending-user-session"
+  },
+  "connectorLifecycle": {
+    "status": "pass",
+    "events": 28,
+    "kinds": ["status", "log", "config", "access", "shell", "thread"],
+    "projectThreadAssociation": true,
+    "promptAndResyncRetained": true
+  },
+  "validation": {
+    "focusedLynxAndHarnessTests": "89/89",
+    "focusedWebTests": "91/91",
+    "focusedClientRuntimeTests": "10/10",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "webTypecheck": "pass",
+    "browserWorkbenchBuild": "pass with existing Effect import.meta and asset-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every admitted loop",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "fidelityAccounting": {
+    "states": 69,
+    "cells": 792,
+    "totalWeight": 258.2,
+    "denominatorChanged": false,
+    "existingWeightsChanged": false
+  }
+}
