@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T03:25:00-07:00",
+  "stateId": "sidebar-project-settings",
+  "codeCommit": "22c749dd26f031b17d025e7a9daf3765d6beece9",
+  "testCommit": "12273d0daa1975c010f6bf8edf77123e7eb1b226",
+  "harnessCommit": "95f587b48c252e815b3736b55a4b005a17cc092c",
+  "classification": {
+    "productLossClosed": [
+      "Lynx Sidebar V2 now renders one measured 24x24 project-actions control for every project-scope row and opens a Native-safe Project settings dialog.",
+      "Lynx Sidebar V1 preserves the authority interaction model: project rows open the same settings surface through context menu or long press instead of gaining an always-visible V2 action.",
+      "The dialog exposes Project name, Grouping rule, Remove project, and Close. Rename dispatches project.meta.update, grouping persists sidebarProjectGroupingOverrides, and confirmed removal dispatches project.delete with force.",
+      "A real disposable connector lifecycle proves create, rename, associated thread creation, force removal, shell convergence, prompt, resync, and clean shutdown."
+    ],
+    "missingCoverage": [
+      "Native physical keyboard text entry and blur/confirm rename remain pending-user-session. Browser source contracts and the real connector rename lifecycle prove the command path, but DevTool touch is not presented as keyboard evidence.",
+      "The strict Browser and Native retained cells cover dark 1280x820. Light mode and compact viewports remain unmeasured for this new dialog."
+    ],
+    "harnessLoss": [
+      "The first Native attempt used an attribute selector unsupported by the Lynx DevTool DOM.querySelector implementation even though the target was present in the returned tree.",
+      "The second attempt read parent action-row innerText, which Lynx Desktop reports empty for nested text nodes. The verifier now measures dedicated label selectors.",
+      "The third attempt again used an attribute selector for the grouping option. The final verifier uses the existing class enumeration plus exact attribute matcher and measured touch."
+    ],
+    "intentionalPlatformDelta": [
+      "Web and Lynx use renderer-specific internal project-scope keys. State identity is canonical project label/count plus selected project/thread.",
+      "Web V1 uses a context menu and V2 uses a visible trailing action. Lynx preserves these state-specific entry patterns.",
+      "Web uses a translucent Base UI dialog and variable DM Sans; Native uses a more opaque Lynx surface and platform rasterization."
+    ],
+    "acceptedRenderingNoise": [
+      "The exact Native dialog is 576x249 versus Web 576x244. Native input and grouping controls are 257x32 versus Web 255x30 and 257x31.",
+      "Native material remains more opaque and its text rasterization differs. No pixel-perfect material credit is claimed."
+    ]
+  },
+  "browser": {
+    "status": "strict-parity-pass",
+    "report": {
+      "path": "/tmp/t3-project-settings-browser-canonical/workbench-report.json",
+      "sha256": "1a5db3243b2e3332596fc896767dda97c557429ad69b2f0d86bd12fd19cce077"
+    },
+    "commit": "95f587b48c252e815b3736b55a4b005a17cc092c",
+    "bundles": {
+      "web": "978b9dc77091",
+      "lynxForWeb": "5a9575c72242"
+    },
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "readyMs": 2169,
+    "identity": {
+      "stateIdentityMatch": true,
+      "project": "t3code-lynxtron",
+      "thread": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+      "projectScopeLabelsMatch": true,
+      "projectActionCount": {
+        "web": 1,
+        "lynx": 1
+      }
+    },
+    "interaction": {
+      "inputChannel": "dual-scope-pointer|dual-project-action-pointer",
+      "webDialogOpened": true,
+      "lynxDialogOpened": true
+    },
+    "geometry": {
+      "web": {
+        "dialog": [352, 288, 576, 244],
+        "backdrop": [0, 0, 1280, 820],
+        "name": [378, 416, 255, 30],
+        "grouping": [646, 416, 257, 31]
+      },
+      "lynx": {
+        "dialog": [352, 284.5, 576, 251],
+        "backdrop": [0, 0, 1280, 820],
+        "name": [377, 423.5, 168, 32],
+        "grouping": [625.90625, 399.5, 242.84375, 32]
+      }
+    },
+    "assertions": {
+      "webSha256": "710ad4195d9d0ad445319c9020ba29f2b570aa5f9cb66eb8568a700083017ba4",
+      "lynxSha256": "c310b79039c3ae4ba5813fab8ed15501cb0e56f70602049dd659ff1011b53bf9"
+    },
+    "console": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rendererErrors": 0
+    }
+  },
+  "native": {
+    "status": "exact-bundle-pass",
+    "report": {
+      "path": "/tmp/t3-project-settings-native-canonical/report.json",
+      "sha256": "1b8a0c4ec3451ffb59c65cbf6fbf7f9c59a9469594dd8104224aa47db930d771"
+    },
+    "head": "95f587b48c252e815b3736b55a4b005a17cc092c",
+    "bundle": {
+      "sha256": "a46071ecee7f3cfef77868ad4b952df06847d329c69bbc4c7dcdba16e5695e96",
+      "bytes": 4950753
+    },
+    "snapshotSha256": "5874ab17e7828063087ccacf55895ce317c5d4488382d089a73921e65007bb00",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "processId": 19964,
+    "serverPort": 58524,
+    "client": {
+      "id": "localhost:8903",
+      "sessionId": 1,
+      "bundleUrl": "file:///Users/bytedance/github/t3code-archaeology-verify3/apps/lynxtron/dist/desktop/main.lynx.bundle"
+    },
+    "transport": {
+      "kind": "main",
+      "beforeSequence": 3,
+      "afterSequence": 4
+    },
+    "interaction": {
+      "inputChannel": "DevTool measured touches",
+      "projectAction": [177, 179, 24, 24],
+      "dialogOpened": true,
+      "groupingOptions": [
+        "Use global default",
+        "Group by repository",
+        "Group by repository and path",
+        "Keep projects separate"
+      ],
+      "groupingChangedToSeparate": true,
+      "removeConfirmationOpened": true,
+      "removeConfirmationCancelled": true,
+      "outsideDismissed": true,
+      "keyboardRename": "pending-user-session"
+    },
+    "geometry": {
+      "dialog": [352, 285.5, 576, 249],
+      "backdrop": [0, 0, 1280, 820],
+      "header": [353, 286.5, 574, 102],
+      "body": [353, 388.5, 574, 81],
+      "footer": [353, 469.5, 574, 64],
+      "name": [377, 424.5, 257, 32],
+      "grouping": [646, 424.5, 257, 32],
+      "removeConfirmation": [377, 410, 526, 105]
+    },
+    "screenshot": {
+      "path": "/tmp/t3-project-settings-native-canonical/native-project-settings.png",
+      "sha256": "2807b3da0db929f60d79ff2948df3344cdf294bc22fcda869effceeaf105239c",
+      "dimensions": "2560x1640"
+    },
+    "rendererErrors": 0,
+    "disposed": true
+  },
+  "runtime": {
+    "connectorSmoke": {
+      "status": "pass",
+      "events": 31,
+      "kinds": ["status", "log", "config", "access", "shell", "thread"],
+      "projectLifecycleMutation": true,
+      "renamedProjectTitle": "Associated project renamed",
+      "projectRemoved": true,
+      "associatedThreadRemoved": true,
+      "promptAndResync": true
+    }
+  },
+  "validation": {
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "webTypecheck": "pass",
+    "lynxFocusedTests": "55/55",
+    "webFocusedTests": "89/89",
+    "nativeVerifierTests": "47/47",
+    "productionWorkbenchBuild": "pass-with-existing-effect-import-meta-and-bundle-size-warnings",
+    "productionNativeBuild": "pass-with-existing-lynx-unsupported-css-and-effect-import-meta-warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
