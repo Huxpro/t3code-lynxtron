@@ -132,6 +132,14 @@ export const ClientSettingsSchema = Schema.Struct({
       modelOrder: Schema.Array(Schema.String).pipe(Schema.withDecodingDefault(Effect.succeed([]))),
     }),
   ).pipe(Schema.withDecodingDefault(Effect.succeed({}))),
+  // Legacy sidebar (the original per-project tree). Deliberately a fresh key
+  // from the retired Sidebar v2 beta preferences: decoding drops those old
+  // keys so the flat thread list is the default for every current client.
+  legacySidebarEnabled: Schema.Boolean.pipe(
+    Schema.withDecodingDefault(
+      Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.legacySidebarEnabled),
+    ),
+  ),
   sidebarAutoSettleAfterDays: Schema.NullOr(SidebarAutoSettleAfterDays).pipe(
     Schema.withDecodingDefault(Effect.succeed(DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS)),
   ),
@@ -151,15 +159,6 @@ export const ClientSettingsSchema = Schema.Struct({
   sidebarThreadPreviewCount: SidebarThreadPreviewCount.pipe(
     Schema.withDecodingDefault(Effect.succeed(DEFAULT_SIDEBAR_THREAD_PREVIEW_COUNT)),
   ),
-  sidebarV2Enabled: Schema.Boolean.pipe(
-    Schema.withDecodingDefault(Effect.succeed(PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarV2Enabled)),
-  ),
-  // Whether `sidebarV2Enabled` reflects an explicit choice in Settings → Beta.
-  // Client settings persist as a whole blob, so every user who has ever touched
-  // any setting already has `sidebarV2Enabled: false` stored — without this bit
-  // there is no way to tell that apart from "left alone", and a channel-derived
-  // default could never reach them. Mirrors `updateChannelConfiguredByUser`.
-  sidebarV2ConfiguredByUser: Schema.Boolean.pipe(Schema.withDecodingDefault(Effect.succeed(false))),
   timestampFormat: TimestampFormat.pipe(
     Schema.withDecodingDefault(Effect.succeed(DEFAULT_TIMESTAMP_FORMAT)),
   ),
@@ -748,6 +747,7 @@ export const ClientSettingsPatch = Schema.Struct({
       }),
     ),
   ),
+  legacySidebarEnabled: Schema.optionalKey(Schema.Boolean),
   sidebarAutoSettleAfterDays: Schema.optionalKey(Schema.NullOr(SidebarAutoSettleAfterDays)),
   sidebarProjectGroupingMode: Schema.optionalKey(SidebarProjectGroupingMode),
   sidebarProjectGroupingOverrides: Schema.optionalKey(
@@ -756,8 +756,6 @@ export const ClientSettingsPatch = Schema.Struct({
   sidebarProjectSortOrder: Schema.optionalKey(SidebarProjectSortOrder),
   sidebarThreadSortOrder: Schema.optionalKey(SidebarThreadSortOrder),
   sidebarThreadPreviewCount: Schema.optionalKey(SidebarThreadPreviewCount),
-  sidebarV2Enabled: Schema.optionalKey(Schema.Boolean),
-  sidebarV2ConfiguredByUser: Schema.optionalKey(Schema.Boolean),
   timestampFormat: Schema.optionalKey(TimestampFormat),
   wordWrap: Schema.optionalKey(Schema.Boolean),
 });

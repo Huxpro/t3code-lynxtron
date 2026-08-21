@@ -16,7 +16,9 @@ export const GENERAL_SETTINGS_DEFAULT_VALUES: GeneralSettingsValues = {
   diffIgnoreWhitespace: PORTABLE_CLIENT_SETTINGS_DEFAULTS.diffIgnoreWhitespace,
   enableAssistantStreaming: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableAssistantStreaming,
   enableProviderUpdateChecks: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableProviderUpdateChecks,
+  legacySidebarEnabled: PORTABLE_CLIENT_SETTINGS_DEFAULTS.legacySidebarEnabled,
   newWorktreesStartFromOrigin: PORTABLE_SERVER_SETTINGS_DEFAULTS.newWorktreesStartFromOrigin,
+  sidebarAutoSettleAfterDays: PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarAutoSettleAfterDays,
   sidebarProjectGroupingMode: PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarProjectGroupingMode,
   timestampFormat: PORTABLE_CLIENT_SETTINGS_DEFAULTS.timestampFormat,
 };
@@ -27,6 +29,8 @@ type GeneralClientSource = Pick<
   | "confirmThreadArchive"
   | "confirmThreadDelete"
   | "diffIgnoreWhitespace"
+  | "legacySidebarEnabled"
+  | "sidebarAutoSettleAfterDays"
   | "sidebarProjectGroupingMode"
   | "timestampFormat"
 >;
@@ -57,7 +61,9 @@ export function projectGeneralSettingsValues(
     diffIgnoreWhitespace: client.diffIgnoreWhitespace,
     enableAssistantStreaming: server.enableAssistantStreaming,
     enableProviderUpdateChecks: server.enableProviderUpdateChecks,
+    legacySidebarEnabled: client.legacySidebarEnabled,
     newWorktreesStartFromOrigin: server.newWorktreesStartFromOrigin,
+    sidebarAutoSettleAfterDays: client.sidebarAutoSettleAfterDays,
     sidebarProjectGroupingMode: client.sidebarProjectGroupingMode,
     timestampFormat: client.timestampFormat,
   };

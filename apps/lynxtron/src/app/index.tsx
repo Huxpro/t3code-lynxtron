@@ -18,7 +18,6 @@ import { ProjectActionDialog } from "./components/ProjectActionDialog";
 import { GitPublishDialog } from "./components/GitPublishDialog";
 import {
   ArchiveSettings,
-  BetaSettings,
   ConnectionsSettings,
   SourceControlSettings,
 } from "./components/OtherSettings";
@@ -180,7 +179,6 @@ function RootSwitch() {
     else if (section === "keybindings") panel = <KeybindingsSettings />;
     else if (section === "source-control") panel = <SourceControlSettings />;
     else if (section === "connections") panel = <ConnectionsSettings />;
-    else if (section === "beta") panel = <BetaSettings />;
     else if (section === "archive") panel = <ArchiveSettings />;
     return (
       <AppSidebarLayout>

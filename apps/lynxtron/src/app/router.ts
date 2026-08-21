@@ -14,6 +14,7 @@ export type LynxSettingsPath = "/settings" | SettingsSectionPath;
 
 export function normalizeLynxPathname(to: string): string {
   if (to === "/settings" || to === "/settings/") return "/settings/general";
+  if (to === "/settings/beta") return "/settings/general";
   // Older Lynx captures used the singular path. Keep it as an input alias,
   // while the shared Settings navigation owns the canonical plural route.
   if (to === "/settings/archive") return "/settings/archived";

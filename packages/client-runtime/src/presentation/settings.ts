@@ -25,10 +25,9 @@ export type PortableClientSettings = Pick<
   | "environmentIdentificationMode"
   | "favorites"
   | "glassOpacity"
+  | "legacySidebarEnabled"
   | "sidebarAutoSettleAfterDays"
   | "sidebarProjectGroupingMode"
-  | "sidebarV2ConfiguredByUser"
-  | "sidebarV2Enabled"
   | "timestampFormat"
   | "wordWrap"
 >;
@@ -187,7 +186,8 @@ export interface PortableGeneralSettingsRestoreProjection {
 
 /**
  * Reset the General controls rendered by portable clients such as Lynxtron.
- * Sidebar V2 is intentionally excluded because it lives in Beta settings.
+ * Legacy sidebar is intentionally excluded because restoring General settings
+ * must not silently replace the user's current navigation model.
  */
 export function projectPortableGeneralSettingsRestore(input: {
   readonly clientSettings: PortableClientSettings;

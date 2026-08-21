@@ -6,6 +6,7 @@ import {
 } from "@t3tools/client-runtime/presentation/settings";
 
 import {
+  GeneralSettingsLegacySection,
   GeneralSettingsSelect,
   GeneralSettingsSwitch,
   GeneralSettingsTextInput,
@@ -30,7 +31,9 @@ export interface GeneralSettingsValues {
   readonly diffIgnoreWhitespace: boolean;
   readonly enableAssistantStreaming: boolean;
   readonly enableProviderUpdateChecks: boolean;
+  readonly legacySidebarEnabled: boolean;
   readonly newWorktreesStartFromOrigin: boolean;
+  readonly sidebarAutoSettleAfterDays: number | null;
   readonly sidebarProjectGroupingMode: GeneralProjectGroupingMode;
   readonly timestampFormat: GeneralTimestampFormat;
 }
@@ -127,6 +130,57 @@ export function GeneralSettingsContent({
             />
           }
         />
+
+        <SettingsRow
+          {...searchableSetting("auto-settle-inactive-threads")}
+          description="Sidebar threads with no activity for this long settle automatically. Threads on merged or closed change requests always settle."
+          resetAction={
+            values.sidebarAutoSettleAfterDays !== defaults.sidebarAutoSettleAfterDays ? (
+              <SettingResetButton
+                label="auto-settle"
+                onClick={() =>
+                  onUpdate({
+                    sidebarAutoSettleAfterDays: defaults.sidebarAutoSettleAfterDays,
+                  })
+                }
+              />
+            ) : null
+          }
+          control={
+            <GeneralSettingsSwitch
+              checked={values.sidebarAutoSettleAfterDays !== null}
+              settingControl="auto-settle"
+              onCheckedChange={(enabled) =>
+                onUpdate({
+                  sidebarAutoSettleAfterDays: enabled
+                    ? (defaults.sidebarAutoSettleAfterDays ?? 3)
+                    : null,
+                })
+              }
+              aria-label="Auto-settle inactive threads"
+            />
+          }
+        />
+
+        {values.sidebarAutoSettleAfterDays !== null ? (
+          <SettingsRow
+            className="general-settings-row--nested"
+            title="Days of inactivity before auto-settle"
+            description="Any new activity un-settles a thread automatically."
+            control={
+              <GeneralSettingsTextInput
+                ariaLabel="Days of inactivity before auto-settle"
+                onCommit={(value) => {
+                  const days = Number(value);
+                  if (Number.isInteger(days) && days >= 1 && days <= 90) {
+                    onUpdate({ sidebarAutoSettleAfterDays: days });
+                  }
+                }}
+                value={String(values.sidebarAutoSettleAfterDays)}
+              />
+            }
+          />
+        ) : null}
 
         <SettingsRow
           {...searchableSetting("time-format")}
@@ -398,6 +452,21 @@ export function GeneralSettingsContent({
           unavailable={textGenerationModelUnavailable}
         />
       </SettingsSection>
+
+      <GeneralSettingsLegacySection>
+        <SettingsRow
+          {...searchableSetting("legacy-sidebar")}
+          description="Brings back the original sidebar with per-project thread trees. The default sidebar shows one flat list: active work as rich cards, settled threads as compact rows."
+          control={
+            <GeneralSettingsSwitch
+              checked={values.legacySidebarEnabled}
+              settingControl="legacy-sidebar"
+              onCheckedChange={(legacySidebarEnabled) => onUpdate({ legacySidebarEnabled })}
+              aria-label="Sidebar (legacy)"
+            />
+          }
+        />
+      </GeneralSettingsLegacySection>
 
       <SettingsSection title="About">
         {aboutContent ?? (

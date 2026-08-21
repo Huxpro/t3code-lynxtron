@@ -3,7 +3,6 @@ import type { SettingsSectionPath } from "../../../web/src/components/settings/S
 export type LynxSettingsPanelId =
   | "archive"
   | "appearance"
-  | "beta"
   | "connections"
   | "general"
   | "keybindings"
@@ -13,7 +12,6 @@ export type LynxSettingsPanelId =
 const PANEL_BY_PATH: Partial<Record<SettingsSectionPath, LynxSettingsPanelId>> = {
   "/settings/archived": "archive",
   "/settings/appearance": "appearance",
-  "/settings/beta": "beta",
   "/settings/connections": "connections",
   "/settings/general": "general",
   "/settings/keybindings": "keybindings",

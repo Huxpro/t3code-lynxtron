@@ -5,14 +5,12 @@ export type SettingsSectionPath =
   | "/settings/providers"
   | "/settings/source-control"
   | "/settings/connections"
-  | "/settings/beta"
   | "/settings/archived";
 
 export interface SettingsNavigationItem {
   readonly icon:
     | "archive"
     | "bot"
-    | "flask-conical"
     | "git-branch"
     | "keyboard"
     | "link-2"
@@ -29,6 +27,5 @@ export const SETTINGS_NAV_ITEMS: ReadonlyArray<SettingsNavigationItem> = [
   { label: "Providers", to: "/settings/providers", icon: "bot" },
   { label: "Source Control", to: "/settings/source-control", icon: "git-branch" },
   { label: "Connections", to: "/settings/connections", icon: "link-2" },
-  { label: "Beta", to: "/settings/beta", icon: "flask-conical" },
   { label: "Archive", to: "/settings/archived", icon: "archive" },
 ];

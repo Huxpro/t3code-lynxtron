@@ -4,7 +4,7 @@ import { ICON_PNGS } from "../../../lynxtron/src/app/components/iconData";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import { AppSidebarComposition } from "./AppSidebarComposition";
 import { useLocation } from "../lib/router";
-import { useEnvironmentIdentificationMode, useSidebarV2Enabled } from "../hooks/useSettings";
+import { useEnvironmentIdentificationMode, useLegacySidebarEnabled } from "../hooks/useSettings";
 import { useSidebarStageBackdropVariant } from "./SidebarStageBackdrop";
 import { Sidebar, SidebarTrigger, useSidebarVisibility } from "./ui/sidebar";
 
@@ -37,22 +37,22 @@ function SidebarGlobalControl() {
  */
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
   const pathname = useLocation({ select: (location) => location.pathname });
-  const sidebarV2Enabled = useSidebarV2Enabled();
+  const legacySidebarEnabled = useLegacySidebarEnabled();
   const isOnSettings = pathname === "/settings" || pathname.startsWith("/settings/");
-  const useSidebarV2 = sidebarV2Enabled && !isOnSettings;
-  const useSidebarV2Theme = useSidebarV2 || isOnSettings;
+  const useFlatSidebar = !legacySidebarEnabled && !isOnSettings;
+  const useFlatSidebarTheme = useFlatSidebar || isOnSettings;
 
   return (
     <AppSidebarComposition
       providerClassName="app-root h-full min-h-0"
       providerStyle={{ "--sidebar-width": "16rem" }}
-      useSidebarV2={useSidebarV2}
+      useFlatSidebar={useFlatSidebar}
       renderSidebar={(content) => (
         <Sidebar
           side="left"
           collapsible="offcanvas"
           data-app-sidebar=""
-          data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}
+          data-sidebar-version={useFlatSidebarTheme ? "flat" : "legacy"}
           className="sidebar border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
         >
           <view className="sidebar-grain" aria-hidden>

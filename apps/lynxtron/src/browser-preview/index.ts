@@ -97,8 +97,7 @@ const requestedRoute = previewUrl.searchParams.get("route") ?? scenario.route;
 const requestedTheme = previewUrl.searchParams.get("theme") === "light" ? "light" : "dark";
 const requestedEnvironmentIdentificationMode =
   previewUrl.searchParams.get("environmentIdentificationMode") === "none" ? "none" : "artwork";
-const requestedSidebarV2Enabled = previewUrl.searchParams.get("sidebarV2Enabled");
-const requestedSidebarV2ConfiguredByUser = previewUrl.searchParams.get("sidebarV2ConfiguredByUser");
+const requestedLegacySidebarEnabled = previewUrl.searchParams.get("legacySidebarEnabled");
 const requestedInitialOverlay = previewUrl.searchParams.get("initialOverlay");
 const requestedSidebarWidthRaw = previewUrl.searchParams.get("sidebarWidth");
 const requestedSidebarWidthValue =
@@ -133,12 +132,9 @@ const themedScenario = {
       : {}),
     clientSettings: {
       ...scenarioClientSettings,
-      ...(requestedSidebarV2Enabled === null
+      ...(requestedLegacySidebarEnabled === null
         ? {}
-        : { sidebarV2Enabled: requestedSidebarV2Enabled === "true" }),
-      ...(requestedSidebarV2ConfiguredByUser === null
-        ? {}
-        : { sidebarV2ConfiguredByUser: requestedSidebarV2ConfiguredByUser === "true" }),
+        : { legacySidebarEnabled: requestedLegacySidebarEnabled === "true" }),
       environmentIdentificationMode: requestedEnvironmentIdentificationMode,
     },
   },

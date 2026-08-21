@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback } from "@lynx-js/react";
+import { type ReactNode, useCallback, useState } from "@lynx-js/react";
 
 import type {
   GeneralSettingsGlassOpacityProps,
@@ -50,6 +50,42 @@ export function SettingsSection({
         ) : null}
       </view>
       <view className="settings-section__rows flex w-full min-w-0 flex-col self-stretch">
+        {children}
+      </view>
+    </view>
+  );
+}
+
+export function GeneralSettingsLegacySection({ children }: { readonly children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <view className="settings-section settings-legacy-section flex w-full min-w-0 flex-col self-stretch">
+      <view
+        className="settings-legacy-section__trigger"
+        aria-expanded={open ? "true" : "false"}
+        bindtap={() => setOpen((current) => !current)}
+      >
+        <text className="settings-section__title settings-legacy-section__title">
+          Legacy features
+        </text>
+        <text
+          className={
+            open
+              ? "settings-legacy-section__chevron settings-legacy-section__chevron--open"
+              : "settings-legacy-section__chevron"
+          }
+        >
+          ›
+        </text>
+      </view>
+      <view
+        aria-hidden={open ? "false" : "true"}
+        className={
+          open
+            ? "settings-section__rows settings-legacy-section__rows flex w-full min-w-0 flex-col self-stretch"
+            : "settings-section__rows settings-legacy-section__rows settings-legacy-section__rows--closed flex w-full min-w-0 flex-col self-stretch"
+        }
+      >
         {children}
       </view>
     </view>
@@ -204,15 +240,23 @@ export function GeneralSettingsGlassOpacity({
 
 export function GeneralSettingsTextInput({
   ariaLabel,
+  onCommit,
   placeholder,
   value,
 }: GeneralSettingsTextInputProps) {
+  const [draft, setDraft] = useState(value);
   return (
-    <view className="general-text-input" aria-label={ariaLabel}>
-      <text className={value ? "general-text-input__text" : "general-text-input__placeholder"}>
-        {value || placeholder || ""}
-      </text>
-    </view>
+    <input
+      className="general-text-input"
+      aria-label={ariaLabel}
+      placeholder={placeholder}
+      {...({ value: draft } as object)}
+      bindinput={(event: { detail?: { value?: string } }) => {
+        const next = event.detail?.value ?? "";
+        setDraft(next);
+        onCommit(next);
+      }}
+    />
   );
 }
 
@@ -252,10 +296,12 @@ export function GeneralSettingsSwitch({
   checked,
   disabled = false,
   onCheckedChange,
+  settingControl,
 }: {
   readonly checked: boolean;
   readonly disabled?: boolean;
   readonly onCheckedChange: (checked: boolean) => void;
+  readonly settingControl?: string;
   readonly "aria-label": string;
 }) {
   const handleTap = useCallback(() => {
@@ -264,8 +310,14 @@ export function GeneralSettingsSwitch({
   return (
     <view
       aria-label={ariaLabel}
+      aria-checked={checked ? "true" : "false"}
+      {...({
+        role: "switch",
+      } as object)}
+      data-setting-control={settingControl}
       className={joinClassNames(
         "ui-switch",
+        settingControl ? `settings-toggle--${settingControl}` : undefined,
         checked ? "ui-switch--checked" : "ui-switch--unchecked",
         disabled ? "ui-switch--disabled" : undefined,
       )}

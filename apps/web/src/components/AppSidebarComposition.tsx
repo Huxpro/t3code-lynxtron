@@ -12,7 +12,7 @@ export function AppSidebarComposition({
   providerStyle,
   renderSidebar,
   sidebarContent,
-  useSidebarV2,
+  useFlatSidebar,
 }: {
   readonly globalControl: ReactNode;
   readonly main: ReactNode;
@@ -20,11 +20,11 @@ export function AppSidebarComposition({
   readonly providerStyle: CSSProperties | Readonly<Record<string, string | number>>;
   readonly renderSidebar: (content: ReactNode) => ReactNode;
   readonly sidebarContent?: ReactNode;
-  readonly useSidebarV2: boolean;
+  readonly useFlatSidebar: boolean;
 }) {
   const sidebar = renderSidebar(
     <>
-      {sidebarContent ?? (useSidebarV2 ? <ThreadSidebarV2 /> : <ThreadSidebar />)}
+      {sidebarContent ?? (useFlatSidebar ? <ThreadSidebarV2 /> : <ThreadSidebar />)}
       <SidebarRail />
     </>,
   );
@@ -35,11 +35,7 @@ export function AppSidebarComposition({
       defaultOpen
       style={providerStyle as CSSProperties}
     >
-      <AppShellSurface
-        sidebar={sidebar}
-        main={main}
-        globalControl={globalControl}
-      />
+      <AppShellSurface sidebar={sidebar} main={main} globalControl={globalControl} />
     </SidebarProvider>
   );
 }

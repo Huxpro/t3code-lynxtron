@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import { BetaSettings } from "../components/OtherSettings";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/settings/beta")({
-  component: BetaSettings,
+  beforeLoad: () => {
+    throw redirect({ to: "/settings/general", replace: true });
+  },
 });

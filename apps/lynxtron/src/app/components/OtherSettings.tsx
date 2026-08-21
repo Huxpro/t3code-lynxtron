@@ -19,17 +19,11 @@ import type {
   SourceControlDiscoveryResult,
   SourceControlWritingStyleMode,
 } from "@t3tools/contracts";
-import {
-  DEFAULT_SERVER_SETTINGS,
-  DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
-  MAX_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
-  MIN_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
-} from "@t3tools/contracts/settings";
+import { DEFAULT_SERVER_SETTINGS } from "@t3tools/contracts/settings";
 import { useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 
 import {
   ArchivedThreadsSurface,
-  BetaSettingsSurface,
   AccessListRowSurface,
   SourceControlItemRowSurface,
   SourceControlMarkSurface,
@@ -58,7 +52,6 @@ import {
   type PairingCredentialState,
 } from "./connectionsMutation.logic";
 import { clientCapabilities } from "../platform/clientCapabilities";
-import { useClientSettingsState } from "../state/prefsStore";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 
 interface SourceControlDiscoveryState {
@@ -570,88 +563,6 @@ export function ConnectionsSettings() {
         </view>
       </SettingsSection>
     </SettingsPageContainer>
-  );
-}
-
-export function BetaSettings() {
-  const [clientSettings, updateClientSettings] = useClientSettingsState();
-  const [autoSettleDraft, setAutoSettleDraft] = useState(
-    String(clientSettings.sidebarAutoSettleAfterDays ?? DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS),
-  );
-  useEffect(() => {
-    setAutoSettleDraft(
-      String(clientSettings.sidebarAutoSettleAfterDays ?? DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS),
-    );
-  }, [clientSettings.sidebarAutoSettleAfterDays]);
-  return (
-    <view className="settings-panel">
-      <BetaSettingsSurface
-        sidebarV2Setting={searchableSetting("sidebar-v2")}
-        sidebarV2Control={
-          <Toggle
-            ariaLabel="Enable the sidebar v2 beta"
-            settingControl="sidebar-v2"
-            value={clientSettings.sidebarV2Enabled}
-            onChange={(sidebarV2Enabled) =>
-              updateClientSettings({
-                sidebarV2Enabled,
-                sidebarV2ConfiguredByUser: true,
-              })
-            }
-          />
-        }
-        autoSettleControls={
-          clientSettings.sidebarV2Enabled ? (
-            <>
-              <SettingsRow
-                title={searchableSetting("auto-settle-inactive-threads").title}
-                description="Threads with no activity for this long settle automatically. Threads on merged or closed PRs always settle."
-                control={
-                  <Toggle
-                    ariaLabel="Auto-settle inactive threads"
-                    settingControl="auto-settle"
-                    value={clientSettings.sidebarAutoSettleAfterDays !== null}
-                    onChange={(enabled) =>
-                      updateClientSettings({
-                        sidebarAutoSettleAfterDays: enabled
-                          ? DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS
-                          : null,
-                      })
-                    }
-                  />
-                }
-              />
-              {clientSettings.sidebarAutoSettleAfterDays !== null ? (
-                <SettingsRow
-                  title="Days of inactivity before auto-settle"
-                  description="Any new activity un-settles a thread automatically."
-                  control={
-                    <input
-                      className="settings-number-input"
-                      type="number"
-                      {...({ value: autoSettleDraft } as object)}
-                      aria-label="Days of inactivity before auto-settle"
-                      bindinput={(event) => {
-                        const value = event.detail.value;
-                        setAutoSettleDraft(value);
-                        const parsed = Number(value);
-                        if (
-                          Number.isInteger(parsed) &&
-                          parsed >= MIN_SIDEBAR_AUTO_SETTLE_AFTER_DAYS &&
-                          parsed <= MAX_SIDEBAR_AUTO_SETTLE_AFTER_DAYS
-                        ) {
-                          updateClientSettings({ sidebarAutoSettleAfterDays: parsed });
-                        }
-                      }}
-                    />
-                  }
-                />
-              ) : null}
-            </>
-          ) : undefined
-        }
-      />
-    </view>
   );
 }
 

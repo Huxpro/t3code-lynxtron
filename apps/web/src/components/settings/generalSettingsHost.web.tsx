@@ -1,6 +1,8 @@
 import { Undo2Icon } from "lucide-react";
 import { type ComponentPropsWithoutRef, type ReactNode, useEffect, useState } from "react";
 
+import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "../ui/collapsible";
+
 import type {
   GeneralSettingsGlassOpacityProps,
   GeneralSettingsSelectProps,
@@ -35,6 +37,33 @@ export function SettingsSection({
         <div className="flex min-h-7 min-w-7 items-center justify-end">{headerAction}</div>
       </div>
       <div className="relative space-y-1 overflow-visible text-foreground">{children}</div>
+    </section>
+  );
+}
+
+export function GeneralSettingsLegacySection({ children }: { readonly children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className="space-y-3">
+      <Collapsible open={open} onOpenChange={setOpen}>
+        <CollapsibleTrigger className="settings-legacy-section__trigger group flex min-h-8 w-full cursor-pointer items-center gap-2 px-3 text-left sm:px-4">
+          <h2 className="settings-legacy-section__title text-lg font-semibold tracking-[-0.025em] text-muted-foreground transition-colors group-hover:text-foreground">
+            Legacy features
+          </h2>
+          <span
+            aria-hidden
+            className={joinClassNames(
+              "text-sm text-muted-foreground transition-transform",
+              open && "rotate-90",
+            )}
+          >
+            ›
+          </span>
+        </CollapsibleTrigger>
+        <CollapsiblePanel>
+          <div className="relative space-y-1 overflow-visible pt-3 text-foreground">{children}</div>
+        </CollapsiblePanel>
+      </Collapsible>
     </section>
   );
 }
@@ -252,11 +281,13 @@ export function GeneralSettingsSwitch({
   checked,
   disabled,
   onCheckedChange,
+  settingControl,
   ...props
 }: {
   readonly checked: boolean;
   readonly disabled?: boolean;
   readonly onCheckedChange: (checked: boolean) => void;
+  readonly settingControl?: string;
   readonly "aria-label": string;
 }) {
   return (
@@ -266,6 +297,7 @@ export function GeneralSettingsSwitch({
       role="switch"
       aria-checked={checked}
       className="relative inline-flex h-[18px] w-[30px] items-center rounded-full bg-input p-px data-[state=checked]:bg-primary disabled:opacity-50"
+      data-setting-control={settingControl}
       data-state={checked ? "checked" : "unchecked"}
       disabled={disabled}
       onClick={() => onCheckedChange(!checked)}

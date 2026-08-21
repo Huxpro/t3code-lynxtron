@@ -348,7 +348,7 @@ const branding: DesktopAppBranding = {
 
 const preferences: Readonly<Record<string, unknown>> = {
   themePreference: "dark",
-  clientSettings: { sidebarV2Enabled: true, sidebarV2ConfiguredByUser: true },
+  clientSettings: { legacySidebarEnabled: false },
 };
 
 export type WorkbenchScenarioId =

@@ -1,7 +1,5 @@
 import { useMemo } from "react";
 
-import { APP_STAGE_LABEL } from "../branding";
-import { resolveSidebarV2Enabled } from "../branding.logic";
 import {
   getClientSettingsState,
   updateClientSettingsState,
@@ -45,15 +43,8 @@ export function useEnvironmentIdentificationMode() {
   );
 }
 
-export function useSidebarV2Enabled(): boolean {
-  return useClientSettings((settings) =>
-    resolveSidebarV2Enabled({
-      enabled: settings.sidebarV2Enabled,
-      configuredByUser: settings.sidebarV2ConfiguredByUser,
-      settingsHydrated: true,
-      stageLabel: APP_STAGE_LABEL,
-    }),
-  );
+export function useLegacySidebarEnabled(): boolean {
+  return useClientSettings((settings) => settings.legacySidebarEnabled);
 }
 
 export function useClientSettingsHydrated(): boolean {

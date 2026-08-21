@@ -55,6 +55,12 @@ export function GeneralSettingsSync() {
         ...(patch.diffIgnoreWhitespace === undefined
           ? {}
           : { diffIgnoreWhitespace: patch.diffIgnoreWhitespace }),
+        ...(patch.legacySidebarEnabled === undefined
+          ? {}
+          : { legacySidebarEnabled: patch.legacySidebarEnabled }),
+        ...(patch.sidebarAutoSettleAfterDays === undefined
+          ? {}
+          : { sidebarAutoSettleAfterDays: patch.sidebarAutoSettleAfterDays }),
         ...(patch.sidebarProjectGroupingMode === undefined
           ? {}
           : { sidebarProjectGroupingMode: patch.sidebarProjectGroupingMode }),

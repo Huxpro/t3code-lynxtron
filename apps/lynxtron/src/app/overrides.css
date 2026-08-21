@@ -4649,6 +4649,8 @@
 .settings-main {
   position: relative;
   --align-self-column: stretch;
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
   width: 100%;
@@ -4755,11 +4757,15 @@
 .settings-scroll {
   --align-self-column: stretch;
   --lynx-linear-weight: 1;
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
-  flex-shrink: 0;
+  flex-shrink: 1;
   width: 100%;
   min-width: 0;
-  height: calc(100% - 52px);
+  height: 0;
+  min-height: 0;
+  overflow: hidden;
   align-self: stretch;
 }
 .settings-content {
@@ -5258,6 +5264,10 @@
   border-width: 1px;
   border-style: solid;
   border-color: var(--input);
+  color: var(--foreground);
+  font-size: var(--settings-control-font-size);
+  font-family: var(--font-sans);
+  box-sizing: border-box;
 }
 .general-text-input__text,
 .general-text-input__placeholder {
@@ -5273,6 +5283,47 @@
 .general-settings-row--nested {
   background-color: rgba(255, 255, 255, 0.02);
   padding-left: 36px;
+}
+.settings-legacy-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+}
+.settings-legacy-section__trigger {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.settings-legacy-section__title {
+  color: var(--muted-foreground);
+}
+.settings-legacy-section__chevron {
+  margin-left: 8px;
+  color: var(--muted-foreground);
+  font-size: 18px;
+  line-height: 18px;
+  transform: rotate(0deg);
+}
+.settings-legacy-section__chevron--open {
+  transform: rotate(90deg);
+}
+.settings-legacy-section__rows {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+  padding-top: 12px;
+}
+.settings-legacy-section__rows--closed {
+  display: none;
 }
 
 .settings-inline-control {

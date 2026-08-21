@@ -16,10 +16,9 @@ export const PORTABLE_CLIENT_SETTINGS_DEFAULTS = {
   environmentIdentificationMode: "artwork",
   favorites: [],
   glassOpacity: 80,
+  legacySidebarEnabled: false,
   sidebarAutoSettleAfterDays: 3,
   sidebarProjectGroupingMode: "repository",
-  sidebarV2ConfiguredByUser: false,
-  sidebarV2Enabled: false,
   timestampFormat: "locale",
   wordWrap: true,
 } as const;

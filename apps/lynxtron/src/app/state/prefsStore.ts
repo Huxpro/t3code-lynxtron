@@ -10,10 +10,7 @@ import { Atom } from "effect/unstable/reactivity";
 
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { appAtomRegistry } from "./atomRegistry";
-export {
-  resolveLynxTheme,
-  type LynxThemePreference,
-} from "./themePreference.logic";
+export { resolveLynxTheme, type LynxThemePreference } from "./themePreference.logic";
 import type { LynxThemePreference } from "./themePreference.logic";
 
 const cache = new Map<string, unknown>();
@@ -74,7 +71,6 @@ function readLegacyClientSettings(): PortableClientSettings {
       "deleteConfirmation",
       PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadDelete,
     ),
-    sidebarV2Enabled: getPref("sidebarV2", PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarV2Enabled),
   };
 }
 
@@ -117,7 +113,6 @@ export function useThemePreferenceState(): [
   }, []);
   return [getPref<LynxThemePreference>("themePreference", "system"), update];
 }
-
 
 function installDevToolSettingsHarness(): void {
   "background only";

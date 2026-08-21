@@ -1,6 +1,7 @@
 import type { ReactNode } from "@lynx-js/react";
 
 import { Icon } from "../../../../lynxtron/src/app/components/Icon";
+import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
 import type { SettingsSectionPath } from "./SettingsNavigationContent";
 import type { SettingsRestoreConfirmationModel } from "./settingsRouteState";
 
@@ -32,14 +33,11 @@ export function SettingsRouteHost({
   readonly restoreLabel: string;
   readonly showRestore: boolean;
 }) {
+  const viewport = useViewportSnapshot();
+  const contentHeight = Math.max(0, viewport.height - 52);
   return (
     <view className="settings-root">
-      <scroll-view
-        className="settings-main"
-        scroll-y
-        scroll-orientation="vertical"
-        {...({ "enable-scroll": false } as object)}
-      >
+      <view className="settings-main">
         <view className="settings-topbar">
           <text className="settings-topbar__title">Settings</text>
           <view className="settings-topbar__spacer" />
@@ -64,7 +62,9 @@ export function SettingsRouteHost({
         </view>
         <scroll-view
           key={pathname}
+          scroll-y
           scroll-orientation="vertical"
+          style={{ height: `${contentHeight}px` }}
           className={
             contentId ? `settings-scroll settings-scroll--${contentId}` : "settings-scroll"
           }
@@ -102,7 +102,7 @@ export function SettingsRouteHost({
             </view>
           </view>
         ) : null}
-      </scroll-view>
+      </view>
     </view>
   );
 }

@@ -14,7 +14,7 @@ import { getLocalStorageItem } from "../hooks/useLocalStorage";
 import { resolveShortcutCommand, shortcutLabelForCommand } from "../keybindings";
 import { cn, isMacPlatform } from "../lib/utils";
 import { primaryServerKeybindingsAtom } from "../state/server";
-import { useEnvironmentIdentificationMode, useSidebarV2Enabled } from "../hooks/useSettings";
+import { useEnvironmentIdentificationMode, useLegacySidebarEnabled } from "../hooks/useSettings";
 import { AppSidebarComposition } from "./AppSidebarComposition";
 import { useSidebarStageBackdropVariant } from "./SidebarStageBackdrop";
 import {
@@ -24,12 +24,7 @@ import {
   THREAD_SIDEBAR_MIN_WIDTH,
   THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
 } from "./threadSidebarWidth";
-import {
-  Sidebar,
-  SidebarTrigger,
-  useSidebar,
-  useSidebarVisibility,
-} from "./ui/sidebar";
+import { Sidebar, SidebarTrigger, useSidebar, useSidebarVisibility } from "./ui/sidebar";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 
 const MACOS_TRAFFIC_LIGHTS_LEFT_INSET = "90px";
@@ -123,13 +118,12 @@ function SidebarControl() {
 
 export function AppSidebarLayout({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
-  const sidebarV2Enabled = useSidebarV2Enabled();
-  // Settings routes render the settings nav, which lives in the v1 component
-  // and is identical for both sidebars — so v1 stays mounted there.
+  const legacySidebarEnabled = useLegacySidebarEnabled();
+  // Settings routes render the settings nav from the legacy component.
   const pathname = useLocation({ select: (location) => location.pathname });
   const isOnSettings = pathname === "/settings" || pathname.startsWith("/settings/");
-  const useSidebarV2 = sidebarV2Enabled && !isOnSettings;
-  const useSidebarV2Theme = useSidebarV2 || isOnSettings;
+  const useFlatSidebar = !legacySidebarEnabled && !isOnSettings;
+  const useFlatSidebarTheme = useFlatSidebar || isOnSettings;
   const isMacosDesktop = isElectron && isMacPlatform(navigator.platform);
   const [sidebarWidth, setSidebarWidth] = useState(readInitialThreadSidebarWidth);
   // Subscribed rather than read once: the clamp must track live window size,
@@ -191,13 +185,13 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
     <AppSidebarComposition
       providerClassName="h-dvh! min-h-0!"
       providerStyle={sidebarProviderStyle}
-      useSidebarV2={useSidebarV2}
+      useFlatSidebar={useFlatSidebar}
       renderSidebar={(content) => (
         <Sidebar
           side="left"
           collapsible="offcanvas"
           data-app-sidebar=""
-          data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}
+          data-sidebar-version={useFlatSidebarTheme ? "flat" : "legacy"}
           className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
           resizable={{
             maxWidth: sidebarMaximumWidth,
