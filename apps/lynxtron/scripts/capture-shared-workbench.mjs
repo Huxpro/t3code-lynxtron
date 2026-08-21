@@ -178,6 +178,7 @@ const isCompactControlsState =
 const isShortCompactControlsState = stateId === "composer-compact-controls-inline-files-short";
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
+const isComposerPlanModeState = stateId === "composer-plan-mode";
 const isFlatSidebarLayoutState = stateId === "sidebar-flat-layout";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
@@ -195,6 +196,12 @@ const composerExpectationByStateId = {
     editorDisabled: false,
   },
   "composer-docked": {
+    layout: "docked",
+    state: "idle",
+    primaryState: "disabled",
+    editorDisabled: false,
+  },
+  "composer-plan-mode": {
     layout: "docked",
     state: "idle",
     primaryState: "disabled",
@@ -222,7 +229,11 @@ const composerExpectationByStateId = {
 const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
 const shouldClearWebNotification =
-  Boolean(overlay) || isProjectSettingsState || isFilesSurfaceState || isReviewState;
+  Boolean(overlay) ||
+  isComposerPlanModeState ||
+  isProjectSettingsState ||
+  isFilesSurfaceState ||
+  isReviewState;
 const reviewExpectation =
   stateId === "review-empty"
     ? "panel-empty"
@@ -776,6 +787,52 @@ function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeigh
     return Math.abs(webBottomInset - lynxBottomInset) <= 16;
   }
   return Math.abs(webRect.y - lynxRect.y) <= 16;
+}
+
+function composerPlanModeMatches(state) {
+  if (!isComposerPlanModeState) return true;
+  const planControl = (client) =>
+    client?.composerMetrics?.anatomy?.controlBoxes?.find(({ id }) => id === "interaction");
+  const web = planControl(state?.web);
+  const lynx = planControl(state?.lynx);
+  const separatorMatches = (box) =>
+    box?.rect && Math.abs(box.rect.width - 1) <= 0.5 && Math.abs(box.rect.height - 16) <= 0.5;
+  const controlMatches = (control) => {
+    const box = control?.box;
+    const icon = control?.icons?.[0];
+    const background = box?.style?.backgroundColor?.replaceAll(" ", "") ?? "";
+    const foreground = box?.style?.color?.replaceAll(" ", "") ?? "";
+    const backgroundMatch = /^rgba\(59,130,246,([0-9.]+)\)$/u.exec(background);
+    const className = box?.attributes?.class ?? "";
+    const materialMatches =
+      box?.tagName === "button"
+        ? className.includes("bg-blue-500/10") && className.includes("text-blue-400")
+        : className.includes("composer-toolbar-control--interaction-plan") &&
+          backgroundMatch !== null &&
+          Math.abs(Number(backgroundMatch[1]) - 0.1) <= 1 / 255 &&
+          foreground === "rgb(96,165,250)";
+    return (
+      box?.rect &&
+      control?.textLeaves?.some(({ text }) => text === "Plan") &&
+      Math.abs(box.rect.height - 28) <= 0.5 &&
+      box.style.borderTopLeftRadius === "8px" &&
+      materialMatches &&
+      icon?.rect &&
+      Math.abs(icon.rect.width - 16) <= 0.5 &&
+      Math.abs(icon.rect.height - 16) <= 0.5 &&
+      icon.style.opacity === "1"
+    );
+  };
+  return (
+    state?.web?.productState?.interactionMode === "plan" &&
+    state?.lynx?.productState?.interactionMode === "plan" &&
+    controlMatches(web) &&
+    controlMatches(lynx) &&
+    separatorMatches(state?.web?.composerMetrics?.anatomy?.interactionSeparator) &&
+    separatorMatches(state?.lynx?.composerMetrics?.anatomy?.interactionSeparator) &&
+    Math.abs(web.box.rect.width - lynx.box.rect.width) <= 2 &&
+    Math.abs(web.box.rect.height - lynx.box.rect.height) <= 0.5
+  );
 }
 
 function rectDeltaWithin(left, right, tolerance) {
@@ -3160,7 +3217,7 @@ WHERE project_id = '${escapedProjectId}';`,
       backupRemoved: true,
     };
   }
-  if (stateId !== "model-picker-selected" && !requiresRunningRuntime) {
+  if (stateId !== "model-picker-selected" && !requiresRunningRuntime && !isComposerPlanModeState) {
     return {
       kind: "pristine-seed",
       sourceSha256: seed?.snapshotSha256 ?? null,
@@ -3176,15 +3233,19 @@ WHERE project_id = '${escapedProjectId}';`,
   const databasePath = path.join(baseDir, "userdata", "state.sqlite");
   const escapedThreadId = threadId.replaceAll("'", "''");
   const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
-  const sql = requiresRunningRuntime
-    ? (() => {
-        const activeTurnId = expectedThreadFixture?.activeTurnId;
-        if (!activeTurnId) {
-          throw new Error(`${stateId} fixture requires an active turn id`);
-        }
-        const escapedActiveTurnId = activeTurnId.replaceAll("'", "''");
-        const fixtureTimestamp = expectedThreadFixture.updatedAt.replaceAll("'", "''");
-        return `UPDATE provider_session_runtime
+  const sql = isComposerPlanModeState
+    ? `UPDATE projection_threads
+SET interaction_mode = 'plan'
+WHERE thread_id = '${escapedThreadId}';`
+    : requiresRunningRuntime
+      ? (() => {
+          const activeTurnId = expectedThreadFixture?.activeTurnId;
+          if (!activeTurnId) {
+            throw new Error(`${stateId} fixture requires an active turn id`);
+          }
+          const escapedActiveTurnId = activeTurnId.replaceAll("'", "''");
+          const fixtureTimestamp = expectedThreadFixture.updatedAt.replaceAll("'", "''");
+          return `UPDATE provider_session_runtime
 SET status = 'running',
     last_seen_at = '${fixtureTimestamp}',
     runtime_payload_json = json_set(
@@ -3194,8 +3255,8 @@ SET status = 'running',
       '$.lastRuntimeEventAt', '${fixtureTimestamp}'
     )
 WHERE thread_id = '${escapedThreadId}';`;
-      })()
-    : `UPDATE projection_threads
+        })()
+      : `UPDATE projection_threads
 SET model_selection_json = json_object(
   'instanceId', '${selectedModelFixture.instanceId}',
   'model', '${selectedModelFixture.model}'
@@ -3216,11 +3277,13 @@ WHERE thread_id = '${escapedThreadId}';`;
 
   const mutationReport = JSON.parse(mutation.stdout);
   try {
-    const verificationSql = requiresRunningRuntime
-      ? `SELECT status, json_extract(runtime_payload_json, '$.activeTurnId') AS active_turn_id
+    const verificationSql = isComposerPlanModeState
+      ? `SELECT interaction_mode FROM projection_threads WHERE thread_id = '${escapedThreadId}'`
+      : requiresRunningRuntime
+        ? `SELECT status, json_extract(runtime_payload_json, '$.activeTurnId') AS active_turn_id
 FROM provider_session_runtime
 WHERE thread_id = '${escapedThreadId}'`
-      : `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`;
+        : `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`;
     const query = spawnSync(
       process.env.T3_NODE_BIN?.trim() || "node",
       [sqliteStateScript, "query", "--base-dir", baseDir, "--sql", verificationSql],
@@ -3232,12 +3295,14 @@ WHERE thread_id = '${escapedThreadId}'`
       );
     }
     const queryReport = JSON.parse(query.stdout);
-    const fixtureMatches = requiresRunningRuntime
-      ? queryReport.rows?.length === 1 &&
-        queryReport.rows[0]?.status === "running" &&
-        queryReport.rows[0]?.active_turn_id === expectedThreadFixture.activeTurnId
-      : queryReport.rows?.length === 1 &&
-        queryReport.rows[0]?.model_selection_json === JSON.stringify(selectedModelFixture);
+    const fixtureMatches = isComposerPlanModeState
+      ? queryReport.rows?.length === 1 && queryReport.rows[0]?.interaction_mode === "plan"
+      : requiresRunningRuntime
+        ? queryReport.rows?.length === 1 &&
+          queryReport.rows[0]?.status === "running" &&
+          queryReport.rows[0]?.active_turn_id === expectedThreadFixture.activeTurnId
+        : queryReport.rows?.length === 1 &&
+          queryReport.rows[0]?.model_selection_json === JSON.stringify(selectedModelFixture);
     if (!fixtureMatches) {
       throw new Error(
         `${stateId} fixture verification mismatch: ${JSON.stringify(queryReport.rows ?? [])}`,
@@ -3245,24 +3310,33 @@ WHERE thread_id = '${escapedThreadId}'`
     }
 
     const prepared = await hashFile(databasePath);
-    return requiresRunningRuntime
+    return isComposerPlanModeState
       ? {
-          kind: "provider-runtime-running",
+          kind: "thread-interaction-mode",
           sourceSha256: seed?.snapshotSha256 ?? null,
           preparedSha256: prepared.sha256,
           threadId,
-          activeTurnId: expectedThreadFixture.activeTurnId,
-          runtimeStatus: "running",
+          interactionMode: "plan",
           backupRemoved: true,
         }
-      : {
-          kind: "thread-model-selection",
-          sourceSha256: seed?.snapshotSha256 ?? null,
-          preparedSha256: prepared.sha256,
-          threadId,
-          modelSelection: selectedModelFixture,
-          backupRemoved: true,
-        };
+      : requiresRunningRuntime
+        ? {
+            kind: "provider-runtime-running",
+            sourceSha256: seed?.snapshotSha256 ?? null,
+            preparedSha256: prepared.sha256,
+            threadId,
+            activeTurnId: expectedThreadFixture.activeTurnId,
+            runtimeStatus: "running",
+            backupRemoved: true,
+          }
+        : {
+            kind: "thread-model-selection",
+            sourceSha256: seed?.snapshotSha256 ?? null,
+            preparedSha256: prepared.sha256,
+            threadId,
+            modelSelection: selectedModelFixture,
+            backupRemoved: true,
+          };
   } finally {
     await rm(mutationReport.backup, { force: true });
   }
@@ -3358,6 +3432,7 @@ async function main() {
     "project-action-dialog",
     "sidebar-project-settings",
     "composer-docked",
+    "composer-plan-mode",
     "composer-working",
     "composer-compact-controls-open",
     "composer-compact-controls-inline-files-narrow",
@@ -3414,13 +3489,15 @@ async function main() {
       ? seed?.dataset?.startingThread
       : stateId === "composer-working" || stateId === "existing-thread-working"
         ? seed?.dataset?.workingThread
-        : stateId === "existing-thread-completed"
-          ? seed?.dataset?.completedThread
-          : stateId === "existing-thread-failed"
-            ? seed?.dataset?.failedThread
-            : threadStateIds.has(stateId)
-              ? (seed?.dataset?.idleThread ?? seed?.dataset?.canonicalThread)
-              : null;
+        : stateId === "composer-plan-mode"
+          ? seed?.dataset?.canonicalThread
+          : stateId === "existing-thread-completed"
+            ? seed?.dataset?.completedThread
+            : stateId === "existing-thread-failed"
+              ? seed?.dataset?.failedThread
+              : threadStateIds.has(stateId)
+                ? (seed?.dataset?.idleThread ?? seed?.dataset?.canonicalThread)
+                : null;
   if (threadStateIds.has(stateId) && !expectedThreadFixture?.id) {
     throw new Error(
       `State ${stateId} requires a seeded thread fixture, but ${seedSource} has none`,
@@ -3456,6 +3533,7 @@ async function main() {
     ? ""
     : (expectedThreadFixture?.projectTitle ?? seed?.dataset?.projects?.[0]?.title ?? "");
   const expectThread = expectedThreadFixture?.id ?? null;
+  let captureWebRoute = requestedWebRoute;
   const webBundle = await hashFile(await webEntryBundlePath());
   const lynxBundle = await hashFile(path.join(LYNX_BUILD_DIR, "lynx/main.web.bundle"));
 
@@ -3558,6 +3636,12 @@ async function main() {
     if (!ready) throw new Error("server not ready");
     for (let i = 0; i < 20 && !startupToken; i++) await delay(200);
     if (!startupToken) throw new Error("did not capture startup pairing token");
+    if (isComposerPlanModeState && expectThread) {
+      const environmentId = (
+        await readFile(path.join(baseDir, "userdata", "environment-id"), "utf8")
+      ).trim();
+      captureWebRoute = `/${encodeURIComponent(environmentId)}/${encodeURIComponent(expectThread)}`;
+    }
 
     front = await startFrontServer(serverPort);
     const origin = `http://${HOST}:${front.port}`;
@@ -3611,7 +3695,7 @@ async function main() {
         seedHash: fixturePreparation.preparedSha256,
         stateId,
         semanticRoute,
-        webRoute: requestedWebRoute,
+        webRoute: captureWebRoute,
         theme,
         overlay,
         query,
@@ -3792,6 +3876,7 @@ async function captureCell({
     "composer-hero": "new-thread",
     "composer-sendable": "new-thread",
     "composer-docked": "existing-thread",
+    "composer-plan-mode": "existing-thread",
     "composer-working": "existing-thread",
     "composer-compact-controls-open": "existing-thread",
     "composer-compact-controls-inline-files-narrow": "existing-thread",
@@ -5908,6 +5993,7 @@ async function captureCell({
       (composerInputReady &&
         composerStateReady &&
         composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics));
+    const planModeReady = composerPlanModeMatches(state);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
@@ -5993,6 +6079,7 @@ async function captureCell({
       transcriptReadyPolls >= 1 &&
       pendingRequestReadyPolls >= 1 &&
       composerReady &&
+      planModeReady &&
       sessionProjectionReady &&
       stageIdentityReady &&
       sidebarControlGeometryReady &&
@@ -6219,6 +6306,7 @@ async function captureCell({
     (finalComposerInputReady &&
       finalComposerStateReady &&
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics));
+  const finalPlanModeReady = composerPlanModeMatches(state);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
@@ -6357,6 +6445,7 @@ async function captureCell({
         density: webState.density,
         selectedThread: isFlatSidebarLayoutState ? null : webState.selectedThread,
         selectedModel: webState.selectedModel,
+        interactionMode: webState.interactionMode,
         lifecycle: webState.lifecycle,
         overlayQuery: webState.overlayQuery,
       }) ===
@@ -6367,6 +6456,7 @@ async function captureCell({
           density: lynxState.density,
           selectedThread: isFlatSidebarLayoutState ? null : lynxState.selectedThread,
           selectedModel: lynxState.selectedModel,
+          interactionMode: lynxState.interactionMode,
           lifecycle: lynxState.lifecycle,
           overlayQuery: lynxState.overlayQuery,
         });
@@ -7295,6 +7385,7 @@ async function captureCell({
     finalChangedFilesStateReady &&
     finalCoreGeometryReady &&
     finalComposerReady &&
+    finalPlanModeReady &&
     finalSessionProjectionReady &&
     finalStageIdentityReady &&
     finalSidebarControlGeometryReady &&
@@ -7345,6 +7436,7 @@ async function captureCell({
       finalChangedFilesStateReady,
       finalCoreGeometryReady,
       finalComposerReady,
+      finalPlanModeReady,
       finalSessionProjectionReady,
       finalStageIdentityReady,
       finalSidebarControlGeometryReady,
@@ -7572,6 +7664,30 @@ async function captureCell({
           context: state?.lynx?.composerMetrics?.anatomy?.context ?? null,
           rightPanel: state?.lynx?.reviewMetrics?.panelRect ?? null,
         },
+      },
+      planMode: {
+        match: finalPlanModeReady,
+        fixture: isComposerPlanModeState ? fixturePreparation : null,
+        web: isComposerPlanModeState
+          ? {
+              mode: state?.web?.productState?.interactionMode ?? null,
+              separator: state?.web?.composerMetrics?.anatomy?.interactionSeparator ?? null,
+              control:
+                state?.web?.composerMetrics?.anatomy?.controlBoxes?.find(
+                  ({ id }) => id === "interaction",
+                ) ?? null,
+            }
+          : null,
+        lynx: isComposerPlanModeState
+          ? {
+              mode: state?.lynx?.productState?.interactionMode ?? null,
+              separator: state?.lynx?.composerMetrics?.anatomy?.interactionSeparator ?? null,
+              control:
+                state?.lynx?.composerMetrics?.anatomy?.controlBoxes?.find(
+                  ({ id }) => id === "interaction",
+                ) ?? null,
+            }
+          : null,
       },
       rightPanelAddMenu: {
         match: finalRightPanelAddMenuReady,

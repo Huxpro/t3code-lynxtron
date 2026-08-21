@@ -482,6 +482,48 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "fixturePreparation.disposed = true");
   });
 
+  it("captures persisted Plan mode with matching Web and Lynx control material", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, 'const isComposerPlanModeState = stateId === "composer-plan-mode"');
+    assert.include(source, "isComposerPlanModeState ||");
+    assert.include(source, '"composer-plan-mode": {');
+    assert.include(source, '"composer-plan-mode",');
+    assert.include(source, '"composer-plan-mode": "existing-thread"');
+    assert.include(source, 'stateId === "composer-plan-mode"');
+    assert.include(source, "seed?.dataset?.canonicalThread");
+    assert.include(source, "let captureWebRoute = requestedWebRoute");
+    assert.include(
+      source,
+      'await readFile(path.join(baseDir, "userdata", "environment-id"), "utf8")',
+    );
+    assert.include(
+      source,
+      "`/${encodeURIComponent(environmentId)}/${encodeURIComponent(expectThread)}`",
+    );
+    assert.include(source, "webRoute: captureWebRoute");
+    assert.include(source, "function composerPlanModeMatches(state)");
+    assert.include(source, 'className.includes("bg-blue-500/10")');
+    assert.include(source, 'className.includes("text-blue-400")');
+    assert.include(source, 'className.includes("composer-toolbar-control--interaction-plan")');
+    assert.include(source, "SET interaction_mode = 'plan'");
+    assert.include(source, 'queryReport.rows[0]?.interaction_mode === "plan"');
+    assert.include(source, 'kind: "thread-interaction-mode"');
+    assert.include(source, "const planModeReady = composerPlanModeMatches(state)");
+    assert.include(source, "const finalPlanModeReady = composerPlanModeMatches(state)");
+    assert.include(source, "finalPlanModeReady,");
+    assert.include(source, "planMode:");
+    assert.include(source, "interactionMode: webState.interactionMode");
+    assert.include(source, "interactionMode: lynxState.interactionMode");
+    assert.include(workbench, "function readComposerInteractionSeparator");
+    assert.include(workbench, 'item.getAttribute("data-composer-control") === "interaction"');
+    assert.include(workbench, 'composerInteractionControl?.textContent?.trim() === "Plan"');
+    assert.include(workbench, "interactionSeparator: readComposerInteractionSeparator");
+  });
+
   it("rejects wrapped or overflowing Sidebar Working metadata", () => {
     assert.include(source, "function sidebarWorkingGeometryMatches(state, expectedThreadFixture)");
     assert.include(source, "Math.abs(card.height - 78) <= 2");

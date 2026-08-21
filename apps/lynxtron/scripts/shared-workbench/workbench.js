@@ -256,6 +256,30 @@ function readComposerToolbarAllocation(firstControl, primaryActions) {
   };
 }
 
+function readComposerInteractionSeparator(root, interactionControl) {
+  if (!root || !interactionControl) return null;
+  const controlRect = interactionControl.getBoundingClientRect();
+  const separators = [
+    ...root.querySelectorAll(
+      ".composer-toolbar-row [data-slot='separator'], .composer-interaction-mode-separator",
+    ),
+  ]
+    .map((element) => ({ element, box: readElementBox(element) }))
+    .filter(
+      ({ box }) =>
+        box?.rect &&
+        box.rect.x + box.rect.width <= controlRect.x + 1 &&
+        Math.abs(box.rect.y + box.rect.height / 2 - (controlRect.y + controlRect.height / 2)) <= 2,
+    )
+    .sort(
+      (left, right) =>
+        controlRect.x -
+        (left.box.rect.x + left.box.rect.width) -
+        (controlRect.x - (right.box.rect.x + right.box.rect.width)),
+    );
+  return separators[0]?.box ?? null;
+}
+
 function readElementAncestors(element, depth = 4) {
   const ancestors = [];
   let current = element?.parentElement ?? null;
@@ -1230,6 +1254,10 @@ function readLynxPane() {
     const composerPrimaryAction = root?.querySelector("[data-composer-primary-state]") ?? null;
     const pendingRequestMetrics = readPendingRequestMetrics(root);
     const composerControlElements = [...(root?.querySelectorAll("[data-composer-control]") ?? [])];
+    const composerInteractionControl =
+      composerControlElements.find(
+        (item) => item.getAttribute("data-composer-control") === "interaction",
+      ) ?? null;
     const composerControlBoxElement = (item) =>
       item.matches("button, [role='button']")
         ? item
@@ -1325,6 +1353,8 @@ function readLynxPane() {
         selectedThread: settingsRoute || heroPresent ? null : activeThreadId,
         selectedModel: null,
         visibleModelLabel,
+        interactionMode:
+          composerInteractionControl?.textContent?.trim() === "Plan" ? "plan" : "default",
         lifecycle: d.connector?.connected ? "ready" : "connecting",
         overlay,
         overlayQuery:
@@ -1758,6 +1788,10 @@ function readLynxPane() {
               ),
               primaryActions: readElementBox(root?.querySelector(".composer-primary-actions")),
               primaryAction: readElementBox(root?.querySelector(".composer-primary-action")),
+              interactionSeparator: readComposerInteractionSeparator(
+                root,
+                composerInteractionControl,
+              ),
               controlBoxes: composerControlElements.map((item) => ({
                 id: item.getAttribute("data-composer-control"),
                 ...composerControlDetails(item),
@@ -2234,6 +2268,10 @@ function readWebPane() {
     const composerEditor = doc.querySelector('[data-composer-editor="true"]');
     const composerPrimaryAction = doc.querySelector("[data-composer-primary-state]");
     const composerControlElements = [...doc.querySelectorAll("[data-composer-control]")];
+    const composerInteractionControl =
+      composerControlElements.find(
+        (item) => item.getAttribute("data-composer-control") === "interaction",
+      ) ?? null;
     const composerControlBoxElement = (item) =>
       item.matches("button, [role='button']")
         ? item
@@ -2275,6 +2313,8 @@ function readWebPane() {
         selectedThread: settingsRoute || heroPresent ? null : activeThreadId,
         selectedModel: null,
         visibleModelLabel,
+        interactionMode:
+          composerInteractionControl?.textContent?.trim() === "Plan" ? "plan" : "default",
         lifecycle: connected && !connecting ? "ready" : connecting ? "connecting" : "error",
         overlay,
         overlayQuery:
@@ -2651,6 +2691,10 @@ function readWebPane() {
               ),
               primaryActions: readElementBox(doc.querySelector(".composer-primary-actions")),
               primaryAction: readElementBox(doc.querySelector(".composer-primary-action")),
+              interactionSeparator: readComposerInteractionSeparator(
+                doc,
+                composerInteractionControl,
+              ),
               controlBoxes: composerControlElements.map((item) => ({
                 id: item.getAttribute("data-composer-control"),
                 ...composerControlDetails(item),
