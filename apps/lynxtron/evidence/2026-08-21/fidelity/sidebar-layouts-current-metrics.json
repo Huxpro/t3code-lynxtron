@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T08:30:00-07:00",
+  "stateIds": ["sidebar-flat-layout", "sidebar-project-groups", "settings-beta"],
+  "classification": {
+    "productLossClosed": [
+      "The flat thread-centric sidebar is now the default on every build channel.",
+      "The original project-tree sidebar remains available as Settings > General > Legacy features > Sidebar (legacy).",
+      "Web and Lynx use one legacySidebarEnabled preference instead of the retired channel-dependent Sidebar v2 beta keys.",
+      "Lynx Settings now owns one bounded 768px scroll viewport at 1280x820, so the Legacy features section can be reached and expanded.",
+      "The Legacy feature row renders full-width instead of collapsing into a horizontal split."
+    ],
+    "harnessLoss": [
+      "The original sidebar-project-groups capture compared draft selectedProject projections even though the authoritative project rows already matched; the focused gate now uses row titles and geometry.",
+      "The original flat-sidebar captures inherited transcript, Composer, Header, and provider-notification gates unrelated to sidebar layout; sidebar-flat-layout now verifies the focused layout contract.",
+      "Lynx DevTool measured touch does not currently scroll the Native Settings scroll-view, so Native Legacy-toggle mutation remains pending a physical wheel/touch session. Browser dual-renderer evidence proves the real wheel, pointer expansion, preference-backed layout selection, and reverse layout availability."
+    ],
+    "intentionalPlatformDelta": [
+      "Internal implementation classes retain the sidebar-v2 prefix for migration stability, while the user-visible product model is flat versus legacy.",
+      "Web and Lynx can resolve different active draft projects in empty-thread fixtures; focused sidebar identity uses visible controls, rows, and layout version."
+    ],
+    "acceptedRenderingNoise": [
+      "Legacy project rows measure approximately 237x31.7 on Web and 239x32 on Lynx-for-Web.",
+      "The Legacy settings row measures 896x85.7 on Web and 896x84 on Lynx-for-Web.",
+      "Native text rasterization, stage artwork, and switch material remain platform-specific."
+    ]
+  },
+  "browser": {
+    "status": "pass",
+    "viewport": "1280x820",
+    "bundles": {
+      "web": "a28e511d1809",
+      "lynxForWeb": "008f117f6414"
+    },
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "flat": {
+      "report": "/tmp/t3-sidebar-layout-final9/flat-focused5/workbench-report.json",
+      "reportSha256": "c16e1cad49e27e232ff1c6014284e8b9dfc3877abbde8287dc3d5309e9d28a5f",
+      "identityMatch": true,
+      "versions": {
+        "web": "flat",
+        "lynx": "flat"
+      },
+      "rendererErrors": 0
+    },
+    "legacy": {
+      "report": "/tmp/t3-sidebar-layout-final9/legacy-serial3/workbench-report.json",
+      "reportSha256": "dbc24290e8e27ed233e50db47596f94aa95f56650d0bcc955b07f7ca26fbc20d",
+      "identityMatch": true,
+      "versions": {
+        "web": "legacy",
+        "lynx": "legacy"
+      },
+      "projectTitles": ["t3code-lynxtron", "background-only"],
+      "rendererErrors": 0
+    },
+    "legacySetting": {
+      "report": "/tmp/t3-sidebar-layout-final9/settings/workbench-report.json",
+      "reportSha256": "fe8bdcb0b9a1eb0242037d5f663a1adf2a8d65629fad2fe20b69c2f7e1757bfe",
+      "identityMatch": true,
+      "interaction": "Web Settings pointer + dual-renderer Settings wheel + Legacy features pointer",
+      "title": "Sidebar (legacy)",
+      "descriptionMatch": true,
+      "geometry": {
+        "web": {
+          "trigger": [320, 518.34375, 896, 32],
+          "row": [320, 562.34375, 896, 85.6875],
+          "control": [1170, 596.1875, 30, 18]
+        },
+        "lynx": {
+          "trigger": [320, 420, 896, 32],
+          "row": [320, 464, 896, 84],
+          "control": [1168, 496, 32, 20]
+        }
+      },
+      "rendererErrors": 0
+    }
+  },
+  "native": {
+    "status": "pass",
+    "report": "/tmp/t3-sidebar-native-basic3/report.json",
+    "reportSha256": "4da31834f37ec1fd71ba3e78f9009a8e4043febf59e65867176a3505a4813897",
+    "bundleSha256": "8976e22eda79c99121f707bc6ded2798919d1c838ad40d3fbd5a03ec8de13eac",
+    "bundleBytes": 4952248,
+    "snapshotSha256": "f7be1746bdab7cbc80112c377964c2891b102db7bace44c72b9aa7f07225630e",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "transport": {
+      "kind": "main",
+      "beforeSequence": 3,
+      "afterSequence": 4
+    },
+    "flatSidebar": {
+      "sidebar": [0, 0, 256, 820],
+      "threadList": [8, 141, 239, 248],
+      "rowCount": 3,
+      "rowSize": [239, 82],
+      "cardSize": [239, 78]
+    },
+    "settingsRoutes": [
+      "/settings/general",
+      "/settings/appearance",
+      "/settings/keybindings",
+      "/settings/providers",
+      "/settings/connections",
+      "/settings/source-control",
+      "/settings/archived"
+    ],
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "gates": {
+    "agentBrowser": {
+      "owned": 0,
+      "orphaned": 0
+    },
+    "screenshotBudget": {
+      "count": 32,
+      "limit": 100
+    }
+  }
+}
