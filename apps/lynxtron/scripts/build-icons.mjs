@@ -191,7 +191,7 @@ const VARIANTS = [
   { size: 18, color: "#71717a" }, // light-theme muted
   { size: 16, color: "#71717a" }, // light-theme small muted
   { size: 14, color: "#3b82f6" }, // semantic info
-  { size: 14, color: "#60a5fa" }, // active Plan mode
+  { size: 16, color: "#60a5fa" }, // active Plan mode
   { size: 14, color: "#f87171" }, // semantic error
 ];
 
@@ -246,7 +246,7 @@ for (const [name, size] of [
   ["lock", 16],
   ["lock-open", 16],
   ["pencil-line", 16],
-  ["pencil-ruler", 14],
+  ["pencil-ruler", 16],
   ["bot", 16],
   ["bot", 18],
 ]) {
