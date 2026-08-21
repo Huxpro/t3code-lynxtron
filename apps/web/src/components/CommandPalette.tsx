@@ -2277,6 +2277,7 @@ function OpenCommandPaletteDialog(props: {
       }}
       onValueChange={handleQueryChange}
       panelClassName="max-h-[min(28rem,70vh)]"
+      paletteView={paletteMode}
       showBackHint={isSubmenu}
       value={query}
     >

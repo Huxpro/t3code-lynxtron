@@ -119,6 +119,7 @@ export interface PaletteRowSurfaceProps {
   readonly chevron?: ReactNode | undefined;
   readonly active?: boolean | undefined;
   readonly disabled?: boolean | undefined;
+  readonly onHoverStart?: (() => void) | undefined;
   readonly onSelect?: (() => void) | undefined;
 }
 
@@ -166,12 +167,13 @@ export function PaletteRowContent({
 export function PaletteRowSurface({
   active = false,
   disabled = false,
+  onHoverStart,
   onSelect,
   semanticClassName,
   ...contentProps
 }: PaletteRowSurfaceProps) {
   const rowClassName = cn(
-    "palette-row flex min-h-8 select-none items-center gap-2 rounded-sm px-2 py-1.5 text-base sm:min-h-7 sm:text-sm",
+    "palette-row flex min-h-8 select-none items-center gap-2 rounded-sm px-2 py-1.5 text-base hover:bg-accent hover:text-accent-foreground sm:min-h-7 sm:text-sm",
     active && "bg-accent text-accent-foreground",
     disabled ? "opacity-64" : "cursor-pointer",
     semanticClassName,
@@ -179,13 +181,24 @@ export function PaletteRowSurface({
 
   if (disabled || !onSelect) {
     return (
-      <HostView className={rowClassName}>
+      <HostView
+        className={rowClassName}
+        data-palette-active={active ? "true" : "false"}
+        data-palette-row="true"
+      >
         <PaletteRowContent {...contentProps} />
       </HostView>
     );
   }
   return (
-    <HostButton type="button" className={rowClassName} onClick={onSelect}>
+    <HostButton
+      type="button"
+      className={rowClassName}
+      data-palette-active={active ? "true" : "false"}
+      data-palette-row="true"
+      onClick={onSelect}
+      onMouseEnter={onHoverStart}
+    >
       <PaletteRowContent {...contentProps} />
     </HostButton>
   );

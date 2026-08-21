@@ -133,6 +133,7 @@ function RootSwitch() {
     if (appliedInitialRoute.current || status !== "ready") return;
     void readPreviewInitialState()
       .then((value) => {
+        if (appliedInitialRoute.current) return;
         if (!value || typeof value !== "object") return;
         const initial = value as {
           route?: string;
@@ -142,6 +143,7 @@ function RootSwitch() {
         appliedInitialRoute.current = true;
         if (initial.route && initial.route !== "/") navigate(initial.route);
         if (initial.overlay === "quick-switch") uiActions.openQuickSwitch();
+        else if (initial.overlay === "add-project") uiActions.openAddProject();
         else if (initial.overlay === "model-picker") uiActions.openModelPicker();
         if (initial.theme) setPref("themePreference", initial.theme);
       })
@@ -161,6 +163,7 @@ function RootSwitch() {
       if (initialRoute !== "/") navigate(initialRoute);
       const initialOverlay = getPref<string>("initialOverlay", "");
       if (initialOverlay === "quick-switch") uiActions.openQuickSwitch();
+      else if (initialOverlay === "add-project") uiActions.openAddProject();
       else if (initialOverlay === "model-picker") uiActions.openModelPicker();
     };
     applyInitialState();
@@ -208,6 +211,7 @@ function RootOverlays() {
       {searchOverlay.open ? (
         <QuickSwitch
           mode={searchOverlay.mode}
+          openIntent={searchOverlay.openIntent}
           projects={projects}
           threads={threads}
           activeThreadId={activeThreadId}

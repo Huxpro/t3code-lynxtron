@@ -50,6 +50,8 @@ import {
   DEFAULT_PROVIDER_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
   type EditorId,
+  type FilesystemBrowseInput,
+  type FilesystemBrowseResult,
   type AuthAccessSnapshot,
   type ApprovalRequestId,
   type AuthAccessStreamEvent,
@@ -81,6 +83,10 @@ import {
   type ServerSettings,
   type ServerSettingsPatch,
   type SourceControlDiscoveryResult,
+  type SourceControlCloneRepositoryInput,
+  type SourceControlCloneRepositoryResult,
+  type SourceControlRepositoryLookupInput,
+  type SourceControlRepositoryInfo,
   type SourceControlPublishRepositoryInput,
   type SourceControlPublishRepositoryResult,
   type TurnId,
@@ -853,6 +859,38 @@ export class T3Connector {
     }
   }
 
+  async createProject(input: { workspaceRoot: string }): Promise<{ projectId: string }> {
+    await this.awaitRecoveredTransport();
+    const requestedRoot = input.workspaceRoot.trim();
+    const workspaceRoot = path.resolve(
+      requestedRoot === "~"
+        ? os.homedir()
+        : requestedRoot.startsWith("~/")
+          ? path.join(os.homedir(), requestedRoot.slice(2))
+          : requestedRoot,
+    );
+    const existing = this.shellSnapshot?.projects.find(
+      (project) => path.resolve(project.workspaceRoot) === workspaceRoot,
+    );
+    if (existing) {
+      this.defaultProjectId = existing.id;
+      return { projectId: existing.id };
+    }
+    const projectId = crypto.randomUUID();
+    await this.dispatchOrchestrationCommand({
+      type: "project.create",
+      commandId: crypto.randomUUID(),
+      projectId,
+      title: path.basename(workspaceRoot) || "Workspace",
+      workspaceRoot,
+      createWorkspaceRootIfMissing: true,
+      defaultModelSelection: this.modelSelection ?? null,
+      createdAt: new Date().toISOString(),
+    });
+    this.defaultProjectId = projectId;
+    return { projectId };
+  }
+
   async createThread(input: { projectId?: string; title?: string }): Promise<{ threadId: string }> {
     await this.awaitRecoveredTransport();
     const threadId = crypto.randomUUID();
@@ -1045,6 +1083,11 @@ export class T3Connector {
     await this.runClient(this.client[WS_METHODS.shellOpenInEditor](input));
   }
 
+  async browseFilesystem(input: FilesystemBrowseInput): Promise<FilesystemBrowseResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<FilesystemBrowseResult>(this.client[WS_METHODS.filesystemBrowse](input));
+  }
+
   async listProjectEntries(input: { cwd: string }): Promise<ProjectListEntriesResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<ProjectListEntriesResult>(
@@ -1118,6 +1161,24 @@ export class T3Connector {
     if (!this.client) throw new Error("not connected");
     return this.runClient<SourceControlPublishRepositoryResult>(
       this.client[WS_METHODS.sourceControlPublishRepository](input),
+    );
+  }
+
+  async lookupRepository(
+    input: SourceControlRepositoryLookupInput,
+  ): Promise<SourceControlRepositoryInfo> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<SourceControlRepositoryInfo>(
+      this.client[WS_METHODS.sourceControlLookupRepository](input),
+    );
+  }
+
+  async cloneRepository(
+    input: SourceControlCloneRepositoryInput,
+  ): Promise<SourceControlCloneRepositoryResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<SourceControlCloneRepositoryResult>(
+      this.client[WS_METHODS.sourceControlCloneRepository](input),
     );
   }
 

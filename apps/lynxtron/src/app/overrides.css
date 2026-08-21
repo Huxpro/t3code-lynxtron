@@ -570,6 +570,22 @@
   background-color: var(--sidebar-control-surface);
   border-radius: 4px;
 }
+.quick-switch-setup-badge {
+  flex-shrink: 0;
+  height: 20px;
+  margin-left: auto;
+  padding: 0 6px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(var(--warning-rgb), 0.24);
+  border-radius: 4px;
+  background-color: rgba(var(--warning-rgb), 0.08);
+  color: var(--warning-foreground);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 20px;
+}
 
 .lynx-project-favicon {
   width: 14px;
@@ -579,8 +595,6 @@
 /* R1/R6/R7: ReactLynx cannot load the DOM-heavy Web project-row card. The
  * shared Sidebar supplies canonical rows/actions to this bounded native leaf. */
 .lynx-sidebar-project-list {
-  display: flex;
-  flex-direction: column;
   width: 239px;
   margin-top: 0;
 }
@@ -602,13 +616,9 @@
   line-height: 16px;
 }
 .lynx-sidebar-project {
-  display: flex;
-  flex-direction: column;
   width: 239px;
 }
 .lynx-sidebar-project-row {
-  display: flex;
-  flex-direction: row;
   align-items: center;
   width: 239px;
   height: 32px;

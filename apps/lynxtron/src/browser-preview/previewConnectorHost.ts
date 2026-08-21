@@ -44,6 +44,10 @@ export interface BrowserPreviewConnectorDiagnostics {
 type EmitGlobalEvent = (eventName: string, params: [ConnectorEventEnvelope]) => void;
 
 const UNSUPPORTED_COMMANDS = new Set<ConnectorCommandName>([
+  "createProject",
+  "browseFilesystem",
+  "lookupRepository",
+  "cloneRepository",
   "listProjectEntries",
   "readProjectFile",
   "writeProjectFile",
@@ -96,8 +100,7 @@ export class BrowserPreviewConnectorHost {
       this.diagnostics.initialStateCalls += 1;
       return {
         route: this.#scenario.route,
-        overlay:
-          (this.#scenario.preferences as { initialOverlay?: string }).initialOverlay ?? null,
+        overlay: (this.#scenario.preferences as { initialOverlay?: string }).initialOverlay ?? null,
         theme:
           (this.#scenario.preferences as { themePreference?: string }).themePreference ?? "dark",
       };

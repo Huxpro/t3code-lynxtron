@@ -127,6 +127,7 @@ export function projectRepoContext(input: {
 /** Allowlisted connector commands the renderer may invoke through main. */
 export const CONNECTOR_COMMAND_NAMES = [
   "reconnect",
+  "createProject",
   "createThread",
   "selectThread",
   "sendPrompt",
@@ -148,6 +149,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "updateProjectScripts",
   "upsertKeybinding",
   "openInEditor",
+  "browseFilesystem",
   "listProjectEntries",
   "searchProjectEntries",
   "readProjectFile",
@@ -158,6 +160,8 @@ export const CONNECTOR_COMMAND_NAMES = [
   "readVcsStatus",
   "initializeRepository",
   "publishRepository",
+  "lookupRepository",
+  "cloneRepository",
   "discoverSourceControl",
   "createPairingCredential",
   "revokePairingLink",

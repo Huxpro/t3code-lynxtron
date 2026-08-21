@@ -46,18 +46,18 @@ export function SidebarProjectListHost({
 
   if (rows.length === 0) {
     return (
-      <view className="lynx-sidebar-project-list lynx-sidebar-project-list--empty">
+      <view className="lynx-sidebar-project-list lynx-sidebar-project-list--empty flex flex-col">
         <text className="lynx-sidebar-empty-projects">No projects yet</text>
       </view>
     );
   }
 
   return (
-    <view className="lynx-sidebar-project-list">
+    <view className="lynx-sidebar-project-list flex flex-col">
       {rows.map((row) => (
-        <view key={row.key} className="lynx-sidebar-project">
+        <view key={row.key} className="lynx-sidebar-project flex flex-col">
           <view
-            className="sidebar-project-row-reference lynx-sidebar-project-row"
+            className="sidebar-project-row-reference lynx-sidebar-project-row flex flex-row"
             bindtap={() => {
               onToggleProject(row);
             }}
@@ -100,14 +100,14 @@ export function SidebarProjectListHost({
           </view>
 
           {row.expanded || row.threads.length > 0 ? (
-            <view className="lynx-sidebar-thread-list">
+            <view className="lynx-sidebar-thread-list flex flex-col">
               {row.showEmptyThreadState ? (
                 <view className="lynx-sidebar-thread-empty">
                   <text className="lynx-sidebar-thread-empty-label">No threads yet</text>
                 </view>
               ) : (
                 row.threads.map((thread) => (
-                  <view key={thread.key} className="lynx-sidebar-thread-shell">
+                  <view key={thread.key} className="lynx-sidebar-thread-shell flex flex-col">
                     {renamingThreadKey === thread.key ? (
                       <view className="lynx-sidebar-thread-rename">
                         <input

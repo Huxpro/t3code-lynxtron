@@ -16,6 +16,8 @@
 import type {
   DesktopAppBranding,
   EditorId,
+  FilesystemBrowseInput,
+  FilesystemBrowseResult,
   OrchestrationLatestTurn,
   OrchestrationMessage,
   OrchestrationMessageRole,
@@ -51,6 +53,10 @@ import type {
   ServerUpsertKeybindingResult,
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
+  SourceControlCloneRepositoryInput,
+  SourceControlCloneRepositoryResult,
+  SourceControlRepositoryLookupInput,
+  SourceControlRepositoryInfo,
   SourceControlPublishRepositoryInput,
   SourceControlPublishRepositoryResult,
   VcsInitInput,
@@ -138,6 +144,7 @@ export interface PairingCredentialResult {
  */
 export interface T3ConnectorCommandBridge {
   reconnect(): Promise<void>;
+  createProject(input: { workspaceRoot: string }): Promise<{ projectId: string }>;
   createThread(input: { projectId?: string; title?: string }): Promise<{ threadId: string }>;
   selectThread(threadId: string): Promise<void>;
   sendPrompt(input: {
@@ -183,6 +190,7 @@ export interface T3ConnectorCommandBridge {
   }): Promise<void>;
   upsertKeybinding(input: ServerUpsertKeybindingInput): Promise<ServerUpsertKeybindingResult>;
   openInEditor(input: { cwd: string; editor: EditorId }): Promise<void>;
+  browseFilesystem(input: FilesystemBrowseInput): Promise<FilesystemBrowseResult>;
   listProjectEntries(input: ProjectListEntriesInput): Promise<ProjectListEntriesResult>;
   searchProjectEntries(input: ProjectSearchEntriesInput): Promise<ProjectSearchEntriesResult>;
   readProjectFile(input: ProjectReadFileInput): Promise<ProjectReadFileResult>;
@@ -195,6 +203,10 @@ export interface T3ConnectorCommandBridge {
   publishRepository(
     input: SourceControlPublishRepositoryInput,
   ): Promise<SourceControlPublishRepositoryResult>;
+  lookupRepository(input: SourceControlRepositoryLookupInput): Promise<SourceControlRepositoryInfo>;
+  cloneRepository(
+    input: SourceControlCloneRepositoryInput,
+  ): Promise<SourceControlCloneRepositoryResult>;
   discoverSourceControl(): Promise<SourceControlDiscoveryResult>;
   createPairingCredential(input?: { readonly label?: string }): Promise<PairingCredentialResult>;
   revokePairingLink(input: { readonly id: string }): Promise<boolean>;

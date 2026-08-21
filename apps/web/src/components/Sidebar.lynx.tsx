@@ -1,11 +1,17 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { scopeProjectRef, scopeThreadRef } from "@t3tools/client-runtime/environment";
 import { resolveThreadStatusPill } from "@t3tools/client-runtime/presentation/sidebar";
+import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
+import { ProjectId } from "@t3tools/contracts";
 
 import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
 import { uiActions } from "../../../lynxtron/src/app/state/uiState";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import { formatRelativeTimeLabel } from "../timestampFormat";
+import { buildSidebarProjectSnapshots } from "../sidebarProjectGrouping";
+import { useClientSettings } from "../hooks/useSettings";
+import { usePrimaryEnvironmentId } from "../state/environments";
+import { sortProjectsForSidebar } from "./Sidebar.logic";
 import { useLocation, useNavigate } from "../lib/router";
 import { useProjects, useThreadShells } from "../state/entities";
 import { SettingsSidebarNav } from "./settings/SettingsSidebarNav";
@@ -20,41 +26,93 @@ export default function Sidebar() {
   const { activeThreadId } = useT3ClientState();
   const projects = useProjects();
   const threads = useThreadShells();
-  const projectRows = useMemo(
+  const primaryEnvironmentId = usePrimaryEnvironmentId();
+  const projectGroupingSettings = useClientSettings((settings) => ({
+    sidebarProjectGroupingMode: settings.sidebarProjectGroupingMode,
+    sidebarProjectGroupingOverrides: settings.sidebarProjectGroupingOverrides,
+  }));
+  const projectSortOrder = useClientSettings((settings) => settings.sidebarProjectSortOrder);
+  const threadSortOrder = useClientSettings((settings) => settings.sidebarThreadSortOrder);
+  const [collapsedProjectKeys, setCollapsedProjectKeys] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+  const groupedProjects = useMemo(
     () =>
-      projects.map((project) => {
-        const projectThreads = threads
-          .filter((thread) => thread.projectId === project.id && thread.archivedAt === null)
-          .sort((left, right) =>
-            (right.latestUserMessageAt ?? right.updatedAt ?? right.createdAt).localeCompare(
-              left.latestUserMessageAt ?? left.updatedAt ?? left.createdAt,
+      buildSidebarProjectSnapshots({
+        projects: [...projects],
+        settings: projectGroupingSettings,
+        primaryEnvironmentId,
+        resolveEnvironmentLabel: () => null,
+      }),
+    [primaryEnvironmentId, projectGroupingSettings, projects],
+  );
+  const orderedProjects = useMemo(
+    () =>
+      sortProjectsForSidebar(
+        groupedProjects.map((project) => ({ ...project, id: project.projectKey })),
+        threads.map((thread) => {
+          const project = groupedProjects.find((candidate) =>
+            candidate.memberProjectRefs.some(
+              (projectRef) =>
+                projectRef.environmentId === thread.environmentId &&
+                projectRef.projectId === thread.projectId,
             ),
           );
-        return {
-          key: `${project.environmentId}:${project.id}`,
-          title: project.title,
-          groupedProjectCount: 1,
-          expanded: true,
-          expansionPreferenceKeys: [`${project.environmentId}:${project.id}`],
-          projectRef: scopeProjectRef(project.environmentId, project.id),
-          threads: projectThreads.map((thread) => {
-            const status = resolveThreadStatusPill({ thread });
-            return {
-              key: `${thread.environmentId}:${thread.id}`,
-              ref: scopeThreadRef(thread.environmentId, thread.id),
-              title: thread.title,
-              metadataLabel: formatRelativeTimeLabel(
-                thread.latestUserMessageAt ?? thread.updatedAt ?? thread.createdAt,
-              ),
-              status,
-              statusLabel: status?.label ?? null,
-              active: thread.id === activeThreadId,
-            };
-          }),
-          showEmptyThreadState: projectThreads.length === 0,
-        };
-      }),
-    [activeThreadId, projects, threads],
+          return {
+            ...thread,
+            projectId: project ? ProjectId.make(project.projectKey) : thread.projectId,
+          };
+        }),
+        projectSortOrder,
+      ),
+    [groupedProjects, projectSortOrder, threads],
+  );
+  const projectRows = useMemo(
+    () =>
+      orderedProjects
+        .map((project) => {
+          const projectKey = project.projectKey;
+          const memberProjectKeys = new Set(
+            project.memberProjectRefs.map(
+              (projectRef) => `${projectRef.environmentId}:${projectRef.projectId}`,
+            ),
+          );
+          const projectThreads = sortThreads(
+            threads.filter(
+              (thread) =>
+                thread.archivedAt === null &&
+                memberProjectKeys.has(`${thread.environmentId}:${thread.projectId}`),
+            ),
+            threadSortOrder,
+          );
+          const projectRef = project.memberProjectRefs[0];
+          if (!projectRef) return null;
+          return {
+            key: projectKey,
+            title: project.displayName,
+            groupedProjectCount: project.groupedProjectCount,
+            expanded: !collapsedProjectKeys.has(projectKey),
+            expansionPreferenceKeys: [projectKey],
+            projectRef,
+            threads: projectThreads.map((thread) => {
+              const status = resolveThreadStatusPill({ thread });
+              return {
+                key: `${thread.environmentId}:${thread.id}`,
+                ref: scopeThreadRef(thread.environmentId, thread.id),
+                title: thread.title,
+                metadataLabel: formatRelativeTimeLabel(
+                  thread.latestUserMessageAt ?? thread.updatedAt ?? thread.createdAt,
+                ),
+                status,
+                statusLabel: status?.label ?? null,
+                active: thread.id === activeThreadId,
+              };
+            }),
+            showEmptyThreadState: projectThreads.length === 0,
+          };
+        })
+        .filter((row) => row !== null),
+    [activeThreadId, collapsedProjectKeys, orderedProjects, threadSortOrder, threads],
   );
 
   if (pathname === "/settings" || pathname.startsWith("/settings/")) {
@@ -101,7 +159,7 @@ export default function Sidebar() {
             <HostView
               className="sidebar-v1-project-control"
               aria-label="Add project"
-              bindtap={() => uiActions.openQuickSwitch("command")}
+              bindtap={uiActions.openAddProject}
             >
               <Icon
                 name="folder-plus"
@@ -113,7 +171,14 @@ export default function Sidebar() {
           </>
         }
         rows={projectRows}
-        onToggleProject={() => {}}
+        onToggleProject={(row) => {
+          setCollapsedProjectKeys((current) => {
+            const next = new Set(current);
+            if (next.has(row.key)) next.delete(row.key);
+            else next.add(row.key);
+            return next;
+          });
+        }}
         onCreateThread={(projectRef) => {
           void t3ClientActions.createThread(projectRef.projectId);
         }}

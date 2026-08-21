@@ -496,7 +496,7 @@ export default function SidebarV2() {
           />
         ) : null,
         scopedDisplayName: scopedProject?.title ?? null,
-        onNewProjectClick: () => uiActions.openQuickSwitch("command"),
+        onNewProjectClick: uiActions.openAddProject,
       }}
       rows={[
         ...threadSearchResults.map((thread, index) => {
@@ -778,7 +778,7 @@ export default function SidebarV2() {
       }
       hasProjects={projects.length > 0}
       scopedDisplayName={scopedProject?.title ?? null}
-      onAddProjectClick={() => uiActions.openQuickSwitch("command")}
+      onAddProjectClick={uiActions.openAddProject}
       footerAuthorityVisual={
         viewport.width === 1280 && viewport.height === 820 && sidebarWidth === 256 ? (
           <image className="sidebar-settings-authority" src={settingsRowUrl} />

@@ -1,4 +1,10 @@
-import type { ReactNode } from "@lynx-js/react";
+import { runOnBackground, type ReactNode } from "@lynx-js/react";
+
+interface HostKeyEvent {
+  readonly key: string;
+}
+
+interface MainThreadKeyEvent extends HostKeyEvent {}
 
 export function HostView({
   children,
@@ -6,9 +12,9 @@ export function HostView({
   onClick,
   onDoubleClick: _onDoubleClick,
   onContextMenu,
-  onKeyDown: _onKeyDown,
-  onMouseEnter: _onMouseEnter,
-  onMouseLeave: _onMouseLeave,
+  onKeyDown,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -20,11 +26,31 @@ export function HostView({
   readonly onMouseEnter?: (event: unknown) => void;
   readonly onMouseLeave?: (event: unknown) => void;
 }) {
+  const handleKeyDown = (event: MainThreadKeyEvent) => {
+    "main thread";
+    if (!onKeyDown) return;
+    runOnBackground(onKeyDown)({
+      key: event.key,
+    });
+  };
+  const handleMouseEnter = () => {
+    "main thread";
+    if (onMouseEnter) runOnBackground(onMouseEnter)({});
+  };
+  const handleMouseLeave = () => {
+    "main thread";
+    if (onMouseLeave) runOnBackground(onMouseLeave)({});
+  };
   return (
     <view
       {...props}
       event-through={eventThrough}
       {...(onContextMenu ? ({ bindcontextmenu: onContextMenu } as object) : {})}
+      {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
+      {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
+      {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
+      {...(onMouseLeave ? { "main-thread:bindmouseleave": handleMouseLeave } : {})}
+      bindmousemove={onMouseEnter}
       bindtap={onClick}
       bindlongpress={onContextMenu}
     >
@@ -103,17 +129,42 @@ export function HostHeadline({
 export function HostButton({
   children,
   onClick,
-  onMouseEnter: _onMouseEnter,
-  onMouseLeave: _onMouseLeave,
+  onKeyDown,
+  onMouseEnter,
+  onMouseLeave,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly onClick?: (event: unknown) => void;
+  readonly onKeyDown?: (event: unknown) => void;
   readonly onMouseEnter?: (event: unknown) => void;
   readonly onMouseLeave?: (event: unknown) => void;
 }) {
+  const handleKeyDown = (event: MainThreadKeyEvent) => {
+    "main thread";
+    if (!onKeyDown) return;
+    runOnBackground(onKeyDown)({
+      key: event.key,
+    });
+  };
+  const handleMouseEnter = () => {
+    "main thread";
+    if (onMouseEnter) runOnBackground(onMouseEnter)({});
+  };
+  const handleMouseLeave = () => {
+    "main thread";
+    if (onMouseLeave) runOnBackground(onMouseLeave)({});
+  };
   return (
-    <view {...props} bindtap={onClick}>
+    <view
+      {...props}
+      {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
+      {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
+      {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
+      {...(onMouseLeave ? { "main-thread:bindmouseleave": handleMouseLeave } : {})}
+      bindmousemove={onMouseEnter}
+      bindtap={onClick}
+    >
       {children}
     </view>
   );

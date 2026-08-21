@@ -20,6 +20,8 @@ import {
 import type {
   ApprovalRequestId,
   EditorId,
+  FilesystemBrowseInput,
+  FilesystemBrowseResult,
   ModelSelection,
   OrchestrationCheckpointSummary,
   OrchestrationGetTurnDiffInput,
@@ -45,6 +47,10 @@ import type {
   ServerUpsertKeybindingInput,
   ServerUpsertKeybindingResult,
   SourceControlDiscoveryResult,
+  SourceControlCloneRepositoryInput,
+  SourceControlCloneRepositoryResult,
+  SourceControlRepositoryLookupInput,
+  SourceControlRepositoryInfo,
   SourceControlPublishRepositoryInput,
   SourceControlPublishRepositoryResult,
   VcsStatusResult,
@@ -807,6 +813,14 @@ function selectThread(
   }
 }
 
+function createProject(workspaceRoot: string): Promise<{ projectId: string }> {
+  const bridge = getBridge();
+  if (!bridge?.createProject) {
+    return Promise.reject(new Error("Project creation is unavailable."));
+  }
+  return bridge.createProject({ workspaceRoot });
+}
+
 async function createThread(projectId?: string): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.createThread) return;
@@ -956,6 +970,14 @@ async function openInEditor(cwd: string, editor: EditorId): Promise<void> {
   await bridge.openInEditor({ cwd, editor });
 }
 
+function browseFilesystem(input: FilesystemBrowseInput): Promise<FilesystemBrowseResult> {
+  const bridge = getBridge();
+  if (!bridge?.browseFilesystem) {
+    return Promise.reject(new Error("Filesystem browsing is unavailable."));
+  }
+  return bridge.browseFilesystem(input);
+}
+
 function listProjectEntries(cwd: string): Promise<ProjectListEntriesResult> {
   const bridge = getBridge();
   if (!bridge?.listProjectEntries) {
@@ -1047,6 +1069,26 @@ function publishRepository(
     return Promise.reject(new Error("Repository publishing is unavailable."));
   }
   return bridge.publishRepository(input);
+}
+
+function lookupRepository(
+  input: SourceControlRepositoryLookupInput,
+): Promise<SourceControlRepositoryInfo> {
+  const bridge = getBridge();
+  if (!bridge?.lookupRepository) {
+    return Promise.reject(new Error("Repository lookup is unavailable."));
+  }
+  return bridge.lookupRepository(input);
+}
+
+function cloneRepository(
+  input: SourceControlCloneRepositoryInput,
+): Promise<SourceControlCloneRepositoryResult> {
+  const bridge = getBridge();
+  if (!bridge?.cloneRepository) {
+    return Promise.reject(new Error("Repository cloning is unavailable."));
+  }
+  return bridge.cloneRepository(input);
 }
 
 function discoverSourceControl(): Promise<SourceControlDiscoveryResult> {
@@ -1444,7 +1486,10 @@ async function restoreGeneralSettingsDefaults(): Promise<ReadonlyArray<string>> 
 
 export const t3ClientActions = {
   archiveThread,
+  browseFilesystem,
+  cloneRepository,
   createPairingCredential,
+  createProject,
   createProviderInstance,
   createThread,
   deleteThread,
@@ -1455,6 +1500,7 @@ export const t3ClientActions = {
   initializeRepository,
   interrupt,
   listProjectEntries,
+  lookupRepository,
   openInEditor,
   publishRepository,
   refreshProviders,

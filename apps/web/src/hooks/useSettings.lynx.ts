@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 
+import { APP_STAGE_LABEL } from "../branding";
+import { resolveSidebarV2Enabled } from "../branding.logic";
 import {
   getClientSettingsState,
   updateClientSettingsState,
@@ -40,6 +42,17 @@ export function useUpdateClientSettings() {
 export function useEnvironmentIdentificationMode() {
   return useClientSettings(
     (settings) => settings.environmentIdentificationMode ?? ("artwork" as const),
+  );
+}
+
+export function useSidebarV2Enabled(): boolean {
+  return useClientSettings((settings) =>
+    resolveSidebarV2Enabled({
+      enabled: settings.sidebarV2Enabled,
+      configuredByUser: settings.sidebarV2ConfiguredByUser,
+      settingsHydrated: true,
+      stageLabel: APP_STAGE_LABEL,
+    }),
   );
 }
 

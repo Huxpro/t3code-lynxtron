@@ -29,6 +29,8 @@ import {
   ORCHESTRATION_WS_METHODS,
   type AuthAccessSnapshot,
   type AuthAccessStreamEvent,
+  type FilesystemBrowseInput,
+  type FilesystemBrowseResult,
   type OrchestrationShellSnapshot,
   type OrchestrationShellStreamItem,
   type OrchestrationGetTurnDiffInput,
@@ -45,6 +47,10 @@ import {
   type ServerSettings,
   type ServerSettingsPatch,
   type SourceControlDiscoveryResult,
+  type SourceControlCloneRepositoryInput,
+  type SourceControlCloneRepositoryResult,
+  type SourceControlRepositoryLookupInput,
+  type SourceControlRepositoryInfo,
   type SourceControlPublishRepositoryInput,
   type SourceControlPublishRepositoryResult,
   type ServerConfigStreamEvent,
@@ -536,6 +542,55 @@ export class LiveConnectorHost {
       return this.#runClient<SourceControlDiscoveryResult>(
         this.#client[WS_METHODS.serverDiscoverSourceControl]({}),
       ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "lookupRepository") {
+      const params = request.params as SourceControlRepositoryLookupInput;
+      return this.#runClient<SourceControlRepositoryInfo>(
+        this.#client[WS_METHODS.sourceControlLookupRepository](params),
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "cloneRepository") {
+      const params = request.params as SourceControlCloneRepositoryInput;
+      return this.#runClient<SourceControlCloneRepositoryResult>(
+        this.#client[WS_METHODS.sourceControlCloneRepository](params),
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "browseFilesystem") {
+      const params = request.params as FilesystemBrowseInput;
+      return this.#runClient<FilesystemBrowseResult>(
+        this.#client[WS_METHODS.filesystemBrowse](params),
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "createProject") {
+      const params = request.params as { workspaceRoot: string };
+      const workspaceRoot = params.workspaceRoot.trim().replace(/[\\/]+$/u, "");
+      const projectId = globalThis.crypto.randomUUID();
+      const title = workspaceRoot.split(/[\\/]/u).filter(Boolean).at(-1) ?? "Workspace";
+      return this.#runClient(
+        this.#client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+          type: "project.create",
+          commandId: globalThis.crypto.randomUUID(),
+          projectId,
+          title,
+          workspaceRoot,
+          createWorkspaceRootIfMissing: true,
+          defaultModelSelection: null,
+          createdAt: new Date().toISOString(),
+        }),
+      ).then(() => {
+        const value = { projectId };
         this.#recordCommandResult(request.method, value);
         return value;
       });
