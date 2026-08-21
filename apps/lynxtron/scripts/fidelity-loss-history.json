@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-21T02:18:00-07:00",
+  "updatedAt": "2026-08-21T03:27:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13433,6 +13433,114 @@
           "path": "apps/lynxtron/evidence/2026-08-21/fidelity/sidebar-project-settings-baseline-metrics.json",
           "classification": "tracked-current",
           "sha256": "6c1b9914373492b88030ef23a9024c1cb4b7b19924dc07d873d6f66c5ad49696"
+        }
+      ]
+    },
+    {
+      "id": "sidebar-project-settings-current",
+      "observedAt": "2026-08-21T03:27:00-07:00",
+      "commit": "2fa4984c8",
+      "codeCommit": "22c749dd2",
+      "codeState": "commit",
+      "label": "Sidebar project settings convergence",
+      "narrative": "The registered P1 project-management workflow now has current Browser, Native, and real connector evidence. Both shipping Browser renderers open project scope through real pointers, expose one project action for the same canonical project, and reach Project settings with matching title, description, field labels, grouping value, Remove project, Close, and fullscreen dim layer. Exact Native on production bundle a46071ec opens the measured 24x24 action, renders a 576x249 dialog, switches among four grouping rules, persists Keep projects separate, opens and cancels destructive removal confirmation, dismisses outside, advances main transport 3 to 4, reports zero renderer errors, and disposes isolated state. A disposable real connector run independently proves create, project.meta.update rename, associated thread creation, project.delete force removal, shell convergence, prompt, resync, and released state. V1 preserves its context-menu/long-press entry while V2 uses the visible trailing action. Browser and Native material remain more opaque than the Web glass authority, exact Native physical keyboard rename remains pending-user-session, and light/compact cells remain uncovered, so the state retains explicit residual and evidence debt.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The registration point left all twelve new cells unknown. Current evidence holds canonical project/thread identity, dark 1280x820 viewport, explicit V2 settings, Web authority, current shipping bundles, and snapshot constant for Browser parity; exact Native uses the production bundle, isolated fixture, PID-owned session, measured touches, main transport, zero errors, and disposed state. The connector lifecycle is independently verified on a disposable server. No existing state, weight, filter, or denominator entry changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/sidebar-project-settings-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "7860cd03cc325d293908a9023f3dfce8d9dede7b68dd858dad6ee9064e887bec"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-project-settings-content",
+              "source": "Both Browser renderers expose one project action and matching Project settings title, description, field labels, current project name, grouping rule, removal, and close controls"
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "project-settings-browser-geometry",
+              "source": "Both dialogs are centered at x=352 with 576px width and fullscreen 1280x820 backdrops; residual preserves the 7px height and control-allocation differences"
+            },
+            "typography": {
+              "residual": 0.12,
+              "confidence": 0.95,
+              "method": "project-settings-browser-typography",
+              "source": "Shared hierarchy and labels pass; residual preserves variable-font and renderer rasterization differences"
+            },
+            "material": {
+              "residual": 0.18,
+              "confidence": 0.95,
+              "method": "project-settings-browser-material",
+              "source": "Dark surface, border, shadow, radius, dim layer, and destructive treatment are present; residual preserves Web glass versus opaque Lynx material without inventing a pixel score"
+            },
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "project-settings-browser-pointer-and-command",
+              "source": "Real dual Browser pointers open scope and project actions; shared source contracts cover V1 long press/context entry and all mutations, while text rename is independently proven by the connector lifecycle"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-browser-runtime",
+              "source": "Current bundles render with zero console errors; real connector create, rename, association, removal, prompt, resync, and cleanup pass"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-settings-content",
+              "source": "Exact Native exposes the canonical action, project/path/environment summary, project name, four grouping rules, remove confirmation, and close"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 1, 0, 5, 1, 8, 0, 2, 0, 1],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "native-project-settings-geometry",
+              "source": "Exact Native measures a 576x249 dialog, fullscreen backdrop, 574px header/body/footer, 257x32 controls, and contained 526x105 confirmation"
+            },
+            "typography": {
+              "residual": 0.12,
+              "confidence": 0.95,
+              "method": "native-project-settings-typography",
+              "source": "Native preserves the shared title, labels, values, and destructive hierarchy; residual preserves platform rasterization"
+            },
+            "material": {
+              "residual": 0.18,
+              "confidence": 0.9,
+              "method": "native-project-settings-material",
+              "source": "Native dark surface, border, shadow, dim layer, primary and destructive treatments are visible; no Browser pixel score is reused as Native evidence"
+            },
+            "interaction": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "native-project-settings-touch-flow",
+              "source": "Measured DevTool touches open the action/dialog, select Keep projects separate, open and cancel removal confirmation, and dismiss outside; physical keyboard rename remains pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-settings-runtime",
+              "source": "Production bundle a46071ec uses main transport sequence 3 to 4, reports zero renderer errors, persists grouping in isolated prefs, and disposes state; connector lifecycle independently proves rename and removal"
+            }
+          }
         }
       ]
     }
