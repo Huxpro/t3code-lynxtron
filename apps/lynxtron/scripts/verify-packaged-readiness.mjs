@@ -1930,6 +1930,78 @@ async function verifyQuickSwitchDefault({
   };
 }
 
+async function verifyActivePlanModeChip({ child, client, timeoutMs }) {
+  const control = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--interaction",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.trim() === "Plan" &&
+      measurement.attributes.class?.includes("composer-toolbar-control--interaction-plan"),
+  });
+  const separator = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-interaction-mode-separator",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect?.width ?? 0) - 1) <= 0.5 &&
+      Math.abs((measurement?.rect?.height ?? 0) - 16) <= 0.5,
+  });
+  const icon = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--interaction-plan .pill__icon-img",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect?.width ?? 0) - 14) <= 0.5 &&
+      Math.abs((measurement?.rect?.height ?? 0) - 14) <= 0.5,
+  });
+  const backgroundColor = await readFirstSelectorStyleValue(
+    client,
+    ".composer-toolbar-control--interaction-plan",
+    "background-color",
+  );
+  const color = await readFirstSelectorStyleValue(
+    client,
+    ".composer-toolbar-control--interaction-plan",
+    "color",
+  );
+  const iconOpacity = await readFirstSelectorStyleValue(
+    client,
+    ".composer-toolbar-control--interaction-plan .pill__icon-img",
+    "opacity",
+  );
+  if (
+    !(
+      backgroundColor === "rgba(59,130,246,0.1)" || backgroundColor === "rgba(59,130,246,0.101961)"
+    ) ||
+    color !== "rgb(96,165,250)" ||
+    iconOpacity !== "1" ||
+    Math.abs(control.rect.height - 28) > 0.5
+  ) {
+    throw new Error(
+      `Native Plan mode material drifted: ${JSON.stringify({
+        backgroundColor,
+        color,
+        iconOpacity,
+        control: control.rect,
+        icon: icon.rect,
+        separator: separator.rect,
+      })}`,
+    );
+  }
+  return {
+    control: control.rect,
+    separator: separator.rect,
+    icon: icon.rect,
+    backgroundColor,
+    color,
+    iconOpacity,
+  };
+}
+
 async function verifyComposerBehavior({ child, client, timeoutMs }) {
   const existingOverlay = await readOptionalMeasurement(client, ".composer-overlay");
   const existingHero = await readOptionalMeasurement(client, ".hero");
@@ -2062,8 +2134,10 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
     selector: ".composer-toolbar-control--interaction",
     timeoutMs,
     predicate: (measurement) =>
-      typeof measurement?.text === "string" && measurement.text.trim() !== beforeInteraction,
+      measurement?.text.trim() === "Plan" &&
+      measurement.attributes.class?.includes("composer-toolbar-control--interaction-plan"),
   });
+  const activeChip = await verifyActivePlanModeChip({ child, client, timeoutMs });
 
   const beforeNewThreadSequence = await readRendererReadiness(client);
   await tapSelector({
@@ -2116,6 +2190,7 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
     interactionMode: {
       before: beforeInteraction,
       after: afterInteraction.text.trim(),
+      activeChip,
       sequence: {
         before: beforeInteractionSequence.lastSeq,
         after: afterInteractionSequence.lastSeq,
@@ -2864,6 +2939,14 @@ async function verifyModelOptionMenuMutation({
   ) {
     throw new Error(`Model-option baseline is incomplete: ${JSON.stringify(beforeState)}`);
   }
+  if (beforeState.activeThread.interactionMode !== "default") {
+    throw new Error(
+      `Plan-mode baseline must start in default mode: ${JSON.stringify({
+        interactionMode: beforeState.activeThread.interactionMode,
+        threadId,
+      })}`,
+    );
+  }
   const trigger = await waitForMeasurement({
     child,
     client,
@@ -3091,12 +3174,6 @@ async function verifyModelOptionMenuMutation({
     expectedLetterSpacing: "-0.44px",
     trigger: thinkingTrigger,
   });
-  const screenshot = captureNativeScreenshot({
-    client,
-    devToolCli,
-    outputDirectory,
-    name: "native-composer-model-option-tracking.png",
-  });
   await tapSelector({
     child,
     client,
@@ -3136,11 +3213,38 @@ async function verifyModelOptionMenuMutation({
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
+  const beforePlanSequence = await readRendererReadiness(client);
+  await tapSelector({
+    child,
+    client,
+    selector: ".composer-toolbar-control--interaction",
+    timeoutMs,
+  });
+  const afterPlanSequence = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforePlanSequence,
+    timeoutMs,
+  });
+  const planState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === threadId && state?.activeThread?.interactionMode === "plan",
+  });
+  const activePlanChip = await verifyActivePlanModeChip({ child, client, timeoutMs });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-composer-plan-mode.png",
+  });
 
   return {
     status: "pass",
     input:
-      "DevTool Input.emulateTouchFromMouseEvent on measured model-option rows and dismiss layer",
+      "DevTool Input.emulateTouchFromMouseEvent on measured model-option rows, dismiss layer, and interaction-mode control",
     threadId,
     trigger: {
       before: trigger.text.trim(),
@@ -3186,11 +3290,18 @@ async function verifyModelOptionMenuMutation({
       after: afterSequence.lastSeq,
       beforeThinking: beforeThinkingSequence.lastSeq,
       afterThinking: afterThinkingSequence.lastSeq,
+      beforePlan: beforePlanSequence.lastSeq,
+      afterPlan: afterPlanSequence.lastSeq,
     },
     finalTrigger: thinkingTrigger.text.trim(),
     dismissLayer: dismissLayer.rect,
     reopenedSelected: true,
     dismissed: true,
+    planMode: {
+      before: beforeState.activeThread.interactionMode,
+      after: planState.activeThread.interactionMode,
+      activeChip: activePlanChip,
+    },
     screenshot,
   };
 }

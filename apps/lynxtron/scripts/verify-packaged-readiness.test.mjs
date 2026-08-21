@@ -238,6 +238,29 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Composer Footer icon geometry drifted");
   });
 
+  it("verifies the Native active Plan chip after real interaction-mode input", () => {
+    assert.include(source, "async function verifyActivePlanModeChip");
+    assert.include(source, 'measurement?.text.trim() === "Plan"');
+    assert.include(source, "composer-toolbar-control--interaction-plan");
+    assert.include(source, 'selector: ".composer-interaction-mode-separator"');
+    assert.include(
+      source,
+      'selector: ".composer-toolbar-control--interaction-plan .pill__icon-img"',
+    );
+    assert.include(source, 'color !== "rgb(96,165,250)"');
+    assert.include(source, 'iconOpacity !== "1"');
+    assert.include(source, "backgroundColor,");
+    assert.include(source, "iconOpacity,");
+    assert.include(source, 'beforeState.activeThread.interactionMode !== "default"');
+    assert.include(source, 'selector: ".composer-toolbar-control--interaction"');
+    assert.include(source, "const afterPlanSequence = await waitForSequenceAdvance");
+    assert.include(source, 'state?.activeThread?.interactionMode === "plan"');
+    assert.include(source, "const activePlanChip = await verifyActivePlanModeChip");
+    assert.include(source, 'name: "native-composer-plan-mode.png"');
+    assert.include(source, "beforePlan: beforePlanSequence.lastSeq");
+    assert.include(source, "afterPlan: afterPlanSequence.lastSeq");
+  });
+
   it("treats the requested theme as a packaged-run precondition", () => {
     assert.include(source, "async function verifyExpectedTheme");
     assert.include(source, 'selector: ".app-theme-root"');
@@ -375,7 +398,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'expectedLetterSpacing: "-0.33px"');
     assert.include(source, 'expectedLetterSpacing: "-0.42px"');
     assert.include(source, 'expectedLetterSpacing: "-0.44px"');
-    assert.include(source, 'name: "native-composer-model-option-tracking.png"');
+    assert.include(source, 'name: "native-composer-plan-mode.png"');
     assert.include(source, 'selector: ".composer-model-option-menu__item--selected"');
     assert.include(source, 'selector: ".composer-model-option-menu-dismiss-layer"');
     assert.include(source, "reopenedSelected: true");
