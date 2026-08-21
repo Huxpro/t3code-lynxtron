@@ -71,20 +71,21 @@ function EditableFilePreview({
         debounceMs: 500,
         scheduler: FILE_SAVE_SCHEDULER,
         onPendingChange: (pending) => {
+          if (pending) setSaveError(null);
           setSaveStatus(pending ? "pending" : "saved");
         },
         onConfirmed: () => {
           setSaveError(null);
         },
+        onFailure: (failure) => {
+          const error =
+            failure._tag === "Exception" ? failure.error : new Error("Unable to save this file.");
+          setSaveError(errorMessage(error));
+          setSaveStatus("error");
+        },
         persist: async (nextContents) => {
-          try {
-            await t3ClientActions.writeProjectFile(cwd, path, nextContents);
-            return { _tag: "Success" as const };
-          } catch (error: unknown) {
-            setSaveError(errorMessage(error));
-            setSaveStatus("error");
-            return { _tag: "Failure" as const };
-          }
+          await t3ClientActions.writeProjectFile(cwd, path, nextContents);
+          return { _tag: "Success" as const };
         },
       }),
     [cwd, path],
@@ -165,7 +166,10 @@ function EditableFilePreview({
         </scroll-view>
       )}
       {saveStatus !== "saved" || saveError ? (
-        <view className="file-panel__statusbar">
+        <view
+          className="file-panel__statusbar"
+          data-file-save-error={saveStatus === "error" ? "true" : "false"}
+        >
           <text
             className={`files-panel__preview-status${
               saveStatus === "error" ? " files-panel__preview-status--error" : ""
@@ -173,8 +177,14 @@ function EditableFilePreview({
           >
             {saveError ?? (saveStatus === "pending" ? "Unsaved changes" : "Save failed")}
           </text>
-          <view className="files-panel__save" bindtap={flush}>
-            <text className="files-panel__save-label">Save now</text>
+          <view
+            className="files-panel__save"
+            data-file-save-retry={saveStatus === "error" ? "true" : "false"}
+            bindtap={flush}
+          >
+            <text className="files-panel__save-label">
+              {saveStatus === "error" ? "Retry save" : "Save now"}
+            </text>
           </view>
         </view>
       ) : null}

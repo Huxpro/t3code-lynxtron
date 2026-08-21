@@ -8,12 +8,23 @@ export interface FileSaveScheduler {
   readonly cancel: (handle: unknown) => void;
 }
 
+export type FileSaveFailure<R extends FileSaveResultLike> =
+  | {
+      readonly _tag: "Result";
+      readonly result: R;
+    }
+  | {
+      readonly _tag: "Exception";
+      readonly error: unknown;
+    };
+
 export interface FileSaveCoordinatorOptions<R extends FileSaveResultLike> {
   readonly debounceMs: number;
   readonly scheduler: FileSaveScheduler;
   readonly persist: (contents: string) => Promise<R>;
   readonly onPendingChange: (pending: boolean) => void;
   readonly onConfirmed: (contents: string) => void;
+  readonly onFailure?: (failure: FileSaveFailure<R>, contents: string) => void;
 }
 
 /**
@@ -74,16 +85,26 @@ export class FileSaveCoordinator<R extends FileSaveResultLike = FileSaveResultLi
     this.saving = true;
     const contents = this.latestContents;
     const revision = this.latestRevision;
-    const result = await this.options.persist(contents);
-    const succeeded = result._tag === "Success";
-    if (succeeded) {
-      this.confirmedRevision = Math.max(this.confirmedRevision, revision);
-      this.options.onConfirmed(contents);
+    let failure: FileSaveFailure<R> | null = null;
+    try {
+      const result = await this.options.persist(contents);
+      if (result._tag === "Success") {
+        this.confirmedRevision = Math.max(this.confirmedRevision, revision);
+        this.options.onConfirmed(contents);
+      } else {
+        failure = { _tag: "Result", result };
+      }
+    } catch (error: unknown) {
+      failure = { _tag: "Exception", error };
     }
 
     this.saving = false;
     if (revision === this.latestRevision) {
-      if (succeeded) this.options.onPendingChange(false);
+      if (failure === null) {
+        this.options.onPendingChange(false);
+      } else {
+        this.options.onFailure?.(failure, contents);
+      }
       return;
     }
 

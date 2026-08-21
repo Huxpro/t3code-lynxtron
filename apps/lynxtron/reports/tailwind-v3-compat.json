@@ -5,12 +5,8 @@
     "postcss": true,
     "preset": "@lynx-js/tailwind-preset"
   },
-  "compatibilityItems": [
-    "R6",
-    "R7",
-    "R9"
-  ],
-  "removedSelectorCount": 79,
+  "compatibilityItems": ["R6", "R7", "R9"],
+  "removedSelectorCount": 80,
   "removedDeclarationCount": 11,
   "removedSelectors": [
     ".\\[\\&\\>span\\:last-child\\]\\:flex>span:last-child",
@@ -87,6 +83,7 @@
     ".hover\\:bg-sidebar-row-hover:hover",
     ".hover\\:border-border:hover",
     ".hover\\:opacity-100:hover",
+    ".hover\\:text-accent-foreground:hover",
     ".hover\\:text-foreground:hover",
     ".hover\\:text-primary:hover",
     ".hover\\:text-sidebar-foreground:hover",

@@ -416,17 +416,18 @@ function useFileSaveCoordinator({
   cwd,
   relativePath,
   onPendingChange,
-}: Pick<
-  EditableFileSurfaceProps,
-  "environmentId" | "cwd" | "relativePath" | "onPendingChange"
->): FileSaveCoordinator {
+}: Pick<EditableFileSurfaceProps, "environmentId" | "cwd" | "relativePath" | "onPendingChange">) {
   const writeFile = useAtomCommand(projectEnvironment.writeFile);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const coordinator = useMemo(
     () =>
       new FileSaveCoordinator({
         debounceMs: FILE_SAVE_DEBOUNCE_MS,
         scheduler: FILE_SAVE_SCHEDULER,
-        onPendingChange: (pending) => onPendingChange(relativePath, pending),
+        onPendingChange: (pending) => {
+          if (!pending) setSaveError(null);
+          onPendingChange(relativePath, pending);
+        },
         persist: (nextContents) =>
           writeFile({
             environmentId,
@@ -435,12 +436,43 @@ function useFileSaveCoordinator({
         onConfirmed: (confirmedContents) => {
           confirmProjectFileQueryData(environmentId, cwd, relativePath, confirmedContents);
         },
+        onFailure: (failure) => {
+          const error =
+            failure._tag === "Result" && failure.result._tag === "Failure"
+              ? squashAtomCommandFailure(failure.result)
+              : failure._tag === "Exception"
+                ? failure.error
+                : new Error("Unable to save this file.");
+          setSaveError(error instanceof Error ? error.message : "Unable to save this file.");
+        },
       }),
     [cwd, environmentId, onPendingChange, relativePath, writeFile],
   );
 
   useEffect(() => () => coordinator.dispose(), [coordinator]);
-  return coordinator;
+  return { coordinator, saveError };
+}
+
+function FileSaveFailureBar({
+  error,
+  onRetry,
+}: {
+  readonly error: string | null;
+  readonly onRetry: () => void;
+}) {
+  if (error === null) return null;
+  return (
+    <div
+      role="alert"
+      className="file-panel__statusbar file-panel__statusbar--error flex min-h-7 shrink-0 items-center justify-between gap-2 border-t border-destructive/20 bg-destructive/5 px-2.5 py-1 text-[11px] text-destructive-foreground"
+      data-file-save-error
+    >
+      <span className="min-w-0 flex-1 truncate">{error}</span>
+      <Button size="xs" variant="ghost" data-file-save-retry onClick={onRetry}>
+        Retry save
+      </Button>
+    </div>
+  );
 }
 
 function EditableFileSurface({
@@ -469,7 +501,7 @@ function EditableFileSurface({
   );
   const surfaceRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
-  const saveCoordinator = useFileSaveCoordinator({
+  const { coordinator: saveCoordinator, saveError } = useFileSaveCoordinator({
     environmentId,
     cwd,
     relativePath,
@@ -653,64 +685,67 @@ function EditableFileSurface({
 
   return (
     <EditProvider editor={editor}>
-      <div
-        ref={surfaceRef}
-        className="flex min-h-0 flex-1"
-        data-file-content-revision={fileContentRevision(contents)}
-      >
-        <Virtualizer
-          className="file-preview-virtualizer min-h-0 flex-1 overflow-auto"
-          config={{
-            overscrollSize: 600,
-            intersectionObserverMargin: 1200,
-          }}
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div
+          ref={surfaceRef}
+          className="flex min-h-0 flex-1"
+          data-file-content-revision={fileContentRevision(contents)}
         >
-          <File<FileCommentAnnotationGroup>
-            file={{
-              name: relativePath,
-              contents,
-              cacheKey: projectFileEditorCacheKey(
-                environmentId,
-                cwd,
-                relativePath,
+          <Virtualizer
+            className="file-preview-virtualizer min-h-0 flex-1 overflow-auto"
+            config={{
+              overscrollSize: 600,
+              intersectionObserverMargin: 1200,
+            }}
+          >
+            <File<FileCommentAnnotationGroup>
+              file={{
+                name: relativePath,
                 contents,
-                editor.getFile(),
-              ),
-            }}
-            options={{
-              disableFileHeader: true,
-              enableGutterUtility: !hasOpenCommentForm,
-              enableLineSelection: !hasOpenCommentForm,
-              onGutterUtilityClick: setSelectedRange,
-              onLineSelectionChange: setSelectedRange,
-              onLineSelectionEnd: handleLineSelectionEnd,
-              overflow: wordWrap ? "wrap" : "scroll",
-              theme: resolveDiffThemeName(resolvedTheme),
-              themeType: resolvedTheme,
-              unsafeCSS: FILE_LINK_REVEAL_UNSAFE_CSS,
-              onPostRender: handlePostRender,
-            }}
-            selectedLines={selectedRange}
-            lineAnnotations={lineAnnotations}
-            renderAnnotation={(annotation) => (
-              <div className="py-1">
-                {annotation.metadata.entries.map((entry) => (
-                  <LocalCommentAnnotation
-                    key={entry.id}
-                    kind={entry.kind}
-                    rangeLabel={formatFileCommentRange(entry.startLine, entry.endLine)}
-                    text={entry.text}
-                    onCancel={() => removeAnnotationEntry(entry.id)}
-                    onComment={(text) => submitAnnotationEntry(entry.id, text)}
-                    onDelete={() => removeAnnotationEntry(entry.id)}
-                  />
-                ))}
-              </div>
-            )}
-            className="min-h-full"
-            contentEditable
-          />
-        </Virtualizer>
+                cacheKey: projectFileEditorCacheKey(
+                  environmentId,
+                  cwd,
+                  relativePath,
+                  contents,
+                  editor.getFile(),
+                ),
+              }}
+              options={{
+                disableFileHeader: true,
+                enableGutterUtility: !hasOpenCommentForm,
+                enableLineSelection: !hasOpenCommentForm,
+                onGutterUtilityClick: setSelectedRange,
+                onLineSelectionChange: setSelectedRange,
+                onLineSelectionEnd: handleLineSelectionEnd,
+                overflow: wordWrap ? "wrap" : "scroll",
+                theme: resolveDiffThemeName(resolvedTheme),
+                themeType: resolvedTheme,
+                unsafeCSS: FILE_LINK_REVEAL_UNSAFE_CSS,
+                onPostRender: handlePostRender,
+              }}
+              selectedLines={selectedRange}
+              lineAnnotations={lineAnnotations}
+              renderAnnotation={(annotation) => (
+                <div className="py-1">
+                  {annotation.metadata.entries.map((entry) => (
+                    <LocalCommentAnnotation
+                      key={entry.id}
+                      kind={entry.kind}
+                      rangeLabel={formatFileCommentRange(entry.startLine, entry.endLine)}
+                      text={entry.text}
+                      onCancel={() => removeAnnotationEntry(entry.id)}
+                      onComment={(text) => submitAnnotationEntry(entry.id, text)}
+                      onDelete={() => removeAnnotationEntry(entry.id)}
+                    />
+                  ))}
+                </div>
+              )}
+              className="min-h-full"
+              contentEditable
+            />
+          </Virtualizer>
+        </div>
+        <FileSaveFailureBar error={saveError} onRetry={() => void saveCoordinator.flush()} />
       </div>
     </EditProvider>
   );
@@ -734,7 +769,7 @@ function RenderedMarkdownSurface({
 > & {
   threadRef: ScopedThreadRef;
 }) {
-  const saveCoordinator = useFileSaveCoordinator({
+  const { coordinator: saveCoordinator, saveError } = useFileSaveCoordinator({
     environmentId,
     cwd,
     relativePath,
@@ -742,23 +777,26 @@ function RenderedMarkdownSurface({
   });
 
   return (
-    <ScrollArea className="min-h-0 flex-1">
-      <ChatMarkdown
-        text={contents}
-        cwd={cwd}
-        threadRef={threadRef}
-        className="mx-auto max-w-4xl px-6 py-5"
-        onTaskListChange={({ markerOffset, checked }) => {
-          const currentContents =
-            getOptimisticProjectFileQueryData(environmentId, cwd, relativePath)?.contents ??
-            contents;
-          const nextContents = setMarkdownTaskChecked(currentContents, markerOffset, checked);
-          if (nextContents === currentContents) return;
-          setProjectFileQueryData(environmentId, cwd, relativePath, nextContents);
-          saveCoordinator.change(nextContents);
-        }}
-      />
-    </ScrollArea>
+    <div className="flex min-h-0 flex-1 flex-col">
+      <ScrollArea className="min-h-0 flex-1">
+        <ChatMarkdown
+          text={contents}
+          cwd={cwd}
+          threadRef={threadRef}
+          className="mx-auto max-w-4xl px-6 py-5"
+          onTaskListChange={({ markerOffset, checked }) => {
+            const currentContents =
+              getOptimisticProjectFileQueryData(environmentId, cwd, relativePath)?.contents ??
+              contents;
+            const nextContents = setMarkdownTaskChecked(currentContents, markerOffset, checked);
+            if (nextContents === currentContents) return;
+            setProjectFileQueryData(environmentId, cwd, relativePath, nextContents);
+            saveCoordinator.change(nextContents);
+          }}
+        />
+      </ScrollArea>
+      <FileSaveFailureBar error={saveError} onRetry={() => void saveCoordinator.flush()} />
+    </div>
   );
 }
 
