@@ -31,6 +31,7 @@ const COLORS = [
   "#71717a",
   "#27272a",
   "#3b82f6",
+  "#60a5fa",
   "#f87171",
 ];
 
@@ -74,6 +75,7 @@ export type IconName =
   | "search"
   | "arrow-up-down"
   | "pencil-line"
+  | "pencil-ruler"
   | "chevron-down"
   | "git-branch"
   | "git-branch-plus"

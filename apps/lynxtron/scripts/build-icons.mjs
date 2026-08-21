@@ -38,6 +38,8 @@ const ICON_BODIES = {
     '<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
   "pencil-line":
     '<path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/><path d="m15 5 3 3"/>',
+  "pencil-ruler":
+    '<path d="M13 7 8.7 2.7a2.41 2.41 0 0 0-3.4 0L2.7 5.3a2.41 2.41 0 0 0 0 3.4L7 13"/><path d="m8 6 2-2"/><path d="m18 16 2-2"/><path d="m17 11 4.3 4.3c.94.94.94 2.46 0 3.4l-2.6 2.6c-.94.94-2.46.94-3.4 0L11 17"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
   "chevron-down": '<path d="m6 9 6 6 6-6"/>',
   "git-branch":
     '<path d="M15 6a9 9 0 0 0-9 9V3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>',
@@ -189,6 +191,7 @@ const VARIANTS = [
   { size: 18, color: "#71717a" }, // light-theme muted
   { size: 16, color: "#71717a" }, // light-theme small muted
   { size: 14, color: "#3b82f6" }, // semantic info
+  { size: 14, color: "#60a5fa" }, // active Plan mode
   { size: 14, color: "#f87171" }, // semantic error
 ];
 
@@ -243,6 +246,7 @@ for (const [name, size] of [
   ["lock", 16],
   ["lock-open", 16],
   ["pencil-line", 16],
+  ["pencil-ruler", 14],
   ["bot", 16],
   ["bot", 18],
 ]) {

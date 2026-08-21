@@ -2396,6 +2396,22 @@
 .composer-toolbar-control--model-option {
   width: auto;
 }
+.composer-interaction-mode-separator {
+  width: 1px;
+  height: 16px;
+  margin-right: 2px;
+  margin-left: 2px;
+  flex-shrink: 0;
+  background-color: var(--border);
+}
+.composer-toolbar-control--interaction-plan {
+  border-radius: 8px;
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+}
+.composer-toolbar-control--interaction-plan .pill__icon-img {
+  opacity: 1;
+}
 .composer-model-option-control-wrap {
   position: relative;
   display: flex;

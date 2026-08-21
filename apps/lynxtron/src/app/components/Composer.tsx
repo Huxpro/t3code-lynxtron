@@ -794,20 +794,30 @@ export function Composer({
                       </view>
                     ) : null,
                     !compactFooter && !questionMode && showInteractionModeToggle ? (
+                      <view
+                        key="interaction-separator"
+                        className="composer-interaction-mode-separator"
+                      />
+                    ) : null,
+                    !compactFooter && !questionMode && showInteractionModeToggle ? (
                       <ComposerToolbarControl
                         key="interaction"
-                        className="composer-toolbar-control--interaction"
+                        className={`composer-toolbar-control--interaction${
+                          interactionMode === "plan"
+                            ? " composer-toolbar-control--interaction-plan"
+                            : ""
+                        }`}
                         controlId="interaction"
                         label={interactionModePresentation.label}
                         leading={
                           <Icon
-                            name={interactionMode === "plan" ? "pencil-line" : "bot"}
+                            name={interactionMode === "plan" ? "pencil-ruler" : "bot"}
                             size={
                               interactionMode === "plan"
                                 ? COMPOSER_FOOTER_ICON_GEOMETRY.interaction.plan
                                 : COMPOSER_FOOTER_ICON_GEOMETRY.interaction.default
                             }
-                            color="#818181"
+                            color={interactionMode === "plan" ? "#60a5fa" : "#818181"}
                             className="pill__icon-img"
                           />
                         }
