@@ -853,7 +853,9 @@ export function Composer({
           }
           checkout={
             <view
-              className="composer-workspace-control-wrap"
+              className={`composer-workspace-control-wrap${
+                workspaceMenuOpen ? " composer-workspace-control-wrap--open" : ""
+              }`}
               data-floating-anchor="composer-workspace-menu"
             >
               <view
