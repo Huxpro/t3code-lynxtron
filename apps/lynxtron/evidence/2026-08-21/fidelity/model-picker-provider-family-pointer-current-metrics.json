@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T13:55:05-07:00",
+  "stateId": "model-picker-provider-rail",
+  "productCommit": "aa432593b7ba46fcfe32b90e55f1221751aa381a",
+  "harnessCommit": "39b345344e7019d674ab1a5a9fa50d8ca0c53568",
+  "classification": {
+    "productLossClosed": [
+      "The Lynx provider-family rail no longer lets icon events pass through the rail item that owns the provider-selection tap.",
+      "A real pointer or Native touch changes the active provider family, replaces the model rows, and keeps the picker open so a model can be chosen."
+    ],
+    "harnessMismatch": [
+      "The previous Browser provider-rail certification used Element.click() for Lynx after Input.emulateTouchFromMouseEvent failed. That bypassed hit testing and incorrectly certified the real pointer path.",
+      "The corrected shared-workbench harness removes the Lynx DOM-click fallback, uses real Web and Lynx CDP pointers, records hit-test diagnostics and a causal provider timeline, and waits for the same stable notification precondition before opening either picker.",
+      "The live dual-renderer fixture currently has an unrelated late provider-update notification race that can close both overlays before the rail pointer is sent. This is retained as harness loss, not product evidence."
+    ],
+    "evidenceBoundary": "Shipping Browser Preview proves the Lynx-for-Web hit-testing path with a real Chromium pointer against the built Lynx bundle. Exact Native proves the production bundle with measured DevTool touch, main transport, isolated state, and zero renderer errors. Neither probe changes a model; provider-family browsing intentionally keeps the picker open."
+  },
+  "browserPreview": {
+    "status": "pass",
+    "bundleSha256": "0da6daf6b139ce50c224fd14cb062e95790aed2aa91b5b7cfdab7b10b830e96d",
+    "scenario": "model-picker",
+    "theme": "dark",
+    "input": "CDP mouseMoved + mousePressed + mouseReleased at the measured Claude rail item",
+    "hitTargetClass": "model-picker-rail-item relative flex aspect-square w-full cursor-pointer items-center justify-center rounded-md",
+    "before": {
+      "provider": "codex",
+      "activeProviders": ["codex"],
+      "rows": ["codex:gpt-5.6-sol", "codex:gpt-5.6-luna", "codex:gpt-5.6-mini"]
+    },
+    "after": {
+      "provider": "claudeAgent",
+      "activeProviders": ["claudeAgent"],
+      "rows": ["claudeAgent:claude-fable-5", "claudeAgent:claude-sonnet-4-5"],
+      "pickerRemainedOpen": true
+    },
+    "rendererErrors": 0
+  },
+  "native": {
+    "status": "pass",
+    "report": "/tmp/t3-model-family-native-final/report.json",
+    "reportSha256": "01d445440beb5737cbf712ce49cbb82380113f1288aac1359dabd88b01382185",
+    "bundleSha256": "c0776e64f5d01ff04603532d2def4a4472d10ae9ae055b4c79c761aecd35d9cb",
+    "bundleBytes": 4953236,
+    "viewport": "1280x820",
+    "theme": "dark",
+    "input": "DevTool Input.emulateTouchFromMouseEvent on the measured provider rail item",
+    "panel": [397, 375, 360, 346],
+    "beforeProvider": "codex",
+    "targetProvider": "claudeAgent",
+    "afterProvider": "claudeAgent",
+    "activeProvider": "claudeAgent",
+    "rows": [
+      "claudeAgent:claude-fable-5",
+      "claudeAgent:claude-opus-5",
+      "claudeAgent:claude-opus-4-8",
+      "claudeAgent:claude-opus-4-7",
+      "claudeAgent:claude-opus-4-6",
+      "claudeAgent:claude-opus-4-5",
+      "claudeAgent:claude-sonnet-5",
+      "claudeAgent:claude-sonnet-4-6",
+      "claudeAgent:claude-haiku-4-5"
+    ],
+    "pickerRemainedOpen": true,
+    "dismissedByClose": true,
+    "dismissedOutside": true,
+    "transport": {
+      "kind": "main",
+      "beforeSequence": 3,
+      "afterSequence": 5
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "screenshot": {
+      "retainedInGit": false,
+      "sha256": "39c6090fc71d451a2543b14d4a4f188d96056f470df832e2148afe5ab3253854"
+    }
+  },
+  "validation": {
+    "focusedSurfaceTests": "7/7",
+    "focusedShellAndPresentationTests": "51/51",
+    "focusedSharedWorkbenchTests": "42/42",
+    "focusedNativeVerifierTests": "47/47",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "nativeBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
