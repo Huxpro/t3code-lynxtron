@@ -548,8 +548,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "overlay.length > 0 ||");
     assert.include(source, "Overlay ${overlay} closed before screenshot capture:");
     assert.include(source, 'stateId !== "settings-beta"');
-    assert.include(source, '"Auto-settle inactive threads"');
-    assert.include(source, '"Days of inactivity before auto-settle"');
+    assert.include(source, "function legacySidebarSettingsReady");
+    assert.include(source, 'web.checked === "false"');
+    assert.include(source, 'lynx.controlClass?.includes("ui-switch--unchecked")');
     assert.include(source, "function generalSettingsContentMatches");
     assert.include(source, "function generalSettingsGeometryMatches");
     assert.include(source, 'stateId !== "settings-general"');
@@ -673,19 +674,31 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "headerMetrics: state?.lynx?.headerMetrics ?? null");
   });
 
-  it("drives explicit Sidebar versions and real Add Project palette entry points", () => {
+  it("drives explicit flat and legacy sidebars with real Add Project entry points", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
       "utf8",
     );
-    assert.include(source, 'stateId === "sidebar-project-groups" ? "false" : "true"');
+    assert.include(source, 'stateId === "sidebar-project-groups" ? "true" : "false"');
+    assert.include(source, 'productState?.sidebarVersion === "legacy"');
+    assert.include(source, 'if (stateId === "sidebar-project-groups") return true;');
+    assert.include(source, 'stateId === "sidebar-project-groups"');
+    assert.include(source, "finalSidebarProjectGroupsReady");
+    assert.include(source, "function flatSidebarLayoutMatches");
+    assert.include(source, 'stateId === "sidebar-flat-layout"');
+    assert.include(source, "finalFlatSidebarLayoutReady");
+    assert.include(source, "isFlatSidebarLayoutState || coreGeometryMatches");
+    assert.include(source, "isFlatSidebarLayoutState || headerGitActionMatches");
     assert.notInclude(source, 'const initialOverlay = stateId === "add-project-sources"');
     assert.include(source, 'stateId !== "add-project-sources"');
     assert.include(source, '[data-testid="sidebar-add-project-trigger"]');
     assert.include(source, '[aria-label="New project"]');
-    assert.include(workbench, "sidebarV2Enabled:");
-    assert.include(workbench, "sidebarV2ConfiguredByUser:");
+    assert.include(workbench, "legacySidebarEnabled:");
+    assert.include(workbench, "function readLegacySidebarSettings");
+    assert.include(workbench, "legacySidebar: readLegacySidebarSettings");
+    assert.include(workbench, '[data-setting-control="legacy-sidebar"]');
     assert.include(workbench, "data-sidebar-version");
+    assert.include(workbench, ".sidebar-inline-search");
     assert.include(workbench, "readSidebarProjectGroups");
     assert.include(workbench, "data-palette-active");
     assert.include(workbench, "data-quick-switch-view");
@@ -694,6 +707,31 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "function addProjectSourcesMatch(state)");
     assert.include(source, "finalAddProjectSourcesReady");
     assert.include(source, 'stateId === "add-project-sources" ||');
+  });
+
+  it("expands the legacy sidebar setting through real pointers", () => {
+    assert.include(source, "function legacySidebarSettingsReady");
+    assert.include(source, "settings-legacy-section__trigger");
+    assert.include(source, "target.scrollIntoView?.({ block: 'center', inline: 'nearest' });");
+    assert.include(
+      source,
+      "await dispatchMouseWheel(cdp, sessionId, points.lynx.scrollPoint, 700)",
+    );
+    assert.include(source, 'client: "lynx",');
+    assert.include(source, 'step: "scroll",');
+    assert.include(source, "state?.web?.literalRoute !== webRoute");
+    assert.notInclude(source, "webRouteInputSent = true");
+    assert.include(source, 'webRoute === "/settings/general"');
+    assert.include(source, 'state?.web?.literalRoute?.startsWith("/draft/")');
+    assert.include(source, "webDraftLandingStablePolls >= 3");
+    assert.include(source, 'webRoute !== "/settings/general"');
+    assert.include(source, "async function openWebSettingsFromSidebar");
+    assert.include(source, "querySelector('.sidebar-settings-row')");
+    assert.include(source, 'return "cdp-pointer"');
+    assert.include(source, 'return clicked ? "dom-click-fallback" : null');
+    assert.include(source, 'client: "web", step: "expand"');
+    assert.include(source, 'client: "lynx", step: "expand"');
+    assert.include(source, "legacySettingsTimeline");
   });
 
   it("records the command palette hover and keyboard causal chain", () => {

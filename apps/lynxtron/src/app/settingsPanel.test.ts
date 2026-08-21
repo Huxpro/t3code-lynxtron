@@ -13,7 +13,6 @@ describe("Lynx Settings route projection", () => {
     ["/settings/providers", "providers"],
     ["/settings/connections", "connections"],
     ["/settings/source-control", "source-control"],
-    ["/settings/beta", "beta"],
     ["/settings/archived", "archive"],
   ] as const)("maps %s to the %s content", (pathname, panel) => {
     expect(resolveLynxSettingsPanel(pathname)).toBe(panel);
@@ -21,6 +20,7 @@ describe("Lynx Settings route projection", () => {
 
   it("keeps unknown Settings content on the existing general fallback", () => {
     expect(resolveLynxSettingsPanel("/settings/not-real")).toBe("general");
+    expect(resolveLynxSettingsPanel("/settings/beta")).toBe("general");
   });
 
   it("stretches Settings content before percentage-width panels resolve", () => {
@@ -29,6 +29,13 @@ describe("Lynx Settings route projection", () => {
       path.resolve(
         import.meta.dirname,
         "../../../web/src/components/settings/settingsLayout.lynx.tsx",
+      ),
+      "utf8",
+    );
+    const settingsRouteHost = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/settingsRouteHost.lynx.tsx",
       ),
       "utf8",
     );
@@ -57,6 +64,19 @@ describe("Lynx Settings route projection", () => {
     const contentBlock = overrides.slice(contentStart, overrides.indexOf("}", contentStart));
     expect(contentBlock).toContain("padding: 36px 32px 40px 32px;");
     expect(overrides).not.toContain(".settings-content--source-control {");
+    const scrollStart = overrides.indexOf(".settings-scroll {");
+    const scrollBlock = overrides.slice(scrollStart, overrides.indexOf("}", scrollStart));
+    expect(scrollBlock).toContain("display: flex;");
+    expect(scrollBlock).toContain("flex-direction: column;");
+    expect(scrollBlock).toContain("flex-shrink: 1;");
+    expect(scrollBlock).toContain("height: 0;");
+    expect(scrollBlock).toContain("min-height: 0;");
+    expect(scrollBlock).toContain("overflow: hidden;");
+    expect(settingsRouteHost).toContain('<view className="settings-main">');
+    expect(settingsRouteHost).toContain("scroll-y");
+    expect(settingsRouteHost.match(/scroll-y/g)).toHaveLength(1);
+    expect(settingsRouteHost).toContain("const contentHeight = Math.max(0, viewport.height - 52);");
+    expect(settingsRouteHost).toContain("style={{ height: `${contentHeight}px` }}");
     const settingsRowMarker = overrides.indexOf("/* SettingsRow:");
     const textStart = overrides.indexOf(".settings-row__text {", settingsRowMarker);
     const textBlock = overrides.slice(textStart, overrides.indexOf("}", textStart));
@@ -173,19 +193,42 @@ describe("Lynx Settings route projection", () => {
     expect(tableContract).not.toContain("grid-template-columns");
   });
 
-  it("renders portable Sidebar v2 auto-settle controls in Lynx", () => {
+  it("renders the shared default and legacy sidebar settings in Lynx", () => {
     const settings = readFileSync(
-      path.resolve(import.meta.dirname, "components/OtherSettings.tsx"),
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/GeneralSettingsContent.tsx",
+      ),
       "utf8",
     );
-    expect(settings).toContain(
-      '<SettingsPageContainer className="flex w-full min-w-0 flex-col self-stretch">',
+    const host = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/generalSettingsHost.lynx.tsx",
+      ),
+      "utf8",
     );
-    expect(settings).toContain("</SettingsPageContainer>");
-    expect(settings).toContain('searchableSetting("auto-settle-inactive-threads").title');
-    expect(settings).toContain("sidebarAutoSettleAfterDays: enabled");
-    expect(settings).toContain('aria-label="Days of inactivity before auto-settle"');
-    expect(settings).not.toContain("The Lynx Sidebar v2 renderer has not moved yet");
+    const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
+    expect(settings).toContain('searchableSetting("auto-settle-inactive-threads")');
+    expect(settings).toContain('settingControl="auto-settle"');
+    expect(settings).toContain('searchableSetting("legacy-sidebar")');
+    expect(settings).toContain('settingControl="legacy-sidebar"');
+    expect(settings).toContain('aria-label="Sidebar (legacy)"');
+    expect(host).toContain("export function GeneralSettingsLegacySection");
+    expect(host).toContain(
+      'className="settings-section settings-legacy-section flex w-full min-w-0 flex-col self-stretch"',
+    );
+    expect(host).toContain(
+      "settings-section__rows settings-legacy-section__rows flex w-full min-w-0 flex-col self-stretch",
+    );
+    expect(host).toContain("data-setting-control={settingControl}");
+    expect(host).toContain('role: "switch"');
+    expect(host).toContain('aria-checked={checked ? "true" : "false"}');
+    expect(host).toContain("settings-legacy-section__rows--closed");
+    const legacyStart = overrides.indexOf(".settings-legacy-section {");
+    const legacyBlock = overrides.slice(legacyStart, overrides.indexOf("}", legacyStart));
+    expect(legacyBlock).toContain("flex-direction: column;");
+    expect(legacyBlock).toContain("width: 100%;");
   });
 
   it("uses the shared fixed network-access projection without a duplicate inventory row", () => {

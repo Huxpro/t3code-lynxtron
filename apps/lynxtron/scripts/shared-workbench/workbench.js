@@ -27,8 +27,7 @@ const expectThread = url.searchParams.get("expectThread") || null;
 const expectedSemanticRoute = url.searchParams.get("semanticRoute") ?? "new-thread";
 const theme = url.searchParams.get("theme") === "light" ? "light" : "dark";
 const expectedOverlay = url.searchParams.get("overlay") || null;
-const sidebarV2Enabled = url.searchParams.get("sidebarV2Enabled") !== "false";
-const sidebarV2ConfiguredByUser = url.searchParams.get("sidebarV2ConfiguredByUser") !== "false";
+const legacySidebarEnabled = url.searchParams.get("legacySidebarEnabled") === "true";
 const initialOverlay = url.searchParams.get("initialOverlay") || null;
 const requestedSidebarWidthRaw = url.searchParams.get("sidebarWidth");
 const requestedSidebarWidthValue =
@@ -52,7 +51,6 @@ const SETTINGS_NAV_LABELS = [
   "Providers",
   "Source Control",
   "Connections",
-  "Beta",
   "Archive",
 ];
 const SETTINGS_ANCHOR_BY_ROUTE = {
@@ -79,7 +77,7 @@ const SETTINGS_ANCHOR_BY_ROUTE = {
   "settings-keybindings": ["keybindings"],
   "settings-connections": ["remote-environments"],
   "settings-source-control": ["source-control"],
-  "settings-beta": ["sidebar-v2"],
+  "settings-beta": ["legacy-sidebar"],
   "settings-archive": ["archive"],
 };
 
@@ -300,6 +298,22 @@ function readSettingsRows(root, ids) {
       },
     ];
   });
+}
+
+function readLegacySidebarSettings(root) {
+  const trigger = root?.querySelector(".settings-legacy-section__trigger");
+  const control = root?.querySelector('[data-setting-control="legacy-sidebar"]');
+  const rowMetrics = readSettingsRows(root, ["legacy-sidebar"])[0] ?? null;
+  return {
+    trigger: readElementBox(trigger),
+    expanded: trigger?.getAttribute("aria-expanded") === "true",
+    row: readElementBox(root?.getElementById("legacy-sidebar")),
+    title: rowMetrics?.title ?? "",
+    description: rowMetrics?.description ?? "",
+    control: readElementBox(control),
+    checked: control?.getAttribute("aria-checked") ?? null,
+    controlClass: control?.getAttribute("class") ?? "",
+  };
 }
 
 function readSettingsNavigationChrome(root) {
@@ -1080,8 +1094,7 @@ if (${JSON.stringify(requestedRightPanelWidth)} !== null) {
 localStorage.setItem(
   "t3code:client-settings:v1",
   JSON.stringify({
-    sidebarV2Enabled: ${JSON.stringify(sidebarV2Enabled)},
-    sidebarV2ConfiguredByUser: ${JSON.stringify(sidebarV2ConfiguredByUser)},
+    legacySidebarEnabled: ${JSON.stringify(legacySidebarEnabled)},
     environmentIdentificationMode: ${JSON.stringify(environmentIdentificationMode)},
   }),
 );
@@ -1096,8 +1109,7 @@ const lynxQuery = new URLSearchParams({
   height: String(height),
   theme,
   environmentIdentificationMode,
-  sidebarV2Enabled: String(sidebarV2Enabled),
-  sidebarV2ConfiguredByUser: String(sidebarV2ConfiguredByUser),
+  legacySidebarEnabled: String(legacySidebarEnabled),
 });
 if (initialOverlay) {
   lynxQuery.set("initialOverlay", initialOverlay);
@@ -1585,7 +1597,9 @@ function readLynxPane() {
           settingsBack: readSettingsNavigationChrome(root).back,
           settingsRow: readElementBox(root?.querySelector(".sidebar-settings-row")),
           settingsAuthority: readElementBox(root?.querySelector(".sidebar-settings-authority")),
-          search: readElementBox(root?.querySelector('[aria-label="Search threads"]')),
+          search: readElementBox(
+            root?.querySelector('[aria-label="Search threads"], .sidebar-inline-search'),
+          ),
           projectScopeRow: readElementBox(
             root?.querySelector(".sidebar-v2-project-scope-host")?.parentElement,
           ),
@@ -1927,6 +1941,7 @@ function readLynxPane() {
               navigationItems: readSettingsNavigationItems(root),
               rowIds: settingsRowIds.filter((id) => root?.getElementById(id)),
               rows: readSettingsRows(root, settingsRowIds),
+              legacySidebar: readLegacySidebarSettings(root),
               keybindings:
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(root)
@@ -2925,6 +2940,7 @@ function readWebPane() {
               navigationItems: readSettingsNavigationItems(doc),
               rowIds: settingsRowIds.filter((id) => doc.getElementById(id)),
               rows: readSettingsRows(doc, settingsRowIds),
+              legacySidebar: readLegacySidebarSettings(doc),
               keybindings:
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(doc)

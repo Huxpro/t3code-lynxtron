@@ -65,6 +65,7 @@ const stateId = argValue("--state-id", "new-thread-hero");
 const semanticRoute = argValue("--semantic-route", "new-thread");
 const settingsWebRouteBySemanticRoute = {
   "settings-archive": "/settings/archived",
+  "settings-beta": "/settings/general",
 };
 const requestedWebRoute = argValue(
   "--web-route",
@@ -110,9 +111,8 @@ const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
 const projectSettingsExpectation = argValue("--project-settings-expect", "missing");
-const sidebarV2Enabled =
-  argValue("--sidebar-v2", stateId === "sidebar-project-groups" ? "false" : "true") !== "false";
-const sidebarV2ConfiguredByUser = argValue("--sidebar-v2-configured", "true") !== "false";
+const legacySidebarEnabled =
+  argValue("--legacy-sidebar", stateId === "sidebar-project-groups" ? "true" : "false") === "true";
 const requestedSidebarWidthValue = Number(argValue("--sidebar-width", ""));
 const requestedSidebarWidth =
   Number.isFinite(requestedSidebarWidthValue) && requestedSidebarWidthValue > 0
@@ -178,6 +178,7 @@ const isCompactControlsState =
 const isShortCompactControlsState = stateId === "composer-compact-controls-inline-files-short";
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
+const isFlatSidebarLayoutState = stateId === "sidebar-flat-layout";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
 const composerExpectationByStateId = {
@@ -221,11 +222,7 @@ const composerExpectationByStateId = {
 const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
 const shouldClearWebNotification =
-  Boolean(overlay) ||
-  stateId === "sidebar-project-groups" ||
-  isProjectSettingsState ||
-  isFilesSurfaceState ||
-  isReviewState;
+  Boolean(overlay) || isProjectSettingsState || isFilesSurfaceState || isReviewState;
 const reviewExpectation =
   stateId === "review-empty"
     ? "panel-empty"
@@ -341,11 +338,42 @@ function sidebarProjectGroupsMatch(state) {
       );
     });
   return (
-    state?.web?.productState?.sidebarVersion === "v1" &&
-    state?.lynx?.productState?.sidebarVersion === "v1" &&
+    state?.web?.productState?.sidebarVersion === "legacy" &&
+    state?.lynx?.productState?.sidebarVersion === "legacy" &&
     titlesMatch &&
     rowsAreVertical(webGroups) &&
     rowsAreVertical(lynxGroups)
+  );
+}
+
+function flatSidebarLayoutMatches(state) {
+  if (!isFlatSidebarLayoutState) return true;
+  const web = state?.web?.sidebarDiagnostics;
+  const lynx = state?.lynx?.sidebarDiagnostics;
+  const webThreads = web?.threads ?? [];
+  const lynxThreads = lynx?.threads ?? [];
+  const threadRowsMatch =
+    webThreads.length === lynxThreads.length &&
+    webThreads.every((thread, index) => {
+      const lynxThread = lynxThreads[index];
+      return (
+        thread.text === lynxThread?.text &&
+        thread.rect?.width === lynxThread?.rect?.width &&
+        thread.rect?.height === lynxThread?.rect?.height
+      );
+    });
+  const controlsMatch =
+    web?.chrome?.search?.rect?.height > 0 &&
+    lynx?.chrome?.search?.rect?.height > 0 &&
+    web.chrome.projectScope?.rect?.height === lynx.chrome.projectScope?.rect?.height &&
+    web.chrome.newProject?.rect?.width === lynx.chrome.newProject?.rect?.width;
+  return (
+    state?.web?.productState?.sidebarVersion === "flat" &&
+    state?.lynx?.productState?.sidebarVersion === "flat" &&
+    web?.width === 256 &&
+    lynx?.width === 256 &&
+    threadRowsMatch &&
+    controlsMatch
   );
 }
 
@@ -457,35 +485,46 @@ function archiveSettingsGeometryMatches(webMetrics, lynxMetrics) {
 
 function betaSettingsGeometryMatches(webMetrics, lynxMetrics) {
   if (stateId !== "settings-beta") return true;
-  const webSection = webMetrics?.geometry?.sections?.[0]?.box?.rect;
-  const lynxSection = lynxMetrics?.geometry?.sections?.[0]?.box?.rect;
-  const lynxRows = lynxMetrics?.geometry?.settingsRows ?? [];
-  const expectedTitles = [
-    "Sidebar v2",
-    "Auto-settle inactive threads",
-    "Days of inactivity before auto-settle",
-  ];
+  const webLegacy = webMetrics?.legacySidebar;
+  const lynxLegacy = lynxMetrics?.legacySidebar;
+  const rowGeometryMatches =
+    webLegacy?.row?.rect &&
+    lynxLegacy?.row?.rect &&
+    Math.abs(webLegacy.row.rect.x - lynxLegacy.row.rect.x) <= 1 &&
+    Math.abs(webLegacy.row.rect.width - lynxLegacy.row.rect.width) <= 1 &&
+    Math.abs(webLegacy.row.rect.height - lynxLegacy.row.rect.height) <= 2;
+  const triggerGeometryMatches =
+    webLegacy?.trigger?.rect &&
+    lynxLegacy?.trigger?.rect &&
+    Math.abs(webLegacy.trigger.rect.x - lynxLegacy.trigger.rect.x) <= 1 &&
+    Math.abs(webLegacy.trigger.rect.width - lynxLegacy.trigger.rect.width) <= 1 &&
+    Math.abs(webLegacy.trigger.rect.height - lynxLegacy.trigger.rect.height) <= 1;
   return (
-    webSection &&
-    lynxSection &&
-    Math.abs(webSection.x - lynxSection.x) <= 1 &&
-    Math.abs(webSection.width - lynxSection.width) <= 1 &&
-    lynxRows.length === expectedTitles.length &&
-    lynxRows.every((row, index) => {
-      const rect = row.box?.rect;
-      const text = row.children?.[0]?.box?.rect;
-      const control = row.children?.[1]?.box?.rect;
-      return (
-        row.title === expectedTitles[index] &&
-        rect &&
-        text &&
-        control &&
-        Math.abs(webSection.x - rect.x) <= 1 &&
-        Math.abs(webSection.width - rect.width) <= 1 &&
-        text.width > 0 &&
-        control.width > 0
-      );
-    })
+    webLegacy?.expanded === true &&
+    lynxLegacy?.expanded === true &&
+    triggerGeometryMatches &&
+    rowGeometryMatches &&
+    webLegacy.title === "Sidebar (legacy)" &&
+    lynxLegacy.title === webLegacy.title &&
+    lynxLegacy.description === webLegacy.description &&
+    webLegacy.control?.rect?.width > 0 &&
+    lynxLegacy.control?.rect?.width > 0
+  );
+}
+
+function legacySidebarSettingsReady(state) {
+  if (stateId !== "settings-beta") return true;
+  const web = state?.web?.settingsMetrics?.legacySidebar;
+  const lynx = state?.lynx?.settingsMetrics?.legacySidebar;
+  return (
+    web?.expanded === true &&
+    lynx?.expanded === true &&
+    web.row?.rect?.width > 0 &&
+    lynx.row?.rect?.width > 0 &&
+    web.control?.rect?.width > 0 &&
+    lynx.control?.rect?.width > 0 &&
+    web.checked === "false" &&
+    (lynx.checked === "false" || lynx.controlClass?.includes("ui-switch--unchecked"))
   );
 }
 
@@ -501,7 +540,7 @@ function settingsNavigationStateMatches(state) {
           "settings-keybindings": "Keybindings",
           "settings-connections": "Connections",
           "settings-source-control": "Source Control",
-          "settings-beta": "Beta",
+          "settings-beta": "General",
           "settings-archive": "Archive",
         }[semanticRoute];
   if (!expectedLabel) return true;
@@ -1192,6 +1231,7 @@ function sidebarWorkingGeometryMatches(state, expectedThreadFixture) {
 }
 
 function headerGitActionMatches(state) {
+  if (stateId === "sidebar-project-groups") return true;
   const webAction = state?.web?.headerMetrics?.actionItems?.find((item) => item.id === "commit");
   const lynxAction = state?.lynx?.headerMetrics?.actionItems?.find((item) => item.id === "commit");
   if (!webAction && !lynxAction) return true;
@@ -1391,6 +1431,40 @@ async function dispatchPointerClickWithMove(cdp, sessionId, point) {
     sessionId,
   );
   await dispatchPointerClick(cdp, sessionId, point);
+}
+
+async function openWebSettingsFromSidebar(cdp, sessionId, useDomFallback) {
+  if (useDomFallback) {
+    const clicked = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const target = document.getElementById('web-pane')
+          ?.contentWindow?.document?.querySelector('.sidebar-settings-row');
+        target?.click();
+        return Boolean(target);
+      })()`,
+    ).catch(() => false);
+    return clicked ? "dom-click-fallback" : null;
+  }
+  const point = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('web-pane');
+      const target = frame?.contentWindow?.document?.querySelector('.sidebar-settings-row');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+      };
+    })()`,
+  ).catch(() => null);
+  if (!point) return null;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return "cdp-pointer";
 }
 
 async function dispatchMouseWheel(cdp, sessionId, point, deltaY) {
@@ -3400,6 +3474,7 @@ async function captureCell({
     "new-thread-hero": "new-thread",
     "new-thread-hero-light": "new-thread",
     "existing-thread-idle": "existing-thread",
+    "sidebar-flat-layout": "existing-thread",
     "existing-thread-working": "existing-thread",
     "git-publish-dialog": "existing-thread",
     "project-action-dialog": "existing-thread",
@@ -3461,8 +3536,7 @@ async function captureCell({
     semanticRoute,
     webRoute,
     theme,
-    sidebarV2Enabled: String(sidebarV2Enabled),
-    sidebarV2ConfiguredByUser: String(sidebarV2ConfiguredByUser),
+    legacySidebarEnabled: String(legacySidebarEnabled),
     ...(overlay ? { overlay } : {}),
     expectProject,
     ...(expectThread ? { expectThread } : {}),
@@ -3480,7 +3554,9 @@ async function captureCell({
   let webProjectMenuWaitPolls = 0;
   let webProjectInputSent = false;
   let webProjectSelectionStage = "waiting-for-trigger";
-  let webRouteInputSent = webRoute === "/";
+  let webSettingsOpenAttempts = 0;
+  let webSettingsInputChannel = webRoute === "/settings/general" ? "pending" : "not-required";
+  let webDraftLandingStablePolls = webRoute === "/settings/general" ? 0 : 3;
   let webOverlayInputSent = false;
   let webOverlayWaitPolls = 0;
   let webProjectActionMenuOpened = false;
@@ -3515,6 +3591,9 @@ async function captureCell({
     stateId === "settings-source-control-error"
       ? 0
       : 10;
+  let webLegacySettingsExpanded = stateId !== "settings-beta";
+  let lynxLegacySettingsExpanded = stateId !== "settings-beta";
+  const legacySettingsTimeline = [];
   let transcriptReadyPolls = stateId.startsWith("existing-thread-") ? 0 : 3;
   let pendingRequestReadyPolls =
     stateId === "existing-thread-approval" || stateId === "existing-thread-question" ? 0 : 3;
@@ -3606,6 +3685,95 @@ async function captureCell({
       sessionId,
       `(() => { const w = window.__T3_WORKBENCH__; return w ? w.read() : null; })()`,
     ).catch(() => null);
+    if (webRoute === "/settings/general") {
+      webDraftLandingStablePolls = state?.web?.literalRoute?.startsWith("/draft/")
+        ? webDraftLandingStablePolls + 1
+        : state?.web?.literalRoute === webRoute
+          ? 3
+          : 0;
+    }
+    if (
+      webRoute === "/settings/general" &&
+      webDraftLandingStablePolls >= 3 &&
+      state?.web?.literalRoute !== webRoute
+    ) {
+      const channel = await openWebSettingsFromSidebar(
+        cdp,
+        sessionId,
+        webSettingsOpenAttempts >= 2,
+      );
+      webSettingsOpenAttempts += channel ? 1 : 0;
+      webSettingsInputChannel = channel ?? "settings-trigger-missing";
+      await delay(100);
+      continue;
+    }
+    if (
+      stateId === "settings-beta" &&
+      state?.web?.settingsMetrics &&
+      state?.lynx?.settingsMetrics
+    ) {
+      if (state.web.settingsMetrics.legacySidebar?.expanded === true) {
+        webLegacySettingsExpanded = true;
+      }
+      if (state.lynx.settingsMetrics.legacySidebar?.expanded === true) {
+        lynxLegacySettingsExpanded = true;
+      }
+      if (!webLegacySettingsExpanded || !lynxLegacySettingsExpanded) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const target = root?.querySelector('.settings-legacy-section__trigger');
+              if (!frame || !target) return null;
+              target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+                visible:
+                  rect.y >= 0 &&
+                  rect.y + rect.height <= frameRect.height,
+                scrollPoint: {
+                  x: frameRect.x + frameRect.width / 2,
+                  y: frameRect.y + frameRect.height / 2,
+                },
+              };
+            };
+            return {
+              web: pointFor('web-pane', false),
+              lynx: pointFor('lynx-pane', true),
+            };
+          })()`,
+        ).catch(() => null);
+        if (!webLegacySettingsExpanded && points?.web) {
+          await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+          legacySettingsTimeline.push({ client: "web", step: "expand", point: points.web });
+          await delay(100);
+          continue;
+        }
+        if (!lynxLegacySettingsExpanded && points?.lynx) {
+          if (!points.lynx.visible) {
+            await dispatchMouseWheel(cdp, sessionId, points.lynx.scrollPoint, 700);
+            legacySettingsTimeline.push({
+              client: "lynx",
+              step: "scroll",
+              point: points.lynx.scrollPoint,
+            });
+            await delay(100);
+            continue;
+          }
+          await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+          legacySettingsTimeline.push({ client: "lynx", step: "expand", point: points.lynx });
+          await delay(100);
+          continue;
+        }
+      }
+    }
     if (expectThread && state?.web?.productState?.selectedThread === expectThread) {
       webThreadInputSent = true;
     }
@@ -4046,7 +4214,7 @@ async function captureCell({
       continue;
     }
     if (
-      !webRouteInputSent &&
+      webRoute !== "/settings/general" &&
       state?.web?.connected === true &&
       state?.web?.literalRoute !== webRoute
     ) {
@@ -4060,7 +4228,6 @@ async function captureCell({
           return true;
         })()`,
       );
-      webRouteInputSent = true;
       await delay(100);
       continue;
     }
@@ -5391,8 +5558,9 @@ async function captureCell({
           state?.lynx?.settingsMetrics,
         ));
     const settingsNavigationReady = settingsNavigationStateMatches(state);
+    const legacySettingsReady = legacySidebarSettingsReady(state);
     settingsAsyncReadyPolls =
-      settingsAsyncReady && settingsGeometryReady && settingsNavigationReady
+      settingsAsyncReady && settingsGeometryReady && settingsNavigationReady && legacySettingsReady
         ? settingsAsyncReadyPolls + 1
         : 0;
     const webTimelineRows = state?.web?.timelineMetrics?.rows ?? [];
@@ -5437,13 +5605,15 @@ async function captureCell({
         height,
       );
     const composerReady =
-      composerInputReady &&
-      composerStateReady &&
-      composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
+      isFlatSidebarLayoutState ||
+      (composerInputReady &&
+        composerStateReady &&
+        composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics));
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
     const sidebarControlGeometryReady = sidebarControlGeometryMatches(state);
     const sidebarProjectGroupsReady = sidebarProjectGroupsMatch(state);
+    const flatSidebarLayoutReady = flatSidebarLayoutMatches(state);
     const addProjectSourcesReady = addProjectSourcesMatch(state);
     const sidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
@@ -5452,7 +5622,7 @@ async function captureCell({
     const rightPanelAddMenuStateReady = rightPanelAddMenuReady(state);
     const diffScopeMenuStateReady = diffScopeMenuReady(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
-    const headerGitActionReady = headerGitActionMatches(state);
+    const headerGitActionReady = isFlatSidebarLayoutState || headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
     const filesBrowserStateReady = filesBrowserSemanticReady(state);
     filesBrowserReadyPolls = filesBrowserStateReady
@@ -5494,7 +5664,8 @@ async function captureCell({
         lynxChangedFilesInputSent &&
         normalizedChangedFilesState(state?.web?.reviewMetrics) === changedFilesTargetState &&
         normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
-    const coreGeometryReady = coreGeometryMatches(state?.web, state?.lynx);
+    const coreGeometryReady =
+      isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
     const reviewReady =
       reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
       sidebarDiffPairMatches(
@@ -5527,6 +5698,7 @@ async function captureCell({
       stageIdentityReady &&
       sidebarControlGeometryReady &&
       sidebarProjectGroupsReady &&
+      flatSidebarLayoutReady &&
       addProjectSourcesReady &&
       sidebarFooterThemeReady &&
       compactControlsReady &&
@@ -5729,7 +5901,8 @@ async function captureCell({
       lynxChangedFilesInputSent &&
       normalizedChangedFilesState(state?.web?.reviewMetrics) === changedFilesTargetState &&
       normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
-  const finalCoreGeometryReady = coreGeometryMatches(state?.web, state?.lynx);
+  const finalCoreGeometryReady =
+    isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
   const finalComposerInputReady =
     !composerInput ||
     (state?.web?.composerMetrics?.editor?.value === composerInput &&
@@ -5743,13 +5916,15 @@ async function captureCell({
       height,
     );
   const finalComposerReady =
-    finalComposerInputReady &&
-    finalComposerStateReady &&
-    composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
+    isFlatSidebarLayoutState ||
+    (finalComposerInputReady &&
+      finalComposerStateReady &&
+      composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics));
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
   const finalSidebarControlGeometryReady = sidebarControlGeometryMatches(state);
   const finalSidebarProjectGroupsReady = sidebarProjectGroupsMatch(state);
+  const finalFlatSidebarLayoutReady = flatSidebarLayoutMatches(state);
   const finalAddProjectSourcesReady = addProjectSourcesMatch(state);
   const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
@@ -5761,7 +5936,7 @@ async function captureCell({
     state,
     expectedThreadFixture,
   );
-  const finalHeaderGitActionReady = headerGitActionMatches(state);
+  const finalHeaderGitActionReady = isFlatSidebarLayoutState || headerGitActionMatches(state);
   const finalGitPublishDialogReady = gitPublishDialogMatches(state);
   let finalFilesBrowserReady = filesBrowserReady(state);
   let finalFileEditorReady = fileEditorReady(state);
@@ -5880,7 +6055,7 @@ async function captureCell({
       semanticRoute: webState.semanticRoute,
       theme: webState.theme,
       density: webState.density,
-      selectedThread: webState.selectedThread,
+      selectedThread: isFlatSidebarLayoutState ? null : webState.selectedThread,
       selectedModel: webState.selectedModel,
       lifecycle: webState.lifecycle,
       overlayQuery: webState.overlayQuery,
@@ -5890,7 +6065,7 @@ async function captureCell({
         semanticRoute: lynxState.semanticRoute,
         theme: lynxState.theme,
         density: lynxState.density,
-        selectedThread: lynxState.selectedThread,
+        selectedThread: isFlatSidebarLayoutState ? null : lynxState.selectedThread,
         selectedModel: lynxState.selectedModel,
         lifecycle: lynxState.lifecycle,
         overlayQuery: lynxState.overlayQuery,
@@ -5899,8 +6074,12 @@ async function captureCell({
     commonStateIdentityMatch &&
     (isProjectSettingsState
       ? projectSettingsSnapshotIdentityMatch
-      : webState?.selectedProject === lynxState?.selectedProject &&
-        webState?.overlay === lynxState?.overlay);
+      : stateId === "sidebar-project-groups"
+        ? finalSidebarProjectGroupsReady && webState?.overlay === lynxState?.overlay
+        : isFlatSidebarLayoutState
+          ? finalFlatSidebarLayoutReady && webState?.overlay === lynxState?.overlay
+          : webState?.selectedProject === lynxState?.selectedProject &&
+            webState?.overlay === lynxState?.overlay);
   const overlayGeometryDelta =
     state?.web?.overlayMetrics?.rect && state?.lynx?.overlayMetrics?.rect
       ? {
@@ -5950,57 +6129,61 @@ async function captureCell({
       : webOverlayRowLabels.every((label, index) => label && label === lynxOverlayRowLabels[index]);
   const settingsContentMatch = !semanticRoute.startsWith("settings-")
     ? true
-    : stateId === "settings-general"
-      ? generalSettingsContentMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics)
-      : stateId === "settings-appearance"
-        ? appearanceSettingsContentMatches(
-            state?.web?.settingsMetrics,
-            state?.lynx?.settingsMetrics,
-          )
-        : stateId === "settings-keybindings"
-          ? keybindingsSettingsContentMatches(
+    : stateId === "settings-beta"
+      ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
+      : stateId === "settings-general"
+        ? generalSettingsContentMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics)
+        : stateId === "settings-appearance"
+          ? appearanceSettingsContentMatches(
               state?.web?.settingsMetrics,
               state?.lynx?.settingsMetrics,
             )
-          : stateId === "settings-connections"
-            ? connectionsSettingsContentMatches(
+          : stateId === "settings-keybindings"
+            ? keybindingsSettingsContentMatches(
                 state?.web?.settingsMetrics,
                 state?.lynx?.settingsMetrics,
               )
-            : stateId === "settings-source-control-loading"
-              ? state?.web?.settingsMetrics?.loading === true &&
-                state?.lynx?.settingsMetrics?.loading === true &&
-                JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                  JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
-              : stateId === "settings-source-control-error"
-                ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+            : stateId === "settings-connections"
+              ? connectionsSettingsContentMatches(
+                  state?.web?.settingsMetrics,
+                  state?.lynx?.settingsMetrics,
+                )
+              : stateId === "settings-source-control-loading"
+                ? state?.web?.settingsMetrics?.loading === true &&
+                  state?.lynx?.settingsMetrics?.loading === true &&
                   JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
                     JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                  JSON.stringify(state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? []) &&
-                  JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                  (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0 &&
-                  (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
-                : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
-                  JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                  JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
-                  JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
-                  JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
-                  JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                    JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                  ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                    (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                    JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
-                      JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
+                  JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                    JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
+                : stateId === "settings-source-control-error"
+                  ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? []) ===
+                      JSON.stringify(
+                        state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                      ) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                    (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0 &&
+                    (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
+                  : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
+                    JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                      JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                    ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                      (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                      JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
+                        JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
 
   const layout = await evaluate(
     cdp,
@@ -6792,9 +6975,13 @@ async function captureCell({
           /SocketReadError: An error occurred during Read/.test(e.text))
       ),
   );
+  const confirmedTargetState =
+    reachedTargetState ||
+    (isFlatSidebarLayoutState && bothReady && finalFlatSidebarLayoutReady) ||
+    (stateId === "sidebar-project-groups" && bothReady && finalSidebarProjectGroupsReady);
 
   const pass =
-    reachedTargetState &&
+    confirmedTargetState &&
     bothReady &&
     identityMatch &&
     finalOverlayReady &&
@@ -6808,6 +6995,7 @@ async function captureCell({
     finalStageIdentityReady &&
     finalSidebarControlGeometryReady &&
     finalSidebarProjectGroupsReady &&
+    finalFlatSidebarLayoutReady &&
     finalAddProjectSourcesReady &&
     finalSidebarFooterThemeReady &&
     finalCompactControlsReady &&
@@ -6843,7 +7031,7 @@ async function captureCell({
     sameDims;
   if (!pass)
     failuresNote(viewport.label, {
-      reachedTargetState,
+      reachedTargetState: confirmedTargetState,
       bothReady,
       identityMatch,
       finalOverlayReady,
@@ -6857,6 +7045,7 @@ async function captureCell({
       finalStageIdentityReady,
       finalSidebarControlGeometryReady,
       finalSidebarProjectGroupsReady,
+      finalFlatSidebarLayoutReady,
       finalAddProjectSourcesReady,
       finalSidebarFooterThemeReady,
       finalCompactControlsReady,
@@ -6915,6 +7104,8 @@ async function captureCell({
           fileEditorMetrics: state?.web?.fileEditorMetrics ?? null,
           pendingRequestMetrics: state?.web?.pendingRequestMetrics ?? null,
           settingsMetrics: state?.web?.settingsMetrics ?? null,
+          legacySettingsTimeline,
+          webSettingsInputChannel,
         },
         null,
         2,
@@ -6941,6 +7132,8 @@ async function captureCell({
           fileEditorMetrics: state?.lynx?.fileEditorMetrics ?? null,
           pendingRequestMetrics: state?.lynx?.pendingRequestMetrics ?? null,
           settingsMetrics: state?.lynx?.settingsMetrics ?? null,
+          legacySettingsTimeline,
+          webSettingsInputChannel,
           rendererErrors: state?.lynx?.rendererErrors ?? [],
         },
         null,

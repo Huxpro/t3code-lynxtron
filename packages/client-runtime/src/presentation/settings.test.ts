@@ -83,10 +83,9 @@ describe("projectPortableGeneralSettingsRestore", () => {
       environmentIdentificationMode: DEFAULT_CLIENT_SETTINGS.environmentIdentificationMode,
       favorites: DEFAULT_CLIENT_SETTINGS.favorites,
       glassOpacity: DEFAULT_CLIENT_SETTINGS.glassOpacity,
+      legacySidebarEnabled: DEFAULT_CLIENT_SETTINGS.legacySidebarEnabled,
       sidebarAutoSettleAfterDays: DEFAULT_CLIENT_SETTINGS.sidebarAutoSettleAfterDays,
       sidebarProjectGroupingMode: DEFAULT_CLIENT_SETTINGS.sidebarProjectGroupingMode,
-      sidebarV2ConfiguredByUser: DEFAULT_CLIENT_SETTINGS.sidebarV2ConfiguredByUser,
-      sidebarV2Enabled: DEFAULT_CLIENT_SETTINGS.sidebarV2Enabled,
       timestampFormat: DEFAULT_CLIENT_SETTINGS.timestampFormat,
       wordWrap: DEFAULT_CLIENT_SETTINGS.wordWrap,
     });
@@ -99,13 +98,13 @@ describe("projectPortableGeneralSettingsRestore", () => {
     });
   });
 
-  it("resets rendered General settings without resetting Sidebar V2", () => {
+  it("resets rendered General settings without resetting the legacy sidebar choice", () => {
     const projection = projectPortableGeneralSettingsRestore({
       clientSettings: {
         ...PORTABLE_CLIENT_SETTINGS_DEFAULTS,
         environmentIdentificationMode: "pill",
         glassOpacity: 55,
-        sidebarV2Enabled: true,
+        legacySidebarEnabled: true,
         wordWrap: false,
       },
       serverSettings: {
@@ -124,7 +123,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
       "New worktrees start from origin",
       "Add project base directory",
     ]);
-    expect(projection.clientPatch).not.toHaveProperty("sidebarV2Enabled");
+    expect(projection.clientPatch).not.toHaveProperty("legacySidebarEnabled");
     expect(projection.clientPatch.glassOpacity).toBe(DEFAULT_CLIENT_SETTINGS.glassOpacity);
     expect(projection.clientPatch.environmentIdentificationMode).toBe(
       DEFAULT_CLIENT_SETTINGS.environmentIdentificationMode,
@@ -147,12 +146,12 @@ describe("mergeClientSettings", () => {
       mergeClientSettings(
         {
           ...DEFAULT_CLIENT_SETTINGS,
-          sidebarV2Enabled: true,
+          legacySidebarEnabled: true,
         },
         { wordWrap: false },
       ),
     ).toMatchObject({
-      sidebarV2Enabled: true,
+      legacySidebarEnabled: true,
       wordWrap: false,
     });
   });

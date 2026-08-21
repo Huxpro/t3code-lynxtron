@@ -687,10 +687,14 @@ describe("desktop shell interaction contract", () => {
       "utf8",
     );
 
-    expect(settings).toContain("resolveSidebarV2Enabled");
-    expect(settings).toContain("sidebarV2ConfiguredByUser");
-    expect(sidebarLayout).toContain("const useSidebarV2 = sidebarV2Enabled && !isOnSettings;");
-    expect(sidebarLayout).toContain('data-sidebar-version={useSidebarV2Theme ? "v2" : "v1"}');
+    expect(settings).toContain("useLegacySidebarEnabled");
+    expect(settings).toContain("settings.legacySidebarEnabled");
+    expect(sidebarLayout).toContain(
+      "const useFlatSidebar = !legacySidebarEnabled && !isOnSettings;",
+    );
+    expect(sidebarLayout).toContain(
+      'data-sidebar-version={useFlatSidebarTheme ? "flat" : "legacy"}',
+    );
     expect(sidebarClassic).toContain("buildSidebarProjectSnapshots");
     expect(sidebarClassic).toContain("sidebarProjectGroupingMode");
     expect(sidebarClassic).toContain("sidebarProjectGroupingOverrides");

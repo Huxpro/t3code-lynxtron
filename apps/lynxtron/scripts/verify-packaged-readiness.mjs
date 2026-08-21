@@ -7818,7 +7818,6 @@ async function verifySettingsRouteBehavior({
     ["/settings/providers", "providers"],
     ["/settings/connections", "connections"],
     ["/settings/source-control", "source-control"],
-    ["/settings/beta", "beta"],
     ["/settings/archived", "archive"],
   ]) {
     await tapSelector({

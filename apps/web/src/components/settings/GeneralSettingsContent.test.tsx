@@ -25,6 +25,7 @@ describe("GeneralSettingsContent", () => {
 
     for (const id of [
       "project-grouping",
+      "auto-settle-inactive-threads",
       "time-format",
       "hide-whitespace-changes",
       "assistant-output",
@@ -39,6 +40,9 @@ describe("GeneralSettingsContent", () => {
     ]) {
       expect(markup).toContain(`id="${id}"`);
     }
+    expect(markup).toContain("Legacy features");
+    expect(markup).toContain('aria-expanded="false"');
+    expect(markup).toContain("Days of inactivity before auto-settle");
     expect(markup).not.toContain(">Theme<");
     expect(markup).not.toContain(">Glass opacity<");
     expect(markup).not.toContain(">Word wrap<");
