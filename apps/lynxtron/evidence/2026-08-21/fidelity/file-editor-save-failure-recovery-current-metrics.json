@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T10:46:56-07:00",
+  "stateId": "file-editor-editing-save",
+  "productCommit": "4ac810cf37c3b51522ff0329067729a643ef78b8",
+  "captureHead": "af12696719c28ae62eeb5081feee15eda4c4027e",
+  "scope": {
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "rightPanelWidth": 360,
+    "writerClients": ["web", "lynx"]
+  },
+  "classification": {
+    "productLossClosed": [
+      "Rejected and thrown file writes now remain pending and report a shared failure callback instead of escaping or becoming silently stuck.",
+      "Web and Lynx render an inline save error with an explicit Retry save control while preserving the unsaved revision.",
+      "A real pointer retry persists the exact failed revision, clears error and pending state, and both renderers reopen the same full-buffer content revision."
+    ],
+    "harnessMismatch": [
+      "The provider-update notification can reset the right-panel route; the final harness restores the canonical thread, Files surface, and target file through shipping pointer controls before editing.",
+      "A missing disposable workspace was insufficient to force failure because the server recreates parent directories. The final one-shot injection replaces the workspace path with a regular-file blocker, then restores the original directory before retry.",
+      "The first completed failure flow was rejected by identity and geometry values computed before Back and reopen. The final harness reapplies the unchanged gates to the post-flow state instead of weakening them."
+    ],
+    "intentionalPlatformDelta": [
+      "Web edits through Pierre contentEditable with trusted beforeinput; Lynx-for-Web edits through its textarea-compatible surface with CDP Input.insertText.",
+      "Web exposes pending through the tab marker. Lynx exposes Unsaved changes and Save now in the editor status row."
+    ],
+    "remainingResidual": [
+      "Exact Native physical keyboard input, save failure, retry, and reopen persistence remain pending-user-session. Browser evidence is not assigned to Native cells.",
+      "The failure and retry evidence is dark 1024x820. Independent light-theme and additional viewport lifecycle coverage remains open."
+    ],
+    "evidenceBoundary": "Both captures use fresh disposable workspaces, the same semantic route, viewport, theme, right-panel width, capture head, Web bundle, Lynx bundle, target file, one-shot blocker contract, and final sentinel contract. Each run alternates the sole writer and receives no Native credit."
+  },
+  "bundles": {
+    "web": "f258b4492a8d",
+    "lynxForWeb": "7380e9356caf"
+  },
+  "webWriter": {
+    "report": "/tmp/t3-file-save-failure-web-final/workbench-report.json",
+    "reportSha256": "550e85c629f0cff373a67b3ebe1fed45f5355d937e63e3ac54818dcda27c7de5",
+    "snapshotSha256": "fd324de92d3b155e9e721c0be3f93c0d14ef072a3572de9a1f1e8ea8fd55c84b",
+    "input": {
+      "channel": "CDP pointer + Pierre caret + Playwright-style keyDown/keyUp + trusted beforeinput",
+      "trustedBeforeInputCount": 62
+    },
+    "pendingVisible": true,
+    "failure": {
+      "inlineErrorVisible": true,
+      "retryLabel": "Retry save",
+      "workspaceRestored": true,
+      "sideBySideSha256": "3b592a2b9c433b559e97fddcd47763852de6f1df669f6eeb4c49de3a7f53c4d7"
+    },
+    "retry": {
+      "channel": "CDP pointer",
+      "errorCleared": true,
+      "pendingCleared": true
+    },
+    "persistence": {
+      "bytes": 6361,
+      "sha256": "8588270253b1869650fb0810ac96a309ea79e7ce89bb8fb318bd0be53b412d3c",
+      "includesSentinel": true
+    },
+    "reopen": {
+      "expectedRevision": "6291:1e389xo",
+      "webRevision": "6291:1e389xo",
+      "lynxRevision": "6291:1e389xo"
+    },
+    "identityMatch": true,
+    "rendererErrors": 0
+  },
+  "lynxWriter": {
+    "report": "/tmp/t3-file-save-failure-lynx-final/workbench-report.json",
+    "reportSha256": "f06bd6e5af56cfa242fbcb46c7a0022c13ff88ac07aa373bcfebcf665cd7ec3e",
+    "snapshotSha256": "74576f6cb4d8d9a02f35629ca4df396c9a8928f0b426cf250e95cba03077055b",
+    "input": {
+      "channel": "DevTool-equivalent pointer + DOM.focus + CDP Input.insertText"
+    },
+    "pendingVisible": true,
+    "failure": {
+      "inlineErrorVisible": true,
+      "retryLabel": "Retry save",
+      "workspaceRestored": true,
+      "sideBySideSha256": "9dcb3a8843fc6f34a8dc93dde1267d060afbe96518ec9df1118dd1d34e71213c"
+    },
+    "retry": {
+      "channel": "CDP pointer",
+      "errorCleared": true,
+      "pendingCleared": true
+    },
+    "persistence": {
+      "bytes": 6361,
+      "sha256": "c1f33d96d9923aecd088576b7e95388687ecd657035cc2aa43c5a66aa6cb8920",
+      "includesSentinel": true,
+      "lynxWriteObserved": true
+    },
+    "reopen": {
+      "expectedRevision": "6291:ieqepc",
+      "webRevision": "6291:ieqepc",
+      "lynxRevision": "6291:ieqepc"
+    },
+    "identityMatch": true,
+    "rendererErrors": 0
+  },
+  "validation": {
+    "focusedClientRuntimeTests": "6/6",
+    "focusedShellContracts": "30/30",
+    "focusedHarnessTests": "54/54",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "browserWorkbenchBuild": "pass with existing Effect import.meta and asset-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
