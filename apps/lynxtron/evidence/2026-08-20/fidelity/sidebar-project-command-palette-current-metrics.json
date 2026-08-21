@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-08-21T08:02:20.236Z",
+  "observedAt": "2026-08-21T08:13:41.849Z",
   "states": ["sidebar-project-groups", "add-project-sources", "command-palette-navigation"],
   "productCommit": "13d6b2e09279316c6a7c6b298cd35998d8a4676c",
   "verifierCommit": "265ce44a000119354c03031bd605c2595a40d662",
-  "captureHead": "265ce44a000119354c03031bd605c2595a40d662",
+  "captureHead": "6d96a6ad1a06f8de0e804c9727130ca3656707f2",
   "classification": {
     "productLossClosed": [
       "Lynx now resolves Sidebar V1/V2 from the same explicit Beta choice and build-stage defaults as Web; Alpha/Latest defaults to V1 and explicit opt-in selects V2.",
@@ -28,14 +28,14 @@
   },
   "sidebarProjectGroups": {
     "status": "pass",
-    "report": "/tmp/t3-sidebar-current-head/sidebar-project-groups/workbench-report.json",
-    "reportSha256": "6814d5e50c54558190f102e66bec8862609401764a4b27647d602ab8b3a12cca",
+    "report": "/tmp/t3-sidebar-final-head/sidebar-project-groups/workbench-report.json",
+    "reportSha256": "152b34d69c64689f46c9363805a8a687df3f622073273c09e6fb2a4782e8a027",
     "screenshotSha256": "ae4a8c75d70cca93be41e64745434f5dc1b76cfdeed5b7e5988c4e5d9ea4327b",
     "viewport": [1280, 820],
     "theme": "dark",
     "bundles": {
       "web": "5f3347b66dfa",
-      "lynx": "f506d52661f7"
+      "lynx": "f0d3180192dc"
     },
     "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
     "rendererErrors": {
@@ -89,14 +89,14 @@
   },
   "addProjectSources": {
     "status": "pass",
-    "report": "/tmp/t3-sidebar-current-head/add-project-sources/workbench-report.json",
-    "reportSha256": "c2a68968284df5cb641c93c79ece6ff7e4da52fa1b5d619b8e5f059f0a41a8ee",
+    "report": "/tmp/t3-sidebar-final-head/add-project-sources/workbench-report.json",
+    "reportSha256": "fc02b99c0c80bc90cb3ca3ca64fca9bb5835cef6b73cd02436861ffe966b4109",
     "screenshotSha256": "efc44b4dcf5bd226141ba7f876693c6296e3041430db90d43570512b179113a3",
     "viewport": [1280, 820],
     "theme": "dark",
     "bundles": {
       "web": "5f3347b66dfa",
-      "lynx": "f506d52661f7"
+      "lynx": "f0d3180192dc"
     },
     "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
     "rendererErrors": {
@@ -132,14 +132,14 @@
   },
   "commandPaletteNavigation": {
     "status": "pass",
-    "report": "/tmp/t3-sidebar-current-head/command-palette-navigation/workbench-report.json",
-    "reportSha256": "0095bf0e2f23b7a641c3d58618d5580648e07fe417edbc06280db642989ed3b8",
-    "screenshotSha256": "849b507ca58955e3a60a967c687eca0780afda0c9fedfeecd0b5d704ad18faa9",
+    "report": "/tmp/t3-sidebar-final-head/command-palette-navigation/workbench-report.json",
+    "reportSha256": "503c159f0e159b6a2dd0da7dc71207c6037c27295cd163c75de59d0f17a37fd1",
+    "screenshotSha256": "520cf79e86c1791cbd030b160b77d0b6963cf433016087d19717bb882c881581",
     "viewport": [1280, 820],
     "theme": "dark",
     "bundles": {
       "web": "5f3347b66dfa",
-      "lynx": "f506d52661f7"
+      "lynx": "f0d3180192dc"
     },
     "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
     "rendererErrors": {
@@ -157,8 +157,8 @@
         "step": "hover-lynx",
         "visual": {
           "hovered": true,
-          "backgroundColor": "rgba(0, 0, 0, 0)",
-          "color": "rgb(245, 245, 245)"
+          "backgroundColor": "rgba(255, 255, 255, 0.04)",
+          "color": "rgb(247, 249, 255)"
         },
         "stateBridge": "browser-proxy-does-not-project-main-thread-hover"
       },
@@ -191,8 +191,8 @@
         "webActive": "Add project",
         "lynxVisual": {
           "hovered": true,
-          "backgroundColor": "rgba(0, 0, 0, 0)",
-          "color": "rgb(245, 245, 245)"
+          "backgroundColor": "rgba(255, 255, 255, 0.04)",
+          "color": "rgb(247, 249, 255)"
         }
       }
     ],
@@ -208,7 +208,7 @@
     "promptAndResyncRetained": true
   },
   "validation": {
-    "focusedLynxAndHarnessTests": "89/89",
+    "focusedLynxAndHarnessTests": "89/89 plus navigation capture contract 40/40",
     "focusedWebTests": "91/91",
     "focusedClientRuntimeTests": "10/10",
     "lynxTypecheck": "pass",
@@ -225,5 +225,6 @@
     "totalWeight": 258.2,
     "denominatorChanged": false,
     "existingWeightsChanged": false
-  }
+  },
+  "browserProxyCommit": "6d96a6ad1"
 }
