@@ -253,6 +253,19 @@ describe("desktop shell interaction contract", () => {
     expect(planIconBlock).toContain("opacity: 1;");
   });
 
+  it("lets the Native Composer textarea retain typed text between React renders", () => {
+    const composer = componentSource("Composer.tsx");
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(composer).toContain("bindinput={handleInput}");
+    expect(composer).not.toContain("{...({ value: editorValue } as object)}");
+    expect(composer).toContain("const [editorRevision, setEditorRevision] = useState(0);");
+    expect(composer).toContain("setEditorRevision((revision) => revision + 1)");
+    expect(composer).toContain("questionEditorKey?: string;");
+    expect(composer).toContain('question-editor:${questionEditorKey ?? ""}');
+    expect(chatView).toContain("questionEditorKey={activePendingQuestion?.id}");
+  });
+
   it("keeps model-selection bridge failures on a fulfilled settled-result path", () => {
     const mutationStart = clientSource.indexOf("function persistModelSelectionMutation");
     const mutationEnd = clientSource.indexOf("\nfunction setModelSelection", mutationStart);
