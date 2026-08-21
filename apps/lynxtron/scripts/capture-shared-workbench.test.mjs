@@ -178,6 +178,36 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "data-terminal-placeholder");
   });
 
+  it("captures the newly discovered Sidebar project-settings scope without hiding a missing Lynx entry", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, 'stateId === "sidebar-project-settings"');
+    assert.include(source, '"sidebar-project-settings": "existing-thread"');
+    assert.include(source, 'argValue("--project-settings-expect", "missing")');
+    assert.include(source, '["missing", "parity"].includes(projectSettingsExpectation)');
+    assert.include(source, "function projectSettingsReady(state, interaction)");
+    assert.include(source, 'state?.web?.productState?.overlay === "project-settings-dialog"');
+    assert.include(source, 'state?.lynx?.productState?.overlay === "project-scope"');
+    assert.include(source, "interaction?.lynxScopeActionCount === 0");
+    assert.include(source, "interaction?.webActionClicked === true");
+    assert.include(source, "interaction?.lynxActionClicked === true");
+    assert.include(source, "projectSettingsInteraction");
+    assert.include(source, "projectSettingsTimeline");
+    assert.include(source, "dual-scope-pointer|web-project-action-pointer");
+    assert.include(source, "[data-sidebar-project-scope-option]");
+    assert.include(source, "[data-sidebar-project-action]");
+    assert.include(source, "finalProjectSettingsReady");
+    assert.include(source, "projectSettings:");
+    assert.include(workbench, "function readProjectSettingsDialog(root)");
+    assert.include(workbench, '=== "Project settings"');
+    assert.include(workbench, '"project-settings-dialog"');
+    assert.include(workbench, "projectScopeOptions:");
+    assert.include(workbench, "actions:");
+  });
+
   it("captures the Diff scope menu without requiring pre-repair row parity", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),

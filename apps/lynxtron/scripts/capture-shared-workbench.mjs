@@ -109,6 +109,7 @@ const providerId = argValue("--provider-id", "");
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
+const projectSettingsExpectation = argValue("--project-settings-expect", "missing");
 const sidebarV2Enabled =
   argValue("--sidebar-v2", stateId === "sidebar-project-groups" ? "false" : "true") !== "false";
 const sidebarV2ConfiguredByUser = argValue("--sidebar-v2-configured", "true") !== "false";
@@ -144,6 +145,9 @@ function webCredentialForState({ desktopBootstrapToken, startupToken, stateId: t
 if (sidebarTargetState && !["expanded", "collapsed"].includes(sidebarTargetState)) {
   throw new Error(`Unsupported --sidebar-state: ${sidebarTargetState}`);
 }
+if (!["missing", "parity"].includes(projectSettingsExpectation)) {
+  throw new Error(`Unsupported --project-settings-expect: ${projectSettingsExpectation}`);
+}
 if (
   explicitChangedFilesTargetState &&
   !["expanded", "preview", "collapsed"].includes(explicitChangedFilesTargetState)
@@ -157,6 +161,7 @@ const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "comp
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
+const isProjectSettingsState = stateId === "sidebar-project-settings";
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
 const isFileEditingSaveState = stateId === "file-editor-editing-save";
@@ -216,7 +221,11 @@ const composerExpectationByStateId = {
 const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
 const shouldClearWebNotification =
-  Boolean(overlay) || stateId === "sidebar-project-groups" || isFilesSurfaceState || isReviewState;
+  Boolean(overlay) ||
+  stateId === "sidebar-project-groups" ||
+  isProjectSettingsState ||
+  isFilesSurfaceState ||
+  isReviewState;
 const reviewExpectation =
   stateId === "review-empty"
     ? "panel-empty"
@@ -1039,6 +1048,44 @@ function projectActionDialogReady(state) {
       )
     );
   });
+}
+
+function projectSettingsReady(state, interaction) {
+  if (!isProjectSettingsState) return true;
+  const webDialog = state?.web?.overlayMetrics?.anatomy;
+  const lynxDialog = state?.lynx?.overlayMetrics?.anatomy;
+  const webReady =
+    state?.web?.productState?.overlay === "project-settings-dialog" &&
+    webDialog?.title === "Project settings" &&
+    JSON.stringify(webDialog?.fieldLabels ?? []) ===
+      JSON.stringify(["Project name", "Grouping rule"]) &&
+    (webDialog?.controls?.projectNames?.length ?? 0) > 0 &&
+    (webDialog?.controls?.groupingRules?.length ?? 0) > 0 &&
+    (webDialog?.removeLabels ?? []).includes("Remove project") &&
+    (webDialog?.footerButtons ?? []).some(({ label }) => label === "Close") &&
+    interaction?.webScopeActionCount > 0 &&
+    interaction?.webActionClicked === true;
+  if (!webReady) return false;
+  if (projectSettingsExpectation === "missing") {
+    return (
+      state?.lynx?.productState?.overlay === "project-scope" &&
+      interaction?.lynxScopeOptionCount > 0 &&
+      interaction?.lynxScopeActionCount === 0 &&
+      lynxDialog === null
+    );
+  }
+  return (
+    state?.lynx?.productState?.overlay === "project-settings-dialog" &&
+    lynxDialog?.title === "Project settings" &&
+    JSON.stringify(lynxDialog?.fieldLabels ?? []) ===
+      JSON.stringify(["Project name", "Grouping rule"]) &&
+    (lynxDialog?.controls?.projectNames?.length ?? 0) > 0 &&
+    (lynxDialog?.controls?.groupingRules?.length ?? 0) > 0 &&
+    (lynxDialog?.removeLabels ?? []).includes("Remove project") &&
+    (lynxDialog?.footerButtons ?? []).some(({ label }) => label === "Close") &&
+    interaction?.lynxScopeActionCount > 0 &&
+    interaction?.lynxActionClicked === true
+  );
 }
 
 function rightPanelAddMenuReady(state) {
@@ -2943,6 +2990,7 @@ async function main() {
     "file-editor-editing-save",
     "git-publish-dialog",
     "project-action-dialog",
+    "sidebar-project-settings",
     "composer-docked",
     "composer-working",
     "composer-compact-controls-open",
@@ -3359,6 +3407,7 @@ async function captureCell({
     "existing-thread-failed": "existing-thread",
     "sidebar-resize": "existing-thread",
     "project-scope-open": "project-scope-open",
+    "sidebar-project-settings": "existing-thread",
     "lifecycle-error": "lifecycle-error",
     "quick-switch-default": "existing-thread",
     "quick-switch-query": "existing-thread",
@@ -3533,6 +3582,21 @@ async function captureCell({
   let shortCompactControlsScrolled = !isShortCompactControlsState;
   let shortCompactControlsDismissed = !isShortCompactControlsState;
   let shortCompactControlsScrollDiagnostics = null;
+  const projectSettingsInteraction = {
+    webScopeOpened: !isProjectSettingsState,
+    lynxScopeOpened: !isProjectSettingsState,
+    webScopeOptionCount: 0,
+    lynxScopeOptionCount: 0,
+    webScopeActionCount: 0,
+    lynxScopeActionCount: 0,
+    webScopeKeys: [],
+    lynxScopeKeys: [],
+    webScopeLabels: [],
+    lynxScopeLabels: [],
+    webActionClicked: false,
+    lynxActionClicked: projectSettingsExpectation === "missing",
+  };
+  const projectSettingsTimeline = [];
   const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
@@ -4541,6 +4605,133 @@ async function captureCell({
         continue;
       }
     }
+    if (isProjectSettingsState) {
+      if (state?.web?.productState?.overlay === "project-scope") {
+        projectSettingsInteraction.webScopeOpened = true;
+      }
+      if (state?.lynx?.productState?.overlay === "project-scope") {
+        projectSettingsInteraction.lynxScopeOpened = true;
+      }
+      if (
+        !projectSettingsInteraction.webScopeOpened ||
+        !projectSettingsInteraction.lynxScopeOpened
+      ) {
+        const scopePoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const target = root?.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]');
+              if (!frame || !target) return null;
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + rect.width / 2,
+                y: frameRect.y + rect.y + rect.height / 2,
+              };
+            };
+            return {
+              web: pointFor('web-pane', false),
+              lynx: pointFor('lynx-pane', true),
+            };
+          })()`,
+        ).catch(() => null);
+        if (!projectSettingsInteraction.webScopeOpened && scopePoints?.web) {
+          await dispatchPointerClickWithMove(cdp, sessionId, scopePoints.web);
+        }
+        if (!projectSettingsInteraction.lynxScopeOpened && scopePoints?.lynx) {
+          await dispatchPointerClickWithMove(cdp, sessionId, scopePoints.lynx);
+        }
+        projectSettingsTimeline.push({
+          elapsedMs: Date.now() - readyStart,
+          stage: "scope-trigger",
+          points: scopePoints,
+        });
+        await delay(100);
+        continue;
+      }
+      if (
+        !projectSettingsInteraction.webActionClicked ||
+        !projectSettingsInteraction.lynxActionClicked
+      ) {
+        const actionState = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const read = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const options = [...(root?.querySelectorAll('[data-sidebar-project-scope-option]') ?? [])];
+              const optionKeys = options.map(
+                (option) => option.getAttribute('data-sidebar-project-scope-option') ?? ''
+              );
+              const optionLabels = options.map(
+                (option) => option.textContent?.trim().replace(/\s+/g, ' ') ?? ''
+              );
+              const actions = options.flatMap((option) => [
+                ...option.querySelectorAll(
+                  '[data-sidebar-project-action], [aria-label^="Project actions for"]'
+                ),
+              ]);
+              const target = actions[0] ?? null;
+              if (!frame || !target) {
+                return {
+                  optionCount: options.length,
+                  optionKeys,
+                  optionLabels,
+                  actionCount: actions.length,
+                  point: null,
+                };
+              }
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                optionCount: options.length,
+                optionKeys,
+                optionLabels,
+                actionCount: actions.length,
+                point: {
+                  x: frameRect.x + rect.x + rect.width / 2,
+                  y: frameRect.y + rect.y + rect.height / 2,
+                },
+              };
+            };
+            return {
+              web: read('web-pane', false),
+              lynx: read('lynx-pane', true),
+            };
+          })()`,
+        ).catch(() => null);
+        projectSettingsInteraction.webScopeOptionCount = actionState?.web?.optionCount ?? 0;
+        projectSettingsInteraction.lynxScopeOptionCount = actionState?.lynx?.optionCount ?? 0;
+        projectSettingsInteraction.webScopeActionCount = actionState?.web?.actionCount ?? 0;
+        projectSettingsInteraction.lynxScopeActionCount = actionState?.lynx?.actionCount ?? 0;
+        projectSettingsInteraction.webScopeKeys = actionState?.web?.optionKeys ?? [];
+        projectSettingsInteraction.lynxScopeKeys = actionState?.lynx?.optionKeys ?? [];
+        projectSettingsInteraction.webScopeLabels = actionState?.web?.optionLabels ?? [];
+        projectSettingsInteraction.lynxScopeLabels = actionState?.lynx?.optionLabels ?? [];
+        if (!projectSettingsInteraction.webActionClicked && actionState?.web?.point) {
+          await dispatchPointerClickWithMove(cdp, sessionId, actionState.web.point);
+          projectSettingsInteraction.webActionClicked = true;
+        }
+        if (!projectSettingsInteraction.lynxActionClicked && actionState?.lynx?.point) {
+          await dispatchPointerClickWithMove(cdp, sessionId, actionState.lynx.point);
+          projectSettingsInteraction.lynxActionClicked = true;
+        }
+        projectSettingsTimeline.push({
+          elapsedMs: Date.now() - readyStart,
+          stage: "project-action",
+          actionState,
+          interaction: { ...projectSettingsInteraction },
+        });
+        await delay(100);
+        continue;
+      }
+    }
     if (
       overlay &&
       !webOverlayInputSent &&
@@ -5257,6 +5448,7 @@ async function captureCell({
     const sidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
     const projectActionReady = projectActionDialogReady(state);
+    const projectSettingsStateReady = projectSettingsReady(state, projectSettingsInteraction);
     const rightPanelAddMenuStateReady = rightPanelAddMenuReady(state);
     const diffScopeMenuStateReady = diffScopeMenuReady(state);
     const sidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(state, expectedThreadFixture);
@@ -5339,6 +5531,7 @@ async function captureCell({
       sidebarFooterThemeReady &&
       compactControlsReady &&
       projectActionReady &&
+      projectSettingsStateReady &&
       rightPanelAddMenuStateReady &&
       diffScopeMenuStateReady &&
       sidebarWorkingGeometryReady &&
@@ -5561,6 +5754,7 @@ async function captureCell({
   const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalProjectActionDialogReady = projectActionDialogReady(state);
+  const finalProjectSettingsReady = projectSettingsReady(state, projectSettingsInteraction);
   const finalRightPanelAddMenuReady = rightPanelAddMenuReady(state);
   const finalDiffScopeMenuReady = diffScopeMenuReady(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
@@ -5670,18 +5864,25 @@ async function captureCell({
           (stateId === "existing-thread-approval" ? "approval" : "question");
   const webState = state?.web?.productState ?? null;
   const lynxState = state?.lynx?.productState ?? null;
-  const stateIdentityMatch =
+  const projectSettingsSnapshotIdentityMatch =
+    isProjectSettingsState &&
+    JSON.stringify(projectSettingsInteraction.webScopeLabels) ===
+      JSON.stringify(projectSettingsInteraction.lynxScopeLabels) &&
+    projectSettingsInteraction.webScopeLabels.length > 0 &&
+    projectSettingsInteraction.webScopeOptionCount ===
+      projectSettingsInteraction.lynxScopeOptionCount &&
+    webState?.selectedProject === lynxState?.selectedProject &&
+    webState?.selectedThread === lynxState?.selectedThread;
+  const commonStateIdentityMatch =
     Boolean(webState && lynxState) &&
     JSON.stringify({
       route: webState.route,
       semanticRoute: webState.semanticRoute,
       theme: webState.theme,
       density: webState.density,
-      selectedProject: webState.selectedProject,
       selectedThread: webState.selectedThread,
       selectedModel: webState.selectedModel,
       lifecycle: webState.lifecycle,
-      overlay: webState.overlay,
       overlayQuery: webState.overlayQuery,
     }) ===
       JSON.stringify({
@@ -5689,13 +5890,17 @@ async function captureCell({
         semanticRoute: lynxState.semanticRoute,
         theme: lynxState.theme,
         density: lynxState.density,
-        selectedProject: lynxState.selectedProject,
         selectedThread: lynxState.selectedThread,
         selectedModel: lynxState.selectedModel,
         lifecycle: lynxState.lifecycle,
-        overlay: lynxState.overlay,
         overlayQuery: lynxState.overlayQuery,
       });
+  const stateIdentityMatch =
+    commonStateIdentityMatch &&
+    (isProjectSettingsState
+      ? projectSettingsSnapshotIdentityMatch
+      : webState?.selectedProject === lynxState?.selectedProject &&
+        webState?.overlay === lynxState?.overlay);
   const overlayGeometryDelta =
     state?.web?.overlayMetrics?.rect && state?.lynx?.overlayMetrics?.rect
       ? {
@@ -6607,6 +6812,7 @@ async function captureCell({
     finalSidebarFooterThemeReady &&
     finalCompactControlsReady &&
     finalProjectActionDialogReady &&
+    finalProjectSettingsReady &&
     finalRightPanelAddMenuReady &&
     finalDiffScopeMenuReady &&
     rightPanelAddMenuDismissed &&
@@ -6655,6 +6861,7 @@ async function captureCell({
       finalSidebarFooterThemeReady,
       finalCompactControlsReady,
       finalProjectActionDialogReady,
+      finalProjectSettingsReady,
       finalRightPanelAddMenuReady,
       finalDiffScopeMenuReady,
       rightPanelAddMenuDismissed,
@@ -6826,6 +7033,17 @@ async function captureCell({
             : "not-required",
         nativePhysicalKeyboard:
           stateId === "command-palette-navigation" ? "pending-user-session" : "not-required",
+      },
+      projectSettings: {
+        match: finalProjectSettingsReady,
+        expectation: isProjectSettingsState ? projectSettingsExpectation : "not-required",
+        inputChannel: isProjectSettingsState
+          ? "dual-scope-pointer|web-project-action-pointer"
+          : "not-required",
+        interaction: projectSettingsInteraction,
+        timeline: projectSettingsTimeline,
+        web: state?.web?.overlayMetrics ?? null,
+        lynx: state?.lynx?.overlayMetrics ?? null,
       },
       sidebarFooterTheme: {
         match: finalSidebarFooterThemeReady,

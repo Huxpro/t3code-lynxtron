@@ -650,6 +650,78 @@ function readProjectActionDialog(root) {
   };
 }
 
+function readProjectSettingsDialog(root) {
+  const lynxDialog = root?.querySelector(".project-settings-dialog") ?? null;
+  const webDialog = [...(root?.querySelectorAll("[data-slot='dialog-popup']") ?? [])].find(
+    (dialog) =>
+      readComposedText(dialog.querySelector("[data-slot='dialog-title']")) === "Project settings",
+  );
+  const dialog = lynxDialog ?? webDialog ?? null;
+  if (!dialog) return null;
+  const footer =
+    dialog.querySelector("[data-slot='dialog-footer']") ??
+    dialog.querySelector(".project-settings-dialog__footer");
+  const fieldLabels = [...dialog.querySelectorAll("label, .project-settings-field__label")]
+    .map((label) =>
+      readComposedText(
+        label.querySelector(".project-settings-field__label") ??
+          label.querySelector("span") ??
+          label,
+      ),
+    )
+    .filter((label) => label === "Project name" || label === "Grouping rule");
+  return {
+    rect: readElementBox(dialog),
+    title: readComposedText(
+      dialog.querySelector("[data-slot='dialog-title'], .project-settings-dialog__title"),
+    ),
+    description: readComposedText(
+      dialog.querySelector(
+        "[data-slot='dialog-description'], .project-settings-dialog__description",
+      ),
+    ),
+    anatomy: {
+      backdrop: readElementBox(
+        root.querySelector("[data-slot='dialog-backdrop'], .project-settings-overlay"),
+      ),
+      header: readElementBox(
+        dialog.querySelector("[data-slot='dialog-header'], .project-settings-dialog__header"),
+      ),
+      body: readElementBox(
+        dialog.querySelector("[data-slot='dialog-panel'], .project-settings-dialog__body"),
+      ),
+      footer: readElementBox(footer),
+    },
+    paths: [...dialog.querySelectorAll(".project-settings-path, .font-mono")]
+      .map((element) => readComposedText(element))
+      .filter(Boolean),
+    fieldLabels,
+    controls: {
+      projectNames: [
+        ...dialog.querySelectorAll("[aria-label^='Project name in'], .project-settings-name-input"),
+      ].map(readProjectActionControl),
+      groupingRules: [
+        ...dialog.querySelectorAll(
+          "[aria-label^='Grouping rule for'], .project-settings-grouping-trigger",
+        ),
+      ].map((control) => ({
+        box: readElementBox(control),
+        text: readComposedText(control),
+        ariaLabel: control.getAttribute("aria-label"),
+      })),
+    },
+    removeLabels: [...dialog.querySelectorAll("button, .project-settings-dialog__button")]
+      .map((button) => readComposedText(button))
+      .filter((label) => label === "Remove project" || label === "Remove all entries"),
+    footerButtons: [...(footer?.querySelectorAll("button, .project-settings-dialog__button") ?? [])]
+      .map((button) => ({
+        label: readComposedText(button),
+        box: readElementBox(button),
+      }))
+      .filter(({ label }) => label),
+  };
+}
+
 function readComposedText(element) {
   if (!element) return "";
   const text = [];
@@ -1055,6 +1127,7 @@ function readLynxPane() {
     const paletteElement = root?.querySelector(".palette-panel");
     const paletteMode = paletteElement?.getAttribute("data-search-overlay-mode") ?? null;
     const projectActionDialog = readProjectActionDialog(root);
+    const projectSettingsDialog = readProjectSettingsDialog(root);
     const overlay =
       paletteElement !== null
         ? paletteMode === "files"
@@ -1072,9 +1145,11 @@ function readLynxPane() {
                   ? "right-panel-add-menu"
                   : root?.querySelector(".diff-panel-header__scope-menu") !== null
                     ? "diff-scope-menu"
-                    : projectActionDialog !== null
-                      ? "project-action-dialog"
-                      : null;
+                    : projectSettingsDialog !== null
+                      ? "project-settings-dialog"
+                      : projectActionDialog !== null
+                        ? "project-action-dialog"
+                        : null;
     const overlayElement =
       overlay === "quick-switch" || overlay === "file-picker"
         ? paletteElement
@@ -1090,9 +1165,11 @@ function readLynxPane() {
                   ? root?.querySelector(".right-panel__add-menu")
                   : overlay === "diff-scope-menu"
                     ? root?.querySelector(".diff-panel-header__scope-menu")
-                    : overlay === "project-action-dialog"
-                      ? root?.querySelector(".project-action-dialog")
-                      : null;
+                    : overlay === "project-settings-dialog"
+                      ? root?.querySelector(".project-settings-dialog")
+                      : overlay === "project-action-dialog"
+                        ? root?.querySelector(".project-action-dialog")
+                        : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -1349,9 +1426,11 @@ function readLynxPane() {
                             rect: readElementBox(row),
                           })),
                         }
-                      : overlay === "project-action-dialog"
-                        ? projectActionDialog
-                        : null,
+                      : overlay === "project-settings-dialog"
+                        ? projectSettingsDialog
+                        : overlay === "project-action-dialog"
+                          ? projectActionDialog
+                          : null,
         query:
           overlay === "quick-switch" || overlay === "file-picker"
             ? lynxInputValue(quickSwitchInput)
@@ -1480,9 +1559,11 @@ function readLynxPane() {
                       ? (root?.querySelectorAll(".right-panel__add-item").length ?? 0)
                       : overlay === "diff-scope-menu"
                         ? (root?.querySelectorAll(".diff-panel-header__scope-item").length ?? 0)
-                        : overlay === "project-action-dialog"
-                          ? (projectActionDialog?.fieldLabels.length ?? 0)
-                          : 0,
+                        : overlay === "project-settings-dialog"
+                          ? (projectSettingsDialog?.fieldLabels.length ?? 0)
+                          : overlay === "project-action-dialog"
+                            ? (projectActionDialog?.fieldLabels.length ?? 0)
+                            : 0,
       },
       sidebarDiagnostics: {
         stageIdentity: readSidebarStageIdentity(root),
@@ -1512,6 +1593,21 @@ function readLynxPane() {
           projectScope: readElementBox(
             root?.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]'),
           ),
+          projectScopeOptions: [
+            ...(root?.querySelectorAll("[data-sidebar-project-scope-option]") ?? []),
+          ].map((option) => ({
+            scopeKey: option.getAttribute("data-sidebar-project-scope-option"),
+            text: readComposedText(option),
+            box: readElementBox(option),
+            actions: [
+              ...option.querySelectorAll(
+                "[data-sidebar-project-action], [aria-label^='Project actions for']",
+              ),
+            ].map((action) => ({
+              ariaLabel: action.getAttribute("aria-label"),
+              box: readElementBox(action),
+            })),
+          })),
           newProject: readElementBox(root?.querySelector(".sidebar-v2-new-project")),
         },
         search: (() => {
@@ -1965,6 +2061,7 @@ function readWebPane() {
       commandPaletteElement?.getAttribute("data-palette-mode") ??
       null;
     const projectActionDialog = readProjectActionDialog(doc);
+    const projectSettingsDialog = readProjectSettingsDialog(doc);
     const overlay =
       commandPaletteElement !== null
         ? commandPaletteMode === "files"
@@ -1982,9 +2079,11 @@ function readWebPane() {
                   ? "right-panel-add-menu"
                   : doc.querySelector('[data-floating-popup="diff-scope-menu"]') !== null
                     ? "diff-scope-menu"
-                    : projectActionDialog !== null
-                      ? "project-action-dialog"
-                      : null;
+                    : projectSettingsDialog !== null
+                      ? "project-settings-dialog"
+                      : projectActionDialog !== null
+                        ? "project-action-dialog"
+                        : null;
     const modelTriggerElement =
       doc.querySelector('[data-chat-provider-model-picker="true"]') ?? null;
     const projectScopeTriggerElement =
@@ -2040,16 +2139,25 @@ function readWebPane() {
                   ? doc.querySelector('[data-floating-popup="right-panel-add-menu"]')
                   : overlay === "diff-scope-menu"
                     ? doc.querySelector('[data-floating-popup="diff-scope-menu"]')
-                    : overlay === "project-action-dialog"
-                      ? projectActionDialog?.rect
+                    : overlay === "project-settings-dialog"
+                      ? projectSettingsDialog?.rect
                         ? [...doc.querySelectorAll("[data-slot='dialog-popup']")].find(
                             (dialog) =>
                               readComposedText(
                                 dialog.querySelector("[data-slot='dialog-title']"),
-                              ) === "Add Action",
+                              ) === "Project settings",
                           )
                         : null
-                      : null;
+                      : overlay === "project-action-dialog"
+                        ? projectActionDialog?.rect
+                          ? [...doc.querySelectorAll("[data-slot='dialog-popup']")].find(
+                              (dialog) =>
+                                readComposedText(
+                                  dialog.querySelector("[data-slot='dialog-title']"),
+                                ) === "Add Action",
+                            )
+                          : null
+                        : null;
     const overlayRect = overlayElement
       ? (() => {
           const rect = overlayElement.getBoundingClientRect();
@@ -2356,9 +2464,11 @@ function readWebPane() {
                             rect: readElementBox(row),
                           })),
                         }
-                      : overlay === "project-action-dialog"
-                        ? projectActionDialog
-                        : null,
+                      : overlay === "project-settings-dialog"
+                        ? projectSettingsDialog
+                        : overlay === "project-action-dialog"
+                          ? projectActionDialog
+                          : null,
         rowLabels:
           overlay === "quick-switch" || overlay === "file-picker"
             ? [
@@ -2426,9 +2536,11 @@ function readWebPane() {
                         ? (overlayElement?.querySelectorAll(
                             '[data-slot="menu-item"], [data-slot="menu-sub-trigger"]',
                           ).length ?? 0)
-                        : overlay === "project-action-dialog"
-                          ? (projectActionDialog?.fieldLabels.length ?? 0)
-                          : 0,
+                        : overlay === "project-settings-dialog"
+                          ? (projectSettingsDialog?.fieldLabels.length ?? 0)
+                          : overlay === "project-action-dialog"
+                            ? (projectActionDialog?.fieldLabels.length ?? 0)
+                            : 0,
       },
       composerMetrics: composerFrame
         ? {
@@ -2717,6 +2829,21 @@ function readWebPane() {
           projectScopeHost: readElementBox(doc.querySelector(".sidebar-v2-project-scope-host")),
           projectScope: readElementBox(
             doc.querySelector('[data-testid="sidebar-v2-project-scope-trigger"]'),
+          ),
+          projectScopeOptions: [...doc.querySelectorAll("[data-sidebar-project-scope-option]")].map(
+            (option) => ({
+              scopeKey: option.getAttribute("data-sidebar-project-scope-option"),
+              text: readComposedText(option),
+              box: readElementBox(option),
+              actions: [
+                ...option.querySelectorAll(
+                  "[data-sidebar-project-action], [aria-label^='Project actions for']",
+                ),
+              ].map((action) => ({
+                ariaLabel: action.getAttribute("aria-label"),
+                box: readElementBox(action),
+              })),
+            }),
           ),
           newProject: readElementBox(doc.querySelector(".sidebar-v2-new-project")),
         },
