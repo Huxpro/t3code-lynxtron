@@ -287,9 +287,7 @@ export function ModelPickerRailItemSurface({
       onMouseEnter={onHoverStart}
       onMouseLeave={onHoverEnd}
     >
-      <HostView className="model-picker-rail-icon pointer-events-none" eventThrough>
-        {icon}
-      </HostView>
+      <HostView className="model-picker-rail-icon pointer-events-none">{icon}</HostView>
       {active ? <HostView className="model-picker-rail-indicator" /> : null}
     </HostButton>
   );
