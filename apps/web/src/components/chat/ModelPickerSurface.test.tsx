@@ -71,6 +71,7 @@ describe("ModelPickerSurface", () => {
     expect(markup).toContain('aria-label="Favorites"');
     expect(markup).toContain("model-picker-rail-item--active");
     expect(markup).toContain("model-picker-rail-icon pointer-events-none");
+    expect(markup).not.toContain("event-through");
     expect(markup.indexOf("data-icon-star")).toBeLessThan(markup.indexOf("data-icon-claude"));
   });
 

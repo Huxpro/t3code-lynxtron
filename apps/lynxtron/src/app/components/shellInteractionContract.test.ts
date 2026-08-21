@@ -39,6 +39,10 @@ const webFilePreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/files/FilePreviewPanel.tsx"),
   "utf8",
 );
+const modelPickerSurfaceSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/ModelPickerSurface.tsx"),
+  "utf8",
+);
 const modelSelectionLogicSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/modelSelection.logic.ts"),
   "utf8",
@@ -103,6 +107,12 @@ describe("desktop shell interaction contract", () => {
     const panelStart = overrides.indexOf(".model-picker-panel {");
     const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
     expect(panelBlock).toContain("z-index: 1;");
+    expect(modelPickerSurfaceSource).toContain(
+      '<HostView className="model-picker-rail-icon pointer-events-none">',
+    );
+    expect(modelPickerSurfaceSource).not.toContain(
+      '<HostView className="model-picker-rail-icon pointer-events-none" eventThrough>',
+    );
   });
 
   it("keeps the model picker scroll chain constrained to the content column", () => {
