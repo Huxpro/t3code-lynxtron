@@ -344,6 +344,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".composer-workspace-menu__item--worktree"');
     assert.include(source, 'side: "top", align: "start", sideOffset: 4');
     assert.include(source, 'selector: ".composer-workspace-menu-dismiss"');
+    assert.include(source, 'selector: ".composer-workspace-control-wrap--open"');
+    assert.include(source, '".composer-model-option-control-wrap"');
+    assert.include(source, '"z-index"');
+    assert.include(source, "workspaceZIndex <= modelOptionZIndex");
+    assert.include(source, "menuAboveModelOptions: true");
     assert.include(source, 'point: "center"');
     assert.include(source, 'measurement?.text.includes("Start from origin")');
     assert.include(source, "valueRetainedAfterDismiss");

@@ -2645,6 +2645,37 @@ async function verifyWorkspaceMenu({ baseDir, child, client, height, timeoutMs, 
     timeoutMs,
     predicate: (measurement) => measurement?.text.includes("New worktree"),
   });
+  const workspaceControl = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-workspace-control-wrap--open",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const modelOptionControl = await readOptionalMeasurement(
+    client,
+    ".composer-model-option-control-wrap",
+  );
+  const workspaceZIndex = Number(
+    await readFirstSelectorStyleValue(client, ".composer-workspace-control-wrap--open", "z-index"),
+  );
+  const modelOptionZIndex = modelOptionControl
+    ? Number(
+        await readFirstSelectorStyleValue(client, ".composer-model-option-control-wrap", "z-index"),
+      )
+    : 0;
+  if (
+    !Number.isFinite(workspaceZIndex) ||
+    !Number.isFinite(modelOptionZIndex) ||
+    workspaceZIndex <= modelOptionZIndex
+  ) {
+    throw new Error(
+      `Workspace menu stacking is not above model options: ${JSON.stringify({
+        workspaceZIndex,
+        modelOptionZIndex,
+      })}`,
+    );
+  }
   const rows = await readSelectorMeasurements(client, ".composer-workspace-menu__item");
   const rowLabels = await readSelectorMeasurements(client, ".composer-workspace-menu__label");
   const relation = assertFloatingRelation({
@@ -2737,6 +2768,11 @@ async function verifyWorkspaceMenu({ baseDir, child, client, height, timeoutMs, 
       text: rowLabels[index]?.text.trim() ?? "",
     })),
     relation,
+    stacking: {
+      workspaceZIndex,
+      modelOptionZIndex,
+      menuAboveModelOptions: true,
+    },
     selectedLabel: selectedTrigger.text.trim(),
     worktreeMenu: worktreeMenu.rect,
     dismissLayer: dismissLayer.rect,
