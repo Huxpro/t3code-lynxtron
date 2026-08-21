@@ -120,6 +120,7 @@ describe("FileSaveCoordinator", () => {
   it("leaves the file pending when the latest write fails", async () => {
     const scheduler = new TestScheduler();
     const onPendingChange = vi.fn();
+    const onFailure = vi.fn();
     const coordinator = new FileSaveCoordinator({
       debounceMs: 500,
       scheduler,
@@ -128,6 +129,7 @@ describe("FileSaveCoordinator", () => {
         .mockResolvedValue(AsyncResult.failure(Cause.fail(new Error("write failed")))),
       onPendingChange,
       onConfirmed: vi.fn(),
+      onFailure,
     });
 
     coordinator.change("latest");
@@ -135,6 +137,41 @@ describe("FileSaveCoordinator", () => {
     await Promise.resolve();
     expect(onPendingChange).toHaveBeenCalledWith(true);
     expect(onPendingChange).not.toHaveBeenCalledWith(false);
+    expect(onFailure).toHaveBeenCalledWith(expect.objectContaining({ _tag: "Result" }), "latest");
+  });
+
+  it("reports rejected writes and allows the same revision to be retried", async () => {
+    const scheduler = new TestScheduler();
+    const persist = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("disk unavailable"))
+      .mockResolvedValueOnce(AsyncResult.success(undefined));
+    const onPendingChange = vi.fn();
+    const onConfirmed = vi.fn();
+    const onFailure = vi.fn();
+    const coordinator = new FileSaveCoordinator({
+      debounceMs: 500,
+      scheduler,
+      persist,
+      onPendingChange,
+      onConfirmed,
+      onFailure,
+    });
+
+    coordinator.change("retry me");
+    await scheduler.advanceBy(500);
+    expect(onFailure).toHaveBeenCalledWith(
+      {
+        _tag: "Exception",
+        error: expect.objectContaining({ message: "disk unavailable" }),
+      },
+      "retry me",
+    );
+
+    await coordinator.flush();
+    expect(persist).toHaveBeenCalledTimes(2);
+    expect(onConfirmed).toHaveBeenCalledWith("retry me");
+    expect(onPendingChange.mock.calls.at(-1)).toEqual([false]);
   });
 
   it("does not write an already confirmed revision again when disposed", async () => {

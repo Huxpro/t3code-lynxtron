@@ -35,6 +35,10 @@ const clientSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/t3Client.ts"),
   "utf8",
 );
+const webFilePreviewSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/files/FilePreviewPanel.tsx"),
+  "utf8",
+);
 const modelSelectionLogicSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/modelSelection.logic.ts"),
   "utf8",
@@ -389,6 +393,20 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("projectFileLineTokens(path, line)");
     expect(files).toContain("data-file-content-revision={fileContentRevision(contents)}");
     expect(files).toContain("file-editor-token file-editor-token--${token.tone}");
+    expect(files).toContain('data-file-save-error={saveStatus === "error" ? "true" : "false"}');
+    expect(files).toContain('data-file-save-retry={saveStatus === "error" ? "true" : "false"}');
+    expect(files).toContain('{saveStatus === "error" ? "Retry save" : "Save now"}');
+    expect(files).toContain("onFailure: (failure) => {");
+    expect(files).toContain("void coordinator.flush()");
+    expect(webFilePreviewSource).toContain('role="alert"');
+    expect(webFilePreviewSource).toContain("data-file-save-error");
+    expect(webFilePreviewSource).toContain("border-destructive/20");
+    expect(webFilePreviewSource).toContain("bg-destructive/5");
+    expect(webFilePreviewSource).toContain("text-destructive-foreground");
+    expect(webFilePreviewSource).toContain("data-file-save-retry");
+    expect(webFilePreviewSource).toContain("Retry save");
+    expect(webFilePreviewSource.match(/<FileSaveFailureBar/g)).toHaveLength(2);
+    expect(webFilePreviewSource).toContain("void saveCoordinator.flush()");
     expect(overrides).toContain(".file-editor-token--heading,");
     expect(overrides).toContain(".file-editor-token--string,");
     expect(overrides).toContain(".file-editor-token--property {");
