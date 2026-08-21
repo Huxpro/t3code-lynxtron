@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T16:45:00-07:00",
+  "stateId": "composer-plan-mode",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "themes": ["light", "dark"],
+    "semanticRoute": "existing-thread",
+    "surface": "Composer footer with the persisted Plan interaction mode active"
+  },
+  "classification": {
+    "newScope": [
+      "Existing idle and compact Composer states do not distinguish the active interaction mode from the default Build state.",
+      "The original T3 authority gives active Plan a distinct 1x16 separator, 28px blue control, 8px radius, 16px PencilRuler icon, Plan label, and truthful persisted interactionMode=plan state.",
+      "The active state must remain legible in both light and dark themes and must survive the Native persisted-session projection."
+    ],
+    "missingCoverage": [
+      "Before this registration, the fixed denominator had no state that required Plan-specific content, geometry, typography, or material.",
+      "No retained same-snapshot Browser pair measured the active Plan control against the Web authority.",
+      "No retained exact-bundle Native run asserted the persisted Plan projection, control geometry, theme material, main transport, and cleanup together."
+    ],
+    "productLoss": [
+      "The pre-fix Lynx control used the default Bot icon and muted treatment instead of the original active Plan composition.",
+      "The first active Plan raster was generated at 14px and scaled at render time instead of using the authority's exact 16px icon."
+    ],
+    "harnessMismatch": [
+      "Native DevTool interaction-mode mutation attempts lost the active localhost:8903 response channel; those attempts are excluded from product attribution.",
+      "The first shared Browser runs selected renderer-specific draft routes instead of one canonical thread; those runs are excluded.",
+      "The admitted Browser harness clears the provider-update notification and navigates both renderers to the canonical environment/thread route after server readiness."
+    ],
+    "evidenceBoundary": "Registration changes only scope accounting. It does not reconstruct a synthetic pre-fix pixel score and gives no repair credit. All twelve new Lynx-for-Web and Native dimension cells remain conservative unknown until the current evidence point."
+  },
+  "authorityContract": {
+    "source": "apps/web/src/components/chat/ChatComposer.tsx",
+    "interactionMode": "plan",
+    "separator": {
+      "width": 1,
+      "height": 16,
+      "horizontalMargin": 2
+    },
+    "control": {
+      "height": 28,
+      "radius": 8,
+      "horizontalPadding": 10,
+      "gap": 6,
+      "icon": "PencilRuler",
+      "iconSize": 16,
+      "label": "Plan",
+      "fontSize": 14,
+      "fontWeight": 500,
+      "lineHeight": 20,
+      "background": "blue-500 at 10% alpha",
+      "foreground": "#60a5fa"
+    }
+  },
+  "denominatorChange": {
+    "before": {
+      "states": 70,
+      "cells": 804,
+      "weight": 262.2
+    },
+    "after": {
+      "states": 71,
+      "cells": 816,
+      "weight": 266.2
+    },
+    "reason": "Persisted Plan mode is a user-reachable Composer state with distinct state truth, iconography, material, and theme requirements that are not represented by the default idle Composer state."
+  },
+  "validation": {
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
