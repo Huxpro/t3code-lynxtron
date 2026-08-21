@@ -710,6 +710,7 @@ export function ChatView({ threadId }: ChatViewProps) {
             </view>
           ) : undefined
         }
+        questionEditorKey={activePendingQuestion?.id}
         questionCustomAnswer={activePendingDraft?.customAnswer ?? ""}
         onQuestionCustomAnswerChange={handleQuestionCustomAnswerChange}
         disabled={status !== "ready" || sessionStatus === "starting"}

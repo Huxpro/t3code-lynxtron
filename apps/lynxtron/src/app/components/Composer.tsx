@@ -72,6 +72,7 @@ interface ComposerProps {
   approvalActions?: ReactNode;
   approvalDetail?: string;
   questionActions?: ReactNode;
+  questionEditorKey?: string;
   questionCustomAnswer?: string;
   onQuestionCustomAnswerChange?: (value: string) => void;
   onSend: (text: string) => Promise<boolean>;
@@ -118,6 +119,7 @@ export function Composer({
   approvalActions,
   approvalDetail,
   questionActions,
+  questionEditorKey,
   questionCustomAnswer,
   onQuestionCustomAnswerChange,
   onSend,
@@ -138,6 +140,7 @@ export function Composer({
     number | null
   >(null);
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
+  const [editorRevision, setEditorRevision] = useState(0);
   const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
   const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
@@ -312,6 +315,7 @@ export function Composer({
     if (!text) return;
     if (await current.onSend(text)) {
       setValue("");
+      setEditorRevision((revision) => revision + 1);
     }
   }, []);
 
@@ -421,9 +425,9 @@ export function Composer({
                   <text className="composer__placeholder">{placeholder}</text>
                 ) : null}
                 <textarea
+                  key={`${questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor"}:${editorRevision}`}
                   className="composer__input"
                   data-composer-editor="true"
-                  {...({ value: editorValue } as object)}
                   bindinput={handleInput}
                   confirm-type="send"
                   bindconfirm={handleSend}
