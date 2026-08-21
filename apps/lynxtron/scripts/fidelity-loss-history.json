@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-20T13:18:00-07:00",
+  "updatedAt": "2026-08-21T08:17:25.012Z",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13262,6 +13262,156 @@
           "path": "apps/lynxtron/evidence/2026-08-20/fidelity/sidebar-project-command-palette-registration.json",
           "classification": "tracked-current",
           "sha256": "25240389e2643730b4cd70233b6c33ec7be4e68ea24f008cb43b9694e8095794"
+        }
+      ]
+    },
+    {
+      "id": "sidebar-project-command-palette-current",
+      "observedAt": "2026-08-21T08:17:25.012Z",
+      "commit": "44f204160",
+      "codeCommit": "13d6b2e09",
+      "codeState": "commit",
+      "label": "Sidebar project and command palette convergence",
+      "narrative": "Current-head Browser evidence closes the measured Lynx-for-Web loss for Sidebar version selection, grouped project rows, dedicated Add Project source anatomy, pointer hover material, and connector-backed project/thread association without assigning Native credit. At dark 1280x820, Web and Lynx-for-Web share the same isolated snapshot and explicit settings. V1 renders the same two logical project titles in vertical 239x32 rows inside the Sidebar. Both Add Project entry points reach six source rows in the same order, with disabled provider treatment and Setup Required badges. Real Browser pointers prove hover material in both renderers; Web CDP keys prove ArrowDown, ArrowUp, Enter, Backspace, and Escape; Lynx-for-Web pointer dismissal passes. The browser proxy cannot translate CDP keys into Lynx main-thread key events, so Lynx keyboard interaction retains residual and Native physical keyboard remains unknown. A real 28-event connector smoke independently proves filesystem browse, project creation, shell projection, associated thread creation/selection, matching thread.projectId, prompt, and resync.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The registration point left all 36 cells unknown. Current evidence uses the same isolated snapshot, explicit Sidebar setting, dark 1280x820 viewport, current Web and Lynx bundles, geometry/content gates, real pointer and Web keyboard input, real connector lifecycle, zero renderer errors, clean owned-process disposal, and no denominator or weight changes. Native receives no updates."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-20/fidelity/sidebar-project-command-palette-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c86f8f253cf4fefd7a1dce959c363f5583e0f19295eea67dada3bf689665c263"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-groups"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-logical-project-groups",
+              "source": "Web and Lynx-for-Web render t3code-lynxtron and background-only in the same order with explicit V1 settings"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 1, 0, 0, 0, 3, 0, 0],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "sidebar-project-row-geometry",
+              "source": "Both clients keep two vertical 239x32 rows inside the 256px Sidebar; measured y offsets differ by 1px and 3px"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "shared-sidebar-row-typography",
+              "source": "Shared DM Sans hierarchy and project titles render in both Browser clients; residual preserves rasterization and the existing titlebar authority font gap"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "shared-sidebar-material",
+              "source": "Shared dark Sidebar tokens and row anatomy pass; no new pixel score is used"
+            },
+            "interaction": {
+              "residual": 0.1,
+              "confidence": 0.9,
+              "method": "group-collapse-create-thread-contract",
+              "source": "Collapse state and per-project thread creation are implemented and source-contracted; Browser capture is static for those actions"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-setting-and-association-runtime",
+              "source": "V1/V2 resolver, project grouping, real project creation, associated thread.projectId, prompt, resync, zero renderer errors, and clean disposal pass"
+            }
+          }
+        },
+        {
+          "states": ["add-project-sources"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-add-project-sources",
+              "source": "Both clients show Local folder, Git URL, GitHub, Azure DevOps, Bitbucket, and GitLab in the same order"
+            },
+            "geometry": {
+              "residual": 0.1,
+              "confidence": 0.9,
+              "method": "bounded-add-project-palette",
+              "source": "Both source palettes are centered, bounded, scroll-safe, and retain identical row order; height differences from platform text/layout remain explicit"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "shared-palette-typography",
+              "source": "Shared titles, descriptions, disabled treatment, and Setup Required labels render in both Browser clients"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "shared-palette-material",
+              "source": "Dark dim layer, panel material, disabled rows, Setup Required badges, active Local folder row, and Back footer are visible; no pixel residual is invented"
+            },
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "real-add-project-entry-and-dismiss",
+              "source": "Real Sidebar New project pointers open the dedicated source view in both clients; Lynx pointer dismissal passes and nested Back is visible"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-backed-project-operations",
+              "source": "Filesystem browse, project create, repository lookup/clone commands, shell projection, thread association, prompt, resync, zero errors, and disposal pass"
+            }
+          }
+        },
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-root-palette-content",
+              "source": "Root palette action labels and final Add project target are shared across Browser clients"
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "bounded-root-palette-geometry",
+              "source": "Both palettes remain centered and bounded at 1280x820; platform geometry differences remain conservative"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "shared-root-palette-typography",
+              "source": "Shared titles, shortcuts, footer labels, and active-row text render in both Browser clients"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "real-pointer-hover-material",
+              "source": "Real Browser pointer hover produces the shared accent background and foreground in Web and Lynx-for-Web"
+            },
+            "interaction": {
+              "residual": 0.35,
+              "confidence": 0.9,
+              "method": "tiered-navigation-evidence",
+              "source": "Web CDP proves ArrowDown, ArrowUp, Enter, Backspace, and Escape; Lynx-for-Web proves pointer hover material and pointer dismissal, while browser proxy main-thread key bridging is blocked and Native physical keyboard remains pending"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "navigation-state-runtime",
+              "source": "Pure active-index tests cover wrapping, disabled skipping, and activation; Browser runtime reports zero renderer errors and clean disposal"
+            }
+          }
         }
       ]
     }
