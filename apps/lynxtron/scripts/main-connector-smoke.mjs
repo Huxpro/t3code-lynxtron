@@ -118,6 +118,19 @@ try {
   if (createdProject.workspaceRoot !== nestedProjectWorkspace) {
     throw new Error("created project did not retain its workspace root");
   }
+  const renamedProjectTitle = "Associated project renamed";
+  await command({
+    method: "updateProject",
+    params: { projectId, title: renamedProjectTitle },
+  });
+  const renamedProject = await waitFor(() => {
+    const reply = handlers.get(T3_CONNECTOR_METHODS.ready)({});
+    const candidate = reply.snapshot.shell.projects.find((entry) => entry.id === projectId);
+    return candidate?.title === renamedProjectTitle ? candidate : null;
+  }, "renamed project in canonical shell");
+  if (renamedProject.workspaceRoot !== nestedProjectWorkspace) {
+    throw new Error("project rename changed the workspace root");
+  }
   const { threadId: associatedThreadId } = await command({
     method: "createThread",
     params: { projectId },
@@ -130,6 +143,20 @@ try {
     throw new Error("created thread was associated with the wrong project");
   }
   await command({ method: "selectThread", params: associatedThreadId });
+  await command({
+    method: "deleteProject",
+    params: { projectId, force: true },
+  });
+  await waitFor(() => {
+    const reply = handlers.get(T3_CONNECTOR_METHODS.ready)({});
+    const projectRemoved = !reply.snapshot.shell.projects.some(
+      (candidate) => candidate.id === projectId,
+    );
+    const associatedThreadRemoved = !reply.snapshot.shell.threads.some(
+      (thread) => thread.id === associatedThreadId,
+    );
+    return projectRemoved && associatedThreadRemoved;
+  }, "removed project and associated thread in canonical shell");
 
   // Existing prompt round-trip on the canonical project remains intact.
   const { threadId } = await command({ method: "createThread", params: { projectId: project.id } });
@@ -169,7 +196,9 @@ try {
       kinds: [...new Set(pushed.map((event) => event.kind))],
       lastSeq: resync.seq,
       projectId,
+      renamedProjectTitle,
       associatedThreadId,
+      projectLifecycleMutation: true,
       threadId,
     }),
   );

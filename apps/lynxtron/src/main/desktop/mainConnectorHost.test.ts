@@ -655,6 +655,38 @@ describe("dispatchConnectorCommand", () => {
     assert.deepEqual(calls, [params]);
   });
 
+  it("forwards canonical project metadata and removal inputs without reshaping payloads", async () => {
+    const calls: Array<{ method: string; input: unknown }> = [];
+    const connector = {
+      connect: () => Promise.resolve(),
+      dispose: () => {},
+      updateProject: (input: unknown) => {
+        calls.push({ method: "updateProject", input });
+        return Promise.resolve();
+      },
+      deleteProject: (input: unknown) => {
+        calls.push({ method: "deleteProject", input });
+        return Promise.resolve();
+      },
+    } as ConnectorLike;
+    const update = { projectId: "project-1", title: "Renamed project" };
+    const remove = { projectId: "project-1", force: true };
+
+    await dispatchConnectorCommand(connector, {
+      method: "updateProject",
+      params: update,
+    });
+    await dispatchConnectorCommand(connector, {
+      method: "deleteProject",
+      params: remove,
+    });
+
+    assert.deepEqual(calls, [
+      { method: "updateProject", input: update },
+      { method: "deleteProject", input: remove },
+    ]);
+  });
+
   it("forwards canonical keybinding upserts without reshaping the payload", async () => {
     const calls: unknown[] = [];
     const connector = {

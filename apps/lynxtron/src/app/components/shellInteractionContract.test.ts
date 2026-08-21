@@ -679,6 +679,7 @@ describe("desktop shell interaction contract", () => {
       ),
       "utf8",
     );
+    const projectSettings = componentSource("ProjectSettingsDialog.tsx");
     const quickSwitch = readFileSync(path.resolve(import.meta.dirname, "QuickSwitch.tsx"), "utf8");
     const appIndex = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
     const settings = readFileSync(
@@ -704,6 +705,20 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarProjectListHost).toContain(
       'className="sidebar-project-row-reference lynx-sidebar-project-row flex flex-row"',
     );
+    expect(sidebarProjectListHost).toContain("bindcontextmenu:");
+    expect(sidebarProjectListHost).toContain("bindlongpress:");
+    expect(sidebarProjectListHost).toContain("<ProjectSettingsDialog");
+    expect(sidebarSource).toContain("data-sidebar-project-action={project.id}");
+    expect(sidebarSource).toContain("aria-label={`Project actions for ${project.title}`}");
+    expect(sidebarSource).toContain("<ProjectSettingsDialog");
+    expect(projectSettings).toContain("Project settings");
+    expect(projectSettings).toContain("Project name");
+    expect(projectSettings).toContain("Grouping rule");
+    expect(projectSettings).toContain("Remove project");
+    expect(projectSettings).toContain(".updateProject(member.id, title)");
+    expect(projectSettings).toContain("updateSettings({ sidebarProjectGroupingOverrides");
+    expect(projectSettings).toContain("t3ClientActions");
+    expect(projectSettings).toContain(".deleteProject(member.id, true)");
     expect(quickSwitch).toContain('data-quick-switch-mode="add-project-sources"');
     expect(quickSwitch).not.toContain('setView(\n      openIntent?.kind === "add-project"');
     expect(quickSwitch).not.toContain("clearQuickSwitchOpenIntent");

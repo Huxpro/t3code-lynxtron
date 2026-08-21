@@ -55,6 +55,8 @@ describe("connector protocol guards", () => {
     assert.isTrue(isConnectorCommandName("readVcsStatus"));
     assert.isTrue(isConnectorCommandName("initializeRepository"));
     assert.isTrue(isConnectorCommandName("publishRepository"));
+    assert.isTrue(isConnectorCommandName("updateProject"));
+    assert.isTrue(isConnectorCommandName("deleteProject"));
     assert.isTrue(isConnectorCommandName("updateProjectScripts"));
     assert.isTrue(isConnectorCommandName("upsertKeybinding"));
     assert.isTrue(isConnectorCommandName("openInEditor"));
