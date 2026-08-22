@@ -35,6 +35,7 @@ import {
   PaletteSearchSurface,
   PaletteSectionSurface,
 } from "../../../../web/src/components/CommandPaletteSurface";
+import { sortProjectsForSidebar } from "../../../../web/src/components/Sidebar.logic";
 import { Kbd, KbdGroup } from "../../../../web/src/components/ui/kbd";
 import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ProjectSummary, ThreadSummary } from "../bridge";
@@ -134,10 +135,16 @@ export function QuickSwitch({
     setQuery(e.detail.value);
   }, []);
 
-  const projectName = projects.length > 0 ? projects[0].title : "workspace";
   const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const orderedProjects = useMemo(
+    () => sortProjectsForSidebar(projects, threads, "updated_at"),
+    [projects, threads],
+  );
   const activeProject =
-    projects.find((project) => project.id === activeThread?.projectId) ?? projects[0] ?? null;
+    orderedProjects.find((project) => project.id === activeThread?.projectId) ??
+    orderedProjects[0] ??
+    null;
+  const projectName = activeProject?.title ?? "workspace";
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot ?? null;
   const openLocalFolderView = useCallback(() => {
     setView("add-project-local");
@@ -146,6 +153,11 @@ export function QuickSwitch({
   }, []);
   const openNewThreadProjects = useCallback(() => {
     setView("new-thread-projects");
+    setQuery("");
+    setActiveIndex(0);
+  }, []);
+  const returnToRoot = useCallback(() => {
+    setView("root");
     setQuery("");
     setActiveIndex(0);
   }, []);
@@ -182,6 +194,17 @@ export function QuickSwitch({
     setActiveIndex(0);
     setRemoteProjectFlow({ source, repositoryInput: "", repository: null, remoteUrl: "" });
   }, []);
+  const navigateBack = useCallback(() => {
+    if (view === "add-project-local" || view === "add-project-remote") {
+      returnToSources();
+      return;
+    }
+    if (view === "add-project-destination") {
+      openRemoteProjectView(remoteProjectFlow?.source ?? "url");
+      return;
+    }
+    returnToRoot();
+  }, [openRemoteProjectView, remoteProjectFlow?.source, returnToRoot, returnToSources, view]);
   const submitRemoteRepository = useCallback(() => {
     const source = remoteProjectFlow?.source;
     const repositoryInput = query.trim();
@@ -499,17 +522,19 @@ export function QuickSwitch({
     }
     return items;
   }, [addLocalProject, cloneAndAddProject, currentBrowsePath, filesystemBrowse?.entries, view]);
-  const projectItems = useMemo<ReadonlyArray<PaletteNavigationItem>>(
-    () =>
-      projects.map((project) => ({
-        id: `project:${project.id}`,
-        icon: "folder",
-        title: project.title,
-        description: project.workspaceRoot,
-        run: () => createThreadInProject(project.id),
-      })),
-    [createThreadInProject, projects],
-  );
+  const projectItems = useMemo<ReadonlyArray<PaletteNavigationItem>>(() => {
+    const preferredProjects =
+      activeProject === null
+        ? orderedProjects
+        : [activeProject, ...orderedProjects.filter((project) => project.id !== activeProject.id)];
+    return preferredProjects.map((project) => ({
+      id: `project:${project.id}`,
+      icon: "folder",
+      title: project.title,
+      description: project.workspaceRoot,
+      run: () => createThreadInProject(project.id),
+    }));
+  }, [activeProject, createThreadInProject, orderedProjects]);
 
   const handleThreadTap = useCallback(
     (threadId: string) => {
@@ -604,13 +629,7 @@ export function QuickSwitch({
         return;
       }
       if (key === "Backspace" && query.length === 0 && view !== "root") {
-        if (view === "add-project-local" || view === "add-project-remote") returnToSources();
-        else if (view === "add-project-destination")
-          openRemoteProjectView(remoteProjectFlow?.source ?? "url");
-        else {
-          setView("root");
-          setActiveIndex(0);
-        }
+        navigateBack();
         return;
       }
       if (key === "Escape") close();
@@ -621,6 +640,7 @@ export function QuickSwitch({
       cloneAndAddProject,
       close,
       navigationItems,
+      navigateBack,
       openRemoteProjectView,
       query,
       remoteProjectFlow?.source,
@@ -630,7 +650,7 @@ export function QuickSwitch({
     ],
   );
   const inputPlaceholder =
-    view === "add-project-sources"
+    view === "add-project-sources" || view === "new-thread-projects"
       ? "Search..."
       : view === "add-project-local"
         ? "Enter project path (e.g. ~/projects/my-app)"
@@ -659,7 +679,15 @@ export function QuickSwitch({
       >
         {/* Search input */}
         <PaletteSearchSurface
-          icon={<Icon name="search" size={16} color="#a1a1aa" className="qs-search__icon-img" />}
+          icon={
+            view === "root" ? (
+              <Icon name="search" size={16} color="#a1a1aa" className="qs-search__icon-img" />
+            ) : (
+              <view className="qs-search__back" aria-label="Back" bindtap={navigateBack}>
+                <Icon name="arrow-left" size={16} color="#a1a1aa" />
+              </view>
+            )
+          }
           input={
             <input
               className="qs-search__input"

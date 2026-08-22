@@ -62,11 +62,11 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
     <>
       <SidebarGroup className="sidebar-v2-control-group px-2 pb-2 pt-3">
         <HostView
-          className={`flex items-center gap-1${props.searchVisual ? " sidebar-v2-control-row--authority" : ""}`}
+          className={`sidebar-v2-control-row sidebar-v2-control-row--search flex items-center gap-1${props.searchVisual ? " sidebar-v2-control-row--authority" : ""}`}
         >
           {props.searchVisual}
-          {props.searchControl ?? (
-            <HostView className="min-w-0 flex-1">
+          <HostView className="sidebar-v2-control-primary min-w-0 flex-1">
+            {props.searchControl ?? (
               <CommandDialogTrigger
                 render={
                   <SidebarMenuButton
@@ -89,9 +89,9 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                   </Kbd>
                 ) : null}
               </CommandDialogTrigger>
-            </HostView>
-          )}
-          <HostView className="shrink-0">
+            )}
+          </HostView>
+          <HostView className="sidebar-v2-control-action shrink-0">
             <Tooltip>
               <TooltipTrigger
                 render={
@@ -101,6 +101,8 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                     className="sidebar-v2-new-thread relative size-8 justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
                     disabled={props.newThreadDisabled}
                     aria-label="New thread"
+                    data-floating-anchor="sidebar-new-thread-tooltip"
+                    data-testid="sidebar-v2-new-thread"
                     render={<HostButton onClick={props.onNewThreadClick} />}
                   />
                 }
@@ -111,7 +113,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                   aria-hidden="true"
                 />
               </TooltipTrigger>
-              <TooltipPopup side="right">
+              <TooltipPopup relationId="sidebar-new-thread-tooltip" side="right">
                 {props.newThreadShortcutLabel
                   ? `New thread (${props.newThreadShortcutLabel})`
                   : "New thread"}
@@ -123,7 +125,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
       {props.projectScopeOptions.length > 0 ? (
         <SidebarGroup className="sidebar-v2-control-group px-2 pb-2 pt-0">
           <HostView
-            className={`flex items-center gap-1${props.projectScopeVisual ? " sidebar-v2-control-row--authority" : ""}`}
+            className={`sidebar-v2-control-row sidebar-v2-control-row--projects flex items-center gap-1${props.projectScopeVisual ? " sidebar-v2-control-row--authority" : ""}`}
           >
             {props.projectScopeVisual}
             <HostView
@@ -197,26 +199,32 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                 </MenuPopup>
               </Menu>
             </HostView>
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <SidebarMenuButton
-                    size="sm"
-                    className="sidebar-v2-new-project relative size-8 shrink-0 justify-center rounded-md bg-transparent p-0 text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
-                    type="button"
-                    aria-label="New project"
-                    render={<HostButton onClick={props.onNewProjectClick} />}
+            <HostView className="sidebar-v2-control-action shrink-0">
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <SidebarMenuButton
+                      size="sm"
+                      className="sidebar-v2-new-project relative size-8 shrink-0 justify-center rounded-md bg-transparent p-0 text-sidebar-muted-foreground hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
+                      type="button"
+                      aria-label="New project"
+                      data-floating-anchor="sidebar-new-project-tooltip"
+                      data-testid="sidebar-v2-new-project"
+                      render={<HostButton onClick={props.onNewProjectClick} />}
+                    />
+                  }
+                >
+                  <FolderPlusIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
+                  <HostText
+                    className="pointer-events-none absolute left-1/2 top-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
+                    aria-hidden="true"
                   />
-                }
-              >
-                <FolderPlusIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
-                <HostText
-                  className="pointer-events-none absolute left-1/2 top-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
-                  aria-hidden="true"
-                />
-              </TooltipTrigger>
-              <TooltipPopup side="right">New project</TooltipPopup>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipPopup relationId="sidebar-new-project-tooltip" side="right">
+                  New project
+                </TooltipPopup>
+              </Tooltip>
+            </HostView>
           </HostView>
         </SidebarGroup>
       ) : null}

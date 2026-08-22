@@ -450,6 +450,10 @@ export function resolveSidebarV2Status(thread: SidebarV2StatusInput): SidebarV2S
   }
 }
 
+export function shouldChooseProjectForNewThread(projectCount: number): boolean {
+  return projectCount > 1;
+}
+
 /** NaN-safe Date.parse for sort comparators: a malformed timestamp must not
     poison the whole ordering, so it sinks to the epoch instead. */
 export function parseTimestampMs(isoDate: string): number {

@@ -57,7 +57,7 @@ interface MainThreadMouseEvent {
 
 const TooltipProviderContext = createContext<TooltipProviderValue>({
   closeDelay: 0,
-  delay: 0,
+  delay: 600,
 });
 const TooltipContext = createContext<TooltipContextValue | null>(null);
 
@@ -66,7 +66,7 @@ export const TooltipCreateHandle = () => ({});
 export function TooltipProvider({
   children,
   closeDelay = 0,
-  delay = 0,
+  delay = 600,
 }: ElementProps & {
   readonly closeDelay?: number;
   readonly delay?: number;
@@ -208,6 +208,7 @@ export function TooltipPopup({
   relationId,
   side = "top",
   sideOffset = 4,
+  variant = "default",
   ...props
 }: ElementProps & {
   readonly align?: FloatingAlign;
@@ -215,6 +216,7 @@ export function TooltipPopup({
   readonly relationId?: string;
   readonly side?: FloatingSide;
   readonly sideOffset?: number;
+  readonly variant?: "default" | "glass";
 }) {
   const context = useContext(TooltipContext);
   const anchorRect = context?.anchorRect ?? null;
@@ -255,7 +257,9 @@ export function TooltipPopup({
           transform: point.transform,
         }}
       >
-        {children}
+        <view className={`lynx-tooltip-content-motion lynx-tooltip-content-motion--${variant}`}>
+          {children}
+        </view>
       </view>
     </overlay>
   );

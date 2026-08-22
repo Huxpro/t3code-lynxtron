@@ -6,6 +6,7 @@ import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
 import { DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS } from "@t3tools/contracts/settings";
 import { formatRelativeTimeLabel } from "../timestampFormat";
+import { shortcutLabelForCommand } from "../keybindings";
 import { useProjects, useThreadShells } from "../state/entities";
 import { useViewportSnapshot } from "../hooks/useViewportSnapshot";
 import { ProjectFavicon } from "./ProjectFavicon";
@@ -15,6 +16,7 @@ import {
   resolveSettledTimestamp,
   formatWorkingDurationLabel,
   searchSidebarThreadsByTitle,
+  shouldChooseProjectForNewThread,
   sortScopedProjectsForSidebar,
   sortSettledThreadsForSidebarV2,
   sortThreadsForSidebarV2,
@@ -433,6 +435,10 @@ export default function SidebarV2() {
       : (orderedProjects.find((project) => project.id === projectScopeKey) ?? null);
   const newThreadProject = scopedProject ?? orderedProjects[0] ?? null;
   const settlementSupported = serverConfig?.environment.capabilities.threadSettlement === true;
+  const newThreadShortcutLabel = serverConfig
+    ? (shortcutLabelForCommand(serverConfig.keybindings, "chat.newLocal", "MacIntel") ??
+      shortcutLabelForCommand(serverConfig.keybindings, "chat.new", "MacIntel"))
+    : null;
   const projectScopeOptions = orderedProjects.map((project) => ({
     scopeKey: project.id,
     displayName: project.title,
@@ -502,10 +508,14 @@ export default function SidebarV2() {
               ) : null}
             </view>
           ),
-          newThreadShortcutLabel: null,
+          newThreadShortcutLabel,
           newThreadDisabled: newThreadProject === null,
           onSearchClick: () => uiActions.openQuickSwitch("command"),
           onNewThreadClick: () => {
+            if (shouldChooseProjectForNewThread(orderedProjects.length)) {
+              uiActions.openNewThreadIn();
+              return;
+            }
             if (newThreadProject) void t3ClientActions.createThread(newThreadProject.id);
           },
           projectScopeOptions,
