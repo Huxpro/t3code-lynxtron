@@ -962,6 +962,10 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("routes Keybindings discovery through the Settings bootstrap scenario", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
     assert.include(source, '"settings-keybindings": "settings-general"');
     assert.include(source, "function keybindingsSettingsContentMatches");
     assert.include(source, "function keybindingsSettingsGeometryMatches");
@@ -969,6 +973,24 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "!rectDeltaWithin(webHeader, lynxHeader, 2)");
     assert.include(source, "const sharedColumnGeometry");
     assert.include(source, "if (columnIndex !== 3) return true");
+    assert.include(source, '"settings-providers": "settings-general"');
+    assert.include(source, '"settings-providers": "Providers"');
+    assert.include(source, "function providerSettingsContentMatches");
+    assert.include(source, "function providerSettingsGeometryMatches");
+    assert.include(source, "webProviders?.inlineCreate === null");
+    assert.include(source, "lynxProviders?.inlineCreate === null");
+    assert.include(source, "providerSettingsContentMatches(");
+    assert.include(source, "providerSettingsGeometryMatches(");
+    assert.include(
+      source,
+      "fileEditingSaveEvidence: !isFileEditingSaveState || fileEditingSaveEvidence !== null",
+    );
+    assert.include(workbench, "function readProviderSettingsMetrics");
+    assert.include(workbench, 'root?.querySelectorAll(".provider-instance-card")');
+    assert.include(workbench, 'root?.querySelector(".provider-instance-create")');
+    assert.include(workbench, 'readComposedText(title) === "Health check interval"');
+    assert.include(workbench, 'const titleElement = card.querySelector(".truncate")');
+    assert.include(workbench, 'expectedSemanticRoute === "settings-providers"');
   });
 
   it("reopens thread-scoped model picker states after selecting the seeded thread", () => {

@@ -386,6 +386,42 @@ function readSettingsNavigationItems(root) {
   });
 }
 
+function readProviderSettingsMetrics(root) {
+  const cards = [...(root?.querySelectorAll(".provider-instance-card") ?? [])];
+  const healthTitle =
+    [...(root?.querySelectorAll(".settings-row__title, h3") ?? [])].find(
+      (title) => readComposedText(title) === "Health check interval",
+    ) ?? null;
+  const healthRow =
+    healthTitle?.closest(".settings-row") ??
+    healthTitle?.parentElement?.parentElement?.parentElement?.parentElement ??
+    null;
+  return {
+    addTrigger: readElementBox(root?.querySelector('[aria-label="Add provider instance"]')),
+    refreshTrigger: readElementBox(root?.querySelector('[aria-label="Refresh provider status"]')),
+    inlineCreate: readElementBox(root?.querySelector(".provider-instance-create")),
+    healthRow: readElementBox(healthRow),
+    cards: cards.map((card) => {
+      const toggleExpanded = card.querySelector('[aria-label^="Toggle "][aria-expanded]');
+      const titleElement = card.querySelector(".truncate");
+      const title =
+        toggleExpanded
+          ?.getAttribute("aria-label")
+          ?.replace(/^Toggle /, "")
+          .replace(/ details$/, "") ?? readComposedText(titleElement);
+      return {
+        title,
+        text: readComposedText(card),
+        box: readElementBox(card),
+        toggleExpanded: readElementBox(toggleExpanded),
+        enabledControl: readElementBox(
+          card.querySelector('[role="switch"], .ui-switch, button[aria-checked]'),
+        ),
+      };
+    }),
+  };
+}
+
 function readKeybindingsMetrics(root) {
   const header = root?.querySelector("[data-keybindings-table-header]") ?? null;
   const rows = [
@@ -1990,6 +2026,10 @@ function readLynxPane() {
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(root)
                   : null,
+              providers:
+                expectedSemanticRoute === "settings-providers"
+                  ? readProviderSettingsMetrics(root)
+                  : null,
               sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
                 (item) => item.textContent?.trim(),
               ),
@@ -2998,6 +3038,10 @@ function readWebPane() {
               keybindings:
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(doc)
+                  : null,
+              providers:
+                expectedSemanticRoute === "settings-providers"
+                  ? readProviderSettingsMetrics(doc)
                   : null,
               sectionTitles: [
                 ...(settingsPanel?.querySelectorAll(":scope > section > div:first-child h2") ?? []),
