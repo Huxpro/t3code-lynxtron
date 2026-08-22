@@ -5989,7 +5989,7 @@ async function verifyFilesBrowser({
         predicate: (measurement) =>
           measurement?.attributes["data-file-save-error"] === "true" &&
           measurement?.text.includes("Retry save") &&
-          Math.abs((measurement?.rect.height ?? 0) - 28) <= 0.5,
+          Math.abs((measurement?.rect.height ?? 0) - 33) <= 0.5,
       });
       const retry = await waitForMeasurement({
         child,
@@ -5998,8 +5998,8 @@ async function verifyFilesBrowser({
         timeoutMs,
         predicate: (measurement) =>
           measurement?.text.trim() === "Retry save" &&
-          (measurement?.rect.width ?? 0) > 0 &&
-          (measurement?.rect.height ?? 0) <= 24,
+          Math.abs((measurement?.rect.width ?? 0) - 75) <= 0.5 &&
+          Math.abs((measurement?.rect.height ?? 0) - 24) <= 0.5,
       });
       const failureScreenshot = captureNativeScreenshot({
         client,

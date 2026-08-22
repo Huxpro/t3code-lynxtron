@@ -628,9 +628,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "__T3_LYNXTRON_FILE_EDITOR_PROBE__?.change");
     assert.include(source, 'measurement?.attributes["data-file-save-status"] === "pending"');
     assert.include(source, 'measurement?.attributes["data-file-save-error"] === "true"');
-    assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 28) <= 0.5");
+    assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 33) <= 0.5");
     assert.include(source, 'selector: "[data-file-save-retry]"');
     assert.include(source, 'measurement?.text.trim() === "Retry save"');
+    assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - 75) <= 0.5");
+    assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 24) <= 0.5");
     assert.include(source, 'physicalKeyboard: "pending-user-session"');
     assert.include(source, "waitForFileContents");
     assert.include(source, "persistedSha256");

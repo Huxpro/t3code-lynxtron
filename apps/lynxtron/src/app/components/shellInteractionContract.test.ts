@@ -536,9 +536,11 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".theme-light .file-editor-token--string,");
     expect(overrides).toContain(".theme-light .file-editor-token--property {");
     expect(overrides).toContain(".file-panel__statusbar {");
-    expect(overrides).toContain("height: 28px;");
+    expect(overrides).toContain("height: 33px;");
     expect(overrides).toContain(".files-panel__save {\n  display: flex;");
     expect(overrides).toContain("flex-shrink: 0;");
+    expect(overrides).toContain("width: 75px;");
+    expect(overrides).toContain("height: 24px;");
     expect(overrides).toContain(".files-panel__save-label {\n  white-space: nowrap;");
     expect(overrides).toContain(".files-panel__preview-status {\n  flex-grow: 1;");
     expect(overrides).toContain("text-overflow: ellipsis;");
