@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T03:27:11-07:00",
+  "updatedAt": "2026-08-22T15:27:39-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14078,6 +14078,153 @@
               "confidence": 0.99,
               "method": "native-tooltip-main-transport",
               "source": "Exact production bundle uses main transport, advances sequence, reports zero renderer errors, and disposes isolated state in dark and light"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "providers-and-lazy-drafts-current",
+      "observedAt": "2026-08-22T15:27:39-07:00",
+      "commit": "45372c88bdfb3b0d1984104a006dc29b37371bdf",
+      "codeCommit": "1e4661e7457104aae83aac3c2a866e59625379bd",
+      "codeState": "commit",
+      "label": "Providers parity and lazy New thread lifecycle",
+      "narrative": "Lynx now matches the Web Providers structure and Add Provider wizard instead of rendering a permanently expanded form. A current-head same-server Browser run verifies ordered provider cards, the health interval row, trailing Add and Refresh controls, exact 576x538 Driver-step dialog geometry, fullscreen backdrop, guarded Identity validation, 200ms exit presence, dismissal, and reopen. New thread creation now reuses a local draft and leaves canonical persistence unchanged until first send. Executable connector tests verify one thread.turn.start command with bootstrap.createThread and subscribe only after dispatch succeeds; server tests verify successful atomic creation and cleanup on bootstrap defects. Exact-bundle Native verifies Provider route selection, five full-width cards, Back dismissal, local draft reuse, unchanged client and SQLite thread IDs, main transport, zero renderer errors, isolated cleanup, and clean process gates.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The point credits only current-head paired Browser and exact-bundle Native evidence. A one-project Browser fixture and a Quick Switch overlay Native fixture were rejected as harness mismatches; no real provider turn was launched."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/providers-and-lazy-drafts-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "22c528f18af7db1da898575bf946791b7129bb32b7528d3d39795c23be0f5463"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "gate": "contentPass",
+              "confidence": 0.99,
+              "method": "same-snapshot-provider-content",
+              "source": "Both renderers show Health check interval, Add and Refresh controls, and ordered Codex, Claude, Cursor, Grok, and OpenCode cards"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 1.6875, 0.15625, 1.53125, 0.15625, 1.375, 0.15625, 1.21875, 0.15625, 1.0625,
+                0.15625
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "paired-provider-card-geometry",
+              "source": "Panel and card widths match at 896px; card height differences are 0.15625px and vertical origin differences stay below 1.6875px"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-provider-typography-review",
+              "source": "Paired Browser frame preserves title, version, badge, summary, and control hierarchy"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-provider-material-review",
+              "source": "Paired Browser frame preserves dark surface, status colors, separators, and trailing controls"
+            },
+            "interaction": {
+              "gate": "interactionPass",
+              "confidence": 0.99,
+              "method": "provider-wizard-pointer-flow",
+              "source": "Add Provider opens, advances to Identity, blocks invalid Config navigation, dismisses through the backdrop, and reopens"
+            },
+            "runtime": {
+              "gate": "runtimePass",
+              "confidence": 0.99,
+              "method": "shared-server-provider-readiness",
+              "source": "Both Browser renderers use one provider snapshot with zero console errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["settings-providers"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "gate": "contentPass",
+              "confidence": 0.95,
+              "method": "native-provider-content",
+              "source": "Exact Native renders the health row, five provider cards, and Add and Refresh controls"
+            },
+            "geometry": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-provider-geometry",
+              "source": "Provider panel and health row are 896px wide; all cards are 896px wide with 864px inner layouts and visible trailing actions"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.9,
+              "method": "native-provider-typography-review",
+              "source": "Native screenshot preserves provider title, status summary, and Early Access hierarchy"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.9,
+              "method": "native-provider-material-review",
+              "source": "Native screenshot preserves dark settings material and provider status accents"
+            },
+            "interaction": {
+              "gate": "interactionPass",
+              "confidence": 0.95,
+              "method": "native-settings-pointer-flow",
+              "source": "Measured DevTool taps open Providers and the Back row returns to chat"
+            },
+            "runtime": {
+              "gate": "runtimePass",
+              "confidence": 0.99,
+              "method": "native-provider-main-transport",
+              "source": "Exact production bundle uses main transport, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-v2-new-thread-projects"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "gate": "interactionPass",
+              "confidence": 0.99,
+              "method": "browser-project-select-and-draft-reuse",
+              "source": "Pointer selection opens one local draft, repeated New thread reuses its ID, and Back, dismiss, and reopen remain functional"
+            },
+            "runtime": {
+              "gate": "runtimePass",
+              "confidence": 0.99,
+              "method": "shared-server-no-empty-thread",
+              "source": "Canonical thread IDs remain empty and Lynx emits zero createThread commands across both selections"
+            }
+          }
+        },
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx", "native"],
+          "dimensions": {
+            "interaction": {
+              "gate": "interactionPass",
+              "confidence": 0.99,
+              "method": "local-draft-reuse",
+              "source": "Repeated New thread actions reuse one local draft ID without adding a Sidebar row"
+            },
+            "runtime": {
+              "gate": "runtimePass",
+              "confidence": 0.99,
+              "method": "canonical-and-sqlite-no-persistence",
+              "source": "Browser canonical snapshots and exact Native SQLite projection IDs remain unchanged until first send"
             }
           }
         }
