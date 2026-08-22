@@ -189,7 +189,7 @@
     "focusedProductAndHarnessTests": "139/139",
     "lynxTypecheck": "pass",
     "browserPreviewTypecheck": "pass",
-    "fidelityLedgerCheck": "pending denominator registration",
+    "fidelityLedgerCheck": "pass: 199 milestones, 71 states, current loss 34.11%, best 34.11%, evidence debt 32.14%",
     "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
     "visualInspection": "pass for light and dark Browser side-by-side plus light and dark exact Native frames",
     "agentBrowserLeakGate": "owned=0 orphaned=0",
