@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-22T16:31:00-07:00",
+  "stateId": "file-editor-editing-save",
+  "productCommit": "3f3498f2e1c2a17586abf490082bc7164ce2569a",
+  "harnessCommit": "050f066481455687140cc3f99baf4bdd2bf03d88",
+  "captureHead": "050f066481455687140cc3f99baf4bdd2bf03d88",
+  "scope": {
+    "viewport": "1024x820",
+    "themes": ["dark", "light"],
+    "semanticRoute": "new-thread with an isolated project",
+    "rightPanelWidth": 360,
+    "targetFile": "fidelity.ts"
+  },
+  "classification": {
+    "productLossClosed": [
+      "The Native failure bar now follows the Web authority's single-line flex structure instead of expanding to 51px and wrapping Retry save.",
+      "Current Browser evidence measures the Web authority at 359x33 with a 74.796875x24 retry control and Lynx-for-Web at 359x33 with a 75x24 retry control.",
+      "Exact Native dark and light runs each reach pending, a real EACCES write failure, visible inline error and Retry save, touch retry, persisted bytes, Back, and reopen with the same full-buffer revision.",
+      "The error copy truncates while the retry action remains a stable single-line control in both themes."
+    ],
+    "harnessMismatch": [
+      "The Browser side-by-side failure frame contains an unrelated provider-health timeout banner in the Lynx pane. Full-frame visual comparison is rejected for this point; only file-editor ROI measurements, lifecycle state, and renderer-local screenshots are used.",
+      "The first exact Native evidence run exposed the real 51px wrapped failure-bar regression. Its screenshots are diagnostic only and are superseded by the current 33px runs."
+    ],
+    "intentionalPlatformDelta": [
+      "Web edits through the Pierre contentEditable kernel while Lynx uses a native textarea.",
+      "Native content mutation is driven through a test-only seam that invokes the shipping React input callback because Lynx DevTool does not implement Input.dispatchKeyEvent."
+    ],
+    "remainingResidual": [
+      "Exact Native physical keyboard focus, character input, selection, and replacement remain pending-user-session and receive no credit from the test seam.",
+      "The current integrated save lifecycle covers the 1024x820 inline right panel. Other Native viewport widths retain their existing static file-detail evidence but not independent mutation coverage."
+    ],
+    "evidenceBoundary": "Browser evidence uses one copied read-only seed and a disposable workspace, real Browser input, a deterministic delayed write failure, real pointer retry, and clean process disposal. Native evidence uses two independent disposable projects and state directories, exact production bundle identity, measured DevTool touches, a gated React input-handler seam, real filesystem permission failure, real connector persistence, Back and reopen, zero renderer errors, and clean process disposal. The seam proves input-handler-to-disk behavior but is not physical keyboard evidence."
+  },
+  "browser": {
+    "report": "/tmp/t3-file-editor-browser-current/workbench-report.json",
+    "reportSha256": "fbbcafc2f3432adfc1e31fe79caf110bb10fb78b22c93f97539ae1179fc39e19",
+    "bundles": {
+      "web": "c40bc4d064dd6f1acdfd25dca6c68c4b37cedc10829d0e121edded8c91a2dab6",
+      "lynxForWeb": "5c4ec39e34bb2a984a41436da00238fddd7d9c8f2d6939e354e301a3f00293d6"
+    },
+    "snapshotSha256": "154ed9b1dd8ce29c8130a8b74fca2483bb3892cf767406d3f1338566c6a5fe78",
+    "writer": "lynx",
+    "input": "DevTool-equivalent pointer, DOM focus, CDP Input.insertText, and real pointer Retry",
+    "failureGeometry": {
+      "webStatusbar": { "x": 665, "y": 787, "width": 359, "height": 33 },
+      "webRetry": { "x": 939.203125, "y": 792, "width": 74.796875, "height": 24 },
+      "lynxStatusbar": { "x": 665, "y": 787, "width": 359, "height": 33 },
+      "lynxRetry": { "x": 939, "y": 792, "width": 75, "height": 24 }
+    },
+    "failureScreenshots": {
+      "webSha256": "b03b72cadf77b9ebc12e4f59111e1ccc8141e8b2c02fb76e3292a5983ca16c23",
+      "lynxSha256": "83d2c447313c0f5fdb5389c30a15450c773abe69e8764ad3af1256a269443365",
+      "fullFrameComparisonRejected": "unrelated provider-health timeout banner"
+    },
+    "identityMatch": true,
+    "rendererErrors": 0,
+    "cleanup": {
+      "disposableWorkspaceRemoved": true,
+      "ownedProcessesStopped": true,
+      "ownedPortsReleased": true
+    }
+  },
+  "native": {
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "bytes": 5262854,
+      "sha256": "c91aa23d22324dd9852c3dfff35e0b2ffb93c0e8aa6b32a32e1b44c9d2039a97"
+    },
+    "dark": {
+      "report": "/tmp/t3-file-editor-native-final-dark/report.json",
+      "reportSha256": "f6488daefd38ea7d977bdebda8ade9f225c929b41a29db59dfb6b046dc3ac699",
+      "snapshotSha256": "5f900b47343d9458e7c67d16595cc7c70f7b24e024139502ad032d06e06d0488",
+      "statusbar": { "x": 665, "y": 787, "width": 359, "height": 33 },
+      "retry": { "x": 939, "y": 792, "width": 75, "height": 24 },
+      "failureScreenshotSha256": "ec205a641d985746402da0db12d2f875981b9dc6fbc18769b5d87c3499c5dde7",
+      "revision": "88:sviu6x",
+      "persistedSha256": "15cd3253a27895fbb1a5db093cad33e72c0a54892b5273c3aa82aad4deeef4c8",
+      "transportSequence": { "before": 3, "after": 5 },
+      "rendererErrors": 0
+    },
+    "light": {
+      "report": "/tmp/t3-file-editor-native-final-light/report.json",
+      "reportSha256": "d3123f4215b1732fcf00b794d96731ba134dda03ca20455d2d65295015c4a749",
+      "snapshotSha256": "8adf2a87b83112edb3db1c854d568fb4ba0c1a6322b5654ba6834e0e1b770a19",
+      "statusbar": { "x": 665, "y": 787, "width": 359, "height": 33 },
+      "retry": { "x": 939, "y": 792, "width": 75, "height": 24 },
+      "failureScreenshotSha256": "185ee28815c1541e2d5dde03136b45291b68803039b5f142fb8def858efbe5c6",
+      "revision": "88:sviu6x",
+      "persistedSha256": "15cd3253a27895fbb1a5db093cad33e72c0a54892b5273c3aa82aad4deeef4c8",
+      "transportSequence": { "before": 3, "after": 5 },
+      "rendererErrors": 0
+    },
+    "inputBoundary": {
+      "touch": "measured DevTool touch for preview, Retry, Back, and reopen",
+      "contentMutation": "gated shipping React input-handler seam",
+      "physicalKeyboard": "pending-user-session"
+    },
+    "cleanup": {
+      "isolatedStateDisposed": true,
+      "ownedProcessesStopped": true,
+      "ownedPortsReleased": true
+    }
+  },
+  "validation": {
+    "focusedTests": "91/91 before exact geometry; 85/85 after exact geometry",
+    "lynxTypecheck": "pass",
+    "desktopTypecheck": "pass",
+    "clientRuntimeTypecheck": "pass with one pre-existing Effect suggestion",
+    "productionBuild": "pass with existing unsupported CSS and Effect import.meta warnings",
+    "browserPreviewBuild": "pass with existing bundle-size and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "0/100 tracked in this checkout",
+    "trackedScreenshotsAdded": 0
+  }
+}

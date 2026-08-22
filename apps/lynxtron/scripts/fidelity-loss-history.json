@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T15:27:39-07:00",
+  "updatedAt": "2026-08-22T16:39:11-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14225,6 +14225,115 @@
               "confidence": 0.99,
               "method": "canonical-and-sqlite-no-persistence",
               "source": "Browser canonical snapshots and exact Native SQLite projection IDs remain unchanged until first send"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-editor-native-save-recovery-current",
+      "observedAt": "2026-08-22T16:39:11-07:00",
+      "commit": "050f066481455687140cc3f99baf4bdd2bf03d88",
+      "codeCommit": "3f3498f2e1c2a17586abf490082bc7164ce2569a",
+      "codeState": "commit",
+      "label": "Native file editor save and recovery fidelity",
+      "narrative": "The file editor now has current Browser and exact-bundle Native evidence for pending, failed write, visible recovery, persisted bytes, Back, and reopen. A current dark 1024x820 Browser run preserves the Web authority's 359x33 failure bar and 74.796875x24 Retry save control while Lynx-for-Web measures 359x33 and 75x24. Exact Native dark and light runs use independent disposable projects, enter editing through measured touch, invoke the shipping React input callback through a gated test seam, force a real EACCES write failure, keep disk unchanged, render a single-line truncated error with a 75x24 Retry save control, recover through measured touch, persist the expected revision, return to Files, and reopen the same revision. The Browser full frame contains an unrelated provider-health timeout banner and is rejected as a whole-frame comparison; file-editor ROI geometry and lifecycle evidence remain valid. Physical Native keyboard input and selection remain pending-user-session and receive no seam-derived credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The point credits current-head Browser file-editor ROI measurements and exact-bundle Native dark/light lifecycle evidence. It preserves the physical-keyboard residual and rejects the unrelated provider-health banner as full-frame evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/file-editor-native-save-recovery-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "733f7d9f8be66ddac1af35b515bf48b54654be45c6c71da2876e6d8d2a72beb1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-editing-save"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-file-save-content",
+              "source": "The current Lynx-for-Web writer retains the pending revision through failure and reopens the same persisted full-buffer revision"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.203125, 0],
+              "anchorScale": 359,
+              "confidence": 0.99,
+              "method": "paired-file-save-error-geometry",
+              "source": "Web and Lynx-for-Web failure bars are both 359x33; Retry save is 74.796875x24 versus 75x24"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-file-save-error-typography",
+              "source": "The current file-editor ROI preserves one-line error copy, truncation, and a one-line Retry save label"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-file-save-error-material",
+              "source": "The current file-editor ROI preserves destructive copy, bordered status material, and compact ghost retry treatment"
+            },
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "browser-file-save-failure-retry-reopen",
+              "source": "Real Browser input and pointer flows prove pending, deterministic failure, Retry, persisted bytes, Back, and reopen for the shipping Lynx-for-Web surface"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-disposable-file-persistence",
+              "source": "The current isolated Browser run persists the sentinel, reports zero renderer errors, removes the disposable workspace, releases ports, and leaves no agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["file-editor-editing-save"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "native-file-save-content",
+              "source": "Exact Native dark and light show the changed revision, visible write failure, Retry save, cleared error, and the same revision after reopen"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.203125, 0],
+              "anchorScale": 359,
+              "confidence": 0.99,
+              "method": "native-file-save-error-geometry",
+              "source": "Exact Native dark and light measure a 359x33 failure bar and 75x24 retry control against the Web authority's 359x33 and 74.796875x24"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.9,
+              "method": "native-dual-theme-file-save-typography",
+              "source": "Visual review confirms single-line truncated failure copy and single-line Retry save in dark and light"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.9,
+              "method": "native-dual-theme-file-save-material",
+              "source": "Visual review confirms readable destructive copy, divider, background, and retry surface in dark and light"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.9,
+              "method": "native-touch-and-handler-seam-save-recovery",
+              "source": "Measured Native touches prove editor entry, Retry, Back, and reopen while a gated handler seam proves input callback to disk; physical keyboard focus, typing, and selection remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-main-transport-file-persistence",
+              "source": "Both exact-bundle Native themes use main transport, advance sequence, persist identical bytes, report zero renderer errors, dispose isolated state, release ports, and leave no agent-browser process"
             }
           }
         }
