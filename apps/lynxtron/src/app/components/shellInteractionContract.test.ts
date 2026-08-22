@@ -746,10 +746,16 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".lynx-tooltip-content-motion {\n  display: flex;\n  flex-direction: column;",
     );
+    expect(overrides).toContain(
+      ".lynx-tooltip-popup {\n  position: absolute;\n  width: max-content;\n  height: max-content;",
+    );
     expect(overrides).toContain(".lynx-tooltip-content-motion--default {");
     expect(overrides).toContain("padding: 4px 8px;");
     expect(overrides).toContain("border-radius: 6px;");
     expect(overrides).toContain("font-size: 12px;");
+    expect(overrides).toContain(
+      ".lynx-tooltip-text {\n  color: inherit;\n  font-family: inherit;\n  font-size: inherit;\n  line-height: inherit;\n  white-space: nowrap;",
+    );
     expect(overrides).toContain("animation: lynx-tooltip-enter 150ms ease-out both;");
     expect(overrides).toContain("animation: lynx-palette-backdrop-enter 200ms ease-in-out both;");
     expect(overrides).toContain("animation: lynx-palette-panel-enter 200ms ease-in-out both;");
@@ -793,7 +799,10 @@ describe("desktop shell interaction contract", () => {
       '"main-thread:global-bindmousemove": handleGlobalMouseMove',
     );
     expect(tooltipSource).toContain("runOnMainThread(handleMouseMove)");
+    expect(tooltipSource).toContain("await runOnBackground(reportHover)(true, rect);");
     expect(tooltipSource).toContain("__T3_LYNXTRON_TOOLTIP_PROBE__");
+    expect(tooltipSource).toContain('typeof children === "string" || typeof children === "number"');
+    expect(tooltipSource).toContain('<text className="lynx-tooltip-text">{children}</text>');
     expect(tooltipSource).toContain('trigger.invoke("boundingClientRect"');
     expect(tooltipSource).toContain("resolveFloatingAnchorPoint(context.anchorRect");
     expect(tooltipSource).toContain("data-floating-side={side}");

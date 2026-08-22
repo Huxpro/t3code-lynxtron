@@ -90,6 +90,23 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'invokeTooltipProbe(initialRelationId, "leave")');
     assert.include(source, "await waitWhileAlive(child, 200)");
     assert.include(source, "opened after a hover left before the delay elapsed");
+    assert.include(source, 'anchorSelector: ".sidebar-v2-new-thread"');
+    assert.include(source, 'relationId: "sidebar-new-thread-tooltip"');
+    assert.include(source, "expectedText: /^New thread(?: \\(.+\\))?$/u");
+    assert.include(source, 'anchorSelector: ".sidebar-v2-new-project"');
+    assert.include(source, 'relationId: "sidebar-new-project-tooltip"');
+    assert.include(source, 'expectedText: "New project"');
+    assert.include(source, "const popup = await waitForSelectorAttributeMeasurement({");
+    assert.include(source, 'attribute: "data-floating-popup"');
+    assert.include(source, 'selector: ".lynx-tooltip-popup"');
+    assert.include(source, "const content = await waitForStableMeasurement({");
+    assert.include(source, 'selector: ".lynx-tooltip-content-motion"');
+    assert.include(source, "measurement.rect.height >= 24");
+    assert.include(source, "popup: content.rect");
+    assert.include(source, "opened after hover left before the 600ms delay elapsed");
+    assert.include(source, "openDelayMs: 600");
+    assert.include(source, "closeDelayMs: 0");
+    assert.include(source, 'physicalPointer: "pending-user-session"');
     assert.include(
       source,
       'const initialRelationId = initialCard.attributes["data-floating-anchor"]',

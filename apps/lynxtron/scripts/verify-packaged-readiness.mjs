@@ -1059,6 +1059,7 @@ function assertFloatingRelation({ anchor, label, placement, popup, viewport }) {
 async function verifyFloatingRelations({ child, client, height, timeoutMs, width }) {
   const viewport = { width, height };
   const detailsPlacement = { side: "right", align: "start", sideOffset: 4 };
+  const actionTooltipPlacement = { side: "right", align: "center", sideOffset: 4 };
   const modelPlacement = { side: "top", align: "start", sideOffset: 4 };
   const readFirstCard = async () => {
     const cards = await readSelectorMeasurements(client, ".sidebar-v2-row-card");
@@ -1078,6 +1079,64 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
         `Tooltip ${action} probe is unavailable for ${relationId}: ${JSON.stringify(response)}`,
       );
     }
+  };
+  const verifyActionTooltip = async ({ anchorSelector, expectedText, label, relationId }) => {
+    const anchor = await waitForMeasurement({
+      child,
+      client,
+      selector: anchorSelector,
+      timeoutMs,
+      predicate: (measurement) => measurement?.rect.width > 0,
+    });
+    await invokeTooltipProbe(relationId, "hover");
+    await invokeTooltipProbe(relationId, "leave");
+    await waitWhileAlive(child, 650);
+    if (await readOptionalMeasurement(client, ".lynx-tooltip-popup")) {
+      throw new Error(`${label} opened after hover left before the 600ms delay elapsed.`);
+    }
+    await invokeTooltipProbe(relationId, "hover");
+    const popup = await waitForSelectorAttributeMeasurement({
+      attribute: "data-floating-popup",
+      child,
+      client,
+      selector: ".lynx-tooltip-popup",
+      timeoutMs,
+      value: relationId,
+    });
+    const content = await waitForStableMeasurement({
+      child,
+      client,
+      selector: ".lynx-tooltip-content-motion",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement.rect.height >= 24 &&
+        (typeof expectedText === "string"
+          ? measurement.text.trim() === expectedText
+          : expectedText.test(measurement.text.trim())),
+    });
+    if (
+      popup.attributes["data-floating-side"] !== "right" ||
+      popup.attributes["data-floating-align"] !== "center" ||
+      popup.attributes["data-floating-side-offset"] !== "4"
+    ) {
+      throw new Error(`${label} placement attributes drifted: ${JSON.stringify(popup)}`);
+    }
+    const relation = assertFloatingRelation({
+      anchor: anchor.rect,
+      label,
+      placement: actionTooltipPlacement,
+      popup: content.rect,
+      viewport,
+    });
+    await invokeTooltipProbe(relationId, "leave");
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".lynx-tooltip-popup",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+    return { ...relation, text: content.text.trim() };
   };
   const hoverCard = async (card) => {
     const relationId = card.attributes["data-floating-anchor"];
@@ -1130,6 +1189,19 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     selector: ".sidebar-v2-details-popover",
     timeoutMs,
     predicate: (measurement) => measurement === null,
+  });
+
+  const newThread = await verifyActionTooltip({
+    anchorSelector: ".sidebar-v2-new-thread",
+    expectedText: /^New thread(?: \(.+\))?$/u,
+    label: "Sidebar New thread tooltip",
+    relationId: "sidebar-new-thread-tooltip",
+  });
+  const newProject = await verifyActionTooltip({
+    anchorSelector: ".sidebar-v2-new-project",
+    expectedText: "New project",
+    label: "Sidebar New project tooltip",
+    relationId: "sidebar-new-project-tooltip",
   });
 
   const resizeResponse = await client.runCdp("Runtime.evaluate", {
@@ -1232,6 +1304,13 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
       initial: initialDetails,
       resized: resizedDetails,
       followedAnchor: true,
+    },
+    actionTooltips: {
+      newThread,
+      newProject,
+      openDelayMs: 600,
+      closeDelayMs: 0,
+      physicalPointer: "pending-user-session",
     },
     model,
   };
