@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  acknowledgePendingMutationAtSequence,
   enqueueSerialMutation,
   markPendingMutationAccepted,
   reconcilePendingMutation,
@@ -82,8 +83,33 @@ describe("latest pending mutation", () => {
     expect(pending.get("thread-1")).toBe(latest);
   });
 
+  it("reconciles an acknowledgement only after canonical state reaches its sequence", () => {
+    const pending = new Map<string, LatestPendingMutation<string>>();
+    const mutation = setLatestPendingMutation(pending, "thread-1", "plan", "default");
+
+    acknowledgePendingMutationAtSequence({
+      pendingMutations: pending,
+      key: "thread-1",
+      mutation,
+      canonicalValue: "default",
+      canonicalSequence: 4,
+      mutationSequence: 5,
+    });
+    expect(pending.get("thread-1")).toBe(mutation);
+
+    acknowledgePendingMutationAtSequence({
+      pendingMutations: pending,
+      key: "thread-1",
+      mutation,
+      canonicalValue: "plan",
+      canonicalSequence: 5,
+      mutationSequence: 5,
+    });
+    expect(pending.has("thread-1")).toBe(false);
+  });
+
   it("serializes mutations per key and continues after a rejected predecessor", async () => {
-    const queues = new Map<string, Promise<void>>();
+    const queues = new Map<string, Promise<unknown>>();
     const order: string[] = [];
     let releaseFirst: (() => void) | undefined;
     let markFirstStarted: (() => void) | undefined;
@@ -124,7 +150,7 @@ describe("latest pending mutation", () => {
   });
 
   it("does not serialize mutations across different keys", async () => {
-    const queues = new Map<string, Promise<void>>();
+    const queues = new Map<string, Promise<unknown>>();
     const order: string[] = [];
     let releaseFirst: (() => void) | undefined;
     const first = enqueueSerialMutation(queues, "thread-1", async () => {

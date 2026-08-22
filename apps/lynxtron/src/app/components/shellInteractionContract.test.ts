@@ -860,7 +860,7 @@ describe("desktop shell interaction contract", () => {
     expect(connectorSource).toContain("private pendingThreadInteractionModes");
     expect(connectorSource).toContain("private pendingThreadModeCommands");
     expect(connectorSource).toContain("private queueThreadModeCommand");
-    expect(connectorSource).toContain("private projectShellThreadMode");
+    expect(connectorSource).not.toContain("private projectShellThreadMode");
     expect(connectorSource).toContain(
       "reconcilePendingMutation(this.pendingThreadRuntimeModes, threadId, thread.runtimeMode)",
     );
@@ -879,11 +879,9 @@ describe("desktop shell interaction contract", () => {
     expect(connectorSource).toContain(
       "rejectPendingMutation(this.pendingThreadInteractionModes, input.threadId, mutation)",
     );
-    expect(connectorSource).toContain("markPendingMutationAccepted(mutation)");
-    expect(connectorSource).toContain(
-      "this.projectShellThreadMode(input.threadId, { runtimeMode: input.runtimeMode })",
-    );
-    expect(connectorSource).toContain("interactionMode: input.interactionMode");
+    expect(connectorSource).toContain("acknowledgePendingMutationAtSequence({");
+    expect(connectorSource).toContain("mutationSequence: result.sequence");
+    expect(connectorSource).not.toContain("this.projectShellThreadMode(");
   });
 
   it("settles prompt dispatch failures without leaking an unhandled rejection", () => {
