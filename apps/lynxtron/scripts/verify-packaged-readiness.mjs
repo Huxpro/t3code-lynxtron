@@ -7943,6 +7943,85 @@ async function assertSettingsNavigationSelection(client, expectedSuffix) {
   };
 }
 
+async function readGeneralBetaSettingsEvidence(client) {
+  const rows = await readSelectorMeasurements(client, ".settings-content--general .settings-row");
+  const autoSettle = rows.find(
+    (row) => row.attributes.idSelector === "auto-settle-inactive-threads",
+  );
+  const days = rows.find((row) => row.text.includes("Days of inactivity before auto-settle"));
+  const legacySidebar = rows.find((row) => row.attributes.idSelector === "legacy-sidebar");
+  const rowStack = await readSelectorMeasurements(
+    client,
+    ".settings-content--general .settings-section__rows",
+  );
+  const legacySidebarStack = rowStack.find(
+    (stack) =>
+      stack.attributes["aria-hidden"] === "true" && stack.text.includes("Sidebar (legacy)"),
+  );
+  const legacySidebarCollapsed =
+    legacySidebar?.rect.width === 0 &&
+    legacySidebar.rect.height === 0 &&
+    legacySidebarStack?.rect.width === 0 &&
+    legacySidebarStack.rect.height === 0;
+  const legacySidebarVisible =
+    Math.abs((legacySidebar?.rect.width ?? 0) - 896) <= 1 && (legacySidebar?.rect.height ?? 0) > 0;
+  if (
+    !autoSettle?.text.includes("Auto-settle inactive threads") ||
+    !days?.text.includes("Any new activity un-settles a thread automatically.") ||
+    !legacySidebar?.text.includes("Sidebar (legacy)") ||
+    Math.abs(autoSettle.rect.width - 896) > 1 ||
+    Math.abs(days.rect.width - 896) > 1 ||
+    (!legacySidebarCollapsed && !legacySidebarVisible) ||
+    rowStack.length < 2
+  ) {
+    throw new Error(
+      `General Beta settings drifted: ${JSON.stringify({
+        autoSettle,
+        days,
+        legacySidebar,
+        rowStack,
+      })}`,
+    );
+  }
+  return {
+    mergedIntoGeneral: true,
+    autoSettle,
+    days,
+    legacySidebar,
+    legacySidebarCollapsed,
+    legacySidebarStack,
+    sectionRowStacks: rowStack.map((measurement) => measurement.rect),
+  };
+}
+
+async function readArchiveSettingsEvidence({ child, client, timeoutMs }) {
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-content--archive",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Archived threads") === true &&
+      measurement.text.includes("No archived threads") &&
+      measurement.text.includes("Archived threads will appear here."),
+  });
+  const [section] = await readSelectorRects(client, ".settings-content--archive .settings-section");
+  const [row] = await readSelectorMeasurements(client, ".settings-content--archive .settings-row");
+  const [text] = await readSelectorRects(client, ".settings-content--archive .settings-row__text");
+  assertSettingsTopOrigin("Archive first section", section, 88);
+  if (!row || !text || Math.abs(row.rect.width - 896) > 1 || Math.abs(text.width - 832) > 1) {
+    throw new Error(
+      `Archive empty-state geometry drifted: ${JSON.stringify({ panel, row, section, text })}`,
+    );
+  }
+  return {
+    panel: panel.rect,
+    section,
+    row,
+    text,
+  };
+}
+
 async function waitForRouteChange({ child, client, initialRoute, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
@@ -7976,6 +8055,7 @@ async function verifySettingsRouteBehavior({
   const observed = [];
   const navigationSelections = [];
   let appearance = null;
+  let archive = null;
   let keybindings = null;
   let sourceControl = null;
   await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
@@ -8008,6 +8088,7 @@ async function verifySettingsRouteBehavior({
     client,
     ".settings-content--general .settings-row",
   );
+  const beta = await readGeneralBetaSettingsEvidence(client);
   const expectedGeneralUnavailableIds = ["background-activity", "text-generation-model"];
   const generalUnavailableRows = generalRows.filter(
     (row) => row.attributes["data-settings-unavailable"] === "true",
@@ -8282,7 +8363,32 @@ async function verifySettingsRouteBehavior({
         }),
       };
       assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 88);
+    } else if (route === "/settings/archived") {
+      archive = await readArchiveSettingsEvidence({ child, client, timeoutMs });
     }
+  }
+
+  const expectedObservedRoutes = [
+    "/settings/general",
+    "/settings/appearance",
+    "/settings/keybindings",
+    "/settings/providers",
+    "/settings/connections",
+    "/settings/source-control",
+    "/settings/archived",
+  ];
+  if (
+    JSON.stringify(observed.map((entry) => entry.route)) !==
+      JSON.stringify(expectedObservedRoutes) ||
+    navigationSelections.length !== expectedObservedRoutes.length
+  ) {
+    throw new Error(
+      `Settings route coverage drifted: ${JSON.stringify({
+        expectedObservedRoutes,
+        navigationSelections,
+        observed,
+      })}`,
+    );
   }
 
   await tapSelector({ child, client, selector: ".settings-nav__back", timeoutMs });
@@ -8332,6 +8438,8 @@ async function verifySettingsRouteBehavior({
       screenshot: generalScreenshot,
     },
     appearance,
+    beta,
+    archive,
     keybindings,
     sourceControl,
     resync: { beforeSeq: beforeResync.lastSeq, afterSeq: afterResync.lastSeq },

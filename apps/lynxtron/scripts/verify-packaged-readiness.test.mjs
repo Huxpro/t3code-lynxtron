@@ -868,6 +868,20 @@ describe("packaged readiness Sidebar geometry", () => {
       'assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 88)',
     );
     assert.include(source, "assertSettingsTopOrigin(`General cycle ${cycle}`");
+    assert.include(source, "async function readGeneralBetaSettingsEvidence");
+    assert.include(source, 'row.attributes.idSelector === "auto-settle-inactive-threads"');
+    assert.include(source, 'row.attributes.idSelector === "legacy-sidebar"');
+    assert.include(source, 'row.text.includes("Days of inactivity before auto-settle")');
+    assert.include(source, 'stack.attributes["aria-hidden"] === "true"');
+    assert.include(source, "const legacySidebarCollapsed =");
+    assert.include(source, "legacySidebarStack?.rect.width === 0");
+    assert.include(source, "(!legacySidebarCollapsed && !legacySidebarVisible)");
+    assert.include(source, "async function readArchiveSettingsEvidence");
+    assert.include(source, 'selector: ".settings-content--archive"');
+    assert.include(source, 'assertSettingsTopOrigin("Archive first section", section, 88)');
+    assert.include(source, "const expectedObservedRoutes = [");
+    assert.include(source, '"/settings/archived"');
+    assert.include(source, "navigationSelections.length !== expectedObservedRoutes.length");
   });
 
   it("verifies unavailable Appearance rows as muted disabled capabilities", () => {
