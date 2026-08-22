@@ -55,6 +55,7 @@ import {
   type AuthAccessSnapshot,
   type ApprovalRequestId,
   type AuthAccessStreamEvent,
+  type DispatchResult,
   type ModelSelection,
   type OrchestrationShellSnapshot,
   type OrchestrationShellStreamItem,
@@ -98,8 +99,8 @@ import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 import { projectRepoContext, type ProjectRepoContext } from "../../shared/connectorProtocol.ts";
 import {
+  acknowledgePendingMutationAtSequence,
   enqueueSerialMutation,
-  markPendingMutationAccepted,
   reconcilePendingMutation,
   rejectPendingMutation,
   setLatestPendingMutation,
@@ -249,7 +250,7 @@ export class T3Connector {
     string,
     LatestPendingMutation<ProviderInteractionMode>
   >();
-  private pendingThreadModeCommands = new Map<string, Promise<void>>();
+  private pendingThreadModeCommands = new Map<string, Promise<unknown>>();
   private serverConfig: ServerConfig | undefined;
   private authAccessSnapshot: AuthAccessSnapshot = EMPTY_AUTH_ACCESS_SNAPSHOT;
   private configProjection: Option.Option<ServerConfigProjection> = Option.none();
@@ -649,12 +650,14 @@ export class T3Connector {
     }
   }
 
-  private async dispatchOrchestrationCommand(command: unknown): Promise<void> {
+  private async dispatchOrchestrationCommand(command: unknown): Promise<DispatchResult> {
     await this.awaitRecoveredTransport();
-    await dispatchWithTransportRecovery({
+    return dispatchWithTransportRecovery({
       command,
       dispatch: (currentCommand) =>
-        this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](currentCommand)),
+        this.runClient<DispatchResult>(
+          this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](currentCommand),
+        ),
       recover: () => this.recoverTransport(),
       onRetry: (error) => {
         this.log(
@@ -664,23 +667,11 @@ export class T3Connector {
     });
   }
 
-  private queueThreadModeCommand(threadId: string, dispatch: () => Promise<void>): Promise<void> {
-    return enqueueSerialMutation(this.pendingThreadModeCommands, threadId, dispatch);
-  }
-
-  private projectShellThreadMode(
+  private queueThreadModeCommand<Result>(
     threadId: string,
-    patch:
-      | Pick<OrchestrationThreadShell, "runtimeMode">
-      | Pick<OrchestrationThreadShell, "interactionMode">,
-  ): void {
-    if (!this.shellSnapshot) return;
-    this.shellSnapshot = {
-      ...this.shellSnapshot,
-      threads: this.shellSnapshot.threads.map((thread) =>
-        thread.id === threadId ? { ...thread, ...patch } : thread,
-      ),
-    };
+    dispatch: () => Promise<Result>,
+  ): Promise<Result> {
+    return enqueueSerialMutation(this.pendingThreadModeCommands, threadId, dispatch);
   }
 
   /** Fork a long-lived client Effect (e.g. a stream) within the context. */
@@ -1346,7 +1337,7 @@ export class T3Connector {
       previousMode,
     );
     try {
-      await this.queueThreadModeCommand(input.threadId, () =>
+      const result = await this.queueThreadModeCommand(input.threadId, () =>
         this.dispatchOrchestrationCommand({
           type: "thread.runtime-mode.set",
           commandId: crypto.randomUUID(),
@@ -1355,9 +1346,15 @@ export class T3Connector {
           createdAt: new Date().toISOString(),
         }),
       );
-      this.projectShellThreadMode(input.threadId, { runtimeMode: input.runtimeMode });
-      markPendingMutationAccepted(mutation);
-      reconcilePendingMutation(this.pendingThreadRuntimeModes, input.threadId, input.runtimeMode);
+      acknowledgePendingMutationAtSequence({
+        pendingMutations: this.pendingThreadRuntimeModes,
+        key: input.threadId,
+        mutation,
+        canonicalValue: this.shellSnapshot?.threads.find((thread) => thread.id === input.threadId)
+          ?.runtimeMode,
+        canonicalSequence: this.shellSnapshot?.snapshotSequence,
+        mutationSequence: result.sequence,
+      });
       this.emitShell();
     } catch (error) {
       if (rejectPendingMutation(this.pendingThreadRuntimeModes, input.threadId, mutation).changed) {
@@ -1383,7 +1380,7 @@ export class T3Connector {
       previousMode,
     );
     try {
-      await this.queueThreadModeCommand(input.threadId, () =>
+      const result = await this.queueThreadModeCommand(input.threadId, () =>
         this.dispatchOrchestrationCommand({
           type: "thread.interaction-mode.set",
           commandId: crypto.randomUUID(),
@@ -1392,15 +1389,15 @@ export class T3Connector {
           createdAt: new Date().toISOString(),
         }),
       );
-      this.projectShellThreadMode(input.threadId, {
-        interactionMode: input.interactionMode,
+      acknowledgePendingMutationAtSequence({
+        pendingMutations: this.pendingThreadInteractionModes,
+        key: input.threadId,
+        mutation,
+        canonicalValue: this.shellSnapshot?.threads.find((thread) => thread.id === input.threadId)
+          ?.interactionMode,
+        canonicalSequence: this.shellSnapshot?.snapshotSequence,
+        mutationSequence: result.sequence,
       });
-      markPendingMutationAccepted(mutation);
-      reconcilePendingMutation(
-        this.pendingThreadInteractionModes,
-        input.threadId,
-        input.interactionMode,
-      );
       this.emitShell();
     } catch (error) {
       if (

@@ -38,8 +38,7 @@ export function rejectPendingMutation<Key, Value>(
   let previous = mutation.previous;
   while (previous?.rejected) previous = previous.previous;
   if (previous) {
-    if (previous.accepted) pendingMutations.delete(key);
-    else pendingMutations.set(key, previous);
+    pendingMutations.set(key, previous);
     return { changed: true, value: previous.value };
   }
   pendingMutations.delete(key);
@@ -76,11 +75,29 @@ export function reconcilePendingMutation<Key, Value>(
   }
 }
 
-export function enqueueSerialMutation<Key>(
-  pendingQueues: Map<Key, Promise<void>>,
+export function acknowledgePendingMutationAtSequence<Key, Value>(options: {
+  readonly pendingMutations: Map<Key, LatestPendingMutation<Value>>;
+  readonly key: Key;
+  readonly mutation: LatestPendingMutation<Value>;
+  readonly canonicalValue: Value | undefined;
+  readonly canonicalSequence: number | undefined;
+  readonly mutationSequence: number;
+}): void {
+  markPendingMutationAccepted(options.mutation);
+  if (
+    options.canonicalValue !== undefined &&
+    options.canonicalSequence !== undefined &&
+    options.canonicalSequence >= options.mutationSequence
+  ) {
+    reconcilePendingMutation(options.pendingMutations, options.key, options.canonicalValue);
+  }
+}
+
+export function enqueueSerialMutation<Key, Result>(
+  pendingQueues: Map<Key, Promise<unknown>>,
   key: Key,
-  dispatch: () => Promise<void>,
-): Promise<void> {
+  dispatch: () => Promise<Result>,
+): Promise<Result> {
   const previous = pendingQueues.get(key) ?? Promise.resolve();
   const queued = previous.catch(() => undefined).then(dispatch);
   const tracked = queued.finally(() => {
