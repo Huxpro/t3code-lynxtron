@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T18:49:20-07:00",
+  "stateId": "composer-plan-mode",
+  "productCommits": [
+    "1cfee37a0ff93362a5607aad86c0f01c0267b6cb",
+    "9d1a7dd180eb75f8bd2e125874c8a6af068e5280"
+  ],
+  "verificationCommits": [
+    "8477e6ceeb2536ddf9862d6d46374006b126e492",
+    "af788fa7d37d59fa361802e67a72d81b07072451"
+  ],
+  "classification": {
+    "productLossClosed": [
+      "Rapid thread-mode changes no longer dispatch concurrently. Renderer and main serialize runtime and interaction-mode commands per thread while preserving concurrency across different threads.",
+      "An older failed command cannot delete or roll back a newer pending Plan or Build intent.",
+      "A newer failed command returns to the most recent successful intent instead of an obsolete pre-mutation snapshot.",
+      "Main consumes the orchestration DispatchResult sequence and retains accepted pending state until the authoritative shell snapshot has reached that command, preventing ABA reconciliation against a stale repeated mode value.",
+      "Renderer keeps canonical mode snapshots separate from optimistic projection and only reconciles accepted mutations against canonical shell state."
+    ],
+    "remainingEvidenceDebt": [
+      "Exact Native physical default-to-Plan-to-default tapping remains pending-user-session. The DevTool mutation path previously lost its localhost:8903 response channel and is not counted as interaction proof.",
+      "The retained exact Native runs prove current persisted Plan state, production bundle health, material, geometry, main transport, and cleanup. They do not lower the existing interaction residual.",
+      "A dedicated delay/failure injection through a live packaged renderer would improve integration coverage but is not required to prove the pure ordering state machine or the authoritative sequence gate."
+    ],
+    "harnessMismatch": [
+      "Earlier DevTool touch and typed connector mutation attempts returned No response found for clientId: localhost:8903 while the session was active. Those runs remain excluded from product attribution.",
+      "No browser or Native screenshot is used to claim rapid-toggle interaction behavior; the race proof is deterministic source-level ordering and receipt-sequence coverage."
+    ],
+    "evidenceBoundary": "This evidence records a repaired P1 race and clean post-fix runtime health without changing the fixed denominator or any fidelity residual. Physical Native input remains uncredited."
+  },
+  "raceContract": {
+    "scope": ["runtimeMode", "interactionMode"],
+    "renderer": {
+      "ordering": "one serial queue per thread",
+      "optimisticProjection": "latest pending mutation overlays canonical shell state",
+      "failure": "only the latest failed mutation may change visible state",
+      "acknowledgement": "accepted mutation reconciles only against canonical shell state"
+    },
+    "main": {
+      "ordering": "one serial queue per thread",
+      "transportRecovery": "existing one-retry stale-transport policy remains active",
+      "acknowledgement": "DispatchResult.sequence gates reconciliation",
+      "authority": "real shell stream is the only canonical state source"
+    },
+    "coveredOrderings": [
+      "single failure restores canonical fallback",
+      "older failure cannot disturb newer intent",
+      "all queued failures restore canonical fallback",
+      "older success plus newer failure returns to the successful value",
+      "latest accepted mutation clears only after canonical confirmation",
+      "stale repeated canonical values cannot confirm an unaccepted mutation",
+      "commands serialize per thread and continue after a rejected predecessor",
+      "commands on different threads remain independent"
+    ]
+  },
+  "validation": {
+    "focusedTests": "76/76",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported-property and Effect import.meta warnings",
+    "connectorBundle": {
+      "sha256": "8528074e5a2b4658f5f6d0039031ea1ea35e0f26d26e8e2b32b1e410871960ec"
+    },
+    "nativeBundle": {
+      "bytes": 5188828,
+      "sha256": "4abd73603ead6e8b719482b919ff0a1891eb0f06eda3d1e77b3eb01a27cf55cc"
+    },
+    "native": {
+      "fixtureSnapshotSha256": "31917aaf93f8cdf7ffe13b14c3912fe1d3b78e71ab7b3b9b9558e9a4d9ab0658",
+      "viewport": [1280, 820],
+      "light": {
+        "status": "pass",
+        "report": "/tmp/t3-plan-sequence-head-light/report.json",
+        "reportSha256": "07674e0a6d5ac986d6cecdb1cc54155a5d982dc5dc00f3a26451cdce8cdd78c8",
+        "transport": {
+          "kind": "main",
+          "sequence": [3, 4]
+        },
+        "rendererErrors": 0,
+        "isolatedStateDisposed": true
+      },
+      "dark": {
+        "status": "pass",
+        "report": "/tmp/t3-plan-sequence-head-dark/report.json",
+        "reportSha256": "abc00958b7cf309b757f83273734403534427420a6d89fdfd0ec9a9fd2d70213",
+        "transport": {
+          "kind": "main",
+          "sequence": [3, 4]
+        },
+        "rendererErrors": 0,
+        "isolatedStateDisposed": true
+      }
+    },
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every admitted loop",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "fidelityAccounting": {
+    "states": 71,
+    "cells": 816,
+    "totalWeight": 266.2,
+    "denominatorChanged": false,
+    "existingWeightsChanged": false,
+    "residualChanged": false,
+    "reason": "The repair closes a deterministic race but exact Native physical interaction remains pending-user-session, so no interaction credit is added."
+  }
+}
