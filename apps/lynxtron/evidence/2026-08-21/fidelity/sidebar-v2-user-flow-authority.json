@@ -65,7 +65,8 @@
   "flows": [
     {
       "id": "sidebar-v2-controls-default",
-      "ledgerState": "sidebar-flat-layout",
+      "captureState": "sidebar-flat-layout",
+      "ledgerCoverage": ["sidebar-resize", "project-scope-open"],
       "reference": "Image #1",
       "entry": "Open the flat Sidebar V2 with at least one project",
       "assertions": [

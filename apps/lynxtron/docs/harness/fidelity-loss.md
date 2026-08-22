@@ -22,6 +22,15 @@ T3 fidelity capture does not use the `agent-browser` CLI. Evidence from a loop
 that bypassed this wrapper, failed either leak gate, or omitted the screenshot
 budget check is invalid harness evidence and cannot update product loss.
 
+For every newly discovered screen or state transition, inspect the current
+Web/Electron component and CSS before implementing or certifying Lynx motion.
+Record the trigger, delay, duration, easing, animated properties, enter and
+exit states, interruption behavior, and `prefers-reduced-motion` behavior in
+the state authority or metrics artifact. A static screenshot is not motion
+authority. Capture only after semantic readiness and a transition-specific
+settled signal; when no completion event is exposed, require consecutive stable
+geometry or style samples instead of treating a fixed sleep as success.
+
 ## Why a fixed denominator
 
 Counting only captured screens makes sparse evidence look artificially good.
