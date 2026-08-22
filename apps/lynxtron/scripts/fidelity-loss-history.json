@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-21T18:49:20-07:00",
+  "updatedAt": "2026-08-21T19:25:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13720,6 +13720,89 @@
           "path": "apps/lynxtron/evidence/2026-08-21/fidelity/composer-plan-mode-rapid-toggle-current-metrics.json",
           "classification": "tracked-current",
           "sha256": "f8a8c418f20d8ab5b75e35e339b50d235c70de99f4dc54612f665e851f77c225"
+        }
+      ]
+    },
+    {
+      "id": "settings-beta-archive-native-current",
+      "observedAt": "2026-08-21T19:25:00-07:00",
+      "commit": "94b87537766c32629f439faf0c65f2c9c28c011c",
+      "codeCommit": "9c63fe5616d1d14fab79f9478f0d801b8489bab5",
+      "codeState": "commit",
+      "label": "Current Native Settings authority",
+      "narrative": "Current product authority has seven Settings routes: former Beta controls now live inside General, while Archive remains independent. The first gated run was rejected as a harness mismatch because it required the intentionally aria-hidden, zero-size Legacy Sidebar section to be visible. After correcting that verifier contract, exact-bundle Native light and dark runs use measured DevTool touch to visit all seven routes, require one semantic and visual selection, verify Auto-settle and Days rows at 896px, preserve the collapsed legacy section, verify Archive's 896px row and 832px text column, repeat two route cycles, and return to chat. Both runs use main transport, advance sequence, report zero renderer errors, dispose isolated state, and pass agent-browser leak gates. This point updates only current Native content, geometry, route-tap interaction, and runtime for settings-beta and settings-archive; typography, material, keyboard, wheel, and mutation evidence remain unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current-head exact-bundle Native measurements replace missing current evidence for four dimensions without changing the fixed denominator, weights, Lynx Browser cells, material, typography, or mutation-state cells."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/settings-beta-archive-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "40e2b9e6b45f30410f6f15901c430e597d76c42a73b90ca4431ca931d7c62591"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-general-beta-equivalent-content",
+              "source": "Both themes render Auto-settle inactive threads and Days of inactivity before auto-settle with current copy inside General while the former Beta route remains absent"
+            },
+            "geometry": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-general-beta-equivalent-geometry",
+              "source": "Both current-head runs measure the Auto-settle row at 320,201,896,84 and Days row at 320,289,896,65 while the aria-hidden Legacy Sidebar row and stack remain 0x0"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-settings-route-touch",
+              "source": "Measured DevTool touch enters General, cycles every current Settings route twice with exactly one selected navigation item, and returns to chat; Beta control mutation is not claimed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-settings-current-head-readiness",
+              "source": "Exact 4abd7360 bundle on light and dark uses main transport, advances sequence, reports zero renderer errors, disposes isolated state, and passes pre/post leak gates"
+            }
+          }
+        },
+        {
+          "states": ["settings-archive"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-archive-empty-content",
+              "source": "Both themes render Archived threads, No archived threads, and Archived threads will appear here on /settings/archived"
+            },
+            "geometry": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-archive-empty-geometry",
+              "source": "Both current-head runs measure the first section at 320,88,896,113, empty row at 320,132,896,65, and text column at 336,144,832,41"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-settings-route-touch",
+              "source": "Measured DevTool touch enters /settings/archived with Archive as the only semantic and visual selection during two complete Settings cycles; archive mutation is not claimed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-settings-current-head-readiness",
+              "source": "Exact 4abd7360 bundle on light and dark uses main transport, advances sequence, reports zero renderer errors, disposes isolated state, and passes pre/post leak gates"
+            }
+          }
         }
       ]
     }

@@ -199,3 +199,4 @@ file-editor-save-failure-recovery-current,2026-08-21T10:46:56-07:00,0b8ee867b,co
 composer-plan-mode-registration,2026-08-21T16:45:00-07:00,0601d8b0560626db7cc7cca3f33037838696896e,commit,Composer Plan mode denominator registration,0.35198,0.35198,0.028202,0.333174,0.666826,0.6386
 composer-plan-mode-current,2026-08-21T16:49:00-07:00,51f49d40dd2a6f2bfe58bb828c0b86740cf02c1b,commit,Composer Plan mode current fidelity,0.341149,0.341149,0.02915,0.321367,0.678633,0.649431
 composer-plan-mode-rapid-toggle-current,2026-08-21T18:49:20-07:00,399d6662bbbc514a94dd19c4a17280e9260d8cdf,commit,Composer Plan mode rapid-toggle race recovery,0.341149,0.341149,0.02915,0.321367,0.678633,0.649431
+settings-beta-archive-native-current,2026-08-21T19:25:00-07:00,94b87537766c32629f439faf0c65f2c9c28c011c,commit,Current Native Settings authority,0.331242,0.331242,0.028731,0.31146,0.68854,0.659338
