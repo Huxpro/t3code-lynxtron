@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T21:20:00-07:00",
+  "surface": "Sidebar V2 controls and shared command palette",
+  "authority": {
+    "primary": "Current Web/Electron source in this checkout",
+    "visualReference": "Six user-supplied original T3 Code screenshots",
+    "implementationRule": "Web and Lynx must share product anatomy, presentation logic, keyboard semantics, and state transitions. Renderer-specific code is limited to host primitives and verified Lynx runtime gaps.",
+    "motionRule": "Every newly discovered screen or state transition must be traced to the Web/Electron source before Lynx implementation or certification. Record duration, easing, animated properties, enter and exit states, interruption behavior, and reduced-motion behavior; do not infer motion from a single screenshot."
+  },
+  "motionAuthority": {
+    "commandPalette": {
+      "source": [
+        "apps/web/src/components/ui/dialog-styles.ts",
+        "apps/web/src/components/ui/command.tsx",
+        "apps/web/src/components/CommandPalette.tsx"
+      ],
+      "backdrop": {
+        "durationMs": 200,
+        "properties": ["opacity"],
+        "enter": "opacity 0 to 1",
+        "exit": "opacity 1 to 0"
+      },
+      "panel": {
+        "durationMs": 200,
+        "easing": "ease-in-out",
+        "properties": ["scale", "opacity", "translate"],
+        "enter": "scale 0.98 and opacity 0 to scale 1 and opacity 1",
+        "exit": "scale 1 and opacity 1 to scale 0.98 and opacity 0"
+      },
+      "lynxImplementation": [
+        "apps/lynxtron/src/app/overrides.css#lynx-palette-backdrop-enter",
+        "apps/lynxtron/src/app/overrides.css#lynx-palette-panel-enter"
+      ],
+      "verification": "Native measurements and screenshots wait for consecutive stable box-model samples rather than a fixed delay, so the 200ms transition is not captured mid-frame."
+    },
+    "sidebarActionTooltip": {
+      "source": [
+        "apps/web/src/components/ui/tooltip.tsx",
+        "apps/web/src/components/ui/tooltip.lynx.tsx",
+        "apps/web/src/components/sidebar/SidebarV2CompositionSurface.tsx"
+      ],
+      "standaloneOpenDelayMs": 600,
+      "threadPreviewOpenDelayMs": 150,
+      "closeDelayMs": 0,
+      "visualDurationMs": 150,
+      "easing": "ease-out",
+      "properties": ["opacity", "scale"],
+      "interruption": "Leaving before the open delay cancels the pending tooltip; leaving an open tooltip dismisses it without a stale delayed reopen."
+    },
+    "sidebarListReorder": {
+      "source": "apps/web/src/components/SidebarV2.tsx",
+      "durationMs": 150,
+      "easing": "ease-out",
+      "purpose": "Preserve row-to-thread continuity when project or thread ordering changes."
+    },
+    "reducedMotion": {
+      "source": [
+        "apps/web/src/components/ui/dialog-styles.ts",
+        "apps/lynxtron/src/app/overrides.css"
+      ],
+      "contract": "Lynx disables tooltip and command-palette spatial animation under prefers-reduced-motion while preserving the final visible state and interaction."
+    }
+  },
+  "flows": [
+    {
+      "id": "sidebar-v2-controls-default",
+      "ledgerState": "sidebar-flat-layout",
+      "reference": "Image #1",
+      "entry": "Open the flat Sidebar V2 with at least one project",
+      "assertions": [
+        "The first 32px control row contains a left Search icon and label plus a trailing New thread icon button.",
+        "The second 32px control row contains a left folder icon, All projects label, trailing chevron, and a separate trailing New project icon button.",
+        "Both rows use the same 8px Sidebar inset and a 4px gap before the 32px trailing action.",
+        "Visible controls are the real interactive components, not screenshot or authority-image substitutes."
+      ]
+    },
+    {
+      "id": "sidebar-v2-new-thread-hover",
+      "ledgerState": "sidebar-v2-new-thread-hover",
+      "reference": "Image #2",
+      "entry": "Hover or keyboard-focus the New thread icon",
+      "assertions": [
+        "The 32px trigger shows the Sidebar hover material and foreground icon.",
+        "A right-side tooltip reads New thread followed by the configured shortcut when available.",
+        "Moving away or moving focus away dismisses the tooltip without leaving a stale delayed popup."
+      ]
+    },
+    {
+      "id": "sidebar-v2-new-thread-projects",
+      "ledgerState": "sidebar-v2-new-thread-projects",
+      "reference": "Image #3",
+      "entry": "Activate New thread while more than one logical project is available",
+      "assertions": [
+        "The shared command palette opens in the new-thread-projects view instead of creating in an arbitrary first project.",
+        "The input has a Back affordance and Search placeholder.",
+        "The Projects section lists every logical project with folder icon, title, workspace path, and shortcut hint where supported.",
+        "Hover and ArrowUp or ArrowDown update the same active row; Enter creates a thread associated with that project; Backspace returns; Escape or backdrop dismisses."
+      ]
+    },
+    {
+      "id": "sidebar-v2-new-project-hover",
+      "ledgerState": "sidebar-v2-new-project-hover",
+      "reference": "Image #4",
+      "entry": "Hover or keyboard-focus the New project icon",
+      "assertions": [
+        "The 32px trigger shows the Sidebar hover material and foreground icon.",
+        "A right-side tooltip reads New project.",
+        "Moving away or moving focus away dismisses the tooltip without leaving a stale delayed popup."
+      ]
+    },
+    {
+      "id": "sidebar-v2-add-project-sources",
+      "ledgerState": "add-project-sources",
+      "reference": "Image #5",
+      "entry": "Activate New project",
+      "assertions": [
+        "The same command palette opens in the add-project-sources view.",
+        "The Sources section contains Local folder, Git URL, GitHub repository, Azure DevOps repository, Bitbucket repository, and GitLab repository.",
+        "Unavailable providers are disabled and visibly marked Setup Required.",
+        "Hover and ArrowUp or ArrowDown update the same active row; Enter selects; Backspace returns; Escape or backdrop dismisses."
+      ]
+    },
+    {
+      "id": "sidebar-v2-command-palette-root",
+      "ledgerState": "quick-switch-default",
+      "interactionLedgerState": "command-palette-navigation",
+      "reference": "Image #6",
+      "entry": "Press Cmd+K",
+      "assertions": [
+        "The same command palette opens in the root view with Search commands, projects, and threads placeholder.",
+        "Actions and Recent Threads use the shared section and row composition.",
+        "Hover and ArrowUp or ArrowDown update the same active row; Enter executes; Escape or backdrop dismisses.",
+        "The footer advertises only keyboard behavior that the current host actually accepts."
+      ]
+    }
+  ],
+  "crossFlowInvariants": [
+    "All palette views use one shared panel, search, result-row, disabled-row, active-row, and footer composition.",
+    "All hover and focus states have visible feedback and an observable reverse state.",
+    "New thread selection preserves project-to-thread association.",
+    "Tooltip motion follows the Web authority: standalone Sidebar action tooltips use Base UI's 600ms open delay, thread-card previews use the explicit 150ms delay, and both dismiss immediately on leave with opacity plus scale transitions instead of layout animation.",
+    "Sidebar row and action disclosure follows the Web authority's opacity and color transitions; thread-list reordering uses the existing 150ms ease-out auto-animate contract.",
+    "Reduced-motion users receive the source-defined non-animated status and transition variants.",
+    "Every Browser or Native evidence loop must report agent-browser owned=0 orphaned=0 before and after.",
+    "Native physical keyboard claims require an authorized real OS input session; source tests or Browser CDP do not substitute for it."
+  ],
+  "resolvedBaselineLoss": [
+    "The Lynx Search control previously collapsed to 16px while Web allocated the 203px primary slot; both now use the shared control-row primary slot.",
+    "The sidebar-flat-layout gate previously checked only broad geometry; it now verifies primary and trailing action slots, labels, and both hover surfaces.",
+    "Lynx New thread previously created directly in the first project; multi-project state now opens the shared project chooser."
+  ],
+  "validation": {
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}

@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 72,
-  "expectedCellCount": 828,
-  "expectedTotalWeight": 270.2,
+  "expectedStateCount": 75,
+  "expectedCellCount": 864,
+  "expectedTotalWeight": 278.2,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -117,6 +117,27 @@
       "label": "Sidebar · Thread Hover Preview",
       "group": "overlays",
       "weight": 3,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "sidebar-v2-new-thread-hover",
+      "label": "Sidebar V2 · New Thread Hover",
+      "group": "overlays",
+      "weight": 2,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "sidebar-v2-new-project-hover",
+      "label": "Sidebar V2 · New Project Hover",
+      "group": "overlays",
+      "weight": 2,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "sidebar-v2-new-thread-projects",
+      "label": "Command Palette · New Thread Projects",
+      "group": "overlays",
+      "weight": 4,
       "clients": ["lynx", "native"]
     },
     {
