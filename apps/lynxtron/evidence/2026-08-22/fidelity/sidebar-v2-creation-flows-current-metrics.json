@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-22T03:05:00-07:00",
+  "stateIds": [
+    "sidebar-v2-new-thread-hover",
+    "sidebar-v2-new-project-hover",
+    "sidebar-v2-new-thread-projects",
+    "add-project-sources",
+    "command-palette-navigation",
+    "quick-switch-default"
+  ],
+  "commits": {
+    "sidebarProduct": "b37587c9b8858c7e32b3c0d98bbc240d72b8757e",
+    "nativeTooltipProduct": "9cab225195a9c309d00eb97fb79a62d4df67427a",
+    "browserHarness": "d9d4aae83924f1da958ea74d5d3f82a3da6a7a78",
+    "nativeHarness": "3f15a3420cf1afb5bd447323026f8c4a2ea0f510",
+    "scopeRegistration": "de076771039fd41995bbd4d815d740bbf1372555"
+  },
+  "classification": {
+    "productLossClosed": [
+      "Sidebar Search now occupies the shared 203px primary slot while New thread and New project remain 32px trailing actions relative to the Sidebar rail.",
+      "New thread opens the shared project chooser when multiple logical projects exist instead of creating in an arbitrary first project.",
+      "New Thread and New Project expose delayed hover tooltips with matching copy, right-side anchoring, and immediate dismissal.",
+      "Native primitive tooltip text now uses a Lynx text node and max-content absolute sizing instead of collapsing to a padding-only 18x10 shell.",
+      "All command-palette entry points share the same panel, search, result-row, disabled-row, active-row, Back, and footer composition."
+    ],
+    "harnessLoss": [
+      "The first Native Quick Switch screenshot was rejected because it sampled the source-defined 200ms scale transition before geometry settled. The verifier now waits for consecutive stable box-model samples.",
+      "Native tooltip probes initially exposed a cross-thread acknowledgment race and an attribute-selector mismatch. The accepted verifier waits for the real hover handler and resolves the popup through class plus data-floating-popup identity.",
+      "A final full Browser recapture against newly created and later live snapshots was rejected because Web remained on a draft route while Lynx selected the requested thread. No failed capture is used for product credit; the five unaffected flows retain their earlier post-commit reports, and both affected hover flows were recaptured on the final product bundle."
+    ],
+    "intentionalPlatformDelta": [
+      "Web uses Base UI transitions and backdrop-filter compositing. Lynx reproduces the 200ms palette and 150ms tooltip opacity/scale motion without claiming Native blur parity.",
+      "Native physical pointer and keyboard input remain pending-user-session; relation-scoped DevTool probes and Browser input do not substitute for OS-level evidence."
+    ],
+    "acceptedRenderingNoise": [
+      "New Thread tooltip width is 125.140625px on Web, 127.34375px on Lynx-for-Web, and 127.88607788085938px on Native.",
+      "New Project tooltip width is 85.1875px on Web, 86.25px on Lynx-for-Web, and 86.92257690429688px on Native.",
+      "All accepted tooltip frames are approximately 26px high with a 4px right-side gap; subpixel font shaping remains platform-specific."
+    ]
+  },
+  "motionAuthority": {
+    "sourceFiles": [
+      "apps/web/src/components/ui/dialog-styles.ts",
+      "apps/web/src/components/ui/command.tsx",
+      "apps/web/src/components/ui/tooltip.tsx",
+      "apps/web/src/components/ui/tooltip.lynx.tsx",
+      "apps/web/src/components/sidebar/SidebarV2CompositionSurface.tsx"
+    ],
+    "commandPalette": {
+      "durationMs": 200,
+      "easing": "ease-in-out",
+      "properties": ["opacity", "scale", "translate"],
+      "enter": "scale 0.98 and opacity 0 to scale 1 and opacity 1",
+      "exit": "scale 1 and opacity 1 to scale 0.98 and opacity 0",
+      "nativeCaptureGate": "three consecutive box-model samples within 0.05px"
+    },
+    "sidebarActionTooltip": {
+      "openDelayMs": 600,
+      "closeDelayMs": 0,
+      "durationMs": 150,
+      "easing": "ease-out",
+      "properties": ["opacity", "scale"],
+      "reducedMotion": "Lynx disables tooltip and palette animations under prefers-reduced-motion while preserving final state."
+    }
+  },
+  "browser": {
+    "status": "pass-with-explicit-provenance-boundary",
+    "viewport": [1280, 820],
+    "affectedCurrentHead": {
+      "head": "3f15a3420cf1afb5bd447323026f8c4a2ea0f510",
+      "webBundleSha256": "3c67a0af84303ccbbe832a63dda4f007aadb6a9c93dffae60cf95e008704d691",
+      "lynxBundleSha256": "0c333bfe740bb5b7564432d34def37b2b0b9adea79180656fdb9182aa1afa683",
+      "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+      "consoleErrors": 0,
+      "states": {
+        "sidebar-v2-new-thread-hover": {
+          "report": "/tmp/t3-sidebar-v2-hover-final-head2/new-thread/workbench-report.json",
+          "reportSha256": "307aa919225cb07d93d2788c9d655929b8d3eee84d0669a3d73f7f0e04ffa93c",
+          "delayAndDismiss": "pass",
+          "web": {
+            "text": "New thread (⇧⌘N)",
+            "rect": [251, 67, 125.140625, 26]
+          },
+          "lynx": {
+            "text": "New thread (⇧⌘N)",
+            "rect": [251, 67, 127.34375, 26]
+          }
+        },
+        "sidebar-v2-new-project-hover": {
+          "report": "/tmp/t3-sidebar-v2-hover-final-head2/new-project/workbench-report.json",
+          "reportSha256": "50f59dc3b75229423ee2cbd7f9445e0b4ca3c131a39b8f53222153da449474ed",
+          "delayAndDismiss": "pass",
+          "web": {
+            "text": "New project",
+            "rect": [251, 107, 85.1875, 26]
+          },
+          "lynx": {
+            "text": "New project",
+            "rect": [251, 107, 86.25, 26]
+          }
+        }
+      }
+    },
+    "unaffectedPostCommit": {
+      "head": "d9d4aae83924f1da958ea74d5d3f82a3da6a7a78",
+      "webBundleSha256": "3c67a0af84303ccbbe832a63dda4f007aadb6a9c93dffae60cf95e008704d691",
+      "lynxBundleSha256": "c67af951e4f1c9b4a485a1162e960b65104461c96e8bf9e3afde1cb24a88aa0b",
+      "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+      "consoleErrors": 0,
+      "states": {
+        "sidebar-flat-layout": {
+          "report": "/tmp/t3-sidebar-v2-head/sidebar-default/workbench-report.json",
+          "reportSha256": "7c78e687f02ab416244924514741b5f1e680b3e0925b632db7e50d85486dc67e"
+        },
+        "sidebar-v2-new-thread-projects": {
+          "report": "/tmp/t3-sidebar-v2-head/new-thread-projects/workbench-report.json",
+          "reportSha256": "cc311d3257f575d6ba769be09e27a7441fbda55649e31f72d472ec040279fa7f",
+          "projectRows": ["t3code-lynxtron", "background-only"],
+          "panelHeight": {
+            "web": 230,
+            "lynx": 238
+          },
+          "openBackDismissReopen": "pass"
+        },
+        "add-project-sources": {
+          "report": "/tmp/t3-sidebar-v2-head/add-project-sources/workbench-report.json",
+          "reportSha256": "4e524c6752f95e8f7bf2ae5f6e17da96ae153cb41545466bce9034961ff5876e"
+        },
+        "command-palette-navigation": {
+          "report": "/tmp/t3-sidebar-v2-head/command-palette-navigation/workbench-report.json",
+          "reportSha256": "77e6528fca9294dca1307422dea91611fd1c095b79368b5cbe0b9706ecf1a65f"
+        },
+        "sidebar-flat-layout-light": {
+          "report": "/tmp/t3-sidebar-v2-head/sidebar-default-light/workbench-report.json",
+          "reportSha256": "3d0858eac75d88ecaa62e88629758cc5faa8dbe68a4f65e53e90e2c12877a58d"
+        }
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "head": "3f15a3420cf1afb5bd447323026f8c4a2ea0f510",
+    "bundleSha256": "b62bc4a842db230762984eed210faafcb766550af2a80d23d9c13830ce4550ea",
+    "bundleBytes": 5198091,
+    "snapshotSha256": "91af80a01ae40ae773328a97238b768831e54617848297f1ad6ed74d33d6b5e2",
+    "viewport": [1280, 820],
+    "dark": {
+      "sidebarReport": "/tmp/t3-sidebar-v2-native-final-head/sidebar-floating/report.json",
+      "sidebarReportSha256": "637c6614661d433eaf60065369a88f58c3b0eac9d72064f6914a3480e5e200f4",
+      "quickSwitchReport": "/tmp/t3-sidebar-v2-native-final-head/quick-switch/report.json",
+      "quickSwitchReportSha256": "8b97c465b851bdf4adebf82e900d50876fb9e6aa82e93ec38173c3d338431601",
+      "quickSwitchScreenshot": "/tmp/t3-sidebar-v2-native-final-head/quick-switch/native-quick-switch-dark.png",
+      "quickSwitchScreenshotSha256": "8ffc812d03caa50cecdfff39aa7fb19c348c3baddeebade3f766313d2cc45f69",
+      "quickSwitchPanel": [353, 82, 573.9616088867188, 397.973388671875],
+      "quickSwitchDismissed": true
+    },
+    "light": {
+      "sidebarReport": "/tmp/t3-sidebar-v2-native-final-light/report.json",
+      "sidebarReportSha256": "8352cafb52d46f7f182fc2ff53509897b2c1a8ac0143533e682dcd46f8b33ca0"
+    },
+    "sidebar": {
+      "insets": {
+        "left": 8,
+        "right": 9
+      },
+      "projectScope": [7, 102, 205, 32],
+      "newProject": [216, 102, 32, 32],
+      "workingProjection": {
+        "sessionStatus": "idle",
+        "workingExpected": false,
+        "workingVisible": false
+      }
+    },
+    "actionTooltips": {
+      "newThread": {
+        "text": "New thread (⇧⌘N)",
+        "rect": [252, 66, 127.88607788085938, 25.97686004638672],
+        "relationResidual": 0.000121
+      },
+      "newProject": {
+        "text": "New project",
+        "rect": [252, 105, 86.92257690429688, 25.97686767578125],
+        "relationResidual": 0.00012
+      },
+      "delayAndDismiss": "pass",
+      "physicalPointer": "pending-user-session"
+    },
+    "transport": {
+      "kind": "main",
+      "sequenceAdvanced": true
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": "87/87",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "productionBuild": "pass with existing Effect import.meta and bundle-size warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every accepted run",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "remainingRisk": [
+    "Native physical pointer hover and physical Cmd+K remain pending-user-session.",
+    "Native New Thread project selection is not credited because this evidence slice did not execute a physical project-row selection.",
+    "A fresh full Browser suite on newly created snapshots hit an existing Web draft-route versus Lynx active-thread identity mismatch; rejected reports remain diagnostic-only and did not replace the accepted same-snapshot evidence."
+  ]
+}
