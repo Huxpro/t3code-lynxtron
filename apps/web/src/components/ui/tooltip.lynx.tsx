@@ -151,7 +151,7 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
       height: measured.height,
     };
     trigger.setAttribute("data-floating-anchor-rect", JSON.stringify(rect));
-    runOnBackground(reportHover)(true, rect);
+    await runOnBackground(reportHover)(true, rect);
   };
   const handleMouseLeave = () => {
     "main thread";
@@ -220,6 +220,12 @@ export function TooltipPopup({
 }) {
   const context = useContext(TooltipContext);
   const anchorRect = context?.anchorRect ?? null;
+  const content =
+    typeof children === "string" || typeof children === "number" ? (
+      <text className="lynx-tooltip-text">{children}</text>
+    ) : (
+      children
+    );
   const reportHover = useCallback(
     (inside: boolean, rect?: FloatingRect) => context?.setHover(inside, rect),
     [context],
@@ -258,7 +264,7 @@ export function TooltipPopup({
         }}
       >
         <view className={`lynx-tooltip-content-motion lynx-tooltip-content-motion--${variant}`}>
-          {children}
+          {content}
         </view>
       </view>
     </overlay>

@@ -234,6 +234,8 @@
 }
 .lynx-tooltip-popup {
   position: absolute;
+  width: max-content;
+  height: max-content;
   pointer-events: none;
   overflow: visible;
 }
@@ -256,6 +258,13 @@
   font-size: 12px;
   line-height: 16px;
   box-sizing: border-box;
+}
+.lynx-tooltip-text {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: nowrap;
 }
 .lynx-tooltip-content-motion--glass {
   padding: 0;
