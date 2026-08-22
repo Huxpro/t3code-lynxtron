@@ -39,7 +39,8 @@ export function DiffPanel({
   readonly turnId?: TurnId | null;
   readonly filePath?: string | null;
 }) {
-  const { activeThreadId, checkpoints, projects, sessionStatus, threads } = useT3ClientState();
+  const { activeThreadId, checkpoints, draftThread, projects, sessionStatus, threads } =
+    useT3ClientState();
   const orderedCheckpoints = useMemo(() => latestFirst(checkpoints), [checkpoints]);
   const [scope, setScope] = useState<LynxDiffScope>(() => initialDiffScope(turnId));
   const [scopeMenuOpen, setScopeMenuOpen] = useState(false);
@@ -57,7 +58,9 @@ export function DiffPanel({
     }
   }, [turnId]);
   const selectedCheckpoint = selectedDiffCheckpoint(orderedCheckpoints, scope);
-  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const activeThread =
+    threads.find((thread) => thread.id === activeThreadId) ??
+    (draftThread?.id === activeThreadId ? draftThread : undefined);
   const activeProject =
     projects.find((project) => project.id === activeThread?.projectId) ?? projects[0];
   const activeCwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;

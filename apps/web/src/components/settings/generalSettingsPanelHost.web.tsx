@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import { useAtomValue } from "@effect/atom-react";
 import {
   type BackgroundActivityProfile,
-  type BackgroundActivitySettings,
   type DesktopUpdateChannel,
   ProviderDriverKind,
 } from "@t3tools/contracts";
@@ -14,10 +13,7 @@ import {
   deriveProviderInstanceEntries,
   sortProviderInstanceEntries,
 } from "@t3tools/client-runtime/presentation/provider";
-import {
-  getBackgroundActivityBaseProfile,
-  resolveServerBackgroundActivitySettings,
-} from "@t3tools/shared/backgroundActivitySettings";
+import { resolveServerBackgroundActivitySettings } from "@t3tools/shared/backgroundActivitySettings";
 import { createModelSelection } from "@t3tools/shared/model";
 import * as Duration from "effect/Duration";
 import * as Equal from "effect/Equal";
@@ -63,7 +59,11 @@ import { Switch } from "../ui/switch";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import {
+  backgroundActivityOverrideSettings,
   backgroundActivitySharedPolicySettings,
+  durationToSeconds,
+  normalizeIntervalSeconds,
+  PROVIDER_HEALTH_INTERVAL_STEP_SECONDS,
   resolveBackgroundActivityProfileOption,
 } from "./SettingsPanels.logic";
 import { SettingResetButton, SettingsRow } from "./settingsLayout";
@@ -75,12 +75,6 @@ const BACKGROUND_ACTIVITY_PROFILE_LABELS: Record<BackgroundActivityProfile, stri
 };
 
 type BackgroundActivityProfileOption = BackgroundActivityProfile | "advanced";
-type BackgroundActivityOverridePatch = Partial<{
-  [K in keyof BackgroundActivitySettings["overrides"]]:
-    | BackgroundActivitySettings["overrides"][K]
-    | undefined;
-}>;
-
 const BACKGROUND_ACTIVITY_PROFILE_OPTION_LABELS: Record<BackgroundActivityProfileOption, string> = {
   ...BACKGROUND_ACTIVITY_PROFILE_LABELS,
   advanced: "Advanced",
@@ -98,7 +92,12 @@ const ADVANCED_BACKGROUND_ACTIVITY_DESCRIPTION =
 
 export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = false;
 
-export const PROVIDER_HEALTH_INTERVAL_STEP_SECONDS = 30;
+export {
+  backgroundActivityOverrideSettings,
+  durationToSeconds,
+  normalizeIntervalSeconds,
+  PROVIDER_HEALTH_INTERVAL_STEP_SECONDS,
+};
 const DEFAULT_DRIVER_KIND = ProviderDriverKind.make("codex");
 const BACKGROUND_ACTIVITY_BOOLEAN_OVERRIDES: ReadonlyArray<{
   readonly key:
@@ -114,17 +113,6 @@ const BACKGROUND_ACTIVITY_BOOLEAN_OVERRIDES: ReadonlyArray<{
   { key: "pauseWhenOnBattery", label: "Pause on battery" },
 ];
 
-export function durationToSeconds(duration: Duration.Duration): number {
-  return Math.round(Duration.toMillis(duration) / 1_000);
-}
-
-export function normalizeIntervalSeconds(value: number | null, minimum = 0): number {
-  if (value === null || !Number.isFinite(value)) {
-    return minimum;
-  }
-  return Math.max(minimum, Math.round(value));
-}
-
 export function resetBackgroundActivitySettings() {
   return {
     backgroundActivity: DEFAULT_UNIFIED_SETTINGS.backgroundActivity,
@@ -137,38 +125,6 @@ function backgroundActivityProfileSettings(profile: BackgroundActivityProfile) {
       schemaVersion: 1 as const,
       profile,
       overrides: {},
-    },
-  };
-}
-
-export function backgroundActivityOverrideSettings(
-  current: BackgroundActivitySettings,
-  resolved: ReturnType<typeof resolveServerBackgroundActivitySettings>,
-  overrides: BackgroundActivityOverridePatch,
-) {
-  const nextOverrides: BackgroundActivityOverridePatch = {
-    automaticGitFetchInterval: resolved.automaticGitFetchInterval,
-    providerHealthRefreshInterval: resolved.providerHealthRefreshInterval,
-    hostPowerMonitorActiveInterval: resolved.hostPowerMonitorActiveInterval,
-    hostPowerMonitorIdleInterval: resolved.hostPowerMonitorIdleInterval,
-    idleClientTtl: resolved.idleClientTtl,
-    pauseWhenHostLocked: resolved.pauseWhenHostLocked,
-    pauseWhenHostLowPower: resolved.pauseWhenHostLowPower,
-    pauseWhenClientLowPower: resolved.pauseWhenClientLowPower,
-    pauseWhenOnBattery: resolved.pauseWhenOnBattery,
-    ...overrides,
-  };
-  for (const [key, value] of Object.entries(nextOverrides)) {
-    if (value === undefined) {
-      delete nextOverrides[key as keyof typeof nextOverrides];
-    }
-  }
-  return {
-    backgroundActivity: {
-      schemaVersion: 1 as const,
-      profile: "custom" as const,
-      baseProfile: getBackgroundActivityBaseProfile(current),
-      overrides: nextOverrides as BackgroundActivitySettings["overrides"],
     },
   };
 }

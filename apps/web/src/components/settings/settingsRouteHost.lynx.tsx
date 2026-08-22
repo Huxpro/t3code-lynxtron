@@ -70,6 +70,7 @@ export function SettingsRouteHost({
           }
         >
           <view
+            flatten={false}
             className={
               contentId ? `settings-content settings-content--${contentId}` : "settings-content"
             }

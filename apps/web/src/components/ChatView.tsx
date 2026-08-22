@@ -5875,6 +5875,8 @@ function ChatViewContent(props: ChatViewProps) {
 
   return (
     <ChatRouteSurface
+      activeThreadKind={routeKind}
+      activeThreadId={threadId}
       layoutControls={rightPanelOpen && !shouldUsePlanSidebarSheet ? panelLayoutControls : null}
       header={chatHeaderNode}
       banner={

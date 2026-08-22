@@ -1,19 +1,16 @@
 import type { ScopedProjectRef } from "@t3tools/contracts";
 import { useCallback } from "react";
 
-import { t3ClientActions } from "../../../lynxtron/src/app/state/t3Client";
+import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
+import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../../../lynxtron/src/app/state/environment";
 
 export type DraftThreadEnvMode = "local" | "worktree";
 
-/**
- * Lynx does not create a Web-only draft route. It dispatches the canonical
- * project-scoped thread command and lets the host select the resulting thread.
- */
 export function useNewThreadHandler() {
   return useCallback(
     async (
       projectRef: ScopedProjectRef,
-      _options?: {
+      options?: {
         branch?: string | null;
         worktreePath?: string | null;
         envMode?: DraftThreadEnvMode;
@@ -21,17 +18,24 @@ export function useNewThreadHandler() {
         replace?: boolean;
       },
     ): Promise<void> => {
-      await t3ClientActions.createThread(projectRef.projectId);
+      await t3ClientActions.createThread(projectRef.projectId, options);
     },
     [],
   );
 }
 
 export function useHandleNewThread() {
+  const { activeThreadId, draftThread, projects, threads } = useT3ClientState();
+  const activeThread = threads.find((thread) => thread.id === activeThreadId);
   return {
-    activeDraftThread: null,
-    activeThread: null,
-    defaultProjectRef: null,
+    activeDraftThread: draftThread ?? null,
+    activeThread,
+    defaultProjectRef: projects[0]
+      ? {
+          environmentId: LYNX_PRIMARY_ENVIRONMENT_ID,
+          projectId: projects[0].id,
+        }
+      : null,
     handleNewThread: useNewThreadHandler(),
   };
 }

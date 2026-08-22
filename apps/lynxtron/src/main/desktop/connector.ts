@@ -25,7 +25,7 @@ import {
   type AuthAccessPresentation,
 } from "@t3tools/client-runtime/presentation/connections";
 import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
-import { projectThreadTurnDispatchState } from "@t3tools/client-runtime/operations/thread-dispatch";
+import { buildThreadTurnStartCommand } from "@t3tools/client-runtime/operations/thread-dispatch";
 import { deriveProviderModelSelectionProjection } from "@t3tools/client-runtime/presentation/model-picker";
 import { applyShellStreamEvent } from "@t3tools/client-runtime/state/shell";
 import {
@@ -47,8 +47,11 @@ import {
   WsRpcGroup,
   WS_METHODS,
   ORCHESTRATION_WS_METHODS,
+  CommandId,
   DEFAULT_PROVIDER_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
+  MessageId,
+  ThreadId,
   type EditorId,
   type FilesystemBrowseInput,
   type FilesystemBrowseResult,
@@ -948,32 +951,27 @@ export class T3Connector {
     bootstrap?: ThreadTurnStartBootstrap;
   }): Promise<void> {
     await this.awaitRecoveredTransport();
+    const bootstrap = materializeTurnBootstrap(input.bootstrap);
     const thread =
       this.shellSnapshot?.threads.find((candidate) => candidate.id === input.threadId) ??
       this.threadSnapshots.get(input.threadId);
-    if (!thread) {
+    const command = buildThreadTurnStartCommand({
+      threadId: ThreadId.make(input.threadId),
+      text: input.text,
+      thread,
+      pendingModelSelection: this.pendingThreadModelSelections.get(input.threadId),
+      bootstrap,
+      commandId: CommandId.make(crypto.randomUUID()),
+      messageId: MessageId.make(crypto.randomUUID()),
+      createdAt: new Date().toISOString(),
+    });
+    if (!command) {
       throw new Error(`thread ${input.threadId} is not present in the canonical snapshot`);
     }
-    const dispatchState = projectThreadTurnDispatchState(
-      thread,
-      this.pendingThreadModelSelections.get(input.threadId),
-    );
-    const bootstrap = materializeTurnBootstrap(input.bootstrap);
-    const command = {
-      type: "thread.turn.start",
-      commandId: crypto.randomUUID(),
-      threadId: input.threadId,
-      message: {
-        messageId: crypto.randomUUID(),
-        role: "user",
-        text: input.text,
-        attachments: [],
-      },
-      ...dispatchState,
-      ...(bootstrap ? { bootstrap } : {}),
-      createdAt: new Date().toISOString(),
-    };
     await this.dispatchOrchestrationCommand(command);
+    if (!thread && bootstrap?.createThread) {
+      this.selectThread(input.threadId);
+    }
   }
 
   async interrupt(input: { threadId: string; turnId?: TurnId }): Promise<void> {

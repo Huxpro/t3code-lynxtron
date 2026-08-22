@@ -59,6 +59,21 @@ export function HostView({
   );
 }
 
+export function HostLayoutView({
+  children,
+  onClick,
+  ...props
+}: Record<string, unknown> & {
+  readonly children?: ReactNode;
+  readonly onClick?: () => void;
+}) {
+  return (
+    <view {...props} flatten={false} bindtap={onClick}>
+      {children}
+    </view>
+  );
+}
+
 export function HostListItem({
   children,
   ...props
@@ -127,6 +142,7 @@ export function HostHeadline({
 }
 
 export function HostButton({
+  "aria-expanded": ariaExpanded,
   children,
   onClick,
   onKeyDown,
@@ -158,6 +174,7 @@ export function HostButton({
   return (
     <view
       {...props}
+      aria-expanded={ariaExpanded}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
       {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
@@ -173,13 +190,19 @@ export function HostButton({
 export function HostText({
   children,
   className,
+  onClick,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly className?: string;
+  readonly onClick?: () => void;
 }) {
   return (
-    <text {...props} className={className ? `lynx-host-text ${className}` : "lynx-host-text"}>
+    <text
+      {...props}
+      className={className ? `lynx-host-text ${className}` : "lynx-host-text"}
+      bindtap={onClick}
+    >
       {children}
     </text>
   );

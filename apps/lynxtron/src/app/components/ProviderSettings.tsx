@@ -1,12 +1,15 @@
-import { useCallback, useMemo, useState } from "@lynx-js/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
 import {
   deriveModelPickerModels,
   describeUnavailableProviderInstance,
   type ModelPickerModel,
 } from "@t3tools/client-runtime/presentation/model-picker";
+import { redactSourceControlAccount } from "@t3tools/client-runtime/presentation/source-control";
 import {
   getProviderSummary,
   getProviderVersionLabel,
+  normalizeProviderAccentColor,
+  sortProviderInstanceEntries,
   type ProviderInstanceEntry,
   type ProviderStatusKey,
 } from "@t3tools/client-runtime/presentation/provider";
@@ -20,6 +23,7 @@ import {
 } from "@t3tools/client-runtime/presentation/provider-settings-fields";
 import { withProviderCustomModels } from "@t3tools/client-runtime/presentation/provider-settings";
 import {
+  DEFAULT_SERVER_SETTINGS,
   ClaudeSettings,
   CodexSettings,
   CursorSettings,
@@ -31,14 +35,43 @@ import {
   type ProviderInstanceEnvironmentVariable,
   type ServerSettings,
 } from "@t3tools/contracts";
+import {
+  getBackgroundActivityPresetSettings,
+  resolveServerBackgroundActivitySettings,
+} from "@t3tools/shared/backgroundActivitySettings";
+import * as Duration from "effect/Duration";
+import {
+  ADD_PROVIDER_WIZARD_STEPS,
+  resolveWizardNavigation,
+} from "../../../../web/src/components/settings/AddProviderInstanceDialog.logic";
 import { ProviderInstanceCardSurface } from "../../../../web/src/components/settings/SettingsSurfaces";
+import {
+  backgroundActivityOverrideSettings,
+  durationToSeconds,
+  normalizeIntervalSeconds,
+  PROVIDER_HEALTH_INTERVAL_STEP_SECONDS,
+} from "../../../../web/src/components/settings/SettingsPanels.logic";
 import { DraftInput } from "../../../../web/src/components/ui/draft-input";
+import {
+  NumberField,
+  NumberFieldDecrement,
+  NumberFieldGroup,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "../../../../web/src/components/ui/number-field";
 import { Textarea } from "../../../../web/src/components/ui/textarea";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import { uiActions } from "../state/uiState";
 import type { ModelInfo } from "../bridge";
 import { Icon } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
-import { SettingsSection, SmallButton, SmallIconButton, Toggle } from "./SettingsControls";
+import {
+  SettingsRow,
+  SettingsSection,
+  SmallButton,
+  SmallIconButton,
+  Toggle,
+} from "./SettingsControls";
 
 interface ProviderCardProps {
   entry: ProviderInstanceEntry;
@@ -67,6 +100,136 @@ const PROVIDER_SETTINGS_SCHEMAS: Readonly<Record<string, ProviderSettingsSchema>
   opencode: OpenCodeSettings,
 };
 
+const PROVIDER_SETTINGS_DRIVER_ORDER = Object.keys(PROVIDER_SETTINGS_SCHEMAS).map((driver) =>
+  ProviderDriverKind.make(driver),
+);
+
+const PROVIDER_ACCENT_SWATCHES = [
+  "#2563eb",
+  "#16a34a",
+  "#ea580c",
+  "#dc2626",
+  "#7c3aed",
+  "#0891b2",
+] as const;
+
+const COMING_SOON_PROVIDER_DRIVERS = [
+  { driver: ProviderDriverKind.make("githubCopilot"), label: "Github Copilot" },
+  { driver: ProviderDriverKind.make("gemini"), label: "Gemini" },
+  { driver: ProviderDriverKind.make("acpRegistry"), label: "ACP Registry" },
+  { driver: ProviderDriverKind.make("piAgent"), label: "Pi Agent" },
+] as const;
+
+const PROVIDER_MOTION_DURATION_MS = 200;
+
+const PROVIDER_DRIVER_LABELS: Readonly<Record<string, string>> = {
+  codex: "Codex",
+  claudeAgent: "Claude",
+  cursor: "Cursor",
+  grok: "Grok",
+  opencode: "OpenCode",
+};
+
+function providerLabel(driver: ProviderDriverKind): string {
+  return PROVIDER_DRIVER_LABELS[driver] ?? String(driver);
+}
+
+function deriveProviderInstanceId(driver: ProviderDriverKind, label: string): string {
+  const slug = label
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 48);
+  return slug ? `${driver}_${slug}` : "";
+}
+
+function validateProviderInstanceId(
+  instanceId: string,
+  existingIds: ReadonlyArray<string>,
+): string | null {
+  if (!instanceId) return "Instance ID is required.";
+  if (!/^[a-zA-Z][a-zA-Z0-9_-]{0,63}$/.test(instanceId)) {
+    return "Instance ID must start with a letter and use only letters, digits, '-', or '_'.";
+  }
+  if (existingIds.includes(instanceId)) {
+    return `An instance named '${instanceId}' already exists.`;
+  }
+  return null;
+}
+
+function prefersReducedMotion(): boolean {
+  const target = globalThis as {
+    readonly matchMedia?: (query: string) => { readonly matches: boolean };
+  };
+  return target.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+}
+
+type ProviderMotionPhase = "closed" | "entering" | "open" | "exiting";
+
+function useProviderPresence(open: boolean): {
+  readonly phase: ProviderMotionPhase;
+  readonly present: boolean;
+} {
+  const [present, setPresent] = useState(open);
+  const [phase, setPhase] = useState<ProviderMotionPhase>(open ? "open" : "closed");
+  const presentRef = useRef(open);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    if (prefersReducedMotion()) {
+      presentRef.current = open;
+      setPresent(open);
+      setPhase(open ? "open" : "closed");
+      return;
+    }
+    if (open) {
+      presentRef.current = true;
+      setPresent(true);
+      setPhase("entering");
+      timerRef.current = setTimeout(() => {
+        setPhase("open");
+        timerRef.current = null;
+      }, PROVIDER_MOTION_DURATION_MS);
+      return;
+    }
+    if (!presentRef.current) {
+      setPhase("closed");
+      return;
+    }
+    setPhase("exiting");
+    timerRef.current = setTimeout(() => {
+      presentRef.current = false;
+      setPresent(false);
+      setPhase("closed");
+      timerRef.current = null;
+    }, PROVIDER_MOTION_DURATION_MS);
+  }, [open]);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current !== null) clearTimeout(timerRef.current);
+    },
+    [],
+  );
+
+  return { phase, present };
+}
+
+function inputValue(event: unknown): string {
+  const input = event as {
+    readonly detail?: { readonly value?: unknown };
+    readonly target?: { readonly value?: unknown };
+    readonly currentTarget?: { readonly value?: unknown };
+  };
+  const value = input.detail?.value ?? input.target?.value ?? input.currentTarget?.value;
+  return typeof value === "string" ? value : "";
+}
+
 function effectiveProviderInstance(
   entry: ProviderInstanceEntry,
   settings: ServerSettings | undefined,
@@ -84,15 +247,15 @@ function effectiveProviderInstance(
 }
 
 function ProviderConfigFields({
-  entry,
+  driver,
   instance,
   onChange,
 }: {
-  entry: ProviderInstanceEntry;
+  driver: ProviderDriverKind;
   instance: ProviderInstanceConfig;
   onChange: (next: ProviderInstanceConfig) => void;
 }) {
-  const schema = PROVIDER_SETTINGS_SCHEMAS[entry.driverKind];
+  const schema = PROVIDER_SETTINGS_SCHEMAS[driver];
   const fields = useMemo(() => (schema ? deriveProviderSettingsFields(schema) : []), [schema]);
   if (fields.length === 0) return null;
   return (
@@ -242,6 +405,8 @@ function ProviderCard({
   onDelete,
 }: ProviderCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const bodyPresence = useProviderPresence(expanded);
+  const [authEmailRevealed, setAuthEmailRevealed] = useState(false);
   const models = useMemo(
     () => deriveModelPickerModels([entry], { includeDisabled: true }),
     [entry],
@@ -251,6 +416,17 @@ function ProviderCard({
     ...entry.snapshot,
     enabled: entry.enabled,
   });
+  const authEmail = entry.snapshot.auth.email?.trim();
+  const authenticatedDetail =
+    entry.snapshot.auth.status === "authenticated" && authEmail
+      ? (entry.snapshot.auth.label ?? entry.snapshot.auth.type ?? null)
+      : null;
+  const summaryHeadline =
+    entry.snapshot.auth.status === "authenticated" && authEmail
+      ? `Authenticated as ${
+          authEmailRevealed ? authEmail : redactSourceControlAccount(authEmail)
+        }${authenticatedDetail ? ` · ${authenticatedDetail}` : ""}`
+      : `${summary.headline}${summary.detail ? ` - ${summary.detail}` : ""}`;
   const versionLabel = getProviderVersionLabel(entry.snapshot.version);
   const unavailableReason = describeUnavailableProviderInstance(entry);
   const canUpdate =
@@ -281,17 +457,35 @@ function ProviderCard({
         </view>
       }
       title={entry.displayName}
+      badge={
+        entry.driverKind === "cursor" || entry.driverKind === "grok" ? (
+          <text className="provider-card__badge">Early Access</text>
+        ) : undefined
+      }
       version={
         versionLabel ? (
           <text className="text-xs text-muted-foreground">{versionLabel}</text>
         ) : undefined
       }
-      summaryHeadline={updating ? "Updating…" : summary.headline}
-      summaryDetail={summary.detail ?? undefined}
+      summaryHeadline={updating ? "Updating…" : summaryHeadline}
+      summaryAriaLabel={
+        entry.snapshot.auth.status === "authenticated" && authEmail
+          ? authEmailRevealed
+            ? "Hide account email"
+            : "Reveal account email"
+          : undefined
+      }
+      onSummaryClick={
+        entry.snapshot.auth.status === "authenticated" && authEmail
+          ? () => setAuthEmailRevealed((current) => !current)
+          : undefined
+      }
       titleTrailing={
         canUpdate ? (
-          <SmallButton
-            label={updating ? "Updating…" : "Update"}
+          <SmallIconButton
+            label={updating ? "Updating provider" : "Update available — update provider"}
+            disabled={updating}
+            icon={<Icon name="arrow-up" size={12} color="#818181" />}
             onTap={updating ? undefined : () => onUpdateProvider(entry.instanceId)}
           />
         ) : undefined
@@ -302,10 +496,20 @@ function ProviderCard({
       expandChevron={
         <Icon name={expanded ? "chevron-down" : "chevron-right"} size={16} color="#a1a1aa" />
       }
-      toggle={<Toggle value={entry.enabled} onChange={handleEnabledChange} />}
+      toggle={
+        <Toggle
+          ariaLabel={`Enable ${entry.displayName}`}
+          value={entry.enabled}
+          onChange={handleEnabledChange}
+        />
+      }
       body={
-        expanded ? (
-          <view className="provider-card__body">
+        bodyPresence.present ? (
+          <view
+            className={`provider-card__body provider-card__body--${bodyPresence.phase}`}
+            data-provider-card-expanded={expanded ? "true" : "false"}
+            data-provider-card-motion={bodyPresence.phase}
+          >
             <view className="provider-card__config-field">
               <text className="provider-card__config-label">Display name</text>
               <DraftInput
@@ -339,7 +543,7 @@ function ProviderCard({
               />
             </view>
             <ProviderConfigFields
-              entry={entry}
+              driver={entry.driverKind}
               instance={instance}
               onChange={(next) => onInstanceChange(entry.instanceId, next)}
             />
@@ -424,6 +628,309 @@ function ProviderCard({
   );
 }
 
+export function AddProviderInstanceDialog({
+  open,
+  onClose,
+}: {
+  readonly open: boolean;
+  readonly onClose: () => void;
+}) {
+  const { settings } = useT3ClientState();
+  const presence = useProviderPresence(open);
+  const wasOpenRef = useRef(false);
+  const [wizardStep, setWizardStep] = useState(0);
+  const [driver, setDriver] = useState(ProviderDriverKind.make("codex"));
+  const [label, setLabel] = useState("");
+  const [instanceIdDraft, setInstanceIdDraft] = useState("");
+  const [accentColor, setAccentColor] = useState("");
+  const [configByDriver, setConfigByDriver] = useState<Readonly<Record<string, unknown>>>({});
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    if (open && !wasOpenRef.current) {
+      setWizardStep(0);
+      setDriver(ProviderDriverKind.make("codex"));
+      setLabel("");
+      setInstanceIdDraft("");
+      setAccentColor("");
+      setConfigByDriver({});
+      setHasAttemptedSubmit(false);
+      setError(null);
+      setSaving(false);
+    }
+    wasOpenRef.current = open;
+  }, [open]);
+  const instanceId = instanceIdDraft.trim() || deriveProviderInstanceId(driver, label);
+  const existingIds = Object.keys(settings?.providerInstances ?? {});
+  const instanceIdError = validateProviderInstanceId(instanceId, existingIds);
+  const configDraft = configByDriver[driver];
+  const instanceDraft: ProviderInstanceConfig = {
+    driver,
+    enabled: true,
+    ...(label.trim() ? { displayName: label.trim() } : {}),
+    ...(normalizeProviderAccentColor(accentColor)
+      ? { accentColor: normalizeProviderAccentColor(accentColor) }
+      : {}),
+    ...(configDraft === undefined ? {} : { config: configDraft }),
+  };
+  const navigateToStep = useCallback(
+    (requestedStep: number) => {
+      const navigation = resolveWizardNavigation(
+        wizardStep,
+        requestedStep,
+        ADD_PROVIDER_WIZARD_STEPS.length,
+        { instanceIdError },
+      );
+      if (navigation.kind === "blocked") {
+        setHasAttemptedSubmit(true);
+        setError(navigation.error);
+      } else {
+        setError(null);
+      }
+      setWizardStep(navigation.step);
+    },
+    [instanceIdError, wizardStep],
+  );
+  const save = useCallback(() => {
+    setHasAttemptedSubmit(true);
+    if (instanceIdError) {
+      setError(instanceIdError);
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    void t3ClientActions
+      .createProviderInstance(ProviderInstanceId.make(instanceId), instanceDraft)
+      .then(onClose)
+      .catch((cause) => setError(cause instanceof Error ? cause.message : String(cause)))
+      .finally(() => setSaving(false));
+  }, [instanceDraft, instanceId, instanceIdError, onClose]);
+
+  if (!presence.present) return null;
+
+  return (
+    <>
+      <view
+        className={`provider-instance-dialog-overlay provider-instance-dialog-overlay--${presence.phase}`}
+        aria-label="Dismiss Add provider instance"
+        data-provider-dialog-motion={presence.phase}
+        bindtap={onClose}
+      />
+      <view
+        className={`provider-instance-dialog provider-instance-dialog--${presence.phase} flex flex-col`}
+        aria-label="Add provider instance"
+        data-provider-instance-dialog="true"
+        data-provider-dialog-motion={presence.phase}
+        data-provider-wizard-step={String(wizardStep)}
+        catchtap={() => undefined}
+      >
+        <view className="provider-instance-dialog__close" aria-label="Close" bindtap={onClose}>
+          <Icon name="x" size={16} color="#818181" />
+        </view>
+        <view className="provider-instance-dialog__header flex flex-col">
+          <text className="provider-instance-dialog__title">Add provider instance</text>
+          <text className="provider-instance-dialog__description">
+            Configure an additional provider instance — for example, a second Codex install pointed
+            at a different workspace.
+          </text>
+          <view className="provider-instance-dialog__steps">
+            {ADD_PROVIDER_WIZARD_STEPS.map((step, index) => (
+              <view
+                key={step}
+                className={
+                  index === wizardStep
+                    ? "provider-instance-dialog__step provider-instance-dialog__step--active"
+                    : "provider-instance-dialog__step"
+                }
+                aria-current={index === wizardStep ? "step" : undefined}
+                aria-label={`${step}, step ${index + 1}`}
+                bindtap={() => navigateToStep(index)}
+              >
+                <view className="provider-instance-dialog__step-number">
+                  <text className="provider-instance-dialog__step-number-label">
+                    {index < wizardStep ? "✓" : String(index + 1)}
+                  </text>
+                </view>
+                <text className="provider-instance-dialog__step-label">{step}</text>
+              </view>
+            ))}
+          </view>
+        </view>
+        <scroll-view
+          className="provider-instance-dialog__body"
+          scroll-y
+          scroll-orientation="vertical"
+        >
+          <view
+            className={`provider-instance-dialog__step-content provider-instance-dialog__step-content--${wizardStep}`}
+          >
+            {wizardStep === 0 ? (
+              <>
+                <view className="provider-instance-dialog__driver-heading" flatten={false}>
+                  <text className="provider-instance-dialog__label">Driver</text>
+                </view>
+                <view className="provider-instance-dialog__drivers">
+                  {PROVIDER_SETTINGS_DRIVER_ORDER.map((option) => (
+                    <view
+                      key={option}
+                      className={
+                        option === driver
+                          ? "provider-instance-dialog__driver provider-instance-dialog__driver--selected"
+                          : "provider-instance-dialog__driver"
+                      }
+                      aria-checked={option === driver ? "true" : "false"}
+                      bindtap={() => setDriver(option)}
+                    >
+                      <ProviderBrandIcon driverKind={option} size={16} />
+                      <text className="provider-instance-dialog__driver-label">
+                        {providerLabel(option)}
+                      </text>
+                      {option === "cursor" || option === "grok" ? (
+                        <text className="provider-instance-dialog__early-access">Early Access</text>
+                      ) : null}
+                      {option === driver ? (
+                        <text className="provider-instance-dialog__driver-check">✓</text>
+                      ) : null}
+                    </view>
+                  ))}
+                  {COMING_SOON_PROVIDER_DRIVERS.map((option) => (
+                    <view
+                      key={option.driver}
+                      className="provider-instance-dialog__driver provider-instance-dialog__driver--disabled"
+                      aria-disabled="true"
+                    >
+                      <text className="provider-instance-dialog__driver-label">{option.label}</text>
+                      <text className="provider-instance-dialog__coming-soon">Coming Soon</text>
+                    </view>
+                  ))}
+                </view>
+              </>
+            ) : null}
+            {wizardStep === 1 ? (
+              <>
+                <view className="provider-instance-dialog__identity-field" flatten={false}>
+                  <text className="provider-instance-dialog__label">Label</text>
+                  <view className="provider-instance-dialog__input-shell" flatten={false}>
+                    <input
+                      className="provider-instance-dialog__input"
+                      aria-label="Provider instance label"
+                      placeholder="e.g. Work"
+                      {...({ value: label } as object)}
+                      bindinput={(event: unknown) => {
+                        setLabel(inputValue(event));
+                        if (hasAttemptedSubmit) setError(null);
+                      }}
+                    />
+                  </view>
+                  <view className="provider-instance-dialog__helper" flatten={false}>
+                    <text className="provider-instance-dialog__hint">
+                      Shown in the provider list. Optional.
+                    </text>
+                  </view>
+                </view>
+                <view className="provider-instance-dialog__identity-field" flatten={false}>
+                  <text className="provider-instance-dialog__label">Instance ID</text>
+                  <view className="provider-instance-dialog__input-shell" flatten={false}>
+                    <input
+                      className="provider-instance-dialog__input"
+                      aria-label="Provider instance ID"
+                      placeholder={`${driver}_work`}
+                      {...({ value: instanceId } as object)}
+                      bindinput={(event: unknown) => {
+                        setInstanceIdDraft(inputValue(event));
+                        if (hasAttemptedSubmit) setError(null);
+                      }}
+                    />
+                  </view>
+                  <view className="provider-instance-dialog__helper" flatten={false}>
+                    {hasAttemptedSubmit && instanceIdError ? (
+                      <text className="provider-instance-dialog__error">
+                        {error ?? instanceIdError}
+                      </text>
+                    ) : (
+                      <text className="provider-instance-dialog__hint">
+                        Routing key used by threads and sessions. Letters, digits, '-', or '_'.
+                      </text>
+                    )}
+                  </view>
+                </view>
+                <view className="provider-instance-dialog__identity-field" flatten={false}>
+                  <text className="provider-instance-dialog__label">Accent color</text>
+                  <view className="provider-instance-dialog__swatches">
+                    {PROVIDER_ACCENT_SWATCHES.map((swatch) => (
+                      <view
+                        key={swatch}
+                        className={
+                          accentColor === swatch
+                            ? "provider-instance-dialog__swatch provider-instance-dialog__swatch--selected"
+                            : "provider-instance-dialog__swatch"
+                        }
+                        aria-label={`Use ${swatch} accent`}
+                        style={{ backgroundColor: swatch }}
+                        bindtap={() => setAccentColor(swatch)}
+                      />
+                    ))}
+                  </view>
+                  <view className="provider-instance-dialog__helper" flatten={false}>
+                    <text className="provider-instance-dialog__hint">
+                      Optional marker shown in the picker.
+                    </text>
+                  </view>
+                </view>
+              </>
+            ) : null}
+            {wizardStep === 2 ? (
+              <ProviderConfigFields
+                driver={driver}
+                instance={instanceDraft}
+                onChange={(next) =>
+                  setConfigByDriver((current) => ({
+                    ...current,
+                    [driver]: next.config ?? {},
+                  }))
+                }
+              />
+            ) : null}
+          </view>
+        </scroll-view>
+        <view className="provider-instance-dialog__footer">
+          <SmallButton
+            className="provider-instance-dialog__secondary"
+            label={wizardStep === 0 ? "Cancel" : "Back"}
+            onTap={() => {
+              if (wizardStep === 0) onClose();
+              else navigateToStep(wizardStep - 1);
+            }}
+          />
+          {wizardStep < ADD_PROVIDER_WIZARD_STEPS.length - 1 ? (
+            <view
+              className="provider-instance-dialog__save"
+              bindtap={() => navigateToStep(wizardStep + 1)}
+            >
+              <text className="provider-instance-dialog__save-label">Next</text>
+            </view>
+          ) : (
+            <view
+              className={
+                saving
+                  ? "provider-instance-dialog__save provider-instance-dialog__save--disabled"
+                  : "provider-instance-dialog__save"
+              }
+              aria-disabled={saving ? "true" : undefined}
+              bindtap={saving ? undefined : save}
+            >
+              <text className="provider-instance-dialog__save-label">
+                {saving ? "Adding…" : "Add instance"}
+              </text>
+            </view>
+          )}
+        </view>
+      </view>
+    </>
+  );
+}
+
 export function ProviderSettings() {
   const {
     providerEntries,
@@ -440,9 +947,19 @@ export function ProviderSettings() {
     updateProvider,
     updateProviderInstance,
   } = t3ClientActions;
-  const [newDriver, setNewDriver] = useState<"codex" | "claudeAgent">("codex");
-  const [newInstanceId, setNewInstanceId] = useState("");
-  const [newDisplayName, setNewDisplayName] = useState("");
+  const effectiveSettings = settings ?? DEFAULT_SERVER_SETTINGS;
+  const resolvedBackgroundActivity = resolveServerBackgroundActivitySettings(effectiveSettings);
+  const providerHealthPreset = getBackgroundActivityPresetSettings(
+    resolvedBackgroundActivity.profile,
+  ).providerHealthRefreshInterval;
+  const providerHealthRefreshIntervalSeconds = durationToSeconds(
+    resolvedBackgroundActivity.providerHealthRefreshInterval,
+  );
+  const defaultProviderHealthRefreshIntervalSeconds = durationToSeconds(providerHealthPreset);
+  const sortedProviderEntries = useMemo(
+    () => sortProviderInstanceEntries(providerEntries, PROVIDER_SETTINGS_DRIVER_ORDER),
+    [providerEntries],
+  );
 
   const handleSelectModel = useCallback(
     (model: ModelInfo) => {
@@ -454,62 +971,89 @@ export function ProviderSettings() {
   return (
     <view className="settings-panel">
       <SettingsSection
+        id="providers"
         title="Providers"
         headerAction={
-          <SmallIconButton
-            label="Refresh provider status"
-            disabled={providersRefreshPending}
-            icon={
-              <Icon
-                name="refresh-cw"
-                size={14}
-                color="#a1a1aa"
-                className={providersRefreshPending ? "provider-refresh-icon--pending" : undefined}
-              />
-            }
-            onTap={() => {
-              void refreshProviders().catch(() => undefined);
-            }}
-          />
+          <view className="provider-settings-header-actions">
+            <SmallIconButton
+              label="Add provider instance"
+              icon={<Icon name="plus" size={14} color="#a1a1aa" />}
+              onTap={uiActions.openAddProviderDialog}
+            />
+            <SmallIconButton
+              label="Refresh provider status"
+              disabled={providersRefreshPending}
+              icon={
+                <Icon
+                  name="refresh-cw"
+                  size={14}
+                  color="#a1a1aa"
+                  className={providersRefreshPending ? "provider-refresh-icon--pending" : undefined}
+                />
+              }
+              onTap={() => {
+                void refreshProviders().catch(() => undefined);
+              }}
+            />
+          </view>
         }
       >
-        <view className="provider-instance-create">
-          <text className="provider-card__config-label">Add provider instance</text>
-          <view className="provider-instance-create__driver">
-            <SmallButton label="Codex" onTap={() => setNewDriver("codex")} />
-            <SmallButton label="Claude" onTap={() => setNewDriver("claudeAgent")} />
-          </view>
-          <DraftInput
-            aria-label="New provider instance ID"
-            value={newInstanceId}
-            placeholder={`${newDriver}_work`}
-            onCommit={setNewInstanceId}
-          />
-          <DraftInput
-            aria-label="New provider display name"
-            value={newDisplayName}
-            placeholder={newDriver === "codex" ? "Work Codex" : "Work Claude"}
-            onCommit={setNewDisplayName}
-          />
-          <SmallButton
-            label="Add instance"
-            onTap={() => {
-              const instanceId = newInstanceId.trim();
-              if (!/^[a-zA-Z][a-zA-Z0-9_-]{0,63}$/.test(instanceId)) return;
-              void t3ClientActions
-                .createProviderInstance(ProviderInstanceId.make(instanceId), {
-                  driver: ProviderDriverKind.make(newDriver),
-                  enabled: true,
-                  ...(newDisplayName.trim() ? { displayName: newDisplayName.trim() } : {}),
-                })
-                .then(() => {
-                  setNewInstanceId("");
-                  setNewDisplayName("");
-                })
-                .catch(() => undefined);
-            }}
-          />
-        </view>
+        <SettingsRow
+          id="provider-health-check-interval"
+          title="Health check interval"
+          description="Refresh provider availability, versions, auth state, and model metadata in the background. Set this to 0 seconds to rely on manual refreshes."
+          control={
+            <view className="provider-health-control">
+              <NumberField
+                value={providerHealthRefreshIntervalSeconds}
+                min={0}
+                step={PROVIDER_HEALTH_INTERVAL_STEP_SECONDS}
+                onValueChange={(value) => {
+                  if (!settings) return;
+                  void t3ClientActions
+                    .updateServerSettings(
+                      backgroundActivityOverrideSettings(
+                        settings.backgroundActivity,
+                        resolvedBackgroundActivity,
+                        {
+                          providerHealthRefreshInterval: Duration.seconds(
+                            normalizeIntervalSeconds(value),
+                          ),
+                        },
+                      ),
+                    )
+                    .catch(() => undefined);
+                }}
+              >
+                <NumberFieldGroup className="provider-health-number-field">
+                  <NumberFieldDecrement aria-label="Decrease provider health check interval" />
+                  <NumberFieldInput aria-label="Provider health check interval in seconds" />
+                  <NumberFieldIncrement aria-label="Increase provider health check interval" />
+                </NumberFieldGroup>
+              </NumberField>
+              <text className="provider-health-unit">seconds</text>
+              {providerHealthRefreshIntervalSeconds !==
+              defaultProviderHealthRefreshIntervalSeconds ? (
+                <SmallIconButton
+                  label="Reset provider health check interval to default"
+                  icon={<Icon name="rotate-ccw" size={12} color="#818181" />}
+                  onTap={() => {
+                    if (!settings) return;
+                    void t3ClientActions
+                      .updateServerSettings(
+                        backgroundActivityOverrideSettings(
+                          settings.backgroundActivity,
+                          resolvedBackgroundActivity,
+                          { providerHealthRefreshInterval: undefined },
+                        ),
+                      )
+                      .catch(() => undefined);
+                  }}
+                />
+              ) : null}
+            </view>
+          }
+        />
         {providerSettingsError ? (
           <view className="settings-empty">
             <text className="settings-empty__text">
@@ -517,14 +1061,14 @@ export function ProviderSettings() {
             </text>
           </view>
         ) : null}
-        {providerEntries.length === 0 ? (
+        {sortedProviderEntries.length === 0 ? (
           <view className="settings-empty">
             <text className="settings-empty__text">
               No providers configured. Connect to a provider to get started.
             </text>
           </view>
         ) : (
-          providerEntries.map((entry) => (
+          sortedProviderEntries.map((entry) => (
             <ProviderCard
               key={entry.instanceId}
               entry={entry}

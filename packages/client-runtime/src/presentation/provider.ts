@@ -237,6 +237,7 @@ export function applyProviderInstanceSettings(
  */
 export function sortProviderInstanceEntries(
   entries: ReadonlyArray<ProviderInstanceEntry>,
+  driverOrder: ReadonlyArray<ProviderDriverKind> = [],
 ): ReadonlyArray<ProviderInstanceEntry> {
   // Group by driver kind preserving first-appearance order, then emit
   // default-first within each kind. Using a Map keeps the "first-seen"
@@ -251,8 +252,14 @@ export function sortProviderInstanceEntries(
       byKind.set(entry.driverKind, [entry]);
     }
   }
+  const orderedKinds = [
+    ...driverOrder.filter((driverKind) => byKind.has(driverKind)),
+    ...Array.from(byKind.keys()).filter((driverKind) => !driverOrder.includes(driverKind)),
+  ];
   const sorted: ProviderInstanceEntry[] = [];
-  for (const bucket of byKind.values()) {
+  for (const driverKind of orderedKinds) {
+    const bucket = byKind.get(driverKind);
+    if (!bucket) continue;
     const defaults = bucket.filter((entry) => entry.isDefault);
     const customs = bucket.filter((entry) => !entry.isDefault);
     sorted.push(...defaults, ...customs);

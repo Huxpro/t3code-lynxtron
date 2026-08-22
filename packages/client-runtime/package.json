@@ -103,6 +103,10 @@
       "types": "./src/presentation/diff.ts",
       "default": "./src/presentation/diff.ts"
     },
+    "./presentation/draft-thread": {
+      "types": "./src/presentation/draftThread.ts",
+      "default": "./src/presentation/draftThread.ts"
+    },
     "./presentation/files": {
       "types": "./src/presentation/files.ts",
       "default": "./src/presentation/files.ts"

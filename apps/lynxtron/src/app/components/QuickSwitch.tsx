@@ -40,7 +40,7 @@ import { Kbd, KbdGroup } from "../../../../web/src/components/ui/kbd";
 import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ProjectSummary, ThreadSummary } from "../bridge";
 import { navigate } from "../router";
-import { t3ClientActions } from "../state/t3Client";
+import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { Icon, type IconName } from "./Icon";
@@ -128,6 +128,7 @@ export function QuickSwitch({
   const [remoteProjectPending, setRemoteProjectPending] = useState(false);
   const [remoteProjectError, setRemoteProjectError] = useState<string | null>(null);
   const { createThread, selectThread } = t3ClientActions;
+  const { draftThread } = useT3ClientState();
 
   const close = uiActions.closeQuickSwitch;
 
@@ -135,7 +136,9 @@ export function QuickSwitch({
     setQuery(e.detail.value);
   }, []);
 
-  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const activeThread =
+    threads.find((thread) => thread.id === activeThreadId) ??
+    (draftThread?.id === activeThreadId ? draftThread : undefined);
   const orderedProjects = useMemo(
     () => sortProjectsForSidebar(projects, threads, "updated_at"),
     [projects, threads],

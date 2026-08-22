@@ -14,6 +14,7 @@ export function SettingsNavigationHost({
   readonly pathname: string;
 }) {
   const openSearch = () => uiActions.openQuickSwitch("command");
+  const navigateBack = () => onBack();
 
   return (
     <>
@@ -67,14 +68,18 @@ export function SettingsNavigationHost({
         })}
       </view>
       <view className="settings-nav__footer">
-        <view className="settings-nav__back" bindtap={onBack}>
-          <Icon
-            name="arrow-left"
-            size={16}
-            color="#a1a1aa"
-            className="settings-nav__back-icon-img"
-          />
-          <text className="settings-nav__back-label">Back</text>
+        <view className="settings-nav__back" flatten={false} bindtap={navigateBack}>
+          <view className="settings-nav__back-icon" bindtap={navigateBack}>
+            <Icon
+              name="arrow-left"
+              size={16}
+              color="#a1a1aa"
+              className="settings-nav__back-icon-img"
+            />
+          </view>
+          <text className="settings-nav__back-label" bindtap={navigateBack}>
+            Back
+          </text>
         </view>
       </view>
     </>

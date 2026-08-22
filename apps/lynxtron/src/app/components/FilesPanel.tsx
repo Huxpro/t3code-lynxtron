@@ -248,7 +248,7 @@ function renderTreeNode(
 export function FilesPanel({
   selectedPath = null,
 }: { readonly selectedPath?: string | null } = {}) {
-  const { activeThreadId, projects, threads } = useT3ClientState();
+  const { activeThreadId, draftThread, projects, threads } = useT3ClientState();
   const [listing, setListing] = useState<ListingState>(EMPTY_LISTING);
   const [refreshVersion, setRefreshVersion] = useState(0);
   const [search, setSearch] = useState("");
@@ -256,12 +256,16 @@ export function FilesPanel({
   const [expandedDirectories, setExpandedDirectories] = useState<Record<string, boolean>>({});
 
   const project = useMemo(() => {
-    const activeThread = threads.find((thread) => thread.id === activeThreadId);
+    const activeThread =
+      threads.find((thread) => thread.id === activeThreadId) ??
+      (draftThread?.id === activeThreadId ? draftThread : undefined);
     return (
       projects.find((candidate) => candidate.id === activeThread?.projectId) ?? projects[0] ?? null
     );
-  }, [activeThreadId, projects, threads]);
-  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  }, [activeThreadId, draftThread, projects, threads]);
+  const activeThread =
+    threads.find((thread) => thread.id === activeThreadId) ??
+    (draftThread?.id === activeThreadId ? draftThread : undefined);
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
 
   useEffect(() => {
@@ -398,7 +402,7 @@ export function FilesPanel({
 }
 
 export function FilePanel({ path }: { readonly path: string }) {
-  const { activeThreadId, projects, threads } = useT3ClientState();
+  const { activeThreadId, draftThread, projects, threads } = useT3ClientState();
   const [panelWidth, setPanelWidth] = useState<number | null>(null);
   const [preview, setPreview] = useState<PreviewState>({
     path,
@@ -406,7 +410,9 @@ export function FilePanel({ path }: { readonly path: string }) {
     pending: true,
     error: null,
   });
-  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const activeThread =
+    threads.find((thread) => thread.id === activeThreadId) ??
+    (draftThread?.id === activeThreadId ? draftThread : undefined);
   const project =
     projects.find((candidate) => candidate.id === activeThread?.projectId) ?? projects[0] ?? null;
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;

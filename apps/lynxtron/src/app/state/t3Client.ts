@@ -2,12 +2,24 @@ import { useAtomValue } from "@effect/atom-react";
 import { useEffect } from "@lynx-js/react";
 import { Atom } from "effect/unstable/reactivity";
 import { presentThreadCommandErrorMessage } from "@t3tools/client-runtime/errors";
+import { truncate } from "@t3tools/shared/String";
 import {
   deriveModelPickerModels,
   deriveProviderModelSelectionProjection,
 } from "@t3tools/client-runtime/presentation/model-picker";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
+import {
+  buildDraftThreadTurnBootstrap,
+  createLocalDraftThread,
+  projectDraftThreadInteractionMode,
+  projectDraftThreadModelSelection,
+  projectDraftThreadRuntimeMode,
+  projectDraftThreadWorkspace,
+  shouldFinalizePromotedDraftThread,
+  type LocalDraftThread,
+  type LocalDraftThreadEnvMode,
+} from "@t3tools/client-runtime/presentation/draft-thread";
 import {
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
   projectPortableGeneralSettingsRestore,
@@ -17,6 +29,7 @@ import {
   buildProviderInstanceDeletePatch,
   buildProviderInstanceUpdatePatch,
 } from "@t3tools/client-runtime/presentation/provider-settings";
+import { ProjectId, ThreadId } from "@t3tools/contracts";
 import type {
   ApprovalRequestId,
   EditorId,
@@ -58,6 +71,7 @@ import type {
   ThreadTurnStartBootstrap,
   TurnId,
 } from "@t3tools/contracts";
+import { newThreadId } from "../../../../web/src/lib/utils";
 
 import type {
   ActivePlanState,
@@ -139,6 +153,7 @@ export interface T3ClientState {
   readonly archivedThreads: ReadonlyArray<ThreadSummary>;
   readonly activeThreadId?: string;
   readonly draftHeroThreadId?: string;
+  readonly draftThread?: LocalDraftThread;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -252,7 +267,9 @@ function patchState(partial: Partial<T3ClientState>): void {
 }
 
 function activeVcsCwd(state: T3ClientState): string | null {
-  const activeThread = state.threads.find((thread) => thread.id === state.activeThreadId);
+  const activeThread =
+    state.threads.find((thread) => thread.id === state.activeThreadId) ??
+    (state.draftThread?.id === state.activeThreadId ? state.draftThread : undefined);
   const activeProject =
     state.projects.find((project) => project.id === activeThread?.projectId) ??
     state.projects[0] ??
@@ -311,6 +328,7 @@ function resetActiveThreadState(
   patchState({
     activeThreadId,
     draftHeroThreadId: options?.draftHero ? activeThreadId : undefined,
+    draftThread: undefined,
     messages: [],
     checkpoints: [],
     sessionStatus: "idle",
@@ -335,7 +353,9 @@ function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelec
     ? { ...config, providers: [mtsProviderFixture] }
     : config;
   const current = appAtomRegistry.get(t3ClientStateAtom);
-  const activeThread = current.threads.find((thread) => thread.id === current.activeThreadId);
+  const activeThread =
+    current.threads.find((thread) => thread.id === current.activeThreadId) ??
+    (current.draftThread?.id === current.activeThreadId ? current.draftThread : undefined);
   const newThreadSelectionCandidates = projectModelSelectionCandidates({
     currentSelection: preferredSelection ?? current.modelSelection,
     projects: current.projects,
@@ -442,9 +462,14 @@ function applyShellPayload(shell: ShellEventPayload): void {
   }
   const stateBeforeShell = appAtomRegistry.get(t3ClientStateAtom);
   const activeThread = threads.find((thread) => thread.id === stateBeforeShell.activeThreadId);
+  const activeDraftThread =
+    stateBeforeShell.draftThread?.id === stateBeforeShell.activeThreadId
+      ? stateBeforeShell.draftThread
+      : undefined;
+  const activePresentationThread = activeThread ?? activeDraftThread;
   const projects = shell.projects ?? [];
   const modelProjection =
-    !activeThread && stateBeforeShell.serverConfig
+    !activePresentationThread && stateBeforeShell.serverConfig
       ? deriveProviderModelSelectionProjection(
           stateBeforeShell.serverConfig,
           projectModelSelectionCandidates({
@@ -454,8 +479,8 @@ function applyShellPayload(shell: ShellEventPayload): void {
         )
       : null;
   const activeModels = availableThreadModels(stateBeforeShell);
-  const activeProjection = activeThread
-    ? resolveActiveThreadModelSelection(activeModels, activeThread.modelSelection, {
+  const activeProjection = activePresentationThread
+    ? resolveActiveThreadModelSelection(activeModels, activePresentationThread.modelSelection, {
         selectedModel: stateBeforeShell.selectedModel,
         selection: stateBeforeShell.modelSelection,
       })
@@ -464,9 +489,9 @@ function applyShellPayload(shell: ShellEventPayload): void {
     projects,
     threads,
     archivedThreads: shell.archivedThreads ?? [],
-    ...(activeThread
+    ...(activePresentationThread
       ? {
-          modelSelection: activeProjection?.selection ?? activeThread.modelSelection,
+          modelSelection: activeProjection?.selection ?? activePresentationThread.modelSelection,
           selectedModel: activeProjection?.selectedModel,
         }
       : modelProjection?.selection
@@ -504,7 +529,15 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
   const nextFingerprint = JSON.stringify(payload);
   if (nextFingerprint === threadFingerprint) return;
   threadFingerprint = nextFingerprint;
+  const current = appAtomRegistry.get(t3ClientStateAtom);
+  const draftPromoted = shouldFinalizePromotedDraftThread({
+    draftThreadId: current.draftThread?.id,
+    payloadThreadId: ThreadId.make(payload.threadId),
+    messageCount: payload.messages?.length ?? 0,
+    sessionStatus: payload.sessionStatus ?? "idle",
+  });
   patchState({
+    ...(draftPromoted ? { draftThread: undefined, draftHeroThreadId: undefined } : {}),
     messages: payload.messages ?? [],
     checkpoints: payload.checkpoints ?? [],
     sessionStatus: payload.sessionStatus ?? "idle",
@@ -626,7 +659,9 @@ function installTransportDevToolHook(): void {
   };
   diagnosticsGlobal.__T3_LYNXTRON_CLIENT_STATE__ = () => {
     const state = appAtomRegistry.get(t3ClientStateAtom);
-    const activeThread = state.threads.find((thread) => thread.id === state.activeThreadId);
+    const activeThread =
+      state.threads.find((thread) => thread.id === state.activeThreadId) ??
+      (state.draftThread?.id === state.activeThreadId ? state.draftThread : undefined);
     const activeProject = state.projects.find((project) => project.id === activeThread?.projectId);
     const selectedProvider = state.providerEntries.find(
       (entry) =>
@@ -634,6 +669,7 @@ function installTransportDevToolHook(): void {
     );
     return {
       activeThreadId: state.activeThreadId,
+      draftThreadId: state.draftThread?.id ?? null,
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
@@ -777,8 +813,9 @@ async function bootstrapT3Client(): Promise<void> {
     }
   }
   refreshVcsStatusProjection();
-  const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
-  if (activeThreadId) {
+  const current = appAtomRegistry.get(t3ClientStateAtom);
+  const activeThreadId = current.activeThreadId;
+  if (activeThreadId && activeThreadId !== current.draftThread?.id) {
     void mainCommandBridge.selectThread?.(activeThreadId);
   }
   installTransportDevToolHook();
@@ -837,11 +874,78 @@ function createProject(workspaceRoot: string): Promise<{ projectId: string }> {
   return bridge.createProject({ workspaceRoot });
 }
 
-async function createThread(projectId?: string): Promise<void> {
-  const bridge = getBridge();
-  if (!bridge?.createThread) return;
-  const result = await bridge.createThread(projectId ? { projectId } : {});
-  if (result?.threadId) selectThread(result.threadId, { draftHero: true });
+async function createThread(
+  projectId?: string,
+  options?: {
+    readonly branch?: string | null;
+    readonly worktreePath?: string | null;
+    readonly envMode?: LocalDraftThreadEnvMode;
+    readonly startFromOrigin?: boolean;
+  },
+): Promise<void> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const activeServerThread = state.threads.find((thread) => thread.id === state.activeThreadId);
+  const activeDraftThread =
+    state.draftThread?.id === state.activeThreadId ? state.draftThread : undefined;
+  const targetProjectId =
+    projectId ??
+    activeDraftThread?.projectId ??
+    activeServerThread?.projectId ??
+    state.projects[0]?.id;
+  const targetProject = state.projects.find((project) => project.id === targetProjectId);
+  const selection =
+    state.modelSelection ??
+    targetProject?.defaultModelSelection ??
+    (state.selectedModel
+      ? { instanceId: state.selectedModel.instanceId, model: state.selectedModel.slug }
+      : state.models[0]
+        ? { instanceId: state.models[0].instanceId, model: state.models[0].slug }
+        : undefined);
+  if (!targetProjectId || !selection) return;
+  if (activeDraftThread?.projectId === targetProjectId) {
+    if (options) {
+      patchState({
+        draftThread: projectDraftThreadWorkspace(activeDraftThread, options),
+      });
+    }
+    navigate("/");
+    return;
+  }
+  const threadId = ThreadId.make(newThreadId());
+  const createdAt = new Date().toISOString();
+  const envMode =
+    options?.envMode ??
+    state.settings?.defaultThreadEnvMode ??
+    PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode;
+  const startFromOrigin =
+    options?.startFromOrigin ??
+    (envMode === "worktree" &&
+      (state.settings?.newWorktreesStartFromOrigin ??
+        PORTABLE_SERVER_SETTINGS_DEFAULTS.newWorktreesStartFromOrigin));
+  const draftThread = createLocalDraftThread({
+    threadId,
+    projectId: ProjectId.make(targetProjectId),
+    modelSelection: selection,
+    runtimeMode: activeServerThread?.runtimeMode ?? activeDraftThread?.runtimeMode,
+    interactionMode: activeServerThread?.interactionMode ?? activeDraftThread?.interactionMode,
+    branch: options?.branch,
+    worktreePath: options?.worktreePath,
+    envMode,
+    startFromOrigin,
+    createdAt,
+  });
+  resetActiveThreadState();
+  patchState({
+    activeThreadId: threadId,
+    draftHeroThreadId: threadId,
+    draftThread,
+    modelSelection: selection,
+    selectedModel:
+      state.models.find(
+        (model) => model.instanceId === selection.instanceId && model.slug === selection.model,
+      ) ?? state.selectedModel,
+  });
+  navigate("/");
 }
 
 function reconnect(): Promise<void> {
@@ -852,18 +956,39 @@ function reconnect(): Promise<void> {
   return bridge.reconnect();
 }
 
+function setDraftWorkspaceMode(envMode: LocalDraftThreadEnvMode): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  if (state.draftThread?.id !== state.activeThreadId) return;
+  patchState({
+    draftThread: projectDraftThreadWorkspace(state.draftThread, { envMode }),
+  });
+}
+
+function setDraftStartFromOrigin(startFromOrigin: boolean): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  if (state.draftThread?.id !== state.activeThreadId) return;
+  patchState({
+    draftThread: projectDraftThreadWorkspace(state.draftThread, { startFromOrigin }),
+  });
+}
+
 function sendPrompt(text: string, bootstrap?: ThreadTurnStartBootstrap): Promise<boolean> {
   const trimmed = text.trim();
-  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const threadId = state.activeThreadId;
+  const draftThread = state.draftThread?.id === threadId ? state.draftThread : undefined;
   const bridge = getBridge();
   if (!trimmed || !threadId || !bridge?.sendPrompt) return Promise.resolve(false);
-  patchState({ draftHeroThreadId: undefined, sessionError: null });
+  const resolvedBootstrap = draftThread
+    ? buildDraftThreadTurnBootstrap(draftThread, truncate(trimmed), bootstrap)
+    : bootstrap;
+  patchState({ sessionError: null });
   try {
     return bridge
       .sendPrompt({
         threadId,
         text: trimmed,
-        ...(bootstrap ? { bootstrap } : {}),
+        ...(resolvedBootstrap ? { bootstrap: resolvedBootstrap } : {}),
       })
       .then(() => true)
       .catch((error: unknown) => {
@@ -1254,6 +1379,17 @@ function setModelSelection(model: ModelInfo): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const threadId = state.activeThreadId;
   const selection = { instanceId: model.instanceId, model: model.slug };
+  if (state.draftThread?.id === threadId) {
+    patchState({
+      draftThread: projectDraftThreadModelSelection(state.draftThread, selection),
+      selectedModel: model,
+      modelSelection: selection,
+      modelSelectionError: null,
+      modelSelectionPending: false,
+    });
+    setPref("modelSelection", selection);
+    return;
+  }
   persistModelSelectionMutation({
     previous: {
       selectedModel: state.selectedModel,
@@ -1278,6 +1414,16 @@ function setModelOptions(options: NonNullable<ModelSelection["options"]>): void 
       : undefined);
   if (!selection) return;
   const nextSelection: ModelSelection = { ...selection, options };
+  if (state.draftThread?.id === state.activeThreadId) {
+    patchState({
+      draftThread: projectDraftThreadModelSelection(state.draftThread, nextSelection),
+      modelSelection: nextSelection,
+      modelSelectionError: null,
+      modelSelectionPending: false,
+    });
+    setPref("modelSelection", nextSelection);
+    return;
+  }
   persistModelSelectionMutation({
     previous: {
       selectedModel: state.selectedModel,
@@ -1293,6 +1439,12 @@ function setModelOptions(options: NonNullable<ModelSelection["options"]>): void 
 function setThreadRuntimeMode(runtimeMode: RuntimeMode): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const threadId = state.activeThreadId;
+  if (state.draftThread?.id === threadId) {
+    patchState({
+      draftThread: projectDraftThreadRuntimeMode(state.draftThread, runtimeMode),
+    });
+    return;
+  }
   const previousMode = state.threads.find((thread) => thread.id === threadId)?.runtimeMode;
   const bridge = getBridge();
   if (!threadId || !previousMode || !bridge?.setThreadRuntimeMode) return;
@@ -1333,6 +1485,12 @@ function setThreadRuntimeMode(runtimeMode: RuntimeMode): void {
 function setThreadInteractionMode(interactionMode: ProviderInteractionMode): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const threadId = state.activeThreadId;
+  if (state.draftThread?.id === threadId) {
+    patchState({
+      draftThread: projectDraftThreadInteractionMode(state.draftThread, interactionMode),
+    });
+    return;
+  }
   const previousMode = state.threads.find((thread) => thread.id === threadId)?.interactionMode;
   const bridge = getBridge();
   if (!threadId || !previousMode || !bridge?.setThreadInteractionMode) return;
@@ -1591,6 +1749,8 @@ export const t3ClientActions = {
   unsettleThread,
   setModelSelection,
   setModelOptions,
+  setDraftStartFromOrigin,
+  setDraftWorkspaceMode,
   setProviderEnabled,
   setThreadInteractionMode,
   setThreadRuntimeMode,

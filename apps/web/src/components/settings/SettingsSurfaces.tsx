@@ -11,7 +11,7 @@
 import type { ReactNode } from "react";
 
 import { cn } from "../../lib/cn";
-import { HostButton, HostText, HostView } from "../ui/hostElements";
+import { HostButton, HostLayoutView, HostText, HostView } from "../ui/hostElements";
 import { SettingsRow, SettingsSection } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
 
@@ -363,6 +363,8 @@ export interface ProviderInstanceCardSurfaceProps {
   /** "headline · detail" status summary. */
   readonly summaryHeadline: ReactNode;
   readonly summaryDetail?: ReactNode;
+  readonly summaryAriaLabel?: string;
+  readonly onSummaryClick?: () => void;
   readonly expanded: boolean;
   readonly onToggleExpanded: () => void;
   /** Accessible label for the expand chevron button. */
@@ -387,6 +389,8 @@ export function ProviderInstanceCardSurface({
   titleTrailing,
   summaryHeadline,
   summaryDetail,
+  summaryAriaLabel,
+  onSummaryClick,
   expanded,
   onToggleExpanded,
   toggleAriaLabel,
@@ -396,25 +400,39 @@ export function ProviderInstanceCardSurface({
 }: ProviderInstanceCardSurfaceProps) {
   return (
     <HostView className="provider-instance-card rounded-xl transition-colors">
-      <HostView className="px-3 py-3 sm:px-4">
-        <HostView className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <HostView className="flex min-w-0 flex-1 flex-col gap-1">
-            <HostView className="flex min-w-0 flex-wrap items-center gap-2">
+      <HostView className="provider-instance-card__header px-3 py-3 sm:px-4">
+        <HostLayoutView className="provider-instance-card__layout flex gap-3 sm:items-center sm:justify-between">
+          <HostLayoutView className="provider-instance-card__copy flex min-w-0 flex-1 gap-1">
+            <HostLayoutView className="provider-instance-card__title-row flex min-w-0 flex-wrap items-center gap-2">
               {icon}
-              <HostText className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
+              <HostText className="provider-instance-card__title truncate text-sm font-medium tracking-[-0.005em] text-foreground">
                 {title}
               </HostText>
               {instanceIdChip}
               {badge}
               {version}
               {titleTrailing}
-            </HostView>
-            <HostText className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
-              {summaryHeadline}
-              {summaryDetail ? <HostText>- {summaryDetail}</HostText> : null}
-            </HostText>
-          </HostView>
-          <HostView className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+            </HostLayoutView>
+            <HostLayoutView
+              className="provider-instance-card__summary min-w-0 text-[13px] leading-[1.45] text-muted-foreground/80"
+              aria-label={summaryAriaLabel}
+              onClick={onSummaryClick}
+            >
+              {typeof summaryHeadline === "string" || typeof summaryHeadline === "number" ? (
+                <HostText className="provider-instance-card__summary-part">
+                  {summaryHeadline}
+                </HostText>
+              ) : (
+                summaryHeadline
+              )}
+              {summaryDetail ? (
+                <HostText className="provider-instance-card__summary-part">
+                  - {summaryDetail}
+                </HostText>
+              ) : null}
+            </HostLayoutView>
+          </HostLayoutView>
+          <HostView className="provider-instance-card__actions flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
             <HostButton
               type="button"
               className="provider-instance-card__chevron inline-flex h-7 cursor-pointer items-center rounded-md px-2 text-xs text-muted-foreground"
@@ -426,7 +444,7 @@ export function ProviderInstanceCardSurface({
             </HostButton>
             {toggle}
           </HostView>
-        </HostView>
+        </HostLayoutView>
       </HostView>
       {body}
     </HostView>

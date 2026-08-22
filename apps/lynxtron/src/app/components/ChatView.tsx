@@ -87,6 +87,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     threads,
     activeThreadId,
     draftHeroThreadId,
+    draftThread,
     messages,
     sessionStatus,
     sessionError,
@@ -134,14 +135,17 @@ export function ChatView({ threadId }: ChatViewProps) {
     respondToApproval,
     respondToUserInput,
     sendPrompt,
+    setDraftStartFromOrigin,
+    setDraftWorkspaceMode: updateDraftWorkspaceMode,
     setModelOptions,
     setThreadInteractionMode,
     setThreadRuntimeMode,
   } = t3ClientActions;
 
+  const activeDraftThread = draftThread?.id === activeThreadId ? draftThread : undefined;
   const activeThread = useMemo(
-    () => threads.find((t) => t.id === activeThreadId),
-    [threads, activeThreadId],
+    () => threads.find((thread) => thread.id === activeThreadId) ?? activeDraftThread,
+    [threads, activeThreadId, activeDraftThread],
   );
   const activeProject = useMemo(
     () => projects.find((project) => project.id === activeThread?.projectId) ?? projects[0] ?? null,
@@ -303,10 +307,22 @@ export function ChatView({ threadId }: ChatViewProps) {
   }, [modelSelection, selectedModel]);
 
   useEffect(() => {
-    setDraftWorkspaceMode(activeThread?.worktreePath ? "worktree" : "local");
-    setStartFromOrigin(false);
+    setDraftWorkspaceMode(
+      activeDraftThread
+        ? activeDraftThread.envMode
+        : activeThread?.worktreePath
+          ? "worktree"
+          : "local",
+    );
+    setStartFromOrigin(activeDraftThread?.startFromOrigin ?? false);
     setRightPanelMaximized(false);
-  }, [activeThreadId, activeThread?.worktreePath]);
+  }, [
+    activeThreadId,
+    activeThread?.worktreePath,
+    activeDraftThread?.envMode,
+    activeDraftThread?.id,
+    activeDraftThread?.startFromOrigin,
+  ]);
 
   useEffect(() => {
     const preferredProvider =
@@ -470,6 +486,8 @@ export function ChatView({ threadId }: ChatViewProps) {
 
   return (
     <ChatRouteSurface
+      activeThreadKind={activeDraftThread ? "draft" : activeThread ? "server" : "none"}
+      activeThreadId={activeThreadId}
       onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}
       layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}
       header={
@@ -565,6 +583,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         />
       ) : null}
       <Composer
+        key={activeThreadId ?? "no-thread"}
         hero={hero}
         placeholder={
           activePendingQuestion
@@ -750,8 +769,14 @@ export function ChatView({ threadId }: ChatViewProps) {
         }
         onRuntimeModeChange={setThreadRuntimeMode}
         onInteractionModeTap={handleInteractionModeTap}
-        onWorkspaceModeChange={setDraftWorkspaceMode}
-        onStartFromOriginChange={setStartFromOrigin}
+        onWorkspaceModeChange={(mode) => {
+          setDraftWorkspaceMode(mode);
+          updateDraftWorkspaceMode(mode);
+        }}
+        onStartFromOriginChange={(enabled) => {
+          setStartFromOrigin(enabled);
+          setDraftStartFromOrigin(enabled);
+        }}
       />
     </ChatRouteSurface>
   );

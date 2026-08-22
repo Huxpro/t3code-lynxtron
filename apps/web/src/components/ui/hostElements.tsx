@@ -8,6 +8,10 @@ export function HostView({
   return <div {...props}>{children}</div>;
 }
 
+export function HostLayoutView({ children, ...props }: React.ComponentProps<"div">) {
+  return <div {...props}>{children}</div>;
+}
+
 export function HostListItem({ children, ...props }: React.ComponentProps<"li">) {
   return <li {...props}>{children}</li>;
 }

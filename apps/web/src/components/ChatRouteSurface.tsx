@@ -25,6 +25,8 @@ export function ChatRouteSurface({
   rightPanel,
   overlays,
   onClick,
+  activeThreadKind,
+  activeThreadId,
 }: {
   /** Layout controls rendered ahead of the column (Web: inline right-panel mode). */
   readonly layoutControls?: ReactNode;
@@ -46,10 +48,15 @@ export function ChatRouteSurface({
   readonly overlays?: ReactNode;
   /** Optional renderer-owned route tap handler (Lynx: outside-overlay dismissal). */
   readonly onClick?: () => void;
+  /** Semantic lifecycle marker used by cross-renderer verification. */
+  readonly activeThreadKind?: "draft" | "server" | "none";
+  readonly activeThreadId?: string;
 }) {
   return (
     <HostView
       className="chat-view-surface-reference relative flex min-h-0 min-w-0 flex-1 overflow-hidden bg-background"
+      data-active-thread-kind={activeThreadKind}
+      data-active-thread-id={activeThreadId}
       onClick={onClick}
     >
       {layoutControls}

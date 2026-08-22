@@ -12,6 +12,7 @@ import { GeneralSettings } from "./components/GeneralSettings";
 import { AppearanceSettings } from "./components/AppearanceSettings";
 import { GeneralSettingsSync } from "./components/GeneralSettingsSync";
 import { ProviderSettings } from "./components/ProviderSettings";
+import { AddProviderInstanceDialog } from "./components/ProviderSettings";
 import { KeybindingsSettings } from "./components/KeybindingsSettings";
 import { QuickSwitch } from "./components/QuickSwitch";
 import { ProjectActionDialog } from "./components/ProjectActionDialog";
@@ -37,6 +38,7 @@ import { readPreviewInitialState, t3ClientActions, useT3ClientState } from "./st
 import {
   installResponsiveUiProbe,
   uiActions,
+  useAddProviderDialogOpen,
   useGitPublishDialogOpen,
   useProjectActionDialogOpen,
   useSearchOverlayState,
@@ -197,10 +199,13 @@ function RootSwitch() {
 
 function RootOverlays() {
   const searchOverlay = useSearchOverlayState();
+  const addProviderDialogOpen = useAddProviderDialogOpen();
   const projectActionDialogOpen = useProjectActionDialogOpen();
   const gitPublishDialogOpen = useGitPublishDialogOpen();
-  const { projects, threads, activeThreadId } = useT3ClientState();
-  const activeThread = threads.find((thread) => thread.id === activeThreadId);
+  const { projects, threads, activeThreadId, draftThread } = useT3ClientState();
+  const activeThread =
+    threads.find((thread) => thread.id === activeThreadId) ??
+    (draftThread?.id === activeThreadId ? draftThread : undefined);
   const activeProject =
     projects.find((project) => project.id === activeThread?.projectId) ?? projects[0] ?? null;
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;
@@ -216,6 +221,10 @@ function RootOverlays() {
         />
       ) : null}
       {projectActionDialogOpen ? <ProjectActionDialog project={activeProject} /> : null}
+      <AddProviderInstanceDialog
+        open={addProviderDialogOpen}
+        onClose={uiActions.closeAddProviderDialog}
+      />
       {gitPublishDialogOpen && cwd ? (
         <GitPublishDialog cwd={cwd} onClose={uiActions.closeGitPublishDialog} />
       ) : null}

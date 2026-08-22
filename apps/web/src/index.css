@@ -286,6 +286,33 @@ html[data-mobile-composer-route-transition="true"]::view-transition-old(t3-mobil
   color: var(--foreground);
 }
 
+.provider-instance-card__layout,
+.provider-instance-card__copy {
+  flex-direction: column;
+}
+
+.provider-instance-card__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 0.25rem;
+}
+
+.provider-instance-card__actions {
+  width: 100%;
+}
+
+@media (min-width: 40rem) {
+  .provider-instance-card__layout {
+    flex-direction: row;
+  }
+
+  .provider-instance-card__actions {
+    width: auto;
+    justify-content: flex-end;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
