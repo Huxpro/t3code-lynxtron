@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 71,
-  "expectedCellCount": 816,
-  "expectedTotalWeight": 266.2,
+  "expectedStateCount": 72,
+  "expectedCellCount": 828,
+  "expectedTotalWeight": 270.2,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -325,6 +325,13 @@
     {
       "id": "settings-keybindings",
       "label": "Settings · Keybindings",
+      "group": "settings",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-providers",
+      "label": "Settings · Providers",
       "group": "settings",
       "weight": 4,
       "clients": ["lynx", "native"]

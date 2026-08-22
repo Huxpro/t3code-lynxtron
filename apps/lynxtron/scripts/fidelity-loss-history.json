@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-21T19:25:00-07:00",
+  "updatedAt": "2026-08-21T20:00:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13801,6 +13801,86 @@
               "confidence": 0.99,
               "method": "native-settings-current-head-readiness",
               "source": "Exact 4abd7360 bundle on light and dark uses main transport, advances sequence, reports zero renderer errors, disposes isolated state, and passes pre/post leak gates"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-providers-registration",
+      "observedAt": "2026-08-21T19:59:00-07:00",
+      "commit": "9375dba6298f9272b70a9274edef5c9819eac82a",
+      "codeCommit": "3fbac5e5877c86e619b0c618acddf5ef021ff13c",
+      "codeState": "commit",
+      "label": "Providers Settings denominator registration",
+      "narrative": "Providers is one of the seven current Settings routes but was absent from the fixed denominator. It is a distinct P1 management surface spanning provider-health policy, Add and Refresh entry points, ordered instance cards, expand and enable controls, update affordances, and the Add Provider wizard. Existing model-picker and provider-update states do not cover this route. The denominator expands from 71 states, 816 cells, and weight 266.2 to 72 states, 828 cells, and weight 270.2. All twelve new Lynx-for-Web and Native cells enter as conservative unknown before any baseline or repair credit.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It adds one user-reachable P1 state, preserves every existing state weight and residual, and leaves all twelve new cells unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/settings-providers-registration.json",
+          "classification": "tracked-current",
+          "sha256": "cd83ede5273032a0f67a16bba8908278b8b12e00d1dd7e056e6637108b2ab99d"
+        }
+      ]
+    },
+    {
+      "id": "settings-providers-browser-baseline",
+      "observedAt": "2026-08-21T20:00:00-07:00",
+      "commit": "9375dba6298f9272b70a9274edef5c9819eac82a",
+      "codeCommit": "3fbac5e5877c86e619b0c618acddf5ef021ff13c",
+      "codeState": "commit",
+      "label": "Providers Settings Browser baseline",
+      "narrative": "A clean same-server Browser capture holds Web authority and Lynx-for-Web on the same immutable snapshot, /settings/providers route, dark theme, 1280x820 viewport, and exact built artifacts. Web renders a Health check interval row, Add and Refresh header actions, and ordered Codex, Claude, Cursor, Grok, and OpenCode cards at approximately 67 to 71px high. Lynx omits Health check interval and the Add trigger, substitutes a permanent 896x115 inline create form, reverses the first two cards, expands cards to 124 to 134px, moves controls to the left, and scrolls the section origin from y=88 to y=-0.5. The strict state therefore fails only Providers content and geometry with zero console errors on the admitted repeat. Full-frame SSIM is 0.723420, Settings-main SSIM is 0.818559, and the authority content crop SSIM is 0.751617. The first post-harness attempt emitted an unrelated Web VCS status error and was rejected rather than filtered into this point.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The baseline uses one immutable source snapshot and server, matching route, theme, viewport, dimensions, product identity, current Web and Lynx bundles, clean console, and clean process gates. It measures the pre-fix product without assigning any repair delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/settings-providers-registration.json",
+          "classification": "tracked-current",
+          "sha256": "cd83ede5273032a0f67a16bba8908278b8b12e00d1dd7e056e6637108b2ab99d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "gate": "visualGap",
+              "confidence": 0.99,
+              "method": "provider-settings-content-gap",
+              "source": "Health check interval and Add trigger are absent, a permanent inline create form is present, and the first two provider cards are reversed"
+            },
+            "geometry": {
+              "gate": "visualGap",
+              "confidence": 0.99,
+              "method": "provider-settings-geometry-gap",
+              "source": "Section y differs by 88.5px, Lynx cards are 53 to 67px taller, and controls occupy the left instead of the authority trailing rail"
+            },
+            "material": {
+              "residual": 0.27658,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - SSIM 0.723420 at the clean matched Providers frame; Settings-main residual is 0.181441 and authority content-crop residual is 0.248383"
+            },
+            "interaction": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "missing-authority-entrypoint",
+              "source": "Lynx has no Add provider instance trigger or wizard entry point; the permanent inline form is a different interaction model"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-provider-settings-readiness",
+              "source": "Both renderers reach the same route and provider snapshot in 2367ms with zero console errors and zero owned or orphaned agent-browser processes"
             }
           }
         }
