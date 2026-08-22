@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-21T16:49:00-07:00",
+  "updatedAt": "2026-08-21T18:49:20-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13699,6 +13699,27 @@
               "source": "Exact 61a906b3 bundle uses main transport sequence 3 to 4, reports zero renderer errors, persists Plan in isolated state, and disposes both runs"
             }
           }
+        }
+      ]
+    },
+    {
+      "id": "composer-plan-mode-rapid-toggle-current",
+      "observedAt": "2026-08-21T18:49:20-07:00",
+      "commit": "399d6662bbbc514a94dd19c4a17280e9260d8cdf",
+      "codeCommit": "9d1a7dd180eb75f8bd2e125874c8a6af068e5280",
+      "codeState": "commit",
+      "label": "Composer Plan mode rapid-toggle race recovery",
+      "narrative": "A source-level P1 audit found that rapid runtime or interaction-mode changes could dispatch concurrently and let an older rejected request delete or roll back a newer optimistic intent. Renderer and main now serialize mode commands per thread, preserve the latest pending value across canonical shell refreshes, and use the orchestration DispatchResult sequence to avoid reconciling an accepted mutation against a stale repeated mode value. Deterministic tests cover single failure, older failure with newer intent, all failures, older success with newer failure, repeated values, per-thread ordering, and cross-thread independence. Current exact Native light and dark runs on bundle 4abd7360 retain persisted Plan state, the original control geometry and material, main transport, zero renderer errors, isolated cleanup, and zero agent-browser leaks. This evidence point intentionally changes no residual or confidence: physical Native default-to-Plan-to-default input remains pending-user-session, and static persisted-state health is not interaction proof.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point records a real repaired race plus deterministic ordering and sequence-gate coverage, but it applies no fidelity update because exact Native physical interaction remains unobserved. The fixed denominator, weights, residuals, and confidence are unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/composer-plan-mode-rapid-toggle-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "f8a8c418f20d8ab5b75e35e339b50d235c70de99f4dc54612f665e851f77c225"
         }
       ]
     }
