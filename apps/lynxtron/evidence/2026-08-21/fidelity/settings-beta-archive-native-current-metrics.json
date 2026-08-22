@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-21T19:23:24-07:00",
+  "stateIds": ["settings-beta", "settings-archive"],
+  "verificationCommit": "9c63fe5616d1d14fab79f9478f0d801b8489bab5",
+  "classification": {
+    "currentAuthority": [
+      "Settings has seven navigation routes: General, Appearance, Keybindings, Providers, Source Control, Connections, and Archive.",
+      "The former Beta route redirects to General. Auto-settle inactive threads and Days of inactivity before auto-settle are the current Beta-equivalent controls inside General.",
+      "The collapsed Sidebar (legacy) section remains present in General with aria-hidden=true and zero-size row-stack geometry; it is not an eighth navigation route.",
+      "Archive remains an independent route at /settings/archived."
+    ],
+    "harnessMismatch": [
+      "The first gated light run incorrectly required the intentionally collapsed Sidebar (legacy) row to be 896px wide. The product exposed the row and its parent stack at 0x0 with aria-hidden=true, so that failure was rejected as a harness mismatch.",
+      "Historical Native evidence described eight Settings routes and a standalone Beta page. It remains historical evidence and is not used as current-route authority."
+    ],
+    "provenNativeDimensions": [
+      "Content: both themes render the current General auto-settle copy and the Archive empty-state copy.",
+      "Geometry: Auto-settle and Days rows are 896px wide; Archive starts at y=88 with a 896px section and row plus an 832px text column.",
+      "Interaction: measured DevTool touch visits each of the seven navigation routes, observes exactly one semantic and visual selection, completes two repeated Settings cycles, and returns to chat.",
+      "Runtime: both exact-bundle runs use the main connector transport, advance sequence, report zero renderer errors, and dispose isolated state."
+    ],
+    "remainingEvidenceDebt": [
+      "No current matched Web-to-Native pixel pair was captured, so Native material receives no update.",
+      "This route matrix does not toggle Auto-settle, edit Days, archive a thread, unarchive a thread, or delete an archived thread. Those behaviors belong to the separate settings-beta-mutation and settings-archive-mutation states.",
+      "Keyboard, wheel, focus, and selection behavior remain outside this evidence."
+    ],
+    "evidenceBoundary": "This current-head exact-bundle evidence updates only Native content, geometry, route-tap interaction, and runtime for settings-beta and settings-archive. It does not change the denominator, weights, Lynx Browser cells, Native material, or mutation-state cells."
+  },
+  "fixture": {
+    "source": "/tmp/t3-plan-mode-native-fixture",
+    "snapshotSha256": "31917aaf93f8cdf7ffe13b14c3912fe1d3b78e71ab7b3b9b9558e9a4d9ab0658",
+    "projectCwd": "/Users/bytedance/github/t3code-lynxtron",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "native": {
+    "viewport": [1280, 820],
+    "bundle": {
+      "bytes": 5188828,
+      "sha256": "4abd73603ead6e8b719482b919ff0a1891eb0f06eda3d1e77b3eb01a27cf55cc"
+    },
+    "routes": [
+      "/settings/general",
+      "/settings/appearance",
+      "/settings/keybindings",
+      "/settings/providers",
+      "/settings/connections",
+      "/settings/source-control",
+      "/settings/archived"
+    ],
+    "navigationContract": {
+      "input": "DevTool Input.emulateTouchFromMouseEvent on measured semantic selectors",
+      "selection": "Exactly one semantic active item and one computed visual selection match every current route.",
+      "repeatedSettingsCycles": 2,
+      "finalRoute": "/"
+    },
+    "betaEquivalent": {
+      "mergedIntoGeneral": true,
+      "autoSettle": {
+        "title": "Auto-settle inactive threads",
+        "rect": [320, 201, 896, 84]
+      },
+      "days": {
+        "title": "Days of inactivity before auto-settle",
+        "description": "Any new activity un-settles a thread automatically.",
+        "rect": [320, 289, 896, 65]
+      },
+      "legacySidebar": {
+        "title": "Sidebar (legacy)",
+        "collapsed": true,
+        "ariaHidden": true,
+        "rect": [320, 1220, 0, 0]
+      }
+    },
+    "archive": {
+      "route": "/settings/archived",
+      "title": "Archived threads",
+      "emptyTitle": "No archived threads",
+      "emptyDescription": "Archived threads will appear here.",
+      "panel": [256, 52, 1024, 237],
+      "section": [320, 88, 896, 113],
+      "row": [320, 132, 896, 65],
+      "text": [336, 144, 832, 41]
+    },
+    "light": {
+      "status": "pass",
+      "report": "/tmp/t3-settings-routes-head-light/report.json",
+      "reportSha256": "00f774226dfde678a0f7785967dae02b78a6c639ca601fb974669973a7fdf0aa",
+      "client": {
+        "id": "localhost:8903",
+        "sessionId": 1,
+        "bundleUrl": "file:///Users/bytedance/github/t3code-archaeology-verify3/apps/lynxtron/dist/desktop/main.lynx.bundle"
+      },
+      "transport": {
+        "kind": "main",
+        "sequence": [3, 5]
+      },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "dark": {
+      "status": "pass",
+      "report": "/tmp/t3-settings-routes-head-dark/report.json",
+      "reportSha256": "22c26a2464971357f6060109e596abb8f2d9476792b9de32f270e17d3d5132ac",
+      "client": {
+        "id": "localhost:8903",
+        "sessionId": 1,
+        "bundleUrl": "file:///Users/bytedance/github/t3code-archaeology-verify3/apps/lynxtron/dist/desktop/main.lynx.bundle"
+      },
+      "transport": {
+        "kind": "main",
+        "sequence": [4, 5]
+      },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    }
+  },
+  "validation": {
+    "verifierTests": "48/48",
+    "webSettingsTests": "54/54",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after every admitted Native run",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "fidelityAccounting": {
+    "states": 71,
+    "cells": 816,
+    "totalWeight": 266.2,
+    "denominatorChanged": false,
+    "existingWeightsChanged": false,
+    "updatedClients": ["native"],
+    "updatedDimensions": ["content", "geometry", "interaction", "runtime"],
+    "unchangedDimensions": ["material"]
+  }
+}
