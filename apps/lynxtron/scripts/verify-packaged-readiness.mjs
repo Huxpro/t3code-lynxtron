@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { EventEmitter } from "node:events";
 import {
+  chmodSync,
   cpSync,
   existsSync,
   mkdirSync,
@@ -31,7 +32,10 @@ import {
   floatingRelationResidual,
   measureFloatingRelation,
 } from "../../../packages/client-runtime/src/presentation/floatingRelation.ts";
-import { projectFileDetailLayout } from "../../../packages/client-runtime/src/presentation/files.ts";
+import {
+  fileContentRevision,
+  projectFileDetailLayout,
+} from "../../../packages/client-runtime/src/presentation/files.ts";
 
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const REPO_ROOT = path.resolve(APP_ROOT, "../..");
@@ -494,6 +498,25 @@ async function waitForClientState({ child, client, predicate, timeoutMs }) {
     await waitForChildExit(child, 100);
   }
   throw new Error(`Timed out waiting for client state: ${JSON.stringify({ latest })}`);
+}
+
+async function waitForFileContents({ child, filePath, predicate, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the workspace file reached its expected contents.");
+    }
+    latest = readFileSync(filePath, "utf8");
+    if (predicate(latest)) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(
+    `Timed out waiting for workspace file contents: ${JSON.stringify({
+      filePath,
+      latestRevision: latest === null ? null : fileContentRevision(latest),
+    })}`,
+  );
 }
 
 async function waitForSequenceAdvance({ child, client, initial, timeoutMs }) {
@@ -5508,7 +5531,10 @@ async function verifyFilesBrowser({
   devToolCli,
   height,
   outputDirectory,
+  projectCwd,
   timeoutMs,
+  verifyFileEditingSave,
+  fileEditorRelativePath,
   verifyFileSheetBack,
   verifyResponsiveSidebarFooterOnly,
   verifyResponsiveSettledBanner,
@@ -5889,6 +5915,212 @@ async function verifyFilesBrowser({
     outputDirectory,
     name: "native-file-surface.png",
   });
+  let fileEditingSave;
+  if (verifyFileEditingSave) {
+    const targetPath = path.resolve(projectCwd, fileEditorRelativePath);
+    const relativeTarget = path.relative(projectCwd, targetPath);
+    if (
+      relativeTarget.startsWith(`..${path.sep}`) ||
+      relativeTarget === ".." ||
+      path.isAbsolute(relativeTarget) ||
+      filePath.text.trim() !== path.basename(fileEditorRelativePath)
+    ) {
+      throw new Error(
+        `Native file editor target escaped its disposable workspace: ${JSON.stringify({
+          fileEditorRelativePath,
+          filePath: filePath.text.trim(),
+          projectCwd,
+          relativeTarget,
+          targetPath,
+        })}`,
+      );
+    }
+    const initialContents = readFileSync(targetPath, "utf8");
+    const sentinel = "\n// Native file save fidelity\n";
+    if (initialContents.includes(sentinel.trim())) {
+      throw new Error("Native file editor fixture already contains the save sentinel.");
+    }
+    const expectedContents = `${initialContents}${sentinel}`;
+    const expectedRevision = fileContentRevision(expectedContents);
+    const originalMode = statSync(targetPath).mode & 0o777;
+    let permissionsRestored = false;
+    try {
+      chmodSync(targetPath, 0o444);
+      await tapSelector({
+        child,
+        client,
+        selector: ".file-editor-preview",
+        timeoutMs,
+      });
+      const editor = await waitForMeasurement({
+        child,
+        client,
+        selector: ".files-panel__editor",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["data-file-editor-mode"] === "editing" &&
+          (measurement?.rect.height ?? 0) > 0,
+      });
+      const mutationResponse = await client.runCdp("Runtime.evaluate", {
+        expression: `globalThis.__T3_LYNXTRON_FILE_EDITOR_PROBE__?.change(${JSON.stringify(
+          expectedContents,
+        )}) ?? false`,
+        returnByValue: true,
+      });
+      if (commandResult(mutationResponse)?.value !== true) {
+        throw new Error(
+          `Native file editor test seam did not accept contents: ${JSON.stringify(mutationResponse)}`,
+        );
+      }
+      const pending = await waitForMeasurement({
+        child,
+        client,
+        selector: ".file-panel__editor-surface",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["data-file-save-status"] === "pending" &&
+          measurement?.attributes["data-file-content-revision"] === expectedRevision,
+      });
+      const failure = await waitForMeasurement({
+        child,
+        client,
+        selector: ".file-panel__statusbar",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["data-file-save-error"] === "true" &&
+          measurement?.text.includes("Retry save") &&
+          Math.abs((measurement?.rect.height ?? 0) - 28) <= 0.5,
+      });
+      const retry = await waitForMeasurement({
+        child,
+        client,
+        selector: "[data-file-save-retry]",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.text.trim() === "Retry save" &&
+          (measurement?.rect.width ?? 0) > 0 &&
+          (measurement?.rect.height ?? 0) <= 24,
+      });
+      const failureScreenshot = captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: "native-file-save-error.png",
+      });
+      if (readFileSync(targetPath, "utf8") !== initialContents) {
+        throw new Error("Failed Native file write changed disk contents before Retry.");
+      }
+
+      chmodSync(targetPath, originalMode);
+      permissionsRestored = true;
+      await tapSelector({
+        child,
+        client,
+        selector: "[data-file-save-retry]",
+        timeoutMs,
+      });
+      const persistedContents = await waitForFileContents({
+        child,
+        filePath: targetPath,
+        predicate: (contents) => contents === expectedContents,
+        timeoutMs,
+      });
+      const confirmed = await waitForMeasurement({
+        child,
+        client,
+        selector: ".file-panel__editor-surface",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["data-file-save-status"] === "saved" &&
+          measurement?.attributes["data-file-content-revision"] === expectedRevision,
+      });
+      await waitForMeasurement({
+        child,
+        client,
+        selector: ".file-panel__statusbar",
+        timeoutMs,
+        predicate: (measurement) => measurement === null,
+      });
+
+      await tapSelector({
+        child,
+        client,
+        selector: ".file-panel__back",
+        timeoutMs,
+      });
+      await waitForMeasurement({
+        child,
+        client,
+        selector: ".files-panel__browser",
+        timeoutMs,
+        predicate: (measurement) => (measurement?.rect.height ?? 0) > 0,
+      });
+      await tapSelector({
+        child,
+        client,
+        selector: ".files-panel .file-tree-row--file",
+        timeoutMs,
+      });
+      const reopened = await waitForMeasurement({
+        child,
+        client,
+        selector: ".file-panel__editor-surface",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement?.attributes["data-file-save-status"] === "saved" &&
+          measurement?.attributes["data-file-content-revision"] === expectedRevision,
+      });
+      const reopenedPreview = await waitForMeasurement({
+        child,
+        client,
+        selector: ".file-editor-preview",
+        timeoutMs,
+        predicate: (measurement) => measurement?.attributes["data-file-editor-mode"] === "preview",
+      });
+      fileEditingSave = {
+        status: "pass",
+        target: {
+          relativePath: fileEditorRelativePath,
+          initialRevision: fileContentRevision(initialContents),
+          expectedRevision,
+          persistedRevision: fileContentRevision(persistedContents),
+        },
+        input: {
+          enterEditing: "DevTool touch on measured preview",
+          contentMutation:
+            "test-only handler seam through the shipping React input callback; not physical keyboard evidence",
+          retry: "DevTool touch on measured Retry save control",
+          backAndReopen: "DevTool touch on measured Back and file-row controls",
+          physicalKeyboard: "pending-user-session",
+        },
+        editor: editor.rect,
+        pending: {
+          surface: pending.rect,
+          revision: pending.attributes["data-file-content-revision"],
+        },
+        failure: {
+          statusbar: failure.rect,
+          text: failure.text.trim(),
+          retry: retry.rect,
+          diskUnchanged: true,
+          screenshot: failureScreenshot,
+        },
+        recovery: {
+          surface: confirmed.rect,
+          errorDismissed: true,
+          persistedBytes: Buffer.byteLength(persistedContents),
+          persistedSha256: createHash("sha256").update(persistedContents).digest("hex"),
+        },
+        reopen: {
+          surface: reopened.rect,
+          preview: reopenedPreview.rect,
+          revision: reopened.attributes["data-file-content-revision"],
+        },
+      };
+    } finally {
+      if (!permissionsRestored) chmodSync(targetPath, originalMode);
+    }
+  }
   let fileSheetBack;
   if (verifyFileSheetBack) {
     const [back, sheetExplorer] = await Promise.all([
@@ -5967,6 +6199,7 @@ async function verifyFilesBrowser({
       panelMode,
       legacyInlinePreview: !measurementVisible(legacyInlinePreview),
     },
+    fileEditingSave,
     fileSheetBack,
     screenshots: {
       tree: treeScreenshot,
@@ -9341,6 +9574,8 @@ async function runOnce({
   verifyRightPanelAddMenu: shouldVerifyRightPanelAddMenu,
   verifyDiffScopeMenu: shouldVerifyDiffScopeMenu,
   verifyFilesBrowser: shouldVerifyFilesBrowser,
+  verifyFileEditingSave: shouldVerifyFileEditingSave,
+  fileEditorRelativePath,
   verifyFileSheetBack,
   verifyCompactControls: shouldVerifyCompactControls,
   verifyGitInitialize: shouldVerifyGitInitialize,
@@ -9396,7 +9631,8 @@ async function runOnce({
       shouldVerifyComposerSendMaterial ||
       shouldVerifySidebarInlineSearch ||
       shouldVerifyCompactControls ||
-      shouldVerifyProjectActionKeybindingMutation
+      shouldVerifyProjectActionKeybindingMutation ||
+      shouldVerifyFileEditingSave
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
@@ -9857,7 +10093,10 @@ async function runOnce({
           devToolCli,
           height,
           outputDirectory,
+          projectCwd,
           timeoutMs,
+          verifyFileEditingSave: shouldVerifyFileEditingSave,
+          fileEditorRelativePath,
           verifyFileSheetBack,
           verifyResponsiveSidebarFooterOnly: shouldVerifyResponsiveSidebarFooter,
           verifyResponsiveSettledBanner: shouldVerifyResponsiveSettledBanner,
@@ -10216,6 +10455,8 @@ const shouldVerifyShellInteractions = process.argv.includes("--verify-shell-inte
 const shouldVerifyRightPanelAddMenu = process.argv.includes("--verify-right-panel-add-menu");
 const shouldVerifyDiffScopeMenu = process.argv.includes("--verify-diff-scope-menu");
 const shouldVerifyFilesBrowser = process.argv.includes("--verify-files-browser");
+const shouldVerifyFileEditingSave = process.argv.includes("--verify-file-editing-save");
+const fileEditorRelativePath = argumentValue("--file-editor-relative-path") ?? "";
 const shouldVerifyFileSheetBack = process.argv.includes("--verify-file-sheet-back");
 const shouldVerifyCompactControls = process.argv.includes("--verify-compact-controls");
 const shouldVerifyResponsiveSidebarFooter = process.argv.includes(
@@ -10280,6 +10521,14 @@ if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutat
 }
 if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-file-sheet-back requires --verify-files-browser.");
+}
+if (
+  shouldVerifyFileEditingSave &&
+  (!shouldVerifyFilesBrowser || fileEditorRelativePath.length === 0)
+) {
+  throw new Error(
+    "--verify-file-editing-save requires --verify-files-browser and --file-editor-relative-path.",
+  );
 }
 if (shouldVerifyResponsiveSidebarFooter && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-responsive-sidebar-footer requires --verify-files-browser.");
@@ -10447,6 +10696,13 @@ const projectSettingsOnlyEmptyFixture =
   !verifyComposerBranding &&
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
+const fileEditingSaveOnlyEmptyFixture =
+  shouldVerifyFileEditingSave &&
+  !verifySettingsNavigation &&
+  !verifySidebarScope &&
+  !verifyComposerBranding &&
+  !shouldVerifyModelPickerFidelity &&
+  !verifyPlan11SemanticOutcomes;
 if (
   !lifecycleOnlyEmptyFixture &&
   !heroOnlyEmptyFixture &&
@@ -10455,6 +10711,7 @@ if (
   !gitInitializeOnlyEmptyFixture &&
   !rightPanelAddMenuOnlyEmptyFixture &&
   !projectSettingsOnlyEmptyFixture &&
+  !fileEditingSaveOnlyEmptyFixture &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
@@ -10507,6 +10764,7 @@ for (let index = 1; index <= runs; index += 1) {
         !gitInitializeOnlyEmptyFixture &&
         !rightPanelAddMenuOnlyEmptyFixture &&
         !projectSettingsOnlyEmptyFixture &&
+        !fileEditingSaveOnlyEmptyFixture &&
         !shouldVerifyFileSheetBack,
       timeoutMs,
       verifySettingsNavigation,
@@ -10550,6 +10808,8 @@ for (let index = 1; index <= runs; index += 1) {
       verifyRightPanelAddMenu: shouldVerifyRightPanelAddMenu,
       verifyDiffScopeMenu: shouldVerifyDiffScopeMenu,
       verifyFilesBrowser: shouldVerifyFilesBrowser,
+      verifyFileEditingSave: shouldVerifyFileEditingSave,
+      fileEditorRelativePath,
       verifyFileSheetBack: shouldVerifyFileSheetBack,
       verifyCompactControls: shouldVerifyCompactControls,
       verifyGitInitialize: shouldVerifyGitInitialize,

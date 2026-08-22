@@ -618,6 +618,25 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "!shouldVerifyFileSheetBack,");
     assert.include(source, 'measurement?.attributes["data-right-panel-active-kind"] === "files"');
     assert.include(source, "fileSheetBack");
+    assert.include(source, '"--verify-file-editing-save"');
+    assert.include(source, '"--file-editor-relative-path"');
+    assert.include(
+      source,
+      '"--verify-file-editing-save requires --verify-files-browser and --file-editor-relative-path."',
+    );
+    assert.include(source, "fileEditingSaveOnlyEmptyFixture");
+    assert.include(source, "__T3_LYNXTRON_FILE_EDITOR_PROBE__?.change");
+    assert.include(source, 'measurement?.attributes["data-file-save-status"] === "pending"');
+    assert.include(source, 'measurement?.attributes["data-file-save-error"] === "true"');
+    assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - 28) <= 0.5");
+    assert.include(source, 'selector: "[data-file-save-retry]"');
+    assert.include(source, 'measurement?.text.trim() === "Retry save"');
+    assert.include(source, 'physicalKeyboard: "pending-user-session"');
+    assert.include(source, "waitForFileContents");
+    assert.include(source, "persistedSha256");
+    assert.include(source, "Native file editor target escaped its disposable workspace");
+    assert.include(source, "chmodSync(targetPath, 0o444)");
+    assert.include(source, "if (!permissionsRestored) chmodSync(targetPath, originalMode)");
     assert.include(outcomeChecksSource, "filesBrowser");
   });
 

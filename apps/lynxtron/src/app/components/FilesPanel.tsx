@@ -15,6 +15,7 @@ import {
   FileTreeDirectoryRowSurface,
   FileTreeFileRowSurface,
 } from "../../../../web/src/components/chat/FileTreeSurface";
+import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
 import { Icon } from "./Icon";
@@ -65,6 +66,7 @@ function EditableFilePreview({
   const [editing, setEditing] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"saved" | "pending" | "error">("saved");
   const [saveError, setSaveError] = useState<string | null>(null);
+  const viewport = useViewportSnapshot();
   const coordinator = useMemo(
     () =>
       new FileSaveCoordinator({
@@ -104,6 +106,39 @@ function EditableFilePreview({
   const flush = useCallback(() => {
     void coordinator.flush();
   }, [coordinator]);
+  useEffect(() => {
+    if (!viewport.testResize) return;
+    const target = globalThis as {
+      __T3_LYNXTRON_FILE_EDITOR_PROBE__?: {
+        readonly change: (value: string) => boolean;
+        readonly flush: () => boolean;
+        readonly state: () => {
+          readonly contents: string;
+          readonly editing: boolean;
+          readonly path: string;
+          readonly saveError: string | null;
+          readonly saveStatus: "saved" | "pending" | "error";
+        };
+      };
+    };
+    const probe = {
+      change: (value: string) => {
+        handleInput({ detail: { value } });
+        return true;
+      },
+      flush: () => {
+        flush();
+        return true;
+      },
+      state: () => ({ contents, editing, path, saveError, saveStatus }),
+    };
+    target.__T3_LYNXTRON_FILE_EDITOR_PROBE__ = probe;
+    return () => {
+      if (target.__T3_LYNXTRON_FILE_EDITOR_PROBE__ === probe) {
+        delete target.__T3_LYNXTRON_FILE_EDITOR_PROBE__;
+      }
+    };
+  }, [contents, editing, flush, handleInput, path, saveError, saveStatus, viewport.testResize]);
 
   if (result.truncated) {
     return (
@@ -127,6 +162,7 @@ function EditableFilePreview({
     <view
       className="file-panel__editor-surface"
       data-file-content-revision={fileContentRevision(contents)}
+      data-file-save-status={saveStatus}
     >
       {editing ? (
         <textarea
