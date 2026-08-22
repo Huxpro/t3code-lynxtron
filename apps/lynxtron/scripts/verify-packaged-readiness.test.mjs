@@ -821,6 +821,10 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies the Native default Quick Switch and outside dismissal", () => {
     assert.include(source, "async function verifyQuickSwitchDefault");
     assert.include(source, '"--verify-quick-switch-default"');
+    assert.include(source, "async function waitForStableMeasurement");
+    assert.include(source, "rectsConverged(previousRect, latest.rect)");
+    assert.include(source, "consecutiveStableSamples >= stableSamples");
+    assert.include(source, "const panel = await waitForStableMeasurement({");
     assert.include(source, 'selector: ".palette-panel"');
     assert.include(source, 'readSelectorRects(client, ".palette-row")');
     assert.include(source, '"Quick Switch idle thread"');

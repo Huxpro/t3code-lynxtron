@@ -31,6 +31,10 @@ const sidebarControlsSource = readFileSync(
   ),
   "utf8",
 );
+const dialogStylesSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/dialog-styles.ts"),
+  "utf8",
+);
 const clientSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/t3Client.ts"),
   "utf8",
@@ -749,6 +753,13 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("animation: lynx-tooltip-enter 150ms ease-out both;");
     expect(overrides).toContain("animation: lynx-palette-backdrop-enter 200ms ease-in-out both;");
     expect(overrides).toContain("animation: lynx-palette-panel-enter 200ms ease-in-out both;");
+    expect(dialogStylesSource).toContain(
+      "transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
+    );
+    expect(dialogStylesSource).toContain(
+      "transition-[scale,opacity,translate] duration-200 ease-in-out",
+    );
+    expect(dialogStylesSource).toContain("data-ending-style:scale-98 data-starting-style:scale-98");
     expect(overrides).toContain("@media (prefers-reduced-motion: reduce) {");
   });
 

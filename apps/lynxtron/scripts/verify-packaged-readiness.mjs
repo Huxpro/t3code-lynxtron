@@ -1484,6 +1484,49 @@ async function waitForMeasurement({ child, client, predicate, selector, timeoutM
   throw new Error(`Timed out waiting for ${selector}: ${JSON.stringify({ latest })}`);
 }
 
+function rectsConverged(previous, current, epsilon = 0.05) {
+  return (
+    previous !== null &&
+    current !== null &&
+    ["x", "y", "width", "height"].every((key) => Math.abs(previous[key] - current[key]) <= epsilon)
+  );
+}
+
+async function waitForStableMeasurement({
+  child,
+  client,
+  predicate,
+  selector,
+  stableSamples = 3,
+  timeoutMs,
+}) {
+  const deadline = Date.now() + timeoutMs;
+  let latest;
+  let previousRect = null;
+  let consecutiveStableSamples = 0;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error(`Lynxtron exited before ${selector} geometry stabilized.`);
+    }
+    latest = await readOptionalMeasurement(client, selector);
+    if (predicate(latest) && rectsConverged(previousRect, latest.rect)) {
+      consecutiveStableSamples += 1;
+      if (consecutiveStableSamples >= stableSamples) return latest;
+    } else {
+      consecutiveStableSamples = 0;
+    }
+    previousRect = latest?.rect ?? null;
+    await waitForChildExit(child, 50);
+  }
+  throw new Error(
+    `Timed out waiting for stable ${selector} geometry: ${JSON.stringify({
+      consecutiveStableSamples,
+      latest,
+      previousRect,
+    })}`,
+  );
+}
+
 function composerStateForSessionStatus(sessionStatus) {
   if (sessionStatus === "running") return "working";
   if (sessionStatus === "starting") return "disabled";
@@ -1851,7 +1894,7 @@ async function verifyQuickSwitchDefault({
   outputDirectory,
   timeoutMs,
 }) {
-  const panel = await waitForMeasurement({
+  const panel = await waitForStableMeasurement({
     child,
     client,
     selector: ".palette-panel",
