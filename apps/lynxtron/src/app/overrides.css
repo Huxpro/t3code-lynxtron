@@ -8174,6 +8174,7 @@
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  height: 28px;
   min-height: 28px;
   padding: 4px 10px;
   gap: 8px;
@@ -8185,19 +8186,31 @@
 }
 
 .files-panel__save {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
   padding: 3px 7px;
   border-radius: 5px;
   background-color: var(--accent);
 }
 
 .files-panel__save-label {
+  white-space: nowrap;
   color: var(--foreground);
   font-size: 10px;
+  line-height: 14px;
   font-family: var(--font-sans);
   font-weight: 600;
 }
 
 .files-panel__preview-status {
+  flex-grow: 1;
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   color: var(--muted-foreground);
   font-size: 10px;
   line-height: 14px;
