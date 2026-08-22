@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-21T03:27:00-07:00",
+  "updatedAt": "2026-08-21T16:49:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13574,6 +13574,129 @@
               "confidence": 0.99,
               "method": "integrated-file-save-failure-retry-lifecycle",
               "source": "Both Browser writers expose pending state, a deterministic first-write failure, inline error copy, Retry save, real pointer recovery, cleared error and pending state, persisted sentinel bytes, and matching cross-client reopen revisions; residual preserves unmeasured Native, light-theme, and additional-viewport behavior"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-plan-mode-registration",
+      "observedAt": "2026-08-21T16:45:00-07:00",
+      "commit": "0601d8b0560626db7cc7cca3f33037838696896e",
+      "codeCommit": "88f602fd5f91ab9c36b564255a99dd4789bbb4ff",
+      "codeState": "commit",
+      "label": "Composer Plan mode denominator registration",
+      "narrative": "A distinct user-reachable Composer state enters the fixed denominator before current evidence receives credit: a persisted thread with interaction mode Plan. Existing idle and compact Composer states do not require the original active-state separator, PencilRuler icon, blue material, Plan label, or truthful persisted interaction mode. The Web authority contract is a 1x16 separator followed by a 28px control with 8px radius, 16px icon, 14px/500/20px label, #60a5fa foreground, and blue-500 at 10% alpha in light and dark themes. Earlier Native touch and connector mutation attempts lost the active DevTool response channel, and earlier Browser attempts selected renderer-specific draft routes; those are harness mismatches and receive no product attribution. All twelve new Lynx-for-Web and Native cells remain conservative unknown at registration. The denominator expands from 70 states, 804 cells, and weight 262.2 to 71 states, 816 cells, and weight 266.2 without changing any existing state weight.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It adds the active persisted Plan state absent from the fixed denominator, preserves every existing weight and residual, reconstructs no synthetic pre-fix pixel score, and leaves all twelve new cells unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/composer-plan-mode-registration.json",
+          "classification": "tracked-current",
+          "sha256": "1b8a6a5e7d21eaafe5ca671d3502e7f903c07cd3be579eb6964d14871b3e6279"
+        }
+      ]
+    },
+    {
+      "id": "composer-plan-mode-current",
+      "observedAt": "2026-08-21T16:49:00-07:00",
+      "commit": "51f49d40dd2a6f2bfe58bb828c0b86740cf02c1b",
+      "codeCommit": "88f602fd5f91ab9c36b564255a99dd4789bbb4ff",
+      "codeState": "commit",
+      "label": "Composer Plan mode current fidelity",
+      "narrative": "Current same-snapshot Browser and exact Native evidence now measures the registered Plan state without changing its denominator. Light and dark Web authority and Lynx-for-Web captures share the prepared snapshot, canonical thread, route, 1280x820 viewport, interactionMode=plan, and zero-error readiness. Both render a 1x16 separator, 28px control, 8px radius, 16px PencilRuler icon, Plan label, 14px/500/20px type, #60a5fa foreground, and blue-500 at 10% alpha. The control's internal icon and label offsets match; Lynx-for-Web retains a 10.03125px separator and 19.03125px control absolute-x delta from preceding footer allocation, plus a 9px separator-to-control gap delta. The aligned 72x28 crop measures light MAE 4.809358 and dark MAE 7.438988 with 14.8313% significant pixels. Exact Native light and dark load the same 61a906b3 bundle, read persisted Plan state, use main transport sequence 3 to 4, report zero renderer errors, and dispose isolated state. Native's 0.0980392 alpha is accepted 8-bit quantization. Real Native mode switching and physical Composer typing remain pending-user-session, so interaction stays conservative unknown rather than receiving static-state credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The registration point left all twelve cells unknown. Current Browser evidence holds source snapshot, prepared snapshot, thread, route, themes, viewport, bundles, and state identity constant. Exact Native uses isolated persisted state, explicit themes and viewport, exact production bundle identity, main transport, zero renderer errors, screenshots, and disposed state. Browser pixels are not reused for Native material, and unsupported physical interaction receives no credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/composer-plan-mode-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "76497ac949dc9fe7c92106d3458f11455158d9f5596a3b79b9eb3b252e6bc83d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-plan-mode"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-plan-mode-content",
+              "source": "Both Browser renderers expose persisted interactionMode=plan, a PencilRuler icon, Plan label, separator, canonical model label, project, thread, and route"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                10.03125, 0, 0, 0, 19.03125, 0, 0.875, 0, 19.03125, 0, 0, 0, 19.03125, 0, 0.875, 0
+              ],
+              "relationResiduals": [0.125],
+              "anchorScale": 72,
+              "confidence": 0.99,
+              "method": "same-snapshot-plan-control-geometry",
+              "source": "Separator, control, icon, and label x/y/width/height deltas plus the 9px separator-to-control gap delta; control height, separator size, icon size, and internal offsets otherwise match"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "plan-control-typography-contract",
+              "source": "Both render 14px/500/20px Plan labels; residual preserves the 0.875px text-width and variable-font versus bundled-font shaping difference"
+            },
+            "material": {
+              "pixel": {
+                "mae": 7.438988,
+                "significantShare": 0.148313
+              },
+              "confidence": 0.99,
+              "method": "plan-control-worst-theme-aligned-crop",
+              "source": "Worst admitted dark 72x28 control crop after aligning each renderer to its measured control box; light measures MAE 4.809358 with the same significant share"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "plan-mode-browser-readiness",
+              "source": "Both light and dark pairs pass same-snapshot identity and Plan gates with zero console errors and clean process/leak cleanup"
+            }
+          }
+        },
+        {
+          "states": ["composer-plan-mode"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-persisted-plan-content",
+              "source": "Exact Native reads interaction_mode=plan from the isolated projection and renders PencilRuler, Plan, and the vertical separator in both themes"
+            },
+            "geometry": {
+              "residual": 0.06,
+              "confidence": 0.99,
+              "method": "native-plan-control-geometry",
+              "source": "Both Native runs measure a 28px control, 1x16 separator, 16x16 icon, and 8px-radius contract; residual preserves the 8px separator-to-control gap difference and subpixel label/control width"
+            },
+            "typography": {
+              "residual": 0.06,
+              "confidence": 0.95,
+              "method": "native-plan-control-typography",
+              "source": "Native preserves the 14px/500/20px Plan hierarchy; residual preserves platform font rasterization"
+            },
+            "material": {
+              "residual": 0.1,
+              "confidence": 0.95,
+              "method": "native-plan-material-boundary",
+              "source": "Exact light and dark Native frames verify #60a5fa foreground, blue-500 background at quantized 25/255 alpha, 8px radius, and full-opacity icon; Browser pixels are not reused as Native evidence"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-plan-final-bundle",
+              "source": "Exact 61a906b3 bundle uses main transport sequence 3 to 4, reports zero renderer errors, persists Plan in isolated state, and disposes both runs"
             }
           }
         }
