@@ -837,29 +837,53 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain(
       "projectThreadInteractionMode(state.threads, threadId, interactionMode)",
     );
-    expect(clientSource).toContain("rollbackThreadModeMutation(");
     expect(clientSource).toContain("const pendingThreadRuntimeModes = new Map");
     expect(clientSource).toContain("const pendingThreadInteractionModes = new Map");
+    expect(clientSource).toContain("const pendingThreadModeCommands = new Map");
+    expect(clientSource).toContain("const canonicalThreadRuntimeModes = new Map");
+    expect(clientSource).toContain("const canonicalThreadInteractionModes = new Map");
     expect(clientSource).toContain("let threads = canonicalThreads;");
     expect(clientSource).toContain(
-      "threads = projectThreadInteractionMode(threads, threadId, interactionMode);",
+      "threads = projectThreadInteractionMode(threads, threadId, mutation.value);",
     );
-    expect(clientSource).toContain(".setThreadRuntimeMode({ threadId, runtimeMode }).catch");
+    expect(clientSource).toContain("const setRuntimeMode = bridge.setThreadRuntimeMode");
+    expect(clientSource).toContain("const setInteractionMode = bridge.setThreadInteractionMode");
+    expect(clientSource).toContain("markPendingMutationAccepted(mutation)");
     expect(clientSource).toContain(
-      ".setThreadInteractionMode({ threadId, interactionMode }).catch",
+      "const rejected = rejectPendingMutation(pendingThreadRuntimeModes, threadId, mutation)",
     );
+    expect(clientSource).toContain(
+      "const rejected = rejectPendingMutation(pendingThreadInteractionModes, threadId, mutation)",
+    );
+    expect(clientSource).toContain("enqueueSerialMutation(pendingThreadModeCommands, threadId");
     expect(connectorSource).toContain("private pendingThreadRuntimeModes");
     expect(connectorSource).toContain("private pendingThreadInteractionModes");
+    expect(connectorSource).toContain("private pendingThreadModeCommands");
+    expect(connectorSource).toContain("private queueThreadModeCommand");
+    expect(connectorSource).toContain("private projectShellThreadMode");
     expect(connectorSource).toContain(
-      "if (thread?.runtimeMode === runtimeMode) this.pendingThreadRuntimeModes.delete(threadId);",
-    );
-    expect(connectorSource).toContain("if (thread?.interactionMode === interactionMode) {");
-    expect(connectorSource).toContain(
-      "this.pendingThreadRuntimeModes.set(input.threadId, input.runtimeMode);",
+      "reconcilePendingMutation(this.pendingThreadRuntimeModes, threadId, thread.runtimeMode)",
     );
     expect(connectorSource).toContain(
-      "this.pendingThreadInteractionModes.set(input.threadId, input.interactionMode);",
+      "reconcilePendingMutation(\n          this.pendingThreadInteractionModes,",
     );
+    expect(connectorSource).toContain(
+      "const mutation = setLatestPendingMutation(\n      this.pendingThreadRuntimeModes,",
+    );
+    expect(connectorSource).toContain(
+      "const mutation = setLatestPendingMutation(\n      this.pendingThreadInteractionModes,",
+    );
+    expect(connectorSource).toContain(
+      "rejectPendingMutation(this.pendingThreadRuntimeModes, input.threadId, mutation)",
+    );
+    expect(connectorSource).toContain(
+      "rejectPendingMutation(this.pendingThreadInteractionModes, input.threadId, mutation)",
+    );
+    expect(connectorSource).toContain("markPendingMutationAccepted(mutation)");
+    expect(connectorSource).toContain(
+      "this.projectShellThreadMode(input.threadId, { runtimeMode: input.runtimeMode })",
+    );
+    expect(connectorSource).toContain("interactionMode: input.interactionMode");
   });
 
   it("settles prompt dispatch failures without leaking an unhandled rejection", () => {
