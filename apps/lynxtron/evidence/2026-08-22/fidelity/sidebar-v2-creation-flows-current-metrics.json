@@ -14,7 +14,8 @@
     "nativeTooltipProduct": "9cab225195a9c309d00eb97fb79a62d4df67427a",
     "browserHarness": "d9d4aae83924f1da958ea74d5d3f82a3da6a7a78",
     "nativeHarness": "3f15a3420cf1afb5bd447323026f8c4a2ea0f510",
-    "scopeRegistration": "de076771039fd41995bbd4d815d740bbf1372555"
+    "scopeRegistration": "de076771039fd41995bbd4d815d740bbf1372555",
+    "motionChecklist": "05f2f71c74b991007d7585b5e9e83d2c95115beb"
   },
   "classification": {
     "productLossClosed": [
@@ -140,12 +141,12 @@
   },
   "native": {
     "status": "pass",
-    "head": "3f15a3420cf1afb5bd447323026f8c4a2ea0f510",
     "bundleSha256": "b62bc4a842db230762984eed210faafcb766550af2a80d23d9c13830ce4550ea",
     "bundleBytes": 5198091,
     "snapshotSha256": "91af80a01ae40ae773328a97238b768831e54617848297f1ad6ed74d33d6b5e2",
     "viewport": [1280, 820],
     "dark": {
+      "head": "3f15a3420cf1afb5bd447323026f8c4a2ea0f510",
       "sidebarReport": "/tmp/t3-sidebar-v2-native-final-head/sidebar-floating/report.json",
       "sidebarReportSha256": "637c6614661d433eaf60065369a88f58c3b0eac9d72064f6914a3480e5e200f4",
       "quickSwitchReport": "/tmp/t3-sidebar-v2-native-final-head/quick-switch/report.json",
@@ -156,6 +157,7 @@
       "quickSwitchDismissed": true
     },
     "light": {
+      "head": "de076771039fd41995bbd4d815d740bbf1372555",
       "sidebarReport": "/tmp/t3-sidebar-v2-native-final-light/report.json",
       "sidebarReportSha256": "8352cafb52d46f7f182fc2ff53509897b2c1a8ac0143533e682dcd46f8b33ca0"
     },
