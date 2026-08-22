@@ -12,6 +12,7 @@ import {
   resolveProviderDriverKindForInstanceSelection,
   getProviderSummary,
   projectProviderStatusNotice,
+  sortProviderInstanceEntries,
 } from "./provider.ts";
 
 function provider(input: {
@@ -231,6 +232,25 @@ describe("deriveProviderInstanceEntries", () => {
     expect(entry?.instanceId).toBe("codex_personal");
     expect(entry?.driverKind).toBe("codex");
     expect(entry?.isDefault).toBe(false);
+  });
+});
+
+describe("sortProviderInstanceEntries", () => {
+  it("uses an explicit driver order while keeping default instances before custom instances", () => {
+    const entries = deriveProviderInstanceEntries([
+      provider({ provider: ProviderDriverKind.make("claudeAgent"), instanceId: "claude_work" }),
+      provider({ provider: ProviderDriverKind.make("claudeAgent"), instanceId: "claudeAgent" }),
+      provider({ provider: ProviderDriverKind.make("codex"), instanceId: "codex_personal" }),
+      provider({ provider: ProviderDriverKind.make("codex"), instanceId: "codex" }),
+      provider({ provider: ProviderDriverKind.make("opencode"), instanceId: "opencode" }),
+    ]);
+
+    expect(
+      sortProviderInstanceEntries(entries, [
+        ProviderDriverKind.make("codex"),
+        ProviderDriverKind.make("claudeAgent"),
+      ]).map((entry) => entry.instanceId),
+    ).toEqual(["codex", "codex_personal", "claudeAgent", "claude_work", "opencode"]);
   });
 });
 

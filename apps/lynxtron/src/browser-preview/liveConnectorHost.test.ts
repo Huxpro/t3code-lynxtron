@@ -4,8 +4,14 @@ import { fileURLToPath } from "node:url";
 
 import { assert, describe, it } from "vite-plus/test";
 
+import {
+  ProjectId,
+  ProviderInstanceId,
+  type DispatchableClientOrchestrationCommand,
+} from "@t3tools/contracts";
+
 import { T3_CONNECTOR_EVENT, T3_CONNECTOR_METHODS } from "../shared/connectorProtocol.ts";
-import { LiveConnectorHost } from "./liveConnectorHost.ts";
+import { dispatchLivePrompt, LiveConnectorHost } from "./liveConnectorHost.ts";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const srcRoot = path.resolve(scriptDir, "..");
@@ -168,6 +174,103 @@ describe("LiveConnectorHost", () => {
     assert.include(source, 'if (request.method === "getTurnDiff")');
     assert.include(source, "this.#client[ORCHESTRATION_WS_METHODS.getTurnDiff](params)");
     assert.include(source, "OrchestrationGetTurnDiffResult");
+  });
+
+  it("forwards one atomic draft promotion and subscribes only after dispatch succeeds", async () => {
+    const commands: Array<
+      Extract<DispatchableClientOrchestrationCommand, { type: "thread.turn.start" }>
+    > = [];
+    const selectedThreadIds: string[] = [];
+    let resolveDispatch!: (value: { sequence: number }) => void;
+    const dispatch = new Promise<{ sequence: number }>((resolve) => {
+      resolveDispatch = resolve;
+    });
+    const bootstrap = {
+      createThread: {
+        projectId: ProjectId.make("project-1"),
+        title: "Implement it",
+        modelSelection: {
+          instanceId: ProviderInstanceId.make("codex"),
+          model: "gpt-5.6",
+        },
+        runtimeMode: "full-access" as const,
+        interactionMode: "default" as const,
+        branch: null,
+        worktreePath: null,
+        createdAt: "2026-08-22T00:00:00.000Z",
+      },
+    };
+
+    const pending = dispatchLivePrompt({
+      params: {
+        threadId: "draft-thread",
+        text: "Implement it",
+        bootstrap,
+      },
+      thread: undefined,
+      dispatch: (command) => {
+        commands.push(command);
+        return dispatch;
+      },
+      selectThread: (threadId) => selectedThreadIds.push(threadId),
+      commandId: "command-1",
+      messageId: "message-1",
+      createdAt: "2026-08-22T00:00:01.000Z",
+    });
+
+    assert.equal(commands.length, 1);
+    assert.deepEqual(selectedThreadIds, []);
+    assert.deepEqual(commands[0], {
+      type: "thread.turn.start",
+      commandId: "command-1",
+      threadId: "draft-thread",
+      message: {
+        messageId: "message-1",
+        role: "user",
+        text: "Implement it",
+        attachments: [],
+      },
+      modelSelection: bootstrap.createThread.modelSelection,
+      titleSeed: "Implement it",
+      runtimeMode: "full-access",
+      interactionMode: "default",
+      bootstrap,
+      createdAt: "2026-08-22T00:00:01.000Z",
+    });
+
+    resolveDispatch({ sequence: 42 });
+    assert.deepEqual(await pending, { sequence: 42 });
+    assert.deepEqual(selectedThreadIds, ["draft-thread"]);
+    assert.equal(commands.length, 1);
+  });
+
+  it("rejects an unknown thread without creating an empty record", async () => {
+    let dispatchCount = 0;
+    let failure: unknown;
+    try {
+      await dispatchLivePrompt({
+        params: {
+          threadId: "missing-thread",
+          text: "No implicit create",
+        },
+        thread: undefined,
+        dispatch: async () => {
+          dispatchCount += 1;
+          return { sequence: 1 };
+        },
+        selectThread: () => {},
+        commandId: "command-2",
+        messageId: "message-2",
+        createdAt: "2026-08-22T00:00:01.000Z",
+      });
+    } catch (error) {
+      failure = error;
+    }
+    assert.match(
+      failure instanceof Error ? failure.message : String(failure),
+      /not present in the canonical snapshot/,
+    );
+    assert.equal(dispatchCount, 0);
   });
 
   // Production graph isolation: the dev-only live host must never be imported by

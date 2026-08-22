@@ -27,6 +27,10 @@ import {
   WsRpcGroup,
   WS_METHODS,
   ORCHESTRATION_WS_METHODS,
+  CommandId,
+  type DispatchableClientOrchestrationCommand,
+  MessageId,
+  ThreadId,
   type AuthAccessSnapshot,
   type AuthAccessStreamEvent,
   type FilesystemBrowseInput,
@@ -54,8 +58,10 @@ import {
   type SourceControlPublishRepositoryInput,
   type SourceControlPublishRepositoryResult,
   type ServerConfigStreamEvent,
+  type ThreadTurnStartBootstrap,
   type VcsStatusResult,
 } from "@t3tools/contracts";
+import { buildThreadTurnStartCommand } from "@t3tools/client-runtime/operations/thread-dispatch";
 import { projectAuthAccess } from "@t3tools/client-runtime/presentation/connections";
 import { applyShellStreamEvent } from "@t3tools/client-runtime/state/shell";
 import {
@@ -149,6 +155,45 @@ const UNSUPPORTED_COMMANDS = new Set([
   "revokeClientSession",
   "revokeOtherClientSessions",
 ]);
+
+type ThreadTurnStartCommand = Extract<
+  DispatchableClientOrchestrationCommand,
+  { type: "thread.turn.start" }
+>;
+
+export async function dispatchLivePrompt<A>(input: {
+  readonly params: {
+    readonly threadId: string;
+    readonly text: string;
+    readonly bootstrap?: ThreadTurnStartBootstrap;
+  };
+  readonly thread:
+    | Pick<OrchestrationThreadShell, "modelSelection" | "runtimeMode" | "interactionMode">
+    | undefined;
+  readonly dispatch: (command: ThreadTurnStartCommand) => Promise<A>;
+  readonly selectThread: (threadId: string) => void;
+  readonly commandId?: string;
+  readonly messageId?: string;
+  readonly createdAt?: string;
+}): Promise<A> {
+  const command = buildThreadTurnStartCommand({
+    threadId: ThreadId.make(input.params.threadId),
+    text: input.params.text,
+    thread: input.thread,
+    bootstrap: input.params.bootstrap,
+    commandId: CommandId.make(input.commandId ?? globalThis.crypto.randomUUID()),
+    messageId: MessageId.make(input.messageId ?? globalThis.crypto.randomUUID()),
+    createdAt: input.createdAt ?? new Date().toISOString(),
+  });
+  if (!command) {
+    throw new Error(`thread ${input.params.threadId} is not present in the canonical snapshot`);
+  }
+  const value = await input.dispatch(command);
+  if (!input.thread && input.params.bootstrap?.createThread) {
+    input.selectThread(input.params.threadId);
+  }
+  return value;
+}
 
 export class LiveConnectorHost {
   readonly diagnostics: LiveConnectorDiagnostics;
@@ -538,6 +583,26 @@ export class LiveConnectorHost {
       return undefined;
     }
     if (!this.#client) throw new Error("Live connector is not connected");
+    if (request.method === "sendPrompt") {
+      const params = request.params as {
+        threadId: string;
+        text: string;
+        bootstrap?: ThreadTurnStartBootstrap;
+      };
+      const thread =
+        this.#shellSnapshot?.threads.find((candidate) => candidate.id === params.threadId) ??
+        this.#threadSnapshots.get(params.threadId);
+      return dispatchLivePrompt({
+        params,
+        thread,
+        dispatch: (command) =>
+          this.#runClient(this.#client[ORCHESTRATION_WS_METHODS.dispatchCommand](command)),
+        selectThread: (threadId) => this.#selectThread(threadId),
+      }).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
     if (request.method === "discoverSourceControl") {
       return this.#runClient<SourceControlDiscoveryResult>(
         this.#client[WS_METHODS.serverDiscoverSourceControl]({}),

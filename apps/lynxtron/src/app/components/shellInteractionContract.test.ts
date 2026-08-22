@@ -55,6 +55,14 @@ const connectorSource = readFileSync(
   path.resolve(import.meta.dirname, "../../main/desktop/connector.ts"),
   "utf8",
 );
+const newThreadHookSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/hooks/useHandleNewThread.lynx.ts"),
+  "utf8",
+);
+const keyboardCommandsSource = readFileSync(
+  path.resolve(import.meta.dirname, "../state/keyboardCommands.ts"),
+  "utf8",
+);
 const browserPreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
   "utf8",
@@ -189,14 +197,73 @@ describe("desktop shell interaction contract", () => {
 
   it("renders shared provider connection fields, environment, refresh, and update actions", () => {
     const providers = componentSource("ProviderSettings.tsx");
+    const app = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
+    const uiState = readFileSync(path.resolve(import.meta.dirname, "../state/uiState.ts"), "utf8");
 
     expect(providers).toContain("deriveProviderSettingsFields(schema)");
     expect(providers).toContain("CodexSettings");
     expect(providers).toContain("ClaudeSettings");
     expect(providers).toContain("ProviderEnvironmentFields");
+    expect(providers).toContain("sortProviderInstanceEntries");
+    expect(providers).toContain("PROVIDER_SETTINGS_DRIVER_ORDER");
+    const settingsRouteHost = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../../web/src/components/settings/settingsRouteHost.lynx.tsx",
+      ),
+      "utf8",
+    );
+    const settingsSurfaces = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../../web/src/components/settings/SettingsSurfaces.tsx",
+      ),
+      "utf8",
+    );
+    expect(settingsRouteHost).not.toContain("resetProviderScroll");
+    expect(settingsRouteHost).not.toContain("initial-scroll-to-index");
+    expect(settingsSurfaces).toContain(
+      'className="provider-instance-card__header px-3 py-3 sm:px-4"',
+    );
+    expect(settingsSurfaces).toContain("provider-instance-card__layout");
+    expect(settingsSurfaces).toContain("provider-instance-card__copy");
+    expect(settingsSurfaces).toContain("provider-instance-card__title-row");
+    expect(settingsSurfaces).toContain("provider-instance-card__summary");
+    expect(settingsSurfaces).toContain("provider-instance-card__actions");
+    expect(providers).toContain('id="provider-health-check-interval"');
+    expect(providers).toContain("backgroundActivityOverrideSettings");
+    expect(providers).toContain("t3ClientActions");
+    expect(providers).toContain(".updateServerSettings(");
     expect(providers).toContain("updateProviderInstance(instanceId, instance)");
     expect(providers).toContain("updateProvider(instanceId)");
+    expect(providers).toContain('label="Add provider instance"');
     expect(providers).toContain('label="Refresh provider status"');
+    expect(providers).toContain("export function AddProviderInstanceDialog");
+    expect(providers).toContain("data-provider-instance-dialog");
+    expect(providers).toContain("ADD_PROVIDER_WIZARD_STEPS");
+    expect(providers).toContain("resolveWizardNavigation");
+    expect(providers).toContain("COMING_SOON_PROVIDER_DRIVERS");
+    expect(providers).toContain("useProviderPresence");
+    expect(providers).toContain("data-provider-dialog-motion={presence.phase}");
+    expect(providers).toContain("data-provider-card-motion={bodyPresence.phase}");
+    expect(providers).toContain(".createProviderInstance(");
+    expect(uiState).toContain("useAddProviderDialogOpen");
+    expect(uiState).toContain("openAddProviderDialog");
+    expect(uiState).toContain("closeAddProviderDialog");
+    expect(app).toContain("<AddProviderInstanceDialog");
+    expect(app).toContain("open={addProviderDialogOpen}");
+    expect(overrides).toContain(
+      "animation: provider-instance-dialog-backdrop-enter 200ms ease both;",
+    );
+    expect(overrides).toContain(
+      "animation: provider-instance-dialog-enter 200ms ease-in-out both;",
+    );
+    expect(overrides).toContain("animation: provider-instance-dialog-exit 200ms ease-in-out both;");
+    expect(overrides).toContain("transform: translate(-50%, -50%) scale(0.98);");
+    expect(overrides).toContain("animation: provider-card-body-enter 200ms ease-in-out both;");
+    expect(overrides).toContain("animation: provider-card-body-exit 200ms ease-in-out both;");
+    expect(overrides).toContain(".provider-instance-dialog__body {\n  display: flex;");
+    expect(providers).toContain('scroll-orientation="vertical"');
   });
 
   it("renders server-declared model options in a dismissible menu", () => {
@@ -547,6 +614,13 @@ describe("desktop shell interaction contract", () => {
     );
     expect(browserPreviewSource).toContain('".settings-main{" +');
     expect(settingsNavigationSource).not.toContain('isActive || item.to === "/settings/providers"');
+    expect(settingsNavigationSource).toContain("const navigateBack = () => onBack();");
+    expect(settingsNavigationSource).toContain(
+      '<view className="settings-nav__back" flatten={false} bindtap={navigateBack}>',
+    );
+    expect(settingsNavigationSource).toContain(
+      '<text className="settings-nav__back-label" bindtap={navigateBack}>',
+    );
     expect(overrides).not.toContain(".settings-nav__item--providers {");
   });
 
@@ -981,6 +1055,34 @@ describe("desktop shell interaction contract", () => {
     const composerSource = componentSource("Composer.tsx");
     expect(composerSource).toContain("if (await current.onSend(text))");
     expect(composerSource).toContain('setValue("");');
+  });
+
+  it("keeps new threads local until the first prompt atomically creates them", () => {
+    const quickSwitch = componentSource("QuickSwitch.tsx");
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(clientSource).toContain("const draftThread = createLocalDraftThread");
+    expect(clientSource).toContain("draftThread,");
+    expect(clientSource).toContain("buildDraftThreadTurnBootstrap(draftThread");
+    expect(clientSource).not.toContain("const result = await bridge.createThread");
+    expect(clientSource).toContain("projectDraftThreadModelSelection");
+    expect(clientSource).toContain("projectDraftThreadRuntimeMode");
+    expect(clientSource).toContain("projectDraftThreadInteractionMode");
+    expect(newThreadHookSource).toContain(
+      "await t3ClientActions.createThread(projectRef.projectId, options)",
+    );
+    expect(sidebarSource).toContain("t3ClientActions.createThread(newThreadProject.id)");
+    expect(quickSwitch).toContain("t3ClientActions.createThread(projectId)");
+    expect(keyboardCommandsSource).toContain("void t3ClientActions.createThread()");
+    expect(connectorSource).toContain("buildThreadTurnStartCommand({");
+    expect(connectorSource).toContain("bootstrap,");
+    expect(connectorSource).toContain("if (!thread && bootstrap?.createThread)");
+    expect(connectorSource).toContain("this.selectThread(input.threadId)");
+    expect(clientSource).toContain("state.settings?.defaultThreadEnvMode");
+    expect(clientSource).toContain("state.settings?.newWorktreesStartFromOrigin");
+    expect(chatView).toContain('activeThreadKind={activeDraftThread ? "draft" :');
+    expect(chatView).toContain("updateDraftWorkspaceMode(mode)");
+    expect(chatView).toContain("setDraftStartFromOrigin(enabled)");
   });
 
   it("seeds and synchronizes the saved model selection before creating new chats", () => {

@@ -428,6 +428,11 @@ describe("packaged readiness Sidebar geometry", () => {
   it("drives titlebar panels and verifies Sidebar menu rows do not collapse", () => {
     assert.include(source, "async function verifyShellInteractions");
     assert.include(source, '"--verify-shell-interactions"');
+    assert.include(source, "const beforeNewThreadIds = beforeNewThreadState?.threadIds ?? []");
+    assert.include(source, 'typeof state?.draftThreadId === "string"');
+    assert.include(source, "state?.draftThreadId === firstDraftState.draftThreadId");
+    assert.include(source, "canonicalThreadIdsBefore: beforeNewThreadIds");
+    assert.include(source, "serverSequenceBefore: beforeNewThreadSequence.lastSeq");
     assert.include(source, 'selector: ".topbar__toggle--terminal"');
     assert.include(source, 'selector: ".terminal-placeholder"');
     assert.include(source, 'selector: ".topbar__toggle--right-panel"');
@@ -435,6 +440,35 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'readSelectorRects(client, ".sidebar-v2-action-menu__item")');
     assert.include(source, "Math.abs(rect.height - 30) <= 0.5");
     assert.include(source, "Sidebar action menu rows collapsed");
+  });
+
+  it("verifies Native New thread stays local and reuses its draft identity", () => {
+    assert.include(source, "async function verifyNewThreadDraftLifecycle");
+    assert.include(source, '"--verify-new-thread-draft-lifecycle"');
+    assert.include(source, "canonicalThreadIdsBefore = beforeState?.threadIds ?? []");
+    assert.include(source, 'typeof state?.draftThreadId === "string"');
+    assert.include(source, "state?.draftThreadId === firstDraftState.draftThreadId");
+    assert.include(source, "const persistedThreadIdsBefore = readPersistedThreadIds(baseDir)");
+    assert.include(source, "const persistedThreadIdsAfter = readPersistedThreadIds(baseDir)");
+    assert.include(source, "const normalizedThreadIds = (threadIds) => [...threadIds].sort()");
+    assert.include(source, "Opening a local Native draft persisted an empty thread");
+    assert.include(source, "serverSequenceAfter: afterSequence.lastSeq");
+    assert.include(outcomeChecksSource, "newThreadDraftLifecycle");
+  });
+
+  it("verifies the Native Providers route without depending on every Settings route", () => {
+    assert.include(source, "async function verifyProvidersSettings");
+    assert.include(source, '"--verify-providers-settings"');
+    assert.include(source, 'selector: ".settings-nav__item--providers"');
+    assert.include(source, 'panel: "providers"');
+    assert.include(source, 'route: "/settings/providers"');
+    assert.include(source, 'selector: ".settings-content--providers .settings-panel"');
+    assert.include(source, 'readSelectorMeasurements(client, ".provider-instance-card")');
+    assert.include(source, "cards.length !== expectedCardCount");
+    assert.include(source, '".provider-settings-header-actions .ui-button"');
+    assert.include(source, "headerActions.length !== 2");
+    assert.include(source, 'name: "native-settings-providers.png"');
+    assert.include(outcomeChecksSource, "providersSettings");
   });
 
   it("verifies the Native right-panel add menu dismissal and surface selection", () => {

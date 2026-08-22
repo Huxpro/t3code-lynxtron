@@ -16,6 +16,7 @@ import {
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
+import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { collectLynxMeasurements } from "./devtool-measurements.mjs";
@@ -2302,6 +2303,8 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
   });
   const activeChip = await verifyActivePlanModeChip({ child, client, timeoutMs });
 
+  const beforeNewThreadState = await readClientState(client);
+  const beforeNewThreadIds = beforeNewThreadState?.threadIds ?? [];
   const beforeNewThreadSequence = await readRendererReadiness(client);
   await tapSelector({
     child,
@@ -2309,12 +2312,16 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
     selector: ".sidebar-v2-new-thread",
     timeoutMs,
   });
-  const afterNewThreadSequence = await waitForSequenceAdvance({
+  const firstDraftState = await waitForClientState({
     child,
     client,
-    initial: beforeNewThreadSequence,
     timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" &&
+      state.activeThreadId === state.draftThreadId &&
+      JSON.stringify(state.threadIds ?? []) === JSON.stringify(beforeNewThreadIds),
   });
+  const afterNewThreadSequence = await readRendererReadiness(client);
   const newThreadHero = await waitForMeasurement({
     child,
     client,
@@ -2326,6 +2333,21 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
   assertComposerRouteState({ hero: newThreadHero, overlay: newThreadOverlay }, "new-thread");
   const newThread = await readComposerOutcome(client);
   assertComposerGeometry(newThread);
+  await tapSelector({
+    child,
+    client,
+    selector: ".sidebar-v2-new-thread",
+    timeoutMs,
+  });
+  const reusedDraftState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.draftThreadId === firstDraftState.draftThreadId &&
+      state.activeThreadId === firstDraftState.draftThreadId &&
+      JSON.stringify(state.threadIds ?? []) === JSON.stringify(beforeNewThreadIds),
+  });
 
   return {
     status: "pass",
@@ -2336,6 +2358,14 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
       transitionSequence: {
         before: beforeNewThreadSequence.lastSeq,
         after: afterNewThreadSequence.lastSeq,
+      },
+      draftLifecycle: {
+        canonicalThreadIdsBefore: beforeNewThreadIds,
+        canonicalThreadIdsAfter: reusedDraftState.threadIds ?? [],
+        firstDraftThreadId: firstDraftState.draftThreadId,
+        reusedDraftThreadId: reusedDraftState.draftThreadId,
+        serverSequenceBefore: beforeNewThreadSequence.lastSeq,
+        serverSequenceAfter: afterNewThreadSequence.lastSeq,
       },
     },
     modelPicker: { opened: modelPicker !== null, closed: true },
@@ -2359,6 +2389,99 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
         after: afterInteractionSequence.lastSeq,
       },
     },
+  };
+}
+
+function readPersistedThreadIds(baseDir) {
+  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
+    readOnly: true,
+  });
+  try {
+    return database
+      .prepare(
+        `SELECT thread_id AS threadId
+         FROM projection_threads
+         WHERE deleted_at IS NULL
+         ORDER BY created_at ASC, thread_id ASC`,
+      )
+      .all()
+      .map((row) => row.threadId);
+  } finally {
+    database.close();
+  }
+}
+
+async function verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs }) {
+  const beforeState = await readClientState(client);
+  const canonicalThreadIdsBefore = beforeState?.threadIds ?? [];
+  const persistedThreadIdsBefore = readPersistedThreadIds(baseDir);
+  const normalizedThreadIds = (threadIds) => [...threadIds].sort();
+  const beforeSequence = await readRendererReadiness(client);
+  await tapSelector({
+    child,
+    client,
+    selector: ".sidebar-v2-new-thread",
+    timeoutMs,
+  });
+  const firstDraftState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" &&
+      state.activeThreadId === state.draftThreadId &&
+      JSON.stringify(state.threadIds ?? []) === JSON.stringify(canonicalThreadIdsBefore),
+  });
+  const hero = await waitForMeasurement({
+    child,
+    client,
+    selector: ".hero",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".sidebar-v2-new-thread",
+    timeoutMs,
+  });
+  const reusedDraftState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.draftThreadId === firstDraftState.draftThreadId &&
+      state.activeThreadId === firstDraftState.draftThreadId &&
+      JSON.stringify(state.threadIds ?? []) === JSON.stringify(canonicalThreadIdsBefore),
+  });
+  const afterSequence = await readRendererReadiness(client);
+  const persistedThreadIdsAfter = readPersistedThreadIds(baseDir);
+  if (
+    JSON.stringify(normalizedThreadIds(persistedThreadIdsAfter)) !==
+      JSON.stringify(normalizedThreadIds(persistedThreadIdsBefore)) ||
+    JSON.stringify(normalizedThreadIds(persistedThreadIdsAfter)) !==
+      JSON.stringify(normalizedThreadIds(reusedDraftState.threadIds ?? []))
+  ) {
+    throw new Error(
+      `Opening a local Native draft persisted an empty thread: ${JSON.stringify({
+        persistedThreadIdsBefore,
+        persistedThreadIdsAfter,
+        clientThreadIdsAfter: reusedDraftState.threadIds ?? [],
+      })}`,
+    );
+  }
+  return {
+    status: "pass",
+    input: "DevTool Input.emulateTouchFromMouseEvent on the measured New thread control",
+    hero: hero.rect,
+    canonicalThreadIdsBefore,
+    canonicalThreadIdsAfter: reusedDraftState.threadIds ?? [],
+    persistedThreadIdsBefore,
+    persistedThreadIdsAfter,
+    firstDraftThreadId: firstDraftState.draftThreadId,
+    reusedDraftThreadId: reusedDraftState.draftThreadId,
+    serverSequenceBefore: beforeSequence.lastSeq,
+    serverSequenceAfter: afterSequence.lastSeq,
   };
 }
 
@@ -8678,6 +8801,131 @@ async function verifySourceControlErrorBehavior({
   };
 }
 
+async function verifyProvidersSettings({ child, client, devToolCli, outputDirectory, timeoutMs }) {
+  const beforeSequence = await readRendererReadiness(client);
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--providers",
+    timeoutMs,
+  });
+  const route = await waitForRoutePanel({
+    child,
+    client,
+    panel: "providers",
+    route: "/settings/providers",
+    timeoutMs,
+  });
+  const navigation = await assertSettingsNavigationSelection(client, "providers");
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-content--providers .settings-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("Providers") === true,
+  });
+  const clientState = await readClientState(client);
+  const cards = await readSelectorMeasurements(client, ".provider-instance-card");
+  const headers = await readSelectorRects(client, ".provider-instance-card__header");
+  const layouts = await readSelectorRects(client, ".provider-instance-card__layout");
+  const copies = await readSelectorRects(client, ".provider-instance-card__copy");
+  const actions = await readSelectorRects(client, ".provider-instance-card__actions");
+  const healthRow = await waitForMeasurement({
+    child,
+    client,
+    selector: "#provider-health-check-interval",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Health check interval") === true &&
+      measurement.text.includes("Refresh provider availability"),
+  });
+  const headerActions = await readSelectorRects(
+    client,
+    ".provider-settings-header-actions .ui-button",
+  );
+  const expectedCardCount = clientState?.providerEntryCount;
+  if (
+    !Number.isInteger(expectedCardCount) ||
+    expectedCardCount <= 0 ||
+    cards.length !== expectedCardCount ||
+    headers.length !== expectedCardCount ||
+    layouts.length !== expectedCardCount ||
+    copies.length !== expectedCardCount ||
+    actions.length !== expectedCardCount ||
+    headerActions.length !== 2 ||
+    Math.abs(panel.rect.x - 320) > 1 ||
+    Math.abs(panel.rect.y - 88) > 1 ||
+    Math.abs(panel.rect.width - 896) > 1 ||
+    Math.abs(healthRow.rect.width - panel.rect.width) > 1 ||
+    cards.some(
+      (card, index) =>
+        !card.text.trim() ||
+        Math.abs((card.rect?.width ?? 0) - panel.rect.width) > 1 ||
+        Math.abs((headers[index]?.width ?? 0) - panel.rect.width) > 1 ||
+        Math.abs((layouts[index]?.width ?? 0) - (panel.rect.width - 32)) > 1 ||
+        (copies[index]?.width ?? 0) <= 0 ||
+        (actions[index]?.width ?? 0) <= 0,
+    )
+  ) {
+    throw new Error(
+      `Native Providers layout drifted: ${JSON.stringify({
+        expectedCardCount,
+        panel: panel.rect,
+        healthRow: healthRow.rect,
+        cards,
+        headers,
+        layouts,
+        copies,
+        actions,
+        headerActions,
+      })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-settings-providers.png",
+  });
+  const afterOpenSequence = await readRendererReadiness(client);
+  await tapSelector({ child, client, selector: ".settings-nav__back", timeoutMs });
+  await waitForChatRoute({ child, client, timeoutMs });
+  return {
+    status: "pass",
+    input: "DevTool Input.emulateTouchFromMouseEvent on measured Settings and Providers controls",
+    route,
+    navigation,
+    panel: panel.rect,
+    healthRow: healthRow.rect,
+    cards: cards.map((card, index) => ({
+      text: card.text.trim(),
+      card: card.rect,
+      header: headers[index],
+      layout: layouts[index],
+      copy: copies[index],
+      actions: actions[index],
+    })),
+    controls: {
+      add: headerActions[0],
+      refresh: headerActions[1],
+    },
+    sequence: {
+      before: beforeSequence.lastSeq,
+      afterOpen: afterOpenSequence.lastSeq,
+    },
+    screenshot,
+    dismissed: true,
+  };
+}
+
 async function verifySourceControlLoadingBehavior({
   child,
   client,
@@ -9053,6 +9301,7 @@ async function runOnce({
   requireCanonicalThread,
   timeoutMs,
   verifySettingsNavigation,
+  verifyProvidersSettings: shouldVerifyProvidersSettings,
   verifySourceControlLoading: shouldVerifySourceControlLoading,
   verifySourceControlError: shouldVerifySourceControlError,
   verifyComposerGeometry: shouldVerifyComposerGeometry,
@@ -9067,6 +9316,7 @@ async function runOnce({
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
   verifyComposerBranding,
+  verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
   verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
@@ -9371,6 +9621,15 @@ async function runOnce({
             timeoutMs,
           })
         : undefined;
+    const providersSettings = shouldVerifyProvidersSettings
+      ? await verifyProvidersSettings({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
     const sourceControlLoading = shouldVerifySourceControlLoading
       ? await verifySourceControlLoadingBehavior({
           child,
@@ -9401,6 +9660,9 @@ async function runOnce({
       : verifyComposerBranding
         ? await verifyComposerBehavior({ child, client, timeoutMs })
         : undefined;
+    const newThreadDraftLifecycle = shouldVerifyNewThreadDraftLifecycle
+      ? await verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs })
+      : undefined;
     const modelPickerFidelity = shouldVerifyModelPickerFidelity
       ? await verifyModelPickerFidelity({
           baseDir,
@@ -9764,9 +10026,11 @@ async function runOnce({
       idleThreadState,
       quickSwitchDefault,
       settingsNavigation,
+      providersSettings,
       sourceControlLoading,
       sourceControlError,
       composer,
+      newThreadDraftLifecycle,
       modelPickerFidelity,
       modelSelectionMutation,
       runtimeMenuDismiss,
@@ -9823,9 +10087,11 @@ async function runOnce({
       quickSwitchDefault,
       composerThemeScreenshot,
       settingsNavigation,
+      providersSettings,
       sourceControlLoading,
       sourceControlError,
       composer,
+      newThreadDraftLifecycle,
       modelPickerFidelity,
       modelSelectionMutation,
       runtimeMenuDismiss,
@@ -9894,6 +10160,7 @@ const expectedEnvironmentIdentificationMode = argumentValue(
 const expectedModelLabel = argumentValue("--expected-model-label");
 const expectNoComposerContext = process.argv.includes("--expect-no-composer-context");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
+const shouldVerifyProvidersSettings = process.argv.includes("--verify-providers-settings");
 const shouldVerifySourceControlLoading = process.argv.includes("--verify-source-control-loading");
 const shouldVerifySourceControlError = process.argv.includes("--verify-source-control-error");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
@@ -9907,6 +10174,9 @@ const shouldVerifyFloatingRelations = process.argv.includes("--verify-floating-r
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
 const verifyComposerBranding = process.argv.includes("--verify-composer-branding");
+const shouldVerifyNewThreadDraftLifecycle = process.argv.includes(
+  "--verify-new-thread-draft-lifecycle",
+);
 const shouldVerifyModelPickerFidelity = process.argv.includes("--verify-model-picker-fidelity");
 const shouldVerifyModelSelectionMutation = process.argv.includes(
   "--verify-model-selection-mutation",
@@ -10240,6 +10510,7 @@ for (let index = 1; index <= runs; index += 1) {
         !shouldVerifyFileSheetBack,
       timeoutMs,
       verifySettingsNavigation,
+      verifyProvidersSettings: shouldVerifyProvidersSettings,
       verifySourceControlLoading: shouldVerifySourceControlLoading,
       verifySourceControlError: shouldVerifySourceControlError,
       verifyComposerGeometry: shouldVerifyComposerGeometry,
@@ -10254,6 +10525,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
       verifyComposerBranding,
+      verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
       verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,

@@ -855,6 +855,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "newThreadProjectsMatch");
     assert.include(source, 'paletteView === "new-thread-projects"');
     assert.include(source, "finalNewThreadProjectsReady");
+    assert.include(source, "initialThreadIds");
+    assert.include(source, "firstDraftIds");
+    assert.include(source, "reusedDraftIds");
+    assert.include(source, "initialLynxCreateThreadCommandCount");
+    assert.include(source, "Opening a local draft persisted an empty thread");
+    assert.include(source, "Repeated New thread did not reuse the local draft");
+    assert.include(source, "draftLifecycle: newThreadDraftLifecycle");
     assert.include(source, "sidebarControlHoverTimeline");
     assert.include(source, "newThreadProjectsTimeline");
     assert.include(source, 'client: "web", step: "back", view: "root"');
@@ -1017,11 +1024,30 @@ describe("shared workbench lifecycle fault capture", () => {
       "fileEditingSaveEvidence: !isFileEditingSaveState || fileEditingSaveEvidence !== null",
     );
     assert.include(workbench, "function readProviderSettingsMetrics");
+    assert.include(workbench, "function readAddProviderDialog");
+    assert.include(workbench, "addProviderDialog: readAddProviderDialog");
     assert.include(workbench, 'root?.querySelectorAll(".provider-instance-card")');
     assert.include(workbench, 'root?.querySelector(".provider-instance-create")');
     assert.include(workbench, 'readComposedText(title) === "Health check interval"');
-    assert.include(workbench, 'const titleElement = card.querySelector(".truncate")');
+    assert.include(
+      workbench,
+      'const titleElement = card.querySelector(".provider-instance-card__title")',
+    );
+    assert.include(workbench, 'card.getAttribute("data-provider-instance-title")');
+    assert.include(workbench, '".provider-instance-card__chevron, [data-provider-card-expanded]"');
+    assert.include(workbench, "[data-provider-card-expanded]");
+    assert.include(workbench, 'card.querySelector(".provider-instance-card__layout")');
+    assert.include(workbench, 'card.querySelector(".provider-instance-card__actions")');
+    assert.include(workbench, "summaryChildren:");
+    assert.include(workbench, "titleButtons:");
     assert.include(workbench, 'expectedSemanticRoute === "settings-providers"');
+    assert.include(source, '"settings-providers-add-dialog": "settings-general"');
+    assert.include(source, "function addProviderDialogPairMatches");
+    assert.include(source, "async function runAddProviderDialogFlow");
+    assert.include(source, 'step: "config-blocked"');
+    assert.include(source, 'step: "dismissed"');
+    assert.include(source, 'step: "reopened"');
+    assert.include(source, "finalAddProviderDialogReady");
   });
 
   it("reopens thread-scoped model picker states after selecting the seeded thread", () => {

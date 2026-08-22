@@ -154,6 +154,11 @@ function readElementBox(element) {
       lineHeight: style.lineHeight,
       letterSpacing: style.letterSpacing,
       opacity: style.opacity,
+      transform: style.transform,
+      transitionDuration: style.transitionDuration,
+      transitionProperty: style.transitionProperty,
+      animationDuration: style.animationDuration,
+      animationName: style.animationName,
     },
   };
 }
@@ -397,28 +402,169 @@ function readProviderSettingsMetrics(root) {
     healthTitle?.parentElement?.parentElement?.parentElement?.parentElement ??
     null;
   return {
+    panel: readElementBox(root?.querySelector(".settings-panel")),
     addTrigger: readElementBox(root?.querySelector('[aria-label="Add provider instance"]')),
     refreshTrigger: readElementBox(root?.querySelector('[aria-label="Refresh provider status"]')),
     inlineCreate: readElementBox(root?.querySelector(".provider-instance-create")),
     healthRow: readElementBox(healthRow),
     cards: cards.map((card) => {
-      const toggleExpanded = card.querySelector('[aria-label^="Toggle "][aria-expanded]');
-      const titleElement = card.querySelector(".truncate");
-      const title =
+      const toggleExpanded = card.querySelector(
+        ".provider-instance-card__chevron, [data-provider-card-expanded]",
+      );
+      const titleElement = card.querySelector(".provider-instance-card__title");
+      const toggleLabel =
         toggleExpanded
           ?.getAttribute("aria-label")
           ?.replace(/^Toggle /, "")
-          .replace(/ details$/, "") ?? readComposedText(titleElement);
+          .replace(/ details$/, "") ?? "";
+      const title =
+        card.getAttribute("data-provider-instance-title") ||
+        toggleLabel ||
+        readComposedText(titleElement);
       return {
         title,
         text: readComposedText(card),
         box: readElementBox(card),
+        header: readElementBox(card.querySelector(".provider-instance-card__header")),
+        layout: readElementBox(card.querySelector(".provider-instance-card__layout")),
+        copy: readElementBox(card.querySelector(".provider-instance-card__copy")),
+        titleRow: readElementBox(card.querySelector(".provider-instance-card__title-row")),
+        summary: readElementBox(card.querySelector(".provider-instance-card__summary")),
+        summaryChildren: [...card.querySelectorAll(".provider-instance-card__summary > *")].map(
+          readElementBox,
+        ),
+        titleButtons: [
+          ...card.querySelectorAll(".provider-instance-card__title-row .ui-button"),
+        ].map(readElementBox),
+        actions: readElementBox(card.querySelector(".provider-instance-card__actions")),
         toggleExpanded: readElementBox(toggleExpanded),
         enabledControl: readElementBox(
           card.querySelector('[role="switch"], .ui-switch, button[aria-checked]'),
         ),
       };
     }),
+  };
+}
+
+function readAddProviderDialog(root) {
+  const lynxDialog = root?.querySelector("[data-provider-instance-dialog='true']") ?? null;
+  const webDialog = [...(root?.querySelectorAll("[data-slot='dialog-popup']") ?? [])].find(
+    (dialog) =>
+      readComposedText(dialog.querySelector("[data-slot='dialog-title']")) ===
+      "Add provider instance",
+  );
+  const dialog = lynxDialog ?? webDialog ?? null;
+  if (!dialog) return null;
+  const backdrop =
+    root.querySelector(".provider-instance-dialog-overlay") ??
+    root.querySelector("[data-slot='dialog-backdrop']");
+  const stepElements = [
+    ...dialog.querySelectorAll(".provider-instance-dialog__step, button[aria-label*=', step ']"),
+  ];
+  const driverElements = [
+    ...dialog.querySelectorAll(
+      ".provider-instance-dialog__driver, [role='radio'], [data-base-ui-radio-root]",
+    ),
+  ];
+  const dialogBox = readElementBox(dialog);
+  const backdropBox = readElementBox(backdrop);
+  const wizardStepAttribute = dialog.getAttribute("data-provider-wizard-step");
+  const wizardStep = Number(wizardStepAttribute);
+  const hasExplicitWizardStep = wizardStepAttribute !== null && Number.isInteger(wizardStep);
+  return {
+    present: true,
+    text: readComposedText(dialog),
+    box: dialogBox,
+    backdrop: backdropBox,
+    header: readElementBox(
+      dialog.querySelector("[data-slot='dialog-header'], .provider-instance-dialog__header"),
+    ),
+    title: readElementBox(
+      dialog.querySelector("[data-slot='dialog-title'], .provider-instance-dialog__title"),
+    ),
+    description: readElementBox(
+      dialog.querySelector(
+        "[data-slot='dialog-description'], .provider-instance-dialog__description",
+      ),
+    ),
+    stepRail: readElementBox(
+      dialog.querySelector("ol[role='list'], .provider-instance-dialog__steps"),
+    ),
+    body: readElementBox(
+      dialog.querySelector("[data-slot='dialog-panel'], .provider-instance-dialog__body"),
+    ),
+    stepContent: readElementBox(
+      dialog.querySelector(
+        "[data-slot='animated-height'], .provider-instance-dialog__step-content",
+      ),
+    ),
+    driverHeading: readElementBox(
+      dialog.querySelector(".provider-instance-dialog__driver-heading"),
+    ),
+    identityFields: [
+      ...dialog.querySelectorAll(
+        ".provider-instance-dialog__identity-field, [data-slot='animated-height'] > div > label, [data-slot='animated-height'] > div > div",
+      ),
+    ].map((field) => ({
+      text: readComposedText(field),
+      box: readElementBox(field),
+      children: [...(field.children ?? [])].map((child) => ({
+        text: readComposedText(child),
+        box: readElementBox(child),
+      })),
+    })),
+    hint: readElementBox(dialog.querySelector(".provider-instance-dialog__hint")),
+    errorBox: readElementBox(
+      dialog.querySelector(".provider-instance-dialog__error, .text-destructive"),
+    ),
+    inputs: [...dialog.querySelectorAll(".provider-instance-dialog__input")].map(readElementBox),
+    swatches: readElementBox(dialog.querySelector(".provider-instance-dialog__swatches")),
+    footer: readElementBox(
+      dialog.querySelector("[data-slot='dialog-footer'], .provider-instance-dialog__footer"),
+    ),
+    close: readElementBox(dialog.querySelector("[aria-label='Close']")),
+    motion:
+      dialog.getAttribute("data-provider-dialog-motion") ??
+      (dialogBox?.style?.opacity === "1" ? "open" : null),
+    transitionDuration: dialogBox?.style?.transitionDuration ?? "",
+    transitionProperty: dialogBox?.style?.transitionProperty ?? "",
+    animationDuration: dialogBox?.style?.animationDuration ?? "",
+    animationName: dialogBox?.style?.animationName ?? "",
+    activeStep: hasExplicitWizardStep
+      ? wizardStep
+      : stepElements.findIndex((step) => step.getAttribute("aria-current") === "step"),
+    steps: stepElements.map((step) => ({
+      label: step.getAttribute("aria-label") ?? readComposedText(step),
+      current: hasExplicitWizardStep
+        ? stepElements.indexOf(step) === wizardStep
+        : step.getAttribute("aria-current") === "step",
+      box: readElementBox(step),
+    })),
+    drivers: driverElements.map((driver) => ({
+      label: readComposedText(driver),
+      checked:
+        driver.getAttribute("aria-checked") === "true" ||
+        driver.getAttribute("data-checked") === "",
+      disabled:
+        driver.getAttribute("aria-disabled") === "true" ||
+        driver.getAttribute("data-disabled") === "",
+      box: readElementBox(driver),
+    })),
+    error: readComposedText(
+      dialog.querySelector(
+        ".provider-instance-dialog__error, .text-destructive, [aria-invalid='true'] + *",
+      ),
+    ),
+    next: readElementBox(
+      [...dialog.querySelectorAll("button, .provider-instance-dialog__save")].find(
+        (button) => readComposedText(button) === "Next",
+      ),
+    ),
+    cancel: readElementBox(
+      [...dialog.querySelectorAll("button, .ui-button")].find((button) =>
+        ["Cancel", "Back"].includes(readComposedText(button)),
+      ),
+    ),
   };
 }
 
@@ -1288,6 +1434,7 @@ function readLynxPane() {
     const composerFrame = root?.querySelector(".composer-frame") ?? null;
     const composerEditorHost = root?.querySelector('[data-composer-editor="true"]') ?? null;
     const composerPrimaryAction = root?.querySelector("[data-composer-primary-state]") ?? null;
+    const chatSurface = root?.querySelector(".chat-view-surface-reference") ?? null;
     const pendingRequestMetrics = readPendingRequestMetrics(root);
     const composerControlElements = [...(root?.querySelectorAll("[data-composer-control]") ?? [])];
     const composerInteractionControl =
@@ -1387,6 +1534,8 @@ function readLynxPane() {
             ? expectProject
             : null,
         selectedThread: settingsRoute || heroPresent ? null : activeThreadId,
+        activeThreadKind: chatSurface?.getAttribute("data-active-thread-kind") ?? null,
+        activeThreadId: chatSurface?.getAttribute("data-active-thread-id") ?? null,
         selectedModel: null,
         visibleModelLabel,
         interactionMode:
@@ -2015,6 +2164,7 @@ function readLynxPane() {
         actionItems: readHeaderActionItems(root?.querySelectorAll("[data-header-action]") ?? []),
       },
       gitPublishDialog: readGitPublishDialog(root),
+      addProviderDialog: readAddProviderDialog(root),
       reviewMetrics: readReviewMetrics(root),
       filesBrowserMetrics: readFilesBrowserMetrics(root),
       fileEditorMetrics: readFileEditorMetrics(root),
@@ -2319,6 +2469,7 @@ function readWebPane() {
     const composerFrame = doc.querySelector(".composer-frame");
     const composerEditor = doc.querySelector('[data-composer-editor="true"]');
     const composerPrimaryAction = doc.querySelector("[data-composer-primary-state]");
+    const chatSurface = doc.querySelector(".chat-view-surface-reference");
     const composerControlElements = [...doc.querySelectorAll("[data-composer-control]")];
     const composerInteractionControl =
       composerControlElements.find(
@@ -2363,6 +2514,8 @@ function readWebPane() {
             ? expectProject
             : null,
         selectedThread: settingsRoute || heroPresent ? null : activeThreadId,
+        activeThreadKind: chatSurface?.getAttribute("data-active-thread-kind") ?? null,
+        activeThreadId: chatSurface?.getAttribute("data-active-thread-id") ?? null,
         selectedModel: null,
         visibleModelLabel,
         interactionMode:
@@ -2919,6 +3072,7 @@ function readWebPane() {
         ]),
       },
       gitPublishDialog: readGitPublishDialog(doc),
+      addProviderDialog: readAddProviderDialog(doc),
       reviewMetrics: readReviewMetrics(doc),
       filesBrowserMetrics: readFilesBrowserMetrics(doc),
       fileEditorMetrics: readFileEditorMetrics(doc),

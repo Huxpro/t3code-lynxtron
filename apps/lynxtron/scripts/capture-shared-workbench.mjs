@@ -163,6 +163,8 @@ const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
+const isAddProviderDialogState = stateId === "settings-providers-add-dialog";
+const isProvidersSettingsState = stateId === "settings-providers" || isAddProviderDialogState;
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
 const isFileEditingSaveState = stateId === "file-editor-editing-save";
@@ -240,6 +242,7 @@ const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
 const shouldClearWebNotification =
   Boolean(overlay) ||
+  isAddProviderDialogState ||
   isComposerPlanModeState ||
   isProjectSettingsState ||
   isFilesSurfaceState ||
@@ -722,7 +725,7 @@ function keybindingsSettingsGeometryMatches(webMetrics, lynxMetrics) {
 }
 
 function providerSettingsContentMatches(webMetrics, lynxMetrics) {
-  if (stateId !== "settings-providers") return true;
+  if (!isProvidersSettingsState) return true;
   const webProviders = webMetrics?.providers;
   const lynxProviders = lynxMetrics?.providers;
   const canonicalCards = (providers) =>
@@ -741,7 +744,7 @@ function providerSettingsContentMatches(webMetrics, lynxMetrics) {
 }
 
 function providerSettingsGeometryMatches(webMetrics, lynxMetrics) {
-  if (stateId !== "settings-providers") return true;
+  if (!isProvidersSettingsState) return true;
   const webSection = webMetrics?.geometry?.sections?.[0]?.box?.rect;
   const lynxSection = lynxMetrics?.geometry?.sections?.[0]?.box?.rect;
   const webCards = webMetrics?.providers?.cards ?? [];
@@ -768,6 +771,59 @@ function providerSettingsGeometryMatches(webMetrics, lynxMetrics) {
       lynxCard.enabledControl?.rect?.width > 0
     );
   });
+}
+
+function addProviderDialogPairMatches(state, viewportWidth, viewportHeight, expectedStep = 0) {
+  if (!isAddProviderDialogState) return true;
+  const web = state?.web?.addProviderDialog;
+  const lynx = state?.lynx?.addProviderDialog;
+  const canonicalSteps = (dialog) =>
+    (dialog?.steps ?? []).map(({ label, current }) => ({
+      label: label.replace(/, step \d+.*$/u, ""),
+      current,
+    }));
+  const enabledDriverLabels = (dialog) =>
+    (dialog?.drivers ?? [])
+      .filter((driver) => !driver.disabled)
+      .map((driver) => driver.label.replace(/✓/gu, "").trim());
+  const disabledDriverLabels = (dialog) =>
+    (dialog?.drivers ?? [])
+      .filter((driver) => driver.disabled)
+      .map((driver) => driver.label.replace(/Coming Soon/gu, "").trim());
+  const geometryReady =
+    rectDeltaWithin(web?.box, lynx?.box, 2) &&
+    rectDeltaWithin(web?.header, lynx?.header, 2) &&
+    rectDeltaWithin(web?.stepRail, lynx?.stepRail, 2) &&
+    rectDeltaWithin(web?.body, lynx?.body, 2) &&
+    rectDeltaWithin(web?.footer, lynx?.footer, 2) &&
+    (web?.steps ?? []).every((step, index) =>
+      rectDeltaWithin(step.box, lynx?.steps?.[index]?.box, 2),
+    ) &&
+    (expectedStep !== 0 ||
+      (web?.drivers ?? []).every((driver, index) =>
+        rectDeltaWithin(driver.box, lynx?.drivers?.[index]?.box, 2),
+      ));
+  const driverParity =
+    expectedStep !== 0 ||
+    (JSON.stringify(enabledDriverLabels(web)) === JSON.stringify(enabledDriverLabels(lynx)) &&
+      JSON.stringify(disabledDriverLabels(web)) === JSON.stringify(disabledDriverLabels(lynx)));
+  return (
+    web?.present === true &&
+    lynx?.present === true &&
+    web.activeStep === expectedStep &&
+    lynx.activeStep === expectedStep &&
+    geometryReady &&
+    JSON.stringify(canonicalSteps(web)) === JSON.stringify(canonicalSteps(lynx)) &&
+    driverParity &&
+    web.backdrop?.rect?.x === 0 &&
+    lynx.backdrop?.rect?.x === 0 &&
+    web.backdrop?.rect?.y === 0 &&
+    lynx.backdrop?.rect?.y === 0 &&
+    web.backdrop?.rect?.width === viewportWidth &&
+    lynx.backdrop?.rect?.width === viewportWidth &&
+    web.backdrop?.rect?.height === viewportHeight &&
+    lynx.backdrop?.rect?.height === viewportHeight
+  );
 }
 
 function generalSettingsGeometryMatches(webMetrics, lynxMetrics) {
@@ -1688,6 +1744,196 @@ async function dispatchOverlayOpeningPointerClick(cdp, sessionId, point) {
   await Promise.all([pressed, released]);
 }
 
+async function providerDialogControlPoint(cdp, sessionId, client, control) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const dialog = ${JSON.stringify(client)} === 'lynx'
+        ? root?.querySelector('[data-provider-instance-dialog="true"]')
+        : [...(root?.querySelectorAll('[data-slot="dialog-popup"]') ?? [])].find(
+            (item) => item.querySelector('[data-slot="dialog-title"]')?.textContent?.trim() ===
+              'Add provider instance'
+          );
+      let target = null;
+      if (${JSON.stringify(control)} === 'add') {
+        target = root?.querySelector('[aria-label="Add provider instance"]');
+      } else if (${JSON.stringify(control)} === 'next') {
+        target = [...(dialog?.querySelectorAll('button, .provider-instance-dialog__save') ?? [])]
+          .find((item) => item.textContent?.trim() === 'Next');
+      } else if (${JSON.stringify(control)} === 'config-step') {
+        target = dialog?.querySelector('[aria-label^="Config, step 3"]');
+      } else if (${JSON.stringify(control)} === 'backdrop') {
+        target =
+          root?.querySelector('.provider-instance-dialog-overlay') ??
+          root?.querySelector('[data-slot="dialog-backdrop"]');
+      }
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      const x =
+        ${JSON.stringify(control)} === 'backdrop'
+          ? frameRect.x + Math.max(8, Math.min(48, rect.width / 8))
+          : frameRect.x + rect.x + rect.width / 2;
+      const y =
+        ${JSON.stringify(control)} === 'backdrop'
+          ? frameRect.y + Math.max(8, Math.min(48, rect.height / 8))
+          : frameRect.y + rect.y + rect.height / 2;
+      return { x, y };
+    })()`,
+  );
+}
+
+async function clickProviderDialogControl(cdp, sessionId, client, control) {
+  const point = await providerDialogControlPoint(cdp, sessionId, client, control);
+  if (!point) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return true;
+}
+
+async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportHeight) {
+  const timeline = [];
+  for (const client of ["web", "lynx"]) {
+    if (!(await clickProviderDialogControl(cdp, sessionId, client, "add"))) {
+      throw new Error(`Missing ${client} Add provider instance trigger`);
+    }
+  }
+  let state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => addProviderDialogPairMatches(next, viewportWidth, viewportHeight, 0),
+    3_000,
+    "Add Provider Driver step",
+  );
+  timeline.push({
+    step: "opened",
+    web: state.web.addProviderDialog,
+    lynx: state.lynx.addProviderDialog,
+  });
+
+  for (const client of ["web", "lynx"]) {
+    if (!(await clickProviderDialogControl(cdp, sessionId, client, "next"))) {
+      throw new Error(`Missing ${client} Add Provider Next control`);
+    }
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => addProviderDialogPairMatches(next, viewportWidth, viewportHeight, 1),
+    3_000,
+    "Add Provider Identity step",
+  );
+  timeline.push({
+    step: "identity",
+    web: state.web.addProviderDialog,
+    lynx: state.lynx.addProviderDialog,
+  });
+
+  for (const client of ["web", "lynx"]) {
+    if (!(await clickProviderDialogControl(cdp, sessionId, client, "config-step"))) {
+      throw new Error(`Missing ${client} Add Provider Config step control`);
+    }
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) =>
+      addProviderDialogPairMatches(next, viewportWidth, viewportHeight, 1) &&
+      Boolean(next?.web?.addProviderDialog?.error) &&
+      Boolean(next?.lynx?.addProviderDialog?.error),
+    3_000,
+    "Add Provider invalid Config skip",
+  );
+  timeline.push({
+    step: "config-blocked",
+    web: state.web.addProviderDialog,
+    lynx: state.lynx.addProviderDialog,
+  });
+
+  for (const client of ["web", "lynx"]) {
+    if (!(await clickProviderDialogControl(cdp, sessionId, client, "backdrop"))) {
+      throw new Error(`Missing ${client} Add Provider backdrop`);
+    }
+  }
+  const closeStartedAt = Date.now();
+  const closing = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) =>
+      (next?.web?.addProviderDialog === null ||
+        next?.web?.addProviderDialog?.motion === "exiting") &&
+      (next?.lynx?.addProviderDialog === null ||
+        next?.lynx?.addProviderDialog?.motion === "exiting"),
+    1_000,
+    "Add Provider exit start",
+  );
+  const webClosing = closing?.web?.addProviderDialog ?? null;
+  const lynxClosing = closing?.lynx?.addProviderDialog ?? null;
+  if (webClosing !== null && !webClosing.transitionDuration.includes("0.2s")) {
+    throw new Error(
+      `Web Add Provider exit motion did not match the 200ms authority: ${JSON.stringify({
+        web: webClosing,
+        lynx: lynxClosing,
+      })}`,
+    );
+  }
+  if (
+    lynxClosing !== null &&
+    (lynxClosing.motion !== "exiting" || !lynxClosing.animationDuration.includes("0.2s"))
+  ) {
+    throw new Error(
+      `Lynx Add Provider exit motion did not match the 200ms authority: ${JSON.stringify({
+        web: webClosing,
+        lynx: lynxClosing,
+      })}`,
+    );
+  }
+  timeline.push({
+    step: "closing",
+    sampled: webClosing !== null || lynxClosing !== null,
+    web: webClosing,
+    lynx: lynxClosing,
+  });
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => next?.web?.addProviderDialog === null && next?.lynx?.addProviderDialog === null,
+    3_000,
+    "Add Provider backdrop dismissal",
+  );
+  const closeElapsedMs = Date.now() - closeStartedAt;
+  if (closeElapsedMs > 1_000) {
+    throw new Error(
+      `Add Provider dismissal exceeded the bounded motion window: ${closeElapsedMs}ms`,
+    );
+  }
+  timeline.push({ step: "dismissed", elapsedMs: closeElapsedMs });
+
+  for (const client of ["web", "lynx"]) {
+    if (!(await clickProviderDialogControl(cdp, sessionId, client, "add"))) {
+      throw new Error(`Missing ${client} Add provider trigger after dismissal`);
+    }
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => addProviderDialogPairMatches(next, viewportWidth, viewportHeight, 0),
+    3_000,
+    "Add Provider reset after reopen",
+  );
+  timeline.push({
+    step: "reopened",
+    web: state.web.addProviderDialog,
+    lynx: state.lynx.addProviderDialog,
+  });
+  return { state, timeline };
+}
+
 function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
   if (expectation === null) return true;
   if (!webMetrics || !lynxMetrics) return false;
@@ -2057,6 +2303,10 @@ async function waitForWorkbenchState(
         view: state?.lynx?.overlayMetrics?.paletteView ?? null,
         active: state?.lynx?.overlayMetrics?.activeRowLabels ?? [],
       },
+      addProviderDialog: {
+        web: state?.web?.addProviderDialog ?? null,
+        lynx: state?.lynx?.addProviderDialog ?? null,
+      },
     })}`,
   );
 }
@@ -2092,6 +2342,13 @@ async function hoverPaletteRow(cdp, sessionId, client, label) {
     { type: "mouseMoved", ...point, button: "none", pointerType: "mouse" },
     sessionId,
   );
+  return true;
+}
+
+async function clickPaletteRow(cdp, sessionId, client, label) {
+  const point = await paletteRowPoint(cdp, sessionId, client, label);
+  if (!point) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
   return true;
 }
 
@@ -4331,6 +4588,7 @@ async function captureCell({
     "settings-appearance": "settings-general",
     "settings-keybindings": "settings-general",
     "settings-providers": "settings-general",
+    "settings-providers-add-dialog": "settings-general",
     "settings-connections": "settings-general",
     "settings-source-control": "settings-general",
     "settings-source-control-loading": "settings-general",
@@ -4411,9 +4669,12 @@ async function captureCell({
   let newThreadProjectsStage =
     stateId === "sidebar-v2-new-thread-projects" ? "waiting-controls" : "not-required";
   const newThreadProjectsTimeline = [];
+  let newThreadDraftLifecycle = null;
   let addProjectSourcesStage =
     stateId === "add-project-sources" ? "waiting-controls" : "not-required";
   const addProjectSourcesTimeline = [];
+  let addProviderDialogStage = isAddProviderDialogState ? "waiting-settings" : "not-required";
+  const addProviderDialogTimeline = [];
   let settingsAsyncReadyPolls =
     stateId === "settings-source-control" ||
     stateId === "settings-source-control-loading" ||
@@ -6583,6 +6844,13 @@ async function captureCell({
   }
   if (stateId === "sidebar-v2-new-thread-projects") {
     state = await waitForSidebarV2Controls(cdp, sessionId);
+    const initialThreadIds = {
+      web: (state?.web?.sidebarDiagnostics?.threads ?? []).map(({ threadId }) => threadId),
+      lynx: (state?.lynx?.sidebarDiagnostics?.threads ?? []).map(({ threadId }) => threadId),
+    };
+    const initialLynxCreateThreadCommandCount =
+      state?.lynx?.connectorDiagnostics?.commands?.filter(({ method }) => method === "createThread")
+        .length ?? 0;
     const selector = ".sidebar-v2-new-thread";
     for (const client of ["web", "lynx"]) {
       if (!(await clickSidebarControl(cdp, sessionId, client, selector))) {
@@ -6687,7 +6955,163 @@ async function captureCell({
     if (!newThreadProjectsMatch(state)) {
       throw new Error("New thread project picker did not restore after reverse-state checks");
     }
+    const webProjectLabels = state?.web?.overlayMetrics?.rowLabels ?? [];
+    const lynxProjectLabels = new Set(state?.lynx?.overlayMetrics?.rowLabels ?? []);
+    const selectedProjectLabel =
+      webProjectLabels.find((label) => label && lynxProjectLabels.has(label)) ?? "";
+    if (!selectedProjectLabel) {
+      throw new Error("New thread project picker had no selectable project");
+    }
+    for (const client of ["web", "lynx"]) {
+      if (!(await clickPaletteRow(cdp, sessionId, client, selectedProjectLabel))) {
+        throw new Error(`Could not select ${client} project for a new draft`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          next?.[client]?.productState?.overlay === null &&
+          next?.[client]?.heroPresent === true &&
+          next?.[client]?.productState?.activeThreadKind === "draft",
+        3_000,
+        `${client} local new-thread draft`,
+      );
+    }
+    const firstDraftIds = {
+      web: state?.web?.productState?.activeThreadId ?? null,
+      lynx: state?.lynx?.productState?.activeThreadId ?? null,
+    };
+    const firstThreadIds = {
+      web: (state?.web?.sidebarDiagnostics?.threads ?? []).map(({ threadId }) => threadId),
+      lynx: (state?.lynx?.sidebarDiagnostics?.threads ?? []).map(({ threadId }) => threadId),
+    };
+    const firstLynxCreateThreadCommandCount =
+      state?.lynx?.connectorDiagnostics?.commands?.filter(({ method }) => method === "createThread")
+        .length ?? 0;
+    if (
+      JSON.stringify(firstThreadIds) !== JSON.stringify(initialThreadIds) ||
+      firstLynxCreateThreadCommandCount !== initialLynxCreateThreadCommandCount ||
+      !firstDraftIds.web ||
+      !firstDraftIds.lynx
+    ) {
+      throw new Error(
+        `Opening a local draft persisted an empty thread: ${JSON.stringify({
+          initialThreadIds,
+          firstThreadIds,
+          initialLynxCreateThreadCommandCount,
+          firstLynxCreateThreadCommandCount,
+          firstDraftIds,
+        })}`,
+      );
+    }
+    for (const client of ["web", "lynx"]) {
+      if (!(await clickSidebarControl(cdp, sessionId, client, selector))) {
+        throw new Error(`Missing ${client} New thread trigger for draft reuse`);
+      }
+      await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          client === "web"
+            ? next?.web?.overlayMetrics?.paletteView === "submenu"
+            : next?.lynx?.overlayMetrics?.paletteView === "new-thread-projects",
+        3_000,
+        `${client} new thread projects draft reuse`,
+      );
+      if (!(await clickPaletteRow(cdp, sessionId, client, selectedProjectLabel))) {
+        throw new Error(`Could not reselect ${client} project for draft reuse`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          next?.[client]?.productState?.overlay === null &&
+          next?.[client]?.heroPresent === true &&
+          next?.[client]?.productState?.activeThreadKind === "draft",
+        3_000,
+        `${client} reused local new-thread draft`,
+      );
+    }
+    const reusedDraftIds = {
+      web: state?.web?.productState?.activeThreadId ?? null,
+      lynx: state?.lynx?.productState?.activeThreadId ?? null,
+    };
+    const reusedThreadIds = {
+      web: (state?.web?.sidebarDiagnostics?.threads ?? []).map(({ threadId }) => threadId),
+      lynx: (state?.lynx?.sidebarDiagnostics?.threads ?? []).map(({ threadId }) => threadId),
+    };
+    const reusedLynxCreateThreadCommandCount =
+      state?.lynx?.connectorDiagnostics?.commands?.filter(({ method }) => method === "createThread")
+        .length ?? 0;
+    if (
+      JSON.stringify(reusedThreadIds) !== JSON.stringify(initialThreadIds) ||
+      reusedLynxCreateThreadCommandCount !== initialLynxCreateThreadCommandCount ||
+      reusedDraftIds.web !== firstDraftIds.web ||
+      reusedDraftIds.lynx !== firstDraftIds.lynx
+    ) {
+      throw new Error(
+        `Repeated New thread did not reuse the local draft: ${JSON.stringify({
+          initialThreadIds,
+          reusedThreadIds,
+          initialLynxCreateThreadCommandCount,
+          reusedLynxCreateThreadCommandCount,
+          firstDraftIds,
+          reusedDraftIds,
+        })}`,
+      );
+    }
+    newThreadDraftLifecycle = {
+      selectedProjectLabel,
+      initialThreadIds,
+      firstThreadIds,
+      reusedThreadIds,
+      firstDraftIds,
+      reusedDraftIds,
+      lynxCreateThreadCommandCount: reusedLynxCreateThreadCommandCount,
+    };
+    if (expectedThreadFixture?.id) {
+      for (const client of ["web", "lynx"]) {
+        const selected = await clickSidebarControl(
+          cdp,
+          sessionId,
+          client,
+          `[data-thread-id="${expectedThreadFixture.id}"]`,
+        );
+        if (!selected) throw new Error(`Could not restore ${client} canonical thread`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          next?.web?.productState?.selectedThread === expectedThreadFixture.id &&
+          next?.lynx?.productState?.selectedThread === expectedThreadFixture.id,
+        3_000,
+        "restore canonical thread after draft reuse",
+      );
+    }
+    for (const client of ["web", "lynx"]) {
+      if (!(await clickSidebarControl(cdp, sessionId, client, selector))) {
+        throw new Error(`Missing ${client} New thread trigger for final palette`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          client === "web"
+            ? next?.web?.overlayMetrics?.paletteView === "submenu"
+            : next?.lynx?.overlayMetrics?.paletteView === "new-thread-projects",
+        3_000,
+        `${client} new thread projects final`,
+      );
+    }
     newThreadProjectsStage = "complete";
+    reachedTargetState = true;
+  }
+  if (isAddProviderDialogState) {
+    const flow = await runAddProviderDialogFlow(cdp, sessionId, width, height);
+    state = flow.state;
+    addProviderDialogTimeline.push(...flow.timeline);
+    addProviderDialogStage = "complete";
     reachedTargetState = true;
   }
   if (stateId === "add-project-sources") {
@@ -6991,6 +7415,10 @@ async function captureCell({
         state?.lynx?.settingsMetrics,
       ));
   const finalSettingsNavigationReady = settingsNavigationStateMatches(state);
+  const finalAddProviderDialogReady =
+    !isAddProviderDialogState ||
+    (addProviderDialogStage === "complete" &&
+      addProviderDialogPairMatches(state, width, height, 0));
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
     state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&
@@ -7144,7 +7572,7 @@ async function captureCell({
                 state?.web?.settingsMetrics,
                 state?.lynx?.settingsMetrics,
               )
-            : stateId === "settings-providers"
+            : isProvidersSettingsState
               ? providerSettingsContentMatches(
                   state?.web?.settingsMetrics,
                   state?.lynx?.settingsMetrics,
@@ -8033,6 +8461,7 @@ async function captureCell({
     finalSettingsAsyncReady &&
     finalSettingsGeometryReady &&
     finalSettingsNavigationReady &&
+    finalAddProviderDialogReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
@@ -8088,6 +8517,7 @@ async function captureCell({
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
       finalSettingsNavigationReady,
+      finalAddProviderDialogReady,
       finalTranscriptReady,
       finalPendingRequestReady,
       commandPaletteNavigationStage,
@@ -8116,6 +8546,7 @@ async function captureCell({
           sidebarDiagnostics: state?.web?.sidebarDiagnostics ?? null,
           headerMetrics: state?.web?.headerMetrics ?? null,
           gitPublishDialog: state?.web?.gitPublishDialog ?? null,
+          addProviderDialog: state?.web?.addProviderDialog ?? null,
           composerMetrics: state?.web?.composerMetrics ?? null,
           timelineMetrics: state?.web?.timelineMetrics ?? null,
           reviewMetrics: state?.web?.reviewMetrics ?? null,
@@ -8144,6 +8575,7 @@ async function captureCell({
           sidebarDiagnostics: state?.lynx?.sidebarDiagnostics ?? null,
           headerMetrics: state?.lynx?.headerMetrics ?? null,
           gitPublishDialog: state?.lynx?.gitPublishDialog ?? null,
+          addProviderDialog: state?.lynx?.addProviderDialog ?? null,
           composerMetrics: state?.lynx?.composerMetrics ?? null,
           timelineMetrics: state?.lynx?.timelineMetrics ?? null,
           reviewMetrics: state?.lynx?.reviewMetrics ?? null,
@@ -8264,6 +8696,7 @@ async function captureCell({
         match: finalNewThreadProjectsReady && newThreadProjectsStage === "complete",
         stage: newThreadProjectsStage,
         timeline: newThreadProjectsTimeline,
+        draftLifecycle: newThreadDraftLifecycle,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
       },
@@ -8277,6 +8710,21 @@ async function captureCell({
         timeline: projectSettingsTimeline,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
+      },
+      addProviderDialog: {
+        match: finalAddProviderDialogReady,
+        stage: addProviderDialogStage,
+        inputChannel: isAddProviderDialogState ? "dual-cdp-pointer" : "not-required",
+        timeline: addProviderDialogTimeline,
+        authority: {
+          backdrop: "200ms opacity",
+          popup: "200ms ease-in-out opacity+scale(.98)",
+          cardBody:
+            "200ms ease-in-out opacity+translate; intrinsic height snaps because Lynx cannot animate auto height",
+          reducedMotion: "no animation; immediate presence",
+        },
+        web: state?.web?.addProviderDialog ?? null,
+        lynx: state?.lynx?.addProviderDialog ?? null,
       },
       sidebarFooterTheme: {
         match: finalSidebarFooterThemeReady,
