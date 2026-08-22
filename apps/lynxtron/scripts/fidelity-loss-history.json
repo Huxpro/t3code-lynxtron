@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-21T20:00:00-07:00",
+  "updatedAt": "2026-08-22T03:27:11-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -13881,6 +13881,203 @@
               "confidence": 0.99,
               "method": "shared-server-provider-settings-readiness",
               "source": "Both renderers reach the same route and provider snapshot in 2367ms with zero console errors and zero owned or orphaned agent-browser processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-v2-creation-flows-registration",
+      "observedAt": "2026-08-22T02:52:06-07:00",
+      "commit": "de076771039fd41995bbd4d815d740bbf1372555",
+      "codeCommit": "9cab225195a9c309d00eb97fb79a62d4df67427a",
+      "codeState": "commit",
+      "label": "Sidebar V2 creation flows denominator registration",
+      "narrative": "Six original Sidebar V2 screenshots and the current Web source establish one shared flow authority for normal controls, both delayed action tooltips, the multi-project New Thread chooser, Add Project sources, and Cmd+K. Three previously unmodeled P1 states expand the fixed denominator from 72 states, 828 cells, and weight 270.2 to 75 states, 864 cells, and weight 278.2. All new cells enter as conservative unknown before repair credit.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point changes only scope accounting. It adds three screenshot-authoritative P1 states, preserves every existing state weight and residual, and leaves all new Lynx-for-Web and Native cells unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-21/fidelity/sidebar-v2-user-flow-authority.json",
+          "classification": "tracked-current",
+          "sha256": "a2c9c4bcc378bb4b41df928894c95b55794af6a280ac64586c71aad4dc820026"
+        }
+      ]
+    },
+    {
+      "id": "sidebar-v2-creation-flows-current",
+      "observedAt": "2026-08-22T03:27:11-07:00",
+      "commit": "8daa544048dcc2bf0be1e22f63b1dce361688098",
+      "codeCommit": "9cab225195a9c309d00eb97fb79a62d4df67427a",
+      "codeState": "commit",
+      "label": "Sidebar V2 creation flows current fidelity",
+      "narrative": "The shared Sidebar control surface now allocates 203px to Search and 32px to each trailing action. Browser pointer flows verify the original 600ms tooltip delay, 0ms dismissal, copy, and paired 26px geometry. Multi-project New Thread opens the shared project chooser and survives Back, dismiss, and reopen. Exact-bundle Native verifies symmetric Sidebar cards, project controls relative to the rail, session-derived Working absence while idle, two content-sized action tooltips, right/center/+4 relations, 600ms cancellation and immediate dismissal, a settled 574px Quick Switch, main transport, zero renderer errors, and isolated cleanup. Physical Native hover and keyboard input remain unclaimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The point credits only directly observed Browser and exact-bundle Native dimensions. Rejected fixture-route and mid-animation captures are classified as harness mismatches; Native physical pointer and keyboard cells remain unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/sidebar-v2-creation-flows-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "cc006d81b5fd498f1de6ab13c659ace3a89212a6836cb31074daa6001db2a18d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-v2-new-thread-hover"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-tooltip-copy",
+              "source": "Web and Lynx-for-Web both render New thread with the configured shortcut"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 2.203125, 0],
+              "anchorScale": 128,
+              "confidence": 0.99,
+              "method": "paired-tooltip-geometry",
+              "source": "Paired final boxes share x=251, y=67, and height=26; width differs by 2.203125px"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-tooltip-typography-review",
+              "source": "Paired final frame preserves the 12px compact tooltip hierarchy; font shaping remains platform-specific"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-tooltip-material-review",
+              "source": "Paired final frame preserves dark tooltip fill, border, radius, shadow, and visible hover state"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-pointer-delay-dismiss",
+              "source": "Real Browser pointer proves no popup before 600ms, open after the authority delay, and immediate dismissal on leave"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-hover-readiness",
+              "source": "Same snapshot and exact artifacts reach semantic ready with zero console errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-v2-new-project-hover"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-tooltip-copy",
+              "source": "Web and Lynx-for-Web both render New project"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 1.0625, 0],
+              "anchorScale": 87,
+              "confidence": 0.99,
+              "method": "paired-tooltip-geometry",
+              "source": "Paired final boxes share x=251, y=107, and height=26; width differs by 1.0625px"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-tooltip-typography-review",
+              "source": "Paired final frame preserves the 12px compact tooltip hierarchy; font shaping remains platform-specific"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-tooltip-material-review",
+              "source": "Paired final frame preserves dark tooltip fill, border, radius, shadow, and visible hover state"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-pointer-delay-dismiss",
+              "source": "Real Browser pointer proves no popup before 600ms, open after the authority delay, and immediate dismissal on leave"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-hover-readiness",
+              "source": "Same snapshot and exact artifacts reach semantic ready with zero console errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-v2-new-thread-projects"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-snapshot-project-chooser-content",
+              "source": "Both renderers show the same two logical project rows, Back affordance, Search placeholder, and project metadata"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 8],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "same-snapshot-project-chooser-geometry",
+              "source": "Panel x, y, width, 574x48 search, and footer width match; Lynx panel and results remain 8px taller"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-project-chooser-typography-review",
+              "source": "Paired frame preserves section, primary, secondary, shortcut, and footer hierarchy"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-project-chooser-material-review",
+              "source": "Paired frame preserves dark overlay, selected row, panel radius, border, and shadow with the known platform blur delta"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.9,
+              "method": "browser-open-back-dismiss-reopen",
+              "source": "Both renderers pass open, Back or Backspace, dismissal, and reopen. Project-row Enter association remains source-tested rather than credited as direct Browser mutation evidence."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-project-chooser-readiness",
+              "source": "Both renderers use one snapshot and project set with zero console errors and clean leak gates"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-v2-new-thread-hover", "sidebar-v2-new-project-hover"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-tooltip-copy",
+              "source": "Exact Native renders New thread with shortcut and New project"
+            },
+            "geometry": {
+              "relationResiduals": [0.000121, 0.00012],
+              "confidence": 0.99,
+              "method": "native-tooltip-anchor-relations",
+              "source": "Both content-sized tooltip boxes preserve right, center, +4 placement with approximately 26px height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-tooltip-main-transport",
+              "source": "Exact production bundle uses main transport, advances sequence, reports zero renderer errors, and disposes isolated state in dark and light"
             }
           }
         }
