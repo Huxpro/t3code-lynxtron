@@ -775,7 +775,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "sidebar-project-groups"');
     assert.include(source, "finalSidebarProjectGroupsReady");
     assert.include(source, "function flatSidebarLayoutMatches");
-    assert.include(source, 'stateId === "sidebar-flat-layout"');
+    assert.include(source, '"sidebar-flat-layout",');
     assert.include(source, "finalFlatSidebarLayoutReady");
     assert.include(source, "isFlatSidebarLayoutState || coreGeometryMatches");
     assert.include(source, "isFlatSidebarLayoutState || headerGitActionMatches");
@@ -834,6 +834,37 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"Escape", "Escape", 27');
     assert.include(source, "nativePhysicalKeyboard:");
     assert.include(source, '"pending-user-session"');
+  });
+
+  it("records the Sidebar V2 action hover and new-thread project flows", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, '"sidebar-v2-new-thread-hover"');
+    assert.include(source, '"sidebar-v2-new-project-hover"');
+    assert.include(source, '"sidebar-v2-new-thread-projects"');
+    assert.include(source, "runSidebarControlHoverFlow");
+    assert.include(source, 'step: "before-delay"');
+    assert.include(source, 'step: "opened"');
+    assert.include(source, 'step: "dismissed"');
+    assert.include(source, "opened before the 600ms authority delay");
+    assert.include(source, "clickSidebarControl");
+    assert.include(source, "clickPaletteBack");
+    assert.include(source, "newThreadProjectsMatch");
+    assert.include(source, 'paletteView === "new-thread-projects"');
+    assert.include(source, "finalNewThreadProjectsReady");
+    assert.include(source, "sidebarControlHoverTimeline");
+    assert.include(source, "newThreadProjectsTimeline");
+    assert.include(source, 'client: "web", step: "back", view: "root"');
+    assert.include(source, 'client: "lynx", step: "back", view: "root"');
+    assert.include(source, 'client: "web", step: "dismiss", overlay: null');
+    assert.include(source, 'client: "lynx", step: "dismiss", overlay: null');
+    assert.include(workbench, "searchRow:");
+    assert.include(workbench, "searchPrimary:");
+    assert.include(workbench, "searchText:");
+    assert.include(workbench, "newThread:");
   });
 
   it("compares Composer toolbar allocation instead of renderer-specific raw box sizing", () => {

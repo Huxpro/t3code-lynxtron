@@ -1673,9 +1673,21 @@ function readLynxPane() {
           settingsBack: readSettingsNavigationChrome(root).back,
           settingsRow: readElementBox(root?.querySelector(".sidebar-settings-row")),
           settingsAuthority: readElementBox(root?.querySelector(".sidebar-settings-authority")),
+          searchRow: readElementBox(root?.querySelector(".sidebar-v2-control-row--search")),
+          searchPrimary: readElementBox(root?.querySelector(".sidebar-v2-control-primary")),
           search: readElementBox(
             root?.querySelector('[aria-label="Search threads"], .sidebar-inline-search'),
           ),
+          searchText: (() => {
+            const host = root?.querySelector('[aria-label="Search threads"]');
+            return (
+              host?.shadowRoot?.querySelector("input")?.placeholder ??
+              host?.getAttribute("placeholder") ??
+              host?.textContent?.trim() ??
+              ""
+            );
+          })(),
+          newThread: readElementBox(root?.querySelector(".sidebar-v2-new-thread")),
           projectScopeRow: readElementBox(
             root?.querySelector(".sidebar-v2-project-scope-host")?.parentElement,
           ),
@@ -2931,7 +2943,12 @@ function readWebPane() {
           settingsBack: readSettingsNavigationChrome(doc).back,
           settingsRow: readElementBox(doc.querySelector(".sidebar-settings-row")),
           settingsAuthority: readElementBox(doc.querySelector(".sidebar-settings-authority")),
+          searchRow: readElementBox(doc.querySelector(".sidebar-v2-control-row--search")),
+          searchPrimary: readElementBox(doc.querySelector(".sidebar-v2-control-primary")),
           search: readElementBox(doc.querySelector('[aria-label="Search threads"]')),
+          searchText:
+            doc.querySelector('[aria-label="Search threads"]')?.getAttribute("placeholder") ?? "",
+          newThread: readElementBox(doc.querySelector(".sidebar-v2-new-thread")),
           projectScopeRow: readElementBox(
             doc.querySelector(".sidebar-v2-project-scope-host")?.parentElement,
           ),

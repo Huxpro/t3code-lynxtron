@@ -692,6 +692,66 @@ describe("desktop shell interaction contract", () => {
     expect(faviconSource).not.toContain("background-color");
   });
 
+  it("keeps Sidebar V2 controls in shared flexible slots", () => {
+    expect(sidebarControlsSource).toContain(
+      "sidebar-v2-control-row sidebar-v2-control-row--search",
+    );
+    expect(sidebarControlsSource).toContain(
+      "sidebar-v2-control-row sidebar-v2-control-row--projects",
+    );
+    expect(sidebarControlsSource).toContain(
+      '<HostView className="sidebar-v2-control-primary min-w-0 flex-1">',
+    );
+    expect(sidebarControlsSource).toContain(
+      '<HostView className="sidebar-v2-control-action shrink-0">',
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-control-row {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: 100%;\n  height: 32px;",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-control-primary {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;\n  min-width: 0;",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-control-action {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 0;\n  flex-shrink: 0;\n  width: 32px;\n  height: 32px;",
+    );
+  });
+
+  it("matches Web new-thread routing and tooltip timing", () => {
+    const tooltipSource = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/tooltip.lynx.tsx"),
+      "utf8",
+    );
+
+    expect(sidebarSource).toContain(
+      "if (shouldChooseProjectForNewThread(orderedProjects.length)) {",
+    );
+    expect(sidebarSource).toContain("uiActions.openNewThreadIn();");
+    expect(sidebarSource).toContain(
+      'shortcutLabelForCommand(serverConfig.keybindings, "chat.newLocal", "MacIntel")',
+    );
+    expect(sidebarSource).toContain(
+      'shortcutLabelForCommand(serverConfig.keybindings, "chat.new", "MacIntel")',
+    );
+    expect(tooltipSource).toContain("delay: 600,");
+    expect(tooltipSource).toContain("delay = 600,");
+    expect(sidebarCompositionSource).toContain("delay={150}");
+    expect(sidebarCompositionSource).toContain("closeDelay={0}");
+    expect(tooltipSource).toContain(
+      "lynx-tooltip-content-motion lynx-tooltip-content-motion--${variant}",
+    );
+    expect(overrides).toContain(
+      ".lynx-tooltip-content-motion {\n  display: flex;\n  flex-direction: column;",
+    );
+    expect(overrides).toContain(".lynx-tooltip-content-motion--default {");
+    expect(overrides).toContain("padding: 4px 8px;");
+    expect(overrides).toContain("border-radius: 6px;");
+    expect(overrides).toContain("font-size: 12px;");
+    expect(overrides).toContain("animation: lynx-tooltip-enter 150ms ease-out both;");
+    expect(overrides).toContain("animation: lynx-palette-backdrop-enter 200ms ease-in-out both;");
+    expect(overrides).toContain("animation: lynx-palette-panel-enter 200ms ease-in-out both;");
+    expect(overrides).toContain("@media (prefers-reduced-motion: reduce) {");
+  });
+
   it("keeps Sidebar details hover-anchored to the complete thread card", () => {
     const tooltipSource = readFileSync(
       path.resolve(import.meta.dirname, "../../../../web/src/components/ui/tooltip.lynx.tsx"),
@@ -799,6 +859,14 @@ describe("desktop shell interaction contract", () => {
     expect(quickSwitch).toContain("createProject");
     expect(quickSwitch).toContain("cloneRepository");
     expect(quickSwitch).toContain("createThreadInProject");
+    expect(quickSwitch).toContain("sortProjectsForSidebar(projects, threads,");
+    expect(quickSwitch).toContain("const navigateBack = useCallback");
+    expect(quickSwitch).toContain('className="qs-search__back"');
+    expect(quickSwitch).toContain('aria-label="Back"');
+    expect(quickSwitch).toContain("bindtap={navigateBack}");
+    expect(quickSwitch).toContain(
+      'view === "add-project-sources" || view === "new-thread-projects"',
+    );
     expect(quickSwitch).toContain("onHoverStart={() => setActiveIndex");
     expect(
       readFileSync(

@@ -92,7 +92,6 @@ const defaultOverlayByStateId = {
   "quick-switch-query-light": "quick-switch",
   "quick-switch-actions-only": "quick-switch",
   "quick-switch-empty": "quick-switch",
-  "add-project-sources": "quick-switch",
   "command-palette-navigation": "quick-switch",
 };
 const defaultQueryByStateId = {
@@ -104,7 +103,9 @@ const defaultQueryByStateId = {
 };
 const overlay = argValue("--overlay", defaultOverlayByStateId[stateId] ?? "");
 const requiresShortcutInput =
-  (overlay === "quick-switch" || overlay === "file-picker") && stateId !== "add-project-sources";
+  (overlay === "quick-switch" || overlay === "file-picker") &&
+  stateId !== "add-project-sources" &&
+  stateId !== "sidebar-v2-new-thread-projects";
 const query = argValue("--query", defaultQueryByStateId[stateId] ?? "");
 const providerId = argValue("--provider-id", "");
 const composerInput = argValue("--composer-input", "");
@@ -179,7 +180,16 @@ const isShortCompactControlsState = stateId === "composer-compact-controls-inlin
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
 const isComposerPlanModeState = stateId === "composer-plan-mode";
-const isFlatSidebarLayoutState = stateId === "sidebar-flat-layout";
+const isFlatSidebarLayoutState = new Set([
+  "sidebar-flat-layout",
+  "sidebar-v2-new-thread-hover",
+  "sidebar-v2-new-project-hover",
+  "sidebar-v2-new-thread-projects",
+  "add-project-sources",
+  "command-palette-navigation",
+]).has(stateId);
+const isSidebarControlHoverState =
+  stateId === "sidebar-v2-new-thread-hover" || stateId === "sidebar-v2-new-project-hover";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
 const composerExpectationByStateId = {
@@ -374,10 +384,25 @@ function flatSidebarLayoutMatches(state) {
       );
     });
   const controlsMatch =
-    web?.chrome?.search?.rect?.height > 0 &&
-    lynx?.chrome?.search?.rect?.height > 0 &&
+    web?.chrome?.searchRow?.rect?.width === 239 &&
+    lynx?.chrome?.searchRow?.rect?.width === 239 &&
+    web?.chrome?.searchPrimary?.rect?.width === 203 &&
+    lynx?.chrome?.searchPrimary?.rect?.width === 203 &&
+    web?.chrome?.newThread?.rect?.width === 32 &&
+    lynx?.chrome?.newThread?.rect?.width === 32 &&
+    web?.chrome?.searchText?.includes("Search") &&
+    lynx?.chrome?.searchText?.includes("Search") &&
     web.chrome.projectScope?.rect?.height === lynx.chrome.projectScope?.rect?.height &&
     web.chrome.newProject?.rect?.width === lynx.chrome.newProject?.rect?.width;
+  if (stateId !== "sidebar-flat-layout") {
+    return (
+      state?.web?.productState?.sidebarVersion === "flat" &&
+      state?.lynx?.productState?.sidebarVersion === "flat" &&
+      web?.width === 256 &&
+      lynx?.width === 256 &&
+      controlsMatch
+    );
+  }
   return (
     state?.web?.productState?.sidebarVersion === "flat" &&
     state?.lynx?.productState?.sidebarVersion === "flat" &&
@@ -402,6 +427,22 @@ function addProjectSourcesMatch(state) {
     ) &&
     !webRows.includes("Open settings") &&
     !lynxRows.includes("Open settings")
+  );
+}
+
+function newThreadProjectsMatch(state) {
+  if (stateId !== "sidebar-v2-new-thread-projects") return true;
+  const webRows = (state?.web?.overlayMetrics?.rowLabels ?? []).filter(Boolean);
+  const lynxRows = (state?.lynx?.overlayMetrics?.rowLabels ?? []).filter(Boolean);
+  const normalizedWebRows = [...webRows].sort();
+  const normalizedLynxRows = [...lynxRows].sort();
+  return (
+    state?.web?.overlayMetrics?.paletteView === "submenu" &&
+    state?.lynx?.overlayMetrics?.paletteView === "new-thread-projects" &&
+    webRows.length >= 2 &&
+    JSON.stringify(normalizedWebRows) === JSON.stringify(normalizedLynxRows) &&
+    state?.web?.overlayMetrics?.activeRowLabels?.length === 1 &&
+    state?.lynx?.overlayMetrics?.activeRowLabels?.length === 1
   );
 }
 
@@ -2119,6 +2160,284 @@ async function clickSidebarSearch(cdp, sessionId, client) {
   return true;
 }
 
+async function sidebarControlPoint(cdp, sessionId, client, selector) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const target =
+        root?.querySelector(${JSON.stringify(selector)}) ??
+        root?.querySelector(
+          ${JSON.stringify(
+            selector.includes("new-thread")
+              ? '[data-testid="sidebar-v2-new-thread"]'
+              : '[data-testid="sidebar-v2-new-project"]',
+          )}
+        );
+      if (!frame || !target) {
+        return {
+          missing: true,
+          sidebarVersion:
+            root?.querySelector('[data-app-sidebar]')?.getAttribute('data-sidebar-version') ?? null,
+          route: frame?.contentWindow?.location?.pathname ?? null,
+          buttons: [...(root?.querySelectorAll('button, [role="button"], [data-sidebar="menu-button"]') ?? [])]
+            .map((button) => ({
+              ariaLabel: button.getAttribute('aria-label'),
+              className: button.getAttribute('class'),
+              testId: button.getAttribute('data-testid'),
+            }))
+            .filter((button) => button.ariaLabel || button.testId),
+        };
+      }
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+      };
+    })()`,
+  );
+}
+
+async function movePointerToSidebarControl(cdp, sessionId, client, selector) {
+  const point = await sidebarControlPoint(cdp, sessionId, client, selector);
+  if (!point || point.missing) return point;
+  await cdp.send(
+    "Input.dispatchMouseEvent",
+    {
+      type: "mouseMoved",
+      x: Math.max(1, point.x - 48),
+      y: point.y,
+      button: "none",
+      pointerType: "mouse",
+    },
+    sessionId,
+  );
+  await delay(50);
+  await cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mouseMoved", ...point, button: "none", pointerType: "mouse" },
+    sessionId,
+  );
+  return { moved: true, point };
+}
+
+async function readSidebarControlHover(cdp, sessionId, client, selector) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const target = root?.querySelector(${JSON.stringify(selector)});
+      if (!target) return null;
+      return {
+        hovered: target.matches(':hover'),
+        disabled: target.disabled === true || target.getAttribute('aria-disabled') === 'true',
+        attributes: Object.fromEntries(
+          target.getAttributeNames().map((name) => [name, target.getAttribute(name)])
+        ),
+      };
+    })()`,
+  );
+}
+
+async function clickSidebarControl(cdp, sessionId, client, selector) {
+  const point = await sidebarControlPoint(cdp, sessionId, client, selector);
+  if (!point || point.missing) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return true;
+}
+
+async function clickPaletteBack(cdp, sessionId, client) {
+  const point = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const target =
+        root?.querySelector('.qs-search__back') ??
+        root?.querySelector('[data-command-palette="true"] button[aria-label="Back"]');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+      };
+    })()`,
+  );
+  if (!point) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return true;
+}
+
+async function readSidebarTooltip(cdp, sessionId, client, relationId) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const popup = root?.querySelector(
+        ${JSON.stringify(`[data-floating-popup="${relationId}"]`)}
+      );
+      if (!popup) return null;
+      const rect = popup.getBoundingClientRect();
+      const style = getComputedStyle(popup);
+      return {
+        text: popup.textContent?.trim().replace(/\s+/g, ' ') ?? '',
+        rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        style: {
+          opacity: style.opacity,
+          transform: style.transform,
+          transitionDuration: style.transitionDuration,
+          transitionProperty: style.transitionProperty,
+        },
+      };
+    })()`,
+  );
+}
+
+async function waitForSidebarTooltip(cdp, sessionId, client, relationId, expectedText) {
+  const deadline = Date.now() + 1_500;
+  let tooltip = null;
+  while (Date.now() < deadline) {
+    tooltip = await readSidebarTooltip(cdp, sessionId, client, relationId);
+    if (tooltip?.text.includes(expectedText)) return tooltip;
+    await delay(50);
+  }
+  return tooltip;
+}
+
+async function waitForSidebarV2Controls(cdp, sessionId) {
+  return waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (state) =>
+      state?.web?.productState?.sidebarVersion === "flat" &&
+      state?.lynx?.productState?.sidebarVersion === "flat" &&
+      state?.web?.sidebarDiagnostics?.chrome?.newThread?.rect?.width === 32 &&
+      state?.lynx?.sidebarDiagnostics?.chrome?.newThread?.rect?.width === 32 &&
+      state?.web?.sidebarDiagnostics?.chrome?.newProject?.rect?.width === 32 &&
+      state?.lynx?.sidebarDiagnostics?.chrome?.newProject?.rect?.width === 32,
+    5_000,
+    "stable Sidebar V2 controls",
+  );
+}
+
+async function runSidebarControlHoverFlow(cdp, sessionId, kind) {
+  const selector = kind === "thread" ? ".sidebar-v2-new-thread" : ".sidebar-v2-new-project";
+  const relationId =
+    kind === "thread" ? "sidebar-new-thread-tooltip" : "sidebar-new-project-tooltip";
+  const expectedText = kind === "thread" ? "New thread" : "New project";
+  const timeline = [];
+
+  for (const client of ["web", "lynx"]) {
+    const pointer = await movePointerToSidebarControl(cdp, sessionId, client, selector);
+    if (!pointer?.moved) {
+      throw new Error(`Missing ${client} ${selector} trigger: ${JSON.stringify(pointer)}`);
+    }
+    const hover = await readSidebarControlHover(cdp, sessionId, client, selector);
+    if (hover?.hovered !== true || hover.disabled === true) {
+      throw new Error(
+        `${client} ${selector} did not enter enabled hover: ${JSON.stringify(hover)}`,
+      );
+    }
+    await delay(250);
+    const beforeDelay = await readSidebarTooltip(cdp, sessionId, client, relationId);
+    timeline.push({ client, step: "before-delay", hover, tooltip: beforeDelay });
+    if (beforeDelay !== null) {
+      throw new Error(`${client} ${relationId} opened before the 600ms authority delay`);
+    }
+    let popupInput = "pointer-hover";
+    let opened = await waitForSidebarTooltip(cdp, sessionId, client, relationId, expectedText);
+    if (!opened && client === "web") {
+      const focused = await focusRemoteElement(
+        cdp,
+        sessionId,
+        `(() => {
+          const frame = document.getElementById('web-pane');
+          return frame?.contentWindow?.document?.querySelector(${JSON.stringify(selector)}) ?? null;
+        })()`,
+      );
+      if (!focused) throw new Error(`Could not focus Web ${selector}`);
+      popupInput = "focus-fallback-after-pointer-hover";
+      opened = await waitForSidebarTooltip(cdp, sessionId, client, relationId, expectedText);
+    }
+    timeline.push({ client, step: "opened", popupInput, tooltip: opened });
+    if (!opened?.text.includes(expectedText)) {
+      const trigger = await readSidebarControlHover(cdp, sessionId, client, selector);
+      throw new Error(
+        `${client} ${relationId} did not open with ${expectedText}: ${JSON.stringify(trigger)}`,
+      );
+    }
+    if (popupInput !== "pointer-hover") {
+      await evaluate(
+        cdp,
+        sessionId,
+        `document.getElementById('web-pane')?.contentWindow?.document
+          ?.querySelector(${JSON.stringify(selector)})?.blur()`,
+      ).catch(() => undefined);
+    }
+    const triggerPoint = pointer.point;
+    await cdp.send(
+      "Input.dispatchMouseEvent",
+      {
+        type: "mouseMoved",
+        x: Math.max(1, triggerPoint.x - 150),
+        y: triggerPoint.y + 100,
+        button: "none",
+        pointerType: "mouse",
+      },
+      sessionId,
+    );
+    await delay(80);
+    const dismissed = await readSidebarTooltip(cdp, sessionId, client, relationId);
+    timeline.push({ client, step: "dismissed", tooltip: dismissed });
+    if (dismissed !== null) {
+      throw new Error(`${client} ${relationId} remained open after pointer leave`);
+    }
+  }
+
+  const webFocused = await focusRemoteElement(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('web-pane');
+      return frame?.contentWindow?.document?.querySelector(${JSON.stringify(selector)}) ?? null;
+    })()`,
+  );
+  if (!webFocused) throw new Error(`Could not focus Web ${selector} for the paired hover frame`);
+  await delay(650);
+  await movePointerToSidebarControl(cdp, sessionId, "lynx", selector);
+  await delay(650);
+  const final = {
+    web: await readSidebarTooltip(cdp, sessionId, "web", relationId),
+    lynx: await readSidebarTooltip(cdp, sessionId, "lynx", relationId),
+  };
+  if (!final.web?.text.includes(expectedText) || !final.lynx?.text.includes(expectedText)) {
+    throw new Error(`Could not retain paired ${relationId} hover frame: ${JSON.stringify(final)}`);
+  }
+  timeline.push({ step: "paired-final", ...final });
+  return { timeline, final };
+}
+
 async function clickLynxPaletteBackdrop(cdp, sessionId) {
   const point = await evaluate(
     cdp,
@@ -2148,8 +2467,72 @@ async function runCommandPaletteNavigationFlow(cdp, sessionId) {
   const view = (state, client) => state?.[client]?.overlayMetrics?.paletteView ?? null;
   const overlay = (state, client) => state?.[client]?.productState?.overlay ?? null;
 
+  let state = await readWorkbenchState(cdp, sessionId);
+  if (view(state, "web") !== "root" || view(state, "lynx") !== "root") {
+    await waitForSidebarV2Controls(cdp, sessionId);
+    const webFocusPoint = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const frame = document.getElementById('web-pane');
+        const target =
+          frame?.contentWindow?.document?.querySelector('[data-chat-header]') ??
+          frame?.contentWindow?.document?.querySelector('.composer-frame');
+        if (!frame || !target) return null;
+        const frameRect = frame.getBoundingClientRect();
+        const rect = target.getBoundingClientRect();
+        return {
+          x: frameRect.x + rect.x + rect.width / 2,
+          y: frameRect.y + rect.y + rect.height / 2,
+        };
+      })()`,
+    );
+    if (!webFocusPoint) throw new Error("Could not focus Web before opening Quick Switch.");
+    await dispatchPointerClickWithMove(cdp, sessionId, webFocusPoint);
+    await cdp.send(
+      "Input.dispatchKeyEvent",
+      {
+        type: "rawKeyDown",
+        modifiers: 4,
+        key: "k",
+        code: "KeyK",
+        windowsVirtualKeyCode: 75,
+      },
+      sessionId,
+    );
+    await cdp.send(
+      "Input.dispatchKeyEvent",
+      {
+        type: "keyUp",
+        modifiers: 4,
+        key: "k",
+        code: "KeyK",
+        windowsVirtualKeyCode: 75,
+      },
+      sessionId,
+    );
+    await evaluate(
+      cdp,
+      sessionId,
+      `document.getElementById('lynx-pane')?.contentWindow
+        ?.__T3_LYNX_WEB_PREVIEW__?.dispatchKeyboardShortcut('command') ?? false`,
+    );
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => view(next, "web") === "root" && view(next, "lynx") === "root",
+      3_000,
+      "command palette root",
+    );
+    timeline.push({
+      step: "open-root",
+      webView: view(state, "web"),
+      lynxView: view(state, "lynx"),
+    });
+  }
+
   await hoverPaletteRow(cdp, sessionId, "web", "Add project");
-  let state = await waitForWorkbenchState(cdp, sessionId, (next) =>
+  state = await waitForWorkbenchState(cdp, sessionId, (next) =>
     active(next, "web").includes("Add project"),
   );
   timeline.push({ step: "hover-web", active: active(state, "web") });
@@ -3507,6 +3890,9 @@ async function main() {
     "quick-switch-query-light",
     "quick-switch-actions-only",
     "quick-switch-empty",
+    "sidebar-v2-new-thread-hover",
+    "sidebar-v2-new-project-hover",
+    "sidebar-v2-new-thread-projects",
   ]);
   const seedSource =
     explicitSeedSource ||
@@ -3548,7 +3934,9 @@ async function main() {
               : threadStateIds.has(stateId)
                 ? (seed?.dataset?.idleThread ?? seed?.dataset?.canonicalThread)
                 : null;
-  if (threadStateIds.has(stateId) && !expectedThreadFixture?.id) {
+  const requiresThreadFixture =
+    threadStateIds.has(stateId) && stateId !== "sidebar-v2-new-thread-projects";
+  if (requiresThreadFixture && !expectedThreadFixture?.id) {
     throw new Error(
       `State ${stateId} requires a seeded thread fixture, but ${seedSource} has none`,
     );
@@ -3902,6 +4290,9 @@ async function captureCell({
     "new-thread-hero-light": "new-thread",
     "existing-thread-idle": "existing-thread",
     "sidebar-flat-layout": "existing-thread",
+    "sidebar-v2-new-thread-hover": "existing-thread",
+    "sidebar-v2-new-project-hover": "existing-thread",
+    "sidebar-v2-new-thread-projects": "existing-thread",
     "existing-thread-working": "existing-thread",
     "git-publish-dialog": "existing-thread",
     "project-action-dialog": "existing-thread",
@@ -4015,6 +4406,14 @@ async function captureCell({
   let commandPaletteNavigationStage =
     stateId === "command-palette-navigation" ? "waiting-root" : "not-required";
   const commandPaletteNavigationTimeline = [];
+  let sidebarControlHoverStage = isSidebarControlHoverState ? "waiting-controls" : "not-required";
+  const sidebarControlHoverTimeline = [];
+  let newThreadProjectsStage =
+    stateId === "sidebar-v2-new-thread-projects" ? "waiting-controls" : "not-required";
+  const newThreadProjectsTimeline = [];
+  let addProjectSourcesStage =
+    stateId === "add-project-sources" ? "waiting-controls" : "not-required";
+  const addProjectSourcesTimeline = [];
   let settingsAsyncReadyPolls =
     stateId === "settings-source-control" ||
     stateId === "settings-source-control-loading" ||
@@ -6136,7 +6535,6 @@ async function captureCell({
       sidebarControlGeometryReady &&
       sidebarProjectGroupsReady &&
       flatSidebarLayoutReady &&
-      addProjectSourcesReady &&
       sidebarFooterThemeReady &&
       compactControlsReady &&
       projectActionReady &&
@@ -6167,6 +6565,163 @@ async function captureCell({
     state = navigation.state;
     commandPaletteNavigationTimeline.push(...navigation.timeline);
     commandPaletteNavigationStage = "complete";
+    webShortcutInputChannel = "cdp-meta-k";
+    lynxShortcutInputChannel = "lynx-host-keyboard-packet:meta-k";
+    reachedTargetState = true;
+  }
+  if (isSidebarControlHoverState) {
+    state = await waitForSidebarV2Controls(cdp, sessionId);
+    const hover = await runSidebarControlHoverFlow(
+      cdp,
+      sessionId,
+      stateId === "sidebar-v2-new-thread-hover" ? "thread" : "project",
+    );
+    sidebarControlHoverTimeline.push(...hover.timeline);
+    sidebarControlHoverStage = "complete";
+    state = await readWorkbenchState(cdp, sessionId);
+    reachedTargetState = true;
+  }
+  if (stateId === "sidebar-v2-new-thread-projects") {
+    state = await waitForSidebarV2Controls(cdp, sessionId);
+    const selector = ".sidebar-v2-new-thread";
+    for (const client of ["web", "lynx"]) {
+      if (!(await clickSidebarControl(cdp, sessionId, client, selector))) {
+        throw new Error(`Missing ${client} New thread trigger`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          client === "web"
+            ? next?.web?.overlayMetrics?.paletteView === "submenu"
+            : next?.lynx?.overlayMetrics?.paletteView === "new-thread-projects",
+        3_000,
+        `${client} new thread projects`,
+      );
+      newThreadProjectsTimeline.push({
+        client,
+        step: "open",
+        view: state?.[client]?.overlayMetrics?.paletteView ?? null,
+        rows: state?.[client]?.overlayMetrics?.rowLabels ?? [],
+      });
+    }
+    if (!newThreadProjectsMatch(state)) {
+      throw new Error(
+        `New thread project picker mismatch: ${JSON.stringify({
+          web: {
+            view: state?.web?.overlayMetrics?.paletteView ?? null,
+            rows: state?.web?.overlayMetrics?.rowLabels ?? [],
+            active: state?.web?.overlayMetrics?.activeRowLabels ?? [],
+          },
+          lynx: {
+            view: state?.lynx?.overlayMetrics?.paletteView ?? null,
+            rows: state?.lynx?.overlayMetrics?.rowLabels ?? [],
+            active: state?.lynx?.overlayMetrics?.activeRowLabels ?? [],
+          },
+        })}`,
+      );
+    }
+    if (!(await dispatchPaletteKey(cdp, sessionId, "web", "Backspace", "Backspace", 8))) {
+      throw new Error("Could not send Web Backspace from New thread projects");
+    }
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => next?.web?.overlayMetrics?.paletteView === "root",
+      3_000,
+      "Web new thread projects back",
+    );
+    newThreadProjectsTimeline.push({ client: "web", step: "back", view: "root" });
+    await dispatchPaletteKey(cdp, sessionId, "web", "Escape", "Escape", 27);
+    await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => next?.web?.productState?.overlay === null,
+      3_000,
+      "Web new thread projects dismiss",
+    );
+    newThreadProjectsTimeline.push({ client: "web", step: "dismiss", overlay: null });
+
+    if (!(await clickPaletteBack(cdp, sessionId, "lynx"))) {
+      throw new Error("Could not click Lynx Back from New thread projects");
+    }
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => next?.lynx?.overlayMetrics?.paletteView === "root",
+      3_000,
+      "Lynx new thread projects back",
+    );
+    newThreadProjectsTimeline.push({ client: "lynx", step: "back", view: "root" });
+    await clickLynxPaletteBackdrop(cdp, sessionId);
+    await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => next?.lynx?.productState?.overlay === null,
+      3_000,
+      "Lynx new thread projects dismiss",
+    );
+    newThreadProjectsTimeline.push({ client: "lynx", step: "dismiss", overlay: null });
+
+    state = await waitForSidebarV2Controls(cdp, sessionId);
+    for (const client of ["web", "lynx"]) {
+      if (!(await clickSidebarControl(cdp, sessionId, client, selector))) {
+        throw new Error(`Missing ${client} New thread trigger on reopen`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          client === "web"
+            ? next?.web?.overlayMetrics?.paletteView === "submenu"
+            : next?.lynx?.overlayMetrics?.paletteView === "new-thread-projects",
+        3_000,
+        `${client} new thread projects reopen`,
+      );
+      newThreadProjectsTimeline.push({
+        client,
+        step: "reopen",
+        view: state?.[client]?.overlayMetrics?.paletteView ?? null,
+      });
+    }
+    if (!newThreadProjectsMatch(state)) {
+      throw new Error("New thread project picker did not restore after reverse-state checks");
+    }
+    newThreadProjectsStage = "complete";
+    reachedTargetState = true;
+  }
+  if (stateId === "add-project-sources") {
+    state = await waitForSidebarV2Controls(cdp, sessionId);
+    for (const client of ["web", "lynx"]) {
+      if (!(await clickSidebarControl(cdp, sessionId, client, ".sidebar-v2-new-project"))) {
+        throw new Error(`Missing ${client} New project trigger`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          client === "web"
+            ? next?.web?.overlayMetrics?.paletteView === "submenu"
+            : next?.lynx?.overlayMetrics?.paletteView === "add-project-sources",
+        3_000,
+        `${client} add project sources`,
+      );
+      addProjectSourcesTimeline.push({
+        client,
+        step: "open",
+        view: state?.[client]?.overlayMetrics?.paletteView ?? null,
+        rows: state?.[client]?.overlayMetrics?.rowLabels ?? [],
+      });
+    }
+    if (!addProjectSourcesMatch(state)) {
+      throw new Error(
+        `Add project sources mismatch: ${JSON.stringify({
+          web: state?.web?.overlayMetrics?.rowLabels ?? [],
+          lynx: state?.lynx?.overlayMetrics?.rowLabels ?? [],
+        })}`,
+      );
+    }
+    addProjectSourcesStage = "complete";
     reachedTargetState = true;
   }
   const readyMs = Date.now() - readyStart;
@@ -6364,6 +6919,7 @@ async function captureCell({
   const finalSidebarProjectGroupsReady = sidebarProjectGroupsMatch(state);
   const finalFlatSidebarLayoutReady = flatSidebarLayoutMatches(state);
   const finalAddProjectSourcesReady = addProjectSourcesMatch(state);
+  const finalNewThreadProjectsReady = newThreadProjectsMatch(state);
   const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalProjectActionDialogReady = projectActionDialogReady(state);
@@ -7451,6 +8007,7 @@ async function captureCell({
     finalSidebarProjectGroupsReady &&
     finalFlatSidebarLayoutReady &&
     finalAddProjectSourcesReady &&
+    finalNewThreadProjectsReady &&
     finalSidebarFooterThemeReady &&
     finalCompactControlsReady &&
     finalProjectActionDialogReady &&
@@ -7479,6 +8036,9 @@ async function captureCell({
     finalTranscriptReady &&
     finalPendingRequestReady &&
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
+    (!isSidebarControlHoverState || sidebarControlHoverStage === "complete") &&
+    (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
+    (stateId !== "add-project-sources" || addProjectSourcesStage === "complete") &&
     settingsContentMatch !== false &&
     lynxStyled &&
     consoleErrors.length === 0 &&
@@ -7502,6 +8062,7 @@ async function captureCell({
       finalSidebarProjectGroupsReady,
       finalFlatSidebarLayoutReady,
       finalAddProjectSourcesReady,
+      finalNewThreadProjectsReady,
       finalSidebarFooterThemeReady,
       finalCompactControlsReady,
       finalProjectActionDialogReady,
@@ -7530,6 +8091,9 @@ async function captureCell({
       finalTranscriptReady,
       finalPendingRequestReady,
       commandPaletteNavigationStage,
+      sidebarControlHoverStage,
+      newThreadProjectsStage,
+      addProjectSourcesStage,
       settingsContentMatch,
       lynxStyled,
       consoleClean: consoleErrors.length === 0,
@@ -7662,7 +8226,11 @@ async function captureCell({
         lynx: state?.lynx?.sidebarProjectGroups ?? [],
       },
       addProjectSources: {
-        match: finalAddProjectSourcesReady,
+        match:
+          finalAddProjectSourcesReady &&
+          (stateId !== "add-project-sources" || addProjectSourcesStage === "complete"),
+        stage: addProjectSourcesStage,
+        timeline: addProjectSourcesTimeline,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
       },
@@ -7681,6 +8249,23 @@ async function captureCell({
             : "not-required",
         nativePhysicalKeyboard:
           stateId === "command-palette-navigation" ? "pending-user-session" : "not-required",
+      },
+      sidebarControlHover: {
+        match: !isSidebarControlHoverState || sidebarControlHoverStage === "complete",
+        stage: sidebarControlHoverStage,
+        timeline: sidebarControlHoverTimeline,
+        authority: {
+          openDelayMs: 600,
+          closeDelayMs: 0,
+          popupTransition: "opacity+scale",
+        },
+      },
+      newThreadProjects: {
+        match: finalNewThreadProjectsReady && newThreadProjectsStage === "complete",
+        stage: newThreadProjectsStage,
+        timeline: newThreadProjectsTimeline,
+        web: state?.web?.overlayMetrics ?? null,
+        lynx: state?.lynx?.overlayMetrics ?? null,
       },
       projectSettings: {
         match: finalProjectSettingsReady,

@@ -22,6 +22,7 @@ import {
   resolveWorkingStartedAt,
   searchSidebarThreadsByTitle,
   formatWorkingDurationLabel,
+  shouldChooseProjectForNewThread,
   shouldNavigateAfterProjectRemoval,
   shouldClearThreadSelectionOnMouseDown,
   sortLogicalProjectsForSidebar,
@@ -689,6 +690,14 @@ describe("resolveSidebarV2Status", () => {
 
   it("defaults to ready with no session", () => {
     expect(resolveSidebarV2Status({ ...idle, session: null })).toBe("ready");
+  });
+});
+
+describe("shouldChooseProjectForNewThread", () => {
+  it("opens the project chooser only when there is a real choice", () => {
+    expect(shouldChooseProjectForNewThread(0)).toBe(false);
+    expect(shouldChooseProjectForNewThread(1)).toBe(false);
+    expect(shouldChooseProjectForNewThread(2)).toBe(true);
   });
 });
 
