@@ -97,6 +97,14 @@ import {
 import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 import { projectRepoContext, type ProjectRepoContext } from "../../shared/connectorProtocol.ts";
+import {
+  enqueueSerialMutation,
+  markPendingMutationAccepted,
+  reconcilePendingMutation,
+  rejectPendingMutation,
+  setLatestPendingMutation,
+  type LatestPendingMutation,
+} from "../../shared/latestPendingMutation.ts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -236,8 +244,12 @@ export class T3Connector {
   private threadFibers = new Map<string, Fiber.Fiber<unknown, unknown>>();
   private modelSelection: ModelSelection | undefined;
   private pendingThreadModelSelections = new Map<string, ModelSelection>();
-  private pendingThreadRuntimeModes = new Map<string, RuntimeMode>();
-  private pendingThreadInteractionModes = new Map<string, ProviderInteractionMode>();
+  private pendingThreadRuntimeModes = new Map<string, LatestPendingMutation<RuntimeMode>>();
+  private pendingThreadInteractionModes = new Map<
+    string,
+    LatestPendingMutation<ProviderInteractionMode>
+  >();
+  private pendingThreadModeCommands = new Map<string, Promise<void>>();
   private serverConfig: ServerConfig | undefined;
   private authAccessSnapshot: AuthAccessSnapshot = EMPTY_AUTH_ACCESS_SNAPSHOT;
   private configProjection: Option.Option<ServerConfigProjection> = Option.none();
@@ -652,6 +664,25 @@ export class T3Connector {
     });
   }
 
+  private queueThreadModeCommand(threadId: string, dispatch: () => Promise<void>): Promise<void> {
+    return enqueueSerialMutation(this.pendingThreadModeCommands, threadId, dispatch);
+  }
+
+  private projectShellThreadMode(
+    threadId: string,
+    patch:
+      | Pick<OrchestrationThreadShell, "runtimeMode">
+      | Pick<OrchestrationThreadShell, "interactionMode">,
+  ): void {
+    if (!this.shellSnapshot) return;
+    this.shellSnapshot = {
+      ...this.shellSnapshot,
+      threads: this.shellSnapshot.threads.map((thread) =>
+        thread.id === threadId ? { ...thread, ...patch } : thread,
+      ),
+    };
+  }
+
   /** Fork a long-lived client Effect (e.g. a stream) within the context. */
   private forkClient(effect: Effect.Effect<unknown, unknown, any>): Fiber.Fiber<unknown, unknown> {
     return Effect.runFork(
@@ -707,14 +738,20 @@ export class T3Connector {
         this.pendingThreadModelSelections.delete(threadId);
       }
     }
-    for (const [threadId, runtimeMode] of this.pendingThreadRuntimeModes) {
+    for (const threadId of this.pendingThreadRuntimeModes.keys()) {
       const thread = this.shellSnapshot?.threads.find((candidate) => candidate.id === threadId);
-      if (thread?.runtimeMode === runtimeMode) this.pendingThreadRuntimeModes.delete(threadId);
+      if (thread) {
+        reconcilePendingMutation(this.pendingThreadRuntimeModes, threadId, thread.runtimeMode);
+      }
     }
-    for (const [threadId, interactionMode] of this.pendingThreadInteractionModes) {
+    for (const threadId of this.pendingThreadInteractionModes.keys()) {
       const thread = this.shellSnapshot?.threads.find((candidate) => candidate.id === threadId);
-      if (thread?.interactionMode === interactionMode) {
-        this.pendingThreadInteractionModes.delete(threadId);
+      if (thread) {
+        reconcilePendingMutation(
+          this.pendingThreadInteractionModes,
+          threadId,
+          thread.interactionMode,
+        );
       }
     }
     // Archive/unarchive/delete all surface here as plain upserts/removes, so
@@ -742,8 +779,8 @@ export class T3Connector {
         ? {
             ...thread,
             ...(pendingSelection ? { modelSelection: pendingSelection } : {}),
-            ...(pendingRuntimeMode ? { runtimeMode: pendingRuntimeMode } : {}),
-            ...(pendingInteractionMode ? { interactionMode: pendingInteractionMode } : {}),
+            ...(pendingRuntimeMode ? { runtimeMode: pendingRuntimeMode.value } : {}),
+            ...(pendingInteractionMode ? { interactionMode: pendingInteractionMode.value } : {}),
           }
         : thread;
     });
@@ -1019,6 +1056,7 @@ export class T3Connector {
     this.pendingThreadModelSelections.delete(input.threadId);
     this.pendingThreadRuntimeModes.delete(input.threadId);
     this.pendingThreadInteractionModes.delete(input.threadId);
+    this.pendingThreadModeCommands.delete(input.threadId);
   }
 
   async archiveThread(input: { threadId: string; unarchive?: boolean }): Promise<void> {
@@ -1297,17 +1335,34 @@ export class T3Connector {
 
   async setThreadRuntimeMode(input: { threadId: string; runtimeMode: RuntimeMode }): Promise<void> {
     await this.awaitRecoveredTransport();
-    this.pendingThreadRuntimeModes.set(input.threadId, input.runtimeMode);
+    const previousMode =
+      this.pendingThreadRuntimeModes.get(input.threadId)?.value ??
+      this.shellSnapshot?.threads.find((thread) => thread.id === input.threadId)?.runtimeMode;
+    if (!previousMode) throw new Error(`thread ${input.threadId} is not present in the shell`);
+    const mutation = setLatestPendingMutation(
+      this.pendingThreadRuntimeModes,
+      input.threadId,
+      input.runtimeMode,
+      previousMode,
+    );
     try {
-      await this.dispatchOrchestrationCommand({
-        type: "thread.runtime-mode.set",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
-        runtimeMode: input.runtimeMode,
-        createdAt: new Date().toISOString(),
-      });
+      await this.queueThreadModeCommand(input.threadId, () =>
+        this.dispatchOrchestrationCommand({
+          type: "thread.runtime-mode.set",
+          commandId: crypto.randomUUID(),
+          threadId: input.threadId,
+          runtimeMode: input.runtimeMode,
+          createdAt: new Date().toISOString(),
+        }),
+      );
+      this.projectShellThreadMode(input.threadId, { runtimeMode: input.runtimeMode });
+      markPendingMutationAccepted(mutation);
+      reconcilePendingMutation(this.pendingThreadRuntimeModes, input.threadId, input.runtimeMode);
+      this.emitShell();
     } catch (error) {
-      this.pendingThreadRuntimeModes.delete(input.threadId);
+      if (rejectPendingMutation(this.pendingThreadRuntimeModes, input.threadId, mutation).changed) {
+        this.emitShell();
+      }
       throw error;
     }
   }
@@ -1317,17 +1372,42 @@ export class T3Connector {
     interactionMode: ProviderInteractionMode;
   }): Promise<void> {
     await this.awaitRecoveredTransport();
-    this.pendingThreadInteractionModes.set(input.threadId, input.interactionMode);
+    const previousMode =
+      this.pendingThreadInteractionModes.get(input.threadId)?.value ??
+      this.shellSnapshot?.threads.find((thread) => thread.id === input.threadId)?.interactionMode;
+    if (!previousMode) throw new Error(`thread ${input.threadId} is not present in the shell`);
+    const mutation = setLatestPendingMutation(
+      this.pendingThreadInteractionModes,
+      input.threadId,
+      input.interactionMode,
+      previousMode,
+    );
     try {
-      await this.dispatchOrchestrationCommand({
-        type: "thread.interaction-mode.set",
-        commandId: crypto.randomUUID(),
-        threadId: input.threadId,
+      await this.queueThreadModeCommand(input.threadId, () =>
+        this.dispatchOrchestrationCommand({
+          type: "thread.interaction-mode.set",
+          commandId: crypto.randomUUID(),
+          threadId: input.threadId,
+          interactionMode: input.interactionMode,
+          createdAt: new Date().toISOString(),
+        }),
+      );
+      this.projectShellThreadMode(input.threadId, {
         interactionMode: input.interactionMode,
-        createdAt: new Date().toISOString(),
       });
+      markPendingMutationAccepted(mutation);
+      reconcilePendingMutation(
+        this.pendingThreadInteractionModes,
+        input.threadId,
+        input.interactionMode,
+      );
+      this.emitShell();
     } catch (error) {
-      this.pendingThreadInteractionModes.delete(input.threadId);
+      if (
+        rejectPendingMutation(this.pendingThreadInteractionModes, input.threadId, mutation).changed
+      ) {
+        this.emitShell();
+      }
       throw error;
     }
   }
