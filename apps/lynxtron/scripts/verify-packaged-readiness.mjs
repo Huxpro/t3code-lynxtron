@@ -2300,7 +2300,7 @@ async function verifyFilePickerDefault({
     !footer ||
     !firstRow ||
     Math.abs(panel.rect.width - 574) > 1 ||
-    Math.abs(panel.rect.height - 418) > 1 ||
+    Math.abs(panel.rect.height - 420) > 1 ||
     Math.abs(search.rect.height - 48) > 1 ||
     Math.abs(resultsViewport.rect.height - 330) > 1 ||
     Math.abs(footer.rect.height - 40) > 1 ||

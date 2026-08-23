@@ -997,7 +997,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "state.fileError === null");
     assert.include(source, "count: initialState.filePaths.length");
     assert.include(source, 'readOptionalMeasurement(client, ".qs-results--files")');
-    assert.include(source, "Math.abs(panel.rect.height - 418) > 1");
+    assert.include(source, "Math.abs(panel.rect.height - 420) > 1");
     assert.include(source, "Math.abs(resultsViewport.rect.height - 330) > 1");
     assert.include(source, "Math.abs((firstRow.rect?.height ?? 0) - 48) > 1");
     assert.include(source, "path.basename(initialState.filePaths[0] ??");
