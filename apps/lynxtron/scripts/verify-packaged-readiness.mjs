@@ -477,6 +477,29 @@ async function readClientState(client) {
   return typeof result?.value === "string" ? JSON.parse(result.value) : null;
 }
 
+async function readSearchOverlayState(client) {
+  const response = await client.runCdp("Runtime.evaluate", {
+    expression: "JSON.stringify(globalThis.__T3_LYNXTRON_SEARCH_OVERLAY_STATE__?.() ?? null)",
+    returnByValue: true,
+  });
+  const result = commandResult(response);
+  return typeof result?.value === "string" ? JSON.parse(result.value) : null;
+}
+
+async function waitForSearchOverlayState({ child, client, predicate, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before search overlay state reached its postcondition.");
+    }
+    latest = await readSearchOverlayState(client);
+    if (predicate(latest)) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(`Timed out waiting for search overlay state: ${JSON.stringify({ latest })}`);
+}
+
 async function readComposerPrimaryActionDiagnostics(client) {
   const response = await client.runCdp("Runtime.evaluate", {
     expression: "JSON.stringify(globalThis.__T3_LYNXTRON_COMPOSER_PRIMARY_ACTION__ ?? null)",
@@ -3157,28 +3180,57 @@ async function verifyNewThreadProjects({
   }
 
   const openChooser = async () => {
-    await tapSelector({
+    const trigger = await waitForMeasurement({
       child,
       client,
       selector: ".sidebar-v2-new-thread",
       timeoutMs,
+      predicate: (measurement) =>
+        measurement !== null && measurement.attributes.class?.includes("opacity-50") !== true,
     });
+    await tapMeasurement({ client, measurement: trigger });
+    let overlayState;
+    try {
+      overlayState = await waitForSearchOverlayState({
+        child,
+        client,
+        timeoutMs: Math.min(timeoutMs, 2_000),
+        predicate: (state) =>
+          state?.open === true &&
+          state.mode === "command" &&
+          state.openIntent?.kind === "new-thread-in",
+      });
+    } catch (error) {
+      throw new Error(
+        `New Thread button did not open the project chooser: ${JSON.stringify({
+          cause: error instanceof Error ? error.message : String(error),
+          clientState: await readClientState(client),
+          overlayState: await readSearchOverlayState(client),
+          trigger: await readOptionalMeasurement(client, ".sidebar-v2-new-thread"),
+        })}`,
+      );
+    }
     const panel = await waitForStableMeasurement({
       child,
       client,
-      selector: '.palette-panel[data-quick-switch-view="new-thread-projects"]',
+      selector: ".palette-panel",
       timeoutMs,
-      predicate: (measurement) => measurement !== null,
+      predicate: (measurement) =>
+        measurement?.attributes["data-quick-switch-view"] === "new-thread-projects",
     });
     const [search, results, section, sectionLabel, footer] = await Promise.all([
       readOptionalMeasurement(client, ".palette-search"),
       readOptionalMeasurement(client, ".palette-results"),
-      readOptionalMeasurement(client, '.qs-section[data-quick-switch-mode="new-thread-projects"]'),
+      readOptionalMeasurement(client, ".qs-section"),
       readOptionalMeasurement(client, ".palette-section-label"),
       readOptionalMeasurement(client, ".palette-footer"),
     ]);
     const rows = await readSelectorMeasurements(client, ".quick-switch-project-row");
-    const rowTitles = rows.map((row) => row.text.split("\n")[0]?.trim() ?? "");
+    const projectRows = projects.map((project) =>
+      rows.find(
+        (row) => row.text.includes(project.title) && row.text.includes(project.workspaceRoot),
+      ),
+    );
     if (
       !search ||
       !results ||
@@ -3187,7 +3239,7 @@ async function verifyNewThreadProjects({
       !footer ||
       rows.length !== 2 ||
       sectionLabel.text.trim() !== "Projects" ||
-      !expectedProjectTitles.every((title) => rowTitles.includes(title)) ||
+      projectRows.some((row) => row === undefined) ||
       Math.abs(panel.rect.width - 576) > 1 ||
       Math.abs(panel.rect.height - 230) > 1 ||
       Math.abs(search.rect.height - 48) > 1 ||
@@ -3206,16 +3258,25 @@ async function verifyNewThreadProjects({
           expectedProjectTitles,
           footer,
           panel,
+          projectRows,
           results,
           rows,
-          rowTitles,
           search,
           section,
           sectionLabel,
         })}`,
       );
     }
-    return { footer, panel, results, rows, rowTitles, search, section, sectionLabel };
+    return {
+      footer,
+      overlayState,
+      panel,
+      results,
+      rows,
+      search,
+      section,
+      sectionLabel,
+    };
   };
 
   const selectProject = async (project) => {
@@ -3223,7 +3284,9 @@ async function verifyNewThreadProjects({
     const row = chooser.rows.find((candidate) => candidate.text.includes(project.title));
     if (!row) {
       throw new Error(
-        `New Thread Projects did not expose ${project.title}: ${JSON.stringify(chooser.rowTitles)}`,
+        `New Thread Projects did not expose ${project.title}: ${JSON.stringify(
+          chooser.rows.map((candidate) => candidate.text),
+        )}`,
       );
     }
     await tapMeasurement({ client, measurement: row });
@@ -3279,9 +3342,9 @@ async function verifyNewThreadProjects({
   await waitForMeasurement({
     child,
     client,
-    selector: '.palette-panel[data-quick-switch-view="root"]',
+    selector: ".palette-panel",
     timeoutMs,
-    predicate: (measurement) => measurement !== null,
+    predicate: (measurement) => measurement?.attributes["data-quick-switch-view"] === "root",
   });
   await tapSelector({ child, client, selector: ".palette-backdrop", timeoutMs });
   await waitForMeasurement({
@@ -10838,6 +10901,7 @@ async function runOnce({
       shouldVerifyProjectActionKeybindingMutation ||
       shouldVerifyFileEditingSave ||
       shouldVerifyFilePickerDefault ||
+      shouldVerifyNewThreadProjects ||
       (shouldVerifyQuickSwitchDefault && quickSwitchQuery.length > 0)
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),

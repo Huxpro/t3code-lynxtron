@@ -378,23 +378,23 @@ export const uiActions = {
 
 export function installResponsiveUiProbe(enabled: boolean): void {
   if (!enabled) return;
-  (
-    globalThis as {
-      __T3_LYNXTRON_RESPONSIVE_UI_PROBE__?: (
-        action:
-          | "close-overlays"
-          | "close-right-panel"
-          | "open-action-dialog"
-          | "open-command-search"
-          | "open-diff"
-          | "open-file-search"
-          | "open-files"
-          | "open-model-picker"
-          | "toggle-sidebar",
-      ) => void;
-      __T3_LYNXTRON_OPEN_DIFF_PROBE__?: (turnId: TurnId, filePath?: string) => void;
-    }
-  ).__T3_LYNXTRON_RESPONSIVE_UI_PROBE__ = (action) => {
+  const target = globalThis as {
+    __T3_LYNXTRON_RESPONSIVE_UI_PROBE__?: (
+      action:
+        | "close-overlays"
+        | "close-right-panel"
+        | "open-action-dialog"
+        | "open-command-search"
+        | "open-diff"
+        | "open-file-search"
+        | "open-files"
+        | "open-model-picker"
+        | "toggle-sidebar",
+    ) => void;
+    __T3_LYNXTRON_OPEN_DIFF_PROBE__?: (turnId: TurnId, filePath?: string) => void;
+    __T3_LYNXTRON_SEARCH_OVERLAY_STATE__?: () => SearchOverlayState;
+  };
+  target.__T3_LYNXTRON_RESPONSIVE_UI_PROBE__ = (action) => {
     if (action === "close-overlays") {
       uiActions.closeProjectActionDialog();
       uiActions.closeQuickSwitch();
@@ -430,11 +430,8 @@ export function installResponsiveUiProbe(enabled: boolean): void {
     }
     requestSidebarToggle();
   };
-  (
-    globalThis as {
-      __T3_LYNXTRON_OPEN_DIFF_PROBE__?: (turnId: TurnId, filePath?: string) => void;
-    }
-  ).__T3_LYNXTRON_OPEN_DIFF_PROBE__ = (turnId, filePath) => {
+  target.__T3_LYNXTRON_OPEN_DIFF_PROBE__ = (turnId, filePath) => {
     uiActions.openRightPanelSurface("diff", { turnId, filePath });
   };
+  target.__T3_LYNXTRON_SEARCH_OVERLAY_STATE__ = () => appAtomRegistry.get(searchOverlayStateAtom);
 }

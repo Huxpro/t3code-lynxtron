@@ -970,10 +970,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyNewThreadProjects");
     assert.include(source, '"--verify-new-thread-projects"');
     assert.include(source, "function readPersistedProjects");
+    assert.include(source, "__T3_LYNXTRON_SEARCH_OVERLAY_STATE__");
+    assert.include(source, "waitForSearchOverlayState");
     assert.include(source, 'selector: ".sidebar-v2-new-thread"');
+    assert.include(source, 'measurement.attributes.class?.includes("opacity-50") !== true');
     assert.include(
       source,
-      "selector: '.palette-panel[data-quick-switch-view=\"new-thread-projects\"]'",
+      'measurement?.attributes["data-quick-switch-view"] === "new-thread-projects"',
     );
     assert.include(source, 'readSelectorMeasurements(client, ".quick-switch-project-row")');
     assert.include(source, "Math.abs(panel.rect.width - 576) > 1");

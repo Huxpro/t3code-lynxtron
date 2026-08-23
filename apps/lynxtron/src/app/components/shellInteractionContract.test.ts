@@ -986,6 +986,14 @@ describe("desktop shell interaction contract", () => {
     expect(quickSwitch).toContain("cloneRepository");
     expect(quickSwitch).toContain("createThreadInProject");
     expect(quickSwitch).toContain("sortProjectsForSidebar(projects, threads,");
+    expect(quickSwitch).toContain('"palette-panel palette-panel--new-thread-projects"');
+    expect(overrides).toContain(".palette-panel--new-thread-projects {\n  width: 576px;\n}");
+    expect(overrides).toContain(
+      ".lynx-web-preview .palette-panel--new-thread-projects {\n  width: 574px;\n}",
+    );
+    expect(overrides).toContain(
+      ".quick-switch-project-row {\n  height: 48px;\n  min-height: 48px;\n}",
+    );
     expect(quickSwitch).toContain("const navigateBack = useCallback");
     expect(quickSwitch).toContain('className="qs-search__back"');
     expect(quickSwitch).toContain('aria-label="Back"');
