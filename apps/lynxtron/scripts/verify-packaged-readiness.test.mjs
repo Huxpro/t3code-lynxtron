@@ -326,6 +326,18 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".model-picker-rail-item--active"');
     assert.include(source, "Native model picker rows did not switch provider");
     assert.include(source, "pickerRemainedOpen: true");
+    assert.include(source, "const setSearch = globalThis.__T3_LYNXTRON_MODEL_PICKER_SEARCH__");
+    assert.include(source, 'if (typeof setSearch !== "function") return false');
+    assert.include(source, "__T3_LYNXTRON_MODEL_PICKER_STATE__?.()");
+    assert.include(source, 'await setSearch("pickle")');
+    assert.include(source, 'JSON.stringify(["opencode:opencode/big-pickle"])');
+    assert.include(source, "queryRail !== null");
+    assert.include(source, 'await setSearch("__t3_no_models__")');
+    assert.include(source, 'measurement?.text.trim() === "No models found"');
+    assert.include(source, "emptyRows.length !== 0");
+    assert.include(source, 'name: `native-model-picker-query-${expectedTheme ?? "system"}.png`');
+    assert.include(source, 'name: `native-model-picker-empty-${expectedTheme ?? "system"}.png`');
+    assert.include(source, 'physicalKeyboard: "pending-user-session"');
     assert.include(source, 'panel: "rgb(25,25,25)"');
     assert.include(source, 'panel: "rgb(255,255,255)"');
     assert.include(source, 'selector: ".model-picker-close"');

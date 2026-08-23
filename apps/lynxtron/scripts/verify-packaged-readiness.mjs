@@ -5014,6 +5014,41 @@ async function verifyModelPickerFidelity({
       `Native model picker rows did not switch provider: ${JSON.stringify(switchedRows)}`,
     );
   }
+  const setSearch = async (value) => {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression: `(() => {
+        const setSearch = globalThis.__T3_LYNXTRON_MODEL_PICKER_SEARCH__;
+        if (typeof setSearch !== "function") return false;
+        setSearch(${JSON.stringify(value)});
+        return true;
+      })()`,
+      returnByValue: true,
+    });
+    if (commandResult(response)?.value === false) {
+      throw new Error("Native model-picker search probe is unavailable.");
+    }
+  };
+  const readPickerState = async () => {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_MODEL_PICKER_STATE__?.() ?? null",
+      returnByValue: true,
+    });
+    const value = commandResult(response)?.value;
+    return typeof value === "string" ? JSON.parse(value) : null;
+  };
+  const waitForPickerState = async (predicate) => {
+    const deadline = Date.now() + timeoutMs;
+    let latest = null;
+    while (Date.now() < deadline) {
+      if (child.exitCode !== null || child.signalCode !== null) {
+        throw new Error("Lynxtron exited before model-picker state reached its postcondition.");
+      }
+      latest = await readPickerState();
+      if (predicate(latest)) return latest;
+      await waitForChildExit(child, 50);
+    }
+    throw new Error(`Timed out waiting for model-picker state: ${JSON.stringify({ latest })}`);
+  };
   await waitForMeasurement({
     child,
     client,
@@ -5021,28 +5056,117 @@ async function verifyModelPickerFidelity({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
-  const screenshotPath = path.join(outputDirectory, "native-model-picker.png");
-  const screenshot = spawnSync(
-    process.execPath,
-    [
-      devToolCli,
-      "take-screenshot",
-      "--client",
-      client.identity.clientId,
-      "--session",
-      String(client.identity.sessionId),
-      "--output",
-      screenshotPath,
-    ],
-    { cwd: APP_ROOT, encoding: "utf8" },
+  const providerScreenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-model-picker-provider-${expectedTheme ?? "system"}.png`,
+  });
+  await setSearch("pickle");
+  const queryState = await waitForPickerState(
+    (state) =>
+      state?.search === "pickle" &&
+      JSON.stringify(state.filteredModelKeys) === JSON.stringify(["opencode:opencode/big-pickle"]),
   );
-  if (screenshot.error) throw screenshot.error;
-  if (screenshot.status !== 0 || !existsSync(screenshotPath)) {
+  const queryPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const queryContent = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-content",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes.class?.includes("model-picker-content--with-rail") !== true,
+  });
+  const queryRows = await readSelectorMeasurements(client, ".model-picker-row");
+  const queryRail = await readOptionalMeasurement(client, ".model-picker-rail-scroll");
+  const queryList = await readOptionalMeasurement(client, ".picker-list");
+  if (
+    queryRail !== null ||
+    queryRows.length !== 1 ||
+    !queryRows[0]?.text.includes("Big Pickle") ||
+    Math.abs(queryPanel.rect.width - 360) > 1 ||
+    Math.abs(queryPanel.rect.height - 346) > 1 ||
+    Math.abs(queryContent.rect.width - 358) > 1 ||
+    Math.abs((queryList?.rect.width ?? 0) - 358) > 1 ||
+    Math.abs((queryRows[0]?.rect.width ?? 0) - 349) > 1 ||
+    Math.abs((queryRows[0]?.rect.height ?? 0) - 53) > 1
+  ) {
     throw new Error(
-      screenshot.stderr || screenshot.stdout || "Native model-picker screenshot capture failed.",
+      `Native model-picker query state drifted: ${JSON.stringify({
+        queryContent,
+        queryList,
+        queryPanel,
+        queryRail,
+        queryRows,
+        queryState,
+      })}`,
     );
   }
-  normalizeNativeScreenshotPng(screenshotPath);
+  const queryScreenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-model-picker-query-${expectedTheme ?? "system"}.png`,
+  });
+  await setSearch("__t3_no_models__");
+  const emptyState = await waitForPickerState(
+    (state) => state?.search === "__t3_no_models__" && state.filteredModelKeys?.length === 0,
+  );
+  const emptyPanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const emptyContent = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-content",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes.class?.includes("model-picker-content--with-rail") !== true,
+  });
+  const empty = await waitForMeasurement({
+    child,
+    client,
+    selector: ".model-picker-empty",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "No models found",
+  });
+  const emptyRows = await readSelectorMeasurements(client, ".model-picker-row");
+  const emptyRail = await readOptionalMeasurement(client, ".model-picker-rail-scroll");
+  if (
+    emptyRows.length !== 0 ||
+    emptyRail !== null ||
+    Math.abs(emptyPanel.rect.width - 360) > 1 ||
+    Math.abs(emptyPanel.rect.height - 346) > 1 ||
+    Math.abs(emptyContent.rect.width - 358) > 1 ||
+    Math.abs(empty.rect.width - 342) > 1
+  ) {
+    throw new Error(
+      `Native model-picker empty state drifted: ${JSON.stringify({
+        empty,
+        emptyContent,
+        emptyPanel,
+        emptyRail,
+        emptyRows,
+        emptyState,
+      })}`,
+    );
+  }
+  const emptyScreenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-model-picker-empty-${expectedTheme ?? "system"}.png`,
+  });
   await tapSelector({
     child,
     client,
@@ -5105,15 +5229,33 @@ async function verifyModelPickerFidelity({
       rows: switchedRows.map((row) => row.attributes["data-model-picker-key"]),
       pickerRemainedOpen: true,
     },
+    query: {
+      value: queryState.search,
+      filteredModelKeys: queryState.filteredModelKeys,
+      panel: queryPanel.rect,
+      content: queryContent.rect,
+      list: queryList?.rect ?? null,
+      rows: queryRows.map((row) => ({ rect: row.rect, text: row.text })),
+      railHidden: queryRail === null,
+      screenshot: queryScreenshot,
+      physicalKeyboard: "pending-user-session",
+    },
+    empty: {
+      value: emptyState.search,
+      filteredModelKeys: emptyState.filteredModelKeys,
+      panel: emptyPanel.rect,
+      content: emptyContent.rect,
+      empty: empty.rect,
+      rowCount: emptyRows.length,
+      railHidden: emptyRail === null,
+      screenshot: emptyScreenshot,
+      physicalKeyboard: "pending-user-session",
+    },
     dismissed: {
       closeButton: true,
       outsideTap: true,
     },
-    screenshot: {
-      path: screenshotPath,
-      bytes: statSync(screenshotPath).size,
-      sha256: sha256(screenshotPath),
-    },
+    screenshot: providerScreenshot,
   };
 }
 
@@ -10967,6 +11109,7 @@ async function runOnce({
       shouldVerifyFileEditingSave ||
       shouldVerifyFilePickerDefault ||
       shouldVerifyNewThreadProjects ||
+      shouldVerifyModelPickerFidelity ||
       (shouldVerifyQuickSwitchDefault && quickSwitchQuery.length > 0)
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
