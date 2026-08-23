@@ -15448,6 +15448,114 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-completed-follow-current",
+      "observedAt": "2026-08-23T13:18:16-07:00",
+      "commit": "a75b0d1e6bd6ac3a640b209cf3c5e7dd89235c00",
+      "codeCommit": "90dc46d21c9c34f530cddd08e9d27059aeda23f1",
+      "codeState": "commit",
+      "label": "Completed transcript follow-state recovery",
+      "narrative": "Short completed transcripts no longer expose a false Scroll to end affordance after Lynx DIFF or layout events. The shared reducer ignores invalid extents and recognizes non-overflowing content, while the Native affordance follows explicit user-detached state. Dark and light Browser captures match the selected completed thread, exact row content, idle Composer, 1024x568 Native list geometry, hidden jump state, and zero errors. Existing rich-fixture material residual and physical-scroll debt remain unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The checkpoint directly measures the follow-state and list-layout correction in both Browser themes and separate exact-bundle Native runs without replacing the richer material baseline."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/existing-thread-completed-follow-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b568494e72518bf85d6736ed113bb2eb33e893f7576844445616842f388f679e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "completed-short-transcript-content",
+              "source": "Dark and light strict captures match the same completed thread, two canonical rows, exact assistant response, idle Composer, and hidden jump affordance"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1024,
+              "confidence": 0.99,
+              "method": "completed-short-transcript-list-geometry",
+              "source": "Both Browser themes retain a 1024x568 Lynx list after the jump node stays mounted outside list sizing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "completed-follow-state-readiness",
+              "source": "Both themes report following=true, atEnd=true, no visible jump affordance, matching identity, and zero renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["native"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 1024,
+              "confidence": 0.99,
+              "method": "native-completed-follow-geometry",
+              "source": "Exact-bundle dark and light runs retain the full transcript host and hide the mounted jump control at opacity zero"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-completed-follow-state",
+              "source": "Native ignores transient non-user list events for follow detachment, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "empty-thread-recovery-current",
+      "observedAt": "2026-08-23T13:18:17-07:00",
+      "commit": "a75b0d1e6bd6ac3a640b209cf3c5e7dd89235c00",
+      "codeCommit": "96d6338cf2626b102b10f1773ff651e25cc23392",
+      "codeState": "commit",
+      "label": "Stale empty thread lifecycle recovery",
+      "narrative": "New Thread remains a local draft until the first prompt, while the Native host now repairs historical canonical empty shells created by older bundles. A shared conservative predicate requires the canonical New thread title, no user message, turn, session, approval, user input, or actionable plan, an active rather than archived shell, and at least 24 hours since both creation and update. A committed-head Native run on a read-only live-state snapshot automatically removes the one stale empty shell from the shell and SQLite projection, manually closes a newly-created canonical empty shell through the visible X, then proves repeated New Thread actions reuse one draft without changing canonical IDs, persisted IDs, or server sequence.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The exact committed-head Native run exercises automatic stale recovery, manual fresh-shell deletion, and local draft reuse against one isolated snapshot while preserving all state weights and denominator entries."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/empty-thread-recovery-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1193ad18808d3759599093ac4ed338c2915e686b7effec1d930bb7941d5f7cd8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-stale-recovery-manual-close-and-draft-reuse",
+              "source": "Startup automatically removes the stale shell, measured touch removes a fresh canonical shell, and two New Thread taps reuse one local draft identity"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-headless-empty-thread-lifecycle",
+              "source": "Shell and SQLite counts converge from two to one, local draft creation leaves both unchanged with sequence 21 to 21, main transport remains active, zero renderer errors occur, and isolated state is disposed"
+            }
+          }
+        }
+      ]
     }
   ]
 }

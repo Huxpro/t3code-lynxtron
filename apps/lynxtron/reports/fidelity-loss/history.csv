@@ -218,3 +218,5 @@ settings-appearance-native-current,2026-08-23T02:39:00-07:00,c24bf4bb9a64e8319ea
 model-picker-states-native-current,2026-08-23T03:22:23-07:00,a49600b1665d33824d23314555a6e31f0bf9c5c8,commit,"Model Picker provider, query, and empty Native fidelity",0.220863,0.220863,0.036217,0.191585,0.808415,0.770123
 settings-bridge-duration-native-current,2026-08-23T05:50:11-07:00,a684c78a4c62aa2dd133a3d962ae519e32b30f3f,commit,Settings bridge Duration regression closure,0.220794,0.220794,0.036213,0.191516,0.808484,0.770192
 existing-thread-question-multi-step-current,2026-08-23T09:29:20-07:00,034346010b0aac4e25bd9d5c0032af58acb507ad,commit,Existing Thread multi-step question fidelity,0.214121,0.214121,0.036468,0.184377,0.815623,0.776865
+existing-thread-completed-follow-current,2026-08-23T13:18:16-07:00,a75b0d1e6bd6ac3a640b209cf3c5e7dd89235c00,commit,Completed transcript follow-state recovery,0.214121,0.214121,0.036467,0.184377,0.815623,0.776865
+empty-thread-recovery-current,2026-08-23T13:18:17-07:00,a75b0d1e6bd6ac3a640b209cf3c5e7dd89235c00,commit,Stale empty thread lifecycle recovery,0.214121,0.214121,0.036467,0.184377,0.815623,0.776865
