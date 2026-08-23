@@ -532,6 +532,9 @@ function applyShellPayload(shell: ShellEventPayload): void {
           }
         : {}),
   });
+  if (stateBeforeShell.activeThreadId && !activePresentationThread) {
+    resetActiveThreadState();
+  }
   if (
     !activeThread &&
     modelProjection?.selection &&
