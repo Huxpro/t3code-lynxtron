@@ -96,7 +96,7 @@ async function mouse(type, point, extra = {}) {
 
 async function waitForPill(present, label) {
   for (let attempt = 0; attempt < 40; attempt += 1) {
-    const nodeId = await queryNodeId(".timeline-jump");
+    const nodeId = await queryNodeId(".timeline-jump--visible");
     if ((nodeId !== null) === present) return;
     await new Promise((resolveWait) => setTimeout(resolveWait, 100));
   }
@@ -115,7 +115,7 @@ if (step === "scroll-up") {
   await waitForPill(true, "jump-to-latest pill should appear after a user scroll away");
   process.stdout.write("PASS scroll-up: follow detached, jump pill visible\n");
 } else if (step === "jump") {
-  const pillCenter = await nodeCenter(".timeline-jump");
+  const pillCenter = await nodeCenter(".timeline-jump--visible");
   await mouse("mouseMoved", pillCenter);
   await mouse("mousePressed", pillCenter);
   await mouse("mouseReleased", pillCenter);

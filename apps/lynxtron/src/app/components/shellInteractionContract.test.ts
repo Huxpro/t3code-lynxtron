@@ -1174,6 +1174,21 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain('activity.kind === "provider.user-input.respond.failed"');
   });
 
+  it("shows the transcript jump affordance only after follow mode detaches", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain(
+      'followState.following ? "timeline-jump--hidden" : "timeline-jump--visible"',
+    );
+    expect(timelineSource).toContain(
+      'data-transcript-jump-visible={followState.following ? "false" : "true"}',
+    );
+    expect(timelineSource).toContain(
+      "contentLength: scrollHeight,\n          viewportLength: listHeight,",
+    );
+    expect(overrides).toContain(".timeline-jump--hidden");
+    expect(overrides).toContain("pointer-events: none;");
+  });
+
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
     expect(clientSource).toContain("patchState({ modelSelection: saved })");
     expect(clientSource).toContain(

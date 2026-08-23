@@ -459,6 +459,39 @@ describe("reduceTranscriptFollow", () => {
     });
     expect(state).toEqual({ following: true, atEnd: true });
   });
+
+  it("cannot detach when the transcript does not overflow", () => {
+    const detached = { following: false, atEnd: false };
+    expect(
+      reduceTranscriptFollow(detached, {
+        kind: "scrolled",
+        source: "user",
+        distanceFromEnd: 500,
+        contentLength: 220,
+        viewportLength: 490,
+      }),
+    ).toEqual(INITIAL_TRANSCRIPT_FOLLOW_STATE);
+  });
+
+  it("ignores scroll events before the viewport has a valid extent", () => {
+    const state = INITIAL_TRANSCRIPT_FOLLOW_STATE;
+    expect(
+      reduceTranscriptFollow(state, {
+        kind: "scrolled",
+        source: "user",
+        distanceFromEnd: 500,
+        contentLength: 220,
+        viewportLength: 0,
+      }),
+    ).toBe(state);
+    expect(
+      reduceTranscriptFollow(state, {
+        kind: "scrolled",
+        source: "user",
+        distanceFromEnd: Number.NaN,
+      }),
+    ).toBe(state);
+  });
 });
 
 describe("deriveTranscriptNewTurnAnchor", () => {

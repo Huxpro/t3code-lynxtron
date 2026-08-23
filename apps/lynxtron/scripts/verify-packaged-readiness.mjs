@@ -5395,7 +5395,7 @@ async function verifyComposerWorkingState({ client, devToolCli, outputDirectory,
   };
 }
 
-async function verifyCompletedTranscriptState({ client, devToolCli, outputDirectory }) {
+async function verifyCompletedTranscriptState({ child, client, devToolCli, outputDirectory }) {
   const composer = await readComposerOutcome(client, { allowMissingInteraction: true });
   assertComposerGeometry(composer, { allowMissingInteraction: true });
   const primaryAction = composer.anchors.primaryAction;
@@ -5418,6 +5418,12 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
   const assistantRow = assistantRowMeasurement?.rect;
   const assistantText = assistantRowMeasurement?.text.trim();
   const checkoutLabel = composer.typography.contextCheckout.text.trim();
+  await waitWhileAlive(child, 1_000);
+  const scrollToEnd = await readOptionalMeasurement(client, ".timeline-jump");
+  const scrollToEndOpacity = await readFirstSelectorStyleValue(client, ".timeline-jump", "opacity");
+  const scrollToEndHidden =
+    scrollToEnd?.attributes["data-transcript-jump-visible"] === "false" &&
+    Number.parseFloat(scrollToEndOpacity) === 0;
   const transcriptGeometryMatches =
     timelineHost &&
     timelineList &&
@@ -5430,6 +5436,7 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
     Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5;
   if (
     !transcriptGeometryMatches ||
+    !scrollToEndHidden ||
     assistantText !== "fidelity loop complete" ||
     checkoutLabel !== "Local checkout"
   ) {
@@ -5443,6 +5450,8 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
         assistantRow,
         assistantText,
         checkoutLabel,
+        scrollToEnd,
+        scrollToEndOpacity,
       })}`,
     );
   }
@@ -5467,6 +5476,8 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
       assistantRow,
       assistantText,
       checkoutLabel,
+      scrollToEnd,
+      scrollToEndOpacity,
     },
     screenshot,
   };
@@ -11445,6 +11456,7 @@ async function runOnce({
       shouldVerifyNewThreadProjects ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
+      shouldVerifyCompletedTranscriptState ||
       (shouldVerifyQuickSwitchDefault && quickSwitchQuery.length > 0)
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
@@ -11856,6 +11868,7 @@ async function runOnce({
       : undefined;
     const completedTranscriptState = shouldVerifyCompletedTranscriptState
       ? await verifyCompletedTranscriptState({
+          child,
           client,
           devToolCli,
           outputDirectory,

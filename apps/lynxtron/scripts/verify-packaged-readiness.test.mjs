@@ -1184,6 +1184,7 @@ describe("packaged readiness Sidebar geometry", () => {
 
   it("verifies the Native completed transcript layout and canonical response", () => {
     assert.include(source, "async function verifyCompletedTranscriptState");
+    assert.include(source, "verifyCompletedTranscriptState({\n          child,");
     assert.include(source, "readSelectorRects(");
     assert.include(source, "const assistantRowRoot = rowRoots[1]");
     assert.notInclude(source, '".timeline-row-root--assistant"');
@@ -1191,6 +1192,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'readFirstSelectorStyleValue(client, ".timeline-list", "padding-top")');
     assert.include(source, "Math.abs(rowRoots[0].y - (timelineList.y + timelineTopInset)) <= 1");
     assert.include(source, "Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5");
+    assert.include(source, 'readOptionalMeasurement(client, ".timeline-jump")');
+    assert.include(source, 'data-transcript-jump-visible"] === "false"');
+    assert.include(
+      source,
+      'readFirstSelectorStyleValue(\n    client,\n    ".timeline-jump",\n    "opacity"',
+    );
+    assert.include(source, "!scrollToEndHidden");
     assert.include(source, 'assistantText !== "fidelity loop complete"');
     assert.include(source, '"--verify-completed-transcript-state"');
     assert.include(source, "allowMissingInteraction: true");
