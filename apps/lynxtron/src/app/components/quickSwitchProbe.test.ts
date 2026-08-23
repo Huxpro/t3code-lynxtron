@@ -11,6 +11,9 @@ describe("Quick Switch visual-state probe", () => {
     expect(source).toContain("__T3_LYNXTRON_QUICK_SWITCH_QUERY__");
     expect(source).toContain("__T3_LYNXTRON_QUICK_SWITCH_STATE__");
     expect(source).toContain("actionLabels: filteredActions.map");
+    expect(source).toContain("filePaths: filteredFiles.map");
+    expect(source).toContain("filePending: filePicker.pending");
+    expect(source).toContain("mode,");
     expect(source).toContain("threadLabels: filteredThreads.map");
     expect(source).toContain("delete target.__T3_LYNXTRON_QUICK_SWITCH_QUERY__");
     expect(source).toContain("delete target.__T3_LYNXTRON_QUICK_SWITCH_STATE__");

@@ -460,6 +460,9 @@ export function QuickSwitch({
         ])
       : threads.slice(0, 6);
   const isEmpty = filteredActions.length === 0 && filteredThreads.length === 0;
+  const filteredFiles = useMemo(() => {
+    return getProjectFilePickerMatches(filePicker.entries, query);
+  }, [filePicker.entries, query]);
   useEffect(() => {
     if (!viewport.testResize) return;
     const target = globalThis as {
@@ -472,6 +475,10 @@ export function QuickSwitch({
         actionLabels: filteredActions.map((action) => action.label),
         actionsOnly,
         empty: isEmpty,
+        fileError: filePicker.error,
+        filePaths: filteredFiles.map((entry) => entry.path),
+        filePending: filePicker.pending,
+        mode,
         normalizedQuery,
         query,
         threadLabels: filteredThreads.map((thread) => thread.title || "Untitled thread"),
@@ -484,16 +491,17 @@ export function QuickSwitch({
   }, [
     actionsOnly,
     filteredActions,
+    filteredFiles,
     filteredThreads,
+    filePicker.error,
+    filePicker.pending,
     isEmpty,
+    mode,
     normalizedQuery,
     query,
     view,
     viewport.testResize,
   ]);
-  const filteredFiles = useMemo(() => {
-    return getProjectFilePickerMatches(filePicker.entries, query);
-  }, [filePicker.entries, query]);
   const sourceReadiness = useMemo(
     () => buildAddProjectRemoteSourceReadiness(sourceControlDiscovery),
     [sourceControlDiscovery],

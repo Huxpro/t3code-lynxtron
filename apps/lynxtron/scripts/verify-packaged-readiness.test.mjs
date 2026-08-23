@@ -987,6 +987,25 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'physicalHover: "pending-user-session"');
   });
 
+  it("verifies the Native File Picker overlay without opening an external editor", () => {
+    assert.include(source, "async function verifyFilePickerDefault");
+    assert.include(source, '"--verify-file-picker-default"');
+    assert.include(source, '"open-file-search"');
+    assert.include(source, "async function waitForQuickSwitchFileState");
+    assert.include(source, 'state?.mode === "files"');
+    assert.include(source, "state.filePending === false");
+    assert.include(source, "state.fileError === null");
+    assert.include(source, "count: initialState.filePaths.length");
+    assert.include(source, 'readOptionalMeasurement(client, ".qs-results--files")');
+    assert.include(source, "Math.abs(panel.rect.height - 418) > 1");
+    assert.include(source, "Math.abs(resultsViewport.rect.height - 330) > 1");
+    assert.include(source, "Math.abs((firstRow.rect?.height ?? 0) - 48) > 1");
+    assert.include(source, "path.basename(initialState.filePaths[0] ??");
+    assert.include(source, 'fileActivation: "pending-user-session-external-shell-side-effect"');
+    assert.include(source, 'physicalKeyboard: "pending-user-session"');
+    assert.equal(source.match(/!shouldVerifyFilePickerDefault &&/gu)?.length, 2);
+  });
+
   it("captures Native General Settings content and geometry before route cycling", () => {
     assert.include(source, "async function assertSettingsNavigationSelection");
     assert.include(source, "Settings navigation selection is not truthful");

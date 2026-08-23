@@ -2223,6 +2223,212 @@ async function verifyQuickSwitchState({
   };
 }
 
+async function openFilePicker({ child, client, timeoutMs }) {
+  const response = await client.runCdp("Runtime.evaluate", {
+    expression:
+      'typeof globalThis.__T3_LYNXTRON_RESPONSIVE_UI_PROBE__ === "function" && (globalThis.__T3_LYNXTRON_RESPONSIVE_UI_PROBE__("open-file-search"), true)',
+    returnByValue: true,
+  });
+  if (response?.exceptionDetails || commandResult(response)?.value !== true) {
+    throw new Error(`File Picker test entry was unavailable: ${JSON.stringify(response)}`);
+  }
+  return waitForStableMeasurement({
+    child,
+    client,
+    selector: ".palette-panel--files",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-search-overlay-mode"] === "files",
+  });
+}
+
+async function waitForQuickSwitchFileState({ child, client, predicate, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the File Picker state became ready.");
+    }
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression:
+        'typeof globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__ === "function" ? globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__() : null',
+      returnByValue: true,
+    });
+    const result = commandResult(response);
+    latest = typeof result?.value === "string" ? JSON.parse(result.value) : null;
+    if (predicate(latest)) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(`Timed out waiting for File Picker state: ${JSON.stringify({ latest })}`);
+}
+
+async function verifyFilePickerDefault({
+  child,
+  client,
+  devToolCli,
+  expectedTheme,
+  outputDirectory,
+  timeoutMs,
+}) {
+  const panel = await openFilePicker({ child, client, timeoutMs });
+  const initialState = await waitForQuickSwitchFileState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.mode === "files" &&
+      state.filePending === false &&
+      state.fileError === null &&
+      Array.isArray(state.filePaths) &&
+      state.filePaths.length > 0,
+  });
+  const search = await readOptionalMeasurement(client, ".palette-search");
+  const results = await readOptionalMeasurement(client, ".palette-results");
+  const resultsViewport = await readOptionalMeasurement(client, ".qs-results--files");
+  const footer = await readOptionalMeasurement(client, ".palette-footer");
+  const rows = await waitForSelectorCount({
+    child,
+    client,
+    count: initialState.filePaths.length,
+    selector: ".quick-switch-file-row",
+    timeoutMs,
+  });
+  const firstRow = rows[0];
+  if (
+    !search ||
+    !results ||
+    !resultsViewport ||
+    !footer ||
+    !firstRow ||
+    Math.abs(panel.rect.width - 574) > 1 ||
+    Math.abs(panel.rect.height - 418) > 1 ||
+    Math.abs(search.rect.height - 48) > 1 ||
+    Math.abs(resultsViewport.rect.height - 330) > 1 ||
+    Math.abs(footer.rect.height - 40) > 1 ||
+    Math.abs((firstRow.rect?.height ?? 0) - 48) > 1 ||
+    !footer.text.includes("Navigate") ||
+    !footer.text.includes("Select") ||
+    !footer.text.includes("Close") ||
+    footer.text.includes("Files")
+  ) {
+    throw new Error(
+      `File Picker default anatomy drifted: ${JSON.stringify({
+        panel,
+        search,
+        results,
+        resultsViewport,
+        footer,
+        rowCount: rows.length,
+        firstRow,
+      })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-file-picker-default-${expectedTheme ?? "system"}.png`,
+  });
+
+  const filterTarget = path.basename(initialState.filePaths[0] ?? "");
+  if (!filterTarget) {
+    throw new Error(`File Picker first row has no filter target: ${JSON.stringify(firstRow)}`);
+  }
+  const filteredState = await setQuickSwitchQuery({
+    child,
+    client,
+    query: filterTarget,
+    timeoutMs,
+  });
+  const settledFilteredState = await waitForQuickSwitchFileState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.mode === "files" &&
+      state.query === filterTarget &&
+      state.filePending === false &&
+      state.fileError === null &&
+      Array.isArray(state.filePaths),
+  });
+  const filteredRows = await waitForSelectorCount({
+    child,
+    client,
+    count: settledFilteredState.filePaths.length,
+    selector: ".quick-switch-file-row",
+    timeoutMs,
+  });
+  if (
+    filteredRows.length === 0 ||
+    filteredRows.length > rows.length ||
+    filteredRows.some((row) => !row.text.toLowerCase().includes(filterTarget.toLowerCase()))
+  ) {
+    throw new Error(
+      `File Picker filter state drifted: ${JSON.stringify({
+        filterTarget,
+        filteredRows,
+        filteredState: settledFilteredState,
+      })}`,
+    );
+  }
+  await setQuickSwitchQuery({ child, client, query: "", timeoutMs });
+  await waitForQuickSwitchFileState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.mode === "files" &&
+      state.query === "" &&
+      state.filePending === false &&
+      state.fileError === null &&
+      state.filePaths.length === rows.length,
+  });
+  await waitForSelectorCount({
+    child,
+    client,
+    count: rows.length,
+    selector: ".quick-switch-file-row",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".palette-backdrop",
+    point: "bottom-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    input: "testResize-gated open/filter state plus measured DevTool outside tap",
+    physicalKeyboard: "pending-user-session",
+    fileActivation: "pending-user-session-external-shell-side-effect",
+    panel: panel.rect,
+    search: search.rect,
+    results: results.rect,
+    resultsViewport: resultsViewport.rect,
+    footer: footer.rect,
+    footerText: footer.text,
+    rowCount: rows.length,
+    firstRow: { rect: firstRow.rect, text: firstRow.text },
+    filter: {
+      query: filterTarget,
+      rowCount: filteredRows.length,
+      rows: filteredRows.map((row) => ({ rect: row.rect, text: row.text })),
+      state: settledFilteredState,
+      setterState: filteredState,
+    },
+    screenshot,
+    dismissed: true,
+  };
+}
+
 async function verifyAddProjectSources({
   child,
   client,
@@ -10209,6 +10415,7 @@ async function runOnce({
   idleFixture,
   verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
   verifyAddProjectSources: shouldVerifyAddProjectSources,
+  verifyFilePickerDefault: shouldVerifyFilePickerDefault,
   verifySidebarProjectGroups: shouldVerifySidebarProjectGroups,
   expectedProjectTitles,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
@@ -10313,6 +10520,7 @@ async function runOnce({
       shouldVerifyCompactControls ||
       shouldVerifyProjectActionKeybindingMutation ||
       shouldVerifyFileEditingSave ||
+      shouldVerifyFilePickerDefault ||
       (shouldVerifyQuickSwitchDefault && quickSwitchQuery.length > 0)
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
@@ -10520,6 +10728,16 @@ async function runOnce({
       : undefined;
     const addProjectSources = shouldVerifyAddProjectSources
       ? await verifyAddProjectSources({
+          child,
+          client,
+          devToolCli,
+          expectedTheme,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
+    const filePickerDefault = shouldVerifyFilePickerDefault
+      ? await verifyFilePickerDefault({
           child,
           client,
           devToolCli,
@@ -10975,6 +11193,7 @@ async function runOnce({
       idleThreadState,
       quickSwitchDefault,
       addProjectSources,
+      filePickerDefault,
       settingsNavigation,
       providersSettings,
       sourceControlLoading,
@@ -11037,6 +11256,7 @@ async function runOnce({
       idleThreadState,
       quickSwitchDefault,
       addProjectSources,
+      filePickerDefault,
       composerThemeScreenshot,
       settingsNavigation,
       providersSettings,
@@ -11121,6 +11341,7 @@ const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-compo
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
 const shouldVerifyAddProjectSources = process.argv.includes("--verify-add-project-sources");
+const shouldVerifyFilePickerDefault = process.argv.includes("--verify-file-picker-default");
 const shouldVerifySidebarProjectGroups = process.argv.includes("--verify-sidebar-project-groups");
 const quickSwitchQuery = argumentValue("--quick-switch-query") ?? "";
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
@@ -11441,6 +11662,7 @@ if (
   !projectSettingsOnlyEmptyFixture &&
   !fileEditingSaveOnlyEmptyFixture &&
   !shouldVerifySidebarProjectGroups &&
+  !shouldVerifyFilePickerDefault &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
@@ -11495,6 +11717,7 @@ for (let index = 1; index <= runs; index += 1) {
         !projectSettingsOnlyEmptyFixture &&
         !fileEditingSaveOnlyEmptyFixture &&
         !shouldVerifySidebarProjectGroups &&
+        !shouldVerifyFilePickerDefault &&
         !shouldVerifyFileSheetBack,
       timeoutMs,
       verifySettingsNavigation,
@@ -11508,6 +11731,7 @@ for (let index = 1; index <= runs; index += 1) {
       idleFixture,
       verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
       verifyAddProjectSources: shouldVerifyAddProjectSources,
+      verifyFilePickerDefault: shouldVerifyFilePickerDefault,
       verifySidebarProjectGroups: shouldVerifySidebarProjectGroups,
       expectedProjectTitles,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
