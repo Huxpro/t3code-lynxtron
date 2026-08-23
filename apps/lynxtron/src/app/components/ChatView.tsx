@@ -22,6 +22,7 @@ import {
 } from "@t3tools/client-runtime/presentation/pending-requests";
 import {
   buildPendingUserInputAnswers,
+  derivePendingUserInputProgress,
   formatPendingPrimaryActionLabel,
   setPendingUserInputCustomAnswer,
   togglePendingUserInputOptionSelection,
@@ -116,9 +117,11 @@ export function ChatView({ threadId }: ChatViewProps) {
   const lastKnownModelSelection = useRef(modelSelection);
   const [respondingApprovalId, setRespondingApprovalId] = useState<string | null>(null);
   const [respondingUserInputId, setRespondingUserInputId] = useState<string | null>(null);
-  const [pendingUserInputDrafts, setPendingUserInputDrafts] = useState<
-    Record<string, PendingUserInputDraftAnswer>
+  const [pendingUserInputDraftsByRequestId, setPendingUserInputDraftsByRequestId] = useState<
+    Record<string, Record<string, PendingUserInputDraftAnswer>>
   >({});
+  const [pendingUserInputQuestionIndexByRequestId, setPendingUserInputQuestionIndexByRequestId] =
+    useState<Record<string, number>>({});
   const [checkoutRepoContext, setCheckoutRepoContext] = useState<{
     readonly cwd: string;
     readonly isRepo: boolean;
@@ -243,13 +246,35 @@ export function ChatView({ threadId }: ChatViewProps) {
   const pendingUserInputs = useMemo(() => derivePendingUserInputs(activities), [activities]);
   const activePendingApproval = pendingApprovals[0] ?? null;
   const activePendingUserInput = pendingUserInputs[0] ?? null;
-  const activePendingQuestion = pendingUserInputs[0]?.questions[0] ?? null;
-  const activePendingDraft = activePendingQuestion
-    ? pendingUserInputDrafts[activePendingQuestion.id]
-    : undefined;
+  const activePendingDrafts = activePendingUserInput
+    ? (pendingUserInputDraftsByRequestId[activePendingUserInput.requestId] ?? {})
+    : {};
+  const activePendingQuestionIndex = activePendingUserInput
+    ? (pendingUserInputQuestionIndexByRequestId[activePendingUserInput.requestId] ?? 0)
+    : 0;
+  const activePendingProgress = useMemo(
+    () =>
+      activePendingUserInput
+        ? derivePendingUserInputProgress(
+            activePendingUserInput.questions,
+            activePendingDrafts,
+            activePendingQuestionIndex,
+          )
+        : null,
+    [activePendingDrafts, activePendingQuestionIndex, activePendingUserInput],
+  );
+  const activePendingQuestion = activePendingProgress?.activeQuestion ?? null;
+  const activePendingDraft = activePendingProgress?.activeDraft;
   const pendingAnswers = activePendingUserInput
-    ? buildPendingUserInputAnswers(activePendingUserInput.questions, pendingUserInputDrafts)
+    ? buildPendingUserInputAnswers(activePendingUserInput.questions, activePendingDrafts)
     : null;
+  const activePendingIsResponding = respondingUserInputId === activePendingUserInput?.requestId;
+  const questionPrimaryActionEnabled =
+    activePendingProgress !== null &&
+    !activePendingIsResponding &&
+    (activePendingProgress.isLastQuestion
+      ? activePendingProgress.isComplete
+      : activePendingProgress.canAdvance);
   const modelTraitsTrigger = useMemo(
     () =>
       presentedSelectedModel
@@ -448,41 +473,70 @@ export function ChatView({ threadId }: ChatViewProps) {
   );
   const handleQuestionOptionSelect = useCallback(
     (optionLabel: string) => {
-      if (!activePendingQuestion) return;
-      setPendingUserInputDrafts((drafts) => ({
-        ...drafts,
-        [activePendingQuestion.id]: togglePendingUserInputOptionSelection(
-          activePendingQuestion,
-          drafts[activePendingQuestion.id],
-          optionLabel,
-        ),
+      if (!activePendingUserInput || !activePendingQuestion) return;
+      setPendingUserInputDraftsByRequestId((byRequestId) => ({
+        ...byRequestId,
+        [activePendingUserInput.requestId]: {
+          ...byRequestId[activePendingUserInput.requestId],
+          [activePendingQuestion.id]: togglePendingUserInputOptionSelection(
+            activePendingQuestion,
+            byRequestId[activePendingUserInput.requestId]?.[activePendingQuestion.id],
+            optionLabel,
+          ),
+        },
       }));
     },
-    [activePendingQuestion],
+    [activePendingQuestion, activePendingUserInput],
   );
   const handleQuestionCustomAnswerChange = useCallback(
     (value: string) => {
-      if (!activePendingQuestion) return;
-      setPendingUserInputDrafts((drafts) => ({
-        ...drafts,
-        [activePendingQuestion.id]: setPendingUserInputCustomAnswer(
-          drafts[activePendingQuestion.id],
-          value,
-        ),
+      if (!activePendingUserInput || !activePendingQuestion) return;
+      setPendingUserInputDraftsByRequestId((byRequestId) => ({
+        ...byRequestId,
+        [activePendingUserInput.requestId]: {
+          ...byRequestId[activePendingUserInput.requestId],
+          [activePendingQuestion.id]: setPendingUserInputCustomAnswer(
+            byRequestId[activePendingUserInput.requestId]?.[activePendingQuestion.id],
+            value,
+          ),
+        },
       }));
     },
-    [activePendingQuestion],
+    [activePendingQuestion, activePendingUserInput],
   );
-  const handleQuestionSubmit = useCallback(async () => {
-    if (!activePendingUserInput || !pendingAnswers) return;
+  const handleQuestionAdvance = useCallback(async () => {
+    if (!activePendingUserInput || !activePendingProgress) return;
+    if (!activePendingProgress.isLastQuestion) {
+      if (!activePendingProgress.canAdvance) return;
+      setPendingUserInputQuestionIndexByRequestId((byRequestId) => ({
+        ...byRequestId,
+        [activePendingUserInput.requestId]: activePendingProgress.questionIndex + 1,
+      }));
+      return;
+    }
+    if (!pendingAnswers) return;
     setRespondingUserInputId(activePendingUserInput.requestId);
     try {
       await respondToUserInput(activePendingUserInput.requestId, pendingAnswers);
-      setPendingUserInputDrafts({});
+      setPendingUserInputDraftsByRequestId((byRequestId) => {
+        const { [activePendingUserInput.requestId]: _resolved, ...remaining } = byRequestId;
+        return remaining;
+      });
+      setPendingUserInputQuestionIndexByRequestId((byRequestId) => {
+        const { [activePendingUserInput.requestId]: _resolved, ...remaining } = byRequestId;
+        return remaining;
+      });
     } finally {
       setRespondingUserInputId(null);
     }
-  }, [activePendingUserInput, pendingAnswers, respondToUserInput]);
+  }, [activePendingProgress, activePendingUserInput, pendingAnswers, respondToUserInput]);
+  const handleQuestionPrevious = useCallback(() => {
+    if (!activePendingUserInput || !activePendingProgress) return;
+    setPendingUserInputQuestionIndexByRequestId((byRequestId) => ({
+      ...byRequestId,
+      [activePendingUserInput.requestId]: Math.max(activePendingProgress.questionIndex - 1, 0),
+    }));
+  }, [activePendingProgress, activePendingUserInput]);
 
   return (
     <ChatRouteSurface
@@ -686,12 +740,12 @@ export function ChatView({ threadId }: ChatViewProps) {
               <ComposerPendingQuestionSurface
                 header={activePendingQuestion.header}
                 question={activePendingQuestion.question}
-                questionIndex={0}
-                questionCount={pendingUserInputs[0]?.questions.length ?? 1}
+                questionIndex={activePendingProgress?.questionIndex ?? 0}
+                questionCount={activePendingUserInput?.questions.length ?? 1}
                 multiSelect={activePendingQuestion.multiSelect === true}
                 options={activePendingQuestion.options}
                 selectedOptionLabels={activePendingDraft?.selectedOptionLabels ?? []}
-                responding={respondingUserInputId === activePendingUserInput?.requestId}
+                responding={activePendingIsResponding}
                 selectedIcon={<Icon name="check" size={14} color="#366ffb" />}
                 onSelect={handleQuestionOptionSelect}
               />
@@ -710,22 +764,38 @@ export function ChatView({ threadId }: ChatViewProps) {
         approvalDetail={activePendingApproval?.detail}
         questionActions={
           activePendingQuestion ? (
-            <view
-              className={`composer-question-submit${
-                pendingAnswers ? "" : " composer-question-submit--disabled"
-              }`}
-              data-composer-primary-state="stop"
-              aria-disabled={pendingAnswers ? "false" : "true"}
-              bindtap={pendingAnswers ? handleQuestionSubmit : undefined}
-            >
-              <text className="composer-question-submit__label">
-                {formatPendingPrimaryActionLabel({
-                  compact: true,
-                  isLastQuestion: true,
-                  isResponding: respondingUserInputId === activePendingUserInput?.requestId,
-                  questionIndex: 0,
-                })}
-              </text>
+            <view className="composer-question-actions">
+              {(activePendingProgress?.questionIndex ?? 0) > 0 ? (
+                <view
+                  className="composer-question-previous"
+                  aria-label="Previous question"
+                  aria-disabled={activePendingIsResponding ? "true" : "false"}
+                  data-pending-question-action="previous"
+                  bindtap={activePendingIsResponding ? undefined : handleQuestionPrevious}
+                >
+                  <Icon name="arrow-left" size={14} color="#818181" />
+                </view>
+              ) : null}
+              <view
+                className={`composer-question-submit${
+                  questionPrimaryActionEnabled ? "" : " composer-question-submit--disabled"
+                }`}
+                data-composer-primary-state="stop"
+                data-pending-question-action={
+                  activePendingProgress?.isLastQuestion ? "submit" : "next"
+                }
+                aria-disabled={questionPrimaryActionEnabled ? "false" : "true"}
+                bindtap={questionPrimaryActionEnabled ? handleQuestionAdvance : undefined}
+              >
+                <text className="composer-question-submit__label">
+                  {formatPendingPrimaryActionLabel({
+                    compact: true,
+                    isLastQuestion: activePendingProgress?.isLastQuestion ?? true,
+                    isResponding: activePendingIsResponding,
+                    questionIndex: activePendingProgress?.questionIndex ?? 0,
+                  })}
+                </text>
+              </view>
             </view>
           ) : undefined
         }

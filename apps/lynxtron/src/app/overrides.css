@@ -3083,6 +3083,25 @@
   padding-top: 8px;
   flex-shrink: 0;
 }
+.composer-question-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.composer-question-previous {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 14px;
+  background-color: transparent;
+}
 .composer-question-submit {
   display: flex;
   align-items: center;
