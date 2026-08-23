@@ -240,6 +240,13 @@ let threadFingerprint = "";
 let mainTransport: MainConnectorTransport | null = null;
 let mainCommandBridge: Partial<PollBridge> | null = null;
 let mtsProviderFixture: ServerProvider | undefined;
+let lastUserInputResponse:
+  | {
+      readonly threadId: string;
+      readonly requestId: ApprovalRequestId;
+      readonly answers: ProviderUserInputAnswers;
+    }
+  | undefined;
 let vcsStatusRequestSequence = 0;
 let modelSelectionMutationSequence = 0;
 const pendingThreadRuntimeModes = new Map<string, LatestPendingMutation<RuntimeMode>>();
@@ -661,6 +668,17 @@ function installTransportDevToolHook(): void {
         readonly requestId: string | null;
         readonly decision: string | null;
       }>;
+      userInputReceipts: ReadonlyArray<{
+        readonly kind: string;
+        readonly requestId: string | null;
+        readonly answers: unknown;
+        readonly detail: string | null;
+      }>;
+      lastUserInputResponse?: {
+        readonly threadId: string;
+        readonly requestId: ApprovalRequestId;
+        readonly answers: ProviderUserInputAnswers;
+      };
       pendingApprovalRequests: ReadonlyArray<{
         readonly requestId: string;
         readonly requestKind: string | null;
@@ -738,6 +756,29 @@ function installTransportDevToolHook(): void {
             decision: typeof payload.decision === "string" ? payload.decision : null,
           };
         }),
+      userInputReceipts: state.activities
+        .filter(
+          (activity) =>
+            activity.kind === "user-input.resolved" ||
+            activity.kind === "provider.user-input.respond.failed",
+        )
+        .map((activity) => {
+          const payload =
+            typeof activity.payload === "object" && activity.payload !== null
+              ? (activity.payload as {
+                  answers?: unknown;
+                  detail?: unknown;
+                  requestId?: unknown;
+                })
+              : {};
+          return {
+            kind: activity.kind,
+            requestId: typeof payload.requestId === "string" ? payload.requestId : null,
+            answers: payload.answers ?? null,
+            detail: typeof payload.detail === "string" ? payload.detail : null,
+          };
+        }),
+      ...(lastUserInputResponse ? { lastUserInputResponse } : {}),
       pendingApprovalRequests: state.activities
         .filter((activity) => activity.kind === "approval.requested")
         .flatMap((activity) => {
@@ -1115,7 +1156,7 @@ function respondToApproval(
   return bridge.respondToApproval({ threadId, requestId, decision });
 }
 
-function respondToUserInput(
+async function respondToUserInput(
   requestId: ApprovalRequestId,
   answers: ProviderUserInputAnswers,
 ): Promise<void> {
@@ -1124,7 +1165,16 @@ function respondToUserInput(
   if (!threadId || !bridge?.respondToUserInput) {
     return Promise.reject(new Error("User-input response is unavailable."));
   }
-  return bridge.respondToUserInput({ threadId, requestId, answers });
+  await bridge.respondToUserInput({ threadId, requestId, answers });
+  if (
+    typeof (
+      globalThis as {
+        __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
+      }
+    ).__T3_LYNXTRON_VIEWPORT_PROBE__ === "function"
+  ) {
+    lastUserInputResponse = { threadId, requestId, answers };
+  }
 }
 
 async function deleteThread(threadId: string): Promise<void> {

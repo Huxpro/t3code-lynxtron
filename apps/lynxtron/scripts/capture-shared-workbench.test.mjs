@@ -909,6 +909,31 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "newThread:");
   });
 
+  it("drives both Browser renderers through a multi-step question", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, '"existing-thread-question-multi-step"');
+    assert.include(source, "const isMultiStepQuestionState");
+    assert.include(source, 'clickPair(\'[data-question-option="Safe"]\', "select-safe")');
+    assert.include(source, 'clickPair(\'[data-pending-question-action="next"]\', "next")');
+    assert.include(source, 'clickPair(\'[data-pending-question-action="previous"]\', "previous")');
+    assert.include(source, 'clickPair(\'[data-question-option="Web"]\', "select-web")');
+    assert.include(source, 'clickPair(\'[data-question-option="Native"]\', "select-native")');
+    assert.include(source, 'multiStepQuestionStage = "complete"');
+    assert.include(source, "multiStepQuestionTimeline");
+    assert.include(source, 'channel: fallback ? "dom-click-fallback" : "cdp-pointer"');
+    assert.include(source, 'waitForPair("restored first answer", restoredFirstAnswer, 1_500)');
+    assert.include(source, "isComposerPlanModeState || isMultiStepQuestionState");
+    assert.include(source, "pendingRequestSemantics");
+    assert.include(workbench, 'data-pending-question-action="next"');
+    assert.include(workbench, 'data-pending-question-action="previous"');
+    assert.include(workbench, 'questionIndex: Number(question.getAttribute("data-question-index")');
+    assert.include(workbench, "optionRows:");
+  });
+
   it("compares Composer toolbar allocation instead of renderer-specific raw box sizing", () => {
     assert.include(source, "function composerToolbarAllocationMatches");
     assert.include(source, "webMetrics?.anatomy?.toolbarAllocation");

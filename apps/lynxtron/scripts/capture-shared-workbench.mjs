@@ -160,6 +160,7 @@ if (stateId === "file-editor-editing-save" && !["web", "lynx"].includes(fileEdit
 }
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
+const isMultiStepQuestionState = stateId === "existing-thread-question-multi-step";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
@@ -292,6 +293,12 @@ function composerMetricsMatch(metrics, expectation) {
     metrics?.primaryState === expectation.primaryState &&
     metrics?.editor?.disabled === expectation.editorDisabled
   );
+}
+
+function pendingRequestSemantics(metrics) {
+  if (!metrics) return null;
+  const { geometry: _geometry, ...semantics } = metrics;
+  return semantics;
 }
 
 function composerAnatomyMatches(webMetrics, lynxMetrics) {
@@ -4167,6 +4174,7 @@ async function main() {
     "existing-thread-failed",
     "existing-thread-approval",
     "existing-thread-question",
+    "existing-thread-question-multi-step",
     "sidebar-resize",
     "files-browser",
     "settled-banner-inline-files-narrow",
@@ -4386,7 +4394,7 @@ async function main() {
     if (!ready) throw new Error("server not ready");
     for (let i = 0; i < 20 && !startupToken; i++) await delay(200);
     if (!startupToken) throw new Error("did not capture startup pairing token");
-    if (isComposerPlanModeState && expectThread) {
+    if ((isComposerPlanModeState || isMultiStepQuestionState) && expectThread) {
       const environmentId = (
         await readFile(path.join(baseDir, "userdata", "environment-id"), "utf8")
       ).trim();
@@ -4610,6 +4618,7 @@ async function captureCell({
     "project-action-dialog": "existing-thread",
     "existing-thread-completed": "existing-thread",
     "existing-thread-failed": "existing-thread",
+    "existing-thread-question-multi-step": "existing-thread",
     "sidebar-resize": "existing-thread",
     "project-scope-open": "project-scope-open",
     "sidebar-project-settings": "existing-thread",
@@ -4741,7 +4750,13 @@ async function captureCell({
   const legacySettingsTimeline = [];
   let transcriptReadyPolls = stateId.startsWith("existing-thread-") ? 0 : 3;
   let pendingRequestReadyPolls =
-    stateId === "existing-thread-approval" || stateId === "existing-thread-question" ? 0 : 3;
+    stateId === "existing-thread-approval" ||
+    stateId === "existing-thread-question" ||
+    isMultiStepQuestionState
+      ? 0
+      : 3;
+  let multiStepQuestionStage = isMultiStepQuestionState ? "waiting-initial" : "not-required";
+  const multiStepQuestionTimeline = [];
   let filesBrowserReadyPolls = isFilesSurfaceState ? 0 : 3;
   let fileEditorReadyPolls = isFileEditorState ? 0 : 3;
   let composerInputSent = composerInput.length === 0;
@@ -6732,15 +6747,15 @@ async function captureCell({
     const expectedPendingKind =
       stateId === "existing-thread-approval"
         ? "approval"
-        : stateId === "existing-thread-question"
+        : stateId === "existing-thread-question" || isMultiStepQuestionState
           ? "question"
           : null;
     const pendingRequestReady =
       expectedPendingKind === null ||
       (state?.web?.pendingRequestMetrics?.kind === expectedPendingKind &&
         state?.lynx?.pendingRequestMetrics?.kind === expectedPendingKind &&
-        JSON.stringify(state?.web?.pendingRequestMetrics) ===
-          JSON.stringify(state?.lynx?.pendingRequestMetrics));
+        JSON.stringify(pendingRequestSemantics(state?.web?.pendingRequestMetrics)) ===
+          JSON.stringify(pendingRequestSemantics(state?.lynx?.pendingRequestMetrics)));
     pendingRequestReadyPolls = pendingRequestReady ? pendingRequestReadyPolls + 1 : 0;
     const composerInputReady =
       !composerInput ||
@@ -6883,6 +6898,180 @@ async function captureCell({
     commandPaletteNavigationStage = "complete";
     webShortcutInputChannel = "cdp-meta-k";
     lynxShortcutInputChannel = "lynx-host-keyboard-packet:meta-k";
+    reachedTargetState = true;
+  }
+  if (isMultiStepQuestionState) {
+    const readPair = () => readWorkbenchState(cdp, sessionId);
+    const waitForPair = async (label, predicate, waitTimeoutMs = timeoutMs) => {
+      const stateDeadline = Date.now() + waitTimeoutMs;
+      let latest = null;
+      while (Date.now() < stateDeadline) {
+        latest = await readPair();
+        if (predicate(latest?.web?.pendingRequestMetrics, latest?.lynx?.pendingRequestMetrics)) {
+          return latest;
+        }
+        await delay(50);
+      }
+      throw new Error(
+        `Timed out waiting for multi-step question ${label}: ${JSON.stringify({
+          web: {
+            connected: latest?.web?.connected ?? null,
+            productState: latest?.web?.productState ?? null,
+            literalRoute: latest?.web?.literalRoute ?? null,
+            composer: latest?.web?.composerMetrics ?? null,
+            timeline: latest?.web?.timelineMetrics ?? null,
+            pendingRequest: latest?.web?.pendingRequestMetrics ?? null,
+          },
+          lynx: {
+            connected: latest?.lynx?.connected ?? null,
+            productState: latest?.lynx?.productState ?? null,
+            composer: latest?.lynx?.composerMetrics ?? null,
+            timeline: latest?.lynx?.timelineMetrics ?? null,
+            pendingRequest: latest?.lynx?.pendingRequestMetrics ?? null,
+          },
+        })}`,
+      );
+    };
+    const clickPane = async (client, selector, label, fallback = false) => {
+      const point = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+          const doc = frame?.contentWindow?.document;
+          const root =
+            ${JSON.stringify(client)} === 'lynx'
+              ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+              : doc;
+          const target = root?.querySelector(${JSON.stringify(selector)});
+          if (!frame || !target) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
+          if (${fallback ? "true" : "false"}) {
+            target.click();
+          }
+          return {
+            x: frameRect.x + rect.x + rect.width / 2,
+            y: frameRect.y + rect.y + rect.height / 2,
+          };
+        })()`,
+      );
+      if (!point) {
+        throw new Error(`Missing ${client} multi-step question ${label} target.`);
+      }
+      if (!fallback) {
+        await dispatchPointerClickWithMove(cdp, sessionId, point);
+      }
+      multiStepQuestionTimeline.push({
+        client,
+        label,
+        channel: fallback ? "dom-click-fallback" : "cdp-pointer",
+        point,
+      });
+    };
+    const clickPair = async (selector, label) => {
+      const points = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pointFor = (frameId, shadow) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const target = root?.querySelector(${JSON.stringify(selector)});
+            if (!frame || !target) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
+            return {
+              x: frameRect.x + rect.x + rect.width / 2,
+              y: frameRect.y + rect.y + rect.height / 2,
+            };
+          };
+          return {
+            web: pointFor('web-pane', false),
+            lynx: pointFor('lynx-pane', true),
+          };
+        })()`,
+      );
+      if (!points?.web || !points?.lynx) {
+        throw new Error(`Missing multi-step question ${label} target: ${JSON.stringify(points)}`);
+      }
+      await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+      await delay(50);
+      await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+      await delay(50);
+      multiStepQuestionTimeline.push({ label, points });
+    };
+    const selected = (metrics, label) =>
+      metrics?.options?.some((option) => option.label === label && option.selected === true);
+    state = await waitForPair(
+      "initial 1/2 state",
+      (web, lynx) =>
+        web?.questionIndex === 0 &&
+        lynx?.questionIndex === 0 &&
+        web?.questionCount === 2 &&
+        lynx?.questionCount === 2,
+    );
+    await clickPair('[data-question-option="Safe"]', "select-safe");
+    state = await waitForPair(
+      "enabled Next",
+      (web, lynx) =>
+        selected(web, "Safe") &&
+        selected(lynx, "Safe") &&
+        web?.primaryAction?.action === "next" &&
+        lynx?.primaryAction?.action === "next" &&
+        web.primaryAction.disabled === false &&
+        lynx.primaryAction.disabled === false,
+    );
+    await clickPair('[data-pending-question-action="next"]', "next");
+    state = await waitForPair(
+      "second question",
+      (web, lynx) =>
+        web?.questionIndex === 1 &&
+        lynx?.questionIndex === 1 &&
+        web?.multiSelect === true &&
+        lynx?.multiSelect === true &&
+        web?.previousAction?.disabled === false &&
+        lynx?.previousAction?.disabled === false,
+    );
+    await clickPair('[data-pending-question-action="previous"]', "previous");
+    const restoredFirstAnswer = (web, lynx) =>
+      web?.questionIndex === 0 &&
+      lynx?.questionIndex === 0 &&
+      selected(web, "Safe") &&
+      selected(lynx, "Safe");
+    try {
+      state = await waitForPair("restored first answer", restoredFirstAnswer, 1_500);
+    } catch {
+      const latest = await readPair();
+      if (latest?.web?.pendingRequestMetrics?.questionIndex !== 0) {
+        await clickPane("web", '[data-pending-question-action="previous"]', "previous", true);
+      }
+      if (latest?.lynx?.pendingRequestMetrics?.questionIndex !== 0) {
+        await clickPane("lynx", '[data-pending-question-action="previous"]', "previous", true);
+      }
+      state = await waitForPair("restored first answer after fallback", restoredFirstAnswer);
+    }
+    await clickPair('[data-pending-question-action="next"]', "next-again");
+    state = await waitForPair(
+      "second question restored",
+      (web, lynx) => web?.questionIndex === 1 && lynx?.questionIndex === 1,
+    );
+    await clickPair('[data-question-option="Web"]', "select-web");
+    await clickPair('[data-question-option="Native"]', "select-native");
+    state = await waitForPair(
+      "multi-select complete",
+      (web, lynx) =>
+        selected(web, "Web") &&
+        selected(web, "Native") &&
+        selected(lynx, "Web") &&
+        selected(lynx, "Native") &&
+        web?.primaryAction?.action === "submit" &&
+        lynx?.primaryAction?.action === "submit" &&
+        web.primaryAction.disabled === false &&
+        lynx.primaryAction.disabled === false,
+    );
+    multiStepQuestionStage = "complete";
     reachedTargetState = true;
   }
   if (isSidebarControlHoverState) {
@@ -7509,10 +7698,12 @@ async function captureCell({
     !stateId.startsWith("existing-thread-") ||
     (isEmptyTranscriptState ? finalEmptyTranscriptReady : finalPopulatedTranscriptReady);
   const finalPendingRequestReady =
-    stateId !== "existing-thread-approval" && stateId !== "existing-thread-question"
+    stateId !== "existing-thread-approval" &&
+    stateId !== "existing-thread-question" &&
+    !isMultiStepQuestionState
       ? true
-      : JSON.stringify(state?.web?.pendingRequestMetrics ?? null) ===
-          JSON.stringify(state?.lynx?.pendingRequestMetrics ?? null) &&
+      : JSON.stringify(pendingRequestSemantics(state?.web?.pendingRequestMetrics)) ===
+          JSON.stringify(pendingRequestSemantics(state?.lynx?.pendingRequestMetrics)) &&
         state?.web?.pendingRequestMetrics?.kind ===
           (stateId === "existing-thread-approval" ? "approval" : "question");
   let webState = state?.web?.productState ?? null;
@@ -8519,6 +8710,7 @@ async function captureCell({
     finalAddProviderDialogReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
+    (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
     (!isSidebarControlHoverState || sidebarControlHoverStage === "complete") &&
     (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
@@ -8575,6 +8767,7 @@ async function captureCell({
       finalAddProviderDialogReady,
       finalTranscriptReady,
       finalPendingRequestReady,
+      multiStepQuestionStage,
       commandPaletteNavigationStage,
       sidebarControlHoverStage,
       newThreadProjectsStage,
@@ -8754,6 +8947,13 @@ async function captureCell({
         draftLifecycle: newThreadDraftLifecycle,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
+      },
+      multiStepQuestion: {
+        match: !isMultiStepQuestionState || multiStepQuestionStage === "complete",
+        stage: multiStepQuestionStage,
+        timeline: multiStepQuestionTimeline,
+        web: state?.web?.pendingRequestMetrics ?? null,
+        lynx: state?.lynx?.pendingRequestMetrics ?? null,
       },
       projectSettings: {
         match: finalProjectSettingsReady,

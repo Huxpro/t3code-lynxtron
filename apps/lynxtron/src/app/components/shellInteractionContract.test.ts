@@ -1129,6 +1129,51 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain("setDraftStartFromOrigin(enabled)");
   });
 
+  it("uses shared pending-input progress for Native multi-question requests", () => {
+    const chatViewSource = componentSource("ChatView.tsx");
+    const composerSource = componentSource("Composer.tsx");
+    expect(chatViewSource).toContain("derivePendingUserInputProgress");
+    expect(chatViewSource).toContain("pendingUserInputDraftsByRequestId");
+    expect(chatViewSource).toContain("pendingUserInputQuestionIndexByRequestId");
+    expect(chatViewSource).toContain("activePendingProgress.isLastQuestion");
+    expect(chatViewSource).toContain("activePendingProgress.canAdvance");
+    expect(chatViewSource).toContain('aria-label="Previous question"');
+    expect(chatViewSource).toContain("handleQuestionAdvance");
+    const pendingSurfaceSource = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../../web/src/components/chat/ComposerPendingSurface.tsx",
+      ),
+      "utf8",
+    );
+    expect(pendingSurfaceSource).toContain(
+      'className="composer-pending-question flex w-full flex-col px-4 py-3 sm:px-5"',
+    );
+    expect(pendingSurfaceSource).toContain('className="composer-pending-question__hint');
+    expect(overrides).toContain(".composer-pending-wrapper--question-multi-select");
+    expect(overrides).toContain("height: 223px;");
+    expect(overrides).toContain("height: 222px;");
+    expect(overrides).toContain("height: 363px;");
+    expect(overrides).toContain("height: 361px;");
+    expect(chatViewSource).toContain(
+      "questionMultiSelect={activePendingQuestion?.multiSelect === true}",
+    );
+    expect(composerSource).toContain(
+      'questionMultiSelect ? "composer-shell--question-multi-select"',
+    );
+    expect(composerSource).toContain(
+      'questionMultiSelect ? "composer-surface--question-multi-select"',
+    );
+    expect(overrides).toContain(".composer-shell--question-multi-select");
+    expect(overrides).toContain(".composer-surface--question-multi-select");
+    expect(composerSource).toContain(
+      "if (questionMode) onQuestionCustomAnswerChange?.(nextValue);",
+    );
+    expect(clientSource).toContain("lastUserInputResponse = { threadId, requestId, answers };");
+    expect(clientSource).toContain('activity.kind === "user-input.resolved"');
+    expect(clientSource).toContain('activity.kind === "provider.user-input.respond.failed"');
+  });
+
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
     expect(clientSource).toContain("patchState({ modelSelection: saved })");
     expect(clientSource).toContain(

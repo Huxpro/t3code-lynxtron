@@ -3026,6 +3026,35 @@ function readPersistedEmptyThreadIds(baseDir) {
   }
 }
 
+function readResolvedUserInputAnswers(baseDir, requestId) {
+  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
+    readOnly: true,
+  });
+  try {
+    const rows = database
+      .prepare(
+        `SELECT payload_json AS payload
+         FROM projection_thread_activities
+         WHERE kind = 'user-input.resolved'
+         ORDER BY created_at DESC, activity_id DESC`,
+      )
+      .all();
+    for (const row of rows) {
+      const payload = JSON.parse(row.payload);
+      if (
+        payload?.requestId === requestId &&
+        payload.answers &&
+        typeof payload.answers === "object"
+      ) {
+        return payload.answers;
+      }
+    }
+    return null;
+  } finally {
+    database.close();
+  }
+}
+
 async function verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs }) {
   const beforeState = await readClientState(client);
   const initialCanonicalThreadIds = beforeState?.threadIds ?? [];
@@ -5817,6 +5846,7 @@ async function verifyApprovalDeclineMutation({
 }
 
 async function verifyQuestionTranscriptState({
+  baseDir,
   child,
   client,
   devToolCli,
@@ -5824,7 +5854,9 @@ async function verifyQuestionTranscriptState({
   questionFixture,
   timeoutMs,
 }) {
-  const question = questionFixture.activity.payload.questions[0];
+  const questions = questionFixture.activity.payload.questions;
+  const question = questions[0];
+  const multiStep = questionFixture.mode === "question-multi-step";
   const clientState = await readClientState(client);
   const frame = await readOptionalMeasurement(client, ".composer-frame");
   const surface = await readOptionalMeasurement(client, ".composer-surface--question");
@@ -5890,6 +5922,245 @@ async function verifyQuestionTranscriptState({
     timeoutMs,
     predicate: (measurement) => measurement?.attributes["data-question-option-selected"] === "true",
   });
+  if (multiStep) {
+    const next = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-question-submit",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["aria-disabled"] === "false" && measurement.text.trim() === "Next",
+    });
+    await tapMeasurement({ client, measurement: next });
+    const secondQuestion = questions[1];
+    const secondPending = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-pending-question",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.text.includes(secondQuestion.header) &&
+        measurement.text.includes(secondQuestion.question) &&
+        /2\s*\/\s*2/u.test(measurement.text),
+    });
+    const previous = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-question-previous",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["aria-label"] === "Previous question" &&
+        measurement.attributes["aria-disabled"] === "false",
+    });
+    await tapMeasurement({ client, measurement: previous });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-pending-question",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.text.includes(question.header) && /1\s*\/\s*2/u.test(measurement.text),
+    });
+    await waitForSelectorAttributeMeasurement({
+      attribute: "data-question-option-selected",
+      child,
+      client,
+      selector: ".composer-pending-question__option",
+      timeoutMs,
+      value: "true",
+    });
+    const nextAgain = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-question-submit",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["aria-disabled"] === "false" && measurement.text.trim() === "Next",
+    });
+    await tapMeasurement({ client, measurement: nextAgain });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-pending-question",
+      timeoutMs,
+      predicate: (measurement) => measurement?.text.includes(secondQuestion.question),
+    });
+    for (const option of secondQuestion.options) {
+      const optionMeasurement = (
+        await readSelectorMeasurements(client, ".composer-pending-question__option")
+      ).find((measurement) => measurement.text.includes(option.label));
+      if (!optionMeasurement) {
+        throw new Error(`Native multi-step question omitted option ${option.label}.`);
+      }
+      await tapMeasurement({ client, measurement: optionMeasurement });
+      const selectedDeadline = Date.now() + timeoutMs;
+      let selectedMeasurement = null;
+      while (Date.now() < selectedDeadline) {
+        if (child.exitCode !== null || child.signalCode !== null) {
+          throw new Error(`Lynxtron exited before ${option.label} became selected.`);
+        }
+        selectedMeasurement = (
+          await readSelectorMeasurements(client, ".composer-pending-question__option")
+        ).find(
+          (measurement) =>
+            measurement.text.includes(option.label) &&
+            measurement.attributes["data-question-option-selected"] === "true",
+        );
+        if (selectedMeasurement) break;
+        await waitForChildExit(child, 100);
+      }
+      if (!selectedMeasurement) {
+        throw new Error(`Native multi-step question did not select ${option.label}.`);
+      }
+    }
+    const customAnswer = "All supported surfaces";
+    const customAnswerResponse = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
+        customAnswer,
+      )}) ?? false`,
+      returnByValue: true,
+    });
+    if (commandResult(customAnswerResponse)?.value !== true) {
+      throw new Error("Native question custom-answer fixture hook was unavailable.");
+    }
+    for (const option of secondQuestion.options) {
+      const clearedDeadline = Date.now() + timeoutMs;
+      let clearedMeasurement = null;
+      while (Date.now() < clearedDeadline) {
+        if (child.exitCode !== null || child.signalCode !== null) {
+          throw new Error(`Lynxtron exited before ${option.label} selection cleared.`);
+        }
+        clearedMeasurement = (
+          await readSelectorMeasurements(client, ".composer-pending-question__option")
+        ).find(
+          (measurement) =>
+            measurement.text.includes(option.label) &&
+            measurement.attributes["data-question-option-selected"] === "false",
+        );
+        if (clearedMeasurement) break;
+        await waitForChildExit(child, 100);
+      }
+      if (!clearedMeasurement) {
+        throw new Error(`Native custom answer did not clear ${option.label}.`);
+      }
+    }
+    const submit = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-question-submit",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["aria-disabled"] === "false" &&
+        measurement.text.trim() === "Submit",
+    });
+    const screenshot = captureNativeScreenshot({
+      client,
+      devToolCli,
+      outputDirectory,
+      name: "native-question-multi-step.png",
+    });
+    const beforeSubmit = await readRendererReadiness(client);
+    await tapMeasurement({ client, measurement: submit });
+    const afterSubmit = await waitForSequenceAdvance({
+      child,
+      client,
+      initial: beforeSubmit,
+      timeoutMs,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-pending-question",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+    const expectedAnswers = {
+      [question.id]: selectedLabel,
+      [secondQuestion.id]: customAnswer,
+    };
+    const resolvedState = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === questionFixture.threadId &&
+        state?.activeThread?.hasPendingUserInput === false &&
+        state?.lastUserInputResponse?.threadId === questionFixture.threadId &&
+        state.lastUserInputResponse.requestId === questionFixture.activity.payload.requestId &&
+        JSON.stringify(state.lastUserInputResponse.answers) === JSON.stringify(expectedAnswers),
+    });
+    const resolvedAnswers = readResolvedUserInputAnswers(
+      baseDir,
+      questionFixture.activity.payload.requestId,
+    );
+    const userInputReceipt = resolvedState.userInputReceipts?.find(
+      (receipt) => receipt.requestId === questionFixture.activity.payload.requestId,
+    );
+    if (
+      resolvedAnswers !== null &&
+      JSON.stringify(resolvedAnswers) !== JSON.stringify(expectedAnswers)
+    ) {
+      throw new Error(
+        `Native multi-step answers did not persist canonically: ${JSON.stringify({
+          expectedAnswers,
+          resolvedAnswers,
+        })}`,
+      );
+    }
+    if (
+      resolvedAnswers === null &&
+      userInputReceipt?.kind !== "provider.user-input.respond.failed"
+    ) {
+      throw new Error(
+        `Native multi-step response reached neither provider resolution nor a stale-fixture receipt: ${JSON.stringify(
+          {
+            expectedAnswers,
+            lastUserInputResponse: resolvedState.lastUserInputResponse,
+            userInputReceipt,
+          },
+        )}`,
+      );
+    }
+    return {
+      status: "pass",
+      fixture: {
+        threadId: questionFixture.threadId,
+        requestId: questionFixture.activity.payload.requestId,
+        activeTurnId: questionFixture.activeTurnId,
+        questionIds: questions.map((entry) => entry.id),
+      },
+      content: {
+        firstQuestion: question.question,
+        secondQuestion: secondQuestion.question,
+        selectedLabel,
+        multiSelectLabels: secondQuestion.options.map((option) => option.label),
+        customAnswer,
+        submitLabel: submit.text.trim(),
+      },
+      navigation: {
+        next: next.rect,
+        secondQuestion: secondPending.rect,
+        previous: previous.rect,
+        nextAgain: nextAgain.rect,
+      },
+      sequence: {
+        beforeSubmit: beforeSubmit.lastSeq,
+        afterSubmit: afterSubmit.lastSeq,
+      },
+      bridgeResponse: resolvedState.lastUserInputResponse,
+      providerResolution:
+        resolvedAnswers === null
+          ? {
+              status: "stale-fixture",
+              receipt: userInputReceipt,
+            }
+          : {
+              status: "resolved",
+              answers: resolvedAnswers,
+            },
+      screenshot,
+    };
+  }
   const submit = await waitForMeasurement({
     child,
     client,
@@ -11168,6 +11439,7 @@ async function runOnce({
       shouldVerifyFilePickerDefault ||
       shouldVerifyNewThreadProjects ||
       shouldVerifyModelPickerFidelity ||
+      shouldVerifyQuestionTranscriptState ||
       (shouldVerifyQuickSwitchDefault && quickSwitchQuery.length > 0)
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
@@ -11623,6 +11895,7 @@ async function runOnce({
     }
     const questionTranscriptState = shouldVerifyQuestionTranscriptState
       ? await verifyQuestionTranscriptState({
+          baseDir,
           child,
           client,
           devToolCli,
@@ -12221,8 +12494,16 @@ if (
 const questionFixture = fixtureManifest.pendingRequestFixture;
 if (
   shouldVerifyQuestionTranscriptState &&
-  (questionFixture?.mode !== "question" ||
-    typeof questionFixture.threadId !== "string" ||
+  questionFixture?.mode !== "question" &&
+  questionFixture?.mode !== "question-multi-step"
+) {
+  throw new Error(
+    "--verify-question-transcript-state requires a real pendingRequestFixture question.",
+  );
+}
+if (
+  shouldVerifyQuestionTranscriptState &&
+  (typeof questionFixture.threadId !== "string" ||
     questionFixture.sessionStatus !== "running" ||
     typeof questionFixture.activeTurnId !== "string" ||
     questionFixture.activity?.kind !== "user-input.requested" ||
@@ -12232,6 +12513,17 @@ if (
 ) {
   throw new Error(
     "--verify-question-transcript-state requires a real pendingRequestFixture question.",
+  );
+}
+if (
+  shouldVerifyQuestionTranscriptState &&
+  questionFixture.mode === "question-multi-step" &&
+  (questionFixture.activity.payload.questions.length !== 2 ||
+    questionFixture.activity.payload.questions[0]?.multiSelect === true ||
+    questionFixture.activity.payload.questions[1]?.multiSelect !== true)
+) {
+  throw new Error(
+    "--verify-question-transcript-state requires a two-question single-select then multi-select fixture.",
   );
 }
 const reviewFixture = fixtureManifest.reviewFixture;

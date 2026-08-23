@@ -1247,6 +1247,16 @@ describe("packaged readiness Sidebar geometry", () => {
   it("selects and submits a real Native pending question", () => {
     assert.include(source, "async function verifyQuestionTranscriptState");
     assert.include(source, '"--verify-question-transcript-state"');
+    assert.include(source, 'questionFixture.mode === "question-multi-step"');
+    assert.include(source, "readResolvedUserInputAnswers");
+    assert.include(source, 'measurement.text.trim() === "Next"');
+    assert.include(source, '".composer-question-previous"');
+    assert.include(source, "Native multi-step question omitted option");
+    assert.include(source, "Native question custom-answer fixture hook was unavailable");
+    assert.include(source, "Native multi-step answers did not persist canonically");
+    assert.include(source, "state.lastUserInputResponse.answers");
+    assert.include(source, 'status: "stale-fixture"');
+    assert.include(source, '"native-question-multi-step.png"');
     assert.include(source, '".composer-pending-question"');
     assert.include(source, '".composer-surface--question"');
     assert.include(source, '".composer-question-submit"');

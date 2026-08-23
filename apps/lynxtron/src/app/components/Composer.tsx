@@ -225,7 +225,8 @@ export function Composer({
     };
     if (!viewport.testResize) return;
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__ = (nextValue) => {
-      setValue(nextValue);
+      if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
+      else setValue(nextValue);
       return true;
     };
     diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__ = (deltaY) =>
@@ -237,7 +238,7 @@ export function Composer({
       delete diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__;
     };
-  }, [viewport.testResize]);
+  }, [onQuestionCustomAnswerChange, questionMode, viewport.testResize]);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });

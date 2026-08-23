@@ -1097,14 +1097,54 @@ function readPendingRequestMetrics(root) {
     };
   }
   if (question) {
+    const primaryAction = root?.querySelector(
+      '[data-pending-question-action="next"], [data-pending-question-action="submit"]',
+    );
+    const previousAction = root?.querySelector('[data-pending-question-action="previous"]');
+    const options = question.querySelector(".composer-pending-question__options");
     return {
       kind: "question",
       text: question.textContent?.trim().replace(/\s+/g, " ") ?? "",
       detail: null,
+      questionIndex: Number(question.getAttribute("data-question-index") ?? "0"),
+      questionCount: Number(question.getAttribute("data-question-count") ?? "1"),
+      multiSelect: question.getAttribute("data-question-multi-select") === "true",
+      geometry: {
+        panel: readElementBox(question),
+        heading: readElementBox(question.querySelector(".composer-pending-question__heading")),
+        prompt: readElementBox(question.querySelector(".composer-pending-question__prompt")),
+        hint: readElementBox(
+          [...question.children].find((child) =>
+            child.textContent?.includes("Select one or more options."),
+          ),
+        ),
+        options: readElementBox(options),
+        optionRows: [...(options?.querySelectorAll("[data-question-option]") ?? [])].map(
+          readElementBox,
+        ),
+        primaryAction: readElementBox(primaryAction),
+        previousAction: readElementBox(previousAction),
+      },
       options: [...question.querySelectorAll("[data-question-option]")].map((item) => ({
         label: item.getAttribute("data-question-option"),
         selected: item.getAttribute("data-question-option-selected") === "true",
       })),
+      primaryAction: primaryAction
+        ? {
+            action: primaryAction.getAttribute("data-pending-question-action"),
+            disabled:
+              primaryAction.disabled === true ||
+              primaryAction.getAttribute("aria-disabled") === "true",
+            text: primaryAction.textContent?.trim().replace(/\s+/g, " ") ?? "",
+          }
+        : null,
+      previousAction: previousAction
+        ? {
+            disabled:
+              previousAction.disabled === true ||
+              previousAction.getAttribute("aria-disabled") === "true",
+          }
+        : null,
     };
   }
   return null;

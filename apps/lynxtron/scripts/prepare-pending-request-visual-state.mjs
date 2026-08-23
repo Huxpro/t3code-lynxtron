@@ -106,11 +106,18 @@ export async function preparePendingRequestVisualState(baseDirectory, options) {
 
   const mode = options.mode;
   const activityKind = mode === "approval" ? "approval.requested" : "user-input.requested";
-  const title = mode === "approval" ? "Pending command approval" : "Pending structured question";
+  const title =
+    mode === "approval"
+      ? "Pending command approval"
+      : mode === "question-multi-step"
+        ? "Pending multi-step question"
+        : "Pending structured question";
   const prompt =
     mode === "approval"
       ? "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval."
-      : "Before doing anything else, use the question tool to ask me which deployment mode to use. Offer exactly two options: Safe and Fast. Wait for my answer.";
+      : mode === "question-multi-step"
+        ? "Before doing anything else, use the question tool once with exactly two questions. First ask which deployment mode to use with exactly two options: Safe and Fast, single-select. Second ask which surfaces to verify with exactly two options: Web and Native, multi-select. Wait for my answers."
+        : "Before doing anything else, use the question tool to ask me which deployment mode to use. Offer exactly two options: Safe and Fast. Wait for my answer.";
   let fixture;
 
   try {
@@ -150,6 +157,21 @@ export async function preparePendingRequestVisualState(baseDirectory, options) {
     );
     await connector.sendPrompt({ threadId, text: prompt });
     const { payload, activity } = await pendingPromise;
+    if (mode === "question-multi-step") {
+      const questions = activity.payload?.questions;
+      if (
+        !Array.isArray(questions) ||
+        questions.length !== 2 ||
+        questions[0]?.multiSelect === true ||
+        questions[1]?.multiSelect !== true
+      ) {
+        throw new Error(
+          `Provider did not produce the requested multi-step question fixture: ${JSON.stringify(
+            questions,
+          )}`,
+        );
+      }
+    }
     fixture = {
       mode,
       threadId,
@@ -183,9 +205,9 @@ export async function preparePendingRequestVisualState(baseDirectory, options) {
 
 const baseDir = argumentValue("--base-dir");
 const mode = argumentValue("--mode");
-if (!baseDir || (mode !== "approval" && mode !== "question")) {
+if (!baseDir || (mode !== "approval" && mode !== "question" && mode !== "question-multi-step")) {
   throw new Error(
-    "Usage: prepare-pending-request-visual-state.mjs --base-dir <visual-state-dir> --mode <approval|question>",
+    "Usage: prepare-pending-request-visual-state.mjs --base-dir <visual-state-dir> --mode <approval|question|question-multi-step>",
   );
 }
 const manifest = await preparePendingRequestVisualState(baseDir, {
