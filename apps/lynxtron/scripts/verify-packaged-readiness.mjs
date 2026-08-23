@@ -3055,49 +3055,73 @@ function readResolvedUserInputAnswers(baseDir, requestId) {
   }
 }
 
-async function verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs }) {
-  const beforeState = await readClientState(client);
-  const initialCanonicalThreadIds = beforeState?.threadIds ?? [];
-  const initialPersistedThreadIds = readPersistedThreadIds(baseDir);
-  const emptyThreadIds = readPersistedEmptyThreadIds(baseDir);
-  if (emptyThreadIds.length === 0) {
-    throw new Error("The Native draft lifecycle fixture has no empty threads to delete.");
+async function verifyNewThreadDraftLifecycle({
+  baseDir,
+  child,
+  client,
+  initialPersistedThreadIds,
+  projectId,
+  staleEmptyThreadIds,
+  timeoutMs,
+}) {
+  if (staleEmptyThreadIds.length === 0) {
+    throw new Error("The Native draft lifecycle fixture has no stale empty threads to recover.");
   }
-  let afterDeleteState = beforeState;
-  for (const [index, emptyThreadId] of emptyThreadIds.entries()) {
-    await tapSelectorByAttribute({
-      attribute: "data-sidebar-empty-thread-delete",
-      child,
-      client,
-      selector: "[data-sidebar-empty-thread-delete]",
-      timeoutMs,
-      value: emptyThreadId,
-    });
-    afterDeleteState = await waitForClientState({
-      child,
-      client,
-      timeoutMs,
-      predicate: (state) =>
-        Array.isArray(state?.threadIds) &&
-        !state.threadIds.includes(emptyThreadId) &&
-        state.threadIds.length === initialCanonicalThreadIds.length - index - 1,
-    });
-    const persistedThreadIdsAfterDelete = readPersistedThreadIds(baseDir);
-    if (
-      persistedThreadIdsAfterDelete.includes(emptyThreadId) ||
-      persistedThreadIdsAfterDelete.length !== initialPersistedThreadIds.length - index - 1
-    ) {
-      throw new Error(
-        `Deleting an empty Native thread did not update persistence: ${JSON.stringify({
-          emptyThreadId,
-          emptyThreadIds,
-          initialPersistedThreadIds,
-          persistedThreadIdsAfterDelete,
-        })}`,
-      );
-    }
+  const afterRecoveryState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      Array.isArray(state?.threadIds) &&
+      staleEmptyThreadIds.every((threadId) => !state.threadIds.includes(threadId)),
+  });
+  const persistedThreadIdsAfterRecovery = readPersistedThreadIds(baseDir);
+  if (staleEmptyThreadIds.some((threadId) => persistedThreadIdsAfterRecovery.includes(threadId))) {
+    throw new Error(
+      `Stale empty Native threads survived automatic recovery: ${JSON.stringify({
+        staleEmptyThreadIds,
+        initialPersistedThreadIds,
+        persistedThreadIdsAfterRecovery,
+      })}`,
+    );
   }
+  if (typeof projectId !== "string") {
+    throw new Error("The Native draft lifecycle fixture has no project for manual cleanup.");
+  }
+  const freshEmptyThread = await invokeConnector(client, "createThread", { projectId });
+  const freshEmptyThreadId = freshEmptyThread?.threadId;
+  if (typeof freshEmptyThreadId !== "string") {
+    throw new Error("Creating a fresh canonical empty thread did not return an id.");
+  }
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.threadIds?.includes(freshEmptyThreadId) === true,
+  });
+  await tapSelectorByAttribute({
+    attribute: "data-sidebar-empty-thread-delete",
+    child,
+    client,
+    selector: "[data-sidebar-empty-thread-delete]",
+    timeoutMs,
+    value: freshEmptyThreadId,
+  });
+  const afterDeleteState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.threadIds?.includes(freshEmptyThreadId) === false,
+  });
   const persistedThreadIdsAfterDelete = readPersistedThreadIds(baseDir);
+  if (persistedThreadIdsAfterDelete.includes(freshEmptyThreadId)) {
+    throw new Error(
+      `Deleting a fresh empty Native thread did not update persistence: ${JSON.stringify({
+        freshEmptyThreadId,
+        persistedThreadIdsAfterDelete,
+      })}`,
+    );
+  }
   const canonicalThreadIdsBefore = afterDeleteState.threadIds ?? [];
   const persistedThreadIdsBefore = persistedThreadIdsAfterDelete;
   const normalizedThreadIds = (threadIds) => [...threadIds].sort();
@@ -3160,11 +3184,18 @@ async function verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured New thread control",
     hero: hero.rect,
     staleEmptyThreadDeletion: {
-      threadIds: emptyThreadIds,
-      canonicalThreadIdsBefore: initialCanonicalThreadIds,
-      canonicalThreadIdsAfter: canonicalThreadIdsBefore,
+      threadIds: staleEmptyThreadIds,
+      canonicalThreadIdsBefore: initialPersistedThreadIds,
+      canonicalThreadIdsAfter: afterRecoveryState.threadIds ?? [],
       persistedThreadIdsBefore: initialPersistedThreadIds,
+      persistedThreadIdsAfter: persistedThreadIdsAfterRecovery,
+      automatic: true,
+    },
+    freshEmptyThreadDeletion: {
+      threadId: freshEmptyThreadId,
+      canonicalThreadIdsAfter: canonicalThreadIdsBefore,
       persistedThreadIdsAfter: persistedThreadIdsAfterDelete,
+      manual: true,
     },
     canonicalThreadIdsBefore,
     canonicalThreadIdsAfter: reusedDraftState.threadIds ?? [],
@@ -11401,6 +11432,15 @@ async function runOnce({
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
   const baseDir = path.join(runRoot, "state");
   cpSync(fixtureDir, baseDir, { recursive: true });
+  const initialPersistedThreadIds = shouldVerifyNewThreadDraftLifecycle
+    ? readPersistedThreadIds(baseDir)
+    : [];
+  const staleEmptyThreadIds = shouldVerifyNewThreadDraftLifecycle
+    ? readPersistedEmptyThreadIds(baseDir)
+    : [];
+  const draftLifecycleProjectId = shouldVerifyNewThreadDraftLifecycle
+    ? readPersistedProjects(baseDir)[0]?.projectId
+    : undefined;
   if (
     expectedEnvironmentIdentificationMode ||
     expectedTheme ||
@@ -11781,7 +11821,15 @@ async function runOnce({
         ? await verifyComposerBehavior({ child, client, timeoutMs })
         : undefined;
     const newThreadDraftLifecycle = shouldVerifyNewThreadDraftLifecycle
-      ? await verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs })
+      ? await verifyNewThreadDraftLifecycle({
+          baseDir,
+          child,
+          client,
+          initialPersistedThreadIds,
+          projectId: draftLifecycleProjectId,
+          staleEmptyThreadIds,
+          timeoutMs,
+        })
       : undefined;
     const modelPickerFidelity = shouldVerifyModelPickerFidelity
       ? await verifyModelPickerFidelity({
