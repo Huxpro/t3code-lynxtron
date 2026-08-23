@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T22:21:52-07:00",
+  "updatedAt": "2026-08-22T23:11:02-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14869,6 +14869,72 @@
               "confidence": 0.99,
               "method": "native-add-project-main-transport",
               "source": "Both themes use main transport, advance sequence, report zero renderer errors, avoid clone/create side effects, and dispose isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-project-groups-native-current",
+      "observedAt": "2026-08-22T23:11:02-07:00",
+      "commit": "3b1a34d52a54e8fbf19d78ded01528d8eb76d1cd",
+      "codeCommit": "13d6b2e09279316c6a7c6b298cd35998d8a4676c",
+      "codeState": "commit",
+      "label": "Sidebar project groups Native coverage",
+      "narrative": "Fresh exact-bundle Native dark and light runs verify the explicit V1 sidebar with two project groups, 239x32 rows, symmetric 8px and 9px list insets, vertical ordering, and measured collapse and re-expand behavior. The Native fixture is a byte-for-byte copy of a stopped isolated two-project Browser snapshot, but it is not the exact retained Browser screenshot snapshot; geometry and semantic state are compared without pixel attribution. Native physical hover remains R6 pending-user-session.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "No product change was made. The point adds exact-bundle Native V1 geometry, dual-theme, and reversible collapse evidence while preserving the snapshot and physical-hover boundaries."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/sidebar-project-groups-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "695a67729c8e0b475f29b7ccb8d52ab7269904ee9985a7b17fbaad939b23ca87"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-groups"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-v1-project-group-content",
+              "source": "Both themes render t3code-lynxtron and background-only in the retained authority order with an empty-thread row under each project"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 1, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "native-v1-project-group-geometry",
+              "source": "Native preserves a 256px sidebar, 239x32 project rows, 8px left and 9px right list insets, and Browser-authority vertical ordering"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-v1-dual-theme-typography",
+              "source": "Manual review confirms project titles, Projects label, Search control, and No threads yet hierarchy in dark and light"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-v1-dual-theme-material",
+              "source": "Manual review confirms shared Sidebar backgrounds, branded header artwork, row chrome, icons, and muted empty states in both themes"
+            },
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-v1-collapse-recovery",
+              "source": "Measured taps collapse the first project from two empty child rows to one and restore it to two; physical hover remains pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-v1-main-transport",
+              "source": "Both themes use main transport, advance sequence, report zero renderer errors, and dispose isolated state"
             }
           }
         }
