@@ -1182,11 +1182,22 @@ async function respondToUserInput(
 
 async function deleteThread(threadId: string): Promise<void> {
   const bridge = getBridge();
-  if (!bridge?.deleteThread) return;
-  if (appAtomRegistry.get(t3ClientStateAtom).activeThreadId === threadId) {
-    resetActiveThreadState();
+  if (!bridge?.deleteThread) {
+    throw new Error("Thread deletion is unavailable.");
   }
-  await bridge.deleteThread({ threadId });
+  try {
+    await bridge.deleteThread({ threadId });
+    if (appAtomRegistry.get(t3ClientStateAtom).activeThreadId === threadId) {
+      resetActiveThreadState();
+    }
+  } catch (error) {
+    patchState({
+      sessionError: presentThreadCommandErrorMessage(
+        error instanceof Error ? error.message : String(error),
+      ),
+    });
+    throw error;
+  }
 }
 
 async function archiveThread(threadId: string, unarchive = false): Promise<void> {

@@ -280,7 +280,8 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   )}
                 </HostView>
                 {props.settlementSupported || props.cardActionControl !== null ? (
-                  <HostText
+                  <HostView
+                    stopTapPropagation
                     className={cn(
                       "sidebar-v2-row-actions absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/v2-row:opacity-100",
                       props.snoozeMenuOpen && "opacity-100",
@@ -299,7 +300,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                         {props.cardActionsPersistent ? null : "Settle"}
                       </HostButton>
                     ) : null}
-                  </HostText>
+                  </HostView>
                 ) : null}
               </HostView>
             </HostView>

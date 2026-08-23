@@ -3,9 +3,28 @@ import type * as React from "react";
 export function HostView({
   children,
   eventThrough: _eventThrough,
+  stopTapPropagation,
+  onClick,
   ...props
-}: React.ComponentProps<"div"> & { readonly eventThrough?: boolean }) {
-  return <div {...props}>{children}</div>;
+}: React.ComponentProps<"div"> & {
+  readonly eventThrough?: boolean;
+  readonly stopTapPropagation?: boolean;
+}) {
+  return (
+    <div
+      {...props}
+      onClick={
+        stopTapPropagation
+          ? (event) => {
+              event.stopPropagation();
+              onClick?.(event);
+            }
+          : onClick
+      }
+    >
+      {children}
+    </div>
+  );
 }
 
 export function HostLayoutView({ children, ...props }: React.ComponentProps<"div">) {

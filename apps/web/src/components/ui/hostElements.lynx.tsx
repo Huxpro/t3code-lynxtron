@@ -6,9 +6,12 @@ interface HostKeyEvent {
 
 interface MainThreadKeyEvent extends HostKeyEvent {}
 
+const ignoreTap = () => undefined;
+
 export function HostView({
   children,
   eventThrough,
+  stopTapPropagation,
   onClick,
   onDoubleClick: _onDoubleClick,
   onContextMenu,
@@ -19,6 +22,7 @@ export function HostView({
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly eventThrough?: boolean;
+  readonly stopTapPropagation?: boolean;
   readonly onClick?: (event: unknown) => void;
   readonly onDoubleClick?: (event: unknown) => void;
   readonly onContextMenu?: (event: unknown) => void;
@@ -51,7 +55,7 @@ export function HostView({
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
       {...(onMouseLeave ? { "main-thread:bindmouseleave": handleMouseLeave } : {})}
       bindmousemove={onMouseEnter}
-      bindtap={onClick}
+      {...(stopTapPropagation ? { catchtap: onClick ?? ignoreTap } : { bindtap: onClick })}
       bindlongpress={onContextMenu}
     >
       {children}
