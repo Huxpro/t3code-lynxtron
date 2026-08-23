@@ -12,13 +12,17 @@ import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentatio
 import {
   buildDraftThreadTurnBootstrap,
   createLocalDraftThread,
+  forgetLocalDraftThread,
   projectDraftThreadInteractionMode,
   projectDraftThreadModelSelection,
   projectDraftThreadRuntimeMode,
   projectDraftThreadWorkspace,
+  readLocalDraftThreadForProject,
+  rememberLocalDraftThread,
   shouldFinalizePromotedDraftThread,
   type LocalDraftThread,
   type LocalDraftThreadEnvMode,
+  type LocalDraftThreadsByProjectId,
 } from "@t3tools/client-runtime/presentation/draft-thread";
 import {
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
@@ -154,6 +158,7 @@ export interface T3ClientState {
   readonly activeThreadId?: string;
   readonly draftHeroThreadId?: string;
   readonly draftThread?: LocalDraftThread;
+  readonly draftThreadsByProjectId: LocalDraftThreadsByProjectId;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -190,6 +195,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   projects: [],
   threads: [],
   archivedThreads: [],
+  draftThreadsByProjectId: {},
   messages: [],
   checkpoints: [],
   sessionStatus: "idle",
@@ -461,11 +467,20 @@ function applyShellPayload(shell: ShellEventPayload): void {
     threads = projectThreadInteractionMode(threads, threadId, mutation.value);
   }
   const stateBeforeShell = appAtomRegistry.get(t3ClientStateAtom);
+  const canonicalThreadIds = new Set(threads.map((thread) => thread.id));
+  const draftThreadsByProjectId = Object.fromEntries(
+    Object.entries(stateBeforeShell.draftThreadsByProjectId).filter(
+      ([, draft]) => !canonicalThreadIds.has(draft.id),
+    ),
+  );
   const activeThread = threads.find((thread) => thread.id === stateBeforeShell.activeThreadId);
-  const activeDraftThread =
-    stateBeforeShell.draftThread?.id === stateBeforeShell.activeThreadId
-      ? stateBeforeShell.draftThread
-      : undefined;
+  const currentDraftThread = stateBeforeShell.draftThread;
+  const activeDraftThread = currentDraftThread
+    ? currentDraftThread.id === stateBeforeShell.activeThreadId &&
+      !canonicalThreadIds.has(currentDraftThread.id)
+      ? currentDraftThread
+      : undefined
+    : undefined;
   const activePresentationThread = activeThread ?? activeDraftThread;
   const projects = shell.projects ?? [];
   const modelProjection =
@@ -489,6 +504,8 @@ function applyShellPayload(shell: ShellEventPayload): void {
     projects,
     threads,
     archivedThreads: shell.archivedThreads ?? [],
+    draftThreadsByProjectId,
+    ...(activeThread ? { draftThread: undefined, draftHeroThreadId: undefined } : {}),
     ...(activePresentationThread
       ? {
           modelSelection: activeProjection?.selection ?? activePresentationThread.modelSelection,
@@ -536,8 +553,18 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
     messageCount: payload.messages?.length ?? 0,
     sessionStatus: payload.sessionStatus ?? "idle",
   });
+  const draftThreadsByProjectId =
+    draftPromoted && current.draftThread
+      ? forgetLocalDraftThread(current.draftThreadsByProjectId, current.draftThread)
+      : current.draftThreadsByProjectId;
   patchState({
-    ...(draftPromoted ? { draftThread: undefined, draftHeroThreadId: undefined } : {}),
+    ...(draftPromoted
+      ? {
+          draftThread: undefined,
+          draftHeroThreadId: undefined,
+          draftThreadsByProjectId,
+        }
+      : {}),
     messages: payload.messages ?? [],
     checkpoints: payload.checkpoints ?? [],
     sessionStatus: payload.sessionStatus ?? "idle",
@@ -670,6 +697,12 @@ function installTransportDevToolHook(): void {
     return {
       activeThreadId: state.activeThreadId,
       draftThreadId: state.draftThread?.id ?? null,
+      draftThreadIdsByProjectId: Object.fromEntries(
+        Object.entries(state.draftThreadsByProjectId).map(([projectId, draft]) => [
+          projectId,
+          draft.id,
+        ]),
+      ),
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
@@ -904,11 +937,41 @@ async function createThread(
   if (!targetProjectId || !selection) return;
   if (activeDraftThread?.projectId === targetProjectId) {
     if (options) {
+      const draftThread = projectDraftThreadWorkspace(activeDraftThread, options);
       patchState({
-        draftThread: projectDraftThreadWorkspace(activeDraftThread, options),
+        draftThread,
+        draftThreadsByProjectId: draftThread
+          ? rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread)
+          : state.draftThreadsByProjectId,
       });
     }
     navigate("/");
+    return;
+  }
+  const reusableDraftThread = readLocalDraftThreadForProject(
+    state.draftThreadsByProjectId,
+    ProjectId.make(targetProjectId),
+  );
+  if (reusableDraftThread) {
+    const draftThread = options
+      ? projectDraftThreadWorkspace(reusableDraftThread, options)
+      : reusableDraftThread;
+    if (!draftThread) return;
+    patchState({
+      activeThreadId: draftThread.id,
+      draftHeroThreadId: draftThread.id,
+      draftThread,
+      draftThreadsByProjectId: rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread),
+      modelSelection: draftThread.modelSelection,
+      selectedModel:
+        state.models.find(
+          (model) =>
+            model.instanceId === draftThread.modelSelection.instanceId &&
+            model.slug === draftThread.modelSelection.model,
+        ) ?? state.selectedModel,
+    });
+    navigate("/");
+    refreshVcsStatusProjection();
     return;
   }
   const threadId = ThreadId.make(newThreadId());
@@ -939,6 +1002,7 @@ async function createThread(
     activeThreadId: threadId,
     draftHeroThreadId: threadId,
     draftThread,
+    draftThreadsByProjectId: rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread),
     modelSelection: selection,
     selectedModel:
       state.models.find(
@@ -959,16 +1023,22 @@ function reconnect(): Promise<void> {
 function setDraftWorkspaceMode(envMode: LocalDraftThreadEnvMode): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   if (state.draftThread?.id !== state.activeThreadId) return;
+  const draftThread = projectDraftThreadWorkspace(state.draftThread, { envMode });
+  if (!draftThread) return;
   patchState({
-    draftThread: projectDraftThreadWorkspace(state.draftThread, { envMode }),
+    draftThread,
+    draftThreadsByProjectId: rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread),
   });
 }
 
 function setDraftStartFromOrigin(startFromOrigin: boolean): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   if (state.draftThread?.id !== state.activeThreadId) return;
+  const draftThread = projectDraftThreadWorkspace(state.draftThread, { startFromOrigin });
+  if (!draftThread) return;
   patchState({
-    draftThread: projectDraftThreadWorkspace(state.draftThread, { startFromOrigin }),
+    draftThread,
+    draftThreadsByProjectId: rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread),
   });
 }
 
@@ -1380,8 +1450,12 @@ function setModelSelection(model: ModelInfo): void {
   const threadId = state.activeThreadId;
   const selection = { instanceId: model.instanceId, model: model.slug };
   if (state.draftThread?.id === threadId) {
+    const draftThread = projectDraftThreadModelSelection(state.draftThread, selection);
     patchState({
-      draftThread: projectDraftThreadModelSelection(state.draftThread, selection),
+      draftThread,
+      draftThreadsByProjectId: draftThread
+        ? rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread)
+        : state.draftThreadsByProjectId,
       selectedModel: model,
       modelSelection: selection,
       modelSelectionError: null,
@@ -1415,8 +1489,12 @@ function setModelOptions(options: NonNullable<ModelSelection["options"]>): void 
   if (!selection) return;
   const nextSelection: ModelSelection = { ...selection, options };
   if (state.draftThread?.id === state.activeThreadId) {
+    const draftThread = projectDraftThreadModelSelection(state.draftThread, nextSelection);
     patchState({
-      draftThread: projectDraftThreadModelSelection(state.draftThread, nextSelection),
+      draftThread,
+      draftThreadsByProjectId: draftThread
+        ? rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread)
+        : state.draftThreadsByProjectId,
       modelSelection: nextSelection,
       modelSelectionError: null,
       modelSelectionPending: false,
@@ -1440,8 +1518,12 @@ function setThreadRuntimeMode(runtimeMode: RuntimeMode): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const threadId = state.activeThreadId;
   if (state.draftThread?.id === threadId) {
+    const draftThread = projectDraftThreadRuntimeMode(state.draftThread, runtimeMode);
     patchState({
-      draftThread: projectDraftThreadRuntimeMode(state.draftThread, runtimeMode),
+      draftThread,
+      draftThreadsByProjectId: draftThread
+        ? rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread)
+        : state.draftThreadsByProjectId,
     });
     return;
   }
@@ -1486,8 +1568,12 @@ function setThreadInteractionMode(interactionMode: ProviderInteractionMode): voi
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const threadId = state.activeThreadId;
   if (state.draftThread?.id === threadId) {
+    const draftThread = projectDraftThreadInteractionMode(state.draftThread, interactionMode);
     patchState({
-      draftThread: projectDraftThreadInteractionMode(state.draftThread, interactionMode),
+      draftThread,
+      draftThreadsByProjectId: draftThread
+        ? rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread)
+        : state.draftThreadsByProjectId,
     });
     return;
   }

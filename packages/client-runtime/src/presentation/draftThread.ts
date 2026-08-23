@@ -17,6 +17,36 @@ export interface LocalDraftThread extends OrchestrationThreadShell {
   readonly startFromOrigin: boolean;
 }
 
+export type LocalDraftThreadsByProjectId = Readonly<Record<string, LocalDraftThread>>;
+
+export function readLocalDraftThreadForProject(
+  draftsByProjectId: LocalDraftThreadsByProjectId,
+  projectId: ProjectId,
+): LocalDraftThread | undefined {
+  return draftsByProjectId[projectId];
+}
+
+export function rememberLocalDraftThread(
+  draftsByProjectId: LocalDraftThreadsByProjectId,
+  draft: LocalDraftThread,
+): LocalDraftThreadsByProjectId {
+  return {
+    ...draftsByProjectId,
+    [draft.projectId]: draft,
+  };
+}
+
+export function forgetLocalDraftThread(
+  draftsByProjectId: LocalDraftThreadsByProjectId,
+  draft: LocalDraftThread,
+): LocalDraftThreadsByProjectId {
+  if (draftsByProjectId[draft.projectId]?.id !== draft.id) {
+    return draftsByProjectId;
+  }
+  const { [draft.projectId]: _forgotten, ...remaining } = draftsByProjectId;
+  return remaining;
+}
+
 export function createLocalDraftThread(input: {
   readonly threadId: ThreadId;
   readonly projectId: ProjectId;
