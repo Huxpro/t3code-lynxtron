@@ -1630,6 +1630,22 @@ async function waitForStableMeasurement({
   );
 }
 
+async function waitForSelectorCount({ child, client, count, selector, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = [];
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error(`Lynxtron exited before ${selector} reached count ${count}.`);
+    }
+    latest = await readSelectorMeasurements(client, selector);
+    if (latest.length === count) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(
+    `Timed out waiting for ${selector} count ${count}: ${JSON.stringify({ latest })}`,
+  );
+}
+
 function composerStateForSessionStatus(sessionStatus) {
   if (sessionStatus === "running") return "working";
   if (sessionStatus === "starting") return "disabled";
@@ -3162,6 +3178,129 @@ async function verifyModelSelectionMutation({
     overlayDismissed: true,
     socketRecovery: expectSocketRecovery ? "reconnected-and-retried-once" : "not-injected",
     screenshot,
+  };
+}
+
+async function verifySidebarProjectGroups({
+  child,
+  client,
+  devToolCli,
+  expectedProjectTitles,
+  expectedTheme,
+  outputDirectory,
+  timeoutMs,
+}) {
+  const sidebar = await waitForStableMeasurement({
+    child,
+    client,
+    selector: ".sidebar",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-sidebar-version"] === "legacy",
+  });
+  const projectList = await waitForStableMeasurement({
+    child,
+    client,
+    selector: ".lynx-sidebar-project-list",
+    timeoutMs,
+    predicate: (measurement) =>
+      expectedProjectTitles.every((title) => measurement?.text.includes(title)),
+  });
+  const group = await readOptionalMeasurement(client, ".lynx-sidebar-projects-group");
+  const rows = await readSelectorMeasurements(client, ".sidebar-project-row-reference");
+  const titles = await readSelectorMeasurements(client, ".sidebar-project-title-reference");
+  const emptyThreadsBefore = await readSelectorMeasurements(client, ".lynx-sidebar-thread-empty");
+  const sidebarRight = sidebar.rect.x + sidebar.rect.width;
+  const leftInset = projectList.rect.x - sidebar.rect.x;
+  const rightInset = sidebarRight - (projectList.rect.x + projectList.rect.width);
+  const titleText = titles.map((title) => title.text.trim());
+  if (
+    !group ||
+    sidebar.rect.width !== 256 ||
+    projectList.rect.width !== 239 ||
+    Math.abs(leftInset - 8) > 1 ||
+    Math.abs(rightInset - 9) > 1 ||
+    rows.length !== expectedProjectTitles.length ||
+    titles.length !== expectedProjectTitles.length ||
+    JSON.stringify(titleText) !== JSON.stringify(expectedProjectTitles) ||
+    rows.some(
+      (row, index) =>
+        Math.abs((row.rect?.width ?? 0) - 239) > 1 ||
+        Math.abs((row.rect?.height ?? 0) - 32) > 1 ||
+        (index > 0 && (row.rect?.y ?? 0) <= (rows[index - 1]?.rect?.y ?? 0)),
+    ) ||
+    emptyThreadsBefore.length !== expectedProjectTitles.length
+  ) {
+    throw new Error(
+      `Sidebar project groups drifted: ${JSON.stringify({
+        emptyThreadsBefore,
+        expectedProjectTitles,
+        group,
+        leftInset,
+        projectList,
+        rightInset,
+        rows,
+        sidebar,
+        titles,
+      })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-sidebar-project-groups-${expectedTheme ?? "system"}.png`,
+  });
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".sidebar-project-row-reference",
+    timeoutMs,
+  });
+  const emptyThreadsCollapsed = await waitForSelectorCount({
+    child,
+    client,
+    count: expectedProjectTitles.length - 1,
+    selector: ".lynx-sidebar-thread-empty",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".sidebar-project-row-reference",
+    timeoutMs,
+  });
+  const emptyThreadsRestored = await waitForSelectorCount({
+    child,
+    client,
+    count: expectedProjectTitles.length,
+    selector: ".lynx-sidebar-thread-empty",
+    timeoutMs,
+  });
+
+  return {
+    status: "pass",
+    sidebar: sidebar.rect,
+    group: group.rect,
+    projectList: projectList.rect,
+    rows: rows.map((row, index) => ({
+      rect: row.rect,
+      text: row.text,
+      title: titleText[index],
+    })),
+    insets: { left: leftInset, right: rightInset },
+    emptyThreadCount: {
+      expanded: emptyThreadsBefore.length,
+      collapsed: expectedProjectTitles.length - 1,
+      restored: expectedProjectTitles.length,
+    },
+    collapseProbe: {
+      collapsedRows: emptyThreadsCollapsed.map((row) => row.rect),
+      restoredRows: emptyThreadsRestored.map((row) => row.rect),
+    },
+    screenshot,
+    interaction: "measured first-project collapse and re-expand taps",
+    physicalHover: "pending-user-session",
   };
 }
 
@@ -10070,6 +10209,8 @@ async function runOnce({
   idleFixture,
   verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
   verifyAddProjectSources: shouldVerifyAddProjectSources,
+  verifySidebarProjectGroups: shouldVerifySidebarProjectGroups,
+  expectedProjectTitles,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
   verifySidebarInlineSearch: shouldVerifySidebarInlineSearch,
   verifyFloatingRelations: shouldVerifyFloatingRelations,
@@ -10123,7 +10264,12 @@ async function runOnce({
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
   const baseDir = path.join(runRoot, "state");
   cpSync(fixtureDir, baseDir, { recursive: true });
-  if (expectedEnvironmentIdentificationMode || expectedTheme || shouldVerifyAddProjectSources) {
+  if (
+    expectedEnvironmentIdentificationMode ||
+    expectedTheme ||
+    shouldVerifyAddProjectSources ||
+    shouldVerifySidebarProjectGroups
+  ) {
     const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
     const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
     writeFileSync(
@@ -10135,6 +10281,12 @@ async function runOnce({
           ...(shouldVerifyAddProjectSources ? { initialOverlay: "add-project" } : {}),
           clientSettings: {
             ...prefs.clientSettings,
+            ...(shouldVerifySidebarProjectGroups
+              ? {
+                  legacySidebarEnabled: true,
+                  sidebarProjectGroupingMode: "separate",
+                }
+              : {}),
             ...(expectedEnvironmentIdentificationMode
               ? { environmentIdentificationMode: expectedEnvironmentIdentificationMode }
               : {}),
@@ -10284,7 +10436,7 @@ async function runOnce({
                 canonicalThreadTitle: null,
                 threadText: null,
                 modelText: null,
-                skipped: "Lifecycle-only empty fixture.",
+                skipped: "Outcome uses an explicit empty-thread fixture.",
               };
     const runPlan11Outcomes = verifyPlan11SemanticOutcomes && isFinalRun;
     const cleanupOutcome = () => restoreOutcomeSurface({ child, client, timeoutMs });
@@ -10296,6 +10448,17 @@ async function runOnce({
       : verifySidebarScope
         ? await verifySidebarScopeBehavior({ child, client, height, timeoutMs, width })
         : undefined;
+    const sidebarProjectGroups = shouldVerifySidebarProjectGroups
+      ? await verifySidebarProjectGroups({
+          child,
+          client,
+          devToolCli,
+          expectedProjectTitles,
+          expectedTheme,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
     const sidebarGeometry = shouldVerifySidebarGeometry
       ? await verifySidebarGeometry(client, width, expectedEnvironmentIdentificationMode)
       : undefined;
@@ -10802,6 +10965,7 @@ async function runOnce({
     if (rendererErrors) throw new Error(`Renderer errors:\n${rendererErrors}`);
     const outcomeChecks = [
       sidebarScope,
+      sidebarProjectGroups,
       sidebarGeometry,
       sidebarInlineSearch,
       floatingRelations,
@@ -10863,6 +11027,7 @@ async function runOnce({
       canonicalState,
       lifecycleRecovery,
       sidebarScope,
+      sidebarProjectGroups,
       sidebarGeometry,
       sidebarInlineSearch,
       floatingRelations,
@@ -10956,6 +11121,7 @@ const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-compo
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
 const shouldVerifyAddProjectSources = process.argv.includes("--verify-add-project-sources");
+const shouldVerifySidebarProjectGroups = process.argv.includes("--verify-sidebar-project-groups");
 const quickSwitchQuery = argumentValue("--quick-switch-query") ?? "";
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const shouldVerifySidebarInlineSearch = process.argv.includes("--verify-sidebar-inline-search");
@@ -11105,6 +11271,15 @@ for (const requiredPath of [fixtureDir, projectCwd, desktopDir, bundle, devToolC
 const fixtureManifest = JSON.parse(
   readFileSync(path.join(fixtureDir, "visual-state.json"), "utf8"),
 );
+const expectedProjectTitles = fixtureManifest.projectGroupTitles;
+if (
+  shouldVerifySidebarProjectGroups &&
+  (!Array.isArray(expectedProjectTitles) ||
+    expectedProjectTitles.length < 2 ||
+    expectedProjectTitles.some((title) => typeof title !== "string" || title.length === 0))
+) {
+  throw new Error("--verify-sidebar-project-groups requires visual-state.json projectGroupTitles.");
+}
 const settledBannerFixture = fixtureManifest.settledBannerFixture;
 if (
   shouldVerifyResponsiveSettledBanner &&
@@ -11265,6 +11440,7 @@ if (
   !rightPanelAddMenuOnlyEmptyFixture &&
   !projectSettingsOnlyEmptyFixture &&
   !fileEditingSaveOnlyEmptyFixture &&
+  !shouldVerifySidebarProjectGroups &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
   throw new Error("The readiness fixture must declare sidebarFixture.titles[0].");
@@ -11318,6 +11494,7 @@ for (let index = 1; index <= runs; index += 1) {
         !rightPanelAddMenuOnlyEmptyFixture &&
         !projectSettingsOnlyEmptyFixture &&
         !fileEditingSaveOnlyEmptyFixture &&
+        !shouldVerifySidebarProjectGroups &&
         !shouldVerifyFileSheetBack,
       timeoutMs,
       verifySettingsNavigation,
@@ -11331,6 +11508,8 @@ for (let index = 1; index <= runs; index += 1) {
       idleFixture,
       verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
       verifyAddProjectSources: shouldVerifyAddProjectSources,
+      verifySidebarProjectGroups: shouldVerifySidebarProjectGroups,
+      expectedProjectTitles,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
       verifySidebarInlineSearch: shouldVerifySidebarInlineSearch,
       verifyFloatingRelations: shouldVerifyFloatingRelations,

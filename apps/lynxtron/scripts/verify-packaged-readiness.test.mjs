@@ -966,6 +966,27 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.notInclude(source, "cloneAndAddProject");
   });
 
+  it("verifies Native legacy project groups and collapse recovery", () => {
+    assert.include(source, "async function verifySidebarProjectGroups");
+    assert.include(source, '"--verify-sidebar-project-groups"');
+    assert.include(
+      source,
+      '"--verify-sidebar-project-groups requires visual-state.json projectGroupTitles."',
+    );
+    assert.include(source, "legacySidebarEnabled: true");
+    assert.include(source, 'sidebarProjectGroupingMode: "separate"');
+    assert.include(source, "!shouldVerifySidebarProjectGroups &&");
+    assert.include(source, 'measurement?.attributes["data-sidebar-version"] === "legacy"');
+    assert.include(source, 'readSelectorMeasurements(client, ".sidebar-project-row-reference")');
+    assert.include(source, 'readSelectorMeasurements(client, ".sidebar-project-title-reference")');
+    assert.include(source, "Math.abs((row.rect?.width ?? 0) - 239) > 1");
+    assert.include(source, "Math.abs((row.rect?.height ?? 0) - 32) > 1");
+    assert.include(source, "async function waitForSelectorCount");
+    assert.include(source, 'selector: ".lynx-sidebar-thread-empty"');
+    assert.include(source, 'interaction: "measured first-project collapse and re-expand taps"');
+    assert.include(source, 'physicalHover: "pending-user-session"');
+  });
+
   it("captures Native General Settings content and geometry before route cycling", () => {
     assert.include(source, "async function assertSettingsNavigationSelection");
     assert.include(source, "Settings navigation selection is not truthful");
