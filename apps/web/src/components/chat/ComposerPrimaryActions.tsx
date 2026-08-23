@@ -79,6 +79,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
               onClick={onPreviousPendingQuestion}
               disabled={pendingAction.isResponding}
               aria-label="Previous question"
+              data-pending-question-action="previous"
             >
               <ChevronLeftIcon className="size-3.5" />
             </Button>
@@ -90,6 +91,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
               {...pointerFocusProps}
               onClick={onPreviousPendingQuestion}
               disabled={pendingAction.isResponding}
+              data-pending-question-action="previous"
             >
               Previous
             </Button>
@@ -105,6 +107,7 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
             pendingAction.isResponding ||
             (pendingAction.isLastQuestion ? !pendingAction.isComplete : !pendingAction.canAdvance)
           }
+          data-pending-question-action={pendingAction.isLastQuestion ? "submit" : "next"}
         >
           {formatPendingPrimaryActionLabel({
             compact,

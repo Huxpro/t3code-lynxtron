@@ -72,6 +72,7 @@ interface ComposerProps {
   approvalActions?: ReactNode;
   approvalDetail?: string;
   questionActions?: ReactNode;
+  questionMultiSelect?: boolean;
   questionEditorKey?: string;
   questionCustomAnswer?: string;
   onQuestionCustomAnswerChange?: (value: string) => void;
@@ -119,6 +120,7 @@ export function Composer({
   approvalActions,
   approvalDetail,
   questionActions,
+  questionMultiSelect = false,
   questionEditorKey,
   questionCustomAnswer,
   onQuestionCustomAnswerChange,
@@ -344,6 +346,7 @@ export function Composer({
           COMPOSER_SHELL_CLASS,
           approvalActions ? "composer-shell--approval" : undefined,
           questionMode ? "composer-shell--question" : undefined,
+          questionMultiSelect ? "composer-shell--question-multi-select" : undefined,
         ]
           .filter(Boolean)
           .join(" ")}
@@ -354,6 +357,7 @@ export function Composer({
             disabled ? "opacity-70" : undefined,
             approvalActions ? "composer-surface--approval" : undefined,
             questionMode ? "composer-surface--question" : undefined,
+            questionMultiSelect ? "composer-surface--question-multi-select" : undefined,
           ]
             .filter(Boolean)
             .join(" ")}

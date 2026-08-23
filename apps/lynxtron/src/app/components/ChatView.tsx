@@ -736,7 +736,13 @@ export function ChatView({ threadId }: ChatViewProps) {
               />
             </view>
           ) : activePendingQuestion ? (
-            <view className="composer-pending-wrapper composer-pending-wrapper--question rounded-t-[19px] border-b border-border/65 bg-muted/20">
+            <view
+              className={`composer-pending-wrapper composer-pending-wrapper--question${
+                activePendingQuestion.multiSelect
+                  ? " composer-pending-wrapper--question-multi-select"
+                  : ""
+              } rounded-t-[19px] border-b border-border/65 bg-muted/20`}
+            >
               <ComposerPendingQuestionSurface
                 header={activePendingQuestion.header}
                 question={activePendingQuestion.question}
@@ -762,6 +768,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           ) : undefined
         }
         approvalDetail={activePendingApproval?.detail}
+        questionMultiSelect={activePendingQuestion?.multiSelect === true}
         questionActions={
           activePendingQuestion ? (
             <view className="composer-question-actions">

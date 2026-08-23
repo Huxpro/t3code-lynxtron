@@ -105,7 +105,10 @@ export function ComposerPendingQuestionSurface({
   return (
     <HostView
       data-composer-pending-kind="question"
-      className="composer-pending-question px-4 py-3 sm:px-5"
+      data-question-index={String(questionIndex)}
+      data-question-count={String(questionCount)}
+      data-question-multi-select={multiSelect ? "true" : "false"}
+      className="composer-pending-question flex w-full flex-col px-4 py-3 sm:px-5"
     >
       <HostView className="composer-pending-question__heading mb-2 flex items-center gap-3">
         <HostText className="composer-pending-question__header text-[11px] font-semibold tracking-widest text-muted-foreground/55 uppercase">
@@ -121,7 +124,7 @@ export function ComposerPendingQuestionSurface({
         {question}
       </HostText>
       {multiSelect ? (
-        <HostText className="mt-1 text-xs text-muted-foreground/65">
+        <HostText className="composer-pending-question__hint mt-1 text-xs text-muted-foreground/65">
           Select one or more options.
         </HostText>
       ) : null}
