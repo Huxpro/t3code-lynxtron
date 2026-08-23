@@ -106,6 +106,10 @@ describe("SidebarV2RowSurface", () => {
     expect(markup).toContain("sidebar-v2-row-actions");
     expect(markup).toContain('aria-label="Thread actions"');
     expect(markup).not.toContain('aria-label="Settle thread"');
+    expect(markup).toMatch(
+      /<div class="sidebar-v2-row-actions[^"]*"><button aria-label="Thread actions">/u,
+    );
+    expect(markup).not.toMatch(/<span class="sidebar-v2-row-actions/u);
   });
 
   it("projects active project-card status and diff metadata without changing its hierarchy", () => {

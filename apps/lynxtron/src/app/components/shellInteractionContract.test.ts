@@ -24,6 +24,10 @@ const sidebarRowSource = readFileSync(
   ),
   "utf8",
 );
+const hostElementsSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
+  "utf8",
+);
 const sidebarControlsSource = readFileSync(
   path.resolve(
     import.meta.dirname,
@@ -825,10 +829,6 @@ describe("desktop shell interaction contract", () => {
       path.resolve(import.meta.dirname, "../../../../web/src/components/ui/tooltip.lynx.tsx"),
       "utf8",
     );
-    const hostElementsSource = readFileSync(
-      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
-      "utf8",
-    );
 
     expect(sidebarSource).toContain(
       "if (shouldChooseProjectForNewThread(orderedProjects.length)) {",
@@ -1131,6 +1131,23 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain("resetActiveThreadState()");
     expect(clientSource).toContain("state.settings?.defaultThreadEnvMode");
     expect(clientSource).toContain("state.settings?.newWorktreesStartFromOrigin");
+    expect(sidebarRowSource).toContain("<HostView\n                    stopTapPropagation");
+    expect(sidebarRowSource).not.toContain(
+      '<HostText\n                    className={cn(\n                      "sidebar-v2-row-actions',
+    );
+    expect(hostElementsSource).toContain(
+      "stopTapPropagation ? { catchtap: onClick ?? ignoreTap } : { bindtap: onClick }",
+    );
+    const deleteThreadBlock = clientSource.slice(
+      clientSource.indexOf("async function deleteThread("),
+      clientSource.indexOf("async function archiveThread("),
+    );
+    expect(deleteThreadBlock).toContain('throw new Error("Thread deletion is unavailable.")');
+    expect(deleteThreadBlock.indexOf("await bridge.deleteThread({ threadId })")).toBeLessThan(
+      deleteThreadBlock.indexOf("resetActiveThreadState()"),
+    );
+    expect(deleteThreadBlock).toContain("sessionError: presentThreadCommandErrorMessage(");
+    expect(deleteThreadBlock).toContain("throw error;");
     expect(chatView).toContain('activeThreadKind={activeDraftThread ? "draft" :');
     expect(chatView).toContain("updateDraftWorkspaceMode(mode)");
     expect(chatView).toContain("setDraftStartFromOrigin(enabled)");
