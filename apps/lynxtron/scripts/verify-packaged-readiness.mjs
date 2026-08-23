@@ -10362,11 +10362,40 @@ async function verifySettingsRouteBehavior({
       route: "/settings/general",
       timeoutMs,
     });
-    const [cycledGeneralSection] = await readSelectorRects(
-      client,
-      ".settings-content--general .settings-section",
-    );
-    assertSettingsTopOrigin(`General cycle ${cycle}`, cycledGeneralSection, 88);
+    let cycledGeneralSection;
+    try {
+      cycledGeneralSection = await waitForMeasurement({
+        child,
+        client,
+        selector: ".settings-content--general .settings-section",
+        timeoutMs,
+        predicate: (measurement) =>
+          measurement !== null &&
+          Math.abs(measurement.rect.x - 320) <= 1 &&
+          Math.abs(measurement.rect.y - 88) <= 1 &&
+          Math.abs(measurement.rect.width - 896) <= 1,
+      });
+    } catch (error) {
+      const layout = Object.fromEntries(
+        await Promise.all(
+          [
+            ".settings-root",
+            ".settings-main",
+            ".settings-topbar",
+            ".settings-scroll",
+            ".settings-content--general",
+            ".settings-content--general .settings-section",
+          ].map(async (selector) => [selector, await readSelectorMeasurements(client, selector)]),
+        ),
+      );
+      throw new Error(
+        `General cycle ${cycle} did not reset: ${JSON.stringify({
+          cause: error instanceof Error ? error.message : String(error),
+          layout,
+        })}`,
+      );
+    }
+    assertSettingsTopOrigin(`General cycle ${cycle}`, cycledGeneralSection.rect, 88);
     await tapSelector({
       child,
       client,

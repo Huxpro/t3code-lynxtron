@@ -1,12 +1,56 @@
 import { assert, describe, it } from "vite-plus/test";
+import {
+  DEFAULT_SERVER_SETTINGS,
+  EnvironmentId,
+  type ServerConfig,
+  type ServerSettingsPatch,
+} from "@t3tools/contracts";
+import * as Duration from "effect/Duration";
 
 import {
   classifyConnectorSequence,
+  decodeConnectorCommandParams,
+  decodeConnectorCommandResult,
+  decodeConnectorServerConfig,
+  encodeConnectorCommandParams,
+  encodeConnectorCommandResult,
+  encodeConnectorServerConfig,
   isConnectorCommandName,
   isConnectorEventEnvelope,
   isConnectorSyncReply,
   projectRepoContext,
 } from "./connectorProtocol.ts";
+
+function serverConfig(settings = DEFAULT_SERVER_SETTINGS): ServerConfig {
+  return {
+    environment: {
+      environmentId: EnvironmentId.make("connector-protocol-test"),
+      label: "Connector Protocol Test",
+      platform: { os: "darwin", arch: "arm64" },
+      serverVersion: "0.0.0-test",
+      capabilities: { repositoryIdentity: true },
+    },
+    auth: {
+      policy: "loopback-browser",
+      bootstrapMethods: ["one-time-token"],
+      sessionMethods: ["browser-session-cookie"],
+      sessionCookieName: "t3_test_session",
+    },
+    cwd: "/tmp/connector-protocol-test",
+    keybindingsConfigPath: "/tmp/connector-protocol-test/keybindings.json",
+    keybindings: [],
+    issues: [],
+    providers: [],
+    availableEditors: [],
+    observability: {
+      logsDirectoryPath: "/tmp/connector-protocol-test/logs",
+      localTracingEnabled: false,
+      otlpTracesEnabled: false,
+      otlpMetricsEnabled: false,
+    },
+    settings,
+  };
+}
 
 describe("project repo context", () => {
   it("preserves non-repository, branch, and detached repository states", () => {
@@ -22,6 +66,87 @@ describe("project repo context", () => {
       isRepo: true,
       branch: null,
     });
+  });
+});
+
+describe("connector protocol schema codecs", () => {
+  it("round-trips duration-bearing settings through JSON-safe command params", () => {
+    const patch: ServerSettingsPatch = {
+      backgroundActivity: {
+        overrides: {
+          providerHealthRefreshInterval: Duration.seconds(90),
+        },
+      },
+    };
+
+    const encoded = encodeConnectorCommandParams("updateServerSettings", { patch }) as {
+      patch: {
+        backgroundActivity?: {
+          overrides?: { providerHealthRefreshInterval?: number };
+        };
+      };
+    };
+    assert.equal(
+      encoded.patch.backgroundActivity?.overrides?.providerHealthRefreshInterval,
+      90_000,
+    );
+
+    const decoded = decodeConnectorCommandParams(
+      "updateServerSettings",
+      structuredClone(encoded),
+    ) as { patch: ServerSettingsPatch };
+    assert.isTrue(
+      Duration.isDuration(
+        decoded.patch.backgroundActivity?.overrides?.providerHealthRefreshInterval,
+      ),
+    );
+    assert.equal(
+      Duration.toMillis(
+        decoded.patch.backgroundActivity!.overrides!.providerHealthRefreshInterval!,
+      ),
+      90_000,
+    );
+  });
+
+  it("round-trips duration-bearing config snapshots and command results", () => {
+    const config = serverConfig({
+      ...DEFAULT_SERVER_SETTINGS,
+      backgroundActivity: {
+        schemaVersion: 1,
+        profile: "custom",
+        baseProfile: "balanced",
+        overrides: {
+          providerHealthRefreshInterval: Duration.seconds(90),
+        },
+      },
+    });
+
+    const encoded = encodeConnectorServerConfig(config);
+    assert.equal(encoded.settings.automaticGitFetchInterval, 30_000);
+    assert.equal(
+      encoded.settings.backgroundActivity?.overrides?.providerHealthRefreshInterval,
+      90_000,
+    );
+
+    const decoded = decodeConnectorServerConfig(structuredClone(encoded));
+    assert.equal(Duration.toMillis(decoded.settings.automaticGitFetchInterval), 30_000);
+    assert.equal(
+      Duration.toMillis(
+        decoded.settings.backgroundActivity.overrides.providerHealthRefreshInterval!,
+      ),
+      90_000,
+    );
+
+    const result = decodeConnectorCommandResult(
+      "updateServerSettings",
+      structuredClone(encodeConnectorCommandResult("updateServerSettings", config)),
+    ) as ServerConfig;
+    assert.equal(
+      Duration.toMillis(
+        result.settings.backgroundActivity.overrides.providerHealthRefreshInterval!,
+      ),
+      90_000,
+    );
   });
 });
 

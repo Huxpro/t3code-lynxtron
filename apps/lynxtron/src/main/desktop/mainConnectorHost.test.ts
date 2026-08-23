@@ -1,4 +1,6 @@
 import { assert, describe, it } from "vite-plus/test";
+import { DEFAULT_SERVER_SETTINGS, EnvironmentId, type ServerConfig } from "@t3tools/contracts";
+import * as Duration from "effect/Duration";
 
 import {
   MainConnectorHost,
@@ -11,6 +13,7 @@ import {
 import {
   T3_CONNECTOR_EVENT,
   T3_CONNECTOR_METHODS,
+  encodeConnectorCommandParams,
   type ConnectorEventEnvelope,
 } from "../../shared/connectorProtocol.ts";
 
@@ -31,6 +34,37 @@ interface Harness {
   handlers: Map<string, (params: unknown) => unknown>;
   pushed: ConnectorEventEnvelope[];
   logs: string[];
+}
+
+function serverConfig(settings = DEFAULT_SERVER_SETTINGS): ServerConfig {
+  return {
+    environment: {
+      environmentId: EnvironmentId.make("main-connector-host-test"),
+      label: "Main Connector Host Test",
+      platform: { os: "darwin", arch: "arm64" },
+      serverVersion: "0.0.0-test",
+      capabilities: { repositoryIdentity: true },
+    },
+    auth: {
+      policy: "loopback-browser",
+      bootstrapMethods: ["one-time-token"],
+      sessionMethods: ["browser-session-cookie"],
+      sessionCookieName: "t3_test_session",
+    },
+    cwd: "/tmp/main-connector-host-test",
+    keybindingsConfigPath: "/tmp/main-connector-host-test/keybindings.json",
+    keybindings: [],
+    issues: [],
+    providers: [],
+    availableEditors: [],
+    observability: {
+      logsDirectoryPath: "/tmp/main-connector-host-test/logs",
+      localTracingEnabled: false,
+      otlpTracesEnabled: false,
+      otlpMetricsEnabled: false,
+    },
+    settings,
+  };
 }
 
 function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harness {
@@ -62,11 +96,15 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
     },
     refreshProviders: (input: unknown) => {
       calls.push({ method: "refreshProviders", input });
-      return Promise.resolve({ providers: [] });
+      return Promise.resolve(serverConfig());
     },
     updateProvider: (input: unknown) => {
       calls.push({ method: "updateProvider", input });
-      return Promise.resolve({ providers: [] });
+      return Promise.resolve(serverConfig());
+    },
+    updateServerSettings: (input: unknown) => {
+      calls.push({ method: "updateServerSettings", input });
+      return Promise.resolve(serverConfig());
     },
     settleThread: (input: unknown) => {
       calls.push({ method: "settleThread", input });
@@ -197,10 +235,7 @@ describe("main connector host", () => {
     const { host, connector, handlers, pushed } = createHarness();
     host.attach();
     await host.connect();
-    (connector.onConfig as unknown as (config: unknown) => void)({
-      providers: [],
-      settings: {},
-    });
+    (connector.onConfig as unknown as (config: ServerConfig) => void)(serverConfig());
     pushed.length = 0; // renderer was not listening yet; the snapshot must cover it
 
     const ready = handlers.get(T3_CONNECTOR_METHODS.ready)!({}) as {
@@ -208,7 +243,11 @@ describe("main connector host", () => {
       snapshot: { config: unknown };
     };
     assert.equal(ready.seq, 1);
-    assert.deepEqual(ready.snapshot.config, { providers: [], settings: {} });
+    assert.equal(
+      (ready.snapshot.config as { settings: { automaticGitFetchInterval: number } }).settings
+        .automaticGitFetchInterval,
+      30_000,
+    );
   });
 
   it("dispatches allowlisted commands and rejects unknown ones", async () => {
@@ -337,6 +376,45 @@ describe("main connector host", () => {
     await assertRejects(command({ method: "dispose" }), /Rejected connector command/);
     await assertRejects(command({ method: "connect" }), /Rejected connector command/);
     await assertRejects(command({}), /Rejected connector command/);
+  });
+
+  it("decodes duration settings before dispatch and encodes the config result", async () => {
+    const { host, connector, handlers } = createHarness();
+    host.attach();
+    await host.connect();
+    const command = handlers.get(T3_CONNECTOR_METHODS.command)!;
+    const params = encodeConnectorCommandParams("updateServerSettings", {
+      patch: {
+        backgroundActivity: {
+          overrides: {
+            providerHealthRefreshInterval: Duration.seconds(90),
+          },
+        },
+      },
+    });
+
+    const result = (await command({
+      method: "updateServerSettings",
+      params,
+    })) as {
+      settings: {
+        automaticGitFetchInterval: number;
+      };
+    };
+    const call = connector.calls.find((entry) => entry.method === "updateServerSettings");
+    const interval = (
+      call?.input as {
+        patch: {
+          backgroundActivity?: {
+            overrides?: { providerHealthRefreshInterval?: Duration.Duration };
+          };
+        };
+      }
+    ).patch.backgroundActivity?.overrides?.providerHealthRefreshInterval;
+
+    assert.isTrue(Duration.isDuration(interval));
+    assert.equal(Duration.toMillis(interval!), 90_000);
+    assert.equal(result.settings.automaticGitFetchInterval, 30_000);
   });
 
   it("replaces the connector, projects restart phases, and ignores stale events", async () => {

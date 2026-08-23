@@ -18,7 +18,10 @@ describe("BrowserPreviewConnectorHost", () => {
     const { host } = harness();
     const ready = host.handleNativeCall(T3_CONNECTOR_METHODS.ready, {}, "bridge") as {
       seq: number;
-      snapshot: { shell: { projects: unknown[]; threads: unknown[] } };
+      snapshot: {
+        config: { settings: { automaticGitFetchInterval: number } };
+        shell: { projects: unknown[]; threads: unknown[] };
+      };
     };
     const resync = host.handleNativeCall(T3_CONNECTOR_METHODS.resync, {}, "bridge") as {
       seq: number;
@@ -27,6 +30,7 @@ describe("BrowserPreviewConnectorHost", () => {
     assert.equal(ready.seq, 0);
     assert.isTrue(ready.snapshot.shell.projects.length >= 1);
     assert.isTrue(ready.snapshot.shell.threads.length >= 1);
+    assert.equal(ready.snapshot.config.settings.automaticGitFetchInterval, 30_000);
     assert.equal(resync.seq, 0);
     assert.equal(host.diagnostics.readyCalls, 1);
     assert.equal(host.diagnostics.resyncCalls, 1);
@@ -82,6 +86,23 @@ describe("BrowserPreviewConnectorHost", () => {
         ),
       /unavailable in the isolated browser preview/,
     );
+  });
+
+  it("returns JSON-safe config values for every config mutation command", () => {
+    const { host } = harness();
+    for (const method of [
+      "refreshProviders",
+      "updateProvider",
+      "setProviderEnabled",
+      "updateServerSettings",
+    ] as const) {
+      const config = host.handleNativeCall(
+        T3_CONNECTOR_METHODS.command,
+        { method, params: {} },
+        "bridge",
+      ) as { settings: { automaticGitFetchInterval: number } };
+      assert.equal(config.settings.automaticGitFetchInterval, 30_000);
+    }
   });
 
   it("rejects unknown modules and commands", () => {
