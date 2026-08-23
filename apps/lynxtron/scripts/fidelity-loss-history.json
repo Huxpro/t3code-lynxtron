@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-23T03:22:23-07:00",
+  "updatedAt": "2026-08-23T09:29:20-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -15332,6 +15332,118 @@
               "confidence": 0.99,
               "method": "native-json-safe-settings-bridge",
               "source": "Schema-encoded bridge DTOs preserve Duration-backed settings across main and renderer realms; both runs use main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-question-multi-step-current",
+      "observedAt": "2026-08-23T09:29:20-07:00",
+      "commit": "034346010b0aac4e25bd9d5c0032af58acb507ad",
+      "codeCommit": "3ae429a3310a12a9a4c4287ac755752643ef8d4d",
+      "codeState": "commit",
+      "label": "Existing Thread multi-step question fidelity",
+      "narrative": "A provider-created two-question request now follows the shared Web interaction model in Lynx: select Safe, advance to a multi-select question, return to the first answer, advance again, select Web and Native, and submit one request-scoped answer map. Fresh Browser dark and light runs match the 363px Composer, 222px question panel, 56px option rows, and 28px Previous control with zero errors. Exact-bundle Native dark and light runs dispatch the expected answers through main transport and cleanly dispose isolated state. Native custom-answer text uses a viewport-test seam because DevTool cannot type physical characters, so that physical-input gap remains explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The checkpoint directly measures the request-scoped navigation and layout fixes on one provider-created fixture in Browser and exact-bundle Native. It keeps the fixed denominator and all existing weights unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/existing-thread-question-multi-step-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1485c7ad8c479bdc89befdb7570aaed1906e4e9460144b6a0a00fabb20dfd87d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-question"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "multi-step-question-content",
+              "source": "Both Browser panes expose the same two questions, progress, selected options, Previous, Next, and Submit semantics"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0.75, 0, 0.75, 0
+              ],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "multi-step-composer-strict-geometry",
+              "source": "Both themes match frame, surface, panel, heading, prompt, hint, options, option rows, editor, footer, and Previous geometry; right action placement differs by 0.75px"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "multi-step-dual-theme-typography",
+              "source": "Visual review confirms matching hierarchy and readable option copy in dark and light; bundled DM Sans shaping remains renderer-specific"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "multi-step-dual-theme-material",
+              "source": "Visual review confirms matching dark and cold-white surfaces, selected option treatment, borders, footer, and controls"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-browser-multi-step-pointer-flow",
+              "source": "CDP pointer input drives select, Next, Previous, retained answer, Next, and two multi-select choices in both panes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-multi-step-readiness",
+              "source": "Both themes preserve one selected thread and pending request through the full flow with zero Browser renderer errors and no agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-question"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-multi-step-question-content",
+              "source": "Both themes render both canonical questions, progress, option labels, custom-answer placeholder, Previous, Next, and Submit"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "native-multi-step-browser-authority-geometry",
+              "source": "Native matches the shared 766x222 second-question panel and 28x28 Previous control in both themes"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-multi-step-dual-theme-typography",
+              "source": "Visual review confirms the question, option, hint, and action hierarchy in both themes; bundled DM Sans shaping remains platform-specific"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-multi-step-dual-theme-material",
+              "source": "Visual review confirms dark and cold-white Composer surfaces, option cards, selected state, borders, and primary action"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "native-multi-step-taps-and-input-seam",
+              "source": "Measured DevTool taps prove every option and navigation action plus Submit; custom-answer text uses the viewport-test seam because physical keyboard input remains pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-multi-step-main-transport",
+              "source": "Both exact-bundle themes advance sequence, dispatch the exact request-scoped answer map, classify the copied provider callback as stale fixture, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }
