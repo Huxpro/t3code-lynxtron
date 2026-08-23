@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T20:07:16-07:00",
+  "updatedAt": "2026-08-22T20:52:49-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14484,6 +14484,115 @@
               "confidence": 0.99,
               "method": "native-connections-main-transport",
               "source": "Both exact-bundle themes use main transport, advance readiness sequence, report zero renderer errors, and dispose isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "command-palette-navigation-current",
+      "observedAt": "2026-08-22T20:52:49-07:00",
+      "commit": "ddc9e427b991e3abfda49c18dbe623b34619c2be",
+      "codeCommit": "b37587c9b8858c7e32b3c0d98bbc240d72b8757e",
+      "codeState": "commit",
+      "label": "Command palette navigation current evidence",
+      "narrative": "A committed-head same-server Browser run verifies exact 576x326 root-palette geometry, six shared action rows, real pointer hover material in both renderers, Web ArrowDown, ArrowUp, Enter, Backspace, and Escape behavior, and Lynx-for-Web outside dismissal. Exact-bundle Native dark and light runs verify the seven-row fixture anatomy, active first row, footer hints, outside dismissal, main transport, zero renderer errors, and isolated cleanup. A Native DevTool mouse-move diagnostic was rejected: Lynxtron 0.0.8 maps the event to touch and did not dispatch the main-thread mouse-enter handler. Native physical hover and keyboard remain explicit R5/R6 pending-user-session debt rather than being inferred from Browser or synthetic evidence.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "No product change was made. The point refreshes committed-head Browser and Native dark/light evidence while preserving the known physical input blockers."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/command-palette-navigation-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "0cf9ab03caa996ac002a0e5d8660973f108a0dadc48f4cbfb6c4bd8efdc8b3db"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-shared-palette-content",
+              "source": "Both Browser renderers expose the same six root actions and footer labels"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-paired-palette-geometry",
+              "source": "Panel, search, results, footer, and 32px action row boxes match exactly at dark 1280x820"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "current-paired-palette-typography",
+              "source": "Visual review confirms matching action hierarchy, labels, shortcuts, section labels, and footer hints"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "current-browser-pointer-hover-material",
+              "source": "Real Browser mouse movement paints Add project with the shared accent background and foreground in both panes"
+            },
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.95,
+              "method": "browser-keyboard-and-pointer-navigation",
+              "source": "Web proves ArrowDown, ArrowUp, Enter, Backspace, and Escape; both Browser panes prove pointer hover and dismissal, while Lynx-for-Web main-thread key bridging remains blocked"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-command-palette-runtime",
+              "source": "Shared active-index logic remains unit-covered; the current Browser run reports zero console errors and clean disposal"
+            }
+          }
+        },
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "native-dual-theme-palette-content",
+              "source": "Exact Native dark and light render the expected seven action and recent-thread labels plus Navigate, Select, and Close footer hints"
+            },
+            "geometry": {
+              "anchorDeltas": [0.05365, 0, 0.03839, 0.02661],
+              "anchorScale": 574,
+              "confidence": 0.95,
+              "method": "native-dual-theme-palette-geometry",
+              "source": "Dark and light panel, search, results, footer, and row dimensions are stable to subpixel rounding"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.9,
+              "method": "native-dual-theme-palette-typography",
+              "source": "Visual review confirms readable action hierarchy, project/thread metadata, shortcuts, and footer labels in both themes"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.9,
+              "method": "native-dual-theme-palette-material",
+              "source": "Visual review confirms theme-correct panel, border, shadow, dim layer, active first row, icons, and keycaps"
+            },
+            "interaction": {
+              "residual": 0.55,
+              "confidence": 0.9,
+              "method": "native-pointer-dismiss-with-physical-input-blockers",
+              "source": "Measured Native outside tap dismisses the palette; physical mouse hover and keyboard navigation remain pending-user-session because DevTool cannot dispatch those event classes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-palette-main-transport",
+              "source": "Both themes use main transport, advance readiness sequence, report zero renderer errors, and dispose isolated state"
             }
           }
         }
