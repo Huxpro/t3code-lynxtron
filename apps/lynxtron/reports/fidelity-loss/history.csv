@@ -212,3 +212,4 @@ command-palette-navigation-current,2026-08-22T20:52:49-07:00,ddc9e427b991e3abfda
 quick-switch-filter-native-current,2026-08-22T21:34:38-07:00,6e555b2efb5a5fa1f9492b597f6900f2130998a8,commit,Quick Switch Native filter-state coverage,0.27587,0.27587,0.033793,0.250544,0.749456,0.715116
 add-project-sources-native-current,2026-08-22T22:21:52-07:00,266036363d771d34b6ffee10e57333785a64e440,commit,Add Project source fidelity,0.267897,0.267897,0.034021,0.242114,0.757886,0.723089
 sidebar-project-groups-native-current,2026-08-22T23:11:02-07:00,3b1a34d52a54e8fbf19d78ded01528d8eb76d1cd,commit,Sidebar project groups Native coverage,0.25982,0.25982,0.034046,0.233732,0.766268,0.731166
+file-picker-native-current,2026-08-23T00:11:00-07:00,b998da5908329a0b3b13565d57fa9591a26a9707,commit,File Picker Native overlay fidelity,0.252534,0.252534,0.034984,0.225436,0.774564,0.738452

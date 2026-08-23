@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T23:11:02-07:00",
+  "updatedAt": "2026-08-23T00:11:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14935,6 +14935,76 @@
               "confidence": 0.99,
               "method": "native-v1-main-transport",
               "source": "Both themes use main transport, advance sequence, report zero renderer errors, and dispose isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "file-picker-native-current",
+      "observedAt": "2026-08-23T00:11:00-07:00",
+      "commit": "b998da5908329a0b3b13565d57fa9591a26a9707",
+      "codeCommit": "d028122f1",
+      "codeState": "commit",
+      "label": "File Picker Native overlay fidelity",
+      "narrative": "A strict exact-bundle Native run exposed a renderer box-model loss hidden by Browser parity: the shared 418px content-box compensation produced a 418px Native outer panel and 328px scroll viewport. The Native default is now 420px while Lynx-for-Web retains 418px, producing the 420px outer shell and 330px viewport in both Native themes. Fresh dark and light runs verify a real filesystem-backed row, 48px row geometry, test-only visual filtering and restoration, full-screen dismissal, main transport, zero renderer errors, and isolated cleanup. Physical keyboard input and external file activation remain pending-user-session.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before and after Native reports use the same dark fixture, viewport, harness, and real filesystem result. The panel changes from 418px to 420px and the scroll viewport from 328px to 330px."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/file-picker-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "90fdbccc568bada3ff8a40245f768b34a9134fa63a16660ed9826fa690894a37"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-picker-filesystem-content",
+              "source": "Both Native themes render the real fidelity.ts filesystem result, filter it by filename, and restore the complete result set"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                1, 0, 2.038391, 0.028076, 0.999939, 0.000069, 2.038269, 0.003212, 0.999939,
+                0.003281, 2.038269, 0.022079, 0.999939, 0.02536, 2.038269, 0.002655, 0.99939,
+                0.005676, 2.03717, 0.00322
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "native-file-picker-browser-authority-geometry",
+              "source": "Native panel, search, 330px scroll viewport, footer, and 48px first row align with retained Browser authority within host-border and subpixel differences"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-file-picker-dual-theme-review",
+              "source": "Manual review confirms file title, path, project section, search placeholder, and footer hierarchy in dark and light"
+            },
+            "material": {
+              "residual": 0.2,
+              "confidence": 0.95,
+              "method": "native-file-picker-dual-theme-material",
+              "source": "Manual review confirms full-screen dimming, dark and cold-white panels, active row, border, shadow, and keycaps; retained Browser pixel residual remains explicit"
+            },
+            "interaction": {
+              "residual": 0.45,
+              "confidence": 0.9,
+              "method": "native-file-picker-filter-and-dismiss",
+              "source": "A test-only state setter verifies filter and restore behavior and a measured backdrop tap dismisses; physical Meta-P, typing, selection, and external file activation remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-file-picker-main-transport",
+              "source": "Both themes use real filesystem RPC results and main transport, advance sequence, report zero renderer errors, and dispose isolated state"
             }
           }
         }

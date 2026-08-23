@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-23T00:11:00-07:00",
+  "stateId": "file-picker-default",
+  "harnessCommit": "b998da5908329a0b3b13565d57fa9591a26a9707",
+  "productCommit": "d028122f1",
+  "classification": {
+    "productLossClosed": [
+      "The Native File Picker inherited the Lynx-for-Web 418px content-box compensation and rendered a 418px outer panel with a 328px scroll viewport. Native now uses a 420px panel while Lynx-for-Web keeps its 418px compensation, so both renderers reach the 420px Web authority shell and 330px visible results allocation.",
+      "The mode-specific correction does not change generic Quick Switch command modes."
+    ],
+    "coverageClosed": [
+      "Fresh exact-bundle dark and light Native runs open File Picker through the testResize-gated product entry, wait for real filesystem RPC completion, render the fixture file, filter through the shared query state, restore the complete row set, and dismiss through a measured backdrop tap.",
+      "Both themes preserve the 48px search row, 48px file row, 40px footer, full-screen dim layer, and theme-correct panel material."
+    ],
+    "remainingResidual": [
+      "The retained Browser authority has a 576px outer panel while Native reports about 574px because the platforms expose their border boxes differently; inner content remains aligned within two pixels.",
+      "Native physical Meta-P, character typing, selection, and focus remain pending-user-session under R5.",
+      "Selecting a file intentionally calls the host OS shell. Automated file activation is not performed because it would create an external side effect; the in-app Files browser and file-detail return path are covered separately."
+    ],
+    "harnessBoundary": [
+      "The first Native attempt measured the intrinsic .palette-results content box instead of the .qs-results--files scroll viewport and was rejected as a harness mismatch.",
+      "The retained Browser authority and current Native fixtures represent equivalent one-project file lists but are not byte-identical snapshots, so no current cross-renderer pixel score is claimed."
+    ],
+    "evidenceBoundary": "Browser authority remains the retained same-snapshot Web/Lynx-for-Web capture. Native uses one fresh owned process per theme, an exact production bundle, real filesystem RPC rows, test-only visual-state filtering, measured backdrop dismissal, main transport, zero renderer errors, and disposed isolated state."
+  },
+  "browserAuthority": {
+    "evidence": "apps/lynxtron/evidence/2026-08-17/fidelity/file-picker-default-current-metrics.json",
+    "evidenceSha256": "611ad00c8eb698604805a76e631e9bc4ff083483b3a2544860e8810d08a66550",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "rowCount": 65,
+    "geometry": {
+      "panel": [352, 82, 576, 420],
+      "search": [353, 83, 574, 48],
+      "resultsViewport": [353, 131, 574, 330],
+      "footer": [353, 461, 574, 40],
+      "row": [361, 167, 558, 48]
+    },
+    "materialResidual": {
+      "fullFrame": 0.238936,
+      "panel": 0.482236
+    }
+  },
+  "nativeBefore": {
+    "report": "/tmp/t3-file-picker-native-dark-current/report.json",
+    "reportSha256": "7a6d53219ad43be2758f3bbaa833eb717297a03ad7cd00e9a005c1ee240388b5",
+    "head": "c47829c570db636fdc8d7bf018cccaa6081cf31d",
+    "bundleSha256": "ee2b1e32f971d72e9ad1e52f72a5d3b8b8f873e3984870638ecb57ee83788912",
+    "theme": "dark",
+    "status": "fail",
+    "failure": {
+      "panelHeight": 417.9720458984375,
+      "resultsViewportHeight": 327.9780731201172,
+      "rowHeight": 47.99678039550781
+    }
+  },
+  "nativeCurrent": {
+    "head": "b998da5908329a0b3b13565d57fa9591a26a9707",
+    "bundleSha256": "5293dcbd1882475133353e1ab5d51166f634c5249422439d0014193e7a4e1e13",
+    "bundleBytes": 5297102,
+    "viewport": [1280, 820],
+    "dark": {
+      "report": "/tmp/t3-file-picker-native-dark-final/report.json",
+      "reportSha256": "add3be079c08fce49322e2176b1e7236fee41493ce30dc321482a0ee1f04a1f2",
+      "snapshotSha256": "5f900b47343d9458e7c67d16595cc7c70f7b24e024139502ad032d06e06d0488",
+      "screenshotSha256": "8fffd4ebb014a4f69adcb21ef3e5249155fbb00363b0859b705ee6209d3d8091"
+    },
+    "light": {
+      "report": "/tmp/t3-file-picker-native-light-final/report.json",
+      "reportSha256": "95aabddcf7589df3b6315171d0e12ccd4b17440d43108313acfe0ea5718e6354",
+      "snapshotSha256": "8adf2a87b83112edb3db1c854d568fb4ba0c1a6322b5654ba6834e0e1b770a19",
+      "screenshotSha256": "2454eaf498b4d236316804c287e1cb07f1105721b43cf0e28ba0c820b19c9a6e"
+    },
+    "geometry": {
+      "panel": [353, 82, 573.9616088867188, 419.971923828125],
+      "search": [353.99993896484375, 82.99993133544922, 571.9617309570312, 47.996788024902344],
+      "resultsViewport": [
+        353.99993896484375, 130.99671936035156, 571.9617309570312, 329.97792053222656
+      ],
+      "footer": [353.99993896484375, 460.9746398925781, 571.9617309570312, 39.997344970703125],
+      "row": [361.9993896484375, 166.99432373046875, 555.9628295898438, 47.99678039550781]
+    },
+    "filesystem": {
+      "rowCount": 1,
+      "firstPath": "fidelity.ts",
+      "filterQuery": "fidelity.ts",
+      "filteredRowCount": 1,
+      "restoredRowCount": 1
+    },
+    "outsideDismissed": true,
+    "physicalKeyboard": "pending-user-session",
+    "fileActivation": "pending-user-session-external-shell-side-effect",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedTests": "60/60",
+    "lynxAndMainTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
