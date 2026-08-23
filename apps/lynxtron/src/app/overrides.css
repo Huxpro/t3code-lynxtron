@@ -9053,6 +9053,12 @@
 .lynx-web-preview .palette-panel--files {
   max-height: 418px;
 }
+.palette-panel--new-thread-projects {
+  width: 576px;
+}
+.lynx-web-preview .palette-panel--new-thread-projects {
+  width: 574px;
+}
 .palette-search {
   display: flex;
   flex-direction: row;
@@ -9130,6 +9136,10 @@
   line-height: 20px;
 }
 .quick-switch-source-row {
+  height: 48px;
+  min-height: 48px;
+}
+.quick-switch-project-row {
   height: 48px;
   min-height: 48px;
 }

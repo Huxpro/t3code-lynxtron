@@ -711,7 +711,13 @@ export function QuickSwitch({
     <>
       <view className="palette-backdrop" bindtap={close} />
       <HostView
-        className={fileMode ? "palette-panel palette-panel--files" : "palette-panel"}
+        className={
+          fileMode
+            ? "palette-panel palette-panel--files"
+            : view === "new-thread-projects"
+              ? "palette-panel palette-panel--new-thread-projects"
+              : "palette-panel"
+        }
         data-search-overlay-mode={mode}
         data-quick-switch-view={view}
         onKeyDown={handlePaletteKeyDown}
