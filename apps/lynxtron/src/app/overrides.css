@@ -3488,6 +3488,11 @@
   gap: 6px;
 }
 .timeline-list {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   flex-grow: 1;
   flex-shrink: 1;
   width: 100%;
@@ -3920,6 +3925,15 @@
   border-color: var(--border);
   background-color: var(--muted);
   transform: translateX(-50%);
+}
+.timeline-jump--hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
+.timeline-jump--visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 .timeline-jump__label {
   color: var(--foreground);

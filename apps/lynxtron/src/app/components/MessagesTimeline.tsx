@@ -617,6 +617,8 @@ export function MessagesTimeline({
           kind: "scrolled",
           source: eventSource === LIST_EVENT_SOURCE_SCROLL ? "user" : "layout",
           distanceFromEnd: scrollHeight - scrollTop - listHeight,
+          contentLength: scrollHeight,
+          viewportLength: listHeight,
         }),
       );
     },
@@ -755,11 +757,15 @@ export function MessagesTimeline({
           </list-item>
         ) : null}
       </list>
-      {!followState.atEnd ? (
-        <view className="timeline-jump" bindtap={handleJumpToLatest}>
-          <text className="timeline-jump__label">↓ Scroll to end</text>
-        </view>
-      ) : null}
+      <view
+        className={`timeline-jump ${
+          followState.following ? "timeline-jump--hidden" : "timeline-jump--visible"
+        }`}
+        data-transcript-jump-visible={followState.following ? "false" : "true"}
+        bindtap={followState.following ? undefined : handleJumpToLatest}
+      >
+        <text className="timeline-jump__label">↓ Scroll to end</text>
+      </view>
     </view>
   );
 }

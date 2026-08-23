@@ -1188,6 +1188,8 @@ export type TranscriptFollowEvent =
       /** "user" for gesture/fling scrolling; "layout" for diff/layout shifts. */
       source: "user" | "layout";
       distanceFromEnd: number;
+      contentLength?: number;
+      viewportLength?: number;
       threshold?: number;
     }
   | { kind: "jump-to-latest" }
@@ -1200,6 +1202,23 @@ export function reduceTranscriptFollow(
   switch (event.kind) {
     case "scrolled": {
       const threshold = event.threshold ?? TRANSCRIPT_FOLLOW_THRESHOLD_PX;
+      if (!Number.isFinite(event.distanceFromEnd)) return state;
+      if (
+        event.contentLength !== undefined &&
+        event.viewportLength !== undefined &&
+        (!Number.isFinite(event.contentLength) ||
+          !Number.isFinite(event.viewportLength) ||
+          event.viewportLength <= 0)
+      ) {
+        return state;
+      }
+      if (
+        event.contentLength !== undefined &&
+        event.viewportLength !== undefined &&
+        event.contentLength <= event.viewportLength + threshold
+      ) {
+        return state.following && state.atEnd ? state : INITIAL_TRANSCRIPT_FOLLOW_STATE;
+      }
       const atEnd = event.distanceFromEnd <= threshold;
       const following = event.source === "user" ? atEnd : state.following;
       if (atEnd === state.atEnd && following === state.following) {
