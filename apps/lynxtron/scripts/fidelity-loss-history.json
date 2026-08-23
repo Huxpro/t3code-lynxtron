@@ -15295,6 +15295,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-bridge-duration-native-current",
+      "observedAt": "2026-08-23T05:50:11-07:00",
+      "commit": "a684c78a4c62aa2dd133a3d962ae519e32b30f3f",
+      "codeCommit": "eb5c7474da4dc105d30655da235e90b19a13cd63",
+      "codeState": "commit",
+      "label": "Settings bridge Duration regression closure",
+      "narrative": "The Lynx connector protocol now encodes Duration-bearing settings and config values into JSON-safe contract DTOs before crossing the renderer/main bridge, then decodes them back into Effect runtime values in the owning realm. Fresh exact-bundle Native dark and light runs visit all seven Settings routes, complete two Providers-to-General reopen cycles, keep the first General section at y=88 without the former Expected Duration notice, use main transport, report zero renderer errors, return to chat, dispose isolated state, and leave no agent-browser process. This checkpoint restores the previously expected interaction/runtime behavior without changing visual residuals or scope.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The failure was reproduced as an invalid cross-realm Effect Duration object, fixed at the shared connector serialization boundary, covered by focused codec and host tests, and verified in both Native themes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/settings-bridge-duration-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "fdec65fc598827106a2c068cdd7b918ddfaa7e3d2831ddcfdc0ee8373886bb0b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general", "settings-providers"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-settings-reopen-cycle",
+              "source": "Both themes visit all seven Settings routes and complete two Providers-to-General reopen cycles with the General first section restored to y=88"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-json-safe-settings-bridge",
+              "source": "Schema-encoded bridge DTOs preserve Duration-backed settings across main and renderer realms; both runs use main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
     }
   ]
 }
