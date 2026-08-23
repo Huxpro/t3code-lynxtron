@@ -1103,7 +1103,16 @@ function assertFloatingRelation({ anchor, label, placement, popup, viewport }) {
   return { anchor, contained, metrics, placement, popup, residual };
 }
 
-async function verifyFloatingRelations({ child, client, height, timeoutMs, width }) {
+async function verifyFloatingRelations({
+  child,
+  client,
+  devToolCli,
+  expectedTheme,
+  height,
+  outputDirectory,
+  timeoutMs,
+  width,
+}) {
   const viewport = { width, height };
   const detailsPlacement = { side: "right", align: "start", sideOffset: 4 };
   const actionTooltipPlacement = { side: "right", align: "center", sideOffset: 4 };
@@ -1185,12 +1194,11 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     });
     return { ...relation, text: content.text.trim() };
   };
-  const hoverCard = async (card) => {
+  const waitForCardTooltip = async (card) => {
     const relationId = card.attributes["data-floating-anchor"];
     if (typeof relationId !== "string") {
       throw new Error(`Sidebar row has no floating relation id: ${JSON.stringify(card)}`);
     }
-    await invokeTooltipProbe(relationId, "hover");
     try {
       return await waitForMeasurement({
         child,
@@ -1214,14 +1222,67 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
   };
   const initialCard = await readFirstCard();
   const initialRelationId = initialCard.attributes["data-floating-anchor"];
+  if (typeof initialRelationId !== "string") {
+    throw new Error(`Sidebar row has no floating relation id: ${JSON.stringify(initialCard)}`);
+  }
   await invokeTooltipProbe(initialRelationId, "hover");
   await invokeTooltipProbe(initialRelationId, "leave");
   await waitWhileAlive(child, 200);
   if (await readOptionalMeasurement(client, ".sidebar-v2-details-popover")) {
     throw new Error("Sidebar details opened after a hover left before the delay elapsed.");
   }
+  const openedAt = Date.now();
   await invokeTooltipProbe(initialRelationId, "hover");
-  const initialPopup = await hoverCard(initialCard);
+  await waitWhileAlive(child, 75);
+  if (await readOptionalMeasurement(client, ".sidebar-v2-details-popover")) {
+    throw new Error("Sidebar details opened before the 150ms authority delay elapsed.");
+  }
+  const initialPopup = await waitForCardTooltip(initialCard);
+  const openedAfterMs = Date.now() - openedAt;
+  const [detailTitle, detailRows, clientState, modelControl] = await Promise.all([
+    waitForStableMeasurement({
+      child,
+      client,
+      selector: ".sidebar-v2-details-title",
+      timeoutMs,
+      predicate: (measurement) => measurement.text.trim().length > 0,
+    }),
+    readSelectorMeasurements(client, ".sidebar-v2-details-row"),
+    readClientState(client),
+    waitForStableMeasurement({
+      child,
+      client,
+      selector: ".composer-toolbar-control--model",
+      timeoutMs,
+      predicate: (measurement) => measurement.text.trim().length > 0,
+    }),
+  ]);
+  const expectedDetailRows = [
+    clientState?.activeProject?.title,
+    clientState?.environmentLabel,
+    ...(clientState?.activeThread?.branch ? [clientState.activeThread.branch] : []),
+    modelControl.text.trim(),
+  ];
+  const actualDetailRows = detailRows.map((row) => row.text.trim());
+  if (
+    detailTitle.text.trim() !== clientState?.activeThread?.title ||
+    expectedDetailRows.some((row) => typeof row !== "string" || row.length === 0) ||
+    JSON.stringify(actualDetailRows) !== JSON.stringify(expectedDetailRows) ||
+    openedAfterMs < 100 ||
+    openedAfterMs > 500 ||
+    Math.abs(initialPopup.rect.width - 262) > 1 ||
+    Math.abs(initialPopup.rect.height - 106) > 1
+  ) {
+    throw new Error(
+      `Sidebar details content or timing drifted: ${JSON.stringify({
+        actualDetailRows,
+        detailTitle,
+        expectedDetailRows,
+        initialPopup,
+        openedAfterMs,
+      })}`,
+    );
+  }
   const initialDetails = assertFloatingRelation({
     anchor: initialCard.rect,
     label: "Sidebar details",
@@ -1229,6 +1290,13 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     popup: initialPopup.rect,
     viewport,
   });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-sidebar-thread-hover-${expectedTheme ?? "system"}.png`,
+  });
+  const dismissedAt = Date.now();
   await invokeTooltipProbe(initialRelationId, "leave");
   await waitForMeasurement({
     child,
@@ -1237,6 +1305,7 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
+  const dismissedAfterMs = Date.now() - dismissedAt;
 
   const newThread = await verifyActionTooltip({
     anchorSelector: ".sidebar-v2-new-thread",
@@ -1266,7 +1335,8 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     timeoutMs,
     predicate: (measurement) => (measurement?.rect.width ?? 0) > initialCard.rect.width + 40,
   });
-  const resizedPopup = await hoverCard(resizedCard);
+  await invokeTooltipProbe(resizedCard.attributes["data-floating-anchor"], "hover");
+  const resizedPopup = await waitForCardTooltip(resizedCard);
   const resizedDetails = assertFloatingRelation({
     anchor: resizedCard.rect,
     label: "Resized Sidebar details",
@@ -1348,9 +1418,19 @@ async function verifyFloatingRelations({ child, client, height, timeoutMs, width
     input:
       "relation-scoped background probe calling the real MTS hover handler, Sidebar resize, and model-trigger tap",
     details: {
-      initial: initialDetails,
+      initial: {
+        ...initialDetails,
+        title: detailTitle.text.trim(),
+        rows: actualDetailRows,
+        openedAfterMs,
+        dismissedAfterMs,
+        quickLeaveCancelled: true,
+      },
       resized: resizedDetails,
       followedAnchor: true,
+      openDelayMs: 150,
+      closeDelayMs: 0,
+      screenshot,
     },
     actionTooltips: {
       newThread,
@@ -11653,7 +11733,10 @@ async function runOnce({
       ? await verifyFloatingRelations({
           child,
           client,
+          devToolCli,
+          expectedTheme,
           height,
+          outputDirectory,
           timeoutMs,
           width,
         })

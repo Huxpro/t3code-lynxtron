@@ -193,6 +193,7 @@ const isFlatSidebarLayoutState = new Set([
 ]).has(stateId);
 const isSidebarControlHoverState =
   stateId === "sidebar-v2-new-thread-hover" || stateId === "sidebar-v2-new-project-hover";
+const isSidebarThreadHoverPreviewState = stateId === "sidebar-thread-hover-preview";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
 const composerExpectationByStateId = {
@@ -2617,11 +2618,59 @@ async function readSidebarTooltip(cdp, sessionId, client, relationId) {
         ${JSON.stringify(`[data-floating-popup="${relationId}"]`)}
       );
       if (!popup) return null;
+      const readBox = (element) => {
+        if (!element) return null;
+        const elementRect = element.getBoundingClientRect();
+        const elementStyle = getComputedStyle(element);
+        return {
+          tagName: element.tagName.toLowerCase(),
+          className: element.getAttribute('class'),
+          rect: {
+            x: elementRect.x,
+            y: elementRect.y,
+            width: elementRect.width,
+            height: elementRect.height,
+          },
+          style: {
+            display: elementStyle.display,
+            flexDirection: elementStyle.flexDirection,
+            paddingTop: elementStyle.paddingTop,
+            paddingRight: elementStyle.paddingRight,
+            paddingBottom: elementStyle.paddingBottom,
+            paddingLeft: elementStyle.paddingLeft,
+            rowGap: elementStyle.rowGap,
+            color: elementStyle.color,
+            fontFamily: elementStyle.fontFamily,
+            fontSize: elementStyle.fontSize,
+            fontWeight: elementStyle.fontWeight,
+            lineHeight: elementStyle.lineHeight,
+          },
+        };
+      };
       const rect = popup.getBoundingClientRect();
       const style = getComputedStyle(popup);
       return {
         text: popup.textContent?.trim().replace(/\s+/g, ' ') ?? '',
+        attributes: Object.fromEntries(
+          popup.getAttributeNames().map((name) => [name, popup.getAttribute(name)])
+        ),
         rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        content: (() => {
+          const content =
+            popup.querySelector('.sidebar-v2-details-content') ??
+            popup.querySelector('[data-slot="tooltip-viewport"] > *');
+          return content ? {
+            box: readBox(content),
+            children: [...content.children].map((child) => ({
+              text: child.textContent?.trim().replace(/\s+/g, ' ') ?? '',
+              box: readBox(child),
+              children: [...child.children].map((grandchild) => ({
+                text: grandchild.textContent?.trim().replace(/\s+/g, ' ') ?? '',
+                box: readBox(grandchild),
+              })),
+            })),
+          } : null;
+        })(),
         style: {
           opacity: style.opacity,
           transform: style.transform,
@@ -2633,12 +2682,213 @@ async function readSidebarTooltip(cdp, sessionId, client, relationId) {
   );
 }
 
+async function sidebarThreadCardTarget(cdp, sessionId, client) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const target = root?.querySelector('.sidebar-v2-row-card');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        relationId: target.getAttribute('data-floating-anchor'),
+        threadId: target.closest('[data-thread-id]')?.getAttribute('data-thread-id') ?? null,
+        text: target.textContent?.trim().replace(/\\s+/g, ' ') ?? '',
+        rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        point: {
+          x: frameRect.x + rect.x + rect.width / 2,
+          y: frameRect.y + rect.y + rect.height / 2,
+        },
+        awayPoint: {
+          x: frameRect.x + frameRect.width - 24,
+          y: frameRect.y + frameRect.height / 2,
+        },
+      };
+    })()`,
+  );
+}
+
+async function movePointer(cdp, sessionId, point) {
+  await cdp.send(
+    "Input.dispatchMouseEvent",
+    { type: "mouseMoved", ...point, button: "none", pointerType: "mouse" },
+    sessionId,
+  );
+}
+
+async function invokeLynxTooltipProbe(cdp, sessionId, relationId, action) {
+  const result = await evaluate(
+    cdp,
+    sessionId,
+    `(() => globalThis.__T3_WORKBENCH__?.invokeLynxTooltip?.(
+      ${JSON.stringify(relationId)},
+      ${JSON.stringify(action)}
+    ) ?? false)()`,
+  );
+  if (result !== true) {
+    throw new Error(`Lynx tooltip ${action} probe is unavailable for ${relationId}`);
+  }
+}
+
+function sidebarTooltipVisible(tooltip) {
+  return (
+    tooltip !== null &&
+    Number(tooltip.style.opacity) > 0.01 &&
+    tooltip.rect.width > 0 &&
+    tooltip.rect.height > 0
+  );
+}
+
+async function waitForSidebarTooltipDismissed(cdp, sessionId, client, relationId) {
+  const startedAt = Date.now();
+  const deadline = startedAt + 1_000;
+  let tooltip = null;
+  while (Date.now() < deadline) {
+    tooltip = await readSidebarTooltip(cdp, sessionId, client, relationId);
+    if (!sidebarTooltipVisible(tooltip)) {
+      return { elapsedMs: Date.now() - startedAt, tooltip };
+    }
+    await delay(25);
+  }
+  return { elapsedMs: Date.now() - startedAt, tooltip };
+}
+
+async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
+  const timeline = [];
+  const openedByClient = {};
+
+  for (const client of ["web", "lynx"]) {
+    const target = await sidebarThreadCardTarget(cdp, sessionId, client);
+    if (!target?.relationId || !target.threadId) {
+      throw new Error(
+        `Missing ${client} Sidebar thread-card hover target: ${JSON.stringify(target)}`,
+      );
+    }
+    if (client === "web") {
+      await movePointer(cdp, sessionId, target.awayPoint);
+      await movePointer(cdp, sessionId, target.point);
+      await movePointer(cdp, sessionId, target.awayPoint);
+    } else {
+      await invokeLynxTooltipProbe(cdp, sessionId, target.relationId, "hover");
+      await invokeLynxTooltipProbe(cdp, sessionId, target.relationId, "leave");
+    }
+    await delay(250);
+    const quickLeave = await readSidebarTooltip(cdp, sessionId, client, target.relationId);
+    timeline.push({ client, step: "quick-leave", target, tooltip: quickLeave });
+    if (sidebarTooltipVisible(quickLeave)) {
+      throw new Error(`${client} Sidebar details opened after quick pointer leave`);
+    }
+
+    if (client === "web") {
+      await movePointer(cdp, sessionId, target.point);
+    } else {
+      await invokeLynxTooltipProbe(cdp, sessionId, target.relationId, "hover");
+    }
+    const opened = await waitForSidebarTooltip(cdp, sessionId, client, target.relationId, "");
+    if (!opened) {
+      throw new Error(`${client} Sidebar details did not open at the expected relation`);
+    }
+    const side = opened.attributes["data-floating-side"] ?? opened.attributes["data-side"] ?? null;
+    const align =
+      opened.attributes["data-floating-align"] ?? opened.attributes["data-align"] ?? null;
+    if (side !== "right" || align !== "start") {
+      throw new Error(
+        `${client} Sidebar details declared an unexpected placement: ${JSON.stringify(opened)}`,
+      );
+    }
+    const sideGap = opened.rect.x - (target.rect.x + target.rect.width);
+    const alignDelta = opened.rect.y - target.rect.y;
+    const contained =
+      opened.rect.x >= -1 &&
+      opened.rect.y >= -1 &&
+      opened.rect.x + opened.rect.width <= viewport.width + 1 &&
+      opened.rect.y + opened.rect.height <= viewport.height + 1;
+    if (sideGap < 0 || Math.abs(alignDelta) > 1 || !contained) {
+      throw new Error(
+        `${client} Sidebar details relation drifted: ${JSON.stringify({
+          alignDelta,
+          contained,
+          opened,
+          sideGap,
+          target,
+        })}`,
+      );
+    }
+    openedByClient[client] = { ...opened, align, alignDelta, contained, side, sideGap, target };
+    timeline.push({ client, step: "opened", tooltip: openedByClient[client] });
+
+    if (client === "web") {
+      await movePointer(cdp, sessionId, target.awayPoint);
+    } else {
+      await invokeLynxTooltipProbe(cdp, sessionId, target.relationId, "leave");
+    }
+    const dismissed = await waitForSidebarTooltipDismissed(
+      cdp,
+      sessionId,
+      client,
+      target.relationId,
+    );
+    timeline.push({ client, step: "dismissed", ...dismissed });
+    if (sidebarTooltipVisible(dismissed.tooltip)) {
+      throw new Error(`${client} Sidebar details remained open after pointer leave`);
+    }
+  }
+  if (
+    Math.abs(openedByClient.web.sideGap - openedByClient.lynx.sideGap) > 3 ||
+    Math.abs(openedByClient.web.alignDelta - openedByClient.lynx.alignDelta) > 2
+  ) {
+    throw new Error(
+      `Sidebar details Browser relations diverged: ${JSON.stringify(openedByClient)}`,
+    );
+  }
+
+  const webTarget = await sidebarThreadCardTarget(cdp, sessionId, "web");
+  const webFocused = await focusRemoteElement(
+    cdp,
+    sessionId,
+    `(() => document.getElementById('web-pane')?.contentWindow?.document
+      ?.querySelector('.sidebar-v2-row-card') ?? null)()`,
+  );
+  if (!webTarget?.relationId || !webFocused) {
+    throw new Error("Could not focus Web Sidebar thread card for the paired hover frame");
+  }
+  await delay(250);
+  const lynxTarget = await sidebarThreadCardTarget(cdp, sessionId, "lynx");
+  if (!lynxTarget?.relationId) {
+    throw new Error("Could not find Lynx Sidebar thread card for the paired hover frame");
+  }
+  await invokeLynxTooltipProbe(cdp, sessionId, lynxTarget.relationId, "hover");
+  await delay(250);
+  const final = {
+    web: await readSidebarTooltip(cdp, sessionId, "web", webTarget.relationId),
+    lynx: await readSidebarTooltip(cdp, sessionId, "lynx", lynxTarget.relationId),
+  };
+  if (!final.web || !final.lynx) {
+    throw new Error(`Could not retain paired Sidebar thread details: ${JSON.stringify(final)}`);
+  }
+  timeline.push({ step: "paired-final", ...final });
+  return { final, openedByClient, timeline };
+}
+
 async function waitForSidebarTooltip(cdp, sessionId, client, relationId, expectedText) {
   const deadline = Date.now() + 1_500;
   let tooltip = null;
   while (Date.now() < deadline) {
     tooltip = await readSidebarTooltip(cdp, sessionId, client, relationId);
-    if (tooltip?.text.includes(expectedText)) return tooltip;
+    if (
+      tooltip?.text.includes(expectedText) &&
+      Number(tooltip.style.opacity) >= 0.99 &&
+      tooltip.rect.width > 0 &&
+      tooltip.rect.height > 0
+    ) {
+      return tooltip;
+    }
     await delay(50);
   }
   return tooltip;
@@ -4212,6 +4462,7 @@ async function main() {
     "quick-switch-empty",
     "sidebar-v2-new-thread-hover",
     "sidebar-v2-new-project-hover",
+    "sidebar-thread-hover-preview",
     "sidebar-v2-new-thread-projects",
   ]);
   const seedSource =
@@ -4615,6 +4866,7 @@ async function captureCell({
     "sidebar-flat-layout": "existing-thread",
     "sidebar-v2-new-thread-hover": "existing-thread",
     "sidebar-v2-new-project-hover": "existing-thread",
+    "sidebar-thread-hover-preview": "existing-thread",
     "sidebar-v2-new-thread-projects": "existing-thread",
     "existing-thread-working": "existing-thread",
     "git-publish-dialog": "existing-thread",
@@ -4733,6 +4985,10 @@ async function captureCell({
   const commandPaletteNavigationTimeline = [];
   let sidebarControlHoverStage = isSidebarControlHoverState ? "waiting-controls" : "not-required";
   const sidebarControlHoverTimeline = [];
+  let sidebarThreadHoverPreviewStage = isSidebarThreadHoverPreviewState
+    ? "waiting-thread"
+    : "not-required";
+  let sidebarThreadHoverPreview = null;
   let newThreadProjectsStage =
     stateId === "sidebar-v2-new-thread-projects" ? "waiting-controls" : "not-required";
   const newThreadProjectsTimeline = [];
@@ -7089,6 +7345,16 @@ async function captureCell({
     state = await readWorkbenchState(cdp, sessionId);
     reachedTargetState = true;
   }
+  if (isSidebarThreadHoverPreviewState) {
+    state = await waitForSidebarV2Controls(cdp, sessionId);
+    sidebarThreadHoverPreview = await runSidebarThreadHoverPreviewFlow(cdp, sessionId, {
+      width,
+      height,
+    });
+    sidebarThreadHoverPreviewStage = "complete";
+    state = await readWorkbenchState(cdp, sessionId);
+    reachedTargetState = true;
+  }
   if (stateId === "sidebar-v2-new-thread-projects") {
     state = await waitForSidebarV2Controls(cdp, sessionId);
     const initialThreadIds = {
@@ -8716,6 +8982,7 @@ async function captureCell({
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
     (!isSidebarControlHoverState || sidebarControlHoverStage === "complete") &&
+    (!isSidebarThreadHoverPreviewState || sidebarThreadHoverPreviewStage === "complete") &&
     (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
     (stateId !== "add-project-sources" || addProjectSourcesStage === "complete") &&
     settingsContentMatch !== false &&
@@ -8940,6 +9207,20 @@ async function captureCell({
         authority: {
           openDelayMs: 600,
           closeDelayMs: 0,
+          popupTransition: "opacity+scale",
+        },
+      },
+      sidebarThreadHoverPreview: {
+        match: !isSidebarThreadHoverPreviewState || sidebarThreadHoverPreviewStage === "complete",
+        stage: sidebarThreadHoverPreviewStage,
+        inputChannel: isSidebarThreadHoverPreviewState
+          ? "web-cdp-pointer|lynx-main-thread-probe"
+          : "not-required",
+        evidence: sidebarThreadHoverPreview,
+        authority: {
+          openDelayMs: 150,
+          closeDelayMs: 0,
+          placement: "right-start-4",
           popupTransition: "opacity+scale",
         },
       },

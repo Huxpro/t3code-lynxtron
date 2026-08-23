@@ -910,6 +910,42 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "newThread:");
   });
 
+  it("records the Sidebar thread-details pointer lifecycle in both Browser renderers", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    const browserPreview = readFileSync(
+      path.join(import.meta.dirname, "../src/browser-preview/index.ts"),
+      "utf8",
+    );
+    const tooltip = readFileSync(
+      path.join(import.meta.dirname, "../../web/src/components/ui/tooltip.lynx.tsx"),
+      "utf8",
+    );
+
+    assert.include(source, '"sidebar-thread-hover-preview"');
+    assert.include(source, "runSidebarThreadHoverPreviewFlow");
+    assert.include(source, 'step: "quick-leave"');
+    assert.include(source, "Sidebar details opened after quick pointer leave");
+    assert.include(source, 'step: "opened"');
+    assert.include(source, 'opened.attributes["data-floating-side"]');
+    assert.include(source, 'opened.attributes["data-side"]');
+    assert.include(source, "Sidebar details Browser relations diverged");
+    assert.include(source, 'step: "dismissed"');
+    assert.include(source, "waitForSidebarTooltipDismissed");
+    assert.include(source, "sidebarTooltipVisible");
+    assert.include(source, "invokeLynxTooltipProbe");
+    assert.include(source, "web-cdp-pointer|lynx-main-thread-probe");
+    assert.include(workbench, "async invokeLynxTooltip(relationId, action)");
+    assert.include(workbench, "invokeTooltipForHarness");
+    assert.include(browserPreview, '"t3:tooltip-test"');
+    assert.include(tooltip, 'const T3_TOOLTIP_TEST_EVENT = "t3:tooltip-test"');
+    assert.include(tooltip, '"background only"');
+    assert.include(source, "openDelayMs: 150");
+    assert.include(source, 'placement: "right-start-4"');
+  });
+
   it("drives both Browser renderers through a multi-step question", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),

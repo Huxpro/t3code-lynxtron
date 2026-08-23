@@ -662,6 +662,7 @@ function installTransportDevToolHook(): void {
       latestTurn: OrchestrationLatestTurn | null;
       activeProject?: ProjectSummary;
       activeThread?: ThreadSummary;
+      environmentLabel: string | null;
       threadIds: ReadonlyArray<string>;
       archivedThreadIds: ReadonlyArray<string>;
       pairingLinkIds: ReadonlyArray<string>;
@@ -729,6 +730,7 @@ function installTransportDevToolHook(): void {
     return {
       activeThreadId: state.activeThreadId,
       draftThreadId: state.draftThread?.id ?? null,
+      environmentLabel: state.serverConfig?.environment.label ?? null,
       draftThreadIdsByProjectId: Object.fromEntries(
         Object.entries(state.draftThreadsByProjectId).map(([projectId, draft]) => [
           projectId,

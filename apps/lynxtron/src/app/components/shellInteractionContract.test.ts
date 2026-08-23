@@ -888,8 +888,13 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("detailsRelationId={detailsRelationId}");
     expect(sidebarSource).not.toContain("detailsThreadId");
     expect(sidebarSource).not.toContain("Show details for");
-    expect(overrides).not.toContain("top: 132px;");
-    expect(overrides).not.toContain("left: 244px;");
+    const detailsPopoverStart = overrides.indexOf(".sidebar-v2-details-popover {");
+    const detailsPopoverBlock = overrides.slice(
+      detailsPopoverStart,
+      overrides.indexOf("}", detailsPopoverStart),
+    );
+    expect(detailsPopoverBlock).not.toContain("top:");
+    expect(detailsPopoverBlock).not.toContain("left:");
     expect(overrides).not.toContain(".sidebar-v2-details-dismiss {");
     expect(tooltipSource).toContain("const hoverInsideRef = useRef(false);");
     expect(tooltipSource).toContain("if (hoverInsideRef.current === inside) return;");

@@ -112,6 +112,18 @@ describe("packaged readiness Sidebar geometry", () => {
       'const initialRelationId = initialCard.attributes["data-floating-anchor"]',
     );
     assert.include(source, '".sidebar-v2-details-popover"');
+    assert.include(source, "await waitWhileAlive(child, 75)");
+    assert.include(source, "opened before the 150ms authority delay elapsed");
+    assert.include(source, 'selector: ".sidebar-v2-details-title"');
+    assert.include(source, 'readSelectorMeasurements(client, ".sidebar-v2-details-row")');
+    assert.include(source, "clientState?.environmentLabel");
+    assert.include(source, "JSON.stringify(actualDetailRows)");
+    assert.include(source, "openedAfterMs < 100");
+    assert.include(source, "openedAfterMs > 500");
+    assert.include(source, 'name: `native-sidebar-thread-hover-${expectedTheme ?? "system"}.png`');
+    assert.include(source, "dismissedAfterMs");
+    assert.include(source, "quickLeaveCancelled: true");
+    assert.include(source, "openDelayMs: 150");
     assert.include(source, 'side: "right", align: "start", sideOffset: 4');
     assert.include(source, "__T3_LYNXTRON_MTS_RESIZE_PROBE__?.sidebar(256,320)");
     assert.include(source, "Sidebar details did not follow its resized anchor");

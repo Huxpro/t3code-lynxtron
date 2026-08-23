@@ -55,11 +55,58 @@ interface MainThreadMouseEvent {
   readonly y: number;
 }
 
+interface GlobalEventEmitterLike {
+  addListener?: (eventName: string, listener: (value: unknown) => void) => void;
+}
+
+declare const lynx:
+  | {
+      getJSModule?: (name: string) => GlobalEventEmitterLike | undefined;
+    }
+  | undefined;
+
+const T3_TOOLTIP_TEST_EVENT = "t3:tooltip-test";
 const TooltipProviderContext = createContext<TooltipProviderValue>({
   closeDelay: 0,
   delay: 600,
 });
 const TooltipContext = createContext<TooltipContextValue | null>(null);
+let tooltipTestBridgeInstalled = false;
+
+function installTooltipTestBridge(): void {
+  "background only";
+  if (tooltipTestBridgeInstalled) return;
+  let registry: GlobalEventEmitterLike | undefined;
+  try {
+    registry = typeof lynx !== "undefined" ? lynx.getJSModule?.("GlobalEventEmitter") : undefined;
+  } catch {
+    registry = undefined;
+  }
+  if (!registry?.addListener) return;
+  tooltipTestBridgeInstalled = true;
+  registry.addListener(T3_TOOLTIP_TEST_EVENT, (value: unknown) => {
+    const input =
+      typeof value === "object" && value !== null
+        ? (value as { readonly action?: unknown; readonly relationId?: unknown })
+        : null;
+    if (
+      typeof input?.relationId !== "string" ||
+      (input.action !== "hover" && input.action !== "leave")
+    ) {
+      return;
+    }
+    const probe = (
+      globalThis as {
+        __T3_LYNXTRON_TOOLTIP_PROBE__?: Record<
+          string,
+          { readonly hover: () => Promise<void>; readonly leave: () => Promise<void> }
+        >;
+      }
+    ).__T3_LYNXTRON_TOOLTIP_PROBE__?.[input.relationId];
+    if (input.action === "hover") void probe?.hover();
+    if (input.action === "leave") void probe?.leave();
+  });
+}
 
 export const TooltipCreateHandle = () => ({});
 
@@ -181,6 +228,7 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
     };
     probes[relationId] = probe;
     target.__T3_LYNXTRON_TOOLTIP_PROBE__ = probes;
+    installTooltipTestBridge();
     return () => {
       if (probes[relationId] === probe) delete probes[relationId];
       if (Object.keys(probes).length === 0) delete target.__T3_LYNXTRON_TOOLTIP_PROBE__;

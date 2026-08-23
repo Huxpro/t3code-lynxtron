@@ -46,6 +46,7 @@ interface BrowserPreviewDiagnostics {
   switchScenario(scenarioId: BrowserPreviewScenarioId): number;
   dispatchKeyboardShortcut(shortcut: "command" | "files"): boolean;
   openWorkspaceMenuForHarness(open: boolean): boolean;
+  invokeTooltipForHarness(relationId: string, action: "hover" | "leave"): boolean;
 }
 
 interface BrowserPreviewRect {
@@ -266,6 +267,10 @@ const diagnostics: BrowserPreviewDiagnostics = {
     emitGlobalEvent("t3:workspace-menu-test", [{ open }]);
     return true;
   },
+  invokeTooltipForHarness: (relationId, action) => {
+    emitGlobalEvent("t3:tooltip-test", [{ relationId, action }]);
+    return true;
+  },
 };
 window.__T3_LYNX_WEB_PREVIEW__ = diagnostics;
 
@@ -469,6 +474,8 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +
       ".composer-compact-controls-menu__label{display:block;flex:1 1 0%;min-width:0;}" +
       ".sidebar-v2-row-card__content{display:flex;flex-direction:column;}" +
+      ".sidebar-v2-details-content,.sidebar-v2-details-rows{display:flex;flex-direction:column;}" +
+      ".sidebar-v2-details-row{display:flex;flex-direction:row;}" +
       ".project-action-dialog,.project-action-dialog__header,.project-action-field{" +
       "display:flex;flex-direction:column;}" +
       ".project-action-dialog__body{display:block;flex:1 1 0%;width:100%;min-height:0;}" +

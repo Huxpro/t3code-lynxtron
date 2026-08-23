@@ -12,6 +12,7 @@ import {
   deriveSidebarImmediateStatus,
   deriveSidebarThreadStatus,
   hasUnseenThreadCompletion,
+  projectSidebarThreadDetailsRows,
   resolveThreadStatusPill,
   type SidebarThreadStatusInput,
 } from "./sidebar.ts";
@@ -136,5 +137,41 @@ describe("shared sidebar presentation", () => {
       pulse: true,
     });
     expect(resolveThreadStatusPill({ thread: baseThread })).toBeNull();
+  });
+
+  it("projects thread details in one renderer-neutral order", () => {
+    expect(
+      projectSidebarThreadDetailsRows({
+        projectTitle: "t3code",
+        environmentLabel: "MacBook Pro",
+        branch: "feature/sidebar",
+        branchMismatch: true,
+        modelLabel: "GPT-5.6",
+        terminalProcessCount: 2,
+        hasError: true,
+      }),
+    ).toEqual([
+      { kind: "project", label: "t3code" },
+      { kind: "environment", label: "MacBook Pro" },
+      { kind: "branch", label: "feature/sidebar" },
+      {
+        kind: "branch-mismatch",
+        label: "You're currently checked out on another branch.",
+      },
+      { kind: "model", label: "GPT-5.6" },
+      { kind: "terminal", label: "2 terminal processes running" },
+      { kind: "error", label: "Error occurred" },
+    ]);
+    expect(
+      projectSidebarThreadDetailsRows({
+        projectTitle: null,
+        environmentLabel: null,
+        branch: null,
+        branchMismatch: false,
+        modelLabel: null,
+        terminalProcessCount: 0,
+        hasError: false,
+      }),
+    ).toEqual([]);
   });
 });

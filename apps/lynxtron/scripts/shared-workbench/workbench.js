@@ -3385,5 +3385,13 @@ const workbench = {
     const s = this.read();
     return s.web.semanticReady === true && s.lynx.semanticReady === true;
   },
+  async invokeLynxTooltip(relationId, action) {
+    return (
+      document
+        .getElementById("lynx-pane")
+        ?.contentWindow?.__T3_LYNX_WEB_PREVIEW__?.invokeTooltipForHarness?.(relationId, action) ===
+      true
+    );
+  },
 };
 window.__T3_WORKBENCH__ = workbench;
