@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-23T00:11:00-07:00",
+  "updatedAt": "2026-08-23T01:59:02-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -15005,6 +15005,74 @@
               "confidence": 0.99,
               "method": "native-file-picker-main-transport",
               "source": "Both themes use real filesystem RPC results and main transport, advance sequence, report zero renderer errors, and dispose isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "new-thread-projects-native-current",
+      "observedAt": "2026-08-23T01:59:02-07:00",
+      "commit": "281745dbe72641f16672cb937e46346fbbde3f01",
+      "codeCommit": "b059c63d0e16cd697935b425f5622138b940c28c",
+      "codeState": "commit",
+      "label": "New Thread Projects Native lifecycle fidelity",
+      "narrative": "Exact-bundle Native dark and light runs verify the shared two-project chooser at the retained Web authority geometry, then select project A, project B, and project A again through measured taps. Each project receives one distinct local draft, returning to A reuses its original identity, and canonical plus SQLite thread sets remain empty throughout. Back reaches the root palette and the full-screen backdrop dismisses it. Physical Native keyboard navigation and hover remain pending-user-session.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The point directly measures the project-keyed draft fix and Native chooser geometry on the exact production bundle in both themes. It preserves explicit physical keyboard and hover debt and changes no state, client, dimension, or group weights."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/new-thread-projects-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4e06a76f044c1722dd242d055adbcf1ceb4c2c8f74279b063afc8c857910bc79"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-v2-new-thread-projects"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-chooser-content",
+              "source": "Both themes render the two canonical project titles, workspace paths, Back affordance, Search placeholder, and Navigate, Select, Back, and Close footer hints"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "native-project-chooser-web-authority-geometry",
+              "source": "Dark Native exactly matches the retained Web panel, search, results, section, label, two 48px rows, and footer boxes; light remains within subpixel rounding"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-dual-theme-project-chooser-typography",
+              "source": "Visual review confirms matching title, path, section, search, and footer hierarchy; bundled DM Sans shaping remains platform-specific"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-dual-theme-project-chooser-material",
+              "source": "Visual review confirms full-screen dimming, dark and cold-white panel treatments, active row, border, shadow, and keycaps in both themes"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "native-project-selection-and-dismissal",
+              "source": "Measured Native taps prove project A, project B, project A reuse, Back to root, and backdrop dismissal; physical keyboard navigation and hover remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-project-draft-main-transport",
+              "source": "Both exact-bundle themes use main transport, keep canonical and SQLite thread sets at zero, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }

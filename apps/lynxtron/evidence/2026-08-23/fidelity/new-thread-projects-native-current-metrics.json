@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-23T01:59:02-07:00",
+  "stateId": "sidebar-v2-new-thread-projects",
+  "commits": {
+    "draftProduct": "6ee0ab3e09a97228784903c25e60aad7cac10cec",
+    "draftTests": "fa4e3bcf6",
+    "pointerProduct": "bed7b2f112956c6aa18a656d14441acb5f69e399",
+    "geometryProduct": "b059c63d0e16cd697935b425f5622138b940c28c",
+    "nativeHarness": "281745dbe72641f16672cb937e46346fbbde3f01"
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynxtron now retains one local draft identity per project, matching Web's project-scoped draft reuse instead of replacing the only draft when the user switches projects.",
+      "Selecting projects A, B, then A again returns to A's original draft identity while canonical shell threads and copied SQLite projection threads remain empty.",
+      "The Native New Thread project chooser now matches the retained Web authority at 576x230 with a 574x48 search region, 574x140 results region, 558x124 section, two 558x48 project rows, and a 574x40 footer.",
+      "The New Thread and New Project transparent coarse-pointer hit areas use the shared HostText event-through abstraction so they cannot intercept Native taps.",
+      "Historical untouched New thread shells keep a visible direct close action without requiring hover."
+    ],
+    "harnessLoss": [
+      "Two initial diagnostic runs queried a compound Lynx DOM selector that the DevTool selector implementation does not support; the committed verifier uses class selection plus an explicit data-quick-switch-view assertion.",
+      "A later diagnostic run tapped before projects and models had reached the renderer, while the New Thread control was correctly disabled. The committed verifier waits for the real control to lose opacity-50 before injecting input.",
+      "Lynx DOM.innerText concatenates the project title and path without a newline. The accepted verifier maps rows to canonical SQLite projects by requiring both title and workspaceRoot instead of depending on text separators."
+    ],
+    "intentionalPlatformDelta": [
+      "Native uses the bundled DM Sans font while the retained Web authority uses DM Sans Variable; small glyph-width and antialiasing differences remain accepted rendering noise.",
+      "Native physical keyboard navigation and physical pointer hover remain pending-user-session. Measured DevTool taps prove the click, selection, Back, and backdrop paths only."
+    ],
+    "evidenceBoundary": "Both Native themes use independent disposable copies of a stopped isolated two-project, zero-thread fixture. Each run verifies the exact staged production bundle, main transport, project-associated draft identities, unchanged canonical and SQLite thread sets, Back and backdrop dismissal, zero renderer errors, owned-process shutdown, and disposed state."
+  },
+  "browserAuthority": {
+    "report": "/tmp/t3-sidebar-v2-head/new-thread-projects/workbench-report.json",
+    "reportSha256": "cc311d3257f575d6ba769be09e27a7441fbda55649e31f72d472ec040279fa7f",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "projectTitles": ["t3code-lynxtron", "background-only"],
+    "geometry": {
+      "panel": [352, 82, 576, 230],
+      "search": [353, 83, 574, 48],
+      "results": [353, 131, 574, 140],
+      "section": [361, 139, 558, 124],
+      "sectionLabel": [361, 139, 558, 28],
+      "rows": [
+        [361, 167, 558, 48],
+        [361, 215, 558, 48]
+      ],
+      "footer": [353, 271, 574, 40]
+    },
+    "openBackDismissReopen": "pass"
+  },
+  "native": {
+    "head": "281745dbe72641f16672cb937e46346fbbde3f01",
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "bytes": 5300552,
+      "sha256": "8557b07de5ebfd3b0e5530407f230ca8c7f0a2069e4616273d913f60caef5d93"
+    },
+    "snapshotSha256": "ce87afe8cf72bddcd9261cf35f359c18008f7186362e27caf7c7694be702b927",
+    "snapshotSourceKind": "byte-for-byte copy from stopped isolated Browser snapshot",
+    "viewport": [1280, 820],
+    "dark": {
+      "report": "/tmp/t3-new-thread-projects-native-dark-final/report.json",
+      "reportSha256": "db3cf1becac03ade8a4b7c07eca8b1055368f6a0041941a992394517c1800f4d",
+      "screenshot": "/tmp/t3-new-thread-projects-native-dark-final/native-new-thread-projects-dark.png",
+      "screenshotSha256": "b8597601f09431654eec6fc4662f6f3d6e46c591c80379f109f66ff8bbb6f8e2",
+      "geometry": {
+        "panel": [352, 82, 576, 230],
+        "search": [353, 83, 574, 48],
+        "results": [353, 131, 574, 140],
+        "section": [361, 139, 558, 124],
+        "sectionLabel": [361, 139, 558, 28],
+        "rows": [
+          [361, 167, 558, 48],
+          [361, 215, 558, 48]
+        ],
+        "footer": [353, 271, 574, 40]
+      }
+    },
+    "light": {
+      "report": "/tmp/t3-new-thread-projects-native-light-final/report.json",
+      "reportSha256": "a5f51a1b091bc08701d9bc965eb831d379163fec7f9c0e2e8bcfc80a05b1dafa",
+      "screenshot": "/tmp/t3-new-thread-projects-native-light-final/native-new-thread-projects-light.png",
+      "screenshotSha256": "e2b8094bd0f81ac6ba979d4d7a9e329b6b02b2e28fc3e86db9f2e835f97d30c2",
+      "geometryWithinOnePixel": true
+    },
+    "draftLifecycle": {
+      "projectCount": 2,
+      "firstProjectDraftCreated": true,
+      "secondProjectDraftCreated": true,
+      "firstProjectDraftReused": true,
+      "distinctDraftPerProject": true,
+      "canonicalThreadCount": [0, 0],
+      "persistedThreadCount": [0, 0]
+    },
+    "dismissal": {
+      "backToRoot": true,
+      "backdropSize": [1280, 820],
+      "outsideTapClosed": true
+    },
+    "transport": "main",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "physicalKeyboard": "pending-user-session",
+    "physicalHover": "pending-user-session"
+  },
+  "validation": {
+    "sharedDraftTests": "6/6",
+    "focusedShellContracts": "pass",
+    "focusedVerifierContract": "pass",
+    "webTypecheck": "pass",
+    "lynxAndMainTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect import.meta warnings",
+    "projectAudit": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0 before and after accepted runs",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
