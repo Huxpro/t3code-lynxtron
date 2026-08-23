@@ -50,10 +50,12 @@ describe("Quick Switch material", () => {
   it("matches the Web File Picker height without changing command modes", () => {
     const source = readFileSync(path.resolve(import.meta.dirname, "QuickSwitch.tsx"), "utf8");
     const filesPanel = rule(".palette-panel--files");
+    const browserFilesPanel = rule(".lynx-web-preview .palette-panel--files");
     const filesResults = rule(".qs-results--files");
 
-    expect(filesPanel).toContain("max-height: 418px;");
+    expect(filesPanel).toContain("max-height: 420px;");
     expect(filesPanel).not.toContain("box-sizing: border-box;");
+    expect(browserFilesPanel).toContain("max-height: 418px;");
     expect(filesResults).toContain("height: 330px;");
     expect(filesResults).toContain("max-height: 330px;");
     expect(rule(".palette-panel")).toContain("max-height: 448px;");
