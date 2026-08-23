@@ -9126,6 +9126,9 @@
   font-size: 14px;
   line-height: 20px;
 }
+.quick-switch-source-row.opacity-64 {
+  opacity: 0.64;
+}
 .quick-switch-file-row--detailed {
   height: 48px;
   min-height: 48px;

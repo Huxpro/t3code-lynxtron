@@ -71,4 +71,8 @@ describe("Quick Switch material", () => {
     expect(source).not.toContain('{fileMode ? "⌘K" : "⌘P"}');
     expect(source).not.toContain('{fileMode ? "Commands" : "Files"}');
   });
+
+  it("visibly mutes unavailable Add Project sources", () => {
+    expect(rule(".quick-switch-source-row.opacity-64")).toContain("opacity: 0.64;");
+  });
 });
