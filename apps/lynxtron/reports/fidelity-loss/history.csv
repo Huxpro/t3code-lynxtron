@@ -207,3 +207,4 @@ sidebar-v2-creation-flows-current,2026-08-22T03:27:11-07:00,8daa544048dcc2bf0be1
 providers-and-lazy-drafts-current,2026-08-22T15:27:39-07:00,45372c88bdfb3b0d1984104a006dc29b37371bdf,commit,Providers parity and lazy New thread lifecycle,0.32752,0.32752,0.028281,0.307948,0.692052,0.663466
 file-editor-native-save-recovery-current,2026-08-22T16:39:11-07:00,050f066481455687140cc3f99baf4bdd2bf03d88,commit,Native file editor save and recovery fidelity,0.314902,0.314902,0.028784,0.294598,0.705402,0.676084
 empty-thread-cleanup-current,2026-08-22T19:35:27-07:00,6e6143b20f4adaa41216df24c6cce39b5f11a104,commit,Disposable empty thread cleanup,0.314902,0.314902,0.028784,0.294598,0.705402,0.676084
+settings-connections-current,2026-08-22T20:07:16-07:00,b5c69aaf30a7cc324faa8002b488dc18a32e012c,commit,Connections settings shared empty state,0.308177,0.308177,0.028622,0.287792,0.712208,0.682809

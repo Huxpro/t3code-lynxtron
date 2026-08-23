@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T19:35:27-07:00",
+  "updatedAt": "2026-08-22T20:07:16-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14375,6 +14375,115 @@
               "confidence": 0.99,
               "method": "native-shell-and-sqlite-lifecycle",
               "source": "The stale shell disappears from both the pushed shell and copied SQLite projection; subsequent New thread actions leave canonical IDs, persisted IDs, and server sequence unchanged"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-connections-current",
+      "observedAt": "2026-08-22T20:07:16-07:00",
+      "commit": "b5c69aaf30a7cc324faa8002b488dc18a32e012c",
+      "codeCommit": "7333488de040caac47a72959b7864cd75698ab30",
+      "codeState": "commit",
+      "label": "Connections settings shared empty state",
+      "narrative": "Connections now uses one shared remote-environment empty-state composition across Web and Lynx. A committed-head same-server Browser run verifies matching navigation, content, top-aligned sections, 896x232 empty region, centered 36x36 icon, 346x52 copy region, and stable route. Exact-bundle Native dark and light runs verify the same section allocation, a vertically stacked 346x28 title and 346x20 description with a 4px gap, the disabled Add environment action at opacity 0.64, loopback access policy, main transport, zero renderer errors, and isolated cleanup. A previous green Native result was rejected after visual inspection exposed horizontally adjacent title and description; the final strict gate asserts their exact relative geometry.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The point credits current committed-head Browser ROI evidence and independent exact Native dark/light evidence. The unrelated Web provider-update toast is excluded from full-frame pixel scoring."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/settings-connections-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c9f603201705ca290d93278b2ce7f76f647988ed5e287d0cf3ebcede2e39e862"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-connections-content",
+              "source": "Both Browser renderers show This environment, Network access, Remote environments, Add environment, and the shared no-saved-environments copy"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 2.3125, 0, 2.3125, 0, 0, 0, 2.3125, 0, 2.3125],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "paired-connections-roi-geometry",
+              "source": "Section and empty-state widths match at 896px; the only section and child origin deltas are 2.3125px vertical rounding"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-connections-typography-review",
+              "source": "Visual review confirms matching hierarchy, centered empty-state title, description, and section labels"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "paired-connections-material-review",
+              "source": "Visual review confirms matching dark Settings surface, icon card, muted copy, and disabled action treatment"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-connections-route",
+              "source": "Both panes reach and retain the Connections route through shipping navigation"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-connections-live-server",
+              "source": "Both panes use one isolated server snapshot, pass semantic readiness, report zero console errors, and clean all owned processes"
+            }
+          }
+        },
+        {
+          "states": ["settings-connections"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-connections-content",
+              "source": "Exact Native dark and light render the local network policy and shared remote-environment empty state without exposing local pairing management"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "native-connections-exact-geometry",
+              "source": "Both themes measure panel 896x504, empty region 896x232, icon 36x36, title 346x28, description 346x20, and a 4px vertical text gap"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-dual-theme-connections-typography",
+              "source": "Visual review confirms centered single-line title and description hierarchy in dark and light"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-dual-theme-connections-material",
+              "source": "Visual review confirms neutral dark and cold-white light surfaces, readable icon treatment, and muted unavailable controls"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-connections-pointer-policy",
+              "source": "Measured Native taps open Connections and confirm the disabled Add environment action remains inert on the same route"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-connections-main-transport",
+              "source": "Both exact-bundle themes use main transport, advance readiness sequence, report zero renderer errors, and dispose isolated state"
             }
           }
         }
