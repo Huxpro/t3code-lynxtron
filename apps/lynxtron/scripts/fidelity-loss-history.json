@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-23T01:59:02-07:00",
+  "updatedAt": "2026-08-23T02:39:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -15073,6 +15073,72 @@
               "confidence": 0.99,
               "method": "native-project-draft-main-transport",
               "source": "Both exact-bundle themes use main transport, keep canonical and SQLite thread sets at zero, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-appearance-native-current",
+      "observedAt": "2026-08-23T02:39:00-07:00",
+      "commit": "c24bf4bb9a64e8319eac8f9b6ccf178259e42c94",
+      "codeCommit": "c24bf4bb9a64e8319eac8f9b6ccf178259e42c94",
+      "codeState": "commit",
+      "label": "Settings Appearance Native fidelity",
+      "narrative": "Fresh exact-bundle Native dark and light runs enter Settings, select Appearance, verify one available Theme row plus three truthfully unavailable rows at opacity 0.48, and return to chat. The retained Browser authority remains the source for shared rows and full-frame material residual. Native exposes the truthful Environment identification capability row for the Dev/Nightly fixture, so that extra explanatory row remains an intentional platform-state delta. Original Web Settings replaces route content immediately; Native does not invent a panel crossfade. Physical keyboard focus and Settings search remain pending-user-session.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "No Appearance product change was required. The point adds current exact-bundle Native dual-theme geometry, unavailable semantics, navigation, runtime, and cleanup evidence while preserving Browser material residual and explicit physical-input debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/settings-appearance-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1146b5d2eae59a54d936c95ef2ce78c5296d3c05e9a6e422d102d1ebb7c33621"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-appearance"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-appearance-content-and-capability-state",
+              "source": "Both themes render Appearance, Theme, Glass opacity, Environment identification, Word wrap, and explanatory unavailable copy with Theme as the only available row"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1024,
+              "confidence": 0.99,
+              "method": "native-appearance-dual-theme-geometry",
+              "source": "Dark and light exactly share the 1024x517 panel and 896px row boxes at y=132, 201, 307, and 394"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-appearance-dual-theme-typography",
+              "source": "Visual review confirms matching hierarchy and readable unavailable copy in both themes; bundled DM Sans shaping remains platform-specific"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-appearance-dual-theme-material",
+              "source": "Visual review confirms dark and cold-white surfaces, selected navigation treatment, input border, muted unsupported rows, and computed opacity 0.48"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "native-appearance-navigation-and-back",
+              "source": "Measured taps prove Settings entry, Appearance selection, truthful active-row feedback, and Back; physical keyboard traversal and Settings search remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-appearance-main-transport",
+              "source": "Both exact-bundle themes use main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }

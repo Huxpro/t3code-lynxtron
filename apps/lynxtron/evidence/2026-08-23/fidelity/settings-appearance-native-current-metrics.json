@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-23T02:39:00-07:00",
+  "stateId": "settings-appearance",
+  "harnessCommit": "c24bf4bb9a64e8319eac8f9b6ccf178259e42c94",
+  "classification": {
+    "productLoss": [],
+    "coverageClosed": [
+      "Fresh exact-bundle Native dark and light runs enter Settings through the real Sidebar control, select Appearance through the real navigation row, and return to chat through Back.",
+      "Both themes render a 1024x517 panel, a 896x65 available Theme row, a 896x102 Glass opacity row, and 896x83 Environment identification and Word wrap rows.",
+      "Glass opacity, Environment identification, and Word wrap expose aria-disabled=true, data-settings-unavailable=true, explanatory status copy, and computed opacity 0.48 while Theme remains available.",
+      "The selected General and Appearance navigation rows are the only visually selected rows in their respective route states."
+    ],
+    "harnessBoundary": [
+      "The broad Settings route verifier still exposes a separate General scroll-restoration regression during repeated Settings reopen cycles. The focused Appearance evidence does not claim that unrelated cycle is fixed.",
+      "The retained Browser authority uses Alpha branding and omits Environment identification; the current Native fixture exposes the truthful Nightly/Dev capability row. Shared Theme, Glass opacity, and Word wrap content and geometry are credited without treating the extra row as product loss.",
+      "The first current run used an older fixture with persisted Settings scroll state and failed an unrelated General-cycle origin gate before retaining Appearance evidence."
+    ],
+    "motionAuthority": [
+      "Original Web Settings replaces route content immediately; it does not animate panel content between General and Appearance.",
+      "Only the shared titlebar/sidebar inset transition uses 200ms linear motion and disables it under prefers-reduced-motion. Native preserves the immediate panel replacement instead of inventing a platform-only crossfade."
+    ],
+    "runtimeBoundary": [
+      "Physical keyboard focus traversal and Settings search remain pending-user-session. Measured DevTool taps prove Settings entry, Appearance selection, and Back only."
+    ],
+    "evidenceBoundary": "Both Native themes use independent disposable copies of the same stopped isolated fixture, the exact staged production bundle, main transport, measured route taps, strict row semantics and opacity checks, zero renderer errors, owned-process shutdown, and disposed state."
+  },
+  "browserAuthority": {
+    "source": "apps/lynxtron/evidence/2026-08-17/fidelity/settings-appearance-current-metrics.json",
+    "sha256": "76e31a824265530b6a846a958b719530748e15ad1a93510fd76ecd557b846cc9",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "sharedRows": ["Theme", "Glass opacity", "Word wrap"],
+    "materialResidual": {
+      "mae": 2.528668,
+      "significantShare": 0.034984
+    }
+  },
+  "native": {
+    "head": "c24bf4bb9a64e8319eac8f9b6ccf178259e42c94",
+    "bundle": {
+      "path": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "bytes": 5300552,
+      "sha256": "8557b07de5ebfd3b0e5530407f230ca8c7f0a2069e4616273d913f60caef5d93"
+    },
+    "snapshotSha256": "31917aaf93f8cdf7ffe13b14c3912fe1d3b78e71ab7b3b9b9558e9a4d9ab0658",
+    "viewport": [1280, 820],
+    "dark": {
+      "report": "/tmp/t3-settings-appearance-native-dark-current/report.json",
+      "reportSha256": "a77807c43a30ff88319e2b9591a7657eaf6a96800be0de0a0e42f01e0d97b37a",
+      "screenshot": "/tmp/t3-settings-appearance-native-dark-current/native-settings-appearance-unavailable.png",
+      "screenshotSha256": "6fb99f11dbe35e8cc7997e3b0f2f68170937a4bde9c9c1e318551c5586736342"
+    },
+    "light": {
+      "report": "/tmp/t3-settings-appearance-native-light-current/report.json",
+      "reportSha256": "c8c9106b17c696009a64e1149d68269b31e21771643e7d017fee685da2b16bcd",
+      "screenshot": "/tmp/t3-settings-appearance-native-light-current/native-settings-appearance-unavailable.png",
+      "screenshotSha256": "a704ddd70a45f2312151b2104e3fe0f6a542c303381175929cee0859473b3b54"
+    },
+    "geometry": {
+      "panel": [256, 52, 1024, 517],
+      "theme": [320, 132, 896, 65],
+      "glassOpacity": [320, 201, 896, 102],
+      "environmentIdentification": [320, 307, 896, 83],
+      "wordWrap": [320, 394, 896, 83]
+    },
+    "unavailableOpacity": 0.48,
+    "routeFlow": {
+      "settingsEntry": true,
+      "appearanceSelection": true,
+      "backToChat": true,
+      "physicalKeyboard": "pending-user-session"
+    },
+    "transport": "main",
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "focusedVerifierContract": "pass",
+    "lynxAndMainTypecheck": "pass",
+    "productionBundleReused": "exact product bundle from b059c63d0",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}

@@ -214,3 +214,4 @@ add-project-sources-native-current,2026-08-22T22:21:52-07:00,266036363d771d34b6f
 sidebar-project-groups-native-current,2026-08-22T23:11:02-07:00,3b1a34d52a54e8fbf19d78ded01528d8eb76d1cd,commit,Sidebar project groups Native coverage,0.25982,0.25982,0.034046,0.233732,0.766268,0.731166
 file-picker-native-current,2026-08-23T00:11:00-07:00,b998da5908329a0b3b13565d57fa9591a26a9707,commit,File Picker Native overlay fidelity,0.252534,0.252534,0.034984,0.225436,0.774564,0.738452
 new-thread-projects-native-current,2026-08-23T01:59:02-07:00,281745dbe72641f16672cb937e46346fbbde3f01,commit,New Thread Projects Native lifecycle fidelity,0.244555,0.244555,0.03521,0.216985,0.783015,0.746431
+settings-appearance-native-current,2026-08-23T02:39:00-07:00,c24bf4bb9a64e8319eac8f9b6ccf178259e42c94,commit,Settings Appearance Native fidelity,0.238572,0.238572,0.035377,0.210647,0.789353,0.752414
