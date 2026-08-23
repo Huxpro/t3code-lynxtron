@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T20:52:49-07:00",
+  "updatedAt": "2026-08-22T21:34:38-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14593,6 +14593,212 @@
               "confidence": 0.99,
               "method": "native-palette-main-transport",
               "source": "Both themes use main transport, advance readiness sequence, report zero renderer errors, and dispose isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "quick-switch-filter-native-current",
+      "observedAt": "2026-08-22T21:34:38-07:00",
+      "commit": "6e555b2efb5a5fa1f9492b597f6900f2130998a8",
+      "codeCommit": "6e555b2efb5a5fa1f9492b597f6900f2130998a8",
+      "codeState": "commit",
+      "label": "Quick Switch Native filter-state coverage",
+      "narrative": "Four fresh exact-bundle Native processes verify dark query, dark actions-only, dark empty, and light query states against the retained Browser authority. Content, geometry, typography, material, main transport, outside dismissal, and isolated cleanup pass. A testResize-gated query setter establishes deterministic visual states only; Native physical character input and keyboard navigation remain R5 pending-user-session debt. Two current Browser refresh attempts were rejected before capture because the copied fixture exposed different model labels across panes and are not credited.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "No product delta is assigned. The harness commit exposes a test-only visual-state setter and exact Native assertions while preserving physical keyboard evidence boundaries."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/quick-switch-filter-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "5283453811a377940ce8f7fcbce5de3f0129e84c84202b3bcac2a6eba8025af8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-query-content",
+              "source": "The settings query renders exactly one Open settings row and no empty surface"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                1, 0, 2.309021, 0.089371, 1, 0, 2.307922, 0.025841, 1, 0.026382, 2.307922, 0.040909,
+                1, 0.067291, 2.307922, 0.02153, 0.995148, 0.045761, 2.299286, 0.017227
+              ],
+              "anchorScale": 574,
+              "confidence": 0.99,
+              "method": "native-query-browser-authority-geometry",
+              "source": "Native panel, search, results, footer, and row differ from retained Browser authority only by host border and subpixel rounding"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-query-visual-review",
+              "source": "Manual review confirms the query, section label, result hierarchy, and footer typography"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-query-dark-material-review",
+              "source": "Manual review confirms full-screen dimming, dark panel, border, shadow, active row, icon, and keycap material"
+            },
+            "interaction": {
+              "residual": 0.65,
+              "confidence": 0.9,
+              "method": "native-visual-state-and-dismiss-only",
+              "source": "A test-only setter establishes the visual query state and a measured outside tap dismisses it; physical typing and navigation remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-query-main-transport",
+              "source": "Exact bundle uses main transport, advances sequence, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        },
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-actions-only-content",
+              "source": "The > query renders the six canonical action rows and no recent threads"
+            },
+            "geometry": {
+              "anchorDeltas": [1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0, 1, 0, 2, 0],
+              "anchorScale": 574,
+              "confidence": 0.99,
+              "method": "native-actions-only-browser-authority-geometry",
+              "source": "Native panel, search, results, footer, and first row match retained Browser geometry within the two-pixel host border"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-actions-only-visual-review",
+              "source": "Manual review confirms the six action labels, icons, section hierarchy, and footer typography"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-actions-only-dark-material-review",
+              "source": "Manual review confirms full-screen dimming, dark panel material, active row, border, shadow, and keycaps"
+            },
+            "interaction": {
+              "residual": 0.65,
+              "confidence": 0.9,
+              "method": "native-visual-state-and-dismiss-only",
+              "source": "A test-only setter establishes the actions-only state and a measured outside tap dismisses it; physical typing and navigation remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-actions-only-main-transport",
+              "source": "Exact bundle uses main transport, advances sequence, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        },
+        {
+          "states": ["quick-switch-empty"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-empty-content",
+              "source": "The no-result query renders zero rows and the canonical No matching commands, projects, or threads copy"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                1, 0, 2.03833, 0.012695, 0.999939, 0.000069, 2.038208, 0.003197, 0.999939, 0.003265,
+                2.038208, 0.006683, 0.999939, 0.009949, 2.038208, 0.002686, 0.999939, 0.003265,
+                2.038208, 0.006683
+              ],
+              "anchorScale": 574,
+              "confidence": 0.99,
+              "method": "native-empty-browser-authority-geometry",
+              "source": "Native panel, search, results, footer, and empty surface match retained Browser geometry within host border and subpixel rounding"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-empty-visual-review",
+              "source": "Manual review confirms centered empty copy, input value, and footer typography"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-empty-dark-material-review",
+              "source": "Manual review confirms full-screen dimming, dark panel material, empty surface, border, shadow, and keycaps"
+            },
+            "interaction": {
+              "residual": 0.65,
+              "confidence": 0.9,
+              "method": "native-visual-state-and-dismiss-only",
+              "source": "A test-only setter establishes the empty state and a measured outside tap dismisses it; physical typing and navigation remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-empty-main-transport",
+              "source": "Exact bundle uses main transport, advances sequence, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        },
+        {
+          "states": ["quick-switch-query-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-query-content",
+              "source": "The light settings query renders exactly one Open settings row and truthful Navigate, Select, and Close footer hints"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                1, 0, 2.038391, 0.011108, 0.999939, 0.000069, 2.038269, 0.003212, 0.999939,
+                0.003281, 2.038269, 0.005081, 0.999939, 0.008362, 2.038269, 0.00267, 0.99939,
+                0.005676, 2.03717, 0.002151
+              ],
+              "anchorScale": 574,
+              "confidence": 0.99,
+              "method": "native-light-query-browser-authority-geometry",
+              "source": "Native light panel, search, results, footer, and row preserve the dark query geometry within host border and subpixel rounding"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-light-bundled-type-scale",
+              "source": "Sizes, weights, and line heights remain aligned; bundled DM Sans retains the documented shaping delta from Web DM Sans Variable"
+            },
+            "material": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-light-query-material-review",
+              "source": "Manual review confirms cold-white panel and background, neutral gray hierarchy, full-screen dimming, active row, border, shadow, and keycaps"
+            },
+            "interaction": {
+              "residual": 0.65,
+              "confidence": 0.9,
+              "method": "native-visual-state-and-dismiss-only",
+              "source": "A test-only setter establishes the light query state and a measured outside tap dismisses it; physical typing and navigation remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-light-query-main-transport",
+              "source": "Exact bundle uses main transport, advances sequence, reports zero renderer errors, and disposes isolated state"
             }
           }
         }

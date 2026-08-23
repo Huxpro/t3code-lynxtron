@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-22T21:34:38-07:00",
+  "evidenceCommit": "6e555b2efb5a5fa1f9492b597f6900f2130998a8",
+  "stateIds": [
+    "quick-switch-query",
+    "quick-switch-query-light",
+    "quick-switch-actions-only",
+    "quick-switch-empty"
+  ],
+  "classification": {
+    "productLoss": [],
+    "coverageClosed": [
+      "Exact-bundle Native dark mode renders the settings query with one Open settings row, the actions-only prefix with six action rows, and the no-results query with the canonical empty copy.",
+      "Exact-bundle Native light mode renders the settings query with the expected cold-white material, one selected row, and the same footer anatomy without a dark-mode regression.",
+      "All four fresh Native processes use the same canonical snapshot, main transport, 1280x820 viewport, zero renderer errors, measured outside dismissal, and disposed isolated state."
+    ],
+    "harnessMismatch": [
+      "Two attempted current-head Browser refreshes were rejected before capture because the copied Native fixture exposed different Web and Lynx model labels, so the workbench correctly withheld the shortcut input. Neither failed attempt is retained or credited.",
+      "Browser content, geometry, material, and real keyboard input remain sourced from the previously retained state-specific evidence. This point updates Native cells only."
+    ],
+    "runtimeBlockers": [
+      "Native query states are established through a testResize-gated state setter so visual content, geometry, typography, material, runtime, and outside dismissal can be inspected.",
+      "The state setter is not physical keyboard evidence. Native character typing, Arrow navigation, Enter, Backspace, Escape, and focus remain pending-user-session under R5."
+    ],
+    "evidenceBoundary": "Each Native state uses one fresh owned process and one retained DevTool frame. Query injection is credited only as a deterministic visual-state setup mechanism; it receives no physical keyboard credit."
+  },
+  "browserAuthority": {
+    "queryDark": {
+      "evidence": "apps/lynxtron/evidence/2026-08-15/fidelity/quick-switch-query-current-metrics.json",
+      "evidenceSha256": "96327077fbff0e9f1aa2e602133dfffa64c5829f7ae7109859aa057384ec9f6e",
+      "query": "settings",
+      "rowLabels": ["Open settings"],
+      "geometry": {
+        "panel": [352, 82, 576, 166],
+        "search": [353, 83, 574, 48],
+        "results": [353, 131, 574, 76],
+        "footer": [353, 207, 574, 40],
+        "row": [361, 167, 558, 32]
+      }
+    },
+    "filterDark": {
+      "evidence": "apps/lynxtron/evidence/2026-08-16/fidelity/quick-switch-filter-states-visible-metrics.json",
+      "evidenceSha256": "57bdea5f5c0364ae58309a1b24a46c94ec01c5a2d4a237b9e270587708259ffa",
+      "actionsOnly": {
+        "query": ">",
+        "rowLabels": [
+          "New thread in t3-hero-claude-workspace",
+          "New thread in...",
+          "Go to file",
+          "Search project contents",
+          "Add project",
+          "Open settings"
+        ],
+        "geometry": {
+          "panel": [352, 82, 576, 326],
+          "search": [353, 83, 574, 48],
+          "results": [353, 131, 574, 236],
+          "footer": [353, 367, 574, 40],
+          "row": [361, 167, 558, 32]
+        }
+      },
+      "empty": {
+        "query": "zzzz-no-result",
+        "copy": "No matching commands, projects, or threads.",
+        "geometry": {
+          "panel": [352, 82, 576, 190],
+          "search": [353, 83, 574, 48],
+          "results": [353, 131, 574, 100],
+          "footer": [353, 231, 574, 40],
+          "empty": [353, 131, 574, 100]
+        }
+      }
+    },
+    "queryLight": {
+      "evidence": "apps/lynxtron/evidence/2026-08-19/fidelity/quick-switch-keycaps-current-metrics.json",
+      "evidenceSha256": "07bda8cf03b9a53dfd79b87a3ad05501658fd8bd10c4f16189ab7c999103ce42",
+      "query": "settings",
+      "rowLabels": ["Open settings"],
+      "footerKeycaps": "current"
+    }
+  },
+  "native": {
+    "head": "6e555b2efb5a5fa1f9492b597f6900f2130998a8",
+    "bundleSha256": "85d90d832f30d7f9f482d90469a6523e9c93d2a7a2490461e9f781d6cc16a2e0",
+    "bundleBytes": 5296688,
+    "snapshotSha256": "91af80a01ae40ae773328a97238b768831e54617848297f1ad6ed74d33d6b5e2",
+    "viewport": [1280, 820],
+    "queryDark": {
+      "report": "/tmp/t3-quick-switch-native-query-dark-current/report.json",
+      "reportSha256": "ad7d2a6db106131ea99f0452d480ca2e6bbf01e69fc1cace413a01166015efb1",
+      "query": "settings",
+      "rowLabels": ["Open settings"],
+      "geometry": {
+        "panel": [353, 82, 573.6909790039062, 165.91062927246094],
+        "search": [353.99945068359375, 82.99945831298828, 571.6920776367188, 47.974159240722656],
+        "results": [353.99945068359375, 130.97361755371094, 571.6920776367188, 75.95909118652344],
+        "footer": [353.99945068359375, 206.93270874023438, 571.6920776367188, 39.97846984863281],
+        "row": [361.9951477050781, 166.95423889160156, 555.7007141113281, 31.982772827148438]
+      },
+      "screenshotSha256": "8496cba4d6a4f66c3df1bde4b275cdbd8beb4ff3ed548e3c41571d2e983125a7"
+    },
+    "actionsOnlyDark": {
+      "report": "/tmp/t3-quick-switch-native-actions-dark-current/report.json",
+      "reportSha256": "c842a196e82753775c8ab6075b43be1cb62b15751728dd22435eb13bafeabe6b",
+      "query": ">",
+      "rowCount": 6,
+      "geometry": {
+        "panel": [353, 82, 574, 326],
+        "search": [354, 83, 572, 48],
+        "results": [354, 131, 572, 236],
+        "footer": [354, 367, 572, 40],
+        "row": [362, 167, 556, 32]
+      },
+      "screenshotSha256": "7433b78260dc9f663f657ca5c1eb8f9b5bd22b1c0456ae6a36a211030340abbb"
+    },
+    "emptyDark": {
+      "report": "/tmp/t3-quick-switch-native-empty-dark-current/report.json",
+      "reportSha256": "34f49f40547a9a70fbcf9eba61c162e1b94e3be53f7d71b31978794ca49feda0",
+      "query": "zzzz-no-result",
+      "copy": "No matching commands, projects, or threads.",
+      "geometry": {
+        "panel": [353, 82, 573.961669921875, 189.9873046875],
+        "search": [353.99993896484375, 82.99993133544922, 571.9617919921875, 47.996803283691406],
+        "results": [353.99993896484375, 130.99673461914062, 571.9617919921875, 99.99331665039062],
+        "footer": [353.99993896484375, 230.99005126953125, 571.9617919921875, 39.997314453125],
+        "empty": [353.99993896484375, 130.99673461914062, 571.9617919921875, 99.99331665039062]
+      },
+      "screenshotSha256": "db9d62b7e3ea3e32661f1394f62b7c6566e41529015e2d3cc9ea188d4184cdfc"
+    },
+    "queryLight": {
+      "report": "/tmp/t3-quick-switch-native-query-light-current/report.json",
+      "reportSha256": "acc5bc7acfcd85ce2697f1fe91b4a954927f7831f79584caa6e2f8c5a1c711fd",
+      "query": "settings",
+      "rowLabels": ["Open settings"],
+      "geometry": {
+        "panel": [353, 82, 573.9616088867188, 165.9888916015625],
+        "search": [353.99993896484375, 82.99993133544922, 571.9617309570312, 47.996788024902344],
+        "results": [353.99993896484375, 130.99671936035156, 571.9617309570312, 75.99491882324219],
+        "footer": [353.99993896484375, 206.99163818359375, 571.9617309570312, 39.99732971191406],
+        "row": [361.9993896484375, 166.99432373046875, 555.9628295898438, 31.997848510742188]
+      },
+      "screenshotSha256": "20f9c31a96e95273be912e65334f8982459870a1cc4c47d65b5613d6628e9c41"
+    },
+    "outsideDismissed": true,
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "physicalKeyboard": "pending-user-session"
+  },
+  "validation": {
+    "focusedTests": "51/51",
+    "lynxAndMainTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect warnings",
+    "browserPreviewBuild": "pass with existing asset-size and Effect warnings",
+    "currentBrowserRefresh": "rejected-harness-mismatch",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
