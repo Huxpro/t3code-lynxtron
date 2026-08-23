@@ -2204,7 +2204,23 @@ function readLynxPane() {
                 main: readElementBox(root?.querySelector(".settings-main")),
                 content: readElementBox(settingsContent),
                 panel: readElementBox(settingsPanel),
-                sourceControlEmpty: readElementBox(root?.querySelector(".source-control-empty")),
+                sourceControlEmpty: readElementBox(
+                  root?.querySelector('[data-slot="empty"], .source-control-empty'),
+                ),
+                sourceControlEmptyMedia: readElementBox(
+                  root?.querySelector('[data-slot="empty-media"], .source-control-empty__media'),
+                ),
+                sourceControlEmptyHeader: readElementBox(
+                  root?.querySelector('[data-slot="empty-header"], .source-control-empty__header'),
+                ),
+                sourceControlEmptyTitle: readElementBox(
+                  root?.querySelector('[data-slot="empty-title"], .source-control-empty__title'),
+                ),
+                sourceControlEmptyDescription: readElementBox(
+                  root?.querySelector(
+                    '[data-slot="empty-description"], .source-control-empty__description',
+                  ),
+                ),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: [
                   ...(settingsPanel?.querySelectorAll(
@@ -2252,7 +2268,9 @@ function readLynxPane() {
                 (item) => item.textContent?.trim(),
               ),
               sourceControlEmptyTitles: [
-                ...(root?.querySelectorAll(".source-control-empty__title") ?? []),
+                ...(root?.querySelectorAll(
+                  '[data-slot="empty-title"], .source-control-empty__title',
+                ) ?? []),
               ].map((item) => item.textContent?.trim()),
               sourceControlRetryLabels: [
                 ...(root?.querySelectorAll("[data-source-control-retry]") ?? []),
@@ -3228,6 +3246,18 @@ function readWebPane() {
                 panel: readElementBox(settingsPanel),
                 sourceControlEmpty: readElementBox(
                   settingsPanel?.querySelector('[data-slot="empty"]'),
+                ),
+                sourceControlEmptyMedia: readElementBox(
+                  settingsPanel?.querySelector('[data-slot="empty-media"]'),
+                ),
+                sourceControlEmptyHeader: readElementBox(
+                  settingsPanel?.querySelector('[data-slot="empty-header"]'),
+                ),
+                sourceControlEmptyTitle: readElementBox(
+                  settingsPanel?.querySelector('[data-slot="empty-title"]'),
+                ),
+                sourceControlEmptyDescription: readElementBox(
+                  settingsPanel?.querySelector('[data-slot="empty-description"]'),
                 ),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: [...(settingsPanel?.querySelectorAll(":scope > section") ?? [])].map(

@@ -875,6 +875,20 @@ function connectionsSettingsContentMatches(webMetrics, lynxMetrics) {
     ) &&
     webMetrics?.rowIds?.includes("remote-environments") &&
     lynxMetrics?.rowIds?.includes("remote-environments") &&
+    webMetrics?.sourceControlEmptyTitles?.includes("No saved remote environments") &&
+    lynxMetrics?.sourceControlEmptyTitles?.includes("No saved remote environments") &&
+    webMetrics?.sectionTexts?.some(
+      (text) =>
+        text.includes("Remote environments") &&
+        text.includes("Add environment") &&
+        text.includes("Click “Add environment” to pair another environment."),
+    ) &&
+    lynxMetrics?.sectionTexts?.some(
+      (text) =>
+        text.includes("Remote environments") &&
+        text.includes("Add environment") &&
+        text.includes("Click “Add environment” to pair another environment."),
+    ) &&
     (webMetrics?.errorTexts?.length ?? 0) === 0 &&
     (lynxMetrics?.errorTexts?.length ?? 0) === 0
   );
@@ -884,20 +898,61 @@ function connectionsSettingsGeometryMatches(webMetrics, lynxMetrics) {
   if (stateId !== "settings-connections") return true;
   const webSections = webMetrics?.geometry?.sections ?? [];
   const lynxSections = lynxMetrics?.geometry?.sections ?? [];
-  const webReference = webSections.find((section) => section.title === "This environment")?.box
-    ?.rect;
-  if (!webReference || lynxSections.length < 2) return false;
+  const webEmpty = webMetrics?.geometry?.sourceControlEmpty?.rect;
+  const lynxEmpty = lynxMetrics?.geometry?.sourceControlEmpty?.rect;
+  const webEmptyMedia = webMetrics?.geometry?.sourceControlEmptyMedia?.rect;
+  const lynxEmptyMedia = lynxMetrics?.geometry?.sourceControlEmptyMedia?.rect;
+  const webEmptyHeader = webMetrics?.geometry?.sourceControlEmptyHeader?.rect;
+  const lynxEmptyHeader = lynxMetrics?.geometry?.sourceControlEmptyHeader?.rect;
+  const webEmptyTitle = webMetrics?.geometry?.sourceControlEmptyTitle?.rect;
+  const lynxEmptyTitle = lynxMetrics?.geometry?.sourceControlEmptyTitle?.rect;
+  const webEmptyDescription = webMetrics?.geometry?.sourceControlEmptyDescription?.rect;
+  const lynxEmptyDescription = lynxMetrics?.geometry?.sourceControlEmptyDescription?.rect;
+  if (
+    webSections.length !== lynxSections.length ||
+    webSections.length < 2 ||
+    !webEmpty ||
+    !lynxEmpty ||
+    !webEmptyMedia ||
+    !lynxEmptyMedia ||
+    !webEmptyHeader ||
+    !lynxEmptyHeader ||
+    !webEmptyTitle ||
+    !lynxEmptyTitle ||
+    !webEmptyDescription ||
+    !lynxEmptyDescription ||
+    Math.abs(webEmpty.height - lynxEmpty.height) > 1 ||
+    Math.abs(webEmptyMedia.x - webEmpty.x - (lynxEmptyMedia.x - lynxEmpty.x)) > 1 ||
+    Math.abs(webEmptyMedia.y - webEmpty.y - (lynxEmptyMedia.y - lynxEmpty.y)) > 1 ||
+    Math.abs(webEmptyHeader.x - webEmpty.x - (lynxEmptyHeader.x - lynxEmpty.x)) > 1 ||
+    Math.abs(webEmptyHeader.y - webEmpty.y - (lynxEmptyHeader.y - lynxEmpty.y)) > 1 ||
+    Math.abs(webEmptyHeader.width - lynxEmptyHeader.width) > 1 ||
+    lynxEmptyHeader.y < lynxEmptyMedia.y + lynxEmptyMedia.height ||
+    lynxEmptyDescription.y < lynxEmptyTitle.y + lynxEmptyTitle.height
+  ) {
+    return false;
+  }
   return lynxSections.every((section, index) => {
+    const webSection = webSections[index];
+    const webRect = webSection?.box?.rect;
+    const webRows = webSection?.rows?.rect;
     const rect = section.box?.rect;
     const rows = section.rows?.rect;
     const previous = lynxSections[index - 1]?.box?.rect;
     return (
+      webSection?.title === section.title &&
+      webRect &&
+      webRows &&
       rect &&
       rows &&
-      Math.abs(rect.x - webReference.x) <= 1 &&
-      Math.abs(rect.width - webReference.width) <= 1 &&
-      Math.abs(rows.x - webReference.x) <= 1 &&
-      Math.abs(rows.width - webReference.width) <= 1 &&
+      Math.abs(rect.x - webRect.x) <= 1 &&
+      Math.abs(rect.y - webRect.y) <= 3 &&
+      Math.abs(rect.width - webRect.width) <= 1 &&
+      Math.abs(rect.height - webRect.height) <= 3 &&
+      Math.abs(rows.x - webRows.x) <= 1 &&
+      Math.abs(rows.y - webRows.y) <= 3 &&
+      Math.abs(rows.width - webRows.width) <= 1 &&
+      Math.abs(rows.height - webRows.height) <= 3 &&
       (!previous || rect.y >= previous.y + previous.height)
     );
   });

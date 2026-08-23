@@ -7890,9 +7890,15 @@ async function verifyFixedNetworkAccessRow({ checked, child, client, description
   return { row, control };
 }
 
-async function verifyConnectionsLocalPolicy({ child, client, timeoutMs }) {
+async function verifyConnectionsLocalPolicy({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+}) {
   const route = await openConnectionsSettings({ child, client, timeoutMs });
-  const panel = await waitForMeasurement({
+  const content = await waitForMeasurement({
     child,
     client,
     selector: ".settings-content--connections",
@@ -7901,6 +7907,16 @@ async function verifyConnectionsLocalPolicy({ child, client, timeoutMs }) {
       measurement?.text.includes("This environment") === true &&
       measurement.text.includes("Remote environments") &&
       !measurement.text.includes("Authorized clients"),
+  });
+  const panel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-connections-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.x ?? 0) - 320) <= 1 &&
+      Math.abs((measurement?.rect.y ?? 0) - 88) <= 1 &&
+      Math.abs((measurement?.rect.width ?? 0) - 896) <= 1,
   });
   const networkAccess = await verifyFixedNetworkAccessRow({
     checked: false,
@@ -7919,13 +7935,148 @@ async function verifyConnectionsLocalPolicy({ child, client, timeoutMs }) {
       `Loopback Connections exposed pairing creation: ${JSON.stringify(createButton)}`,
     );
   }
+  const sections = await readSelectorMeasurements(
+    client,
+    ".settings-connections-panel > .settings-section",
+  );
+  const empty = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-remote-empty",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.width ?? 0) - 896) <= 1 &&
+      Math.abs((measurement?.rect.height ?? 0) - 232) <= 1 &&
+      measurement?.text.includes("No saved remote environments") &&
+      measurement.text.includes("Click “Add environment” to pair another environment."),
+  });
+  const emptyMedia = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-remote-empty__media",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.width ?? 0) - 36) <= 1 &&
+      Math.abs((measurement?.rect.height ?? 0) - 36) <= 1,
+  });
+  const emptyTitle = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-remote-empty__title",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "No saved remote environments",
+  });
+  const emptyDescription = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-remote-empty__description",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.trim() === "Click “Add environment” to pair another environment.",
+  });
+  if (
+    Math.abs(emptyMedia.rect.x - (empty.rect.x + 430)) > 1 ||
+    Math.abs(emptyMedia.rect.y - (empty.rect.y + 48)) > 1 ||
+    Math.abs(emptyTitle.rect.x - (empty.rect.x + 275)) > 1 ||
+    Math.abs(emptyTitle.rect.y - (empty.rect.y + 132)) > 1 ||
+    Math.abs(emptyTitle.rect.width - 346) > 1 ||
+    Math.abs(emptyTitle.rect.height - 28) > 1 ||
+    Math.abs(emptyDescription.rect.x - emptyTitle.rect.x) > 1 ||
+    Math.abs(emptyDescription.rect.y - (emptyTitle.rect.y + emptyTitle.rect.height + 4)) > 1 ||
+    Math.abs(emptyDescription.rect.width - 346) > 1 ||
+    Math.abs(emptyDescription.rect.height - 20) > 1
+  ) {
+    throw new Error(
+      `Native Connections empty-state anatomy drifted: ${JSON.stringify({
+        empty: empty.rect,
+        media: emptyMedia.rect,
+        title: emptyTitle.rect,
+        description: emptyDescription.rect,
+      })}`,
+    );
+  }
+  const addEnvironment = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-connections-add-environment",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["aria-disabled"] === "true" &&
+      measurement.attributes.class?.includes("ui-button--disabled") === true &&
+      measurement?.text.trim() === "Add environment" &&
+      Math.abs((measurement?.rect.height ?? 0) - 20) <= 1,
+  });
+  const addEnvironmentOpacity = await readFirstSelectorStyleValue(
+    client,
+    ".settings-connections-add-environment",
+    "opacity",
+  );
+  if (Math.abs(Number(addEnvironmentOpacity) - 0.64) > 1 / 255) {
+    throw new Error(
+      `Native disabled Add environment affordance drifted: ${JSON.stringify({
+        addEnvironment,
+        opacity: addEnvironmentOpacity,
+      })}`,
+    );
+  }
+  if (
+    sections.length !== 2 ||
+    sections[0]?.text.includes("This environment") !== true ||
+    sections[1]?.text.includes("Remote environments") !== true ||
+    Math.abs((sections[0]?.rect.y ?? 0) - panel.rect.y) > 1 ||
+    Math.abs(
+      (sections[1]?.rect.y ?? 0) -
+        ((sections[0]?.rect.y ?? 0) + (sections[0]?.rect.height ?? 0) + 48),
+    ) > 1 ||
+    Math.abs((sections[1]?.rect.height ?? 0) - 276) > 1
+  ) {
+    throw new Error(
+      `Native Connections section flow drifted: ${JSON.stringify({ panel, sections })}`,
+    );
+  }
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-connections-add-environment",
+    timeoutMs,
+  });
+  const afterDisabledTap = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-connections-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.x ?? 0) - 320) <= 1 &&
+      Math.abs((measurement?.rect.y ?? 0) - 88) <= 1,
+  });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-settings-connections-local.png",
+  });
   return {
     status: "pass",
+    input: "DevTool touch on measured Settings, Connections, and disabled Add environment controls",
     route,
+    content: content.rect,
     panel: panel.rect,
+    sections: sections.map((section) => ({ rect: section.rect, text: section.text.trim() })),
     networkAccess,
+    remoteEnvironments: {
+      addEnvironment: {
+        ...addEnvironment,
+        opacity: addEnvironmentOpacity,
+      },
+      empty: empty.rect,
+      media: emptyMedia.rect,
+      title: emptyTitle.rect,
+      description: emptyDescription.rect,
+      disabledActionStayedOnRoute: afterDisabledTap.rect,
+    },
     authorizedClientsVisible: false,
     createPairingVisible: false,
+    screenshot,
   };
 }
 
@@ -9963,7 +10114,13 @@ async function runOnce({
         })
       : undefined;
     const connectionsLocalPolicy = shouldVerifyConnectionsLocalPolicy
-      ? await verifyConnectionsLocalPolicy({ child, client, timeoutMs })
+      ? await verifyConnectionsLocalPolicy({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          timeoutMs,
+        })
       : undefined;
     const composer = runPlan11Outcomes
       ? await captureOutcome(

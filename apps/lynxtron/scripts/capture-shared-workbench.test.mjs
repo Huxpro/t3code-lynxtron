@@ -608,7 +608,39 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId !== "settings-connections"');
     assert.include(source, 'webMetrics?.rowIds?.includes("remote-environments")');
     assert.include(source, 'lynxMetrics?.rowIds?.includes("remote-environments")');
+    assert.include(
+      source,
+      'webMetrics?.sourceControlEmptyTitles?.includes("No saved remote environments")',
+    );
+    assert.include(
+      source,
+      'lynxMetrics?.sourceControlEmptyTitles?.includes("No saved remote environments")',
+    );
+    assert.include(source, "Math.abs(webEmpty.height - lynxEmpty.height) > 1");
+    assert.include(
+      source,
+      "Math.abs(webEmptyMedia.x - webEmpty.x - (lynxEmptyMedia.x - lynxEmpty.x)) > 1",
+    );
+    assert.include(
+      source,
+      "Math.abs(webEmptyMedia.y - webEmpty.y - (lynxEmptyMedia.y - lynxEmpty.y)) > 1",
+    );
+    assert.include(source, "Math.abs(webEmptyHeader.width - lynxEmptyHeader.width) > 1");
+    assert.include(source, "lynxEmptyHeader.y < lynxEmptyMedia.y + lynxEmptyMedia.height");
+    assert.include(source, "lynxEmptyDescription.y < lynxEmptyTitle.y + lynxEmptyTitle.height");
+    assert.include(source, "Math.abs(rect.y - webRect.y) <= 3");
+    assert.include(source, "Math.abs(rect.height - webRect.height) <= 3");
+    assert.include(source, "Math.abs(rows.y - webRows.y) <= 3");
+    assert.include(source, "Math.abs(rows.height - webRows.height) <= 3");
     assert.include(source, "rect.y >= previous.y + previous.height");
+    assert.include(
+      workbench,
+      "root?.querySelector('[data-slot=\"empty\"], .source-control-empty')",
+    );
+    assert.include(
+      workbench,
+      "root?.querySelector('[data-slot=\"empty-media\"], .source-control-empty__media')",
+    );
     assert.include(source, "function betaSettingsGeometryMatches");
     assert.include(source, "function settingsNavigationStateMatches(state)");
     assert.include(source, "visuallySelectedItems.length === 1");
@@ -655,7 +687,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "sourceControlEmptyTitles:");
     assert.include(workbench, "data-source-control-loading-row");
     assert.include(workbench, "doc.querySelectorAll('[data-slot=\"skeleton\"]')");
-    assert.include(workbench, 'root?.querySelector(".source-control-empty")');
+    assert.include(
+      workbench,
+      "root?.querySelector('[data-slot=\"empty\"], .source-control-empty')",
+    );
     assert.include(workbench, "settingsPanel?.querySelector('[data-slot=\"empty\"]')");
   });
 
