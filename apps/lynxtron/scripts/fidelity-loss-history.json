@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T16:39:11-07:00",
+  "updatedAt": "2026-08-22T19:35:27-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14334,6 +14334,47 @@
               "confidence": 0.99,
               "method": "native-main-transport-file-persistence",
               "source": "Both exact-bundle Native themes use main transport, advance sequence, persist identical bytes, report zero renderer errors, dispose isolated state, release ports, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "empty-thread-cleanup-current",
+      "observedAt": "2026-08-22T19:35:27-07:00",
+      "commit": "6e6143b20f4adaa41216df24c6cce39b5f11a104",
+      "codeCommit": "5d9a4f5ab7659ea0f384ac4a6168c87bfe22e240",
+      "codeState": "commit",
+      "label": "Disposable empty thread cleanup",
+      "narrative": "The reported Sidebar rows came from an August 20 bundle that predated the shared lazy-draft lifecycle. Read-only inspection found seven canonical New thread rows with zero messages, zero turns, no session, and no pending state. The current shared Sidebar row now preserves renderer-supplied action controls independently of settlement and snooze support, while a conservative shared predicate identifies only untouched empty New thread shells. Exact-bundle Native on a VACUUM snapshot deletes one such stale shell through a measured pointer action, removes it from both the shell and SQLite projection, then proves two New thread actions reuse one local draft without changing canonical or persisted thread IDs or server sequence. The source process and its eight rows remain unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point preserves the existing new-thread residuals and adds current committed-head evidence for stale-empty cleanup, lazy draft reuse, main transport, zero renderer errors, and isolated cleanup."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/empty-thread-cleanup-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "50afb923e73c01d52a0ce20bdbc7fb7e8f95073460eed1395ce5782098bcdd9c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-empty-delete-and-draft-reuse",
+              "source": "Measured Native pointer input deletes one conservatively identified empty canonical shell, then repeated New thread actions reuse one local draft ID"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-shell-and-sqlite-lifecycle",
+              "source": "The stale shell disappears from both the pushed shell and copied SQLite projection; subsequent New thread actions leave canonical IDs, persisted IDs, and server sequence unchanged"
             }
           }
         }
