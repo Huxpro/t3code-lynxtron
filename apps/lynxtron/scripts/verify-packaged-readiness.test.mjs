@@ -445,10 +445,15 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies Native New thread stays local and reuses its draft identity", () => {
     assert.include(source, "async function verifyNewThreadDraftLifecycle");
     assert.include(source, '"--verify-new-thread-draft-lifecycle"');
-    assert.include(source, "canonicalThreadIdsBefore = beforeState?.threadIds ?? []");
+    assert.include(source, "function readPersistedEmptyThreadIds");
+    assert.include(source, '"data-sidebar-empty-thread-delete"');
+    assert.include(source, "Deleting an empty Native thread did not update persistence");
+    assert.include(source, "initialCanonicalThreadIds = beforeState?.threadIds ?? []");
+    assert.include(source, "canonicalThreadIdsBefore = afterDeleteState.threadIds ?? []");
     assert.include(source, 'typeof state?.draftThreadId === "string"');
     assert.include(source, "state?.draftThreadId === firstDraftState.draftThreadId");
-    assert.include(source, "const persistedThreadIdsBefore = readPersistedThreadIds(baseDir)");
+    assert.include(source, "const initialPersistedThreadIds = readPersistedThreadIds(baseDir)");
+    assert.include(source, "const persistedThreadIdsBefore = persistedThreadIdsAfterDelete");
     assert.include(source, "const persistedThreadIdsAfter = readPersistedThreadIds(baseDir)");
     assert.include(source, "const normalizedThreadIds = (threadIds) => [...threadIds].sort()");
     assert.include(source, "Opening a local Native draft persisted an empty thread");
