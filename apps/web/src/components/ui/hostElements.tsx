@@ -36,6 +36,10 @@ export function HostButton({ children, ...props }: React.ComponentProps<"button"
   return <button {...props}>{children}</button>;
 }
 
-export function HostText({ children, ...props }: React.ComponentProps<"span">) {
+export function HostText({
+  children,
+  eventThrough: _eventThrough,
+  ...props
+}: React.ComponentProps<"span"> & { readonly eventThrough?: boolean }) {
   return <span {...props}>{children}</span>;
 }

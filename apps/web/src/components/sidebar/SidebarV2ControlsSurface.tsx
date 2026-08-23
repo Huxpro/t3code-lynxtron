@@ -109,6 +109,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
               >
                 <SquarePenIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
                 <HostText
+                  eventThrough
                   className="pointer-events-none absolute left-1/2 top-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
                   aria-hidden="true"
                 />
@@ -216,6 +217,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                 >
                   <FolderPlusIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
                   <HostText
+                    eventThrough
                     className="pointer-events-none absolute left-1/2 top-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
                     aria-hidden="true"
                   />

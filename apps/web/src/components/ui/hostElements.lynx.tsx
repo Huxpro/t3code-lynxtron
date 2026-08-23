@@ -190,16 +190,19 @@ export function HostButton({
 export function HostText({
   children,
   className,
+  eventThrough,
   onClick,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly className?: string;
+  readonly eventThrough?: boolean;
   readonly onClick?: () => void;
 }) {
   return (
     <text
       {...props}
+      event-through={eventThrough}
       className={className ? `lynx-host-text ${className}` : "lynx-host-text"}
       bindtap={onClick}
     >

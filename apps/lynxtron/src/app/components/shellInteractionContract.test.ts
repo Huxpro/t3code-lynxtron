@@ -825,11 +825,17 @@ describe("desktop shell interaction contract", () => {
       path.resolve(import.meta.dirname, "../../../../web/src/components/ui/tooltip.lynx.tsx"),
       "utf8",
     );
+    const hostElementsSource = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
+      "utf8",
+    );
 
     expect(sidebarSource).toContain(
       "if (shouldChooseProjectForNewThread(orderedProjects.length)) {",
     );
     expect(sidebarSource).toContain("uiActions.openNewThreadIn();");
+    expect(sidebarControlsSource.match(/<HostText\s+eventThrough/g)).toHaveLength(2);
+    expect(hostElementsSource).toContain("event-through={eventThrough}");
     expect(sidebarSource).toContain(
       'shortcutLabelForCommand(serverConfig.keybindings, "chat.newLocal", "MacIntel")',
     );
