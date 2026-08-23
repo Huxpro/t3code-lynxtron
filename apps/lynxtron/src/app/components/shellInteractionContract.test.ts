@@ -749,8 +749,22 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("resolveWorkingStartedAt(thread)");
     expect(sidebarSource).toContain("formatWorkingDurationLabel(Date.now() - startedMs)");
     expect(sidebarSource).toContain("workingDuration: <LynxWorkingDuration thread={thread} />");
-    expect(sidebarSource).toContain("settlementSupported={false}");
-    expect(sidebarSource).not.toContain("cardActionsPersistent");
+    expect(sidebarSource).toContain("settlementSupported={settlementSupported}");
+    expect(sidebarSource).toContain('"data-sidebar-thread-action-trigger": thread.id');
+    expect(sidebarSource).toContain('"data-sidebar-empty-thread-delete": thread.id');
+    expect(sidebarSource).toContain('? "Delete empty thread"');
+    expect(sidebarSource).toContain("data-sidebar-thread-delete={thread.id}");
+    expect(sidebarSource).toContain("data-sidebar-thread-delete-confirm={thread.id}");
+    expect(sidebarSource).toContain("bindtap={requestDelete}");
+    expect(sidebarSource).toContain("bindtap={confirmDelete}");
+    expect(sidebarSource).toContain("isDisposableEmptyThread(thread)");
+    expect(sidebarSource).toContain("t3ClientActions.archiveThread(thread.id)");
+    expect(sidebarSource).toContain("t3ClientActions.deleteThread(thread.id)");
+    expect(sidebarSource).toContain(
+      "cardActionsPersistent={actionMenuOpen || hoveredThreadId === thread.id}",
+    );
+    expect(sidebarSource).toContain("setHoveredThreadId(thread.id)");
+    expect(sidebarSource).toContain("if (!actionMenuOpen) {");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
     expect(overrides).toContain(".sidebar-v2-working-duration {");
     expect(overrides).toContain(".sidebar-v2-row-item--active {");

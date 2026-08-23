@@ -29,7 +29,6 @@ const baseProps: SidebarV2RowSurfaceProps = {
   isWoke: false,
   settlementSupported: true,
   snoozeSupported: false,
-  showSnoozeButton: false,
   snoozeMenuOpen: false,
   snoozeWakeLabelText: null,
   projectTitle: "t3code",
@@ -48,7 +47,7 @@ const baseProps: SidebarV2RowSurfaceProps = {
   remoteIndicator: <span data-remote>Remote</span>,
   providerIndicator: <span data-provider>Codex</span>,
   detailsTooltip: <span data-tooltip>Details</span>,
-  snoozeControl: null,
+  cardActionControl: null,
   settleIcon: <span>Settle icon</span>,
   unsettleIcon: <span>Unsettle icon</span>,
   unsnoozeIcon: <span>Wake icon</span>,
@@ -92,6 +91,20 @@ describe("SidebarV2RowSurface", () => {
     expect(markup).toContain('data-testid="sidebar-v2-row-slim"');
     expect(markup).toContain("2h");
     expect(markup).toContain('aria-label="Wake thread now"');
+    expect(markup).not.toContain('aria-label="Settle thread"');
+  });
+
+  it("keeps a supplied card action visible without settlement support", () => {
+    const markup = renderToStaticMarkup(
+      <SidebarV2RowSurface
+        {...baseProps}
+        settlementSupported={false}
+        cardActionControl={<button aria-label="Thread actions">Actions</button>}
+      />,
+    );
+
+    expect(markup).toContain("sidebar-v2-row-actions");
+    expect(markup).toContain('aria-label="Thread actions"');
     expect(markup).not.toContain('aria-label="Settle thread"');
   });
 
