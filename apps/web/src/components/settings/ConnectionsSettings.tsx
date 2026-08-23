@@ -84,7 +84,6 @@ import { Switch } from "../ui/switch";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import { Group, GroupSeparator } from "../ui/group";
 import { AnimatedHeight } from "../AnimatedHeight";
 import {
@@ -140,7 +139,7 @@ import { ConnectionStatusDot } from "../ConnectionStatusDot";
 import { ServerUpdateAction, ServerUpdateProgress } from "../ServerUpdateAction";
 import { CloudEnvironmentConnectRows } from "../cloud/CloudEnvironmentConnectList";
 import { ITEM_ROW_CLASSNAME, ITEM_ROW_INNER_CLASSNAME } from "./itemRows";
-import { AccessListRowSurface } from "./SettingsSurfaces";
+import { AccessListRowSurface, EmptyRemoteEnvironments } from "./SettingsSurfaces";
 
 const DEFAULT_TAILSCALE_SERVE_PORT = 443;
 const EMPTY_ADVERTISED_ENDPOINTS: ReadonlyArray<AdvertisedEndpoint> = [];
@@ -1637,24 +1636,6 @@ function CloudLinkRow({ canManageRelay }: { readonly canManageRelay: boolean }) 
   return hasCloudPublicConfig() ? <ConfiguredCloudLinkRow canManageRelay={canManageRelay} /> : null;
 }
 
-function EmptyRemoteEnvironments({ cloudEnabled = true }: { readonly cloudEnabled?: boolean }) {
-  return (
-    <Empty className="min-h-52">
-      <EmptyMedia variant="icon">
-        <ChevronsLeftRightEllipsisIcon />
-      </EmptyMedia>
-      <EmptyHeader>
-        <EmptyTitle>No saved remote environments</EmptyTitle>
-        <EmptyDescription>
-          {cloudEnabled
-            ? "Click “Add environment” to pair another environment, or connect one from T3 Connect."
-            : "Click “Add environment” to pair another environment."}
-        </EmptyDescription>
-      </EmptyHeader>
-    </Empty>
-  );
-}
-
 function CloudRemoteEnvironmentRows({
   primaryEnvironmentId,
   savedEnvironments,
@@ -1666,10 +1647,10 @@ function CloudRemoteEnvironmentRows({
     <CloudEnvironmentConnectRows
       primaryEnvironmentId={primaryEnvironmentId}
       savedEnvironments={savedEnvironments}
-      empty={<EmptyRemoteEnvironments />}
+      empty={<EmptyRemoteEnvironments icon={<ChevronsLeftRightEllipsisIcon />} />}
     />
   ) : savedEnvironments.length === 0 ? (
-    <EmptyRemoteEnvironments cloudEnabled={false} />
+    <EmptyRemoteEnvironments cloudEnabled={false} icon={<ChevronsLeftRightEllipsisIcon />} />
   ) : null;
 }
 

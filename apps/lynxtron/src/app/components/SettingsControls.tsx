@@ -65,17 +65,19 @@ export function SelectBox({
 
 export function SmallButton({
   className,
+  disabled = false,
   label,
   icon,
   onTap,
 }: {
   className?: string;
+  disabled?: boolean;
   label: string;
   icon?: ReactNode;
   onTap?: () => void;
 }) {
   return (
-    <Button className={className} onClick={onTap} size="xs" variant="outline">
+    <Button className={className} disabled={disabled} onClick={onTap} size="xs" variant="outline">
       {icon}
       {label}
     </Button>

@@ -25,6 +25,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 import {
   ArchivedThreadsSurface,
   AccessListRowSurface,
+  EmptyRemoteEnvironments,
   SourceControlItemRowSurface,
   SourceControlMarkSurface,
   StatusDotSurface,
@@ -451,7 +452,7 @@ export function ConnectionsSettings() {
   };
 
   return (
-    <SettingsPageContainer className="flex w-full min-w-0 flex-col self-stretch">
+    <SettingsPageContainer className="settings-connections-panel flex w-full min-w-0 flex-col self-stretch">
       <SettingsSection title="This environment">
         {canManageAccess ? (
           <SettingsRow
@@ -554,13 +555,22 @@ export function ConnectionsSettings() {
           ) : null}
         </SettingsSection>
       ) : null}
-      <SettingsSection id={searchableSetting("remote-environments").id} title="Remote environments">
-        <view className="settings-empty-card">
-          <text className="settings-empty__text">No saved remote environments</text>
-          <text className="settings-empty__hint">
-            Click “Add environment” to pair another environment.
-          </text>
-        </view>
+      <SettingsSection
+        id={searchableSetting("remote-environments").id}
+        title="Remote environments"
+        headerAction={
+          <SmallButton
+            className="settings-connections-add-environment"
+            disabled
+            icon={<Icon name="plus" size={12} color="#818181" />}
+            label="Add environment"
+          />
+        }
+      >
+        <EmptyRemoteEnvironments
+          cloudEnabled={false}
+          icon={<Icon name="chevrons-left-right-ellipsis" size={18} color="#a1a1aa" />}
+        />
       </SettingsSection>
     </SettingsPageContainer>
   );

@@ -4897,6 +4897,10 @@
   --align-self-row: start;
   align-self: flex-start;
 }
+.settings-content--connections > .settings-panel {
+  --align-self-row: start;
+  align-self: flex-start;
+}
 .settings-panel--keybindings {
   max-width: 948px;
 }
@@ -6020,6 +6024,94 @@
 }
 .settings-empty-card--action {
   padding: 24px 16px;
+}
+.settings-remote-empty {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 232px;
+  min-height: 232px;
+  box-sizing: border-box;
+}
+.settings-remote-empty__media {
+  position: absolute;
+  top: 48px;
+  left: calc(50% - 18px);
+  width: 36px;
+  height: 36px;
+}
+.settings-remote-empty__media-layer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  background-color: var(--card);
+  box-sizing: border-box;
+}
+.settings-remote-empty__media-layer--left {
+  transform: translateX(-2px) rotate(-10deg) scale(0.84);
+}
+.settings-remote-empty__media-layer--right {
+  transform: translateX(2px) rotate(10deg) scale(0.84);
+}
+.settings-remote-empty__media-layer--front {
+  z-index: 1;
+}
+.settings-remote-empty__header {
+  position: absolute;
+  top: 132px;
+  left: calc(50% - 173px);
+  display: block;
+  width: 346px;
+  height: 52px;
+  max-width: 384px;
+}
+.settings-remote-empty__title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 346px;
+  height: 28px;
+  color: var(--foreground);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  text-align: center;
+}
+.settings-remote-empty__description {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  display: block;
+  width: 346px;
+  height: 20px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+.settings-connections-add-environment.ui-button--xs {
+  min-width: 0;
+  height: 20px;
+  padding: 0 4px;
+  border-width: 0;
+  background-color: transparent;
+}
+.settings-connections-add-environment .ui-button__label {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 400;
 }
 .source-control-empty {
   --align-self-column: stretch;

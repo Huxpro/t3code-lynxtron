@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 
 import { cn } from "../../lib/cn";
 import { HostButton, HostLayoutView, HostText, HostView } from "../ui/hostElements";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import { SettingsRow, SettingsSection } from "./settingsLayout";
 import { searchableSetting } from "./settingsSearch";
 
@@ -340,6 +341,32 @@ export function AccessListRowSurface({
         ) : null}
       </HostView>
     </HostView>
+  );
+}
+
+export function EmptyRemoteEnvironments({
+  cloudEnabled = true,
+  icon,
+}: {
+  readonly cloudEnabled?: boolean;
+  readonly icon: ReactNode;
+}) {
+  return (
+    <Empty className="settings-remote-empty min-h-52">
+      <EmptyMedia className="settings-remote-empty__media" variant="icon">
+        {icon}
+      </EmptyMedia>
+      <EmptyHeader className="settings-remote-empty__header">
+        <EmptyTitle className="settings-remote-empty__title">
+          No saved remote environments
+        </EmptyTitle>
+        <EmptyDescription className="settings-remote-empty__description">
+          {cloudEnabled
+            ? "Click “Add environment” to pair another environment, or connect one from T3 Connect."
+            : "Click “Add environment” to pair another environment."}
+        </EmptyDescription>
+      </EmptyHeader>
+    </Empty>
   );
 }
 

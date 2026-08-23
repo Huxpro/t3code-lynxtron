@@ -115,6 +115,7 @@ export type IconName =
   | "terminal-square"
   | "chevrons-down-up"
   | "chevrons-up-down"
+  | "chevrons-left-right-ellipsis"
   | "rows-3"
   | "columns-2"
   | "text-wrap"
