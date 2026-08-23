@@ -793,7 +793,6 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
       isWoke={isWoke}
       settlementSupported={props.settlementSupported}
       snoozeSupported={props.snoozeSupported}
-      showSnoozeButton={showSnoozeButton}
       snoozeMenuOpen={snoozeMenuOpen}
       snoozeWakeLabelText={props.snoozeWakeLabelText}
       projectTitle={props.projectTitle}
@@ -836,7 +835,7 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
       }
       detailsTooltip={detailsTooltip}
       detailsRelationId={`sidebar-thread-details:${threadKey}`}
-      snoozeControl={
+      cardActionControl={
         showSnoozeButton ? (
           <SnoozePopoverButton
             open={snoozeMenuOpen}

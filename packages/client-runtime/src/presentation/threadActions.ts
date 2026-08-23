@@ -1,3 +1,5 @@
+import type { OrchestrationThreadShell } from "@t3tools/contracts";
+
 export type ThreadDestructiveAction = "archive" | "delete";
 
 export interface ThreadActionConfirmationPresentation {
@@ -37,4 +39,27 @@ export function formatThreadActionConfirmationMessage(
   return presentation.description
     ? `${presentation.title}\n${presentation.description}`
     : presentation.title;
+}
+
+export function isDisposableEmptyThread(
+  thread: Pick<
+    OrchestrationThreadShell,
+    | "hasActionableProposedPlan"
+    | "hasPendingApprovals"
+    | "hasPendingUserInput"
+    | "latestTurn"
+    | "latestUserMessageAt"
+    | "session"
+    | "title"
+  >,
+): boolean {
+  return (
+    thread.title.trim() === "New thread" &&
+    thread.latestUserMessageAt === null &&
+    thread.latestTurn === null &&
+    thread.session === null &&
+    !thread.hasPendingApprovals &&
+    !thread.hasPendingUserInput &&
+    !thread.hasActionableProposedPlan
+  );
 }

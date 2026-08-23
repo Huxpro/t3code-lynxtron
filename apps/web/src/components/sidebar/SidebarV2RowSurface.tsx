@@ -26,7 +26,6 @@ export interface SidebarV2RowSurfaceProps {
   readonly isWoke: boolean;
   readonly settlementSupported: boolean;
   readonly snoozeSupported: boolean;
-  readonly showSnoozeButton: boolean;
   readonly cardActionsPersistent?: boolean;
   readonly snoozeMenuOpen: boolean;
   readonly snoozeWakeLabelText: string | null;
@@ -48,7 +47,7 @@ export interface SidebarV2RowSurfaceProps {
   readonly detailsTooltip: ReactNode;
   readonly detailsOverlay?: ReactNode;
   readonly detailsRelationId?: string;
-  readonly snoozeControl: ReactNode;
+  readonly cardActionControl: ReactNode;
   readonly settleIcon: ReactNode;
   readonly unsettleIcon: ReactNode;
   readonly unsnoozeIcon: ReactNode;
@@ -57,6 +56,8 @@ export interface SidebarV2RowSurfaceProps {
   readonly onDoubleClick: HostViewProps["onDoubleClick"];
   readonly onKeyDown: HostViewProps["onKeyDown"];
   readonly onContextMenu: HostViewProps["onContextMenu"];
+  readonly onMouseEnter?: HostViewProps["onMouseEnter"];
+  readonly onMouseLeave?: HostViewProps["onMouseLeave"];
   readonly onSettleClick: HostButtonProps["onClick"];
   readonly onUnsettleClick: HostButtonProps["onClick"];
   readonly onUnsnoozeClick: HostButtonProps["onClick"];
@@ -119,6 +120,8 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 onDoubleClick={props.onDoubleClick}
                 onKeyDown={props.onKeyDown}
                 onContextMenu={props.onContextMenu}
+                onMouseEnter={props.onMouseEnter}
+                onMouseLeave={props.onMouseLeave}
               />
             }
           >
@@ -230,6 +233,8 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               onDoubleClick={props.onDoubleClick}
               onKeyDown={props.onKeyDown}
               onContextMenu={props.onContextMenu}
+              onMouseEnter={props.onMouseEnter}
+              onMouseLeave={props.onMouseLeave}
             />
           }
         >
@@ -274,7 +279,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                     <HostText>{props.threadTimeLabel}</HostText>
                   )}
                 </HostView>
-                {props.settlementSupported || props.showSnoozeButton ? (
+                {props.settlementSupported || props.cardActionControl !== null ? (
                   <HostText
                     className={cn(
                       "sidebar-v2-row-actions absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/v2-row:opacity-100",
@@ -282,7 +287,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                       props.cardActionsPersistent && "opacity-100",
                     )}
                   >
-                    {props.snoozeControl}
+                    {props.cardActionControl}
                     {props.settlementSupported ? (
                       <HostButton
                         type="button"

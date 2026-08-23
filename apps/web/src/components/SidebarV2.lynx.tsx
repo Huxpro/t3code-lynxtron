@@ -32,6 +32,7 @@ import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation
 import { clientCapabilities } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
 import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
+import { isDisposableEmptyThread } from "@t3tools/client-runtime/presentation/thread-actions";
 
 function compactSidebarTimeLabel(label: string): string {
   if (label === "just now") return "now";
@@ -217,6 +218,18 @@ function LynxThreadActionMenu({
       .catch(() => undefined)
       .finally(onClose);
   };
+  const requestDelete = (event: unknown) => {
+    stopPropagation(event);
+    if (isDisposableEmptyThread(thread)) {
+      run(() => t3ClientActions.deleteThread(thread.id));
+      return;
+    }
+    setConfirmingDelete(true);
+  };
+  const confirmDelete = (event: unknown) => {
+    stopPropagation(event);
+    run(() => t3ClientActions.deleteThread(thread.id));
+  };
 
   return (
     <>
@@ -266,9 +279,13 @@ function LynxThreadActionMenu({
               </view>
               <view
                 className="sidebar-v2-action-menu__confirm-button sidebar-v2-action-menu__confirm-button--danger"
-                bindtap={() => run(() => t3ClientActions.deleteThread(thread.id))}
+                data-sidebar-thread-delete-confirm={thread.id}
+                bindtap={confirmDelete}
               >
-                <text className="sidebar-v2-action-menu__item-label sidebar-v2-action-menu__item-label--danger">
+                <text
+                  className="sidebar-v2-action-menu__item-label sidebar-v2-action-menu__item-label--danger"
+                  bindtap={confirmDelete}
+                >
                   Delete
                 </text>
               </view>
@@ -326,10 +343,14 @@ function LynxThreadActionMenu({
             </view>
             <view
               className="sidebar-v2-action-menu__item sidebar-v2-action-menu__item--danger"
-              bindtap={() => setConfirmingDelete(true)}
+              data-sidebar-thread-delete={thread.id}
+              bindtap={requestDelete}
             >
               <Icon name="trash-2" size={14} color="#f87171" />
-              <text className="sidebar-v2-action-menu__item-label sidebar-v2-action-menu__item-label--danger">
+              <text
+                className="sidebar-v2-action-menu__item-label sidebar-v2-action-menu__item-label--danger"
+                bindtap={requestDelete}
+              >
                 Delete
               </text>
             </view>
@@ -361,6 +382,7 @@ export default function SidebarV2() {
   const [projectSettingsProjectId, setProjectSettingsProjectId] = useState<string | null>(null);
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
   const [actionMenuThreadId, setActionMenuThreadId] = useState<string | null>(null);
+  const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
   const orderedProjects = useMemo(
     () => sortScopedProjectsForSidebar(projects, threads, "updated_at"),
     [projects, threads],
@@ -577,6 +599,7 @@ export default function SidebarV2() {
           ...visibleActiveThreads.map((thread) => {
             const status = resolveSidebarV2Status(thread);
             const isActive = thread.id === activeThreadId;
+            const disposableEmptyThread = isDisposableEmptyThread(thread);
             const project = projectById.get(thread.projectId) ?? null;
             const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
             const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
@@ -599,9 +622,9 @@ export default function SidebarV2() {
                 }
                 isUnread={false}
                 isWoke={false}
-                settlementSupported={false}
+                settlementSupported={settlementSupported}
                 snoozeSupported={false}
-                showSnoozeButton={false}
+                cardActionsPersistent={actionMenuOpen || hoveredThreadId === thread.id}
                 snoozeMenuOpen={false}
                 snoozeWakeLabelText={null}
                 projectTitle={project?.title ?? null}
@@ -664,17 +687,31 @@ export default function SidebarV2() {
                     />
                   ) : undefined
                 }
-                snoozeControl={
+                cardActionControl={
                   <view
                     className="sidebar-v2-card-action-icon"
-                    data-sidebar-thread-action-trigger={thread.id}
-                    aria-label={`Thread actions for ${thread.title}`}
+                    {...(disposableEmptyThread
+                      ? { "data-sidebar-empty-thread-delete": thread.id }
+                      : { "data-sidebar-thread-action-trigger": thread.id })}
+                    aria-label={
+                      disposableEmptyThread
+                        ? "Delete empty thread"
+                        : `Thread actions for ${thread.title}`
+                    }
                     bindtap={(event: unknown) => {
                       stopPropagation(event);
+                      if (disposableEmptyThread) {
+                        void t3ClientActions.deleteThread(thread.id).catch(() => undefined);
+                        return;
+                      }
                       setActionMenuThreadId(actionMenuOpen ? null : thread.id);
                     }}
                   >
-                    <Icon name="ellipsis" size={12} color="#a1a1aa" />
+                    <Icon
+                      name={disposableEmptyThread ? "x" : "ellipsis"}
+                      size={12}
+                      color="#a1a1aa"
+                    />
                   </view>
                 }
                 settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
@@ -693,6 +730,14 @@ export default function SidebarV2() {
                 onContextMenu={(event) => {
                   stopPropagation(event);
                   setActionMenuThreadId(thread.id);
+                }}
+                onMouseEnter={() => {
+                  setHoveredThreadId(thread.id);
+                }}
+                onMouseLeave={() => {
+                  if (!actionMenuOpen) {
+                    setHoveredThreadId((current) => (current === thread.id ? null : current));
+                  }
                 }}
                 onSettleClick={(event) => {
                   stopPropagation(event);
@@ -746,7 +791,6 @@ export default function SidebarV2() {
                 isWoke={false}
                 settlementSupported={settlementSupported}
                 snoozeSupported={false}
-                showSnoozeButton={false}
                 snoozeMenuOpen={false}
                 snoozeWakeLabelText={null}
                 projectTitle={project?.title ?? null}
@@ -783,7 +827,7 @@ export default function SidebarV2() {
                     />
                   ) : undefined
                 }
-                snoozeControl={null}
+                cardActionControl={null}
                 settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
                 unsettleIcon={
                   <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
