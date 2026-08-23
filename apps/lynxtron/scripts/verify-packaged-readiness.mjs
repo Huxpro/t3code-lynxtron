@@ -9748,6 +9748,149 @@ async function readArchiveSettingsEvidence({ child, client, timeoutMs }) {
   };
 }
 
+async function readAppearanceSettingsEvidence({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+}) {
+  const appearancePanel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-content--appearance",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Appearance") === true &&
+      measurement.text.includes("Theme") &&
+      measurement.text.includes("Glass opacity") &&
+      measurement.text.includes("Word wrap"),
+  });
+  const rows = await readSelectorMeasurements(
+    client,
+    ".settings-content--appearance .settings-row",
+  );
+  const unavailableTitles = [
+    "Glass opacity",
+    ...(appearancePanel.text.includes("Environment identification")
+      ? ["Environment identification"]
+      : []),
+    "Word wrap",
+  ];
+  const unavailableRows = rows.filter(
+    (row) => row.attributes["data-settings-unavailable"] === "true",
+  );
+  const availableRows = rows.filter(
+    (row) => row.attributes["data-settings-unavailable"] !== "true",
+  );
+  const [theme] = availableRows;
+  assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 132);
+  if (
+    rows.length !== unavailableTitles.length + 1 ||
+    availableRows.length !== 1 ||
+    theme.attributes["aria-disabled"] === "true" ||
+    theme.attributes["data-settings-unavailable"] === "true"
+  ) {
+    throw new Error(
+      `Appearance row availability is inconsistent: ${JSON.stringify({
+        availableRows,
+        rows,
+        unavailableTitles,
+      })}`,
+    );
+  }
+  if (
+    unavailableRows.length !== unavailableTitles.length ||
+    unavailableRows.some((row) => row.attributes["aria-disabled"] !== "true")
+  ) {
+    throw new Error(
+      `Appearance unavailable rows lost disabled semantics: ${JSON.stringify({
+        unavailableRows,
+        unavailableTitles,
+      })}`,
+    );
+  }
+  const unavailableOpacities = await readSelectorStyleValues(
+    client,
+    ".settings-content--appearance .settings-row--unavailable",
+    "opacity",
+  );
+  if (
+    unavailableOpacities.length !== unavailableRows.length ||
+    unavailableOpacities.some(
+      (opacity) => opacity === null || Math.abs(Number(opacity) - 0.48) > 1 / 255,
+    )
+  ) {
+    throw new Error(
+      `Appearance unavailable rows are not visibly muted: ${JSON.stringify({
+        unavailableOpacities,
+        unavailableRows,
+      })}`,
+    );
+  }
+  return {
+    panel: appearancePanel.rect,
+    text: appearancePanel.text,
+    theme,
+    unavailableRows,
+    unavailableOpacities,
+    screenshot: captureNativeScreenshot({
+      client,
+      devToolCli,
+      outputDirectory,
+      name: "native-settings-appearance-unavailable.png",
+    }),
+  };
+}
+
+async function verifySettingsAppearance({ child, client, devToolCli, outputDirectory, timeoutMs }) {
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  const generalSelection = await assertSettingsNavigationSelection(client, "general");
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--appearance",
+    timeoutMs,
+  });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "appearance",
+    route: "/settings/appearance",
+    timeoutMs,
+  });
+  const appearanceSelection = await assertSettingsNavigationSelection(client, "appearance");
+  const appearance = await readAppearanceSettingsEvidence({
+    child,
+    client,
+    devToolCli,
+    outputDirectory,
+    timeoutMs,
+  });
+  await tapSelector({ child, client, selector: ".settings-nav__back", timeoutMs });
+  await waitForChatRoute({ child, client, timeoutMs });
+  return {
+    status: "pass",
+    input: "DevTool taps on measured Settings, Appearance, and Back controls",
+    routeTransition: {
+      sourceAuthority:
+        "Web replaces Settings route content immediately; only titlebar/sidebar inset changes use the shared 200ms linear reduced-motion-aware transition.",
+      generalSelection,
+      appearanceSelection,
+      finalRoute: "/",
+    },
+    appearance,
+    physicalKeyboard: "pending-user-session",
+  };
+}
+
 async function waitForRouteChange({ child, client, initialRoute, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
@@ -9899,92 +10042,13 @@ async function verifySettingsRouteBehavior({
       await assertSettingsNavigationSelection(client, route.slice("/settings/".length)),
     );
     if (route === "/settings/appearance") {
-      const appearancePanel = await waitForMeasurement({
+      appearance = await readAppearanceSettingsEvidence({
         child,
         client,
-        selector: ".settings-content--appearance",
+        devToolCli,
+        outputDirectory,
         timeoutMs,
-        predicate: (measurement) =>
-          measurement?.text.includes("Appearance") === true &&
-          measurement.text.includes("Theme") &&
-          measurement.text.includes("Glass opacity") &&
-          measurement.text.includes("Word wrap"),
       });
-      const rows = await readSelectorMeasurements(
-        client,
-        ".settings-content--appearance .settings-row",
-      );
-      const unavailableTitles = [
-        "Glass opacity",
-        ...(appearancePanel.text.includes("Environment identification")
-          ? ["Environment identification"]
-          : []),
-        "Word wrap",
-      ];
-      const unavailableRows = rows.filter(
-        (row) => row.attributes["data-settings-unavailable"] === "true",
-      );
-      const availableRows = rows.filter(
-        (row) => row.attributes["data-settings-unavailable"] !== "true",
-      );
-      const [theme] = availableRows;
-      assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 132);
-      if (
-        rows.length !== unavailableTitles.length + 1 ||
-        availableRows.length !== 1 ||
-        theme.attributes["aria-disabled"] === "true" ||
-        theme.attributes["data-settings-unavailable"] === "true"
-      ) {
-        throw new Error(
-          `Appearance row availability is inconsistent: ${JSON.stringify({
-            availableRows,
-            rows,
-            unavailableTitles,
-          })}`,
-        );
-      }
-      if (
-        unavailableRows.length !== unavailableTitles.length ||
-        unavailableRows.some((row) => row.attributes["aria-disabled"] !== "true")
-      ) {
-        throw new Error(
-          `Appearance unavailable rows lost disabled semantics: ${JSON.stringify({
-            unavailableRows,
-            unavailableTitles,
-          })}`,
-        );
-      }
-      const unavailableOpacities = await readSelectorStyleValues(
-        client,
-        ".settings-content--appearance .settings-row--unavailable",
-        "opacity",
-      );
-      if (
-        unavailableOpacities.length !== unavailableRows.length ||
-        unavailableOpacities.some(
-          (opacity) => opacity === null || Math.abs(Number(opacity) - 0.48) > 1 / 255,
-        )
-      ) {
-        throw new Error(
-          `Appearance unavailable rows are not visibly muted: ${JSON.stringify({
-            unavailableOpacities,
-            unavailableRows,
-          })}`,
-        );
-      }
-      appearance = {
-        panel: appearancePanel.rect,
-        text: appearancePanel.text,
-        theme,
-        unavailableRows,
-        unavailableOpacities,
-        screenshot: captureNativeScreenshot({
-          client,
-          devToolCli,
-          outputDirectory,
-          name: "native-settings-appearance-unavailable.png",
-        }),
-      };
     } else if (route === "/settings/keybindings") {
       const keybindingsPanel = await waitForMeasurement({
         child,
@@ -10782,6 +10846,7 @@ async function runOnce({
   requireCanonicalThread,
   timeoutMs,
   verifySettingsNavigation,
+  verifySettingsAppearance: shouldVerifySettingsAppearance,
   verifyProvidersSettings: shouldVerifyProvidersSettings,
   verifySourceControlLoading: shouldVerifySourceControlLoading,
   verifySourceControlError: shouldVerifySourceControlError,
@@ -11171,6 +11236,15 @@ async function runOnce({
             timeoutMs,
           })
         : undefined;
+    const settingsAppearance = shouldVerifySettingsAppearance
+      ? await verifySettingsAppearance({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
     const providersSettings = shouldVerifyProvidersSettings
       ? await verifyProvidersSettings({
           child,
@@ -11589,6 +11663,7 @@ async function runOnce({
       newThreadProjects,
       filePickerDefault,
       settingsNavigation,
+      settingsAppearance,
       providersSettings,
       sourceControlLoading,
       sourceControlError,
@@ -11654,6 +11729,7 @@ async function runOnce({
       filePickerDefault,
       composerThemeScreenshot,
       settingsNavigation,
+      settingsAppearance,
       providersSettings,
       sourceControlLoading,
       sourceControlError,
@@ -11727,6 +11803,7 @@ const expectedEnvironmentIdentificationMode = argumentValue(
 const expectedModelLabel = argumentValue("--expected-model-label");
 const expectNoComposerContext = process.argv.includes("--expect-no-composer-context");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
+const shouldVerifySettingsAppearance = process.argv.includes("--verify-settings-appearance");
 const shouldVerifyProvidersSettings = process.argv.includes("--verify-providers-settings");
 const shouldVerifySourceControlLoading = process.argv.includes("--verify-source-control-loading");
 const shouldVerifySourceControlError = process.argv.includes("--verify-source-control-error");
@@ -12059,6 +12136,7 @@ if (
   !rightPanelAddMenuOnlyEmptyFixture &&
   !projectSettingsOnlyEmptyFixture &&
   !fileEditingSaveOnlyEmptyFixture &&
+  !shouldVerifySettingsAppearance &&
   !shouldVerifySidebarProjectGroups &&
   !shouldVerifyNewThreadProjects &&
   !shouldVerifyFilePickerDefault &&
@@ -12115,12 +12193,14 @@ for (let index = 1; index <= runs; index += 1) {
         !rightPanelAddMenuOnlyEmptyFixture &&
         !projectSettingsOnlyEmptyFixture &&
         !fileEditingSaveOnlyEmptyFixture &&
+        !shouldVerifySettingsAppearance &&
         !shouldVerifySidebarProjectGroups &&
         !shouldVerifyNewThreadProjects &&
         !shouldVerifyFilePickerDefault &&
         !shouldVerifyFileSheetBack,
       timeoutMs,
       verifySettingsNavigation,
+      verifySettingsAppearance: shouldVerifySettingsAppearance,
       verifyProvidersSettings: shouldVerifyProvidersSettings,
       verifySourceControlLoading: shouldVerifySourceControlLoading,
       verifySourceControlError: shouldVerifySourceControlError,

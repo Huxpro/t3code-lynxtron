@@ -1091,6 +1091,13 @@ describe("packaged readiness Sidebar geometry", () => {
   });
 
   it("verifies unavailable Appearance rows as muted disabled capabilities", () => {
+    assert.include(source, "async function verifySettingsAppearance");
+    assert.include(source, '"--verify-settings-appearance"');
+    assert.include(source, 'selector: ".sidebar-settings-row"');
+    assert.include(source, 'selector: ".settings-nav__item--appearance"');
+    assert.include(source, 'route: "/settings/appearance"');
+    assert.include(source, 'selector: ".settings-nav__back"');
+    assert.include(source, "readAppearanceSettingsEvidence");
     assert.include(source, 'selector: ".settings-content--appearance"');
     assert.include(source, "async function readSelectorMeasurements");
     assert.include(source, "rows.length !== unavailableTitles.length + 1");
@@ -1105,6 +1112,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '".settings-content--appearance .settings-row--unavailable"');
     assert.include(source, "Math.abs(Number(opacity) - 0.48) > 1 / 255");
     assert.include(source, 'name: "native-settings-appearance-unavailable.png"');
+    assert.include(source, 'physicalKeyboard: "pending-user-session"');
+    assert.include(source, "only titlebar/sidebar inset changes use the shared 200ms linear");
+    assert.include(outcomeChecksSource, "settingsAppearance");
   });
 
   it("verifies the exact-bundle Source Control error anatomy and retry", () => {
