@@ -5406,6 +5406,9 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
   }
   const [timelineHost] = await readSelectorRects(client, ".timeline-host");
   const [timelineList] = await readSelectorRects(client, ".timeline-list");
+  const timelineTopInset = Number.parseFloat(
+    await readFirstSelectorStyleValue(client, ".timeline-list", "padding-top"),
+  );
   const rowRoots = await readSelectorRects(client, ".timeline-row-root");
   const assistantRowRoot = rowRoots[1];
   const assistantRowMeasurement = await readOptionalMeasurement(
@@ -5418,10 +5421,11 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
   const transcriptGeometryMatches =
     timelineHost &&
     timelineList &&
+    Number.isFinite(timelineTopInset) &&
     rowRoots.length === 2 &&
     assistantRowRoot &&
     assistantRow &&
-    Math.abs(rowRoots[0].y - (timelineHost.y + 48)) <= 1 &&
+    Math.abs(rowRoots[0].y - (timelineList.y + timelineTopInset)) <= 1 &&
     Math.abs(assistantRowRoot.y - (rowRoots[0].y + rowRoots[0].height)) <= 1 &&
     Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5;
   if (
@@ -5433,6 +5437,7 @@ async function verifyCompletedTranscriptState({ client, devToolCli, outputDirect
       `Canonical completed transcript drifted: ${JSON.stringify({
         timelineHost,
         timelineList,
+        timelineTopInset,
         rowRoots,
         assistantRowRoot,
         assistantRow,
