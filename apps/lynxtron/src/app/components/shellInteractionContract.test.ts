@@ -761,7 +761,7 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("t3ClientActions.archiveThread(thread.id)");
     expect(sidebarSource).toContain("t3ClientActions.deleteThread(thread.id)");
     expect(sidebarSource).toContain(
-      "cardActionsPersistent={actionMenuOpen || hoveredThreadId === thread.id}",
+      "disposableEmptyThread || actionMenuOpen || hoveredThreadId === thread.id",
     );
     expect(sidebarSource).toContain("setHoveredThreadId(thread.id)");
     expect(sidebarSource).toContain("if (!actionMenuOpen) {");
@@ -1094,6 +1094,10 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain("projectDraftThreadModelSelection");
     expect(clientSource).toContain("projectDraftThreadRuntimeMode");
     expect(clientSource).toContain("projectDraftThreadInteractionMode");
+    expect(clientSource).toContain("draftThreadsByProjectId: LocalDraftThreadsByProjectId");
+    expect(clientSource).toContain("readLocalDraftThreadForProject(");
+    expect(clientSource).toContain("rememberLocalDraftThread(");
+    expect(clientSource).toContain("forgetLocalDraftThread(");
     expect(newThreadHookSource).toContain(
       "await t3ClientActions.createThread(projectRef.projectId, options)",
     );

@@ -10,10 +10,13 @@ import {
 import {
   buildDraftThreadTurnBootstrap,
   createLocalDraftThread,
+  forgetLocalDraftThread,
   projectDraftThreadInteractionMode,
   projectDraftThreadModelSelection,
   projectDraftThreadRuntimeMode,
   projectDraftThreadWorkspace,
+  readLocalDraftThreadForProject,
+  rememberLocalDraftThread,
   shouldFinalizePromotedDraftThread,
 } from "./draftThread.ts";
 
@@ -23,6 +26,35 @@ const selection = {
 };
 
 describe("local draft thread", () => {
+  it("remembers one reusable local draft per project", () => {
+    const first = createLocalDraftThread({
+      threadId: ThreadId.make("draft-a"),
+      projectId: ProjectId.make("project-a"),
+      modelSelection: selection,
+      createdAt: "2026-08-22T00:00:00.000Z",
+    });
+    const second = createLocalDraftThread({
+      threadId: ThreadId.make("draft-b"),
+      projectId: ProjectId.make("project-b"),
+      modelSelection: selection,
+      createdAt: "2026-08-22T00:01:00.000Z",
+    });
+
+    const registry = rememberLocalDraftThread(rememberLocalDraftThread({}, first), second);
+
+    expect(readLocalDraftThreadForProject(registry, first.projectId)).toBe(first);
+    expect(readLocalDraftThreadForProject(registry, second.projectId)).toBe(second);
+    expect(forgetLocalDraftThread(registry, first)).toEqual({
+      [second.projectId]: second,
+    });
+    expect(
+      forgetLocalDraftThread(registry, {
+        ...first,
+        id: ThreadId.make("stale-draft-a"),
+      }),
+    ).toBe(registry);
+  });
+
   it("builds a non-persisted thread shell with the same defaults as a server thread", () => {
     expect(
       createLocalDraftThread({
