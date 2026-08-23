@@ -2207,6 +2207,173 @@ async function verifyQuickSwitchState({
   };
 }
 
+async function verifyAddProjectSources({
+  child,
+  client,
+  devToolCli,
+  expectedTheme,
+  outputDirectory,
+  timeoutMs,
+}) {
+  const expectedTitles = [
+    "Local folder",
+    "Git URL",
+    "GitHub repository",
+    "Azure DevOps repository",
+    "Bitbucket repository",
+    "GitLab repository",
+  ];
+  const panel = await waitForStableMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-quick-switch-view"] === "add-project-sources" &&
+      expectedTitles.every((title) => measurement.text.includes(title)) &&
+      !measurement.text.includes("Checking source control providers"),
+  });
+  const search = await readOptionalMeasurement(client, ".palette-search");
+  const results = await readOptionalMeasurement(client, ".palette-results");
+  const footer = await readOptionalMeasurement(client, ".palette-footer");
+  const rows = await readSelectorMeasurements(client, ".quick-switch-source-row");
+  const setupBadges = await readSelectorMeasurements(client, ".quick-switch-setup-badge");
+  const titles = expectedTitles.filter((title) => panel.text.includes(title));
+  const disabledRows = rows.filter((row) => row.attributes.class?.includes("opacity-64"));
+  const activeRows = rows.filter((row) => row.attributes["data-palette-active"] === "true");
+  const disabledOpacity = await readFirstSelectorStyleValue(
+    client,
+    ".quick-switch-source-row.opacity-64",
+    "opacity",
+  );
+  if (
+    !search ||
+    !results ||
+    !footer ||
+    rows.length !== expectedTitles.length ||
+    JSON.stringify(titles) !== JSON.stringify(expectedTitles) ||
+    rows[0]?.text.includes("Local folder") !== true ||
+    activeRows.length !== 1 ||
+    activeRows[0]?.text.includes("Local folder") !== true ||
+    disabledRows.length === 0 ||
+    setupBadges.length !== disabledRows.length ||
+    disabledOpacity !== "0.64" ||
+    !footer.text.includes("Backspace") ||
+    !footer.text.includes("Back")
+  ) {
+    throw new Error(
+      `Add Project sources anatomy drifted: ${JSON.stringify({
+        panel: panel.rect,
+        search: search?.rect,
+        results: results?.rect,
+        footer: footer?.rect,
+        footerText: footer?.text,
+        rows,
+        setupBadges,
+        titles,
+        disabledOpacity,
+      })}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-add-project-sources-${expectedTheme ?? "system"}.png`,
+  });
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".quick-switch-source-row.opacity-64",
+    timeoutMs,
+  });
+  const afterDisabledTap = await waitForStableMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-quick-switch-view"] === "add-project-sources",
+  });
+
+  await tapSelector({
+    child,
+    client,
+    selector: ".quick-switch-source-row",
+    timeoutMs,
+  });
+  const localFolder = await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-quick-switch-view"] === "add-project-local" &&
+      measurement.text.includes("Local folder"),
+  });
+
+  await tapSelector({ child, client, selector: ".qs-search__back", timeoutMs });
+  const returnedSources = await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-quick-switch-view"] === "add-project-sources",
+  });
+  await tapSelector({ child, client, selector: ".qs-search__back", timeoutMs });
+  const returnedRoot = await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-quick-switch-view"] === "root",
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".palette-backdrop",
+    point: "bottom-right",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    input: "initialOverlay add-project plus measured DevTool taps",
+    physicalKeyboard: "pending-user-session",
+    panel: panel.rect,
+    search: search.rect,
+    results: results.rect,
+    footer: footer.rect,
+    footerText: footer.text,
+    rows: rows.map((row) => ({
+      active: row.attributes["data-palette-active"] === "true",
+      disabled: row.attributes.class?.includes("opacity-64") === true,
+      rect: row.rect,
+      text: row.text,
+    })),
+    setupBadges: setupBadges.map((badge) => ({ rect: badge.rect, text: badge.text })),
+    disabledOpacity,
+    screenshot,
+    flow: {
+      disabledTapStayedInSources:
+        afterDisabledTap.attributes["data-quick-switch-view"] === "add-project-sources",
+      localFolderView: localFolder.attributes["data-quick-switch-view"],
+      returnedSources: returnedSources.attributes["data-quick-switch-view"],
+      returnedRoot: returnedRoot.attributes["data-quick-switch-view"],
+      dismissed: true,
+    },
+  };
+}
+
 async function verifyActivePlanModeChip({ child, client, timeoutMs }) {
   const control = await waitForMeasurement({
     child,
@@ -9902,6 +10069,7 @@ async function runOnce({
   verifyIdleThreadState: shouldVerifyIdleThreadState,
   idleFixture,
   verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
+  verifyAddProjectSources: shouldVerifyAddProjectSources,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
   verifySidebarInlineSearch: shouldVerifySidebarInlineSearch,
   verifyFloatingRelations: shouldVerifyFloatingRelations,
@@ -9955,7 +10123,7 @@ async function runOnce({
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
   const baseDir = path.join(runRoot, "state");
   cpSync(fixtureDir, baseDir, { recursive: true });
-  if (expectedEnvironmentIdentificationMode || expectedTheme) {
+  if (expectedEnvironmentIdentificationMode || expectedTheme || shouldVerifyAddProjectSources) {
     const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
     const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
     writeFileSync(
@@ -9964,6 +10132,7 @@ async function runOnce({
         {
           ...prefs,
           ...(expectedTheme ? { themePreference: expectedTheme } : {}),
+          ...(shouldVerifyAddProjectSources ? { initialOverlay: "add-project" } : {}),
           clientSettings: {
             ...prefs.clientSettings,
             ...(expectedEnvironmentIdentificationMode
@@ -10183,6 +10352,16 @@ async function runOnce({
           expectedTheme,
           outputDirectory,
           query: quickSwitchQuery,
+          timeoutMs,
+        })
+      : undefined;
+    const addProjectSources = shouldVerifyAddProjectSources
+      ? await verifyAddProjectSources({
+          child,
+          client,
+          devToolCli,
+          expectedTheme,
+          outputDirectory,
           timeoutMs,
         })
       : undefined;
@@ -10631,6 +10810,7 @@ async function runOnce({
       heroComposerState,
       idleThreadState,
       quickSwitchDefault,
+      addProjectSources,
       settingsNavigation,
       providersSettings,
       sourceControlLoading,
@@ -10691,6 +10871,7 @@ async function runOnce({
       heroComposerState,
       idleThreadState,
       quickSwitchDefault,
+      addProjectSources,
       composerThemeScreenshot,
       settingsNavigation,
       providersSettings,
@@ -10774,6 +10955,7 @@ const shouldVerifyComposerSendMaterial = process.argv.includes("--verify-compose
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
+const shouldVerifyAddProjectSources = process.argv.includes("--verify-add-project-sources");
 const quickSwitchQuery = argumentValue("--quick-switch-query") ?? "";
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const shouldVerifySidebarInlineSearch = process.argv.includes("--verify-sidebar-inline-search");
@@ -11148,6 +11330,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyIdleThreadState: shouldVerifyIdleThreadState,
       idleFixture,
       verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
+      verifyAddProjectSources: shouldVerifyAddProjectSources,
       verifySidebarGeometry: shouldVerifySidebarGeometry,
       verifySidebarInlineSearch: shouldVerifySidebarInlineSearch,
       verifyFloatingRelations: shouldVerifyFloatingRelations,

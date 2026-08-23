@@ -941,6 +941,31 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "initialOverlay product state plus measured DevTool outside tap");
   });
 
+  it("verifies the Native Add Project source flow without creating a project", () => {
+    assert.include(source, "async function verifyAddProjectSources");
+    assert.include(source, '"--verify-add-project-sources"');
+    assert.include(source, 'initialOverlay: "add-project"');
+    assert.include(source, '"GitHub repository"');
+    assert.include(source, '"Azure DevOps repository"');
+    assert.include(source, '"Bitbucket repository"');
+    assert.include(source, '"GitLab repository"');
+    assert.include(source, 'readSelectorMeasurements(client, ".quick-switch-source-row")');
+    assert.include(source, 'readSelectorMeasurements(client, ".quick-switch-setup-badge")');
+    assert.include(source, "readFirstSelectorStyleValue(");
+    assert.include(source, '".quick-switch-source-row.opacity-64"');
+    assert.include(source, 'disabledOpacity !== "0.64"');
+    assert.include(source, "disabledTapStayedInSources:");
+    assert.include(source, 'selector: ".qs-search__back"');
+    assert.include(
+      source,
+      'measurement?.attributes["data-quick-switch-view"] === "add-project-local"',
+    );
+    assert.include(source, 'measurement?.attributes["data-quick-switch-view"] === "root"');
+    assert.include(source, 'selector: ".palette-backdrop"');
+    assert.include(source, 'physicalKeyboard: "pending-user-session"');
+    assert.notInclude(source, "cloneAndAddProject");
+  });
+
   it("captures Native General Settings content and geometry before route cycling", () => {
     assert.include(source, "async function assertSettingsNavigationSelection");
     assert.include(source, "Settings navigation selection is not truthful");
