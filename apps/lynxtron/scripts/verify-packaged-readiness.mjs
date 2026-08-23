@@ -3030,43 +3030,45 @@ async function verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs
   const beforeState = await readClientState(client);
   const initialCanonicalThreadIds = beforeState?.threadIds ?? [];
   const initialPersistedThreadIds = readPersistedThreadIds(baseDir);
-  const emptyThreadId =
-    readPersistedEmptyThreadIds(baseDir).find(
-      (threadId) => threadId !== beforeState?.activeThreadId,
-    ) ?? null;
-  if (!emptyThreadId) {
-    throw new Error("The Native draft lifecycle fixture has no inactive empty thread to delete.");
+  const emptyThreadIds = readPersistedEmptyThreadIds(baseDir);
+  if (emptyThreadIds.length === 0) {
+    throw new Error("The Native draft lifecycle fixture has no empty threads to delete.");
   }
-  await tapSelectorByAttribute({
-    attribute: "data-sidebar-empty-thread-delete",
-    child,
-    client,
-    selector: "[data-sidebar-empty-thread-delete]",
-    timeoutMs,
-    value: emptyThreadId,
-  });
-  const afterDeleteState = await waitForClientState({
-    child,
-    client,
-    timeoutMs,
-    predicate: (state) =>
-      Array.isArray(state?.threadIds) &&
-      !state.threadIds.includes(emptyThreadId) &&
-      state.threadIds.length === initialCanonicalThreadIds.length - 1,
-  });
+  let afterDeleteState = beforeState;
+  for (const [index, emptyThreadId] of emptyThreadIds.entries()) {
+    await tapSelectorByAttribute({
+      attribute: "data-sidebar-empty-thread-delete",
+      child,
+      client,
+      selector: "[data-sidebar-empty-thread-delete]",
+      timeoutMs,
+      value: emptyThreadId,
+    });
+    afterDeleteState = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) =>
+        Array.isArray(state?.threadIds) &&
+        !state.threadIds.includes(emptyThreadId) &&
+        state.threadIds.length === initialCanonicalThreadIds.length - index - 1,
+    });
+    const persistedThreadIdsAfterDelete = readPersistedThreadIds(baseDir);
+    if (
+      persistedThreadIdsAfterDelete.includes(emptyThreadId) ||
+      persistedThreadIdsAfterDelete.length !== initialPersistedThreadIds.length - index - 1
+    ) {
+      throw new Error(
+        `Deleting an empty Native thread did not update persistence: ${JSON.stringify({
+          emptyThreadId,
+          emptyThreadIds,
+          initialPersistedThreadIds,
+          persistedThreadIdsAfterDelete,
+        })}`,
+      );
+    }
+  }
   const persistedThreadIdsAfterDelete = readPersistedThreadIds(baseDir);
-  if (
-    persistedThreadIdsAfterDelete.includes(emptyThreadId) ||
-    persistedThreadIdsAfterDelete.length !== initialPersistedThreadIds.length - 1
-  ) {
-    throw new Error(
-      `Deleting an empty Native thread did not update persistence: ${JSON.stringify({
-        emptyThreadId,
-        initialPersistedThreadIds,
-        persistedThreadIdsAfterDelete,
-      })}`,
-    );
-  }
   const canonicalThreadIdsBefore = afterDeleteState.threadIds ?? [];
   const persistedThreadIdsBefore = persistedThreadIdsAfterDelete;
   const normalizedThreadIds = (threadIds) => [...threadIds].sort();
@@ -3129,7 +3131,7 @@ async function verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured New thread control",
     hero: hero.rect,
     staleEmptyThreadDeletion: {
-      threadId: emptyThreadId,
+      threadIds: emptyThreadIds,
       canonicalThreadIdsBefore: initialCanonicalThreadIds,
       canonicalThreadIdsAfter: canonicalThreadIdsBefore,
       persistedThreadIdsBefore: initialPersistedThreadIds,

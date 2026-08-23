@@ -464,7 +464,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"data-sidebar-empty-thread-delete"');
     assert.include(source, "Deleting an empty Native thread did not update persistence");
     assert.include(source, "initialCanonicalThreadIds = beforeState?.threadIds ?? []");
+    assert.include(source, "for (const [index, emptyThreadId] of emptyThreadIds.entries())");
     assert.include(source, "canonicalThreadIdsBefore = afterDeleteState.threadIds ?? []");
+    assert.include(source, "threadIds: emptyThreadIds");
     assert.include(source, 'typeof state?.draftThreadId === "string"');
     assert.include(source, "state?.draftThreadId === firstDraftState.draftThreadId");
     assert.include(source, "const initialPersistedThreadIds = readPersistedThreadIds(baseDir)");
