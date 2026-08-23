@@ -73,6 +73,8 @@ describe("Quick Switch material", () => {
   });
 
   it("visibly mutes unavailable Add Project sources", () => {
+    expect(rule(".quick-switch-source-row")).toContain("height: 48px;");
+    expect(rule(".quick-switch-source-row")).toContain("min-height: 48px;");
     expect(rule(".quick-switch-source-row.opacity-64")).toContain("opacity: 0.64;");
   });
 });
