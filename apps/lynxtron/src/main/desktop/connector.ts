@@ -27,6 +27,7 @@ import {
 import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
 import { buildThreadTurnStartCommand } from "@t3tools/client-runtime/operations/thread-dispatch";
 import { deriveProviderModelSelectionProjection } from "@t3tools/client-runtime/presentation/model-picker";
+import { selectStaleDisposableThreadIds } from "@t3tools/client-runtime/presentation/thread-actions";
 import { applyShellStreamEvent } from "@t3tools/client-runtime/state/shell";
 import {
   applyAuthAccessStreamEvent,
@@ -254,6 +255,8 @@ export class T3Connector {
     LatestPendingMutation<ProviderInteractionMode>
   >();
   private pendingThreadModeCommands = new Map<string, Promise<unknown>>();
+  private pendingDisposableThreadDeletes = new Set<string>();
+  private attemptedDisposableThreadDeletes = new Set<string>();
   private serverConfig: ServerConfig | undefined;
   private authAccessSnapshot: AuthAccessSnapshot = EMPTY_AUTH_ACCESS_SNAPSHOT;
   private configProjection: Option.Option<ServerConfigProjection> = Option.none();
@@ -748,6 +751,9 @@ export class T3Connector {
         );
       }
     }
+    if (item.kind === "snapshot") {
+      this.scheduleDisposableThreadCleanup();
+    }
     // Archive/unarchive/delete all surface here as plain upserts/removes, so
     // refresh the (stream-excluded) archived snapshot on every shell item.
     this.refreshArchived();
@@ -763,7 +769,8 @@ export class T3Connector {
     const threads = sortThreads(
       allThreads
         // Archived threads leave the sidebar (they surface in Settings > Archive).
-        .filter((t) => !t.archivedAt),
+        .filter((thread) => !thread.archivedAt)
+        .filter((thread) => !this.pendingDisposableThreadDeletes.has(thread.id)),
       "updated_at",
     ).map((thread) => {
       const pendingSelection = this.pendingThreadModelSelections.get(thread.id);
@@ -782,6 +789,39 @@ export class T3Connector {
       .slice()
       .sort((a, b) => ((b.archivedAt ?? "") > (a.archivedAt ?? "") ? 1 : -1));
     this.events.onShell({ projects, threads, archivedThreads });
+  }
+
+  private scheduleDisposableThreadCleanup(): void {
+    const nowMs = Date.now();
+    const threads = this.shellSnapshot?.threads ?? [];
+    const candidates = selectStaleDisposableThreadIds(threads, { nowMs }).filter(
+      (threadId) => !this.attemptedDisposableThreadDeletes.has(threadId),
+    );
+    if (candidates.length === 0) return;
+    for (const threadId of candidates) {
+      this.attemptedDisposableThreadDeletes.add(threadId);
+      this.pendingDisposableThreadDeletes.add(threadId);
+    }
+    queueMicrotask(() => {
+      if (this.disposed) return;
+      void Promise.all(
+        candidates.map(async (threadId) => {
+          try {
+            await this.deleteThread({ threadId });
+            this.log(`[connector] removed stale disposable thread ${threadId}`);
+          } catch (error) {
+            this.pendingDisposableThreadDeletes.delete(threadId);
+            this.attemptedDisposableThreadDeletes.delete(threadId);
+            this.log(
+              `[connector] failed to remove stale disposable thread ${threadId}: ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            );
+            this.emitShell();
+          }
+        }),
+      );
+    });
   }
 
   private threadSnapshots = new Map<string, OrchestrationThread>();

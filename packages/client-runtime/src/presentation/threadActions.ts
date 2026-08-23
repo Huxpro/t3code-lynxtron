@@ -2,6 +2,8 @@ import type { OrchestrationThreadShell } from "@t3tools/contracts";
 
 export type ThreadDestructiveAction = "archive" | "delete";
 
+export const DISPOSABLE_EMPTY_THREAD_CLEANUP_GRACE_MS = 24 * 60 * 60 * 1000;
+
 export interface ThreadActionConfirmationPresentation {
   readonly action: ThreadDestructiveAction;
   readonly title: string;
@@ -62,4 +64,36 @@ export function isDisposableEmptyThread(
     !thread.hasPendingUserInput &&
     !thread.hasActionableProposedPlan
   );
+}
+
+export function selectStaleDisposableThreadIds(
+  threads: ReadonlyArray<
+    Pick<
+      OrchestrationThreadShell,
+      | "archivedAt"
+      | "createdAt"
+      | "hasActionableProposedPlan"
+      | "hasPendingApprovals"
+      | "hasPendingUserInput"
+      | "id"
+      | "latestTurn"
+      | "latestUserMessageAt"
+      | "session"
+      | "title"
+      | "updatedAt"
+    >
+  >,
+  options: {
+    readonly nowMs: number;
+    readonly graceMs?: number;
+  },
+): ReadonlyArray<OrchestrationThreadShell["id"]> {
+  const graceMs = options.graceMs ?? DISPOSABLE_EMPTY_THREAD_CLEANUP_GRACE_MS;
+  return threads.flatMap((thread) => {
+    if (thread.archivedAt !== null || !isDisposableEmptyThread(thread)) return [];
+    const lastTouchedAtMs = Math.max(Date.parse(thread.createdAt), Date.parse(thread.updatedAt));
+    return Number.isFinite(lastTouchedAtMs) && options.nowMs - lastTouchedAtMs >= graceMs
+      ? [thread.id]
+      : [];
+  });
 }
