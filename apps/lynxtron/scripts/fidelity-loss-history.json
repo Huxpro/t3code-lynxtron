@@ -15556,6 +15556,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "empty-thread-dismissal-current",
+      "observedAt": "2026-08-23T15:04:41-07:00",
+      "commit": "a5a7db973cb7152f2866412c85294e8550763787",
+      "codeCommit": "0d9344b12e1c878fe2e1da38a01e4965f4ffb543",
+      "codeState": "commit",
+      "label": "Empty thread dismissal interaction repair",
+      "narrative": "The shared Sidebar V2 action slot now renders as a real layout container and stops action taps before they can select the parent row. Lynx waits for typed delete acknowledgement before clearing active state and surfaces failures instead of silently swallowing them. Exact-bundle Native on a read-only live-state snapshot automatically removes the stale empty shell, deletes a fresh canonical empty shell through the measured X control, then proves repeated New Thread actions reuse one local draft without changing canonical IDs, persisted IDs, or server sequence. This evidence refresh keeps the fixed 75-state denominator and existing residuals unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The exact Native run directly exercises the repaired action hit target and acknowledgement ordering. Existing new-thread interaction and runtime residuals were already zero, so the checkpoint records evidence without assigning an artificial score reduction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/empty-thread-dismissal-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "782d054509b8509bd1f621bb26f8ee17f7151bee503f7d2fd1e60083a664577b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-stale-recovery-manual-close-and-draft-reuse",
+              "source": "Measured Native touch deletes a fresh canonical empty shell through the repaired shared action slot, while repeated New Thread actions reuse one local draft identity"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-headless-empty-thread-lifecycle",
+              "source": "Shell and SQLite counts converge, local draft creation leaves both unchanged with sequence 20 to 20, main transport remains active, zero renderer errors occur, isolated state is disposed, and the live source database hash is unchanged"
+            }
+          }
+        }
+      ]
     }
   ]
 }

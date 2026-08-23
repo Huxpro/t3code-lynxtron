@@ -220,3 +220,4 @@ settings-bridge-duration-native-current,2026-08-23T05:50:11-07:00,a684c78a4c62aa
 existing-thread-question-multi-step-current,2026-08-23T09:29:20-07:00,034346010b0aac4e25bd9d5c0032af58acb507ad,commit,Existing Thread multi-step question fidelity,0.214121,0.214121,0.036468,0.184377,0.815623,0.776865
 existing-thread-completed-follow-current,2026-08-23T13:18:16-07:00,a75b0d1e6bd6ac3a640b209cf3c5e7dd89235c00,commit,Completed transcript follow-state recovery,0.214121,0.214121,0.036467,0.184377,0.815623,0.776865
 empty-thread-recovery-current,2026-08-23T13:18:17-07:00,a75b0d1e6bd6ac3a640b209cf3c5e7dd89235c00,commit,Stale empty thread lifecycle recovery,0.214121,0.214121,0.036467,0.184377,0.815623,0.776865
+empty-thread-dismissal-current,2026-08-23T15:04:41-07:00,a5a7db973cb7152f2866412c85294e8550763787,commit,Empty thread dismissal interaction repair,0.214121,0.214121,0.036467,0.184377,0.815623,0.776865
