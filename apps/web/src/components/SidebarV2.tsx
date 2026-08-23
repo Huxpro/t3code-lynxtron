@@ -143,6 +143,7 @@ import {
   deriveProviderInstanceEntries,
   type ProviderInstanceEntry,
 } from "@t3tools/client-runtime/presentation/provider";
+import { projectSidebarThreadDetailsRows } from "@t3tools/client-runtime/presentation/sidebar";
 import { primaryServerProvidersAtom } from "../state/server";
 import { useThreadRunningTerminalIds } from "../state/terminalSessions";
 import { stackedThreadToast, toastManager } from "./ui/toast";
@@ -242,6 +243,15 @@ function SidebarV2ThreadTooltip({
   terminalStatus: TerminalStatusIndicator | null;
   terminalProcessCount: number;
 }) {
+  const detailRows = projectSidebarThreadDetailsRows({
+    projectTitle,
+    environmentLabel,
+    branch: thread.branch,
+    branchMismatch: branchMismatch !== null,
+    modelLabel: driverKind ? modelLabel : null,
+    terminalProcessCount: terminalStatus ? terminalProcessCount : 0,
+    hasError: Boolean(thread.session?.lastError),
+  });
   return (
     <TooltipPopup
       relationId={relationId}
@@ -256,63 +266,55 @@ function SidebarV2ThreadTooltip({
           {thread.title}
         </div>
         <div className="grid gap-1.5 pl-0.5 text-xs text-muted-foreground">
-          {projectTitle ? (
-            <div className="flex min-w-0 items-center gap-2">
-              <ProjectFavicon
-                environmentId={thread.environmentId}
-                cwd={projectCwd ?? ""}
-                className="size-3 shrink-0 stroke-muted-foreground"
-              />
-              <div className="min-w-0 truncate text-foreground/75">{projectTitle}</div>
-            </div>
-          ) : null}
-          {environmentLabel ? (
-            <div className="flex min-w-0 items-center gap-2">
-              <ServerIcon className="size-3 shrink-0 stroke-muted-foreground" />
-              <div className="min-w-0 truncate text-foreground/75">{environmentLabel}</div>
-            </div>
-          ) : null}
-          {thread.branch ? (
-            <div className="flex min-w-0 items-center gap-2">
-              <GitBranchIcon className="size-3 shrink-0 stroke-muted-foreground" />
-              <div className="min-w-0 truncate text-foreground/75">{thread.branch}</div>
-            </div>
-          ) : null}
-          {branchMismatch ? (
-            <div className="flex min-w-0 items-start gap-2 text-warning">
-              <CircleAlertIcon aria-hidden className="mt-0.5 size-3 shrink-0 stroke-current" />
-              <div className="min-w-0 flex-1 wrap-break-word leading-5">
-                You're currently checked out on another branch.
+          {detailRows.map((row) => (
+            <div
+              key={row.kind}
+              className={cn(
+                "flex min-w-0 gap-2",
+                row.kind === "branch-mismatch" ? "items-start text-warning" : "items-center",
+                row.kind === "error" && "text-red-600 dark:text-red-400",
+              )}
+            >
+              {row.kind === "project" ? (
+                <ProjectFavicon
+                  environmentId={thread.environmentId}
+                  cwd={projectCwd ?? ""}
+                  className="size-3 shrink-0 stroke-muted-foreground"
+                />
+              ) : row.kind === "environment" ? (
+                <ServerIcon className="size-3 shrink-0 stroke-muted-foreground" />
+              ) : row.kind === "branch" ? (
+                <GitBranchIcon className="size-3 shrink-0 stroke-muted-foreground" />
+              ) : row.kind === "branch-mismatch" || row.kind === "error" ? (
+                <CircleAlertIcon
+                  aria-hidden
+                  className={cn(
+                    "size-3 shrink-0 stroke-current",
+                    row.kind === "branch-mismatch" && "mt-0.5",
+                  )}
+                />
+              ) : row.kind === "model" ? (
+                <ProviderInstanceIcon
+                  driverKind={driverKind!}
+                  displayName={thread.session?.providerName ?? modelInstanceId}
+                  iconClassName="size-3 shrink-0 grayscale opacity-60"
+                />
+              ) : (
+                <TerminalIcon
+                  aria-hidden
+                  className={cn("size-3 shrink-0", terminalStatus?.colorClass)}
+                />
+              )}
+              <div
+                className={cn(
+                  "min-w-0 text-foreground/75",
+                  row.kind === "branch-mismatch" ? "flex-1 wrap-break-word leading-5" : "truncate",
+                )}
+              >
+                {row.label}
               </div>
             </div>
-          ) : null}
-          {driverKind ? (
-            <div className="flex min-w-0 items-center gap-2">
-              <ProviderInstanceIcon
-                driverKind={driverKind}
-                displayName={thread.session?.providerName ?? modelInstanceId}
-                iconClassName="size-3 shrink-0 grayscale opacity-60"
-              />
-              <div className="min-w-0 truncate text-foreground/75">{modelLabel}</div>
-            </div>
-          ) : null}
-          {terminalStatus ? (
-            <div className="flex min-w-0 items-center gap-2">
-              <TerminalIcon
-                aria-hidden
-                className={cn("size-3 shrink-0", terminalStatus.colorClass)}
-              />
-              <div className="min-w-0 truncate text-foreground/75">
-                {terminalProcessLabel(terminalProcessCount)}
-              </div>
-            </div>
-          ) : null}
-          {thread.session?.lastError ? (
-            <div className="flex min-w-0 items-center gap-2 text-red-600 dark:text-red-400">
-              <CircleAlertIcon className="size-3 shrink-0 stroke-current" />
-              <div className="min-w-0 truncate">Error occurred</div>
-            </div>
-          ) : null}
+          ))}
         </div>
       </div>
     </TooltipPopup>

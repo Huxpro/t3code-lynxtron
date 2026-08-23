@@ -1,31 +1,36 @@
 import type { EnvironmentId } from "@t3tools/contracts";
 
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../../../lynxtron/src/app/state/environment";
+import { useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
 
-const PRIMARY_ENVIRONMENT = {
-  environmentId: LYNX_PRIMARY_ENVIRONMENT_ID,
-  label: "Local",
-  displayUrl: null,
-  relayManaged: false,
-  entry: {
-    target: {
-      _tag: "DirectConnectionTarget",
-      environmentId: LYNX_PRIMARY_ENVIRONMENT_ID,
-      label: "Local",
+function primaryEnvironment(label: string) {
+  return {
+    environmentId: LYNX_PRIMARY_ENVIRONMENT_ID,
+    label,
+    displayUrl: null,
+    relayManaged: false,
+    entry: {
+      target: {
+        _tag: "DirectConnectionTarget",
+        environmentId: LYNX_PRIMARY_ENVIRONMENT_ID,
+        label,
+      },
     },
-  },
-  connection: {
-    phase: "connected",
-    error: null,
-  },
-};
+    connection: {
+      phase: "connected",
+      error: null,
+    },
+  } as const;
+}
 
 export function useEnvironments() {
+  const label = useT3ClientState().serverConfig?.environment.label ?? "Local";
+  const environment = primaryEnvironment(label);
   return {
     isReady: true,
     networkStatus: "online",
-    environments: [PRIMARY_ENVIRONMENT],
-    presentationById: new Map([[LYNX_PRIMARY_ENVIRONMENT_ID, PRIMARY_ENVIRONMENT]]),
+    environments: [environment],
+    presentationById: new Map([[LYNX_PRIMARY_ENVIRONMENT_ID, environment]]),
   };
 }
 
@@ -34,11 +39,14 @@ export function usePrimaryEnvironmentId(): EnvironmentId {
 }
 
 export function useEnvironment(environmentId: EnvironmentId | null) {
-  return environmentId === LYNX_PRIMARY_ENVIRONMENT_ID ? PRIMARY_ENVIRONMENT : null;
+  const environment = primaryEnvironment(
+    useT3ClientState().serverConfig?.environment.label ?? "Local",
+  );
+  return environmentId === LYNX_PRIMARY_ENVIRONMENT_ID ? environment : null;
 }
 
 export function usePrimaryEnvironment() {
-  return PRIMARY_ENVIRONMENT;
+  return primaryEnvironment(useT3ClientState().serverConfig?.environment.label ?? "Local");
 }
 
 export function useEnvironmentHttpBaseUrl(): null {

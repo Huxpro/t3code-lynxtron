@@ -33,6 +33,7 @@ import { clientCapabilities } from "../../../lynxtron/src/app/platform/clientCap
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
 import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
 import { isDisposableEmptyThread } from "@t3tools/client-runtime/presentation/thread-actions";
+import { projectSidebarThreadDetailsRows } from "@t3tools/client-runtime/presentation/sidebar";
 
 function compactSidebarTimeLabel(label: string): string {
   if (label === "just now") return "now";
@@ -138,17 +139,26 @@ function LynxThreadDetails({
   relationId,
   thread,
   projectTitle,
+  environmentLabel,
   provider,
-  instanceId,
   modelLabel,
 }: {
   readonly relationId: string;
   readonly thread: ReturnType<typeof useThreadShells>[number];
   readonly projectTitle: string | null;
+  readonly environmentLabel: string | null;
   readonly provider: ProviderInstanceEntry | null;
-  readonly instanceId: string;
   readonly modelLabel: string;
 }) {
+  const detailRows = projectSidebarThreadDetailsRows({
+    projectTitle,
+    environmentLabel,
+    branch: thread.branch,
+    branchMismatch: false,
+    modelLabel: provider ? modelLabel : null,
+    terminalProcessCount: 0,
+    hasError: Boolean(thread.session?.lastError),
+  });
   return (
     <TooltipPopup
       relationId={relationId}
@@ -160,33 +170,36 @@ function LynxThreadDetails({
       data-sidebar-thread-details={thread.id}
     >
       <view className="sidebar-v2-details-content">
-        <text className="sidebar-v2-details-title" text-maxline="2">
+        <text className="sidebar-v2-details-title" text-maxline="1">
           {thread.title}
         </text>
-        {projectTitle ? (
-          <view className="sidebar-v2-details-row">
-            <Icon name="folder" size={12} color="#818181" />
-            <text className="sidebar-v2-details-value">{projectTitle}</text>
-          </view>
-        ) : null}
-        {thread.branch ? (
-          <view className="sidebar-v2-details-row">
-            <Icon name="git-branch" size={12} color="#818181" />
-            <text className="sidebar-v2-details-value">{thread.branch}</text>
-          </view>
-        ) : null}
-        <view className="sidebar-v2-details-row">
-          <ProviderBrandIcon driverKind={provider?.driverKind ?? null} size={12} />
-          <text className="sidebar-v2-details-value">
-            {provider?.displayName ?? instanceId} · {modelLabel}
-          </text>
+        <view className="sidebar-v2-details-rows">
+          {detailRows.map((row) => (
+            <view
+              key={row.kind}
+              className={
+                row.kind === "error" || row.kind === "branch-mismatch"
+                  ? "sidebar-v2-details-row sidebar-v2-details-row--error"
+                  : "sidebar-v2-details-row"
+              }
+            >
+              {row.kind === "project" ? (
+                <Icon name="folder" size={12} color="#818181" />
+              ) : row.kind === "environment" ? (
+                <Icon name="globe" size={12} color="#818181" />
+              ) : row.kind === "branch" ? (
+                <Icon name="git-branch" size={12} color="#818181" />
+              ) : row.kind === "model" ? (
+                <ProviderBrandIcon driverKind={provider?.driverKind ?? null} size={12} />
+              ) : row.kind === "terminal" ? (
+                <Icon name="terminal" size={12} color="#818181" />
+              ) : (
+                <Icon name="triangle-alert" size={12} color="#f87171" />
+              )}
+              <text className="sidebar-v2-details-value">{row.label}</text>
+            </view>
+          ))}
         </view>
-        {thread.session?.lastError ? (
-          <view className="sidebar-v2-details-row sidebar-v2-details-row--error">
-            <Icon name="triangle-alert" size={12} color="#f87171" />
-            <text className="sidebar-v2-details-value">Error occurred</text>
-          </view>
-        ) : null}
       </view>
     </TooltipPopup>
   );
@@ -672,8 +685,8 @@ export default function SidebarV2() {
                     relationId={detailsRelationId}
                     thread={thread}
                     projectTitle={project?.title ?? null}
+                    environmentLabel={serverConfig?.environment.label ?? null}
                     provider={providerProjection.provider}
-                    instanceId={providerProjection.instanceId}
                     modelLabel={providerProjection.modelLabel}
                   />
                 }

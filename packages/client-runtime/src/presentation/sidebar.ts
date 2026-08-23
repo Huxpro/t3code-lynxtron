@@ -40,6 +40,54 @@ export interface ThreadStatusPill {
   readonly pulse: boolean;
 }
 
+export type SidebarThreadDetailsRowKind =
+  | "project"
+  | "environment"
+  | "branch"
+  | "branch-mismatch"
+  | "model"
+  | "terminal"
+  | "error";
+
+export interface SidebarThreadDetailsRow {
+  readonly kind: SidebarThreadDetailsRowKind;
+  readonly label: string;
+}
+
+export function projectSidebarThreadDetailsRows(input: {
+  readonly projectTitle: string | null;
+  readonly environmentLabel: string | null;
+  readonly branch: string | null;
+  readonly branchMismatch: boolean;
+  readonly modelLabel: string | null;
+  readonly terminalProcessCount: number;
+  readonly hasError: boolean;
+}): ReadonlyArray<SidebarThreadDetailsRow> {
+  const rows: SidebarThreadDetailsRow[] = [];
+  if (input.projectTitle) rows.push({ kind: "project", label: input.projectTitle });
+  if (input.environmentLabel) {
+    rows.push({ kind: "environment", label: input.environmentLabel });
+  }
+  if (input.branch) rows.push({ kind: "branch", label: input.branch });
+  if (input.branchMismatch) {
+    rows.push({
+      kind: "branch-mismatch",
+      label: "You're currently checked out on another branch.",
+    });
+  }
+  if (input.modelLabel) rows.push({ kind: "model", label: input.modelLabel });
+  if (input.terminalProcessCount > 0) {
+    rows.push({
+      kind: "terminal",
+      label: `${input.terminalProcessCount} terminal ${
+        input.terminalProcessCount === 1 ? "process" : "processes"
+      } running`,
+    });
+  }
+  if (input.hasError) rows.push({ kind: "error", label: "Error occurred" });
+  return rows;
+}
+
 type SidebarImmediateStatusInput = Pick<
   OrchestrationThreadShell,
   "hasPendingApprovals" | "hasPendingUserInput" | "session"

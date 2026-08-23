@@ -283,7 +283,7 @@
   z-index: 89;
   display: flex;
   flex-direction: column;
-  width: 272px;
+  width: 262px;
   max-width: 320px;
   box-sizing: border-box;
 }
@@ -442,11 +442,18 @@
   background-color: rgba(239, 68, 68, 0.12);
 }
 .sidebar-v2-details-title {
+  height: 12px;
+  overflow: hidden;
   color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 600;
-  line-height: 17px;
+  line-height: 12px;
+}
+.sidebar-v2-details-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .sidebar-v2-details-row {
   display: flex;
