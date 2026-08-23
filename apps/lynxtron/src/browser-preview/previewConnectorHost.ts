@@ -1,6 +1,7 @@
 import {
   T3_CONNECTOR_EVENT,
   T3_CONNECTOR_METHODS,
+  encodeConnectorServerConfig,
   isConnectorCommandName,
   type ConnectorCommandName,
   type ConnectorCommandRequest,
@@ -62,7 +63,12 @@ export class BrowserPreviewConnectorHost {
 
   constructor(scenario: BrowserPreviewScenario, emitGlobalEvent: EmitGlobalEvent) {
     this.#scenario = scenario;
-    this.#snapshot = scenario.snapshot;
+    this.#snapshot = {
+      ...scenario.snapshot,
+      config: scenario.snapshot.config
+        ? encodeConnectorServerConfig(scenario.snapshot.config)
+        : null,
+    };
     this.#emitGlobalEvent = emitGlobalEvent;
     this.diagnostics = {
       hostKind: "typed-browser-preview",
@@ -142,12 +148,17 @@ export class BrowserPreviewConnectorHost {
   switchScenario(scenarioId: BrowserPreviewScenarioId): number {
     const scenario = BROWSER_PREVIEW_SCENARIOS[scenarioId];
     this.#scenario = scenario;
-    this.#snapshot = scenario.snapshot;
+    this.#snapshot = {
+      ...scenario.snapshot,
+      config: scenario.snapshot.config
+        ? encodeConnectorServerConfig(scenario.snapshot.config)
+        : null,
+    };
     this.diagnostics.scenarioId = scenario.id;
     this.diagnostics.route = scenario.route;
     this.#emit({ kind: "status", payload: scenario.snapshot.status });
-    if (scenario.snapshot.config) {
-      this.#emit({ kind: "config", payload: scenario.snapshot.config });
+    if (this.#snapshot.config) {
+      this.#emit({ kind: "config", payload: this.#snapshot.config });
     }
     this.#emit({ kind: "access", payload: scenario.snapshot.access });
     this.#emit({ kind: "shell", payload: scenario.snapshot.shell });
@@ -188,7 +199,12 @@ export class BrowserPreviewConnectorHost {
     if (request.method === "createThread") {
       return { threadId: this.#scenario.snapshot.shell.threads[0]?.id };
     }
-    if (request.method === "setProviderEnabled" || request.method === "updateServerSettings") {
+    if (
+      request.method === "refreshProviders" ||
+      request.method === "updateProvider" ||
+      request.method === "setProviderEnabled" ||
+      request.method === "updateServerSettings"
+    ) {
       return this.#snapshot.config;
     }
     if (request.method === "createPairingCredential") {

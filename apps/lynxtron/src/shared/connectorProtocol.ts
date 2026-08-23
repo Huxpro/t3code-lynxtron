@@ -22,14 +22,15 @@ import type {
   OrchestrationSessionStatus,
   OrchestrationThreadActivity,
   OrchestrationThreadShell,
-  ServerConfig,
   TurnId,
 } from "@t3tools/contracts";
+import { ServerConfig, ServerSettingsPatch } from "@t3tools/contracts";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
 import type {
   ActivePlanState,
   LatestProposedPlanState,
 } from "@t3tools/client-runtime/presentation/thread";
+import * as Schema from "effect/Schema";
 
 /** Main -> renderer push channel name (LynxWindow.sendGlobalEvent). */
 export const T3_CONNECTOR_EVENT = "t3:connector-event";
@@ -77,11 +78,86 @@ export interface ConnectorThreadPayload {
   readonly activeTurnId?: TurnId | null;
 }
 
+export type ConnectorServerConfig = typeof ServerConfig.Encoded;
+export type ConnectorServerSettingsPatch = typeof ServerSettingsPatch.Encoded;
+
+const encodeServerConfig = Schema.encodeSync(ServerConfig);
+const decodeServerConfig = Schema.decodeUnknownSync(ServerConfig);
+const encodeServerSettingsPatch = Schema.encodeSync(ServerSettingsPatch);
+const decodeServerSettingsPatch = Schema.decodeUnknownSync(ServerSettingsPatch);
+
+export function encodeConnectorServerConfig(
+  config: typeof ServerConfig.Type,
+): ConnectorServerConfig {
+  return encodeServerConfig(config);
+}
+
+export function decodeConnectorServerConfig(config: unknown): typeof ServerConfig.Type {
+  return decodeServerConfig(config);
+}
+
+export function encodeConnectorServerSettingsPatch(
+  patch: typeof ServerSettingsPatch.Type,
+): ConnectorServerSettingsPatch {
+  return encodeServerSettingsPatch(patch);
+}
+
+export function decodeConnectorServerSettingsPatch(
+  patch: unknown,
+): typeof ServerSettingsPatch.Type {
+  return decodeServerSettingsPatch(patch);
+}
+
+export function encodeConnectorCommandParams(
+  method: ConnectorCommandName,
+  params: unknown,
+): unknown {
+  if (method !== "updateServerSettings") return params;
+  const input = params as { readonly patch?: typeof ServerSettingsPatch.Type } | null | undefined;
+  return {
+    patch: encodeConnectorServerSettingsPatch(input?.patch ?? {}),
+  };
+}
+
+export function decodeConnectorCommandParams(
+  method: ConnectorCommandName,
+  params: unknown,
+): unknown {
+  if (method !== "updateServerSettings") return params;
+  const input = params as { readonly patch?: unknown } | null | undefined;
+  return {
+    patch: decodeConnectorServerSettingsPatch(input?.patch ?? {}),
+  };
+}
+
+const SERVER_CONFIG_COMMANDS: ReadonlySet<ConnectorCommandName> = new Set([
+  "refreshProviders",
+  "updateProvider",
+  "setProviderEnabled",
+  "updateServerSettings",
+]);
+
+export function encodeConnectorCommandResult(
+  method: ConnectorCommandName,
+  result: unknown,
+): unknown {
+  return SERVER_CONFIG_COMMANDS.has(method)
+    ? encodeConnectorServerConfig(result as typeof ServerConfig.Type)
+    : result;
+}
+
+export function decodeConnectorCommandResult(
+  method: ConnectorCommandName,
+  result: unknown,
+): unknown {
+  return SERVER_CONFIG_COMMANDS.has(method) ? decodeConnectorServerConfig(result) : result;
+}
+
 export type ConnectorEventKind = "status" | "config" | "access" | "shell" | "thread" | "log";
 
 export type ConnectorEventPayload =
   | { readonly kind: "status"; readonly payload: ConnectorStatusPayload }
-  | { readonly kind: "config"; readonly payload: ServerConfig }
+  | { readonly kind: "config"; readonly payload: ConnectorServerConfig }
   | { readonly kind: "access"; readonly payload: AuthAccessPresentation }
   | { readonly kind: "shell"; readonly payload: ConnectorShellPayload }
   | { readonly kind: "thread"; readonly threadId: string; readonly payload: ConnectorThreadPayload }
@@ -93,7 +169,7 @@ export type ConnectorEventEnvelope = ConnectorEventPayload & { readonly seq: num
 /** Serializable mirror of the connector state used for ready/resync replies. */
 export interface ConnectorSnapshot {
   readonly status: ConnectorStatusPayload;
-  readonly config: ServerConfig | null;
+  readonly config: ConnectorServerConfig | null;
   readonly access: AuthAccessPresentation;
   readonly shell: ConnectorShellPayload;
   readonly threads: Readonly<Record<string, ConnectorThreadPayload>>;

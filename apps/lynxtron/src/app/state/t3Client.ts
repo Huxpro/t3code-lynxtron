@@ -106,7 +106,12 @@ import {
   type GlobalEventListenerRegistry,
   type MainConnectorTransport,
 } from "./mainConnectorTransport";
-import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
+import {
+  CONNECTOR_COMMAND_NAMES,
+  decodeConnectorCommandResult,
+  decodeConnectorServerConfig,
+  encodeConnectorCommandParams,
+} from "../../shared/connectorProtocol.ts";
 import {
   availableThreadModels,
   findExactModelForSelection,
@@ -583,7 +588,9 @@ function applyConnectorSnapshot(
   preferredSelection?: ModelSelection | null,
 ): void {
   applyStatusPayload(snapshot.status as StatusEventPayload);
-  if (snapshot.config) applyConfigPayload(snapshot.config, preferredSelection);
+  if (snapshot.config) {
+    applyConfigPayload(decodeConnectorServerConfig(snapshot.config), preferredSelection);
+  }
   applyAccessPayload(snapshot.access);
   applyShellPayload(snapshot.shell as ShellEventPayload);
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
@@ -597,7 +604,7 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
       applyStatusPayload(envelope.payload as StatusEventPayload);
       return;
     case "config":
-      applyConfigPayload(envelope.payload as ServerConfig);
+      applyConfigPayload(decodeConnectorServerConfig(envelope.payload));
       return;
     case "access":
       applyAccessPayload(envelope.payload as AuthAccessPresentation);
@@ -622,7 +629,11 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
 function buildMainCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
   const bridge: Record<string, (input?: unknown) => Promise<unknown>> = {};
   for (const method of CONNECTOR_COMMAND_NAMES) {
-    bridge[method] = (input?: unknown) => transport.invoke(method, input);
+    bridge[method] = async (input?: unknown) =>
+      decodeConnectorCommandResult(
+        method,
+        await transport.invoke(method, encodeConnectorCommandParams(method, input)),
+      );
   }
   return bridge as Partial<PollBridge>;
 }

@@ -16,19 +16,28 @@ import {
   type WorkbenchScenario,
   type WorkbenchScenarioId,
 } from "./fallbackScenarios.ts";
+import type { ServerConfig } from "@t3tools/contracts";
 import type { ConnectorSnapshot } from "../shared/connectorProtocol.ts";
 
 export type BrowserPreviewScenarioId = WorkbenchScenarioId;
 
 export type BrowserPreviewScenario = WorkbenchScenario & {
-  readonly snapshot: ConnectorSnapshot;
+  readonly snapshot: Omit<ConnectorSnapshot, "config"> & {
+    readonly config: ServerConfig | null;
+  };
 };
 
 const scenarios = WORKBENCH_SCENARIOS as Record<WorkbenchScenarioId, BrowserPreviewScenario>;
 
 // Drift guard: the web-owned catalog snapshots must remain assignable to this
-// renderer's connector snapshot contract. This is a compile-time check only.
-type _AssertSnapshotShape = WorkbenchScenario["snapshot"] extends ConnectorSnapshot ? true : never;
+// renderer's connector snapshot contract apart from the schema-encoded config
+// boundary. This is a compile-time check only.
+type RuntimeConfigSnapshot = Omit<ConnectorSnapshot, "config"> & {
+  readonly config: ServerConfig | null;
+};
+type _AssertSnapshotShape = WorkbenchScenario["snapshot"] extends RuntimeConfigSnapshot
+  ? true
+  : never;
 const _assertSnapshotShape: _AssertSnapshotShape = true;
 void _assertSnapshotShape;
 

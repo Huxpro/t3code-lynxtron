@@ -93,11 +93,15 @@ import * as Socket from "effect/unstable/socket/Socket";
 import {
   T3_CONNECTOR_EVENT,
   T3_CONNECTOR_METHODS,
+  decodeConnectorCommandParams,
+  encodeConnectorCommandResult,
+  encodeConnectorServerConfig,
   isConnectorCommandName,
   type ConnectorCommandRequest,
   type ConnectorConnectionStatus,
   type ConnectorEventEnvelope,
   type ConnectorEventPayload,
+  type ConnectorServerConfig,
   type ConnectorShellPayload,
   type ConnectorSnapshot,
   type ConnectorStatusPayload,
@@ -202,7 +206,7 @@ export class LiveConnectorHost {
 
   // Accumulated connector state (mirrors MainConnectorHost's fields).
   #status: ConnectorStatusPayload = { status: "connecting" };
-  #config: ServerConfig | null = null;
+  #config: ConnectorServerConfig | null = null;
   #access = EMPTY_ACCESS;
   #shell: ConnectorShellPayload = { projects: [], threads: [] };
   #threads: Record<string, ConnectorThreadPayload> = {};
@@ -368,7 +372,10 @@ export class LiveConnectorHost {
   #setConfig(config: ServerConfig, event: ServerConfigStreamEvent): void {
     this.#configProjection = applyServerConfigProjection(this.#configProjection, event);
     if (Option.isSome(this.#configProjection)) {
-      this.#emit({ kind: "config", payload: this.#configProjection.value.config });
+      this.#emit({
+        kind: "config",
+        payload: encodeConnectorServerConfig(this.#configProjection.value.config),
+      });
     }
   }
 
@@ -434,7 +441,10 @@ export class LiveConnectorHost {
         Effect.sync(() => {
           this.#configProjection = applyServerConfigProjection(this.#configProjection, event);
           if (Option.isSome(this.#configProjection)) {
-            this.#emit({ kind: "config", payload: this.#configProjection.value.config });
+            this.#emit({
+              kind: "config",
+              payload: encodeConnectorServerConfig(this.#configProjection.value.config),
+            });
           }
         }),
       ),
@@ -753,7 +763,11 @@ export class LiveConnectorHost {
       });
     }
     if (request.method === "updateServerSettings") {
-      const patch = (request.params as { patch: ServerSettingsPatch }).patch;
+      const patch = (
+        decodeConnectorCommandParams(request.method, request.params) as {
+          patch: ServerSettingsPatch;
+        }
+      ).patch;
       return this.#runClient<ServerSettings>(
         this.#client[WS_METHODS.serverUpdateSettings]({ patch }),
       ).then(async (settings) => {
@@ -764,7 +778,7 @@ export class LiveConnectorHost {
           { ...config, settings },
           { version: 1, type: "settingsUpdated", payload: { settings } },
         );
-        return { ...config, settings };
+        return encodeConnectorCommandResult(request.method, { ...config, settings });
       });
     }
     if (request.method === "getTurnDiff") {

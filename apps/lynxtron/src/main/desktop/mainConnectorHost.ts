@@ -18,10 +18,14 @@
 import {
   T3_CONNECTOR_EVENT,
   T3_CONNECTOR_METHODS,
+  decodeConnectorCommandParams,
+  encodeConnectorCommandResult,
+  encodeConnectorServerConfig,
   isConnectorCommandName,
   type ConnectorCommandRequest,
   type ConnectorEventEnvelope,
   type ConnectorEventPayload,
+  type ConnectorServerConfig,
   type ConnectorShellPayload,
   type ConnectorSnapshot,
   type ConnectorStatusPayload,
@@ -100,7 +104,9 @@ export function dispatchConnectorCommand(
   connector: ConnectorLike,
   request: ConnectorCommandRequest,
 ): unknown {
-  const params = request.params as Record<string, unknown> | undefined;
+  const params = decodeConnectorCommandParams(request.method, request.params) as
+    | Record<string, unknown>
+    | undefined;
   switch (request.method) {
     case "selectThread":
       return (connector.selectThread as (threadId: string) => void)(params as unknown as string);
@@ -136,7 +142,7 @@ export class MainConnectorHost {
   private testSocketOpenErrorForThreadModelSelectionPending: boolean;
   private seq = 0;
   private status: ConnectorStatusPayload = { status: "idle" };
-  private config: ServerConfig | null = null;
+  private config: ConnectorServerConfig | null = null;
   private access: AuthAccessPresentation = EMPTY_ACCESS;
   private shell: ConnectorShellPayload = { projects: [], threads: [] };
   private readonly threads: Record<string, ConnectorThreadPayload> = {};
@@ -209,7 +215,7 @@ export class MainConnectorHost {
       return Promise.resolve(dispatchConnectorCommand(connector, request));
     };
     try {
-      return await dispatch();
+      return encodeConnectorCommandResult(request.method, await dispatch());
     } catch (error) {
       const cause = error instanceof Error ? error : new Error(String(error));
       if (
@@ -227,7 +233,7 @@ export class MainConnectorHost {
       } else {
         await this.reconnect();
       }
-      return dispatch();
+      return encodeConnectorCommandResult(request.method, await dispatch());
     }
   }
 
@@ -270,7 +276,8 @@ export class MainConnectorHost {
           payload: detail === undefined ? { status: nextStatus } : { status: nextStatus, detail },
         });
       },
-      onConfig: (config) => emitCurrent({ kind: "config", payload: config }),
+      onConfig: (config) =>
+        emitCurrent({ kind: "config", payload: encodeConnectorServerConfig(config) }),
       onAccess: (access) => emitCurrent({ kind: "access", payload: access }),
       onShell: (payload) => emitCurrent({ kind: "shell", payload }),
       onThread: (threadId, payload) => emitCurrent({ kind: "thread", threadId, payload }),
