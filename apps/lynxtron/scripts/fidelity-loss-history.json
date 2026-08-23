@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-23T02:39:00-07:00",
+  "updatedAt": "2026-08-23T03:22:23-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -15139,6 +15139,158 @@
               "confidence": 0.99,
               "method": "native-appearance-main-transport",
               "source": "Both exact-bundle themes use main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "model-picker-states-native-current",
+      "observedAt": "2026-08-23T03:22:23-07:00",
+      "commit": "a49600b1665d33824d23314555a6e31f0bf9c5c8",
+      "codeCommit": "a49600b1665d33824d23314555a6e31f0bf9c5c8",
+      "codeState": "commit",
+      "label": "Model Picker provider, query, and empty Native fidelity",
+      "narrative": "Fresh exact-bundle Native dark and light runs verify provider-family navigation through measured touch, deterministic pickle query filtering, the visible no-results state, hidden provider rail during search, stable 360x346 panel geometry, correct theme materials, Close, and outside dismissal. Query text is established through the existing viewport-test-gated React setter because Lynx DevTool cannot dispatch physical keyboard characters, so physical typing and keyboard navigation remain explicit residual rather than inferred coverage.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "No model-picker product change was required. This point adds current exact-bundle Native coverage for three previously Browser-only states without changing weights, scope, or Browser residuals."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/model-picker-states-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d076fc3f5bb921402323ba422b5f09f228b75c4071c5602bfa7c0a78340afa8c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-provider-rail"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-provider-rail-content",
+              "source": "Both themes switch from Codex to Claude and replace the list with nine Claude model keys while keeping the picker open"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 1, 2, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "native-provider-rail-browser-authority-geometry",
+              "source": "Native panel, 44x344 rail, 314x344 content, 36x36 provider items, and 53px first row match retained Browser geometry within host-border differences"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-provider-rail-dual-theme-typography",
+              "source": "Visual review confirms model names, provider labels, icons, favorites, and hierarchy in dark and light"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-provider-rail-dual-theme-material",
+              "source": "Visual review confirms dark and cold-white panel, content, rail, selected provider marker, border, and shadow treatments"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-provider-rail-touch",
+              "source": "Measured Native touch changes the active provider family, replaces model rows, and leaves the picker open"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-provider-rail-main-transport",
+              "source": "Both exact-bundle themes use main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["model-picker-query"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-query-content",
+              "source": "The deterministic pickle query returns exactly opencode:opencode/big-pickle with Big Pickle and OpenCode labels in both themes"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "native-model-query-browser-authority-geometry",
+              "source": "Native panel, content, list, and 53px result row match retained Browser geometry within one host-border pixel"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-model-query-dual-theme-typography",
+              "source": "Visual review confirms query, model name, provider label, and close control hierarchy in dark and light"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-model-query-dual-theme-material",
+              "source": "Visual review confirms dark and cold-white anchored panels, divider, row material, border, and shadow"
+            },
+            "interaction": {
+              "residual": 0.35,
+              "confidence": 0.95,
+              "method": "native-model-query-state-seam",
+              "source": "A viewport-test-gated shipping React setter proves filtering and rail hiding; physical text entry and keyboard navigation remain pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-query-main-transport",
+              "source": "Both exact-bundle themes keep the picker open, use main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["model-picker-empty"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-empty-content",
+              "source": "The deterministic no-match query renders zero rows and the canonical No models found message in both themes"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "native-model-empty-geometry",
+              "source": "Both themes preserve the visible 360x346 panel, 358x344 content, and 342x68 padded empty-state box"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-model-empty-dual-theme-typography",
+              "source": "Visual review confirms centered readable no-results copy and query hierarchy in dark and light"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-model-empty-dual-theme-material",
+              "source": "Visual review confirms the visible panel, dark and cold-white surfaces, divider, border, and shadow with no clipping"
+            },
+            "interaction": {
+              "residual": 0.35,
+              "confidence": 0.95,
+              "method": "native-model-empty-state-seam",
+              "source": "A viewport-test-gated shipping React setter proves the no-results transition while Close and outside dismissal use measured taps; physical typing remains pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-empty-main-transport",
+              "source": "Both exact-bundle themes keep the empty panel visible, use main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }
