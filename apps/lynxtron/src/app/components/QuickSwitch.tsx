@@ -36,6 +36,7 @@ import {
   PaletteSectionSurface,
 } from "../../../../web/src/components/CommandPaletteSurface";
 import { sortProjectsForSidebar } from "../../../../web/src/components/Sidebar.logic";
+import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { Kbd, KbdGroup } from "../../../../web/src/components/ui/kbd";
 import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ProjectSummary, ThreadSummary } from "../bridge";
@@ -107,6 +108,7 @@ export function QuickSwitch({
   threads,
   activeThreadId,
 }: QuickSwitchProps) {
+  const viewport = useViewportSnapshot();
   const [query, setQuery] = useState("");
   const [filePicker, setFilePicker] = useState<FilePickerState>(EMPTY_FILE_PICKER_STATE);
   const [view, setView] = useState<QuickSwitchView>(
@@ -458,6 +460,37 @@ export function QuickSwitch({
         ])
       : threads.slice(0, 6);
   const isEmpty = filteredActions.length === 0 && filteredThreads.length === 0;
+  useEffect(() => {
+    if (!viewport.testResize) return;
+    const target = globalThis as {
+      __T3_LYNXTRON_QUICK_SWITCH_QUERY__?: (value: string) => void;
+      __T3_LYNXTRON_QUICK_SWITCH_STATE__?: () => string;
+    };
+    target.__T3_LYNXTRON_QUICK_SWITCH_QUERY__ = setQuery;
+    target.__T3_LYNXTRON_QUICK_SWITCH_STATE__ = () =>
+      JSON.stringify({
+        actionLabels: filteredActions.map((action) => action.label),
+        actionsOnly,
+        empty: isEmpty,
+        normalizedQuery,
+        query,
+        threadLabels: filteredThreads.map((thread) => thread.title || "Untitled thread"),
+        view,
+      });
+    return () => {
+      delete target.__T3_LYNXTRON_QUICK_SWITCH_QUERY__;
+      delete target.__T3_LYNXTRON_QUICK_SWITCH_STATE__;
+    };
+  }, [
+    actionsOnly,
+    filteredActions,
+    filteredThreads,
+    isEmpty,
+    normalizedQuery,
+    query,
+    view,
+    viewport.testResize,
+  ]);
   const filteredFiles = useMemo(() => {
     return getProjectFilePickerMatches(filePicker.entries, query);
   }, [filePicker.entries, query]);

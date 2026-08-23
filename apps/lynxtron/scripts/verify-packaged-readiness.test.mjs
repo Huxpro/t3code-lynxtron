@@ -913,22 +913,31 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Non-repository idle thread rendered repository context.");
   });
 
-  it("verifies the Native default Quick Switch and outside dismissal", () => {
-    assert.include(source, "async function verifyQuickSwitchDefault");
+  it("verifies Native Quick Switch filter states and outside dismissal", () => {
+    assert.include(source, "async function verifyQuickSwitchState");
     assert.include(source, '"--verify-quick-switch-default"');
+    assert.include(source, '"--quick-switch-query"');
+    assert.include(source, '"--quick-switch-query requires --verify-quick-switch-default."');
+    assert.include(source, "__T3_LYNXTRON_QUICK_SWITCH_QUERY__");
+    assert.include(source, "__T3_LYNXTRON_QUICK_SWITCH_STATE__");
+    assert.include(source, 'query === ">"');
+    assert.include(source, 'query === "zzzz-no-result"');
+    assert.include(source, '"No matching commands, projects, or threads."');
     assert.include(source, "async function waitForStableMeasurement");
     assert.include(source, "rectsConverged(previousRect, latest.rect)");
     assert.include(source, "consecutiveStableSamples >= stableSamples");
     assert.include(source, "const panel = await waitForStableMeasurement({");
     assert.include(source, 'selector: ".palette-panel"');
-    assert.include(source, 'readSelectorRects(client, ".palette-row")');
+    assert.include(source, 'readSelectorMeasurements(client, ".palette-row")');
     assert.include(source, '"Quick Switch idle thread"');
     assert.include(source, '!footer.text.includes("Enter")');
     assert.include(source, '!footer.text.includes("Select")');
     assert.include(source, 'footer.text.includes("⌘P")');
     assert.include(source, 'footer.text.includes("Files")');
-    assert.include(source, "native-quick-switch-${expectedTheme ??");
+    assert.include(source, "native-quick-switch-${stateSlug}-${expectedTheme ??");
     assert.include(source, 'selector: ".palette-backdrop"');
+    assert.include(source, '"testResize-gated query setter for visual state only"');
+    assert.include(source, 'physicalKeyboard: "pending-user-session"');
     assert.include(source, "initialOverlay product state plus measured DevTool outside tap");
   });
 

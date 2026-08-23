@@ -1989,34 +1989,139 @@ async function verifyIdleThreadState({
   };
 }
 
-async function verifyQuickSwitchDefault({
-  child,
-  client,
-  devToolCli,
-  expectedTheme,
-  outputDirectory,
-  timeoutMs,
-}) {
-  const panel = await waitForStableMeasurement({
-    child,
-    client,
-    selector: ".palette-panel",
-    timeoutMs,
-    predicate: (measurement) => measurement?.attributes["data-search-overlay-mode"] === "command",
-  });
-  const search = await readOptionalMeasurement(client, ".palette-search");
-  const results = await readOptionalMeasurement(client, ".palette-results");
-  const footer = await readOptionalMeasurement(client, ".palette-footer");
-  const rows = await readSelectorRects(client, ".palette-row");
-  const expectedLabels = [
+async function setQuickSwitchQuery({ child, client, query, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the Quick Switch query probe became ready.");
+    }
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression: `(() => {
+        if (
+          typeof globalThis.__T3_LYNXTRON_QUICK_SWITCH_QUERY__ !== "function" ||
+          typeof globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__ !== "function"
+        ) {
+          return JSON.stringify({ ready: false });
+        }
+        globalThis.__T3_LYNXTRON_QUICK_SWITCH_QUERY__(${JSON.stringify(query)});
+        return JSON.stringify({
+          ready: true,
+          state: JSON.parse(globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__()),
+        });
+      })()`,
+      returnByValue: true,
+    });
+    const result = commandResult(response);
+    latest = typeof result?.value === "string" ? JSON.parse(result.value) : null;
+    if (latest?.ready === true) break;
+    await waitForChildExit(child, 100);
+  }
+  if (latest?.ready !== true) {
+    throw new Error(`Quick Switch query probe was unavailable: ${JSON.stringify({ latest })}`);
+  }
+  while (Date.now() < deadline) {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression:
+        'typeof globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__ === "function" ? globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__() : null',
+      returnByValue: true,
+    });
+    const result = commandResult(response);
+    latest = typeof result?.value === "string" ? JSON.parse(result.value) : null;
+    if (latest?.query === query) return latest;
+    await waitForChildExit(child, 50);
+  }
+  throw new Error(
+    `Quick Switch query did not reach its expected state: ${JSON.stringify({ latest, query })}`,
+  );
+}
+
+function quickSwitchExpectation(query) {
+  const actionLabels = [
     "New thread in t3-hero-claude-workspace",
     "New thread in...",
     "Go to file",
     "Search project contents",
     "Add project",
     "Open settings",
-    "Quick Switch idle thread",
   ];
+  if (query === "settings") {
+    return {
+      actionLabels: ["Open settings"],
+      actionsOnly: false,
+      emptyMessage: null,
+      threadLabels: [],
+    };
+  }
+  if (query === ">") {
+    return {
+      actionLabels,
+      actionsOnly: true,
+      emptyMessage: null,
+      threadLabels: [],
+    };
+  }
+  if (query === "zzzz-no-result") {
+    return {
+      actionLabels: [],
+      actionsOnly: false,
+      emptyMessage: "No matching commands, projects, or threads.",
+      threadLabels: [],
+    };
+  }
+  return {
+    actionLabels,
+    actionsOnly: false,
+    emptyMessage: null,
+    threadLabels: ["Quick Switch idle thread"],
+  };
+}
+
+async function verifyQuickSwitchState({
+  child,
+  client,
+  devToolCli,
+  expectedTheme,
+  outputDirectory,
+  query,
+  timeoutMs,
+}) {
+  await waitForStableMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-search-overlay-mode"] === "command",
+  });
+  const state = query
+    ? await setQuickSwitchQuery({ child, client, query, timeoutMs })
+    : {
+        actionLabels: quickSwitchExpectation("").actionLabels,
+        actionsOnly: false,
+        empty: false,
+        normalizedQuery: "",
+        query: "",
+        threadLabels: ["Quick Switch idle thread"],
+        view: "root",
+      };
+  const expected = quickSwitchExpectation(query);
+  const panel = await waitForStableMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-search-overlay-mode"] === "command" &&
+      expected.actionLabels.every((label) => measurement.text.includes(label)) &&
+      (expected.emptyMessage === null || measurement.text.includes(expected.emptyMessage)),
+  });
+  const search = await readOptionalMeasurement(client, ".palette-search");
+  const results = await readOptionalMeasurement(client, ".palette-results");
+  const footer = await readOptionalMeasurement(client, ".palette-footer");
+  const rowMeasurements = await readSelectorMeasurements(client, ".palette-row");
+  const rows = rowMeasurements.map((measurement) => measurement.rect);
+  const empty = await readOptionalMeasurement(client, ".palette-empty");
+  const expectedLabels = [...expected.actionLabels, ...expected.threadLabels];
   const labels = expectedLabels.filter((label) => panel.text.includes(label));
   if (
     !search ||
@@ -2024,13 +2129,21 @@ async function verifyQuickSwitchDefault({
     !footer ||
     rows.length !== expectedLabels.length ||
     JSON.stringify(labels) !== JSON.stringify(expectedLabels) ||
+    JSON.stringify(state.actionLabels) !== JSON.stringify(expected.actionLabels) ||
+    JSON.stringify(state.threadLabels) !== JSON.stringify(expected.threadLabels) ||
+    state.actionsOnly !== expected.actionsOnly ||
+    state.empty !== (expected.emptyMessage !== null) ||
+    state.normalizedQuery !== (query === ">" ? "" : query) ||
+    state.query !== query ||
+    state.view !== "root" ||
+    (expected.emptyMessage === null ? empty !== null : empty?.text !== expected.emptyMessage) ||
     !footer.text.includes("Enter") ||
     !footer.text.includes("Select") ||
     footer.text.includes("⌘P") ||
     footer.text.includes("Files")
   ) {
     throw new Error(
-      `Quick Switch default anatomy drifted: ${JSON.stringify({
+      `Quick Switch anatomy drifted: ${JSON.stringify({
         panel: panel.rect,
         search: search?.rect,
         results: results?.rect,
@@ -2038,14 +2151,24 @@ async function verifyQuickSwitchDefault({
         footerText: footer?.text,
         rows,
         labels,
+        state,
+        empty,
       })}`,
     );
   }
+  const stateSlug =
+    query === ""
+      ? "default"
+      : query === ">"
+        ? "actions-only"
+        : query === "zzzz-no-result"
+          ? "empty"
+          : "query";
   const screenshot = captureNativeScreenshot({
     client,
     devToolCli,
     outputDirectory,
-    name: `native-quick-switch-${expectedTheme ?? "system"}.png`,
+    name: `native-quick-switch-${stateSlug}-${expectedTheme ?? "system"}.png`,
   });
   await tapSelector({
     child,
@@ -2063,6 +2186,12 @@ async function verifyQuickSwitchDefault({
   });
   return {
     status: "pass",
+    state: stateSlug,
+    query,
+    stateProbe: query
+      ? "testResize-gated query setter for visual state only"
+      : "initialOverlay product state",
+    physicalKeyboard: "pending-user-session",
     input: "initialOverlay product state plus measured DevTool outside tap",
     panel: panel.rect,
     search: search.rect,
@@ -2071,6 +2200,8 @@ async function verifyQuickSwitchDefault({
     footerText: footer.text,
     rows,
     labels,
+    empty: empty?.rect ?? null,
+    emptyText: empty?.text ?? null,
     screenshot,
     dismissed: true,
   };
@@ -9860,7 +9991,8 @@ async function runOnce({
       shouldVerifySidebarInlineSearch ||
       shouldVerifyCompactControls ||
       shouldVerifyProjectActionKeybindingMutation ||
-      shouldVerifyFileEditingSave
+      shouldVerifyFileEditingSave ||
+      (shouldVerifyQuickSwitchDefault && quickSwitchQuery.length > 0)
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
@@ -10044,12 +10176,13 @@ async function runOnce({
         })
       : undefined;
     const quickSwitchDefault = shouldVerifyQuickSwitchDefault
-      ? await verifyQuickSwitchDefault({
+      ? await verifyQuickSwitchState({
           child,
           client,
           devToolCli,
           expectedTheme,
           outputDirectory,
+          query: quickSwitchQuery,
           timeoutMs,
         })
       : undefined;
@@ -10641,6 +10774,7 @@ const shouldVerifyComposerSendMaterial = process.argv.includes("--verify-compose
 const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-composer-state");
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
+const quickSwitchQuery = argumentValue("--quick-switch-query") ?? "";
 const shouldVerifySidebarGeometry = process.argv.includes("--verify-sidebar-geometry");
 const shouldVerifySidebarInlineSearch = process.argv.includes("--verify-sidebar-inline-search");
 const shouldVerifyFloatingRelations = process.argv.includes("--verify-floating-relations");
@@ -10747,6 +10881,9 @@ if (
 }
 if (shouldVerifyHeroComposerState && !expectedModelLabel) {
   throw new Error("--verify-hero-composer-state requires --expected-model-label.");
+}
+if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
+  throw new Error("--quick-switch-query requires --verify-quick-switch-default.");
 }
 if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutation) {
   throw new Error(
