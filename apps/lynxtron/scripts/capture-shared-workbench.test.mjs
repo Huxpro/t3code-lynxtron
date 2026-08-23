@@ -504,6 +504,7 @@ describe("shared workbench lifecycle fault capture", () => {
       source,
       "`/${encodeURIComponent(environmentId)}/${encodeURIComponent(expectThread)}`",
     );
+    assert.include(source, "explicitExpectedThreadId || isComposerPlanModeState");
     assert.include(source, "webRoute: captureWebRoute");
     assert.include(source, "function composerPlanModeMatches(state)");
     assert.include(source, 'className.includes("bg-blue-500/10")');

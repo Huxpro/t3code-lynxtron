@@ -4394,7 +4394,10 @@ async function main() {
     if (!ready) throw new Error("server not ready");
     for (let i = 0; i < 20 && !startupToken; i++) await delay(200);
     if (!startupToken) throw new Error("did not capture startup pairing token");
-    if ((isComposerPlanModeState || isMultiStepQuestionState) && expectThread) {
+    if (
+      (explicitExpectedThreadId || isComposerPlanModeState || isMultiStepQuestionState) &&
+      expectThread
+    ) {
       const environmentId = (
         await readFile(path.join(baseDir, "userdata", "environment-id"), "utf8")
       ).trim();
