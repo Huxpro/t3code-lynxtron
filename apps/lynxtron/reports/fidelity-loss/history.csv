@@ -210,3 +210,4 @@ empty-thread-cleanup-current,2026-08-22T19:35:27-07:00,6e6143b20f4adaa41216df24c
 settings-connections-current,2026-08-22T20:07:16-07:00,b5c69aaf30a7cc324faa8002b488dc18a32e012c,commit,Connections settings shared empty state,0.308177,0.308177,0.028622,0.287792,0.712208,0.682809
 command-palette-navigation-current,2026-08-22T20:52:49-07:00,ddc9e427b991e3abfda49c18dbe623b34619c2be,commit,Command palette navigation current evidence,0.300807,0.300807,0.029467,0.279578,0.720422,0.690179
 quick-switch-filter-native-current,2026-08-22T21:34:38-07:00,6e555b2efb5a5fa1f9492b597f6900f2130998a8,commit,Quick Switch Native filter-state coverage,0.27587,0.27587,0.033793,0.250544,0.749456,0.715116
+add-project-sources-native-current,2026-08-22T22:21:52-07:00,266036363d771d34b6ffee10e57333785a64e440,commit,Add Project source fidelity,0.267897,0.267897,0.034021,0.242114,0.757886,0.723089

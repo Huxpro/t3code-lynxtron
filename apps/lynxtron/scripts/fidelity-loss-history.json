@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-22T21:34:38-07:00",
+  "updatedAt": "2026-08-22T22:21:52-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -14799,6 +14799,76 @@
               "confidence": 0.99,
               "method": "native-light-query-main-transport",
               "source": "Exact bundle uses main transport, advances sequence, reports zero renderer errors, and disposes isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "add-project-sources-native-current",
+      "observedAt": "2026-08-22T22:21:52-07:00",
+      "commit": "266036363d771d34b6ffee10e57333785a64e440",
+      "codeCommit": "266036363d771d34b6ffee10e57333785a64e440",
+      "codeState": "commit",
+      "label": "Add Project source fidelity",
+      "narrative": "A strict Native verifier exposed two product losses hidden by the earlier Browser-only evidence: unavailable provider rows resolved to opacity 1 despite carrying opacity-64, and six source rows rendered at 44px instead of the 48px Web authority. Source-specific Native CSS now resolves disabled rows to 0.64 and locks source rows to 48px. Fresh exact-bundle dark and light runs verify all six sources, active and disabled states, Setup Required badges, inert disabled taps, Local folder navigation, two-level Back behavior, outside dismissal, main transport, zero renderer errors, and isolated cleanup. Native physical keyboard remains R5 pending-user-session.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Direct before and after Native reports use the same fixture, viewport, theme, harness, and source flow. The before report records opacity 1 and 44px rows; the final reports record opacity 0.64 and 48px rows."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-22/fidelity/add-project-sources-native-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "b859325f8be0fbb094925dabb256828dee0a857fa3ad232332bbcdf128c167f2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["add-project-sources"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-add-project-source-content",
+              "source": "Both themes render Local folder, Git URL, GitHub, Azure DevOps, Bitbucket, and GitLab in authority order with three Setup Required badges"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                1, 0, 2.038391, 1.971771, 0.999939, 0.000069, 2.038269, 0.003212, 0.999939,
+                0.003281, 2.038269, 0.022202, 0.999939, 1.974518, 2.038269, 0.002686, 0.99939,
+                0.005676, 2.03717, 0.00322
+              ],
+              "anchorScale": 574,
+              "confidence": 0.99,
+              "method": "native-add-project-browser-authority-geometry",
+              "source": "Panel, search, results, footer, and 48px source rows align with retained Browser authority within host-border and subpixel differences"
+            },
+            "typography": {
+              "gate": "visualPass",
+              "confidence": 0.95,
+              "method": "native-add-project-dual-theme-review",
+              "source": "Manual review confirms title, descriptions, section label, Setup Required badges, and footer hierarchy in both themes"
+            },
+            "material": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "native-disabled-source-before-after",
+              "source": "Unavailable source row opacity improves from 1 to 0.64; dual-theme review confirms panel, dim layer, active row, and warning badges without regressions"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.95,
+              "method": "native-add-project-tap-flow",
+              "source": "Measured taps prove disabled rows stay inert, Local folder opens, Back returns to Sources then root, and the backdrop dismisses; physical keyboard remains pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-add-project-main-transport",
+              "source": "Both themes use main transport, advance sequence, report zero renderer errors, avoid clone/create side effects, and dispose isolated state"
             }
           }
         }
