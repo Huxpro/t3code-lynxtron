@@ -1125,6 +1125,10 @@ describe("desktop shell interaction contract", () => {
     expect(connectorSource).toContain("selectStaleDisposableThreadIds(");
     expect(connectorSource).toContain("this.scheduleDisposableThreadCleanup()");
     expect(connectorSource).toContain("this.pendingDisposableThreadDeletes.has(thread.id)");
+    expect(clientSource).toContain(
+      "if (stateBeforeShell.activeThreadId && !activePresentationThread)",
+    );
+    expect(clientSource).toContain("resetActiveThreadState()");
     expect(clientSource).toContain("state.settings?.defaultThreadEnvMode");
     expect(clientSource).toContain("state.settings?.newWorktreesStartFromOrigin");
     expect(chatView).toContain('activeThreadKind={activeDraftThread ? "draft" :');
