@@ -4951,6 +4951,24 @@ async function verifyModelPickerFidelity({
       ["Current checkout", "Local checkout"].includes(measurement.text.trim()),
   });
   const providerItems = await readSelectorMeasurements(client, ".model-picker-rail-item");
+  if (
+    Math.abs(rail.rect.width - 44) > 1 ||
+    Math.abs(rail.rect.height - 344) > 1 ||
+    Math.abs(content.rect.width - 314) > 1 ||
+    Math.abs(content.rect.height - 344) > 1 ||
+    providerItems.some(
+      (item) =>
+        Math.abs((item.rect?.width ?? 0) - 36) > 1 || Math.abs((item.rect?.height ?? 0) - 36) > 1,
+    )
+  ) {
+    throw new Error(
+      `Native model-picker provider rail geometry drifted: ${JSON.stringify({
+        content,
+        providerItems,
+        rail,
+      })}`,
+    );
+  }
   const beforeProvider = content.attributes["data-model-picker-selected-provider"];
   const targetProvider = providerItems.find(
     (item) =>
@@ -5228,6 +5246,15 @@ async function verifyModelPickerFidelity({
       active: switchedProvider.attributes["data-model-picker-provider"],
       rows: switchedRows.map((row) => row.attributes["data-model-picker-key"]),
       pickerRemainedOpen: true,
+    },
+    providerGeometry: {
+      rail: rail.rect,
+      content: content.rect,
+      items: providerItems.map((item) => ({
+        provider: item.attributes["data-model-picker-provider"],
+        rect: item.rect,
+      })),
+      firstRow: switchedRows[0]?.rect ?? null,
     },
     query: {
       value: queryState.search,

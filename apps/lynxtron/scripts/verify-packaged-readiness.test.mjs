@@ -322,6 +322,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".model-picker-content"');
     assert.include(source, 'selector: ".model-picker-rail-scroll"');
     assert.include(source, 'readSelectorMeasurements(client, ".model-picker-rail-item")');
+    assert.include(source, "Math.abs(rail.rect.width - 44) > 1");
+    assert.include(source, "Math.abs((item.rect?.width ?? 0) - 36) > 1");
+    assert.include(source, "providerGeometry:");
     assert.include(source, 'attribute: "data-model-picker-provider"');
     assert.include(source, 'selector: ".model-picker-rail-item--active"');
     assert.include(source, "Native model picker rows did not switch provider");
