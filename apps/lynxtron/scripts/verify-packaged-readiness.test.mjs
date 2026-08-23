@@ -966,6 +966,36 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.notInclude(source, "cloneAndAddProject");
   });
 
+  it("verifies Native New Thread project association without persisting empty threads", () => {
+    assert.include(source, "async function verifyNewThreadProjects");
+    assert.include(source, '"--verify-new-thread-projects"');
+    assert.include(source, "function readPersistedProjects");
+    assert.include(source, 'selector: ".sidebar-v2-new-thread"');
+    assert.include(
+      source,
+      "selector: '.palette-panel[data-quick-switch-view=\"new-thread-projects\"]'",
+    );
+    assert.include(source, 'readSelectorMeasurements(client, ".quick-switch-project-row")');
+    assert.include(source, "Math.abs(panel.rect.width - 576) > 1");
+    assert.include(source, "Math.abs(panel.rect.height - 230) > 1");
+    assert.include(source, "Math.abs((row.rect?.height ?? 0) - 48) > 1");
+    assert.include(source, "await tapMeasurement({ client, measurement: row })");
+    assert.include(source, "candidate.activeThread?.projectId === project.projectId");
+    assert.include(
+      source,
+      "candidate.draftThreadIdsByProjectId?.[project.projectId] === candidate.draftThreadId",
+    );
+    assert.include(source, "Different projects reused the same local draft identity.");
+    assert.include(source, "did not reuse its local draft");
+    assert.include(source, "persistedThreadIdsAfter.length !== 0");
+    assert.include(source, 'selector: ".qs-search__back"');
+    assert.include(source, 'selector: ".palette-backdrop"');
+    assert.include(source, 'name: `native-new-thread-projects-${expectedTheme ?? "system"}.png`');
+    assert.include(source, 'physicalKeyboard: "pending-user-session"');
+    assert.include(source, 'physicalHover: "pending-user-session"');
+    assert.include(outcomeChecksSource, "newThreadProjects");
+  });
+
   it("verifies Native legacy project groups and collapse recovery", () => {
     assert.include(source, "async function verifySidebarProjectGroups");
     assert.include(source, '"--verify-sidebar-project-groups"');

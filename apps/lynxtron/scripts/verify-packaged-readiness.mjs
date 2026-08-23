@@ -2954,6 +2954,24 @@ function readPersistedThreadIds(baseDir) {
   }
 }
 
+function readPersistedProjects(baseDir) {
+  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
+    readOnly: true,
+  });
+  try {
+    return database
+      .prepare(
+        `SELECT project_id AS projectId, title, workspace_root AS workspaceRoot
+         FROM projection_projects
+         WHERE deleted_at IS NULL
+         ORDER BY updated_at DESC, project_id ASC`,
+      )
+      .all();
+  } finally {
+    database.close();
+  }
+}
+
 function readPersistedEmptyThreadIds(baseDir) {
   const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
     readOnly: true,
@@ -3102,6 +3120,270 @@ async function verifyNewThreadDraftLifecycle({ baseDir, child, client, timeoutMs
     reusedDraftThreadId: reusedDraftState.draftThreadId,
     serverSequenceBefore: beforeSequence.lastSeq,
     serverSequenceAfter: afterSequence.lastSeq,
+  };
+}
+
+async function verifyNewThreadProjects({
+  baseDir,
+  child,
+  client,
+  devToolCli,
+  expectedProjectTitles,
+  expectedTheme,
+  outputDirectory,
+  timeoutMs,
+}) {
+  const projects = readPersistedProjects(baseDir);
+  if (
+    projects.length !== 2 ||
+    expectedProjectTitles.length !== 2 ||
+    !expectedProjectTitles.every((title) => projects.some((project) => project.title === title))
+  ) {
+    throw new Error(
+      `--verify-new-thread-projects requires exactly two declared persisted projects: ${JSON.stringify(
+        { expectedProjectTitles, projects },
+      )}`,
+    );
+  }
+  const canonicalThreadIdsBefore = (await readClientState(client))?.threadIds ?? [];
+  const persistedThreadIdsBefore = readPersistedThreadIds(baseDir);
+  if (canonicalThreadIdsBefore.length !== 0 || persistedThreadIdsBefore.length !== 0) {
+    throw new Error(
+      `New Thread Projects fixture must start without threads: ${JSON.stringify({
+        canonicalThreadIdsBefore,
+        persistedThreadIdsBefore,
+      })}`,
+    );
+  }
+
+  const openChooser = async () => {
+    await tapSelector({
+      child,
+      client,
+      selector: ".sidebar-v2-new-thread",
+      timeoutMs,
+    });
+    const panel = await waitForStableMeasurement({
+      child,
+      client,
+      selector: '.palette-panel[data-quick-switch-view="new-thread-projects"]',
+      timeoutMs,
+      predicate: (measurement) => measurement !== null,
+    });
+    const [search, results, section, sectionLabel, footer] = await Promise.all([
+      readOptionalMeasurement(client, ".palette-search"),
+      readOptionalMeasurement(client, ".palette-results"),
+      readOptionalMeasurement(client, '.qs-section[data-quick-switch-mode="new-thread-projects"]'),
+      readOptionalMeasurement(client, ".palette-section-label"),
+      readOptionalMeasurement(client, ".palette-footer"),
+    ]);
+    const rows = await readSelectorMeasurements(client, ".quick-switch-project-row");
+    const rowTitles = rows.map((row) => row.text.split("\n")[0]?.trim() ?? "");
+    if (
+      !search ||
+      !results ||
+      !section ||
+      !sectionLabel ||
+      !footer ||
+      rows.length !== 2 ||
+      sectionLabel.text.trim() !== "Projects" ||
+      !expectedProjectTitles.every((title) => rowTitles.includes(title)) ||
+      Math.abs(panel.rect.width - 576) > 1 ||
+      Math.abs(panel.rect.height - 230) > 1 ||
+      Math.abs(search.rect.height - 48) > 1 ||
+      Math.abs(results.rect.height - 140) > 1 ||
+      Math.abs(section.rect.height - 124) > 1 ||
+      Math.abs(sectionLabel.rect.height - 28) > 1 ||
+      rows.some((row) => Math.abs((row.rect?.height ?? 0) - 48) > 1) ||
+      Math.abs(footer.rect.height - 40) > 1 ||
+      !footer.text.includes("Navigate") ||
+      !footer.text.includes("Select") ||
+      !footer.text.includes("Back") ||
+      !footer.text.includes("Close")
+    ) {
+      throw new Error(
+        `Native New Thread Projects anatomy drifted from Web authority: ${JSON.stringify({
+          expectedProjectTitles,
+          footer,
+          panel,
+          results,
+          rows,
+          rowTitles,
+          search,
+          section,
+          sectionLabel,
+        })}`,
+      );
+    }
+    return { footer, panel, results, rows, rowTitles, search, section, sectionLabel };
+  };
+
+  const selectProject = async (project) => {
+    const chooser = await openChooser();
+    const row = chooser.rows.find((candidate) => candidate.text.includes(project.title));
+    if (!row) {
+      throw new Error(
+        `New Thread Projects did not expose ${project.title}: ${JSON.stringify(chooser.rowTitles)}`,
+      );
+    }
+    await tapMeasurement({ client, measurement: row });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".palette-panel",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+    const state = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (candidate) =>
+        typeof candidate?.draftThreadId === "string" &&
+        candidate.activeThreadId === candidate.draftThreadId &&
+        candidate.activeThread?.projectId === project.projectId &&
+        candidate.draftThreadIdsByProjectId?.[project.projectId] === candidate.draftThreadId &&
+        Array.isArray(candidate.threadIds) &&
+        candidate.threadIds.length === 0,
+    });
+    const persistedThreadIds = readPersistedThreadIds(baseDir);
+    if (persistedThreadIds.length !== 0) {
+      throw new Error(
+        `Selecting ${project.title} persisted an empty thread: ${JSON.stringify(
+          persistedThreadIds,
+        )}`,
+      );
+    }
+    return { chooser, persistedThreadIds, state };
+  };
+
+  const firstProject = projects[0];
+  const secondProject = projects[1];
+  const firstSelection = await selectProject(firstProject);
+  const secondSelection = await selectProject(secondProject);
+  if (firstSelection.state.draftThreadId === secondSelection.state.draftThreadId) {
+    throw new Error("Different projects reused the same local draft identity.");
+  }
+  const firstSelectionAgain = await selectProject(firstProject);
+  if (firstSelectionAgain.state.draftThreadId !== firstSelection.state.draftThreadId) {
+    throw new Error(
+      `Returning to ${firstProject.title} did not reuse its local draft: ${JSON.stringify({
+        first: firstSelection.state.draftThreadId,
+        returned: firstSelectionAgain.state.draftThreadId,
+      })}`,
+    );
+  }
+
+  const backChooser = await openChooser();
+  await tapSelector({ child, client, selector: ".qs-search__back", timeoutMs });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: '.palette-panel[data-quick-switch-view="root"]',
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  await tapSelector({ child, client, selector: ".palette-backdrop", timeoutMs });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  await openChooser();
+  const backdrop = await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-backdrop",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-new-thread-projects-${expectedTheme ?? "system"}.png`,
+  });
+  await tapSelector({
+    child,
+    client,
+    point: "bottom-right",
+    selector: ".palette-backdrop",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".palette-panel",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const finalState = await readClientState(client);
+  const persistedThreadIdsAfter = readPersistedThreadIds(baseDir);
+  if (
+    (finalState?.threadIds?.length ?? -1) !== 0 ||
+    persistedThreadIdsAfter.length !== 0 ||
+    Object.keys(finalState?.draftThreadIdsByProjectId ?? {}).length !== 2
+  ) {
+    throw new Error(
+      `New Thread Projects left incorrect canonical or draft state: ${JSON.stringify({
+        finalState,
+        persistedThreadIdsAfter,
+      })}`,
+    );
+  }
+
+  return {
+    status: "pass",
+    authority: {
+      panel: [352, 82, 576, 230],
+      search: [353, 83, 574, 48],
+      results: [353, 131, 574, 140],
+      section: [361, 139, 558, 124],
+      sectionLabel: [361, 139, 558, 28],
+      rowHeight: 48,
+      footer: [353, 271, 574, 40],
+    },
+    geometry: {
+      panel: firstSelection.chooser.panel.rect,
+      search: firstSelection.chooser.search.rect,
+      results: firstSelection.chooser.results.rect,
+      section: firstSelection.chooser.section.rect,
+      sectionLabel: firstSelection.chooser.sectionLabel.rect,
+      rows: firstSelection.chooser.rows.map((row) => ({
+        rect: row.rect,
+        text: row.text,
+      })),
+      footer: firstSelection.chooser.footer.rect,
+    },
+    projects: projects.map((project) => ({
+      ...project,
+      draftThreadId:
+        finalState.draftThreadIdsByProjectId?.[project.projectId] ??
+        firstSelection.state.draftThreadIdsByProjectId?.[project.projectId] ??
+        secondSelection.state.draftThreadIdsByProjectId?.[project.projectId],
+    })),
+    draftLifecycle: {
+      firstProject: firstSelection.state.draftThreadId,
+      secondProject: secondSelection.state.draftThreadId,
+      firstProjectReused: firstSelectionAgain.state.draftThreadId,
+      registry: finalState.draftThreadIdsByProjectId,
+    },
+    canonicalThreadIdsBefore,
+    canonicalThreadIdsAfter: finalState.threadIds,
+    persistedThreadIdsBefore,
+    persistedThreadIdsAfter,
+    dismissal: {
+      backToRoot: true,
+      backdrop: backdrop.rect,
+      outsideTapClosed: true,
+    },
+    screenshot,
+    physicalKeyboard: "pending-user-session",
+    physicalHover: "pending-user-session",
+    input: "DevTool taps on measured Sidebar, project rows, Back, and backdrop",
   };
 }
 
@@ -9042,6 +9324,38 @@ async function tapSelector({ child, client, point = "center", selector, timeoutM
   }
 }
 
+async function tapMeasurement({ client, measurement, point = "center" }) {
+  if (!Number.isInteger(measurement?.nodeId) || !measurement?.rect) {
+    throw new Error(`Cannot tap an invalid measurement: ${JSON.stringify(measurement)}`);
+  }
+  const tapPoint =
+    point === "top-left"
+      ? { x: measurement.rect.x + 2, y: measurement.rect.y + 2 }
+      : point === "bottom-right"
+        ? {
+            x: measurement.rect.x + measurement.rect.width - 2,
+            y: measurement.rect.y + measurement.rect.height - 2,
+          }
+        : {
+            x: measurement.rect.x + measurement.rect.width / 2,
+            y: measurement.rect.y + measurement.rect.height / 2,
+          };
+  const timestamp = Date.now() / 1000;
+  for (const [type, offset] of [
+    ["mouseMoved", 0],
+    ["mousePressed", 0.01],
+    ["mouseReleased", 0.02],
+  ]) {
+    await client.runCdp("Input.emulateTouchFromMouseEvent", {
+      type,
+      x: tapPoint.x,
+      y: tapPoint.y,
+      timestamp: timestamp + offset,
+      button: "left",
+    });
+  }
+}
+
 async function tapSelectorByAttribute({
   attribute,
   child,
@@ -10416,6 +10730,7 @@ async function runOnce({
   verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
   verifyAddProjectSources: shouldVerifyAddProjectSources,
   verifyFilePickerDefault: shouldVerifyFilePickerDefault,
+  verifyNewThreadProjects: shouldVerifyNewThreadProjects,
   verifySidebarProjectGroups: shouldVerifySidebarProjectGroups,
   expectedProjectTitles,
   verifySidebarGeometry: shouldVerifySidebarGeometry,
@@ -10475,6 +10790,7 @@ async function runOnce({
     expectedEnvironmentIdentificationMode ||
     expectedTheme ||
     shouldVerifyAddProjectSources ||
+    shouldVerifyNewThreadProjects ||
     shouldVerifySidebarProjectGroups
   ) {
     const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
@@ -10488,6 +10804,7 @@ async function runOnce({
           ...(shouldVerifyAddProjectSources ? { initialOverlay: "add-project" } : {}),
           clientSettings: {
             ...prefs.clientSettings,
+            ...(shouldVerifyNewThreadProjects ? { legacySidebarEnabled: false } : {}),
             ...(shouldVerifySidebarProjectGroups
               ? {
                   legacySidebarEnabled: true,
@@ -10731,6 +11048,18 @@ async function runOnce({
           child,
           client,
           devToolCli,
+          expectedTheme,
+          outputDirectory,
+          timeoutMs,
+        })
+      : undefined;
+    const newThreadProjects = shouldVerifyNewThreadProjects
+      ? await verifyNewThreadProjects({
+          baseDir,
+          child,
+          client,
+          devToolCli,
+          expectedProjectTitles,
           expectedTheme,
           outputDirectory,
           timeoutMs,
@@ -11193,6 +11522,7 @@ async function runOnce({
       idleThreadState,
       quickSwitchDefault,
       addProjectSources,
+      newThreadProjects,
       filePickerDefault,
       settingsNavigation,
       providersSettings,
@@ -11256,6 +11586,7 @@ async function runOnce({
       idleThreadState,
       quickSwitchDefault,
       addProjectSources,
+      newThreadProjects,
       filePickerDefault,
       composerThemeScreenshot,
       settingsNavigation,
@@ -11341,6 +11672,7 @@ const shouldVerifyHeroComposerState = process.argv.includes("--verify-hero-compo
 const shouldVerifyIdleThreadState = process.argv.includes("--verify-idle-thread-state");
 const shouldVerifyQuickSwitchDefault = process.argv.includes("--verify-quick-switch-default");
 const shouldVerifyAddProjectSources = process.argv.includes("--verify-add-project-sources");
+const shouldVerifyNewThreadProjects = process.argv.includes("--verify-new-thread-projects");
 const shouldVerifyFilePickerDefault = process.argv.includes("--verify-file-picker-default");
 const shouldVerifySidebarProjectGroups = process.argv.includes("--verify-sidebar-project-groups");
 const quickSwitchQuery = argumentValue("--quick-switch-query") ?? "";
@@ -11494,12 +11826,14 @@ const fixtureManifest = JSON.parse(
 );
 const expectedProjectTitles = fixtureManifest.projectGroupTitles;
 if (
-  shouldVerifySidebarProjectGroups &&
+  (shouldVerifySidebarProjectGroups || shouldVerifyNewThreadProjects) &&
   (!Array.isArray(expectedProjectTitles) ||
     expectedProjectTitles.length < 2 ||
     expectedProjectTitles.some((title) => typeof title !== "string" || title.length === 0))
 ) {
-  throw new Error("--verify-sidebar-project-groups requires visual-state.json projectGroupTitles.");
+  throw new Error(
+    "--verify-sidebar-project-groups and --verify-new-thread-projects require visual-state.json projectGroupTitles.",
+  );
 }
 const settledBannerFixture = fixtureManifest.settledBannerFixture;
 if (
@@ -11662,6 +11996,7 @@ if (
   !projectSettingsOnlyEmptyFixture &&
   !fileEditingSaveOnlyEmptyFixture &&
   !shouldVerifySidebarProjectGroups &&
+  !shouldVerifyNewThreadProjects &&
   !shouldVerifyFilePickerDefault &&
   (typeof canonicalThreadTitle !== "string" || canonicalThreadTitle.length === 0)
 ) {
@@ -11717,6 +12052,7 @@ for (let index = 1; index <= runs; index += 1) {
         !projectSettingsOnlyEmptyFixture &&
         !fileEditingSaveOnlyEmptyFixture &&
         !shouldVerifySidebarProjectGroups &&
+        !shouldVerifyNewThreadProjects &&
         !shouldVerifyFilePickerDefault &&
         !shouldVerifyFileSheetBack,
       timeoutMs,
@@ -11731,6 +12067,7 @@ for (let index = 1; index <= runs; index += 1) {
       idleFixture,
       verifyQuickSwitchDefault: shouldVerifyQuickSwitchDefault,
       verifyAddProjectSources: shouldVerifyAddProjectSources,
+      verifyNewThreadProjects: shouldVerifyNewThreadProjects,
       verifyFilePickerDefault: shouldVerifyFilePickerDefault,
       verifySidebarProjectGroups: shouldVerifySidebarProjectGroups,
       expectedProjectTitles,
