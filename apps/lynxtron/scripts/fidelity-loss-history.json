@@ -15597,6 +15597,115 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-thread-hover-preview-dual-theme-current",
+      "observedAt": "2026-08-23T15:41:40-07:00",
+      "commit": "fe3c62aaba2c88d627ad515551c4a2094316eb8a",
+      "codeCommit": "7a5198730c2362b691c6b697b29e215de5f14020",
+      "codeState": "commit",
+      "label": "Sidebar thread hover preview dual-theme convergence",
+      "narrative": "The Sidebar hover preview now shares one renderer-neutral detail-row projection and matches project, environment, optional branch, model, terminal, and error content across Web and Lynx. Current dark and light Browser captures retain the same canonical snapshot and show matching content, cold-light/dark material, right-start placement, quick-leave cancellation, and dismissal. Exact Native dark and light verify the 150ms delayed open, exact title and three detail rows, 262x106 popup, 4px side gap, zero align delta, Sidebar resize following, main transport, zero renderer errors, and isolated cleanup. Physical Native mouse hover remains pending-user-session rather than inferred from the test seam.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The checkpoint directly replaces the prior Native-only/coarse contract evidence with same-snapshot dual-theme Browser and exact-bundle Native measurements. It preserves the fixed 75-state denominator and all weights."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/sidebar-thread-hover-preview-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "92a863475398e053cac72247d59bcbc5dfaf2a0c11b37f754514a748f0fe266f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-thread-hover-preview"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-browser-exact-content",
+              "source": "Web authority and Lynx-for-Web render the same title, project, environment, and model text in the same order"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.65625, 3],
+              "anchorScale": 262,
+              "confidence": 0.99,
+              "method": "dual-theme-browser-popup-geometry",
+              "source": "Both themes place the popup at x=251 y=146; Web is 261.34375x106 and Lynx-for-Web is 262x109"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "dual-theme-browser-visual-review",
+              "source": "Both themes preserve the 12px title and 11/12px detail hierarchy; renderer-specific font shaping remains"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "dual-theme-browser-visual-review",
+              "source": "Visual review confirms matching cold-light and dark tooltip surfaces, borders, radius, padding, icons, and shadow hierarchy"
+            },
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "browser-pointer-and-lynx-test-seam",
+              "source": "Web uses real CDP pointer movement; Lynx-for-Web uses a viewport-test-only bridge to the real hover state machine because iframe pointer hover does not reach the background runtime"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-browser-hover-readiness",
+              "source": "Both themes keep matched identity, complete the quick-leave/open/dismiss flow, and report zero renderer errors with no agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["sidebar-thread-hover-preview"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-exact-content",
+              "source": "Both exact-bundle themes render the canonical title and exact t3code-lynxtron, MacBook Pro (3), and Big Pickle rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 303,
+              "confidence": 0.99,
+              "method": "native-dual-theme-hover-geometry",
+              "source": "Both themes render 262x106 at a 4px side gap and zero align delta, then follow the Sidebar anchor from 239px to 303px"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-dual-theme-visual-review",
+              "source": "Visual review confirms matching title and detail-row hierarchy in both themes; native font rasterization remains platform-specific"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-dual-theme-visual-review",
+              "source": "Visual review confirms the dark and cold-white popup surfaces, border, radius, padding, icon treatment, and shadow"
+            },
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "native-real-mts-hover-handler-test-seam",
+              "source": "Both themes prove 75ms closed, visible after the 150ms authority delay, quick-leave cancellation, dismissal, and resize follow through the real MTS handler; physical mouse hover remains pending-user-session"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-main-transport",
+              "source": "Both exact-bundle runs use the main transport, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
     }
   ]
 }
