@@ -64,6 +64,22 @@ describe("Lynx Settings route projection", () => {
     const contentBlock = overrides.slice(contentStart, overrides.indexOf("}", contentStart));
     expect(contentBlock).toContain("padding: 36px 32px 40px 32px;");
     expect(overrides).not.toContain(".settings-content--source-control {");
+    expect(overrides).toContain(
+      ".settings-content--connections > .settings-panel {\n  --align-self-row: start;\n  align-self: flex-start;",
+    );
+    expect(overrides).toContain(
+      ".settings-remote-empty {\n  position: relative;\n  display: block;",
+    );
+    expect(overrides).toContain("height: 232px;");
+    expect(overrides).toContain("left: calc(50% - 18px);");
+    expect(overrides).toContain("left: calc(50% - 173px);");
+    expect(overrides).toContain("width: 346px;");
+    expect(overrides).toContain(
+      ".settings-remote-empty__title {\n  position: absolute;\n  top: 0;\n  left: 0;",
+    );
+    expect(overrides).toContain(
+      ".settings-remote-empty__description {\n  position: absolute;\n  top: 32px;\n  left: 0;",
+    );
     const scrollStart = overrides.indexOf(".settings-scroll {");
     const scrollBlock = overrides.slice(scrollStart, overrides.indexOf("}", scrollStart));
     expect(scrollBlock).toContain("display: flex;");
@@ -242,6 +258,18 @@ describe("Lynx Settings route projection", () => {
     expect(settings).toContain("value={networkAccess.checked}");
     expect(settings).toMatch(/value=\{networkAccess\.checked\}[\s\S]+?disabled/);
     expect(settings).not.toContain('title="Access inventory"');
+    expect(settings).toContain("EmptyRemoteEnvironments");
+    expect(settings).toContain('className="settings-connections-add-environment"');
+    expect(settings).toMatch(
+      /className="settings-connections-add-environment"[\s\S]+?disabled[\s\S]+?label="Add environment"/,
+    );
+    expect(settings).toContain('name="chevrons-left-right-ellipsis"');
+    expect(settings).toMatch(
+      /title="Remote environments"[\s\S]+?<EmptyRemoteEnvironments[\s\S]+?cloudEnabled=\{false\}/,
+    );
+    expect(settings).not.toMatch(
+      /title="Remote environments"[\s\S]+?<view className="settings-empty-card">/,
+    );
   });
 
   it("matches the canonical Source Control empty and error anatomy", () => {

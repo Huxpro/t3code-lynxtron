@@ -6,6 +6,7 @@ import {
   AppearanceSettingsSurface,
   ArchivedThreadsSurface,
   BetaSettingsSurface,
+  EmptyRemoteEnvironments,
   ProviderInstanceCardSurface,
   SourceControlItemRowSurface,
   SourceControlMarkSurface,
@@ -223,6 +224,27 @@ describe("AccessListRowSurface", () => {
     }
     expect(markup).toContain("access-list-row");
     expect(markup.indexOf("data-dot")).toBeLessThan(markup.indexOf("MacBook Pro"));
+  });
+});
+
+describe("EmptyRemoteEnvironments", () => {
+  it("shares the canonical empty-state anatomy and offline copy", () => {
+    const markup = renderToStaticMarkup(
+      <EmptyRemoteEnvironments cloudEnabled={false} icon={<span data-remote-icon />} />,
+    );
+
+    for (const part of [
+      'data-slot="empty"',
+      'data-slot="empty-media"',
+      'data-slot="empty-title"',
+      'data-slot="empty-description"',
+      "data-remote-icon",
+      "No saved remote environments",
+      "Click “Add environment” to pair another environment.",
+    ]) {
+      expect(markup).toContain(part);
+    }
+    expect(markup).not.toContain("T3 Connect");
   });
 });
 
