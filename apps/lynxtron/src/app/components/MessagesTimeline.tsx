@@ -132,7 +132,7 @@ function LynxTurnDiffCard({
       }
       foldersControl={
         <view
-          className="inline-flex size-[22px] flex-col items-center justify-center rounded-md border border-border"
+          className="turn-diff-card__folders-toggle inline-flex size-[22px] flex-col items-center justify-center rounded-md border border-border"
           aria-label={allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"}
           data-review-toggle-directories
           bindtap={() => setAllDirectoriesExpanded((current) => !current)}
@@ -153,13 +153,15 @@ function LynxTurnDiffCard({
       }
       openDiffControl={
         <view
-          className="inline-flex h-6 items-center justify-center gap-1 rounded-md border border-border bg-background px-2"
+          className="turn-diff-card__open inline-flex h-6 items-center justify-center gap-1 rounded-md border border-border bg-background px-2"
           aria-label="Open diff"
           data-review-open-diff
           bindtap={() => openDiff(summary.files[0]?.path)}
         >
           <Icon name="file-json" size={12} color="#818181" />
-          <text className="lynx-host-text text-[11px] font-medium text-foreground">Open diff</text>
+          <text className="lynx-host-text turn-diff-card__open-label text-[11px] font-medium text-foreground">
+            Open diff
+          </text>
         </view>
       }
       previewScopes={scopeSummary.map((scope) => ({

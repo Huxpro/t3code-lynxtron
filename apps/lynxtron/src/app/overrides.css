@@ -4024,11 +4024,13 @@
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
+  line-height: 16px;
 }
 .turn-diff-card__stat,
 .turn-diff-card__file-stat {
   font-family: var(--font-mono);
   font-size: 10px;
+  line-height: 16px;
 }
 .turn-diff-card__stat {
   display: flex;
@@ -4047,6 +4049,7 @@
   color: var(--muted-foreground);
   font-family: var(--font-sans);
   font-size: 11px;
+  line-height: 16px;
 }
 .turn-diff-card__folders-toggle {
   display: flex;
@@ -4091,8 +4094,9 @@
 .turn-diff-card__open-label {
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
+  line-height: 16px;
 }
 .turn-diff-card__preview {
   display: flex;
@@ -4231,6 +4235,17 @@
 .file-tree-row--selected .file-tree-row__name {
   color: rgba(var(--foreground-rgb), 0.9);
 }
+.turn-diff-card .file-tree-row__name {
+  color: rgba(var(--muted-foreground-rgb), 0.8);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 16px;
+}
+.turn-diff-card .file-tree-row__stat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 16px;
+}
 .lynx-diff-stat {
   display: flex;
   flex-direction: row;
@@ -4242,6 +4257,7 @@
 .lynx-diff-stat__deletions {
   font-family: var(--font-mono);
   font-size: 10px;
+  line-height: 16px;
 }
 .lynx-diff-stat__additions {
   color: #22c55e;

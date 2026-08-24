@@ -69,11 +69,11 @@ export function FileTreeDirectoryRowSurface({
         {chevron}
       </HostText>
       {folderIcon}
-      <HostText className="file-tree-row__name truncate font-mono text-[11px] text-muted-foreground/90 group-hover:text-foreground/90">
+      <HostText className="file-tree-row__name truncate font-mono text-[11px] leading-4 text-muted-foreground/90 group-hover:text-foreground/90">
         {name}
       </HostText>
       {trailing ? (
-        <HostText className="ml-auto shrink-0 font-mono text-[10px] tabular-nums">
+        <HostText className="file-tree-row__stat ml-auto shrink-0 font-mono text-[10px] leading-4 tabular-nums">
           {trailing}
         </HostText>
       ) : null}
@@ -102,11 +102,11 @@ export function FileTreeFileRowSurface({
     <>
       {showLeadingSpacer ? <HostText aria-hidden className="size-3.5 shrink-0" /> : null}
       {fileIcon}
-      <HostText className="file-tree-row__name truncate font-mono text-[11px] text-muted-foreground/80 group-hover:text-foreground/90">
+      <HostText className="file-tree-row__name truncate font-mono text-[11px] leading-4 text-muted-foreground/80 group-hover:text-foreground/90">
         {name}
       </HostText>
       {trailing ? (
-        <HostText className="ml-auto shrink-0 font-mono text-[10px] tabular-nums">
+        <HostText className="file-tree-row__stat ml-auto shrink-0 font-mono text-[10px] leading-4 tabular-nums">
           {trailing}
         </HostText>
       ) : null}

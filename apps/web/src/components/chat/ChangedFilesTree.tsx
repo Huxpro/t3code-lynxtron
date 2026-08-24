@@ -85,9 +85,7 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
                 size="icon-xs"
                 variant="outline"
                 className="!size-[22px]"
-                aria-label={
-                  allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"
-                }
+                aria-label={allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"}
                 data-scroll-anchor-ignore
                 onClick={onToggleAllDirectories}
               />
@@ -119,7 +117,9 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
             }
           >
             <FileDiffIcon className="size-3" />
-            <span className="hidden sm:inline">Open diff</span>
+            <span className="turn-diff-card__open-label hidden text-xs leading-4 sm:inline">
+              Open diff
+            </span>
           </TooltipTrigger>
           <TooltipPopup side="top">Open the full diff</TooltipPopup>
         </Tooltip>

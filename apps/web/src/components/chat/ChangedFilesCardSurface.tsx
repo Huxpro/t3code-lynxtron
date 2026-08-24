@@ -96,11 +96,14 @@ export function ChangedFilesCardSurface({
             {toggleIcon}
           </HostView>
           <HostView className="flex min-w-0 items-center gap-1 whitespace-nowrap font-medium text-foreground text-xs leading-4">
-            <HostText>{label}</HostText>
+            <HostText className="turn-diff-card__status text-xs leading-4">{label}</HostText>
             {stat}
           </HostView>
           <HostText
-            className={cn("ml-1 truncate text-[11px] text-muted-foreground", hintClassName)}
+            className={cn(
+              "turn-diff-card__hint ml-1 truncate text-[11px] leading-4 text-muted-foreground",
+              hintClassName,
+            )}
           >
             {expanded ? "Hide files" : "Show files"}
           </HostText>
