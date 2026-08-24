@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-23T21:30:52-07:00",
+  "updatedAt": "2026-08-24T04:08:35-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16058,6 +16058,90 @@
               "confidence": 0.99,
               "method": "native-dual-theme-failed-banner-inset",
               "source": "Both exact-bundle themes render the 358x58 error banner, 1024x510 timeline host, first row at y=130, failed row at y=221, and only one-pixel native height quantization"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-hero-layout-current",
+      "observedAt": "2026-08-24T04:08:35-07:00",
+      "commit": "6642991cf09eab369b6448a2e8dadcece1d5ddce",
+      "codeCommit": "937a38d70125fd7123cc2e602d05d44f789269ad",
+      "codeState": "commit",
+      "label": "Composer Hero layout convergence",
+      "narrative": "The shared Hero composition now preserves the project name as inline text, explicitly resolves the 30px/36px/-0.75px headline typography, and allocates the checkout and branch controls as equal 354x24 columns. Same-snapshot dark and light Browser captures render GPT-5.6-Sol and the same project, context labels, Composer, and controls with zero errors. Exact-bundle Native dark and light reproduce the headline and control allocation with main transport sequence 3 to 5, zero renderer errors, and isolated cleanup. Web draft and Lynx none are intentionally equivalent unpersisted Hero representations; Native uses a separate Claude fixture and therefore supplies platform correlation rather than model pixel identity. Material and interaction remain unchanged because this slice has no valid same-identity before pixels or physical-input claim.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Committed-head dual-theme Browser and exact-bundle Native measurements directly cover the repaired inline headline, typography, and equal checkout or branch allocation while preserving material, interaction, all 75 states, 864 cells, weights, thresholds, filters, and denominator entries."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/composer-hero-layout-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "2f1b3deba8dc30c92f484109cd80fba1331fd5613b9bca880d643f6e9a179b04"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-hero-exact-content",
+              "source": "Both Browser themes render the same project, GPT-5.6-Sol, Low, Full access, Build, Current checkout, and main content; Web draft and Lynx none are equivalent unpersisted Hero states"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "dual-theme-hero-anatomy",
+              "source": "Headline centers match; y and font box height differ by one pixel, while the 768x140 Composer, 724x48 context strip, and two 354x24 controls match exactly. The intentional responsive headline max-width difference is excluded"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-hero-computed-typography",
+              "source": "Both Browser themes resolve the headline to 30px font size, 36px line height, and -0.75px tracking, with the Lynx project name remaining inline"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-hero-readiness",
+              "source": "Both committed-head Browser runs pass model, semantic-state, geometry, and typography gates with zero renderer errors and zero agent-browser leaks"
+            }
+          }
+        },
+        {
+          "states": ["composer-hero"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-hero-content",
+              "source": "Both exact-bundle themes render t3code-lynxtron, Claude Fable 5, High · 1M, Full access, Build, Current checkout, and main from the isolated Native fixture"
+            },
+            "geometry": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-hero-anatomy",
+              "source": "Both themes enforce the 768x36 headline, 768x140 Composer, 766x138 surface, 734x70 editor, 766x44 footer, and equal 354x24 context controls"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-hero-computed-typography",
+              "source": "Both exact-bundle themes resolve the headline to 30px font size, 36px line height, and -0.75px tracking"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-main-transport",
+              "source": "Both exact-bundle runs use the main transport, advance sequence 3 to 5, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }

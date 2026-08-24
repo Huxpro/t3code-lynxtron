@@ -227,3 +227,4 @@ existing-thread-approval-dual-theme-current,2026-08-23T20:10:18-07:00,a3fd9b7579
 empty-thread-immediate-recovery-current,2026-08-23T21:30:52-07:00,2f2935d759c5846dc8b3a0b9e2aa1c45de6b436e,commit,Immediate empty thread lifecycle recovery,0.204057,0.204057,0.036445,0.173951,0.826049,0.786929
 existing-thread-completed-provider-lock-current,2026-08-23T23:27:21-07:00,c22b919685435fe9f4d8eab60e1432801bac0531,commit,Completed thread canonical provider lock,0.204057,0.204057,0.036445,0.173951,0.826049,0.786929
 existing-thread-failed-banner-inset-current,2026-08-24T00:31:30-07:00,d724b05167ebe41aab5db1a1574be5420b41e822,commit,Failed transcript banner inset convergence,0.204056,0.204056,0.036444,0.173951,0.826049,0.78693
+composer-hero-layout-current,2026-08-24T04:08:35-07:00,6642991cf09eab369b6448a2e8dadcece1d5ddce,commit,Composer Hero layout convergence,0.201921,0.201921,0.03635,0.171816,0.828184,0.789065
