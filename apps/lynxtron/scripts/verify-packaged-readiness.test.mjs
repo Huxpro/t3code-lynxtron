@@ -1285,6 +1285,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyFailedTranscriptState");
     assert.include(source, '".thread-error-banner"');
     assert.include(source, '".thread-error-description"');
+    assert.include(source, '".thread-error-dismiss"');
+    assert.include(source, "predicate: (measurement) => measurement === null");
+    assert.include(source, "Native failed-thread dismiss changed session content");
     assert.include(source, 'modelText === "Big Pickle"');
     assert.include(
       source,

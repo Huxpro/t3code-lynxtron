@@ -179,12 +179,24 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain('className="provider-status-banner-overlay"');
     expect(chatView).not.toContain(") : visibleProviderStatusNotice ? (");
     expect(chatView).not.toContain("visibleProviderStatusNotice && !hero");
-    expect(chatView).toContain("hasTopBanner={Boolean(sessionError || modelSelectionError)}");
+    expect(chatView).toContain("hasTopBanner={Boolean(visibleThreadError)}");
     expect(chatView).toContain(".refreshProviders(activeProviderStatus?.instanceId)");
     expect(chatView).toContain('label={providersRefreshPending ? "Refreshing…" : "Refresh"}');
     expect(overrides).toContain(".chat-body-reference > .provider-status-banner-overlay {");
     expect(chatView).toContain("resolveThreadLockedConnectionValue({");
     expect(chatView).toContain("hasActiveThread: activeThread !== undefined");
+  });
+
+  it("keeps failed-thread dismissal local to the rendered error", () => {
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(chatView).toContain("dismissedThreadErrorsById");
+    expect(chatView).toContain("visibleThreadError");
+    expect(chatView).toContain('label="Dismiss error"');
+    expect(chatView).toContain('className="thread-error-dismiss"');
+    expect(chatView).toContain("onTap={dismissThreadError}");
+    expect(chatView).toContain("hasTopBanner={Boolean(visibleThreadError)}");
+    expect(chatView).not.toContain("setSessionError");
   });
 
   it("keeps shared Lynx buttons accessible to provider recovery controls", () => {

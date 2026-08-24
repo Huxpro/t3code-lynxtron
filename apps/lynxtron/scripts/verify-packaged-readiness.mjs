@@ -5714,7 +5714,13 @@ async function verifyCompletedTranscriptState({ child, client, devToolCli, outpu
   };
 }
 
-async function verifyFailedTranscriptState({ client, devToolCli, outputDirectory }) {
+async function verifyFailedTranscriptState({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  timeoutMs,
+}) {
   const composer = await readComposerOutcome(client, { allowMissingInteraction: true });
   assertComposerGeometry(composer, { allowMissingInteraction: true });
   const primaryAction = composer.anchors.primaryAction;
@@ -5755,6 +5761,33 @@ async function verifyFailedTranscriptState({ client, devToolCli, outputDirectory
     outputDirectory,
     name: "native-failed.png",
   });
+  await tapSelector({
+    child,
+    client,
+    selector: ".thread-error-dismiss",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".thread-error-banner",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const dismissedComposer = await readComposerOutcome(client, { allowMissingInteraction: true });
+  const dismissedRows = await readSelectorRects(client, ".timeline-row-root");
+  if (
+    dismissedComposer.anchors.primaryAction.attributes["data-composer-primary-state"] !==
+      "disabled" ||
+    dismissedRows.length !== 2
+  ) {
+    throw new Error(
+      `Native failed-thread dismiss changed session content: ${JSON.stringify({
+        dismissedComposer,
+        dismissedRows,
+      })}`,
+    );
+  }
   return {
     status: "pass",
     primaryAction: {
@@ -5774,6 +5807,13 @@ async function verifyFailedTranscriptState({ client, devToolCli, outputDirectory
     },
     checkoutLabel,
     screenshot,
+    dismissal: {
+      localOnly: true,
+      dismissed: true,
+      retainedFailedRows: dismissedRows.length,
+      retainedPrimaryState:
+        dismissedComposer.anchors.primaryAction.attributes["data-composer-primary-state"] ?? null,
+    },
   };
 }
 
@@ -12232,9 +12272,11 @@ async function runOnce({
       : undefined;
     const failedTranscriptState = shouldVerifyFailedTranscriptState
       ? await verifyFailedTranscriptState({
+          child,
           client,
           devToolCli,
           outputDirectory,
+          timeoutMs,
         })
       : undefined;
     const approvalTranscriptState =
