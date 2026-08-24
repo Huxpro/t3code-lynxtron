@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T21:57:05Z",
+  "stateId": "model-picker-default",
+  "scope": {
+    "client": "native",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "commits": {
+    "product": "af9bdfa9a",
+    "contract": "19c493a67"
+  },
+  "native": {
+    "status": "pass",
+    "captureTier": "native",
+    "bundle": {
+      "sha256": "3e56d69e534ec14b5e51d681597d2f8947e3ddee996fe270458015105e6fd443",
+      "bytes": 5315385
+    },
+    "fixture": {
+      "sourceKind": "isolated copy of the agent-owned composer-docked state",
+      "snapshotId": "ae3610b4d85d633e16c77612e2c444f66b7f197007d3565665914f172382ddeb",
+      "threadId": "445f5cb6-fe19-4044-b2bf-e30b658d431e",
+      "modelBefore": {
+        "instanceId": "codex",
+        "model": "gpt-5.6-sol"
+      }
+    },
+    "input": "DevTool Input.emulateTouchFromMouseEvent on measured model row, close control, and fullscreen outside-dismiss surface",
+    "selection": {
+      "target": "codex:gpt-5.6-terra",
+      "activeThreadAfter": {
+        "instanceId": "codex",
+        "model": "gpt-5.6-terra"
+      },
+      "overlayClosedAfterSelection": true
+    },
+    "dismissal": {
+      "closeControl": true,
+      "outsideTap": true,
+      "outsideLayer": {
+        "viewport": [0, 0, 1280, 820],
+        "backgroundColor": "transparent",
+        "armedAfterOpenMs": 250,
+        "panelZIndex": 51,
+        "dismissLayerZIndex": 50
+      }
+    },
+    "isolatedProcessDisposed": true
+  },
+  "classification": {
+    "productLossClosed": [
+      "A model row is again selectable through real Native touch and updates the active thread model.",
+      "The close control and a real outside touch independently dismiss the anchored picker.",
+      "The fullscreen dismiss surface no longer consumes the opening gesture or unarmed model-row taps."
+    ],
+    "harnessBoundary": [
+      "The generic packaged-readiness sequence still opens its picker during a separate startup synchronization window in this fixture and is retained as harness work, not product-loss evidence.",
+      "No fidelity weights, denominator, thresholds, filters, or residual policy changed for this interaction repair."
+    ],
+    "remainingDebt": [
+      "Physical keyboard Escape and focus-return remain pending-user-session evidence.",
+      "The existing cross-renderer visual-material residual remains unchanged."
+    ]
+  },
+  "validation": {
+    "directOwnedNativeProbe": "pass: selection, close control, and outside dismissal",
+    "shellInteractionContract": "38/38",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
