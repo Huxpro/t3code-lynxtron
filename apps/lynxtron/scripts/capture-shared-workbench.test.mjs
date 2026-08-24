@@ -89,6 +89,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "process.env.T3_PLAN11C_SEED_SOURCE");
     assert.include(source, "const expectedNewThreadModelSelection =");
     assert.include(source, "defaultModelSelection ?? null");
+    assert.include(source, "expectThread,\n        expectedNewThreadModelSelection,");
+    assert.include(source, "expectThread,\n  expectedNewThreadModelSelection,");
     assert.include(source, "modelSelection: JSON.stringify(expectedNewThreadModelSelection)");
   });
 
