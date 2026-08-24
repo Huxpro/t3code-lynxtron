@@ -4796,7 +4796,10 @@ async function main() {
     for (let i = 0; i < 20 && !startupToken; i++) await delay(200);
     if (!startupToken) throw new Error("did not capture startup pairing token");
     if (
-      (explicitExpectedThreadId || isComposerPlanModeState || isMultiStepQuestionState) &&
+      (explicitExpectedThreadId ||
+        isEmptyTranscriptState ||
+        isComposerPlanModeState ||
+        isMultiStepQuestionState) &&
       expectThread
     ) {
       const environmentId = (
