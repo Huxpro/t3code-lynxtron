@@ -4798,6 +4798,7 @@ async function main() {
     if (
       (explicitExpectedThreadId ||
         isEmptyTranscriptState ||
+        stateId === "composer-docked" ||
         isComposerPlanModeState ||
         isMultiStepQuestionState) &&
       expectThread
