@@ -473,13 +473,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyNewThreadDraftLifecycle");
     assert.include(source, '"--verify-new-thread-draft-lifecycle"');
     assert.include(source, "function readPersistedEmptyThreadIds");
-    assert.include(source, "staleEmptyThreadIds.every");
+    assert.include(source, "recoverableEmptyThreadIds.every");
     assert.include(source, "survived automatic recovery");
     assert.include(source, 'invokeConnector(client, "createThread", { projectId })');
     assert.include(source, '"data-sidebar-empty-thread-delete"');
     assert.include(source, "Deleting a fresh empty Native thread did not update persistence");
     assert.include(source, "canonicalThreadIdsBefore = afterDeleteState.threadIds ?? []");
-    assert.include(source, "threadIds: staleEmptyThreadIds");
+    assert.include(source, "threadIds: recoverableEmptyThreadIds");
     assert.include(source, "automatic: true");
     assert.include(source, "manual: true");
     assert.include(source, 'typeof state?.draftThreadId === "string"');

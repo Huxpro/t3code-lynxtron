@@ -3141,11 +3141,11 @@ async function verifyNewThreadDraftLifecycle({
   client,
   initialPersistedThreadIds,
   projectId,
-  staleEmptyThreadIds,
+  recoverableEmptyThreadIds,
   timeoutMs,
 }) {
-  if (staleEmptyThreadIds.length === 0) {
-    throw new Error("The Native draft lifecycle fixture has no stale empty threads to recover.");
+  if (recoverableEmptyThreadIds.length === 0) {
+    throw new Error("The Native draft lifecycle fixture has no empty threads to recover.");
   }
   const afterRecoveryState = await waitForClientState({
     child,
@@ -3153,13 +3153,15 @@ async function verifyNewThreadDraftLifecycle({
     timeoutMs,
     predicate: (state) =>
       Array.isArray(state?.threadIds) &&
-      staleEmptyThreadIds.every((threadId) => !state.threadIds.includes(threadId)),
+      recoverableEmptyThreadIds.every((threadId) => !state.threadIds.includes(threadId)),
   });
   const persistedThreadIdsAfterRecovery = readPersistedThreadIds(baseDir);
-  if (staleEmptyThreadIds.some((threadId) => persistedThreadIdsAfterRecovery.includes(threadId))) {
+  if (
+    recoverableEmptyThreadIds.some((threadId) => persistedThreadIdsAfterRecovery.includes(threadId))
+  ) {
     throw new Error(
-      `Stale empty Native threads survived automatic recovery: ${JSON.stringify({
-        staleEmptyThreadIds,
+      `Empty Native threads survived automatic recovery: ${JSON.stringify({
+        recoverableEmptyThreadIds,
         initialPersistedThreadIds,
         persistedThreadIdsAfterRecovery,
       })}`,
@@ -3263,8 +3265,8 @@ async function verifyNewThreadDraftLifecycle({
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured New thread control",
     hero: hero.rect,
-    staleEmptyThreadDeletion: {
-      threadIds: staleEmptyThreadIds,
+    recoverableEmptyThreadDeletion: {
+      threadIds: recoverableEmptyThreadIds,
       canonicalThreadIdsBefore: initialPersistedThreadIds,
       canonicalThreadIdsAfter: afterRecoveryState.threadIds ?? [],
       persistedThreadIdsBefore: initialPersistedThreadIds,
@@ -11531,7 +11533,7 @@ async function runOnce({
   const initialPersistedThreadIds = shouldVerifyNewThreadDraftLifecycle
     ? readPersistedThreadIds(baseDir)
     : [];
-  const staleEmptyThreadIds = shouldVerifyNewThreadDraftLifecycle
+  const recoverableEmptyThreadIds = shouldVerifyNewThreadDraftLifecycle
     ? readPersistedEmptyThreadIds(baseDir)
     : [];
   const draftLifecycleProjectId = shouldVerifyNewThreadDraftLifecycle
@@ -11926,7 +11928,7 @@ async function runOnce({
           client,
           initialPersistedThreadIds,
           projectId: draftLifecycleProjectId,
-          staleEmptyThreadIds,
+          recoverableEmptyThreadIds,
           timeoutMs,
         })
       : undefined;
