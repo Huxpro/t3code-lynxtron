@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T00:31:30-07:00",
+  "stateId": "existing-thread-failed",
+  "commits": {
+    "product": "f249694c91cb0baef74fc55e0d9ebe18c620a437",
+    "tests": "d724b05167ebe41aab5db1a1574be5420b41e822"
+  },
+  "fixture": {
+    "source": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-visual-state-M4LBkO",
+    "snapshotId": "593b05b88c58ded7c0dc122f267cac75175b8eb2a009d3463608895c139ef829",
+    "databaseSha256": "fae7d6dac40d38e11621fdcdef3776c6f3ecc5875d892e24ca62a2e8ac0fc775",
+    "manifestSha256": "b49db5f7fe7cba4d38c945f7b767d09dff2b056ebae8bc47cee9281b45fe1a9d",
+    "createdThroughRealConnector": true,
+    "threadId": "fa0793fd-1c0e-4498-b7fd-7ac9f23b0f32",
+    "providerInstanceId": "opencode",
+    "requestedModel": "opencode/not-a-real-model",
+    "fallbackModel": "Big Pickle",
+    "latestTurnState": "error",
+    "sessionStatus": "error",
+    "failureReason": "Model not found: opencode/not-a-real-model."
+  },
+  "classification": {
+    "productLossClosed": [
+      "The Lynx transcript used the same 16px class for a running session and for a visible top banner, while the Web authority reserves a 20px first-row inset below an error or provider-status banner.",
+      "The Native and Lynx-for-Web list now use a dedicated top-banner class with a 20px inset. Working remains a separate state: Native keeps its 16px base inset and Lynx-for-Web keeps the Web authority's 48px fade header.",
+      "Failed first-row and second-row x, y, and width now match Web in both themes; the first row moves from y=126 to y=130 and the failed row from y=217 to y=221."
+    ],
+    "harnessLossClosed": [
+      "The prior failed-state capture compared row content but did not reject vertical geometry drift. A state-specific hard gate now compares both row identities and x, y, and width within one pixel.",
+      "The Native verifier now requires the first failed transcript row at timelineHost.y + 20 rather than preserving the obsolete 16px expectation."
+    ],
+    "harnessBoundary": [
+      "Lynx-for-Web reports the failed work row list-item wrapper as 28px while Web reports the shared pb-2 wrapper as 36px. The next row y is exact and Native measures the row at 35px, so the 8px Browser proxy height is not attributed as product loss.",
+      "The Web-only provider update notification contaminates full-frame pixels in both themes. Material residual remains at the prior accepted measurement rather than crediting this geometry change with unrelated pixels."
+    ],
+    "evidenceBoundary": [
+      "Dark and light Browser captures use the same immutable connector-created failed snapshot, explicit 1280x820 viewport, committed bundles, exact thread selection, error session projection, Big Pickle fallback, and zero console errors.",
+      "Fresh exact-bundle Native dark and light runs verify the canonical error banner, failure text, failed work marker, disabled primary action, Local checkout, 20px transcript inset, main transport advancement, zero renderer errors, and isolated-state disposal.",
+      "A current Working regression capture uses a read-only VACUUM INTO copy of the known running thread and passes the existing two-row geometry gate at y=100 and y=191."
+    ]
+  },
+  "browser": {
+    "status": "pass",
+    "viewport": [1280, 820],
+    "before": {
+      "darkReport": "/tmp/t3-failed-current-browser-dark/workbench-report.json",
+      "darkReportSha256": "ac8436f95c1f6c10c1b8f4e6c424986a8ef6af07fc3ed96dd9a07d3f97b8ccf1",
+      "lightReport": "/tmp/t3-failed-current-browser-light/workbench-report.json",
+      "lightReportSha256": "255802058043f0ee7eafc512b2cc740745227090355d2863e3298318fbc2d7ac",
+      "webRowY": [130, 221],
+      "lynxRowY": [126, 217],
+      "rowOffsetY": [-4, -4],
+      "fullFrameSsim": {
+        "dark": 0.811097,
+        "light": 0.931488
+      },
+      "transcriptSsim": {
+        "dark": 0.95538,
+        "light": 0.955904
+      }
+    },
+    "after": {
+      "darkReport": "/tmp/t3-failed-final-dark/workbench-report.json",
+      "darkReportSha256": "55642f95b6c58f7682442a171dfc6670424d38b6d80c314aa445e09b052bc751",
+      "lightReport": "/tmp/t3-failed-final-light/workbench-report.json",
+      "lightReportSha256": "6a6c6d83cb6950c81ea9dae2a1ada09045f194c802e49b683d3cff6d3e6ce428",
+      "webBundleSha256": "2c580d6803c4dac63ba09a56a367ecee9ea2c5309ecb6630db23b34fca3cd238",
+      "lynxBundleSha256": "6bb2e346f8d8f6fbc9a392850ccaf68170c1c59263869cbb2bf3eb0642c320f4",
+      "webRowY": [130, 221],
+      "lynxRowY": [130, 221],
+      "rowOffsetY": [0, 0],
+      "rowX": [384, 384],
+      "rowWidth": [768, 768],
+      "modelLabel": "Big Pickle",
+      "composerState": "idle",
+      "geometryGateMatch": true,
+      "sessionProjectionMatch": true,
+      "rendererErrors": 0,
+      "fullFrameSsim": {
+        "dark": 0.811578,
+        "light": 0.931527
+      },
+      "transcriptSsim": {
+        "dark": 0.956393,
+        "light": 0.956634
+      }
+    },
+    "workingRegression": {
+      "report": "/tmp/t3-working-regression-final-head/workbench-report.json",
+      "reportSha256": "2bafd679b82932e8baa2fe8f08403dac3208df71f666a375ade7fab34c37e2a0",
+      "webRowY": [100, 191],
+      "lynxRowY": [100, 191],
+      "sessionProjectionMatch": true,
+      "rendererErrors": 0
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundleSha256": "9d8c7f6cc65467c003b8e0db1c55a05f230148bce5938ec2fac09231162239d5",
+    "connectorBundleSha256": "fc33b450ac64c28b4361f51f47c71f4f4bc430a764f39c0d8472958939058580",
+    "dark": {
+      "report": "/tmp/t3-failed-final-native-dark/report.json",
+      "reportSha256": "8d6385b0890a22dc01f193e77b3453d041c0a208a809b6736558b78c3b2726f0",
+      "screenshotSha256": "7c79b216d94e5873a6e59981e83a40c964e29a4a169a065ed67d06ec80095f37",
+      "rowY": [130, 221],
+      "rowHeight": [91, 35],
+      "transportSequence": {
+        "before": 3,
+        "after": 4
+      },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "light": {
+      "report": "/tmp/t3-failed-final-native-light/report.json",
+      "reportSha256": "9ece8a12bd1ecc7f02f49feb6b54dda71c011c392851582822dee7ef17b9da62",
+      "screenshotSha256": "f048d70db409d8d0a87a33bc00158e60367f0a481c8c2d67c481ad68b07ea4fe",
+      "rowY": [130, 221],
+      "rowHeight": [91, 35],
+      "transportSequence": {
+        "before": 3,
+        "after": 4
+      },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    }
+  },
+  "validation": {
+    "transcriptLayoutContract": "5/5",
+    "workbenchHarnessContract": "46/46",
+    "nativeFailedVerifierContract": "1/1",
+    "lynxTypecheck": "pass",
+    "browserDarkStrictCapture": "pass",
+    "browserLightStrictCapture": "pass",
+    "workingRegressionCapture": "pass",
+    "nativeDarkExactBundle": "pass",
+    "nativeLightExactBundle": "pass",
+    "productionBuild": "pass with existing Effect import.meta and unsupported CSS warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "remainingRisk": [
+    "Full-frame and transcript material residuals remain because the change intentionally adjusts only semantic spacing.",
+    "The Web-only provider update notification remains a separate comparable-state/harness concern.",
+    "Native error-banner dismissal, keyboard focus, scrolling, and selection remain pending-user-session."
+  ]
+}

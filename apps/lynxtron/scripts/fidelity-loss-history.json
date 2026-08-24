@@ -16013,6 +16013,55 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-failed-banner-inset-current",
+      "observedAt": "2026-08-24T00:31:30-07:00",
+      "commit": "d724b05167ebe41aab5db1a1574be5420b41e822",
+      "codeCommit": "f249694c91cb0baef74fc55e0d9ebe18c620a437",
+      "codeState": "commit",
+      "label": "Failed transcript banner inset convergence",
+      "narrative": "A fresh connector-created failed turn showed that Lynx reused the 16px Working transcript inset whenever any top banner was visible, while the Web authority reserves 20px below an error or provider-status banner. Lynx now gives the banner and Working states separate classes: Native Working keeps the 16px base inset, Lynx-for-Web Working keeps the 48px Web fade header, and both renderers use 20px under a real top banner. The failed first and work rows move from y=126/217 to y=130/221 and match Web in dark and light. The Browser proxy's list-item wrapper still reports the work row eight pixels shorter than Web, but the next-row position is exact and Native measures only a one-pixel height quantization, so that proxy-only height is not treated as product loss.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same-snapshot before and after captures isolate the four-pixel top-banner inset correction. A current Working regression capture proves its independent 48px Browser path remains aligned, while exact-bundle Native verifies the intended 20px banner inset in both themes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/existing-thread-failed-inset-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "d55bfcf37357188d2dd9bce8ed4749eb1a15d910b5656aa833b1a8c4678377d6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.25, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "dual-theme-failed-row-position-geometry",
+              "source": "Dark and light Browser captures align both failed transcript rows at x=384, y=130/221, and width=768; only the first row's 0.25px native text-height quantization remains in the trusted anchors"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["native"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.25, 0, 0, 0, -1],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "native-dual-theme-failed-banner-inset",
+              "source": "Both exact-bundle themes render the 358x58 error banner, 1024x510 timeline host, first row at y=130, failed row at y=221, and only one-pixel native height quantization"
+            }
+          }
+        }
+      ]
     }
   ]
 }
