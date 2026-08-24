@@ -223,3 +223,4 @@ empty-thread-recovery-current,2026-08-23T13:18:17-07:00,a75b0d1e6bd6ac3a640b209c
 empty-thread-dismissal-current,2026-08-23T15:04:41-07:00,a5a7db973cb7152f2866412c85294e8550763787,commit,Empty thread dismissal interaction repair,0.214121,0.214121,0.036467,0.184377,0.815623,0.776865
 sidebar-thread-hover-preview-dual-theme-current,2026-08-23T15:41:40-07:00,fe3c62aaba2c88d627ad515551c4a2094316eb8a,commit,Sidebar thread hover preview dual-theme convergence,0.209903,0.209903,0.03653,0.179947,0.820053,0.781083
 settings-source-control-loading-dual-theme-current,2026-08-23T17:15:22-07:00,ef95db29dcbf2c4d83c93142044614a2ec0fd8ac,commit,Settings Source Control loading dual-theme convergence,0.206729,0.206729,0.036537,0.176645,0.823355,0.784257
+existing-thread-approval-dual-theme-current,2026-08-23T20:10:18-07:00,a3fd9b7579e0fb4d5d90ad4e1870b741e5ef3073,commit,Existing Thread Approval dual-theme convergence,0.204057,0.204057,0.036445,0.173951,0.826049,0.786929

@@ -15809,6 +15809,110 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-approval-dual-theme-current",
+      "observedAt": "2026-08-23T20:10:18-07:00",
+      "commit": "a3fd9b7579e0fb4d5d90ad4e1870b741e5ef3073",
+      "codeCommit": "a3fd9b7579e0fb4d5d90ad4e1870b741e5ef3073",
+      "codeState": "commit",
+      "label": "Existing Thread Approval dual-theme convergence",
+      "narrative": "Current same-snapshot Browser and exact-bundle Native evidence replaces the prior dark-only Approval coverage. The first light Browser frame passed the old semantic gate while visibly rendering dark calibration sprites, a black editor raster, and dark outline actions over the cold-white Composer. The stricter gate exposed additional product and compatibility loss: a duplicated 16px heading inset, a 115px pending box against the 114px authority, Lynx-for-Web row layout after x-view wrapper insertion, and Native single-edge borders retaining the dark cascade. The repaired product restores real light text, white outline surfaces, neutral borders on every edge, and exact 768x247 Composer anatomy without changing dark material. Browser light Composer SSIM improves from 0.853426 to 0.968658, dark Composer SSIM is 0.990429, and scaled Native Composer SSIM is 0.991081 dark and 0.986294 light. The deterministic projection fixture is explicitly visual-only: successful live-provider approval decisions and physical input remain unverified interaction debt.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The checkpoint combines same-snapshot dual-theme Browser authority, exact-bundle dual-theme Native measurements, and a before/after light Composer comparison. It preserves all 75 states, 864 cells, weights, thresholds, filters, and the unverified interaction dimension."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/existing-thread-approval-dual-theme-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "6dee6d224b70cb8b3b525aca6762e2d1537839e905693dc79ce8883758b9000a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-approval"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-approval-exact-content",
+              "source": "Both Browser themes render the same selected running thread, pending command request, detail, editor projection, and four approval actions"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0.203125, 0, 0.203125, 0, -0.140625, 0, 0.0625, 0, -0.3125, 0, -0.25, 0, -0.203125,
+                0
+              ],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "dual-theme-approval-composer-anatomy",
+              "source": "Frame, surface, pending, detail, editor, footer, and four action x/y/width/height boxes match in both themes; maximum action delta is 0.3125px"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "dual-theme-browser-visual-review",
+              "source": "Visual review confirms the pending eyebrow, summary, detail, editor, and action hierarchy in dark and light; renderer-specific font shaping remains"
+            },
+            "material": {
+              "residual": 0.020457,
+              "confidence": 0.95,
+              "method": "dual-theme-approval-composer-ssim",
+              "source": "Mean residual of dark 0.990429 and light 0.968658 Browser Composer SSIM; the pre-repair light Composer SSIM was 0.853426"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-browser-approval-readiness",
+              "source": "Both themes use the same immutable pending projection, match selected thread and running state, report zero renderer errors, and leave no agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-approval"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-approval-content",
+              "source": "Both exact-bundle themes render the selected running thread, Working Composer, Stop state, pending command detail, editor projection, and four approval actions"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "native-dual-theme-approval-anatomy",
+              "source": "Both themes render the exact 768x247 frame, 766x245 surface, 766x114 pending box, 726x50 detail, 766x90 editor, 766x40 footer, and four authority action boxes"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-dual-theme-visual-review",
+              "source": "Visual review confirms the pending, detail, editor, and action hierarchy in both themes; native text rasterization remains platform-specific"
+            },
+            "material": {
+              "residual": 0.011313,
+              "confidence": 0.9,
+              "method": "native-dual-theme-composer-region-review",
+              "source": "Scaled Native Composer SSIM is 0.991081 dark and 0.986294 light; computed outline material is #191919/#2b2b2b dark and #ffffff/#d4d4d8 light"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-main-transport",
+              "source": "Both exact-bundle runs use main transport, advance sequence 3 to 5, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
     }
   ]
 }
