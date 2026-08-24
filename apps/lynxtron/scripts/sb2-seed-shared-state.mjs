@@ -61,21 +61,37 @@ function sha256(buffer) {
   return createHash("sha256").update(buffer).digest("hex");
 }
 
+const SNAPSHOT_BUSY_TIMEOUT_MS = 5_000;
+const SNAPSHOT_ATTEMPTS = 3;
+
+function isTransientSnapshotLockFailure(output) {
+  return /(?:database is locked|SQLITE_BUSY|SQLITE_LOCKED)/iu.test(output);
+}
+
 /** Run a read-only VACUUM INTO through the current Node SQLite runtime. */
 function vacuumInto(sourcePath, destPath) {
   const code = `
     const { DatabaseSync } = require("node:sqlite");
     const source = new DatabaseSync(${JSON.stringify(sourcePath)}, { readOnly: true });
+    source.exec("PRAGMA busy_timeout=${SNAPSHOT_BUSY_TIMEOUT_MS}");
     source.exec("VACUUM INTO '" + ${JSON.stringify(destPath)}.replaceAll("'", "''") + "'");
     source.close();
   `;
-  const result = spawnSync(process.execPath, ["-e", code], { encoding: "utf8" });
-  if (result.status !== 0) {
-    throw new Error(`VACUUM INTO failed: ${result.stderr || result.stdout || "unknown"}`);
+  let lastOutput = "";
+  for (let attempt = 1; attempt <= SNAPSHOT_ATTEMPTS; attempt += 1) {
+    const result = spawnSync(process.execPath, ["-e", code], { encoding: "utf8" });
+    lastOutput = result.stderr || result.stdout || "unknown";
+    if (result.status === 0) {
+      if (!existsSync(destPath)) {
+        throw new Error(`VACUUM INTO did not create ${destPath}`);
+      }
+      return;
+    }
+    if (!isTransientSnapshotLockFailure(lastOutput) || attempt === SNAPSHOT_ATTEMPTS) {
+      throw new Error(`VACUUM INTO failed: ${lastOutput}`);
+    }
   }
-  if (!existsSync(destPath)) {
-    throw new Error(`VACUUM INTO did not create ${destPath}`);
-  }
+  throw new Error(`VACUUM INTO failed: ${lastOutput}`);
 }
 
 /** Summarize the seeded dataset so both panes can assert the same records. */
