@@ -179,8 +179,6 @@ export function SourceControlSettings() {
   const sourceControlWritingStyle =
     settings?.sourceControlWritingStyle ?? DEFAULT_SERVER_SETTINGS.sourceControlWritingStyle;
   const usesDedicatedModel = settings?.sourceControlWriterModelSelection !== null;
-  const writerModel =
-    settings?.sourceControlWriterModelSelection ?? settings?.textGenerationModelSelection;
   const updateSourceControlWritingStyle = (patch: Partial<typeof sourceControlWritingStyle>) => {
     void t3ClientActions.updateServerSettings({ sourceControlWritingStyle: patch }).catch(() => {});
   };
@@ -235,7 +233,6 @@ export function SourceControlSettings() {
         className="source-control-writing-row"
         title="Source control writer model"
         description="Optional model override for change descriptions, change request titles and descriptions, and branch or bookmark names. Off uses the global text generation model."
-        status={usesDedicatedModel && writerModel ? writerModel.model : "Uses global model"}
         control={
           <Toggle
             value={usesDedicatedModel}
