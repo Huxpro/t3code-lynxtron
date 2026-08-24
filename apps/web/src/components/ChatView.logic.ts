@@ -321,10 +321,17 @@ export function threadHasStarted(thread: Thread | null | undefined): boolean {
   );
 }
 
-// `threadProvider` is the open branded driver kind carried by the session.
-// Unknown driver kinds degrade to `null` (i.e. "unlocked"), which is the safe
-// rollback / fork behavior — the routing layer is the right place to surface
-// "driver not installed" errors, not the lock state.
+export function resolveProviderDriverKindByInstanceId(
+  providers: ReadonlyArray<Pick<ServerProvider, "driver" | "instanceId">>,
+  instanceId: string | null,
+): ProviderDriverKind | null {
+  return providers.find((provider) => provider.instanceId === instanceId)?.driver ?? null;
+}
+
+// `threadProvider` is the persisted provider selection for the thread. For
+// built-in default instances this is also the open branded driver kind. Prefer
+// it over the session's legacy `providerName`, which can be a display label
+// rather than a canonical driver slug.
 //
 // `selectedProvider` takes the same open-string shape because the composer
 // now tracks the picker selection as a `ProviderInstanceId` (e.g.
@@ -341,19 +348,22 @@ export function deriveLockedProvider(input: {
   if (!threadHasStarted(input.thread)) {
     return null;
   }
-  const sessionProvider = input.thread?.session?.providerName ?? null;
-  if (sessionProvider && isProviderDriverKind(sessionProvider)) {
-    return sessionProvider;
-  }
   const narrowedThreadProvider =
     input.threadProvider && isProviderDriverKind(input.threadProvider)
       ? input.threadProvider
       : null;
+  if (narrowedThreadProvider) {
+    return narrowedThreadProvider;
+  }
+  const sessionProvider = input.thread?.session?.providerName ?? null;
+  if (sessionProvider && isProviderDriverKind(sessionProvider)) {
+    return sessionProvider;
+  }
   const narrowedSelectedProvider =
     input.selectedProvider && isProviderDriverKind(input.selectedProvider)
       ? input.selectedProvider
       : null;
-  return narrowedThreadProvider ?? narrowedSelectedProvider ?? null;
+  return narrowedSelectedProvider;
 }
 
 export function getStartedThreadModelChangeBlockReason(input: {
