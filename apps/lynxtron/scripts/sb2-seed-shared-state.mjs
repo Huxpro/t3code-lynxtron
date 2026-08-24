@@ -83,8 +83,16 @@ function summarize(dbPath) {
   const code = `
     const db = new (require('bun:sqlite').Database)(${JSON.stringify(dbPath)}, { readonly: true });
     const projects = db.query(
-      'select project_id as id, title, workspace_root as workspaceRoot from projection_projects order by title'
-    ).all();
+      'select project_id as id, title, workspace_root as workspaceRoot, default_model_selection_json as defaultModelSelectionJson from projection_projects order by title'
+    ).all().map((project) => ({
+      id: project.id,
+      title: project.title,
+      workspaceRoot: project.workspaceRoot,
+      defaultModelSelection:
+        typeof project.defaultModelSelectionJson === 'string'
+          ? JSON.parse(project.defaultModelSelectionJson)
+          : null,
+    }));
     const threads = db.query(\`
       select
         t.thread_id as id,

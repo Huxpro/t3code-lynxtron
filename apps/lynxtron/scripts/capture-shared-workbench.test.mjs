@@ -87,6 +87,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'const explicitSeedSource = argValue("--seed-source", "")');
     assert.include(source, "explicitSeedSource ||");
     assert.include(source, "process.env.T3_PLAN11C_SEED_SOURCE");
+    assert.include(source, "const expectedNewThreadModelSelection =");
+    assert.include(source, "defaultModelSelection ?? null");
+    assert.include(source, "modelSelection: JSON.stringify(expectedNewThreadModelSelection)");
   });
 
   it("gates the renderer-neutral unpersisted Hero state and its geometry", () => {

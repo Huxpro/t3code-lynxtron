@@ -6,6 +6,14 @@ import { assert, describe, it } from "vite-plus/test";
 const source = readFileSync(path.join(import.meta.dirname, "workbench.js"), "utf8");
 
 describe("shared workbench Composer metrics", () => {
+  it("forwards the snapshot-owned new-thread model selection to the Lynx pane", () => {
+    assert.include(source, 'url.searchParams.get("modelSelection")');
+    assert.include(
+      source,
+      'lynxQuery.set("modelSelection", JSON.stringify(requestedModelSelection))',
+    );
+  });
+
   it("compares only a visible placeholder when the editor is empty", () => {
     assert.include(
       source,

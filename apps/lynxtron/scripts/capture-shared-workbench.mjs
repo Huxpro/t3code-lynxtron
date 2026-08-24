@@ -4658,6 +4658,11 @@ async function main() {
     ? ""
     : (expectedThreadFixture?.projectTitle ?? seed?.dataset?.projects?.[0]?.title ?? "");
   const expectThread = expectedThreadFixture?.id ?? null;
+  const expectedNewThreadModelSelection =
+    semanticRoute === "new-thread" && expectThread === null
+      ? (seed?.dataset?.projects?.find((project) => project.title === expectProject)
+          ?.defaultModelSelection ?? null)
+      : null;
   let captureWebRoute = requestedWebRoute;
   const webBundle = await hashFile(await webEntryBundlePath());
   const lynxBundle = await hashFile(path.join(LYNX_BUILD_DIR, "lynx/main.web.bundle"));
@@ -5053,6 +5058,9 @@ async function captureCell({
     ...(overlay ? { overlay } : {}),
     expectProject,
     ...(expectThread ? { expectThread } : {}),
+    ...(expectedNewThreadModelSelection
+      ? { modelSelection: JSON.stringify(expectedNewThreadModelSelection) }
+      : {}),
     ...(expectedSidebarWidth === null ? {} : { sidebarWidth: String(expectedSidebarWidth) }),
     ...(expectedRightPanelWidth === null
       ? {}

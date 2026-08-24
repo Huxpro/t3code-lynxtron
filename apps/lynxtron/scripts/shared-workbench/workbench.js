@@ -26,6 +26,15 @@ const expectProject = url.searchParams.get("expectProject") ?? "";
 const expectThread = url.searchParams.get("expectThread") || null;
 const expectedSemanticRoute = url.searchParams.get("semanticRoute") ?? "new-thread";
 const theme = url.searchParams.get("theme") === "light" ? "light" : "dark";
+const requestedModelSelection = (() => {
+  const value = url.searchParams.get("modelSelection");
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+})();
 const expectedOverlay = url.searchParams.get("overlay") || null;
 const legacySidebarEnabled = url.searchParams.get("legacySidebarEnabled") === "true";
 const initialOverlay = url.searchParams.get("initialOverlay") || null;
@@ -1377,6 +1386,9 @@ const lynxQuery = new URLSearchParams({
   environmentIdentificationMode,
   legacySidebarEnabled: String(legacySidebarEnabled),
 });
+if (requestedModelSelection) {
+  lynxQuery.set("modelSelection", JSON.stringify(requestedModelSelection));
+}
 if (initialOverlay) {
   lynxQuery.set("initialOverlay", initialOverlay);
 }

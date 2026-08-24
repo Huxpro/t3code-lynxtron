@@ -96,6 +96,15 @@ const scenarioId = isBrowserPreviewScenarioId(requestedScenario)
 const scenario = BROWSER_PREVIEW_SCENARIOS[scenarioId];
 const requestedRoute = previewUrl.searchParams.get("route") ?? scenario.route;
 const requestedTheme = previewUrl.searchParams.get("theme") === "light" ? "light" : "dark";
+const requestedModelSelection = (() => {
+  const value = previewUrl.searchParams.get("modelSelection");
+  if (!value) return null;
+  try {
+    return JSON.parse(value) as unknown;
+  } catch {
+    return null;
+  }
+})();
 const requestedEnvironmentIdentificationMode =
   previewUrl.searchParams.get("environmentIdentificationMode") === "none" ? "none" : "artwork";
 const requestedLegacySidebarEnabled = previewUrl.searchParams.get("legacySidebarEnabled");
@@ -127,6 +136,7 @@ const themedScenario = {
     initialRoute: requestedRoute,
     ...(requestedInitialOverlay ? { initialOverlay: requestedInitialOverlay } : {}),
     themePreference: requestedTheme,
+    ...(requestedModelSelection ? { modelSelection: requestedModelSelection } : {}),
     ...(requestedSidebarWidth !== null ? { chat_thread_sidebar_width: requestedSidebarWidth } : {}),
     ...(requestedRightPanelWidth !== null
       ? { "t3code:preview-panel-width": requestedRightPanelWidth }

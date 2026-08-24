@@ -16,5 +16,7 @@ describe("shared-state snapshot seeding", () => {
 
   it("records the source workspace needed for disposable write fixtures", () => {
     assert.include(source, "workspace_root as workspaceRoot");
+    assert.include(source, "default_model_selection_json as defaultModelSelectionJson");
+    assert.include(source, "defaultModelSelection:");
   });
 });
