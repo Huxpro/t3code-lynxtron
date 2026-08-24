@@ -65,6 +65,7 @@ import {
   useRightPanelState,
 } from "../state/uiState";
 import {
+  availableThreadModels,
   resolveActiveThreadModelSelection,
   resolveModelPickerNavigationProvider,
 } from "../state/modelSelection.logic";
@@ -160,10 +161,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   const checkoutBranch = currentRepoContext?.branch ?? null;
 
   const presentationModels = useMemo(
-    () =>
-      models.length > 0
-        ? models
-        : deriveModelPickerModels(providerEntries, { includeDisabled: true }),
+    () => availableThreadModels({ models, providerEntries }),
     [models, providerEntries],
   );
   const activeThreadModelProjection = useMemo(
