@@ -6697,7 +6697,14 @@ async function verifyReviewCheckpointStates({
     checkpointTypography.fileName.lineHeight === "16px" &&
     checkpointTypography.fileStat.fontSize === "10px" &&
     checkpointTypography.fileStat.lineHeight === "16px";
-  if (!checkpointTypographyMatches) {
+  const canonicalModelLabel = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--model",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "GPT-5.6-Sol",
+  });
+  if (!checkpointTypographyMatches || canonicalModelLabel.text.trim() !== "GPT-5.6-Sol") {
     throw new Error(
       `Review checkpoint typography drifted: ${JSON.stringify({
         checkpointStatus,
@@ -6706,6 +6713,7 @@ async function verifyReviewCheckpointStates({
         checkpointFileName,
         checkpointFileStat,
         checkpointTypography,
+        canonicalModelLabel,
       })}`,
     );
   }
@@ -6739,6 +6747,7 @@ async function verifyReviewCheckpointStates({
       tree: tree.rect,
       rows: treeRows,
       typography: checkpointTypography,
+      modelLabel: canonicalModelLabel.text.trim(),
       screenshot: treeScreenshot,
     },
   };

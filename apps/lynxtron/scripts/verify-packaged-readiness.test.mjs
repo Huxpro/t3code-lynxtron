@@ -1233,7 +1233,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyReviewCheckpointStates");
     assert.include(
       source,
-      "state?.activeThread?.modelSelection?.instanceId ===\n        reviewFixture.modelSelection.instanceId",
+      "state?.activeThread?.modelSelection?.instanceId === reviewFixture.modelSelection.instanceId",
     );
     assert.include(
       source,
@@ -1249,6 +1249,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'checkpointTypography.openLabel.fontSize === "12px"');
     assert.include(source, 'checkpointTypography.fileName.fontSize === "11px"');
     assert.include(source, 'checkpointTypography.fileStat.fontSize === "10px"');
+    assert.include(source, 'selector: ".composer-toolbar-control--model"');
+    assert.include(source, 'measurement?.text.trim() === "GPT-5.6-Sol"');
     assert.include(source, "Review checkpoint typography drifted");
   });
 
