@@ -51,6 +51,10 @@ export function HostHeadline({ children, ...props }: React.ComponentProps<"h1">)
   return <h1 {...props}>{children}</h1>;
 }
 
+export function HostInlineText({ children, ...props }: React.ComponentProps<"span">) {
+  return <span {...props}>{children}</span>;
+}
+
 export function HostButton({ children, ...props }: React.ComponentProps<"button">) {
   return <button {...props}>{children}</button>;
 }

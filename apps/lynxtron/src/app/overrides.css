@@ -3237,16 +3237,22 @@
   height: 3px;
   background-color: var(--composer-strip-band-4);
 }
-.composer-context-item {
+.composer-context-item--checkout,
+.composer-context-item--branch {
   position: relative;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: calc(50% - 4px);
   min-width: 0;
   overflow: hidden;
 }
 .composer-workspace-control-wrap {
   position: relative;
   display: flex;
+  flex-basis: 0;
   flex-grow: 1;
-  width: 0;
+  width: 100%;
   min-width: 0;
   z-index: 52;
 }
@@ -3404,6 +3410,7 @@
 }
 .composer-context-control--branch {
   margin-left: auto;
+  width: 100%;
   min-width: 0;
   padding-right: 7px;
   padding-left: 7px;
@@ -3416,6 +3423,17 @@
   bottom: 100%;
   width: 100%;
   padding-bottom: 32px;
+}
+.hero__headline {
+  display: block;
+  width: 100%;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 36px;
+  letter-spacing: -0.75px;
+  text-align: center;
 }
 .hero__project-name {
   border-bottom-width: 1px;

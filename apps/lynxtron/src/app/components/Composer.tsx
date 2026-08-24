@@ -32,6 +32,7 @@ import {
   ComposerToolbarControl,
   ComposerToolbarRow,
 } from "../../../../web/src/components/chat/ComposerSurface";
+import { HostInlineText } from "../../../../web/src/components/ui/hostElements";
 import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
@@ -1018,7 +1019,11 @@ export function Composer({
         <view className="hero__inner">
           <view className="hero__headline-slot">
             <ComposerHeroHeadline
-              project={<text className="hero__project-name">{projectName ?? "your project"}</text>}
+              project={
+                <HostInlineText className="hero__project-name">
+                  {projectName ?? "your project"}
+                </HostInlineText>
+              }
             />
           </view>
           {card}

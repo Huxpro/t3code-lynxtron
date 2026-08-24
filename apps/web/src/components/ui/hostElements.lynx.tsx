@@ -145,6 +145,24 @@ export function HostHeadline({
   );
 }
 
+export function HostInlineText({
+  children,
+  className,
+  ...props
+}: Record<string, unknown> & {
+  readonly children?: ReactNode;
+  readonly className?: string;
+}) {
+  return (
+    <inline-text
+      {...props}
+      className={className ? `lynx-host-inline-text ${className}` : "lynx-host-inline-text"}
+    >
+      {children}
+    </inline-text>
+  );
+}
+
 export function HostButton({
   "aria-expanded": ariaExpanded,
   children,
