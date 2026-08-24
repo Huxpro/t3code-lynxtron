@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-23T09:29:20-07:00",
+  "updatedAt": "2026-08-23T21:30:52-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -15909,6 +15909,47 @@
               "confidence": 0.99,
               "method": "native-dual-theme-main-transport",
               "source": "Both exact-bundle runs use main transport, advance sequence 3 to 5, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "empty-thread-immediate-recovery-current",
+      "observedAt": "2026-08-23T21:30:52-07:00",
+      "commit": "2f2935d759c5846dc8b3a0b9e2aa1c45de6b436e",
+      "codeCommit": "677b4e9399310808fe2e8279138e53614bc4f735",
+      "codeState": "commit",
+      "label": "Immediate empty thread lifecycle recovery",
+      "narrative": "The shared local-draft path already prevents current New Thread actions from creating durable empty rows, but startup recovery retained untouched canonical New thread shells for 24 hours. That grace allowed several rows created by an older or parallel bundle to remain visible for the rest of the day. The Native host now removes every strictly untouched canonical New thread shell from the initial snapshot only. An exact-bundle run removes two recently timestamped empty rows from both shell and SQLite, then proves repeated New Thread actions reuse one local draft without advancing the server sequence. A separate empty-only run proves that removing every canonical shell leaves a usable New Thread hero and complete Composer. Existing new-thread interaction and runtime residuals were already zero, so this evidence refresh does not claim an artificial loss reduction.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The exact Native run directly exercises the newly closed recent-empty recovery boundary and the empty-only reverse state while preserving all 75 states, 864 cells, weights, thresholds, and filters."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/empty-thread-immediate-recovery-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "5e8eb3e54c2e6c571ada661ffa7c5c814df498c7128f7765385d2f3f6dadc7d3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-immediate-recovery-manual-close-and-draft-reuse",
+              "source": "Startup removes two recently created untouched shells, measured touch removes a fresh canonical shell, and two New Thread taps reuse one local draft identity"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-headless-immediate-empty-thread-lifecycle",
+              "source": "Shell and SQLite counts converge from three to one, local draft creation leaves both unchanged with sequence 22 to 22, the empty-only reverse state retains a complete Hero Composer, main transport remains active, zero renderer errors occur, isolated state is disposed, and no agent-browser process remains"
             }
           }
         }
