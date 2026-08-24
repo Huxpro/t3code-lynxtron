@@ -16509,6 +16509,78 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-working-current-dual-theme-refresh",
+      "observedAt": "2026-08-24T10:56:00-07:00",
+      "commit": "05142b4b5",
+      "codeCommit": "05142b4b5",
+      "codeState": "commit",
+      "label": "Composer Working current dual-theme refresh",
+      "narrative": "A current read-only-derived running Codex snapshot revalidates Composer Working after the capture router began routing Web to the same persisted running thread. Browser dark/light now match the selected thread/model, Working/Stop state, placeholder, Low, Full access, Build, Local checkout/main, and Composer geometry instead of comparing a Web local Hero to Lynx Working. Exact Native evidence refreshes OpenCode before creating a controlled thread, then proves its Working Stop control through a measured touch and transition back to disabled. No product UI loss is observed; stale material and typography residuals are intentionally retained.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The original current capture compared different thread routes, and the first Native Stop check relied on cached provider metadata. The commits repair only harness routing and provider-readiness verification; weights, denominator entries, thresholds, filters, material residual, and typography residual remain unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/composer-working-current-refresh-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "227d6292dbdf091f74508c05eb87ccbb07de6345b4136019ea0fcda79336b556"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-working-content",
+              "source": "Both Browser themes select the same persisted running Codex thread and render GPT-5.6-Sol, Working, Stop, the shared working placeholder, Low, Full access, Build, and Local checkout/main"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "dual-theme-current-working-composer-geometry",
+              "source": "Both Browser themes align the 768x140 working Composer and 734x70 editor after canonical persisted-running-thread routing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-working-readiness",
+              "source": "Both Browser pairs complete canonical running-session identity and semantic gates with zero Lynx renderer errors and no agent-browser processes"
+            }
+          }
+        },
+        {
+          "states": ["composer-working"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-working-stop-content",
+              "source": "The refreshed OpenCode provider renders Stop for the controlled running thread and returns to disabled Send after the real tap"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-working-stop-touch",
+              "source": "Measured Native Stop touch invokes the handler and transitions the primary action from Stop response to Send message"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-current-working-provider-ready-main-transport",
+              "source": "refreshProviders returns ready/authenticated OpenCode, main transport advances 25 to 38 to 46 to 53, renderer errors are zero, and isolated state is disposed"
+            }
+          }
+        }
+      ]
     }
   ]
 }
