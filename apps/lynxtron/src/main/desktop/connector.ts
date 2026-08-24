@@ -27,7 +27,7 @@ import {
 import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
 import { buildThreadTurnStartCommand } from "@t3tools/client-runtime/operations/thread-dispatch";
 import { deriveProviderModelSelectionProjection } from "@t3tools/client-runtime/presentation/model-picker";
-import { selectStaleDisposableThreadIds } from "@t3tools/client-runtime/presentation/thread-actions";
+import { selectRecoverableDisposableThreadIds } from "@t3tools/client-runtime/presentation/thread-actions";
 import { applyShellStreamEvent } from "@t3tools/client-runtime/state/shell";
 import {
   applyAuthAccessStreamEvent,
@@ -792,9 +792,8 @@ export class T3Connector {
   }
 
   private scheduleDisposableThreadCleanup(): void {
-    const nowMs = Date.now();
     const threads = this.shellSnapshot?.threads ?? [];
-    const candidates = selectStaleDisposableThreadIds(threads, { nowMs }).filter(
+    const candidates = selectRecoverableDisposableThreadIds(threads).filter(
       (threadId) => !this.attemptedDisposableThreadDeletes.has(threadId),
     );
     if (candidates.length === 0) return;
@@ -808,12 +807,12 @@ export class T3Connector {
         candidates.map(async (threadId) => {
           try {
             await this.deleteThread({ threadId });
-            this.log(`[connector] removed stale disposable thread ${threadId}`);
+            this.log(`[connector] removed disposable empty thread ${threadId}`);
           } catch (error) {
             this.pendingDisposableThreadDeletes.delete(threadId);
             this.attemptedDisposableThreadDeletes.delete(threadId);
             this.log(
-              `[connector] failed to remove stale disposable thread ${threadId}: ${
+              `[connector] failed to remove disposable empty thread ${threadId}: ${
                 error instanceof Error ? error.message : String(error)
               }`,
             );
