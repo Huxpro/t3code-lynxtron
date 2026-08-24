@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-24T08:24:14-07:00",
+  "updatedAt": "2026-08-24T09:13:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16373,6 +16373,65 @@
               "confidence": 0.99,
               "method": "native-dual-theme-current-idle-main-transport",
               "source": "Both exact-bundle runs use main transport, advance sequence 3 to 5 or 4, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "unavailable-provider-model-label-current",
+      "observedAt": "2026-08-24T09:13:00-07:00",
+      "commit": "edd8c112a",
+      "codeCommit": "ab866e7c2",
+      "codeState": "commit",
+      "label": "Unavailable provider model-label convergence",
+      "narrative": "A real connector-created Claude warning-provider thread exposed a display-only projection gap: the persisted selection remained claudeAgent/claude-fable-5 and the provider catalog still reported Claude Fable 5, but Lynx ChatView read a reduced model list and displayed raw claude-fable-5. ChatView now resolves active-thread presentation against the complete catalog. Browser dark/light and exact Native dark/light all render Claude Fable 5 while preserving the canonical selection, idle/null-turn state, disabled send, same Composer geometry, main transport, and zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The product change directly corrects a warning-provider model-label display loss without changing provider selection, provider locks, state weights, denominator entries, thresholds, or filters."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/unavailable-provider-model-label-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "4a50ade46e9e3c48c7bd11bb03bd70a59dbd0aeea92c15f76ffa581ee13d89d0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-unavailable-provider-model-label",
+              "source": "Both Browser themes select the same warning Claude thread and render Claude Fable 5, idle Composer, disabled send, and zero timeline rows in Web and Lynx-for-Web"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-unavailable-provider-readiness",
+              "source": "Same immutable warning-provider snapshot passes identity and zero-error Browser gates with no agent-browser processes"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-unavailable-provider-model-label",
+              "source": "Both exact-bundle themes retain claudeAgent/claude-fable-5 and render Claude Fable 5 for the warning-provider idle thread"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-unavailable-provider-main-transport",
+              "source": "Both Native runs use main transport sequence 3 to 4, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }

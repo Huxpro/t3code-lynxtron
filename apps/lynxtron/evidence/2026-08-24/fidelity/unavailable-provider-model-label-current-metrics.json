@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T09:13:00-07:00",
+  "stateId": "existing-thread-idle",
+  "scope": "unavailable-provider-model-label",
+  "commits": {
+    "product": "ab866e7c2",
+    "contract": "edd8c112a"
+  },
+  "classification": {
+    "productLossClosed": [
+      "ChatView resolved active thread display models from a reduced projection whenever one or more selectable models existed. A persisted Claude warning-provider thread could therefore lose its Claude Fable 5 model object and render raw claude-fable-5 despite the complete provider catalog carrying the human name. ChatView now uses the same complete availableThreadModels catalog as t3Client's canonical projection."
+    ],
+    "fixtureBoundary": [
+      "The fixture is a real connector-created persisted idle Claude thread with status warning/auth unknown and nine provider-supplied models. It tests display projection only; the thread's model selection is not mutated or rerouted."
+    ],
+    "evidenceBoundary": [
+      "Browser dark/light use the same immutable source database, selected thread, warning provider catalog, 1280x820 viewport, and current Web/Lynx-for-Web bundles.",
+      "Exact Native dark/light use the same fixture and current desktop bundle. Both assert canonical Claude selection, rendered Claude Fable 5 text, idle/null-turn state, main transport, zero renderer errors, and isolated cleanup.",
+      "This targeted state closes model-label content/runtime confidence. It does not claim new material, typography, or physical-input coverage."
+    ]
+  },
+  "fixture": {
+    "sourceDatabaseSha256": "e96314f97efe36a5c56d78da7d8c23f8c66fe4784a0b2df26e1ea06483f24a83",
+    "createdThroughRealConnector": true,
+    "projectTitle": "t3code-unavailable-claude-fixture",
+    "threadId": "f5ce9f7b-6a07-443c-a70d-19c86227329d",
+    "threadTitle": "Unavailable Claude label projection",
+    "sessionStatus": "idle",
+    "latestTurn": null,
+    "messageCount": 0,
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5",
+      "label": "Claude Fable 5"
+    },
+    "provider": {
+      "status": "warning",
+      "authStatus": "unknown",
+      "modelCount": 9
+    }
+  },
+  "browser": {
+    "status": "pass",
+    "viewport": [1280, 820],
+    "webBundleSha256": "f2c39f8c8badc24f22775facb389208b0aad8b5eeef41649dfaead1840b112fd",
+    "lynxBundleSha256": "d6d91c82516bd237c37cdea8082a0aa79411c2c6af7c5e2fb9e104159d31e134",
+    "dark": {
+      "reportSha256": "48a20037c32f273412b1f5e85616a9c88bd6356bcd3196059e6ac7a140cd494a",
+      "sideBySideSha256": "bfe7b691164c86e11801deef82aa02a018393b4181988b0c7815415030be9e95",
+      "rendererErrors": 0
+    },
+    "light": {
+      "reportSha256": "d8ac68f5b8cab1511eba9206b7ee7f8383510968bb9ba348f2c3c2037f05f794",
+      "sideBySideSha256": "1b9e76ea5753e23452979c5649dddb650905ce09879952f020bb149b48ef4c5b",
+      "rendererErrors": 0
+    },
+    "identity": {
+      "selectedThread": "f5ce9f7b-6a07-443c-a70d-19c86227329d",
+      "modelLabel": "Claude Fable 5",
+      "sessionStatus": "idle",
+      "timelineRows": 0,
+      "composerState": "idle",
+      "primaryActionState": "disabled"
+    },
+    "geometry": {
+      "web": {
+        "emptyTranscript": { "x": 256, "y": 52, "width": 1024, "height": 768 },
+        "composer": { "x": 384, "y": 628, "width": 768, "height": 140 }
+      },
+      "lynx": {
+        "emptyTranscript": { "x": 256, "y": 52, "width": 1024, "height": 768 },
+        "composer": { "x": 384, "y": 628, "width": 768, "height": 140 }
+      }
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundleSha256": "9a3a88b702e2193f57b425abca4075d441234a014e75a79ae1bbd7f7b50ea05b",
+    "dark": {
+      "reportSha256": "2da22e4b0af004884ac0c791e089f5ad850111ca6d59788397f032096b35763b",
+      "transportSequence": { "before": 3, "after": 4 },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "light": {
+      "reportSha256": "48c1e93c1f2411e982e28ee1be0f27767d8fcf967086791372bbf9084199cbe1",
+      "transportSequence": { "before": 3, "after": 4 },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "identity": {
+      "activeThreadId": "f5ce9f7b-6a07-443c-a70d-19c86227329d",
+      "modelSelection": { "instanceId": "claudeAgent", "model": "claude-fable-5" },
+      "renderedModelLabel": "Claude Fable 5"
+    }
+  },
+  "validation": {
+    "modelSelectionLogicAndShellContracts": "50/50",
+    "fullFocusedHarnessContracts": "98/98",
+    "lynxTypecheck": "pass",
+    "browserDarkCapture": "pass",
+    "browserLightCapture": "pass",
+    "nativeDarkExactBundle": "pass",
+    "nativeLightExactBundle": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100"
+  }
+}

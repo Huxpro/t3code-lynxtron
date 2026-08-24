@@ -231,3 +231,4 @@ composer-hero-layout-current,2026-08-24T04:08:35-07:00,6642991cf09eab369b6448a2e
 completed-checkpoint-typography-model-current,2026-08-24T05:57:27-07:00,f00e9352b50cf978b595bf8ecdbfe8e4cb809bcc,commit,Completed checkpoint typography and model recovery convergence,0.199786,0.199786,0.036257,0.169681,0.830319,0.7912
 existing-thread-failed-current-refresh,2026-08-24T06:41:02-07:00,fc84c3a3cc660fe4f01b6f7c508ce41a303c72dd,commit,Failed thread current dual-theme refresh,0.199786,0.199786,0.036256,0.169681,0.830319,0.7912
 existing-thread-idle-current-refresh,2026-08-24T08:24:14-07:00,d6c912b7cb69e797e4519b0ffe5ee2938adaea05,commit,Idle thread current dual-theme refresh,0.199786,0.199786,0.036256,0.169681,0.830319,0.7912
+unavailable-provider-model-label-current,2026-08-24T09:13:00-07:00,edd8c112a,commit,Unavailable provider model-label convergence,0.199786,0.199786,0.036256,0.169681,0.830319,0.7912
