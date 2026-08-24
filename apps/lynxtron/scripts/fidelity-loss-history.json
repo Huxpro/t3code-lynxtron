@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-24T05:57:27-07:00",
+  "updatedAt": "2026-08-24T06:41:02-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16227,6 +16227,79 @@
               "confidence": 0.99,
               "method": "native-dual-theme-completed-checkpoint-main-transport",
               "source": "Both exact-bundle runs use main transport sequence 3 to 4, render GPT-5.6-Sol, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-failed-current-refresh",
+      "observedAt": "2026-08-24T06:41:02-07:00",
+      "commit": "fc84c3a3cc660fe4f01b6f7c508ce41a303c72dd",
+      "codeCommit": "f249694c91cb0baef74fc55e0d9ebe18c620a437",
+      "codeState": "commit",
+      "label": "Failed thread current dual-theme refresh",
+      "narrative": "Current committed-head evidence revalidates the connector-created failed-thread state after the completed-thread and snapshot-retry changes. The same immutable error snapshot selects the failed thread in Browser dark/light and exact-bundle Native dark/light. Both renderers show Big Pickle fallback, idle/disabled send state, Local checkout, the canonical model-not-found banner, user row at y=130, failed work row at y=221, and zero renderer errors. The Browser capture pairs now seed concurrently without SQLite lock contention after the snapshot busy-timeout/retry repair. No new product visual loss was observed; the checkpoint refreshes content, geometry, and runtime confidence while retaining material and physical-input limits.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Current same-fixture dual-theme Browser and Native evidence replaces stale completed-state coverage without changing product residual assumptions, weights, denominator entries, thresholds, filters, material residual, or physical-input debt. The separate snapshot retry commit is validated as harness reliability work."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/existing-thread-failed-current-refresh-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1575ff16afac84c6be63a49a862625973f3e02b597a1b45818c965c4595a847c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-failed-content",
+              "source": "Both Browser themes render the selected error thread, Failed sidebar state, Big Pickle fallback, idle Composer, Local checkout, canonical prompt, failure banner, and failed work entry"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.25, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "dual-theme-current-failed-row-geometry",
+              "source": "Both themes retain the 768x140 Composer, user row at x=384/y=130, failed work row at x=384/y=221, and only 0.25px user-row height quantization"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-failed-readiness",
+              "source": "Concurrent current Browser captures derive equal snapshot hashes through the retrying seed path, complete semantic identity, and report zero renderer errors with zero agent-browser leaks"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-current-failed-content",
+              "source": "Both exact-bundle themes render the canonical failed thread title, Big Pickle fallback, error banner/reason, disabled Send, failed marker, and Local checkout"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "native-dual-theme-current-failed-geometry",
+              "source": "Both themes render the 358x58 banner, 1024x510 timeline host, 768px user row at y=130, and 768px failed work row at y=221"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-current-failed-main-transport",
+              "source": "Both exact-bundle themes use main transport sequence 3 to 4, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T06:41:02-07:00",
+  "stateId": "existing-thread-failed",
+  "commits": {
+    "snapshotRetryHarness": "fc84c3a3cc660fe4f01b6f7c508ce41a303c72dd",
+    "currentUiBundle": "f00e9352b50cf978b595bf8ecdbfe8e4cb809bcc",
+    "priorFailedInsetProduct": "f249694c91cb0baef74fc55e0d9ebe18c620a437"
+  },
+  "classification": {
+    "productLossClosedPreviously": [
+      "The failed-state banner uses its own 20px first-row inset rather than reusing the 16px Working inset. The canonical user row remains at y=130 and the failed work row remains at y=221 in both Browser renderers and Native themes."
+    ],
+    "productLossFound": [],
+    "harnessLossClosed": [
+      "Concurrent Browser captures of one read-only SQLite source could collide while each seed process issued VACUUM INTO, producing database is locked before UI startup. The seed helper now applies a 5-second SQLite busy timeout and bounded retry only for SQLITE_BUSY/SQLITE_LOCKED. Two concurrent snapshots of the same failed fixture now succeed with the same snapshot hash."
+    ],
+    "intentionalPlatformDelta": [
+      "Web reports the failed work wrapper as 36px including 8px bottom padding, while the Lynx list item reports its 28px visual content box. The next row origin is equal and Native reports a 35px work row, so this wrapper accounting difference is not product loss.",
+      "Native screenshots are device-scale exports of the explicit 1280x820 logical viewport; exact pixel equality across Browser and Native is not claimed."
+    ],
+    "acceptedRenderingNoise": [
+      "The user row has 90.75px Browser height versus 91px Lynx/native height. This is font/raster rounding, while row x/y/width and content are equal."
+    ],
+    "evidenceBoundary": [
+      "Dark and light Browser captures use the same connector-created failed snapshot, explicit 1280x820 viewport, selected failed thread, Big Pickle fallback projection, current Web/Lynx-for-Web bundles, and zero console errors.",
+      "Current exact-bundle Native dark and light runs use the same failed fixture, verify the main transport, canonical error banner/error string, disabled send, Big Pickle fallback, Local checkout, row geometry, zero renderer errors, and isolated-state disposal.",
+      "Content, geometry, and runtime receive current evidence. Material remains at the earlier accepted residual because provider update/health notice state is not identical between renderers. Typography and physical input/scroll/selection remain evidence debt.",
+      "No state weights, denominator entries, thresholds, filters, or modeled scope changed."
+    ]
+  },
+  "fixture": {
+    "source": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-visual-state-M4LBkO",
+    "sourceDatabase": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-visual-state-M4LBkO/userdata/state.sqlite",
+    "sourceDatabaseSha256": "fae7d6dac40d38e11621fdcdef3776c6f3ecc5875d892e24ca62a2e8ac0fc775",
+    "snapshotId": "593b05b88c58ded7c0dc122f267cac75175b8eb2a009d3463608895c139ef829",
+    "createdThroughRealConnector": true,
+    "projectTitle": "t3code-archaeology-verify3",
+    "threadId": "fa0793fd-1c0e-4498-b7fd-7ac9f23b0f32",
+    "latestTurnState": "error",
+    "sessionStatus": "error",
+    "modelSelection": {
+      "instanceId": "opencode",
+      "requestedModel": "opencode/not-a-real-model",
+      "fallbackLabel": "Big Pickle"
+    },
+    "failureReason": "Model not found: opencode/not-a-real-model.",
+    "parallelSnapshotProof": {
+      "firstSnapshotSha256": "3b86cf5ac613dcd039abd4194f9cc47b1769d4047fb6888689cb8a5a873fd2d1",
+      "secondSnapshotSha256": "3b86cf5ac613dcd039abd4194f9cc47b1769d4047fb6888689cb8a5a873fd2d1",
+      "projects": 1,
+      "threads": 1,
+      "messageCount": 1
+    }
+  },
+  "browser": {
+    "status": "pass",
+    "viewport": [1280, 820],
+    "commit": "fc84c3a3cc660fe4f01b6f7c508ce41a303c72dd",
+    "webBundleSha256": "f2c39f8c8badc24f22775facb389208b0aad8b5eeef41649dfaead1840b112fd",
+    "lynxBundleSha256": "b2ee1519120026534af82161c4260ad8e8adaba5a29d8ed947a8d535d6f040bd",
+    "dark": {
+      "report": "/tmp/t3-failed-final-dark-current/workbench-report.json",
+      "reportSha256": "173c22f03e812e1fceea135cc7f6741bba66dc4ea7ee7ecc98b5cb2d03f2ce23",
+      "sideBySideSha256": "cfea26e917d9d335a4585ffc09f304e816d20433d554be8412dd877a176543a1",
+      "seedSha256": "3b86cf5ac613dcd039abd4194f9cc47b1769d4047fb6888689cb8a5a873fd2d1",
+      "readyMs": 5386,
+      "rendererErrors": 0
+    },
+    "light": {
+      "report": "/tmp/t3-failed-final-light-current/workbench-report.json",
+      "reportSha256": "cc72f202bc77210200e6662c7a91b9e2dd1746157edf98f78f420e9998782c54",
+      "sideBySideSha256": "9d804d0415fbae8b74caa047413f8474319f602bf2a83348a057e80e78dcfedf",
+      "seedSha256": "3b86cf5ac613dcd039abd4194f9cc47b1769d4047fb6888689cb8a5a873fd2d1",
+      "readyMs": 5460,
+      "rendererErrors": 0
+    },
+    "identity": {
+      "selectedThread": "fa0793fd-1c0e-4498-b7fd-7ac9f23b0f32",
+      "sessionStatus": "error",
+      "sidebarStatus": "Failed",
+      "modelLabel": "Big Pickle",
+      "composerState": "idle",
+      "context": ["Local checkout", "archaeology/final5-20260812"],
+      "failureReason": "Model not found: opencode/not-a-real-model."
+    },
+    "geometry": {
+      "web": {
+        "composer": { "x": 384, "y": 628, "width": 768, "height": 140 },
+        "userRow": { "x": 384, "y": 130, "width": 768, "height": 90.75 },
+        "failedWorkRow": { "x": 384, "y": 221, "width": 768, "height": 36, "contentHeight": 28 }
+      },
+      "lynx": {
+        "composer": { "x": 384, "y": 628, "width": 768, "height": 140 },
+        "userRow": { "x": 384, "y": 130, "width": 768, "height": 91 },
+        "failedWorkRow": { "x": 384, "y": 221, "width": 768, "height": 28 }
+      },
+      "trustedAnchorDeltas": [0, 0, 0.25, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "trustedAnchorScale": 1280
+    }
+  },
+  "native": {
+    "status": "pass",
+    "viewport": [1280, 820],
+    "uiBundleCommit": "f00e9352b50cf978b595bf8ecdbfe8e4cb809bcc",
+    "bundleSha256": "7a588047466876eaa19a577bb537f12e528aa66dc2b836d2ecd12d8e5b26cb35",
+    "dark": {
+      "report": "/tmp/t3-failed-current-native-dark/report.json",
+      "reportSha256": "63d017674f88bada427984e907f240e8fd382b88945ac3c1edfdee66475dcca2",
+      "screenshotSha256": "54c222405759f1050453a30929e6d4f3c573b69fc37f3072e957fab3fe67c1d0",
+      "transportSequence": { "before": 3, "after": 4 },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "light": {
+      "report": "/tmp/t3-failed-current-native-light/report.json",
+      "reportSha256": "62234f193c94e4c8cbd87ab55db7e5cc8a054d71b982480089d2ebc9bf2972ac",
+      "screenshotSha256": "98bef6bd039cf0907a669a9fbe6a157909f9d3b48d1ee6bf8039a8ed54b34a29",
+      "transportSequence": { "before": 3, "after": 4 },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "geometry": {
+      "errorBanner": { "x": 589, "y": 52, "width": 358, "height": 58 },
+      "timelineHost": { "x": 256, "y": 110, "width": 1024, "height": 510 },
+      "userRow": { "x": 384, "y": 130, "width": 768, "height": 91 },
+      "failedWorkRow": { "x": 384, "y": 221, "width": 768, "height": 35 }
+    },
+    "identity": {
+      "modelLabel": "Big Pickle",
+      "primaryActionState": "disabled",
+      "checkoutLabel": "Local checkout",
+      "failureReason": "Model not found: opencode/not-a-real-model."
+    }
+  },
+  "validation": {
+    "seedSnapshotContract": "3/3",
+    "parallelSnapshotProof": "pass: two concurrent snapshots with equal hash",
+    "failedTranscriptBrowserGate": "pass dark/light",
+    "failedTranscriptNativeGate": "pass dark/light",
+    "webTypecheck": "pass from current UI build",
+    "lynxTypecheck": "pass from current UI build",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  },
+  "remainingRisk": [
+    "Failed-state material remains affected by independent provider update/health notices and retains its prior accepted residual.",
+    "Browser proxy reports the work row wrapper differently from Native/Web outer wrapper accounting; row origins and visual content are aligned.",
+    "Native error-banner dismissal, physical keyboard focus, scrolling, and selection remain pending-user-session."
+  ]
+}
