@@ -5614,7 +5614,7 @@ async function verifyFailedTranscriptState({ client, devToolCli, outputDirectory
     errorDescription?.text.includes("Model not found: opencode/not-a-real-model.") &&
     timelineHost &&
     rowRoots.length === 2 &&
-    Math.abs(rowRoots[0].y - (timelineHost.y + 16)) <= 1 &&
+    Math.abs(rowRoots[0].y - (timelineHost.y + 20)) <= 1 &&
     errorWorkEntry !== null &&
     checkoutLabel === "Local checkout";
   if (!matches) {

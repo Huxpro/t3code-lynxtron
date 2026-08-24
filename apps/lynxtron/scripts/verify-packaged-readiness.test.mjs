@@ -1231,6 +1231,7 @@ describe("packaged readiness Sidebar geometry", () => {
       source,
       'errorDescription?.text.includes("Model not found: opencode/not-a-real-model.")',
     );
+    assert.include(source, "Math.abs(rowRoots[0].y - (timelineHost.y + 20)) <= 1");
     assert.include(source, '".transcript-work-status--failed"');
     assert.include(source, '"--verify-failed-transcript-state"');
     assert.include(source, "transcriptFixture?.title");

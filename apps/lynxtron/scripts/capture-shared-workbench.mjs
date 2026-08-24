@@ -522,6 +522,26 @@ function workingTranscriptGeometryMatches(webMetrics, lynxMetrics) {
   });
 }
 
+function failedTranscriptGeometryMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "existing-thread-failed") return true;
+  const webRows = webMetrics?.rowGeometry ?? [];
+  const lynxRows = lynxMetrics?.rowGeometry ?? [];
+  if (webRows.length !== 2 || lynxRows.length !== 2) return false;
+  return webRows.every((webRow, index) => {
+    const lynxRow = lynxRows[index];
+    return (
+      lynxRow?.id === webRow.id &&
+      lynxRow.kind === webRow.kind &&
+      ["x", "y", "width"].every(
+        (key) =>
+          typeof webRow[key] === "number" &&
+          typeof lynxRow[key] === "number" &&
+          Math.abs(webRow[key] - lynxRow[key]) <= 1,
+      )
+    );
+  });
+}
+
 function approvalComposerMatches(webMetrics, lynxMetrics) {
   if (stateId !== "existing-thread-approval") return true;
   for (const key of ["pending", "detail", "editorArea", "footer"]) {
@@ -8010,6 +8030,7 @@ async function captureCell({
     JSON.stringify(state?.web?.timelineMetrics?.workEntries ?? []) ===
       JSON.stringify(state?.lynx?.timelineMetrics?.workEntries ?? []) &&
     workingTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
+    failedTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     webTurnFoldInputSent &&
     lynxTurnFoldInputSent &&
     webThinkingInputSent &&
@@ -9223,6 +9244,14 @@ async function captureCell({
         },
       },
       completedComposerProviderState: readCompletedComposerProviderState(state),
+      failedTranscriptGeometry: {
+        match: failedTranscriptGeometryMatches(
+          state?.web?.timelineMetrics,
+          state?.lynx?.timelineMetrics,
+        ),
+        webRows: state?.web?.timelineMetrics?.rowGeometry ?? [],
+        lynxRows: state?.lynx?.timelineMetrics?.rowGeometry ?? [],
+      },
       sidebarStageIdentity: {
         match: finalStageIdentityReady,
         web: state?.web?.sidebarDiagnostics?.stageIdentity ?? null,

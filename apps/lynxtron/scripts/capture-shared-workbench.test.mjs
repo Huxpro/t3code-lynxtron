@@ -73,6 +73,14 @@ describe("shared workbench lifecycle fault capture", () => {
       source,
       "completedComposerProviderState: readCompletedComposerProviderState(state)",
     );
+    assert.include(source, "function failedTranscriptGeometryMatches(webMetrics, lynxMetrics)");
+    assert.include(source, 'stateId !== "existing-thread-failed"');
+    assert.include(source, '["x", "y", "width"].every(');
+    assert.include(
+      source,
+      "failedTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics)",
+    );
+    assert.include(source, "failedTranscriptGeometry: {");
   });
 
   it("accepts an explicit immutable seed source for cross-client fixtures", () => {
