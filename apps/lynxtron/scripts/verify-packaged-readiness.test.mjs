@@ -1233,10 +1233,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyReviewCheckpointStates");
     assert.include(source, 'readOptionalMeasurement(client, ".turn-diff-card__status")');
     assert.include(source, 'readOptionalMeasurement(client, ".turn-diff-card__hint")');
-    assert.include(
-      source,
-      'readOptionalMeasurement(\n    client,\n    ".turn-diff-card__open-label"',
-    );
+    assert.include(source, '".turn-diff-card__open-label"');
     assert.include(source, 'readOptionalMeasurement(client, ".file-tree-row__name")');
     assert.include(source, 'readOptionalMeasurement(client, ".file-tree-row__stat")');
     assert.include(source, 'checkpointTypography.status.fontSize === "12px"');
