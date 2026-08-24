@@ -703,7 +703,11 @@ export function MessagesTimeline({
       <list
         ref={listRef}
         className={
-          isWorking || hasTopBanner ? "timeline-list timeline-list--top-banner" : "timeline-list"
+          hasTopBanner
+            ? "timeline-list timeline-list--top-banner"
+            : isWorking
+              ? "timeline-list timeline-list--working"
+              : "timeline-list"
         }
         scroll-orientation="vertical"
         list-type="single"
