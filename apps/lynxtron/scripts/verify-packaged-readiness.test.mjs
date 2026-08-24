@@ -469,6 +469,20 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Sidebar action menu rows collapsed");
   });
 
+  it("reports client and connector readiness when Native Stop never becomes visible", () => {
+    assert.include(source, "Native working session did not render Stop");
+    assert.include(source, "const clientState = await readClientState(client)");
+    assert.include(source, "const readiness = await readRendererReadiness(client)");
+  });
+
+  it("refreshes the selected provider before exercising the Native Stop flow", () => {
+    assert.include(source, 'await invokeConnector(client, "refreshProviders", {');
+    assert.include(source, "const refreshedProvider = refreshedConfig?.providers?.find(");
+    assert.include(source, 'refreshedProvider?.status !== "ready"');
+    assert.include(source, 'refreshedProvider.auth?.status !== "authenticated"');
+    assert.include(source, "refreshedProvider,");
+  });
+
   it("verifies Native New thread stays local and reuses its draft identity", () => {
     assert.include(source, "async function verifyNewThreadDraftLifecycle");
     assert.include(source, '"--verify-new-thread-draft-lifecycle"');

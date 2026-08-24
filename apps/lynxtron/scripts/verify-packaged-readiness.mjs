@@ -4916,6 +4916,17 @@ async function verifyComposerStopBehavior({
     instanceId: "opencode",
     model: "opencode/big-pickle",
   };
+  const refreshedConfig = await invokeConnector(client, "refreshProviders", {
+    instanceId: modelSelection.instanceId,
+  });
+  const refreshedProvider = refreshedConfig?.providers?.find(
+    (provider) => provider.instanceId === modelSelection.instanceId,
+  );
+  if (refreshedProvider?.status !== "ready" || refreshedProvider.auth?.status !== "authenticated") {
+    throw new Error(
+      `OpenCode provider did not become ready after refresh: ${JSON.stringify(refreshedProvider)}`,
+    );
+  }
   await invokeConnector(client, "setModelSelection", { selection: modelSelection });
   const created = await invokeConnector(client, "createThread", {
     projectId,
@@ -4951,13 +4962,28 @@ async function verifyComposerStopBehavior({
     threadId: created.threadId,
     text: "Run `sleep 120` in the shell, then reply done. Do not modify files.",
   });
-  const beforeStop = await waitForMeasurement({
-    child,
-    client,
-    selector: ".composer-primary-action",
-    timeoutMs,
-    predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "stop",
-  });
+  let beforeStop;
+  try {
+    beforeStop = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-primary-action",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "stop",
+    });
+  } catch (error) {
+    const clientState = await readClientState(client).catch((stateError) => ({
+      error: stateError instanceof Error ? stateError.message : String(stateError),
+    }));
+    const readiness = await readRendererReadiness(client).catch((readinessError) => ({
+      error: readinessError instanceof Error ? readinessError.message : String(readinessError),
+    }));
+    throw new Error(
+      `Native working session did not render Stop: ${
+        error instanceof Error ? error.message : String(error)
+      }; clientState=${JSON.stringify(clientState)}; readiness=${JSON.stringify(readiness)}`,
+    );
+  }
   const runningSequence = await waitForSequenceAdvance({
     child,
     client,
@@ -5061,6 +5087,7 @@ async function verifyComposerStopBehavior({
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured Native Stop control",
     threadId: created.threadId,
     modelSelection,
+    refreshedProvider,
     screenshot: {
       path: screenshotPath,
       bytes: statSync(screenshotPath).size,
