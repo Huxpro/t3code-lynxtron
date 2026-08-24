@@ -1,11 +1,11 @@
+import { ProviderInstanceId, ThreadId } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
 import {
-  DISPOSABLE_EMPTY_THREAD_CLEANUP_GRACE_MS,
   formatThreadActionConfirmationMessage,
   isDisposableEmptyThread,
   projectThreadActionConfirmation,
-  selectStaleDisposableThreadIds,
+  selectRecoverableDisposableThreadIds,
 } from "./threadActions.ts";
 
 describe("thread action confirmation presentation", () => {
@@ -67,14 +67,12 @@ describe("thread action confirmation presentation", () => {
       isDisposableEmptyThread({
         ...emptyThread,
         session: {
+          threadId: ThreadId.make("active-thread"),
           status: "stopped",
           activeTurnId: null,
-          providerKind: "codex",
           providerName: "Codex",
-          providerInstanceId: "codex",
-          providerThreadId: null,
-          cwd: "/repo",
-          createdAt: "2026-08-23T00:00:00.000Z",
+          providerInstanceId: ProviderInstanceId.make("codex"),
+          runtimeMode: "full-access",
           updatedAt: "2026-08-23T00:00:00.000Z",
           lastError: null,
         },
@@ -82,10 +80,9 @@ describe("thread action confirmation presentation", () => {
     ).toBe(false);
   });
 
-  it("selects only stale canonical empty shells for automatic recovery", () => {
-    const nowMs = Date.parse("2026-08-23T12:00:00.000Z");
-    const staleEmptyThread = {
-      id: "stale-empty",
+  it("selects every canonical untouched empty shell for startup recovery", () => {
+    const emptyThread = {
+      id: ThreadId.make("stale-empty"),
       title: "New thread",
       createdAt: "2026-08-21T10:00:00.000Z",
       updatedAt: "2026-08-21T10:00:00.000Z",
@@ -99,65 +96,25 @@ describe("thread action confirmation presentation", () => {
     };
 
     expect(
-      selectStaleDisposableThreadIds(
-        [
-          staleEmptyThread,
-          {
-            ...staleEmptyThread,
-            id: "fresh-empty",
-            createdAt: "2026-08-23T11:58:00.000Z",
-            updatedAt: "2026-08-23T11:58:00.000Z",
-          },
-          {
-            ...staleEmptyThread,
-            id: "recently-updated-empty",
-            updatedAt: "2026-08-23T11:59:00.000Z",
-          },
-          {
-            ...staleEmptyThread,
-            id: "active-thread",
-            latestUserMessageAt: "2026-08-21T10:01:00.000Z",
-          },
-          {
-            ...staleEmptyThread,
-            id: "archived-empty",
-            archivedAt: "2026-08-22T10:00:00.000Z",
-          },
-          {
-            ...staleEmptyThread,
-            id: "invalid-timestamp",
-            createdAt: "invalid",
-            updatedAt: "invalid",
-          },
-        ],
-        { nowMs },
-      ),
-    ).toEqual(["stale-empty"]);
-  });
-
-  it("includes an empty shell exactly at the cleanup grace boundary", () => {
-    const nowMs = Date.parse("2026-08-23T12:00:00.000Z");
-    const timestamp = new Date(nowMs - DISPOSABLE_EMPTY_THREAD_CLEANUP_GRACE_MS).toISOString();
-
-    expect(
-      selectStaleDisposableThreadIds(
-        [
-          {
-            id: "boundary-empty",
-            title: "New thread",
-            createdAt: timestamp,
-            updatedAt: timestamp,
-            archivedAt: null,
-            latestUserMessageAt: null,
-            latestTurn: null,
-            session: null,
-            hasPendingApprovals: false,
-            hasPendingUserInput: false,
-            hasActionableProposedPlan: false,
-          },
-        ],
-        { nowMs },
-      ),
-    ).toEqual(["boundary-empty"]);
+      selectRecoverableDisposableThreadIds([
+        emptyThread,
+        {
+          ...emptyThread,
+          id: ThreadId.make("fresh-empty"),
+          createdAt: "2026-08-23T11:59:59.999Z",
+          updatedAt: "2026-08-23T11:59:59.999Z",
+        },
+        {
+          ...emptyThread,
+          id: ThreadId.make("active-thread"),
+          latestUserMessageAt: "2026-08-21T10:01:00.000Z",
+        },
+        {
+          ...emptyThread,
+          id: ThreadId.make("archived-empty"),
+          archivedAt: "2026-08-22T10:00:00.000Z",
+        },
+      ]),
+    ).toEqual(["stale-empty", "fresh-empty"]);
   });
 });
