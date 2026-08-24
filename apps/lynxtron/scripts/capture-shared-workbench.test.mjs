@@ -576,6 +576,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "explicitExpectedThreadId ||");
     assert.include(source, "isEmptyTranscriptState ||");
     assert.include(source, 'stateId === "composer-docked" ||');
+    assert.include(source, 'stateId === "composer-working" ||');
     assert.include(source, "isComposerPlanModeState ||");
     assert.include(source, "webRoute: captureWebRoute");
     assert.include(source, "function composerPlanModeMatches(state)");
