@@ -6565,12 +6565,15 @@ async function verifyReviewCheckpointStates({
 }) {
   const checkpoint = reviewFixture.checkpoint;
   const restored = await restoreOutcomeSurface({ child, client, timeoutMs });
-  await waitForClientState({
+  const clientState = await waitForClientState({
     child,
     client,
     timeoutMs,
     predicate: (state) =>
-      state?.activeThreadId === reviewFixture.threadId && state?.latestTurn?.state === "completed",
+      state?.activeThreadId === reviewFixture.threadId &&
+      state?.latestTurn?.state === "completed" &&
+      state?.activeThread?.modelSelection?.instanceId === reviewFixture.modelSelection.instanceId &&
+      state?.activeThread?.modelSelection?.model === reviewFixture.modelSelection.model,
   });
   let checkpointCard = await waitForMeasurement({
     child,
@@ -6718,6 +6721,12 @@ async function verifyReviewCheckpointStates({
       threadId: reviewFixture.threadId,
       turnId: checkpoint.turnId,
       file: checkpoint.files[0],
+      modelSelection: reviewFixture.modelSelection,
+    },
+    clientState: {
+      activeThreadId: clientState.activeThreadId,
+      latestTurnState: clientState.latestTurn.state,
+      modelSelection: clientState.activeThread.modelSelection,
     },
     restored,
     preview: {

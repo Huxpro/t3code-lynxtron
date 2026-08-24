@@ -1231,6 +1231,14 @@ describe("packaged readiness Sidebar geometry", () => {
 
   it("verifies Native completed checkpoint typography at text leaves", () => {
     assert.include(source, "async function verifyReviewCheckpointStates");
+    assert.include(
+      source,
+      "state?.activeThread?.modelSelection?.instanceId ===\n        reviewFixture.modelSelection.instanceId",
+    );
+    assert.include(
+      source,
+      "state?.activeThread?.modelSelection?.model === reviewFixture.modelSelection.model",
+    );
     assert.include(source, 'readOptionalMeasurement(client, ".turn-diff-card__status")');
     assert.include(source, 'readOptionalMeasurement(client, ".turn-diff-card__hint")');
     assert.include(source, '".turn-diff-card__open-label"');
