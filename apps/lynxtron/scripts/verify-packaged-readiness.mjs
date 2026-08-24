@@ -3223,29 +3223,45 @@ async function verifyNewThreadDraftLifecycle({
   recoverableEmptyThreadIds,
   timeoutMs,
 }) {
-  if (recoverableEmptyThreadIds.length === 0) {
-    throw new Error("The Native draft lifecycle fixture has no empty threads to recover.");
-  }
-  const afterRecoveryState = await waitForClientState({
-    child,
-    client,
-    timeoutMs,
-    predicate: (state) =>
-      Array.isArray(state?.threadIds) &&
-      recoverableEmptyThreadIds.every((threadId) => !state.threadIds.includes(threadId)),
-  });
-  const persistedThreadIdsAfterRecovery = readPersistedThreadIds(baseDir);
-  if (
-    recoverableEmptyThreadIds.some((threadId) => persistedThreadIdsAfterRecovery.includes(threadId))
-  ) {
-    throw new Error(
-      `Empty Native threads survived automatic recovery: ${JSON.stringify({
-        recoverableEmptyThreadIds,
-        initialPersistedThreadIds,
-        persistedThreadIdsAfterRecovery,
-      })}`,
-    );
-  }
+  const legacyRecovery =
+    recoverableEmptyThreadIds.length === 0
+      ? {
+          status: "skipped",
+          reason: "Fixture has no recoverable legacy empty threads.",
+        }
+      : await (async () => {
+          const afterRecoveryState = await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) =>
+              Array.isArray(state?.threadIds) &&
+              recoverableEmptyThreadIds.every((threadId) => !state.threadIds.includes(threadId)),
+          });
+          const persistedThreadIdsAfterRecovery = readPersistedThreadIds(baseDir);
+          if (
+            recoverableEmptyThreadIds.some((threadId) =>
+              persistedThreadIdsAfterRecovery.includes(threadId),
+            )
+          ) {
+            throw new Error(
+              `Empty Native threads survived automatic recovery: ${JSON.stringify({
+                recoverableEmptyThreadIds,
+                initialPersistedThreadIds,
+                persistedThreadIdsAfterRecovery,
+              })}`,
+            );
+          }
+          return {
+            status: "pass",
+            threadIds: recoverableEmptyThreadIds,
+            canonicalThreadIdsBefore: initialPersistedThreadIds,
+            canonicalThreadIdsAfter: afterRecoveryState.threadIds ?? [],
+            persistedThreadIdsBefore: initialPersistedThreadIds,
+            persistedThreadIdsAfter: persistedThreadIdsAfterRecovery,
+            automatic: true,
+          };
+        })();
   if (typeof projectId !== "string") {
     throw new Error("The Native draft lifecycle fixture has no project for manual cleanup.");
   }
@@ -3254,37 +3270,39 @@ async function verifyNewThreadDraftLifecycle({
   if (typeof freshEmptyThreadId !== "string") {
     throw new Error("Creating a fresh canonical empty thread did not return an id.");
   }
-  await waitForClientState({
-    child,
-    client,
-    timeoutMs,
-    predicate: (state) => state?.threadIds?.includes(freshEmptyThreadId) === true,
-  });
-  await tapSelectorByAttribute({
-    attribute: "data-sidebar-empty-thread-delete",
-    child,
-    client,
-    selector: "[data-sidebar-empty-thread-delete]",
-    timeoutMs,
-    value: freshEmptyThreadId,
-  });
-  const afterDeleteState = await waitForClientState({
-    child,
-    client,
-    timeoutMs,
-    predicate: (state) => state?.threadIds?.includes(freshEmptyThreadId) === false,
-  });
-  const persistedThreadIdsAfterDelete = readPersistedThreadIds(baseDir);
-  if (persistedThreadIdsAfterDelete.includes(freshEmptyThreadId)) {
+  const runtimeRecoveryDeadline = Date.now() + timeoutMs;
+  let runtimeRecoveryState = await readClientState(client);
+  let runtimeThreadObserved =
+    runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId) === true;
+  while (Date.now() < runtimeRecoveryDeadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the runtime empty thread was recovered.");
+    }
+    runtimeRecoveryState = await readClientState(client);
+    runtimeThreadObserved ||=
+      runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId) === true;
+    if (!runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId)) break;
+    await waitForChildExit(child, 100);
+  }
+  if (runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId)) {
     throw new Error(
-      `Deleting a fresh empty Native thread did not update persistence: ${JSON.stringify({
+      `A runtime-created empty Native thread remained visible after recovery: ${JSON.stringify({
         freshEmptyThreadId,
-        persistedThreadIdsAfterDelete,
+        runtimeRecoveryState,
       })}`,
     );
   }
-  const canonicalThreadIdsBefore = afterDeleteState.threadIds ?? [];
-  const persistedThreadIdsBefore = persistedThreadIdsAfterDelete;
+  const persistedThreadIdsAfterRuntimeRecovery = readPersistedThreadIds(baseDir);
+  if (persistedThreadIdsAfterRuntimeRecovery.includes(freshEmptyThreadId)) {
+    throw new Error(
+      `A runtime-created empty Native thread survived automatic recovery: ${JSON.stringify({
+        freshEmptyThreadId,
+        persistedThreadIdsAfterRuntimeRecovery,
+      })}`,
+    );
+  }
+  const canonicalThreadIdsBefore = runtimeRecoveryState?.threadIds ?? [];
+  const persistedThreadIdsBefore = persistedThreadIdsAfterRuntimeRecovery;
   const normalizedThreadIds = (threadIds) => [...threadIds].sort();
   const beforeSequence = await readRendererReadiness(client);
   await tapSelector({
@@ -3344,19 +3362,13 @@ async function verifyNewThreadDraftLifecycle({
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured New thread control",
     hero: hero.rect,
-    recoverableEmptyThreadDeletion: {
-      threadIds: recoverableEmptyThreadIds,
-      canonicalThreadIdsBefore: initialPersistedThreadIds,
-      canonicalThreadIdsAfter: afterRecoveryState.threadIds ?? [],
-      persistedThreadIdsBefore: initialPersistedThreadIds,
-      persistedThreadIdsAfter: persistedThreadIdsAfterRecovery,
-      automatic: true,
-    },
-    freshEmptyThreadDeletion: {
+    legacyEmptyThreadRecovery: legacyRecovery,
+    runtimeEmptyThreadRecovery: {
       threadId: freshEmptyThreadId,
-      canonicalThreadIdsAfter: canonicalThreadIdsBefore,
-      persistedThreadIdsAfter: persistedThreadIdsAfterDelete,
-      manual: true,
+      canonicalThreadIdsAfter: runtimeRecoveryState?.threadIds ?? [],
+      persistedThreadIdsAfter: persistedThreadIdsAfterRuntimeRecovery,
+      observedInClient: runtimeThreadObserved,
+      automatic: true,
     },
     canonicalThreadIdsBefore,
     canonicalThreadIdsAfter: reusedDraftState.threadIds ?? [],

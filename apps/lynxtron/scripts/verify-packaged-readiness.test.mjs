@@ -480,20 +480,26 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "session.status = 'idle'");
     assert.include(source, "session.active_turn_id IS NULL");
     assert.include(source, "session.last_error IS NULL");
+    assert.include(source, "const legacyRecovery =");
+    assert.include(source, "Fixture has no recoverable legacy empty threads.");
     assert.include(source, "recoverableEmptyThreadIds.every");
     assert.include(source, "survived automatic recovery");
     assert.include(source, 'invokeConnector(client, "createThread", { projectId })');
-    assert.include(source, '"data-sidebar-empty-thread-delete"');
-    assert.include(source, "Deleting a fresh empty Native thread did not update persistence");
-    assert.include(source, "canonicalThreadIdsBefore = afterDeleteState.threadIds ?? []");
-    assert.include(source, "threadIds: recoverableEmptyThreadIds");
+    assert.include(source, "runtimeRecoveryState");
+    assert.include(source, "runtimeThreadObserved");
+    assert.include(source, "A runtime-created empty Native thread survived automatic recovery");
+    assert.include(source, "canonicalThreadIdsBefore = runtimeRecoveryState?.threadIds ?? []");
+    assert.include(source, "legacyEmptyThreadRecovery: legacyRecovery");
     assert.include(source, "automatic: true");
-    assert.include(source, "manual: true");
+    assert.include(source, "runtimeEmptyThreadRecovery");
     assert.include(source, 'typeof state?.draftThreadId === "string"');
     assert.include(source, "state?.draftThreadId === firstDraftState.draftThreadId");
     assert.include(source, "initialPersistedThreadIds = shouldVerifyNewThreadDraftLifecycle");
     assert.include(source, "? readPersistedThreadIds(baseDir)");
-    assert.include(source, "const persistedThreadIdsBefore = persistedThreadIdsAfterDelete");
+    assert.include(
+      source,
+      "const persistedThreadIdsBefore = persistedThreadIdsAfterRuntimeRecovery",
+    );
     assert.include(source, "const persistedThreadIdsAfter = readPersistedThreadIds(baseDir)");
     assert.include(source, "const normalizedThreadIds = (threadIds) => [...threadIds].sort()");
     assert.include(source, "Opening a local Native draft persisted an empty thread");
