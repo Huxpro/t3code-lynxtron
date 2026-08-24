@@ -5682,6 +5682,10 @@
 .theme-light .ui-button--outline,
 .theme-light .ui-button--destructive-outline {
   border-color: var(--input);
+  border-top-color: var(--input);
+  border-right-color: var(--input);
+  border-bottom-color: var(--input);
+  border-left-color: var(--input);
   background-color: var(--popover);
 }
 .ui-button--destructive-outline .ui-button__label {

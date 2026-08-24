@@ -42,6 +42,10 @@ describe("approval Composer layout", () => {
       ".theme-light .ui-button--outline,\n.theme-light .ui-button--destructive-outline {",
     );
     expect(overridesSource).toContain("border-color: var(--input);");
+    expect(overridesSource).toContain("border-top-color: var(--input);");
+    expect(overridesSource).toContain("border-right-color: var(--input);");
+    expect(overridesSource).toContain("border-bottom-color: var(--input);");
+    expect(overridesSource).toContain("border-left-color: var(--input);");
     expect(overridesSource).toContain("background-color: var(--popover);");
     expect(overridesSource).toContain(
       ".theme-light .composer-approval-action--cancel .ui-button__label,\n.theme-light .composer-approval-action--session .ui-button__label {",
