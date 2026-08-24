@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-24T15:35:27-07:00",
+  "updatedAt": "2026-08-24T16:21:46-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16697,6 +16697,41 @@
               "confidence": 0.99,
               "method": "current-light-hero-native-main-transport",
               "source": "PID-owned production bundle confirms light theme, main transport 3 to 4, zero renderer errors, and disposed isolated state"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-failed-native-dismiss-repair",
+      "observedAt": "2026-08-24T16:06:15-07:00",
+      "commit": "f7f84412c",
+      "codeCommit": "4dbc9be0b",
+      "codeState": "commit",
+      "label": "Failed thread Native dismiss repair",
+      "narrative": "The failed-thread error banner now matches the shared Web behavior: a visible Dismiss error control hides only the current rendered error for the active thread. A fresh PID-owned exact Native dark run first verifies the canonical failed state, then sends a measured Input.emulateTouchFromMouseEvent tap to the control. The banner disappears while the same two timeline rows and disabled Send state remain; main transport advances from 3 to 4, renderer errors remain zero, and the copied state is disposed. This is deliberately narrow interaction coverage for the dismiss control, not a claim about physical keyboard, scrolling, focus, material, or typography.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The Web authority supplies a local-only onDismiss action. The before/after Native tap in the same isolated failed session directly proves the newly restored action without changing the fixed model denominator, weights, thresholds, filters, or untouched residual dimensions."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/existing-thread-failed-native-dismiss-repair.json",
+          "classification": "tracked-current",
+          "sha256": "023924f43ab4730cb8825dbcafc1130f204a3dc39f993d3f128c17c3747c6d80"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-failed-thread-dismiss-touch",
+              "source": "Measured Native error-dismiss touch removes .thread-error-banner while retaining two failed timeline rows and disabled Send in the same isolated session"
             }
           }
         }

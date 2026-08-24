@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T16:06:15-07:00",
+  "stateId": "existing-thread-failed",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "commits": {
+    "product": "4dbc9be0b",
+    "harness": "f7f84412c"
+  },
+  "authority": {
+    "webComponent": "apps/web/src/components/chat/ThreadErrorBanner.tsx",
+    "semantics": "The Web onDismiss action clears only the local rendered thread-error map; it does not mutate session.lastError."
+  },
+  "native": {
+    "status": "pass",
+    "captureTier": "native",
+    "bundle": {
+      "sha256": "58c6b48c35d647bdf3750e2cd7ac6a514edf4eb06c82411849355f941b5ebe0a",
+      "bytes": 5316041
+    },
+    "fixture": {
+      "source": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-visual-state-M4LBkO",
+      "snapshotId": "593b05b88c58ded7c0dc122f267cac75175b8eb2a009d3463608895c139ef829",
+      "threadId": "fa0793fd-1c0e-4498-b7fd-7ac9f23b0f32",
+      "error": "Model not found: opencode/not-a-real-model."
+    },
+    "precondition": {
+      "model": "Big Pickle",
+      "errorBanner": {
+        "x": 570,
+        "y": 52,
+        "width": 396,
+        "height": 62
+      },
+      "timelineRows": 2,
+      "primaryActionState": "disabled",
+      "checkout": "Local checkout"
+    },
+    "input": {
+      "method": "DevTool Input.emulateTouchFromMouseEvent",
+      "target": ".thread-error-dismiss",
+      "postcondition": ".thread-error-banner is absent"
+    },
+    "result": {
+      "dismissed": true,
+      "retainedFailedRows": 2,
+      "retainedPrimaryState": "disabled",
+      "mainTransport": {
+        "beforeSequence": 3,
+        "afterSequence": 4
+      },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "artifacts": {
+      "readinessReportSha256": "db95dac7dc4ae3e26cbcab53abed442cedbd4f49f7b65ae66b58536ce29222ab",
+      "preDismissScreenshotSha256": "80a0a2877eedca67ccba5997528348ed3f68d395a2559daa673476ff3d4c8a3b",
+      "screenshotRetainedInGit": false
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "The failed-thread banner exposes the same Dismiss error affordance as the shared Web source.",
+      "A real Native touch removes the rendered error without clearing the failed session, timeline, or disabled composer state."
+    ],
+    "remainingDebt": [
+      "Physical keyboard focus and Escape behavior remain pending an authorized user/computer session.",
+      "Scrolling, selection, typography, and cross-renderer material residuals are unchanged by this narrowly scoped interaction repair."
+    ],
+    "policy": "No state weights, denominator entries, filters, thresholds, or residual policy changed."
+  },
+  "validation": {
+    "focusedContracts": "pass: shell failed-thread dismissal and packaged readiness failed-state selector contract",
+    "lynxTypecheck": "pass",
+    "nativeReadiness": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
