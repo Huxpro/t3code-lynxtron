@@ -1039,6 +1039,24 @@ function completedComposerProviderStateMatches(state) {
   );
 }
 
+function readCompletedComposerProviderState(state) {
+  return {
+    match: completedComposerProviderStateMatches(state),
+    web: {
+      visibleModelLabel: state?.web?.productState?.visibleModelLabel ?? null,
+      state: state?.web?.composerMetrics?.state ?? null,
+      placeholder: state?.web?.composerMetrics?.placeholder ?? null,
+      controlIds: (state?.web?.composerMetrics?.controls ?? []).map(({ id }) => id),
+    },
+    lynx: {
+      visibleModelLabel: state?.lynx?.productState?.visibleModelLabel ?? null,
+      state: state?.lynx?.composerMetrics?.state ?? null,
+      placeholder: state?.lynx?.composerMetrics?.placeholder ?? null,
+      controlIds: (state?.lynx?.composerMetrics?.controls ?? []).map(({ id }) => id),
+    },
+  };
+}
+
 function composerPlanModeMatches(state) {
   if (!isComposerPlanModeState) return true;
   const planControl = (client) =>
@@ -9045,21 +9063,7 @@ async function captureCell({
       finalChangedFilesStateReady,
       finalCoreGeometryReady,
       finalComposerReady,
-      completedComposerProviderState: {
-        match: completedComposerProviderStateMatches(state),
-        web: {
-          visibleModelLabel: state?.web?.productState?.visibleModelLabel ?? null,
-          state: state?.web?.composerMetrics?.state ?? null,
-          placeholder: state?.web?.composerMetrics?.placeholder ?? null,
-          controlIds: (state?.web?.composerMetrics?.controls ?? []).map(({ id }) => id),
-        },
-        lynx: {
-          visibleModelLabel: state?.lynx?.productState?.visibleModelLabel ?? null,
-          state: state?.lynx?.composerMetrics?.state ?? null,
-          placeholder: state?.lynx?.composerMetrics?.placeholder ?? null,
-          controlIds: (state?.lynx?.composerMetrics?.controls ?? []).map(({ id }) => id),
-        },
-      },
+      completedComposerProviderState: readCompletedComposerProviderState(state),
       finalPlanModeReady,
       finalSessionProjectionReady,
       finalStageIdentityReady,
@@ -9218,6 +9222,7 @@ async function captureCell({
           ).length,
         },
       },
+      completedComposerProviderState: readCompletedComposerProviderState(state),
       sidebarStageIdentity: {
         match: finalStageIdentityReady,
         web: state?.web?.sidebarDiagnostics?.stageIdentity ?? null,

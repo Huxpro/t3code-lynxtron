@@ -68,7 +68,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "webLabel.length > 0");
     assert.include(source, "webComposer?.state === lynxComposer?.state");
     assert.include(source, "completedComposerProviderStateMatches(state)");
-    assert.include(source, "completedComposerProviderState: {");
+    assert.include(source, "function readCompletedComposerProviderState(state)");
+    assert.include(
+      source,
+      "completedComposerProviderState: readCompletedComposerProviderState(state)",
+    );
   });
 
   it("accepts an explicit immutable seed source for cross-client fixtures", () => {
