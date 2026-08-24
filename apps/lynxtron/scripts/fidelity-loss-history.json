@@ -15706,6 +15706,109 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-loading-dual-theme-current",
+      "observedAt": "2026-08-23T17:15:22-07:00",
+      "commit": "ef95db29dcbf2c4d83c93142044614a2ec0fd8ac",
+      "codeCommit": "6c68f1b7ebccc7ba4689e642efdcd49613467fd1",
+      "codeState": "commit",
+      "label": "Settings Source Control loading dual-theme convergence",
+      "narrative": "Current deterministic pending-RPC evidence replaces the August 16 dark-only snapshot. A real product drift was found and repaired: Lynx added a renderer-only Uses global model status line that made Text generation 16 to 17px taller than Web. Dark and light Browser captures now match all three section origins, both 896x176 loading sections, all four 896x66 loading rows, and the final section within 1.21875px. Exact-bundle Native dark and light reproduce the same geometry with main transport, zero renderer errors, and isolated cleanup. A separate Lynx-for-Web compatibility fix restores column and intrinsic-content declarations stripped from the browser proxy and receives no product-loss attribution.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The checkpoint combines same-snapshot dual-theme Browser comparisons and exact-bundle Native runs against a deterministic server-layer pending RPC. It preserves all 75 states, 864 cells, weights, thresholds, and filters."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/settings-source-control-loading-dual-theme-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "fd871d258517d797b0c6cee1623c56de201e784eed564d8ef54b96d494add340"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control-loading"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-loading-section-content",
+              "source": "Both Browser renderers remain pending and expose Version Control, Source Control Providers, Text generation, and four loading rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.21875],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "dual-theme-source-control-loading-anatomy",
+              "source": "Both themes match section origins and loading-row boxes exactly; Text generation is 289px in Lynx-for-Web versus 290.21875px in Web"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "dual-theme-browser-visual-review",
+              "source": "Heading and Text generation row hierarchy align in both themes; renderer-specific font shaping remains"
+            },
+            "material": {
+              "residual": 0.107271,
+              "confidence": 0.95,
+              "method": "dual-theme-region-ssim",
+              "source": "Mean of dark and light Browser loading-section and Text generation residuals; excludes the unrelated Web-only update notification"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-source-control-pending-readiness",
+              "source": "Both Browser runs use the same deterministic pending RPC and snapshot, reach semantic readiness in 1352ms and 1467ms, report zero renderer errors, and leave no agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["settings-source-control-loading"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-loading-content",
+              "source": "Both exact-bundle themes render three canonical section headings and four loading rows while discovery remains pending"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "native-dual-theme-source-control-loading-anatomy",
+              "source": "Both themes render 896x176 loading sections, four 896x66 rows, and a 289px Text generation section at y=536"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "native-dual-theme-visual-review",
+              "source": "Visual review confirms consistent heading, row-title, description, and control hierarchy in dark and light; native rasterization remains platform-specific"
+            },
+            "material": {
+              "residual": 0.115875,
+              "confidence": 0.9,
+              "method": "native-dual-theme-region-review",
+              "source": "Scaled Native loading-section and Text generation region comparisons average 88.41% SSIM; screenshots confirm matching light/dark structure without claiming exact platform pixels"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-settings-route-pointer-navigation",
+              "source": "Measured DevTool taps navigate from Settings General to Source Control before the real discovery RPC remains pending"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-source-control-pending-readiness",
+              "source": "Both exact-bundle runs hold the server discovery RPC pending, retain main transport sequence 12, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
     }
   ]
 }

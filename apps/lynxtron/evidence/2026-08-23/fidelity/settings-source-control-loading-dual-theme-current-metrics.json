@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-23T17:15:22-07:00",
+  "stateId": "settings-source-control-loading",
+  "commits": {
+    "product": "6c68f1b7ebccc7ba4689e642efdcd49613467fd1",
+    "tests": "ef95db29dcbf2c4d83c93142044614a2ec0fd8ac"
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx no longer adds a renderer-only Uses global model status line below the Source control writer model description.",
+      "The Text generation section now measures 289px in Lynx and exact Native versus 290.21875px in Web instead of 305px and 307px.",
+      "Version Control and Source Control Providers retain their exact 896x176 section geometry and four 896x66 loading rows in both themes."
+    ],
+    "harnessLossClosed": [
+      "The Lynx-for-Web compatibility layer now restores Settings content and Source Control column layout declarations stripped as native defaults by the Lynx CSS pipeline.",
+      "Rejected captures with sections at y=57.5 or laid out as three horizontal columns are classified as Browser proxy mismatch and receive no product attribution."
+    ],
+    "evidenceBoundary": [
+      "Browser full-frame dark pixels include an unrelated Web-only provider update notification, so material scoring uses Settings-main and loading-section regions rather than the contaminated full frame.",
+      "Native screenshots are exact-bundle, same-snapshot, same-route, same-theme evidence at a 1280x820 logical viewport; cross-renderer pixel values are supporting evidence rather than exact equality.",
+      "No state weights, denominator entries, thresholds, or filters changed."
+    ]
+  },
+  "browser": {
+    "status": "pass",
+    "fixtureSnapshotSha256": "d4c769a5f4dcd00fef93b2ced555462c2792fa3deffe175150ca8aee2f485360",
+    "viewport": [1280, 820],
+    "dark": {
+      "report": "/tmp/t3-sc-loading-browser-dark-final2/workbench-report.json",
+      "reportSha256": "7b91ef4f1cc5e08e2351db3b698d04cc5a4874e3dea30a448303e4da82dc3186",
+      "readyMs": 1352,
+      "settingsMainSsim": 0.878785,
+      "loadingSectionsLeftSsim": 0.891145,
+      "textGenerationSsim": 0.806796,
+      "rendererErrors": 0
+    },
+    "light": {
+      "report": "/tmp/t3-sc-loading-browser-light-final2/workbench-report.json",
+      "reportSha256": "2d726780b4aab4ae8a95dee53d0d2aaca07069e239b884b5923f8d0465e1cdc8",
+      "readyMs": 1467,
+      "settingsMainSsim": 0.906924,
+      "loadingSectionsLeftSsim": 0.978375,
+      "textGenerationSsim": 0.806576,
+      "rendererErrors": 0
+    },
+    "geometry": {
+      "webSections": [
+        { "x": 320, "y": 88, "width": 896, "height": 176 },
+        { "x": 320, "y": 312, "width": 896, "height": 176 },
+        { "x": 320, "y": 536, "width": 896, "height": 290.21875 }
+      ],
+      "lynxSections": [
+        { "x": 320, "y": 88, "width": 896, "height": 176 },
+        { "x": 320, "y": 312, "width": 896, "height": 176 },
+        { "x": 320, "y": 536, "width": 896, "height": 289 }
+      ],
+      "lynxLoadingRows": [
+        { "x": 320, "y": 132, "width": 896, "height": 66 },
+        { "x": 320, "y": 198, "width": 896, "height": 66 },
+        { "x": 320, "y": 356, "width": 896, "height": 66 },
+        { "x": 320, "y": 422, "width": 896, "height": 66 }
+      ]
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundleSha256": "eb15b6deb00291fb0916459b796a3fb8fa7e6edd776335052ba803aaa45cc667",
+    "bundleBytes": 5310681,
+    "dark": {
+      "report": "/tmp/t3-sc-loading-native-dark-final/report.json",
+      "reportSha256": "062b803870f6f20878e9a456a19c4e40d9e2444d9f7e9616dfabc45893f4139e",
+      "screenshot": "/tmp/t3-sc-loading-native-dark-final/native-settings-source-control-loading.png",
+      "screenshotSha256": "cd53bf8776891ce157a33ae8603a23c849cb0286d654bc74389755757cc1ef0a",
+      "transportSequence": 12,
+      "rendererErrors": 0
+    },
+    "light": {
+      "report": "/tmp/t3-sc-loading-native-light-final/report.json",
+      "reportSha256": "6c9596224587de8a61382e8ec7edaf83d772588cb9dcdac92f4423743b513bf4",
+      "screenshot": "/tmp/t3-sc-loading-native-light-final/native-settings-source-control-loading.png",
+      "screenshotSha256": "6cdad57bc2c303ac6e3d216f95be495a2f4fd8a7c97efcb638facdbd63ffa80d",
+      "transportSequence": 12,
+      "rendererErrors": 0
+    },
+    "geometry": {
+      "sections": [
+        { "x": 320, "y": 88, "width": 896, "height": 176 },
+        { "x": 320, "y": 312, "width": 896, "height": 176 },
+        { "x": 320, "y": 536, "width": 896, "height": 289 }
+      ],
+      "loadingRows": [
+        { "x": 320, "y": 132, "width": 896, "height": 66 },
+        { "x": 320, "y": 198, "width": 896, "height": 66 },
+        { "x": 320, "y": 356, "width": 896, "height": 66 },
+        { "x": 320, "y": 422, "width": 896, "height": 66 }
+      ]
+    },
+    "scaledRegionSsim": {
+      "darkLoadingSectionsLeft": 0.963963,
+      "darkTextGeneration": 0.78081,
+      "lightLoadingSectionsLeft": 0.981966,
+      "lightTextGeneration": 0.780749
+    },
+    "interaction": "Measured DevTool taps navigate Settings to Source Control before the real server discovery RPC remains pending.",
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "settingsTests": "15/15",
+    "nativeVerifierContract": "1/1",
+    "browserPreviewContract": "7/7",
+    "webTypecheck": "pass",
+    "lynxTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "browserDarkStrictCapture": "pass",
+    "browserLightStrictCapture": "pass",
+    "nativeDarkExactBundle": "pass",
+    "nativeLightExactBundle": "pass",
+    "productionBuild": "pass with existing Effect import.meta and unsupported CSS warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
