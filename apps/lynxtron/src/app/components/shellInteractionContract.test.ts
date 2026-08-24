@@ -103,14 +103,18 @@ describe("desktop shell interaction contract", () => {
 
     expect(source).toContain('className="model-picker-dismiss-layer"');
     expect(source).toContain('aria-label="Dismiss model picker"');
-    expect(source).toContain("event-through");
-    expect(source).toContain("catchtap={handlePanelTap}");
+    expect(source).toContain("data-model-picker-dismiss-armed");
+    expect(source).toContain("user-interaction-enabled={dismissArmed}");
+    expect(source).toContain("bindtap={dismissArmed ? onClose : undefined}");
+    expect(source).toContain("setTimeout(() => setDismissArmed(true), 250)");
+    expect(source).not.toContain("event-through");
+    expect(source).not.toContain("catchtap={handlePanelTap}");
     expect(source).toContain('className="model-picker-close"');
     expect(source).toContain("bindtap={onClose}");
-    expect(source.indexOf('className="model-picker-panel"')).toBeLessThan(
-      source.indexOf('className="model-picker-dismiss-layer"'),
+    expect(source.indexOf('className="model-picker-dismiss-layer"')).toBeLessThan(
+      source.indexOf('className="model-picker-panel"'),
     );
-    expect(componentSource("ChatView.tsx")).toContain(
+    expect(componentSource("ChatView.tsx")).not.toContain(
       "onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}",
     );
     expect(overrides).toContain(".model-picker-dismiss-layer {");
@@ -118,11 +122,11 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("background-color: var(--popover);");
     const dismissStart = overrides.indexOf(".model-picker-dismiss-layer {");
     const dismissBlock = overrides.slice(dismissStart, overrides.indexOf("}", dismissStart));
-    expect(dismissBlock).toContain("z-index: 0;");
+    expect(dismissBlock).toContain("z-index: 50;");
     expect(dismissBlock).not.toContain("var(--overlay-backdrop)");
     const panelStart = overrides.indexOf(".model-picker-panel {");
     const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
-    expect(panelBlock).toContain("z-index: 1;");
+    expect(panelBlock).toContain("z-index: 51;");
     expect(modelPickerSurfaceSource).toContain(
       '<HostView className="model-picker-rail-icon pointer-events-none">',
     );
