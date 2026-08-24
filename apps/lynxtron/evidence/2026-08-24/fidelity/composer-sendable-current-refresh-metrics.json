@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T11:52:00-07:00",
+  "stateId": "composer-sendable",
+  "scope": "current-dual-theme-browser-real-input-refresh",
+  "commits": {
+    "captureHarness": "cf057e812"
+  },
+  "classification": {
+    "harnessLossClosed": [
+      "The workbench treated Web's legitimate /draft/<id> new-thread route as a route mismatch and repeatedly navigated it back to /. That restart loop prevented the composer input phase from running. New-thread draft routes are now accepted as stable workbench targets.",
+      "The Web contenteditable composer did not reliably accept DOM.focus plus char events in its iframe. The workbench now uses the same focus emulation, real pointer placement, raw key down/up sequence, and per-character rendered-value confirmation pattern used by the existing file editor flow."
+    ],
+    "productLossObserved": [],
+    "evidenceBoundary": [
+      "A freshly created isolated project fixture has one project and zero persisted threads. Both Browser panes create their local draft normally and receive the same real input text through CDP pointer/raw-key input.",
+      "Dark and light evidence confirms content, geometry, and runtime for Browser. Native physical keyboard focus, typing, and send remain pending-user-session and are not replaced by this Browser interaction.",
+      "No fresh material SSIM or typography sampling is claimed. Existing material and typography residuals remain unchanged."
+    ]
+  },
+  "fixture": {
+    "sourceDatabaseSha256": "2b375e25ff732858c0193e29083e7c52b76a56b8672b4a35b51a8132cc925715",
+    "createdThroughProductionServerCli": true,
+    "projectTitle": "t3code-composer-sendable-fixture",
+    "threadCount": 0,
+    "input": "hello fidelity"
+  },
+  "browser": {
+    "status": "pass",
+    "viewport": [1280, 820],
+    "webBundleSha256": "f2c39f8c8badc24f22775facb389208b0aad8b5eeef41649dfaead1840b112fd",
+    "lynxBundleSha256": "d6d91c82516bd237c37cdea8082a0aa79411c2c6af7c5e2fb9e104159d31e134",
+    "dark": {
+      "reportSha256": "f1b606479ea35f681f4206c5dbbddbe702086663937292eaec00925ce8b4faf7",
+      "sideBySideSha256": "4755c102fe8a46680c7766c9723695359730cebd4b2bb608657717628c4dffa9",
+      "rendererErrors": 0
+    },
+    "light": {
+      "reportSha256": "5e6db172c5f5c31bee043f354f5b236cda47d874d82b3f7b2b2f2912d47687c0",
+      "sideBySideSha256": "546f64bf89375d1f512a70cca174e64409557d1bc68d3bcfef15e8c2fe155936",
+      "rendererErrors": 0
+    },
+    "identity": {
+      "layout": "hero",
+      "composerState": "sendable",
+      "primaryActionState": "send",
+      "editorValue": "hello fidelity",
+      "controls": ["GPT-5.6-Sol", "Low", "Full access", "Build"],
+      "context": ["Current checkout", "archaeology/final5-20260812"]
+    },
+    "geometry": {
+      "web": {
+        "composer": { "x": 384, "y": 340, "width": 768, "height": 140 },
+        "editor": { "x": 401, "y": 357, "width": 734, "height": 70 }
+      },
+      "lynx": {
+        "composer": { "x": 384, "y": 340, "width": 768, "height": 140 },
+        "editor": { "x": 401, "y": 357, "width": 734, "height": 70 }
+      },
+      "trustedAnchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+      "trustedAnchorScale": 1280
+    },
+    "input": {
+      "web": "CDP focus emulation, pointer placement, raw key down/up with per-character rendered-value confirmation",
+      "lynx": "DOM focus plus per-character insertText rendered-value confirmation"
+    }
+  },
+  "validation": {
+    "workbenchCaptureContracts": "49/49",
+    "browserDarkCapture": "pass",
+    "browserLightCapture": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0,
+    "nativeKeyboardTyping": "pending-user-session"
+  }
+}

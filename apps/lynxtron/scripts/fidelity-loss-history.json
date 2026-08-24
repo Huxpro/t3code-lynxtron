@@ -16581,6 +16581,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-sendable-current-dual-theme-refresh",
+      "observedAt": "2026-08-24T11:52:00-07:00",
+      "commit": "cf057e812",
+      "codeCommit": "cf057e812",
+      "codeState": "commit",
+      "label": "Composer Sendable current dual-theme refresh",
+      "narrative": "A current zero-thread isolate revalidates Composer Sendable through real Browser pointer and keyboard input. The shared workbench now accepts Web's normal draft route and verifies each character rendered in the Web contenteditable before proceeding, while Lynx receives the same text through its focus and insertText path. Dark and light pairs both render hello fidelity, Sendable, Send, the same controls/context, and matched Composer geometry with no renderer errors. This is a harness/evidence correction: prior material and typography residuals plus Native physical keyboard debt remain explicitly unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The capture previously reloaded valid /draft routes and failed before input could run. The committed change corrects only route stability and the real input harness; state weights, denominator entries, thresholds, filters, material residual, typography residual, and Native physical-input debt remain unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/composer-sendable-current-refresh-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "ab25b981060cae319ba23e17ddab13d4ae0219c8d4bceef9af639fd6be0c6d65"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-sendable-content",
+              "source": "Both Browser themes render the same real hello fidelity input, Sendable state, Send action, GPT-5.6-Sol, Low, Full access, Build, and Current checkout context"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "dual-theme-current-sendable-composer-geometry",
+              "source": "Both Browser themes align the 768x140 hero Composer and 734x70 editor after real input"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-real-sendable-input",
+              "source": "Web uses real CDP pointer/raw-key input with per-character rendered-value confirmation; Lynx uses focus and per-character insertText confirmation; both reach the same Sendable postcondition"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-sendable-readiness",
+              "source": "Both current Browser pairs pass semantic identity and zero-error gates with no agent-browser processes"
+            }
+          }
+        }
+      ]
     }
   ]
 }

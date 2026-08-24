@@ -234,3 +234,4 @@ existing-thread-idle-current-refresh,2026-08-24T08:24:14-07:00,d6c912b7cb69e797e
 unavailable-provider-model-label-current,2026-08-24T09:13:00-07:00,edd8c112a,commit,Unavailable provider model-label convergence,0.199786,0.199786,0.036256,0.169681,0.830319,0.7912
 composer-docked-current-dual-theme-refresh,2026-08-24T10:21:40-07:00,d690a8154b47f8f70e60f10cf29ae361132eaa09,commit,Composer Docked current dual-theme refresh,0.197636,0.197636,0.036146,0.167546,0.832454,0.79335
 composer-working-current-dual-theme-refresh,2026-08-24T10:56:00-07:00,05142b4b5,commit,Composer Working current dual-theme refresh,0.197636,0.197636,0.036146,0.167546,0.832454,0.79335
+composer-sendable-current-dual-theme-refresh,2026-08-24T11:52:00-07:00,cf057e812,commit,Composer Sendable current dual-theme refresh,0.197601,0.197601,0.036105,0.167546,0.832454,0.793385
