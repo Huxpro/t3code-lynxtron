@@ -1219,6 +1219,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "JSON.stringify(canonical(webRows))");
     assert.include(source, "!rectDeltaWithin(webHeader, lynxHeader, 2)");
     assert.include(source, "const sharedColumnGeometry");
+    assert.include(source, "Status is intentionally an empty structural cell");
+    assert.include(source, "webRow.conflicts.length === 0");
+    assert.include(source, "!webColumn.box");
     assert.include(source, "if (columnIndex !== 3) return true");
     assert.include(source, '"settings-providers": "settings-general"');
     assert.include(source, '"settings-providers": "Providers"');

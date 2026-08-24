@@ -800,8 +800,21 @@ function keybindingsSettingsGeometryMatches(webMetrics, lynxMetrics) {
       return false;
     }
     return webRow.columns.every((webColumn, columnIndex) => {
+      const lynxColumn = lynxRow.columns[columnIndex];
+      // Status is intentionally an empty structural cell on non-conflicting
+      // bindings. Neither renderer has visible status content to measure in
+      // that case; conflict rows still require a measured icon below.
+      if (
+        columnIndex === 3 &&
+        webRow.conflicts.length === 0 &&
+        lynxRow.conflicts.length === 0 &&
+        !webColumn.box &&
+        !lynxColumn?.box
+      ) {
+        return true;
+      }
       const webRect = webColumn.box?.rect;
-      const lynxRect = lynxRow.columns[columnIndex]?.box?.rect;
+      const lynxRect = lynxColumn?.box?.rect;
       if (!webRect || !lynxRect) return false;
       const sharedColumnGeometry =
         Math.abs(webRect.x - lynxRect.x) <= 2 && Math.abs(webRect.width - lynxRect.width) <= 2;
