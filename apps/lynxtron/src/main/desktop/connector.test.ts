@@ -55,6 +55,41 @@ describe("Diff preview connector surface", () => {
   });
 });
 
+describe("disposable empty-thread recovery", () => {
+  it("reconciles legacy empty shells after every material shell update", () => {
+    const source = readFileSync(path.join(import.meta.dirname, "connector.ts"), "utf8");
+    const handleShellItem = source.slice(
+      source.indexOf("private handleShellItem"),
+      source.indexOf("  private emitShell"),
+    );
+
+    assert.include(
+      handleShellItem,
+      'if (item.kind !== "synchronized" && this.shellSnapshot) {\n      this.scheduleDisposableThreadCleanup();',
+    );
+    assert.notInclude(
+      handleShellItem,
+      'if (item.kind === "snapshot") {\n      this.scheduleDisposableThreadCleanup();\n    }',
+    );
+  });
+
+  it("rechecks a queued deletion against the latest shell before dispatching it", () => {
+    const source = readFileSync(path.join(import.meta.dirname, "connector.ts"), "utf8");
+    const cleanup = source.slice(
+      source.indexOf("private scheduleDisposableThreadCleanup"),
+      source.indexOf("  private threadSnapshots"),
+    );
+
+    assert.include(cleanup, "const currentThread = this.shellSnapshot?.threads.find(");
+    assert.include(
+      cleanup,
+      "selectRecoverableDisposableThreadIds([currentThread]).includes(threadId)",
+    );
+    assert.include(cleanup, "this.attemptedDisposableThreadDeletes.delete(threadId);");
+    assert.include(cleanup, "await this.deleteThread({ threadId });");
+  });
+});
+
 describe("retryRpcTransportOpen", () => {
   it("opens with a fresh attempt after transient failures", async () => {
     const attempts: number[] = [];

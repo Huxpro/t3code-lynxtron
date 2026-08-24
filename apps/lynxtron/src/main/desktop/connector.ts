@@ -751,7 +751,7 @@ export class T3Connector {
         );
       }
     }
-    if (item.kind === "snapshot") {
+    if (item.kind !== "synchronized" && this.shellSnapshot) {
       this.scheduleDisposableThreadCleanup();
     }
     // Archive/unarchive/delete all surface here as plain upserts/removes, so
@@ -806,6 +806,18 @@ export class T3Connector {
       void Promise.all(
         candidates.map(async (threadId) => {
           try {
+            const currentThread = this.shellSnapshot?.threads.find(
+              (thread) => thread.id === threadId,
+            );
+            if (
+              !currentThread ||
+              !selectRecoverableDisposableThreadIds([currentThread]).includes(threadId)
+            ) {
+              this.pendingDisposableThreadDeletes.delete(threadId);
+              this.attemptedDisposableThreadDeletes.delete(threadId);
+              this.emitShell();
+              return;
+            }
             await this.deleteThread({ threadId });
             this.log(`[connector] removed disposable empty thread ${threadId}`);
           } catch (error) {
