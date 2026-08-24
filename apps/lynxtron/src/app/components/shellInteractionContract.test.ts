@@ -504,6 +504,11 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("border-radius: 5px;");
     expect(overrides).toContain("font-family: var(--font-sans);");
     expect(overrides).toContain("font-size: 12px;");
+    expect(overrides).toContain(".turn-diff-card .file-tree-row__name {");
+    expect(overrides).toContain(".turn-diff-card .file-tree-row__stat {");
+    expect(overrides).toContain(".turn-diff-card__status {");
+    expect(overrides).toContain(".turn-diff-card__hint {");
+    expect(overrides).toContain(".turn-diff-card__open-label {");
     expect(overrides).toContain(".file-panel__explorer {");
     expect(overrides).toContain("width: 256px;");
     expect(overrides).toContain(".right-panel--sheet .file-panel__explorer {");

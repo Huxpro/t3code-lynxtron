@@ -6639,6 +6639,73 @@ async function verifyReviewCheckpointStates({
   if (treeRows.length !== 1) {
     throw new Error(`Review tree did not expose one file row: ${JSON.stringify(treeRows)}`);
   }
+  const checkpointStatus = await readOptionalMeasurement(client, ".turn-diff-card__status");
+  const checkpointHint = await readOptionalMeasurement(client, ".turn-diff-card__hint");
+  const checkpointOpenLabel = await readOptionalMeasurement(client, ".turn-diff-card__open-label");
+  const checkpointFileName = await readOptionalMeasurement(client, ".file-tree-row__name");
+  const checkpointFileStat = await readOptionalMeasurement(client, ".file-tree-row__stat");
+  const checkpointTypography = {
+    status: {
+      fontSize: await readFirstSelectorStyleValue(client, ".turn-diff-card__status", "font-size"),
+      lineHeight: await readFirstSelectorStyleValue(
+        client,
+        ".turn-diff-card__status",
+        "line-height",
+      ),
+    },
+    hint: {
+      fontSize: await readFirstSelectorStyleValue(client, ".turn-diff-card__hint", "font-size"),
+      lineHeight: await readFirstSelectorStyleValue(client, ".turn-diff-card__hint", "line-height"),
+    },
+    openLabel: {
+      fontSize: await readFirstSelectorStyleValue(
+        client,
+        ".turn-diff-card__open-label",
+        "font-size",
+      ),
+      lineHeight: await readFirstSelectorStyleValue(
+        client,
+        ".turn-diff-card__open-label",
+        "line-height",
+      ),
+    },
+    fileName: {
+      fontSize: await readFirstSelectorStyleValue(client, ".file-tree-row__name", "font-size"),
+      lineHeight: await readFirstSelectorStyleValue(client, ".file-tree-row__name", "line-height"),
+    },
+    fileStat: {
+      fontSize: await readFirstSelectorStyleValue(client, ".file-tree-row__stat", "font-size"),
+      lineHeight: await readFirstSelectorStyleValue(client, ".file-tree-row__stat", "line-height"),
+    },
+  };
+  const checkpointTypographyMatches =
+    checkpointStatus?.text.trim() === "1 changed file" &&
+    checkpointHint?.text.trim() === "Hide files" &&
+    checkpointOpenLabel?.text.trim() === "Open diff" &&
+    checkpointFileName?.text.trim() === checkpoint.files[0].path &&
+    checkpointFileStat?.text.replaceAll(" ", "") === "+1−1" &&
+    checkpointTypography.status.fontSize === "12px" &&
+    checkpointTypography.status.lineHeight === "16px" &&
+    checkpointTypography.hint.fontSize === "11px" &&
+    checkpointTypography.hint.lineHeight === "16px" &&
+    checkpointTypography.openLabel.fontSize === "12px" &&
+    checkpointTypography.openLabel.lineHeight === "16px" &&
+    checkpointTypography.fileName.fontSize === "11px" &&
+    checkpointTypography.fileName.lineHeight === "16px" &&
+    checkpointTypography.fileStat.fontSize === "10px" &&
+    checkpointTypography.fileStat.lineHeight === "16px";
+  if (!checkpointTypographyMatches) {
+    throw new Error(
+      `Review checkpoint typography drifted: ${JSON.stringify({
+        checkpointStatus,
+        checkpointHint,
+        checkpointOpenLabel,
+        checkpointFileName,
+        checkpointFileStat,
+        checkpointTypography,
+      })}`,
+    );
+  }
   const treeScreenshot = captureNativeScreenshot({
     client,
     devToolCli,
@@ -6662,6 +6729,7 @@ async function verifyReviewCheckpointStates({
       card: checkpointCard.rect,
       tree: tree.rect,
       rows: treeRows,
+      typography: checkpointTypography,
       screenshot: treeScreenshot,
     },
   };

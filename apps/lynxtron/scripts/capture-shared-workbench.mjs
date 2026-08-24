@@ -1189,6 +1189,35 @@ function reviewDiffHasExpectedPatch(diff) {
   );
 }
 
+function checkpointCardTypographyMatches(webState, lynxState) {
+  if (stateId !== "existing-thread-completed") return true;
+  const webCard = webState?.reviewMetrics?.checkpointCards?.find((card) => card.status === "ready");
+  const lynxCard = lynxState?.reviewMetrics?.checkpointCards?.find(
+    (card) => card.status === "ready",
+  );
+  if (!webCard || !lynxCard) return false;
+  const fontMatches = (webBox, lynxBox, expectedSize, expectedLineHeight) =>
+    webBox?.style?.fontSize === expectedSize &&
+    lynxBox?.style?.fontSize === expectedSize &&
+    webBox?.style?.lineHeight === expectedLineHeight &&
+    lynxBox?.style?.lineHeight === expectedLineHeight;
+  return (
+    fontMatches(webCard.statusText, lynxCard.statusText, "12px", "16px") &&
+    fontMatches(webCard.hintText, lynxCard.hintText, "11px", "16px") &&
+    fontMatches(webCard.openLabel, lynxCard.openLabel, "12px", "16px") &&
+    webCard.fileNames?.length === lynxCard.fileNames?.length &&
+    webCard.fileNames?.length > 0 &&
+    webCard.fileNames.every((box, index) =>
+      fontMatches(box, lynxCard.fileNames[index], "11px", "16px"),
+    ) &&
+    webCard.fileStats?.length === lynxCard.fileStats?.length &&
+    webCard.fileStats?.length > 0 &&
+    webCard.fileStats.every((box, index) =>
+      fontMatches(box, lynxCard.fileStats[index], "10px", "16px"),
+    )
+  );
+}
+
 function coreGeometryMatches(webState, lynxState) {
   const webComposer = webState?.composerMetrics;
   const lynxComposer = lynxState?.composerMetrics;
@@ -7222,6 +7251,7 @@ async function captureCell({
     const heroGeometryReady = heroGeometryMatches(state);
     const reviewReady =
       reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
+      checkpointCardTypographyMatches(state?.web, state?.lynx) &&
       sidebarDiffPairMatches(
         state?.web?.sidebarDiagnostics,
         state?.lynx?.sidebarDiagnostics,
@@ -8022,6 +8052,7 @@ async function captureCell({
     : null;
   const finalReviewReady =
     reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
+    checkpointCardTypographyMatches(state?.web, state?.lynx) &&
     sidebarDiffPairMatches(
       state?.web?.sidebarDiagnostics,
       state?.lynx?.sidebarDiagnostics,
@@ -9169,6 +9200,7 @@ async function captureCell({
       fileEditorReturnedToBrowser,
       gitPublishDismissed,
       finalReviewReady,
+      checkpointCardTypographyReady: checkpointCardTypographyMatches(state?.web, state?.lynx),
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
       finalSettingsNavigationReady,

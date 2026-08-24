@@ -1050,7 +1050,12 @@ function readReviewMetrics(root) {
         item.querySelector(".turn-diff-card__toggle") ??
           item.querySelector("button[aria-expanded]"),
       ),
+      statusText: readElementBox(item.querySelector(".turn-diff-card__status")),
+      hintText: readElementBox(item.querySelector(".turn-diff-card__hint")),
+      openLabel: readElementBox(item.querySelector(".turn-diff-card__open-label")),
       treeRect: readElementBox(item.querySelector("[data-review-tree]")),
+      fileNames: [...(item.querySelectorAll(".file-tree-row__name") ?? [])].map(readElementBox),
+      fileStats: [...(item.querySelectorAll(".file-tree-row__stat") ?? [])].map(readElementBox),
       treeRows: [
         ...(item.querySelectorAll("[data-review-tree] [data-review-file-path]") ?? []),
       ].map((row) => ({

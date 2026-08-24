@@ -206,6 +206,33 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '=== "Full access"');
   });
 
+  it("gates completed checkpoint typography at the text leaves", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, "function checkpointCardTypographyMatches(webState, lynxState)");
+    assert.include(source, 'fontMatches(webCard.statusText, lynxCard.statusText, "12px", "16px")');
+    assert.include(source, 'fontMatches(webCard.hintText, lynxCard.hintText, "11px", "16px")');
+    assert.include(source, 'fontMatches(webCard.openLabel, lynxCard.openLabel, "12px", "16px")');
+    assert.include(source, "checkpointCardTypographyReady:");
+    assert.include(
+      workbench,
+      'statusText: readElementBox(item.querySelector(".turn-diff-card__status"))',
+    );
+    assert.include(
+      workbench,
+      'hintText: readElementBox(item.querySelector(".turn-diff-card__hint"))',
+    );
+    assert.include(
+      workbench,
+      'openLabel: readElementBox(item.querySelector(".turn-diff-card__open-label"))',
+    );
+    assert.include(workbench, 'item.querySelectorAll(".file-tree-row__name")');
+    assert.include(workbench, 'item.querySelectorAll(".file-tree-row__stat")');
+  });
+
   it("captures the right-panel add menu after opening an inline Files surface", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),

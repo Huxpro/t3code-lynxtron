@@ -27,6 +27,8 @@ describe("FileTreeDirectoryRowSurface", () => {
     expect(markup).toContain("padding-left:36px");
     expect(markup).toContain("rotate-90");
     expect(markup).toContain('aria-expanded="true"');
+    expect(markup).toContain("file-tree-row__name");
+    expect(markup).toContain("file-tree-row__stat");
   });
 
   it("omits the rotation when collapsed", () => {
@@ -61,6 +63,8 @@ describe("FileTreeFileRowSurface", () => {
     expect(markup).toContain("index.ts");
     expect(markup).toContain("data-stats");
     expect(markup).toContain("padding-left:22px");
+    expect(markup).toContain("file-tree-row__name");
+    expect(markup).toContain("file-tree-row__stat");
   });
 
   it("renders a plain row without a select handler", () => {

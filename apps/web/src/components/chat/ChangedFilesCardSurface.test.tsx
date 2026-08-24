@@ -52,6 +52,8 @@ describe("ChangedFilesCardSurface", () => {
       expect(markup).toContain('data-review-turn-id="turn-1"');
       expect(markup).toContain('data-review-file-count="2"');
       expect(markup).toContain('data-open-diff="true"');
+      expect(markup).toContain('class="turn-diff-card__status ');
+      expect(markup).toContain("turn-diff-card__hint");
     }
 
     expect(collapsed).not.toContain("a.ts");

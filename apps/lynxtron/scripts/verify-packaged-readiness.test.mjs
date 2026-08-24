@@ -1229,6 +1229,24 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '".model-picker-anchor > .composer-toolbar-control--model"');
   });
 
+  it("verifies Native completed checkpoint typography at text leaves", () => {
+    assert.include(source, "async function verifyReviewCheckpointStates");
+    assert.include(source, 'readOptionalMeasurement(client, ".turn-diff-card__status")');
+    assert.include(source, 'readOptionalMeasurement(client, ".turn-diff-card__hint")');
+    assert.include(
+      source,
+      'readOptionalMeasurement(\n    client,\n    ".turn-diff-card__open-label"',
+    );
+    assert.include(source, 'readOptionalMeasurement(client, ".file-tree-row__name")');
+    assert.include(source, 'readOptionalMeasurement(client, ".file-tree-row__stat")');
+    assert.include(source, 'checkpointTypography.status.fontSize === "12px"');
+    assert.include(source, 'checkpointTypography.hint.fontSize === "11px"');
+    assert.include(source, 'checkpointTypography.openLabel.fontSize === "12px"');
+    assert.include(source, 'checkpointTypography.fileName.fontSize === "11px"');
+    assert.include(source, 'checkpointTypography.fileStat.fontSize === "10px"');
+    assert.include(source, "Review checkpoint typography drifted");
+  });
+
   it("verifies the Native failed transcript banner, fallback model, and error row", () => {
     assert.include(source, "async function verifyFailedTranscriptState");
     assert.include(source, '".thread-error-banner"');
