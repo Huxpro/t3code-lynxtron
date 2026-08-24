@@ -174,6 +174,8 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).not.toContain("visibleProviderStatusNotice && !hero");
     expect(chatView).toContain(".refreshProviders(activeProviderStatus?.instanceId)");
     expect(chatView).toContain('label={providersRefreshPending ? "Refreshing…" : "Refresh"}');
+    expect(chatView).toContain("resolveThreadLockedConnectionValue({");
+    expect(chatView).toContain("hasActiveThread: activeThread !== undefined");
   });
 
   it("keeps shared Lynx buttons accessible to provider recovery controls", () => {

@@ -53,6 +53,7 @@ import { SmallButton } from "./SettingsControls";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import {
   resolveConnectionScopedValue,
+  resolveThreadLockedConnectionValue,
   shouldRenderConnectionLifecycleBanner,
 } from "../state/connectionPresentation.logic";
 import { navigate } from "../router";
@@ -175,12 +176,14 @@ export function ChatView({ threadId }: ChatViewProps) {
         : { selectedModel, selection: modelSelection },
     [activeThread, modelSelection, presentationModels, selectedModel],
   );
-  const presentedSelectedModel = resolveConnectionScopedValue({
+  const presentedSelectedModel = resolveThreadLockedConnectionValue({
+    hasActiveThread: activeThread !== undefined,
     status,
     current: activeThreadModelProjection.selectedModel,
     lastKnown: lastKnownSelectedModel.current,
   });
-  const presentedModelSelection = resolveConnectionScopedValue({
+  const presentedModelSelection = resolveThreadLockedConnectionValue({
+    hasActiveThread: activeThread !== undefined,
     status,
     current: activeThreadModelProjection.selection,
     lastKnown: lastKnownModelSelection.current,
