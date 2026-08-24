@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-24T04:08:35-07:00",
+  "updatedAt": "2026-08-24T05:57:27-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16142,6 +16142,91 @@
               "confidence": 0.99,
               "method": "native-dual-theme-main-transport",
               "source": "Both exact-bundle runs use the main transport, advance sequence 3 to 5, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "completed-checkpoint-typography-model-current",
+      "observedAt": "2026-08-24T05:57:27-07:00",
+      "commit": "f00e9352b50cf978b595bf8ecdbfe8e4cb809bcc",
+      "codeCommit": "8018de177a034b192d4296b5d659397817a799c7",
+      "codeState": "commit",
+      "label": "Completed checkpoint typography and model recovery convergence",
+      "narrative": "A current completed review fixture exposed two linked product losses. First, shared checkpoint text leaves depended on Web inheritance and rendered at Lynx's 16px default. Second, a persisted Codex GPT-5.6-Sol thread could show a stale Claude Fable 5 preference during recovery because last-known presentation was allowed to override the active thread projection. Shared leaf classes now make the checkpoint hierarchy explicit, and active persisted threads now own their model selection. Same-snapshot Browser dark retry and light captures show matching completed-thread content, GPT-5.6-Sol Composer state, Local checkout/main context, expanded checkpoint geometry, and the 12/11/12/11/10px leaf hierarchy with zero errors. Exact-bundle Native dark and light both select fidelity-review-thread, require canonical codex/gpt-5.6-sol data and rendered GPT-5.6-Sol text, exercise preview to expanded checkpoint flow, and report main transport plus zero errors. A first dark Browser capture with one VCS status error was rejected and repeated successfully from the same seed; it is recorded as a harness sample, not a product residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The committed-head Browser and Native evidence directly observes the repaired checkpoint text leaves and active-thread model presentation. It preserves all 75 states, 864 cells, model weights, thresholds, filters, and material/physical-input boundaries."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/completed-checkpoint-typography-model-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "94a3475b10b9749060f53a53b95cd0a9fa86db15c903af48c0d630bda55905ca"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-completed-checkpoint-content",
+              "source": "Same immutable completed fixture renders fidelity-review-thread, GPT-5.6-Sol, idle Composer, Local checkout/main, checkpoint title, show/hide state, review-fixture.txt, and +1/-1 content in Web and Lynx-for-Web"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, -0.75, 0, 0, 0, -1, 0, -1, 0, 0.25],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "dual-theme-completed-checkpoint-geometry",
+              "source": "Expanded 760px card and 742px header/tree match; only fractional browser card/header/tree height quantization remains"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-completed-checkpoint-leaf-typography",
+              "source": "Both renderers resolve status 12/16/500, hint 11/16/400, Open diff 12/16/500, file name 11/16/400, and file stat 10/16/400"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-completed-checkpoint-readiness",
+              "source": "Dark retry and light current bundles match the selected thread/model/session projection and report zero Browser renderer errors with zero agent-browser leaks"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-completed-checkpoint-content",
+              "source": "Both exact-bundle themes require and render the completed codex/gpt-5.6-sol fixture selection, canonical thread title, checkpoint path, and preview/expanded checkpoint states"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "native-dual-theme-completed-checkpoint-geometry",
+              "source": "Both themes exercise 760x106 preview, 760x79 expanded card, 742x25 tree, and one file row at the same logical widths"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-completed-checkpoint-leaf-typography",
+              "source": "Both themes explicitly verify the 12/11/12/11/10px checkpoint leaf hierarchy at 16px line height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-completed-checkpoint-main-transport",
+              "source": "Both exact-bundle runs use main transport sequence 3 to 4, render GPT-5.6-Sol, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
             }
           }
         }
