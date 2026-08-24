@@ -169,6 +169,7 @@ describe("desktop shell interaction contract", () => {
   it("shows provider recovery guidance in hero and thread layouts", () => {
     const chatView = componentSource("ChatView.tsx");
 
+    expect(chatView).toContain("availableThreadModels({ models, providerEntries })");
     expect(chatView).toContain("projectProviderStatusNotice(activeProviderStatus)");
     expect(chatView).toContain("showEmptyTranscript || visibleProviderStatusNotice ? (");
     expect(chatView).toContain('className="provider-status-banner-overlay"');
