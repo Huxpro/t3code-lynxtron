@@ -468,6 +468,12 @@ describe("desktop shell interaction contract", () => {
       '".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +',
     );
     expect(browserPreviewSource).toContain(
+      '"display:flex!important;flex-direction:column!important;width:100%;height:114px;padding:16px 20px;" +',
+    );
+    expect(browserPreviewSource).toContain(
+      '".composer-pending-approval__detail{display:flex!important;flex-direction:row!important;}" +',
+    );
+    expect(browserPreviewSource).toContain(
       '".right-panel__add-menu{display:flex;flex-direction:column;width:128px;height:122px;}" +',
     );
     expect(browserPreviewSource).toContain(

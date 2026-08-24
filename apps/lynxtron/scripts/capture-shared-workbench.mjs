@@ -522,6 +522,30 @@ function workingTranscriptGeometryMatches(webMetrics, lynxMetrics) {
   });
 }
 
+function approvalComposerMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "existing-thread-approval") return true;
+  for (const key of ["pending", "detail", "editorArea", "footer"]) {
+    if (!rectDeltaWithin(webMetrics?.anatomy?.[key], lynxMetrics?.anatomy?.[key], 1)) {
+      return false;
+    }
+  }
+  const webActions = webMetrics?.anatomy?.actions ?? [];
+  const lynxActions = lynxMetrics?.anatomy?.actions ?? [];
+  if (
+    webActions.length !== 4 ||
+    lynxActions.length !== 4 ||
+    !webActions.every((action, index) => rectDeltaWithin(action, lynxActions[index], 1))
+  ) {
+    return false;
+  }
+  if (theme !== "light") return true;
+  return [lynxActions[1], lynxActions[2]].every(
+    (action) =>
+      action?.style?.backgroundColor === "rgb(255, 255, 255)" &&
+      action.style.borderTopColor === "rgb(212, 212, 216)",
+  );
+}
+
 function archiveSettingsGeometryMatches(webMetrics, lynxMetrics) {
   if (stateId !== "settings-archive") return true;
   const webSection = webMetrics?.geometry?.sections?.[0]?.box?.rect;
@@ -7014,7 +7038,8 @@ async function captureCell({
       (state?.web?.pendingRequestMetrics?.kind === expectedPendingKind &&
         state?.lynx?.pendingRequestMetrics?.kind === expectedPendingKind &&
         JSON.stringify(pendingRequestSemantics(state?.web?.pendingRequestMetrics)) ===
-          JSON.stringify(pendingRequestSemantics(state?.lynx?.pendingRequestMetrics)));
+          JSON.stringify(pendingRequestSemantics(state?.lynx?.pendingRequestMetrics)) &&
+        approvalComposerMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics));
     pendingRequestReadyPolls = pendingRequestReady ? pendingRequestReadyPolls + 1 : 0;
     const composerInputReady =
       !composerInput ||
@@ -7974,7 +7999,8 @@ async function captureCell({
       : JSON.stringify(pendingRequestSemantics(state?.web?.pendingRequestMetrics)) ===
           JSON.stringify(pendingRequestSemantics(state?.lynx?.pendingRequestMetrics)) &&
         state?.web?.pendingRequestMetrics?.kind ===
-          (stateId === "existing-thread-approval" ? "approval" : "question");
+          (stateId === "existing-thread-approval" ? "approval" : "question") &&
+        approvalComposerMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics);
   let webState = state?.web?.productState ?? null;
   let lynxState = state?.lynx?.productState ?? null;
   const currentStateIdentityMatches = () => {

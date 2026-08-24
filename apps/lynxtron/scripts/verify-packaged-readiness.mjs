@@ -5661,6 +5661,7 @@ async function verifyApprovalTranscriptState({
   approvalFixture,
   client,
   devToolCli,
+  expectedTheme,
   outputDirectory,
 }) {
   const clientState = await readClientState(client);
@@ -5747,7 +5748,14 @@ async function verifyApprovalTranscriptState({
       (surface?.rect?.y ?? 0) + (surface?.rect?.height ?? 0),
     ) &&
     actionGeometryMatches;
-  if (!stateMatches || !contentMatches || !geometryMatches) {
+  const materialMatches =
+    expectedTheme !== "light" ||
+    [actions[1], actions[2]].every(
+      (action) =>
+        action.measurement?.style.backgroundColor === "rgb(255,255,255)" &&
+        action.measurement.style.borderBottomColor === "rgb(212,212,216)",
+    );
+  if (!stateMatches || !contentMatches || !geometryMatches || !materialMatches) {
     throw new Error(
       `Canonical approval transcript drifted: ${JSON.stringify({
         clientState,
@@ -5763,6 +5771,7 @@ async function verifyApprovalTranscriptState({
         stateMatches,
         contentMatches,
         geometryMatches,
+        materialMatches,
       })}`,
     );
   }
@@ -12019,6 +12028,7 @@ async function runOnce({
             approvalFixture,
             client,
             devToolCli,
+            expectedTheme,
             outputDirectory,
           })
         : undefined;

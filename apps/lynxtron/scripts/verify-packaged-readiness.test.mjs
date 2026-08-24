@@ -1247,6 +1247,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'clientState?.sessionStatus === "running"');
     assert.include(source, 'frame?.attributes["data-composer-state"] === "working"');
     assert.include(source, "approximately(footer?.rect?.y");
+    assert.include(source, 'expectedTheme !== "light"');
+    assert.include(source, 'action.measurement?.style.backgroundColor === "rgb(255,255,255)"');
+    assert.include(source, 'action.measurement.style.borderBottomColor === "rgb(212,212,216)"');
     assert.include(source, '"native-approval.png"');
     assert.include(source, '"--verify-approval-transcript-state"');
     assert.include(source, "fixtureManifest.pendingRequestFixture");

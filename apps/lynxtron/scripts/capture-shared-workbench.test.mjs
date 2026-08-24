@@ -751,6 +751,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'pendingRequestMetrics?.kind === "approval"');
     assert.include(workbench, 'editorValue: pendingRequestMetrics.detail ?? ""');
     assert.include(workbench, 'primaryState: "stop"');
+    assert.include(source, "function approvalComposerMatches");
+    assert.include(source, 'for (const key of ["pending", "detail", "editorArea", "footer"])');
+    assert.include(source, "webActions.length !== 4");
+    assert.include(source, 'theme !== "light"');
+    assert.include(source, 'action?.style?.backgroundColor === "rgb(255, 255, 255)"');
+    assert.include(
+      source,
+      "approvalComposerMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics)",
+    );
   });
 
   it("gates working and connecting presentation on the seeded session projection", () => {
