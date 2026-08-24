@@ -53,11 +53,17 @@ export function isDisposableEmptyThread(
     | "title"
   >,
 ): boolean {
+  const hasRecoverableEmptySession =
+    thread.session === null ||
+    (thread.session.status === "idle" &&
+      thread.session.activeTurnId === null &&
+      thread.session.lastError === null);
+
   return (
     thread.title.trim() === "New thread" &&
     thread.latestUserMessageAt === null &&
     thread.latestTurn === null &&
-    thread.session === null &&
+    hasRecoverableEmptySession &&
     !thread.hasPendingApprovals &&
     !thread.hasPendingUserInput &&
     !thread.hasActionableProposedPlan
