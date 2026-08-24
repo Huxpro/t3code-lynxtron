@@ -5810,6 +5810,12 @@ async function verifyApprovalTranscriptState({
       footer: footer.rect,
       actions: actions.map((action) => action.measurement.rect),
     },
+    material: {
+      outlineActions: [actions[1], actions[2]].map((action) => ({
+        backgroundColor: action.measurement.style.backgroundColor,
+        borderBottomColor: action.measurement.style.borderBottomColor,
+      })),
+    },
     screenshot,
   };
 }
