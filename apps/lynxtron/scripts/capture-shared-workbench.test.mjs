@@ -124,6 +124,30 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'runtimeStatus: "running"');
   });
 
+  it("uses a real pointer-focus fallback before typing into a sendable Web composer", () => {
+    assert.include(source, "let webComposerEditorFocused = await focusRemoteElement(");
+    assert.include(source, "const webComposerEditorPoint = await evaluate(");
+    assert.include(
+      source,
+      'await cdp.send("Emulation.setFocusEmulationEnabled", { enabled: true }, sessionId);',
+    );
+    assert.include(
+      source,
+      "await dispatchPointerClickWithMove(cdp, sessionId, webComposerEditorPoint);",
+    );
+    assert.include(source, "web-cdp-focus-emulation+pointer-raw-key");
+    assert.include(source, "const sequence = cdpKeySequenceForCharacter(character);");
+    assert.include(source, "web?.composerMetrics?.editor?.value");
+    assert.include(
+      source,
+      "if (!prefixApplied) {\n            composerInputDiagnostics.webFailedPrefix = expectedPrefix;",
+    );
+    assert.include(source, "let composerInputDiagnostics = null;");
+    assert.include(source, "composerInputDiagnostics.webPointerPoint");
+    assert.include(source, "composerInputDiagnostics.webFailedPrefix");
+    assert.include(source, "composerMetrics?.editor?.disabled !== true");
+  });
+
   it("cold-starts both renderers at the requested Sidebar width and gates control geometry", () => {
     assert.include(source, '"sidebar-resize",');
     assert.include(source, '"sidebar-resize": "existing-thread"');
@@ -928,6 +952,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'client: "lynx",');
     assert.include(source, 'step: "scroll",');
     assert.include(source, "state?.web?.literalRoute !== webRoute");
+    assert.include(
+      source,
+      '!(semanticRoute === "new-thread" && state?.web?.literalRoute?.startsWith("/draft/"))',
+    );
     assert.notInclude(source, "webRouteInputSent = true");
     assert.include(source, 'webRoute === "/settings/general"');
     assert.include(source, 'state?.web?.literalRoute?.startsWith("/draft/")');

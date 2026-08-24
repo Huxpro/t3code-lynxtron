@@ -5180,6 +5180,7 @@ async function captureCell({
   let fileEditorReadyPolls = isFileEditorState ? 0 : 3;
   let composerInputSent = composerInput.length === 0;
   let composerInputChannel = composerInput.length === 0 ? "not-required" : "pending";
+  let composerInputDiagnostics = null;
   let webReviewPanelInputSent =
     !isReviewState ||
     reviewExpectation === "checkpoint" ||
@@ -5795,6 +5796,7 @@ async function captureCell({
     if (
       webRoute !== "/settings/general" &&
       state?.web?.connected === true &&
+      !(semanticRoute === "new-thread" && state?.web?.literalRoute?.startsWith("/draft/")) &&
       state?.web?.literalRoute !== webRoute
     ) {
       await evaluate(
@@ -7016,10 +7018,17 @@ async function captureCell({
       !composerInputSent &&
       state?.web?.composerMetrics?.state === "idle" &&
       state?.lynx?.composerMetrics?.state === "idle" &&
-      state?.web?.composerMetrics?.editor?.disabled === false &&
-      state?.lynx?.composerMetrics?.editor?.disabled === false
+      state?.web?.composerMetrics?.editor?.disabled !== true &&
+      state?.lynx?.composerMetrics?.editor?.disabled !== true
     ) {
-      const webComposerEditorFocused = await focusRemoteElement(
+      composerInputDiagnostics = {
+        branchEntered: true,
+        webEditorDisabled: state?.web?.composerMetrics?.editor?.disabled ?? null,
+        lynxEditorDisabled: state?.lynx?.composerMetrics?.editor?.disabled ?? null,
+        webValue: state?.web?.composerMetrics?.editor?.value ?? null,
+        lynxValue: state?.lynx?.composerMetrics?.editor?.value ?? null,
+      };
+      let webComposerEditorFocused = await focusRemoteElement(
         cdp,
         sessionId,
         `(() => {
@@ -7027,17 +7036,62 @@ async function captureCell({
           return frame?.contentWindow?.document?.querySelector('[data-composer-editor="true"]') ?? null;
         })()`,
       );
+      composerInputDiagnostics.webDomFocus = webComposerEditorFocused;
+      await cdp.send("Page.bringToFront", {}, sessionId);
+      await cdp.send("Emulation.setFocusEmulationEnabled", { enabled: true }, sessionId);
+      let webComposerInputChannel = "web-cdp-focus-emulation+pointer-raw-key";
+      let webComposerFocusEmulationEnabled = true;
+      {
+        const webComposerEditorPoint = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const frame = document.getElementById('web-pane');
+            const editor = frame?.contentWindow?.document?.querySelector('[data-composer-editor="true"]');
+            if (!frame || !editor) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = editor.getBoundingClientRect();
+            return {
+              x: frameRect.x + rect.x + Math.min(12, Math.max(1, rect.width / 2)),
+              y: frameRect.y + rect.y + Math.min(12, Math.max(1, rect.height / 2)),
+            };
+          })()`,
+        ).catch(() => null);
+        composerInputDiagnostics.webPointerPoint = webComposerEditorPoint;
+        if (webComposerEditorPoint) {
+          await dispatchPointerClickWithMove(cdp, sessionId, webComposerEditorPoint);
+          webComposerEditorFocused = true;
+        }
+      }
       let lynxComposerEditorFocused = true;
       if (webComposerEditorFocused) {
         for (let index = 0; index < composerInput.length; index += 1) {
           const character = composerInput[index];
-          await cdp.send(
-            "Input.dispatchKeyEvent",
-            { type: "char", text: character, unmodifiedText: character },
-            sessionId,
-          );
+          const expectedPrefix = composerInput.slice(0, index + 1);
+          const sequence = cdpKeySequenceForCharacter(character);
+          await cdp.send("Input.dispatchKeyEvent", sequence.keyDown, sessionId);
+          await cdp.send("Input.dispatchKeyEvent", sequence.keyUp, sessionId);
+          const prefixDeadline = Date.now() + 1_000;
+          let prefixApplied = false;
+          while (Date.now() < prefixDeadline) {
+            const currentValue = await evaluate(
+              cdp,
+              sessionId,
+              `(() => window.__T3_WORKBENCH__?.read()?.web?.composerMetrics?.editor?.value ?? "")()`,
+            ).catch(() => "");
+            if (currentValue === expectedPrefix) {
+              prefixApplied = true;
+              break;
+            }
+            await delay(20);
+          }
+          if (!prefixApplied) {
+            composerInputDiagnostics.webFailedPrefix = expectedPrefix;
+            webComposerEditorFocused = false;
+            break;
+          }
         }
-        for (let index = 0; index < composerInput.length; index += 1) {
+        for (let index = 0; webComposerEditorFocused && index < composerInput.length; index += 1) {
           const character = composerInput[index];
           const expectedPrefix = composerInput.slice(0, index + 1);
           const focused = await focusRemoteElement(
@@ -7076,7 +7130,18 @@ async function captureCell({
           }
         }
         composerInputSent = true;
-        composerInputChannel = `web-dom-focus+key-char:${webComposerEditorFocused}|lynx-dom-focus+key-char:${lynxComposerEditorFocused}`;
+        composerInputChannel = `${webComposerInputChannel}:${webComposerEditorFocused}|lynx-dom-focus+key-char:${lynxComposerEditorFocused}`;
+        await cdp
+          .send("Emulation.setFocusEmulationEnabled", { enabled: false }, sessionId)
+          .catch(() => undefined);
+        webComposerFocusEmulationEnabled = false;
+      }
+      composerInputDiagnostics.webInputAccepted = webComposerEditorFocused;
+      composerInputDiagnostics.lynxInputAccepted = lynxComposerEditorFocused;
+      if (webComposerFocusEmulationEnabled) {
+        await cdp
+          .send("Emulation.setFocusEmulationEnabled", { enabled: false }, sessionId)
+          .catch(() => undefined);
       }
     }
     const overlayReady =
@@ -9645,6 +9710,7 @@ async function captureCell({
       providerPostconditionTimeline,
       providerPointerTimeline,
       composerInputChannel,
+      composerInputDiagnostics,
       reviewInteractionTimeline,
     },
     images: {
