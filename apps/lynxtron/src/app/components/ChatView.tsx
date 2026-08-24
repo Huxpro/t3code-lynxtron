@@ -566,37 +566,6 @@ export function ChatView({ threadId }: ChatViewProps) {
             description={sessionError ?? modelSelectionError}
             icon={<Icon name="circle-alert" size={16} color="#ef4444" />}
           />
-        ) : visibleProviderStatusNotice ? (
-          <ThreadErrorBannerSurface
-            description={`${visibleProviderStatusNotice.title}. ${visibleProviderStatusNotice.message}`}
-            icon={
-              <Icon
-                name="circle-alert"
-                size={16}
-                color={visibleProviderStatusNotice.tone === "warning" ? "#f59e0b" : "#ef4444"}
-              />
-            }
-            action={
-              <view className="provider-status-banner__actions">
-                <SmallButton
-                  label={providersRefreshPending ? "Refreshing…" : "Refresh"}
-                  onTap={
-                    providersRefreshPending
-                      ? undefined
-                      : () => {
-                          void t3ClientActions
-                            .refreshProviders(activeProviderStatus?.instanceId)
-                            .catch(() => undefined);
-                        }
-                  }
-                />
-                <SmallButton
-                  label="Dismiss"
-                  onTap={() => setDismissedProviderStatusNoticeKey(visibleProviderStatusNotice.key)}
-                />
-              </view>
-            }
-          />
         ) : shouldRenderConnectionLifecycleBanner({ hero }) ? (
           <ConnectionLifecycleBannerSurface
             presentation={connectionLifecycle}
@@ -608,11 +577,51 @@ export function ChatView({ threadId }: ChatViewProps) {
         ) : null
       }
       bodyOverlay={
-        showEmptyTranscript ? (
-          <TranscriptEmptySurface
-            className="timeline-empty-overlay"
-            title={EMPTY_TRANSCRIPT_PLACEHOLDER}
-          />
+        showEmptyTranscript || visibleProviderStatusNotice ? (
+          <>
+            {showEmptyTranscript ? (
+              <TranscriptEmptySurface
+                className="timeline-empty-overlay"
+                title={EMPTY_TRANSCRIPT_PLACEHOLDER}
+              />
+            ) : null}
+            {visibleProviderStatusNotice ? (
+              <view className="provider-status-banner-overlay">
+                <ThreadErrorBannerSurface
+                  description={`${visibleProviderStatusNotice.title}. ${visibleProviderStatusNotice.message}`}
+                  icon={
+                    <Icon
+                      name="circle-alert"
+                      size={16}
+                      color={visibleProviderStatusNotice.tone === "warning" ? "#f59e0b" : "#ef4444"}
+                    />
+                  }
+                  action={
+                    <view className="provider-status-banner__actions">
+                      <SmallButton
+                        label={providersRefreshPending ? "Refreshing…" : "Refresh"}
+                        onTap={
+                          providersRefreshPending
+                            ? undefined
+                            : () => {
+                                void t3ClientActions
+                                  .refreshProviders(activeProviderStatus?.instanceId)
+                                  .catch(() => undefined);
+                              }
+                        }
+                      />
+                      <SmallButton
+                        label="Dismiss"
+                        onTap={() =>
+                          setDismissedProviderStatusNoticeKey(visibleProviderStatusNotice.key)
+                        }
+                      />
+                    </view>
+                  }
+                />
+              </view>
+            ) : null}
+          </>
         ) : undefined
       }
       chatColumnHidden={rightPanel.isOpen && rightPanelMaximized}
@@ -631,7 +640,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           messages={messages}
           activities={activities}
           sessionStatus={sessionStatus}
-          hasTopBanner={Boolean(sessionError || modelSelectionError || visibleProviderStatusNotice)}
+          hasTopBanner={Boolean(sessionError || modelSelectionError)}
           cwd={cwd}
           latestTurn={latestTurn}
           proposedPlans={proposedPlans}

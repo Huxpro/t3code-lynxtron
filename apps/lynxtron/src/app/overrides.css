@@ -3458,6 +3458,17 @@
   left: 0;
   pointer-events: none;
 }
+.chat-body-reference > .provider-status-banner-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+.provider-status-banner-overlay .thread-error-banner {
+  pointer-events: auto;
+}
 /* ======= Transcript native list (surface: chat transcript; Lynx host leaf
    for the shared transcript projection; remove-when: transcript row chrome is
    compiled from the shared Web composition via the Tailwind v3 pipeline) ==== */
