@@ -16736,6 +16736,28 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-current-harness-repair",
+      "observedAt": "2026-08-24T16:38:17-07:00",
+      "commit": "5409c112a",
+      "codeCommit": "5409c112a",
+      "codeState": "commit",
+      "label": "Settings Keybindings current harness proof",
+      "narrative": "A current 1280x820 dark Browser pair uses one immutable read-only snapshot and the production Web plus Lynx-for-Web bundles. It confirms all 45 canonical keybinding records, 18 visible conflict indicators, matched header/row geometry, and zero renderer errors. The prior geometry gate falsely required a measurable Status cell even where both renderers deliberately render no status content for a non-conflicting row; it now accepts only that mutually empty structural leaf while retaining strict measured geometry for visible conflict indicators. A separate exact Native dark run confirms the Keybindings route, 45 rows, 18 conflict indicators, canonical first/last records, all eight Settings routes, two Back cycles, main transport progress, zero renderer errors, and isolated cleanup. This closes a harness classification error, not a new product residual: Browser material and physical scroll/keyboard debt remain unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The change narrows a false geometry failure to the mutually empty status leaf. It preserves every product observation, fixed state denominator, weights, filters, thresholds, material residual, and physical-input debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/settings-keybindings-current-harness-repair.json",
+          "classification": "tracked-current",
+          "sha256": "a3e033f479f8d2c1becbb625f660d47c572d0ea7b28ddd075aeb2371eb629465"
+        }
+      ],
+      "updates": []
     }
   ]
 }

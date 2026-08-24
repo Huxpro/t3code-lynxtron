@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T16:38:17-07:00",
+  "stateId": "settings-keybindings",
+  "scope": {
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "semanticRoute": "settings-keybindings"
+  },
+  "commit": "5409c112a",
+  "classification": {
+    "harnessLossClosed": [
+      "The Browser geometry gate treated empty Status cells as a missing measurement even though both renderers intentionally omit visible content for non-conflicting rows.",
+      "The gate now accepts only a mutually empty Status leaf; visible conflict rows still require measured Status icon geometry."
+    ],
+    "productStatus": [
+      "The same isolated Browser fixture now passes content and geometry gates with 45 canonical rows and matching visible table geometry.",
+      "Exact Native verification confirms the Keybindings route, 45 rows, 18 conflict indicators, canonical first/last records, all Settings routes, two Back cycles, advancing main transport, and zero renderer errors."
+    ],
+    "remainingDebt": [
+      "Physical Native scrolling and keyboard focus remain pending an authorized user/computer session.",
+      "The existing Browser material residual is retained because Web's provider-update overlay and Lynx's keyboard-capability notice are intentionally different surfaces in this capture."
+    ],
+    "policy": "No product visual residual, state weight, denominator entry, filter, threshold, or physical-input claim changed."
+  },
+  "browser": {
+    "status": "pass",
+    "workbenchReportSha256": "0b9722aa3051607d7e52fb20d87b710a0638778369d748180753d5af68c24762",
+    "sideBySideSha256": "38c0d2214a34e893af44360465d7cc5198173a11c682d13d7452e3d84971255e",
+    "seedSnapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "bundles": {
+      "web": "f2c39f8c8bad",
+      "lynx": "d0e3e150df31"
+    },
+    "content": {
+      "rows": 45,
+      "canonicalRecordsMatch": true,
+      "visibleConflictIndicators": 18
+    },
+    "geometry": {
+      "webHeader": { "x": 294, "y": 176.5, "width": 948, "height": 33.5 },
+      "lynxHeader": { "x": 294, "y": 175, "width": 948, "height": 34 },
+      "firstRow": { "webY": 210, "lynxY": 209, "width": 948, "height": 41 },
+      "lastRow": { "webY": 2014, "lynxY": 2013, "width": 948, "height": 40 },
+      "emptyStatusRows": "unmeasured structural leaves on both renderers"
+    },
+    "rendererErrors": 0
+  },
+  "native": {
+    "status": "pass",
+    "readinessReportSha256": "b9a35e88854f669097e4ff9523ef97c3d10b6b2d091ec4db7d3b7aafd1eabb4f",
+    "bundleSha256": "58c6b48c35d647bdf3750e2cd7ac6a514edf4eb06c82411849355f941b5ebe0a",
+    "fixtureSnapshotId": "593b05b88c58ded7c0dc122f267cac75175b8eb2a009d3463608895c139ef829",
+    "keybindings": {
+      "header": { "x": 294, "y": 175, "width": 948, "height": 34 },
+      "rows": 45,
+      "conflictIndicators": 18,
+      "first": "chat.new / ⌘N / !terminalFocus",
+      "last": "thread.previous / ⇧⌘[ / Always",
+      "scrollInteraction": "pending-user-session"
+    },
+    "settingsNavigation": {
+      "routes": 8,
+      "repeatedBackCycles": 2,
+      "finalRoute": "/"
+    },
+    "transport": { "beforeSequence": 3, "afterSequence": 4 },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "validation": {
+    "workbenchContract": "pass: Keybindings gate",
+    "browserPair": "pass",
+    "nativeSettingsNavigation": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
