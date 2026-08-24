@@ -15954,6 +15954,65 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-completed-provider-lock-current",
+      "observedAt": "2026-08-23T23:27:21-07:00",
+      "commit": "c22b919685435fe9f4d8eab60e1432801bac0531",
+      "codeCommit": "0b78aceebb087ad3f2aaa5508df60df8708a99c6",
+      "codeState": "commit",
+      "label": "Completed thread canonical provider lock",
+      "narrative": "A rich completed-thread fixture exposed a real Web state mismatch hidden by the earlier visual gate: the persisted session stored the display label Codex while its canonical provider instance was codex. Web treated the display label as an open driver slug, filtered out the live codex provider entry, and rendered a disabled no-provider Composer while Lynx correctly rendered GPT-5.6-Sol. Web now resolves the persisted instance through the live provider snapshot and prefers that canonical driver over legacy providerName. Committed-head dark and light Browser captures require equal non-empty model labels, Composer state, placeholder, and control ids; fresh exact-bundle Native runs preserve the same completed thread and canonical provider while opening its real checkpoint diff. Existing rich transcript geometry and material residuals remain unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The checkpoint directly closes a same-snapshot Web/Lynx content and runtime mismatch, covers custom instance-to-driver resolution, and preserves all existing geometry, material, interaction, weights, thresholds, filters, and denominator entries."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-23/fidelity/existing-thread-completed-provider-lock-current-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "c1d15828cf7a53f54e80704ecefa299db0d526c239c2a1672182a5fba1ebbfe5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-completed-provider-state",
+              "source": "Dark and light same-snapshot captures render GPT-5.6-Sol, idle Composer, the canonical placeholder, and model, model-option, runtime, and interaction controls in both Web and Lynx"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "completed-canonical-provider-readiness",
+              "source": "Both Browser themes pass the committed provider-state gate with matching thread and session projection, zero renderer errors, and zero agent-browser leaks"
+            }
+          }
+        },
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-completed-provider-content",
+              "source": "Fresh exact-bundle dark and light runs select fidelity-review-thread with canonical codex and GPT-5.6-Sol, render an idle Composer, and retain the completed checkpoint content"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-completed-provider-runtime",
+              "source": "Both Native runs use main transport, advance sequence 3 to 4, open the real checkpoint diff, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
     }
   ]
 }
