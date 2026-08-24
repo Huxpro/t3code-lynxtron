@@ -92,6 +92,10 @@ export function ModelPicker({
     readonly title: string;
     readonly message: string;
   } | null>(null);
+  // The picker mounts from the model trigger's tap. Keep the fullscreen
+  // outside-dismiss target inert for the rest of that gesture so its mouse-up
+  // cannot immediately close the picker on Lynxtron Desktop.
+  const [dismissArmed, setDismissArmed] = useState(false);
   const [showTopFade, setShowTopFade] = useState(false);
   const [showBottomFade, setShowBottomFade] = useState(false);
   const selectProvider = useCallback(
@@ -122,8 +126,9 @@ export function ModelPicker({
     setNotice(null);
   }, []);
 
-  const handlePanelTap = useCallback((e: any) => {
-    e?.stopPropagation?.();
+  useEffect(() => {
+    const timer = setTimeout(() => setDismissArmed(true), 250);
+    return () => clearTimeout(timer);
   }, []);
 
   const context = useMemo(
@@ -274,6 +279,13 @@ export function ModelPicker({
   return (
     <>
       <view
+        className="model-picker-dismiss-layer"
+        aria-label="Dismiss model picker"
+        data-model-picker-dismiss-armed={dismissArmed ? "true" : "false"}
+        user-interaction-enabled={dismissArmed}
+        bindtap={dismissArmed ? onClose : undefined}
+      />
+      <view
         className="model-picker-panel"
         data-floating-popup="composer-model-picker"
         {...(viewport.testResize
@@ -284,7 +296,6 @@ export function ModelPicker({
             }
           : {})}
         style={{ width: "360px", height: "346px", bottom: "32px" }}
-        catchtap={handlePanelTap}
       >
         <ModelPickerBodySurface>
           {!search.trim() ? (
@@ -481,11 +492,6 @@ export function ModelPicker({
           </ModelPickerContentSurface>
         </ModelPickerBodySurface>
       </view>
-      <view
-        className="model-picker-dismiss-layer"
-        aria-label="Dismiss model picker"
-        event-through
-      />
     </>
   );
 }

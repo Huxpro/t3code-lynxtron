@@ -543,7 +543,6 @@ export function ChatView({ threadId }: ChatViewProps) {
     <ChatRouteSurface
       activeThreadKind={activeDraftThread ? "draft" : activeThread ? "server" : "none"}
       activeThreadId={activeThreadId}
-      onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}
       layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}
       header={
         <ChatHeader
