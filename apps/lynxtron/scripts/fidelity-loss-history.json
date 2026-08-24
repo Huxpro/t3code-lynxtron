@@ -16436,6 +16436,79 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-docked-current-dual-theme-refresh",
+      "observedAt": "2026-08-24T10:21:40-07:00",
+      "commit": "d690a8154b47f8f70e60f10cf29ae361132eaa09",
+      "codeCommit": "d690a8154b47f8f70e60f10cf29ae361132eaa09",
+      "codeState": "commit",
+      "label": "Composer Docked current dual-theme refresh",
+      "narrative": "A current real connector-created persisted Codex idle fixture revalidates Composer Docked after the capture router began routing the Web pane to the expected thread. Browser dark/light now select the same persisted thread/model in Web and Lynx-for-Web instead of comparing a Web local draft Hero to a Lynx existing thread. Exact-bundle Native dark/light confirm the same Codex selection, idle/null-turn state, zero timeline rows, disabled send, 768x140 Composer, main transport, zero renderer errors, and isolated cleanup. The light Native material check records the cold-white surface, neutral frame, shadow, and Context seam without claiming a new pixel residual.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The original failure compared different product states because composer-docked was omitted from the canonical Web route predicate. This commit changes only capture routing and its contract; it preserves the state denominator, weights, thresholds, filters, and existing material, typography, and physical-input residuals."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/composer-docked-current-refresh-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "1a438c20e3b6dbbd2247b4525483fcaa834cc1b7f491af2ce4a2c0e3985101c6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-docked"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-docked-content",
+              "source": "Both Browser themes select the same persisted Codex thread and render GPT-5.6-Sol, idle/disabled Composer, follow-up placeholder, Low, Full access, Build, Current checkout, and zero timeline rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "dual-theme-current-docked-composer-geometry",
+              "source": "Both Browser themes align the 768x140 Composer and 734x70 editor after canonical persisted-thread routing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-docked-readiness",
+              "source": "Both Browser pairs complete canonical identity and semantic gates with zero Lynx renderer errors and no agent-browser processes"
+            }
+          }
+        },
+        {
+          "states": ["composer-docked"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-current-docked-content",
+              "source": "Both exact-bundle themes select Composer docked Codex projection with codex/gpt-5.6-sol, idle/null-turn state, disabled send, zero timeline rows, and rendered GPT-5.6-Sol"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "native-dual-theme-current-docked-composer-geometry",
+              "source": "Both Native themes measure the 768x140 Composer, 766x138 surface, 734x70 editor, 766x44 footer, and 724x48 Context strip"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-dual-theme-current-docked-main-transport",
+              "source": "Both exact-bundle runs use main transport sequence 3 to 4, report zero renderer errors, dispose isolated state, and leave no agent-browser process"
+            }
+          }
+        }
+      ]
     }
   ]
 }
