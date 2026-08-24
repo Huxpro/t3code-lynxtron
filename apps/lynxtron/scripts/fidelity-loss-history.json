@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-24T09:13:00-07:00",
+  "updatedAt": "2026-08-24T15:35:27-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16631,6 +16631,72 @@
               "confidence": 0.99,
               "method": "dual-theme-current-sendable-readiness",
               "source": "Both current Browser pairs pass semantic identity and zero-error gates with no agent-browser processes"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "new-thread-hero-light-current-browser-native-refresh",
+      "observedAt": "2026-08-24T15:07:51-07:00",
+      "commit": "71574d228",
+      "codeCommit": "71574d228",
+      "codeState": "commit",
+      "label": "New Thread Hero Light current Browser and Native refresh",
+      "narrative": "Current isolated evidence closes the missing Native light-Hero coverage without changing the fixed denominator or visual-residual policy. A same-server Browser Web/Lynx-for-Web pair renders the light zero-thread Hero with the same selected project, GPT-5.6-Sol, idle Composer, controls, context, exact Composer/editor geometry, semantic identity, and zero renderer errors. A fresh PID-owned Native production bundle independently proves light theme, new-thread Hero, the same model/controls/context, 768x140 Composer anatomy, advancing main transport, zero renderer errors, and isolated-state disposal. The Browser authority h1 content box remains 984px wide while the Lynx hero text box is 768px; both retain the same centered 30px/36px/-0.75px text metrics and Composer center column. Material, typography, and physical interaction debt therefore remain explicit rather than being overwritten by this coverage refresh.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point adds only current comparable Browser and exact Native Hero evidence. It does not alter weights, denominator entries, filters, thresholds, material residuals, typography residuals, or physical-interaction debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/new-thread-hero-light-current-refresh-metrics.json",
+          "classification": "tracked-current",
+          "sha256": "a7a9ece592b60070313373ae17ff22077f5702990584cadf4728b01e7845e910"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-hero-browser-content",
+              "source": "Same SB3 snapshot, project, route, light theme, GPT-5.6-Sol, idle Composer, disabled primary action, controls, context, and zero renderer errors in Web authority and Lynx-for-Web"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-hero-browser-readiness",
+              "source": "Same-server Browser pair passes capture identity and semantic readiness with no renderer errors or agent-browser process"
+            }
+          }
+        },
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-hero-native-content",
+              "source": "Exact light Native Hero renders GPT-5.6-Sol, idle Composer, Low, Full access, Build, and Current checkout/branch context"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "current-light-hero-native-composer-geometry",
+              "source": "Exact Native Hero, headline, 768x140 Composer, 766x138 surface, 734x70 editor, and 766x44 footer measured at 1280x820"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-hero-native-main-transport",
+              "source": "PID-owned production bundle confirms light theme, main transport 3 to 4, zero renderer errors, and disposed isolated state"
             }
           }
         }
