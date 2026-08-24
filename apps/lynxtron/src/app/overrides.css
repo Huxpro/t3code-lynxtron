@@ -28,6 +28,8 @@
 .theme-light .composer-context-authority-surface,
 .theme-light .ui-button__authority-label {
   display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 .theme-light .lynx-sidebar-chrome-header--authority .sidebar-brand,
 .theme-light .sidebar-footer--authority .sidebar-settings-row > image,
@@ -2874,7 +2876,7 @@
   box-sizing: border-box;
 }
 
-.composer-surface > .composer-pending-approval {
+.composer-surface .composer-pending-approval {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -2894,7 +2896,6 @@
   position: relative;
   width: 726px;
   height: 20px;
-  margin-top: 16px;
   gap: 13px;
 }
 .composer-pending-approval__eyebrow {
@@ -5678,6 +5679,11 @@
   border-top-color: #383838;
   background-color: #191919;
 }
+.theme-light .ui-button--outline,
+.theme-light .ui-button--destructive-outline {
+  border-color: var(--input);
+  background-color: var(--popover);
+}
 .ui-button--destructive-outline .ui-button__label {
   color: var(--destructive-foreground);
 }
@@ -5720,6 +5726,8 @@
 .viewport-responsive .composer-context-authority-surface,
 .viewport-responsive .ui-button__authority-label {
   display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 .viewport-responsive .lynx-sidebar-chrome-header--authority .sidebar-brand,
 .viewport-responsive .sidebar-footer--authority .sidebar-settings-row > image,
@@ -5760,6 +5768,8 @@
 .sidebar-width-responsive .composer-context-authority-surface,
 .sidebar-width-responsive .ui-button__authority-label {
   display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 .sidebar-width-responsive .lynx-sidebar-chrome-header--authority .sidebar-brand,
 .sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > image,
@@ -5832,6 +5842,14 @@
   text-stroke-width: 0.15px;
   transform: translateX(-8.5px) scaleX(1.106);
   transform-origin: left center;
+}
+.theme-light .composer-approval-action--cancel .ui-button__label,
+.theme-light .composer-approval-action--session .ui-button__label {
+  color: var(--foreground);
+  text-stroke-color: var(--foreground);
+}
+.theme-light .composer-approval-action--decline .ui-button__label {
+  color: var(--destructive-foreground);
 }
 .composer-approval-action--accept {
   width: 112px;
