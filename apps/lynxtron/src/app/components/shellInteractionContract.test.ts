@@ -170,10 +170,14 @@ describe("desktop shell interaction contract", () => {
     const chatView = componentSource("ChatView.tsx");
 
     expect(chatView).toContain("projectProviderStatusNotice(activeProviderStatus)");
-    expect(chatView).toContain(": visibleProviderStatusNotice ? (");
+    expect(chatView).toContain("showEmptyTranscript || visibleProviderStatusNotice ? (");
+    expect(chatView).toContain('className="provider-status-banner-overlay"');
+    expect(chatView).not.toContain(") : visibleProviderStatusNotice ? (");
     expect(chatView).not.toContain("visibleProviderStatusNotice && !hero");
+    expect(chatView).toContain("hasTopBanner={Boolean(sessionError || modelSelectionError)}");
     expect(chatView).toContain(".refreshProviders(activeProviderStatus?.instanceId)");
     expect(chatView).toContain('label={providersRefreshPending ? "Refreshing…" : "Refresh"}');
+    expect(overrides).toContain(".chat-body-reference > .provider-status-banner-overlay {");
     expect(chatView).toContain("resolveThreadLockedConnectionValue({");
     expect(chatView).toContain("hasActiveThread: activeThread !== undefined");
   });

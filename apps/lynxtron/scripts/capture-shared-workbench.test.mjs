@@ -1043,7 +1043,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "multiStepQuestionTimeline");
     assert.include(source, 'channel: fallback ? "dom-click-fallback" : "cdp-pointer"');
     assert.include(source, 'waitForPair("restored first answer", restoredFirstAnswer, 1_500)');
-    assert.include(source, "isComposerPlanModeState || isMultiStepQuestionState");
+    assert.include(source, "isEmptyTranscriptState ||");
+    assert.include(source, "isComposerPlanModeState ||");
+    assert.include(source, "isMultiStepQuestionState) &&");
     assert.include(source, "pendingRequestSemantics");
     assert.include(workbench, 'data-pending-question-action="next"');
     assert.include(workbench, 'data-pending-question-action="previous"');
