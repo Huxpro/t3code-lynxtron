@@ -163,6 +163,16 @@ function readElementBox(element) {
   };
 }
 
+function readHeroMetrics(root) {
+  return {
+    root: readElementBox(root?.querySelector(".hero")),
+    inner: readElementBox(root?.querySelector(".hero__inner")),
+    headlineSlot: readElementBox(root?.querySelector(".hero__headline-slot")),
+    headline: readElementBox(root?.querySelector(".hero__headline")),
+    projectName: readElementBox(root?.querySelector(".hero__project-name")),
+  };
+}
+
 function readSidebarThreadMetrics(item) {
   const rect = item.getBoundingClientRect();
   const child = item.querySelector('[role="button"]');
@@ -1563,6 +1573,7 @@ function readLynxPane() {
       rendered: d.rendered === true,
       stageBackdropPresent: d.stageBackdropPresent === true,
       heroPresent,
+      heroMetrics: readHeroMetrics(root),
       activeThreadTitle: d.activeThreadTitle ?? null,
       productState: {
         route: settingsRoute ? (d.connector?.route ?? "/settings/general") : "/",
@@ -2561,6 +2572,7 @@ function readWebPane() {
       connected,
       semanticReady: connected && !connecting,
       heroPresent,
+      heroMetrics: readHeroMetrics(doc),
       literalRoute,
       productState: {
         route: settingsRoute ? literalRoute : "/",

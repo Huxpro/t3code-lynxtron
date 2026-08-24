@@ -1938,8 +1938,11 @@ async function verifyComposerSendMaterial({
 async function verifyHeroComposerState({
   child,
   client,
+  devToolCli,
   expectNoComposerContext,
   expectedModelLabel,
+  expectedTheme,
+  outputDirectory,
   timeoutMs,
 }) {
   const hero = await readOptionalMeasurement(client, ".hero");
@@ -1958,6 +1961,37 @@ async function verifyHeroComposerState({
   assertComposerGeometry(composer, {
     allowMissingContext: expectNoComposerContext,
   });
+  const headline = await waitForStableMeasurement({
+    child,
+    client,
+    selector: ".hero__headline",
+    timeoutMs,
+    predicate: (measurement) =>
+      Math.abs((measurement?.rect.width ?? 0) - 768) <= 1 &&
+      Math.abs((measurement?.rect.height ?? 0) - 36) <= 1,
+  });
+  const [headlineFontSize, headlineLineHeight, headlineLetterSpacing] = await Promise.all([
+    readFirstSelectorStyleValue(client, ".hero__headline", "font-size"),
+    readFirstSelectorStyleValue(client, ".hero__headline", "line-height"),
+    readFirstSelectorStyleValue(client, ".hero__headline", "letter-spacing"),
+  ]);
+  if (
+    headlineFontSize !== "30px" ||
+    headlineLineHeight !== "36px" ||
+    headlineLetterSpacing !== "-0.75px" ||
+    Math.abs(headline.rect.x + headline.rect.width / 2 - (composer.anchors.shell.rect.x + 384)) >
+      1 ||
+    Math.abs(headline.rect.y + headline.rect.height + 32 - composer.anchors.shell.rect.y) > 1
+  ) {
+    throw new Error(
+      `Hero headline geometry drifted: ${JSON.stringify({
+        headline,
+        headlineFontSize,
+        headlineLetterSpacing,
+        headlineLineHeight,
+      })}`,
+    );
+  }
   const context = expectNoComposerContext
     ? await Promise.all([
         readOptionalMeasurement(client, ".composer-context-strip"),
@@ -1969,21 +2003,48 @@ async function verifyHeroComposerState({
         }
         return [];
       })
-    : [
-        composer.typography.contextCheckout.text.trim(),
-        composer.typography.contextBranch.text.trim(),
-      ];
+    : await waitForSelectorCount({
+        child,
+        client,
+        count: 2,
+        selector: ".composer-context-control",
+        timeoutMs,
+      }).then((controls) => {
+        if (
+          controls.some(
+            (control) =>
+              Math.abs((control.rect?.width ?? 0) - 354) > 1 ||
+              Math.abs((control.rect?.height ?? 0) - 24) > 1,
+          )
+        ) {
+          throw new Error(`Hero context allocation drifted: ${JSON.stringify(controls)}`);
+        }
+        return controls.map((control) => control.text.trim());
+      });
   const model = composer.anchors.model.text.trim();
   if (model !== expectedModelLabel) {
     throw new Error(
       `Hero Composer model drifted: ${JSON.stringify({ expectedModelLabel, model })}`,
     );
   }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: `native-hero-${expectedTheme ?? "system"}.png`,
+  });
   return {
     status: "pass",
     route: "new-thread",
     hero: hero.rect,
+    headline: {
+      rect: headline.rect,
+      fontSize: headlineFontSize,
+      lineHeight: headlineLineHeight,
+      letterSpacing: headlineLetterSpacing,
+    },
     model,
+    screenshot,
     composer: {
       frame: composer.anchors.shell.rect,
       surface: composer.anchors.surface.rect,
@@ -11778,8 +11839,11 @@ async function runOnce({
       ? await verifyHeroComposerState({
           child,
           client,
+          devToolCli,
           expectNoComposerContext,
           expectedModelLabel,
+          expectedTheme,
+          outputDirectory,
           timeoutMs,
         })
       : undefined;

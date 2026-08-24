@@ -339,6 +339,44 @@ function composerToolbarAllocationMatches(webMetrics, lynxMetrics) {
   );
 }
 
+function unpersistedHeroStateReady(state) {
+  const web = state?.web;
+  const lynx = state?.lynx;
+  const isUnpersistedKind = (kind) => kind === "draft" || kind === "none";
+  return (
+    semanticRoute === "new-thread" &&
+    web?.semanticReady === true &&
+    lynx?.semanticReady === true &&
+    web.heroPresent === true &&
+    lynx.heroPresent === true &&
+    web.productState?.selectedThread === null &&
+    lynx.productState?.selectedThread === null &&
+    isUnpersistedKind(web.productState?.activeThreadKind) &&
+    isUnpersistedKind(lynx.productState?.activeThreadKind)
+  );
+}
+
+function heroGeometryMatches(state) {
+  if (semanticRoute !== "new-thread") return true;
+  const webHeadline = state?.web?.heroMetrics?.headline;
+  const lynxHeadline = state?.lynx?.heroMetrics?.headline;
+  const webCheckout = state?.web?.composerMetrics?.anatomy?.contextControls?.[0]?.box;
+  const lynxCheckout = state?.lynx?.composerMetrics?.anatomy?.contextControls?.[0]?.box;
+  if (!webHeadline?.rect || !lynxHeadline?.rect || !webCheckout?.rect || !lynxCheckout?.rect) {
+    return false;
+  }
+  const centerX = (box) => box.rect.x + box.rect.width / 2;
+  return (
+    Math.abs(centerX(webHeadline) - centerX(lynxHeadline)) <= 1 &&
+    Math.abs(webHeadline.rect.y - lynxHeadline.rect.y) <= 2 &&
+    Math.abs(webHeadline.rect.height - lynxHeadline.rect.height) <= 2 &&
+    webHeadline.style.fontSize === lynxHeadline.style.fontSize &&
+    webHeadline.style.lineHeight === lynxHeadline.style.lineHeight &&
+    webHeadline.style.letterSpacing === lynxHeadline.style.letterSpacing &&
+    Math.abs(webCheckout.rect.width - lynxCheckout.rect.width) <= 2
+  );
+}
+
 function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
   if (!webMetrics?.anatomy || !lynxMetrics?.anatomy) return false;
   const webEmpty = webMetrics.emptyText !== null;
@@ -7171,6 +7209,7 @@ async function captureCell({
         normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
     const coreGeometryReady =
       isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
+    const heroGeometryReady = heroGeometryMatches(state);
     const reviewReady =
       reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
       sidebarDiffPairMatches(
@@ -7222,6 +7261,7 @@ async function captureCell({
       sidebarStateReady &&
       changedFilesStateReady &&
       coreGeometryReady &&
+      heroGeometryReady &&
       reviewReady &&
       lifecycleReady
     ) {
@@ -7912,6 +7952,7 @@ async function captureCell({
       normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
   let finalCoreGeometryReady =
     isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
+  const finalHeroGeometryReady = heroGeometryMatches(state);
   const finalComposerInputReady =
     !composerInput ||
     (state?.web?.composerMetrics?.editor?.value === composerInput &&
@@ -9012,6 +9053,7 @@ async function captureCell({
   );
   const confirmedTargetState =
     reachedTargetState ||
+    (unpersistedHeroStateReady(state) && finalCoreGeometryReady && finalComposerReady) ||
     (isFlatSidebarLayoutState && bothReady && finalFlatSidebarLayoutReady) ||
     (stateId === "sidebar-project-groups" && bothReady && finalSidebarProjectGroupsReady);
 
@@ -9025,6 +9067,7 @@ async function captureCell({
     finalSidebarStateReady &&
     finalChangedFilesStateReady &&
     finalCoreGeometryReady &&
+    finalHeroGeometryReady &&
     finalComposerReady &&
     finalPlanModeReady &&
     finalSessionProjectionReady &&
@@ -9083,6 +9126,7 @@ async function captureCell({
       finalSidebarStateReady,
       finalChangedFilesStateReady,
       finalCoreGeometryReady,
+      finalHeroGeometryReady,
       finalComposerReady,
       completedComposerProviderState: readCompletedComposerProviderState(state),
       finalPlanModeReady,
@@ -9267,6 +9311,11 @@ async function captureCell({
         match: finalSidebarProjectGroupsReady,
         web: state?.web?.sidebarProjectGroups ?? [],
         lynx: state?.lynx?.sidebarProjectGroups ?? [],
+      },
+      heroGeometry: {
+        match: finalHeroGeometryReady,
+        web: state?.web?.heroMetrics ?? null,
+        lynx: state?.lynx?.heroMetrics ?? null,
       },
       addProjectSources: {
         match:

@@ -1165,6 +1165,21 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain("setDraftStartFromOrigin(enabled)");
   });
 
+  it("keeps the Lynx Hero headline inline and the context controls evenly allocated", () => {
+    const composerSource = componentSource("Composer.tsx");
+
+    expect(hostElementsSource).toContain("<inline-text");
+    expect(composerSource).toContain('<HostInlineText className="hero__project-name">');
+    expect(overrides).toContain(".hero__headline {");
+    expect(overrides).toContain("font-size: 30px;");
+    expect(overrides).toContain("line-height: 36px;");
+    expect(overrides).toContain("text-align: center;");
+    expect(overrides).toMatch(
+      /\.composer-context-item--checkout,[\s\S]*?\.composer-context-item--branch \{[\s\S]*?flex-grow: 0;[\s\S]*?flex-shrink: 0;[\s\S]*?width: calc\(50% - 4px\);/,
+    );
+    expect(overrides).toMatch(/\.composer-context-control--branch \{[\s\S]*?width: 100%;/);
+  });
+
   it("uses shared pending-input progress for Native multi-question requests", () => {
     const chatViewSource = componentSource("ChatView.tsx");
     const composerSource = componentSource("Composer.tsx");

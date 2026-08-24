@@ -89,6 +89,25 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "process.env.T3_PLAN11C_SEED_SOURCE");
   });
 
+  it("gates the renderer-neutral unpersisted Hero state and its geometry", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, "function unpersistedHeroStateReady(state)");
+    assert.include(source, 'kind === "draft" || kind === "none"');
+    assert.include(source, "web.productState?.selectedThread === null");
+    assert.include(source, "lynx.productState?.selectedThread === null");
+    assert.include(source, "function heroGeometryMatches(state)");
+    assert.include(source, "finalHeroGeometryReady");
+    assert.include(source, "unpersistedHeroStateReady(state)");
+    assert.include(source, "heroGeometry:");
+    assert.include(workbench, "function readHeroMetrics(root)");
+    assert.include(workbench, "heroMetrics: readHeroMetrics(root)");
+    assert.include(workbench, "heroMetrics: readHeroMetrics(doc)");
+  });
+
   it("synchronizes the provider runtime for real working-state captures", () => {
     assert.include(
       source,

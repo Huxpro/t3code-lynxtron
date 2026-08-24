@@ -925,6 +925,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'assertComposerRouteState({ hero, overlay }, "new-thread")');
     assert.include(source, "allowMissingContext: expectNoComposerContext");
     assert.include(source, "Non-repository Hero Composer rendered repository context.");
+    assert.include(source, 'selector: ".hero__headline"');
+    assert.include(source, 'headlineFontSize !== "30px"');
+    assert.include(source, 'headlineLineHeight !== "36px"');
+    assert.include(source, 'headlineLetterSpacing !== "-0.75px"');
+    assert.include(source, 'selector: ".composer-context-control"');
+    assert.include(source, "Hero context allocation drifted");
+    assert.include(source, 'name: `native-hero-${expectedTheme ?? "system"}.png`');
     assert.include(source, "heroOnlyEmptyFixture");
   });
 
