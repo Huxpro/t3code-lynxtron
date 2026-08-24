@@ -2,6 +2,7 @@ import {
   EnvironmentId,
   MessageId,
   ProjectId,
+  ProviderDriverKind,
   ProviderInstanceId,
   ThreadId,
   TurnId,
@@ -17,12 +18,14 @@ import {
   buildLoadingThreadFromShell,
   buildThreadTurnInterruptInput,
   createLocalDispatchSnapshot,
+  deriveLockedProvider,
   dismissBranchMismatchForSession,
   getStartedThreadModelChangeBlockReason,
   hasServerAcknowledgedLocalDispatch,
   isBranchMismatchDismissedForSession,
   reconcileMountedTerminalThreadIds,
   reconcileRetainedMountedThreadIds,
+  resolveProviderDriverKindByInstanceId,
   resolveThreadMetadataUpdateForNextTurn,
   resolveSendEnvMode,
   startNewThreadForProject,
@@ -179,6 +182,67 @@ describe("buildThreadTurnInterruptInput", () => {
     expect(buildThreadTurnInterruptInput(makeThread({ session: readySession }))).toEqual({
       threadId,
     });
+  });
+});
+
+describe("deriveLockedProvider", () => {
+  it("prefers the canonical thread provider over a session display name", () => {
+    expect(
+      deriveLockedProvider({
+        thread: makeThread({
+          session: {
+            ...readySession,
+            providerName: "Codex",
+          },
+          latestTurn: completedTurn,
+        }),
+        selectedProvider: null,
+        threadProvider: "codex",
+      }),
+    ).toBe("codex");
+  });
+
+  it("falls back to the legacy session provider when no thread provider is available", () => {
+    expect(
+      deriveLockedProvider({
+        thread: makeThread({
+          session: readySession,
+          latestTurn: completedTurn,
+        }),
+        selectedProvider: null,
+        threadProvider: null,
+      }),
+    ).toBe("codex");
+  });
+});
+
+describe("resolveProviderDriverKindByInstanceId", () => {
+  it("resolves a custom instance to its canonical driver kind", () => {
+    expect(
+      resolveProviderDriverKindByInstanceId(
+        [
+          {
+            instanceId: ProviderInstanceId.make("codex_work"),
+            driver: ProviderDriverKind.make("codex"),
+          },
+        ],
+        "codex_work",
+      ),
+    ).toBe("codex");
+  });
+
+  it("does not substitute another provider when the instance is missing", () => {
+    expect(
+      resolveProviderDriverKindByInstanceId(
+        [
+          {
+            instanceId: ProviderInstanceId.make("codex"),
+            driver: ProviderDriverKind.make("codex"),
+          },
+        ],
+        "claudeAgent",
+      ),
+    ).toBeNull();
   });
 });
 
