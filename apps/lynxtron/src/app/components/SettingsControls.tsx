@@ -85,18 +85,27 @@ export function SmallButton({
 }
 
 export function SmallIconButton({
+  className,
   label,
   icon,
   disabled = false,
   onTap,
 }: {
+  className?: string;
   label: string;
   icon: ReactNode;
   disabled?: boolean;
   onTap?: () => void;
 }) {
   return (
-    <Button aria-label={label} disabled={disabled} onClick={onTap} size="icon-xs" variant="ghost">
+    <Button
+      aria-label={label}
+      className={className}
+      disabled={disabled}
+      onClick={onTap}
+      size="icon-xs"
+      variant="ghost"
+    >
       {icon}
     </Button>
   );

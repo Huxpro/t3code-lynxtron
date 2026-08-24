@@ -49,7 +49,7 @@ import { MessagesTimeline } from "./MessagesTimeline";
 import { Composer } from "./Composer";
 import { ModelPicker } from "./ModelPicker";
 import { RightPanel } from "./RightPanel";
-import { SmallButton } from "./SettingsControls";
+import { SmallButton, SmallIconButton } from "./SettingsControls";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import {
   resolveConnectionScopedValue,
@@ -119,6 +119,9 @@ export function ChatView({ threadId }: ChatViewProps) {
   const lastKnownModelSelection = useRef(modelSelection);
   const [respondingApprovalId, setRespondingApprovalId] = useState<string | null>(null);
   const [respondingUserInputId, setRespondingUserInputId] = useState<string | null>(null);
+  const [dismissedThreadErrorsById, setDismissedThreadErrorsById] = useState<
+    Record<string, string>
+  >({});
   const [pendingUserInputDraftsByRequestId, setPendingUserInputDraftsByRequestId] = useState<
     Record<string, Record<string, PendingUserInputDraftAnswer>>
   >({});
@@ -152,6 +155,15 @@ export function ChatView({ threadId }: ChatViewProps) {
     () => threads.find((thread) => thread.id === activeThreadId) ?? activeDraftThread,
     [threads, activeThreadId, activeDraftThread],
   );
+  const threadError = sessionError ?? modelSelectionError;
+  const visibleThreadError =
+    threadError && dismissedThreadErrorsById[activeThreadId ?? ""] !== threadError
+      ? threadError
+      : null;
+  const dismissThreadError = useCallback(() => {
+    if (!activeThreadId || !threadError) return;
+    setDismissedThreadErrorsById((errors) => ({ ...errors, [activeThreadId]: threadError }));
+  }, [activeThreadId, threadError]);
   const activeProject = useMemo(
     () => projects.find((project) => project.id === activeThread?.projectId) ?? projects[0] ?? null,
     [activeThread?.projectId, projects],
@@ -558,10 +570,18 @@ export function ChatView({ threadId }: ChatViewProps) {
         />
       }
       banner={
-        (sessionError || modelSelectionError) && !hero ? (
+        visibleThreadError && !hero ? (
           <ThreadErrorBannerSurface
-            description={sessionError ?? modelSelectionError}
+            description={visibleThreadError}
             icon={<Icon name="circle-alert" size={16} color="#ef4444" />}
+            action={
+              <SmallIconButton
+                className="thread-error-dismiss"
+                label="Dismiss error"
+                icon={<Icon name="x" size={14} color="#ef4444" />}
+                onTap={dismissThreadError}
+              />
+            }
           />
         ) : shouldRenderConnectionLifecycleBanner({ hero }) ? (
           <ConnectionLifecycleBannerSurface
@@ -637,7 +657,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           messages={messages}
           activities={activities}
           sessionStatus={sessionStatus}
-          hasTopBanner={Boolean(sessionError || modelSelectionError)}
+          hasTopBanner={Boolean(visibleThreadError)}
           cwd={cwd}
           latestTurn={latestTurn}
           proposedPlans={proposedPlans}
