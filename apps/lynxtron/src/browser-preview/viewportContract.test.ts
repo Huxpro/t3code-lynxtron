@@ -118,4 +118,16 @@ describe("resolveBrowserPreviewViewportContract", () => {
       '"display:flex;flex:none;flex-direction:row;width:100%;box-sizing:border-box;}"',
     );
   });
+
+  it("restores Settings scroll content and Source Control column layout in the browser proxy", () => {
+    const source = readFileSync(path.join(scriptDir, "index.ts"), "utf8");
+
+    assert.include(source, '".settings-content{"');
+    assert.include(
+      source,
+      '"display:flex;flex:none;flex-direction:column;width:100%;min-width:0;box-sizing:border-box;}"',
+    );
+    assert.include(source, '".source-control-panel,.source-control-section{"');
+    assert.include(source, '"display:flex;flex-direction:column;width:100%;min-width:0;}"');
+  });
 });

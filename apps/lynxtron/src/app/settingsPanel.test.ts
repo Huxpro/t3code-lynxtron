@@ -301,6 +301,8 @@ describe("Lynx Settings route projection", () => {
     expect(settings).toContain("data-source-control-loading-row={row}");
     expect(settings).toContain('label="Rescan server environment"');
     expect(settings).not.toContain("Scanning server integrations…");
+    expect(settings).not.toContain("status={usesDedicatedModel");
+    expect(settings).not.toContain('"Uses global model"');
     const rowStart = overrides.indexOf(".source-control-loading-row {");
     const rowBlock = overrides.slice(rowStart, overrides.indexOf("}", rowStart));
     expect(rowBlock).toContain("height: 66px;");

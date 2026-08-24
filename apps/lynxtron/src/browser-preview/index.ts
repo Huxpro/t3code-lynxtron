@@ -453,6 +453,10 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".settings-nav__footer{display:flex;flex:none;flex-direction:column;width:100%;}" +
       ".settings-main{" +
       "display:flex;flex:1 1 0%;flex-direction:column;width:0;min-width:0;height:100%;}" +
+      ".settings-content{" +
+      "display:flex;flex:none;flex-direction:column;width:100%;min-width:0;box-sizing:border-box;}" +
+      ".source-control-panel,.source-control-section{" +
+      "display:flex;flex-direction:column;width:100%;min-width:0;}" +
       // overrides.css custom layout classes whose flex-direction/grow the Lynx
       // pipeline strips as native-redundant; re-supply for the browser proxy.
       ".hero{flex-direction:column;flex-grow:1;}" +
