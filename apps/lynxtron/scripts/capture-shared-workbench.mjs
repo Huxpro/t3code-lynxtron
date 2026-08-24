@@ -1023,6 +1023,22 @@ function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeigh
   return Math.abs(webRect.y - lynxRect.y) <= 16;
 }
 
+function completedComposerProviderStateMatches(state) {
+  if (stateId !== "existing-thread-completed") return true;
+  const webLabel = state?.web?.productState?.visibleModelLabel?.trim() ?? "";
+  const lynxLabel = state?.lynx?.productState?.visibleModelLabel?.trim() ?? "";
+  const webComposer = state?.web?.composerMetrics;
+  const lynxComposer = state?.lynx?.composerMetrics;
+  return (
+    webLabel.length > 0 &&
+    webLabel === lynxLabel &&
+    webComposer?.state === lynxComposer?.state &&
+    webComposer?.placeholder === lynxComposer?.placeholder &&
+    JSON.stringify((webComposer?.controls ?? []).map(({ id }) => id)) ===
+      JSON.stringify((lynxComposer?.controls ?? []).map(({ id }) => id))
+  );
+}
+
 function composerPlanModeMatches(state) {
   if (!isComposerPlanModeState) return true;
   const planControl = (client) =>
@@ -7057,7 +7073,8 @@ async function captureCell({
       isFlatSidebarLayoutState ||
       (composerInputReady &&
         composerStateReady &&
-        composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics));
+        composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
+        completedComposerProviderStateMatches(state));
     const planModeReady = composerPlanModeMatches(state);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
@@ -7873,7 +7890,8 @@ async function captureCell({
     isFlatSidebarLayoutState ||
     (finalComposerInputReady &&
       finalComposerStateReady &&
-      composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics));
+      composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
+      completedComposerProviderStateMatches(state));
   const finalPlanModeReady = composerPlanModeMatches(state);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
@@ -9027,6 +9045,21 @@ async function captureCell({
       finalChangedFilesStateReady,
       finalCoreGeometryReady,
       finalComposerReady,
+      completedComposerProviderState: {
+        match: completedComposerProviderStateMatches(state),
+        web: {
+          visibleModelLabel: state?.web?.productState?.visibleModelLabel ?? null,
+          state: state?.web?.composerMetrics?.state ?? null,
+          placeholder: state?.web?.composerMetrics?.placeholder ?? null,
+          controlIds: (state?.web?.composerMetrics?.controls ?? []).map(({ id }) => id),
+        },
+        lynx: {
+          visibleModelLabel: state?.lynx?.productState?.visibleModelLabel ?? null,
+          state: state?.lynx?.composerMetrics?.state ?? null,
+          placeholder: state?.lynx?.composerMetrics?.placeholder ?? null,
+          controlIds: (state?.lynx?.composerMetrics?.controls ?? []).map(({ id }) => id),
+        },
+      },
       finalPlanModeReady,
       finalSessionProjectionReady,
       finalStageIdentityReady,

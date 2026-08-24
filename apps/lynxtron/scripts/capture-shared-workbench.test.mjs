@@ -63,6 +63,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "seed?.dataset?.failedThread");
     assert.include(source, 'expectedThreadFixture?.latestTurnState !== "completed"');
     assert.include(source, 'expectedThreadFixture?.latestTurnState !== "error"');
+    assert.include(source, "function completedComposerProviderStateMatches(state)");
+    assert.include(source, 'stateId !== "existing-thread-completed"');
+    assert.include(source, "webLabel.length > 0");
+    assert.include(source, "webComposer?.state === lynxComposer?.state");
+    assert.include(source, "completedComposerProviderStateMatches(state)");
+    assert.include(source, "completedComposerProviderState: {");
   });
 
   it("accepts an explicit immutable seed source for cross-client fixtures", () => {
