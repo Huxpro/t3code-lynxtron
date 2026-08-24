@@ -1,4 +1,4 @@
-import { ProviderInstanceId, ThreadId } from "@t3tools/contracts";
+import { ProviderInstanceId, ThreadId, TurnId } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
 import {
@@ -56,11 +56,56 @@ describe("thread action confirmation presentation", () => {
     };
 
     expect(isDisposableEmptyThread(emptyThread)).toBe(true);
+    expect(
+      isDisposableEmptyThread({
+        ...emptyThread,
+        session: {
+          threadId: ThreadId.make("idle-empty-thread"),
+          status: "idle",
+          activeTurnId: null,
+          providerName: "Codex",
+          providerInstanceId: ProviderInstanceId.make("codex"),
+          runtimeMode: "full-access",
+          updatedAt: "2026-08-23T00:00:00.000Z",
+          lastError: null,
+        },
+      }),
+    ).toBe(true);
     expect(isDisposableEmptyThread({ ...emptyThread, title: "Renamed draft" })).toBe(false);
     expect(
       isDisposableEmptyThread({
         ...emptyThread,
         latestUserMessageAt: "2026-08-23T00:00:00.000Z",
+      }),
+    ).toBe(false);
+    expect(
+      isDisposableEmptyThread({
+        ...emptyThread,
+        session: {
+          threadId: ThreadId.make("active-thread"),
+          status: "idle",
+          activeTurnId: TurnId.make("active-turn"),
+          providerName: "Codex",
+          providerInstanceId: ProviderInstanceId.make("codex"),
+          runtimeMode: "full-access",
+          updatedAt: "2026-08-23T00:00:00.000Z",
+          lastError: null,
+        },
+      }),
+    ).toBe(false);
+    expect(
+      isDisposableEmptyThread({
+        ...emptyThread,
+        session: {
+          threadId: ThreadId.make("failed-thread"),
+          status: "idle",
+          activeTurnId: null,
+          providerName: "Codex",
+          providerInstanceId: ProviderInstanceId.make("codex"),
+          runtimeMode: "full-access",
+          updatedAt: "2026-08-23T00:00:00.000Z",
+          lastError: "Provider startup failed",
+        },
       }),
     ).toBe(false);
     expect(

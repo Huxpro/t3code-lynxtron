@@ -3148,6 +3148,9 @@ function readPersistedEmptyThreadIds(baseDir) {
          WHERE thread.deleted_at IS NULL
            AND thread.archived_at IS NULL
            AND thread.title = 'New thread'
+           AND thread.pending_approval_count = 0
+           AND thread.pending_user_input_count = 0
+           AND thread.has_actionable_proposed_plan = 0
            AND NOT EXISTS (
              SELECT 1
              FROM projection_thread_messages AS message
@@ -3157,6 +3160,21 @@ function readPersistedEmptyThreadIds(baseDir) {
              SELECT 1
              FROM projection_turns AS turn
              WHERE turn.thread_id = thread.thread_id
+           )
+           AND (
+             NOT EXISTS (
+               SELECT 1
+               FROM projection_thread_sessions AS session
+               WHERE session.thread_id = thread.thread_id
+             )
+             OR EXISTS (
+               SELECT 1
+               FROM projection_thread_sessions AS session
+               WHERE session.thread_id = thread.thread_id
+                 AND session.status = 'idle'
+                 AND session.active_turn_id IS NULL
+                 AND session.last_error IS NULL
+             )
            )
          ORDER BY thread.created_at DESC, thread.thread_id ASC`,
       )

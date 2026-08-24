@@ -473,6 +473,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "async function verifyNewThreadDraftLifecycle");
     assert.include(source, '"--verify-new-thread-draft-lifecycle"');
     assert.include(source, "function readPersistedEmptyThreadIds");
+    assert.include(source, "FROM projection_thread_sessions AS session");
+    assert.include(source, "thread.pending_approval_count = 0");
+    assert.include(source, "thread.pending_user_input_count = 0");
+    assert.include(source, "thread.has_actionable_proposed_plan = 0");
+    assert.include(source, "session.status = 'idle'");
+    assert.include(source, "session.active_turn_id IS NULL");
+    assert.include(source, "session.last_error IS NULL");
     assert.include(source, "recoverableEmptyThreadIds.every");
     assert.include(source, "survived automatic recovery");
     assert.include(source, 'invokeConnector(client, "createThread", { projectId })');
