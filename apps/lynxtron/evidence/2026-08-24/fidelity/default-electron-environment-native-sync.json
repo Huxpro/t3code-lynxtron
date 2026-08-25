@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-25T07:44:58Z",
+  "stateId": "existing-thread-idle",
+  "scope": {
+    "clients": ["electron", "native"],
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "flow": "default local-environment discovery without an explicit pairing URL or Lynxtron server base directory"
+  },
+  "commits": {
+    "product": "faed3ff91",
+    "runtimeUpgrade": "19bc2e168",
+    "contract": "60ee0b855"
+  },
+  "snapshot": {
+    "source": "read-only VACUUM INTO snapshot of the visible Electron showcase environment",
+    "sha256": "c94554d3c94c4078cde8b3b3003246a69fbb4d76677c0f933c61a345f470d7a1",
+    "liveUserDataWritten": false
+  },
+  "target": {
+    "projectId": "7c021d96-db88-478d-ad8e-75780abfe283",
+    "projectTitle": "background-only",
+    "threadId": "2dd5b2ae-5abb-4f66-afae-721c4926528b",
+    "threadTitle": "Update README",
+    "archived": false
+  },
+  "electron": {
+    "processId": 42191,
+    "serverPort": 59230,
+    "environmentId": "77b7be1f-8863-4a9a-aa3c-4f3a11a1f415",
+    "rendezvousMode": "0600",
+    "rendezvousRemovedAfterExit": true
+  },
+  "native": {
+    "processId": 42497,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "runtimeExecutable": "/Users/bytedance/github/t3code/node_modules/.pnpm/@lynx-js+lynxtron@0.0.16/node_modules/@lynx-js/lynxtron/dist/Lynxtron.app/Contents/MacOS/lynxtron",
+    "bundle": {
+      "sha256": "ef3e6d137ecb8a31c778642836f086df80939a1a0d8f40e7dd2ce981ca16a970"
+    },
+    "connection": {
+      "mode": "existing-environment",
+      "source": "desktop-rendezvous",
+      "serverOwned": false
+    },
+    "readiness": {
+      "status": "ready",
+      "projectPresent": true,
+      "threadPresent": true,
+      "activeThreadMatches": true,
+      "transportKind": "main",
+      "lastSequence": 8
+    },
+    "rendererErrors": 0
+  },
+  "classification": {
+    "productLossClosed": [
+      "A default Lynxtron launch discovers the active Electron-owned local environment instead of creating a second server and database.",
+      "The exact background-only project and Update README thread are projected into the Lynxtron renderer and selected through the main transport."
+    ],
+    "harnessLoss": [
+      "Lynxtron 0.0.16 makes DevTool opt-in and still uses a fixed Desktop debug-router port; an existing 0.0.8 client occupying that port prevents exact screenshot and geometry capture. The renderer readiness receipt proves state synchronization but is not admitted as visual evidence."
+    ],
+    "remainingScope": [
+      "The four-step Electron authority flow covering transcript, Files with tree, editor-only Files, and Diff tab still requires paired Web/Lynx/Native interaction and geometry certification."
+    ],
+    "policy": "No weights, denominator entries, thresholds, filters, or visual residuals changed."
+  },
+  "securityAndCleanup": {
+    "credentialInEvidence": false,
+    "credentialRetained": false,
+    "ownedElectronStopped": true,
+    "ownedNativeStopped": true,
+    "ownedServerListenerReleased": true,
+    "visibleElectronTouched": false
+  },
+  "validation": {
+    "focusedTests": "24/24 plus 2/2 discovery source contracts",
+    "sharedDesktopLynxTypechecks": "pass",
+    "desktopProductionBuild": "pass",
+    "lynxtronProductionBuild": "pass on 0.0.16",
+    "defaultDiscoverySmoke": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
