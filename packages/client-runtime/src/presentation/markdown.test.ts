@@ -287,6 +287,15 @@ describe("Markdown link projection", () => {
   it("projects display and workspace-relative file metadata", () => {
     expect(
       resolveMarkdownFileLinkMeta(
+        "/Users/bytedance/github/background-only/README.md",
+        "/Users/bytedance/github/background-only",
+      ),
+    ).toMatchObject({
+      workspaceRelativePath: "README.md",
+      basename: "README.md",
+    });
+    expect(
+      resolveMarkdownFileLinkMeta(
         "file:///C:/Users/mike/dev-stuff/t3code/apps/web/src/session-logic.ts#L501",
         "C:/Users/mike/dev-stuff/t3code",
       ),

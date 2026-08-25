@@ -67,18 +67,21 @@ function writePrefs(patch: Record<string, unknown>): Record<string, unknown> {
 }
 
 const READINESS_REPORT_PATH = process.env.T3_LYNXTRON_READINESS_REPORT?.trim();
-function reportReadiness(value: Record<string, unknown>): boolean {
-  if (!READINESS_REPORT_PATH) return false;
+function writeAtomicReport(reportPath: string, value: Record<string, unknown>): boolean {
   try {
-    fs.mkdirSync(path.dirname(READINESS_REPORT_PATH), { recursive: true });
-    const temporaryPath = `${READINESS_REPORT_PATH}.${process.pid}.tmp`;
+    fs.mkdirSync(path.dirname(reportPath), { recursive: true });
+    const temporaryPath = `${reportPath}.${process.pid}.tmp`;
     fs.writeFileSync(temporaryPath, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 });
-    fs.renameSync(temporaryPath, READINESS_REPORT_PATH);
-    fs.chmodSync(READINESS_REPORT_PATH, 0o600);
+    fs.renameSync(temporaryPath, reportPath);
+    fs.chmodSync(reportPath, 0o600);
     return true;
   } catch {
     return false;
   }
+}
+function reportReadiness(value: Record<string, unknown>): boolean {
+  if (!READINESS_REPORT_PATH) return false;
+  return writeAtomicReport(READINESS_REPORT_PATH, value);
 }
 
 contextBridge.exposeInLynxBTS({
