@@ -5,6 +5,7 @@ import {
   type MarkdownInlinePresentation,
 } from "@t3tools/client-runtime/presentation/markdown";
 import { clientCapabilities } from "../platform/clientCapabilities";
+import { uiActions } from "../state/uiState";
 import { parseMarkdownBlocks, type ParsedMarkdownBlock } from "./markdownBlocks";
 import { copyMarkdownCode } from "./markdownClipboard";
 
@@ -14,6 +15,10 @@ import { copyMarkdownCode } from "./markdownClipboard";
 function activateMarkdownLink(href: string, cwd: string | undefined): void {
   "background only";
   const fileLink = resolveMarkdownFileLinkMeta(href, cwd);
+  if (fileLink?.workspaceRelativePath) {
+    uiActions.openFileSurface(fileLink.workspaceRelativePath);
+    return;
+  }
   if (fileLink && clientCapabilities.navigation.canOpenPath()) {
     void clientCapabilities.navigation.openPath(fileLink.filePath).catch((cause) => {
       console.error("[lynx-markdown] failed to open file link", { href, cause });
@@ -69,6 +74,48 @@ function renderInline(
       </text>
     );
   });
+}
+
+function renderInteractiveParagraph(text: string, key: string, cwd: string | undefined): ReactNode {
+  const spans = parseMarkdownInline(text);
+  if (!spans.some((span) => span.href)) {
+    return <text className="md-paragraph">{renderInline(spans, key, cwd)}</text>;
+  }
+  return (
+    <view className="md-paragraph md-paragraph--segments" data-markdown-interactive-paragraph>
+      {spans.map((span, index) => {
+        const spanKey = `${key}-${index}`;
+        const className = `${span.code ? "md-inline-code" : "md-inline"}${
+          span.href ? " md-link" : ""
+        }${span.strikethrough ? " md-strikethrough" : ""}`;
+        const content = (
+          <text
+            key={spanKey}
+            className={className}
+            style={
+              {
+                fontWeight: span.bold ? "700" : "400",
+                fontStyle: span.italic ? "italic" : "normal",
+              } as object
+            }
+          >
+            {span.text}
+          </text>
+        );
+        return span.href ? (
+          <view
+            key={spanKey}
+            className="md-link-hit-target"
+            bindtap={() => activateMarkdownLink(span.href!, cwd)}
+          >
+            {content}
+          </view>
+        ) : (
+          content
+        );
+      })}
+    </view>
+  );
 }
 
 function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; blockKey: string }) {
@@ -130,7 +177,11 @@ function MarkdownDetailsBlock({
       <view className="md-details-summary" bindtap={() => setOpen((value) => !value)}>
         <text className={`md-details-chevron${open ? " md-details-chevron--open" : ""}`}>›</text>
         <text className="md-details-label">
-          {renderInline(parseMarkdownInline(block.summary ?? "Details"), `${blockKey}-summary`, cwd)}
+          {renderInline(
+            parseMarkdownInline(block.summary ?? "Details"),
+            `${blockKey}-summary`,
+            cwd,
+          )}
         </text>
       </view>
       {open ? (
@@ -170,11 +221,7 @@ function renderBlock(
     }
 
     case "paragraph":
-      return (
-        <text key={key} className="md-paragraph">
-          {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd)}
-        </text>
-      );
+      return <view key={key}>{renderInteractiveParagraph(block.text ?? "", key, cwd)}</view>;
 
     case "code":
       return <MarkdownCodeBlock key={key} block={block} blockKey={key} />;
@@ -324,9 +371,7 @@ export function InlineMarkdownRenderer({
         ) : (
           <text
             key={`inline-${index}`}
-            className={`inline-markdown-text${
-              span.strikethrough ? " md-strikethrough" : ""
-            }`}
+            className={`inline-markdown-text${span.strikethrough ? " md-strikethrough" : ""}`}
             style={
               {
                 fontWeight: span.bold ? "700" : "400",

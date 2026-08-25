@@ -2,7 +2,6 @@ import { useCallback, useState } from "@lynx-js/react";
 import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
 import {
   RIGHT_PANEL_DEFAULT_WIDTH,
-  RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY,
   RIGHT_PANEL_MIN_WIDTH,
   RIGHT_PANEL_WIDTH_STORAGE_KEY,
   resolveRightPanelMaximumWidth,
@@ -25,6 +24,8 @@ import { FilePanel, FilesPanel } from "./FilesPanel";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
+
+const LYNX_RIGHT_PANEL_SHEET_QUERY = "(max-width: 760px)";
 
 interface RightPanelContentProps {
   activePlan: ActivePlanState | null;
@@ -129,7 +130,7 @@ export function RightPanel({
   onMaximizedChange = () => undefined,
 }: RightPanelProps) {
   const state = useRightPanelState();
-  const sheet = useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY);
+  const sheet = useMediaQuery(LYNX_RIGHT_PANEL_SHEET_QUERY);
   const viewport = useViewportSnapshot();
   const [showAddMenu, setShowAddMenu] = useState(false);
   const resize = useResizableWidth({
