@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T21:48:23-07:00",
+  "stateId": "model-picker-default",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "themes": ["light", "dark"]
+  },
+  "authority": {
+    "webSources": [
+      "apps/web/src/components/chat/ModelPickerContent.tsx",
+      "apps/web/src/components/chat/ModelPickerSurface.tsx",
+      "apps/web/src/components/chat/ModelPickerSidebar.tsx",
+      "apps/web/src/index.css"
+    ],
+    "material": {
+      "panel": "dropdown-glass: bounded 83.6% popover tint, foreground 10% border, light/dark elevated shadows",
+      "content": "ModelPickerContent bg-muted/40",
+      "rail": "ModelPickerRailSurface bg-muted/30",
+      "contentRailBorder": "border-border/70"
+    }
+  },
+  "native": {
+    "status": "pass",
+    "bundle": {
+      "sha256": "813c0ffcbf218c0bf9e7b1bd902de61331e83878302b9c1939def61d97cdcc0e",
+      "bytes": 5317949
+    },
+    "fixture": {
+      "source": "/tmp/t3-model-picker-fixture.XI2Rc3",
+      "snapshotId": "58959b1e5b0a81892ac9e6519d3d4506b658f4708e101c3f9539fcb6ccbd891e",
+      "threadId": "445f5cb6-fe19-4044-b2bf-e30b658d431e"
+    },
+    "light": {
+      "reportSha256": "d6a373bba8da8013d3be87985d1c17d94d7d794650836e3467b1d0aaf03d628a",
+      "resolvedColors": {
+        "panel": "rgba(255,255,255,0.835294)",
+        "content": "rgba(250,250,250,0.4)",
+        "rail": "rgba(250,250,250,0.298039)"
+      }
+    },
+    "dark": {
+      "reportSha256": "7eb0d5031e573db9484860ee6c9486129591db61aab7362978d90e916df22e72",
+      "resolvedColors": {
+        "panel": "rgba(25,25,25,0.835294)",
+        "content": "rgba(255,255,255,0.0156863)",
+        "rail": "rgba(255,255,255,0.0117647)"
+      }
+    },
+    "panel": [397, 375, 360, 346],
+    "providerRail": [398, 376, 44, 344],
+    "content": [442, 376, 314, 344],
+    "input": "DevTool touches on measured Native trigger, provider rail, Close control, outside dismiss layer, and selectable model row",
+    "result": {
+      "providerSwitch": "codex to claudeAgent while picker remains open",
+      "query": "pickle produces the OpenCode Big Pickle row with rail hidden",
+      "empty": "no-model query produces No models found with rail hidden",
+      "closeButtonDismissed": true,
+      "outsideDismissed": true,
+      "selection": {
+        "reportSha256": "4b2e9ee47c2517fe96a928bb0553b091fbb739b06b48c2645db3e16c5f7cc8ea",
+        "before": "codex/gpt-5.6-sol",
+        "after": "codex/gpt-5.6-terra",
+        "persisted": "codex/gpt-5.6-terra",
+        "transportSequence": [12, 19],
+        "overlayDismissed": true
+      },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true,
+      "physicalKeyboard": "pending-user-session"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "The Native Model Picker now maps the current Web dropdown-glass panel, shared muted content surface, provider rail, and content/rail divider authority.",
+      "The material-only change preserves native scroll-view behavior, provider navigation, query and empty states, close/outside dismissal, and real persisted model selection."
+    ],
+    "evidenceBoundary": [
+      "Lynx cannot apply browser backdrop blur, so the mapping uses bounded tint and shadow rather than claiming blur implementation parity.",
+      "Physical keyboard typing, Escape, navigation, and focus return require an authorized interactive user session.",
+      "Cross-renderer pixel material residual is not re-scored in this checkpoint."
+    ],
+    "policy": "No state weights, denominator entries, filters, thresholds, or residual policy changed."
+  },
+  "validation": {
+    "focusedContracts": "63/63 plus Model Picker verifier contract",
+    "lynxTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect warnings",
+    "exactNative": "pass light and dark plus persisted selection mutation",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
