@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T21:36:17-07:00",
+  "classification": "current-structured-negative-evidence",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "native": {
+    "status": "pass-with-runtime-boundaries",
+    "bundle": {
+      "sha256": "d15cd0c600bece421c5af67bf9b78ab5faa4df86aa831ad89b33ce0cbe6c2e6e",
+      "bytes": 5317682
+    },
+    "fixture": {
+      "source": "/tmp/t3-model-picker-fixture.XI2Rc3",
+      "snapshotId": "58959b1e5b0a81892ac9e6519d3d4506b658f4708e101c3f9539fcb6ccbd891e"
+    },
+    "reportSha256": "130236e6d651932796220735059c4fb60eb06d8e91bd3c7654cc328a4fc1bb31",
+    "transport": {
+      "kind": "main",
+      "lastSeq": [3, 5]
+    },
+    "R5": {
+      "operation": "Input.dispatchKeyEvent",
+      "result": "CDP request error: Not implemented: Input.dispatchKeyEvent"
+    },
+    "R10": {
+      "Worker": "undefined",
+      "OffscreenCanvas": "undefined",
+      "Blob": "undefined",
+      "URL": "function"
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "disposition": {
+    "R5": "Native physical keyboard and focus evidence require an authorized real OS input session; touch or Browser keyboard results cannot substitute.",
+    "R10": "The Web Worker/OffscreenCanvas patch renderer remains a hard platform island; review claims stay bounded to the host-backed Native implementation.",
+    "policy": "No state weights, denominator entries, filters, thresholds, or residual policy changed."
+  },
+  "validation": {
+    "exactNative": "pass with expected R5/R10 boundaries",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
