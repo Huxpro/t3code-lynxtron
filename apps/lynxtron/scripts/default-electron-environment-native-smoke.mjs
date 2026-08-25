@@ -22,7 +22,10 @@ import { resolveElectronLaunchCommand } from "../../desktop/scripts/electron-lau
 const require = createRequire(import.meta.url);
 const appRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
-const sourceRoot = path.resolve(process.argv.slice(2).find((value) => value !== "--") ?? "");
+const sourceRoot = path.resolve(
+  process.argv.slice(2).find((value) => value !== "--" && !value.startsWith("--")) ?? "",
+);
+const keep = process.argv.includes("--keep");
 const sourceDatabase = path.join(sourceRoot, "userdata/state.sqlite");
 if (!existsSync(sourceDatabase)) throw new Error("Source database missing: " + sourceDatabase);
 
@@ -161,6 +164,7 @@ electron.stderr.on("data", (chunk) => {
   electronLog += String(chunk);
 });
 let rendezvousPath;
+let native;
 try {
   rendezvousPath = await waitFor(() => {
     const candidate = path.join(rendezvousDirectory, String(electron.pid) + ".json");
@@ -180,7 +184,7 @@ try {
     path.dirname(packagePath),
     "dist/Lynxtron.app/Contents/MacOS/lynxtron",
   );
-  const native = spawn(executable, [path.join(appRoot, "dist/desktop")], {
+  native = spawn(executable, [path.join(appRoot, "dist/desktop")], {
     cwd: appRoot,
     env: {
       ...process.env,
@@ -190,6 +194,7 @@ try {
       T3_LYNXTRON_PREFS_PATH: path.join(fixtureDir, "lynxtron-prefs.json"),
       T3_LYNXTRON_PROJECT_CWD: target.workspaceRoot,
       T3_LYNXTRON_READINESS_REPORT: readinessReceiptPath,
+      ...(keep ? { T3_LYNXTRON_ENABLE_DEVTOOL: "1" } : {}),
       T3_LYNXTRON_VIEWPORT_WIDTH: "1280",
       T3_LYNXTRON_VIEWPORT_HEIGHT: "820",
     },
@@ -224,7 +229,7 @@ try {
       ? value
       : null;
   }, "Native readiness receipt");
-  await stopOwnedChild(native);
+  if (!keep) await stopOwnedChild(native);
   process.stdout.write(
     JSON.stringify(
       {
@@ -269,7 +274,17 @@ try {
       2,
     ) + "\n",
   );
+  if (keep) {
+    process.stdout.write(
+      "[default-electron-native] retained; press Ctrl-C to stop owned processes\n",
+    );
+    await new Promise((resolve) => {
+      process.once("SIGINT", resolve);
+      process.once("SIGTERM", resolve);
+    });
+  }
 } finally {
+  await stopOwnedChild(native);
   await stopOwnedChild(electron);
   if (rendezvousPath)
     await waitFor(() => !existsSync(rendezvousPath), "Electron rendezvous cleanup", 10_000);

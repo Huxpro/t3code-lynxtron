@@ -144,6 +144,18 @@ describe("applyRightPanelAction", () => {
     });
   });
 
+  it("preserves the file tab when the changed-files action adds a Diff tab", () => {
+    const withFile = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
+      type: "open",
+      surface: file,
+    });
+    expect(applyRightPanelAction(withFile, { type: "open", surface: diff })).toEqual({
+      isOpen: true,
+      activeSurfaceId: diff.id,
+      surfaces: [file, diff],
+    });
+  });
+
   it("reopens a hidden panel without duplicating its existing surface", () => {
     const opened = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
       type: "open",

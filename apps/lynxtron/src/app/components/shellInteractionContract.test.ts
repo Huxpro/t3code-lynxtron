@@ -425,6 +425,12 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('fileIcon={<Icon name="file-json" size={14}');
     expect(files).toContain("uiActions.openFileSurface(path)");
     expect(files).toContain("export function FilePanel");
+    expect(files).toContain("const [explorerOpen, setExplorerOpen] = useState(true)");
+    expect(files).toContain(
+      'aria-label={explorerVisible ? "Hide file explorer" : "Show file explorer"}',
+    );
+    expect(files).toContain('data-file-explorer-open={explorerVisible ? "true" : "false"}');
+    expect(files).toContain("{explorerVisible ? (");
     expect(files).toContain('className="file-panel__toolbar" data-surface-subheader');
     expect(files).toContain('className="file-panel__editor-surface"');
     expect(files).toContain('className="file-panel__explorer"');
