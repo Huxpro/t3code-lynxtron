@@ -513,8 +513,8 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".right-panel__tabs{height:44px!important;min-height:44px!important;box-sizing:border-box;}" +
       ".right-panel__tab-scroll{flex:none;width:max-content!important;max-width:calc(100% - 132px);}" +
       ".right-panel__tab-list>[data-active-tab]{min-width:100px;max-width:176px;box-sizing:border-box;}" +
-      ".right-panel__add-menu{display:flex;flex-direction:column;width:128px;height:122px;}" +
-      ".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:118px;height:28px;}" +
+      ".right-panel__add-menu{display:flex;flex-direction:column;width:176px;height:122px;}" +
+      ".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:166px;height:28px;}" +
       ".diff-panel-header__scope-menu,.diff-panel-header__scope-submenu{" +
       "display:flex;flex-direction:column;}" +
       ".diff-panel-header__scope-item{" +
