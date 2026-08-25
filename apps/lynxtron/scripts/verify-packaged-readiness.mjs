@@ -5200,14 +5200,14 @@ async function verifyModelPickerFidelity({
   const expectedColors =
     expectedTheme === "light"
       ? {
-          panel: "rgb(255,255,255)",
-          content: "rgb(255,255,255)",
-          rail: "rgb(250,250,250)",
+          panel: "rgba(255,255,255,0.835294)",
+          content: "rgba(250,250,250,0.4)",
+          rail: "rgba(250,250,250,0.298039)",
         }
       : {
-          panel: "rgb(25,25,25)",
-          content: "rgb(25,25,25)",
-          rail: "rgba(255,255,255,0.0392157)",
+          panel: "rgba(25,25,25,0.835294)",
+          content: "rgba(255,255,255,0.0156863)",
+          rail: "rgba(255,255,255,0.0117647)",
         };
   const resolvedColors = {
     panel: panel.style.backgroundColor,

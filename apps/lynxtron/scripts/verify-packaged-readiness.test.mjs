@@ -353,8 +353,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'name: `native-model-picker-query-${expectedTheme ?? "system"}.png`');
     assert.include(source, 'name: `native-model-picker-empty-${expectedTheme ?? "system"}.png`');
     assert.include(source, 'physicalKeyboard: "pending-user-session"');
-    assert.include(source, 'panel: "rgb(25,25,25)"');
-    assert.include(source, 'panel: "rgb(255,255,255)"');
+    assert.include(source, 'panel: "rgba(25,25,25,0.835294)"');
+    assert.include(source, 'panel: "rgba(255,255,255,0.835294)"');
+    assert.include(source, 'rail: "rgba(250,250,250,0.298039)"');
     assert.include(source, 'selector: ".model-picker-close"');
     assert.include(source, 'selector: ".model-picker-dismiss-layer"');
     assert.include(source, 'measurement.style.backgroundColor === "rgba(0,0,0,0)"');
