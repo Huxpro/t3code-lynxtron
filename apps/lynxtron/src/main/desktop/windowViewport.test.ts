@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { DEFAULT_LYNXTRON_VIEWPORT, resolveLynxtronViewport } from "./windowViewport.ts";
+import {
+  DEFAULT_LYNXTRON_VIEWPORT,
+  resolveLynxtronViewport,
+  resolveLynxtronWindowPosition,
+} from "./windowViewport.ts";
 
 describe("resolveLynxtronViewport", () => {
   it("uses the established content viewport by default", () => {
@@ -31,5 +35,21 @@ describe("resolveLynxtronViewport", () => {
         T3_LYNXTRON_VIEWPORT_HEIGHT: invalidValue,
       }),
     ).toEqual(DEFAULT_LYNXTRON_VIEWPORT);
+  });
+});
+
+describe("resolveLynxtronWindowPosition", () => {
+  it("returns an explicit integer position for deterministic native evidence", () => {
+    expect(
+      resolveLynxtronWindowPosition({
+        T3_LYNXTRON_WINDOW_X: "20",
+        T3_LYNXTRON_WINDOW_Y: "60",
+      }),
+    ).toEqual({ x: 20, y: 60 });
+  });
+
+  it("leaves normal launches under window-manager control", () => {
+    expect(resolveLynxtronWindowPosition({})).toBeUndefined();
+    expect(resolveLynxtronWindowPosition({ T3_LYNXTRON_WINDOW_X: "20" })).toBeUndefined();
   });
 });

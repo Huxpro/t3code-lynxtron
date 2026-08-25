@@ -8,7 +8,7 @@ import {
   type DiscreteKeyboardAccelerator,
 } from "./keyboardMenu.ts";
 import { MainConnectorHost, settleMainConnectorHandler } from "./mainConnectorHost.ts";
-import { resolveLynxtronViewport } from "./windowViewport.ts";
+import { resolveLynxtronViewport, resolveLynxtronWindowPosition } from "./windowViewport.ts";
 import { startLynxtronViewportHost } from "./viewportHost.ts";
 import { startLynxtronThemeHost } from "./themeHost.ts";
 import { createSystemThemeSource } from "./systemThemeSource.ts";
@@ -159,9 +159,11 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
 
 app.whenReady().then(() => {
   const viewport = resolveLynxtronViewport();
+  const windowPosition = resolveLynxtronWindowPosition();
   const win = new LynxWindow({
     width: viewport.width,
     height: viewport.height,
+    ...windowPosition,
     useContentSize: true,
     title: "T3 Code",
     ...(process.platform === "darwin"

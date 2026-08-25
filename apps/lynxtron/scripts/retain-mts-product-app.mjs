@@ -9,23 +9,22 @@ import {
   mkdtempSync,
   openSync,
   readFileSync,
-  realpathSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath, pathToFileURL } from "node:url";
-
-import { openOwnedDevToolSession, readOwnedListeningTcpPorts } from "./devtool-client-identity.mjs";
+import { fileURLToPath } from "node:url";
 
 const appRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const retainedPath =
   process.env.T3_MTS_PRODUCT_RETAINED_PATH ??
   path.join(os.tmpdir(), "t3-mts-product-retained.json");
-const devToolCli = path.join(os.homedir(), ".agents/skills/lynx-devtool/scripts/index.mjs");
+const sourceRoot =
+  process.env.T3_MTS_PRODUCT_SOURCE_ROOT ?? path.join(os.homedir(), ".t3-lynxtron");
+const projectCwd = process.env.T3_MTS_PRODUCT_PROJECT_CWD ?? repoRoot;
 
 function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -46,7 +45,6 @@ function processCommand(processId) {
 }
 
 function createIsolatedState(stateDir) {
-  const sourceRoot = path.join(os.homedir(), ".t3-lynxtron");
   const sourceDatabase = path.join(sourceRoot, "userdata/state.sqlite");
   const targetUserdata = path.join(stateDir, "userdata");
   mkdirSync(targetUserdata, { recursive: true });
@@ -71,31 +69,23 @@ function createIsolatedState(stateDir) {
   }
 }
 
-async function waitForClient(child, expectedBundle, timeoutMs) {
+async function waitForReadiness(child, readinessReportPath, timeoutMs) {
   const deadline = Date.now() + timeoutMs;
-  const expectedBundleUrl = pathToFileURL(realpathSync(expectedBundle)).href;
-  let lastError;
   while (Date.now() < deadline) {
     if (child.exitCode !== null || child.signalCode !== null) {
       throw new Error("MTS product app exited before DevTool became ready.");
     }
-    try {
-      const client = await openOwnedDevToolSession({
-        appName: "@t3tools/lynxtron",
-        devToolCli,
-        ownedPorts: readOwnedListeningTcpPorts(child.pid),
-      });
-      if (client.identity.bundleUrl !== expectedBundleUrl) {
-        await client.close();
-        throw new Error(`Unexpected MTS product bundle ${String(client.identity.bundleUrl)}`);
+    if (existsSync(readinessReportPath)) {
+      try {
+        const value = JSON.parse(readFileSync(readinessReportPath, "utf8"));
+        if (value.status === "ready" && value.transport?.kind === "main") return value;
+      } catch {
+        // Atomic writer may not have published the first complete report yet.
       }
-      return client;
-    } catch (error) {
-      lastError = error;
-      await wait(100);
     }
+    await wait(100);
   }
-  throw lastError ?? new Error("Timed out waiting for the MTS product app.");
+  throw new Error("Timed out waiting for the MTS product app readiness report.");
 }
 
 async function stop() {
@@ -141,6 +131,7 @@ async function main() {
   const desktopDir = path.join(root, "desktop");
   const stateDir = path.join(root, "state");
   const logPath = path.join(root, "lynxtron.log");
+  const readinessReportPath = path.join(root, "native-readiness.json");
   cpSync(path.join(appRoot, "dist/desktop"), desktopDir, { recursive: true });
   createIsolatedState(stateDir);
   const logFd = openSync(logPath, "a");
@@ -151,9 +142,12 @@ async function main() {
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BASE_DIR: stateDir,
-      T3_LYNXTRON_PROJECT_CWD: repoRoot,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_READINESS_REPORT: readinessReportPath,
       T3_LYNXTRON_VIEWPORT_WIDTH: "1280",
       T3_LYNXTRON_VIEWPORT_HEIGHT: "820",
+      T3_LYNXTRON_WINDOW_X: "20",
+      T3_LYNXTRON_WINDOW_Y: "60",
       T3_LYNXTRON_VIEWPORT_PROBE: "1",
     },
     stdio: ["ignore", logFd, logFd],
@@ -161,9 +155,8 @@ async function main() {
   closeSync(logFd);
   if (!child.pid) throw new Error("MTS product app did not return an owned PID.");
   child.unref();
-  let client;
   try {
-    client = await waitForClient(child, path.join(desktopDir, "main.lynx.bundle"), 30_000);
+    const readiness = await waitForReadiness(child, readinessReportPath, 30_000);
     writeFileSync(
       retainedPath,
       `${JSON.stringify(
@@ -172,9 +165,12 @@ async function main() {
           root,
           desktopDir,
           stateDir,
+          sourceRoot,
+          projectCwd,
           logPath,
+          readinessReportPath,
           processId: child.pid,
-          client: client.identity,
+          readiness,
         },
         null,
         2,
@@ -186,7 +182,7 @@ async function main() {
           retained: true,
           processId: child.pid,
           statePath: retainedPath,
-          client: client.identity,
+          readiness,
         },
         null,
         2,
@@ -196,8 +192,6 @@ async function main() {
     process.kill(child.pid, "SIGINT");
     rmSync(root, { recursive: true, force: true });
     throw error;
-  } finally {
-    await client?.close();
   }
 }
 

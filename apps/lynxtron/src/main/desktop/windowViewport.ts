@@ -11,6 +11,11 @@ export interface LynxtronViewport {
   readonly height: number;
 }
 
+export interface LynxtronWindowPosition {
+  readonly x: number;
+  readonly y: number;
+}
+
 function parseViewportEdge(value: string | undefined, fallback: number): number {
   if (value === undefined || value.trim() === "") {
     return fallback;
@@ -29,4 +34,12 @@ export function resolveLynxtronViewport(
     width: parseViewportEdge(env.T3_LYNXTRON_VIEWPORT_WIDTH, DEFAULT_LYNXTRON_VIEWPORT.width),
     height: parseViewportEdge(env.T3_LYNXTRON_VIEWPORT_HEIGHT, DEFAULT_LYNXTRON_VIEWPORT.height),
   };
+}
+
+export function resolveLynxtronWindowPosition(
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): LynxtronWindowPosition | undefined {
+  const x = Number(env.T3_LYNXTRON_WINDOW_X);
+  const y = Number(env.T3_LYNXTRON_WINDOW_Y);
+  return Number.isInteger(x) && Number.isInteger(y) ? { x, y } : undefined;
 }
