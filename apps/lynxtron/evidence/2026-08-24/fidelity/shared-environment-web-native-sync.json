@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-25T05:50:33Z",
+  "stateId": "existing-thread-idle",
+  "scope": {
+    "clients": ["web", "native"],
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "connection": "one disposable server shared by Web authority and packaged Native"
+  },
+  "commits": {
+    "product": "55ca8995e",
+    "contract": "70408f5e4"
+  },
+  "environment": {
+    "ownership": "one owner connector and one disposable copied fixture",
+    "serverPort": 59442,
+    "threadId": "445f5cb6-fe19-4044-b2bf-e30b658d431e",
+    "liveUserDataReadOrWritten": false,
+    "externalVisibleProcessesTouched": false,
+    "ownerListenerReleased": true,
+    "frontListenerReleased": true
+  },
+  "web": {
+    "captureTier": "browser",
+    "browser": "Chrome/151.0.7922.174",
+    "browserProcessId": 98286,
+    "input": "real CDP pointer double-click, text insertion, and Enter on the shipping thread row",
+    "initialTitle": "Shared client thread 1787636903686",
+    "authoredTitle": "Shared client thread 1787636903686 web",
+    "observedAfterNativeExit": "Shared client thread 1787636903686 owner",
+    "consoleErrors": 0,
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "deviceScaleFactor": 1
+    },
+    "screenshot": {
+      "sha256": "c7b6464e3928779e9cf0588f26f9d9b70dd66bb089b75760f28644cb806e2b39",
+      "retainedInGit": false
+    }
+  },
+  "native": {
+    "captureTier": "native",
+    "processId": 98966,
+    "connection": {
+      "mode": "existing-environment",
+      "serverOwned": false,
+      "reportedServerPort": null
+    },
+    "bundle": {
+      "sha256": "813c0ffcbf218c0bf9e7b1bd902de61331e83878302b9c1939def61d97cdcc0e",
+      "bytes": 5317949
+    },
+    "connectorBundleSha256": "ebdf74ba067f1d3bf12bf49bd1a155e6ad2834d624c39d1990ff4fd2dcef8412",
+    "canonicalThreadTitle": "Shared client thread 1787636903686 web",
+    "transport": {
+      "kind": "main",
+      "beforeSequence": 3,
+      "afterSequence": 7
+    },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "reportSha256": "a10409487c44f849ad9a8f57063ce7d5e5c4519d5ef08d6aa5cbcea730c51f19"
+  },
+  "synchronization": {
+    "webToServer": "Web renamed the durable thread and the owner projection observed the exact title.",
+    "serverToNative": "Packaged Native attached with a separate pairing credential and rendered the Web-authored title.",
+    "serverToWebAfterNativeExit": "After Native disposed, the owner renamed the same thread again and the already-paired Web UI updated in place.",
+    "secondServerSpawnedByNative": false,
+    "externalServerSurvivedNativeExit": true
+  },
+  "security": {
+    "pairingCredentialFilesMode": "0600",
+    "pairingCredentialFilesRemoved": true,
+    "pairingCredentialInReport": false,
+    "pairingCredentialRetained": false
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynxtron can attach to an existing T3 environment instead of always creating an isolated server and state directory.",
+      "Web and packaged Native render and mutate the same durable thread through one server event stream.",
+      "Disposing the attached Native client does not terminate the externally owned server."
+    ],
+    "remainingProductWork": [
+      "The attachment entry point is currently the explicit T3_LYNXTRON_PAIRING_URL launch contract; a user-facing environment picker and persisted pairing lifecycle are not part of this slice."
+    ],
+    "policy": "No state weights, denominator entries, filters, thresholds, or visual residual policy changed."
+  },
+  "validation": {
+    "connectorFocusedTests": "41/41",
+    "sharedConnectorSmoke": "pass",
+    "sharedNativeSmoke": "pass",
+    "sharedWebNativeSmoke": "pass",
+    "lynxAndMainTypecheck": "pass",
+    "productionBuilds": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
