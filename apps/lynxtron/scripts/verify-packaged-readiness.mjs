@@ -11840,6 +11840,7 @@ async function runOnce({
   expectNoComposerContext,
   expectedModelLabel,
   outputDirectory,
+  pairingUrl,
   projectCwd,
   requireCanonicalThread,
   timeoutMs,
@@ -11970,6 +11971,7 @@ async function runOnce({
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
       T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      ...(pairingUrl ? { T3_LYNXTRON_PAIRING_URL: pairingUrl } : {}),
       ...(shouldVerifyConnectionsMutation ? { T3CODE_HOST: "0.0.0.0" } : {}),
       ...(shouldVerifyModelOptionMenuMutation ||
       shouldVerifyComposerSendMaterial ||
@@ -12009,7 +12011,9 @@ async function runOnce({
       expectedBundleUrl: pathToFileURL(bundle).href,
       timeoutMs,
     });
-    await waitForLogText(child, log, "T3 Code server is ready", timeoutMs);
+    if (!pairingUrl) {
+      await waitForLogText(child, log, "T3 Code server is ready", timeoutMs);
+    }
     const beforeProbe = await waitForMainTransport({ child, client, timeoutMs });
     const theme = await verifyExpectedTheme({
       child,
@@ -12751,7 +12755,11 @@ async function runOnce({
       status: outcomeChecks.every((outcome) => outcome.status === "pass") ? "pass" : "fail",
       startedAt,
       processId: child.pid,
-      isolatedState: { path: baseDir, disposed: true },
+      isolatedState: { path: pairingUrl ? null : baseDir, disposed: true },
+      connection: {
+        mode: pairingUrl ? "existing-environment" : "owned-local",
+        serverOwned: !pairingUrl,
+      },
       serverPort: Number(log.read().match(/Listening on http:\/\/127\.0\.0\.1:(\d+)/u)?.[1]),
       client: client.identity,
       transport,
@@ -12819,7 +12827,11 @@ async function runOnce({
       status: "fail",
       startedAt,
       processId: child.pid,
-      isolatedState: { path: baseDir, disposed: true },
+      isolatedState: { path: pairingUrl ? null : baseDir, disposed: true },
+      connection: {
+        mode: pairingUrl ? "existing-environment" : "owned-local",
+        serverOwned: !pairingUrl,
+      },
       error: error instanceof Error ? error.message : String(error),
     };
   } finally {
@@ -12841,6 +12853,10 @@ const runs = Number(argumentValue("--runs") ?? 3);
 const width = Number(argumentValue("--width") ?? 1280);
 const height = Number(argumentValue("--height") ?? 820);
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? DEFAULT_TIMEOUT_MS);
+const pairingUrlFile = argumentValue("--pairing-url-file");
+const pairingUrl = pairingUrlFile
+  ? readFileSync(path.resolve(pairingUrlFile), "utf8").trim()
+  : null;
 const expectedTheme = argumentValue("--expected-theme");
 const expectedEnvironmentIdentificationMode = argumentValue(
   "--expected-environment-identification-mode",
@@ -13250,6 +13266,7 @@ for (let index = 1; index <= runs; index += 1) {
       expectNoComposerContext,
       expectedModelLabel,
       outputDirectory,
+      pairingUrl,
       projectCwd,
       requireCanonicalThread:
         !lifecycleOnlyEmptyFixture &&

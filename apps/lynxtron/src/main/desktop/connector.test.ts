@@ -5,8 +5,62 @@ import path from "node:path";
 import {
   dispatchWithTransportRecovery,
   materializeTurnBootstrap,
+  resolveConnectorLaunchTarget,
   retryRpcTransportOpen,
 } from "./connector";
+
+describe("connector launch target", () => {
+  it("keeps the existing owned local-server mode by default", () => {
+    assert.deepEqual(resolveConnectorLaunchTarget({ T3_LYNXTRON_BASE_DIR: " /tmp/t3-owned " }), {
+      kind: "owned-local",
+      baseDir: "/tmp/t3-owned",
+    });
+  });
+
+  it("attaches to a direct pairing URL instead of owning another server", () => {
+    assert.deepEqual(
+      resolveConnectorLaunchTarget({
+        T3_LYNXTRON_BASE_DIR: "/tmp/ignored-owned-state",
+        T3_LYNXTRON_PAIRING_URL: "http://127.0.0.1:45679/pair#token=pairing-secret",
+      }),
+      {
+        kind: "existing-environment",
+        httpBaseUrl: "http://127.0.0.1:45679/",
+        wsBaseUrl: "ws://127.0.0.1:45679/",
+        credential: "pairing-secret",
+      },
+    );
+  });
+
+  it("resolves hosted pairing links through the shared remote contract", () => {
+    assert.deepEqual(
+      resolveConnectorLaunchTarget({
+        T3_LYNXTRON_PAIRING_URL:
+          "https://app.t3.codes/pair?host=https%3A%2F%2Fdesktop.example%3A44342%2F#token=pairing-secret",
+      }),
+      {
+        kind: "existing-environment",
+        httpBaseUrl: "https://desktop.example:44342/",
+        wsBaseUrl: "wss://desktop.example:44342/",
+        credential: "pairing-secret",
+      },
+    );
+  });
+
+  it("keeps external-environment ownership out of the connector lifecycle", () => {
+    const source = readFileSync(path.join(import.meta.dirname, "connector.ts"), "utf8");
+    const existingConnect = source.slice(
+      source.indexOf("private async connectExistingEnvironment"),
+      source.indexOf("  private async finishConnection"),
+    );
+    const dispose = source.slice(source.indexOf("dispose(): void"));
+
+    assert.notInclude(existingConnect, "spawn(");
+    assert.include(existingConnect, "this.ownsServer = false;");
+    assert.include(existingConnect, "return this.finishConnection({ ensureProject: false });");
+    assert.include(dispose, 'this.child?.kill("SIGKILL")');
+  });
+});
 
 describe("materializeTurnBootstrap", () => {
   it("adds a unique temporary branch for a worktree bootstrap", () => {

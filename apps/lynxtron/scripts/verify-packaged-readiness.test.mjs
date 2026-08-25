@@ -13,6 +13,15 @@ const outcomeChecksSource = source.slice(
 );
 
 describe("packaged readiness Sidebar geometry", () => {
+  it("attaches verification to an existing environment without reporting credentials", () => {
+    assert.include(source, '"--pairing-url-file"');
+    assert.include(source, "T3_LYNXTRON_PAIRING_URL: pairingUrl");
+    assert.include(source, 'mode: pairingUrl ? "existing-environment" : "owned-local"');
+    assert.include(source, "serverOwned: !pairingUrl");
+    assert.include(source, "if (!pairingUrl) {");
+    assert.notInclude(source, "pairingUrl,\n      transport,");
+  });
+
   it("verifies every row and card with read-only DevTool box models", () => {
     assert.include(source, "--verify-sidebar-geometry");
     assert.include(source, '"--no-daemon"');
