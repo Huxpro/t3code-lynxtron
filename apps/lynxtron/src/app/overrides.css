@@ -9362,7 +9362,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 50;
+  z-index: 0;
   background-color: transparent;
 }
 .model-picker-panel {
@@ -9379,7 +9379,7 @@
   border-color: rgba(var(--border-rgb), 0.72);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   overflow: hidden;
-  z-index: 51;
+  z-index: 1;
 }
 .theme-dark .model-picker-panel {
   background-color: #191919;
