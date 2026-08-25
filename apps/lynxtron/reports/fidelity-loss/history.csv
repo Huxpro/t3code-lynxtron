@@ -244,3 +244,4 @@ shared-environment-web-native-sync,2026-08-24T22:50:33-07:00,3c53163f4,commit,Sh
 default-electron-environment-native-sync,2026-08-25T00:44:58-07:00,60ee0b855,commit,Default Electron environment Native synchronization,0.207291,0.207291,0.036031,0.177662,0.822338,0.783823
 background-only-file-review-native-flow,2026-08-25T05:49:00-07:00,4b76a8e5046e2a4fec2174a1ffdf0d2b14165976,commit,Background-only Native file review flow,0.205186,0.205186,0.035939,0.175557,0.824443,0.785928
 right-panel-terminal-scope-discovery,2026-08-25T09:25:00-07:00,a64903741c0bc32a0e35d155ff4dbafb29a41b0a,commit,Right panel Terminal scope discovery,0.205186,0.205186,0.035939,0.175557,0.824443,0.785928
+right-panel-terminal-native-first-slice,2026-08-25T10:04:00-07:00,84151c938e76e3b3b1efe9bab7d3b314ccad6408,commit,Right panel Terminal Native first functional slice,0.201229,0.201229,0.036452,0.17101,0.82899,0.789885

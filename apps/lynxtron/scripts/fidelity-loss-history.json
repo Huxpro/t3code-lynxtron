@@ -16917,6 +16917,53 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "right-panel-terminal-native-first-slice",
+      "observedAt": "2026-08-25T10:04:00-07:00",
+      "commit": "84151c938e76e3b3b1efe9bab7d3b314ccad6408",
+      "codeCommit": "5c7366b9db84b39b377ecd464baf020d9539ada1",
+      "codeState": "commit",
+      "label": "Right panel Terminal Native first functional slice",
+      "narrative": "The enabled Native Terminal action no longer opens a static placeholder. A fresh workspace @lynx-js/lynxtron 0.0.16 process uses an isolated copy of the exact background-only and Update README environment, opens a server-backed term-1 PTY at /Users/bytedance/github/background-only, renders its running prompt, accepts physical text input, sends pwd through the visible Run action, streams the exact cwd back into the panel, and closes the terminal with deleteHistory so no terminal log remains. The run uses one 1280x820 light Native window, main transport, and zero renderer errors. Physical Return did not submit, and the Native slice does not yet implement Web's xterm-compatible key-by-key input, selection, resize, or split terminals; those remain explicit product residuals. Lynx-for-Web remains missing coverage in this slice.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The committed connector and UI replace a knowingly nonfunctional placeholder with a real PTY lifecycle. Only directly observed Native content, runtime, and partial interaction receive credit; all unmeasured clients and dimensions remain unknown."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-native.json",
+          "classification": "tracked-current",
+          "sha256": "8c2c7955ea09b9230b0a6a38a8e2f5baeb1e196ca57ec508a930ad7364324111"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-terminal-real-pty-content",
+              "source": "The exact Native surface renders the running shell prompt, active workspace cwd, pwd command, and exact cwd output instead of placeholder copy"
+            },
+            "interaction": {
+              "residual": 0.35,
+              "confidence": 0.99,
+              "method": "native-terminal-command-and-close-flow",
+              "source": "Physical pointer and keyboard input prove open, type, Run, streamed output, tab close, and deleteHistory; Return submit and full PTY interactions remain missing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-terminal-main-transport",
+              "source": "The main-owned connector opens, attaches, writes, streams, and closes term-1 against the isolated server with no renderer errors or retained terminal history"
+            }
+          }
+        }
+      ]
     }
   ]
 }
