@@ -18,6 +18,7 @@ import { isNightlyDesktopVersion } from "../updates/updateChannels.ts";
 export interface MakeDesktopEnvironmentInput {
   readonly dirname: string;
   readonly homeDirectory: string;
+  readonly temporaryDirectory?: string;
   readonly platform: NodeJS.Platform;
   readonly processArch: string;
   readonly appVersion: string;
@@ -40,6 +41,7 @@ export class DesktopEnvironment extends Context.Service<
     readonly appPath: string;
     readonly resourcesPath: string;
     readonly homeDirectory: string;
+    readonly temporaryDirectory: string;
     readonly appDataDirectory: string;
     readonly userDataPathOverride: Option.Option<string>;
     readonly baseDir: string;
@@ -179,6 +181,7 @@ const make = Effect.fn("desktop.environment.make")(function* (
     appPath: input.appPath,
     resourcesPath,
     homeDirectory,
+    temporaryDirectory: input.temporaryDirectory ?? input.homeDirectory,
     appDataDirectory,
     userDataPathOverride,
     baseDir,

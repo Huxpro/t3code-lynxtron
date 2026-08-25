@@ -103,6 +103,7 @@ import {
 import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
+import { discoverDesktopLocalEnvironment } from "./localEnvironmentRendezvous.ts";
 import { projectRepoContext, type ProjectRepoContext } from "../../shared/connectorProtocol.ts";
 import {
   acknowledgePendingMutationAtSequence,
@@ -250,18 +251,39 @@ export type ConnectorLaunchTarget =
       readonly httpBaseUrl: string;
       readonly wsBaseUrl: string;
       readonly credential: string;
+      readonly source: "explicit-pairing-url" | "desktop-rendezvous";
+      readonly expectedEnvironmentId?: string;
     };
 
 export function resolveConnectorLaunchTarget(
   env: Readonly<Record<string, string | undefined>> = process.env,
+  discoverLocalEnvironment: typeof discoverDesktopLocalEnvironment = discoverDesktopLocalEnvironment,
 ): ConnectorLaunchTarget {
   const pairingUrl = env.T3_LYNXTRON_PAIRING_URL?.trim();
   if (pairingUrl) {
-    return { kind: "existing-environment", ...resolveRemotePairingTarget({ pairingUrl }) };
+    return {
+      kind: "existing-environment",
+      source: "explicit-pairing-url",
+      ...resolveRemotePairingTarget({ pairingUrl }),
+    };
+  }
+  const explicitBaseDir = env.T3_LYNXTRON_BASE_DIR?.trim();
+  if (!explicitBaseDir) {
+    const rendezvous = discoverLocalEnvironment();
+    if (rendezvous) {
+      return {
+        kind: "existing-environment",
+        source: "desktop-rendezvous",
+        httpBaseUrl: rendezvous.httpBaseUrl,
+        wsBaseUrl: rendezvous.wsBaseUrl,
+        credential: rendezvous.bootstrapCredential,
+        expectedEnvironmentId: rendezvous.environmentId,
+      };
+    }
   }
   return {
     kind: "owned-local",
-    baseDir: env.T3_LYNXTRON_BASE_DIR?.trim() || path.join(os.homedir(), ".t3-lynxtron"),
+    baseDir: explicitBaseDir || path.join(os.homedir(), ".t3-lynxtron"),
   };
 }
 
@@ -418,6 +440,24 @@ export class T3Connector {
     this.ownsServer = false;
     this.serverExited = false;
     this.events.onStatus("connecting", "Connecting to existing T3 environment…");
+    if (target.expectedEnvironmentId) {
+      const descriptor = await httpRequest(
+        this.httpBaseUrl,
+        "/.well-known/t3/environment",
+        "GET",
+        {},
+      );
+      if (descriptor.status !== 200) {
+        throw new Error(`environment descriptor failed (${descriptor.status})`);
+      }
+      const environmentId = (JSON.parse(descriptor.body) as { environmentId?: unknown })
+        .environmentId;
+      if (environmentId !== target.expectedEnvironmentId) {
+        throw new Error(
+          `environment identity mismatch (expected ${target.expectedEnvironmentId}, received ${String(environmentId)})`,
+        );
+      }
+    }
     const form = new URLSearchParams({
       grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
       subject_token: target.credential,

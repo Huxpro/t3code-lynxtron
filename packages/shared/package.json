@@ -214,6 +214,10 @@
     "./devProxy": {
       "types": "./src/devProxy.ts",
       "import": "./src/devProxy.ts"
+    },
+    "./localEnvironmentRendezvous": {
+      "types": "./src/localEnvironmentRendezvous.ts",
+      "import": "./src/localEnvironmentRendezvous.ts"
     }
   },
   "scripts": {

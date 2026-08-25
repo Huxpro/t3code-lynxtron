@@ -1,10 +1,16 @@
 import * as Cause from "effect/Cause";
+import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
 import * as Option from "effect/Option";
 import * as Ref from "effect/Ref";
 import * as Schema from "effect/Schema";
+import * as HttpClient from "effect/unstable/http/HttpClient";
+import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
+import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
 
 import * as NetService from "@t3tools/shared/Net";
+import { ExecutionEnvironmentDescriptor } from "@t3tools/contracts";
 import * as Crypto from "effect/Crypto";
 import * as ElectronApp from "../electron/ElectronApp.ts";
 import * as ElectronDialog from "../electron/ElectronDialog.ts";
@@ -25,6 +31,10 @@ import * as DesktopShellEnvironment from "../shell/DesktopShellEnvironment.ts";
 import * as DesktopState from "./DesktopState.ts";
 import * as DesktopUpdates from "../updates/DesktopUpdates.ts";
 import * as DesktopWslBackend from "../wsl/DesktopWslBackend.ts";
+import {
+  publishDesktopLocalEnvironment,
+  removeDesktopLocalEnvironment,
+} from "../backend/DesktopLocalEnvironmentRendezvous.ts";
 
 const DEFAULT_DESKTOP_BACKEND_PORT = 3773;
 const MAX_TCP_PORT = 65_535;
@@ -145,6 +155,8 @@ const bootstrap = Effect.gen(function* () {
   const serverExposure = yield* DesktopServerExposure.DesktopServerExposure;
   const wslBackend = yield* DesktopWslBackend.DesktopWslBackend;
   const desktopWindow = yield* DesktopWindow.DesktopWindow;
+  const fileSystem = yield* FileSystem.FileSystem;
+  const httpClient = yield* HttpClient.HttpClient;
   yield* logBootstrapInfo("bootstrap start");
 
   if (environment.isDevelopment && Option.isNone(environment.configuredBackendPort)) {
@@ -207,6 +219,47 @@ const bootstrap = Effect.gen(function* () {
     }
     yield* primaryBackend.start;
     yield* logBootstrapInfo("bootstrap backend start requested");
+    yield* Effect.addFinalizer(() =>
+      removeDesktopLocalEnvironment({
+        ownerPid: process.pid,
+        temporaryDirectory: environment.temporaryDirectory,
+      }).pipe(Effect.provideService(FileSystem.FileSystem, fileSystem), Effect.ignore),
+    );
+    yield* Effect.forkScoped(
+      Effect.gen(function* () {
+        if (!(yield* primaryBackend.waitForReady(Duration.minutes(1)))) return;
+        const config = yield* primaryBackend.currentConfig;
+        if (Option.isNone(config)) return;
+        const descriptor = yield* httpClient
+          .execute(
+            HttpClientRequest.get(
+              new URL("/.well-known/t3/environment", config.value.httpBaseUrl).toString(),
+            ),
+          )
+          .pipe(
+            Effect.flatMap(HttpClientResponse.filterStatusOk),
+            Effect.flatMap(HttpClientResponse.schemaBodyJson(ExecutionEnvironmentDescriptor)),
+          );
+        yield* publishDesktopLocalEnvironment({
+          ownerPid: process.pid,
+          temporaryDirectory: environment.temporaryDirectory,
+          environmentId: descriptor.environmentId,
+          httpBaseUrl: config.value.httpBaseUrl.href,
+          wsBaseUrl: config.value.httpBaseUrl.href.replace(/^http/u, "ws"),
+          bootstrapCredential: config.value.bootstrap.desktopBootstrapToken,
+        }).pipe(Effect.provideService(FileSystem.FileSystem, fileSystem));
+        yield* logBootstrapInfo("published local environment rendezvous", {
+          environmentId: descriptor.environmentId,
+          baseUrl: config.value.httpBaseUrl.href,
+        });
+      }).pipe(
+        Effect.catch((error) =>
+          logBootstrapWarning("failed to publish local environment rendezvous", {
+            error: String(error),
+          }),
+        ),
+      ),
+    );
     // Bring up the WSL backend if the user previously enabled it. The
     // primary is already starting; reconcile fires off the WSL register
     // in parallel rather than blocking primary readiness on a possibly

@@ -71,6 +71,7 @@ const desktopEnvironmentLayer = Layer.unwrap(
     return DesktopEnvironment.layer({
       dirname: __dirname,
       homeDirectory: NodeOS.homedir(),
+      temporaryDirectory: NodeOS.tmpdir(),
       platform,
       processArch,
       ...metadata,
