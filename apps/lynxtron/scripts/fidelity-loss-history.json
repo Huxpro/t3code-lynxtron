@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-24T22:51:41-07:00",
+  "updatedAt": "2026-08-25T00:45:00-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16841,6 +16841,28 @@
           "path": "apps/lynxtron/evidence/2026-08-24/fidelity/shared-environment-web-native-sync.json",
           "classification": "tracked-current",
           "sha256": "208e7ac7db7a356f32d634699ce233fe48e3028e85619b8ead92afc0a6485454"
+        }
+      ],
+      "updates": []
+    },
+    {
+      "id": "default-electron-environment-native-sync",
+      "observedAt": "2026-08-25T00:44:58-07:00",
+      "commit": "60ee0b855",
+      "codeCommit": "faed3ff91",
+      "codeState": "commit",
+      "label": "Default Electron environment Native synchronization",
+      "narrative": "The default Lynxtron launch now discovers the active Electron-owned local environment through a private PID-owned rendezvous instead of creating a second server. A read-only VACUUM INTO snapshot of the visible Electron showcase preserves the exact background-only project and Update README thread. A fresh Electron build publishes the scoped bootstrap descriptor at mode 0600; a fresh workspace @lynx-js/lynxtron 0.0.16 process launches without an explicit pairing URL or Lynxtron base directory and reports the same project, thread, active thread id, ready status, and main transport sequence 8. Both owned clients and the server are disposed, the descriptor is removed, and no credential enters evidence. Exact screenshot and geometry capture remain a separate harness loss because Lynxtron 0.0.16 makes DevTool opt-in while the pre-existing 0.0.8 instance occupied the fixed Desktop debug-router port.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "This closes the default environment split that hid Electron threads from Lynxtron. The current fidelity model has no environment-ownership dimension, so no state weight, denominator, threshold, filter, or visual residual is changed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/default-electron-environment-native-sync.json",
+          "classification": "tracked-current",
+          "sha256": "1df2fed0756ef360f9a4ec546afa0f6ae6285cb65659af7871039c1b6437587f"
         }
       ],
       "updates": []
