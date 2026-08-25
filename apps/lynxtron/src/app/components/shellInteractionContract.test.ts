@@ -398,10 +398,11 @@ describe("desktop shell interaction contract", () => {
     expect(frameBlock).toContain("box-shadow:");
   });
 
-  it("opens a truthful Terminal placeholder from the titlebar control", () => {
+  it("opens a real Terminal session from the titlebar control", () => {
     const header = componentSource("ChatHeader.tsx");
     const chatView = componentSource("ChatView.tsx");
     const panel = componentSource("RightPanel.tsx");
+    const terminal = componentSource("TerminalPanel.tsx");
 
     expect(header).toContain("export function ChatLayoutControls");
     expect(header).toContain('aria-label="Open terminal panel"');
@@ -415,8 +416,15 @@ describe("desktop shell interaction contract", () => {
       "layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}",
     );
     expect(panel).toContain('case "terminal":');
-    expect(panel).toContain('data-terminal-placeholder="true"');
+    expect(panel).toContain("<TerminalPanel />");
+    expect(panel).toContain("closeTerminalSession(activeThreadId)");
     expect(panel).toContain('bindtap={() => handleAddSurface("terminal")}');
+    expect(terminal).toContain(".openTerminal({");
+    expect(terminal).toContain(".writeTerminal({");
+    expect(terminal).toContain(".closeTerminal({");
+    expect(terminal).toContain('confirm-type="send"');
+    expect(terminal).toContain('data-terminal-session-status={session?.status ?? "starting"}');
+    expect(terminal).not.toContain("Terminal sessions are not connected yet");
     expect(overrides).toContain(".topbar__toggle:hover {");
     expect(overrides).toContain(".topbar__toggle:active {");
   });

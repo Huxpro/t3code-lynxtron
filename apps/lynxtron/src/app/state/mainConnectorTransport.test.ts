@@ -35,6 +35,7 @@ function makeSnapshot(seqTag: string): ConnectorSnapshot {
     },
     shell: { projects: [], threads: [{ id: seqTag } as never] },
     threads: {},
+    terminals: {},
   };
 }
 

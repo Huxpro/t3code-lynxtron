@@ -141,6 +141,22 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
       calls.push({ method: "revokePairingLink", input });
       return Promise.resolve(true);
     },
+    openTerminal: (input: unknown) => {
+      calls.push({ method: "openTerminal", input });
+      return Promise.resolve({ status: "running" });
+    },
+    writeTerminal: (input: unknown) => {
+      calls.push({ method: "writeTerminal", input });
+      return Promise.resolve();
+    },
+    resizeTerminal: (input: unknown) => {
+      calls.push({ method: "resizeTerminal", input });
+      return Promise.resolve();
+    },
+    closeTerminal: (input: unknown) => {
+      calls.push({ method: "closeTerminal", input });
+      return Promise.resolve();
+    },
   };
   const host = new MainConnectorHost({
     window: {
@@ -248,6 +264,33 @@ describe("main connector host", () => {
         .automaticGitFetchInterval,
       30_000,
     );
+  });
+
+  it("streams terminal state and retains it in resync snapshots", async () => {
+    const { host, connector, handlers, pushed } = createHarness();
+    host.attach();
+    await host.connect();
+    (
+      connector.onTerminal as unknown as (
+        threadId: string,
+        terminalId: string,
+        payload: unknown,
+      ) => void
+    )("t1", "term-1", {
+      threadId: "t1",
+      terminalId: "term-1",
+      cwd: "/repo",
+      status: "running",
+      history: "ready\n",
+      error: null,
+      updatedAt: "2026-08-25T00:00:00.000Z",
+    });
+
+    assert.equal(pushed.at(-1)?.kind, "terminal");
+    const ready = handlers.get(T3_CONNECTOR_METHODS.ready)!({}) as {
+      snapshot: { terminals: Record<string, { history: string }> };
+    };
+    assert.equal(ready.snapshot.terminals["t1\u0000term-1"]?.history, "ready\n");
   });
 
   it("dispatches allowlisted commands and rejects unknown ones", async () => {
@@ -372,6 +415,33 @@ describe("main connector host", () => {
 
     await command({ method: "revokePairingLink", params: { id: "link-1" } });
     assert.deepEqual(connector.calls[14], { method: "revokePairingLink", input: "link-1" });
+
+    await command({
+      method: "openTerminal",
+      params: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
+    });
+    assert.deepEqual(connector.calls[15], {
+      method: "openTerminal",
+      input: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
+    });
+
+    await command({
+      method: "writeTerminal",
+      params: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
+    });
+    assert.deepEqual(connector.calls[16], {
+      method: "writeTerminal",
+      input: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
+    });
+
+    await command({
+      method: "closeTerminal",
+      params: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
+    });
+    assert.deepEqual(connector.calls[17], {
+      method: "closeTerminal",
+      input: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
+    });
 
     await assertRejects(command({ method: "dispose" }), /Rejected connector command/);
     await assertRejects(command({ method: "connect" }), /Rejected connector command/);

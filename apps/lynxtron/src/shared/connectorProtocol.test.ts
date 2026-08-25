@@ -189,6 +189,10 @@ describe("connector protocol guards", () => {
     assert.isTrue(isConnectorCommandName("refreshProviders"));
     assert.isTrue(isConnectorCommandName("updateProvider"));
     assert.isTrue(isConnectorCommandName("revokeOtherClientSessions"));
+    assert.isTrue(isConnectorCommandName("openTerminal"));
+    assert.isTrue(isConnectorCommandName("writeTerminal"));
+    assert.isTrue(isConnectorCommandName("resizeTerminal"));
+    assert.isTrue(isConnectorCommandName("closeTerminal"));
     assert.isFalse(isConnectorCommandName("dispose"));
     assert.isFalse(isConnectorCommandName("connect"));
     assert.isFalse(isConnectorCommandName("__proto__"));
@@ -198,6 +202,15 @@ describe("connector protocol guards", () => {
   it("validates sequenced envelopes", () => {
     assert.isTrue(isConnectorEventEnvelope({ seq: 1, kind: "status", payload: {} }));
     assert.isTrue(isConnectorEventEnvelope({ seq: 9, kind: "thread", threadId: "t", payload: {} }));
+    assert.isTrue(
+      isConnectorEventEnvelope({
+        seq: 10,
+        kind: "terminal",
+        threadId: "t",
+        terminalId: "term-1",
+        payload: {},
+      }),
+    );
     assert.isFalse(isConnectorEventEnvelope({ seq: 0, kind: "status", payload: {} }));
     assert.isFalse(isConnectorEventEnvelope({ seq: 1.5, kind: "status", payload: {} }));
     assert.isFalse(isConnectorEventEnvelope({ seq: 1, kind: "everything", payload: {} }));
@@ -212,6 +225,7 @@ describe("connector protocol guards", () => {
       access: { pairingLinks: [], clientSessions: [] },
       shell: { projects: [], threads: [] },
       threads: {},
+      terminals: {},
     };
     assert.isTrue(isConnectorSyncReply({ seq: 0, snapshot }));
     assert.isTrue(isConnectorSyncReply({ seq: 12, snapshot }));
