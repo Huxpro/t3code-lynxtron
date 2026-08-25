@@ -278,10 +278,30 @@ function getBridge(): Partial<PollBridge> | undefined {
 }
 
 function patchState(partial: Partial<T3ClientState>): void {
-  appAtomRegistry.set(t3ClientStateAtom, {
+  const next = {
     ...appAtomRegistry.get(t3ClientStateAtom),
     ...partial,
-  });
+  };
+  appAtomRegistry.set(t3ClientStateAtom, next);
+  const reportReadiness = getPreloadBridge()?.reportReadiness as
+    | ((value: Record<string, unknown>) => boolean)
+    | undefined;
+  if (reportReadiness && next.status === "ready" && next.projects.length > 0) {
+    reportReadiness({
+      status: next.status,
+      projects: next.projects.map((project) => ({ id: project.id, title: project.title })),
+      threads: next.threads.map((thread) => ({
+        id: thread.id,
+        projectId: thread.projectId,
+        title: thread.title,
+      })),
+      activeThreadId: next.activeThreadId ?? null,
+      transport: {
+        kind: mainTransport ? "main" : "unavailable",
+        lastSeq: mainTransport?.lastSeq ?? -1,
+      },
+    });
+  }
 }
 
 function activeVcsCwd(state: T3ClientState): string | null {

@@ -66,11 +66,27 @@ function writePrefs(patch: Record<string, unknown>): Record<string, unknown> {
   return next;
 }
 
+const READINESS_REPORT_PATH = process.env.T3_LYNXTRON_READINESS_REPORT?.trim();
+function reportReadiness(value: Record<string, unknown>): boolean {
+  if (!READINESS_REPORT_PATH) return false;
+  try {
+    fs.mkdirSync(path.dirname(READINESS_REPORT_PATH), { recursive: true });
+    const temporaryPath = `${READINESS_REPORT_PATH}.${process.pid}.tmp`;
+    fs.writeFileSync(temporaryPath, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 });
+    fs.renameSync(temporaryPath, READINESS_REPORT_PATH);
+    fs.chmodSync(READINESS_REPORT_PATH, 0o600);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 contextBridge.exposeInLynxBTS({
   getAppBranding: () => resolveLynxtronAppBranding(process.env.T3_LYNXTRON_APP_STAGE_LABEL),
   // Preference persistence (sync; small JSON file).
   getPrefs: () => readPrefs(),
   setPrefs: (patch: Record<string, unknown>) => writePrefs(patch ?? {}),
+  ...(READINESS_REPORT_PATH ? { reportReadiness } : {}),
   writeClipboardText: (value: string) => clipboard.writeText(value),
   openExternal: async (url: string) => {
     await shell.openExternal(url);

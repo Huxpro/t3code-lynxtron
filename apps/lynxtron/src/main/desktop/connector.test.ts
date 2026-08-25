@@ -25,6 +25,7 @@ describe("connector launch target", () => {
       }),
       {
         kind: "existing-environment",
+        source: "explicit-pairing-url",
         httpBaseUrl: "http://127.0.0.1:45679/",
         wsBaseUrl: "ws://127.0.0.1:45679/",
         credential: "pairing-secret",
@@ -40,11 +41,65 @@ describe("connector launch target", () => {
       }),
       {
         kind: "existing-environment",
+        source: "explicit-pairing-url",
         httpBaseUrl: "https://desktop.example:44342/",
         wsBaseUrl: "wss://desktop.example:44342/",
         credential: "pairing-secret",
       },
     );
+  });
+
+  it("keeps an explicit isolated base directory ahead of desktop auto-discovery", () => {
+    assert.deepEqual(
+      resolveConnectorLaunchTarget({ T3_LYNXTRON_BASE_DIR: "/tmp/isolated" }, () => ({
+        version: 1,
+        ownerPid: 101,
+        environmentId: "desktop",
+        httpBaseUrl: "http://127.0.0.1:45679/",
+        wsBaseUrl: "ws://127.0.0.1:45679/",
+        bootstrapCredential: "desktop-secret",
+        publishedAt: "2026-08-24T01:00:00Z",
+      })),
+      { kind: "owned-local", baseDir: "/tmp/isolated" },
+    );
+  });
+
+  it("attaches to the newest live desktop environment by default", () => {
+    assert.deepEqual(
+      resolveConnectorLaunchTarget({}, () => ({
+        version: 1,
+        ownerPid: 101,
+        environmentId: "desktop-environment",
+        httpBaseUrl: "http://127.0.0.1:45679/",
+        wsBaseUrl: "ws://127.0.0.1:45679/",
+        bootstrapCredential: "desktop-secret",
+        publishedAt: "2026-08-24T01:00:00Z",
+      })),
+      {
+        kind: "existing-environment",
+        source: "desktop-rendezvous",
+        httpBaseUrl: "http://127.0.0.1:45679/",
+        wsBaseUrl: "ws://127.0.0.1:45679/",
+        credential: "desktop-secret",
+        expectedEnvironmentId: "desktop-environment",
+      },
+    );
+  });
+
+  it("keeps an explicit pairing URL ahead of desktop auto-discovery", () => {
+    const target = resolveConnectorLaunchTarget(
+      { T3_LYNXTRON_PAIRING_URL: "http://127.0.0.1:4777/pair#token=explicit" },
+      () => {
+        throw new Error("desktop discovery must not run");
+      },
+    );
+    assert.deepEqual(target, {
+      kind: "existing-environment",
+      source: "explicit-pairing-url",
+      httpBaseUrl: "http://127.0.0.1:4777/",
+      wsBaseUrl: "ws://127.0.0.1:4777/",
+      credential: "explicit",
+    });
   });
 
   it("keeps external-environment ownership out of the connector lifecycle", () => {
@@ -57,6 +112,7 @@ describe("connector launch target", () => {
 
     assert.notInclude(existingConnect, "spawn(");
     assert.include(existingConnect, "this.ownsServer = false;");
+    assert.include(existingConnect, "target.expectedEnvironmentId");
     assert.include(existingConnect, "return this.finishConnection({ ensureProject: false });");
     assert.include(dispose, 'this.child?.kill("SIGKILL")');
   });
