@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T20:05:56-07:00",
+  "stateId": "model-picker-selected",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "light",
+    "semanticRoute": "sessionless-idle"
+  },
+  "commits": {
+    "product": "ec68e3ab227fd941cdc390fa77835683b366efbf",
+    "contract": "58f0cfb6888c7daf8ab2fbffe42343bf1a069294"
+  },
+  "diagnosis": {
+    "preFixBundle": "3e56d69e534ec14b5e51d681597d2f8947e3ddee996fe270458015105e6fd443",
+    "nativeHitTest": {
+      "target": [600, 215],
+      "resolvedNode": "model-picker-dismiss-layer",
+      "dismissLayerBox": [0, 0, 1280, 820],
+      "result": "The full-screen sibling dismissal layer consumed a visible model-row touch; the picker closed while the connector sequence and thread model selection remained unchanged."
+    },
+    "cause": "On Lynxtron Desktop, the full-screen sibling dismissal layer won native hit testing over the visually higher model-picker panel despite their CSS z-index values."
+  },
+  "repair": {
+    "structure": "The route root owns outside dismissal. The picker panel catches internal taps, and the transparent picker surface is event-through rather than a competing full-screen hit target.",
+    "native": {
+      "status": "pass",
+      "bundle": {
+        "sha256": "b38872ed37e3f7f32921a497ac2839446d18449b0d146359baed2cb9e9ba3f46",
+        "bytes": 5315775
+      },
+      "fixture": {
+        "source": "/tmp/t3-model-picker-fixture.XI2Rc3",
+        "snapshotId": "58959b1e5b0a81892ac9e6519d3d4506b658f4708e101c3f9539fcb6ccbd891e",
+        "threadId": "445f5cb6-fe19-4044-b2bf-e30b658d431e"
+      },
+      "input": "DevTool Input.emulateTouchFromMouseEvent on the measured model trigger and model row",
+      "row": {
+        "key": "codex:gpt-5.6-terra",
+        "rect": [451, 480, 304, 53]
+      },
+      "selection": {
+        "before": { "instanceId": "codex", "model": "gpt-5.6-sol" },
+        "after": { "instanceId": "codex", "model": "gpt-5.6-terra" },
+        "persisted": { "instanceId": "codex", "model": "gpt-5.6-terra" },
+        "modelLabel": { "before": "GPT-5.6-Sol", "after": "GPT-5.6-Terra" },
+        "pending": false,
+        "error": null,
+        "overlayDismissed": true
+      },
+      "transport": { "beforeSequence": 13, "afterSequence": 18, "kind": "main" },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true,
+      "artifacts": {
+        "readinessReportSha256": "915ebf7c72a8d238085a341fc75c0bfdd7b185679305a4725821904ef911adf5",
+        "screenshotSha256": "9ffc13e79009398916adb6c0c2c72f8036dc9f7953e45d4d6455b53f2c01182d",
+        "screenshotRetainedInGit": false
+      }
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "A visible native model row no longer dismisses without executing its selection handler.",
+      "Native touch changes the composer label, active thread selection, and persisted model selection through the main connector."
+    ],
+    "evidenceBoundary": [
+      "The expanded provider/query/empty native flow reached all three states but its DevTool session disconnected during final teardown; it is not used to claim additional coverage.",
+      "Native physical keyboard typing, keyboard navigation, and focus-return remain pending-user-session evidence."
+    ],
+    "policy": "No state weights, denominator entries, filters, thresholds, or residual policy changed."
+  },
+  "validation": {
+    "focusedContracts": "57/57",
+    "lynxTypecheck": "pass",
+    "productionBuild": "pass with existing unsupported CSS and Effect warnings",
+    "exactNativeSelection": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}
