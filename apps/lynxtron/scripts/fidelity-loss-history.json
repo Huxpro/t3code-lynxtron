@@ -2,7 +2,7 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-history",
   "modelId": "t3-lynxtron-fidelity-loss-v1",
-  "updatedAt": "2026-08-24T17:12:14-07:00",
+  "updatedAt": "2026-08-24T22:51:41-07:00",
   "provenance": {
     "referenceSystem": {
       "repository": "/Users/bytedance/github/synara",
@@ -16819,6 +16819,28 @@
           "path": "apps/lynxtron/evidence/2026-08-24/fidelity/quick-switch-default-light-current-native.json",
           "classification": "tracked-current",
           "sha256": "33ebf1d35c5a3729614b34dd1efd646bf000cda23e918693bf6ab73a2ceaf508"
+        }
+      ],
+      "updates": []
+    },
+    {
+      "id": "shared-environment-web-native-sync",
+      "observedAt": "2026-08-24T22:50:33-07:00",
+      "commit": "3c53163f4",
+      "codeCommit": "70408f5e4",
+      "codeState": "commit",
+      "label": "Shared environment Web and Native thread synchronization",
+      "narrative": "Lynxtron can now consume a direct or hosted pairing URL and attach to the existing T3 environment instead of always starting a second isolated server. A disposable one-server run pairs the real Web UI and packaged Native with separate credentials. Web renames one durable thread through real pointer and keyboard input, the owner projection receives it, and exact Native renders the same Web-authored title with main transport sequence 3 to 7 and zero renderer errors. After Native exits, an owner mutation remains visible in the already-paired Web UI, proving external server ownership is preserved. Pairing files are mode 0600 and removed, reports contain no credential, both listeners and owned clients are disposed, and the agent-browser gate is zero. A user-facing environment picker and persistent pairing lifecycle remain separate product work.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "This closes the reported environment-isolation defect without changing the fixed fidelity denominator, state weights, thresholds, filters, or any existing visual residual. The current model has no separate cross-client environment-ownership dimension, so the evidence is recorded without manufacturing score credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/shared-environment-web-native-sync.json",
+          "classification": "tracked-current",
+          "sha256": "208e7ac7db7a356f32d634699ce233fe48e3028e85619b8ead92afc0a6485454"
         }
       ],
       "updates": []
