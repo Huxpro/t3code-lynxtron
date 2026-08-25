@@ -16901,6 +16901,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-scope-discovery",
+      "observedAt": "2026-08-25T09:25:00-07:00",
+      "commit": "a64903741c0bc32a0e35d155ff4dbafb29a41b0a",
+      "codeCommit": "a64903741c0bc32a0e35d155ff4dbafb29a41b0a",
+      "codeState": "commit",
+      "label": "Right panel Terminal scope discovery",
+      "narrative": "A source-to-ledger coverage audit found a reachable right-panel Terminal state absent from the fixed model. Web owns a real terminal lifecycle with server-backed open, attach, write, resize, and close operations. Native exposes the same enabled Terminal action and promises to start a shell, but the committed surface only renders a static not-connected placeholder. This is a P1 product loss rather than an intentional platform delta. The state enters the denominator with all twelve Lynx-for-Web and Native dimension cells unknown before repair evidence is applied.",
+      "attribution": {
+        "allocation": "scope-discovery",
+        "confidence": 0.99,
+        "reason": "The newly discovered reachable product state is admitted before repair credit. Existing states, weights, thresholds, filters, and residuals are unchanged."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
