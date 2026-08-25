@@ -16,6 +16,7 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import * as crypto from "node:crypto";
 import * as http from "node:http";
+import * as https from "node:https";
 import * as net from "node:net";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -101,6 +102,7 @@ import {
 } from "@t3tools/contracts";
 import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
+import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
 import { projectRepoContext, type ProjectRepoContext } from "../../shared/connectorProtocol.ts";
 import {
   acknowledgePendingMutationAtSequence,
@@ -217,15 +219,16 @@ function findFreePort(): Promise<number> {
 }
 
 function httpRequest(
-  host: string,
-  port: number,
-  path: string,
+  baseUrl: string,
+  requestPath: string,
   method: string,
   headers: Record<string, string>,
   body?: string,
 ): Promise<{ status: number; body: string }> {
   return new Promise((resolve, reject) => {
-    const req = http.request({ host, port, path, method, headers, timeout: 8000 }, (res) => {
+    const url = new URL(requestPath, baseUrl);
+    const request = url.protocol === "https:" ? https.request : http.request;
+    const req = request(url, { method, headers, timeout: 8000 }, (res) => {
       let data = "";
       res.on("data", (c) => (data += c));
       res.on("end", () => resolve({ status: res.statusCode ?? 0, body: data }));
@@ -237,10 +240,36 @@ function httpRequest(
   });
 }
 
+export type ConnectorLaunchTarget =
+  | {
+      readonly kind: "owned-local";
+      readonly baseDir: string;
+    }
+  | {
+      readonly kind: "existing-environment";
+      readonly httpBaseUrl: string;
+      readonly wsBaseUrl: string;
+      readonly credential: string;
+    };
+
+export function resolveConnectorLaunchTarget(
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): ConnectorLaunchTarget {
+  const pairingUrl = env.T3_LYNXTRON_PAIRING_URL?.trim();
+  if (pairingUrl) {
+    return { kind: "existing-environment", ...resolveRemotePairingTarget({ pairingUrl }) };
+  }
+  return {
+    kind: "owned-local",
+    baseDir: env.T3_LYNXTRON_BASE_DIR?.trim() || path.join(os.homedir(), ".t3-lynxtron"),
+  };
+}
+
 export class T3Connector {
   private child: ChildProcess | undefined;
-  private host = "127.0.0.1";
-  private port = 0;
+  private httpBaseUrl = "";
+  private wsBaseUrl = "";
+  private ownsServer = false;
   private bearer: string | undefined;
   private events: ConnectorEvents;
   private client: any;
@@ -276,30 +305,41 @@ export class T3Connector {
   }
 
   async connect(): Promise<ConnectorConnectResult> {
+    const target = resolveConnectorLaunchTarget();
+    if (target.kind === "existing-environment") {
+      return this.connectExistingEnvironment(target);
+    }
+    return this.connectOwnedLocalServer(target);
+  }
+
+  private async connectOwnedLocalServer(
+    target: Extract<ConnectorLaunchTarget, { kind: "owned-local" }>,
+  ): Promise<ConnectorConnectResult> {
     const serverBin = resolveServerBin({
       explicitPath: process.env.T3_SERVER_BIN,
       connectorDirectory: __dirname,
     });
-    this.port = await findFreePort();
+    const host = "127.0.0.1";
+    const port = await findFreePort();
+    this.httpBaseUrl = `http://${host}:${port}/`;
+    this.wsBaseUrl = `ws://${host}:${port}/`;
+    this.ownsServer = true;
     const bootstrapToken = crypto.randomBytes(24).toString("hex");
     const envelope = {
       mode: "desktop",
       noBrowser: true,
-      port: this.port,
-      host: this.host,
+      port,
+      host,
       desktopBootstrapToken: bootstrapToken,
       tailscaleServeEnabled: false,
       tailscaleServePort: 3774,
     };
     const serverOutput = process.env.T3_LYNXTRON_SERVER_STDIO === "ignore" ? "ignore" : "inherit";
 
-    this.events.onStatus("starting-server", `Launching t3 server on :${this.port}`);
-    // Isolated base dir so this instance never shares SQLite state with a
-    // separately running t3 server (e.g. the reference Electron app on ~/.t3).
-    const baseDir = process.env.T3_LYNXTRON_BASE_DIR ?? path.join(os.homedir(), ".t3-lynxtron");
+    this.events.onStatus("starting-server", `Launching t3 server on :${port}`);
     this.child = spawn(
       resolveNodeExecutable(),
-      [serverBin, "serve", "--bootstrap-fd", "3", "--base-dir", baseDir],
+      [serverBin, "serve", "--bootstrap-fd", "3", "--base-dir", target.baseDir],
       {
         // Do NOT pipe stdout/stderr: the server floods stdout with migration
         // logs + a QR code at startup, and draining that in-process starves the
@@ -331,7 +371,7 @@ export class T3Connector {
         throw new Error("t3 server process exited before becoming ready");
       }
       try {
-        const r = await httpRequest(this.host, this.port, "/.well-known/t3/environment", "GET", {});
+        const r = await httpRequest(this.httpBaseUrl, "/.well-known/t3/environment", "GET", {});
         if (r.status === 200) {
           ready = true;
           break;
@@ -353,8 +393,7 @@ export class T3Connector {
       client_device_type: "desktop",
     }).toString();
     const exchange = await httpRequest(
-      this.host,
-      this.port,
+      this.httpBaseUrl,
       "/oauth/token",
       "POST",
       {
@@ -368,7 +407,45 @@ export class T3Connector {
     }
     const bearer = JSON.parse(exchange.body).access_token as string;
     this.bearer = bearer;
+    return this.finishConnection({ ensureProject: true });
+  }
 
+  private async connectExistingEnvironment(
+    target: Extract<ConnectorLaunchTarget, { kind: "existing-environment" }>,
+  ): Promise<ConnectorConnectResult> {
+    this.httpBaseUrl = target.httpBaseUrl;
+    this.wsBaseUrl = target.wsBaseUrl;
+    this.ownsServer = false;
+    this.serverExited = false;
+    this.events.onStatus("connecting", "Connecting to existing T3 environment…");
+    const form = new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+      subject_token: target.credential,
+      subject_token_type: "urn:t3:params:oauth:token-type:environment-bootstrap",
+      requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
+      client_label: "T3 Code Lynxtron",
+      client_device_type: "desktop",
+    }).toString();
+    const exchange = await httpRequest(
+      this.httpBaseUrl,
+      "/oauth/token",
+      "POST",
+      {
+        "content-type": "application/x-www-form-urlencoded",
+        "content-length": String(Buffer.byteLength(form)),
+      },
+      form,
+    );
+    if (exchange.status !== 200) {
+      throw new Error(`token exchange failed (${exchange.status}): ${exchange.body.slice(0, 200)}`);
+    }
+    this.bearer = JSON.parse(exchange.body).access_token as string;
+    return this.finishConnection({ ensureProject: false });
+  }
+
+  private async finishConnection(options: {
+    ensureProject: boolean;
+  }): Promise<ConnectorConnectResult> {
     const config = await this.openRpc(await this.issueSocketUrl());
     this.setServerConfig(config, {
       version: 1,
@@ -390,7 +467,9 @@ export class T3Connector {
 
     // Ensure at least one project exists to chat in (fresh isolated base dir
     // starts empty). Point it at this repo's cwd.
-    await this.ensureProject();
+    if (options.ensureProject) {
+      await this.ensureProject();
+    }
 
     this.ready = true;
     this.events.onStatus("ready", undefined);
@@ -404,8 +483,7 @@ export class T3Connector {
   private async issueSocketUrl(): Promise<string> {
     if (!this.bearer) throw new Error("not connected");
     const ticketRes = await httpRequest(
-      this.host,
-      this.port,
+      this.httpBaseUrl,
       "/api/auth/websocket-ticket",
       "POST",
       {
@@ -419,14 +497,20 @@ export class T3Connector {
       throw new Error(`ws ticket failed (${ticketRes.status}): ${ticketRes.body.slice(0, 200)}`);
     }
     const wsTicket = JSON.parse(ticketRes.body).ticket as string;
-    const socketUrl = `ws://${this.host}:${this.port}/ws?wsTicket=${encodeURIComponent(wsTicket)}`;
-    this.log(`[connector] socketUrl ${socketUrl}`);
-    return socketUrl;
+    const socketUrl = new URL(this.wsBaseUrl);
+    socketUrl.pathname = "/ws";
+    socketUrl.search = "";
+    socketUrl.hash = "";
+    socketUrl.searchParams.set("wsTicket", wsTicket);
+    this.log(`[connector] socket ${socketUrl.protocol}//${socketUrl.host}${socketUrl.pathname}`);
+    return socketUrl.toString();
   }
 
   async recoverTransport(): Promise<void> {
     if (this.disposed) throw new Error("connector is disposed");
-    if (this.serverExited || !this.child) throw new Error("t3 server is not running");
+    if (this.serverExited || (this.ownsServer && !this.child)) {
+      throw new Error("t3 server is not running");
+    }
     if (this.transportRecoveryPromise) return this.transportRecoveryPromise;
     const recovery = this.rebuildRpcTransport();
     const tracked = recovery.finally(() => {
@@ -1294,8 +1378,7 @@ export class T3Connector {
     if (!this.bearer) throw new Error("not connected");
     const body = JSON.stringify(payload ?? {});
     const response = await httpRequest(
-      this.host,
-      this.port,
+      this.httpBaseUrl,
       requestPath,
       "POST",
       {
