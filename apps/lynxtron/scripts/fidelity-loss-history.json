@@ -16964,6 +16964,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-provider-wizard-scope-discovery",
+      "observedAt": "2026-08-25T12:20:00-07:00",
+      "commit": "1eff8d3d62691d3e7593f8b087a405a5d36c5f79",
+      "codeCommit": "1eff8d3d62691d3e7593f8b087a405a5d36c5f79",
+      "codeState": "commit",
+      "label": "Add Provider wizard scope discovery",
+      "narrative": "A source-to-ledger audit found that the reachable three-step Add Provider wizard was only subsumed under the broad Settings Providers state. Existing Native evidence covers Driver, entry into Identity, and outside dismissal, but does not cover Config, validation, save, persistence, or reverse state. The dedicated state enters the denominator with all twelve Lynx-for-Web and Native cells unknown before any additional evidence is applied.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state makes a previously hidden user flow measurable. Existing state weights, thresholds, filters, and residuals are unchanged."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
