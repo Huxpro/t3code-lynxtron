@@ -68,6 +68,7 @@ export function Button({
 
   return (
     <view
+      flatten={false}
       aria-label={ariaLabel}
       aria-disabled={disabled ? "true" : undefined}
       className={resolvedClassName}

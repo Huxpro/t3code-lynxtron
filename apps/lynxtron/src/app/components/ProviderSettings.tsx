@@ -619,7 +619,11 @@ function ProviderCard({
               );
             })}
             {onDelete ? (
-              <SmallButton label="Delete instance" onTap={() => onDelete(entry.instanceId)} />
+              <SmallButton
+                className="provider-card__delete-instance"
+                label="Delete instance"
+                onTap={() => onDelete(entry.instanceId)}
+              />
             ) : null}
           </view>
         ) : undefined
@@ -647,6 +651,7 @@ export function AddProviderInstanceDialog({
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const navigationGuardRef = useRef(0);
   useEffect(() => {
     if (open && !wasOpenRef.current) {
       setWizardStep(0);
@@ -676,6 +681,9 @@ export function AddProviderInstanceDialog({
   };
   const navigateToStep = useCallback(
     (requestedStep: number) => {
+      const now = Date.now();
+      if (requestedStep > wizardStep && now - navigationGuardRef.current < 250) return;
+      navigationGuardRef.current = now;
       const navigation = resolveWizardNavigation(
         wizardStep,
         requestedStep,
