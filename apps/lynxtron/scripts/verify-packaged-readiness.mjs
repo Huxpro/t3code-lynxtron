@@ -2216,6 +2216,26 @@ async function setQuickSwitchQuery({ child, client, query, timeoutMs }) {
   );
 }
 
+async function readQuickSwitchState({ child, client, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the Quick Switch state probe became ready.");
+    }
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression:
+        'typeof globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__ === "function" ? globalThis.__T3_LYNXTRON_QUICK_SWITCH_STATE__() : null',
+      returnByValue: true,
+    });
+    const result = commandResult(response);
+    latest = typeof result?.value === "string" ? JSON.parse(result.value) : null;
+    if (latest?.view === "root") return latest;
+    await waitForChildExit(child, 50);
+  }
+  throw new Error(`Quick Switch state probe was unavailable: ${JSON.stringify({ latest })}`);
+}
+
 function quickSwitchExpectation(query) {
   const actionLabels = [
     "New thread in t3-hero-claude-workspace",
@@ -2275,16 +2295,10 @@ async function verifyQuickSwitchState({
   });
   const state = query
     ? await setQuickSwitchQuery({ child, client, query, timeoutMs })
-    : {
-        actionLabels: quickSwitchExpectation("").actionLabels,
-        actionsOnly: false,
-        empty: false,
-        normalizedQuery: "",
-        query: "",
-        threadLabels: ["Quick Switch idle thread"],
-        view: "root",
-      };
+    : await readQuickSwitchState({ child, client, timeoutMs });
   const expected = quickSwitchExpectation(query);
+  const expectedActionLabels = query ? expected.actionLabels : state.actionLabels;
+  const expectedThreadLabels = query ? expected.threadLabels : state.threadLabels;
   const panel = await waitForStableMeasurement({
     child,
     client,
@@ -2292,7 +2306,7 @@ async function verifyQuickSwitchState({
     timeoutMs,
     predicate: (measurement) =>
       measurement?.attributes["data-search-overlay-mode"] === "command" &&
-      expected.actionLabels.every((label) => measurement.text.includes(label)) &&
+      expectedActionLabels.every((label) => measurement.text.includes(label)) &&
       (expected.emptyMessage === null || measurement.text.includes(expected.emptyMessage)),
   });
   const search = await readOptionalMeasurement(client, ".palette-search");
@@ -2301,16 +2315,26 @@ async function verifyQuickSwitchState({
   const rowMeasurements = await readSelectorMeasurements(client, ".palette-row");
   const rows = rowMeasurements.map((measurement) => measurement.rect);
   const empty = await readOptionalMeasurement(client, ".palette-empty");
-  const expectedLabels = [...expected.actionLabels, ...expected.threadLabels];
+  const expectedLabels = [...expectedActionLabels, ...expectedThreadLabels];
   const labels = expectedLabels.filter((label) => panel.text.includes(label));
+  const requiredDefaultActions = [
+    "New thread in...",
+    "Go to file",
+    "Search project contents",
+    "Add project",
+    "Open settings",
+  ];
   if (
     !search ||
     !results ||
     !footer ||
     rows.length !== expectedLabels.length ||
     JSON.stringify(labels) !== JSON.stringify(expectedLabels) ||
-    JSON.stringify(state.actionLabels) !== JSON.stringify(expected.actionLabels) ||
-    JSON.stringify(state.threadLabels) !== JSON.stringify(expected.threadLabels) ||
+    JSON.stringify(state.actionLabels) !== JSON.stringify(expectedActionLabels) ||
+    JSON.stringify(state.threadLabels) !== JSON.stringify(expectedThreadLabels) ||
+    (query === "" &&
+      (!state.actionLabels.some((label) => label.startsWith("New thread in ")) ||
+        !requiredDefaultActions.every((label) => state.actionLabels.includes(label)))) ||
     state.actionsOnly !== expected.actionsOnly ||
     state.empty !== (expected.emptyMessage !== null) ||
     state.normalizedQuery !== (query === ">" ? "" : query) ||
@@ -11798,7 +11822,11 @@ async function runOnce({
         {
           ...prefs,
           ...(expectedTheme ? { themePreference: expectedTheme } : {}),
-          ...(shouldVerifyAddProjectSources ? { initialOverlay: "add-project" } : {}),
+          ...(shouldVerifyAddProjectSources
+            ? { initialOverlay: "add-project" }
+            : shouldVerifyQuickSwitchDefault
+              ? { initialOverlay: "quick-switch" }
+              : {}),
           clientSettings: {
             ...prefs.clientSettings,
             ...(shouldVerifyNewThreadProjects ? { legacySidebarEnabled: false } : {}),
@@ -11839,7 +11867,7 @@ async function runOnce({
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyCompletedTranscriptState ||
-      (shouldVerifyQuickSwitchDefault && quickSwitchQuery.length > 0)
+      shouldVerifyQuickSwitchDefault
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),

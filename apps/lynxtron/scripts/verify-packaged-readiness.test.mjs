@@ -985,6 +985,7 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies Native Quick Switch filter states and outside dismissal", () => {
     assert.include(source, "async function verifyQuickSwitchState");
     assert.include(source, '"--verify-quick-switch-default"');
+    assert.include(source, 'initialOverlay: "quick-switch"');
     assert.include(source, '"--quick-switch-query"');
     assert.include(source, '"--quick-switch-query requires --verify-quick-switch-default."');
     assert.include(source, "__T3_LYNXTRON_QUICK_SWITCH_QUERY__");
@@ -993,12 +994,17 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'query === "zzzz-no-result"');
     assert.include(source, '"No matching commands, projects, or threads."');
     assert.include(source, "async function waitForStableMeasurement");
+    assert.include(source, "async function readQuickSwitchState");
     assert.include(source, "rectsConverged(previousRect, latest.rect)");
     assert.include(source, "consecutiveStableSamples >= stableSamples");
     assert.include(source, "const panel = await waitForStableMeasurement({");
     assert.include(source, 'selector: ".palette-panel"');
     assert.include(source, 'readSelectorMeasurements(client, ".palette-row")');
-    assert.include(source, '"Quick Switch idle thread"');
+    assert.include(
+      source,
+      'state.actionLabels.some((label) => label.startsWith("New thread in "))',
+    );
+    assert.include(source, "requiredDefaultActions");
     assert.include(source, '!footer.text.includes("Enter")');
     assert.include(source, '!footer.text.includes("Select")');
     assert.include(source, 'footer.text.includes("⌘P")');
