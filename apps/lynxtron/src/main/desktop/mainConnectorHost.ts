@@ -31,6 +31,7 @@ import {
   type ConnectorStatusPayload,
   type ConnectorSyncReply,
   type ConnectorThreadPayload,
+  type TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
 import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
@@ -68,6 +69,7 @@ export interface ConnectorEventCallbacks {
   onAccess: (access: AuthAccessPresentation) => void;
   onShell: (payload: ConnectorShellPayload) => void;
   onThread: (threadId: string, payload: ConnectorThreadPayload) => void;
+  onTerminal: (threadId: string, terminalId: string, payload: TerminalSessionPresentation) => void;
   onLog: (line: string) => void;
 }
 
@@ -146,6 +148,7 @@ export class MainConnectorHost {
   private access: AuthAccessPresentation = EMPTY_ACCESS;
   private shell: ConnectorShellPayload = { projects: [], threads: [] };
   private readonly threads: Record<string, ConnectorThreadPayload> = {};
+  private readonly terminals: Record<string, TerminalSessionPresentation> = {};
 
   constructor(options: MainConnectorHostOptions) {
     this.options = options;
@@ -182,6 +185,7 @@ export class MainConnectorHost {
         access: this.access,
         shell: this.shell,
         threads: { ...this.threads },
+        terminals: { ...this.terminals },
       },
     };
   }
@@ -281,6 +285,8 @@ export class MainConnectorHost {
       onAccess: (access) => emitCurrent({ kind: "access", payload: access }),
       onShell: (payload) => emitCurrent({ kind: "shell", payload }),
       onThread: (threadId, payload) => emitCurrent({ kind: "thread", threadId, payload }),
+      onTerminal: (threadId, terminalId, payload) =>
+        emitCurrent({ kind: "terminal", threadId, terminalId, payload }),
       onLog: (line) => {
         if (!isCurrent()) return;
         this.options.onLog?.(line);
@@ -321,6 +327,9 @@ export class MainConnectorHost {
         break;
       case "thread":
         this.threads[event.threadId] = event.payload;
+        break;
+      case "terminal":
+        this.terminals[`${event.threadId}\u0000${event.terminalId}`] = event.payload;
         break;
       case "log":
         break;

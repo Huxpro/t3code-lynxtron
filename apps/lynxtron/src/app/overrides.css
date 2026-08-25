@@ -8026,40 +8026,97 @@
   opacity: 1;
 }
 
-.terminal-placeholder {
+.terminal-panel {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   flex-grow: 1;
-  min-height: 240px;
-  padding: 32px;
-  text-align: center;
+  height: 0;
+  min-height: 0;
+  background-color: var(--background);
 }
-.terminal-placeholder__icon {
+.terminal-panel__meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 12px;
+  border-bottom-width: 1px;
+  border-bottom-color: var(--border);
+}
+.terminal-panel__cwd,
+.terminal-panel__status {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 14px;
+}
+.terminal-panel__viewport {
+  flex-grow: 1;
+  height: 0;
+  min-height: 0;
+  padding: 10px 12px;
+}
+.terminal-panel__output {
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+}
+.terminal-panel__error {
+  padding: 6px 12px;
+  color: var(--destructive);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.terminal-panel__command-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 6px 8px 6px 12px;
+  border-top-width: 1px;
+  border-top-color: var(--border);
+}
+.terminal-panel__prompt {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.terminal-panel__input {
+  flex-grow: 1;
+  height: 28px;
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background-color: transparent;
+}
+.terminal-panel__run {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 12px;
-  border-radius: 10px;
+  height: 28px;
+  min-width: 48px;
+  flex-shrink: 0;
+  padding: 0 10px;
+  border-radius: 6px;
   background-color: var(--secondary);
-}
-.terminal-placeholder__title {
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
+  font-size: 11px;
 }
-.terminal-placeholder__copy {
-  max-width: 280px;
-  margin-top: 6px;
+.terminal-panel__run--disabled {
+  opacity: 0.45;
+}
+.terminal-panel__empty {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
   color: var(--muted-foreground);
   font-family: var(--font-sans);
   font-size: 12px;
-  line-height: 18px;
 }
 
 /* ============= Files Panel ============= */

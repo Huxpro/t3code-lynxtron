@@ -59,6 +59,11 @@ import type {
   SourceControlRepositoryInfo,
   SourceControlPublishRepositoryInput,
   SourceControlPublishRepositoryResult,
+  TerminalCloseInput,
+  TerminalOpenInput,
+  TerminalResizeInput,
+  TerminalSessionSnapshot,
+  TerminalWriteInput,
   VcsInitInput,
   VcsStatusResult,
   RuntimeMode,
@@ -214,6 +219,10 @@ export interface T3ConnectorCommandBridge {
   revokePairingLink(input: { readonly id: string }): Promise<boolean>;
   revokeClientSession(input: { readonly sessionId: string }): Promise<boolean>;
   revokeOtherClientSessions(): Promise<number>;
+  openTerminal(input: TerminalOpenInput): Promise<TerminalSessionSnapshot>;
+  writeTerminal(input: TerminalWriteInput): Promise<void>;
+  resizeTerminal(input: TerminalResizeInput): Promise<void>;
+  closeTerminal(input: TerminalCloseInput): Promise<void>;
 }
 
 /** Capabilities that stay preload-resident after AR2. */

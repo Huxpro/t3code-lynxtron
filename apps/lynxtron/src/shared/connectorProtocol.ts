@@ -22,6 +22,7 @@ import type {
   OrchestrationSessionStatus,
   OrchestrationThreadActivity,
   OrchestrationThreadShell,
+  TerminalSessionStatus,
   TurnId,
 } from "@t3tools/contracts";
 import { ServerConfig, ServerSettingsPatch } from "@t3tools/contracts";
@@ -76,6 +77,16 @@ export interface ConnectorThreadPayload {
   readonly latestTurn?: OrchestrationLatestTurn | null;
   readonly proposedPlans?: ReadonlyArray<OrchestrationProposedPlan>;
   readonly activeTurnId?: TurnId | null;
+}
+
+export interface TerminalSessionPresentation {
+  readonly threadId: string;
+  readonly terminalId: string;
+  readonly cwd: string;
+  readonly status: TerminalSessionStatus | "closed";
+  readonly history: string;
+  readonly error: string | null;
+  readonly updatedAt: string | null;
 }
 
 export type ConnectorServerConfig = typeof ServerConfig.Encoded;
@@ -153,7 +164,14 @@ export function decodeConnectorCommandResult(
   return SERVER_CONFIG_COMMANDS.has(method) ? decodeConnectorServerConfig(result) : result;
 }
 
-export type ConnectorEventKind = "status" | "config" | "access" | "shell" | "thread" | "log";
+export type ConnectorEventKind =
+  | "status"
+  | "config"
+  | "access"
+  | "shell"
+  | "thread"
+  | "terminal"
+  | "log";
 
 export type ConnectorEventPayload =
   | { readonly kind: "status"; readonly payload: ConnectorStatusPayload }
@@ -161,6 +179,12 @@ export type ConnectorEventPayload =
   | { readonly kind: "access"; readonly payload: AuthAccessPresentation }
   | { readonly kind: "shell"; readonly payload: ConnectorShellPayload }
   | { readonly kind: "thread"; readonly threadId: string; readonly payload: ConnectorThreadPayload }
+  | {
+      readonly kind: "terminal";
+      readonly threadId: string;
+      readonly terminalId: string;
+      readonly payload: TerminalSessionPresentation;
+    }
   | { readonly kind: "log"; readonly payload: string };
 
 /** One sequenced main -> renderer event. `seq` is strictly monotonic per window. */
@@ -173,6 +197,7 @@ export interface ConnectorSnapshot {
   readonly access: AuthAccessPresentation;
   readonly shell: ConnectorShellPayload;
   readonly threads: Readonly<Record<string, ConnectorThreadPayload>>;
+  readonly terminals: Readonly<Record<string, TerminalSessionPresentation>>;
 }
 
 export interface ConnectorSyncRequest {
@@ -245,6 +270,10 @@ export const CONNECTOR_COMMAND_NAMES = [
   "revokePairingLink",
   "revokeClientSession",
   "revokeOtherClientSessions",
+  "openTerminal",
+  "writeTerminal",
+  "resizeTerminal",
+  "closeTerminal",
 ] as const;
 
 export type ConnectorCommandName = (typeof CONNECTOR_COMMAND_NAMES)[number];
@@ -285,7 +314,7 @@ export function isConnectorEventEnvelope(value: unknown): value is ConnectorEven
     Number.isInteger(candidate.seq) &&
     candidate.seq > 0 &&
     typeof candidate.kind === "string" &&
-    ["status", "config", "access", "shell", "thread", "log"].includes(candidate.kind)
+    ["status", "config", "access", "shell", "thread", "terminal", "log"].includes(candidate.kind)
   );
 }
 

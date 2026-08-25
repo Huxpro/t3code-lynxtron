@@ -70,6 +70,11 @@ import type {
   SourceControlRepositoryInfo,
   SourceControlPublishRepositoryInput,
   SourceControlPublishRepositoryResult,
+  TerminalCloseInput,
+  TerminalOpenInput,
+  TerminalResizeInput,
+  TerminalSessionSnapshot,
+  TerminalWriteInput,
   VcsStatusResult,
   RuntimeMode,
   ThreadTurnStartBootstrap,
@@ -135,6 +140,7 @@ import type {
   ConnectorEventEnvelope,
   ConnectorSnapshot,
   ProjectRepoContext,
+  TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 
 interface PollBridge extends T3Bridge {}
@@ -189,6 +195,7 @@ export interface T3ClientState {
   readonly latestTurn: OrchestrationLatestTurn | null;
   readonly proposedPlans: ReadonlyArray<OrchestrationProposedPlan>;
   readonly activeTurnId: TurnId | null;
+  readonly terminalSessions: Readonly<Record<string, TerminalSessionPresentation>>;
 }
 
 const INITIAL_T3_CLIENT_STATE: T3ClientState = {
@@ -226,6 +233,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   latestTurn: null,
   proposedPlans: [],
   activeTurnId: null,
+  terminalSessions: {},
 };
 
 export const t3ClientStateAtom = Atom.make<T3ClientState>(INITIAL_T3_CLIENT_STATE).pipe(
@@ -626,6 +634,7 @@ function applyConnectorSnapshot(
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
   if (activeThread) applyThreadPayload(activeThread as ThreadEventPayload);
+  patchState({ terminalSessions: snapshot.terminals });
 }
 
 function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
@@ -649,6 +658,14 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
       }
       return;
     }
+    case "terminal":
+      patchState({
+        terminalSessions: {
+          ...appAtomRegistry.get(t3ClientStateAtom).terminalSessions,
+          [`${envelope.threadId}\u0000${envelope.terminalId}`]: envelope.payload,
+        },
+      });
+      return;
     case "log":
       // Mirror host logs to the renderer console, matching the preload path.
       console.log(envelope.payload);
@@ -1893,6 +1910,30 @@ async function restoreGeneralSettingsDefaults(): Promise<ReadonlyArray<string>> 
   return restore.changedSettingLabels;
 }
 
+function openTerminal(input: TerminalOpenInput): Promise<TerminalSessionSnapshot> {
+  const bridge = getBridge();
+  if (!bridge?.openTerminal) return Promise.reject(new Error("Terminal is unavailable."));
+  return bridge.openTerminal(input);
+}
+
+function writeTerminal(input: TerminalWriteInput): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.writeTerminal) return Promise.reject(new Error("Terminal is unavailable."));
+  return bridge.writeTerminal(input);
+}
+
+function resizeTerminal(input: TerminalResizeInput): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.resizeTerminal) return Promise.reject(new Error("Terminal is unavailable."));
+  return bridge.resizeTerminal(input);
+}
+
+function closeTerminal(input: TerminalCloseInput): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.closeTerminal) return Promise.reject(new Error("Terminal is unavailable."));
+  return bridge.closeTerminal(input);
+}
+
 export const t3ClientActions = {
   archiveThread,
   browseFilesystem,
@@ -1911,6 +1952,7 @@ export const t3ClientActions = {
   interrupt,
   listProjectEntries,
   lookupRepository,
+  openTerminal,
   openInEditor,
   publishRepository,
   refreshProviders,
@@ -1928,6 +1970,9 @@ export const t3ClientActions = {
   selectThread,
   sendPrompt,
   searchProjectEntries,
+  writeTerminal,
+  resizeTerminal,
+  closeTerminal,
   settleThread,
   unsettleThread,
   setModelSelection,

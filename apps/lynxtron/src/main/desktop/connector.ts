@@ -41,6 +41,11 @@ import {
 import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
 import { applyThreadDetailEvent } from "@t3tools/client-runtime/state/threads";
 import {
+  applyTerminalAttachStreamEvent,
+  EMPTY_TERMINAL_BUFFER_STATE,
+  type TerminalBufferState,
+} from "@t3tools/client-runtime/state/terminal";
+import {
   deriveActivePlanState,
   findLatestProposedPlan,
 } from "@t3tools/client-runtime/presentation/thread";
@@ -95,6 +100,12 @@ import {
   type SourceControlRepositoryInfo,
   type SourceControlPublishRepositoryInput,
   type SourceControlPublishRepositoryResult,
+  type TerminalAttachStreamEvent,
+  type TerminalCloseInput,
+  type TerminalOpenInput,
+  type TerminalResizeInput,
+  type TerminalSessionSnapshot,
+  type TerminalWriteInput,
   type TurnId,
   type RuntimeMode,
   type VcsInitInput,
@@ -104,7 +115,11 @@ import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
 import { discoverDesktopLocalEnvironment } from "./localEnvironmentRendezvous.ts";
-import { projectRepoContext, type ProjectRepoContext } from "../../shared/connectorProtocol.ts";
+import {
+  projectRepoContext,
+  type ProjectRepoContext,
+  type TerminalSessionPresentation,
+} from "../../shared/connectorProtocol.ts";
 import {
   acknowledgePendingMutationAtSequence,
   enqueueSerialMutation,
@@ -133,6 +148,7 @@ export interface ConnectorEvents {
   onAccess?: (access: AuthAccessPresentation) => void;
   onShell: (payload: unknown) => void;
   onThread: (threadId: string, payload: unknown) => void;
+  onTerminal?: (threadId: string, terminalId: string, payload: TerminalSessionPresentation) => void;
   onLog: (line: string) => void;
 }
 
@@ -298,6 +314,9 @@ export class T3Connector {
   private protocolContext: any;
   private appScope: Scope.Closeable | undefined;
   private threadFibers = new Map<string, Fiber.Fiber<unknown, unknown>>();
+  private terminalFibers = new Map<string, Fiber.Fiber<unknown, unknown>>();
+  private terminalStates = new Map<string, TerminalSessionPresentation>();
+  private terminalAttachInputs = new Map<string, TerminalOpenInput>();
   private modelSelection: ModelSelection | undefined;
   private pendingThreadModelSelections = new Map<string, ModelSelection>();
   private pendingThreadRuntimeModes = new Map<string, LatestPendingMutation<RuntimeMode>>();
@@ -566,10 +585,15 @@ export class T3Connector {
     this.ready = false;
     this.events.onStatus("reconnecting", "Restoring backend connection…");
     const selectedThreadIds = [...this.threadFibers.keys()];
+    const terminalInputs = [...this.terminalAttachInputs.values()];
     for (const fiber of this.threadFibers.values()) {
       Effect.runFork(Fiber.interrupt(fiber));
     }
     this.threadFibers.clear();
+    for (const fiber of this.terminalFibers.values()) {
+      Effect.runFork(Fiber.interrupt(fiber));
+    }
+    this.terminalFibers.clear();
     const previousScope = this.appScope;
     this.rpcTransportGeneration += 1;
     this.client = undefined;
@@ -601,6 +625,9 @@ export class T3Connector {
     this.subscribeShell();
     for (const threadId of selectedThreadIds) {
       this.selectThread(threadId);
+    }
+    for (const input of terminalInputs) {
+      this.subscribeTerminal(input);
     }
     this.ready = true;
     this.events.onStatus("ready", undefined);
@@ -1348,6 +1375,84 @@ export class T3Connector {
     return this.runClient<ProjectWriteFileResult>(this.client[WS_METHODS.projectsWriteFile](input));
   }
 
+  private terminalKey(threadId: string, terminalId: string): string {
+    return `${threadId}\u0000${terminalId}`;
+  }
+
+  private emitTerminal(state: TerminalSessionPresentation): void {
+    this.terminalStates.set(this.terminalKey(state.threadId, state.terminalId), state);
+    this.events.onTerminal?.(state.threadId, state.terminalId, state);
+  }
+
+  private subscribeTerminal(input: TerminalOpenInput): void {
+    if (!this.client || !this.protocolContext) return;
+    const key = this.terminalKey(input.threadId, input.terminalId);
+    const existingFiber = this.terminalFibers.get(key);
+    if (existingFiber) Effect.runFork(Fiber.interrupt(existingFiber));
+    this.terminalAttachInputs.set(key, input);
+    let buffer: TerminalBufferState = EMPTY_TERMINAL_BUFFER_STATE;
+    const stream = this.client[WS_METHODS.terminalAttach]({
+      ...input,
+      restartIfNotRunning: true,
+    });
+    const consume = Stream.runForEach(
+      stream as Stream.Stream<TerminalAttachStreamEvent, unknown, any>,
+      (event) =>
+        Effect.sync(() => {
+          buffer = applyTerminalAttachStreamEvent(buffer, event);
+          this.emitTerminal({
+            threadId: input.threadId,
+            terminalId: input.terminalId,
+            cwd: input.cwd,
+            status: buffer.status,
+            history: buffer.buffer,
+            error: buffer.error,
+            updatedAt: buffer.updatedAt,
+          });
+        }),
+    );
+    this.terminalFibers.set(key, this.forkClient(consume));
+  }
+
+  async openTerminal(input: TerminalOpenInput): Promise<TerminalSessionSnapshot> {
+    if (!this.client) throw new Error("not connected");
+    const snapshot = await this.runClient<TerminalSessionSnapshot>(
+      this.client[WS_METHODS.terminalOpen](input),
+    );
+    this.subscribeTerminal(input);
+    return snapshot;
+  }
+
+  async writeTerminal(input: TerminalWriteInput): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(this.client[WS_METHODS.terminalWrite](input));
+  }
+
+  async resizeTerminal(input: TerminalResizeInput): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(this.client[WS_METHODS.terminalResize](input));
+  }
+
+  async closeTerminal(input: TerminalCloseInput): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(this.client[WS_METHODS.terminalClose](input));
+    if (!input.terminalId) return;
+    const key = this.terminalKey(input.threadId, input.terminalId);
+    const fiber = this.terminalFibers.get(key);
+    if (fiber) Effect.runFork(Fiber.interrupt(fiber));
+    this.terminalFibers.delete(key);
+    this.terminalAttachInputs.delete(key);
+    this.emitTerminal({
+      threadId: input.threadId,
+      terminalId: input.terminalId,
+      cwd: this.terminalStates.get(key)?.cwd ?? ".",
+      status: "closed",
+      history: "",
+      error: null,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
   async getTurnDiff(input: OrchestrationGetTurnDiffInput): Promise<OrchestrationGetTurnDiffResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<OrchestrationGetTurnDiffResult>(
@@ -1679,6 +1784,9 @@ export class T3Connector {
     this.disposed = true;
     this.rpcTransportGeneration += 1;
     for (const fiber of this.threadFibers.values()) {
+      Effect.runFork(Fiber.interrupt(fiber));
+    }
+    for (const fiber of this.terminalFibers.values()) {
       Effect.runFork(Fiber.interrupt(fiber));
     }
     if (this.appScope) {

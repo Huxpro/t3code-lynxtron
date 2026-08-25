@@ -24,6 +24,8 @@ import { FilePanel, FilesPanel } from "./FilesPanel";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
+import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
+import { useT3ClientState } from "../state/t3Client";
 
 const LYNX_RIGHT_PANEL_SHEET_QUERY = "(max-width: 760px)";
 
@@ -54,8 +56,8 @@ const ADDABLE_ICONS: Record<AddableKind, IconName> = {
 };
 
 /**
- * Add-surface catalog, converged on the Web four-entry anatomy. Browser and
- * Terminal stay registered placeholders (disabled with an honest reason);
+ * Add-surface catalog, converged on the Web four-entry anatomy. Browser stays
+ * a registered placeholder (disabled with an honest reason);
  * Plan opens through the proposed-plan product flow, not this menu.
  */
 const ADDABLE_SURFACES: ReadonlyArray<{
@@ -108,18 +110,7 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
     case "file":
       return <FilePanel path={surface.path} />;
     case "terminal":
-      return (
-        <view className="terminal-placeholder" data-terminal-placeholder="true">
-          <view className="terminal-placeholder__icon">
-            <Icon name="terminal-square" size={24} color="#818181" />
-          </view>
-          <text className="terminal-placeholder__title">Terminal</text>
-          <text className="terminal-placeholder__copy">
-            Terminal sessions are not connected yet. This panel reserves the workspace surface
-            without pretending a shell is running.
-          </text>
-        </view>
-      );
+      return <TerminalPanel />;
   }
 }
 
@@ -129,6 +120,7 @@ export function RightPanel({
   maximized = false,
   onMaximizedChange = () => undefined,
 }: RightPanelProps) {
+  const { activeThreadId } = useT3ClientState();
   const state = useRightPanelState();
   const sheet = useMediaQuery(LYNX_RIGHT_PANEL_SHEET_QUERY);
   const viewport = useViewportSnapshot();
@@ -147,9 +139,13 @@ export function RightPanel({
     uiActions.activateRightPanelSurface(surface.id);
   }, []);
 
-  const handleCloseTab = useCallback((surface: RightPanelSurface) => {
-    uiActions.closeRightPanelSurface(surface.id);
-  }, []);
+  const handleCloseTab = useCallback(
+    (surface: RightPanelSurface) => {
+      if (surface.kind === "terminal") closeTerminalSession(activeThreadId);
+      uiActions.closeRightPanelSurface(surface.id);
+    },
+    [activeThreadId],
+  );
 
   const handleAddSurface = useCallback((kind: Exclude<RightPanelKind, "file">) => {
     uiActions.openRightPanelSurface(kind);
