@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-25T10:04:00-07:00",
+  "stateId": "right-panel-terminal",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "light",
+    "interactionChannel": "real macOS pointer and keyboard input"
+  },
+  "target": {
+    "projectId": "7c021d96-db88-478d-ad8e-75780abfe283",
+    "projectTitle": "background-only",
+    "threadId": "2dd5b2ae-5abb-4f66-afae-721c4926528b",
+    "threadTitle": "Update README",
+    "cwd": "/Users/bytedance/github/background-only"
+  },
+  "snapshot": {
+    "source": "read-only VACUUM INTO snapshot of the visible Electron showcase environment",
+    "sha256": "ac366cb2dd74f0dd3620843ca2684145fd3212dfb741d6c07ec6cac418e00264",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 29476,
+    "windowId": 31380,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "runtimeExecutable": "/Users/bytedance/github/t3code/node_modules/.pnpm/@lynx-js+lynxtron@0.0.16/node_modules/@lynx-js/lynxtron/dist/Lynxtron.app/Contents/MacOS/lynxtron",
+    "bundleSha256": "97e7c826f11fbf89e22af5b7dcccaabc8862a72ce367b449e0238d40f759139c",
+    "transportKind": "main",
+    "rendererErrors": 0
+  },
+  "observations": [
+    {
+      "name": "open and attach",
+      "result": "pass",
+      "detail": "The titlebar Terminal action opens a Terminal tab backed by a running server PTY at the active workspace cwd.",
+      "screenshot": "right-panel-terminal-native-open.png",
+      "sha256": "63a81b81d589eb24679310251c01fd851780ca7982e76363f16ccbe5512b77b4"
+    },
+    {
+      "name": "text input",
+      "result": "pass",
+      "detail": "Physical keyboard input writes pwd into the Native command field.",
+      "screenshot": "right-panel-terminal-native-typed.png",
+      "sha256": "3301c214580b199350b373644eafbe30a15b2bc2da42e1bf5715f396b3ab3d1d"
+    },
+    {
+      "name": "write and streamed output",
+      "result": "pass",
+      "detail": "A physical Run click sends pwd through terminal.write; the attach stream renders /Users/bytedance/github/background-only and the persisted isolated PTY history contains the same output.",
+      "screenshot": "right-panel-terminal-native-output.png",
+      "sha256": "c50f645e706d3cad75835e5be828881e49bf5407b1b4abb270bdf2ba65f844d9"
+    },
+    {
+      "name": "close and delete history",
+      "result": "pass",
+      "detail": "A physical tab-close click removes the Terminal surface and terminal.close(deleteHistory:true) removes the isolated history file.",
+      "screenshot": "right-panel-terminal-native-closed.png",
+      "sha256": "bdb1634b283ee9edf0e85de6f4d79d005420a58cf2b443559dc20825585fbb42"
+    },
+    {
+      "name": "Enter submit",
+      "result": "product-residual",
+      "detail": "Physical Return did not emit bindconfirm in Lynxtron 0.0.16; the visible Run action remains the verified submission path."
+    }
+  ],
+  "classification": {
+    "closedProductLoss": "The enabled Native Terminal entry no longer opens a static placeholder; it owns a real server PTY lifecycle.",
+    "remainingProductLoss": [
+      "Physical Return does not submit the command.",
+      "Native currently exposes one command-oriented session rather than Web's complete xterm split, resize, selection, and key-by-key PTY surface."
+    ],
+    "missingCoverage": [
+      "No matched Web authority or Lynx-for-Web capture was retained in this slice.",
+      "Dark theme and narrow viewport remain unmeasured for the new terminal state."
+    ],
+    "harnessLoss": "Lynxtron 0.0.16 still did not register with the installed DevTool daemon, so no DevTool geometry or console credit is claimed.",
+    "intentionalPlatformDelta": "The first Native slice uses an explicit command field and Run control instead of claiming xterm-compatible key-by-key input.",
+    "acceptedRenderingNoise": []
+  },
+  "policy": "The state entered the fixed model before repair credit. No existing weight, threshold, filter, or residual was reduced."
+}
