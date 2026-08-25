@@ -536,6 +536,21 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "providersSettings");
   });
 
+  it("verifies the Native Add provider dialog without creating an instance", () => {
+    assert.include(source, "async function verifyProviderInstanceDialog");
+    assert.include(source, '"--verify-provider-instance-dialog"');
+    assert.include(source, "verifyProviderInstanceDialog: shouldVerifyProviderInstanceDialog");
+    assert.include(source, 'measurement.attributes["aria-label"] === "Add provider instance"');
+    assert.include(source, 'selector: ".provider-instance-dialog"');
+    assert.include(source, 'measurement.attributes["data-provider-wizard-step"] === "0"');
+    assert.include(source, 'measurement.attributes["data-provider-dialog-motion"] === "open"');
+    assert.include(source, 'measurement?.attributes["data-provider-wizard-step"] === "1"');
+    assert.include(source, 'selector: ".provider-instance-dialog-overlay"');
+    assert.include(source, "drivers.length === 0");
+    assert.include(source, "dismissed: true");
+    assert.include(outcomeChecksSource, "providerInstanceDialog");
+  });
+
   it("verifies the Native right-panel add menu dismissal and surface selection", () => {
     assert.include(source, "async function verifyRightPanelAddMenu");
     assert.include(source, '"--verify-right-panel-add-menu"');

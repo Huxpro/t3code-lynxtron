@@ -11354,6 +11354,120 @@ async function verifyProvidersSettings({ child, client, devToolCli, outputDirect
   };
 }
 
+async function verifyProviderInstanceDialog({ child, client, height, timeoutMs, width }) {
+  const approximately = (actual, expected, tolerance = 3) =>
+    typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
+  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "general",
+    route: "/settings/general",
+    timeoutMs,
+  });
+  await tapSelector({
+    child,
+    client,
+    selector: ".settings-nav__item--providers",
+    timeoutMs,
+  });
+  await waitForRoutePanel({
+    child,
+    client,
+    panel: "providers",
+    route: "/settings/providers",
+    timeoutMs,
+  });
+  const headerActions = await readSelectorMeasurements(
+    client,
+    ".provider-settings-header-actions .ui-button",
+  );
+  const addProvider = headerActions.find(
+    (measurement) => measurement.attributes["aria-label"] === "Add provider instance",
+  );
+  if (!addProvider) {
+    throw new Error(
+      `Native Providers page did not expose Add provider: ${JSON.stringify(headerActions)}`,
+    );
+  }
+  await tapMeasurement({ client, measurement: addProvider });
+  const dialog = await waitForMeasurement({
+    child,
+    client,
+    selector: ".provider-instance-dialog",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes("Add provider instance") === true &&
+      measurement.text.includes("Driver") &&
+      measurement.attributes["data-provider-wizard-step"] === "0" &&
+      measurement.attributes["data-provider-dialog-motion"] === "open",
+  });
+  const overlay = await readOptionalMeasurement(client, ".provider-instance-dialog-overlay");
+  const steps = await readSelectorMeasurements(client, ".provider-instance-dialog__step");
+  const drivers = await readSelectorMeasurements(client, ".provider-instance-dialog__driver");
+  const footer = await readOptionalMeasurement(client, ".provider-instance-dialog__footer");
+  const next = await readSelectorMeasurements(client, ".provider-instance-dialog__save");
+  if (
+    !approximately(dialog.rect?.width, 576) ||
+    !measurementVisible(overlay) ||
+    !approximately(overlay.rect?.width, width) ||
+    !approximately(overlay.rect?.height, height) ||
+    steps.length !== 3 ||
+    drivers.length === 0 ||
+    !measurementVisible(footer) ||
+    next.length !== 1
+  ) {
+    throw new Error(
+      `Native Provider Instance dialog anatomy drifted: ${JSON.stringify({
+        dialog,
+        drivers,
+        footer,
+        next,
+        overlay,
+        steps,
+      })}`,
+    );
+  }
+  await tapMeasurement({ client, measurement: next[0] });
+  const identity = await waitForMeasurement({
+    child,
+    client,
+    selector: ".provider-instance-dialog",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-provider-wizard-step"] === "1" &&
+      measurement.text.includes("Instance ID") &&
+      measurement.text.includes("Accent color"),
+  });
+  await tapSelector({
+    child,
+    client,
+    point: "bottom-right",
+    selector: ".provider-instance-dialog-overlay",
+    timeoutMs,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".provider-instance-dialog",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  return {
+    status: "pass",
+    input:
+      "DevTool touches on Settings, Providers, Add provider, Next, and fullscreen outside dismiss",
+    dialog: dialog.rect,
+    overlay: overlay?.rect ?? null,
+    stepZero: {
+      drivers: drivers.map(({ rect, text }) => ({ rect, text })),
+      steps: steps.map(({ rect, text }) => ({ rect, text })),
+    },
+    stepOne: identity.rect,
+    dismissed: true,
+  };
+}
+
 async function verifySourceControlLoadingBehavior({
   child,
   client,
@@ -11732,6 +11846,7 @@ async function runOnce({
   verifySettingsNavigation,
   verifySettingsAppearance: shouldVerifySettingsAppearance,
   verifyProvidersSettings: shouldVerifyProvidersSettings,
+  verifyProviderInstanceDialog: shouldVerifyProviderInstanceDialog,
   verifySourceControlLoading: shouldVerifySourceControlLoading,
   verifySourceControlError: shouldVerifySourceControlError,
   verifyComposerGeometry: shouldVerifyComposerGeometry,
@@ -12160,6 +12275,15 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const providerInstanceDialog = shouldVerifyProviderInstanceDialog
+      ? await verifyProviderInstanceDialog({
+          child,
+          client,
+          height,
+          timeoutMs,
+          width,
+        })
+      : undefined;
     const sourceControlLoading = shouldVerifySourceControlLoading
       ? await verifySourceControlLoadingBehavior({
           child,
@@ -12584,6 +12708,7 @@ async function runOnce({
       settingsNavigation,
       settingsAppearance,
       providersSettings,
+      providerInstanceDialog,
       sourceControlLoading,
       sourceControlError,
       composer,
@@ -12650,6 +12775,7 @@ async function runOnce({
       settingsNavigation,
       settingsAppearance,
       providersSettings,
+      providerInstanceDialog,
       sourceControlLoading,
       sourceControlError,
       composer,
@@ -12724,6 +12850,9 @@ const expectNoComposerContext = process.argv.includes("--expect-no-composer-cont
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
 const shouldVerifySettingsAppearance = process.argv.includes("--verify-settings-appearance");
 const shouldVerifyProvidersSettings = process.argv.includes("--verify-providers-settings");
+const shouldVerifyProviderInstanceDialog = process.argv.includes(
+  "--verify-provider-instance-dialog",
+);
 const shouldVerifySourceControlLoading = process.argv.includes("--verify-source-control-loading");
 const shouldVerifySourceControlError = process.argv.includes("--verify-source-control-error");
 const shouldVerifyComposerGeometry = process.argv.includes("--verify-composer-geometry");
@@ -13140,6 +13269,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifySettingsNavigation,
       verifySettingsAppearance: shouldVerifySettingsAppearance,
       verifyProvidersSettings: shouldVerifyProvidersSettings,
+      verifyProviderInstanceDialog: shouldVerifyProviderInstanceDialog,
       verifySourceControlLoading: shouldVerifySourceControlLoading,
       verifySourceControlError: shouldVerifySourceControlError,
       verifyComposerGeometry: shouldVerifyComposerGeometry,
