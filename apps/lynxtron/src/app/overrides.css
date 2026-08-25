@@ -6718,7 +6718,11 @@
   bottom: 0;
   left: 0;
   z-index: 150;
-  background-color: var(--overlay-backdrop);
+  /* Native-safe counterpart to Web's DialogPopup backdrop. */
+  background-color: rgba(var(--background-rgb), 0.6);
+}
+.theme-dark .provider-instance-dialog-overlay {
+  background-color: rgba(var(--background-rgb), 0.64);
 }
 .provider-instance-dialog-overlay--entering {
   animation: provider-instance-dialog-backdrop-enter 200ms ease both;
@@ -6738,12 +6742,20 @@
   max-height: calc(100% - 32px);
   border-width: 1px;
   border-style: solid;
-  border-color: var(--border);
+  /* Native-safe counterpart to Web's dialog-glass material. */
+  border-color: rgba(var(--foreground-rgb), 0.08);
   border-radius: 18px;
-  background-color: var(--popover);
-  box-shadow: 0 24px 72px -20px var(--overlay-shadow);
+  background-color: var(--background);
+  box-shadow:
+    0 1px 0 rgba(var(--foreground-rgb), 0.04) inset,
+    0 24px 72px -20px rgba(0, 0, 0, 0.9);
   box-sizing: border-box;
   transform: translate(-50%, -50%);
+}
+.theme-light .provider-instance-dialog {
+  border-color: rgba(39, 39, 42, 0.1);
+  background-color: rgba(252, 252, 252, 0.8);
+  box-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.65);
 }
 .provider-instance-dialog--entering {
   animation: provider-instance-dialog-enter 200ms ease-in-out both;
