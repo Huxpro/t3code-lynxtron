@@ -542,6 +542,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".right-panel__add-btn"');
     assert.include(source, 'selector: ".right-panel__add-menu"');
     assert.include(source, 'selector: ".right-panel__add-menu-dismiss"');
+    assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - 176) <= 0.5");
+    assert.include(source, "Math.abs((row.rect?.width ?? 0) - 166) > 0.5");
     assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - width) <= 1");
     assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - height) <= 1");
     assert.include(source, 'readSelectorMeasurements(client, ".right-panel__add-item")');

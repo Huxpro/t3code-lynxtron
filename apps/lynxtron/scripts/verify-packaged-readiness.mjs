@@ -7100,7 +7100,7 @@ async function verifyRightPanelAddMenu({
       selector: ".right-panel__add-menu",
       timeoutMs,
       predicate: (measurement) =>
-        Math.abs((measurement?.rect.width ?? 0) - 128) <= 0.5 &&
+        Math.abs((measurement?.rect.width ?? 0) - 176) <= 0.5 &&
         Math.abs((measurement?.rect.height ?? 0) - 122) <= 0.5,
     });
   };
@@ -7128,7 +7128,7 @@ async function verifyRightPanelAddMenu({
       (row, index) =>
         row.attributes["data-right-panel-add-kind"] !== expectedRows[index].kind ||
         row.text.trim() !== expectedRows[index].label ||
-        Math.abs((row.rect?.width ?? 0) - 118) > 0.5 ||
+        Math.abs((row.rect?.width ?? 0) - 166) > 0.5 ||
         Math.abs((row.rect?.height ?? 0) - 28) > 0.5,
     )
   ) {
