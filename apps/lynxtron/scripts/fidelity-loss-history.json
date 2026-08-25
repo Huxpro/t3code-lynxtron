@@ -16800,6 +16800,28 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-default-light-current-native",
+      "observedAt": "2026-08-24T17:28:56-07:00",
+      "commit": "9a8629cd2",
+      "codeCommit": "9a8629cd2",
+      "codeState": "commit",
+      "label": "Quick Switch current light Native proof",
+      "narrative": "The packaged Quick Switch verifier now opens the overlay from isolated preferences and reads current action/thread labels from its own test-only state probe, eliminating stale fixture labels. A fresh exact Native light run measures the 574x398 command palette, 572x48 search surface, 572x308 results, 572x40 truthful footer, current action/thread content, measured outside dismissal, main transport 3 to 4, zero renderer errors, and isolated cleanup. Physical keyboard opening/query typing and a current Browser material pair remain outside this proof, so this checkpoint deliberately preserves the existing residuals and denominator.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The change repairs only isolated-fixture setup and stale assertion labels. It does not alter the product surface, fixed weights, denominator, thresholds, filters, Browser pixel residual, or physical keyboard debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/quick-switch-default-light-current-native.json",
+          "classification": "tracked-current",
+          "sha256": "33ebf1d35c5a3729614b34dd1efd646bf000cda23e918693bf6ab73a2ceaf508"
+        }
+      ],
+      "updates": []
     }
   ]
 }
