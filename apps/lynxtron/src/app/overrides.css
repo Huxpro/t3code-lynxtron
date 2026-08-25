@@ -1321,14 +1321,19 @@
   width: 100%;
   max-height: 256px;
   padding: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* Native-safe counterpart to Web's elevated dropdown-glass mix. */
+  border: 1px solid rgba(var(--foreground-rgb), 0.1);
   border-radius: 8px;
-  background-color: rgb(25, 25, 25);
+  background-color: rgba(var(--popover-rgb), 0.836);
+  box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);
   box-sizing: border-box;
 }
+.theme-dark .sidebar-v2-scope-popup {
+  box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.8);
+}
 .theme-light .sidebar-v2-scope-popup {
-  border-color: rgba(0, 0, 0, 0.08);
-  background-color: rgb(255, 255, 255);
+  border-color: rgba(var(--foreground-rgb), 0.1);
+  background-color: rgba(var(--popover-rgb), 0.836);
 }
 .sidebar-v2-scope-popup .lynx-menu-radio-item {
   display: flex;
