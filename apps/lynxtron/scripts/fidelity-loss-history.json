@@ -16866,6 +16866,41 @@
         }
       ],
       "updates": []
+    },
+    {
+      "id": "background-only-file-review-native-flow",
+      "observedAt": "2026-08-25T05:49:00-07:00",
+      "commit": "4b76a8e5046e2a4fec2174a1ffdf0d2b14165976",
+      "codeCommit": "d7ed1e34fc9a005a82540773265c7d6e94ab1702",
+      "codeState": "commit",
+      "label": "Background-only Native file review flow",
+      "narrative": "A fresh workspace @lynx-js/lynxtron 0.0.16 process loads a read-only VACUUM INTO snapshot containing the exact background-only project and Update README completed thread. Real macOS pointer input opens the absolute assistant README.md link as an internal file tab with the workspace tree, hides the explorer while preserving and expanding the editor, then opens the changed-files checkpoint as a new active Diff tab while preserving README.md. Four window-only captures retain one 1280x820 Native window and exclude system notifications and unrelated applications. The run uses main transport, reports no renderer errors, and does not write live user data. Lynxtron 0.0.16 does not register with the installed DevTool daemon, so no DevTool geometry or console credit is claimed. Existing file-editor-detail and review-diff interaction cells were already at 0.99 and remain unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The physical pointer chain directly verifies the repaired assistant Markdown file entry and preserves the existing file and Diff tabs. It changes only the previously unmeasured Native interaction cell for the completed transcript and leaves all state weights, denominator entries, thresholds, filters, geometry, material, and existing interaction residuals unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/background-only-file-review-native-flow.json",
+          "classification": "tracked-current",
+          "sha256": "d97857c605cec76949718f69951e7aeddb34860af84d3003c927b83e6ec43350"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-background-only-file-review-pointer-flow",
+              "source": "Real macOS pointer input opens the assistant README.md link, hides its explorer, and opens Diff while preserving both tabs in one exact 0.0.16 Native session"
+            }
+          }
+        }
+      ]
     }
   ]
 }
