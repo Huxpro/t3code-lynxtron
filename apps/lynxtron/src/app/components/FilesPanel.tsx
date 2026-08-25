@@ -440,6 +440,7 @@ export function FilesPanel({
 export function FilePanel({ path }: { readonly path: string }) {
   const { activeThreadId, draftThread, projects, threads } = useT3ClientState();
   const [panelWidth, setPanelWidth] = useState<number | null>(null);
+  const [explorerOpen, setExplorerOpen] = useState(true);
   const [preview, setPreview] = useState<PreviewState>({
     path,
     result: null,
@@ -456,6 +457,7 @@ export function FilePanel({ path }: { readonly path: string }) {
   const fileName = pathParts.at(-1) ?? path;
   const directoryParts = pathParts.slice(0, -1);
   const detailLayout = projectFileDetailLayout(panelWidth);
+  const explorerVisible = detailLayout.showExplorer && explorerOpen;
 
   useEffect(() => {
     if (!cwd) {
@@ -482,7 +484,8 @@ export function FilePanel({ path }: { readonly path: string }) {
   return (
     <view
       className="file-panel"
-      data-file-detail-layout={detailLayout.showExplorer ? "split" : "editor"}
+      data-file-detail-layout={explorerVisible ? "split" : "editor"}
+      data-file-explorer-open={explorerVisible ? "true" : "false"}
       bindlayoutchange={(event: { detail?: { width?: unknown } }) => {
         const width = event.detail?.width;
         if (typeof width === "number" && Number.isFinite(width) && width > 0) {
@@ -519,6 +522,16 @@ export function FilePanel({ path }: { readonly path: string }) {
             </view>
           </view>
         </scroll-view>
+        <view
+          className={`file-panel__explorer-toggle${
+            explorerVisible ? " file-panel__explorer-toggle--active" : ""
+          }`}
+          aria-label={explorerVisible ? "Hide file explorer" : "Show file explorer"}
+          aria-pressed={explorerVisible ? "true" : "false"}
+          bindtap={() => setExplorerOpen((current) => !current)}
+        >
+          <Icon name="files" size={14} color="#71717a" />
+        </view>
       </view>
       <view className="file-panel__content">
         <view className="file-panel__editor-column">
@@ -539,7 +552,7 @@ export function FilePanel({ path }: { readonly path: string }) {
             />
           ) : null}
         </view>
-        {detailLayout.showExplorer ? (
+        {explorerVisible ? (
           <view className="file-panel__explorer">
             <FilesPanel selectedPath={path} />
           </view>

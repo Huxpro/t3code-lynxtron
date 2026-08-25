@@ -8191,6 +8191,23 @@
 .file-panel__back:active {
   background-color: rgba(var(--foreground-rgb), 0.12);
 }
+.file-panel__explorer-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.file-panel__explorer-toggle:hover,
+.file-panel__explorer-toggle--active {
+  background-color: var(--accent);
+}
+.file-panel__explorer-toggle:active {
+  background-color: rgba(var(--foreground-rgb), 0.12);
+}
 .file-panel__breadcrumbs {
   display: flex;
   flex-direction: row;
