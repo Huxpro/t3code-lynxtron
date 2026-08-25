@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-24T17:04:35-07:00",
+  "stateId": "right-panel-add-menu",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "authority": {
+    "webSource": "apps/web/src/components/RightPanelTabs.tsx",
+    "popupClass": "min-w-44",
+    "derivedGeometry": {
+      "popupWidth": 176,
+      "innerRowWidth": 166,
+      "rowHeight": 28,
+      "popupHeight": 122
+    }
+  },
+  "commits": {
+    "product": "485e1bfcc",
+    "contract": "703a00984"
+  },
+  "native": {
+    "status": "pass",
+    "captureTier": "native",
+    "bundle": {
+      "sha256": "edceb9ab2f8a7a80f898607ddfb51bb3e8f1bcc3b3efb92c1445bfc75785a623",
+      "bytes": 5316041
+    },
+    "fixture": {
+      "source": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-visual-state-M4LBkO",
+      "snapshotId": "593b05b88c58ded7c0dc122f267cac75175b8eb2a009d3463608895c139ef829"
+    },
+    "menu": {
+      "x": 1144,
+      "y": 46,
+      "width": 176,
+      "height": 122
+    },
+    "rows": [
+      { "kind": "browser", "label": "Browser", "x": 1149, "y": 51, "width": 166, "height": 28 },
+      { "kind": "terminal", "label": "Terminal", "x": 1149, "y": 79, "width": 166, "height": 28 },
+      { "kind": "files", "label": "Files", "x": 1149, "y": 107, "width": 166, "height": 28 },
+      { "kind": "diff", "label": "Diff", "x": 1149, "y": 135, "width": 166, "height": 28 }
+    ],
+    "input": "DevTool Input.emulateTouchFromMouseEvent on the add control, fullscreen dismiss layer, Files row, and Terminal row",
+    "dismissLayer": { "x": 0, "y": 0, "width": 1280, "height": 820 },
+    "result": {
+      "dismissed": true,
+      "filesSelected": true,
+      "terminalSelected": true,
+      "mainTransport": { "beforeSequence": 3, "afterSequence": 4 },
+      "rendererErrors": 0,
+      "isolatedStateDisposed": true
+    },
+    "artifacts": {
+      "readinessReportSha256": "9a2a5c6759a07e9745444736a6ab73f2744093bb62daf7bb0ffb7f7f498502f5",
+      "screenshotSha256": "653eb14af26642e22076f85eb965591187daed832e2e6b8543fc4d9829bb8d05",
+      "screenshotRetainedInGit": false
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "The Lynx add-surface popup no longer preserves the old 128px width after the Web authority moved to min-w-44.",
+      "The native menu now has the authority 176px outer width and four 166px content rows while retaining its existing dismissal and surface-selection flows."
+    ],
+    "evidenceBoundary": [
+      "The product change is source-authority and exact Native geometry verified.",
+      "The current Browser capture harness did not complete before the local process ceiling, so this checkpoint does not replace the prior Browser material residual with an unmeasured pixel claim."
+    ],
+    "policy": "No state weights, denominator entries, filters, thresholds, or unmeasured material/typography residuals changed."
+  },
+  "validation": {
+    "shellInteractionContract": "39/39",
+    "nativeVerifierContracts": "2/2 focused right-panel assertions",
+    "lynxTypecheck": "app and browser-preview passed",
+    "exactNative": "pass",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "32/100",
+    "trackedScreenshotsAdded": 0
+  }
+}

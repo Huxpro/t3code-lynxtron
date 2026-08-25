@@ -16758,6 +16758,48 @@
         }
       ],
       "updates": []
+    },
+    {
+      "id": "right-panel-add-menu-authority-width",
+      "observedAt": "2026-08-24T17:04:35-07:00",
+      "commit": "703a00984",
+      "codeCommit": "485e1bfcc",
+      "codeState": "commit",
+      "label": "Right panel add menu authority width",
+      "narrative": "The current Web RightPanel source uses a min-w-44 add-surface popup, while Lynx still held an obsolete 128px menu from the earlier authority snapshot. Lynx and its Browser-preview compatibility layer now use the matching 176px popup and four 166px content rows, retaining 28px rows, disabled Browser treatment, fullscreen outside dismissal, and surface selection. A fresh PID-owned exact Native run measures the 176x122 menu, four ordered 166x28 rows, the 1280x820 dismiss layer, real Files and Terminal selection, main transport 3 to 4, zero renderer errors, and isolated cleanup. A new Browser pair could not finish before the local process ceiling and is not used to rewrite the existing Browser material residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The active Web source directly establishes min-w-44 as the product authority. The exact Native measurement isolates the old 128px width drift and verifies the corrected dimensions and interaction contract without changing unmeasured Browser pixel residuals."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-24/fidelity/right-panel-add-menu-authority-width.json",
+          "classification": "tracked-current",
+          "sha256": "8c230d4ce520398a81d3c86502db4233bb6e3785c07c4303fbcacda1488353bf"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-add-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 176,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-authority-width",
+              "source": "Exact Native measures a 176x122 authority menu and four 166x28 rows with unchanged fullscreen dismiss geometry"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-right-panel-add-menu-authority-width-touch",
+              "source": "Measured Native touches dismiss the expanded menu and still select Files and Terminal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
