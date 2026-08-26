@@ -1991,6 +1991,9 @@ async function providerDialogControlPoint(cdp, sessionId, client, control) {
           .find((item) => item.textContent?.trim() === 'Next');
       } else if (${JSON.stringify(control)} === 'config-step') {
         target = dialog?.querySelector('[aria-label^="Config, step 3"]');
+      } else if (${JSON.stringify(control)} === 'add-instance') {
+        target = [...(dialog?.querySelectorAll('button, .provider-instance-dialog__save') ?? [])]
+          .find((item) => item.textContent?.trim() === 'Add instance');
       } else if (${JSON.stringify(control)} === 'backdrop') {
         target =
           root?.querySelector('.provider-instance-dialog-overlay') ??
@@ -2154,6 +2157,144 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
     web: state.web.addProviderDialog,
     lynx: state.lynx.addProviderDialog,
   });
+
+  if (!(await clickProviderDialogControl(cdp, sessionId, "lynx", "next"))) {
+    throw new Error("Missing Lynx Add Provider Next control after reopen");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => next?.lynx?.addProviderDialog?.activeStep === 1,
+    3_000,
+    "Lynx Add Provider Identity mutation step",
+  );
+  const fillLynxInput = async (index, value) => {
+    const focused = await focusRemoteElement(
+      cdp,
+      sessionId,
+      `(() => {
+        const frame = document.getElementById('lynx-pane');
+        const root = frame?.contentWindow?.document
+          ?.getElementById('t3-lynx-preview')?.shadowRoot;
+        const host = root?.querySelectorAll('.provider-instance-dialog__input')?.[${index}];
+        return host?.shadowRoot?.querySelector('input') ?? host ?? null;
+      })()`,
+    );
+    if (!focused) throw new Error(`Could not focus Lynx Add Provider input ${index}`);
+    await cdp.send("Input.insertText", { text: value }, sessionId);
+  };
+  const instanceLabel = "Fidelity Codex";
+  const instanceId = "codex_fidelity_browser";
+  await fillLynxInput(0, instanceLabel);
+  await fillLynxInput(1, instanceId);
+  await delay(300);
+  if (!(await clickProviderDialogControl(cdp, sessionId, "lynx", "next"))) {
+    throw new Error("Missing Lynx Add Provider Config navigation control");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => next?.lynx?.addProviderDialog?.activeStep === 2,
+    3_000,
+    "Lynx Add Provider Config step",
+  );
+  timeline.push({ step: "config", lynx: state.lynx.addProviderDialog });
+  if (!(await clickProviderDialogControl(cdp, sessionId, "lynx", "add-instance"))) {
+    throw new Error("Missing Lynx Add instance control");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) =>
+      next?.lynx?.addProviderDialog === null &&
+      (next?.web?.settingsMetrics?.providers?.cards ?? []).some(
+        (card) => card.title === instanceLabel,
+      ) &&
+      (next?.lynx?.settingsMetrics?.providers?.cards ?? []).some(
+        (card) => card.title === instanceLabel,
+      ),
+    5_000,
+    "shared Add Provider save",
+  );
+  timeline.push({
+    step: "saved",
+    instanceId,
+    webCards: state.web.settingsMetrics?.providers?.cards?.map((card) => card.title) ?? [],
+    lynxCards: state.lynx.settingsMetrics?.providers?.cards?.map((card) => card.title) ?? [],
+  });
+  const deletePoint = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('lynx-pane');
+      const root = frame?.contentWindow?.document
+        ?.getElementById('t3-lynx-preview')?.shadowRoot;
+      const card = [...(root?.querySelectorAll('.provider-instance-card') ?? [])].find(
+        (candidate) => candidate.textContent?.includes(${JSON.stringify(instanceLabel)})
+      );
+      const target = card?.querySelector('.provider-instance-card__chevron');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+    })()`,
+  );
+  if (!deletePoint) throw new Error("Missing saved Lynx provider card expansion control");
+  await dispatchPointerClickWithMove(cdp, sessionId, deletePoint);
+  const expanded = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) =>
+      next?.lynx?.settingsMetrics?.providers?.cards?.some(
+        (card) => card.title === instanceLabel && card.text.includes("Delete instance"),
+      ),
+    3_000,
+    "saved Lynx provider card expansion",
+  );
+  const removePoint = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('lynx-pane');
+      const root = frame?.contentWindow?.document
+        ?.getElementById('t3-lynx-preview')?.shadowRoot;
+      const card = [...(root?.querySelectorAll('.provider-instance-card') ?? [])].find(
+        (candidate) => candidate.textContent?.includes(${JSON.stringify(instanceLabel)})
+      );
+      const target = card?.querySelector('.provider-card__delete-instance');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+    })()`,
+  );
+  if (!removePoint) throw new Error("Missing saved Lynx provider Delete instance control");
+  await dispatchPointerClickWithMove(cdp, sessionId, removePoint);
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) =>
+      !(next?.web?.settingsMetrics?.providers?.cards ?? []).some(
+        (card) => card.title === instanceLabel,
+      ) &&
+      !(next?.lynx?.settingsMetrics?.providers?.cards ?? []).some(
+        (card) => card.title === instanceLabel,
+      ),
+    5_000,
+    "shared Add Provider delete reversal",
+  );
+  timeline.push({ step: "deleted", instanceId, expanded: Boolean(expanded) });
+  if (!(await clickProviderDialogControl(cdp, sessionId, "web", "backdrop"))) {
+    throw new Error("Missing Web Add Provider backdrop after shared delete");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => next?.web?.addProviderDialog === null && next?.lynx?.addProviderDialog === null,
+    3_000,
+    "Add Provider final shared dismissal",
+  );
+  timeline.push({ step: "final-dismissed" });
   return { state, timeline };
 }
 
@@ -8183,7 +8324,19 @@ async function captureCell({
   const finalAddProviderDialogReady =
     !isAddProviderDialogState ||
     (addProviderDialogStage === "complete" &&
-      addProviderDialogPairMatches(state, width, height, 0));
+      [
+        "opened",
+        "identity",
+        "config-blocked",
+        "dismissed",
+        "reopened",
+        "config",
+        "saved",
+        "deleted",
+        "final-dismissed",
+      ].every((step) => addProviderDialogTimeline.some((entry) => entry.step === step)) &&
+      state?.web?.addProviderDialog === null &&
+      state?.lynx?.addProviderDialog === null);
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
     state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&

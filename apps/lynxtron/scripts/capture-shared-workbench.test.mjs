@@ -1271,7 +1271,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'step: "config-blocked"');
     assert.include(source, 'step: "dismissed"');
     assert.include(source, 'step: "reopened"');
+    assert.include(source, 'step: "config"');
+    assert.include(source, 'step: "saved"');
+    assert.include(source, 'step: "deleted"');
+    assert.include(source, 'step: "final-dismissed"');
+    assert.include(source, "codex_fidelity_browser");
+    assert.include(source, "provider-card__delete-instance");
     assert.include(source, "finalAddProviderDialogReady");
+    assert.include(source, '"saved", "deleted"');
   });
 
   it("reopens thread-scoped model picker states after selecting the seeded thread", () => {
