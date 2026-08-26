@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-08-26T11:52:00-07:00",
+  "observedAt": "2026-08-26T14:46:16-07:00",
   "stateId": "right-panel-native-file-context-menu",
   "scope": {
     "client": "native",
@@ -15,37 +15,53 @@
     "expectedMention": "[README.md](README.md)"
   },
   "native": {
-    "processId": 34909,
-    "windowId": 36161,
+    "processId": 34114,
+    "windowId": 36513,
     "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "runtimeExecutable": "/Users/bytedance/github/t3code/node_modules/.pnpm/@lynx-js+lynxtron@0.0.16/node_modules/@lynx-js/lynxtron/dist/Lynxtron.app/Contents/MacOS/lynxtron",
+    "stagedDesktopDir": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3-mts-product-Rwj73q/desktop",
     "bundleSha256": "b9ca004ede2245eae813d45baeb931228c9dcf2e3350c94237956e89e3f1a167",
     "transportKind": "main",
+    "initialLastSeq": 11,
     "devToolRegistration": "unavailable"
+  },
+  "setup": {
+    "method": "isolated copied snapshot with initialOverlay right-panel-tabs",
+    "sourceRoot": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-electron-showcase-VZ5ktT/t3-home",
+    "stateDir": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3-mts-product-Rwj73q/state",
+    "productPath": "uiActions.openRightPanelSurface(diff) followed by uiActions.openRightPanelSurface(files)",
+    "rendererFixtureData": false
   },
   "observations": [
     {
       "name": "file row system menu",
       "result": "pass",
-      "detail": "A real secondary click on README.md opens the macOS system menu with Copy mention and Add to chat.",
+      "detail": "A real secondary click on README.md in owned PID 34114 opens the macOS system menu with Copy mention and Add to chat.",
       "screenshot": "right-panel-native-file-menu-open.png",
-      "sha256": "5b3751cac29f3e7df597055cf02b107aa36ee8336c80511d671f270fc7b88101"
+      "sha256": "abca0d9ba068b84d92b85d5fefbc78257f0d6a9740857cfff83350fd2fa8aac1",
+      "imagePixels": [3456, 2234]
     },
     {
       "name": "Add to chat",
       "result": "pass",
-      "detail": "Selecting the highlighted Add to chat item writes [README.md](README.md) into the real Composer, focuses the editor, enables Send, and leaves the Lynxtron process alive.",
+      "detail": "Selecting Add to chat writes [README.md](README.md) into the real Composer after the asynchronous SelectorQuery update, enables Send, keeps both right-panel tabs visible, and leaves owned PID 34114 alive without a blank LynxView.",
       "screenshot": "right-panel-native-file-menu-add-chat.png",
-      "sha256": "dd0e5220bdc4838b794ef5f7f612ebfa8601999c36831ec273722f20b30f57ac"
+      "sha256": "61506051417d1e9dc9c99c6e0effe65e3a8bd50c3763fcf8f1d9d217331869ad",
+      "imagePixels": [2784, 1864]
     }
   ],
   "rejectedSamples": [
     {
+      "classification": "identity-mismatch",
+      "detail": "The prior retained files mixed an older PID 34909 with the later safe SelectorQuery build. Those files were deleted and replaced; they receive no repair credit."
+    },
+    {
       "classification": "product-loss-fixed",
-      "detail": "The first Add-to-chat implementation crossed a component-local main-thread closure and blanked the LynxView. It was replaced with the documented background-thread SelectorQuery setValue, setSelectionRange, and focus UI methods before the retained pass."
+      "detail": "The first Add-to-chat implementation crossed a component-local main-thread closure and blanked the LynxView. It was replaced with background-thread SelectorQuery setValue, setSelectionRange, and focus UI methods before this retained pass."
     },
     {
       "classification": "harness-loss",
-      "detail": "Several earlier clicks used incorrect Retina/window-shadow coordinate conversion and did not select a menu item. They receive no interaction credit."
+      "detail": "An immediate post-click capture preceded the asynchronous SelectorQuery UI update and still showed the placeholder. A subsequent stable capture from the same owned PID proved the mention insertion; only the stable frame is retained."
     }
   ],
   "classification": {
@@ -61,7 +77,7 @@
       "Copy mention clipboard contents were not physically inspected.",
       "Dark theme, nested directories, and narrow sheet layout are not retained."
     ],
-    "harnessLoss": "Lynxtron 0.0.16 did not register an owned DevTool client, so no DevTool console or computed geometry is claimed.",
+    "harnessLoss": "Lynxtron 0.0.16 did not register an owned Desktop DevTool client, so no DevTool console or computed geometry is claimed. Unrelated iOS LynxExplorer/dev-server sessions were explicitly excluded.",
     "intentionalPlatformDelta": "The popup uses native macOS menu material instead of Web popup pixels.",
     "acceptedRenderingNoise": []
   },
@@ -69,7 +85,6 @@
     "focusedTests": "43/43",
     "typecheck": "pass",
     "productionBuild": "pass with existing unsupported-CSS and Effect import.meta warnings",
-    "agentBrowserLeakGate": "owned=0 orphaned=0",
     "screenshotBudget": "48/100"
   }
 }
