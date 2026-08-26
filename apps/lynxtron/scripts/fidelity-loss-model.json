@@ -4,7 +4,7 @@
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
   "expectedStateCount": 78,
   "expectedCellCount": 894,
-  "expectedTotalWeight": 288.2,
+  "expectedTotalWeight": 287.4,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
