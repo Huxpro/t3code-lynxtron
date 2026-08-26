@@ -25,6 +25,10 @@ const retainedPath =
 const sourceRoot =
   process.env.T3_MTS_PRODUCT_SOURCE_ROOT ?? path.join(os.homedir(), ".t3-lynxtron");
 const projectCwd = process.env.T3_MTS_PRODUCT_PROJECT_CWD ?? repoRoot;
+const viewportWidth = process.env.T3_MTS_PRODUCT_VIEWPORT_WIDTH ?? "1280";
+const viewportHeight = process.env.T3_MTS_PRODUCT_VIEWPORT_HEIGHT ?? "820";
+const initialRoute = process.env.T3_MTS_PRODUCT_INITIAL_ROUTE?.trim();
+const initialOverlay = process.env.T3_MTS_PRODUCT_INITIAL_OVERLAY?.trim();
 
 function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -67,6 +71,27 @@ function createIsolatedState(stateDir) {
       cpSync(source, path.join(stateDir, relativePath), { recursive: true });
     }
   }
+  if (initialRoute || initialOverlay) {
+    const prefsPath = path.join(stateDir, "lynxtron-prefs.json");
+    let prefs = {};
+    try {
+      prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
+    } catch {
+      // A fresh isolated source may not have preferences yet.
+    }
+    writeFileSync(
+      prefsPath,
+      JSON.stringify(
+        {
+          ...prefs,
+          ...(initialRoute ? { initialRoute } : {}),
+          ...(initialOverlay ? { initialOverlay } : {}),
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+  }
 }
 
 async function waitForReadiness(child, readinessReportPath, timeoutMs) {
@@ -89,6 +114,10 @@ async function waitForReadiness(child, readinessReportPath, timeoutMs) {
 }
 
 async function stop() {
+  if (!existsSync(retainedPath)) {
+    console.log(JSON.stringify({ stopped: false, reason: "not-retained" }, null, 2));
+    return;
+  }
   const retained = JSON.parse(readFileSync(retainedPath, "utf8"));
   let processExists = true;
   try {
@@ -144,8 +173,8 @@ async function main() {
       T3_LYNXTRON_BASE_DIR: stateDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_READINESS_REPORT: readinessReportPath,
-      T3_LYNXTRON_VIEWPORT_WIDTH: "1280",
-      T3_LYNXTRON_VIEWPORT_HEIGHT: "820",
+      T3_LYNXTRON_VIEWPORT_WIDTH: viewportWidth,
+      T3_LYNXTRON_VIEWPORT_HEIGHT: viewportHeight,
       T3_LYNXTRON_WINDOW_X: "20",
       T3_LYNXTRON_WINDOW_Y: "60",
       T3_LYNXTRON_VIEWPORT_PROBE: "1",

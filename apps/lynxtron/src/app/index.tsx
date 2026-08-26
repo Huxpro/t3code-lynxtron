@@ -146,6 +146,7 @@ function RootSwitch() {
         if (initial.overlay === "quick-switch") uiActions.openQuickSwitch();
         else if (initial.overlay === "add-project") uiActions.openAddProject();
         else if (initial.overlay === "model-picker") uiActions.openModelPicker();
+        else if (initial.overlay === "add-provider") uiActions.openAddProviderDialog();
         if (initial.theme) setPref("themePreference", initial.theme);
       })
       .catch(() => undefined);
@@ -166,6 +167,7 @@ function RootSwitch() {
       if (initialOverlay === "quick-switch") uiActions.openQuickSwitch();
       else if (initialOverlay === "add-project") uiActions.openAddProject();
       else if (initialOverlay === "model-picker") uiActions.openModelPicker();
+      else if (initialOverlay === "add-provider") uiActions.openAddProviderDialog();
     };
     applyInitialState();
     return () => {

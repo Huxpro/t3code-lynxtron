@@ -736,6 +736,7 @@ function installTransportDevToolHook(): void {
       modelSelectionPending: boolean;
       providerCount: number;
       providerEntryCount: number;
+      providerInstanceIds: ReadonlyArray<string>;
       providersRefreshPending: boolean;
       providerSettingsError: string | null;
       keybindingCommands: ReadonlyArray<string>;
@@ -842,6 +843,7 @@ function installTransportDevToolHook(): void {
       modelSelectionPending: state.modelSelectionPending,
       providerCount: state.providers.length,
       providerEntryCount: state.providerEntries.length,
+      providerInstanceIds: Object.keys(state.settings?.providerInstances ?? {}),
       providersRefreshPending: state.providersRefreshPending,
       providerSettingsError: state.providerSettingsError,
       keybindingCommands: state.serverConfig?.keybindings.map((binding) => binding.command) ?? [],

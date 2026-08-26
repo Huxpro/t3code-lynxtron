@@ -52,6 +52,7 @@ import {
   PROVIDER_HEALTH_INTERVAL_STEP_SECONDS,
 } from "../../../../web/src/components/settings/SettingsPanels.logic";
 import { DraftInput } from "../../../../web/src/components/ui/draft-input";
+import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import {
   NumberField,
   NumberFieldDecrement,
@@ -639,6 +640,7 @@ export function AddProviderInstanceDialog({
   readonly open: boolean;
   readonly onClose: () => void;
 }) {
+  const viewport = useViewportSnapshot();
   const { settings } = useT3ClientState();
   const presence = useProviderPresence(open);
   const wasOpenRef = useRef(false);
@@ -652,6 +654,30 @@ export function AddProviderInstanceDialog({
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const navigationGuardRef = useRef(0);
+  const fillForTest = useCallback(
+    (input: {
+      readonly accentColor?: string;
+      readonly instanceId?: string;
+      readonly label?: string;
+    }) => {
+      if (input.label !== undefined) setLabel(input.label);
+      if (input.instanceId !== undefined) setInstanceIdDraft(input.instanceId);
+      if (input.accentColor !== undefined) setAccentColor(input.accentColor);
+    },
+    [],
+  );
+  useEffect(() => {
+    if (!viewport.testResize || !open) return;
+    const target = globalThis as {
+      __T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__?: typeof fillForTest;
+    };
+    target.__T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__ = fillForTest;
+    return () => {
+      if (target.__T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__ === fillForTest) {
+        delete target.__T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__;
+      }
+    };
+  }, [fillForTest, open, viewport.testResize]);
   useEffect(() => {
     if (open && !wasOpenRef.current) {
       setWizardStep(0);

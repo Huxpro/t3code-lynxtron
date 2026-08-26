@@ -546,7 +546,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "providersSettings");
   });
 
-  it("verifies the Native Add provider dialog without creating an instance", () => {
+  it("verifies the complete Native Add provider lifecycle", () => {
     assert.include(source, "async function verifyProviderInstanceDialog");
     assert.include(source, '"--verify-provider-instance-dialog"');
     assert.include(source, "verifyProviderInstanceDialog: shouldVerifyProviderInstanceDialog");
@@ -555,7 +555,15 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'measurement.attributes["data-provider-wizard-step"] === "0"');
     assert.include(source, 'measurement.attributes["data-provider-dialog-motion"] === "open"');
     assert.include(source, 'measurement?.attributes["data-provider-wizard-step"] === "1"');
-    assert.include(source, 'selector: ".provider-instance-dialog-overlay"');
+    assert.include(source, "__T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__");
+    assert.include(source, "Instance ID is required.");
+    assert.include(source, "Instance ID must start with a letter");
+    assert.include(source, 'measurement?.attributes["data-provider-wizard-step"] === "2"');
+    assert.include(source, 'selector: ".provider-instance-card__chevron"');
+    assert.include(source, 'selector: ".provider-card__delete-instance"');
+    assert.include(source, "state?.providerInstanceIds?.includes(instanceId) === false");
+    assert.include(source, 'path.join(baseDir, "userdata", "settings.json")');
+    assert.include(source, "persistedAfterDelete");
     assert.include(source, "drivers.length === 0");
     assert.include(source, "dismissed: true");
     assert.include(outcomeChecksSource, "providerInstanceDialog");

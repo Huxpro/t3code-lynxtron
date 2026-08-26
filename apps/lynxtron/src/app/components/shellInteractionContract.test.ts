@@ -225,6 +225,7 @@ describe("desktop shell interaction contract", () => {
 
     expect(button).toContain('"aria-label": ariaLabel');
     expect(button).toContain("aria-label={ariaLabel}");
+    expect(button).toContain("flatten={false}");
     expect(button).toContain('aria-disabled={disabled ? "true" : undefined}');
     expect(input).toContain("aria-label={ariaLabel}");
     expect(input).toContain('aria-disabled={disabled ? "true" : undefined}');
@@ -287,8 +288,13 @@ describe("desktop shell interaction contract", () => {
     expect(uiState).toContain("useAddProviderDialogOpen");
     expect(uiState).toContain("openAddProviderDialog");
     expect(uiState).toContain("closeAddProviderDialog");
+    expect(app).toContain('initial.overlay === "add-provider"');
     expect(app).toContain("<AddProviderInstanceDialog");
     expect(app).toContain("open={addProviderDialogOpen}");
+    expect(providers).toContain("now - navigationGuardRef.current < 250");
+    expect(providers).toContain("__T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__");
+    expect(providers).toContain("if (!viewport.testResize || !open) return;");
+    expect(providers).toContain('className="provider-card__delete-instance"');
     expect(overrides).toContain(
       "animation: provider-instance-dialog-backdrop-enter 200ms ease both;",
     );

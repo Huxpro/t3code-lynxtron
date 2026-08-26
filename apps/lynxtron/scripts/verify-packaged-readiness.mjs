@@ -1690,6 +1690,20 @@ async function waitForMeasurement({ child, client, predicate, selector, timeoutM
   throw new Error(`Timed out waiting for ${selector}: ${JSON.stringify({ latest })}`);
 }
 
+async function waitForSelectorMeasurements({ child, client, predicate, selector, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = [];
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error(`Lynxtron exited before ${selector} reached its expected collection state.`);
+    }
+    latest = await readSelectorMeasurements(client, selector);
+    if (predicate(latest)) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(`Timed out waiting for ${selector} collection: ${JSON.stringify({ latest })}`);
+}
+
 function rectsConverged(previous, current, epsilon = 0.05) {
   return (
     previous !== null &&
@@ -10273,6 +10287,37 @@ async function tapMeasurement({ client, measurement, point = "center" }) {
   }
 }
 
+async function tapMeasurementDescendant({ client, measurement, selector }) {
+  if (!Number.isInteger(measurement?.nodeId)) {
+    throw new Error(`Cannot query an invalid measurement: ${JSON.stringify(measurement)}`);
+  }
+  const response = await client.runCdp("DOM.querySelector", {
+    nodeId: measurement.nodeId,
+    selector,
+  });
+  const nodeId = commandResult(response)?.nodeId;
+  if (!Number.isInteger(nodeId) || nodeId <= 0) {
+    throw new Error(`Could not find ${selector} inside measurement ${measurement.nodeId}.`);
+  }
+  const boxResponse = await client.runCdp("DOM.getBoxModel", { nodeId });
+  const model = commandResult(boxResponse)?.model;
+  const point = quadPoint(model?.border ?? model?.content);
+  const timestamp = Date.now() / 1000;
+  for (const [type, offset] of [
+    ["mouseMoved", 0],
+    ["mousePressed", 0.01],
+    ["mouseReleased", 0.02],
+  ]) {
+    await client.runCdp("Input.emulateTouchFromMouseEvent", {
+      type,
+      x: point.x,
+      y: point.y,
+      timestamp: timestamp + offset,
+      button: "left",
+    });
+  }
+}
+
 async function tapSelectorByAttribute({
   attribute,
   child,
@@ -11354,7 +11399,9 @@ async function verifyProvidersSettings({ child, client, devToolCli, outputDirect
   };
 }
 
-async function verifyProviderInstanceDialog({ child, client, height, timeoutMs, width }) {
+async function verifyProviderInstanceDialog({ baseDir, child, client, height, timeoutMs, width }) {
+  const instanceId = "codex_fidelity_20260825";
+  const displayName = "Fidelity Codex";
   const approximately = (actual, expected, tolerance = 3) =>
     typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
   await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
@@ -11439,13 +11486,61 @@ async function verifyProviderInstanceDialog({ child, client, height, timeoutMs, 
       measurement.text.includes("Instance ID") &&
       measurement.text.includes("Accent color"),
   });
-  await tapSelector({
+  await tapSelector({ child, client, selector: ".provider-instance-dialog__save", timeoutMs });
+  const requiredError = await waitForMeasurement({
     child,
     client,
-    point: "bottom-right",
-    selector: ".provider-instance-dialog-overlay",
+    selector: ".provider-instance-dialog__error",
     timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === "Instance ID is required.",
   });
+  const invalidFixture = await client.runCdp("Runtime.evaluate", {
+    expression: `String(globalThis.__T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__?.(${JSON.stringify({
+      instanceId: "1 invalid",
+      label: displayName,
+    })}))`,
+    returnByValue: true,
+  });
+  if (invalidFixture?.exceptionDetails || commandResult(invalidFixture)?.value !== "undefined") {
+    throw new Error(
+      `Native Provider Instance invalid fixture failed: ${JSON.stringify(invalidFixture)}`,
+    );
+  }
+  await tapSelector({ child, client, selector: ".provider-instance-dialog__save", timeoutMs });
+  const invalidError = await waitForMeasurement({
+    child,
+    client,
+    selector: ".provider-instance-dialog__error",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.trim() ===
+      "Instance ID must start with a letter and use only letters, digits, '-', or '_'.",
+  });
+  const validFixture = await client.runCdp("Runtime.evaluate", {
+    expression: `String(globalThis.__T3_LYNXTRON_PROVIDER_INSTANCE_PROBE__?.(${JSON.stringify({
+      accentColor: "#2563eb",
+      instanceId,
+      label: displayName,
+    })}))`,
+    returnByValue: true,
+  });
+  if (validFixture?.exceptionDetails || commandResult(validFixture)?.value !== "undefined") {
+    throw new Error(
+      `Native Provider Instance valid fixture failed: ${JSON.stringify(validFixture)}`,
+    );
+  }
+  await tapSelector({ child, client, selector: ".provider-instance-dialog__save", timeoutMs });
+  const config = await waitForMeasurement({
+    child,
+    client,
+    selector: ".provider-instance-dialog",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-provider-wizard-step"] === "2" &&
+      measurement.text.includes("Add instance"),
+  });
+  const configFields = await readSelectorMeasurements(client, ".provider-card__config-field");
+  await tapSelector({ child, client, selector: ".provider-instance-dialog__save", timeoutMs });
   await waitForMeasurement({
     child,
     client,
@@ -11453,17 +11548,92 @@ async function verifyProviderInstanceDialog({ child, client, height, timeoutMs, 
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
+  const createdState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.providerInstanceIds?.includes(instanceId) === true,
+  });
+  const createdCards = await waitForSelectorMeasurements({
+    child,
+    client,
+    selector: ".provider-instance-card",
+    timeoutMs,
+    predicate: (measurements) =>
+      measurements.some((measurement) => measurement.text.includes(displayName)),
+  });
+  const createdCard = createdCards.find((measurement) => measurement.text.includes(displayName));
+  if (!createdCard)
+    throw new Error(`Created provider card was not rendered: ${JSON.stringify(createdState)}`);
+  await tapMeasurementDescendant({
+    client,
+    measurement: createdCard,
+    selector: ".provider-instance-card__chevron",
+  });
+  const expandedCard = await waitForMeasurement({
+    child,
+    client,
+    selector: ".provider-instance-card",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.text.includes(displayName) === true &&
+      measurement.text.includes("Delete instance"),
+  });
+  await tapMeasurementDescendant({
+    client,
+    measurement: expandedCard,
+    selector: ".provider-card__delete-instance",
+  });
+  const deletedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.providerInstanceIds?.includes(instanceId) === false,
+  });
+  await waitForSelectorMeasurements({
+    child,
+    client,
+    selector: ".provider-instance-card",
+    timeoutMs,
+    predicate: (measurements) =>
+      measurements.every((measurement) => !measurement.text.includes(displayName)),
+  });
+  const settingsPath = path.join(baseDir, "userdata", "settings.json");
+  const persistedSettings = JSON.parse(
+    await waitForFileContents({
+      child,
+      filePath: settingsPath,
+      timeoutMs,
+      predicate: (contents) =>
+        Object.hasOwn(JSON.parse(contents).providerInstances ?? {}, instanceId) === false,
+    }),
+  );
   return {
     status: "pass",
     input:
-      "DevTool touches on Settings, Providers, Add provider, Next, and fullscreen outside dismiss",
+      "testResize-gated form fixture plus DevTool touches on visible wizard, save, expand, and delete controls",
     dialog: dialog.rect,
     overlay: overlay?.rect ?? null,
     stepZero: {
       drivers: drivers.map(({ rect, text }) => ({ rect, text })),
       steps: steps.map(({ rect, text }) => ({ rect, text })),
     },
-    stepOne: identity.rect,
+    stepOne: {
+      rect: identity.rect,
+      requiredError: requiredError.text.trim(),
+      invalidError: invalidError.text.trim(),
+    },
+    stepTwo: { rect: config.rect, configFieldCount: configFields.length },
+    mutation: {
+      instanceId,
+      displayName,
+      created: createdState.providerInstanceIds.includes(instanceId),
+      card: createdCard.rect,
+      expanded: expandedCard.rect,
+      deleted: deletedState.providerInstanceIds.includes(instanceId) === false,
+      persistedAfterDelete:
+        Object.hasOwn(persistedSettings.providerInstances ?? {}, instanceId) === false,
+    },
     dismissed: true,
   };
 }
@@ -11984,7 +12154,8 @@ async function runOnce({
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyCompletedTranscriptState ||
-      shouldVerifyQuickSwitchDefault
+      shouldVerifyQuickSwitchDefault ||
+      shouldVerifyProviderInstanceDialog
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
@@ -12281,6 +12452,7 @@ async function runOnce({
       : undefined;
     const providerInstanceDialog = shouldVerifyProviderInstanceDialog
       ? await verifyProviderInstanceDialog({
+          baseDir,
           child,
           client,
           height,
