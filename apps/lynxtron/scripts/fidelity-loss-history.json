@@ -17496,6 +17496,22 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "transcript-native-file-link-context-menu-scope-discovery",
+      "observedAt": "2026-08-26T16:08:00-07:00",
+      "commit": "a5fb121185fdfc7679a96bb52d0b8f3e866aa478",
+      "codeCommit": "a5fb121185fdfc7679a96bb52d0b8f3e866aa478",
+      "codeState": "commit",
+      "label": "Native transcript file-link context menu scope discovery",
+      "narrative": "The Web ChatMarkdown workspace file-link chip exposes a system-native context menu with Open in editor, optional Open in integrated browser, Copy relative path, and Copy full path. The Native MarkdownRenderer activates the same resolved file link on tap but exposes no secondary-click menu or copy actions. This independently reachable Native-only interaction enters the denominator before repair. External web-link menus remain a separate candidate and receive no coverage from this state.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state makes transcript file-link secondary-click, navigation, and clipboard behavior independently measurable without changing existing weights, thresholds, filters, residuals, or prior repair credit."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
