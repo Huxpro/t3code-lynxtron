@@ -17119,6 +17119,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-provider-wizard-lynx-lifecycle",
+      "observedAt": "2026-08-25T21:16:00-07:00",
+      "commit": "7a670d75d9402b2a4d41af2031d5ba7191e48d6e",
+      "codeCommit": "691df1193155cf0e948fba2deab2b4eeea9be93d",
+      "codeState": "commit",
+      "label": "Add Provider wizard Lynx-for-Web lifecycle",
+      "narrative": "One isolated shared-server Browser-first flow covers Driver, Identity, blocked invalid Config navigation, dismissal and reset, composed Lynx input for Fidelity Codex and codex_fidelity_browser, Config, Add instance, cross-renderer card projection, Lynx card expansion, Delete instance, cross-renderer removal, final dismissal, and an isolated settings.json with no retained test instance. Native exact-process acceptance remains separately blocked and is not inferred from this browser evidence.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The real shared-server mutation and reverse state directly close the Lynx-for-Web content, interaction, and runtime cells. Visual cells remain unknown because Config and mutation terminal states were not retained as paired geometry evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/provider-instance-browser-flow.json",
+          "classification": "tracked-current",
+          "sha256": "6ba644b6df42e25ed600a84814f380cb271a4d32c2a5d28a1d32a8973bd71346"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-provider-wizard-complete-content",
+              "source": "The Lynx wizard renders Driver, Identity, Config, validation, saved provider card, and delete reverse state from one shared server"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-provider-wizard-save-delete-flow",
+              "source": "Visible controls and composed input complete validation, Config, save, card expansion, delete, and final dismissal"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-provider-wizard-shared-server",
+              "source": "The Lynx mutation projects into Web through the shared server and deletion restores both clients and isolated settings.json"
+            }
+          }
+        }
+      ]
     }
   ]
 }

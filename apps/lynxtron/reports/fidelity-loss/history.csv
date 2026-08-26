@@ -250,3 +250,4 @@ settings-provider-wizard-native-boundary,2026-08-25T17:10:00-07:00,9332ae94b45fc
 right-panel-terminal-lynx-live-server,2026-08-25T20:03:00-07:00,a9df9a5db1268187c0aa7807cd7b62d85e50ba18,commit,Right panel Terminal Lynx-for-Web shared-server slice,0.210179,0.210179,0.037264,0.179608,0.820392,0.781059
 right-panel-terminal-lynx-layout,2026-08-25T20:36:00-07:00,8cdc9312f,commit,Right panel Terminal Lynx-for-Web full-height layout,0.209205,0.209205,0.037376,0.178501,0.821499,0.782033
 right-panel-terminal-lynx-command,2026-08-25T20:56:00-07:00,528e0579282edaeb5461ea6de13c23c2fddd4a7d,commit,Right panel Terminal Lynx-for-Web command flow,0.208817,0.208817,0.036904,0.178501,0.821499,0.782421
+settings-provider-wizard-lynx-lifecycle,2026-08-25T21:16:00-07:00,7a670d75d9402b2a4d41af2031d5ba7191e48d6e,commit,Add Provider wizard Lynx-for-Web lifecycle,0.205829,0.205829,0.03677,0.175512,0.824488,0.785409
