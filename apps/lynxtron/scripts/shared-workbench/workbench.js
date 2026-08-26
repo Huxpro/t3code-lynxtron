@@ -1019,6 +1019,7 @@ function readReviewMetrics(root) {
   const codeDiff = diffSurface?.querySelector("[data-review-code-diff], .diff-render-surface");
   const checkpointCards = [...(root?.querySelectorAll("[data-review-checkpoint-card]") ?? [])];
   const trees = [...(root?.querySelectorAll("[data-review-tree]") ?? [])];
+  const terminal = root?.querySelector(".terminal-panel");
   return {
     panelOpen: Boolean(rightPanel),
     panelEmpty: Boolean(emptySurface),
@@ -1027,6 +1028,13 @@ function readReviewMetrics(root) {
     activeKind:
       rightPanel?.getAttribute("data-right-panel-active-kind") ??
       (diffSurface ? "diff" : emptySurface ? "empty" : null),
+    terminal: terminal
+      ? {
+          root: readElementBox(terminal),
+          viewport: readElementBox(terminal.querySelector(".terminal-panel__viewport")),
+          commandRow: readElementBox(terminal.querySelector(".terminal-panel__command-row")),
+        }
+      : null,
     actionKeys: [...(root?.querySelectorAll("[data-right-panel-action]") ?? [])].map((item) =>
       item.getAttribute("data-right-panel-action"),
     ),
