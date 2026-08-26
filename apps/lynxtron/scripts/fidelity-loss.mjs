@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.resolve(scriptDirectory, "..");
@@ -1175,8 +1175,8 @@ export function buildArtifacts(model, history) {
   };
 }
 
-function main() {
-  const options = parseArguments(process.argv.slice(2));
+export function main(argv = process.argv.slice(2)) {
+  const options = parseArguments(argv);
   const model = readJson(options.modelPath);
   const history = readJson(options.historyPath);
   const modelErrors = validateModel(model);
@@ -1205,6 +1205,6 @@ function main() {
   );
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
   main();
 }
