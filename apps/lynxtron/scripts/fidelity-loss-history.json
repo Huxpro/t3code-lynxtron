@@ -17298,6 +17298,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-native-tab-context-menu-scope-discovery",
+      "observedAt": "2026-08-26T02:24:00-07:00",
+      "commit": "a8174083984e1816e21d8e6699add1464d47bd72",
+      "codeCommit": "a8174083984e1816e21d8e6699add1464d47bd72",
+      "codeState": "commit",
+      "label": "Native right-panel tab context menu scope discovery",
+      "narrative": "The Web authority exposes a system-native right-panel tab context menu with Copy path for file tabs plus Close, Close others, Close to the right, and Close all lifecycle actions. It also supports middle-click close. The Native shared tab surface currently exposes activation and a visible close button only; no secondary-click system menu or multi-tab close actions exist. This independently reachable Native-only interaction enters the denominator before repair.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state makes a previously hidden tab-lifecycle interaction independently measurable. Existing state weights, cells, thresholds, filters, and residuals are unchanged."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
