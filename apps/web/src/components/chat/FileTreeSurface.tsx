@@ -104,13 +104,21 @@ export function FileTreeFileRowSurface({
 }) {
   const content = (
     <>
-      {showLeadingSpacer ? <HostText aria-hidden className="size-3.5 shrink-0" /> : null}
-      {fileIcon}
-      <HostText className="file-tree-row__name truncate font-mono text-[11px] leading-4 text-muted-foreground/80 group-hover:text-foreground/90">
+      {showLeadingSpacer ? (
+        <HostText aria-hidden eventThrough className="size-3.5 shrink-0" />
+      ) : null}
+      <HostView eventThrough>{fileIcon}</HostView>
+      <HostText
+        eventThrough
+        className="file-tree-row__name truncate font-mono text-[11px] leading-4 text-muted-foreground/80 group-hover:text-foreground/90"
+      >
         {name}
       </HostText>
       {trailing ? (
-        <HostText className="file-tree-row__stat ml-auto shrink-0 font-mono text-[10px] leading-4 tabular-nums">
+        <HostText
+          eventThrough
+          className="file-tree-row__stat ml-auto shrink-0 font-mono text-[10px] leading-4 tabular-nums"
+        >
           {trailing}
         </HostText>
       ) : null}
