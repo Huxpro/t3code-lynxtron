@@ -604,6 +604,7 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('{ id: "add-to-chat", label: "Add to chat" }');
     expect(files).toContain("onContextMenu={() => onContextMenu(node.path)}");
     expect(fileTreeSurfaceSource).toContain("eventThrough>{fileIcon}");
+    expect(fileTreeSurfaceSource).toContain("onContextMenu={onContextMenu}");
     expect(files).toContain("if (!requestComposerTextInsertion(`${mention} `))");
     expect(composer).toContain("onComposerTextInsertion((text) =>");
     expect(composer).toContain('target.invoke("setValue", { value: nextValue })');
@@ -656,7 +657,7 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("uiActions.closeRightPanelSurfacesToRight(surface.id)");
     expect(panel).toContain("closeRemovedTerminal(state.surfaces");
     expect(rightPanelSurfaceSource).toContain("...(onContextMenu ? { onContextMenu } : {})");
-    expect(hostElementsSource.match(/event.button === 2 && onContextMenu/g)).toHaveLength(2);
+    expect(hostElementsSource.match(/event.button === 2 && onContextMenu/g)).toHaveLength(3);
     expect(panel).toContain('className="right-panel__add-menu-dismiss"');
     expect(panel).toContain("bindtap={() => setShowAddMenu(false)}");
     expect(panel).toContain('data-floating-popup="right-panel-add-menu"');
