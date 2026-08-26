@@ -53,6 +53,7 @@ import {
   type PairingCredentialState,
 } from "./connectionsMutation.logic";
 import { clientCapabilities } from "../platform/clientCapabilities";
+import { showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 
 interface SourceControlDiscoveryState {
@@ -575,7 +576,19 @@ export function ConnectionsSettings() {
 
 export function ArchiveSettings() {
   const { archivedThreads, projects } = useT3ClientState();
-  const { archiveThread } = t3ClientActions;
+  const { archiveThread, deleteThread } = t3ClientActions;
+  const [confirmingDeleteThreadId, setConfirmingDeleteThreadId] = useState<string | null>(null);
+  const showArchivedThreadContextMenu = async (threadId: string) => {
+    const selection = await showNativeContextMenu([
+      { id: "unarchive", label: "Unarchive" },
+      { id: "delete", label: "Delete", destructive: true },
+    ]);
+    if (selection === "unarchive") {
+      await archiveThread(threadId, true);
+    } else if (selection === "delete") {
+      setConfirmingDeleteThreadId(threadId);
+    }
+  };
 
   const groups = useMemo(() => {
     const result: Array<{
@@ -617,13 +630,35 @@ export function ArchiveSettings() {
           ...group,
           threads: group.threads.map((thread) => ({
             ...thread,
-            action: (
-              <SmallButton
-                className={`settings-archive-unarchive--${thread.id}`}
-                label="Unarchive"
-                onTap={() => archiveThread(thread.id, true)}
-              />
-            ),
+            onContextMenu: () => {
+              void showArchivedThreadContextMenu(thread.id).catch((cause) => {
+                console.error("[lynx-settings] archived thread action failed", {
+                  threadId: thread.id,
+                  cause,
+                });
+              });
+            },
+            action:
+              confirmingDeleteThreadId === thread.id ? (
+                <view className="settings-archive-delete-confirm">
+                  <SmallButton label="Cancel" onTap={() => setConfirmingDeleteThreadId(null)} />
+                  <SmallButton
+                    className={`settings-archive-delete-confirm--${thread.id}`}
+                    label="Confirm delete"
+                    onTap={() => {
+                      void deleteThread(thread.id)
+                        .catch(() => undefined)
+                        .finally(() => setConfirmingDeleteThreadId(null));
+                    }}
+                  />
+                </view>
+              ) : (
+                <SmallButton
+                  className={`settings-archive-unarchive--${thread.id}`}
+                  label="Unarchive"
+                  onTap={() => archiveThread(thread.id, true)}
+                />
+              ),
           })),
         }))}
         emptyTitle="No archived threads"

@@ -5409,6 +5409,19 @@
   align-items: center;
   flex-shrink: 0;
 }
+.settings-archive-delete-confirm {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.settings-archive-delete-confirm .ui-button:last-child {
+  border-color: var(--destructive);
+  background-color: var(--destructive);
+}
+.settings-archive-delete-confirm .ui-button:last-child .ui-button__label {
+  color: var(--destructive-foreground);
+}
 .settings-number-input {
   width: 96px;
   height: 32px;

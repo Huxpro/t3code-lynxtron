@@ -1,6 +1,7 @@
 import { type ReactNode } from "@lynx-js/react";
 
 import { Button } from "../ui/button";
+import { HostView } from "../ui/hostElements";
 
 type LynxClassNameProps = {
   readonly className?: string;
@@ -77,6 +78,7 @@ export function SettingsRow({
   children,
   unavailable = false,
   className,
+  onContextMenu,
 }: LynxClassNameProps & {
   readonly id?: string;
   readonly title: ReactNode;
@@ -86,9 +88,10 @@ export function SettingsRow({
   readonly control?: ReactNode;
   readonly children?: ReactNode;
   readonly unavailable?: boolean;
+  readonly onContextMenu?: ((event: unknown) => void) | undefined;
 }) {
   return (
-    <view
+    <HostView
       id={id}
       aria-disabled={unavailable ? "true" : undefined}
       data-settings-unavailable={unavailable ? "true" : undefined}
@@ -97,6 +100,7 @@ export function SettingsRow({
         unavailable ? "settings-row--unavailable" : undefined,
         className,
       )}
+      onContextMenu={onContextMenu}
     >
       <view className="settings-row__text flex min-w-0 flex-1 flex-col">
         <view className="settings-row__title-line">
@@ -108,7 +112,7 @@ export function SettingsRow({
       </view>
       {control ? <view className="settings-row__control">{control}</view> : null}
       {children}
-    </view>
+    </HostView>
   );
 }
 
