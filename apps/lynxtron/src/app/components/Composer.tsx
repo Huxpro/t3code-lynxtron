@@ -32,7 +32,7 @@ import {
   ComposerToolbarControl,
   ComposerToolbarRow,
 } from "../../../../web/src/components/chat/ComposerSurface";
-import { HostInlineText } from "../../../../web/src/components/ui/hostElements";
+import { HostInlineText, HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
@@ -40,6 +40,7 @@ import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.lo
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
 import { appendComposerText, onComposerTextInsertion } from "../state/composerCommandBus";
+import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import {
   compactControlsContentHeight,
   compactControlsPanelHeight,
@@ -145,6 +146,16 @@ export function Composer({
   >(null);
   const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
   const [editorRevision, setEditorRevision] = useState(0);
+  const activeBranch = branch?.trim() || null;
+  const showBranchContextMenu = useCallback(async () => {
+    if (!activeBranch) return;
+    const selection = await showNativeContextMenu([
+      { id: "copy-branch-name", label: "Copy branch name" },
+    ]);
+    if (selection === "copy-branch-name") {
+      await clientCapabilities.clipboard.writeText(activeBranch);
+    }
+  }, [activeBranch]);
   const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
   const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
@@ -1024,26 +1035,30 @@ export function Composer({
             </view>
           }
           branch={
-            <view className="composer-context-control composer-context-control--branch">
+            <HostView
+              className="composer-context-control composer-context-control--branch"
+              onContextMenu={activeBranch ? showBranchContextMenu : undefined}
+            >
               <Icon
                 name="git-branch"
                 size={12}
                 color="#818181"
                 className="composer-context-icon composer-context-icon--branch"
               />
-              <text
+              <HostText
                 className="composer-context-label composer-context-label--branch"
                 text-maxline="1"
+                onContextMenu={activeBranch ? showBranchContextMenu : undefined}
               >
                 {context.branchLabel}
-              </text>
+              </HostText>
               <Icon
                 name="chevron-down"
                 size={12}
                 color="#818181"
                 className="composer-context-icon composer-context-icon--chevron"
               />
-            </view>
+            </HostView>
           }
         />
       ) : null}
