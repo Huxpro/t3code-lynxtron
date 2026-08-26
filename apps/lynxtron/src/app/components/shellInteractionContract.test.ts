@@ -581,6 +581,12 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("width: 49px;");
     expect(overrides).toContain("font-size: 13px;");
     expect(overrides).toContain("line-height: 20px;");
+    expect(overrides).toContain(
+      ".diff-code-line {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  min-height: 20px;",
+    );
+    expect(overrides).toContain(
+      ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  color: var(--foreground);\n  font-size: 13px;\n  line-height: 20px;",
+    );
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
     expect(files).toContain("projectFileLineTokens(path, line)");
@@ -845,9 +851,13 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("if (!actionMenuOpen) {");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
     expect(overrides).toContain(".sidebar-v2-working-duration {");
-    expect(overrides).toContain(".sidebar-v2-row-item--active {");
-    expect(overrides).toContain("background-color: rgba(241, 243, 247, 0.11);");
-    expect(overrides).toContain(".theme-light .sidebar-v2-row-item--active {");
+    expect(overrides).not.toContain(".sidebar-v2-row-item--active {");
+    expect(sidebarRowSource).toContain('"bg-sidebar-row-active text-sidebar-foreground"');
+    expect(overrides).toContain(
+      ".inline-markdown-text {\n  color: rgba(var(--foreground-rgb), 0.8);",
+    );
+    expect(overrides).toContain(".md-paragraph {\n  color: rgba(var(--foreground-rgb), 0.8);");
+    expect(overrides).toContain(".md-inline-code {\n  padding: 1px 5px;\n  border-width: 1px;");
     expect(overrides).toContain(
       ".sidebar-v2-row-card {\n  display: flex;\n  flex-direction: column;",
     );
