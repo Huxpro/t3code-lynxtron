@@ -109,7 +109,7 @@ export function FileTreeFileRowSurface({
       ) : null}
       <HostView eventThrough>{fileIcon}</HostView>
       <HostText
-        eventThrough
+        onContextMenu={onContextMenu}
         className="file-tree-row__name truncate font-mono text-[11px] leading-4 text-muted-foreground/80 group-hover:text-foreground/90"
       >
         {name}

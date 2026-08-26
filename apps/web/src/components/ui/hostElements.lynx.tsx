@@ -233,18 +233,27 @@ export function HostText({
   className,
   eventThrough,
   onClick,
+  onContextMenu,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly className?: string;
   readonly eventThrough?: boolean;
   readonly onClick?: () => void;
+  readonly onContextMenu?: (event: unknown) => void;
 }) {
+  const handleMouseDown = (event: MainThreadMouseEvent) => {
+    "main thread";
+    if (event.button === 2 && onContextMenu) {
+      runOnBackground(onContextMenu)({ button: event.button });
+    }
+  };
   return (
     <text
       {...props}
       event-through={eventThrough}
       className={className ? `lynx-host-text ${className}` : "lynx-host-text"}
+      {...(onContextMenu ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       bindtap={onClick}
     >
       {children}
