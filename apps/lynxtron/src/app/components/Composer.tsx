@@ -39,6 +39,7 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.logic";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
+import { appendComposerText, onComposerTextInsertion } from "../state/composerCommandBus";
 import {
   compactControlsContentHeight,
   compactControlsPanelHeight,
@@ -147,9 +148,35 @@ export function Composer({
   const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
   const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
+  const editorRef = useMainThreadRef<MainThread.Element>(null);
   const compactControlsMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
+  const promptValueRef = useRef(value);
+  promptValueRef.current = value;
+  const applyExternalTextInsertion = (nextValue: string) => {
+    "main thread";
+    const target = editorRef.current ?? lynx.querySelector(".composer__input");
+    if (!target) return;
+    void target.invoke("setValue", { value: nextValue });
+    void target.invoke("setSelectionRange", {
+      selectionStart: nextValue.length,
+      selectionEnd: nextValue.length,
+    });
+    void target.invoke("focus");
+  };
+  useEffect(
+    () =>
+      onComposerTextInsertion((text) => {
+        if (questionMode) return false;
+        const nextValue = appendComposerText(promptValueRef.current, text);
+        promptValueRef.current = nextValue;
+        setValue(nextValue);
+        void runOnMainThread(applyExternalTextInsertion)(nextValue);
+        return true;
+      }),
+    [questionMode],
+  );
   useEffect(() => {
     if (!viewport.testResize) return;
     const emitter = lynx.getJSModule?.("GlobalEventEmitter") as
@@ -433,6 +460,7 @@ export function Composer({
                 <textarea
                   key={`${questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor"}:${editorRevision}`}
                   className="composer__input"
+                  main-thread:ref={editorRef}
                   data-composer-editor="true"
                   bindinput={handleInput}
                   confirm-type="send"

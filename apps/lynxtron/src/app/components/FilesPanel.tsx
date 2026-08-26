@@ -8,6 +8,7 @@ import {
 import { getProjectFilePickerMatches } from "@t3tools/client-runtime/presentation/file-picker";
 import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coordinator";
 import type { ProjectEntry, ProjectReadFileResult } from "@t3tools/contracts";
+import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 
 import {
@@ -18,6 +19,8 @@ import {
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
+import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
+import { requestComposerTextInsertion } from "../state/composerCommandBus";
 import { Icon } from "./Icon";
 
 interface ListingState {
@@ -236,6 +239,7 @@ function renderTreeNode(
   selectedPath: string | null,
   onToggleDirectory: (path: string) => void,
   onSelectFile: (path: string) => void,
+  onContextMenu: (path: string) => void,
 ): ReactNode {
   if (node.kind === "directory") {
     const expanded = expandedDirectories[node.path] ?? depth === 0;
@@ -248,6 +252,7 @@ function renderTreeNode(
           chevron={<text className="file-tree__chevron-glyph">▸</text>}
           folderIcon={<Icon name="folder" size={14} color="#71717a" />}
           onToggle={() => onToggleDirectory(node.path)}
+          onContextMenu={() => onContextMenu(node.path)}
         />
         {expanded ? (
           <FileTreeChildrenSurface>
@@ -260,6 +265,7 @@ function renderTreeNode(
                 selectedPath,
                 onToggleDirectory,
                 onSelectFile,
+                onContextMenu,
               ),
             )}
           </FileTreeChildrenSurface>
@@ -277,6 +283,7 @@ function renderTreeNode(
       selected={node.path === selectedPath}
       fileIcon={<Icon name="file-json" size={14} color="#71717a" />}
       onSelect={() => onSelectFile(node.path)}
+      onContextMenu={() => onContextMenu(node.path)}
     />
   );
 }
@@ -363,6 +370,20 @@ export function FilesPanel({
   }, []);
 
   const selectFile = useCallback((path: string) => uiActions.openFileSurface(path), []);
+  const showFileContextMenu = useCallback(async (path: string) => {
+    const mention = serializeComposerFileLink(path);
+    const selection = await showNativeContextMenu([
+      { id: "copy-mention", label: "Copy mention" },
+      { id: "add-to-chat", label: "Add to chat" },
+    ]);
+    if (selection === "copy-mention") {
+      await clientCapabilities.clipboard.writeText(mention);
+    } else if (selection === "add-to-chat") {
+      if (!requestComposerTextInsertion(`${mention} `)) {
+        console.error("[lynx-files] active composer cannot accept file mentions", { path });
+      }
+    }
+  }, []);
 
   return (
     <view className="files-panel">
@@ -410,6 +431,9 @@ export function FilesPanel({
                         selectedPath,
                         toggleDirectory,
                         selectFile,
+                        (path) => {
+                          void showFileContextMenu(path).catch(() => undefined);
+                        },
                       ),
                     )}
                   </FileTreeChildrenSurface>
