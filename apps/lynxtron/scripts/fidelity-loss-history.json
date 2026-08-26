@@ -17020,7 +17020,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser.json",
           "classification": "tracked-current",
-          "sha256": "c8dba60f47cae54824a7e388ae6a7fd8fe6875cc4c15be518fe219ab307b42d3"
+          "sha256": "323db1f67cc16caeeb4ca918b47ce182cf779e722d52f40f9af2a70b141cbebb"
         }
       ],
       "updates": [
@@ -17067,7 +17067,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser.json",
           "classification": "tracked-current",
-          "sha256": "c8dba60f47cae54824a7e388ae6a7fd8fe6875cc4c15be518fe219ab307b42d3"
+          "sha256": "323db1f67cc16caeeb4ca918b47ce182cf779e722d52f40f9af2a70b141cbebb"
         }
       ],
       "updates": [
@@ -17080,6 +17080,41 @@
               "confidence": 0.99,
               "method": "browser-terminal-full-height-box-model",
               "source": "Measured terminal root 539 by 776, output viewport 539 by 692, and bottom command row at y 756 inside the matched 1280 by 820 Lynx pane"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "right-panel-terminal-lynx-command",
+      "observedAt": "2026-08-25T20:56:00-07:00",
+      "commit": "528e0579282edaeb5461ea6de13c23c2fddd4a7d",
+      "codeCommit": "bdc9e336d8f471081b58abe2f0d56c4bf0bd6fae",
+      "codeState": "commit",
+      "label": "Right panel Terminal Lynx-for-Web command flow",
+      "narrative": "The matched shared-server Browser-first flow focuses the visible Lynx terminal command field, inserts pwd, activates the visible Run control, observes writeTerminal in the live-host diagnostics, and waits for the isolated PTY to render /Users/bytedance/github/t3code-lynxtron. The retained output frame has zero renderer errors. Browser tab close remains unclaimed because the Lynx host does not expose a stable composed close target; Native physical evidence separately covers close and deleteHistory.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Visible input, Run, RPC diagnostics, and exact PTY output directly extend Lynx-for-Web interaction evidence without claiming unsupported xterm behavior or close."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser.json",
+          "classification": "tracked-current",
+          "sha256": "323db1f67cc16caeeb4ca918b47ce182cf779e722d52f40f9af2a70b141cbebb"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.35,
+              "confidence": 0.99,
+              "method": "browser-terminal-command-output-flow",
+              "source": "Visible Lynx-for-Web input and Run send pwd through writeTerminal and render the exact shared PTY cwd; close, splits, selection, resize, and key-by-key PTY remain unclaimed"
             }
           }
         }
