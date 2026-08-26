@@ -281,7 +281,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "rightPanelAddMenuTerminalSelected");
     assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
     assert.include(source, "web-terminal-row-pointer|lynx-terminal-row-pointer");
-    assert.include(source, "data-terminal-placeholder");
+    assert.include(source, "lynx?.querySelector('.terminal-panel') !== null");
   });
 
   it("captures the newly discovered Sidebar project-settings scope without hiding a missing Lynx entry", () => {

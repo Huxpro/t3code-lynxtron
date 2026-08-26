@@ -37,6 +37,7 @@ describe("LiveConnectorHost", () => {
     assert.equal(ready.seq, 0);
     assert.equal(ready.snapshot.status.status, "connecting");
     assert.deepEqual(ready.snapshot.shell.projects, []);
+    assert.deepEqual(ready.snapshot.terminals, {});
     assert.equal(host.diagnostics.readyCalls, 1);
 
     const resync = host.handleNativeCall(T3_CONNECTOR_METHODS.resync, {}, "bridge") as {
@@ -174,6 +175,21 @@ describe("LiveConnectorHost", () => {
     assert.include(source, 'if (request.method === "getTurnDiff")');
     assert.include(source, "this.#client[ORCHESTRATION_WS_METHODS.getTurnDiff](params)");
     assert.include(source, "OrchestrationGetTurnDiffResult");
+  });
+
+  it("forwards terminal lifecycle commands and emits terminal snapshots", () => {
+    const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
+    assert.include(source, 'if (request.method === "openTerminal")');
+    assert.include(source, "this.#client[WS_METHODS.terminalOpen](params)");
+    assert.include(source, "this.#client[WS_METHODS.terminalAttach]");
+    assert.include(source, "applyTerminalAttachStreamEvent(buffer, event)");
+    assert.include(source, 'if (request.method === "writeTerminal")');
+    assert.include(source, "this.#client[WS_METHODS.terminalWrite](params)");
+    assert.include(source, 'if (request.method === "resizeTerminal")');
+    assert.include(source, "this.#client[WS_METHODS.terminalResize](params)");
+    assert.include(source, 'if (request.method === "closeTerminal")');
+    assert.include(source, "this.#client[WS_METHODS.terminalClose](params)");
+    assert.include(source, 'status: "closed"');
   });
 
   it("forwards one atomic draft promotion and subscribes only after dispatch succeeds", async () => {

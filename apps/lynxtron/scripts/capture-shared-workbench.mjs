@@ -8857,7 +8857,7 @@ async function captureCell({
                 lynx
                   ?.querySelector('[data-right-panel-open="true"]')
                   ?.getAttribute('data-right-panel-active-kind') === 'terminal' &&
-                lynx?.querySelector('[data-terminal-placeholder="true"]') !== null &&
+                lynx?.querySelector('.terminal-panel') !== null &&
                 lynx?.querySelector('.right-panel__add-menu') === null,
             };
           })()`,
