@@ -1044,6 +1044,9 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarProjectListHost).toContain("<ProjectSettingsDialog");
     expect(sidebarSource).toContain("data-sidebar-project-action={project.id}");
     expect(sidebarSource).toContain("aria-label={`Project actions for ${project.title}`}");
+    expect(sidebarSource).toContain("showNativeContextMenu([");
+    expect(sidebarSource).toContain("void showThreadContextMenu(");
+    expect(sidebarSource).toContain('{ id: "delete", label: "Delete", destructive: true }');
     expect(sidebarSource).toContain("<ProjectSettingsDialog");
     expect(projectSettings).toContain("Project settings");
     expect(projectSettings).toContain("Project name");
