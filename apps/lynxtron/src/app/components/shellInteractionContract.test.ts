@@ -288,7 +288,7 @@ describe("desktop shell interaction contract", () => {
     expect(uiState).toContain("useAddProviderDialogOpen");
     expect(uiState).toContain("openAddProviderDialog");
     expect(uiState).toContain("closeAddProviderDialog");
-    expect(app).toContain('initial.overlay === "add-provider"');
+    expect(app).toContain('overlay === "add-provider"');
     expect(app).toContain("<AddProviderInstanceDialog");
     expect(app).toContain("open={addProviderDialogOpen}");
     expect(providers).toContain("now - navigationGuardRef.current < 250");
@@ -1081,6 +1081,9 @@ describe("desktop shell interaction contract", () => {
     expect(quickSwitch).not.toContain('setView(\n      openIntent?.kind === "add-project"');
     expect(quickSwitch).not.toContain("clearQuickSwitchOpenIntent");
     expect(appIndex).toContain("if (appliedInitialRoute.current) return;");
+    expect(appIndex).toContain('overlay === "right-panel-tabs"');
+    expect(appIndex).toContain('uiActions.openRightPanelSurface("files")');
+    expect(appIndex).toContain('uiActions.openRightPanelSurface("diff")');
     expect(quickSwitch).toContain('"Local folder"');
     expect(quickSwitch).toContain('"Git URL"');
     expect(quickSwitch).toContain("Setup Required");

@@ -130,6 +130,16 @@ function RootSwitch() {
   // auto-select-thread no longer force-navigates off a /settings route, so the
   // route stays put once applied.
   const appliedInitialRoute = useRef(false);
+  const applyInitialOverlay = (overlay: string | null | undefined) => {
+    if (overlay === "quick-switch") uiActions.openQuickSwitch();
+    else if (overlay === "add-project") uiActions.openAddProject();
+    else if (overlay === "model-picker") uiActions.openModelPicker();
+    else if (overlay === "add-provider") uiActions.openAddProviderDialog();
+    else if (overlay === "right-panel-tabs") {
+      uiActions.openRightPanelSurface("files");
+      uiActions.openRightPanelSurface("diff");
+    }
+  };
   useEffect(() => {
     if (appliedInitialRoute.current || status !== "ready") return;
     void readPreviewInitialState()
@@ -143,10 +153,7 @@ function RootSwitch() {
         };
         appliedInitialRoute.current = true;
         if (initial.route && initial.route !== "/") navigate(initial.route);
-        if (initial.overlay === "quick-switch") uiActions.openQuickSwitch();
-        else if (initial.overlay === "add-project") uiActions.openAddProject();
-        else if (initial.overlay === "model-picker") uiActions.openModelPicker();
-        else if (initial.overlay === "add-provider") uiActions.openAddProviderDialog();
+        applyInitialOverlay(initial.overlay);
         if (initial.theme) setPref("themePreference", initial.theme);
       })
       .catch(() => undefined);
@@ -164,10 +171,7 @@ function RootSwitch() {
       const initialRoute = getPref<string>("initialRoute", "/");
       if (initialRoute !== "/") navigate(initialRoute);
       const initialOverlay = getPref<string>("initialOverlay", "");
-      if (initialOverlay === "quick-switch") uiActions.openQuickSwitch();
-      else if (initialOverlay === "add-project") uiActions.openAddProject();
-      else if (initialOverlay === "model-picker") uiActions.openModelPicker();
-      else if (initialOverlay === "add-provider") uiActions.openAddProviderDialog();
+      applyInitialOverlay(initialOverlay);
     };
     applyInitialState();
     return () => {
