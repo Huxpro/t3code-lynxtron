@@ -17528,6 +17528,35 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "settings-archive-delete-gap-discovery",
+      "observedAt": "2026-08-26T16:49:00-07:00",
+      "commit": "18c66840bc30b88852da5cf6fce0b1d383df3ff0",
+      "codeCommit": "18c66840bc30b88852da5cf6fce0b1d383df3ff0",
+      "codeState": "commit",
+      "label": "Archive destructive action coverage correction",
+      "narrative": "A source-to-evidence audit found that the prior Native Archive mutation checkpoint proved only the visible Unarchive action and its round trip. The Web authority also exposes a row context menu with Unarchive and destructive Delete, while Native has no row context menu or confirmed delete path. The existing settings-archive-mutation state already covers this lifecycle, so no duplicate state is added; its Native interaction residual is corrected conservatively before repair.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The earlier checkpoint over-generalized one verified Unarchive action to the complete mutation interaction. This correction preserves all weights and other dimensions while making the unimplemented destructive path visible."
+      },
+      "sources": [],
+      "updates": [
+        {
+          "states": ["settings-archive-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.55,
+              "confidence": 0.99,
+              "method": "archive-action-source-coverage-audit",
+              "source": "Unarchive is physically verified, but the Web row menu's destructive Delete action and confirmation lifecycle are absent in Native"
+            }
+          }
+        }
+      ]
     }
   ]
 }
