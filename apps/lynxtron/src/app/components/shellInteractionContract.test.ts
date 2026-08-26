@@ -627,6 +627,15 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("text-overflow: ellipsis;");
     expect(overrides).toContain("border-radius: 0;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");
+    expect(panel).toContain("showNativeContextMenu([");
+    expect(panel).toContain('{ id: "close", label: "Close" }');
+    expect(panel).toContain('id: "close-others"');
+    expect(panel).toContain('id: "close-to-right"');
+    expect(panel).toContain('{ id: "close-all", label: "Close all"');
+    expect(panel).toContain('surface.kind === "file" ? [{ id: "copy-path", label: "Copy path" }]');
+    expect(panel).toContain("uiActions.closeOtherRightPanelSurfaces(surface.id)");
+    expect(panel).toContain("uiActions.closeRightPanelSurfacesToRight(surface.id)");
+    expect(panel).toContain("closeRemovedTerminal(state.surfaces");
     expect(panel).toContain('className="right-panel__add-menu-dismiss"');
     expect(panel).toContain("bindtap={() => setShowAddMenu(false)}");
     expect(panel).toContain('data-floating-popup="right-panel-add-menu"');

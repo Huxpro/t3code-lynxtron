@@ -156,6 +156,36 @@ describe("applyRightPanelAction", () => {
     });
   });
 
+  it("supports the Web tab context-menu close lifecycle", () => {
+    const withPlan = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
+      type: "open",
+      surface: plan,
+    });
+    const withFile = applyRightPanelAction(withPlan, { type: "open", surface: file });
+    const withDiff = applyRightPanelAction(withFile, { type: "open", surface: diff });
+
+    expect(
+      applyRightPanelAction(withDiff, {
+        type: "close-surfaces-to-right",
+        surfaceId: file.id,
+      }),
+    ).toEqual({
+      isOpen: true,
+      activeSurfaceId: file.id,
+      surfaces: [plan, file],
+    });
+    expect(
+      applyRightPanelAction(withDiff, {
+        type: "close-other-surfaces",
+        surfaceId: file.id,
+      }),
+    ).toEqual({
+      isOpen: true,
+      activeSurfaceId: file.id,
+      surfaces: [file],
+    });
+  });
+
   it("reopens a hidden panel without duplicating its existing surface", () => {
     const opened = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
       type: "open",
