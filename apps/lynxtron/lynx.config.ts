@@ -27,7 +27,11 @@ const parsedProbePageConfig =
   probePageConfig === undefined
     ? undefined
     : (JSON.parse(probePageConfig) as Record<string, unknown>);
-const probePageConfigKeys = parsedProbePageConfig ? Object.keys(parsedProbePageConfig) : [];
+const pageConfig = {
+  alignMouseEventWithW3C: true,
+  ...parsedProbePageConfig,
+};
+const pageConfigKeys = Object.keys(pageConfig);
 
 // Standalone Lynx build config for the T3 Code Lynxtron port.
 export default defineConfig({
@@ -124,14 +128,10 @@ export default defineConfig({
     pluginReactLynx({
       enableCSSInheritance: true,
     }),
-    ...(parsedProbePageConfig
-      ? [
-          pluginLynxConfig(parsedProbePageConfig, {
-            configKeys: probePageConfigKeys,
-            validate: (input) => input as never,
-          }),
-        ]
-      : []),
+    pluginLynxConfig(pageConfig, {
+      configKeys: pageConfigKeys,
+      validate: (input) => input as never,
+    }),
     pluginRspeedyDevReady(),
   ],
 });

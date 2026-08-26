@@ -6,6 +6,10 @@ interface HostKeyEvent {
 
 interface MainThreadKeyEvent extends HostKeyEvent {}
 
+interface MainThreadMouseEvent {
+  readonly button: number;
+}
+
 const ignoreTap = () => undefined;
 
 export function HostView({
@@ -45,11 +49,17 @@ export function HostView({
     "main thread";
     if (onMouseLeave) runOnBackground(onMouseLeave)({});
   };
+  const handleMouseDown = (event: MainThreadMouseEvent) => {
+    "main thread";
+    if (event.button === 2 && onContextMenu) {
+      runOnBackground(onContextMenu)({ button: event.button });
+    }
+  };
   return (
     <view
       {...props}
       event-through={eventThrough}
-      {...(onContextMenu ? ({ bindcontextmenu: onContextMenu } as object) : {})}
+      {...(onContextMenu ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
       {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
