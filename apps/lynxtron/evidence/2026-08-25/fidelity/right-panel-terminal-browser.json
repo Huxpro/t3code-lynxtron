@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-25T20:03:00-07:00",
+  "stateId": "right-panel-terminal",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark"
+  },
+  "identity": {
+    "project": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "threadTitle": "New thread",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "sameState": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "input": "CDP pointer input on visible Web right-panel controls and Lynx-for-Web Terminal control",
+    "webTerminalVisible": true,
+    "lynxTerminalVisible": true,
+    "lynxOpenTerminalCommandObserved": true,
+    "lynxTerminalStatus": "running",
+    "lynxCwd": "/Users/bytedance/github/t3code-lynxtron",
+    "rendererErrors": 0,
+    "sameDimensions": true
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser-report.json",
+      "sha256": "aa593c0a45d6c57f71bd5e251c3712b180d5c5149795b8719c6f7d963bd27bd2"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-web-dark.png",
+      "sha256": "3afcc79beac38e0635af1798ac315e40cfcbd55cd94d7dbf97dd6272d63a0dfc"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-lynx-dark.png",
+      "sha256": "ae338734275b825d3c79f6ca7b450afe6ee4d6755c4a16dc58f8e8bd459aa7c6"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx-for-Web now opens and attaches a real terminal against the same T3 WebSocket server instead of falling through to an undefined command result.",
+      "Terminal snapshot events use the same renderer protocol and client-runtime reducer as Native."
+    ],
+    "remainingProductResidual": [
+      "The Lynx command-oriented terminal is intentionally narrower than Web's xterm surface: no splits, selection, resize interaction, or key-by-key PTY parity yet.",
+      "This capture verifies open and attached running state; command write/output/close remains covered only by the separate Native physical flow."
+    ],
+    "policy": "No state weight, denominator entry, filter, or threshold changed."
+  }
+}
