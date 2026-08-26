@@ -119,6 +119,11 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain('{ id: "copy-full", label: "Copy full path" }');
     expect(markdown).toContain("clientCapabilities.clipboard.writeText(fileLink.displayPath)");
     expect(markdown).toContain("clientCapabilities.clipboard.writeText(fileLink.targetPath)");
+    expect(markdown).toContain("resolveExternalWebLinkHost(href)");
+    expect(markdown).toContain('{ id: "open-external", label: "Open in system browser" }');
+    expect(markdown).toContain('{ id: "copy-link", label: "Copy Link" }');
+    expect(markdown).toContain("clientCapabilities.navigation.openExternal(href)");
+    expect(markdown).toContain("clientCapabilities.clipboard.writeText(href)");
     expect(markdown.indexOf("uiActions.openFileSurface")).toBeLessThan(
       markdown.indexOf("clientCapabilities.navigation.canOpenPath()"),
     );
