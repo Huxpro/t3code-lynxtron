@@ -246,3 +246,4 @@ background-only-file-review-native-flow,2026-08-25T05:49:00-07:00,4b76a8e5046e2a
 right-panel-terminal-scope-discovery,2026-08-25T09:25:00-07:00,a64903741c0bc32a0e35d155ff4dbafb29a41b0a,commit,Right panel Terminal scope discovery,0.216294,0.216294,0.035939,0.187079,0.812921,0.774944
 right-panel-terminal-native-first-slice,2026-08-25T10:04:00-07:00,84151c938e76e3b3b1efe9bab7d3b314ccad6408,commit,Right panel Terminal Native first functional slice,0.212393,0.212393,0.036452,0.182596,0.817404,0.778845
 settings-provider-wizard-scope-discovery,2026-08-25T12:20:00-07:00,1eff8d3d62691d3e7593f8b087a405a5d36c5f79,commit,Add Provider wizard scope discovery,0.212393,0.212393,0.036452,0.182596,0.817404,0.778845
+settings-provider-wizard-native-boundary,2026-08-25T17:10:00-07:00,9332ae94b45fcbbb2faf5680dfef414390ec5798,commit,Add Provider wizard Native verification boundary,0.212393,0.212393,0.036452,0.182596,0.817404,0.778845

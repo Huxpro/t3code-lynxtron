@@ -16980,6 +16980,28 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "settings-provider-wizard-native-boundary",
+      "observedAt": "2026-08-25T17:10:00-07:00",
+      "commit": "9332ae94b45fcbbb2faf5680dfef414390ec5798",
+      "codeCommit": "691df1193155cf0e948fba2deab2b4eeea9be93d",
+      "codeState": "commit",
+      "label": "Add Provider wizard Native verification boundary",
+      "narrative": "A real macOS pointer click exposed duplicate forward navigation in the Native wizard: one Driver-step click reached the re-rendered Identity-step Next control and immediately showed the required-ID error. The product now gives shared Lynx buttons direct hit boxes and guards duplicate forward navigation. A deterministic verifier now covers required and malformed ID validation, Config, save, isolated persistence, provider card creation, and delete reversal, but Lynxtron 0.0.16 did not expose a PID-owned DevTool port and unrelated foreground applications made further physical input unsafe. The run is therefore retained as product and harness evidence without changing any residual.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The evidence distinguishes a repaired product defect from an unresolved harness constraint. No runtime cells receive credit until the exact packaged lifecycle verifier or an equivalent safe physical session passes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/provider-instance-lifecycle-current-native.json",
+          "classification": "tracked-current",
+          "sha256": "8e3beceeabd677666b02b4d4ae12ee0800d324cfd3c40469687382ba339c34ec"
+        }
+      ],
+      "updates": []
     }
   ]
 }
