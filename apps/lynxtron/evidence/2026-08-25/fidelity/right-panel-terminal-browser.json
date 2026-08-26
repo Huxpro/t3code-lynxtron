@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-08-25T20:36:00-07:00",
+  "observedAt": "2026-08-25T20:56:00-07:00",
   "stateId": "right-panel-terminal",
   "scope": {
     "clients": ["web", "lynx"],
@@ -22,6 +22,10 @@
     "webTerminalVisible": true,
     "lynxTerminalVisible": true,
     "lynxOpenTerminalCommandObserved": true,
+    "lynxWriteTerminalCommandObserved": true,
+    "lynxCommand": "pwd",
+    "lynxCommandOutput": "/Users/bytedance/github/t3code-lynxtron",
+    "lynxCloseTerminal": "not-claimed",
     "lynxTerminalStatus": "running",
     "lynxCwd": "/Users/bytedance/github/t3code-lynxtron",
     "rendererErrors": 0,
@@ -37,7 +41,7 @@
   "artifacts": {
     "report": {
       "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser-report.json",
-      "sha256": "86f7e6451396372e96e382663891c76096b4d7ed59712e8d147371e5f80b69af"
+      "sha256": "63c9ab6a7f8f7fe7a6727626fee190750327074bb7e1c56421c33c60432a0386"
     },
     "web": {
       "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-web-dark.png",
@@ -45,18 +49,19 @@
     },
     "lynx": {
       "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-lynx-dark.png",
-      "sha256": "f7e2c01514f519d6b7d41594afe3e497dc7114522b0199c48722d8223a07eb69"
+      "sha256": "62a3703039fb5b3cd9798e54111317156a8bc578df60ceaa0a9d9a3ff80449ed"
     }
   },
   "classification": {
     "productLossClosed": [
       "Lynx-for-Web now opens and attaches a real terminal against the same T3 WebSocket server instead of falling through to an undefined command result.",
       "Terminal snapshot events use the same renderer protocol and client-runtime reducer as Native.",
-      "The Lynx terminal fills the 539 by 776 content region with a 692-point viewport and a bottom-anchored command row."
+      "The Lynx terminal fills the 539 by 776 content region with a 692-point viewport and a bottom-anchored command row.",
+      "The visible command field and Run control send pwd through writeTerminal and render the exact shared-server cwd response."
     ],
     "remainingProductResidual": [
       "The Lynx command-oriented terminal is intentionally narrower than Web's xterm surface: no splits, selection, resize interaction, or key-by-key PTY parity yet.",
-      "This capture verifies open and attached running state; command write/output/close remains covered only by the separate Native physical flow."
+      "The Browser-first capture does not claim tab close because the Lynx host does not expose a reliable composed close target; Native physical evidence still covers close and deleteHistory."
     ],
     "policy": "No state weight, denominator entry, filter, or threshold changed."
   }
