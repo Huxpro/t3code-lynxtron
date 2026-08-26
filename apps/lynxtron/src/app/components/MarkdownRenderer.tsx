@@ -4,8 +4,9 @@ import {
   resolveMarkdownFileLinkMeta,
   type MarkdownInlinePresentation,
 } from "@t3tools/client-runtime/presentation/markdown";
-import { clientCapabilities } from "../platform/clientCapabilities";
+import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { uiActions } from "../state/uiState";
+import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import { parseMarkdownBlocks, type ParsedMarkdownBlock } from "./markdownBlocks";
 import { copyMarkdownCode } from "./markdownClipboard";
 
@@ -32,6 +33,38 @@ function activateMarkdownLink(href: string, cwd: string | undefined): void {
   }
 }
 
+async function showMarkdownFileLinkContextMenu(
+  href: string,
+  cwd: string | undefined,
+): Promise<void> {
+  const fileLink = resolveMarkdownFileLinkMeta(href, cwd);
+  if (!fileLink) return;
+  const selection = await showNativeContextMenu([
+    { id: "open", label: "Open in editor" },
+    { id: "copy-relative", label: "Copy relative path" },
+    { id: "copy-full", label: "Copy full path" },
+  ]);
+  if (selection === "open") {
+    activateMarkdownLink(href, cwd);
+  } else if (selection === "copy-relative") {
+    await clientCapabilities.clipboard.writeText(fileLink.displayPath);
+  } else if (selection === "copy-full") {
+    await clientCapabilities.clipboard.writeText(fileLink.targetPath);
+  }
+}
+
+function fileLinkContextMenuHandler(
+  href: string | null,
+  cwd: string | undefined,
+): (() => void) | undefined {
+  if (!href || !resolveMarkdownFileLinkMeta(href, cwd)) return undefined;
+  return () => {
+    void showMarkdownFileLinkContextMenu(href, cwd).catch((cause) => {
+      console.error("[lynx-markdown] failed to handle file link context menu", { href, cause });
+    });
+  };
+}
+
 function renderInline(
   spans: ReadonlyArray<MarkdownInlinePresentation>,
   key: string,
@@ -45,19 +78,21 @@ function renderInline(
           activateMarkdownLink(span.href!, cwd);
         }
       : undefined;
+    const handleContextMenu = fileLinkContextMenuHandler(span.href, cwd);
     if (span.code) {
       return (
-        <text
+        <HostText
           key={spanKey}
           className={`md-inline-code ${span.href ? "md-link" : ""}`}
-          bindtap={handleTap}
+          onClick={handleTap}
+          onContextMenu={handleContextMenu}
         >
           {span.text}
-        </text>
+        </HostText>
       );
     }
     return (
-      <text
+      <HostText
         key={spanKey}
         className={`md-inline${span.href ? " md-link" : ""}${
           span.strikethrough ? " md-strikethrough" : ""
@@ -68,10 +103,11 @@ function renderInline(
             fontStyle: span.italic ? "italic" : "normal",
           } as object
         }
-        bindtap={handleTap}
+        onClick={handleTap}
+        onContextMenu={handleContextMenu}
       >
         {span.text}
-      </text>
+      </HostText>
     );
   });
 }
@@ -88,8 +124,9 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
         const className = `${span.code ? "md-inline-code" : "md-inline"}${
           span.href ? " md-link" : ""
         }${span.strikethrough ? " md-strikethrough" : ""}`;
+        const handleContextMenu = fileLinkContextMenuHandler(span.href, cwd);
         const content = (
-          <text
+          <HostText
             key={spanKey}
             className={className}
             style={
@@ -98,18 +135,20 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
                 fontStyle: span.italic ? "italic" : "normal",
               } as object
             }
+            onContextMenu={handleContextMenu}
           >
             {span.text}
-          </text>
+          </HostText>
         );
         return span.href ? (
-          <view
+          <HostView
             key={spanKey}
             className="md-link-hit-target"
-            bindtap={() => activateMarkdownLink(span.href!, cwd)}
+            onClick={() => activateMarkdownLink(span.href!, cwd)}
+            onContextMenu={handleContextMenu}
           >
             {content}
-          </view>
+          </HostView>
         ) : (
           content
         );
