@@ -607,9 +607,11 @@ describe("desktop shell interaction contract", () => {
     expect(fileTreeSurfaceSource).toContain("onContextMenu={onContextMenu}");
     expect(files).toContain("if (!requestComposerTextInsertion(`${mention} `))");
     expect(composer).toContain("onComposerTextInsertion((text) =>");
-    expect(composer).toContain('target.invoke("setValue", { value: nextValue })');
-    expect(composer).toContain('target.invoke("setSelectionRange"');
-    expect(composer).toContain('target.invoke("focus")');
+    expect(composer).toContain('select("#composer-prompt-editor")');
+    expect(composer).toContain('invoke("setValue", { value: nextValue })');
+    expect(composer).toContain('invoke("setSelectionRange"');
+    expect(composer).toContain('invoke("focus")');
+    expect(composer).toContain('id="composer-prompt-editor"');
     expect(files).toContain("data-file-content-revision={fileContentRevision(contents)}");
     expect(files).toContain("data-file-save-status={saveStatus}");
     expect(files).toContain("file-editor-token file-editor-token--${token.tone}");
