@@ -21,7 +21,8 @@
  * secret — mints the WebSocket ticket and injects a ready `socketUrl`; no
  * credential is minted in the browser. Capabilities the browser cannot satisfy
  * (filesystem, shell, keyboard, clipboard, native navigation) stay explicitly
- * unavailable, exactly as in the static preview host.
+ * unavailable. The live host does forward terminal RPC because it is connected
+ * to a real shared server; the static preview remains shell-free.
  */
 import {
   WsRpcGroup,
@@ -158,7 +159,6 @@ export interface LiveConnectorDiagnostics {
   readonly unsupportedCapabilities: readonly [
     "keyboard",
     "filesystem",
-    "shell",
     "clipboard",
     "native-navigation",
   ];
@@ -256,13 +256,7 @@ export class LiveConnectorHost {
       commands: [],
       lastCommandResult: null,
       commandResults: [],
-      unsupportedCapabilities: [
-        "keyboard",
-        "filesystem",
-        "shell",
-        "clipboard",
-        "native-navigation",
-      ],
+      unsupportedCapabilities: ["keyboard", "filesystem", "clipboard", "native-navigation"],
     };
   }
 

@@ -33,7 +33,9 @@ interface BrowserPreviewDiagnostics {
   readonly nativeModuleCalls: Array<{ moduleName: string; method: string; data: unknown }>;
   readonly connector: BrowserPreviewConnectorHost["diagnostics"] | LiveConnectorHost["diagnostics"];
   known: (typeof BROWSER_PREVIEW_SCENARIOS)[BrowserPreviewScenarioId]["known"];
-  readonly unsupportedCapabilities: BrowserPreviewConnectorHost["diagnostics"]["unsupportedCapabilities"];
+  readonly unsupportedCapabilities: ReadonlyArray<
+    "keyboard" | "filesystem" | "shell" | "clipboard" | "native-navigation"
+  >;
   viewportContract: BrowserPreviewViewportContract;
   semanticReady: boolean;
   rendered: boolean;

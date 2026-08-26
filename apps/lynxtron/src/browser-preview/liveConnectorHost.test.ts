@@ -53,6 +53,7 @@ describe("LiveConnectorHost", () => {
     assert.isTrue(ok.ok);
     assert.isTrue(host.diagnostics.nativeModuleReady);
     assert.equal(host.diagnostics.hostKind, "live-browser-preview");
+    assert.notInclude(host.diagnostics.unsupportedCapabilities, "shell");
   });
 
   it("records commands and rejects browser-unavailable capabilities", () => {
