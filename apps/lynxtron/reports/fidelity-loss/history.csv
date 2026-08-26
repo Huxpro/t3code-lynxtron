@@ -255,3 +255,4 @@ sidebar-native-context-menu-scope-discovery,2026-08-25T23:20:00-07:00,223ba9903d
 sidebar-native-thread-context-menu-dark,2026-08-26T01:14:55-07:00,96b9bc29f,commit,Native thread system context menu,0.209031,0.209031,0.037345,0.178347,0.821653,0.78228
 core-reading-surfaces-native-dark,2026-08-26T02:01:00-07:00,62d5e9994,commit,Native completed-thread reading surface alignment,0.207984,0.207984,0.037599,0.177041,0.822959,0.783327
 right-panel-native-tab-context-menu-scope-discovery,2026-08-26T02:24:00-07:00,a8174083984e1816e21d8e6699add1464d47bd72,commit,Native right-panel tab context menu scope discovery,0.207984,0.207984,0.037599,0.177041,0.822959,0.783327
+right-panel-native-tab-context-menu-dark,2026-08-26T04:51:50-07:00,52b189bcb1185bc9ffd6cf9b801f9c30e10a6a5f,commit,Native right-panel tab system menu,0.204493,0.204493,0.038089,0.172993,0.827007,0.786818

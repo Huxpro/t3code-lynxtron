@@ -17314,6 +17314,81 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "right-panel-native-tab-context-menu-dark",
+      "observedAt": "2026-08-26T04:51:50-07:00",
+      "commit": "52b189bcb1185bc9ffd6cf9b801f9c30e10a6a5f",
+      "codeCommit": "cbe50ad85c5b138c898a4e5a5ff7d0aac12cdbff",
+      "codeState": "commit",
+      "label": "Native right-panel tab system menu",
+      "narrative": "A fresh isolated Lynxtron 0.0.16 process opens real Files and Diff product surfaces through the viewport-test initial state. A physical secondary click on the active Diff tab opens a macOS system menu with Close, Close others, disabled Close to the right, and Close all. Selecting Close others removes Files and retains Diff. A second physical run on the Files tab shows Close to the right enabled, but its selection result is not claimed because the remaining tab frame was visually ambiguous. Middle-click close, file-tab Copy path, Close all, light theme, and narrow sheet layout remain uncovered.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.98,
+        "reason": "Exact owned process evidence directly proves the native system menu and one multi-tab reverse state without borrowing unobserved action outcomes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-tab-context-menu.json",
+          "classification": "tracked-current",
+          "sha256": "0606b2ca8bc62fc21e3f03e606bcab4dfdbf888b2ed6bde8bd4b4495794b5e6a"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-tab-menu-open.png",
+          "classification": "tracked-current",
+          "sha256": "81d93c351894b80ed59001da9c70f39da6aca881150862073b09d5930d37dd52"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-tab-menu-close-others.png",
+          "classification": "tracked-current",
+          "sha256": "157e6a9b0e4b13ae10f75d294592b0914d52df552f365dcbac5d0660a4457d01"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-native-tab-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.15,
+              "confidence": 0.98,
+              "method": "native-tab-menu-visible-content",
+              "source": "The Diff and Files tab menus expose the Web close lifecycle labels; file-only Copy path remains source-covered and unobserved"
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-tab-menu-window-server-frame",
+              "source": "The system menu anchors to the physically secondary-clicked tab and uses native macOS sizing"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-tab-menu-window-server-frame",
+              "source": "Menu labels render through native macOS typography"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-tab-menu-window-server-frame",
+              "source": "The visible popup is the operating-system menu material with native disabled-item treatment"
+            },
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.98,
+              "method": "physical-secondary-click-and-close-others",
+              "source": "Physical input opens both tab menus and Close others removes Files while retaining Diff; middle-click, Copy path, Close all, and Close-right outcome remain unclaimed"
+            },
+            "runtime": {
+              "residual": 0.15,
+              "confidence": 0.94,
+              "method": "isolated-main-transport-tab-lifecycle",
+              "source": "The isolated 0.0.16 process uses main transport and a production bundle; DevTool registration is unavailable and the visible Diff body error is fixture-root mismatch"
+            }
+          }
+        }
+      ]
     }
   ]
 }
