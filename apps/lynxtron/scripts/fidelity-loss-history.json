@@ -17002,6 +17002,53 @@
         }
       ],
       "updates": []
+    },
+    {
+      "id": "right-panel-terminal-lynx-live-server",
+      "observedAt": "2026-08-25T20:03:00-07:00",
+      "commit": "a9df9a5db1268187c0aa7807cd7b62d85e50ba18",
+      "codeCommit": "bdc9e336d8f471081b58abe2f0d56c4bf0bd6fae",
+      "codeState": "commit",
+      "label": "Right panel Terminal Lynx-for-Web shared-server slice",
+      "narrative": "A Browser-first capture selects the same seeded thread in the Web authority and Lynx-for-Web panes, then opens Terminal through visible pointer controls. The Lynx live host forwards terminal.open and terminal.attach to the same isolated T3 WebSocket server and renders the running shell with the exact project cwd. Both 1280x820 dark panes pass state identity, connection, dimensions, and zero-console-error gates. The Lynx command surface remains intentionally narrower than Web xterm, so geometry, typography, material, command write/output, split, selection, and resize retain their existing unknown or residual status.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The new live-host transport closes the prior missing Lynx-for-Web server-backed terminal path. Credit is limited to directly observed content, open interaction, and runtime readiness."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser.json",
+          "classification": "tracked-current",
+          "sha256": "e8d21ea0549abbf9c350c64ad70a5e4b745509f2337405aa52de5b3a761ce4e4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-live-server-content",
+              "source": "Matched Web and Lynx-for-Web panes show the same Terminal state; Lynx renders the running shell and exact project cwd"
+            },
+            "interaction": {
+              "residual": 0.7,
+              "confidence": 0.99,
+              "method": "browser-terminal-open-only",
+              "source": "Real CDP pointer input opens and attaches the Lynx terminal; write, output, close, split, selection, resize, and key-by-key PTY interaction are not claimed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-main-transport",
+              "source": "The live Lynx-for-Web host records openTerminal and consumes terminal.attach from the same isolated server with zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
