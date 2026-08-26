@@ -17512,6 +17512,22 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "transcript-native-external-link-context-menu-scope-discovery",
+      "observedAt": "2026-08-26T16:31:00-07:00",
+      "commit": "190c6505521ffd904fa8cc1f7131f8e060f1f588",
+      "codeCommit": "190c6505521ffd904fa8cc1f7131f8e060f1f588",
+      "codeState": "commit",
+      "label": "Native transcript external-link context menu scope discovery",
+      "narrative": "The Web ChatMarkdown external-link surface exposes a system-native menu with Open in integrated browser, Open in system browser, and Copy Link. The Native MarkdownRenderer opens HTTP and HTTPS links on tap but exposes no secondary-click menu. Native already has system-browser navigation and clipboard capabilities, while integrated browser navigation is unavailable. This independently reachable Native-only interaction enters the denominator before repair; the unavailable integrated-browser action remains explicit residual rather than a fabricated item.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state makes external-link secondary-click, system navigation, and clipboard behavior independently measurable without changing existing weights, thresholds, filters, residuals, or prior repair credit."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
