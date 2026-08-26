@@ -11,7 +11,9 @@ import {
   activatePanelSurface,
   clearPanelSurfaces,
   closePanelSurface,
+  closePanelSurfacesToRight,
   createEmptyPanelSurfaceState,
+  keepOnlyPanelSurface,
   openPanelSurface,
   setPanelSurfaceVisibility,
   togglePanelSurfaceVisibility,
@@ -98,6 +100,8 @@ export type RightPanelAction =
       readonly surface: FilesRightPanelSurface;
     }
   | { readonly type: "close-surface"; readonly surfaceId: string }
+  | { readonly type: "close-other-surfaces"; readonly surfaceId: string }
+  | { readonly type: "close-surfaces-to-right"; readonly surfaceId: string }
   | { readonly type: "activate"; readonly surfaceId: string }
   | { readonly type: "close-panel" }
   | { readonly type: "close-all" }
@@ -148,6 +152,10 @@ export function applyRightPanelAction(
     }
     case "close-surface":
       return closePanelSurface(state, action.surfaceId);
+    case "close-other-surfaces":
+      return keepOnlyPanelSurface(state, action.surfaceId);
+    case "close-surfaces-to-right":
+      return closePanelSurfacesToRight(state, action.surfaceId);
     case "activate":
       return activatePanelSurface(state, action.surfaceId);
     case "close-panel":
@@ -289,6 +297,12 @@ export const uiActions = {
   },
   closeRightPanelSurface(surfaceId: string): void {
     updateRightPanel({ type: "close-surface", surfaceId });
+  },
+  closeOtherRightPanelSurfaces(surfaceId: string): void {
+    updateRightPanel({ type: "close-other-surfaces", surfaceId });
+  },
+  closeRightPanelSurfacesToRight(surfaceId: string): void {
+    updateRightPanel({ type: "close-surfaces-to-right", surfaceId });
   },
   openModelPicker(): void {
     appAtomRegistry.set(modelPickerOpenAtom, true);

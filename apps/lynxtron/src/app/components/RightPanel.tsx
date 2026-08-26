@@ -26,6 +26,7 @@ import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
 import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
 import { useT3ClientState } from "../state/t3Client";
+import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 
 const LYNX_RIGHT_PANEL_SHEET_QUERY = "(max-width: 760px)";
 
@@ -147,6 +148,52 @@ export function RightPanel({
     [activeThreadId],
   );
 
+  const closeRemovedTerminal = useCallback(
+    (removed: ReadonlyArray<RightPanelSurface>) => {
+      if (removed.some((surface) => surface.kind === "terminal")) {
+        closeTerminalSession(activeThreadId);
+      }
+    },
+    [activeThreadId],
+  );
+
+  const handleTabContextMenu = useCallback(
+    async (surface: RightPanelSurface) => {
+      const surfaceIndex = state.surfaces.findIndex((entry) => entry.id === surface.id);
+      if (surfaceIndex < 0) return;
+      const selection = await showNativeContextMenu([
+        ...(surface.kind === "file" ? [{ id: "copy-path", label: "Copy path" }] : []),
+        { id: "close", label: "Close" },
+        {
+          id: "close-others",
+          label: "Close others",
+          disabled: state.surfaces.length <= 1,
+        },
+        {
+          id: "close-to-right",
+          label: "Close to the right",
+          disabled: surfaceIndex >= state.surfaces.length - 1,
+        },
+        { id: "close-all", label: "Close all", disabled: state.surfaces.length === 0 },
+      ]);
+      if (selection === "copy-path" && surface.kind === "file") {
+        await clientCapabilities.clipboard.writeText(surface.path);
+      } else if (selection === "close") {
+        handleCloseTab(surface);
+      } else if (selection === "close-others") {
+        closeRemovedTerminal(state.surfaces.filter((entry) => entry.id !== surface.id));
+        uiActions.closeOtherRightPanelSurfaces(surface.id);
+      } else if (selection === "close-to-right") {
+        closeRemovedTerminal(state.surfaces.slice(surfaceIndex + 1));
+        uiActions.closeRightPanelSurfacesToRight(surface.id);
+      } else if (selection === "close-all") {
+        closeRemovedTerminal(state.surfaces);
+        uiActions.closeAllRightPanelSurfaces();
+      }
+    },
+    [closeRemovedTerminal, handleCloseTab, state.surfaces],
+  );
+
   const handleAddSurface = useCallback((kind: Exclude<RightPanelKind, "file">) => {
     uiActions.openRightPanelSurface(kind);
     setShowAddMenu(false);
@@ -226,6 +273,9 @@ export function RightPanel({
                 active={surface.id === state.activeSurfaceId}
                 onActivate={() => handleTabClick(surface)}
                 onClose={() => handleCloseTab(surface)}
+                onContextMenu={() => {
+                  void handleTabContextMenu(surface).catch(() => undefined);
+                }}
                 closeIcon={<Icon name="x" size={14} color="#818181" />}
                 closeVisible
               />
