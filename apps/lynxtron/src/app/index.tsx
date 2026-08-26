@@ -136,8 +136,8 @@ function RootSwitch() {
     else if (overlay === "model-picker") uiActions.openModelPicker();
     else if (overlay === "add-provider") uiActions.openAddProviderDialog();
     else if (overlay === "right-panel-tabs") {
-      uiActions.openRightPanelSurface("files");
       uiActions.openRightPanelSurface("diff");
+      uiActions.openRightPanelSurface("files");
     }
   };
   useEffect(() => {

@@ -1099,6 +1099,9 @@ describe("desktop shell interaction contract", () => {
     expect(appIndex).toContain('overlay === "right-panel-tabs"');
     expect(appIndex).toContain('uiActions.openRightPanelSurface("files")');
     expect(appIndex).toContain('uiActions.openRightPanelSurface("diff")');
+    expect(appIndex.indexOf('uiActions.openRightPanelSurface("diff")')).toBeLessThan(
+      appIndex.indexOf('uiActions.openRightPanelSurface("files")'),
+    );
     expect(quickSwitch).toContain('"Local folder"');
     expect(quickSwitch).toContain('"Git URL"');
     expect(quickSwitch).toContain("Setup Required");
