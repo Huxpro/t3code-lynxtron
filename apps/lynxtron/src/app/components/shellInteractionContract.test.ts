@@ -32,6 +32,10 @@ const rightPanelSurfaceSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/RightPanelSurface.tsx"),
   "utf8",
 );
+const fileTreeSurfaceSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/FileTreeSurface.tsx"),
+  "utf8",
+);
 const sidebarControlsSource = readFileSync(
   path.resolve(
     import.meta.dirname,
@@ -598,6 +602,8 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("serializeComposerFileLink(path)");
     expect(files).toContain('{ id: "copy-mention", label: "Copy mention" }');
     expect(files).toContain('{ id: "add-to-chat", label: "Add to chat" }');
+    expect(files).toContain("onContextMenu={() => onContextMenu(node.path)}");
+    expect(fileTreeSurfaceSource).toContain("eventThrough>{fileIcon}");
     expect(files).toContain("if (!requestComposerTextInsertion(`${mention} `))");
     expect(composer).toContain("onComposerTextInsertion((text) =>");
     expect(composer).toContain('target.invoke("setValue", { value: nextValue })');
