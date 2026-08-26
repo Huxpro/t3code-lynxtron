@@ -17252,6 +17252,52 @@
           }
         }
       ]
+    },
+    {
+      "id": "core-reading-surfaces-native-dark",
+      "observedAt": "2026-08-26T02:01:00-07:00",
+      "commit": "62d5e9994",
+      "codeCommit": "0751fe1c6",
+      "codeState": "commit",
+      "label": "Native completed-thread reading surface alignment",
+      "narrative": "A fresh isolated Lynxtron 0.0.16 process renders the background-only completed thread on the production bundle after source-level alignment to the Web authority. Assistant paragraph and list copy now use the shared 14px, 23px, 80%-foreground hierarchy; inline code uses the shared muted bordered chip; and the active Sidebar V2 thread card uses one bg-sidebar-row-active surface instead of compounding outer and inner translucent fills. The retained exact-PID window frame covers Native dark only. Three coordinate-driven attempts to activate Open diff produced no route change, so review-diff receives no visual or interaction credit; its 13px/20px Pierre metric alignment is source- and build-verified only.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.94,
+        "reason": "The exact owned Native frame directly observes completed-thread typography and active-card material after the product change while leaving light, hover, right-panel, and DevTool gaps explicit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/core-reading-surfaces-native-dark.json",
+          "classification": "tracked-current",
+          "sha256": "ba6d4caf0ca62f4eab9bb57b077ad53220d99a7ed943f9e0a57c67ae4dd1a93e"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/core-reading-surfaces-native-dark.png",
+          "classification": "tracked-current",
+          "sha256": "047f21a2ce466451c4a78d939c2c1e63e2cc6cd52f3b713a312d2366e75c6fa4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["native"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.94,
+              "method": "native-dark-completed-thread-reading-frame",
+              "source": "The exact owned frame renders assistant paragraphs and lists at the Web authority's 14px, 23px, 80%-foreground hierarchy; light theme and native shaping remain uncovered"
+            },
+            "material": {
+              "residual": 0.12,
+              "confidence": 0.94,
+              "method": "native-dark-completed-thread-reading-frame",
+              "source": "The visible completed-thread surface uses the muted bordered inline-code treatment and a single active-card fill; no paired Web pixel metric or hover frame is claimed"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -253,3 +253,4 @@ right-panel-terminal-lynx-command,2026-08-25T20:56:00-07:00,528e0579282edaeb5461
 settings-provider-wizard-lynx-lifecycle,2026-08-25T21:16:00-07:00,7a670d75d9402b2a4d41af2031d5ba7191e48d6e,commit,Add Provider wizard Lynx-for-Web lifecycle,0.209145,0.209145,0.03677,0.178954,0.821046,0.78213
 sidebar-native-context-menu-scope-discovery,2026-08-25T23:20:00-07:00,223ba9903dac2adb07178aaac8c655f18b0acd05,commit,Native thread context menu scope discovery,0.209145,0.209145,0.03677,0.178954,0.821046,0.78213
 sidebar-native-thread-context-menu-dark,2026-08-26T01:14:55-07:00,96b9bc29f,commit,Native thread system context menu,0.205729,0.205729,0.037345,0.174916,0.825084,0.785546
+core-reading-surfaces-native-dark,2026-08-26T02:01:00-07:00,62d5e9994,commit,Native completed-thread reading surface alignment,0.204677,0.204677,0.037599,0.173605,0.826395,0.786598
