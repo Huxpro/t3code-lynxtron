@@ -1047,6 +1047,8 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("showNativeContextMenu([");
     expect(sidebarSource).toContain("void showThreadContextMenu(");
     expect(sidebarSource).toContain('{ id: "delete", label: "Delete", destructive: true }');
+    expect(hostElementsSource).toContain("event.button === 2 && onContextMenu");
+    expect(hostElementsSource).toContain('"main-thread:bindmousedown": handleMouseDown');
     expect(sidebarSource).toContain("<ProjectSettingsDialog");
     expect(projectSettings).toContain("Project settings");
     expect(projectSettings).toContain("Project name");

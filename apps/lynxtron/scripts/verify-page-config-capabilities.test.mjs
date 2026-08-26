@@ -12,10 +12,12 @@ const verifier = readFileSync(
 );
 
 describe("pageConfig capability probe", () => {
-  it("keeps raw pageConfig injection behind the probe entry", () => {
+  it("enables W3C mouse buttons for desktop product input and keeps probe overrides gated", () => {
     assert.include(config, "T3_LYNXTRON_PROBE_PAGE_CONFIG");
     assert.include(config, "T3_LYNXTRON_PROBE_PAGE_CONFIG requires an env-gated probe entry.");
-    assert.include(config, "pluginLynxConfig(parsedProbePageConfig");
+    assert.include(config, "alignMouseEventWithW3C: true");
+    assert.include(config, "...parsedProbePageConfig");
+    assert.include(config, "pluginLynxConfig(pageConfig");
   });
 
   it("covers baseline, typed, legacy, and untyped config variants", () => {
