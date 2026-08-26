@@ -74,7 +74,10 @@ export function TerminalPanel() {
   }
 
   return (
-    <view className="terminal-panel" data-terminal-session-status={session?.status ?? "starting"}>
+    <view
+      className="terminal-panel flex flex-col"
+      data-terminal-session-status={session?.status ?? "starting"}
+    >
       <view className="terminal-panel__meta">
         <text className="terminal-panel__cwd">{cwd}</text>
         <text className="terminal-panel__status">{session?.status ?? "starting"}</text>

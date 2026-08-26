@@ -430,7 +430,14 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain(".closeTerminal({");
     expect(terminal).toContain('confirm-type="send"');
     expect(terminal).toContain('data-terminal-session-status={session?.status ?? "starting"}');
+    expect(terminal).toContain('className="terminal-panel flex flex-col"');
     expect(terminal).not.toContain("Terminal sessions are not connected yet");
+    expect(overrides).toContain(".terminal-panel {");
+    expect(overrides).toMatch(/\.terminal-panel \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/);
+    expect(overrides).toMatch(/\.terminal-panel__viewport \{[\s\S]*top: 32px;[\s\S]*bottom: 52px;/);
+    expect(overrides).toMatch(
+      /\.terminal-panel__command-row \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/,
+    );
     expect(overrides).toContain(".topbar__toggle:hover {");
     expect(overrides).toContain(".topbar__toggle:active {");
   });
