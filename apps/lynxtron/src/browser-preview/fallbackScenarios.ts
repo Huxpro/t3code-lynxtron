@@ -39,6 +39,7 @@ import type {
   ActivePlanState,
   LatestProposedPlanState,
 } from "@t3tools/client-runtime/presentation/thread";
+import type { TerminalSessionPresentation } from "../shared/connectorProtocol.ts";
 
 /**
  * Structural mirror of the Lynxtron connector protocol's status/shell/thread/
@@ -83,6 +84,7 @@ export interface WorkbenchConnectorSnapshot {
   readonly access: AuthAccessPresentation;
   readonly shell: WorkbenchShellPayload;
   readonly threads: Readonly<Record<string, WorkbenchThreadPayload>>;
+  readonly terminals: Readonly<Record<string, TerminalSessionPresentation>>;
 }
 
 const NOW = "2026-08-02T09:00:00.000Z";
@@ -418,6 +420,7 @@ function baseSnapshot(
       [NEW_THREAD_ID]: newThreadPayload,
       [activeThread.id]: threadPayload,
     },
+    terminals: {},
   };
 }
 

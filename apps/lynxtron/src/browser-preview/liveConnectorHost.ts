@@ -58,6 +58,12 @@ import {
   type SourceControlPublishRepositoryInput,
   type SourceControlPublishRepositoryResult,
   type ServerConfigStreamEvent,
+  type TerminalAttachStreamEvent,
+  type TerminalCloseInput,
+  type TerminalOpenInput,
+  type TerminalResizeInput,
+  type TerminalSessionSnapshot,
+  type TerminalWriteInput,
   type ThreadTurnStartBootstrap,
   type VcsStatusResult,
 } from "@t3tools/contracts";
@@ -74,6 +80,11 @@ import {
 } from "@t3tools/client-runtime/state/server";
 import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
 import { applyThreadDetailEvent } from "@t3tools/client-runtime/state/threads";
+import {
+  applyTerminalAttachStreamEvent,
+  EMPTY_TERMINAL_BUFFER_STATE,
+  type TerminalBufferState,
+} from "@t3tools/client-runtime/state/terminal";
 import {
   deriveActivePlanState,
   findLatestProposedPlan,
@@ -106,6 +117,7 @@ import {
   type ConnectorSnapshot,
   type ConnectorStatusPayload,
   type ConnectorSyncReply,
+  type TerminalSessionPresentation,
   type ConnectorThreadPayload,
   projectRepoContext,
   type ProjectRepoContext,
@@ -222,6 +234,8 @@ export class LiveConnectorHost {
   #threadSnapshots = new Map<string, OrchestrationThread>();
   #threadSequences = new Map<string, number>();
   #threadFibers = new Map<string, Fiber.Fiber<unknown, unknown>>();
+  #terminalFibers = new Map<string, Fiber.Fiber<unknown, unknown>>();
+  #terminalStates = new Map<string, TerminalSessionPresentation>();
   #disposed = false;
   #startPromise: Promise<void> | null = null;
 
@@ -315,6 +329,10 @@ export class LiveConnectorHost {
       Effect.runFork(Fiber.interrupt(fiber));
     }
     this.#threadFibers.clear();
+    for (const fiber of this.#terminalFibers.values()) {
+      Effect.runFork(Fiber.interrupt(fiber));
+    }
+    this.#terminalFibers.clear();
     if (this.#appScope) {
       Effect.runFork(Scope.close(this.#appScope, Exit.void));
       this.#appScope = undefined;
@@ -332,6 +350,7 @@ export class LiveConnectorHost {
         access: this.#access,
         shell: this.#shell,
         threads: { ...this.#threads },
+        terminals: Object.fromEntries(this.#terminalStates),
       },
     };
   }
@@ -353,6 +372,9 @@ export class LiveConnectorHost {
         break;
       case "thread":
         this.#threads[event.threadId] = event.payload;
+        break;
+      case "terminal":
+        this.#terminalStates.set(`${event.threadId}\u0000${event.terminalId}`, event.payload);
         break;
       case "log":
         break;
@@ -573,6 +595,47 @@ export class LiveConnectorHost {
     });
   }
 
+  #terminalKey(threadId: string, terminalId: string): string {
+    return `${threadId}\u0000${terminalId}`;
+  }
+
+  #emitTerminal(state: TerminalSessionPresentation): void {
+    this.#emit({
+      kind: "terminal",
+      threadId: state.threadId,
+      terminalId: state.terminalId,
+      payload: state,
+    });
+  }
+
+  #subscribeTerminal(input: TerminalOpenInput): void {
+    const key = this.#terminalKey(input.threadId, input.terminalId);
+    const existingFiber = this.#terminalFibers.get(key);
+    if (existingFiber) Effect.runFork(Fiber.interrupt(existingFiber));
+    let buffer: TerminalBufferState = EMPTY_TERMINAL_BUFFER_STATE;
+    const stream = this.#client[WS_METHODS.terminalAttach]({
+      ...input,
+      restartIfNotRunning: true,
+    });
+    const fiber = this.#forkClient(
+      Stream.runForEach(stream as Stream.Stream<TerminalAttachStreamEvent, unknown, any>, (event) =>
+        Effect.sync(() => {
+          buffer = applyTerminalAttachStreamEvent(buffer, event);
+          this.#emitTerminal({
+            threadId: input.threadId,
+            terminalId: input.terminalId,
+            cwd: input.cwd,
+            status: buffer.status,
+            history: buffer.buffer,
+            error: buffer.error,
+            updatedAt: buffer.updatedAt,
+          });
+        }),
+      ),
+    );
+    this.#terminalFibers.set(key, fiber);
+  }
+
   #handleCommand(value: unknown): unknown {
     if (typeof value !== "object" || value === null) {
       throw new Error("Malformed live connector command");
@@ -593,6 +656,52 @@ export class LiveConnectorHost {
       return undefined;
     }
     if (!this.#client) throw new Error("Live connector is not connected");
+    if (request.method === "openTerminal") {
+      const params = request.params as TerminalOpenInput;
+      return this.#runClient<TerminalSessionSnapshot>(
+        this.#client[WS_METHODS.terminalOpen](params),
+      ).then((value) => {
+        this.#subscribeTerminal(params);
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "writeTerminal") {
+      const params = request.params as TerminalWriteInput;
+      return this.#runClient(this.#client[WS_METHODS.terminalWrite](params)).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "resizeTerminal") {
+      const params = request.params as TerminalResizeInput;
+      return this.#runClient(this.#client[WS_METHODS.terminalResize](params)).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "closeTerminal") {
+      const params = request.params as TerminalCloseInput;
+      return this.#runClient(this.#client[WS_METHODS.terminalClose](params)).then((value) => {
+        if (params.terminalId) {
+          const key = this.#terminalKey(params.threadId, params.terminalId);
+          const fiber = this.#terminalFibers.get(key);
+          if (fiber) Effect.runFork(Fiber.interrupt(fiber));
+          this.#terminalFibers.delete(key);
+          this.#emitTerminal({
+            threadId: params.threadId,
+            terminalId: params.terminalId,
+            cwd: this.#terminalStates.get(key)?.cwd ?? ".",
+            status: "closed",
+            history: "",
+            error: null,
+            updatedAt: new Date().toISOString(),
+          });
+        }
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
     if (request.method === "sendPrompt") {
       const params = request.params as {
         threadId: string;
