@@ -27,6 +27,8 @@ const sourceRoot =
 const projectCwd = process.env.T3_MTS_PRODUCT_PROJECT_CWD ?? repoRoot;
 const viewportWidth = process.env.T3_MTS_PRODUCT_VIEWPORT_WIDTH ?? "1280";
 const viewportHeight = process.env.T3_MTS_PRODUCT_VIEWPORT_HEIGHT ?? "820";
+const windowX = process.env.T3_MTS_PRODUCT_WINDOW_X ?? "20";
+const windowY = process.env.T3_MTS_PRODUCT_WINDOW_Y ?? "60";
 const initialRoute = process.env.T3_MTS_PRODUCT_INITIAL_ROUTE?.trim();
 const initialOverlay = process.env.T3_MTS_PRODUCT_INITIAL_OVERLAY?.trim();
 
@@ -175,8 +177,8 @@ async function main() {
       T3_LYNXTRON_READINESS_REPORT: readinessReportPath,
       T3_LYNXTRON_VIEWPORT_WIDTH: viewportWidth,
       T3_LYNXTRON_VIEWPORT_HEIGHT: viewportHeight,
-      T3_LYNXTRON_WINDOW_X: "20",
-      T3_LYNXTRON_WINDOW_Y: "60",
+      T3_LYNXTRON_WINDOW_X: windowX,
+      T3_LYNXTRON_WINDOW_Y: windowY,
       T3_LYNXTRON_VIEWPORT_PROBE: "1",
     },
     stdio: ["ignore", logFd, logFd],
