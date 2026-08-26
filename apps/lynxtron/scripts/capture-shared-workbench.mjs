@@ -5254,6 +5254,7 @@ async function captureCell({
   let rightPanelAddMenuDismissed = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelTerminalScreenshot = null;
+  let rightPanelTerminalCommand = null;
   let diffScopeMenuDismissed = !isDiffScopeMenuState;
   let diffScopeWorkingTreeSelected = !isDiffScopeMenuState;
   let shortCompactControlsScrolled = !isShortCompactControlsState;
@@ -8887,6 +8888,68 @@ async function captureCell({
         await delay(100);
       }
       if (isRightPanelTerminalState && rightPanelAddMenuTerminalSelected) {
+        const focused = await focusRemoteElement(
+          cdp,
+          sessionId,
+          `document.getElementById('lynx-pane')?.contentWindow?.document
+            ?.getElementById('t3-lynx-preview')?.shadowRoot
+            ?.querySelector('.terminal-panel__input')?.shadowRoot?.querySelector('input') ??
+            document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot
+              ?.querySelector('.terminal-panel__input') ?? null`,
+        );
+        if (!focused) throw new Error("Could not focus the Lynx terminal command input.");
+        await cdp.send("Input.insertText", { text: "pwd" }, sessionId);
+        const runPoint = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const frame = document.getElementById('lynx-pane');
+            const root = frame?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            const target = root?.querySelector('.terminal-panel__run');
+            if (!frame || !target) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
+            return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+          })()`,
+        );
+        if (!runPoint) throw new Error("Could not locate the Lynx terminal Run control.");
+        await dispatchPointerClickWithMove(cdp, sessionId, runPoint);
+        const commandDeadline = Date.now() + 5_000;
+        while (Date.now() < commandDeadline) {
+          rightPanelTerminalCommand = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const state = window.__T3_WORKBENCH__?.read();
+              const frame = document.getElementById('lynx-pane');
+              const root = frame?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot;
+              const output = root?.querySelector('.terminal-panel__output')?.textContent ?? '';
+              return {
+                output,
+                writeObserved: state?.lynx?.connectorDiagnostics?.commands?.some(
+                  ({ method }) => method === 'writeTerminal'
+                ) === true,
+              };
+            })()`,
+          ).catch(() => null);
+          if (
+            rightPanelTerminalCommand?.writeObserved &&
+            rightPanelTerminalCommand.output.includes("/Users/bytedance/github/t3code-lynxtron")
+          )
+            break;
+          await delay(100);
+        }
+        if (
+          !rightPanelTerminalCommand?.writeObserved ||
+          !rightPanelTerminalCommand.output.includes("/Users/bytedance/github/t3code-lynxtron")
+        ) {
+          throw new Error(
+            `Lynx terminal command did not return the shared cwd: ${JSON.stringify(rightPanelTerminalCommand)}`,
+          );
+        }
         state =
           (await evaluate(
             cdp,
@@ -8900,6 +8963,7 @@ async function captureCell({
           cellDir,
           prefix: "terminal",
         });
+        rightPanelTerminalCommand = { ...rightPanelTerminalCommand, closed: "not-claimed" };
       }
     }
   }
@@ -9632,6 +9696,7 @@ async function captureCell({
           : "not-required",
         terminalSelected: rightPanelAddMenuTerminalSelected,
         terminalScreenshot: rightPanelTerminalScreenshot,
+        terminalCommand: rightPanelTerminalCommand,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
       },

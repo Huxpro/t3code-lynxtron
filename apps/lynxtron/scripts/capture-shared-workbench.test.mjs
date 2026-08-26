@@ -287,6 +287,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "method === 'openTerminal'");
     assert.include(source, 'prefix: "terminal"');
     assert.include(source, "terminalScreenshot: rightPanelTerminalScreenshot");
+    assert.include(source, 'text: "pwd"');
+    assert.include(source, "method === 'writeTerminal'");
+    assert.include(source, 'closed: "not-claimed"');
+    assert.include(source, "terminalCommand: rightPanelTerminalCommand");
     assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
     assert.include(source, "web-terminal-row-pointer|lynx-terminal-row-pointer");
     assert.include(source, "lynx?.querySelector('.terminal-panel') !== null");
