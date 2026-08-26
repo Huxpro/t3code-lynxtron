@@ -279,6 +279,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "data-right-panel-add-kind");
     assert.include(source, "rightPanelAddMenuDismissed");
     assert.include(source, "rightPanelAddMenuTerminalSelected");
+    assert.include(source, 'const isRightPanelTerminalState = stateId === "right-panel-terminal"');
+    assert.include(source, "(isRightPanelAddMenuState || isRightPanelTerminalState)");
+    assert.include(source, "isRightPanelTerminalState && rightPanelAddMenuTerminalSelected");
+    assert.include(source, "shadow ? '.topbar__toggle--terminal'");
+    assert.include(source, '[data-right-panel-action=\"terminal\"]');
+    assert.include(source, "method === 'openTerminal'");
+    assert.include(source, 'prefix: "terminal"');
+    assert.include(source, "terminalScreenshot: rightPanelTerminalScreenshot");
     assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
     assert.include(source, "web-terminal-row-pointer|lynx-terminal-row-pointer");
     assert.include(source, "lynx?.querySelector('.terminal-panel') !== null");

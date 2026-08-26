@@ -181,6 +181,7 @@ const isCompactControlsState =
   stateId === "composer-compact-controls-inline-files-short";
 const isShortCompactControlsState = stateId === "composer-compact-controls-inline-files-short";
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
+const isRightPanelTerminalState = stateId === "right-panel-terminal";
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
 const isComposerPlanModeState = stateId === "composer-plan-mode";
 const isFlatSidebarLayoutState = new Set([
@@ -248,6 +249,7 @@ const shouldClearWebNotification =
   isComposerPlanModeState ||
   isProjectSettingsState ||
   isFilesSurfaceState ||
+  isRightPanelTerminalState ||
   isReviewState;
 const reviewExpectation =
   stateId === "review-empty"
@@ -4599,6 +4601,7 @@ async function main() {
     "composer-compact-controls-inline-files-narrow",
     "composer-compact-controls-inline-files-short",
     "right-panel-add-menu",
+    "right-panel-terminal",
     "diff-scope-menu",
     "composer-connecting",
     "composer-disabled",
@@ -5069,6 +5072,7 @@ async function captureCell({
     "composer-compact-controls-inline-files-narrow": "existing-thread",
     "composer-compact-controls-inline-files-short": "existing-thread",
     "right-panel-add-menu": "existing-thread",
+    "right-panel-terminal": "existing-thread",
     "diff-scope-menu": "existing-thread",
     "settled-banner-inline-files-narrow": "existing-thread",
     "composer-disabled": "existing-thread",
@@ -5247,8 +5251,9 @@ async function captureCell({
   let fileEditorReturnedToBrowser = !isFileEditorState || isFileEditingSaveState;
   let webFileEditorReturnedToBrowser = !isFileEditorState || isFileEditingSaveState;
   let lynxFileEditorReturnedToBrowser = !isFileEditorState || isFileEditingSaveState;
-  let rightPanelAddMenuDismissed = !isRightPanelAddMenuState;
-  let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState;
+  let rightPanelAddMenuDismissed = !isRightPanelAddMenuState && !isRightPanelTerminalState;
+  let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState && !isRightPanelTerminalState;
+  let rightPanelTerminalScreenshot = null;
   let diffScopeMenuDismissed = !isDiffScopeMenuState;
   let diffScopeWorkingTreeSelected = !isDiffScopeMenuState;
   let shortCompactControlsScrolled = !isShortCompactControlsState;
@@ -8428,6 +8433,7 @@ async function captureCell({
   reachedTargetState ||= isFileEditorState && finalFileEditorReady;
   if (
     overlay &&
+    !isRightPanelTerminalState &&
     (state?.web?.productState?.overlay !== overlay ||
       state?.lynx?.productState?.overlay !== overlay)
   ) {
@@ -8727,7 +8733,7 @@ async function captureCell({
     }
   }
 
-  if (isRightPanelAddMenuState && finalRightPanelAddMenuReady) {
+  if ((isRightPanelAddMenuState || isRightPanelTerminalState) && finalRightPanelAddMenuReady) {
     const outsidePoints = await evaluate(
       cdp,
       sessionId,
@@ -8776,7 +8782,11 @@ async function captureCell({
             const frame = document.getElementById(frameId);
             const doc = frame?.contentWindow?.document;
             const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
-            const trigger = root?.querySelector('[data-floating-anchor="right-panel-add-menu"], .right-panel__add-btn');
+            const trigger = root?.querySelector(
+              ${JSON.stringify(isRightPanelTerminalState)}
+                ? (shadow ? '.topbar__toggle--terminal' : '[aria-label="Toggle right panel"]')
+                : '[data-floating-anchor="right-panel-add-menu"], .right-panel__add-btn'
+            );
             if (!frame || !trigger) return null;
             const frameRect = frame.getBoundingClientRect();
             const rect = trigger.getBoundingClientRect();
@@ -8807,13 +8817,17 @@ async function captureCell({
               const frame = document.getElementById(frameId);
               const doc = frame?.contentWindow?.document;
               const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              if (${JSON.stringify(isRightPanelTerminalState)} && shadow) {
+                return root?.querySelector('.terminal-panel') ? { alreadySelected: true } : null;
+              }
               const rows = [
                 ...(root?.querySelectorAll(
-                  '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"], [data-right-panel-add-kind]'
+                  '[data-floating-popup="right-panel-add-menu"] [data-slot="menu-item"], [data-right-panel-add-kind], [data-right-panel-action="terminal"]'
                 ) ?? []),
               ];
               const target = rows.find((row) =>
                 row.getAttribute('data-right-panel-add-kind') === 'terminal' ||
+                row.getAttribute('data-right-panel-action') === 'terminal' ||
                 row.textContent?.trim() === 'Terminal'
               );
               if (!frame || !target) return null;
@@ -8830,12 +8844,13 @@ async function captureCell({
             };
           })()`,
         ).catch(() => null);
-        if (terminalPoints?.web && terminalPoints?.lynx) break;
+        if (terminalPoints?.web && (terminalPoints?.lynx || terminalPoints?.lynx?.alreadySelected))
+          break;
         await delay(100);
       }
       if (terminalPoints?.web)
         await dispatchPointerClickWithMove(cdp, sessionId, terminalPoints.web);
-      if (terminalPoints?.lynx) {
+      if (terminalPoints?.lynx && !terminalPoints.lynx.alreadySelected) {
         await dispatchPointerClickWithMove(cdp, sessionId, terminalPoints.lynx);
       }
       for (let attempt = 0; attempt < 30; attempt += 1) {
@@ -8858,6 +8873,9 @@ async function captureCell({
                   ?.querySelector('[data-right-panel-open="true"]')
                   ?.getAttribute('data-right-panel-active-kind') === 'terminal' &&
                 lynx?.querySelector('.terminal-panel') !== null &&
+                window.__T3_WORKBENCH__?.read()?.lynx?.connectorDiagnostics?.commands?.some(
+                  ({ method }) => method === 'openTerminal'
+                ) === true &&
                 lynx?.querySelector('.right-panel__add-menu') === null,
             };
           })()`,
@@ -8867,6 +8885,21 @@ async function captureCell({
           break;
         }
         await delay(100);
+      }
+      if (isRightPanelTerminalState && rightPanelAddMenuTerminalSelected) {
+        state =
+          (await evaluate(
+            cdp,
+            sessionId,
+            `(() => window.__T3_WORKBENCH__?.read() ?? null)()`,
+          ).catch(() => null)) ?? state;
+        rightPanelTerminalScreenshot = await capturePanePair({
+          cdp,
+          sessionId,
+          layout,
+          cellDir,
+          prefix: "terminal",
+        });
       }
     }
   }
@@ -9177,6 +9210,7 @@ async function captureCell({
   );
   const confirmedTargetState =
     reachedTargetState ||
+    (isRightPanelTerminalState && rightPanelAddMenuTerminalSelected) ||
     (unpersistedHeroStateReady(state) && finalCoreGeometryReady && finalComposerReady) ||
     (isFlatSidebarLayoutState && bothReady && finalFlatSidebarLayoutReady) ||
     (stateId === "sidebar-project-groups" && bothReady && finalSidebarProjectGroupsReady);
@@ -9185,7 +9219,7 @@ async function captureCell({
     confirmedTargetState &&
     bothReady &&
     identityMatch &&
-    finalOverlayReady &&
+    (isRightPanelTerminalState || finalOverlayReady) &&
     finalShortcutInputReady &&
     finalSidebarSearchReady &&
     finalSidebarStateReady &&
@@ -9597,6 +9631,7 @@ async function captureCell({
           ? "web-terminal-row-pointer|lynx-terminal-row-pointer"
           : "not-required",
         terminalSelected: rightPanelAddMenuTerminalSelected,
+        terminalScreenshot: rightPanelTerminalScreenshot,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
       },
