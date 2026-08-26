@@ -17480,6 +17480,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-native-branch-context-menu-scope-discovery",
+      "observedAt": "2026-08-26T15:35:59-07:00",
+      "commit": "f0106c5c240a6800c7a140bedb898b388020db8c",
+      "codeCommit": "f0106c5c240a6800c7a140bedb898b388020db8c",
+      "codeState": "commit",
+      "label": "Native branch context menu scope discovery",
+      "narrative": "The Web BranchToolbarBranchSelector exposes a system-native context menu for an active branch with Copy branch name and clipboard feedback. The Native Composer renders the same branch identity as a static context control with no secondary-click handler or system menu. This independently reachable Native-only interaction enters the denominator before repair.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state makes branch secondary-click and clipboard behavior independently measurable. Existing state weights, thresholds, filters, residuals, and prior repair credit are unchanged."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
