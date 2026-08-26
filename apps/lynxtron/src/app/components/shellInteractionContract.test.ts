@@ -449,6 +449,7 @@ describe("desktop shell interaction contract", () => {
   it("matches the compact Files browser anatomy and keeps search functional", () => {
     const files = componentSource("FilesPanel.tsx");
     const panel = componentSource("RightPanel.tsx");
+    const composer = componentSource("Composer.tsx");
 
     expect(files).toContain('className="files-panel__toolbar" data-surface-subheader');
     expect(files).toContain('aria-label="Refresh workspace files"');
@@ -594,6 +595,14 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
     expect(files).toContain("projectFileLineTokens(path, line)");
+    expect(files).toContain("serializeComposerFileLink(path)");
+    expect(files).toContain('{ id: "copy-mention", label: "Copy mention" }');
+    expect(files).toContain('{ id: "add-to-chat", label: "Add to chat" }');
+    expect(files).toContain("if (!requestComposerTextInsertion(`${mention} `))");
+    expect(composer).toContain("onComposerTextInsertion((text) =>");
+    expect(composer).toContain('target.invoke("setValue", { value: nextValue })');
+    expect(composer).toContain('target.invoke("setSelectionRange"');
+    expect(composer).toContain('target.invoke("focus")');
     expect(files).toContain("data-file-content-revision={fileContentRevision(contents)}");
     expect(files).toContain("data-file-save-status={saveStatus}");
     expect(files).toContain("file-editor-token file-editor-token--${token.tone}");
