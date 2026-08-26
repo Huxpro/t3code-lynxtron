@@ -28,6 +28,10 @@ const hostElementsSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
   "utf8",
 );
+const rightPanelSurfaceSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/RightPanelSurface.tsx"),
+  "utf8",
+);
 const sidebarControlsSource = readFileSync(
   path.resolve(
     import.meta.dirname,
@@ -636,6 +640,8 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("uiActions.closeOtherRightPanelSurfaces(surface.id)");
     expect(panel).toContain("uiActions.closeRightPanelSurfacesToRight(surface.id)");
     expect(panel).toContain("closeRemovedTerminal(state.surfaces");
+    expect(rightPanelSurfaceSource).toContain("...(onContextMenu ? { onContextMenu } : {})");
+    expect(hostElementsSource.match(/event.button === 2 && onContextMenu/g)).toHaveLength(2);
     expect(panel).toContain('className="right-panel__add-menu-dismiss"');
     expect(panel).toContain("bindtap={() => setShowAddMenu(false)}");
     expect(panel).toContain('data-floating-popup="right-panel-add-menu"');
