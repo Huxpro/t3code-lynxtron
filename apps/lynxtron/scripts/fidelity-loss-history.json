@@ -17020,7 +17020,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser.json",
           "classification": "tracked-current",
-          "sha256": "e8d21ea0549abbf9c350c64ad70a5e4b745509f2337405aa52de5b3a761ce4e4"
+          "sha256": "c8dba60f47cae54824a7e388ae6a7fd8fe6875cc4c15be518fe219ab307b42d3"
         }
       ],
       "updates": [
@@ -17045,6 +17045,41 @@
               "confidence": 0.99,
               "method": "browser-terminal-main-transport",
               "source": "The live Lynx-for-Web host records openTerminal and consumes terminal.attach from the same isolated server with zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "right-panel-terminal-lynx-layout",
+      "observedAt": "2026-08-25T20:36:00-07:00",
+      "commit": "8cdc9312f",
+      "codeCommit": "63d7b34a564b0e1fd158f1a2c442bdb882fe72fb",
+      "codeState": "commit",
+      "label": "Right panel Terminal Lynx-for-Web full-height layout",
+      "narrative": "The first shared-server terminal capture exposed a Lynx layout primitive loss: the terminal root computed as a horizontal row and collapsed its viewport and command line into the top band. The repaired surface uses the Lynx flex-column token, fills the full 539 by 776 content region, provides a 539 by 692 output viewport, and anchors the command row at the bottom. The matched Browser-first rerun passes every hard gate with zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Measured box models directly verify the repaired terminal containment. Credit stays limited to geometry; xterm-internal typography and material remain unmeasured."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-browser.json",
+          "classification": "tracked-current",
+          "sha256": "c8dba60f47cae54824a7e388ae6a7fd8fe6875cc4c15be518fe219ab307b42d3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "browser-terminal-full-height-box-model",
+              "source": "Measured terminal root 539 by 776, output viewport 539 by 692, and bottom command row at y 756 inside the matched 1280 by 820 Lynx pane"
             }
           }
         }
