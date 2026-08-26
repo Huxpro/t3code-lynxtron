@@ -17389,6 +17389,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-native-file-context-menu-scope-discovery",
+      "observedAt": "2026-08-26T05:32:00-07:00",
+      "commit": "d4051793b029130557e7758200fac8d862588fc4",
+      "codeCommit": "d4051793b029130557e7758200fac8d862588fc4",
+      "codeState": "commit",
+      "label": "Native file-row context menu scope discovery",
+      "narrative": "The Web File Browser exposes a system-native row context menu with Copy mention and Add to chat. The Native Files tree currently supports directory toggle and file selection only, even though its shared HostButton now has a verified secondary-click path. This independently reachable Native-only interaction enters the denominator before adding the menu and composer insertion path.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state makes file-row secondary-click and composer insertion independently measurable without changing existing weights, thresholds, filters, or residuals."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
