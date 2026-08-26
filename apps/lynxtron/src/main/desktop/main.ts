@@ -15,6 +15,7 @@ import { createSystemThemeSource } from "./systemThemeSource.ts";
 import { createReloadMenuItem, reloadApplication } from "./reloadWindow.ts";
 import { T3_RELOAD_FOR_TEST_METHOD } from "../../shared/viewportProtocol.ts";
 import { startClipboardCapabilityHost } from "./capabilityHost.ts";
+import { startContextMenuCapabilityHost } from "./contextMenuHost.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
@@ -227,6 +228,17 @@ app.whenReady().then(() => {
   win.on("closed", () => {
     clipboardCapabilityHost.dispose();
   });
+  const contextMenuCapabilityHost = startContextMenuCapabilityHost(
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, (_event, params) => handler(params));
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    win,
+    (template) => Menu.buildFromTemplate(template),
+  );
+  win.on("closed", () => contextMenuCapabilityHost.dispose());
   if (process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1") {
     lynxBridge.handle(T3_RELOAD_FOR_TEST_METHOD, () => reloadApplication(app));
     win.on("closed", () => {

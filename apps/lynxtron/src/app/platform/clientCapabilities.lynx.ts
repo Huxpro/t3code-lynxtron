@@ -8,6 +8,8 @@ import { connectionStatusAtom } from "../state/connectionStatus";
 import { getViewportSnapshot, subscribeViewport } from "../state/viewportStore";
 import {
   T3_CLIPBOARD_WRITE_TEXT_METHOD,
+  T3_CONTEXT_MENU_SHOW_METHOD,
+  type NativeContextMenuItem,
 } from "../../shared/capabilityProtocol.ts";
 import { callBridge, type BridgeCallModule } from "../state/mainConnectorTransport";
 
@@ -31,6 +33,15 @@ function bridge(): PlatformBridge | undefined {
   } catch {
     return undefined;
   }
+}
+
+export async function showNativeContextMenu(
+  items: ReadonlyArray<NativeContextMenuItem>,
+): Promise<string | null> {
+  "background only";
+  if (!NativeModules?.bridge?.call) throw new Error("Native context menu is unavailable");
+  const value = await callBridge(NativeModules.bridge, T3_CONTEXT_MENU_SHOW_METHOD, { items });
+  return typeof value === "string" ? value : null;
 }
 
 const storage = {

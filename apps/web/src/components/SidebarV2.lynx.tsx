@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
 import { uiActions } from "../../../lynxtron/src/app/state/uiState";
@@ -29,7 +29,10 @@ import { useSidebar } from "./ui/sidebar";
 import { TooltipPopup } from "./ui/tooltip";
 import settingsRowUrl from "../../../lynxtron/src/app/assets/sidebar-settings-row@2x.png?external";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
-import { clientCapabilities } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
+import {
+  clientCapabilities,
+  showNativeContextMenu,
+} from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
 import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
 import { isDisposableEmptyThread } from "@t3tools/client-runtime/presentation/thread-actions";
@@ -211,16 +214,18 @@ function LynxThreadActionMenu({
   settled,
   settlementSupported,
   onClose,
+  initialMode = "menu",
 }: {
   readonly thread: ReturnType<typeof useThreadShells>[number];
   readonly projectPath: string | null;
   readonly settled: boolean;
   readonly settlementSupported: boolean;
   readonly onClose: () => void;
+  readonly initialMode?: "menu" | "rename" | "delete";
 }) {
-  const [renaming, setRenaming] = useState(false);
+  const [renaming, setRenaming] = useState(initialMode === "rename");
   const [renameDraft, setRenameDraft] = useState(thread.title);
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(initialMode === "delete");
   const workspacePath = thread.worktreePath ?? projectPath;
   const actionCount =
     (settlementSupported ? 1 : 0) + 1 + (workspacePath ? 1 : 0) + (thread.branch ? 1 : 0) + 2;
@@ -395,6 +400,10 @@ export default function SidebarV2() {
   const [projectSettingsProjectId, setProjectSettingsProjectId] = useState<string | null>(null);
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
   const [actionMenuThreadId, setActionMenuThreadId] = useState<string | null>(null);
+  const [nativeFollowup, setNativeFollowup] = useState<{
+    readonly kind: "rename" | "delete";
+    readonly threadId: string;
+  } | null>(null);
   const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
   const orderedProjects = useMemo(
     () => sortScopedProjectsForSidebar(projects, threads, "updated_at"),
@@ -470,6 +479,38 @@ export default function SidebarV2() {
       : (orderedProjects.find((project) => project.id === projectScopeKey) ?? null);
   const newThreadProject = scopedProject ?? orderedProjects[0] ?? null;
   const settlementSupported = serverConfig?.environment.capabilities.threadSettlement === true;
+  const showThreadContextMenu = useCallback(
+    async (thread: (typeof threads)[number], projectPath: string | null, settled: boolean) => {
+      const workspacePath = thread.worktreePath ?? projectPath;
+      const selection = await showNativeContextMenu([
+        ...(settlementSupported
+          ? [
+              {
+                id: settled ? "unsettle" : "settle",
+                label: settled ? "Un-settle thread" : "Settle thread",
+              },
+            ]
+          : []),
+        { id: "rename", label: "Rename thread" },
+        ...(workspacePath ? [{ id: "copy-path", label: "Copy path" }] : []),
+        ...(thread.branch ? [{ id: "copy-branch", label: "Copy branch" }] : []),
+        { id: "archive", label: "Archive" },
+        { id: "delete", label: "Delete", destructive: true },
+      ]);
+      if (selection === "settle") await t3ClientActions.settleThread(thread.id);
+      else if (selection === "unsettle") await t3ClientActions.unsettleThread(thread.id);
+      else if (selection === "copy-path" && workspacePath) {
+        await clientCapabilities.clipboard.writeText(workspacePath);
+      } else if (selection === "copy-branch" && thread.branch) {
+        await clientCapabilities.clipboard.writeText(thread.branch);
+      } else if (selection === "archive") await t3ClientActions.archiveThread(thread.id);
+      else if (selection === "rename" || selection === "delete") {
+        setActionMenuThreadId(thread.id);
+        setNativeFollowup({ kind: selection, threadId: thread.id });
+      }
+    },
+    [settlementSupported, threads],
+  );
   const newThreadShortcutLabel = serverConfig
     ? (shortcutLabelForCommand(serverConfig.keybindings, "chat.newLocal", "MacIntel") ??
       shortcutLabelForCommand(serverConfig.keybindings, "chat.new", "MacIntel"))
@@ -698,7 +739,13 @@ export default function SidebarV2() {
                       projectPath={project?.workspaceRoot ?? null}
                       settled={false}
                       settlementSupported={settlementSupported}
-                      onClose={() => setActionMenuThreadId(null)}
+                      initialMode={
+                        nativeFollowup?.threadId === thread.id ? nativeFollowup.kind : "menu"
+                      }
+                      onClose={() => {
+                        setActionMenuThreadId(null);
+                        setNativeFollowup(null);
+                      }}
                     />
                   ) : undefined
                 }
@@ -744,7 +791,9 @@ export default function SidebarV2() {
                 onKeyDown={() => {}}
                 onContextMenu={(event) => {
                   stopPropagation(event);
-                  setActionMenuThreadId(thread.id);
+                  void showThreadContextMenu(thread, project?.workspaceRoot ?? null, false).catch(
+                    () => undefined,
+                  );
                 }}
                 onMouseEnter={() => {
                   setHoveredThreadId(thread.id);
@@ -838,7 +887,13 @@ export default function SidebarV2() {
                       projectPath={project?.workspaceRoot ?? null}
                       settled
                       settlementSupported={settlementSupported}
-                      onClose={() => setActionMenuThreadId(null)}
+                      initialMode={
+                        nativeFollowup?.threadId === thread.id ? nativeFollowup.kind : "menu"
+                      }
+                      onClose={() => {
+                        setActionMenuThreadId(null);
+                        setNativeFollowup(null);
+                      }}
                     />
                   ) : undefined
                 }
@@ -856,7 +911,9 @@ export default function SidebarV2() {
                 onKeyDown={() => {}}
                 onContextMenu={(event) => {
                   stopPropagation(event);
-                  setActionMenuThreadId(thread.id);
+                  void showThreadContextMenu(thread, project?.workspaceRoot ?? null, true).catch(
+                    () => undefined,
+                  );
                 }}
                 onSettleClick={stopPropagation}
                 onUnsettleClick={(event) => {
