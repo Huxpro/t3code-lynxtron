@@ -57,6 +57,7 @@ export function RightPanelTabSurface({
       type="button"
       className="flex min-w-0 flex-1 items-center gap-1.5"
       onClick={onActivate}
+      {...(onContextMenu ? { onContextMenu } : {})}
       aria-label={title}
     >
       {icon}

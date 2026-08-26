@@ -177,6 +177,7 @@ export function HostButton({
   "aria-expanded": ariaExpanded,
   children,
   onClick,
+  onContextMenu,
   onKeyDown,
   onMouseEnter,
   onMouseLeave,
@@ -184,6 +185,7 @@ export function HostButton({
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly onClick?: (event: unknown) => void;
+  readonly onContextMenu?: (event: unknown) => void;
   readonly onKeyDown?: (event: unknown) => void;
   readonly onMouseEnter?: (event: unknown) => void;
   readonly onMouseLeave?: (event: unknown) => void;
@@ -203,10 +205,17 @@ export function HostButton({
     "main thread";
     if (onMouseLeave) runOnBackground(onMouseLeave)({});
   };
+  const handleMouseDown = (event: MainThreadMouseEvent) => {
+    "main thread";
+    if (event.button === 2 && onContextMenu) {
+      runOnBackground(onContextMenu)({ button: event.button });
+    }
+  };
   return (
     <view
       {...props}
       aria-expanded={ariaExpanded}
+      {...(onContextMenu ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
       {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
