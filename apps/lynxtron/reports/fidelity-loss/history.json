@@ -26375,7 +26375,7 @@
       "allocation": "measured-product-change",
       "changedLines": 0,
       "commit": "73f3e35964c6f3f118fe08e3c0575d20bf33423a",
-      "committedAt": "2026-08-26T11:52:00-07:00",
+      "committedAt": "2026-08-26T14:46:16-07:00",
       "confidence": 0.98,
       "delta": -0.003568,
       "reason": "The exact owned Native frames prove both the system file-row menu and the Add-to-chat composer postcondition after fixing the renderer failure.",
@@ -45553,7 +45553,7 @@
     {
       "allocation": "measured-product-change",
       "commit": "73f3e35964c6f3f118fe08e3c0575d20bf33423a",
-      "committedAt": "2026-08-26T11:52:00-07:00",
+      "committedAt": "2026-08-26T14:46:16-07:00",
       "confidence": 0.98,
       "delta": -0.003568,
       "measuredCheckpoint": "right-panel-native-file-context-menu-light",
@@ -280664,29 +280664,29 @@
         "confidence": 0.98,
         "reason": "The exact owned Native frames prove both the system file-row menu and the Add-to-chat composer postcondition after fixing the renderer failure."
       },
-      "commit": "5877dfa4a5963e0d5f7f4393d4bffd274976b906",
+      "commit": "6684844fdf87a4b7fcb8c32a1c8adcdebcacfb5f",
       "codeCommit": "73f3e35964c6f3f118fe08e3c0575d20bf33423a",
       "codeState": "commit",
       "id": "right-panel-native-file-context-menu-light",
       "label": "Native file-row system menu and composer insertion",
-      "narrative": "A fresh isolated Lynxtron 0.0.16 light-theme run opens the real Files tree beside the completed background-only thread. A physical secondary click on README.md opens the macOS system menu with Copy mention and Add to chat. Selecting Add to chat writes the canonical [README.md](README.md) mention into the real non-question Composer, focuses it, enables Send, and keeps the process alive. An earlier unsafe worklet implementation blanked the LynxView and was rejected; the retained pass uses documented background-thread SelectorQuery setValue, setSelectionRange, and focus methods.",
-      "observedAt": "2026-08-26T11:52:00-07:00",
+      "narrative": "A fresh isolated Lynxtron 0.0.16 light-theme run on owned PID 34114 opens the real Files tree beside the completed background-only thread. A physical secondary click on README.md opens the macOS system menu with Copy mention and Add to chat. Selecting Add to chat writes the canonical [README.md](README.md) mention into the real non-question Composer, enables Send, keeps both right-panel tabs visible, and leaves the same process alive without a blank LynxView. An earlier unsafe worklet implementation blanked the LynxView, and earlier retained files mixed process identities; both samples were rejected. This retained pass uses documented background-thread SelectorQuery setValue, setSelectionRange, and focus methods.",
+      "observedAt": "2026-08-26T14:46:16-07:00",
       "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-file-context-menu.json",
           "classification": "tracked-current",
-          "sha256": "dfaa247774543a2e9c1cc6691aad78656ec7c69fc04444e693ebd695cf37bfe0"
+          "sha256": "1c25ec3c6c1ea15bacb2cdfd6fc9664dd3af612c1c6aa33035b26b60cf2b2be0"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-file-menu-open.png",
           "classification": "tracked-current",
-          "sha256": "5b3751cac29f3e7df597055cf02b107aa36ee8336c80511d671f270fc7b88101"
+          "sha256": "abca0d9ba068b84d92b85d5fefbc78257f0d6a9740857cfff83350fd2fa8aac1"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-file-menu-add-chat.png",
           "classification": "tracked-current",
-          "sha256": "dd0e5220bdc4838b794ef5f7f612ebfa8601999c36831ec273722f20b30f57ac"
+          "sha256": "61506051417d1e9dc9c99c6e0effe65e3a8bd50c3763fcf8f1d9d217331869ad"
         }
       ],
       "confidence": 0.827614,
