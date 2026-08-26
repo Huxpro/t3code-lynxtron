@@ -86,6 +86,14 @@ const settingsNavigationSource = readFileSync(
   ),
   "utf8",
 );
+const settingsLayoutSource = readFileSync(
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/settings/settingsLayout.lynx.tsx",
+  ),
+  "utf8",
+);
+const otherSettingsSource = componentSource("OtherSettings.tsx");
 const branchToolbarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/BranchToolbar.tsx"),
   "utf8",
@@ -127,6 +135,15 @@ describe("desktop shell interaction contract", () => {
     expect(markdown.indexOf("uiActions.openFileSurface")).toBeLessThan(
       markdown.indexOf("clientCapabilities.navigation.canOpenPath()"),
     );
+  });
+
+  it("keeps archived thread destructive actions behind the native menu and confirmation", () => {
+    expect(settingsLayoutSource).toContain("onContextMenu={onContextMenu}");
+    expect(otherSettingsSource).toContain("showArchivedThreadContextMenu");
+    expect(otherSettingsSource).toContain('{ id: "unarchive", label: "Unarchive" }');
+    expect(otherSettingsSource).toContain('{ id: "delete", label: "Delete", destructive: true }');
+    expect(otherSettingsSource).toContain("Confirm delete");
+    expect(otherSettingsSource).toContain("deleteThread(thread.id)");
   });
 
   it("keeps the anchored model picker selectable while outside taps dismiss", () => {
