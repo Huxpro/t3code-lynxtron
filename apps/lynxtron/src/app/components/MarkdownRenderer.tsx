@@ -7,6 +7,7 @@ import {
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { uiActions } from "../state/uiState";
 import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
+import { resolveExternalWebLinkHost } from "../../../../web/src/components/chat/externalLinkContextMenu";
 import { parseMarkdownBlocks, type ParsedMarkdownBlock } from "./markdownBlocks";
 import { copyMarkdownCode } from "./markdownClipboard";
 
@@ -65,6 +66,35 @@ function fileLinkContextMenuHandler(
   };
 }
 
+async function showMarkdownExternalLinkContextMenu(href: string): Promise<void> {
+  const selection = await showNativeContextMenu([
+    { id: "open-external", label: "Open in system browser" },
+    { id: "copy-link", label: "Copy Link" },
+  ]);
+  if (selection === "open-external") {
+    await clientCapabilities.navigation.openExternal(href);
+  } else if (selection === "copy-link") {
+    await clientCapabilities.clipboard.writeText(href);
+  }
+}
+
+function markdownLinkContextMenuHandler(
+  href: string | null,
+  cwd: string | undefined,
+): (() => void) | undefined {
+  const fileHandler = fileLinkContextMenuHandler(href, cwd);
+  if (fileHandler) return fileHandler;
+  if (!href || !resolveExternalWebLinkHost(href)) return undefined;
+  return () => {
+    void showMarkdownExternalLinkContextMenu(href).catch((cause) => {
+      console.error("[lynx-markdown] failed to handle external link context menu", {
+        href,
+        cause,
+      });
+    });
+  };
+}
+
 function renderInline(
   spans: ReadonlyArray<MarkdownInlinePresentation>,
   key: string,
@@ -78,7 +108,7 @@ function renderInline(
           activateMarkdownLink(span.href!, cwd);
         }
       : undefined;
-    const handleContextMenu = fileLinkContextMenuHandler(span.href, cwd);
+    const handleContextMenu = markdownLinkContextMenuHandler(span.href, cwd);
     if (span.code) {
       return (
         <HostText
@@ -124,7 +154,7 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
         const className = `${span.code ? "md-inline-code" : "md-inline"}${
           span.href ? " md-link" : ""
         }${span.strikethrough ? " md-strikethrough" : ""}`;
-        const handleContextMenu = fileLinkContextMenuHandler(span.href, cwd);
+        const handleContextMenu = markdownLinkContextMenuHandler(span.href, cwd);
         const content = (
           <HostText
             key={spanKey}
