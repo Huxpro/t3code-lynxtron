@@ -17166,6 +17166,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-native-context-menu-scope-discovery",
+      "observedAt": "2026-08-25T23:20:00-07:00",
+      "commit": "223ba9903dac2adb07178aaac8c655f18b0acd05",
+      "codeCommit": "223ba9903dac2adb07178aaac8c655f18b0acd05",
+      "codeState": "commit",
+      "label": "Native thread context menu scope discovery",
+      "narrative": "The Electron authority exposes a system-native thread context menu with lifecycle, rename, unread, copy, and destructive actions. Lynx currently intercepts contextmenu and renders a custom in-app overlay with a smaller action set. This reachable Native-only state enters the denominator before replacing the custom shell with Lynxtron Menu.popup.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state makes the system-menu interaction independently measurable. Existing weights, cells, thresholds, filters, and residuals are unchanged."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
