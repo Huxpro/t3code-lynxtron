@@ -17405,6 +17405,81 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "right-panel-native-file-context-menu-light",
+      "observedAt": "2026-08-26T11:52:00-07:00",
+      "commit": "5877dfa4a5963e0d5f7f4393d4bffd274976b906",
+      "codeCommit": "73f3e35964c6f3f118fe08e3c0575d20bf33423a",
+      "codeState": "commit",
+      "label": "Native file-row system menu and composer insertion",
+      "narrative": "A fresh isolated Lynxtron 0.0.16 light-theme run opens the real Files tree beside the completed background-only thread. A physical secondary click on README.md opens the macOS system menu with Copy mention and Add to chat. Selecting Add to chat writes the canonical [README.md](README.md) mention into the real non-question Composer, focuses it, enables Send, and keeps the process alive. An earlier unsafe worklet implementation blanked the LynxView and was rejected; the retained pass uses documented background-thread SelectorQuery setValue, setSelectionRange, and focus methods.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.98,
+        "reason": "The exact owned Native frames prove both the system file-row menu and the Add-to-chat composer postcondition after fixing the renderer failure."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-file-context-menu.json",
+          "classification": "tracked-current",
+          "sha256": "dfaa247774543a2e9c1cc6691aad78656ec7c69fc04444e693ebd695cf37bfe0"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-file-menu-open.png",
+          "classification": "tracked-current",
+          "sha256": "5b3751cac29f3e7df597055cf02b107aa36ee8336c80511d671f270fc7b88101"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-native-file-menu-add-chat.png",
+          "classification": "tracked-current",
+          "sha256": "dd0e5220bdc4838b794ef5f7f612ebfa8601999c36831ec273722f20b30f57ac"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-native-file-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-file-menu-visible-content",
+              "source": "The system menu shows Copy mention and Add to chat, and the Composer renders the canonical README markdown mention"
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-file-menu-window-server-frame",
+              "source": "The native menu anchors to the physically secondary-clicked README row"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-file-menu-window-server-frame",
+              "source": "Menu labels use native macOS typography and the inserted mention is visible in the shipping Composer"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-file-menu-window-server-frame",
+              "source": "The popup uses operating-system menu material rather than a renderer-drawn overlay"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.98,
+              "method": "physical-secondary-click-add-to-chat",
+              "source": "Physical input opens the menu and Add to chat inserts the canonical mention; Copy mention and question-mode feedback remain unclaimed"
+            },
+            "runtime": {
+              "residual": 0.15,
+              "confidence": 0.94,
+              "method": "isolated-main-transport-file-menu",
+              "source": "The isolated 0.0.16 process remains alive after SelectorQuery-driven composer insertion; DevTool registration remains unavailable"
+            }
+          }
+        }
+      ]
     }
   ]
 }

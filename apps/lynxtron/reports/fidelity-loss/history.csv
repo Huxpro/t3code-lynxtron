@@ -257,3 +257,4 @@ core-reading-surfaces-native-dark,2026-08-26T02:01:00-07:00,62d5e9994,commit,Nat
 right-panel-native-tab-context-menu-scope-discovery,2026-08-26T02:24:00-07:00,a8174083984e1816e21d8e6699add1464d47bd72,commit,Native right-panel tab context menu scope discovery,0.211263,0.211263,0.037599,0.180449,0.819551,0.780084
 right-panel-native-tab-context-menu-dark,2026-08-26T04:51:50-07:00,52b189bcb1185bc9ffd6cf9b801f9c30e10a6a5f,commit,Native right-panel tab system menu,0.207787,0.207787,0.038089,0.176417,0.823583,0.78356
 right-panel-native-file-context-menu-scope-discovery,2026-08-26T05:32:00-07:00,d4051793b029130557e7758200fac8d862588fc4,commit,Native file-row context menu scope discovery,0.207787,0.207787,0.038089,0.176417,0.823583,0.78356
+right-panel-native-file-context-menu-light,2026-08-26T11:52:00-07:00,5877dfa4a5963e0d5f7f4393d4bffd274976b906,commit,Native file-row system menu and composer insertion,0.204219,0.204219,0.038464,0.172386,0.827614,0.787128
