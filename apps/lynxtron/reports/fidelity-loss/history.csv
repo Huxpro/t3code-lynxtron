@@ -252,3 +252,4 @@ right-panel-terminal-lynx-layout,2026-08-25T20:36:00-07:00,8cdc9312f,commit,Righ
 right-panel-terminal-lynx-command,2026-08-25T20:56:00-07:00,528e0579282edaeb5461ea6de13c23c2fddd4a7d,commit,Right panel Terminal Lynx-for-Web command flow,0.212121,0.212121,0.036904,0.181931,0.818069,0.779154
 settings-provider-wizard-lynx-lifecycle,2026-08-25T21:16:00-07:00,7a670d75d9402b2a4d41af2031d5ba7191e48d6e,commit,Add Provider wizard Lynx-for-Web lifecycle,0.209145,0.209145,0.03677,0.178954,0.821046,0.78213
 sidebar-native-context-menu-scope-discovery,2026-08-25T23:20:00-07:00,223ba9903dac2adb07178aaac8c655f18b0acd05,commit,Native thread context menu scope discovery,0.209145,0.209145,0.03677,0.178954,0.821046,0.78213
+sidebar-native-thread-context-menu-dark,2026-08-26T01:14:55-07:00,96b9bc29f,commit,Native thread system context menu,0.205729,0.205729,0.037345,0.174916,0.825084,0.785546

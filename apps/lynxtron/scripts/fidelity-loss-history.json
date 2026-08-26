@@ -17182,6 +17182,76 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "sidebar-native-thread-context-menu-dark",
+      "observedAt": "2026-08-26T01:14:55-07:00",
+      "commit": "96b9bc29f",
+      "codeCommit": "f54b12476",
+      "codeState": "commit",
+      "label": "Native thread system context menu",
+      "narrative": "An isolated Lynxtron 0.0.16 process on the production bundle receives a real macOS secondary mouse click on the active thread card through W3C-aligned main-thread mousedown button=2, calls the main-process capability bridge, and displays a system-native Menu.popup containing Settle, Rename, Copy path, Copy branch, Archive, a destructive separator, and Delete. No menu action was selected. The retained window-server screenshot is exact-PID visible evidence; DevTool registration was unavailable and no DevTool console or LynxView geometry credit is inferred.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.98,
+        "reason": "The real secondary click and visible OS menu directly close the native menu presentation and opening path while preserving explicit residual for missing actions, unselected outcomes, variants, and DevTool coverage."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/sidebar-native-thread-context-menu.json",
+          "classification": "tracked-current",
+          "sha256": "97e7b42040b2b81e84e99a9c3c6b38c0c4246a9c41c40e65717edb00ee98def4"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-25/fidelity/sidebar-native-thread-context-menu-dark.png",
+          "classification": "tracked-current",
+          "sha256": "e6b2dfa5333b37b9f2e2e4fe426c926aae00b7c30b253e2583df5fa2125356cb"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-native-thread-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.2,
+              "confidence": 0.98,
+              "method": "native-menu-visible-content",
+              "source": "The system menu shows lifecycle, rename, copy, archive, and destructive actions; unread and move remain absent"
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-menu-window-server-frame",
+              "source": "The menu anchors at the real secondary-clicked thread card and uses native macOS sizing and separators"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-menu-window-server-frame",
+              "source": "Menu labels render through the macOS system menu rather than renderer typography"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-menu-window-server-frame",
+              "source": "The visible surface is the operating system menu material, including border, shadow, and destructive separator"
+            },
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.98,
+              "method": "physical-secondary-click-open",
+              "source": "A real macOS secondary click opens the native menu; destructive and mutating selections were intentionally not exercised"
+            },
+            "runtime": {
+              "residual": 0.2,
+              "confidence": 0.9,
+              "method": "isolated-main-transport-window-evidence",
+              "source": "The isolated 0.0.16 process and main transport were ready, but DevTool registration and console evidence were unavailable"
+            }
+          }
+        }
+      ]
     }
   ]
 }
