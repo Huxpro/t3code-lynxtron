@@ -148,22 +148,31 @@ export function Composer({
   const modelOptionMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const modelOptionMenuWheelRef = useMainThreadRef({ offset: 0 });
   const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
-  const editorRef = useMainThreadRef<MainThread.Element>(null);
   const compactControlsMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
   const promptValueRef = useRef(value);
   promptValueRef.current = value;
   const applyExternalTextInsertion = (nextValue: string) => {
-    "main thread";
-    const target = editorRef.current ?? lynx.querySelector(".composer__input");
-    if (!target) return;
-    void target.invoke("setValue", { value: nextValue });
-    void target.invoke("setSelectionRange", {
+    const invoke = (method: string, params?: Record<string, unknown>) => {
+      lynx
+        .createSelectorQuery()
+        .select("#composer-prompt-editor")
+        .invoke({
+          method,
+          ...(params ? { params } : {}),
+          fail: (result) => {
+            console.error("[lynx-composer] external text insertion failed", { method, result });
+          },
+        })
+        .exec();
+    };
+    invoke("setValue", { value: nextValue });
+    invoke("setSelectionRange", {
       selectionStart: nextValue.length,
       selectionEnd: nextValue.length,
     });
-    void target.invoke("focus");
+    invoke("focus");
   };
   useEffect(
     () =>
@@ -172,7 +181,7 @@ export function Composer({
         const nextValue = appendComposerText(promptValueRef.current, text);
         promptValueRef.current = nextValue;
         setValue(nextValue);
-        void runOnMainThread(applyExternalTextInsertion)(nextValue);
+        applyExternalTextInsertion(nextValue);
         return true;
       }),
     [questionMode],
@@ -458,9 +467,9 @@ export function Composer({
                   <text className="composer__placeholder">{placeholder}</text>
                 ) : null}
                 <textarea
+                  id="composer-prompt-editor"
                   key={`${questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor"}:${editorRevision}`}
                   className="composer__input"
-                  main-thread:ref={editorRef}
                   data-composer-editor="true"
                   bindinput={handleInput}
                   confirm-type="send"
