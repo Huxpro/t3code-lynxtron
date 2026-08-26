@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-26T11:52:00-07:00",
+  "stateId": "right-panel-native-file-context-menu",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "light",
+    "interactionChannel": "real macOS secondary click and menu selection via cliclick"
+  },
+  "target": {
+    "projectTitle": "background-only",
+    "threadTitle": "Update README",
+    "filePath": "README.md",
+    "expectedMention": "[README.md](README.md)"
+  },
+  "native": {
+    "processId": 34909,
+    "windowId": 36161,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "b9ca004ede2245eae813d45baeb931228c9dcf2e3350c94237956e89e3f1a167",
+    "transportKind": "main",
+    "devToolRegistration": "unavailable"
+  },
+  "observations": [
+    {
+      "name": "file row system menu",
+      "result": "pass",
+      "detail": "A real secondary click on README.md opens the macOS system menu with Copy mention and Add to chat.",
+      "screenshot": "right-panel-native-file-menu-open.png",
+      "sha256": "5b3751cac29f3e7df597055cf02b107aa36ee8336c80511d671f270fc7b88101"
+    },
+    {
+      "name": "Add to chat",
+      "result": "pass",
+      "detail": "Selecting the highlighted Add to chat item writes [README.md](README.md) into the real Composer, focuses the editor, enables Send, and leaves the Lynxtron process alive.",
+      "screenshot": "right-panel-native-file-menu-add-chat.png",
+      "sha256": "dd0e5220bdc4838b794ef5f7f612ebfa8601999c36831ec273722f20b30f57ac"
+    }
+  ],
+  "rejectedSamples": [
+    {
+      "classification": "product-loss-fixed",
+      "detail": "The first Add-to-chat implementation crossed a component-local main-thread closure and blanked the LynxView. It was replaced with the documented background-thread SelectorQuery setValue, setSelectionRange, and focus UI methods before the retained pass."
+    },
+    {
+      "classification": "harness-loss",
+      "detail": "Several earlier clicks used incorrect Retina/window-shadow coordinate conversion and did not select a menu item. They receive no interaction credit."
+    }
+  ],
+  "classification": {
+    "closedProductLoss": [
+      "Native file rows expose the Web authority's system menu actions.",
+      "Add to chat writes the canonical markdown mention into the real Composer without converting the textarea to a controlled input.",
+      "External insertion uses documented Lynx SelectorQuery UI methods and no longer blanks the LynxView."
+    ],
+    "remainingProductLoss": [
+      "Question-mode Composer intentionally rejects file mention insertion, but Native has no toast surface explaining that rejection."
+    ],
+    "missingCoverage": [
+      "Copy mention clipboard contents were not physically inspected.",
+      "Dark theme, nested directories, and narrow sheet layout are not retained."
+    ],
+    "harnessLoss": "Lynxtron 0.0.16 did not register an owned DevTool client, so no DevTool console or computed geometry is claimed.",
+    "intentionalPlatformDelta": "The popup uses native macOS menu material instead of Web popup pixels.",
+    "acceptedRenderingNoise": []
+  },
+  "validation": {
+    "focusedTests": "43/43",
+    "typecheck": "pass",
+    "productionBuild": "pass with existing unsupported-CSS and Effect import.meta warnings",
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "48/100"
+  }
+}
