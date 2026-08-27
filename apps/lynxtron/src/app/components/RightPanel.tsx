@@ -33,9 +33,13 @@ const LYNX_RIGHT_PANEL_SHEET_QUERY = "(max-width: 760px)";
 interface RightPanelContentProps {
   activePlan: ActivePlanState | null;
   activeProposedPlan: LatestProposedPlanState | null;
+  terminalHeight: number;
+  terminalWidth: number;
 }
 
-interface RightPanelProps extends RightPanelContentProps {
+interface RightPanelProps {
+  activePlan: ActivePlanState | null;
+  activeProposedPlan: LatestProposedPlanState | null;
   maximized?: boolean;
   onMaximizedChange?: (maximized: boolean) => void;
 }
@@ -111,7 +115,7 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
     case "file":
       return <FilePanel path={surface.path} />;
     case "terminal":
-      return <TerminalPanel />;
+      return <TerminalPanel width={props.terminalWidth} height={props.terminalHeight} />;
   }
 }
 
@@ -211,6 +215,12 @@ export function RightPanel({
 
   const activeSurface = state.surfaces.find((s) => s.id === state.activeSurfaceId) ?? null;
   const hasActiveSurface = activeSurface !== null;
+  const terminalWidth = sheet
+    ? Math.min(viewport.width - 24, 340)
+    : maximized
+      ? viewport.width
+      : resize.width;
+  const terminalHeight = Math.max(1, viewport.height - 52);
 
   const emptyActions: ReadonlyArray<RightPanelActionItem> = ADDABLE_SURFACES.map((item) => ({
     key: item.kind,
@@ -371,7 +381,12 @@ export function RightPanel({
       {/* Content */}
       <view className="right-panel__content">
         {hasActiveSurface ? (
-          renderSurface(activeSurface, { activePlan, activeProposedPlan })
+          renderSurface(activeSurface, {
+            activePlan,
+            activeProposedPlan,
+            terminalHeight,
+            terminalWidth,
+          })
         ) : (
           <RightPanelEmptySurface actions={emptyActions} />
         )}

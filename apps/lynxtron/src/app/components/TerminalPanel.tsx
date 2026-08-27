@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "@lynx-js/react";
+import { useEffect, useMemo, useRef, useState } from "@lynx-js/react";
 
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
+import { terminalGridSize } from "./terminalGrid.logic";
 
 const TERMINAL_ID = "term-1";
 
@@ -15,7 +16,13 @@ function inputValue(event: unknown): string {
   return typeof value === "string" ? value : "";
 }
 
-export function TerminalPanel() {
+export function TerminalPanel({
+  width,
+  height,
+}: {
+  readonly width: number;
+  readonly height: number;
+}) {
   const { activeThreadId, draftThread, projects, status, terminalSessions, threads } =
     useT3ClientState();
   const [command, setCommand] = useState("");
@@ -30,6 +37,8 @@ export function TerminalPanel() {
   const terminalKey = activeThreadId ? `${activeThreadId}\u0000${TERMINAL_ID}` : null;
   const session = terminalKey ? terminalSessions[terminalKey] : undefined;
   const output = useMemo(() => presentTerminalText(session?.history ?? ""), [session?.history]);
+  const grid = useMemo(() => terminalGridSize(width, height), [height, width]);
+  const resizedGridRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!activeThreadId || !cwd || status !== "ready") return;
@@ -41,8 +50,8 @@ export function TerminalPanel() {
         terminalId: TERMINAL_ID,
         cwd,
         worktreePath: activeThread?.worktreePath ?? null,
-        cols: 100,
-        rows: 30,
+        cols: grid.cols,
+        rows: grid.rows,
       })
       .catch((cause: unknown) => {
         if (!cancelled) setOpenError(cause instanceof Error ? cause.message : String(cause));
@@ -51,6 +60,24 @@ export function TerminalPanel() {
       cancelled = true;
     };
   }, [activeThread?.worktreePath, activeThreadId, cwd, status]);
+
+  useEffect(() => {
+    if (!activeThreadId || session?.status !== "running") return;
+    const key = `${activeThreadId}:${grid.cols}x${grid.rows}`;
+    if (resizedGridRef.current === key) return;
+    resizedGridRef.current = key;
+    void t3ClientActions
+      .resizeTerminal({
+        threadId: activeThreadId,
+        terminalId: TERMINAL_ID,
+        cols: grid.cols,
+        rows: grid.rows,
+      })
+      .catch((cause: unknown) => {
+        resizedGridRef.current = null;
+        setOpenError(cause instanceof Error ? cause.message : String(cause));
+      });
+  }, [activeThreadId, grid.cols, grid.rows, session?.status]);
 
   const runCommand = () => {
     const value = command.trim();
