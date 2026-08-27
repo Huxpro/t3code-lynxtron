@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-27T12:12:00-07:00",
+  "stateId": "model-picker-query",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "light",
+    "interactionChannel": "isolated product overlay and real macOS keyboard input via cliclick"
+  },
+  "snapshot": {
+    "sha256BeforeLaunch": "5b89591b946cf133bdfedafa30e32f789cd6d33d839f513ffe343fe632c53553",
+    "eventCountBeforeLaunch": 7,
+    "threadId": "fidelity-review-thread",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 40507,
+    "windowId": 40727,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "b558197a2e9ad3234f9cb8e66540a14fe6af262d2a434cd96073f7a573d9fb5d",
+    "transportKind": "main",
+    "lastSeq": 11
+  },
+  "observations": [
+    {
+      "name": "physical model query",
+      "result": "pass",
+      "detail": "Real OS typing enters gpt in the focused Native model search and filters the visible list to matching GPT models.",
+      "screenshot": "model-picker-native-gpt-query.png",
+      "sha256": "d34ab94be3f109f5229dc089357c064724da443c4ec2682e0e3b41c2e136ed94",
+      "pixelSize": [2784, 1864]
+    },
+    {
+      "name": "physical Escape dismissal",
+      "result": "fail",
+      "detail": "A real Escape key leaves the focused Model Picker open; the post-key frame is byte-identical to the query frame."
+    }
+  ],
+  "classification": {
+    "closedProductLoss": "The Model Picker now requests native focus and accepts real character input for filtering.",
+    "remainingProductLoss": [
+      "Physical Escape, Arrow navigation, and Enter selection remain unavailable through the renderer keyboard boundary."
+    ],
+    "missingCoverage": [
+      "A model was not selected in this run.",
+      "Dark-theme physical model query was not repeated."
+    ],
+    "harnessLoss": "Desktop DevTool registration remains unavailable; exact-PID WindowServer frames and immutable bundle and snapshot identity are used.",
+    "intentionalPlatformDelta": [],
+    "acceptedRenderingNoise": []
+  }
+}
