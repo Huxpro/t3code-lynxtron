@@ -1,4 +1,4 @@
-import { runOnBackground, type ReactNode, useCallback } from "@lynx-js/react";
+import { type ReactNode, useCallback } from "@lynx-js/react";
 import approvalAcceptEdgeUrl from "../../../../lynxtron/src/app/assets/approval-accept-edge@2x.png?external";
 import approvalAcceptLabelUrl from "../../../../lynxtron/src/app/assets/approval-accept-label@2x.png?external";
 import approvalCancelLabelUrl from "../../../../lynxtron/src/app/assets/approval-cancel-label@2x.png?external";
@@ -58,10 +58,6 @@ export function Button({
   const handleTap = useCallback(() => {
     if (!disabled) onClick?.();
   }, [disabled, onClick]);
-  const handleLabelMouseDown = (event: { readonly button: number }) => {
-    "main thread";
-    if (event.button === 0) runOnBackground(handleTap)();
-  };
   const resolvedClassName = [
     buttonVariants({ className, size, variant }),
     disabled ? "ui-button--disabled" : undefined,
@@ -81,8 +77,6 @@ export function Button({
       <text
         className={`ui-button__label${approvalLabel ? " ui-button__label--authority-hidden" : ""}`}
         text-maxline="1"
-        catchtap={handleTap}
-        main-thread:bindmousedown={handleLabelMouseDown}
       >
         {children}
       </text>

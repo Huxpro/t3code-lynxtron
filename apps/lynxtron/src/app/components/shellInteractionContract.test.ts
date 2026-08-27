@@ -263,9 +263,6 @@ describe("desktop shell interaction contract", () => {
     expect(button).toContain('"aria-label": ariaLabel');
     expect(button).toContain("aria-label={ariaLabel}");
     expect(button).toContain("flatten={false}");
-    expect(button).toContain("catchtap={handleTap}");
-    expect(button).toContain("main-thread:bindmousedown={handleLabelMouseDown}");
-    expect(button).toContain("if (event.button === 0) runOnBackground(handleTap)();");
     expect(button).toContain('aria-disabled={disabled ? "true" : undefined}');
     expect(input).toContain("aria-label={ariaLabel}");
     expect(input).toContain('aria-disabled={disabled ? "true" : undefined}');
