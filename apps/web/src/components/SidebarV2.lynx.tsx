@@ -1009,6 +1009,14 @@ export default function SidebarV2() {
                 title={
                   <HostText
                     eventThrough
+                    onContextMenu={(event) => {
+                      stopPropagation(event);
+                      void showThreadContextMenu(
+                        thread,
+                        project?.workspaceRoot ?? null,
+                        true,
+                      ).catch(() => undefined);
+                    }}
                     className="sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
                   >
                     {thread.title}

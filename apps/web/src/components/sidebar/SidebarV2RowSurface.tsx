@@ -127,6 +127,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
           >
             <HostText
               eventThrough
+              onContextMenu={props.onContextMenu}
               className={cn(
                 "shrink-0 transition-opacity",
                 !props.isActive &&
@@ -145,15 +146,18 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
             {props.prBadge}
             <HostText
               eventThrough
+              onContextMenu={props.onContextMenu}
               className="relative ml-auto flex h-6 min-w-8 shrink-0 items-center justify-end"
             >
               <HostText
                 eventThrough
+                onContextMenu={props.onContextMenu}
                 className="inline-flex justify-end tabular-nums text-muted-foreground/55 transition-opacity group-hover/v2-row:opacity-0"
               >
                 {props.variantAction === "unsnooze" && props.snoozeWakeLabelText !== null ? (
                   <HostText
                     eventThrough
+                    onContextMenu={props.onContextMenu}
                     className="text-xs text-blue-600 tabular-nums dark:text-blue-400"
                   >
                     {props.snoozeWakeLabelText}
@@ -161,6 +165,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 ) : props.isWoke ? (
                   <HostText
                     eventThrough
+                    onContextMenu={props.onContextMenu}
                     role="status"
                     aria-label="Woke from snooze"
                     className="inline-flex items-center gap-1 text-xs font-medium text-amber-700 dark:text-amber-300"
@@ -169,7 +174,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                     Woke
                   </HostText>
                 ) : (
-                  <HostText eventThrough className="text-xs">
+                  <HostText eventThrough onContextMenu={props.onContextMenu} className="text-xs">
                     {props.variantAction === "unsettle"
                       ? props.settledTimeLabel
                       : props.threadTimeLabel}
