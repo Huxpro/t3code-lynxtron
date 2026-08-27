@@ -17826,6 +17826,68 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-native-input-focus-current",
+      "observedAt": "2026-08-27T04:11:00-07:00",
+      "commit": "d7a60161a",
+      "codeCommit": "8397ad6d3",
+      "codeState": "commit",
+      "label": "Native Quick Switch physical input focus",
+      "narrative": "The current production bundle requests focus through the Lynx input focus UI method when Quick Switch mounts. On an exact owned Lynxtron 0.0.16 process, real Command-K opens the palette, real OS typing enters settings and filters to Open settings, and real Escape dismisses the focused overlay. A separate current-bundle process opened directly into the root palette confirms that real ArrowDown still leaves the first row active; the runtime does not deliver a usable renderer key event to the focused input or its container. Dark query typing and dismissal receive partial repair credit, while Arrow, Enter, repeat-open, and all light-theme physical input remain explicit residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID physical keyboard input, immutable snapshot identity, current bundle hash, and retained pass and fail frames isolate the focus repair without borrowing Browser or light-theme evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-input-focus.json",
+          "classification": "tracked-current",
+          "sha256": "3d8991399d3233109db8ffa1aa5c46f5103ac3c0b9b0f2ddb7209b0ef93f00de"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-settings-query.png",
+          "classification": "tracked-current",
+          "sha256": "adb70766f3eb6417066d340f3d16340c4163402568c50bc3162d9e2388b809cf"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-escape-dismissed.png",
+          "classification": "tracked-current",
+          "sha256": "8f73cb727312dec946b6cc0e6c65cc29ec18b26809d1304d79f555c93fde426b"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-arrow-down-unhandled.png",
+          "classification": "tracked-current",
+          "sha256": "017e23e4e6aff4af655426ff990d01814a8fe5bd73d8ec79c60ab1f26d5bb244"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.4,
+              "confidence": 0.99,
+              "method": "physical-focused-query-and-dismissal",
+              "source": "Real Command-K, settings character entry, filtering, and Escape dismissal pass; Arrow navigation, Enter selection, and repeat-open remain unverified or failing"
+            }
+          }
+        },
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.55,
+              "confidence": 0.99,
+              "method": "physical-focused-input-navigation-audit",
+              "source": "Physical Escape works, but a fresh current-bundle ArrowDown leaves the first action active; ArrowUp and Enter cannot be credited"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -268,3 +268,5 @@ sidebar-native-thread-menu-action-coverage-correction,2026-08-26T19:28:00-07:00,
 sidebar-native-thread-menu-actions-current,2026-08-26T19:46:00-07:00,d0704bb8827050cff48d849f45ad3bac19ca9fd9,commit,Native thread menu unread and branch actions,0.217509,0.217185,0.038893,0.185844,0.814156,0.773979
 sidebar-native-settled-thread-menu-routing-correction,2026-08-26T22:02:00-07:00,ebc79e2b5,commit,Native settled-thread menu routing correction,0.217617,0.217185,0.039035,0.185836,0.814164,0.773871
 sidebar-native-settled-menu-mark-unread-current,2026-08-27T00:02:00-07:00,fc2753b31,commit,Native settled menu and Mark unread mutation,0.217207,0.217185,0.038552,0.185818,0.814182,0.774281
+quick-switch-native-physical-input-focus-correction,2026-08-27T00:24:00-07:00,f8c07a91319a7cc5ca03417d76ec89b09c0968ea,commit,Native Quick Switch physical input focus correction,0.218233,0.217185,0.040159,0.185525,0.814475,0.773255
+quick-switch-native-input-focus-current,2026-08-27T04:11:00-07:00,d7a60161a,commit,Native Quick Switch physical input focus,0.217199,0.217185,0.039062,0.185378,0.814622,0.774289
