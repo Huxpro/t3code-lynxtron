@@ -939,6 +939,12 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain('label: "Snooze"');
     expect(sidebarSource).toContain("t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil)");
     expect(sidebarSource).toContain("t3ClientActions.unsnoozeThread(thread.id)");
+    expect(sidebarRowSource).toMatch(
+      /variant === "slim"[\s\S]*?<HostText\s+eventThrough[\s\S]*?props\.favicon/u,
+    );
+    expect(sidebarSource).toMatch(
+      /visibleSettledThreads\.map[\s\S]*?<HostText\s+eventThrough[\s\S]*?thread\.title/u,
+    );
     expect(sidebarSource).toContain("markThreadUnreadInTimestampRecord");
     expect(sidebarSource).toContain("markThreadVisitedInTimestampRecord");
     expect(sidebarSource).toContain("hasUnseenThreadCompletion({");
