@@ -17797,6 +17797,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-native-physical-input-focus-correction",
+      "observedAt": "2026-08-27T00:24:00-07:00",
+      "commit": "f8c07a91319a7cc5ca03417d76ec89b09c0968ea",
+      "codeCommit": "f8c07a91319a7cc5ca03417d76ec89b09c0968ea",
+      "codeState": "commit",
+      "label": "Native Quick Switch physical input focus correction",
+      "narrative": "On the exact owned Lynxtron process, a real macOS Command-K opens Quick Switch, but immediately typing settings through real OS keyboard input leaves the query empty and the result list unfiltered. Source inspection confirms the mounted input has value, bindinput, and bindconfirm handlers but no focus request. The existing dark and light Quick Switch query states already cover this interaction, so no denominator state or weight changes; the earlier pending-user-session residual is corrected to a measured product failure before repair.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Real OS shortcut and character input on the exact owned Native process convert previously unknown physical-input debt into an observed focus failure without changing scope, weights, filters, or thresholds."
+      },
+      "sources": [],
+      "updates": [
+        {
+          "states": ["quick-switch-query", "quick-switch-query-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "physical-command-k-then-character-input",
+              "source": "Command-K visibly opens the Native palette, but real OS typing of settings leaves the input empty and does not filter results because the mounted input never requests focus"
+            }
+          }
+        }
+      ]
     }
   ]
 }
