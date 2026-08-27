@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-27T00:02:00-07:00",
+  "stateId": "sidebar-native-thread-context-menu",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "interactionChannel": "real macOS secondary click and keyboard menu selection via cliclick"
+  },
+  "snapshot": {
+    "kind": "event-sourced completed-turn fixture",
+    "sha256BeforeLaunch": "5b89591b946cf133bdfedafa30e32f789cd6d33d839f513ffe343fe632c53553",
+    "eventCountBeforeLaunch": 7,
+    "projectId": "2ed7ddd6-4455-44fa-91c3-5ef7d21a42b4",
+    "threadId": "fidelity-review-thread",
+    "latestTurnId": "fidelity-review-turn-1",
+    "completedAt": "2026-08-19T15:10:00.000Z",
+    "projectorOffset": 7,
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 71752,
+    "windowId": 40003,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "4e1bc55af88530cb379c2aa681eb8b54bdd6925cfc509b6c7c09fe664e169962",
+    "transportKind": "main",
+    "lastSeq": 12,
+    "devToolRegistration": "unavailable"
+  },
+  "observations": [
+    {
+      "name": "settled row system menu",
+      "result": "pass",
+      "detail": "The physical secondary click on the settled slim row opens the native menu with New thread on main, Un-settle thread, Snooze submenu, Rename thread, Regenerate title, Copy path, Copy branch, Mark unread, Archive, and destructive Delete.",
+      "screenshot": "sidebar-native-completed-menu.png",
+      "sha256": "03a356c7831e953d3f05704c88f459984383d7b62a7a33dfebf9e9c43dece094",
+      "pixelSize": [3456, 2234]
+    },
+    {
+      "name": "mark unread timestamp mutation",
+      "result": "pass",
+      "detail": "The active completed thread first persisted primary:fidelity-review-thread at 2026-08-19T15:10:00.000Z. After leaving it through the real branch menu action and selecting Mark unread from the real system menu, the isolated preference changed to 2026-08-19T15:09:59.999Z, exactly one millisecond before completion.",
+      "screenshot": "sidebar-native-mark-unread-result.png",
+      "sha256": "5703af8918ae066955505e3ff770fd2fc935119d1dd43f49949e52c98e494fdb",
+      "pixelSize": [3456, 2234]
+    }
+  ],
+  "classification": {
+    "closedProductLoss": "Settled-row secondary-click routing and Mark unread persisted mutation now work through real Native input.",
+    "remainingProductLoss": [],
+    "missingCoverage": [
+      "Snooze, Wake, Regenerate title, and destructive selections are source/test covered but not selected in this retained run.",
+      "Light-theme settled menu is not retained in this slice."
+    ],
+    "harnessLoss": "Desktop DevTool registration remains unavailable; exact window-server frames, PID identity, persisted preference bytes, and projector-backed SQLite state are used instead.",
+    "intentionalPlatformDelta": "The context menu uses native macOS material and metrics.",
+    "acceptedRenderingNoise": []
+  }
+}
