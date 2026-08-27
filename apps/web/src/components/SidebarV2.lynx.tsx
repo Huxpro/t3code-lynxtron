@@ -539,6 +539,9 @@ export default function SidebarV2() {
   const showThreadContextMenu = useCallback(
     async (thread: (typeof threads)[number], projectPath: string | null, settled: boolean) => {
       const workspacePath = thread.worktreePath ?? projectPath;
+      const supportsTitleRegeneration =
+        serverConfig?.environment.capabilities.threadTitleRegeneration === true;
+      const isRegeneratingTitle = thread.titleRegeneration != null;
       const selection = await showNativeContextMenu([
         ...(thread.branch
           ? [{ id: "new-thread-on-branch", label: `New thread on ${thread.branch}` }]
@@ -552,6 +555,15 @@ export default function SidebarV2() {
             ]
           : []),
         { id: "rename", label: "Rename thread" },
+        ...(supportsTitleRegeneration
+          ? [
+              {
+                id: "regenerate-title",
+                label: isRegeneratingTitle ? "Regenerating…" : "Regenerate title",
+                disabled: isRegeneratingTitle,
+              },
+            ]
+          : []),
         ...(workspacePath ? [{ id: "copy-path", label: "Copy path" }] : []),
         ...(thread.branch ? [{ id: "copy-branch", label: "Copy branch" }] : []),
         { id: "mark-unread", label: "Mark unread" },
@@ -573,13 +585,15 @@ export default function SidebarV2() {
         await clientCapabilities.clipboard.writeText(thread.branch);
       } else if (selection === "mark-unread") {
         markThreadUnread(thread);
+      } else if (selection === "regenerate-title") {
+        await t3ClientActions.regenerateThreadTitle(thread.id);
       } else if (selection === "archive") await t3ClientActions.archiveThread(thread.id);
       else if (selection === "rename" || selection === "delete") {
         setActionMenuThreadId(thread.id);
         setNativeFollowup({ kind: selection, threadId: thread.id });
       }
     },
-    [markThreadUnread, settlementSupported, threads],
+    [markThreadUnread, serverConfig, settlementSupported, threads],
   );
   const newThreadShortcutLabel = serverConfig
     ? (shortcutLabelForCommand(serverConfig.keybindings, "chat.newLocal", "MacIntel") ??

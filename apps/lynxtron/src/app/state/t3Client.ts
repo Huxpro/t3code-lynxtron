@@ -1268,6 +1268,12 @@ async function renameThread(threadId: string, title: string): Promise<void> {
   await bridge.renameThread({ threadId, title });
 }
 
+async function regenerateThreadTitle(threadId: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.regenerateThreadTitle) return;
+  await bridge.regenerateThreadTitle({ threadId });
+}
+
 async function updateProject(projectId: string, title: string): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.updateProject) {
@@ -1963,6 +1969,7 @@ export const t3ClientActions = {
   readVcsStatus,
   reconnect,
   renameThread,
+  regenerateThreadTitle,
   respondToApproval,
   respondToUserInput,
   revokeClientSession,

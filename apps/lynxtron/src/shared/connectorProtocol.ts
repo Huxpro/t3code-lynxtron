@@ -247,6 +247,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "settleThread",
   "unsettleThread",
   "renameThread",
+  "regenerateThreadTitle",
   "updateProject",
   "deleteProject",
   "updateProjectScripts",

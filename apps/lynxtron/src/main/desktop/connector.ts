@@ -1286,6 +1286,15 @@ export class T3Connector {
     });
   }
 
+  async regenerateThreadTitle(input: { threadId: string }): Promise<void> {
+    await this.dispatchOrchestrationCommand({
+      type: "thread.meta.update",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      regenerateTitle: true,
+    });
+  }
+
   async updateProject(input: { projectId: string; title: string }): Promise<void> {
     const title = input.title.trim();
     if (!title) return;
