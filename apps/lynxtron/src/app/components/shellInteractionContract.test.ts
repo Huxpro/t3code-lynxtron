@@ -940,10 +940,13 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil)");
     expect(sidebarSource).toContain("t3ClientActions.unsnoozeThread(thread.id)");
     expect(sidebarRowSource).toMatch(
-      /variant === "slim"[\s\S]*?<HostText\s+onContextMenu=\{props\.onContextMenu\}[\s\S]*?props\.favicon/u,
+      /variant === "slim"[\s\S]*?<HostText[\s\S]*?onClick=\{\(\) => props\.onClick\?\.\(\{\}\)\}[\s\S]*?onContextMenu=\{props\.onContextMenu\}[\s\S]*?props\.favicon/u,
     );
     expect(sidebarSource).toMatch(
-      /visibleSettledThreads\.map[\s\S]*?<HostText\s+onContextMenu=\{\(event\)[\s\S]*?thread\.title/u,
+      /visibleSettledThreads\.map[\s\S]*?<HostText[\s\S]*?onClick=\{\(\) => \{[\s\S]*?markThreadVisited\(thread\)[\s\S]*?onContextMenu=\{\(event\)[\s\S]*?thread\.title/u,
+    );
+    expect(sidebarSource).toMatch(
+      /visibleSettledThreads\.map[\s\S]*?<HostText\s+onClick=\{\(\) => \{[\s\S]*?markThreadVisited\(thread\)/u,
     );
     expect(sidebarSource).toContain("markThreadUnreadInTimestampRecord");
     expect(sidebarSource).toContain("markThreadVisitedInTimestampRecord");
