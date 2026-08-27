@@ -26911,10 +26911,10 @@
       "allocation": "measured-product-change",
       "changedLines": 0,
       "commit": "5920ac8e705cbdf64986418b7afa17131230bfc6",
-      "committedAt": "2026-08-26T18:17:13-07:00",
+      "committedAt": "2026-08-26T18:43:00-07:00",
       "confidence": 0.99,
-      "delta": -0.000108,
-      "reason": "The paired width cells directly prove that current panel geometry changes the terminal cols while preserving rows through the typed resize RPC. No Native physical interaction or full-xterm credit is inferred.",
+      "delta": -0.000162,
+      "reason": "The same-session width transition directly proves that committed panel geometry changes terminal cols while preserving rows through the typed resize RPC. No Native physical interaction or full-xterm credit is inferred.",
       "subject": "Right panel Terminal responsive PTY grid",
       "surfaces": [
         "review"
@@ -46485,12 +46485,12 @@
     {
       "allocation": "measured-product-change",
       "commit": "5920ac8e705cbdf64986418b7afa17131230bfc6",
-      "committedAt": "2026-08-26T18:17:13-07:00",
+      "committedAt": "2026-08-26T18:43:00-07:00",
       "confidence": 0.99,
-      "delta": -0.000108,
+      "delta": -0.000162,
       "measuredCheckpoint": "right-panel-terminal-responsive-grid-current",
-      "rawLoss": 0.217521,
-      "smoothedLoss": 0.217597,
+      "rawLoss": 0.217467,
+      "smoothedLoss": 0.217585,
       "subject": "Right panel Terminal responsive PTY grid"
     }
   ],
@@ -297570,37 +297570,32 @@
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
-        "reason": "The paired width cells directly prove that current panel geometry changes the terminal cols while preserving rows through the typed resize RPC. No Native physical interaction or full-xterm credit is inferred."
+        "reason": "The same-session width transition directly proves that committed panel geometry changes terminal cols while preserving rows through the typed resize RPC. No Native physical interaction or full-xterm credit is inferred."
       },
-      "commit": "91e226df714f2a88cbaa4ad36e9d7bab5d35f5de",
+      "commit": "dd9e1655d478b452e3f5e50aa402516e5f22c9f7",
       "codeCommit": "5920ac8e705cbdf64986418b7afa17131230bfc6",
       "codeState": "commit",
       "id": "right-panel-terminal-responsive-grid-current",
       "label": "Right panel Terminal responsive PTY grid",
-      "narrative": "Two fresh single-server Browser-first cells use the same immutable snapshot, selected thread, dark theme, 1280x820 viewport, and current Web and Lynx-for-Web artifacts. At requested panel widths 540 and 640, Lynx measures 539x776 and 615x776 terminal roots and sends typed openTerminal plus resizeTerminal grids of 71x36 and 82x36 respectively. Both runs execute pwd through the visible command path, render the exact workspace cwd, report zero console errors, and clean owned processes. This closes only responsive PTY grid synchronization; key-by-key xterm input, selection, splits, Native physical drag, and Return submission remain unclaimed.",
-      "observedAt": "2026-08-26T18:17:13-07:00",
+      "narrative": "One fresh single-server Browser-first cell uses an immutable snapshot, selected thread, dark theme, 1280x820 viewport, and current Web and Lynx-for-Web artifacts. The running Lynx terminal starts in a 541px panel with a 71x36 PTY grid, then the existing committed resize path widens that same panel to 617px and sends a second typed resizeTerminal grid of 82x36. The same PTY retains its pwd output, the run reports zero console errors, and all owned processes are cleaned. This closes only responsive PTY grid synchronization; key-by-key xterm input, selection, splits, Native physical drag, and Return submission remain unclaimed.",
+      "observedAt": "2026-08-26T18:43:00-07:00",
       "screenshots": [],
       "sources": [
         {
-          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-current.json",
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-dynamic.json",
           "classification": "tracked-current",
-          "sha256": "ac2282c0f47d585a1cfa4e2ea01a2f7d473fd365e97575e2b288bfed6d212a6a"
+          "sha256": "4feb343b0a49b270c59a20513b7cb8c4ddfe8195f819dc0d80e886520ef26282"
         },
         {
-          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-540-lynx.png",
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-dynamic-lynx.png",
           "classification": "tracked-current",
-          "sha256": "4b069bca59a9014ee7973291fd164443764b07a76dfa225c29db350b9bdb23b4"
-        },
-        {
-          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-640-lynx.png",
-          "classification": "tracked-current",
-          "sha256": "e197b21c395b2413f92c22aeac2dd3057b4666f0c7ce5a1614ddaf9474bd740e"
+          "sha256": "70962b508de0635e925be41fdcec6126a181d1acb216fabf52419d135626d9b8"
         }
       ],
       "confidence": 0.81413,
       "evidenceDebt": 0.18587,
-      "loss": 0.217521,
-      "observedResidual": 0.038877,
+      "loss": 0.217467,
+      "observedResidual": 0.038811,
       "byDimension": {
         "content": {
           "confidence": 0.964297,
@@ -297629,8 +297624,8 @@
         "interaction": {
           "confidence": 0.791828,
           "evidenceDebt": 0.208172,
-          "loss": 0.263027,
-          "observedResidual": 0.069277
+          "loss": 0.262758,
+          "observedResidual": 0.068937
         },
         "runtime": {
           "confidence": 0.965031,
@@ -297673,8 +297668,8 @@
         "review": {
           "confidence": 0.871,
           "evidenceDebt": 0.129,
-          "loss": 0.168417,
-          "observedResidual": 0.045255
+          "loss": 0.168031,
+          "observedResidual": 0.044811
         }
       },
       "states": [
@@ -297744,8 +297739,8 @@
           "group": "review",
           "id": "right-panel-terminal",
           "label": "Right Panel · Terminal Session",
-          "loss": 0.457084,
-          "observedResidual": 0.115484,
+          "loss": 0.453124,
+          "observedResidual": 0.109032,
           "weight": 4
         },
         {
@@ -298520,7 +298515,7 @@
         }
       ],
       "bestLoss": 0.217185,
-      "improvementFromBaseline": 0.773967
+      "improvementFromBaseline": 0.774021
     }
   ],
   "provenance": {
