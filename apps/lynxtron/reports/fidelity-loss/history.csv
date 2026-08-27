@@ -272,3 +272,4 @@ quick-switch-native-physical-input-focus-correction,2026-08-27T00:24:00-07:00,f8
 quick-switch-native-input-focus-current,2026-08-27T04:11:00-07:00,d7a60161a,commit,Native Quick Switch physical input focus,0.217199,0.217185,0.039062,0.185378,0.814622,0.774289
 file-picker-native-input-focus-current,2026-08-27T04:43:00-07:00,2bc13af48,commit,Native File Picker physical input focus,0.217038,0.217038,0.039037,0.185232,0.814768,0.77445
 quick-switch-native-light-input-focus-current,2026-08-27T05:05:00-07:00,d9e96c0b0,commit,Native light Quick Switch physical input focus,0.21607,0.21607,0.03785,0.185232,0.814768,0.775418
+provider-dialog-native-baseline-current,2026-08-27T05:34:00-07:00,272522fd2,commit,Native Add Provider dialog baseline,0.209502,0.209502,0.038835,0.177563,0.822437,0.781986

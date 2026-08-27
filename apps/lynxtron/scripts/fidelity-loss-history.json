@@ -17978,6 +17978,91 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-native-baseline-current",
+      "observedAt": "2026-08-27T05:34:00-07:00",
+      "commit": "272522fd2",
+      "codeCommit": "f32678bda",
+      "codeState": "commit",
+      "label": "Native Add Provider dialog baseline",
+      "narrative": "The separately modeled Add Provider dialog had complete Lynx-for-Web lifecycle evidence but no Native cell observations. A fresh exact-bundle Native run now holds the canonical snapshot, Providers route, dark theme, 1280 by 820 viewport, and main transport. The Driver state renders the shared title, description, three-step track, two-column driver grid, disabled options, and footer. Real pointer input advances to Identity, a second Next is correctly blocked by the required Instance ID validation, and the close control restores Providers without persistence. A mis-scaled input-coordinate frame is rejected; Config, save, delete, and light theme remain missing coverage rather than inferred success.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Exact-PID frames and physical pointer outcomes convert Native unknown cells into measured coverage without a product change or credit for rejected input coordinates."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/provider-dialog-native-baseline.json",
+          "classification": "tracked-current",
+          "sha256": "72d3d71034a34332765904063927e42cc8999fa1849cd8db0c7e90fdf28764ff"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/provider-dialog-native-driver.png",
+          "classification": "tracked-current",
+          "sha256": "b1c7b722d06c267f1e56e0e6d07d4ca7104ade59b361e8df539201ced29b0297"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/provider-dialog-native-identity.png",
+          "classification": "tracked-current",
+          "sha256": "4d850199bdfe368b66d4c461f2617a5ca3609d59e6e318c6f1937c736484a6d5"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/provider-dialog-native-validation.png",
+          "classification": "tracked-current",
+          "sha256": "2c096ae98c9fddafe1f25b9794b1332a1d8645ac58f3044c31221364fd222c50"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/provider-dialog-native-dismissed.png",
+          "classification": "tracked-current",
+          "sha256": "ce02e1eecf933e5be535e0eea7e80d9cf600b28a265b61577fca0a21077c8486"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "native-provider-driver-and-identity-content",
+              "source": "Driver and Identity retain the shared wizard hierarchy, options, fields, validation copy, and reverse close state; Config and mutation terminal states remain uncovered"
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "native-provider-dialog-visual-review",
+              "source": "Driver and Identity preserve centered dialog, three equal step regions, two-column driver cards, stacked fields, and fixed footer without clipping at 1280 by 820"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "native-provider-dialog-typography-review",
+              "source": "Visible title, description, steps, labels, hints, validation, cards, badges, and buttons preserve the shared hierarchy with platform shaping noise"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "native-provider-dialog-material-review",
+              "source": "Dark backdrop, panel, borders, active step, selected card, status badges, validation color, and primary action are visually coherent; paired pixel attribution is not claimed"
+            },
+            "interaction": {
+              "residual": 0.35,
+              "confidence": 0.99,
+              "method": "physical-provider-driver-identity-validation-dismissal",
+              "source": "Real pointer input advances Driver to Identity, blocks invalid Next with visible validation, and closes without persistence; composed input, Config, save, projection, and delete remain uncovered"
+            },
+            "runtime": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "native-provider-dialog-main-transport",
+              "source": "Exact bundle reaches canonical Providers state on main transport with no renderer error; DevTool registration and full mutation lifecycle remain unavailable"
+            }
+          }
+        }
+      ]
     }
   ]
 }
