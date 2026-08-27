@@ -18063,6 +18063,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-archive-native-delete-leaf-routing-correction",
+      "observedAt": "2026-08-27T06:40:00-07:00",
+      "commit": "b6789b7561fe69429f3c65a787ac93d7c957d11e",
+      "codeCommit": "b6789b7561fe69429f3c65a787ac93d7c957d11e",
+      "codeState": "commit",
+      "label": "Native Archive delete leaf-routing correction",
+      "narrative": "A canonical event-sourced archived thread is projected from sequence eight into an isolated current-bundle Native process. A real secondary click opens the macOS system menu with Unarchive and destructive Delete. Selecting Delete exposes the inline Cancel and Confirm delete controls, proving the previously reported absent action has since been implemented. Exact OCR-derived clicks on both visible button labels do not dispatch their handlers: Cancel leaves the confirmation open, and Confirm delete emits no thread.deleted event and leaves deleted_at null. The existing Archive mutation state already covers this flow, so no denominator or weight changes and no repair credit are applied.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Physical system-menu and OCR-located button input distinguish an implemented Delete flow from a real nested-label event-routing failure without changing scope or weights."
+      },
+      "sources": [],
+      "updates": [
+        {
+          "states": ["settings-archive-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.72,
+              "confidence": 0.99,
+              "method": "physical-archive-delete-leaf-routing-audit",
+              "source": "The real system menu exposes Delete and opens inline confirmation, but OCR-derived physical clicks on Cancel and Confirm delete do not fire; no thread.deleted event or deleted_at mutation occurs"
+            }
+          }
+        }
+      ]
     }
   ]
 }

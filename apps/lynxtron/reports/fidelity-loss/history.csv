@@ -273,3 +273,4 @@ quick-switch-native-input-focus-current,2026-08-27T04:11:00-07:00,d7a60161a,comm
 file-picker-native-input-focus-current,2026-08-27T04:43:00-07:00,2bc13af48,commit,Native File Picker physical input focus,0.217038,0.217038,0.039037,0.185232,0.814768,0.77445
 quick-switch-native-light-input-focus-current,2026-08-27T05:05:00-07:00,d9e96c0b0,commit,Native light Quick Switch physical input focus,0.21607,0.21607,0.03785,0.185232,0.814768,0.775418
 provider-dialog-native-baseline-current,2026-08-27T05:34:00-07:00,272522fd2,commit,Native Add Provider dialog baseline,0.209502,0.209502,0.038835,0.177563,0.822437,0.781986
+settings-archive-native-delete-leaf-routing-correction,2026-08-27T06:40:00-07:00,b6789b7561fe69429f3c65a787ac93d7c957d11e,commit,Native Archive delete leaf-routing correction,0.209639,0.209502,0.039002,0.177563,0.822437,0.781849
