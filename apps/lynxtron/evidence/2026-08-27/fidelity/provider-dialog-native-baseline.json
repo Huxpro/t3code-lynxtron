@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-27T05:34:00-07:00",
+  "stateId": "settings-providers-add-dialog",
+  "scope": {
+    "client": "native",
+    "route": "/settings/providers",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "interactionChannel": "isolated initial product state and real macOS pointer input via cliclick"
+  },
+  "snapshot": {
+    "sha256BeforeLaunch": "5b89591b946cf133bdfedafa30e32f789cd6d33d839f513ffe343fe632c53553",
+    "eventCountBeforeLaunch": 7,
+    "threadId": "fidelity-review-thread",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 38860,
+    "windowId": 40397,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "8b7b66bb88ce2ccc4d3cd240bcd1ad5be093c4ef6f5e03b1aca4ee3922be1954",
+    "transportKind": "main",
+    "lastSeq": 11
+  },
+  "observations": [
+    {
+      "name": "Driver baseline",
+      "result": "pass",
+      "detail": "The Native dialog renders the Web-authority title, description, three-step track, selected Codex driver, two-column enabled and disabled driver grid, and footer controls.",
+      "screenshot": "provider-dialog-native-driver.png",
+      "sha256": "b1c7b722d06c267f1e56e0e6d07d4ca7104ade59b361e8df539201ced29b0297",
+      "pixelSize": [2784, 1864]
+    },
+    {
+      "name": "Driver to Identity",
+      "result": "pass",
+      "detail": "A real pointer selection of Next advances to Identity, marks Driver complete, and exposes Label and Instance ID fields plus Back and Next.",
+      "screenshot": "provider-dialog-native-identity.png",
+      "sha256": "4d850199bdfe368b66d4c461f2617a5ca3609d59e6e318c6f1937c736484a6d5",
+      "pixelSize": [2784, 1864]
+    },
+    {
+      "name": "Identity validation gate",
+      "result": "pass",
+      "detail": "A second real Next pointer input leaves the wizard on Identity and renders Instance ID is required instead of advancing with placeholder text.",
+      "screenshot": "provider-dialog-native-validation.png",
+      "sha256": "2c096ae98c9fddafe1f25b9794b1332a1d8645ac58f3044c31221364fd222c50",
+      "pixelSize": [2784, 1864]
+    },
+    {
+      "name": "Close reverse state",
+      "result": "pass",
+      "detail": "The real close control dismisses the dialog and restores the Providers route without persisting a provider instance.",
+      "screenshot": "provider-dialog-native-dismissed.png",
+      "sha256": "ce02e1eecf933e5be535e0eea7e80d9cf600b28a265b61577fca0a21077c8486",
+      "pixelSize": [2784, 1864]
+    }
+  ],
+  "classification": {
+    "closedProductLoss": [],
+    "remainingProductLoss": [],
+    "missingCoverage": [
+      "Native composed Identity input, Config, Add instance mutation, card projection, and Delete reverse mutation remain unverified.",
+      "Light-theme Native wizard was not captured."
+    ],
+    "harnessLoss": "One mis-scaled coordinate produced a transient diagnostic frame and was excluded. Desktop DevTool registration remains unavailable.",
+    "intentionalPlatformDelta": [],
+    "acceptedRenderingNoise": [
+      "Native font shaping and system-host shadow rasterization differ from Browser pixels while preserving the shared hierarchy."
+    ]
+  }
+}
