@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-27T04:11:00-07:00",
+  "stateIds": ["quick-switch-query", "command-palette-navigation"],
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "interactionChannel": "real macOS keyboard input via cliclick"
+  },
+  "snapshot": {
+    "kind": "event-sourced completed-turn fixture",
+    "sha256BeforeLaunch": "5b89591b946cf133bdfedafa30e32f789cd6d33d839f513ffe343fe632c53553",
+    "eventCountBeforeLaunch": 7,
+    "projectId": "2ed7ddd6-4455-44fa-91c3-5ef7d21a42b4",
+    "threadId": "fidelity-review-thread",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 82778,
+    "windowId": 40161,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "fbf174fb39fbde4b2424c3250c173f3c58f3ce86f6d791a86a3c24a02a5c57a5",
+    "transportKind": "main",
+    "lastSeq": 12,
+    "devToolRegistration": "unavailable"
+  },
+  "observations": [
+    {
+      "name": "physical query entry",
+      "result": "pass",
+      "detail": "After a real Command-K opens Quick Switch, real OS typing of settings enters the focused input and filters the list to the single Open settings action.",
+      "screenshot": "quick-switch-native-settings-query.png",
+      "sha256": "adb70766f3eb6417066d340f3d16340c4163402568c50bc3162d9e2388b809cf",
+      "pixelSize": [2784, 1864]
+    },
+    {
+      "name": "physical Escape dismissal",
+      "result": "pass",
+      "detail": "A real Escape key dismisses the focused Quick Switch overlay and restores the canonical thread view.",
+      "screenshot": "quick-switch-native-escape-dismissed.png",
+      "sha256": "8f73cb727312dec946b6cc0e6c65cc29ec18b26809d1304d79f555c93fde426b",
+      "pixelSize": [2784, 1864]
+    },
+    {
+      "name": "physical ArrowDown navigation",
+      "result": "fail",
+      "detail": "On a fresh current-bundle process opened directly into the root palette, the input visibly has a caret but a real ArrowDown leaves the active highlight on the first row. Lynxtron does not deliver a usable input or container keydown event, matching the documented R5 runtime boundary.",
+      "screenshot": "quick-switch-native-arrow-down-unhandled.png",
+      "sha256": "017e23e4e6aff4af655426ff990d01814a8fe5bd73d8ec79c60ab1f26d5bb244",
+      "pixelSize": [2784, 1864]
+    }
+  ],
+  "classification": {
+    "closedProductLoss": "Opening Quick Switch now focuses its real Native input, so physical character entry filters the palette; physical Escape also dismisses the focused overlay.",
+    "remainingProductLoss": [
+      "Physical ArrowUp, ArrowDown, and Enter navigation remain unavailable because Lynxtron does not deliver a usable renderer key event for the focused input or its container."
+    ],
+    "missingCoverage": [
+      "Light-theme physical query entry was not repeated and receives no borrowed dark-theme credit.",
+      "The filtered Open settings action was not activated with Enter."
+    ],
+    "harnessLoss": "Desktop DevTool registration remains unavailable; exact-PID WindowServer frames, immutable snapshot identity, bundle hash, and process logs are used without claiming DevTool console or LynxView geometry evidence.",
+    "intentionalPlatformDelta": [],
+    "acceptedRenderingNoise": []
+  }
+}
