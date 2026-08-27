@@ -17,6 +17,7 @@ import {
   type FloatingRect,
   type FloatingSide,
 } from "@t3tools/client-runtime/presentation/floating-relation";
+import { HostView } from "./hostElements";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -253,9 +254,14 @@ export function MenuRadioItem({
   children,
   className,
   disabled = false,
+  onContextMenu,
   value,
   ...props
-}: ElementProps & { readonly disabled?: boolean; readonly value: string }) {
+}: ElementProps & {
+  readonly disabled?: boolean;
+  readonly onContextMenu?: (event: unknown) => void;
+  readonly value: string;
+}) {
   const menu = useContext(MenuContext);
   const radio = useContext(RadioContext);
   const handleTap = useCallback(() => {
@@ -264,7 +270,7 @@ export function MenuRadioItem({
     menu?.setOpen(false);
   }, [disabled, menu, radio, value]);
   return (
-    <view
+    <HostView
       {...props}
       className={classes(
         "lynx-menu-radio-item flex h-8 min-h-8 w-full flex-row items-center gap-2 rounded-sm px-2 py-0 text-sm text-popover-foreground",
@@ -273,10 +279,11 @@ export function MenuRadioItem({
         className,
       )}
       data-checked={radio.value === value}
-      bindtap={handleTap}
+      onClick={handleTap}
+      onContextMenu={onContextMenu}
     >
       {children}
-    </view>
+    </HostView>
   );
 }
 

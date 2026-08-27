@@ -525,6 +525,21 @@ export default function SidebarV2() {
         className="size-4 shrink-0"
       />
     ),
+    onContextMenu: () => {
+      void showNativeContextMenu([
+        { id: "settings", label: "Project settings" },
+        { id: "copy-path", label: "Copy Path" },
+      ])
+        .then(async (selection) => {
+          if (selection === "settings") {
+            setProjectScopeMenuOpen(false);
+            setProjectSettingsProjectId(project.id);
+          } else if (selection === "copy-path") {
+            await clientCapabilities.clipboard.writeText(project.workspaceRoot);
+          }
+        })
+        .catch(() => undefined);
+    },
     actions: (
       <view
         className="sidebar-v2-project-action"

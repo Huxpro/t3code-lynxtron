@@ -23,6 +23,7 @@ export interface SidebarV2ProjectScopeOption {
   readonly favicon: ReactNode;
   /** Web-only trailing project-actions control; Lynx passes null. */
   readonly actions?: ReactNode;
+  readonly onContextMenu?: HostButtonProps["onContextMenu"];
 }
 
 export interface SidebarV2ControlsSurfaceProps {
@@ -188,9 +189,13 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                         closeOnClick
                         data-sidebar-project-scope-option={option.scopeKey}
                         className="sidebar-v2-scope-option h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
+                        onContextMenu={option.onContextMenu}
                       >
                         {option.favicon}
-                        <HostText className="min-w-0 truncate text-sm">
+                        <HostText
+                          className="min-w-0 truncate text-sm"
+                          onContextMenu={option.onContextMenu}
+                        >
                           {option.displayName}
                         </HostText>
                         {option.actions ?? null}
