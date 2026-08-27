@@ -1,4 +1,4 @@
-import { runOnBackground, useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
 import type { NodesRef } from "@lynx-js/types";
 import type {
   FilesystemBrowseResult,
@@ -706,10 +706,6 @@ export function QuickSwitch({
       view,
     ],
   );
-  const handleSearchInputKeyDown = (event: { readonly key: string }) => {
-    "main thread";
-    runOnBackground(handlePaletteKeyDown)({ key: event.key });
-  };
   const inputPlaceholder =
     view === "add-project-sources" || view === "new-thread-projects"
       ? "Search..."
@@ -762,7 +758,6 @@ export function QuickSwitch({
               className="qs-search__input"
               {...({ value: query } as object)}
               placeholder={inputPlaceholder}
-              main-thread:bindkeydown={handleSearchInputKeyDown}
               bindinput={handleInput}
               bindconfirm={() => handlePaletteKeyDown({ key: "Enter" })}
             />
