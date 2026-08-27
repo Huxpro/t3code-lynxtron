@@ -689,6 +689,9 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("closeRemovedTerminal(state.surfaces");
     expect(rightPanelSurfaceSource).toContain("...(onContextMenu ? { onContextMenu } : {})");
     expect(hostElementsSource.match(/event.button === 2 && onContextMenu/g)).toHaveLength(3);
+    expect(hostElementsSource.match(/event.button === 1 && onAuxClick/g)).toHaveLength(3);
+    expect(panel).toContain("onAuxClick={() => handleCloseTab(surface)}");
+    expect(rightPanelSurfaceSource).toContain("...(onAuxClick ? { onAuxClick } : {})");
     expect(panel).toContain('className="right-panel__add-menu-dismiss"');
     expect(panel).toContain("bindtap={() => setShowAddMenu(false)}");
     expect(panel).toContain('data-floating-popup="right-panel-add-menu"');
