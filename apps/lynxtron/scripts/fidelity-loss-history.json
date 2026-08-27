@@ -17576,32 +17576,27 @@
     },
     {
       "id": "right-panel-terminal-responsive-grid-current",
-      "observedAt": "2026-08-26T18:17:13-07:00",
-      "commit": "91e226df714f2a88cbaa4ad36e9d7bab5d35f5de",
+      "observedAt": "2026-08-26T18:43:00-07:00",
+      "commit": "dd9e1655d478b452e3f5e50aa402516e5f22c9f7",
       "codeCommit": "5920ac8e705cbdf64986418b7afa17131230bfc6",
       "codeState": "commit",
       "label": "Right panel Terminal responsive PTY grid",
-      "narrative": "Two fresh single-server Browser-first cells use the same immutable snapshot, selected thread, dark theme, 1280x820 viewport, and current Web and Lynx-for-Web artifacts. At requested panel widths 540 and 640, Lynx measures 539x776 and 615x776 terminal roots and sends typed openTerminal plus resizeTerminal grids of 71x36 and 82x36 respectively. Both runs execute pwd through the visible command path, render the exact workspace cwd, report zero console errors, and clean owned processes. This closes only responsive PTY grid synchronization; key-by-key xterm input, selection, splits, Native physical drag, and Return submission remain unclaimed.",
+      "narrative": "One fresh single-server Browser-first cell uses an immutable snapshot, selected thread, dark theme, 1280x820 viewport, and current Web and Lynx-for-Web artifacts. The running Lynx terminal starts in a 541px panel with a 71x36 PTY grid, then the existing committed resize path widens that same panel to 617px and sends a second typed resizeTerminal grid of 82x36. The same PTY retains its pwd output, the run reports zero console errors, and all owned processes are cleaned. This closes only responsive PTY grid synchronization; key-by-key xterm input, selection, splits, Native physical drag, and Return submission remain unclaimed.",
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
-        "reason": "The paired width cells directly prove that current panel geometry changes the terminal cols while preserving rows through the typed resize RPC. No Native physical interaction or full-xterm credit is inferred."
+        "reason": "The same-session width transition directly proves that committed panel geometry changes terminal cols while preserving rows through the typed resize RPC. No Native physical interaction or full-xterm credit is inferred."
       },
       "sources": [
         {
-          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-current.json",
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-dynamic.json",
           "classification": "tracked-current",
-          "sha256": "ac2282c0f47d585a1cfa4e2ea01a2f7d473fd365e97575e2b288bfed6d212a6a"
+          "sha256": "4feb343b0a49b270c59a20513b7cb8c4ddfe8195f819dc0d80e886520ef26282"
         },
         {
-          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-540-lynx.png",
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-dynamic-lynx.png",
           "classification": "tracked-current",
-          "sha256": "4b069bca59a9014ee7973291fd164443764b07a76dfa225c29db350b9bdb23b4"
-        },
-        {
-          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-640-lynx.png",
-          "classification": "tracked-current",
-          "sha256": "e197b21c395b2413f92c22aeac2dd3057b4666f0c7ce5a1614ddaf9474bd740e"
+          "sha256": "70962b508de0635e925be41fdcec6126a181d1acb216fabf52419d135626d9b8"
         }
       ],
       "updates": [
@@ -17610,16 +17605,16 @@
           "clients": ["lynx"],
           "dimensions": {
             "interaction": {
-              "residual": 0.25,
+              "residual": 0.2,
               "confidence": 0.99,
               "method": "browser-terminal-responsive-grid-flow",
-              "source": "Two same-snapshot cells prove openTerminal and resizeTerminal at 71x36 and 82x36 as panel width changes; close, splits, selection, and key-by-key PTY input remain unclaimed"
+              "source": "One running PTY receives resizeTerminal at 71x36 and then 82x36 as the committed panel width changes; close, splits, selection, key-by-key PTY input, and Native physical drag remain unclaimed"
             },
             "runtime": {
               "residual": 0,
               "confidence": 0.99,
               "method": "browser-terminal-resize-rpc",
-              "source": "Both current-head runs forward typed terminal grids through the shared server, render pwd output, report zero errors, and dispose owned processes"
+              "source": "The current-head same-session run forwards both typed terminal grids through the shared server, retains pwd output, reports zero errors, and disposes owned processes"
             }
           }
         }
