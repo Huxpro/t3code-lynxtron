@@ -18206,6 +18206,61 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-native-filter-states-physical-current",
+      "observedAt": "2026-08-27T14:53:00-07:00",
+      "commit": "8347afea2",
+      "codeCommit": "0af79d359",
+      "codeState": "commit",
+      "label": "Native Quick Switch physical filter states",
+      "narrative": "Fresh exact-owned light Native processes extend the physical Quick Switch verification from the ordinary settings query to the existing Actions-only and Empty states. After rejecting an Actions-only attempt made while the owned window was not key, exact-PID activation plus real > input hides Recent Threads and retains the six canonical Actions. A separate exact-PID run types zzzz-no-match and renders the canonical empty message. Real Escape dismisses both overlays to the same canonical thread frame. Credit is limited to physical character filtering and dismissal; ArrowUp, ArrowDown, Enter activation, and dark-theme repetitions remain residual. No states, clients, dimensions, weights, or thresholds change.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID real keyboard input, immutable snapshot identity, current bundle hash, and retained filter and dismissal frames verify the shared focus and Escape repairs in two already-modeled states without borrowing navigation or theme credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-filter-states.json",
+          "classification": "tracked-current",
+          "sha256": "ab1e0354a259e30625391ae59831600606638d2ddf8f9abf3d7258efd259ca11"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-actions-only.png",
+          "classification": "tracked-current",
+          "sha256": "333d27ff679071e509f2ba20f881bd704196b05c69312ebb570ddaf5f1ce088b"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-actions-only-dismissed.png",
+          "classification": "tracked-current",
+          "sha256": "f4d4e9041356b38e41c8c7912eabfe6b1cb0bb747680a8d2331ed801d1ec4dee"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-empty.png",
+          "classification": "tracked-current",
+          "sha256": "e8ccc07a9d85539093538604ec16171b16ebeb4723146eafe11f111d193f860e"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-empty-dismissed.png",
+          "classification": "tracked-current",
+          "sha256": "f4d4e9041356b38e41c8c7912eabfe6b1cb0bb747680a8d2331ed801d1ec4dee"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only", "quick-switch-empty"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.3,
+              "confidence": 0.99,
+              "method": "physical-filter-input-and-native-escape",
+              "source": "Real character input produces the Actions-only and empty filter states and physical Escape dismisses both; Arrow navigation, Enter selection, and dark-theme repetitions remain residual"
+            }
+          }
+        }
+      ]
     }
   ]
 }
