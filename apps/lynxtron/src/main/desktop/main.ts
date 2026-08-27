@@ -63,6 +63,8 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
       id: `t3-${item.id}`,
       label: item.label,
       accelerator: item.accelerator,
+      visible: item.visible,
+      acceleratorWorksWhenHidden: item.acceleratorWorksWhenHidden,
       click: () => dispatch(item),
     }));
 

@@ -7,6 +7,7 @@ export const T3_KEYBOARD_EVENT = "t3:keyboard";
 
 export interface DiscreteKeyboardAccelerator {
   readonly id:
+    | "dismiss-overlay"
     | "file-picker"
     | "new-thread"
     | "quick-switch"
@@ -18,9 +19,24 @@ export interface DiscreteKeyboardAccelerator {
   readonly code: string;
   readonly shift: boolean;
   readonly menu: "app" | "file" | "view";
+  readonly usesCommandModifier?: boolean;
+  readonly visible?: boolean;
+  readonly acceleratorWorksWhenHidden?: boolean;
 }
 
 export const DISCRETE_KEYBOARD_ACCELERATORS: ReadonlyArray<DiscreteKeyboardAccelerator> = [
+  {
+    id: "dismiss-overlay",
+    label: "Dismiss Overlay",
+    accelerator: "Esc",
+    key: "Escape",
+    code: "Escape",
+    shift: false,
+    menu: "app",
+    usesCommandModifier: false,
+    visible: false,
+    acceleratorWorksWhenHidden: true,
+  },
   {
     id: "open-settings",
     label: "Settings…",
@@ -80,13 +96,14 @@ export function createDiscreteKeyboardPacket(input: {
   readonly sequence: number;
 }): RendererNeutralKeyboardPacket {
   const mac = input.platform === "darwin";
+  const usesCommandModifier = input.accelerator.usesCommandModifier !== false;
   return {
     type: "keydown",
     key: input.accelerator.key,
     code: input.accelerator.code,
     modifiers: {
-      meta: mac,
-      ctrl: !mac,
+      meta: usesCommandModifier && mac,
+      ctrl: usesCommandModifier && !mac,
       shift: input.accelerator.shift,
       alt: false,
     },

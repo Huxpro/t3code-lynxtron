@@ -222,6 +222,10 @@ export function useModelPickerOpen(): boolean {
   return useAtomValue(modelPickerOpenAtom);
 }
 
+export function isModelPickerOpen(): boolean {
+  return appAtomRegistry.get(modelPickerOpenAtom);
+}
+
 export function useModelPickerNavigation(): ModelPickerNavigationState {
   return useAtomValue(modelPickerNavigationAtom);
 }
@@ -248,6 +252,18 @@ export function useSearchOverlayState(): SearchOverlayState {
 
 export function isSearchOverlayOpen(): boolean {
   return appAtomRegistry.get(searchOverlayStateAtom).open;
+}
+
+export function dismissOpenSearchOverlay(): boolean {
+  if (appAtomRegistry.get(modelPickerOpenAtom)) {
+    appAtomRegistry.set(modelPickerOpenAtom, false);
+    return true;
+  }
+  if (appAtomRegistry.get(searchOverlayStateAtom).open) {
+    updateSearchOverlay({ _tag: "SetOpen", open: false });
+    return true;
+  }
+  return false;
 }
 
 export function readModelPickerNavigation(): ModelPickerNavigationState {

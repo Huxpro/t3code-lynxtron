@@ -2,7 +2,7 @@ import { isRendererNeutralKeyboardPacket } from "@t3tools/shared/keyboard";
 
 import { navigate } from "../router";
 import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";
-import { uiActions } from "./uiState";
+import { dismissOpenSearchOverlay, uiActions } from "./uiState";
 import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
 
@@ -23,6 +23,15 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     return false;
   }
   lastSequence = input.sequence;
+  if (
+    input.key.toLowerCase() === "escape" &&
+    !input.modifiers.meta &&
+    !input.modifiers.ctrl &&
+    !input.modifiers.shift &&
+    !input.modifiers.alt
+  ) {
+    return dismissOpenSearchOverlay();
+  }
   const state = getT3ClientSnapshot();
   const command = resolveKeyboardPacketCommand(input, state.serverConfig?.keybindings ?? []);
 
