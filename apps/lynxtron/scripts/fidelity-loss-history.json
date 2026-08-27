@@ -17740,6 +17740,63 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-native-settled-menu-mark-unread-current",
+      "observedAt": "2026-08-27T00:02:00-07:00",
+      "commit": "fc2753b31",
+      "codeCommit": "8044bb671",
+      "codeState": "commit",
+      "label": "Native settled menu and Mark unread mutation",
+      "narrative": "A canonical event-sourced fixture supplies one completed turn with a stable completion timestamp and survives server projection bootstrap to offset 7. On the exact owned Lynxtron 0.0.16 process, a physical secondary click on the settled slim row opens the macOS system menu with the expanded authority-aligned action set. The active thread first persists its visit at the exact completion time; after leaving it through the verified branch action, selecting Mark unread through the physical system menu moves the isolated timestamp back exactly one millisecond. This proves the shared unread mutation and settled-row menu path. Snooze, Wake, Regenerate title, destructive outcomes, and the light variant remain unclaimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.98,
+        "reason": "Exact-PID physical input, immutable snapshot identity, projector offsets, and persisted preference bytes directly prove the settled-row menu and unread mutation without borrowing Browser evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/sidebar-native-mark-unread.json",
+          "classification": "tracked-current",
+          "sha256": "c1e960c72da7f53d7ff3aa7b8f2df7419ab9b79984149fe9f30d441b3efcbf03"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/sidebar-native-completed-menu.png",
+          "classification": "tracked-current",
+          "sha256": "03a356c7831e953d3f05704c88f459984383d7b62a7a33dfebf9e9c43dece094"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/sidebar-native-mark-unread-result.png",
+          "classification": "tracked-current",
+          "sha256": "5703af8918ae066955505e3ff770fd2fc935119d1dd43f49949e52c98e494fdb"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-native-thread-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "physical-settled-thread-menu-content",
+              "source": "The settled-row native menu visibly includes branch creation, lifecycle, Snooze, rename, title regeneration, copy, Mark unread, archive, and destructive actions in the authority order"
+            },
+            "interaction": {
+              "residual": 0.22,
+              "confidence": 0.98,
+              "method": "physical-mark-unread-persisted-transition",
+              "source": "A real system-menu selection changes the isolated visit timestamp from completedAt 15:10:00.000Z to 15:09:59.999Z; Snooze, Wake, title regeneration, and destructive outcomes remain unselected"
+            },
+            "runtime": {
+              "residual": 0.12,
+              "confidence": 0.98,
+              "method": "event-sourced-completed-thread-runtime",
+              "source": "The retained source has seven canonical events, all projector offsets at seven, the expected completed turn, main transport, and exact bundle identity; Desktop DevTool registration remains unavailable"
+            }
+          }
+        }
+      ]
     }
   ]
 }
