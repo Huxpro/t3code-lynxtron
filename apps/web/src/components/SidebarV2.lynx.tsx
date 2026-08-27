@@ -4,6 +4,7 @@ import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/sta
 import { uiActions } from "../../../lynxtron/src/app/state/uiState";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
+import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
 import { DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS } from "@t3tools/contracts/settings";
 import { formatRelativeTimeLabel } from "../timestampFormat";
 import { shortcutLabelForCommand } from "../keybindings";
@@ -36,7 +37,16 @@ import {
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
 import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
 import { isDisposableEmptyThread } from "@t3tools/client-runtime/presentation/thread-actions";
-import { projectSidebarThreadDetailsRows } from "@t3tools/client-runtime/presentation/sidebar";
+import {
+  hasUnseenThreadCompletion,
+  markThreadUnreadInTimestampRecord,
+  markThreadVisitedInTimestampRecord,
+  projectSidebarThreadDetailsRows,
+  sanitizeThreadVisitedTimestampRecord,
+} from "@t3tools/client-runtime/presentation/sidebar";
+import { getPref, setPref } from "../../../lynxtron/src/app/state/prefsStore";
+
+const THREAD_VISITED_TIMESTAMPS_PREF = "threadLastVisitedAtById";
 
 function compactSidebarTimeLabel(label: string): string {
   if (label === "just now") return "now";
@@ -213,6 +223,7 @@ function LynxThreadActionMenu({
   projectPath,
   settled,
   settlementSupported,
+  onMarkUnread,
   onClose,
   initialMode = "menu",
 }: {
@@ -220,6 +231,7 @@ function LynxThreadActionMenu({
   readonly projectPath: string | null;
   readonly settled: boolean;
   readonly settlementSupported: boolean;
+  readonly onMarkUnread: () => void;
   readonly onClose: () => void;
   readonly initialMode?: "menu" | "rename" | "delete";
 }) {
@@ -228,7 +240,7 @@ function LynxThreadActionMenu({
   const [confirmingDelete, setConfirmingDelete] = useState(initialMode === "delete");
   const workspacePath = thread.worktreePath ?? projectPath;
   const actionCount =
-    (settlementSupported ? 1 : 0) + 1 + (workspacePath ? 1 : 0) + (thread.branch ? 1 : 0) + 2;
+    (settlementSupported ? 1 : 0) + 2 + (workspacePath ? 1 : 0) + (thread.branch ? 1 : 0) + 2;
   const menuHeight = actionCount * 30 + 10;
 
   const run = (action: () => Promise<void>) => {
@@ -354,6 +366,16 @@ function LynxThreadActionMenu({
             ) : null}
             <view
               className="sidebar-v2-action-menu__item"
+              bindtap={() => {
+                onMarkUnread();
+                onClose();
+              }}
+            >
+              <Icon name="message-square" size={14} color="#818181" />
+              <text className="sidebar-v2-action-menu__item-label">Mark unread</text>
+            </view>
+            <view
+              className="sidebar-v2-action-menu__item"
               bindtap={() => run(() => t3ClientActions.archiveThread(thread.id))}
             >
               <Icon name="archive" size={14} color="#818181" />
@@ -405,6 +427,37 @@ export default function SidebarV2() {
     readonly threadId: string;
   } | null>(null);
   const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
+  const [threadLastVisitedAtById, setThreadLastVisitedAtById] = useState(() =>
+    sanitizeThreadVisitedTimestampRecord(getPref(THREAD_VISITED_TIMESTAMPS_PREF, {})),
+  );
+  const updateThreadVisitedTimestamps = useCallback(
+    (update: (current: Record<string, string>) => Record<string, string>) => {
+      setThreadLastVisitedAtById((current) => {
+        const next = update(current);
+        if (next !== current) setPref(THREAD_VISITED_TIMESTAMPS_PREF, next);
+        return next;
+      });
+    },
+    [],
+  );
+  const markThreadVisited = useCallback(
+    (thread: (typeof threads)[number]) => {
+      const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
+      updateThreadVisitedTimestamps((current) =>
+        markThreadVisitedInTimestampRecord(current, threadKey, thread.updatedAt),
+      );
+    },
+    [updateThreadVisitedTimestamps],
+  );
+  const markThreadUnread = useCallback(
+    (thread: (typeof threads)[number]) => {
+      const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
+      updateThreadVisitedTimestamps((current) =>
+        markThreadUnreadInTimestampRecord(current, threadKey, thread.latestTurn?.completedAt),
+      );
+    },
+    [updateThreadVisitedTimestamps],
+  );
   const orderedProjects = useMemo(
     () => sortScopedProjectsForSidebar(projects, threads, "updated_at"),
     [projects, threads],
@@ -458,6 +511,10 @@ export default function SidebarV2() {
     setActiveSearchResultIndex(0);
   }, [threadSearchQuery]);
   useEffect(() => {
+    const activeThread = threads.find((thread) => thread.id === activeThreadId);
+    if (activeThread) markThreadVisited(activeThread);
+  }, [activeThreadId, markThreadVisited, threads]);
+  useEffect(() => {
     if (!viewport.testResize) return;
     (
       globalThis as {
@@ -494,6 +551,7 @@ export default function SidebarV2() {
         { id: "rename", label: "Rename thread" },
         ...(workspacePath ? [{ id: "copy-path", label: "Copy path" }] : []),
         ...(thread.branch ? [{ id: "copy-branch", label: "Copy branch" }] : []),
+        { id: "mark-unread", label: "Mark unread" },
         { id: "archive", label: "Archive" },
         { id: "delete", label: "Delete", destructive: true },
       ]);
@@ -503,13 +561,15 @@ export default function SidebarV2() {
         await clientCapabilities.clipboard.writeText(workspacePath);
       } else if (selection === "copy-branch" && thread.branch) {
         await clientCapabilities.clipboard.writeText(thread.branch);
+      } else if (selection === "mark-unread") {
+        markThreadUnread(thread);
       } else if (selection === "archive") await t3ClientActions.archiveThread(thread.id);
       else if (selection === "rename" || selection === "delete") {
         setActionMenuThreadId(thread.id);
         setNativeFollowup({ kind: selection, threadId: thread.id });
       }
     },
-    [settlementSupported, threads],
+    [markThreadUnread, settlementSupported, threads],
   );
   const newThreadShortcutLabel = serverConfig
     ? (shortcutLabelForCommand(serverConfig.keybindings, "chat.newLocal", "MacIntel") ??
@@ -648,6 +708,7 @@ export default function SidebarV2() {
                 bindtap={() => {
                   setThreadSearchQuery("");
                   setActiveSearchResultIndex(0);
+                  markThreadVisited(thread);
                   t3ClientActions.selectThread(thread.id);
                 }}
               >
@@ -674,6 +735,11 @@ export default function SidebarV2() {
             const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
             const actionMenuOpen = actionMenuThreadId === thread.id;
             const detailsRelationId = `sidebar-thread-details:${thread.id}`;
+            const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
+            const isUnread = hasUnseenThreadCompletion({
+              latestTurn: thread.latestTurn,
+              lastVisitedAt: threadLastVisitedAtById[threadKey],
+            });
             return (
               <SidebarV2RowSurface
                 key={thread.id}
@@ -689,7 +755,7 @@ export default function SidebarV2() {
                   status === "approval" ||
                   status === "input"
                 }
-                isUnread={false}
+                isUnread={isUnread}
                 isWoke={false}
                 settlementSupported={settlementSupported}
                 snoozeSupported={false}
@@ -754,6 +820,7 @@ export default function SidebarV2() {
                       projectPath={project?.workspaceRoot ?? null}
                       settled={false}
                       settlementSupported={settlementSupported}
+                      onMarkUnread={() => markThreadUnread(thread)}
                       initialMode={
                         nativeFollowup?.threadId === thread.id ? nativeFollowup.kind : "menu"
                       }
@@ -800,6 +867,7 @@ export default function SidebarV2() {
                 }
                 wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
                 onClick={() => {
+                  markThreadVisited(thread);
                   t3ClientActions.selectThread(thread.id);
                 }}
                 onDoubleClick={() => {}}
@@ -856,6 +924,11 @@ export default function SidebarV2() {
           ...visibleSettledThreads.map((thread) => {
             const project = projectById.get(thread.projectId) ?? null;
             const actionMenuOpen = actionMenuThreadId === thread.id;
+            const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
+            const isUnread = hasUnseenThreadCompletion({
+              latestTurn: thread.latestTurn,
+              lastVisitedAt: threadLastVisitedAtById[threadKey],
+            });
             return (
               <SidebarV2RowSurface
                 key={`${thread.id}:slim`}
@@ -866,7 +939,7 @@ export default function SidebarV2() {
                 isSelected={false}
                 shouldRecede={false}
                 isInFlight={false}
-                isUnread={false}
+                isUnread={isUnread}
                 isWoke={false}
                 settlementSupported={settlementSupported}
                 snoozeSupported={false}
@@ -902,6 +975,7 @@ export default function SidebarV2() {
                       projectPath={project?.workspaceRoot ?? null}
                       settled
                       settlementSupported={settlementSupported}
+                      onMarkUnread={() => markThreadUnread(thread)}
                       initialMode={
                         nativeFollowup?.threadId === thread.id ? nativeFollowup.kind : "menu"
                       }
@@ -921,7 +995,10 @@ export default function SidebarV2() {
                   <Icon name="rotate-ccw" size={12} color="#a1a1aa" className="size-3" />
                 }
                 wokeIcon={<Icon name="refresh-cw" size={12} color="#a1a1aa" className="size-3" />}
-                onClick={() => t3ClientActions.selectThread(thread.id)}
+                onClick={() => {
+                  markThreadVisited(thread);
+                  t3ClientActions.selectThread(thread.id);
+                }}
                 onDoubleClick={() => {}}
                 onKeyDown={() => {}}
                 onContextMenu={(event) => {

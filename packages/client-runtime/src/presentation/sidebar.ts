@@ -179,6 +179,51 @@ export function hasUnseenThreadCompletion(
   return completedAt > lastVisitedAt;
 }
 
+export function markThreadVisitedInTimestampRecord(
+  timestamps: Record<string, string>,
+  threadId: string,
+  visitedAt: string,
+): Record<string, string> {
+  const visitedAtMs = Date.parse(visitedAt);
+  if (!Number.isFinite(visitedAtMs)) return timestamps;
+
+  const previousVisitedAt = timestamps[threadId];
+  const previousVisitedAtMs = previousVisitedAt ? Date.parse(previousVisitedAt) : Number.NaN;
+  if (Number.isFinite(previousVisitedAtMs) && previousVisitedAtMs >= visitedAtMs) {
+    return timestamps;
+  }
+
+  return { ...timestamps, [threadId]: visitedAt };
+}
+
+export function markThreadUnreadInTimestampRecord(
+  timestamps: Record<string, string>,
+  threadId: string,
+  latestTurnCompletedAt: string | null | undefined,
+): Record<string, string> {
+  if (!latestTurnCompletedAt) return timestamps;
+
+  const completedAtMs = Date.parse(latestTurnCompletedAt);
+  if (!Number.isFinite(completedAtMs)) return timestamps;
+
+  const unreadVisitedAt = new Date(completedAtMs - 1).toISOString();
+  if (timestamps[threadId] === unreadVisitedAt) return timestamps;
+  return { ...timestamps, [threadId]: unreadVisitedAt };
+}
+
+export function sanitizeThreadVisitedTimestampRecord(value: unknown): Record<string, string> {
+  if (!value || typeof value !== "object") return {};
+  return Object.fromEntries(
+    Object.entries(value).filter(
+      (entry): entry is [string, string] =>
+        entry[0].length > 0 &&
+        typeof entry[1] === "string" &&
+        entry[1].length > 0 &&
+        Number.isFinite(Date.parse(entry[1])),
+    ),
+  );
+}
+
 export function deriveSidebarThreadStatus(thread: SidebarThreadStatusInput): SidebarThreadStatus {
   const immediateStatus = deriveSidebarImmediateStatus(thread);
   if (immediateStatus.kind !== "ready") return immediateStatus;
