@@ -12,8 +12,11 @@ import {
   deriveSidebarImmediateStatus,
   deriveSidebarThreadStatus,
   hasUnseenThreadCompletion,
+  markThreadUnreadInTimestampRecord,
+  markThreadVisitedInTimestampRecord,
   projectSidebarThreadDetailsRows,
   resolveThreadStatusPill,
+  sanitizeThreadVisitedTimestampRecord,
   type SidebarThreadStatusInput,
 } from "./sidebar.ts";
 
@@ -108,6 +111,49 @@ describe("shared sidebar presentation", () => {
         lastVisitedAt: "2026-07-27T10:02:00.000Z",
       }),
     ).toBe(false);
+  });
+
+  it("advances visited timestamps monotonically", () => {
+    const initial = { "thread-1": "2026-07-27T10:00:30.000Z" };
+
+    expect(
+      markThreadVisitedInTimestampRecord(initial, "thread-1", "2026-07-27T10:00:20.000Z"),
+    ).toBe(initial);
+    expect(markThreadVisitedInTimestampRecord(initial, "thread-1", "not-a-date")).toBe(initial);
+    expect(
+      markThreadVisitedInTimestampRecord(initial, "thread-1", "2026-07-27T10:01:00.000Z"),
+    ).toEqual({ "thread-1": "2026-07-27T10:01:00.000Z" });
+  });
+
+  it("marks a completed thread unread immediately before its completion", () => {
+    const initial = { "thread-2": "2026-07-27T10:02:00.000Z" };
+    const unread = markThreadUnreadInTimestampRecord(initial, "thread-1", settledTurn.completedAt);
+
+    expect(unread).toEqual({
+      ...initial,
+      "thread-1": "2026-07-27T10:00:59.999Z",
+    });
+    expect(
+      hasUnseenThreadCompletion({
+        latestTurn: settledTurn,
+        lastVisitedAt: unread["thread-1"],
+      }),
+    ).toBe(true);
+    expect(markThreadUnreadInTimestampRecord(unread, "thread-1", settledTurn.completedAt)).toBe(
+      unread,
+    );
+    expect(markThreadUnreadInTimestampRecord(initial, "thread-1", null)).toBe(initial);
+  });
+
+  it("sanitizes persisted thread visit timestamps", () => {
+    expect(
+      sanitizeThreadVisitedTimestampRecord({
+        "thread-1": "2026-07-27T10:00:30.000Z",
+        "thread-2": "not-a-date",
+        "": "2026-07-27T10:00:30.000Z",
+        "thread-3": 123,
+      }),
+    ).toEqual({ "thread-1": "2026-07-27T10:00:30.000Z" });
   });
 
   it("assigns blockers a higher priority than active and resting states", () => {

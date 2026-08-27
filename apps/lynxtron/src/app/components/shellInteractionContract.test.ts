@@ -928,6 +928,12 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("bindtap={requestDelete}");
     expect(sidebarSource).toContain("bindtap={confirmDelete}");
     expect(sidebarSource).toContain("isDisposableEmptyThread(thread)");
+    expect(sidebarSource).toContain('{ id: "mark-unread", label: "Mark unread" }');
+    expect(sidebarSource).toContain("markThreadUnreadInTimestampRecord");
+    expect(sidebarSource).toContain("markThreadVisitedInTimestampRecord");
+    expect(sidebarSource).toContain("hasUnseenThreadCompletion({");
+    expect(sidebarSource).toContain("isUnread={isUnread}");
+    expect(sidebarSource).toContain("setPref(THREAD_VISITED_TIMESTAMPS_PREF, next)");
     expect(sidebarSource).toContain("t3ClientActions.archiveThread(thread.id)");
     expect(sidebarSource).toContain("t3ClientActions.deleteThread(thread.id)");
     expect(sidebarSource).toContain(
