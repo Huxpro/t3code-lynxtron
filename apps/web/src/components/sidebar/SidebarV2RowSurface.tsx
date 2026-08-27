@@ -125,7 +125,6 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
             }
           >
             <HostText
-              eventThrough
               onContextMenu={props.onContextMenu}
               className={cn(
                 "shrink-0 transition-opacity",
@@ -153,7 +152,6 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               >
                 {props.variantAction === "unsnooze" && props.snoozeWakeLabelText !== null ? (
                   <HostText
-                    eventThrough
                     onContextMenu={props.onContextMenu}
                     className="text-xs text-blue-600 tabular-nums dark:text-blue-400"
                   >
@@ -161,7 +159,6 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   </HostText>
                 ) : props.isWoke ? (
                   <HostText
-                    eventThrough
                     onContextMenu={props.onContextMenu}
                     role="status"
                     aria-label="Woke from snooze"
@@ -171,7 +168,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                     Woke
                   </HostText>
                 ) : (
-                  <HostText eventThrough onContextMenu={props.onContextMenu} className="text-xs">
+                  <HostText onContextMenu={props.onContextMenu} className="text-xs">
                     {props.variantAction === "unsettle"
                       ? props.settledTimeLabel
                       : props.threadTimeLabel}

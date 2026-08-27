@@ -1008,7 +1008,6 @@ export default function SidebarV2() {
                 }
                 title={
                   <HostText
-                    eventThrough
                     onContextMenu={(event) => {
                       stopPropagation(event);
                       void showThreadContextMenu(
