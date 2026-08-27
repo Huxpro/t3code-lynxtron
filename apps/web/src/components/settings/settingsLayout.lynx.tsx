@@ -1,7 +1,7 @@
 import { type ReactNode } from "@lynx-js/react";
 
 import { Button } from "../ui/button";
-import { HostView } from "../ui/hostElements";
+import { HostText, HostView } from "../ui/hostElements";
 
 type LynxClassNameProps = {
   readonly className?: string;
@@ -104,11 +104,19 @@ export function SettingsRow({
     >
       <view className="settings-row__text flex min-w-0 flex-1 flex-col">
         <view className="settings-row__title-line">
-          <text className="settings-row__title">{title}</text>
+          <HostText className="settings-row__title" onContextMenu={onContextMenu}>
+            {title}
+          </HostText>
           {resetAction ? <view className="settings-row__reset">{resetAction}</view> : null}
         </view>
-        <text className="settings-row__desc">{description}</text>
-        {status ? <text className="settings-row__status">{status}</text> : null}
+        <HostText className="settings-row__desc" onContextMenu={onContextMenu}>
+          {description}
+        </HostText>
+        {status ? (
+          <HostText className="settings-row__status" onContextMenu={onContextMenu}>
+            {status}
+          </HostText>
+        ) : null}
       </view>
       {control ? <view className="settings-row__control">{control}</view> : null}
       {children}
