@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-27T14:05:00-07:00",
+  "stateId": "model-picker-query",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "light",
+    "interactionChannel": "real macOS Escape through hidden Lynxtron Menu accelerator"
+  },
+  "snapshot": {
+    "sha256BeforeLaunch": "5b89591b946cf133bdfedafa30e32f789cd6d33d839f513ffe343fe632c53553",
+    "eventCountBeforeLaunch": 7,
+    "threadId": "fidelity-review-thread",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 92766,
+    "windowId": 40757,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "transportKind": "main",
+    "lastSeq": 11
+  },
+  "observations": [
+    {
+      "name": "physical Escape dismissal",
+      "result": "pass",
+      "detail": "A real Escape key activates the hidden host accelerator, sends a modifier-free renderer-neutral packet, and closes the open Model Picker.",
+      "beforeScreenshot": "model-picker-native-escape-open.png",
+      "beforeSha256": "553af76e5e3eb00139efaf370e4b527c4dc70b6893803fcd5c0a190c591537ae",
+      "afterScreenshot": "model-picker-native-escape-dismissed.png",
+      "afterSha256": "276ab60452bf2a4118e980777098aeecf9de777bbfe8b8d878fcaf2bb461b491",
+      "pixelSize": [2784, 1864]
+    }
+  ],
+  "classification": {
+    "closedProductLoss": "Model Picker now closes through a real physical Escape key despite the absence of general renderer key events.",
+    "remainingProductLoss": [
+      "Arrow navigation and Enter selection remain behind the Lynxtron renderer-key event boundary."
+    ],
+    "missingCoverage": ["No model selection is claimed in this run."],
+    "harnessLoss": "Desktop DevTool registration remains unavailable; exact-PID WindowServer frames and process logs are used.",
+    "intentionalPlatformDelta": "Escape is captured by a hidden native Menu accelerator and delivered as a normalized packet rather than a renderer DOM key event.",
+    "acceptedRenderingNoise": []
+  }
+}
