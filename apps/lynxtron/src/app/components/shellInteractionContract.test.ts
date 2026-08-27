@@ -139,6 +139,7 @@ describe("desktop shell interaction contract", () => {
 
   it("keeps archived thread destructive actions behind the native menu and confirmation", () => {
     expect(settingsLayoutSource).toContain("onContextMenu={onContextMenu}");
+    expect(settingsLayoutSource.match(/onContextMenu=\{onContextMenu\}/g)).toHaveLength(4);
     expect(otherSettingsSource).toContain("showArchivedThreadContextMenu");
     expect(otherSettingsSource).toContain('{ id: "unarchive", label: "Unarchive" }');
     expect(otherSettingsSource).toContain('{ id: "delete", label: "Delete", destructive: true }');
