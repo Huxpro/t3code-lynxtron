@@ -9103,6 +9103,75 @@ async function captureCell({
             `Lynx terminal command did not return the shared cwd: ${JSON.stringify(rightPanelTerminalCommand)}`,
           );
         }
+        const beforeResize = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const state = window.__T3_WORKBENCH__?.read();
+            const panel = state?.lynx?.reviewMetrics?.panelRect;
+            const grids = state?.lynx?.connectorDiagnostics?.commands
+              ?.filter(({ method, terminalGrid }) => method === 'resizeTerminal' && terminalGrid)
+              .map(({ terminalGrid }) => terminalGrid) ?? [];
+            return { panelWidth: panel?.rect?.width ?? null, grids };
+          })()`,
+        );
+        const invokedResize = await evaluate(
+          cdp,
+          sessionId,
+          `document.getElementById('lynx-pane')?.contentWindow
+            ?.__T3_LYNX_WEB_PREVIEW__?.invokeResizeForHarness?.('right-panel', 740, 640) ?? false`,
+        );
+        if (invokedResize !== true)
+          throw new Error("Lynx right-panel resize probe is unavailable.");
+        const resizeDeadline = Date.now() + 3_000;
+        let afterResize = null;
+        while (Date.now() < resizeDeadline) {
+          afterResize = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const state = window.__T3_WORKBENCH__?.read();
+              const panel = state?.lynx?.reviewMetrics?.panelRect;
+              const grids = state?.lynx?.connectorDiagnostics?.commands
+                ?.filter(({ method, terminalGrid }) => method === 'resizeTerminal' && terminalGrid)
+                .map(({ terminalGrid }) => terminalGrid) ?? [];
+              return { panelWidth: panel?.rect?.width ?? null, grids };
+            })()`,
+          ).catch(() => null);
+          const beforeGrid = beforeResize?.grids?.at(-1);
+          const afterGrid = afterResize?.grids?.at(-1);
+          if (
+            typeof beforeResize?.panelWidth === "number" &&
+            typeof afterResize?.panelWidth === "number" &&
+            afterResize.panelWidth > beforeResize.panelWidth + 50 &&
+            typeof beforeGrid?.cols === "number" &&
+            typeof afterGrid?.cols === "number" &&
+            afterGrid.cols > beforeGrid.cols &&
+            afterGrid.rows === beforeGrid.rows
+          ) {
+            break;
+          }
+          await delay(100);
+        }
+        const beforeGrid = beforeResize?.grids?.at(-1);
+        const afterGrid = afterResize?.grids?.at(-1);
+        if (
+          typeof beforeResize?.panelWidth !== "number" ||
+          typeof afterResize?.panelWidth !== "number" ||
+          afterResize.panelWidth <= beforeResize.panelWidth + 50 ||
+          typeof beforeGrid?.cols !== "number" ||
+          typeof afterGrid?.cols !== "number" ||
+          afterGrid.cols <= beforeGrid.cols ||
+          afterGrid.rows !== beforeGrid.rows
+        ) {
+          throw new Error(
+            `Lynx terminal grid did not follow the committed panel resize: ${JSON.stringify({ beforeResize, afterResize })}`,
+          );
+        }
+        rightPanelTerminalCommand = {
+          ...rightPanelTerminalCommand,
+          resize: { before: beforeResize, after: afterResize },
+        };
         state =
           (await evaluate(
             cdp,

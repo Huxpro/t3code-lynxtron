@@ -291,6 +291,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "method === 'writeTerminal'");
     assert.include(source, 'closed: "not-claimed"');
     assert.include(source, "terminalCommand: rightPanelTerminalCommand");
+    assert.include(source, "invokeResizeForHarness?.('right-panel', 740, 640)");
+    assert.include(source, "afterGrid.cols > beforeGrid.cols");
+    assert.include(source, "afterGrid.rows === beforeGrid.rows");
     assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
     assert.include(source, "web-terminal-row-pointer|lynx-terminal-row-pointer");
     assert.include(source, "lynx?.querySelector('.terminal-panel') !== null");
@@ -1278,7 +1281,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "codex_fidelity_browser");
     assert.include(source, "provider-card__delete-instance");
     assert.include(source, "finalAddProviderDialogReady");
-    assert.include(source, '"saved", "deleted"');
+    assert.include(source, 'step: "saved"');
+    assert.include(source, 'step: "deleted"');
   });
 
   it("reopens thread-scoped model picker states after selecting the seeded thread", () => {
