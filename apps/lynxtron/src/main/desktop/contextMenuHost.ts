@@ -48,7 +48,12 @@ export function startContextMenuCapabilityHost(
         complete(null);
         return;
       }
-      buildMenu(buildItems(items)).popup({ window, callback: () => complete(null) });
+      buildMenu(buildItems(items)).popup({
+        window,
+        callback: () => {
+          setImmediate(() => complete(null));
+        },
+      });
     });
   });
   return { dispose: () => bridge.removeHandler(T3_CONTEXT_MENU_SHOW_METHOD) };
