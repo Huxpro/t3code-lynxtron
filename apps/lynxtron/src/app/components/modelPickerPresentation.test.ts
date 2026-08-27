@@ -105,6 +105,18 @@ function context(overrides: Partial<ModelPickerContext> = {}): ModelPickerContex
 }
 
 describe("Lynx model picker presentation", () => {
+  it("focuses the native search input when the picker mounts", () => {
+    const picker = readFileSync(path.resolve(import.meta.dirname, "ModelPicker.tsx"), "utf8");
+
+    expect(picker).toContain("const searchInputRef = useRef<NodesRef>(null);");
+    expect(picker).toContain('id="model-picker-search-input"');
+    expect(picker).toContain("ref={searchInputRef}");
+    expect(picker).toMatch(
+      /searchInputRef\.current[\s\S]*?\.invoke\(\{[\s\S]*?method: "focus"[\s\S]*?\}\)[\s\S]*?\.exec\(\)/,
+    );
+    expect(picker).toContain("[lynx-model-picker] input focus failed");
+  });
+
   it("anchors the panel to the Composer authority offset", () => {
     const picker = readFileSync(path.resolve(import.meta.dirname, "ModelPicker.tsx"), "utf8");
     const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
