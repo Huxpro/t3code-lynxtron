@@ -118,6 +118,14 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
       calls.push({ method: "regenerateThreadTitle", input });
       return Promise.resolve();
     },
+    snoozeThread: (input: unknown) => {
+      calls.push({ method: "snoozeThread", input });
+      return Promise.resolve();
+    },
+    unsnoozeThread: (input: unknown) => {
+      calls.push({ method: "unsnoozeThread", input });
+      return Promise.resolve();
+    },
     readProjectBranch: (input: unknown) => {
       calls.push({ method: "readProjectBranch", input });
       return Promise.resolve("main");
@@ -423,14 +431,29 @@ describe("main connector host", () => {
       input: { threadId: "t1" },
     });
 
+    await command({
+      method: "snoozeThread",
+      params: { threadId: "t1", snoozedUntil: "2026-09-01T09:00:00.000Z" },
+    });
+    assert.deepEqual(connector.calls[15], {
+      method: "snoozeThread",
+      input: { threadId: "t1", snoozedUntil: "2026-09-01T09:00:00.000Z" },
+    });
+
+    await command({ method: "unsnoozeThread", params: { threadId: "t1" } });
+    assert.deepEqual(connector.calls[16], {
+      method: "unsnoozeThread",
+      input: { threadId: "t1" },
+    });
+
     await command({ method: "revokePairingLink", params: { id: "link-1" } });
-    assert.deepEqual(connector.calls[15], { method: "revokePairingLink", input: "link-1" });
+    assert.deepEqual(connector.calls[17], { method: "revokePairingLink", input: "link-1" });
 
     await command({
       method: "openTerminal",
       params: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
     });
-    assert.deepEqual(connector.calls[16], {
+    assert.deepEqual(connector.calls[18], {
       method: "openTerminal",
       input: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
     });
@@ -439,7 +462,7 @@ describe("main connector host", () => {
       method: "writeTerminal",
       params: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
     });
-    assert.deepEqual(connector.calls[17], {
+    assert.deepEqual(connector.calls[19], {
       method: "writeTerminal",
       input: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
     });
@@ -448,7 +471,7 @@ describe("main connector host", () => {
       method: "closeTerminal",
       params: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
     });
-    assert.deepEqual(connector.calls[18], {
+    assert.deepEqual(connector.calls[20], {
       method: "closeTerminal",
       input: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
     });
