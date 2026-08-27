@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   cpSync,
   closeSync,
@@ -15,7 +16,8 @@ import {
 import os from "node:os";
 import path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { DatabaseSync } from "node:sqlite";
 
 const appRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
@@ -31,6 +33,7 @@ const windowX = process.env.T3_MTS_PRODUCT_WINDOW_X ?? "20";
 const windowY = process.env.T3_MTS_PRODUCT_WINDOW_Y ?? "60";
 const initialRoute = process.env.T3_MTS_PRODUCT_INITIAL_ROUTE?.trim();
 const initialOverlay = process.env.T3_MTS_PRODUCT_INITIAL_OVERLAY?.trim();
+const expectedThreadId = process.env.T3_MTS_PRODUCT_EXPECTED_THREAD_ID?.trim();
 
 function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -50,17 +53,46 @@ function processCommand(processId) {
   return result.stdout.trim();
 }
 
-function createIsolatedState(stateDir) {
-  const sourceDatabase = path.join(sourceRoot, "userdata/state.sqlite");
+export function createIsolatedState(stateDir, options = { sourceRoot, expectedThreadId }) {
+  const sourceDatabase = path.join(options.sourceRoot, "userdata/state.sqlite");
   const targetUserdata = path.join(stateDir, "userdata");
   mkdirSync(targetUserdata, { recursive: true });
   const targetDatabase = path.join(targetUserdata, "state.sqlite");
-  const code = `new (require("bun:sqlite").Database)(${JSON.stringify(
-    sourceDatabase,
-  )}, { readonly: true }).run("VACUUM INTO '" + ${JSON.stringify(targetDatabase)} + "'")`;
-  const snapshot = spawnSync("bun", ["-e", code], { encoding: "utf8" });
-  if (snapshot.status !== 0) {
-    throw new Error(snapshot.stderr || "Could not snapshot MTS product fixture.");
+  const source = new DatabaseSync(sourceDatabase, { readOnly: true });
+  try {
+    source.exec(`VACUUM INTO '${targetDatabase.replaceAll("'", "''")}'`);
+  } finally {
+    source.close();
+  }
+  if (!existsSync(targetDatabase)) {
+    throw new Error("MTS product snapshot did not materialize its target database.");
+  }
+  const database = new DatabaseSync(targetDatabase, { readOnly: true });
+  let snapshotIdentity;
+  try {
+    snapshotIdentity = {
+      sha256: createHash("sha256").update(readFileSync(targetDatabase)).digest("hex"),
+      eventCount: Number(
+        database.prepare("SELECT COUNT(*) AS count FROM orchestration_events").get().count,
+      ),
+      projectIds: database
+        .prepare(
+          "SELECT project_id AS id FROM projection_projects WHERE deleted_at IS NULL ORDER BY project_id",
+        )
+        .all()
+        .map((row) => row.id),
+      threadIds: database
+        .prepare(
+          "SELECT thread_id AS id FROM projection_threads WHERE deleted_at IS NULL ORDER BY thread_id",
+        )
+        .all()
+        .map((row) => row.id),
+    };
+  } finally {
+    database.close();
+  }
+  if (options.expectedThreadId && !snapshotIdentity.threadIds.includes(options.expectedThreadId)) {
+    throw new Error(`MTS product snapshot is missing expected thread ${options.expectedThreadId}.`);
   }
   for (const relativePath of [
     "lynxtron-prefs.json",
@@ -68,7 +100,7 @@ function createIsolatedState(stateDir) {
     "userdata/environment-id",
     "userdata/keybindings.json",
   ]) {
-    const source = path.join(sourceRoot, relativePath);
+    const source = path.join(options.sourceRoot, relativePath);
     if (existsSync(source)) {
       cpSync(source, path.join(stateDir, relativePath), { recursive: true });
     }
@@ -94,6 +126,15 @@ function createIsolatedState(stateDir) {
       ) + "\n",
     );
   }
+  return snapshotIdentity;
+}
+
+export function isExpectedReadiness(value, expectedThread = expectedThreadId) {
+  return (
+    value?.status === "ready" &&
+    value.transport?.kind === "main" &&
+    (!expectedThread || value.threads?.some((thread) => thread.id === expectedThread))
+  );
 }
 
 async function waitForReadiness(child, readinessReportPath, timeoutMs) {
@@ -105,7 +146,9 @@ async function waitForReadiness(child, readinessReportPath, timeoutMs) {
     if (existsSync(readinessReportPath)) {
       try {
         const value = JSON.parse(readFileSync(readinessReportPath, "utf8"));
-        if (value.status === "ready" && value.transport?.kind === "main") return value;
+        if (isExpectedReadiness(value)) {
+          return value;
+        }
       } catch {
         // Atomic writer may not have published the first complete report yet.
       }
@@ -163,8 +206,14 @@ async function main() {
   const stateDir = path.join(root, "state");
   const logPath = path.join(root, "lynxtron.log");
   const readinessReportPath = path.join(root, "native-readiness.json");
-  cpSync(path.join(appRoot, "dist/desktop"), desktopDir, { recursive: true });
-  createIsolatedState(stateDir);
+  let snapshotIdentity;
+  try {
+    cpSync(path.join(appRoot, "dist/desktop"), desktopDir, { recursive: true });
+    snapshotIdentity = createIsolatedState(stateDir);
+  } catch (error) {
+    rmSync(root, { recursive: true, force: true });
+    throw error;
+  }
   const logFd = openSync(logPath, "a");
   const child = spawn(executablePath(), [desktopDir], {
     cwd: appRoot,
@@ -201,6 +250,7 @@ async function main() {
           logPath,
           readinessReportPath,
           processId: child.pid,
+          snapshotIdentity,
           readiness,
         },
         null,
@@ -226,4 +276,8 @@ async function main() {
   }
 }
 
-await main();
+const IS_MAIN_MODULE =
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+
+if (IS_MAIN_MODULE) await main();
