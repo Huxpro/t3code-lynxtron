@@ -273,6 +273,7 @@ export function RightPanel({
                 active={surface.id === state.activeSurfaceId}
                 onActivate={() => handleTabClick(surface)}
                 onClose={() => handleCloseTab(surface)}
+                onAuxClick={() => handleCloseTab(surface)}
                 onContextMenu={() => {
                   void handleTabContextMenu(surface).catch(() => undefined);
                 }}

@@ -18,6 +18,7 @@ export function HostView({
   stopTapPropagation,
   onClick,
   onDoubleClick: _onDoubleClick,
+  onAuxClick,
   onContextMenu,
   onKeyDown,
   onMouseEnter,
@@ -29,6 +30,7 @@ export function HostView({
   readonly stopTapPropagation?: boolean;
   readonly onClick?: (event: unknown) => void;
   readonly onDoubleClick?: (event: unknown) => void;
+  readonly onAuxClick?: (event: unknown) => void;
   readonly onContextMenu?: (event: unknown) => void;
   readonly onKeyDown?: (event: unknown) => void;
   readonly onMouseEnter?: (event: unknown) => void;
@@ -51,6 +53,10 @@ export function HostView({
   };
   const handleMouseDown = (event: MainThreadMouseEvent) => {
     "main thread";
+    if (event.button === 1 && onAuxClick) {
+      runOnBackground(onAuxClick)({ button: event.button });
+      return;
+    }
     if (event.button === 2 && onContextMenu) {
       runOnBackground(onContextMenu)({ button: event.button });
     }
@@ -59,7 +65,7 @@ export function HostView({
     <view
       {...props}
       event-through={eventThrough}
-      {...(onContextMenu ? { "main-thread:bindmousedown": handleMouseDown } : {})}
+      {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
       {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
@@ -177,6 +183,7 @@ export function HostButton({
   "aria-expanded": ariaExpanded,
   children,
   onClick,
+  onAuxClick,
   onContextMenu,
   onKeyDown,
   onMouseEnter,
@@ -185,6 +192,7 @@ export function HostButton({
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly onClick?: (event: unknown) => void;
+  readonly onAuxClick?: (event: unknown) => void;
   readonly onContextMenu?: (event: unknown) => void;
   readonly onKeyDown?: (event: unknown) => void;
   readonly onMouseEnter?: (event: unknown) => void;
@@ -207,6 +215,10 @@ export function HostButton({
   };
   const handleMouseDown = (event: MainThreadMouseEvent) => {
     "main thread";
+    if (event.button === 1 && onAuxClick) {
+      runOnBackground(onAuxClick)({ button: event.button });
+      return;
+    }
     if (event.button === 2 && onContextMenu) {
       runOnBackground(onContextMenu)({ button: event.button });
     }
@@ -215,7 +227,7 @@ export function HostButton({
     <view
       {...props}
       aria-expanded={ariaExpanded}
-      {...(onContextMenu ? { "main-thread:bindmousedown": handleMouseDown } : {})}
+      {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
       {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
@@ -233,6 +245,7 @@ export function HostText({
   className,
   eventThrough,
   onClick,
+  onAuxClick,
   onContextMenu,
   ...props
 }: Record<string, unknown> & {
@@ -240,10 +253,15 @@ export function HostText({
   readonly className?: string;
   readonly eventThrough?: boolean;
   readonly onClick?: () => void;
+  readonly onAuxClick?: (event: unknown) => void;
   readonly onContextMenu?: (event: unknown) => void;
 }) {
   const handleMouseDown = (event: MainThreadMouseEvent) => {
     "main thread";
+    if (event.button === 1 && onAuxClick) {
+      runOnBackground(onAuxClick)({ button: event.button });
+      return;
+    }
     if (event.button === 2 && onContextMenu) {
       runOnBackground(onContextMenu)({ button: event.button });
     }
@@ -253,7 +271,7 @@ export function HostText({
       {...props}
       event-through={eventThrough}
       className={className ? `lynx-host-text ${className}` : "lynx-host-text"}
-      {...(onContextMenu ? { "main-thread:bindmousedown": handleMouseDown } : {})}
+      {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       bindtap={onClick}
     >
       {children}

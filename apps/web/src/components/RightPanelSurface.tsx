@@ -57,11 +57,18 @@ export function RightPanelTabSurface({
       type="button"
       className="flex min-w-0 flex-1 items-center gap-1.5"
       onClick={onActivate}
+      {...(onAuxClick ? { onAuxClick } : {})}
       {...(onContextMenu ? { onContextMenu } : {})}
       aria-label={title}
     >
       {icon}
-      <HostText className="truncate">{title}</HostText>
+      <HostText
+        className="truncate"
+        {...(onAuxClick ? { onAuxClick } : {})}
+        {...(onContextMenu ? { onContextMenu } : {})}
+      >
+        {title}
+      </HostText>
     </HostButton>
   );
   const closeVisibilityClass =
