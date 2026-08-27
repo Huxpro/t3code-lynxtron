@@ -459,7 +459,15 @@ describe("desktop shell interaction contract", () => {
       "layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}",
     );
     expect(panel).toContain('case "terminal":');
-    expect(panel).toContain("<TerminalPanel />");
+    expect(panel).toContain(
+      "<TerminalPanel width={props.terminalWidth} height={props.terminalHeight} />",
+    );
+    expect(panel).toContain("terminalHeight,");
+    expect(panel).toContain("terminalWidth,");
+    expect(terminal).toContain("terminalGridSize(width, height)");
+    expect(terminal).toContain(".resizeTerminal({");
+    expect(terminal).toContain("cols: grid.cols");
+    expect(terminal).toContain("rows: grid.rows");
     expect(panel).toContain("closeTerminalSession(activeThreadId)");
     expect(panel).toContain('bindtap={() => handleAddSurface("terminal")}');
     expect(terminal).toContain(".openTerminal({");
