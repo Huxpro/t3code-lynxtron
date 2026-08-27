@@ -3,7 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
 import { uiActions } from "../../../lynxtron/src/app/state/uiState";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
-import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
+import {
+  effectiveSettled,
+  effectiveSnoozed,
+  resolveSnoozePresets,
+} from "@t3tools/client-runtime/state/thread-settled";
 import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
 import { DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS } from "@t3tools/contracts/settings";
 import { formatRelativeTimeLabel } from "../timestampFormat";
@@ -541,6 +545,9 @@ export default function SidebarV2() {
       const workspacePath = thread.worktreePath ?? projectPath;
       const supportsTitleRegeneration =
         serverConfig?.environment.capabilities.threadTitleRegeneration === true;
+      const supportsSnooze = serverConfig?.environment.capabilities.threadSnooze === true;
+      const isSnoozed = effectiveSnoozed(thread, { now: new Date().toISOString() });
+      const snoozePresets = resolveSnoozePresets(new Date());
       const isRegeneratingTitle = thread.titleRegeneration != null;
       const selection = await showNativeContextMenu([
         ...(thread.branch
@@ -552,6 +559,20 @@ export default function SidebarV2() {
                 id: settled ? "unsettle" : "settle",
                 label: settled ? "Un-settle thread" : "Settle thread",
               },
+            ]
+          : []),
+        ...(supportsSnooze
+          ? [
+              isSnoozed
+                ? { id: "unsnooze", label: "Wake thread" }
+                : {
+                    id: "snooze",
+                    label: "Snooze",
+                    children: snoozePresets.map((preset) => ({
+                      id: `snooze:${preset.id}`,
+                      label: `${preset.label} (${preset.whenLabel})`,
+                    })),
+                  },
             ]
           : []),
         { id: "rename", label: "Rename thread" },
@@ -570,6 +591,11 @@ export default function SidebarV2() {
         { id: "archive", label: "Archive" },
         { id: "delete", label: "Delete", destructive: true },
       ]);
+      if (selection?.startsWith("snooze:")) {
+        const preset = snoozePresets.find((candidate) => `snooze:${candidate.id}` === selection);
+        if (preset) await t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil);
+        return;
+      }
       if (selection === "new-thread-on-branch" && thread.branch) {
         await t3ClientActions.createThread(thread.projectId, {
           branch: thread.branch,
@@ -579,6 +605,7 @@ export default function SidebarV2() {
         });
       } else if (selection === "settle") await t3ClientActions.settleThread(thread.id);
       else if (selection === "unsettle") await t3ClientActions.unsettleThread(thread.id);
+      else if (selection === "unsnooze") await t3ClientActions.unsnoozeThread(thread.id);
       else if (selection === "copy-path" && workspacePath) {
         await clientCapabilities.clipboard.writeText(workspacePath);
       } else if (selection === "copy-branch" && thread.branch) {

@@ -1274,6 +1274,18 @@ async function regenerateThreadTitle(threadId: string): Promise<void> {
   await bridge.regenerateThreadTitle({ threadId });
 }
 
+async function snoozeThread(threadId: string, snoozedUntil: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.snoozeThread) return;
+  await bridge.snoozeThread({ threadId, snoozedUntil });
+}
+
+async function unsnoozeThread(threadId: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.unsnoozeThread) return;
+  await bridge.unsnoozeThread({ threadId });
+}
+
 async function updateProject(projectId: string, title: string): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.updateProject) {
@@ -1970,6 +1982,7 @@ export const t3ClientActions = {
   reconnect,
   renameThread,
   regenerateThreadTitle,
+  snoozeThread,
   respondToApproval,
   respondToUserInput,
   revokeClientSession,
@@ -1984,6 +1997,7 @@ export const t3ClientActions = {
   closeTerminal,
   settleThread,
   unsettleThread,
+  unsnoozeThread,
   setModelSelection,
   setModelOptions,
   setDraftStartFromOrigin,

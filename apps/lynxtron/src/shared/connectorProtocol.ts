@@ -248,6 +248,8 @@ export const CONNECTOR_COMMAND_NAMES = [
   "unsettleThread",
   "renameThread",
   "regenerateThreadTitle",
+  "snoozeThread",
+  "unsnoozeThread",
   "updateProject",
   "deleteProject",
   "updateProjectScripts",

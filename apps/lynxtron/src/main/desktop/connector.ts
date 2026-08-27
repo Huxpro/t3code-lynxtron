@@ -1295,6 +1295,24 @@ export class T3Connector {
     });
   }
 
+  async snoozeThread(input: { threadId: string; snoozedUntil: string }): Promise<void> {
+    await this.dispatchOrchestrationCommand({
+      type: "thread.snooze",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      snoozedUntil: input.snoozedUntil,
+    });
+  }
+
+  async unsnoozeThread(input: { threadId: string }): Promise<void> {
+    await this.dispatchOrchestrationCommand({
+      type: "thread.unsnooze",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      reason: "user",
+    });
+  }
+
   async updateProject(input: { projectId: string; title: string }): Promise<void> {
     const title = input.title.trim();
     if (!title) return;

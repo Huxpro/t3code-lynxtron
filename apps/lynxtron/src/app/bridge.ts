@@ -190,6 +190,8 @@ export interface T3ConnectorCommandBridge {
   unsettleThread(input: { threadId: string }): Promise<void>;
   renameThread(input: { threadId: string; title: string }): Promise<void>;
   regenerateThreadTitle(input: { threadId: string }): Promise<void>;
+  snoozeThread(input: { threadId: string; snoozedUntil: string }): Promise<void>;
+  unsnoozeThread(input: { threadId: string }): Promise<void>;
   updateProject(input: { projectId: string; title: string }): Promise<void>;
   deleteProject(input: { projectId: string; force?: boolean }): Promise<void>;
   updateProjectScripts(input: {
