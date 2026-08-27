@@ -18161,6 +18161,51 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-native-escape-current",
+      "observedAt": "2026-08-27T14:05:00-07:00",
+      "commit": "6de5268fa",
+      "codeCommit": "0af79d359",
+      "codeState": "commit",
+      "label": "Native Model Picker Escape dismissal",
+      "narrative": "A hidden Lynxtron Menu accelerator captures physical Escape and sends a modifier-free renderer-neutral packet. The renderer consumes it before configurable keybinding resolution and closes only an open Model Picker or Quick Switch. A fresh exact-owned light Native process visibly transitions from the open Model Picker to the canonical thread on a real Escape key. This is a deliberately discrete host capability, not a claim that general renderer Arrow or Enter events work.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID before and after frames plus focused packet and state tests directly verify physical Escape dismissal while preserving the general keyboard-event boundary."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/model-picker-native-escape.json",
+          "classification": "tracked-current",
+          "sha256": "b7a537e8d0aae75f5ba8f851a60a0aec4a6b8ace83723f6d891ea1b3f8a8ec8b"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/model-picker-native-escape-open.png",
+          "classification": "tracked-current",
+          "sha256": "553af76e5e3eb00139efaf370e4b527c4dc70b6893803fcd5c0a190c591537ae"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/model-picker-native-escape-dismissed.png",
+          "classification": "tracked-current",
+          "sha256": "276ab60452bf2a4118e980777098aeecf9de777bbfe8b8d878fcaf2bb461b491"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-query"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.3,
+              "confidence": 0.99,
+              "method": "physical-model-query-and-native-escape",
+              "source": "Real character filtering and physical Escape dismissal pass; Arrow navigation and Enter selection remain unavailable through the general renderer keyboard boundary"
+            }
+          }
+        }
+      ]
     }
   ]
 }
