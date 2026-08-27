@@ -867,6 +867,19 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarControlsSource).toContain(
       "sidebar-v2-project-scope-host relative min-w-0 flex-1",
     );
+    expect(sidebarControlsSource).toContain("onContextMenu={option.onContextMenu}");
+    expect(sidebarControlsSource.match(/onContextMenu=\{option.onContextMenu\}/g)).toHaveLength(2);
+    expect(
+      readFileSync(
+        path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
+        "utf8",
+      ),
+    ).toContain("onClick={handleTap}");
+    expect(sidebarSource).toContain('{ id: "settings", label: "Project settings" }');
+    expect(sidebarSource).toContain('{ id: "copy-path", label: "Copy Path" }');
+    expect(sidebarSource).toContain(
+      "clientCapabilities.clipboard.writeText(project.workspaceRoot)",
+    );
     expect(sidebarControlsSource).not.toContain("maxWidth: `${props.projectScopePopupWidth}px`");
     expect(overrides).toContain(
       ".sidebar-v2-project-scope-host {\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;\n  min-width: 0;\n}",
