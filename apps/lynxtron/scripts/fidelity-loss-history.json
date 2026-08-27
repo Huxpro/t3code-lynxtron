@@ -18121,6 +18121,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-native-input-focus-current",
+      "observedAt": "2026-08-27T12:12:00-07:00",
+      "commit": "371744185",
+      "codeCommit": "5b8d00e34",
+      "codeState": "commit",
+      "label": "Native Model Picker physical query focus",
+      "narrative": "The current production bundle invokes the Lynx input focus UI method when Model Picker mounts. On an exact owned Native process, real OS typing enters gpt and filters the visible list to matching GPT models. A subsequent real Escape key leaves the picker open, so general keyboard navigation and dismissal are not credited. The point closes only physical character-entry and filtering loss.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID physical typing, current bundle identity, and a retained filtered result frame isolate the focus repair while preserving Escape, Arrow, Enter, and dark-theme residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/model-picker-native-input-focus.json",
+          "classification": "tracked-current",
+          "sha256": "3270bceaa06c7ff4133de1ccbabd98857a47c7b2e0bc9830f4196b0cbafeb211"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/model-picker-native-gpt-query.png",
+          "classification": "tracked-current",
+          "sha256": "d34ab94be3f109f5229dc089357c064724da443c4ec2682e0e3b41c2e136ed94"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-query"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.45,
+              "confidence": 0.99,
+              "method": "physical-model-query-filter",
+              "source": "Real gpt character entry filters the Native model list; Escape, Arrow navigation, Enter selection, and dark-theme physical input remain unverified or failing"
+            }
+          }
+        }
+      ]
     }
   ]
 }

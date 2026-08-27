@@ -275,3 +275,4 @@ quick-switch-native-light-input-focus-current,2026-08-27T05:05:00-07:00,d9e96c0b
 provider-dialog-native-baseline-current,2026-08-27T05:34:00-07:00,272522fd2,commit,Native Add Provider dialog baseline,0.209502,0.209502,0.038835,0.177563,0.822437,0.781986
 settings-archive-native-delete-leaf-routing-correction,2026-08-27T06:40:00-07:00,b6789b7561fe69429f3c65a787ac93d7c957d11e,commit,Native Archive delete leaf-routing correction,0.209639,0.209502,0.039002,0.177563,0.822437,0.781849
 model-picker-native-physical-input-focus-correction,2026-08-27T10:45:00-07:00,854eccb70,commit,Native Model Picker physical input focus correction,0.210645,0.209502,0.040301,0.177497,0.822503,0.780843
+model-picker-native-input-focus-current,2026-08-27T12:12:00-07:00,371744185,commit,Native Model Picker physical query focus,0.209758,0.209502,0.039222,0.177497,0.822503,0.78173
