@@ -119,7 +119,6 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                 onClick={props.onClick}
                 onDoubleClick={props.onDoubleClick}
                 onKeyDown={props.onKeyDown}
-                onContextMenu={props.onContextMenu}
                 onMouseEnter={props.onMouseEnter}
                 onMouseLeave={props.onMouseLeave}
               />
@@ -146,12 +145,10 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
             {props.prBadge}
             <HostText
               eventThrough
-              onContextMenu={props.onContextMenu}
               className="relative ml-auto flex h-6 min-w-8 shrink-0 items-center justify-end"
             >
               <HostText
                 eventThrough
-                onContextMenu={props.onContextMenu}
                 className="inline-flex justify-end tabular-nums text-muted-foreground/55 transition-opacity group-hover/v2-row:opacity-0"
               >
                 {props.variantAction === "unsnooze" && props.snoozeWakeLabelText !== null ? (
