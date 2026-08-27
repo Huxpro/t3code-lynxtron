@@ -49,6 +49,7 @@ interface BrowserPreviewDiagnostics {
   dispatchKeyboardShortcut(shortcut: "command" | "files"): boolean;
   openWorkspaceMenuForHarness(open: boolean): boolean;
   invokeTooltipForHarness(relationId: string, action: "hover" | "leave"): boolean;
+  invokeResizeForHarness(target: "sidebar" | "right-panel", startX: number, endX: number): boolean;
 }
 
 interface BrowserPreviewRect {
@@ -281,6 +282,10 @@ const diagnostics: BrowserPreviewDiagnostics = {
   },
   invokeTooltipForHarness: (relationId, action) => {
     emitGlobalEvent("t3:tooltip-test", [{ relationId, action }]);
+    return true;
+  },
+  invokeResizeForHarness: (target, startX, endX) => {
+    emitGlobalEvent("t3:resize-test", [{ target, startX, endX }]);
     return true;
   },
 };

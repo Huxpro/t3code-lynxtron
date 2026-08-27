@@ -41,6 +41,55 @@ interface MainThreadSidebarTargets {
   readonly container: MainThread.Element | null;
 }
 
+interface ResizeTestEvent {
+  readonly target?: unknown;
+  readonly startX?: unknown;
+  readonly endX?: unknown;
+}
+
+interface GlobalEventEmitterLike {
+  addListener?: (eventName: string, listener: (value: unknown) => void) => void;
+}
+
+declare const lynx: {
+  getJSModule?: (name: string) => GlobalEventEmitterLike | undefined;
+  querySelector(selector: string): MainThread.Element | null;
+};
+
+const T3_RESIZE_TEST_EVENT = "t3:resize-test";
+let resizeTestBridgeInstalled = false;
+
+function installResizeTestBridge(): void {
+  "background only";
+  if (resizeTestBridgeInstalled) return;
+  let emitter: GlobalEventEmitterLike | undefined;
+  try {
+    emitter = typeof lynx !== "undefined" ? lynx.getJSModule?.("GlobalEventEmitter") : undefined;
+  } catch {
+    emitter = undefined;
+  }
+  if (!emitter?.addListener) return;
+  resizeTestBridgeInstalled = true;
+  emitter.addListener(T3_RESIZE_TEST_EVENT, (value: unknown) => {
+    const input = typeof value === "object" && value !== null ? (value as ResizeTestEvent) : null;
+    if (
+      (input?.target !== "sidebar" && input?.target !== "right-panel") ||
+      typeof input.startX !== "number" ||
+      typeof input.endX !== "number"
+    ) {
+      return;
+    }
+    const probe = (
+      globalThis as {
+        __T3_LYNXTRON_MTS_RESIZE_PROBE__?: Partial<
+          Record<"sidebar" | "right-panel", (startX: number, endX: number) => Promise<void>>
+        >;
+      }
+    ).__T3_LYNXTRON_MTS_RESIZE_PROBE__?.[input.target];
+    void probe?.(input.startX, input.endX);
+  });
+}
+
 export function useResizableWidth(options: UseResizableWidthOptions) {
   const bounds = {
     defaultWidth: options.defaultWidth,
@@ -202,6 +251,7 @@ export function useResizableWidth(options: UseResizableWidthOptions) {
 
   useEffect(() => {
     if (!options.testProbe) return;
+    installResizeTestBridge();
     const targetGlobal = globalThis as {
       __T3_LYNXTRON_MTS_RESIZE_PROBE__?: Partial<
         Record<"sidebar" | "right-panel", (startX: number, endX: number) => Promise<void>>
