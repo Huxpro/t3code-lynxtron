@@ -270,3 +270,4 @@ sidebar-native-settled-thread-menu-routing-correction,2026-08-26T22:02:00-07:00,
 sidebar-native-settled-menu-mark-unread-current,2026-08-27T00:02:00-07:00,fc2753b31,commit,Native settled menu and Mark unread mutation,0.217207,0.217185,0.038552,0.185818,0.814182,0.774281
 quick-switch-native-physical-input-focus-correction,2026-08-27T00:24:00-07:00,f8c07a91319a7cc5ca03417d76ec89b09c0968ea,commit,Native Quick Switch physical input focus correction,0.218233,0.217185,0.040159,0.185525,0.814475,0.773255
 quick-switch-native-input-focus-current,2026-08-27T04:11:00-07:00,d7a60161a,commit,Native Quick Switch physical input focus,0.217199,0.217185,0.039062,0.185378,0.814622,0.774289
+file-picker-native-input-focus-current,2026-08-27T04:43:00-07:00,2bc13af48,commit,Native File Picker physical input focus,0.217038,0.217038,0.039037,0.185232,0.814768,0.77445

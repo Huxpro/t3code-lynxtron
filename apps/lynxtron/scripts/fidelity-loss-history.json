@@ -17888,6 +17888,51 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-native-input-focus-current",
+      "observedAt": "2026-08-27T04:43:00-07:00",
+      "commit": "2bc13af48",
+      "codeCommit": "8397ad6d3",
+      "codeState": "commit",
+      "label": "Native File Picker physical input focus",
+      "narrative": "A current production bundle opens the existing File Picker product mode through an isolated initial-overlay entry, separating input behavior from an unreliable Command-P delivery attempt. The input visibly owns focus; real OS typing of review enters the query and retains review-fixture.txt as the matching file, and real Escape dismisses the overlay. The shared Quick Switch focus repair therefore closes the Native character-entry path for File Picker as well. Arrow navigation, Enter selection, Command-P delivery, and light-theme physical input remain unclaimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID physical character and Escape input on the current bundle verify the shared focus repair in File Picker while isolating accelerator and general key-event residuals."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/file-picker-native-input-focus.json",
+          "classification": "tracked-current",
+          "sha256": "0f445c32cfee5602838108fe2d1ea332fc59c3a03b34fc9dddcaf64bd7afdfbb"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/file-picker-native-review-query.png",
+          "classification": "tracked-current",
+          "sha256": "ecbc6613c1bcddf3d06645ba218543a2ccc9d0ef52cda73069a07590c84e2a1f"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/file-picker-native-escape-dismissed.png",
+          "classification": "tracked-current",
+          "sha256": "8f73cb727312dec946b6cc0e6c65cc29ec18b26809d1304d79f555c93fde426b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.4,
+              "confidence": 0.99,
+              "method": "physical-focused-file-query-and-dismissal",
+              "source": "Real review character entry filters the focused Native File Picker and real Escape dismisses it; Arrow, Enter, Command-P delivery, and light-theme physical input remain residual"
+            }
+          }
+        }
+      ]
     }
   ]
 }
