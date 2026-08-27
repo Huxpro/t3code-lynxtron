@@ -18092,6 +18092,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-native-physical-input-focus-correction",
+      "observedAt": "2026-08-27T10:45:00-07:00",
+      "commit": "854eccb70",
+      "codeCommit": "854eccb70",
+      "codeState": "commit",
+      "label": "Native Model Picker physical input focus correction",
+      "narrative": "A fresh exact-bundle Native process opens the Model Picker through its isolated product overlay state. The search field is visible but real OS typing of gpt leaves the complete window frame byte-identical and does not filter the model list. Source inspection confirms the input has value and bindinput but no focus UI-method request. The existing model-picker-query state already owns this interaction, so no denominator or weight changes and no repair credit are applied.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Exact-PID physical character input converts test-seam-only coverage into a measured Native focus failure without changing the fixed model."
+      },
+      "sources": [],
+      "updates": [
+        {
+          "states": ["model-picker-query"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 1,
+              "confidence": 0.99,
+              "method": "physical-model-picker-character-input",
+              "source": "The visible Native Model Picker input does not accept real gpt typing because it never requests focus; before and after exact-window frames are byte-identical"
+            }
+          }
+        }
+      ]
     }
   ]
 }
