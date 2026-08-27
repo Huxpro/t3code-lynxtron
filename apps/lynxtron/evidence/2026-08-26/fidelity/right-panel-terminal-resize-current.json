@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-26T18:20:00-07:00",
+  "stateId": "right-panel-terminal",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "requestedRightPanelWidths": [540, 640]
+  },
+  "identity": {
+    "commit": "602fcd2b232d10dbc66b50dbede2f4b594e5e34d",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "threadTitle": "Composer docked Codex projection",
+    "sameServerIdentity": true
+  },
+  "observations": [
+    {
+      "requestedPanelWidth": 540,
+      "measuredPanelWidth": 541,
+      "measuredTerminalSize": [539, 776],
+      "openGrid": { "cols": 71, "rows": 36 },
+      "resizeGrid": { "cols": 71, "rows": 36 },
+      "screenshot": "right-panel-terminal-resize-540-lynx.png",
+      "sha256": "4b069bca59a9014ee7973291fd164443764b07a76dfa225c29db350b9bdb23b4"
+    },
+    {
+      "requestedPanelWidth": 640,
+      "measuredPanelWidth": 617,
+      "measuredTerminalSize": [615, 776],
+      "openGrid": { "cols": 82, "rows": 36 },
+      "resizeGrid": { "cols": 82, "rows": 36 },
+      "screenshot": "right-panel-terminal-resize-640-lynx.png",
+      "sha256": "e197b21c395b2413f92c22aeac2dd3057b4666f0c7ce5a1614ddaf9474bd740e"
+    }
+  ],
+  "validation": {
+    "focusedTests": "65/65",
+    "typecheck": "pass",
+    "browserCells": "2/2 pass",
+    "consoleErrors": 0,
+    "agentBrowserLeakGate": "owned=0 orphaned=0",
+    "screenshotBudget": "48/100"
+  },
+  "classification": {
+    "closedProductLoss": [
+      "Lynx terminal open uses the grid derived from the current right-panel content size.",
+      "The running PTY receives a typed resizeTerminal command whose columns track the panel width while rows remain stable."
+    ],
+    "remainingProductLoss": [
+      "Native remains a command runner rather than Web's full xterm surface: key-by-key input, selection, and split terminals are not implemented."
+    ],
+    "missingCoverage": [
+      "Native physical panel dragging and Return submission remain pending-user-session."
+    ],
+    "harnessLoss": [],
+    "intentionalPlatformDelta": [
+      "The requested 640px panel is clamped by the shared maximum-width rule to approximately 616px content width."
+    ],
+    "acceptedRenderingNoise": []
+  }
+}
