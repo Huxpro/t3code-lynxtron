@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "@lynx-js/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
+import type { NodesRef } from "@lynx-js/types";
 import type {
   FilesystemBrowseResult,
   ProjectEntry,
@@ -109,6 +110,7 @@ export function QuickSwitch({
   activeThreadId,
 }: QuickSwitchProps) {
   const viewport = useViewportSnapshot();
+  const searchInputRef = useRef<NodesRef>(null);
   const [query, setQuery] = useState("");
   const [filePicker, setFilePicker] = useState<FilePickerState>(EMPTY_FILE_PICKER_STATE);
   const [view, setView] = useState<QuickSwitchView>(
@@ -283,6 +285,17 @@ export function QuickSwitch({
     setQuery("");
     setActiveIndex(0);
   }, [mode]);
+
+  useEffect(() => {
+    searchInputRef.current
+      ?.invoke({
+        method: "focus",
+        fail: (result) => {
+          console.error("[lynx-quick-switch] input focus failed", result);
+        },
+      })
+      .exec();
+  }, []);
 
   useEffect(() => {
     if (!openIntent) return;
@@ -740,6 +753,8 @@ export function QuickSwitch({
           }
           input={
             <input
+              id="quick-switch-search-input"
+              ref={searchInputRef}
               className="qs-search__input"
               {...({ value: query } as object)}
               placeholder={inputPlaceholder}
