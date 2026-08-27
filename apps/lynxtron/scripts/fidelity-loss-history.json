@@ -17557,6 +17557,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-native-project-context-menu-scope-discovery",
+      "observedAt": "2026-08-26T17:10:00-07:00",
+      "commit": "16e071a3e161007c4f75b868758a77b5b1a260fb",
+      "codeCommit": "16e071a3e161007c4f75b868758a77b5b1a260fb",
+      "codeState": "commit",
+      "label": "Native project context menu scope discovery",
+      "narrative": "The Web Sidebar project row exposes a system-native context menu with Rename, Group into, Copy Path, and destructive Remove actions. Native exposes the verified Project settings dialog through an ellipsis action, covering rename, grouping, and confirmed removal, but it has no project-row secondary-click entry and no Copy Path action. This independently reachable Native-only interaction enters the denominator before repair. The first repair slice will expose only truthful Project settings and Copy Path actions; Web's finer direct-action menu remains residual.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The new state isolates project-row secondary-click and clipboard behavior without duplicating the already-modeled Project settings dialog or changing prior weights, thresholds, filters, and residuals."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
