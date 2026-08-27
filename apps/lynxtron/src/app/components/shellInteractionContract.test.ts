@@ -955,6 +955,9 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("setPref(THREAD_VISITED_TIMESTAMPS_PREF, next)");
     expect(sidebarSource).toContain("t3ClientActions.archiveThread(thread.id)");
     expect(sidebarSource).toContain("t3ClientActions.deleteThread(thread.id)");
+    expect(componentSource("OtherSettings.tsx")).toContain('data-settings-archive-error="true"');
+    expect(componentSource("OtherSettings.tsx")).toContain('"Failed to unarchive thread"');
+    expect(componentSource("OtherSettings.tsx")).toContain('"Failed to delete thread"');
     expect(sidebarSource).toContain(
       "disposableEmptyThread || actionMenuOpen || hoveredThreadId === thread.id",
     );
