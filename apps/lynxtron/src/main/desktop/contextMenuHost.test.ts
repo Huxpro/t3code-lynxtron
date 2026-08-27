@@ -37,4 +37,63 @@ describe("startContextMenuCapabilityHost", () => {
     host.dispose();
     expect(removeHandler).toHaveBeenCalledWith(T3_CONTEXT_MENU_SHOW_METHOD);
   });
+
+  it("lets a menu item selection win when popup closure is reported first", async () => {
+    let handler: ((params: unknown) => unknown) | undefined;
+    let template: MenuItemConstructorOptions[] = [];
+    let closePopup: (() => void) | undefined;
+    startContextMenuCapabilityHost(
+      {
+        handle(_method, nextHandler) {
+          handler = nextHandler;
+        },
+        removeHandler() {},
+      },
+      { id: "window" },
+      (nextTemplate) => {
+        template = nextTemplate;
+        return {
+          popup(options) {
+            closePopup = options.callback;
+            return {};
+          },
+        };
+      },
+    );
+
+    const selection = handler?.({
+      items: [{ id: "copy", label: "Copy" }],
+    }) as Promise<string | null>;
+    closePopup?.();
+    template[0]?.click?.({} as never, {} as never, {} as never);
+
+    await expect(selection).resolves.toBe("copy");
+  });
+
+  it("resolves null after a native menu closes without a selection", async () => {
+    let handler: ((params: unknown) => unknown) | undefined;
+    let closePopup: (() => void) | undefined;
+    startContextMenuCapabilityHost(
+      {
+        handle(_method, nextHandler) {
+          handler = nextHandler;
+        },
+        removeHandler() {},
+      },
+      { id: "window" },
+      () => ({
+        popup(options) {
+          closePopup = options.callback;
+          return {};
+        },
+      }),
+    );
+
+    const selection = handler?.({
+      items: [{ id: "copy", label: "Copy" }],
+    }) as Promise<string | null>;
+    closePopup?.();
+
+    await expect(selection).resolves.toBeNull();
+  });
 });
