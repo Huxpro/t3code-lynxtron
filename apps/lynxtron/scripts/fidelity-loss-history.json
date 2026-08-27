@@ -18261,6 +18261,76 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-native-branch-context-menu-current-baseline",
+      "observedAt": "2026-08-27T16:14:00-07:00",
+      "commit": "a952940a1",
+      "codeCommit": "5819e98da",
+      "codeState": "commit",
+      "label": "Native branch context menu routing baseline",
+      "narrative": "A current-head exact-owned Native run measures the previously unknown Composer branch context-menu state. Real secondary click on the visible main branch opens a macOS system menu with Copy branch name, and the AX tree confirms that menu and item belong to the owned Lynxtron PID. A real pointer selection at the exact AXMenuItem center closes the menu but leaves a primed clipboard sentinel unchanged; Return selection also leaves it unchanged. A setImmediate popup-callback hypothesis passed focused tests but failed fresh-bundle physical acceptance, so its product and test commits were explicitly reverted before this current measurement. The state receives coverage for content, native material, anchoring, runtime, and menu reveal only; leaf action delivery remains a measured P1 product loss.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Exact-PID physical secondary click, AX-owned menu bounds, immutable snapshot identity, and a clipboard postcondition convert a fully unknown state into a measured partial failure without repair credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/branch-context-menu-native-baseline.json",
+          "classification": "tracked-current",
+          "sha256": "2ab3e69ff913759deb81e794319cd5819acb348f63a347c916339145a95fb1dc"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/branch-context-menu-native.png",
+          "classification": "tracked-current",
+          "sha256": "bb7d108caf493bfe21d83e8ec6e1bcd591e7d13cde57d5e64611b82992eeb1b3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-native-branch-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "physical-native-branch-menu-content",
+              "source": "The system menu visibly exposes the authority Copy branch name action for the canonical main branch"
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-branch-menu-ax-bounds",
+              "source": "AX reports the owned menu item at 849,847 with size 146 by 24, anchored directly above the physical branch control"
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "native-system-menu-typography",
+              "source": "The action uses native macOS menu typography"
+            },
+            "material": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-system-menu-material",
+              "source": "The popup is an AXMenu owned by the Lynxtron process, not a renderer-drawn imitation"
+            },
+            "interaction": {
+              "residual": 0.72,
+              "confidence": 0.99,
+              "method": "physical-branch-menu-leaf-routing-audit",
+              "source": "Real secondary click opens the menu, but exact-AX-bounds pointer selection and Return both close it without replacing the clipboard sentinel with main"
+            },
+            "runtime": {
+              "residual": 0.12,
+              "confidence": 0.98,
+              "method": "isolated-main-transport-branch-menu",
+              "source": "The fresh production bundle uses main transport at sequence 12 on the immutable isolated snapshot; Desktop DevTool registration remains unavailable"
+            }
+          }
+        }
+      ]
     }
   ]
 }
