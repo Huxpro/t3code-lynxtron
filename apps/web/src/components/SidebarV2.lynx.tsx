@@ -540,6 +540,9 @@ export default function SidebarV2() {
     async (thread: (typeof threads)[number], projectPath: string | null, settled: boolean) => {
       const workspacePath = thread.worktreePath ?? projectPath;
       const selection = await showNativeContextMenu([
+        ...(thread.branch
+          ? [{ id: "new-thread-on-branch", label: `New thread on ${thread.branch}` }]
+          : []),
         ...(settlementSupported
           ? [
               {
@@ -555,7 +558,14 @@ export default function SidebarV2() {
         { id: "archive", label: "Archive" },
         { id: "delete", label: "Delete", destructive: true },
       ]);
-      if (selection === "settle") await t3ClientActions.settleThread(thread.id);
+      if (selection === "new-thread-on-branch" && thread.branch) {
+        await t3ClientActions.createThread(thread.projectId, {
+          branch: thread.branch,
+          worktreePath: thread.worktreePath,
+          envMode: thread.worktreePath ? "worktree" : "local",
+          startFromOrigin: false,
+        });
+      } else if (selection === "settle") await t3ClientActions.settleThread(thread.id);
       else if (selection === "unsettle") await t3ClientActions.unsettleThread(thread.id);
       else if (selection === "copy-path" && workspacePath) {
         await clientCapabilities.clipboard.writeText(workspacePath);
