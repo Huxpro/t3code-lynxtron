@@ -153,7 +153,11 @@ export interface LiveConnectorDiagnostics {
     readonly overlay: string | null;
     readonly theme: "light" | "dark";
   } | null;
-  readonly commands: Array<{ sequence: number; method: string }>;
+  readonly commands: Array<{
+    sequence: number;
+    method: string;
+    terminalGrid?: { readonly terminalId: string; readonly cols: number; readonly rows: number };
+  }>;
   lastCommandResult: { readonly method: string; readonly value: unknown } | null;
   readonly commandResults: Array<{ readonly method: string; readonly value: unknown }>;
   readonly unsupportedCapabilities: readonly [
@@ -638,9 +642,21 @@ export class LiveConnectorHost {
     if (!isConnectorCommandName(request.method)) {
       throw new Error(`Rejected live connector command: ${String(request.method)}`);
     }
+    const terminalGrid =
+      request.method === "openTerminal" || request.method === "resizeTerminal"
+        ? (() => {
+            const input = request.params as TerminalOpenInput | TerminalResizeInput;
+            return {
+              terminalId: input.terminalId,
+              cols: input.cols ?? 80,
+              rows: input.rows ?? 24,
+            };
+          })()
+        : undefined;
     this.diagnostics.commands.push({
       sequence: this.diagnostics.commands.length + 1,
       method: request.method,
+      ...(terminalGrid ? { terminalGrid } : {}),
     });
     if (UNSUPPORTED_COMMANDS.has(request.method)) {
       throw new Error(`${request.method} is unavailable in the isolated browser preview`);
