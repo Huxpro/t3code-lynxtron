@@ -1186,6 +1186,8 @@ describe("desktop shell interaction contract", () => {
     expect(quickSwitch).not.toContain('setView(\n      openIntent?.kind === "add-project"');
     expect(quickSwitch).not.toContain("clearQuickSwitchOpenIntent");
     expect(appIndex).toContain("if (appliedInitialRoute.current) return;");
+    expect(appIndex).toContain('overlay === "file-picker"');
+    expect(appIndex).toContain('uiActions.openQuickSwitch("files")');
     expect(appIndex).toContain('overlay === "right-panel-tabs"');
     expect(appIndex).toContain('uiActions.openRightPanelSurface("files")');
     expect(appIndex).toContain('uiActions.openRightPanelSurface("diff")');

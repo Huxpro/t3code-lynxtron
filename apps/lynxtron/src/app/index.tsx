@@ -132,6 +132,7 @@ function RootSwitch() {
   const appliedInitialRoute = useRef(false);
   const applyInitialOverlay = (overlay: string | null | undefined) => {
     if (overlay === "quick-switch") uiActions.openQuickSwitch();
+    else if (overlay === "file-picker") uiActions.openQuickSwitch("files");
     else if (overlay === "add-project") uiActions.openAddProject();
     else if (overlay === "model-picker") uiActions.openModelPicker();
     else if (overlay === "add-provider") uiActions.openAddProviderDialog();
