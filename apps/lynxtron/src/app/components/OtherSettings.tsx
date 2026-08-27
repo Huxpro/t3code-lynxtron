@@ -578,13 +578,23 @@ export function ArchiveSettings() {
   const { archivedThreads, projects } = useT3ClientState();
   const { archiveThread, deleteThread } = t3ClientActions;
   const [confirmingDeleteThreadId, setConfirmingDeleteThreadId] = useState<string | null>(null);
+  const [mutationError, setMutationError] = useState<string | null>(null);
+  const runArchiveMutation = async (label: string, action: () => Promise<void>) => {
+    setMutationError(null);
+    try {
+      await action();
+    } catch (cause) {
+      setMutationError(`${label}: ${cause instanceof Error ? cause.message : String(cause)}`);
+      throw cause;
+    }
+  };
   const showArchivedThreadContextMenu = async (threadId: string) => {
     const selection = await showNativeContextMenu([
       { id: "unarchive", label: "Unarchive" },
       { id: "delete", label: "Delete", destructive: true },
     ]);
     if (selection === "unarchive") {
-      await archiveThread(threadId, true);
+      await runArchiveMutation("Failed to unarchive thread", () => archiveThread(threadId, true));
     } else if (selection === "delete") {
       setConfirmingDeleteThreadId(threadId);
     }
@@ -624,6 +634,11 @@ export function ArchiveSettings() {
 
   return (
     <view className="settings-panel">
+      {mutationError ? (
+        <view className="settings-error-card" data-settings-archive-error="true">
+          <text className="settings-error-card__text">{mutationError}</text>
+        </view>
+      ) : null}
       <ArchivedThreadsSurface
         anchorId={searchableSetting("archive").id}
         groups={groups.map((group) => ({
@@ -646,7 +661,9 @@ export function ArchiveSettings() {
                     className={`settings-archive-delete-confirm--${thread.id}`}
                     label="Confirm delete"
                     onTap={() => {
-                      void deleteThread(thread.id)
+                      void runArchiveMutation("Failed to delete thread", () =>
+                        deleteThread(thread.id),
+                      )
                         .catch(() => undefined)
                         .finally(() => setConfirmingDeleteThreadId(null));
                     }}
@@ -656,7 +673,11 @@ export function ArchiveSettings() {
                 <SmallButton
                   className={`settings-archive-unarchive--${thread.id}`}
                   label="Unarchive"
-                  onTap={() => archiveThread(thread.id, true)}
+                  onTap={() => {
+                    void runArchiveMutation("Failed to unarchive thread", () =>
+                      archiveThread(thread.id, true),
+                    ).catch(() => undefined);
+                  }}
                 />
               ),
           })),
