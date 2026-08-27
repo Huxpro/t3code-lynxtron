@@ -17654,6 +17654,63 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-native-thread-menu-actions-current",
+      "observedAt": "2026-08-26T19:46:00-07:00",
+      "commit": "d0704bb8827050cff48d849f45ad3bac19ca9fd9",
+      "codeCommit": "2b8eef4ab",
+      "codeState": "commit",
+      "label": "Native thread menu unread and branch actions",
+      "narrative": "A fresh isolated Lynxtron 0.0.16 process on the current production bundle receives a physical secondary click on the inactive Update README row and renders the expanded macOS system menu with New thread on main and Mark unread alongside the previously verified actions. Keyboard selection of New thread on main opens the real New thread hero for background-only and preserves Current checkout on main. The fixture has no latest turn completion, so Mark unread correctly has no mutation target and receives content but no outcome credit. Snooze or Wake and Regenerate title remain absent, and Desktop DevTool registration remains unavailable.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.98,
+        "reason": "Exact-PID window-server frames and real OS input directly verify the expanded system-menu content and branch-preserving draft action while retaining explicit residual for absent and unverified actions."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/sidebar-native-thread-menu-actions.json",
+          "classification": "tracked-current",
+          "sha256": "6d428de3592d3aec5fb9fd604a03e9008fb75cb458543a08dd48b845c300b2d7"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/sidebar-native-thread-menu-expanded.png",
+          "classification": "tracked-current",
+          "sha256": "fb41ab4e703230794f564a15df58168ae2205a2cc272caf76fd54987db5b1794"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/sidebar-native-new-thread-on-branch.png",
+          "classification": "tracked-current",
+          "sha256": "fe8eabb3619176843db0e5e23ad78804bfa45b76bcc6e911316cc06f80d44f3f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-native-thread-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.16,
+              "confidence": 0.98,
+              "method": "physical-expanded-thread-menu-content",
+              "source": "The visible Native system menu now includes New thread on main and Mark unread; capability-gated Snooze or Wake and Regenerate title remain absent"
+            },
+            "interaction": {
+              "residual": 0.38,
+              "confidence": 0.98,
+              "method": "physical-thread-menu-branch-selection",
+              "source": "Real secondary click and keyboard selection open a branch-preserving draft. Mark unread outcome lacks a completed-turn fixture; Snooze or Wake, title regeneration, and destructive outcomes remain absent or unverified"
+            },
+            "runtime": {
+              "residual": 0.18,
+              "confidence": 0.94,
+              "method": "isolated-main-transport-thread-actions",
+              "source": "Current bundle 15ff2178 runs on owned PID 5578 with main transport sequence 12 and isolated state; Desktop DevTool registration remains unavailable"
+            }
+          }
+        }
+      ]
     }
   ]
 }

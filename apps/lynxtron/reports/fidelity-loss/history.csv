@@ -265,3 +265,4 @@ settings-archive-delete-gap-discovery,2026-08-26T16:49:00-07:00,18c66840bc30b888
 sidebar-native-project-context-menu-scope-discovery,2026-08-26T17:10:00-07:00,16e071a3e161007c4f75b868758a77b5b1a260fb,commit,Native project context menu scope discovery,0.217629,0.217185,0.039009,0.18587,0.81413,0.773859
 right-panel-terminal-responsive-grid-current,2026-08-26T18:43:00-07:00,dd9e1655d478b452e3f5e50aa402516e5f22c9f7,commit,Right panel Terminal responsive PTY grid,0.217467,0.217185,0.038811,0.18587,0.81413,0.774021
 sidebar-native-thread-menu-action-coverage-correction,2026-08-26T19:28:00-07:00,52d7ef8160fa3aacfa10b54a6a5a6c8cd75074bd,commit,Native thread menu action coverage correction,0.217766,0.217185,0.039196,0.185855,0.814145,0.773722
+sidebar-native-thread-menu-actions-current,2026-08-26T19:46:00-07:00,d0704bb8827050cff48d849f45ad3bac19ca9fd9,commit,Native thread menu unread and branch actions,0.217509,0.217185,0.038893,0.185844,0.814156,0.773979
