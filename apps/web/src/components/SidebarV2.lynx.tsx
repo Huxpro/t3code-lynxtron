@@ -1008,6 +1008,10 @@ export default function SidebarV2() {
                 }
                 title={
                   <HostText
+                    onClick={() => {
+                      markThreadVisited(thread);
+                      t3ClientActions.selectThread(thread.id);
+                    }}
                     onContextMenu={(event) => {
                       stopPropagation(event);
                       void showThreadContextMenu(
