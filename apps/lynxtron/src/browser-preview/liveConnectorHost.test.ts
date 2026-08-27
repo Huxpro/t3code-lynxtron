@@ -188,6 +188,13 @@ describe("LiveConnectorHost", () => {
     assert.include(source, "this.#client[WS_METHODS.terminalWrite](params)");
     assert.include(source, 'if (request.method === "resizeTerminal")');
     assert.include(source, "this.#client[WS_METHODS.terminalResize](params)");
+    assert.include(
+      source,
+      'request.method === "openTerminal" || request.method === "resizeTerminal"',
+    );
+    assert.include(source, "terminalId: input.terminalId");
+    assert.include(source, "cols: input.cols ?? 80");
+    assert.include(source, "rows: input.rows ?? 24");
     assert.include(source, 'if (request.method === "closeTerminal")');
     assert.include(source, "this.#client[WS_METHODS.terminalClose](params)");
     assert.include(source, 'status: "closed"');
