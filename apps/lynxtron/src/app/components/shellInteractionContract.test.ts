@@ -929,6 +929,10 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("bindtap={confirmDelete}");
     expect(sidebarSource).toContain("isDisposableEmptyThread(thread)");
     expect(sidebarSource).toContain('{ id: "mark-unread", label: "Mark unread" }');
+    expect(sidebarSource).toContain("label: `New thread on ${thread.branch}`");
+    expect(sidebarSource).toContain("t3ClientActions.createThread(thread.projectId, {");
+    expect(sidebarSource).toContain('envMode: thread.worktreePath ? "worktree" : "local"');
+    expect(sidebarSource).toContain("startFromOrigin: false");
     expect(sidebarSource).toContain("markThreadUnreadInTimestampRecord");
     expect(sidebarSource).toContain("markThreadVisitedInTimestampRecord");
     expect(sidebarSource).toContain("hasUnseenThreadCompletion({");
