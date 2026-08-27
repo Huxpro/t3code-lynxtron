@@ -1007,7 +1007,10 @@ export default function SidebarV2() {
                   <Icon name="message-square" size={16} color="#818181" className="size-4" />
                 }
                 title={
-                  <HostText className="sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+                  <HostText
+                    eventThrough
+                    className="sidebar-v2-row-title min-w-0 flex-1 truncate text-sm font-medium text-foreground"
+                  >
                     {thread.title}
                   </HostText>
                 }
