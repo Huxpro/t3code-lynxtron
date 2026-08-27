@@ -6,8 +6,38 @@ describe("Lynxtron discrete keyboard menu", () => {
   it("covers only the certified discrete command set", () => {
     assert.deepEqual(
       DISCRETE_KEYBOARD_ACCELERATORS.map((entry) => entry.id),
-      ["open-settings", "new-thread", "quick-switch", "file-picker", "toggle-sidebar"],
+      [
+        "dismiss-overlay",
+        "open-settings",
+        "new-thread",
+        "quick-switch",
+        "file-picker",
+        "toggle-sidebar",
+      ],
     );
+  });
+
+  it("encodes Escape as a hidden modifier-free accelerator", () => {
+    const accelerator = DISCRETE_KEYBOARD_ACCELERATORS.find(
+      (entry) => entry.id === "dismiss-overlay",
+    );
+    assert.isDefined(accelerator);
+    assert.deepInclude(accelerator!, {
+      accelerator: "Esc",
+      visible: false,
+      acceleratorWorksWhenHidden: true,
+      usesCommandModifier: false,
+    });
+    const packet = createDiscreteKeyboardPacket({
+      accelerator: accelerator!,
+      platform: "darwin",
+      sequence: 9,
+    });
+    assert.deepInclude(packet, {
+      key: "Escape",
+      code: "Escape",
+      modifiers: { meta: false, ctrl: false, shift: false, alt: false },
+    });
   });
 
   it("encodes macOS accelerators as renderer-neutral packets", () => {

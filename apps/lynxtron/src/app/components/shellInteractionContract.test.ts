@@ -1189,6 +1189,7 @@ describe("desktop shell interaction contract", () => {
     expect(appIndex).toContain('overlay === "file-picker"');
     expect(appIndex).toContain('uiActions.openQuickSwitch("files")');
     expect(appIndex).toContain('overlay === "right-panel-tabs"');
+    expect(keyboardCommandsSource).toContain("return dismissOpenSearchOverlay();");
     expect(appIndex).toContain('uiActions.openRightPanelSurface("files")');
     expect(appIndex).toContain('uiActions.openRightPanelSurface("diff")');
     expect(appIndex.indexOf('uiActions.openRightPanelSurface("diff")')).toBeLessThan(

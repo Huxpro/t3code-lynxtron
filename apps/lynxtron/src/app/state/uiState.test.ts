@@ -2,12 +2,32 @@ import { describe, expect, it } from "vite-plus/test";
 
 import {
   applyRightPanelAction,
+  dismissOpenSearchOverlay,
   INITIAL_MODEL_PICKER_NAVIGATION_STATE,
   INITIAL_RIGHT_PANEL_STATE,
+  isModelPickerOpen,
+  isSearchOverlayOpen,
   selectModelPickerProvider,
   syncModelPickerProvider,
+  uiActions,
   type RightPanelSurface,
 } from "./uiState";
+
+describe("dismissOpenSearchOverlay", () => {
+  it("closes the model picker before the quick switch", () => {
+    uiActions.closeModelPicker();
+    uiActions.closeQuickSwitch();
+    uiActions.openQuickSwitch("command");
+    uiActions.openModelPicker();
+
+    expect(dismissOpenSearchOverlay()).toBe(true);
+    expect(isModelPickerOpen()).toBe(false);
+    expect(isSearchOverlayOpen()).toBe(true);
+    expect(dismissOpenSearchOverlay()).toBe(true);
+    expect(isSearchOverlayOpen()).toBe(false);
+    expect(dismissOpenSearchOverlay()).toBe(false);
+  });
+});
 
 const plan: RightPanelSurface = { id: "plan:1", kind: "plan", label: "Plan" };
 const files = { id: "files:2", kind: "files", label: "Files" } satisfies RightPanelSurface;
