@@ -5,8 +5,9 @@ import {
   useEffect,
   useMainThreadRef,
   useMemo,
+  useRef,
 } from "@lynx-js/react";
-import type { MainThread } from "@lynx-js/types";
+import type { MainThread, NodesRef } from "@lynx-js/types";
 import type {
   ModelSelection,
   ProviderDriverKind,
@@ -74,6 +75,7 @@ export function ModelPicker({
   onClose,
 }: ModelPickerProps) {
   const viewport = useViewportSnapshot();
+  const searchInputRef = useRef<NodesRef>(null);
   const navigation = readModelPickerNavigation();
   const listScrollRef = useMainThreadRef<MainThread.Element>(null);
   const wheelStateRef = useMainThreadRef({ key: "", offset: 0 });
@@ -94,6 +96,16 @@ export function ModelPicker({
   } | null>(null);
   const [showTopFade, setShowTopFade] = useState(false);
   const [showBottomFade, setShowBottomFade] = useState(false);
+  useEffect(() => {
+    searchInputRef.current
+      ?.invoke({
+        method: "focus",
+        fail: (result) => {
+          console.error("[lynx-model-picker] input focus failed", result);
+        },
+      })
+      .exec();
+  }, []);
   const selectProvider = useCallback(
     (provider: ProviderInstanceId | "favorites") => {
       onActiveProviderChange(provider);
@@ -344,6 +356,8 @@ export function ModelPicker({
               icon={<Icon name="search" size={16} color="#71717a" />}
               input={
                 <input
+                  id="model-picker-search-input"
+                  ref={searchInputRef}
                   className="picker-search__input"
                   {...({ value: search } as object)}
                   placeholder="Search models..."
