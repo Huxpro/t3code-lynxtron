@@ -17711,6 +17711,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-native-settled-thread-menu-routing-correction",
+      "observedAt": "2026-08-26T22:02:00-07:00",
+      "commit": "ebc79e2b5",
+      "codeCommit": "ebc79e2b5",
+      "codeState": "commit",
+      "label": "Native settled-thread menu routing correction",
+      "narrative": "A canonical event-sourced completed-turn fixture exposes the settled slim row variant independently of the previously verified active card. Two real secondary-click attempts on the visible settled row produced no system menu. Source inspection shows the handler only on the outer HostView while visible nested HostText leaves do not route secondary-click events, matching the previously repaired Settings-row failure mode. The existing Native thread context-menu state already covers row variants, so no duplicate denominator state is added and no repair credit is granted.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.98,
+        "reason": "This separates the unverified settled-row event path from the already measured active-card path without changing weights, filters, thresholds, or denominator."
+      },
+      "sources": [],
+      "updates": [
+        {
+          "states": ["sidebar-native-thread-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.52,
+              "confidence": 0.99,
+              "method": "physical-settled-row-secondary-click-audit",
+              "source": "Active card menu opening and branch creation remain verified, but two real secondary clicks on the canonical settled slim row did not open the system menu; nested text leaves lack explicit routing"
+            }
+          }
+        }
+      ]
     }
   ]
 }
