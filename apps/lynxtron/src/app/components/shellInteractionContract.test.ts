@@ -933,6 +933,8 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("t3ClientActions.createThread(thread.projectId, {");
     expect(sidebarSource).toContain('envMode: thread.worktreePath ? "worktree" : "local"');
     expect(sidebarSource).toContain("startFromOrigin: false");
+    expect(sidebarSource).toContain('id: "regenerate-title"');
+    expect(sidebarSource).toContain("t3ClientActions.regenerateThreadTitle(thread.id)");
     expect(sidebarSource).toContain("markThreadUnreadInTimestampRecord");
     expect(sidebarSource).toContain("markThreadVisitedInTimestampRecord");
     expect(sidebarSource).toContain("hasUnseenThreadCompletion({");

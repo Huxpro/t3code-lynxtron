@@ -114,6 +114,10 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
       calls.push({ method: "unsettleThread", input });
       return Promise.resolve();
     },
+    regenerateThreadTitle: (input: unknown) => {
+      calls.push({ method: "regenerateThreadTitle", input });
+      return Promise.resolve();
+    },
     readProjectBranch: (input: unknown) => {
       calls.push({ method: "readProjectBranch", input });
       return Promise.resolve("main");
@@ -413,14 +417,20 @@ describe("main connector host", () => {
       input: { threadId: "t1" },
     });
 
+    await command({ method: "regenerateThreadTitle", params: { threadId: "t1" } });
+    assert.deepEqual(connector.calls[14], {
+      method: "regenerateThreadTitle",
+      input: { threadId: "t1" },
+    });
+
     await command({ method: "revokePairingLink", params: { id: "link-1" } });
-    assert.deepEqual(connector.calls[14], { method: "revokePairingLink", input: "link-1" });
+    assert.deepEqual(connector.calls[15], { method: "revokePairingLink", input: "link-1" });
 
     await command({
       method: "openTerminal",
       params: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
     });
-    assert.deepEqual(connector.calls[15], {
+    assert.deepEqual(connector.calls[16], {
       method: "openTerminal",
       input: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
     });
@@ -429,7 +439,7 @@ describe("main connector host", () => {
       method: "writeTerminal",
       params: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
     });
-    assert.deepEqual(connector.calls[16], {
+    assert.deepEqual(connector.calls[17], {
       method: "writeTerminal",
       input: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
     });
@@ -438,7 +448,7 @@ describe("main connector host", () => {
       method: "closeTerminal",
       params: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
     });
-    assert.deepEqual(connector.calls[17], {
+    assert.deepEqual(connector.calls[18], {
       method: "closeTerminal",
       input: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
     });
