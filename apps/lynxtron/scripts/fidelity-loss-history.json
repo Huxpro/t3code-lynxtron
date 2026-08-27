@@ -17933,6 +17933,51 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-native-light-input-focus-current",
+      "observedAt": "2026-08-27T05:05:00-07:00",
+      "commit": "d9e96c0b0",
+      "codeCommit": "8397ad6d3",
+      "codeState": "commit",
+      "label": "Native light Quick Switch physical input focus",
+      "narrative": "A disposable copy of the canonical snapshot forces light theme without touching live state. The initial-overlay plus simultaneous theme path was rejected after it failed to retain focus, because that harness-only ordering does not match production. A fresh light process then uses the real Command-K path: physical settings input filters to Open settings and physical Escape closes the overlay. This closes the theme-specific character-input gap while preserving Arrow and Enter residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID production-path input on an isolated light snapshot verifies the shared focus repair without borrowing dark evidence or crediting the rejected harness run."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-light-input-focus.json",
+          "classification": "tracked-current",
+          "sha256": "0f16b9ff98023125d34e3c073239a3d0a5df7863ff0c7d436cd4f2fecd896206"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-light-settings-query.png",
+          "classification": "tracked-current",
+          "sha256": "41d0b069d270a1063eb89357555dc7b52773cd7ac110dc9295412c7b9d41dde6"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-light-escape-dismissed.png",
+          "classification": "tracked-current",
+          "sha256": "3c2110dbbca285982fefab13ac09218e2a46fc7ccbd1ab2217cb98bb1eb2cbbf"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.4,
+              "confidence": 0.99,
+              "method": "physical-light-command-k-query-and-dismissal",
+              "source": "Real Command-K, settings character entry, filtering, and Escape dismissal pass in light theme; Arrow and Enter remain residual"
+            }
+          }
+        }
+      ]
     }
   ]
 }
