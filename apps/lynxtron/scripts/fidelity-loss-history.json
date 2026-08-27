@@ -17573,6 +17573,57 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "right-panel-terminal-responsive-grid-current",
+      "observedAt": "2026-08-26T18:17:13-07:00",
+      "commit": "91e226df714f2a88cbaa4ad36e9d7bab5d35f5de",
+      "codeCommit": "5920ac8e705cbdf64986418b7afa17131230bfc6",
+      "codeState": "commit",
+      "label": "Right panel Terminal responsive PTY grid",
+      "narrative": "Two fresh single-server Browser-first cells use the same immutable snapshot, selected thread, dark theme, 1280x820 viewport, and current Web and Lynx-for-Web artifacts. At requested panel widths 540 and 640, Lynx measures 539x776 and 615x776 terminal roots and sends typed openTerminal plus resizeTerminal grids of 71x36 and 82x36 respectively. Both runs execute pwd through the visible command path, render the exact workspace cwd, report zero console errors, and clean owned processes. This closes only responsive PTY grid synchronization; key-by-key xterm input, selection, splits, Native physical drag, and Return submission remain unclaimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The paired width cells directly prove that current panel geometry changes the terminal cols while preserving rows through the typed resize RPC. No Native physical interaction or full-xterm credit is inferred."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-current.json",
+          "classification": "tracked-current",
+          "sha256": "ac2282c0f47d585a1cfa4e2ea01a2f7d473fd365e97575e2b288bfed6d212a6a"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-540-lynx.png",
+          "classification": "tracked-current",
+          "sha256": "4b069bca59a9014ee7973291fd164443764b07a76dfa225c29db350b9bdb23b4"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-26/fidelity/right-panel-terminal-resize-640-lynx.png",
+          "classification": "tracked-current",
+          "sha256": "e197b21c395b2413f92c22aeac2dd3057b4666f0c7ce5a1614ddaf9474bd740e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.99,
+              "method": "browser-terminal-responsive-grid-flow",
+              "source": "Two same-snapshot cells prove openTerminal and resizeTerminal at 71x36 and 82x36 as panel width changes; close, splits, selection, and key-by-key PTY input remain unclaimed"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-resize-rpc",
+              "source": "Both current-head runs forward typed terminal grids through the shared server, render pwd output, report zero errors, and dispose owned processes"
+            }
+          }
+        }
+      ]
     }
   ]
 }
