@@ -14,6 +14,9 @@ describe("Quick Switch visual-state probe", () => {
       /searchInputRef\.current[\s\S]*?\.invoke\(\{[\s\S]*?method: \"focus\"[\s\S]*?\}\)[\s\S]*?\.exec\(\)/,
     );
     expect(source).toContain("[lynx-quick-switch] input focus failed");
+    expect(source).toContain("const handleSearchInputKeyDown");
+    expect(source).toContain("runOnBackground(handlePaletteKeyDown)({ key: event.key });");
+    expect(source).toContain("main-thread:bindkeydown={handleSearchInputKeyDown}");
   });
 
   it("is available only in isolated viewport-test runs", () => {
