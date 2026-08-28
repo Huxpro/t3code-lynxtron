@@ -18371,6 +18371,79 @@
           }
         }
       ]
+    },
+    {
+      "id": "transcript-native-link-context-menus-current-baseline",
+      "observedAt": "2026-08-27T18:40:00-07:00",
+      "commit": "35b2432d1",
+      "codeCommit": "5819e98da",
+      "codeState": "commit",
+      "label": "Native transcript link context-menu baseline",
+      "narrative": "A disposable sequence-eight assistant message makes one workspace file link and one external HTTPS link visible through the real event projector. On the exact owned Native window, repeated cliclick secondary-clicks across each visible link produce no AXMenu, although the same exact-PID activation and input channel opens and selects the Composer branch system menu. Source already declares separate HostView and HostText context handlers for both link types, so these states are no longer unknown: their content and runtime are observed, while context-event delivery and all menu actions remain measured P1 product loss. No denominator, weights, thresholds, or unrelated cells change.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.98,
+        "reason": "A real projector fixture and a separately validated physical secondary-click channel convert two fully unknown Native states into measured renderer event-routing failures without repair credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/transcript-link-context-menu-native-baseline.json",
+          "classification": "tracked-current",
+          "sha256": "1f538104729420d7875ef443b018daa7a85a5431180acff0e9702f9ace0b18c7"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/transcript-link-context-menu-native-baseline.png",
+          "classification": "tracked-current",
+          "sha256": "6d58f2d5b32ee982e75d73f2b5ca9d2deb7de3c8712b12550207e80e6f6a6ccc"
+        }
+      ],
+      "updates": [
+        {
+          "states": [
+            "transcript-native-file-link-context-menu",
+            "transcript-native-external-link-context-menu"
+          ],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "native-projected-link-content",
+              "source": "The real projector renders canonical workspace-file and HTTPS link labels from one thread.message-sent event"
+            },
+            "geometry": {
+              "residual": 0.12,
+              "confidence": 0.9,
+              "method": "native-link-visual-review",
+              "source": "Both links occupy stable inline positions in the shared assistant paragraph without clipping"
+            },
+            "typography": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "native-link-typography-review",
+              "source": "Both visible links preserve the surrounding assistant-message hierarchy with platform shaping noise"
+            },
+            "material": {
+              "residual": 0.12,
+              "confidence": 0.85,
+              "method": "native-link-material-review",
+              "source": "The link surfaces remain readable in the canonical light transcript; no menu material can be credited because no popup appears"
+            },
+            "interaction": {
+              "residual": 1,
+              "confidence": 0.98,
+              "method": "physical-transcript-link-secondary-click-audit",
+              "source": "Repeated real secondary clicks across both file and external link hit regions produce no owned AXMenu, so no copy or navigation action can be exercised"
+            },
+            "runtime": {
+              "residual": 0.12,
+              "confidence": 0.98,
+              "method": "isolated-main-transport-link-fixture",
+              "source": "The sequence-eight message is applied by the real projector and rendered on main transport; Desktop DevTool registration remains unavailable"
+            }
+          }
+        }
+      ]
     }
   ]
 }
