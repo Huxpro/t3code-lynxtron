@@ -303,6 +303,11 @@ function patchState(partial: Partial<T3ClientState>): void {
         projectId: thread.projectId,
         title: thread.title,
       })),
+      archivedThreads: next.archivedThreads.map((thread) => ({
+        id: thread.id,
+        projectId: thread.projectId,
+        title: thread.title,
+      })),
       activeThreadId: next.activeThreadId ?? null,
       transport: {
         kind: mainTransport ? "main" : "unavailable",

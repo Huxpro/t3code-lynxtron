@@ -133,7 +133,9 @@ export function isExpectedReadiness(value, expectedThread = expectedThreadId) {
   return (
     value?.status === "ready" &&
     value.transport?.kind === "main" &&
-    (!expectedThread || value.threads?.some((thread) => thread.id === expectedThread))
+    (!expectedThread ||
+      Boolean(value.threads?.some((thread) => thread.id === expectedThread)) ||
+      Boolean(value.archivedThreads?.some((thread) => thread.id === expectedThread)))
   );
 }
 
