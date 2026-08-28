@@ -114,6 +114,10 @@ const branchToolbarBranchSource = readFileSync(
 );
 
 describe("desktop shell interaction contract", () => {
+  it("reports archived thread identity to isolated Native readiness harnesses", () => {
+    expect(clientSource).toContain("archivedThreads: next.archivedThreads.map");
+  });
+
   it("opens workspace markdown links in the internal file surface", () => {
     const markdown = readFileSync(path.join(import.meta.dirname, "MarkdownRenderer.tsx"), "utf8");
     expect(markdown).toContain("fileLink?.workspaceRelativePath");

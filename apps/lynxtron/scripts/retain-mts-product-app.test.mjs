@@ -40,6 +40,10 @@ describe("retain MTS product app", () => {
     const base = { status: "ready", transport: { kind: "main" }, threads: [] };
     assert.equal(isExpectedReadiness(base, "thread-1"), false);
     assert.equal(isExpectedReadiness({ ...base, threads: [{ id: "thread-1" }] }, "thread-1"), true);
+    assert.equal(
+      isExpectedReadiness({ ...base, archivedThreads: [{ id: "thread-1" }] }, "thread-1"),
+      true,
+    );
     assert.equal(isExpectedReadiness(base, undefined), true);
   });
 });
