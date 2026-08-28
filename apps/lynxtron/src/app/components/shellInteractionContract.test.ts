@@ -442,6 +442,7 @@ describe("desktop shell interaction contract", () => {
   });
 
   it("opens a real Terminal session from the titlebar control", () => {
+    const appIndex = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
     const header = componentSource("ChatHeader.tsx");
     const chatView = componentSource("ChatView.tsx");
     const panel = componentSource("RightPanel.tsx");
@@ -450,6 +451,9 @@ describe("desktop shell interaction contract", () => {
     expect(header).toContain("export function ChatLayoutControls");
     expect(header).toContain('aria-label="Open terminal panel"');
     expect(header).toContain('bindtap={() => uiActions.openRightPanelSurface("terminal")}');
+    expect(appIndex).toContain(
+      'overlay === "terminal") uiActions.openRightPanelSurface("terminal")',
+    );
     expect(header).toContain("bindtap={uiActions.toggleRightPanel}");
     expect(header).toContain(
       'className="workspace-titlebar-controls topbar__layout-controls lynx-titlebar-no-drag"',
@@ -474,6 +478,9 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain(".writeTerminal({");
     expect(terminal).toContain(".closeTerminal({");
     expect(terminal).toContain('confirm-type="send"');
+    expect(terminal).toContain("const commandInputRef = useRef<NodesRef>(null)");
+    expect(terminal).toContain('method: "focus"');
+    expect(terminal).toContain("ref={commandInputRef}");
     expect(terminal).toContain('data-terminal-session-status={session?.status ?? "starting"}');
     expect(terminal).toContain('className="terminal-panel flex flex-col"');
     expect(terminal).not.toContain("Terminal sessions are not connected yet");
