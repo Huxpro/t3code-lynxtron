@@ -7,6 +7,7 @@ describe("Lynxtron discrete keyboard menu", () => {
     assert.deepEqual(
       DISCRETE_KEYBOARD_ACCELERATORS.map((entry) => entry.id),
       [
+        "terminal-submit",
         "dismiss-overlay",
         "open-settings",
         "new-thread",
@@ -15,6 +16,19 @@ describe("Lynxtron discrete keyboard menu", () => {
         "toggle-sidebar",
       ],
     );
+  });
+
+  it("keeps physical Return disabled until Terminal focus is reported", () => {
+    const accelerator = DISCRETE_KEYBOARD_ACCELERATORS.find(
+      (entry) => entry.id === "terminal-submit",
+    );
+    assert.deepInclude(accelerator!, {
+      accelerator: "Return",
+      key: "Enter",
+      usesCommandModifier: false,
+      visible: false,
+      enabled: false,
+    });
   });
 
   it("encodes Escape as a hidden modifier-free accelerator", () => {

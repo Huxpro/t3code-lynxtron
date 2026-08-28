@@ -10,6 +10,7 @@ import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution.ts";
 describe("Lynxtron keyboard command resolution", () => {
   it("feeds each native menu packet through the canonical resolver", () => {
     const expected = {
+      "terminal-submit": null,
       "dismiss-overlay": null,
       "file-picker": "filePicker.toggle",
       "new-thread": "chat.new",

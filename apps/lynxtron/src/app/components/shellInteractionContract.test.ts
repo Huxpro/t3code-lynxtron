@@ -484,7 +484,13 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain('confirm-type="send"');
     expect(terminal).toContain("const commandInputRef = useRef<NodesRef>(null)");
     expect(terminal).toContain('method: "focus"');
+    expect(terminal).toContain("success: () => {");
+    expect(terminal).toContain("terminalReturnController.setFocused(true)");
     expect(terminal).toContain("ref={commandInputRef}");
+    expect(terminal).toContain("terminalReturnController.setSubmitHandler(runCommand)");
+    expect(terminal).toContain("bindfocus={() => terminalReturnController.setFocused(true)}");
+    expect(terminal).toContain("bindblur={() => terminalReturnController.setFocused(false)}");
+    expect(terminal).toContain("terminalReturnController.dispose()");
     expect(terminal).toContain('data-terminal-session-status={session?.status ?? "starting"}');
     expect(terminal).toContain('className="terminal-panel flex flex-col"');
     expect(terminal).not.toContain("Terminal sessions are not connected yet");
