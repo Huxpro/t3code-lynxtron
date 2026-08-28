@@ -18489,6 +18489,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-native-return-current",
+      "observedAt": "2026-08-28T08:21:59-07:00",
+      "commit": "0ccf54584",
+      "codeCommit": "ec3b14c56",
+      "codeState": "commit",
+      "label": "Native Terminal physical Return submission",
+      "narrative": "The Native host now exposes a hidden Return accelerator only while the real Terminal input reports focus. Because Lynxtron 0.0.16 does not re-register an already-installed MenuItem when its enabled property changes, each focus transition rebuilds the same application menu with the Terminal accelerator enabled or disabled. A fresh exact-owned 1280x820 light process on the immutable canonical snapshot receives physical character input and one physical Return; the command field clears, PTY history appends the submitted command, the shell response, and a fresh prompt. Midscene without a configured model, later attempts where Synara stole frontmost ownership, and missing Desktop DevTool registration are classified as harness loss and excluded. Credit is limited to focused Return submission; xterm-compatible key-by-key input, selection, split terminals, and Lynx-for-Web coverage remain residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID physical keyboard input, main-side focus handshake diagnostics, a cleared input, and appended PTY history isolate the focus-scoped Return repair without expanding credit to remaining Terminal interactions."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-native-return-submit.json",
+          "classification": "tracked-current",
+          "sha256": "7f36b4b2ee150040ebe9683a6fc2afd86a2be85865b02ee1d0386cf28e5d6bd1"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-native-return-submit.png",
+          "classification": "tracked-current",
+          "sha256": "490fe9e30381c26b16a1a952a41e98750bfa84aed7d0744c383b6107241b7079"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.22,
+              "confidence": 0.99,
+              "method": "physical-focused-return-and-pty-postcondition",
+              "source": "Terminal focus enables a host-scoped Return accelerator; one real Return clears the command field and appends the submitted command, shell response, and next prompt to PTY history. Key-by-key PTY input, selection, and splits remain residual."
+            }
+          }
+        }
+      ]
     }
   ]
 }
