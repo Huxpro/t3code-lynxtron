@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "@lynx-js/react";
+import type { NodesRef } from "@lynx-js/types";
 
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
@@ -28,6 +29,7 @@ export function TerminalPanel({
   const [command, setCommand] = useState("");
   const [openError, setOpenError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const commandInputRef = useRef<NodesRef>(null);
   const activeThread =
     threads.find((thread) => thread.id === activeThreadId) ??
     (draftThread?.id === activeThreadId ? draftThread : undefined);
@@ -39,6 +41,17 @@ export function TerminalPanel({
   const output = useMemo(() => presentTerminalText(session?.history ?? ""), [session?.history]);
   const grid = useMemo(() => terminalGridSize(width, height), [height, width]);
   const resizedGridRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    commandInputRef.current
+      ?.invoke({
+        method: "focus",
+        fail: (result) => {
+          console.error("[lynx-terminal] input focus failed", result);
+        },
+      })
+      .exec();
+  }, []);
 
   useEffect(() => {
     if (!activeThreadId || !cwd || status !== "ready") return;
@@ -118,6 +131,7 @@ export function TerminalPanel({
       <view className="terminal-panel__command-row">
         <text className="terminal-panel__prompt">$</text>
         <input
+          ref={commandInputRef}
           className="terminal-panel__input"
           {...({ value: command } as object)}
           placeholder="Run a command"
