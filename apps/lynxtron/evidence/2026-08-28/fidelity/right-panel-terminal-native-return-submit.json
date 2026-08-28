@@ -1,0 +1,40 @@
+{
+  "stateId": "right-panel-terminal",
+  "classification": "product-loss-repair",
+  "surface": "native",
+  "theme": "light",
+  "requestedViewport": { "width": 1280, "height": 820 },
+  "ownedProcessId": 39114,
+  "ownedWindow": { "x": 80, "y": 60, "width": 1280, "height": 820 },
+  "snapshot": {
+    "sha256": "9b5d198f5428dfecf04b1c7f2d7907b9fc260d868dcce593458bf0f2fa181d1e",
+    "projectId": "f349f875-3409-40ee-9ddf-a68c2b57adbb",
+    "threadId": "fidelity-review-thread"
+  },
+  "bundle": "fresh production build copied by retain-mts-product-app.mjs",
+  "semanticReadiness": { "transport": "main", "lastSeq": 13 },
+  "interaction": {
+    "channel": "cliclick physical keyboard",
+    "frontmostPidBefore": 39114,
+    "frontmostPidAfter": 39114,
+    "input": "print T3RETURN_39114 followed by one physical Return",
+    "postconditions": [
+      "Terminal command input cleared",
+      "PTY history appended the submitted command",
+      "PTY history appended a shell response and a fresh prompt"
+    ]
+  },
+  "capture": {
+    "path": "right-panel-terminal-native-return-submit.png",
+    "mode": "exact CGWindowID capture",
+    "imageWidth": 2696,
+    "imageHeight": 1776,
+    "sha256": "490fe9e30381c26b16a1a952a41e98750bfa84aed7d0744c383b6107241b7079"
+  },
+  "excludedHarnessAttempts": [
+    "Midscene act sent no input because model configuration was absent",
+    "Two later clean-marker attempts were discarded because Synara PID 43568 became frontmost",
+    "DevTool console capture was unavailable because the PID exposed no listening DevTool port"
+  ],
+  "residuals": ["xterm-compatible key-by-key PTY input", "selection", "split terminals"]
+}
