@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-27T23:45:00-07:00",
+  "stateId": "right-panel-terminal",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "interactionChannel": "real macOS character and Return input via cliclick"
+  },
+  "snapshot": {
+    "sha256BeforeLaunch": "5b89591b946cf133bdfedafa30e32f789cd6d33d839f513ffe343fe632c53553",
+    "eventCountBeforeLaunch": 7,
+    "threadId": "fidelity-review-thread",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 74188,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "d1c7bb00e1f03371a440ff8ea551947eb1bedde3925d38af8d69f7a393f267e0",
+    "transportKind": "main",
+    "lastSeq": 12
+  },
+  "observations": [
+    {
+      "name": "physical terminal character entry",
+      "result": "pass",
+      "detail": "After Terminal mounts with a NodesRef focus request, real OS typing enters echo T3RETURNMARKER in the command field without a pointer focus step.",
+      "screenshot": "right-panel-terminal-native-focused-command.png",
+      "sha256": "be492588c45e289eb40ccd898ee70b8f53ddb26b49a9c459278bbcd2572ac00f",
+      "pixelSize": [2784, 1864]
+    },
+    {
+      "name": "physical Return submission",
+      "result": "fail",
+      "detail": "A real Return key leaves echo T3RETURNMARKER in the command field and the PTY history contains no marker output; bindconfirm is not delivered by the current Native runtime.",
+      "screenshot": "right-panel-terminal-native-return-unhandled.png",
+      "sha256": "94ffbd1d624731137c179ca53f0aaa92f078174e684ee47f055ade3c16dbf115",
+      "pixelSize": [2696, 1776]
+    }
+  ],
+  "classification": {
+    "closedProductLoss": "The Native Terminal command field now owns focus when the surface opens and accepts real character input.",
+    "remainingProductLoss": [
+      "Physical Return does not deliver bindconfirm, so the visible Run control remains the only verified command submission path.",
+      "Full xterm key-by-key input, selection, and split terminals remain outside this slice."
+    ],
+    "missingCoverage": [],
+    "harnessLoss": "Several pointer attempts used incorrect shadow-scaled coordinates and were excluded; the retained character-entry pass requires no pointer focus.",
+    "intentionalPlatformDelta": "Native uses a bounded command field and Run action rather than Web xterm.",
+    "acceptedRenderingNoise": []
+  }
+}
