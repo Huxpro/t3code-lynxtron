@@ -18529,6 +18529,81 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-native-project-context-menu-current",
+      "observedAt": "2026-08-28T08:51:44-07:00",
+      "commit": "ecd351d61",
+      "codeCommit": "6ca6fad4c",
+      "codeState": "commit",
+      "label": "Native project context menu measurement",
+      "narrative": "The final zero-confidence state is measured on fresh exact-owned Native processes using the immutable canonical snapshot and the existing flat-sidebar project scope popup. After excluding two coordinate misses that left the renderer popup open, real secondary click on the project option opens an owned macOS system menu containing Project settings and Copy Path. In one valid run, selecting the exact AX Copy Path center changes a primed clipboard sentinel to the canonical workspace path on the third 250 ms signal check. A second run leaves the item highlighted without closing the menu and is classified as pointer-delivery harness flake; a third run is discarded because an unrelated Synara Lynxtron process became frontmost. The state therefore leaves unknown coverage with bounded interaction and runtime residual, but receives no product repair credit and no claim of perfectly stable pointer selection.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.94,
+        "reason": "Two exact-owned fresh runs prove the native menu content and anchoring, while one clipboard postcondition proves Copy Path callback delivery; excluded coordinate, hover-only, and frontmost-PID failures keep confidence below full."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/sidebar-native-project-context-menu.json",
+          "classification": "tracked-current",
+          "sha256": "13f228ac10802ec1c7e5996510cc85cd959cdd5db319c90b9074bbf0a1acbc25"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/sidebar-native-project-context-menu-open.png",
+          "classification": "tracked-current",
+          "sha256": "abd24948e3410918b29a615a5ee776d8dcdfbfcffc59deebaae22a943371e996"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/sidebar-native-project-context-menu-selected.png",
+          "classification": "tracked-current",
+          "sha256": "079ff41591279a72d424b43e70a0c8c46b66b20ff072b3e51e0a6a1c1b5795d6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-native-project-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "physical-native-project-menu-content",
+              "source": "The owned system menu exposes the authority Project settings and Copy Path actions."
+            },
+            "geometry": {
+              "residual": 0.08,
+              "confidence": 0.98,
+              "method": "native-project-menu-ax-bounds",
+              "source": "AX reports two 128 by 24 menu items anchored at the physical project option."
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "native-system-menu-typography",
+              "source": "The project actions use native macOS menu typography."
+            },
+            "material": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-system-menu-material",
+              "source": "The popup is an AX-owned macOS menu rather than renderer-drawn material."
+            },
+            "interaction": {
+              "residual": 0.12,
+              "confidence": 0.92,
+              "method": "physical-secondary-click-and-clipboard-postcondition",
+              "source": "Real secondary click opens the menu and one exact AX-center selection copies the canonical workspace path; one hover-only selection attempt is retained as harness flake."
+            },
+            "runtime": {
+              "residual": 0.12,
+              "confidence": 0.92,
+              "method": "isolated-main-transport-project-menu",
+              "source": "Fresh processes use main transport on the immutable snapshot; Desktop DevTool registration remains unavailable."
+            }
+          }
+        }
+      ]
     }
   ]
 }

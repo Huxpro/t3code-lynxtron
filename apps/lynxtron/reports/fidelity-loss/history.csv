@@ -283,3 +283,4 @@ composer-native-branch-context-menu-current,2026-08-27T17:22:00-07:00,bd67fdd29,
 transcript-native-link-context-menus-current-baseline,2026-08-27T18:40:00-07:00,35b2432d1,commit,Native transcript link context-menu baseline,0.19927,0.19927,0.040309,0.165637,0.834363,0.792218
 right-panel-terminal-native-focus-current,2026-08-27T23:45:00-07:00,71d08433c,commit,Native Terminal physical command focus,0.199189,0.199189,0.040212,0.165637,0.834363,0.792299
 right-panel-terminal-native-return-current,2026-08-28T08:21:59-07:00,0ccf54584,commit,Native Terminal physical Return submission,0.19906,0.19906,0.040058,0.165637,0.834363,0.792428
+sidebar-native-project-context-menu-current,2026-08-28T08:51:44-07:00,ecd351d61,commit,Native project context menu measurement,0.195369,0.195369,0.04014,0.161721,0.838279,0.796119
