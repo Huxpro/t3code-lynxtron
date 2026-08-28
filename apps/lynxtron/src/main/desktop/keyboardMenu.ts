@@ -8,6 +8,7 @@ export const T3_KEYBOARD_EVENT = "t3:keyboard";
 export interface DiscreteKeyboardAccelerator {
   readonly id:
     | "dismiss-overlay"
+    | "terminal-submit"
     | "file-picker"
     | "new-thread"
     | "quick-switch"
@@ -22,9 +23,23 @@ export interface DiscreteKeyboardAccelerator {
   readonly usesCommandModifier?: boolean;
   readonly visible?: boolean;
   readonly acceleratorWorksWhenHidden?: boolean;
+  readonly enabled?: boolean;
 }
 
 export const DISCRETE_KEYBOARD_ACCELERATORS: ReadonlyArray<DiscreteKeyboardAccelerator> = [
+  {
+    id: "terminal-submit",
+    label: "Run Terminal Command",
+    accelerator: "Return",
+    key: "Enter",
+    code: "Enter",
+    shift: false,
+    menu: "app",
+    usesCommandModifier: false,
+    visible: false,
+    acceleratorWorksWhenHidden: true,
+    enabled: false,
+  },
   {
     id: "dismiss-overlay",
     label: "Dismiss Overlay",

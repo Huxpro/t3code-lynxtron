@@ -4,6 +4,7 @@ import type { NodesRef } from "@lynx-js/types";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
 import { terminalGridSize } from "./terminalGrid.logic";
+import { terminalReturnController } from "../state/terminalKeyboard";
 
 const TERMINAL_ID = "term-1";
 
@@ -29,6 +30,7 @@ export function TerminalPanel({
   const [command, setCommand] = useState("");
   const [openError, setOpenError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const sendingRef = useRef(false);
   const commandInputRef = useRef<NodesRef>(null);
   const activeThread =
     threads.find((thread) => thread.id === activeThreadId) ??
@@ -46,6 +48,9 @@ export function TerminalPanel({
     commandInputRef.current
       ?.invoke({
         method: "focus",
+        success: () => {
+          terminalReturnController.setFocused(true);
+        },
         fail: (result) => {
           console.error("[lynx-terminal] input focus failed", result);
         },
@@ -94,7 +99,8 @@ export function TerminalPanel({
 
   const runCommand = () => {
     const value = command.trim();
-    if (!activeThreadId || !value || sending) return;
+    if (!activeThreadId || !value || sendingRef.current) return false;
+    sendingRef.current = true;
     setSending(true);
     void t3ClientActions
       .writeTerminal({ threadId: activeThreadId, terminalId: TERMINAL_ID, data: `${value}\n` })
@@ -102,8 +108,21 @@ export function TerminalPanel({
       .catch((cause: unknown) =>
         setOpenError(cause instanceof Error ? cause.message : String(cause)),
       )
-      .finally(() => setSending(false));
+      .finally(() => {
+        sendingRef.current = false;
+        setSending(false);
+      });
+    return true;
   };
+
+  terminalReturnController.setSubmitHandler(runCommand);
+
+  useEffect(
+    () => () => {
+      terminalReturnController.dispose();
+    },
+    [],
+  );
 
   if (!activeThreadId || !cwd) {
     return (
@@ -137,6 +156,8 @@ export function TerminalPanel({
           placeholder="Run a command"
           aria-label="Terminal command"
           bindinput={(event) => setCommand(inputValue(event))}
+          bindfocus={() => terminalReturnController.setFocused(true)}
+          bindblur={() => terminalReturnController.setFocused(false)}
           confirm-type="send"
           bindconfirm={runCommand}
         />

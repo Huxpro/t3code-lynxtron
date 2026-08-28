@@ -16,6 +16,7 @@ import { createReloadMenuItem, reloadApplication } from "./reloadWindow.ts";
 import { T3_RELOAD_FOR_TEST_METHOD } from "../../shared/viewportProtocol.ts";
 import { startClipboardCapabilityHost } from "./capabilityHost.ts";
 import { startContextMenuCapabilityHost } from "./contextMenuHost.ts";
+import { startTerminalKeyboardHost } from "./terminalKeyboardHost.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
@@ -46,8 +47,9 @@ interface GlobalEventWindow extends ResizableWindow {
   on(event: "closed", listener: () => void): unknown;
 }
 
-function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
+function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
   let sequence = 0;
+  let terminalReturnEnabled = false;
   const dispatch = (accelerator: DiscreteKeyboardAccelerator) => {
     sequence += 1;
     const delivered = win.sendGlobalEvent(
@@ -65,41 +67,50 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
       accelerator: item.accelerator,
       visible: item.visible,
       acceleratorWorksWhenHidden: item.acceleratorWorksWhenHidden,
+      enabled: item.id === "terminal-submit" ? terminalReturnEnabled : item.enabled,
       click: () => dispatch(item),
     }));
-
-  Menu.setApplicationMenu(
-    Menu.buildFromTemplate([
-      {
-        label: "T3 Code",
-        submenu: [
-          ...itemsFor("app"),
-          { type: "separator" },
-          { role: process.platform === "darwin" ? "quit" : "close" },
-        ],
-      },
-      {
-        label: "File",
-        submenu: itemsFor("file"),
-      },
-      {
-        label: "View",
-        submenu: [createReloadMenuItem(app), { type: "separator" }, ...itemsFor("view")],
-      },
-      {
-        label: "Edit",
-        submenu: [
-          { role: "undo" },
-          { role: "redo" },
-          { type: "separator" },
-          { role: "cut" },
-          { role: "copy" },
-          { role: "paste" },
-          { role: "selectAll" },
-        ],
-      },
-    ]),
-  );
+  const install = () =>
+    Menu.setApplicationMenu(
+      Menu.buildFromTemplate([
+        {
+          label: "T3 Code",
+          submenu: [
+            ...itemsFor("app"),
+            { type: "separator" },
+            { role: process.platform === "darwin" ? "quit" : "close" },
+          ],
+        },
+        {
+          label: "File",
+          submenu: itemsFor("file"),
+        },
+        {
+          label: "View",
+          submenu: [createReloadMenuItem(app), { type: "separator" }, ...itemsFor("view")],
+        },
+        {
+          label: "Edit",
+          submenu: [
+            { role: "undo" },
+            { role: "redo" },
+            { type: "separator" },
+            { role: "cut" },
+            { role: "copy" },
+            { role: "paste" },
+            { role: "selectAll" },
+          ],
+        },
+      ]),
+    );
+  install();
+  return {
+    setTerminalReturnEnabled(enabled: boolean) {
+      if (terminalReturnEnabled === enabled) return;
+      terminalReturnEnabled = enabled;
+      install();
+    },
+  };
 }
 
 // Framed LynxWindows mis-size their LynxView at creation; nudge once after
@@ -247,6 +258,17 @@ app.whenReady().then(() => {
       lynxBridge.removeHandler(T3_RELOAD_FOR_TEST_METHOD);
     });
   }
+  const keyboardMenu = installDiscreteKeyboardMenu(win);
+  const terminalKeyboardHost = startTerminalKeyboardHost(
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, (_event, params) => handler(params));
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    (enabled) => keyboardMenu.setTerminalReturnEnabled(enabled),
+  );
+  win.on("closed", () => terminalKeyboardHost.dispose());
   console.log(`[main] loading Lynx bundle from ${LYNX_BUNDLE_SOURCE}`);
   if (LYNX_BUNDLE_SOURCE.startsWith("http://") || LYNX_BUNDLE_SOURCE.startsWith("https://")) {
     win.loadURL(LYNX_BUNDLE_SOURCE);
@@ -254,7 +276,6 @@ app.whenReady().then(() => {
     win.loadFile(LYNX_BUNDLE_SOURCE);
   }
   nudgeFramedWindowViewport(win);
-  installDiscreteKeyboardMenu(win);
 
   // P3-S1 capability probe (R3/R5): prove at runtime whether the declared
   // LynxWindow.sendGlobalEvent delivers from main to the renderer. Only runs

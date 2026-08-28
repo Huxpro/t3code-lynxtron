@@ -5,6 +5,7 @@ import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";
 import { dismissOpenSearchOverlay, uiActions } from "./uiState";
 import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
+import { terminalReturnController } from "./terminalKeyboard";
 
 interface GlobalEventEmitterLike {
   addListener?: (eventName: string, listener: (...args: unknown[]) => void) => void;
@@ -23,6 +24,7 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     return false;
   }
   lastSequence = input.sequence;
+  if (terminalReturnController.dispatch(input)) return true;
   if (
     input.key.toLowerCase() === "escape" &&
     !input.modifiers.meta &&
