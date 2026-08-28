@@ -18331,6 +18331,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-native-branch-context-menu-current",
+      "observedAt": "2026-08-27T17:22:00-07:00",
+      "commit": "bd67fdd29",
+      "codeCommit": "5819e98da",
+      "codeState": "commit",
+      "label": "Native branch context menu physical selection",
+      "narrative": "A fresh current-head Native A/B corrects the immediately preceding branch-menu baseline. Direct CGEvent mouseDown and mouseUp injection is not a reliable macOS system-menu selection channel and caused a false product-loss classification. With the same immutable snapshot, exact-PID AX frontmost activation, exact AXMenuItem bounds, and cliclick physical input, secondary click opens Copy branch name and selecting its center changes a primed clipboard sentinel to main on the third 250 ms signal check. The existing product implementation therefore passes menu reveal and clipboard action without a code change. Only dark-theme repetition and Desktop DevTool registration remain evidence debt.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The accepted physical pointer channel and clipboard postcondition supersede a harness-induced false failure; no product repair credit is claimed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/branch-context-menu-native-current.json",
+          "classification": "tracked-current",
+          "sha256": "f25b730aa52d61d7dfa0ae1bc5c425378f2e03bfae317b10c36d998f846bf98d"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/branch-context-menu-native-selected.png",
+          "classification": "tracked-current",
+          "sha256": "fcfd3ceb847a77ff4fcd5a292ba834567acee7d88ce6df0558b094884ee94f7f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-native-branch-context-menu"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "physical-secondary-click-and-clipboard-postcondition",
+              "source": "cliclick opens the system menu and selects its exact AX item center; polling observes the clipboard change from a sentinel to main"
+            }
+          }
+        }
+      ]
     }
   ]
 }
