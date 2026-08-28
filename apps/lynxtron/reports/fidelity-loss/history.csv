@@ -281,3 +281,4 @@ quick-switch-native-filter-states-physical-current,2026-08-27T14:53:00-07:00,834
 composer-native-branch-context-menu-current-baseline,2026-08-27T16:14:00-07:00,a952940a1,commit,Native branch context menu routing baseline,0.2053,0.2053,0.03875,0.173264,0.826736,0.786188
 composer-native-branch-context-menu-current,2026-08-27T17:22:00-07:00,bd67fdd29,commit,Native branch context menu physical selection,0.204784,0.204784,0.038125,0.173264,0.826736,0.786704
 transcript-native-link-context-menus-current-baseline,2026-08-27T18:40:00-07:00,35b2432d1,commit,Native transcript link context-menu baseline,0.19927,0.19927,0.040309,0.165637,0.834363,0.792218
+right-panel-terminal-native-focus-current,2026-08-27T23:45:00-07:00,71d08433c,commit,Native Terminal physical command focus,0.199189,0.199189,0.040212,0.165637,0.834363,0.792299

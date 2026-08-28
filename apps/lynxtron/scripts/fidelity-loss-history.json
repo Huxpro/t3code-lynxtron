@@ -18444,6 +18444,51 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-native-focus-current",
+      "observedAt": "2026-08-27T23:45:00-07:00",
+      "commit": "71d08433c",
+      "codeCommit": "9b2a1e242",
+      "codeState": "commit",
+      "label": "Native Terminal physical command focus",
+      "narrative": "The Native Terminal command field now requests focus through a NodesRef UI method when the surface mounts. A fresh exact-owned terminal state on the canonical snapshot opens a real server-backed PTY, and real macOS character input enters echo T3RETURNMARKER without a pointer focus step. Physical Return leaves the marker in the field and produces no marker output, so bindconfirm, key-by-key xterm behavior, selection, and splits remain explicit residual. Earlier pointer attempts with shadow-scaled coordinates are excluded as harness mismatches. The initial terminal overlay is a test-only deterministic entry to the real product surface and receives no product credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Exact-PID physical character input on the current production bundle isolates mount-time focus while the retained Return failure prevents broader keyboard credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/right-panel-terminal-native-focus.json",
+          "classification": "tracked-current",
+          "sha256": "d51b74a3d95663993bea26f69794519addd652b157edce6db55da91861429c98"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/right-panel-terminal-native-focused-command.png",
+          "classification": "tracked-current",
+          "sha256": "be492588c45e289eb40ccd898ee70b8f53ddb26b49a9c459278bbcd2572ac00f"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/right-panel-terminal-native-return-unhandled.png",
+          "classification": "tracked-current",
+          "sha256": "94ffbd1d624731137c179ca53f0aaa92f078174e684ee47f055ade3c16dbf115"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.3,
+              "confidence": 0.99,
+              "method": "physical-focused-command-and-return-audit",
+              "source": "Terminal opens with focused command input and accepts real characters; visible Run remains verified, while physical Return, xterm key input, selection, and splits remain residual"
+            }
+          }
+        }
+      ]
     }
   ]
 }
