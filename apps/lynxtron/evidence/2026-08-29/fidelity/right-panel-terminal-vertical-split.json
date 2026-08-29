@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T00:35:00-07:00",
+  "stateId": "right-panel-terminal-vertical-split",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "6c2a5c775336d2b835c0395fd571c5bb7283e8b8",
+    "productCommit": "c7a87011d",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "webBundleSha256Prefix": "a479565e2ca9",
+    "lynxBundleSha256Prefix": "627222ca9842",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "interaction": {
+    "channel": "CDP pointer input against both production Browser renderers",
+    "steps": [
+      "Both renderers open Terminal on the canonical seeded thread.",
+      "Both renderers receive the visible Split Terminal Vertically pointer action.",
+      "Lynx keeps term-1 and term-2 simultaneously mounted as full-width stacked panes.",
+      "Each Lynx pane receives a 71 by 17 PTY resize and retains its own marker history.",
+      "Pointer activation changes the shared command target between panes.",
+      "Closing term-2 restores term-1 at the unsplit 71 by 35 grid."
+    ]
+  },
+  "result": {
+    "status": "pass",
+    "webHasVerticalSplit": true,
+    "lynxSplit": "vertical",
+    "lynxPaneWidths": [539, 539],
+    "lynxPaneHeights": [352, 352],
+    "splitGrid": { "cols": 71, "rows": 17 },
+    "restoredGrid": { "cols": 71, "rows": 35 },
+    "rendererErrors": 0
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/workbench-report.json",
+      "sha256": "9b70583ecf5a64e709e7c1352b89e3c0d5565daeecbaa38a71d4b5bedb55d174"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/1280x820/terminal-web.png",
+      "sha256": "0fbf487d4d9123f2277fbc23635d1caf35ce2d3b521453e596bff7682649f5af"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/1280x820/terminal-lynx.png",
+      "sha256": "6b67457d8d14b5e655773b332468f3c904a929deb6c45d87ba4a2d24fe2f04ef"
+    },
+    "sideBySide": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/1280x820/terminal-side-by-side.png",
+      "sha256": "618af3fc8e80fb9b794c3218f9c992416acc5852825abae36f24fc21d70ac4f7"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx now supports the Web authority vertical split lifecycle with two live full-width stacked panes.",
+      "The initial implementation stayed horizontally arranged despite vertical state; strengthened width and height gates found it, and the product now uses deterministic top-half and bottom-half positioning.",
+      "PTY grid sizing follows split direction and restores full rows after close."
+    ],
+    "missingCoverage": [
+      "Native vertical split correlation remains unavailable because Computer Use repeatedly resolves exact owned Lynxtron pid and window requests to unrelated same-bundle-id processes."
+    ],
+    "remainingProductResidual": [
+      "More than two panes, xterm key-by-key behavior, and selection actions remain outside this slice."
+    ],
+    "acceptedRenderingNoise": [
+      "Web and Lynx allocate terminal labels from separate client-local UI state while sharing the same server terminal contract."
+    ],
+    "policy": "No state weight, threshold, bad sample filter, or scope reduction was used."
+  }
+}
