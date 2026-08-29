@@ -6284,7 +6284,7 @@ async function captureCell({
       }
     }
     const lifecycleFaultPreflight = (() => {
-      if (!requiresStableProviderFaultPreflight) return { ready: true, key: "not-required" };
+      if (!requiresStableProviderFaultPreflight) return null;
       const webModel = state?.web?.productState?.visibleModelLabel?.trim() ?? "";
       const lynxModel = state?.lynx?.productState?.visibleModelLabel?.trim() ?? "";
       const webControls = (state?.web?.composerMetrics?.controls ?? []).map(({ id, label }) => ({
@@ -6312,26 +6312,29 @@ async function captureCell({
           state?.web?.composerMetrics?.placeholder === state?.lynx?.composerMetrics?.placeholder,
       };
     })();
-    if (lifecycleFaultPreflight.ready) {
+    if (lifecycleFaultPreflight?.ready) {
       lifecycleFaultPreflightStablePolls =
         lifecycleFaultPreflight.key === lastLifecycleFaultPreflightKey
           ? lifecycleFaultPreflightStablePolls + 1
           : 1;
       lastLifecycleFaultPreflightKey = lifecycleFaultPreflight.key;
-    } else {
+    } else if (lifecycleFaultPreflight) {
       lifecycleFaultPreflightStablePolls = 0;
       lastLifecycleFaultPreflightKey = lifecycleFaultPreflight.key;
     }
-    const preflightTimelineKey = `${lifecycleFaultPreflightStablePolls}:${lifecycleFaultPreflight.key}`;
-    if (preflightTimelineKey !== lifecycleFaultPreflightTimeline.at(-1)?.key) {
+    const preflightTimelineKey = lifecycleFaultPreflight
+      ? `${lifecycleFaultPreflightStablePolls}:${lifecycleFaultPreflight.key}`
+      : null;
+    if (
+      preflightTimelineKey &&
+      preflightTimelineKey !== lifecycleFaultPreflightTimeline.at(-1)?.key
+    ) {
       lifecycleFaultPreflightTimeline.push({
         key: preflightTimelineKey,
         elapsedMs: Date.now() - readyStart,
         ready: lifecycleFaultPreflight.ready,
         stablePolls: lifecycleFaultPreflightStablePolls,
-        snapshot: JSON.parse(
-          lifecycleFaultPreflight.key === "not-required" ? "{}" : lifecycleFaultPreflight.key,
-        ),
+        snapshot: JSON.parse(lifecycleFaultPreflight.key),
       });
     }
     if (

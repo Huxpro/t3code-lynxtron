@@ -20075,6 +20075,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-hero-current-dark-typography",
+      "observedAt": "2026-08-29T13:39:00-07:00",
+      "commit": "7911ebf10",
+      "codeState": "commit",
+      "label": "New Thread Hero current dark typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run reaches the same unpersisted Hero state on one isolated snapshot. Web draft and Lynx none are intentionally equivalent representations; both show background-only, Claude Fable 5, High · 1M, Full access, Build, the shared follow-up placeholder, matching Hero and Composer geometry, and zero renderer errors. Computed current typography replaces the early font-size-only proxy: headline and inline project name are 30px weight 400, 36px line height, and minus 0.75px tracking; the editor is 14px weight 400 with 22.75px versus 23px line height; footer labels are 14px weight 500 and 20px line height, with the established separated-trait tracking correction retained on Lynx.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact-head capture closes only the stale dark Hero typography-confidence gap and leaves product code, weights, thresholds, scope, material, and interaction unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/new-thread-hero-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "3b644b6035ae87e85a20aba5b2b6886a015309544fac53c0be95cd7df2abac0f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "current-dark-hero-computed-typography",
+              "source": "Headline and inline project name match 30px weight 400, 36px and minus 0.75px tracking; editor and four footer labels match with only 0.25px line-height and fractional shaping noise"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-dark-hero-shared-runtime",
+              "source": "Same isolated snapshot, project, dark theme, 1280 by 820 viewport, current bundles, equivalent unpersisted state, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

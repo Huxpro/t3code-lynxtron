@@ -29,6 +29,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "webModel === lynxModel");
     assert.include(source, "JSON.stringify(webControls) === JSON.stringify(lynxControls)");
     assert.include(source, "lifecycleFaultPreflightStablePolls >= 3");
+    assert.include(source, "if (!requiresStableProviderFaultPreflight) return null");
+    assert.match(
+      source,
+      /if \(\s*preflightTimelineKey &&\s*preflightTimelineKey !== lifecycleFaultPreflightTimeline/,
+    );
     assert.include(source, "lifecycleFaultPreflight: {");
   });
 
