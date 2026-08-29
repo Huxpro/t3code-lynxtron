@@ -44,7 +44,7 @@
   "artifacts": {
     "report": {
       "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/workbench-report.json",
-      "sha256": "5fb8d206db4d410efcffb2a1b5539795a4a66f09f404d426568e4e86e0cdcb68"
+      "sha256": "6daed3fdc9c258bd389a367828235ede725e64d8716d1ead1016b2167609ebf4"
     },
     "web": {
       "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/1280x820/terminal-web.png",
@@ -53,10 +53,6 @@
     "lynx": {
       "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/1280x820/terminal-lynx.png",
       "sha256": "6b67457d8d14b5e655773b332468f3c904a929deb6c45d87ba4a2d24fe2f04ef"
-    },
-    "sideBySide": {
-      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/1280x820/terminal-side-by-side.png",
-      "sha256": "618af3fc8e80fb9b794c3218f9c992416acc5852825abae36f24fc21d70ac4f7"
     }
   },
   "classification": {

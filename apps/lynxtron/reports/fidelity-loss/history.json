@@ -343966,12 +343966,12 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split.json",
           "classification": "tracked-current",
-          "sha256": "188a33339aa3c3ce60cdba38a03432a23d009b42f01b755c2c0733bdfdb5c3e8"
+          "sha256": "d839971266d9603bec48f7de16095aebfec236ef9f71bd49d75d3a15f049855e"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/workbench-report.json",
           "classification": "tracked-current",
-          "sha256": "5fb8d206db4d410efcffb2a1b5539795a4a66f09f404d426568e4e86e0cdcb68"
+          "sha256": "6daed3fdc9c258bd389a367828235ede725e64d8716d1ead1016b2167609ebf4"
         }
       ],
       "confidence": 0.822943,
@@ -344982,7 +344982,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split.json",
           "classification": "tracked-current",
-          "sha256": "188a33339aa3c3ce60cdba38a03432a23d009b42f01b755c2c0733bdfdb5c3e8"
+          "sha256": "d839971266d9603bec48f7de16095aebfec236ef9f71bd49d75d3a15f049855e"
         }
       ],
       "confidence": 0.822943,
