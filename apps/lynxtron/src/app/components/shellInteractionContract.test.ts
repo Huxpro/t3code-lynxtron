@@ -338,7 +338,7 @@ describe("desktop shell interaction contract", () => {
     expect(uiState).toContain("useAddProviderDialogOpen");
     expect(uiState).toContain("openAddProviderDialog");
     expect(uiState).toContain("closeAddProviderDialog");
-    expect(button).toContain("catchtap={handleTap}");
+    expect(button).toContain("bindtap={handleTap}");
     expect(app).toContain('overlay === "add-provider"');
     expect(app).toContain("<AddProviderInstanceDialog");
     expect(app).toContain("open={addProviderDialogOpen}");
