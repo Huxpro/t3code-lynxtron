@@ -289,14 +289,18 @@ describe("Lynx Settings route projection", () => {
     const emptyBlock = overrides.slice(emptyStart, overrides.indexOf("}", emptyStart));
     expect(emptyBlock).toContain("min-height: 352px;");
     expect(emptyBlock).toContain("--align-self-column: stretch;");
-    expect(emptyBlock).toContain("--flex-direction: column;");
+    expect(emptyBlock).toContain("position: relative;");
+    expect(emptyBlock).toContain("display: block;");
     expect(emptyBlock).toContain("width: 100%;");
     const emptyHeaderStart = overrides.indexOf(".source-control-empty__header {");
     const emptyHeaderBlock = overrides.slice(
       emptyHeaderStart,
       overrides.indexOf("}", emptyHeaderStart),
     );
-    expect(emptyHeaderBlock).toContain("--flex-direction: column;");
+    expect(emptyHeaderBlock).toContain("position: absolute;");
+    expect(emptyHeaderBlock).toContain("top: 156px;");
+    expect(emptyHeaderBlock).toContain("width: 384px;");
+    expect(overrides).toContain(".source-control-empty__content .ui-button__label {");
   });
 
   it("matches the canonical Source Control initial loading anatomy", () => {
