@@ -19592,6 +19592,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-default-current-geometry-typography",
+      "observedAt": "2026-08-29T09:20:00-07:00",
+      "commit": "defcdaa0c",
+      "codeCommit": "c49b13b5c",
+      "codeState": "commit",
+      "label": "Quick Switch default current geometry and typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run opens Quick Switch through each renderer's shipping shortcut path on the same persisted thread. The first run exposed current authority drift: Web had moved to a 576 by 420 panel with a fixed 48px search row and footer at y 461 while Lynx still rendered 576 by 450 with a compressed 40px search row and footer at y 491. Lynx now uses the current 418px content-box panel limit, a non-shrinking 48px search allocation, and a 330px results allocation. The final strict capture matches panel, search, visible results viewport, footer, and first row with zero anchor delta, while eight row labels and the active row agree. The geometry gate separately learned to compare Web's visible results region ending at the overlaid footer rather than its covered DOM overflow. Section, row, and footer typography match the authority; input typography retains a small residual because its Lynx host does not expose the text style through the current probe.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures use the same state, route, theme, viewport, Web bundle, rows, and active item. Product size changes are separated from the visible-results gate correction, and no material or Native credit is claimed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-default-current.json",
+          "classification": "tracked-current",
+          "sha256": "ad44f21e23aba4b71c504cdb9f6ad2e4b827ec3e4e896ed581191755f4521dd1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-quick-switch-visible-geometry",
+              "source": "Panel, search, visible results viewport, footer, and first row match x, y, width, and height exactly at 1280 by 820"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "current-quick-switch-visible-typography",
+              "source": "Section label, result row, and footer hints match authority size, weight, and line height; residual preserves unexposed Lynx input-host text metrics and renderer shaping"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-quick-switch-shared-runtime",
+              "source": "Same isolated snapshot, selected thread, empty query, eight rows, active first row, exact committed bundles, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

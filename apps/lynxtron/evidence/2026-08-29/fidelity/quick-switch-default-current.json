@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T09:20:00-07:00",
+  "stateId": "quick-switch-default",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "interaction": "open the command palette through each renderer's shipping shortcut path"
+  },
+  "identity": {
+    "commit": "defcdaa0c919a5e79cc9438849f6f9a87e59590e",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "48e3b3943b4f",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "rowCount": 8,
+    "activeRowMatches": true,
+    "geometryResidual": 0,
+    "typographyResidual": 0.04,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "panel": [352, 82, 576, 420],
+    "search": [353, 83, 574, 48],
+    "visibleResults": [353, 131, 574, 330],
+    "footer": [353, 461, 574, 40],
+    "firstRow": [361, 167, 558, 32],
+    "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  "typography": {
+    "sectionLabel": { "fontSize": 12, "fontWeight": 500, "lineHeight": 16 },
+    "rows": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+    "footerHints": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-default-typography-current/workbench-report.json",
+      "sha256": "9db6323e4f098f1f14cc319ddd3b248e9d6200d523be8df49ea853092c2222d5"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-default-typography-current/1280x820/web-assertions.json",
+      "sha256": "fda10761f3a952fc1fcb3350ed3ff7a00cab92532a1c4fe0a276e9d5ea6c6ca6"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-default-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "a0bd2989f6fa3e24f634fa92dc955a5c97fcf0657de0d61e949cddf632f90ec6"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx command palette shrank from 576 by 450 to the current 576 by 420 Web authority and preserves a fixed 48px search region."
+    ],
+    "missingCoverageClosed": [
+      "Current exact-head evidence measures panel, search, visible results viewport, footer, first row, section label, row, and footer-hint typography."
+    ],
+    "harnessLossClosed": [
+      "The geometry gate now compares the visible results viewport ending at the footer rather than Web's covered DOM overflow."
+    ],
+    "typographyBoundary": "The Lynx input host did not expose a computed text style through this probe, so typography retains a small nonzero residual instead of claiming complete zero-delta coverage.",
+    "evidenceBoundary": "This run updates Lynx geometry and typography only. Existing material and Native interaction evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}
