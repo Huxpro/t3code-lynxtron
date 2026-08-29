@@ -698,6 +698,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'readComposedText(button).trim() === "Revoke"');
   });
 
+  it("can retain only dedicated terminal pane images without reconstructible composites", () => {
+    assert.include(source, "!paneImagesOnly &&");
+    assert.include(source, "web: terminalOnlyImages ? null");
+  });
+
   it("reaps its exact browser process and removes the isolated profile", () => {
     assert.notInclude(source, "agent-browser");
     assert.include(source, "async function stopOwnedChild(child");

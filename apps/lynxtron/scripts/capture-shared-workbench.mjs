@@ -3957,6 +3957,7 @@ async function capturePanePair({ cdp, sessionId, layout, cellDir, prefix }) {
     },
   };
   if (
+    !paneImagesOnly &&
     result.web.dimensions.width === result.lynx.dimensions.width &&
     result.web.dimensions.height === result.lynx.dimensions.height
   ) {
