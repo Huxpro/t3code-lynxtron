@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T09:58:00-07:00",
+  "stateId": "quick-switch-actions-only",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "query": ">"
+  },
+  "identity": {
+    "commit": "6fb970ddc957dfe3d56b997dcab47756d219af26",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "378fff3a8495",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "query": ">",
+    "rowCount": 6,
+    "activeRows": [],
+    "typographyResidual": 0.04,
+    "rendererErrors": 0
+  },
+  "typography": {
+    "sectionLabel": { "fontSize": 12, "fontWeight": 500, "lineHeight": 16 },
+    "resultRows": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+    "footerHints": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-actions-only-typography-current/workbench-report.json",
+      "sha256": "8f894cbc9e3cce976bb4fa05d2f2fbddd0aeb5fe6dee78472a85be9d18238c32"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-actions-only-typography-current/1280x820/web-assertions.json",
+      "sha256": "f966114a6fe6b8a8b318b690370d6d71478609ef8227c87ab603fbb2a00b7072"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-actions-only-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "c01155dbca47eef2288c98024b457ec327d2e767d59a6701af47468440f2f26b"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head actions-only evidence replaces the unknown Lynx typography cell."
+    ],
+    "acceptedRenderingNoise": [
+      "Section, six action rows, and footer hints match authority font size, weight, and line height."
+    ],
+    "typographyBoundary": "The Lynx input host does not expose its text style through this probe, so typography retains a small nonzero residual.",
+    "interactionBoundary": "Real query input is verified, but this capture does not execute an action with Enter and therefore does not update interaction.",
+    "evidenceBoundary": "Existing material and Native evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}

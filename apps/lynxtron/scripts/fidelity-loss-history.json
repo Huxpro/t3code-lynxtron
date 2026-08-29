@@ -19727,6 +19727,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-actions-only-current-typography",
+      "observedAt": "2026-08-29T09:58:00-07:00",
+      "commit": "6fb970ddc",
+      "codeState": "commit",
+      "label": "Quick Switch actions-only current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run enters the actions-only prefix through both real query input paths on one isolated persisted-thread snapshot. Both renderers expose the same six action rows and no active row. Runtime styles close the unknown Lynx typography cell: section labels use 12px weight 500 with 16px line height, result rows use 14px weight 400 with 20px line height, and footer hints use 14px weight 500 with 20px line height. The Lynx input host remains outside the current computed-style probe, so a small nonzero typography residual is retained. This run does not execute an action and therefore leaves interaction unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head actions-only content and computed text styles replace one unknown cell without product, denominator, weight, threshold, filter, material, Native, screenshot, or action-execution credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-actions-only-current.json",
+          "classification": "tracked-current",
+          "sha256": "a92613ad9e0b121297b8eb79f33393efec21c15610c30384c8361f4304ecf5d6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "current-quick-switch-actions-visible-typography",
+              "source": "Section label, six action rows, and footer hints match authority size, weight, and line height; residual preserves unexposed input-host metrics"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-quick-switch-actions-shared-runtime",
+              "source": "Same isolated snapshot, selected thread, actions-only query, six rows, no active row, exact committed bundles, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
