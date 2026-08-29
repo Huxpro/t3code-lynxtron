@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T07:45:00-07:00",
+  "stateId": "composer-sendable",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "new-thread",
+    "themes": ["dark", "light"],
+    "interaction": "enter hello fidelity through each renderer's real Browser input path without submitting"
+  },
+  "identity": {
+    "commit": "ba00a9ca2fcdd6cfa87bc737609c6449e13b7cef",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "3c252a9cc661a2a5c069fc24eeb48dbbdaa5d84fa0e01f963da932a5becd90cd",
+    "sameState": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "themesPassed": 2,
+    "editorValue": "hello fidelity",
+    "composerState": "sendable",
+    "primaryAction": "send",
+    "rendererErrors": 0,
+    "typographyResidual": 0.04
+  },
+  "typography": {
+    "editor": {
+      "fontSize": 14,
+      "fontWeight": 400,
+      "webLineHeight": 22.75,
+      "lynxLineHeight": 23
+    },
+    "toolbarLabels": {
+      "fontSize": 14,
+      "fontWeight": 500,
+      "lineHeight": 20,
+      "lynxMultiTraitTracking": -0.56
+    },
+    "contextLabels": {
+      "fontSize": 12,
+      "fontWeight": 500,
+      "lineHeight": 16
+    }
+  },
+  "artifacts": {
+    "darkReport": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-sendable-typography-current-dark/workbench-report.json",
+      "sha256": "ad03ee50b2444477d5e415791cc63ba69a4de9cafc6531dfaf62ca7174807101"
+    },
+    "darkWebAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-sendable-typography-current-dark/1280x820/web-assertions.json",
+      "sha256": "ad81b40e0e8ac6da44c45049e124783abccdf827a2041666620fee56eaee2f85"
+    },
+    "darkLynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-sendable-typography-current-dark/1280x820/lynx-assertions.json",
+      "sha256": "e4b54a2c82fd7a5ae189c815af7b0379bd9ff252460ccf1923c0cd5e25eecd54"
+    },
+    "lightReport": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-sendable-typography-current-light/workbench-report.json",
+      "sha256": "3f728ffb6aa573d7ef0e9383e98fc5b8aafba96d7ec2754022ad092fb00c30d2"
+    },
+    "lightWebAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-sendable-typography-current-light/1280x820/web-assertions.json",
+      "sha256": "8eeee0239c40edcbc00defe0bea8e2b48c68e8087c354862ceb720bc4344b7a3"
+    },
+    "lightLynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-sendable-typography-current-light/1280x820/lynx-assertions.json",
+      "sha256": "1a85f0ec9b40e6347bb46eb05b1fdb11e8b9978ef23231711667ceca22aa9e18"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head dual-theme Browser evidence replaces the unknown Lynx typography cell for Composer Sendable."
+    ],
+    "acceptedRenderingNoise": [
+      "The editor resolves the same 14px weight 400 token with a 0.25px line-box difference.",
+      "Toolbar and context labels retain their verified renderer-specific shaping compensation and otherwise match authority size, weight, and line-height roles."
+    ],
+    "evidenceBoundary": "This run updates Lynx typography only. Existing material, Native, and physical keyboard or send evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}

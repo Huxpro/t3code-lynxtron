@@ -19420,6 +19420,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-sendable-current-typography",
+      "observedAt": "2026-08-29T07:45:00-07:00",
+      "commit": "ba00a9ca2",
+      "codeState": "commit",
+      "label": "Composer Sendable current typography",
+      "narrative": "Fresh exact-head dark and light 1280 by 820 Browser runs enter hello fidelity through each renderer's real input path on one isolated snapshot. Both pairs reach Sendable and Send with matching Composer geometry, controls, context, exact committed bundles, and zero renderer errors. Computed styles close the previously unknown Lynx typography cell: the editor uses 14px weight 400, toolbar labels use 14px weight 500 with 20px line height, and context labels use 12px weight 500 with 16px line height. The remaining quarter-pixel editor line-box difference and previously verified multi-trait shaping compensation remain explicit as a small nonzero residual. Native physical typing and send debt remain unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head dual-theme computed styles replace one unknown cell with measured accepted rendering noise; no product, denominator, weight, threshold, filter, material, Native, screenshot, or physical-input change is credited."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-sendable-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "5818b45701fef07c57da3b7fe146bf5bc47b38a483aee6105e01535eba044a06"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "dual-theme-current-sendable-computed-typography",
+              "source": "Dark and light editor, toolbar, and context leaves match authority size, weight, and line-height roles; residual preserves quarter-pixel editor quantization and the verified multi-trait tracking compensation"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-theme-current-sendable-shared-runtime",
+              "source": "Same isolated snapshot, real hello fidelity input, Sendable and Send state, 1280 by 820 viewport, exact committed bundles, and zero renderer errors in dark and light"
+            }
+          }
+        }
+      ]
     }
   ]
 }
