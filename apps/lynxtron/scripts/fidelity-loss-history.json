@@ -18892,12 +18892,12 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split.json",
           "classification": "tracked-current",
-          "sha256": "d6d3c6910a3c055f4528bda32dade229a59e1cf147ba6eff5278305ee2a8fe83"
+          "sha256": "b7837dc7ade7da456888303f4e0ec24fc64da1a4ce5dfd0acc03f598302ad749"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split/workbench-report.json",
           "classification": "tracked-current",
-          "sha256": "6d272e335d906f9ee4943ebb5adfbc7a04e7e95274b9cdda660e8c4684eb9c10"
+          "sha256": "e4a1666562c7e45280ac67dd8e5e5adeed2ebdf6beff63c5ccc49a613285be94"
         }
       ],
       "updates": [
@@ -19034,7 +19034,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split.json",
           "classification": "tracked-current",
-          "sha256": "d6d3c6910a3c055f4528bda32dade229a59e1cf147ba6eff5278305ee2a8fe83"
+          "sha256": "b7837dc7ade7da456888303f4e0ec24fc64da1a4ce5dfd0acc03f598302ad749"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split.json",
