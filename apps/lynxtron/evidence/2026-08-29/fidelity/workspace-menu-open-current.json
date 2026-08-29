@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T05:18:00-07:00",
+  "stateId": "workspace-menu-open",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "overlay": "workspace-menu"
+  },
+  "identity": {
+    "commit": "f57550d68baeddd7f779edf109887c5feb2cb19b",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "bdfe230e758409f774bedf56a8afe193cfce73fe3d43b802d4b6875ee39be4af",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "geometry": {
+    "webPanel": { "x": 410, "y": 672, "width": 354, "height": 96 },
+    "lynxPanel": { "x": 410, "y": 672, "width": 354, "height": 96 },
+    "webFirstRow": { "x": 415, "y": 705, "width": 344, "height": 29 },
+    "lynxFirstRow": { "x": 415, "y": 705, "width": 344, "height": 29 },
+    "relation": { "side": "top", "align": "start", "sideOffset": 4 },
+    "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0]
+  },
+  "result": {
+    "status": "pass-with-harness-loss",
+    "contentMatch": true,
+    "geometryMatch": true,
+    "rendererErrors": 0
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/workspace-menu-open-current/workbench-report.json",
+      "sha256": "1e95faa35fee968cb4341faeb7a7eb95a2b902502f26c7e2e708e952495dc9c4"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/workspace-menu-open-current/1280x820/web.png",
+      "sha256": "a771596ed61909baba615be25cba00bdf3ec05c5379e03e9eb5e37eadcb2832a"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/workspace-menu-open-current/1280x820/lynx.png",
+      "sha256": "8bd10b63e3dcb80a9387fd1168fa5e972e6ac7f95f3006b535cfc38fefaa5fd2"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx workspace menu now follows the full 354px trigger width instead of retaining the obsolete fixed 158px width.",
+      "Panel, first row, and top/start/+4 relation geometry match exactly in the current DOM measurements."
+    ],
+    "harnessLossExcluded": [
+      "The Lynx screenshot compositor omitted an overlay that remained present in product state and measured DOM geometry; the image is diagnostic and receives no material credit."
+    ],
+    "remainingProductResidual": [
+      "The prior material residual remains unchanged until a capture visibly contains both menus."
+    ],
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed."
+  }
+}
