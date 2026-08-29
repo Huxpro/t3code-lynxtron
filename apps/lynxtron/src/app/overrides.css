@@ -5234,6 +5234,8 @@
 }
 .source-control-item {
   box-sizing: border-box;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 .source-control-loading-row {
   --align-self-column: stretch;
@@ -5341,10 +5343,16 @@
   column-gap: var(--settings-row-control-gap);
 }
 .source-control-item__copy {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: 4px;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+}
+.source-control-item__headline {
+  min-height: 20px;
+}
+.source-control-item__summary {
+  margin-top: 4px;
+  line-height: 19px;
 }
 .source-control-writing-row {
   display: grid;

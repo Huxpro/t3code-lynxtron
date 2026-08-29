@@ -190,6 +190,8 @@ describe("SourceControlItemRowSurface", () => {
       expect(markup).toContain(part);
     }
     expect(markup).toContain("data-control");
+    expect(markup).toContain("source-control-item__headline");
+    expect(markup).toContain("source-control-item__summary");
     expect(markup.indexOf("data-mark")).toBeLessThan(markup.indexOf("GitHub"));
     expect(markup.indexOf("GitHub")).toBeLessThan(markup.indexOf("Detected CLI"));
   });

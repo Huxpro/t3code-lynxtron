@@ -47,7 +47,9 @@ export function SettingsSection({
     return (
       <view id={id} className={className}>
         {header}
-        {children}
+        <view className="settings-section__rows flex w-full min-w-0 flex-col self-stretch">
+          {children}
+        </view>
       </view>
     );
   }

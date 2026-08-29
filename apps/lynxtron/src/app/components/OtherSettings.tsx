@@ -97,33 +97,31 @@ function SourceControlLoadingSection({
       className="source-control-section"
       stacked
     >
-      <view className="settings-section__rows flex w-full min-w-0 flex-col self-stretch">
-        {rows.map((row) => (
-          <view
-            key={row}
-            className="source-control-loading-row"
-            data-source-control-loading-row={row}
-          >
-            <view className="source-control-loading-row__layout">
-              <view className="source-control-loading-row__copy">
-                <view className="source-control-loading-row__headline">
-                  <view className="source-control-loading-row__mark">
-                    <view className="source-control-loading-row__icon" />
-                    <view className="source-control-loading-row__dot" />
-                  </view>
-                  <view className="source-control-loading-row__label" />
-                  <view className="source-control-loading-row__badge" />
+      {rows.map((row) => (
+        <view
+          key={row}
+          className="source-control-loading-row"
+          data-source-control-loading-row={row}
+        >
+          <view className="source-control-loading-row__layout">
+            <view className="source-control-loading-row__copy">
+              <view className="source-control-loading-row__headline">
+                <view className="source-control-loading-row__mark">
+                  <view className="source-control-loading-row__icon" />
+                  <view className="source-control-loading-row__dot" />
                 </view>
-                <view className="source-control-loading-row__detail" />
+                <view className="source-control-loading-row__label" />
+                <view className="source-control-loading-row__badge" />
               </view>
-              <view className="source-control-loading-row__actions">
-                <view className="source-control-loading-row__button" />
-                <view className="source-control-loading-row__switch" />
-              </view>
+              <view className="source-control-loading-row__detail" />
+            </view>
+            <view className="source-control-loading-row__actions">
+              <view className="source-control-loading-row__button" />
+              <view className="source-control-loading-row__switch" />
             </view>
           </view>
-        ))}
-      </view>
+        </view>
+      ))}
     </SettingsSection>
   );
 }

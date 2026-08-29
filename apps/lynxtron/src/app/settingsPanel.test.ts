@@ -305,6 +305,12 @@ describe("Lynx Settings route projection", () => {
     expect(settings).toContain("<SmallIconButton");
     expect(settings).toContain('icon={<Icon name="refresh-cw"');
     expect(settings).not.toContain('label={discovery.pending ? "Scanning…" : "Rescan"}');
+    expect(overrides).toMatch(
+      /.source-control-item {[sS]*padding-left: 16px;[sS]*padding-right: 16px;/,
+    );
+    expect(overrides).toMatch(
+      /.source-control-item__summary {[sS]*margin-top: 4px;[sS]*line-height: 19px;/,
+    );
     expect(settings).not.toContain("Scanning server integrations…");
     expect(settings).not.toContain("status={usesDedicatedModel");
     expect(settings).not.toContain('"Uses global model"');

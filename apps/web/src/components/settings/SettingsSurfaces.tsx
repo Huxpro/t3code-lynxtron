@@ -277,7 +277,7 @@ export function SourceControlItemRowSurface({
     >
       <HostView className="source-control-item__layout flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <HostView className="source-control-item__copy flex min-w-0 flex-1 flex-col gap-1">
-          <HostView className="flex min-w-0 flex-wrap items-center gap-2">
+          <HostView className="source-control-item__headline flex min-w-0 flex-wrap items-center gap-2">
             {mark}
             <HostText className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
               {label}
@@ -287,7 +287,7 @@ export function SourceControlItemRowSurface({
             ) : null}
             {badge}
           </HostView>
-          <HostText className="flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
+          <HostText className="source-control-item__summary flex min-w-0 flex-wrap items-center gap-x-1 text-[13px] leading-[1.45] text-muted-foreground/80">
             {summary}
           </HostText>
         </HostView>
