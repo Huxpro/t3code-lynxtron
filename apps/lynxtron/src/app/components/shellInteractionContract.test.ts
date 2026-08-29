@@ -334,9 +334,9 @@ describe("desktop shell interaction contract", () => {
     expect(uiState).toContain("useAddProviderDialogOpen");
     expect(uiState).toContain("openAddProviderDialog");
     expect(uiState).toContain("closeAddProviderDialog");
-    expect(otherSettingsSource).toContain("settings-archive-delete-confirm");
-    expect(otherSettingsSource).toContain(
-      '<text\n                      className="ui-button__label"\n                      bindtap',
+    expect(settingsLayoutSource).not.toContain("      onContextMenu={onContextMenu}\n    >");
+    expect(settingsLayoutSource).toContain(
+      '<HostView\n        className="settings-row__text flex min-w-0 flex-1 flex-col"\n        onContextMenu={onContextMenu}',
     );
     expect(app).toContain('overlay === "add-provider"');
     expect(app).toContain("<AddProviderInstanceDialog");
