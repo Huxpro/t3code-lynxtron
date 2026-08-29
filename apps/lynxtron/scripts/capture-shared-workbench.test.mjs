@@ -716,6 +716,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelector(".settings-panel")');
     assert.include(workbench, ":scope > .settings-section");
     assert.include(workbench, "sectionTexts:");
+    assert.include(workbench, "const settingsSections = [");
+    assert.include(workbench, '":scope > .source-control-section, :scope > .settings-section"');
     assert.include(source, "settingsMetrics?.sectionTexts");
     assert.include(workbench, "function readSettingsNavigationChrome");
     assert.include(workbench, "function readSettingsNavigationItems");

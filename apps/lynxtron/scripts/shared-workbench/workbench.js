@@ -2345,6 +2345,11 @@ function readLynxPane() {
             const settingsPanel =
               root?.querySelector(".settings-content--source-control > .source-control-panel") ??
               root?.querySelector(".settings-panel");
+            const settingsSections = [
+              ...(settingsPanel?.querySelectorAll(
+                ":scope > .source-control-section, :scope > .settings-section",
+              ) ?? []),
+            ];
             const settingsRowIds = SETTINGS_ANCHOR_BY_ROUTE[expectedSemanticRoute] ?? [];
             return {
               navigationLabels: [
@@ -2363,10 +2368,10 @@ function readLynxPane() {
                 expectedSemanticRoute === "settings-providers"
                   ? readProviderSettingsMetrics(root)
                   : null,
-              sectionTitles: [...(root?.querySelectorAll(".settings-section__title") ?? [])].map(
-                (item) => item.textContent?.trim(),
+              sectionTitles: settingsSections.map((item) =>
+                item.querySelector(".settings-section__title")?.textContent?.trim(),
               ),
-              sectionTexts: [...(root?.querySelectorAll(".settings-section") ?? [])].map(
+              sectionTexts: settingsSections.map(
                 (item) => item.textContent?.trim().replace(/\s+/g, " ") ?? "",
               ),
               geometry: {
@@ -2393,11 +2398,7 @@ function readLynxPane() {
                   ),
                 ),
                 panelAncestors: readElementAncestors(settingsPanel),
-                sections: [
-                  ...(settingsPanel?.querySelectorAll(
-                    ":scope > .source-control-section, :scope > .settings-section",
-                  ) ?? []),
-                ].map((item) => ({
+                sections: settingsSections.map((item) => ({
                   title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
                   box: readElementBox(item),
                   rows: readElementBox(item.querySelector(".settings-section__rows")),
