@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 87,
-  "expectedCellCount": 954,
-  "expectedTotalWeight": 300.2,
+  "expectedStateCount": 88,
+  "expectedCellCount": 966,
+  "expectedTotalWeight": 303.2,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -593,6 +593,13 @@
       "label": "Right Panel · Terminal Session",
       "group": "review",
       "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "right-panel-terminal-multi-session",
+      "label": "Right Panel · Terminal Multi-session",
+      "group": "review",
+      "weight": 3,
       "clients": ["lynx", "native"]
     },
     {
