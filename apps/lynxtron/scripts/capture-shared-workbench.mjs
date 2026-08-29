@@ -422,10 +422,12 @@ function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
       const footer = metrics.anatomy.footer?.rect;
       if (!results || !footer) return null;
       return {
-        x: results.x,
-        y: results.y,
-        width: results.width,
-        height: Math.max(0, Math.min(results.y + results.height, footer.y) - results.y),
+        rect: {
+          x: results.x,
+          y: results.y,
+          width: results.width,
+          height: Math.max(0, Math.min(results.y + results.height, footer.y) - results.y),
+        },
       };
     };
     return rectDeltaWithin(visibleResults(webMetrics), visibleResults(lynxMetrics), 2);

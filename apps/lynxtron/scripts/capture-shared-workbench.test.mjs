@@ -898,6 +898,7 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(source, "function quickSwitchAnatomyMatches");
     assert.include(source, "const visibleResults = (metrics) =>");
+    assert.include(source, "rect: {");
     assert.include(source, "Math.min(results.y + results.height, footer.y) - results.y");
     assert.include(source, '["panel", "search", "results", "footer", "empty"]');
     assert.include(
