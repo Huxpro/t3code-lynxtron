@@ -93,6 +93,10 @@ const settingsLayoutSource = readFileSync(
   ),
   "utf8",
 );
+const buttonSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/button.lynx.tsx"),
+  "utf8",
+);
 const otherSettingsSource = componentSource("OtherSettings.tsx");
 const branchToolbarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/BranchToolbar.tsx"),
@@ -338,6 +342,8 @@ describe("desktop shell interaction contract", () => {
     expect(settingsLayoutSource).toContain(
       '<HostView\n        className="settings-row__text flex min-w-0 flex-1 flex-col"\n        onContextMenu={onContextMenu}',
     );
+    expect(buttonSource).toContain("if (event.button === 0 && !disabled && onClick)");
+    expect(buttonSource).toContain("main-thread:bindmousedown={handleMouseDown}");
     expect(app).toContain('overlay === "add-provider"');
     expect(app).toContain("<AddProviderInstanceDialog");
     expect(app).toContain("open={addProviderDialogOpen}");
