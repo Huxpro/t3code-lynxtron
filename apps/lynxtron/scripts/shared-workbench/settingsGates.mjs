@@ -11,6 +11,19 @@ function rectWithin(webRect, lynxRect, tolerance) {
   );
 }
 
+function horizontalAnchorWithin(webRect, lynxRect, tolerance) {
+  return (
+    webRect &&
+    lynxRect &&
+    ["x", "y", "width"].every(
+      (key) =>
+        typeof webRect[key] === "number" &&
+        typeof lynxRect[key] === "number" &&
+        Math.abs(webRect[key] - lynxRect[key]) <= tolerance,
+    )
+  );
+}
+
 export function sourceControlErrorSettingsGeometryMatches(webMetrics, lynxMetrics) {
   const webSections = webMetrics?.geometry?.sections ?? [];
   const lynxSections = lynxMetrics?.geometry?.sections ?? [];
@@ -30,9 +43,8 @@ export function sourceControlErrorSettingsGeometryMatches(webMetrics, lynxMetric
     ) &&
     webSections.length === 2 &&
     lynxSections.length === 2 &&
-    webSections.every((webSection, index) =>
-      rectWithin(webSection?.box?.rect, lynxSections[index]?.box?.rect, 8),
-    )
+    rectWithin(webSections[0]?.box?.rect, lynxSections[0]?.box?.rect, 1) &&
+    horizontalAnchorWithin(webSections[1]?.box?.rect, lynxSections[1]?.box?.rect, 1)
   );
 }
 

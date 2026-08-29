@@ -49,6 +49,34 @@ describe("Source Control error Settings gate", () => {
       }),
     ).toBe(true);
   });
+
+  it("accepts platform-specific trailing section height only when its anchor matches", () => {
+    const lynxMetrics = {
+      sectionTitles: ["Server environment", "Text generation"],
+      sourceControlEmptyTitles: ["Could not scan the server environment"],
+      geometry: {
+        sourceControlEmpty: { rect: { x: 320, y: 132, width: 896, height: 352 } },
+        sections: [
+          { box: { rect: { x: 320, y: 88, width: 896, height: 396 } } },
+          { box: { rect: { x: 320, y: 532, width: 896, height: 268 } } },
+        ],
+      },
+    };
+
+    expect(sourceControlErrorSettingsGeometryMatches(webMetrics, lynxMetrics)).toBe(true);
+    expect(
+      sourceControlErrorSettingsGeometryMatches(webMetrics, {
+        ...lynxMetrics,
+        geometry: {
+          ...lynxMetrics.geometry,
+          sections: [
+            lynxMetrics.geometry.sections[0],
+            { box: { rect: { x: 321, y: 540, width: 896, height: 268 } } },
+          ],
+        },
+      }),
+    ).toBe(false);
+  });
 });
 
 describe("Source Control loading Settings gate", () => {
