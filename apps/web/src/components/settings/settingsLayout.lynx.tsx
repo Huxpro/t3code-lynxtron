@@ -100,11 +100,9 @@ export function SettingsRow({
         unavailable ? "settings-row--unavailable" : undefined,
         className,
       )}
+      onContextMenu={onContextMenu}
     >
-      <HostView
-        className="settings-row__text flex min-w-0 flex-1 flex-col"
-        onContextMenu={onContextMenu}
-      >
+      <view className="settings-row__text flex min-w-0 flex-1 flex-col">
         <view className="settings-row__title-line">
           <HostText className="settings-row__title" onContextMenu={onContextMenu}>
             {title}
@@ -119,7 +117,7 @@ export function SettingsRow({
             {status}
           </HostText>
         ) : null}
-      </HostView>
+      </view>
       {control ? <view className="settings-row__control">{control}</view> : null}
       {children}
     </HostView>
