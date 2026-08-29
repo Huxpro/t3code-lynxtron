@@ -37,6 +37,7 @@ const requestedModelSelection = (() => {
 })();
 const expectedOverlay = url.searchParams.get("overlay") || null;
 const legacySidebarEnabled = url.searchParams.get("legacySidebarEnabled") === "true";
+const betaMutationEnabled = url.searchParams.get("betaMutationEnabled") === "true";
 const initialOverlay = url.searchParams.get("initialOverlay") || null;
 const requestedSidebarWidthRaw = url.searchParams.get("sidebarWidth");
 const requestedSidebarWidthValue =
@@ -359,8 +360,63 @@ function readLegacySidebarSettings(root) {
     title: rowMetrics?.title ?? "",
     description: rowMetrics?.description ?? "",
     control: readElementBox(control),
-    checked: control?.getAttribute("aria-checked") ?? null,
+    checked:
+      control?.getAttribute("aria-checked") ??
+      (control?.getAttribute("class")?.includes("ui-switch--checked")
+        ? "true"
+        : control?.getAttribute("class")?.includes("ui-switch--unchecked")
+          ? "false"
+          : null),
     controlClass: control?.getAttribute("class") ?? "",
+  };
+}
+
+function readBetaMutationSettings(root) {
+  const settingTitles = [...(root?.querySelectorAll(".settings-row__title, h3") ?? [])];
+  const autoSettleTitle =
+    settingTitles.find((title) => readComposedText(title) === "Auto-settle inactive threads") ??
+    null;
+  const autoSettleRow =
+    autoSettleTitle?.closest(".settings-row") ??
+    autoSettleTitle?.parentElement?.parentElement?.parentElement?.parentElement ??
+    null;
+  const control =
+    root?.querySelector('[data-setting-control="auto-settle"]') ??
+    autoSettleRow?.querySelector('[role="switch"]') ??
+    null;
+  const daysTitle =
+    settingTitles.find(
+      (title) => readComposedText(title) === "Days of inactivity before auto-settle",
+    ) ?? null;
+  const daysRow =
+    daysTitle?.closest(".settings-row") ??
+    daysTitle?.parentElement?.parentElement?.parentElement?.parentElement ??
+    null;
+  const daysInput =
+    root?.querySelector(
+      '[aria-label="Days of inactivity before auto-settle"], [accessibility-label="Days of inactivity before auto-settle"]',
+    ) ??
+    daysRow?.querySelector("input") ??
+    null;
+  return {
+    titleCandidates: settingTitles.map((title) => readComposedText(title)),
+    autoSettleTitle: autoSettleTitle ? readComposedText(autoSettleTitle) : null,
+    autoSettleRowClass: autoSettleRow?.getAttribute("class") ?? null,
+    autoSettleRow: readElementBox(autoSettleRow),
+    checked:
+      control?.getAttribute("aria-checked") ??
+      (control?.getAttribute("class")?.includes("ui-switch--checked")
+        ? "true"
+        : control?.getAttribute("class")?.includes("ui-switch--unchecked")
+          ? "false"
+          : null),
+    control: readElementBox(control),
+    daysInput: readElementBox(daysInput),
+    daysValue:
+      daysInput?.value ??
+      daysInput?.getAttribute("value") ??
+      daysRow?.textContent?.match(/\b(\d{1,2})\b/u)?.[1] ??
+      null,
   };
 }
 
@@ -1417,6 +1473,9 @@ localStorage.setItem(
   "t3code:client-settings:v1",
   JSON.stringify({
     legacySidebarEnabled: ${JSON.stringify(legacySidebarEnabled)},
+    ...(${JSON.stringify(betaMutationEnabled)}
+      ? { sidebarV2Enabled: true, sidebarAutoSettleAfterDays: 3 }
+      : {}),
     environmentIdentificationMode: ${JSON.stringify(environmentIdentificationMode)},
   }),
 );
@@ -1432,6 +1491,7 @@ const lynxQuery = new URLSearchParams({
   theme,
   environmentIdentificationMode,
   legacySidebarEnabled: String(legacySidebarEnabled),
+  betaMutationEnabled: String(betaMutationEnabled),
 });
 if (requestedModelSelection) {
   lynxQuery.set("modelSelection", JSON.stringify(requestedModelSelection));
@@ -2294,6 +2354,7 @@ function readLynxPane() {
               rowIds: settingsRowIds.filter((id) => root?.getElementById(id)),
               rows: readSettingsRows(root, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(root),
+              betaMutation: readBetaMutationSettings(root),
               keybindings:
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(root)
@@ -3335,6 +3396,7 @@ function readWebPane() {
               rowIds: settingsRowIds.filter((id) => doc.getElementById(id)),
               rows: readSettingsRows(doc, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(doc),
+              betaMutation: readBetaMutationSettings(doc),
               keybindings:
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(doc)

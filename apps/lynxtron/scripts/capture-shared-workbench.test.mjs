@@ -755,6 +755,14 @@ describe("shared workbench lifecycle fault capture", () => {
       "root?.querySelector('[data-slot=\"empty-media\"], .source-control-empty__media')",
     );
     assert.include(source, "function betaSettingsGeometryMatches");
+    assert.include(source, '"settings-beta-mutation": "settings-general"');
+    assert.include(source, "function betaMutationStateMatches");
+    assert.include(source, "async function runBetaMutationFlow");
+    assert.include(source, '"Beta mutation disabled state"');
+    assert.include(source, '"Beta mutation restored state"');
+    assert.include(source, "finalBetaMutationReady");
+    assert.include(workbench, "function readBetaMutationSettings");
+    assert.include(workbench, "sidebarAutoSettleAfterDays: 3");
     assert.include(source, "function settingsNavigationStateMatches(state)");
     assert.include(source, "visuallySelectedItems.length === 1");
     assert.include(source, "finalSettingsNavigationReady");

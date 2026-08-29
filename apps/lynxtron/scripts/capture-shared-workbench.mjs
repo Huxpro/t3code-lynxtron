@@ -164,6 +164,7 @@ const isMultiStepQuestionState = stateId === "existing-thread-question-multi-ste
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
+const isBetaMutationState = stateId === "settings-beta-mutation";
 const isAddProviderDialogState =
   stateId === "settings-providers-add-dialog" || stateId === "settings-providers-add-dialog-light";
 const isProvidersSettingsState = stateId === "settings-providers" || isAddProviderDialogState;
@@ -632,7 +633,25 @@ function archiveSettingsGeometryMatches(webMetrics, lynxMetrics) {
 }
 
 function betaSettingsGeometryMatches(webMetrics, lynxMetrics) {
-  if (stateId !== "settings-beta") return true;
+  if (stateId !== "settings-beta" && !isBetaMutationState) return true;
+  if (isBetaMutationState) {
+    const webRow = webMetrics?.betaMutation?.autoSettleRow?.rect;
+    const lynxRow = lynxMetrics?.betaMutation?.autoSettleRow?.rect;
+    const webControl = webMetrics?.betaMutation?.control?.rect;
+    const lynxControl = lynxMetrics?.betaMutation?.control?.rect;
+    return (
+      webRow &&
+      lynxRow &&
+      webControl &&
+      lynxControl &&
+      Math.abs(webRow.x - lynxRow.x) <= 1 &&
+      Math.abs(webRow.width - lynxRow.width) <= 1 &&
+      Math.abs(webControl.x - lynxControl.x) <= 2 &&
+      Math.abs(webControl.width - lynxControl.width) <= 2 &&
+      Math.abs(webControl.height - lynxControl.height) <= 2 &&
+      Math.abs(webControl.y - webRow.y - (lynxControl.y - lynxRow.y)) <= 2
+    );
+  }
   const webLegacy = webMetrics?.legacySidebar;
   const lynxLegacy = lynxMetrics?.legacySidebar;
   const rowGeometryMatches =
@@ -674,6 +693,62 @@ function legacySidebarSettingsReady(state) {
     web.checked === "false" &&
     (lynx.checked === "false" || lynx.controlClass?.includes("ui-switch--unchecked"))
   );
+}
+
+function betaMutationStateMatches(state, checked) {
+  if (!isBetaMutationState) return true;
+  return [state?.web, state?.lynx].every((client) => {
+    const mutation = client?.settingsMetrics?.betaMutation;
+    return (
+      mutation?.checked === String(checked) &&
+      (checked
+        ? mutation.daysValue === "3"
+        : mutation.daysInput === null && mutation.daysValue === null)
+    );
+  });
+}
+
+async function runBetaMutationFlow(cdp, sessionId) {
+  const timeline = [];
+  let state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => betaMutationStateMatches(next, true),
+    5_000,
+    "Beta mutation initial state",
+  );
+  timeline.push({ step: "initial", value: 3 });
+  for (const client of ["web", "lynx"]) {
+    if (
+      !(await clickSidebarControl(cdp, sessionId, client, '[data-setting-control="auto-settle"]'))
+    ) {
+      throw new Error(`Missing ${client} Auto-settle control`);
+    }
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => betaMutationStateMatches(next, false),
+    5_000,
+    "Beta mutation disabled state",
+  );
+  timeline.push({ step: "disabled", value: null });
+  for (const client of ["web", "lynx"]) {
+    if (
+      !(await clickSidebarControl(cdp, sessionId, client, '[data-setting-control="auto-settle"]'))
+    ) {
+      throw new Error(`Missing ${client} Auto-settle control for restore`);
+    }
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => betaMutationStateMatches(next, true),
+    5_000,
+    "Beta mutation restored state",
+  );
+  timeline.push({ step: "restored", value: 3 });
+  return { state, timeline };
 }
 
 function settingsNavigationStateMatches(state) {
@@ -2718,6 +2793,10 @@ async function waitForWorkbenchState(
       addProviderDialog: {
         web: state?.web?.addProviderDialog ?? null,
         lynx: state?.lynx?.addProviderDialog ?? null,
+      },
+      betaMutation: {
+        web: state?.web?.settingsMetrics?.betaMutation ?? null,
+        lynx: state?.lynx?.settingsMetrics?.betaMutation ?? null,
       },
     })}`,
   );
@@ -5291,6 +5370,7 @@ async function captureCell({
     "settings-source-control-loading": "settings-general",
     "settings-source-control-error": "settings-general",
     "settings-beta": "settings-general",
+    "settings-beta-mutation": "settings-general",
     "settings-archive": "settings-general",
     "review-checkpoint": "existing-thread",
     "review-tree": "existing-thread",
@@ -5312,6 +5392,7 @@ async function captureCell({
     webRoute,
     theme,
     legacySidebarEnabled: String(legacySidebarEnabled),
+    betaMutationEnabled: String(isBetaMutationState),
     ...(overlay ? { overlay } : {}),
     expectProject,
     ...(expectThread ? { expectThread } : {}),
@@ -5379,6 +5460,8 @@ async function captureCell({
   const addProjectSourcesTimeline = [];
   let addProviderDialogStage = isAddProviderDialogState ? "waiting-settings" : "not-required";
   const addProviderDialogTimeline = [];
+  let betaMutationStage = isBetaMutationState ? "waiting-settings" : "not-required";
+  const betaMutationTimeline = [];
   let settingsAsyncReadyPolls =
     stateId === "settings-source-control" ||
     stateId === "settings-source-control-loading" ||
@@ -8080,6 +8163,13 @@ async function captureCell({
     addProviderDialogStage = "complete";
     reachedTargetState = true;
   }
+  if (isBetaMutationState) {
+    const flow = await runBetaMutationFlow(cdp, sessionId);
+    state = flow.state;
+    betaMutationTimeline.push(...flow.timeline);
+    betaMutationStage = "complete";
+    reachedTargetState = true;
+  }
   if (stateId === "add-project-sources") {
     state = await waitForSidebarV2Controls(cdp, sessionId);
     for (const client of ["web", "lynx"]) {
@@ -8400,6 +8490,13 @@ async function captureCell({
       ].every((step) => addProviderDialogTimeline.some((entry) => entry.step === step)) &&
       state?.web?.addProviderDialog === null &&
       state?.lynx?.addProviderDialog === null);
+  const finalBetaMutationReady =
+    !isBetaMutationState ||
+    (betaMutationStage === "complete" &&
+      betaMutationStateMatches(state, true) &&
+      ["initial", "disabled", "restored"].every((step) =>
+        betaMutationTimeline.some((entry) => entry.step === step),
+      ));
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
     state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&
@@ -8543,68 +8640,70 @@ async function captureCell({
       : webOverlayRowLabels.every((label, index) => label && label === lynxOverlayRowLabels[index]);
   const settingsContentMatch = !semanticRoute.startsWith("settings-")
     ? true
-    : stateId === "settings-beta"
-      ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
-      : stateId === "settings-general"
-        ? generalSettingsContentMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics)
-        : stateId === "settings-appearance"
-          ? appearanceSettingsContentMatches(
-              state?.web?.settingsMetrics,
-              state?.lynx?.settingsMetrics,
-            )
-          : stateId === "settings-keybindings"
-            ? keybindingsSettingsContentMatches(
+    : isBetaMutationState
+      ? finalBetaMutationReady
+      : stateId === "settings-beta"
+        ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
+        : stateId === "settings-general"
+          ? generalSettingsContentMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics)
+          : stateId === "settings-appearance"
+            ? appearanceSettingsContentMatches(
                 state?.web?.settingsMetrics,
                 state?.lynx?.settingsMetrics,
               )
-            : isProvidersSettingsState
-              ? providerSettingsContentMatches(
+            : stateId === "settings-keybindings"
+              ? keybindingsSettingsContentMatches(
                   state?.web?.settingsMetrics,
                   state?.lynx?.settingsMetrics,
                 )
-              : stateId === "settings-connections"
-                ? connectionsSettingsContentMatches(
+              : isProvidersSettingsState
+                ? providerSettingsContentMatches(
                     state?.web?.settingsMetrics,
                     state?.lynx?.settingsMetrics,
                   )
-                : stateId === "settings-source-control-loading"
-                  ? state?.web?.settingsMetrics?.loading === true &&
-                    state?.lynx?.settingsMetrics?.loading === true &&
-                    JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                      JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                    JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                      JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
-                  : stateId === "settings-source-control-error"
-                    ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                : stateId === "settings-connections"
+                  ? connectionsSettingsContentMatches(
+                      state?.web?.settingsMetrics,
+                      state?.lynx?.settingsMetrics,
+                    )
+                  : stateId === "settings-source-control-loading"
+                    ? state?.web?.settingsMetrics?.loading === true &&
+                      state?.lynx?.settingsMetrics?.loading === true &&
                       JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
                         JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                      JSON.stringify(
-                        state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                      ) ===
+                      JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                        JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
+                    : stateId === "settings-source-control-error"
+                      ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                        JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
                         JSON.stringify(
-                          state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                        ) &&
-                      JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                      (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0 &&
-                      (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
-                    : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
-                      JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                      JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
-                      JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
-                      JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
-                      JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                      ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                        (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                        JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
+                          state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                        ) ===
+                          JSON.stringify(
+                            state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                          ) &&
+                        JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                        (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0 &&
+                        (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
+                      : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                        JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                        JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
+                        JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
+                        JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
+                        JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                        ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                          (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                          JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
 
   const layout = await evaluate(
     cdp,
@@ -9610,6 +9709,7 @@ async function captureCell({
     finalSettingsGeometryReady &&
     finalSettingsNavigationReady &&
     finalAddProviderDialogReady &&
+    finalBetaMutationReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
@@ -9671,6 +9771,7 @@ async function captureCell({
       finalSettingsGeometryReady,
       finalSettingsNavigationReady,
       finalAddProviderDialogReady,
+      finalBetaMutationReady,
       finalTranscriptReady,
       finalPendingRequestReady,
       multiStepQuestionStage,
@@ -9914,6 +10015,14 @@ async function captureCell({
         },
         web: state?.web?.addProviderDialog ?? null,
         lynx: state?.lynx?.addProviderDialog ?? null,
+      },
+      betaMutation: {
+        match: finalBetaMutationReady,
+        stage: betaMutationStage,
+        inputChannel: isBetaMutationState ? "dual-cdp-pointer" : "not-required",
+        timeline: betaMutationTimeline,
+        web: state?.web?.settingsMetrics?.betaMutation ?? null,
+        lynx: state?.lynx?.settingsMetrics?.betaMutation ?? null,
       },
       sidebarFooterTheme: {
         match: finalSidebarFooterThemeReady,

@@ -111,6 +111,7 @@ const requestedModelSelection = (() => {
 const requestedEnvironmentIdentificationMode =
   previewUrl.searchParams.get("environmentIdentificationMode") === "none" ? "none" : "artwork";
 const requestedLegacySidebarEnabled = previewUrl.searchParams.get("legacySidebarEnabled");
+const betaMutationEnabled = previewUrl.searchParams.get("betaMutationEnabled") === "true";
 const requestedInitialOverlay = previewUrl.searchParams.get("initialOverlay");
 const requestedSidebarWidthRaw = previewUrl.searchParams.get("sidebarWidth");
 const requestedSidebarWidthValue =
@@ -149,6 +150,7 @@ const themedScenario = {
       ...(requestedLegacySidebarEnabled === null
         ? {}
         : { legacySidebarEnabled: requestedLegacySidebarEnabled === "true" }),
+      ...(betaMutationEnabled ? { sidebarV2Enabled: true, sidebarAutoSettleAfterDays: 3 } : {}),
       environmentIdentificationMode: requestedEnvironmentIdentificationMode,
     },
   },
