@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vite-plus/test";
 
 import {
   firstEnabledQuickSwitchIndex,
+  initialQuickSwitchActiveIndex,
   moveQuickSwitchActiveIndex,
   runActiveQuickSwitchItem,
 } from "./quickSwitchNavigation";
@@ -31,5 +32,11 @@ describe("Quick Switch navigation", () => {
   it("enters navigation from an intentionally empty selection", () => {
     expect(moveQuickSwitchActiveIndex(-1, 1, items)).toBe(1);
     expect(moveQuickSwitchActiveIndex(-1, -1, items)).toBe(2);
+  });
+
+  it("keeps filtered and file results unselected until keyboard navigation", () => {
+    expect(initialQuickSwitchActiveIndex(items, { fileMode: false, query: "" })).toBe(1);
+    expect(initialQuickSwitchActiveIndex(items, { fileMode: false, query: "settings" })).toBe(-1);
+    expect(initialQuickSwitchActiveIndex(items, { fileMode: true, query: "" })).toBe(-1);
   });
 });

@@ -46,6 +46,13 @@ export function firstEnabledQuickSwitchIndex(
   return index < 0 ? 0 : index;
 }
 
+export function initialQuickSwitchActiveIndex(
+  items: ReadonlyArray<QuickSwitchNavigationItem>,
+  options: { readonly fileMode: boolean; readonly query: string },
+): number {
+  return options.fileMode || options.query.length > 0 ? -1 : firstEnabledQuickSwitchIndex(items);
+}
+
 export function runActiveQuickSwitchItem(
   activeIndex: number,
   items: ReadonlyArray<QuickSwitchNavigationItem>,

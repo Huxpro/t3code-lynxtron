@@ -47,7 +47,7 @@ import { uiActions } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { Icon, type IconName } from "./Icon";
 import {
-  firstEnabledQuickSwitchIndex,
+  initialQuickSwitchActiveIndex,
   moveQuickSwitchActiveIndex,
   runActiveQuickSwitchItem,
   type QuickSwitchNavigationItem,
@@ -660,8 +660,8 @@ export function QuickSwitch({
     view,
   ]);
   useEffect(() => {
-    setActiveIndex(fileMode ? -1 : firstEnabledQuickSwitchIndex(navigationItems));
-  }, [fileMode, navigationItems]);
+    setActiveIndex(initialQuickSwitchActiveIndex(navigationItems, { fileMode, query }));
+  }, [fileMode, navigationItems, query]);
   const handlePaletteKeyDown = useCallback(
     (event: unknown) => {
       const key =
