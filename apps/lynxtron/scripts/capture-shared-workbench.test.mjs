@@ -297,6 +297,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "right-panel-terminal-vertical-split"');
     assert.include(source, '"right-panel-terminal-vertical-split": "existing-thread"');
     assert.include(source, "explicitExpectedThreadId || threadStateIds.has(stateId)");
+    assert.include(source, '"file-picker-default",');
     assert.include(source, 'aria-label="New terminal"');
     assert.include(source, 'aria-label="Split terminal horizontally"');
     assert.include(source, "lynxPaneWidths");

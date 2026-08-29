@@ -5020,6 +5020,7 @@ async function main() {
     "existing-thread-question",
     "existing-thread-question-multi-step",
     "sidebar-resize",
+    "file-picker-default",
     "files-browser",
     "settled-banner-inline-files-narrow",
     "file-editor-detail",
