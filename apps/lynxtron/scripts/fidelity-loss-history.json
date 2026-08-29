@@ -19540,6 +19540,58 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-provider-wizard-current-visuals",
+      "observedAt": "2026-08-29T08:49:00-07:00",
+      "commit": "5396763d4",
+      "codeCommit": "5396763d4",
+      "codeState": "commit",
+      "label": "Add Provider wizard current geometry and typography",
+      "narrative": "A new explicit Driver stop-point opens the dark Add Provider wizard through both visible Add actions and retains the dialog as the final state. The first valid current capture found real typography drift: Lynx used 12px step labels, 13px driver names, missing badge line height, and inherited 16px footer controls while Web used 14px step and driver labels, 10px badges with 13.3333px line height, and 14px weight 500 footer actions. Scoped dialog styles now match those authority tokens. A fresh exact-head capture measures identical 576 by 538 panel, 574 by 156 header, 574 by 320 body, 574 by 60 footer, all three step boxes, and all nine driver cards with zero anchor delta. Runtime leaves match title, description, steps, driver names, badges, Cancel, and Next. A separate post-fix complete lifecycle passes Driver, Identity, blocked invalid Config, dismissal, reopen, composed input, Config, save, cross-renderer projection, delete, and final dismissal. A temporary visual frame measured dialog-crop SSIM 0.814104, but because the tracked screenshot budget is already full, the pixel is not retained and material remains unknown rather than receiving unverifiable credit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after runtime style evidence isolates the scoped dialog typography changes, while exact post-fix geometry and full lifecycle evidence preserve the shared state and behavior contract. Material remains unknown because its temporary pixels are not retained."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-providers-add-dialog-current.json",
+          "classification": "tracked-current",
+          "sha256": "e9f6f7a3e7cb740d61b0fd20402083d93e45538945148bf916aba1c2e60680ca"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-provider-driver-dialog-geometry",
+              "source": "Panel, header, body, footer, three step boxes, and nine driver cards have zero x, y, width, and height delta at 1280 by 820"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "current-provider-driver-runtime-typography",
+              "source": "Title, description, six step leaves, nine driver names, four Coming Soon and two Early Access badges, Cancel, and Next match authority size, weight, and line height; residual preserves the text-glyph versus SVG selected check"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-provider-wizard-complete-runtime",
+              "source": "Same isolated snapshot and exact committed bundles pass Driver hold plus complete create, projection, delete, and dismissal lifecycle with zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T08:49:00-07:00",
+  "stateId": "settings-providers-add-dialog",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-providers",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "5396763d4413cb4fd54484cffef721137bb0fde9",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "a35686825f1d",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "driverGeometryResidual": 0,
+    "typographyResidual": 0.02,
+    "rendererErrors": 0,
+    "completeLifecyclePassed": true
+  },
+  "geometry": {
+    "panel": [352, 141, 576, 538],
+    "header": [353, 142, 574, 156],
+    "body": [353, 298, 574, 320],
+    "footer": [353, 618, 574, 60],
+    "stepAnchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "driverAnchorDeltas": [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0
+    ]
+  },
+  "typography": {
+    "title": { "fontSize": 20, "fontWeight": 600, "lineHeight": 20 },
+    "description": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+    "steps": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 },
+    "driverNames": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 },
+    "badges": { "fontSize": 10, "fontWeight": 500, "lineHeight": 13.3333 },
+    "footerActions": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 }
+  },
+  "artifacts": {
+    "driverReport": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-providers-add-dialog-driver-current/workbench-report.json",
+      "sha256": "5b93b393da8389e50678ca96fb4245c80ab048207d1d32945e209b2e83053225"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-providers-add-dialog-driver-current/1280x820/web-assertions.json",
+      "sha256": "9c5c180ac69ab6bb08570416158b8c0df0ea8af460fa14a55fc654a606b8fd07"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-providers-add-dialog-driver-current/1280x820/lynx-assertions.json",
+      "sha256": "a6e6a2410448a0fb3b702748bcdd21433539edd4b7cdd79276dc66069a531333"
+    },
+    "lifecycleReport": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-providers-add-dialog-lifecycle-current/workbench-report.json",
+      "sha256": "2888cb7a7c0af9bef5b64fc2b60394f12c7ca1799e159ca36cd7d0d5bc6cf802"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx step labels changed from 12px to the Web authority's 14px, with matching weight and line height.",
+      "Lynx driver names changed from 13px to 14px, badges gained the authority line height, and Cancel and Next now use 14px weight 500 with 20px line height."
+    ],
+    "missingCoverageClosed": [
+      "Driver geometry is measured across panel, header, body, footer, three step boxes, and nine driver cards with zero anchor delta.",
+      "Runtime text leaves now cover title, description, steps, driver names, badges, and footer actions."
+    ],
+    "intentionalPlatformDelta": [
+      "Lynx renders the selected-driver check as a text glyph while Web uses an SVG icon."
+    ],
+    "materialStillUnknown": [
+      "A temporary paired frame measured dialog-crop SSIM 0.814104, but the PNG is not retained because the tracked screenshot budget is already 100 of 100; no material cell is updated from non-retained pixels."
+    ],
+    "evidenceBoundary": "The retained Driver report closes geometry and typography only. The separate retained lifecycle report proves Driver, Identity, validation, dismissal, Config, save, projection, delete, and final dismissal after the typography repair.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}
