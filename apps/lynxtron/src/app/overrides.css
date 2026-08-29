@@ -6391,7 +6391,7 @@
   background-color: var(--background);
   box-sizing: border-box;
 }
-.provider-health-number-field > view {
+.provider-health-number-field__stepper {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6400,9 +6400,11 @@
   height: 30px;
   color: var(--muted-foreground);
 }
-.provider-health-number-field > input {
+.provider-health-number-field__input {
   flex-grow: 1;
+  flex-shrink: 1;
   width: 66px;
+  min-width: 0;
   height: 30px;
   color: var(--foreground);
   font-family: var(--font-mono);

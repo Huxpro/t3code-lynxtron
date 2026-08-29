@@ -1066,9 +1066,18 @@ export function ProviderSettings() {
                 }}
               >
                 <NumberFieldGroup className="provider-health-number-field">
-                  <NumberFieldDecrement aria-label="Decrease provider health check interval" />
-                  <NumberFieldInput aria-label="Provider health check interval in seconds" />
-                  <NumberFieldIncrement aria-label="Increase provider health check interval" />
+                  <NumberFieldDecrement
+                    className="provider-health-number-field__stepper"
+                    aria-label="Decrease provider health check interval"
+                  />
+                  <NumberFieldInput
+                    className="provider-health-number-field__input"
+                    aria-label="Provider health check interval in seconds"
+                  />
+                  <NumberFieldIncrement
+                    className="provider-health-number-field__stepper"
+                    aria-label="Increase provider health check interval"
+                  />
                 </NumberFieldGroup>
               </NumberField>
               <text className="provider-health-unit">seconds</text>

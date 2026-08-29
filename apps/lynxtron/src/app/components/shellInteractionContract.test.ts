@@ -310,6 +310,8 @@ describe("desktop shell interaction contract", () => {
     expect(settingsSurfaces).toContain("provider-instance-card__summary");
     expect(settingsSurfaces).toContain("provider-instance-card__actions");
     expect(providers).toContain('id="provider-health-check-interval"');
+    expect(providers).toContain('className="provider-health-number-field__stepper"');
+    expect(providers).toContain('className="provider-health-number-field__input"');
     expect(providers).toContain("backgroundActivityOverrideSettings");
     expect(providers).toContain("t3ClientActions");
     expect(providers).toContain(".updateServerSettings(");
