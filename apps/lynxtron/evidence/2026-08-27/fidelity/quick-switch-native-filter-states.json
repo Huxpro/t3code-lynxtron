@@ -54,7 +54,7 @@
       "name": "physical empty Escape dismissal",
       "result": "pass",
       "detail": "A real Escape key dismissed the empty palette and restored the same canonical thread frame as the Actions-only run.",
-      "screenshot": "quick-switch-native-empty-dismissed.png",
+      "screenshot": "quick-switch-native-actions-only-dismissed.png",
       "sha256": "f4d4e9041356b38e41c8c7912eabfe6b1cb0bb747680a8d2331ed801d1ec4dee",
       "pixelSize": [2784, 1864]
     }

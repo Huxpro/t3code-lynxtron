@@ -35,7 +35,7 @@
       "name": "physical Escape dismissal",
       "result": "pass",
       "detail": "A real Escape key closes the focused file picker and restores the canonical thread.",
-      "screenshot": "file-picker-native-escape-dismissed.png",
+      "screenshot": "quick-switch-native-escape-dismissed.png",
       "sha256": "8f73cb727312dec946b6cc0e6c65cc29ec18b26809d1304d79f555c93fde426b",
       "pixelSize": [2784, 1864]
     }

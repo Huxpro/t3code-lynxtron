@@ -17906,7 +17906,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-27/fidelity/file-picker-native-input-focus.json",
           "classification": "tracked-current",
-          "sha256": "0f445c32cfee5602838108fe2d1ea332fc59c3a03b34fc9dddcaf64bd7afdfbb"
+          "sha256": "8207ba8dc21f2899a067babf138030301c3d819801579fdff02c74f2fb135e03"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-27/fidelity/file-picker-native-review-query.png",
@@ -17914,7 +17914,7 @@
           "sha256": "ecbc6613c1bcddf3d06645ba218543a2ccc9d0ef52cda73069a07590c84e2a1f"
         },
         {
-          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/file-picker-native-escape-dismissed.png",
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-escape-dismissed.png",
           "classification": "tracked-current",
           "sha256": "8f73cb727312dec946b6cc0e6c65cc29ec18b26809d1304d79f555c93fde426b"
         }
@@ -18224,7 +18224,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-filter-states.json",
           "classification": "tracked-current",
-          "sha256": "ab1e0354a259e30625391ae59831600606638d2ddf8f9abf3d7258efd259ca11"
+          "sha256": "be0b00f4f5c406805bb3b7d23fc5d31d87473f08671b832549f2ccec7f29ea62"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-actions-only.png",
@@ -18242,7 +18242,7 @@
           "sha256": "e8ccc07a9d85539093538604ec16171b16ebeb4723146eafe11f111d193f860e"
         },
         {
-          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-empty-dismissed.png",
+          "path": "apps/lynxtron/evidence/2026-08-27/fidelity/quick-switch-native-actions-only-dismissed.png",
           "classification": "tracked-current",
           "sha256": "f4d4e9041356b38e41c8c7912eabfe6b1cb0bb747680a8d2331ed801d1ec4dee"
         }
