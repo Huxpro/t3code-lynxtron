@@ -135,6 +135,7 @@ const explicitSeedSource = argValue("--seed-source", "");
 const expandThinking = hasFlag("--expand-thinking");
 const keepServer = hasFlag("--keep-server");
 const terminalOnlyImages = hasFlag("--terminal-only-images");
+const paneImagesOnly = hasFlag("--pane-images-only");
 const timeoutMs = Number(argValue("--timeout-ms", "35000"));
 const selectedModelFixture = {
   instanceId: "claudeAgent",
@@ -8890,7 +8891,7 @@ async function captureCell({
 
   let sideBySide = null;
   let diff = null;
-  if (sameDims && !terminalOnlyImages) {
+  if (sameDims && !terminalOnlyImages && !paneImagesOnly) {
     const sbsPath = path.join(cellDir, "side-by-side.png");
     const diffPath = path.join(cellDir, "diff.png");
     const sbs = runFfmpeg([

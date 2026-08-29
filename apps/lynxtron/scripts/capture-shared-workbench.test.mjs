@@ -302,6 +302,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "lynxPaneWidths");
     assert.include(source, "lynxPaneHeights");
     assert.include(source, 'const terminalOnlyImages = hasFlag("--terminal-only-images")');
+    assert.include(source, 'const paneImagesOnly = hasFlag("--pane-images-only")');
     assert.include(source, "data-terminal-session-count");
     assert.include(source, "LYNX_TERM_2_MARKER");
     assert.include(source, "LYNX_TERM_1_MARKER");
