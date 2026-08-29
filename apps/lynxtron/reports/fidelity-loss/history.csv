@@ -305,3 +305,4 @@ composer-working-current-typography,2026-08-29T08:05:00-07:00,bb4c25d5b,commit,C
 settings-provider-wizard-current-visuals,2026-08-29T08:49:00-07:00,5396763d4,commit,Add Provider wizard current geometry and typography,0.200344,0.200344,0.039653,0.167326,0.832674,0.791546
 quick-switch-default-current-geometry-typography,2026-08-29T09:20:00-07:00,defcdaa0c,commit,Quick Switch default current geometry and typography,0.199768,0.199768,0.039642,0.166736,0.833264,0.792122
 quick-switch-query-current-selection-typography,2026-08-29T09:43:00-07:00,a81ba8f46,commit,Quick Switch query selection and typography,0.199202,0.199202,0.039642,0.166146,0.833854,0.792688
+quick-switch-empty-current-typography,2026-08-29T09:52:00-07:00,0d85bac21,commit,Quick Switch empty current typography,0.19875,0.19875,0.039632,0.165685,0.834315,0.79314

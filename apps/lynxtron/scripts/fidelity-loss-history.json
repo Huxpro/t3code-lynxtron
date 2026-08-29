@@ -19687,6 +19687,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-empty-current-typography",
+      "observedAt": "2026-08-29T09:52:00-07:00",
+      "commit": "0d85bac21",
+      "codeState": "commit",
+      "label": "Quick Switch empty current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run enters zzzz-no-result through both real query input paths on one isolated persisted-thread snapshot. Both renderers expose the same empty copy, zero result rows, and matching 576 by 190 panel, 48px search, 100px empty results region, and 40px footer. Runtime styles close the unknown Lynx typography cell: both empty labels use 14px weight 400, 20px line height, and normal tracking. Their measured text widths differ by 0.5px, retained as a small nonzero shaping residual. Existing material and Native evidence remain unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head no-result content, geometry, and computed text styles replace one unknown cell without product, denominator, weight, threshold, filter, material, Native, or screenshot credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-empty-current.json",
+          "classification": "tracked-current",
+          "sha256": "4433379f1b30b923cb5aa505c714d38c0d48fa6ecfd3d3f4fd7c171f1607752a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "current-quick-switch-empty-computed-typography",
+              "source": "Matching empty copy uses 14px weight 400, 20px line height, and normal tracking; residual preserves the measured 0.5px glyph-width difference"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-quick-switch-empty-shared-runtime",
+              "source": "Same isolated snapshot, selected thread, zzzz-no-result query, zero rows, exact committed bundles, matching empty geometry, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
