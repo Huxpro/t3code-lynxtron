@@ -19939,6 +19939,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-beta-current-typography",
+      "observedAt": "2026-08-29T11:48:00-07:00",
+      "commit": "c216e625b",
+      "codeState": "commit",
+      "label": "Settings Beta current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run reaches the same Beta view and three canonical sections on one isolated snapshot with zero renderer errors. Because the two panes retain different scroll offsets, only six rows visible in both panes are used for the typography comparison and no geometry or material claim is made. Add project starts in, Archive confirmation, Delete confirmation, Text generation model, Sidebar legacy, and Diagnostics all use matching 14px weight 500 title typography with 20px line height and minus 0.07px tracking. Their descriptions use matching 13px weight 400 typography; Web resolves 18.85px line height while Lynx uses the Native-safe 20px line height, retained as a nonzero residual. Existing Beta mutation evidence remains unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head visible leaf metrics replace one unknown cell while excluding offscreen rows and differing scroll offsets. No product, geometry, material, interaction, Native, denominator, weight, threshold, or filter change is credited."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-beta-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "251f37fde6b2ca3dc2ce690a68ff16528b88da47effb9fe8b6f75ba7deccca12"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "current-beta-visible-row-typography",
+              "source": "Six mutually visible row titles match 14px weight 500, 20px and minus 0.07px tracking; descriptions match 13px weight 400 with a retained 18.85px versus 20px line-height delta"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-beta-shared-runtime",
+              "source": "Same isolated snapshot, General route, Beta semantic view, dark theme, exact committed bundles, three canonical sections, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

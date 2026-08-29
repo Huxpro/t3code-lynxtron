@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T11:48:00-07:00",
+  "stateId": "settings-beta",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-beta",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "c216e625b231b580dfd85119eca20ee920780103",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "1224ccca21eb",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "sectionTitles": ["General", "Legacy features", "About"],
+    "commonVisibleRows": 6,
+    "typographyResidual": 0.04,
+    "rendererErrors": 0
+  },
+  "typography": {
+    "rowTitles": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20, "letterSpacing": -0.07 },
+    "rowDescriptions": {
+      "fontSize": 13,
+      "fontWeight": 400,
+      "webLineHeight": 18.85,
+      "lynxLineHeight": 20
+    },
+    "rows": [
+      "Add project starts in",
+      "Archive confirmation",
+      "Delete confirmation",
+      "Text generation model",
+      "Sidebar (legacy)",
+      "Diagnostics"
+    ]
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-beta-typography-current/workbench-report.json",
+      "sha256": "f2a78b2eb79f079bdd29af53c44e253783b5a080d788ac9c69a7e20934dfbcb"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-beta-typography-current/1280x820/web-assertions.json",
+      "sha256": "1750e2dd92deb575f6c91e8e2b57bcd74b6205cdfddad8ff5e697347a0fc0760"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-beta-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "bc1db196fb9513bb8741ea7006ea7d17a9577b3ee6aaf5bde6983dc8a16ebed9"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head Settings Beta evidence replaces the unknown Lynx typography cell using six rows visible in both independently scrolled panes."
+    ],
+    "acceptedRenderingNoise": [
+      "Row titles match exactly; descriptions retain the Web 18.85px versus Lynx 20px line-height difference."
+    ],
+    "harnessBoundary": "The panes have different scroll offsets, so this evidence does not update Beta geometry or material. Offscreen rows are excluded from visible typography comparison.",
+    "evidenceBoundary": "Existing interaction, mutation, and Native evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}
