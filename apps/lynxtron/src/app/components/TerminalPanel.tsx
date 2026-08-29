@@ -10,6 +10,7 @@ import {
   addTerminalSession,
   initialTerminalSessionSelection,
   removeTerminalSession,
+  splitTerminalSession,
 } from "./terminalSessions.logic";
 import { Icon } from "./Icon";
 
@@ -48,8 +49,10 @@ export function TerminalPanel({
     ? activeThreadId + String.fromCharCode(0) + selection.activeId
     : null;
   const session = terminalKey ? terminalSessions[terminalKey] : undefined;
-  const output = useMemo(() => presentTerminalText(session?.history ?? ""), [session?.history]);
-  const grid = useMemo(() => terminalGridSize(width, height), [height, width]);
+  const grid = useMemo(
+    () => terminalGridSize(width / selection.visibleIds.length, height),
+    [height, selection.visibleIds.length, width],
+  );
   const resizedGridRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -89,22 +92,29 @@ export function TerminalPanel({
   }, [activeThread?.worktreePath, activeThreadId, cwd, selection.activeId, status]);
 
   useEffect(() => {
-    if (!activeThreadId || session?.status !== "running") return;
-    const key = `${activeThreadId}:${selection.activeId}:${grid.cols}x${grid.rows}`;
+    if (!activeThreadId) return;
+    const runningIds = selection.visibleIds.filter((terminalId) => {
+      const key = activeThreadId + String.fromCharCode(0) + terminalId;
+      return terminalSessions[key]?.status === "running";
+    });
+    if (runningIds.length === 0) return;
+    const key = `${activeThreadId}:${runningIds.join(",")}:${grid.cols}x${grid.rows}`;
     if (resizedGridRef.current === key) return;
     resizedGridRef.current = key;
-    void t3ClientActions
-      .resizeTerminal({
-        threadId: activeThreadId,
-        terminalId: selection.activeId,
-        cols: grid.cols,
-        rows: grid.rows,
-      })
-      .catch((cause: unknown) => {
-        resizedGridRef.current = null;
-        setOpenError(cause instanceof Error ? cause.message : String(cause));
-      });
-  }, [activeThreadId, grid.cols, grid.rows, selection.activeId, session?.status]);
+    void Promise.all(
+      runningIds.map((terminalId) =>
+        t3ClientActions.resizeTerminal({
+          threadId: activeThreadId,
+          terminalId,
+          cols: grid.cols,
+          rows: grid.rows,
+        }),
+      ),
+    ).catch((cause: unknown) => {
+      resizedGridRef.current = null;
+      setOpenError(cause instanceof Error ? cause.message : String(cause));
+    });
+  }, [activeThreadId, grid.cols, grid.rows, selection.visibleIds, terminalSessions]);
 
   const runCommand = () => {
     const value = command.trim();
@@ -161,6 +171,7 @@ export function TerminalPanel({
       data-terminal-session-status={session?.status ?? "starting"}
       data-terminal-session-id={selection.activeId}
       data-terminal-session-count={String(selection.ids.length)}
+      data-terminal-split={selection.visibleIds.length > 1 ? "horizontal" : "none"}
     >
       <view className="terminal-panel__meta">
         <text className="terminal-panel__cwd">{cwd}</text>
@@ -199,6 +210,17 @@ export function TerminalPanel({
           </view>
         </scroll-view>
         <view
+          className={
+            "terminal-panel__session-split" +
+            (selection.visibleIds.length > 1 ? " terminal-panel__session-split--disabled" : "")
+          }
+          aria-label="Split terminal horizontally"
+          aria-disabled={selection.visibleIds.length > 1 ? "true" : "false"}
+          bindtap={() => setSelection(splitTerminalSession)}
+        >
+          <Icon name="columns-2" size={13} color="#818181" />
+        </view>
+        <view
           className="terminal-panel__session-new"
           aria-label="New terminal"
           bindtap={() => setSelection(addTerminalSession)}
@@ -206,9 +228,32 @@ export function TerminalPanel({
           <Icon name="plus" size={13} color="#818181" />
         </view>
       </view>
-      <scroll-view className="terminal-panel__viewport" scroll-orientation="vertical">
-        <text className="terminal-panel__output whitespace-pre">{output || "Starting shell…"}</text>
-      </scroll-view>
+      <view className="terminal-panel__viewports">
+        {selection.visibleIds.map((terminalId, index) => {
+          const key = activeThreadId + String.fromCharCode(0) + terminalId;
+          const visibleSession = terminalSessions[key];
+          const output = presentTerminalText(visibleSession?.history ?? "");
+          return (
+            <scroll-view
+              key={terminalId}
+              className={
+                "terminal-panel__viewport" +
+                (index > 0 ? " terminal-panel__viewport--divided" : "") +
+                (terminalId === selection.activeId ? " terminal-panel__viewport--active" : "")
+              }
+              data-terminal-viewport={terminalId}
+              scroll-orientation="vertical"
+              bindtap={() =>
+                setSelection((current) => activateTerminalSession(current, terminalId))
+              }
+            >
+              <text className="terminal-panel__output whitespace-pre">
+                {output || "Starting shell…"}
+              </text>
+            </scroll-view>
+          );
+        })}
+      </view>
       {openError || session?.error ? (
         <text className="terminal-panel__error">{openError ?? session?.error}</text>
       ) : null}
