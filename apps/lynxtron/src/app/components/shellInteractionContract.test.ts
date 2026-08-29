@@ -6,6 +6,10 @@ import { describe, expect, it } from "vite-plus/test";
 const componentSource = (name: string) =>
   readFileSync(path.resolve(import.meta.dirname, name), "utf8");
 const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
+const button = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/button.lynx.tsx"),
+  "utf8",
+);
 const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
@@ -334,7 +338,7 @@ describe("desktop shell interaction contract", () => {
     expect(uiState).toContain("useAddProviderDialogOpen");
     expect(uiState).toContain("openAddProviderDialog");
     expect(uiState).toContain("closeAddProviderDialog");
-    expect(overrides).toContain(".ui-button__label {\n  pointer-events: none;");
+    expect(button).toContain("catchtap={handleTap}");
     expect(app).toContain('overlay === "add-provider"');
     expect(app).toContain("<AddProviderInstanceDialog");
     expect(app).toContain("open={addProviderDialogOpen}");

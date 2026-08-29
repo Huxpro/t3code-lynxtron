@@ -76,6 +76,7 @@ export function Button({
     >
       <text
         className={`ui-button__label${approvalLabel ? " ui-button__label--authority-hidden" : ""}`}
+        catchtap={handleTap}
         text-maxline="1"
       >
         {children}
