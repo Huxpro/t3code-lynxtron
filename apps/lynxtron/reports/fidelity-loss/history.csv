@@ -294,3 +294,4 @@ right-panel-terminal-split-reconciliation,2026-08-29T01:02:00-07:00,33af6cc6d,co
 settings-source-control-current,2026-08-29T02:47:00-07:00,2b0e5de07,commit,Settings Source Control current Browser evidence,0.208982,0.208982,0.039505,0.176448,0.823552,0.782908
 settings-connections-mutation-browser-current,2026-08-29T03:42:00-07:00,099083ff0,commit,Settings Connections Browser mutation coverage,0.206625,0.206625,0.039585,0.173925,0.826075,0.785265
 right-panel-terminal-current-rendering,2026-08-29T04:25:00-07:00,1c5c51844,commit,Right Panel Terminal current rendering,0.205605,0.205605,0.039898,0.172593,0.827407,0.786285
+workspace-menu-open-width-current,2026-08-29T05:18:00-07:00,3fe0c9d18,commit,Workspace menu current anchor width,0.205604,0.205604,0.039897,0.172593,0.827407,0.786286

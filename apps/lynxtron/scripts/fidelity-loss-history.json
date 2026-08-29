@@ -19216,6 +19216,42 @@
           }
         }
       ]
+    },
+    {
+      "id": "workspace-menu-open-width-current",
+      "observedAt": "2026-08-29T05:18:00-07:00",
+      "commit": "3fe0c9d18",
+      "codeCommit": "f57550d68",
+      "codeState": "commit",
+      "label": "Workspace menu current anchor width",
+      "narrative": "A fresh same-snapshot dark 1280 by 820 Browser run found that the Web authority had evolved from the old 158px popup to a 354px trigger-width popup while Lynx remained fixed at 158px. The Lynx menu now follows its full anchor width. Current DOM measurements match both 354 by 96 panels, both 344 by 29 first rows, and top/start/+4 relation with zero anchor delta. The Lynx screenshot compositor omitted the overlay even though product state and DOM geometry retained it, so current pixels are diagnostic only and the prior material residual remains unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after runs use the same seed, route, theme, viewport, and Web bundle. The product change removes the obsolete fixed width; compositor loss is excluded and receives no material credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/workspace-menu-open-current.json",
+          "classification": "tracked-current",
+          "sha256": "9be9526768bf4ac2664292c954aff20a906a8b6a6aec14addce1fa161abaefd0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["workspace-menu-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 354,
+              "confidence": 0.99,
+              "method": "current-workspace-panel-row-and-relation-geometry",
+              "source": "Both 354 by 96 panels, both 344 by 29 first rows, and the top/start/+4 anchor relation match exactly"
+            }
+          }
+        }
+      ]
     }
   ]
 }
