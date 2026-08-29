@@ -309,3 +309,4 @@ quick-switch-empty-current-typography,2026-08-29T09:52:00-07:00,0d85bac21,commit
 quick-switch-actions-only-current-typography,2026-08-29T09:58:00-07:00,6fb970ddc,commit,Quick Switch actions-only current typography,0.198325,0.198325,0.039632,0.165242,0.834758,0.793565
 model-picker-empty-current-typography,2026-08-29T10:08:00-07:00,c253d1e1f,commit,Model Picker empty current typography,0.197873,0.197873,0.039621,0.164781,0.835219,0.794017
 model-picker-query-current-provider-typography,2026-08-29T10:38:00-07:00,cfe37e148,commit,Model Picker query provider identity and typography,0.197283,0.197283,0.039621,0.164166,0.835834,0.794607
+model-picker-provider-rail-current-typography,2026-08-29T10:45:00-07:00,0c75f641c,commit,Model Picker provider rail current typography,0.196693,0.196693,0.039621,0.163552,0.836448,0.795197

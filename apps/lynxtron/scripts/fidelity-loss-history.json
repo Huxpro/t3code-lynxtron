@@ -19848,6 +19848,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-provider-rail-current-typography",
+      "observedAt": "2026-08-29T10:45:00-07:00",
+      "commit": "0c75f641c",
+      "codeState": "commit",
+      "label": "Model Picker provider rail current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run uses visible pointer input in both panes to switch the Model Picker rail from codex to opencode. Both renderers reach the same selected provider and seven ordered OpenCode model keys; Lynx records the provider choice as explicitly touched. Runtime styles close the unknown Lynx typography cell: Big Pickle uses 12px weight 500 and the provider label uses 12px weight 400 in both renderers. Half-pixel line-box and small glyph-width differences remain explicit, while the Lynx text favorite glyph remains an intentional renderer delta.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head provider selection, model keys, and computed text styles replace one unknown cell without product, denominator, weight, threshold, filter, material, Native, or screenshot credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/model-picker-provider-rail-current.json",
+          "classification": "tracked-current",
+          "sha256": "92a884ddeb5c505c5d98149e1c4ecee3ce0f142419d606796ce6202fb0ad7694"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-provider-rail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "current-model-picker-provider-rail-typography",
+              "source": "OpenCode model names use 12px weight 500 and provider labels use 12px weight 400 in both renderers; residual preserves half-pixel line boxes and glyph shaping"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-model-picker-provider-rail-runtime",
+              "source": "Real pointer input selects opencode in both panes, yields seven identical model keys, marks Lynx navigation touched, and reports zero renderer errors on exact committed bundles"
+            }
+          }
+        }
+      ]
     }
   ]
 }
