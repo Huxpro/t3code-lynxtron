@@ -5399,7 +5399,7 @@
   color: var(--muted-foreground-80);
   max-width: 576px;
   font-size: var(--settings-row-description-font-size);
-  line-height: var(--settings-row-description-line-height);
+  line-height: 20px;
   font-family: var(--font-sans);
   margin-top: 2px;
 }

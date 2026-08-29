@@ -103,6 +103,7 @@ describe("Lynx Settings route projection", () => {
       overrides.indexOf("}", descriptionStart),
     );
     expect(descriptionBlock).toContain("max-width: 576px;");
+    expect(descriptionBlock).toContain("line-height: 20px;");
     expect(layout).toContain('"settings-section flex w-full min-w-0 flex-col self-stretch"');
     expect(layout).toContain('"settings-section__rows flex w-full min-w-0 flex-col self-stretch"');
     expect(layout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
