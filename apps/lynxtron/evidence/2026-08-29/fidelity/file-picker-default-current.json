@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T06:42:00-07:00",
+  "stateId": "file-picker-default",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "overlay": "file-picker"
+  },
+  "identity": {
+    "commit": "6ff986c4575b27b2d03dabbd94eb1fc63b4d6c48",
+    "productCommit": "3603dfb76",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "3c252a9cc661a2a5c069fc24eeb48dbbdaa5d84fa0e01f963da932a5becd90cd",
+    "sameState": true,
+    "sameThread": true,
+    "sameModel": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "rowCount": 65,
+    "webActiveRows": [],
+    "lynxActiveRows": [],
+    "panelRect": [352, 82, 576, 420],
+    "rendererErrors": 0
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/file-picker-default-current/workbench-report.json",
+      "sha256": "4a0e180ef040bc3968510c3088c83f44ff2421e628934ae9c1a7b7751be8cc13"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/file-picker-default-current/1280x820/web.png",
+      "sha256": "be6cd4ae40d7b464ad153e676c88151aa63cc605e6f1ecf16c23faf2f3b0ac0f"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/file-picker-default-current/1280x820/lynx.png",
+      "sha256": "9d3390f1cde98a41a26079545ee4ca5184171e68690b741213af9a3b3b34f07e"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx File Picker no longer paints the first file as active before keyboard or pointer navigation begins.",
+      "An unselected File Picker ignores Enter; first ArrowDown and ArrowUp choose the first and last enabled rows respectively."
+    ],
+    "harnessLossExcluded": [
+      "The first current attempt omitted the explicit file-picker overlay and was discarded.",
+      "An earlier current attempt did not assign file-picker-default to the canonical thread fixture and was rejected by identity gates."
+    ],
+    "remainingProductResidual": [
+      "The Lynx surface retains platform-specific icon rasterization and opaque material differences; no unverified pixel metric is claimed."
+    ],
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed. Native remains unchanged."
+  }
+}
