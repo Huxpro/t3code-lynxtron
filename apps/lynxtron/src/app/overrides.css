@@ -6284,6 +6284,7 @@
 }
 .source-control-empty {
   --align-self-column: stretch;
+  --flex-direction: column;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6327,6 +6328,7 @@
   z-index: 1;
 }
 .source-control-empty__header {
+  --flex-direction: column;
   display: flex;
   flex-direction: column;
   align-items: center;
