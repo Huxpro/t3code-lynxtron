@@ -241,6 +241,7 @@ export function TerminalPanel({
                 (index > 0 ? " terminal-panel__viewport--divided" : "") +
                 (terminalId === selection.activeId ? " terminal-panel__viewport--active" : "")
               }
+              style={{ width: selection.visibleIds.length > 1 ? "50%" : "100%" }}
               data-terminal-viewport={terminalId}
               scroll-orientation="vertical"
               bindtap={() =>

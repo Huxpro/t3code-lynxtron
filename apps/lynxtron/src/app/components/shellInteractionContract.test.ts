@@ -497,6 +497,7 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain("splitTerminalSession");
     expect(terminal).toContain("selection.visibleIds.map");
     expect(terminal).toContain("data-terminal-viewport={terminalId}");
+    expect(terminal).toContain('selection.visibleIds.length > 1 ? "50%" : "100%"');
     expect(terminal).toContain('confirm-type="send"');
     expect(terminal).toContain("const commandInputRef = useRef<NodesRef>(null)");
     expect(terminal).toContain('method: "focus"');

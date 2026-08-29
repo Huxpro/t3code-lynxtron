@@ -8134,8 +8134,7 @@
 }
 .terminal-panel__viewport {
   position: relative;
-  flex-grow: 1;
-  width: 0;
+  flex-shrink: 0;
   min-height: 0;
   padding: 10px 12px;
 }
