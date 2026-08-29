@@ -363,6 +363,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   ]);
 
   useEffect(() => {
+    if (modelPickerOpen) return;
     const preferredProvider =
       presentedModelSelection?.instanceId ?? selectedModel?.instanceId ?? undefined;
     uiActions.syncModelPickerProvider(
@@ -378,6 +379,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     clientSettings.favorites.length,
     modelPickerScopeKey,
     lockedProvider,
+    modelPickerOpen,
     presentedModelSelection?.instanceId,
     providerEntries,
     selectedModel?.instanceId,

@@ -153,6 +153,7 @@ describe("desktop shell interaction contract", () => {
 
   it("keeps the anchored model picker selectable while outside taps dismiss", () => {
     const source = componentSource("ModelPicker.tsx");
+    const chatView = componentSource("ChatView.tsx");
 
     expect(source).toContain('className="model-picker-dismiss-layer"');
     expect(source).toContain('aria-label="Dismiss model picker"');
@@ -165,9 +166,11 @@ describe("desktop shell interaction contract", () => {
     );
     expect(source).toContain('className="model-picker-close"');
     expect(source).toContain("bindtap={onClose}");
-    expect(componentSource("ChatView.tsx")).toContain(
+    expect(chatView).toContain(
       "onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}",
     );
+    expect(chatView).toContain("if (modelPickerOpen) return;");
+    expect(chatView).toContain("onActiveProviderChange={uiActions.selectModelPickerProvider}");
     expect(overrides).toContain(".model-picker-dismiss-layer {");
     expect(overrides).toContain("background-color: transparent;");
     expect(overrides).toContain("background-color: var(--popover);");
