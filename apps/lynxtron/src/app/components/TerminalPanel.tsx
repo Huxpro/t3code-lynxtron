@@ -241,8 +241,9 @@ export function TerminalPanel({
       </view>
       <view
         className={
-          "terminal-panel__viewports" +
-          (selection.splitDirection === "vertical" ? " terminal-panel__viewports--vertical" : "")
+          selection.splitDirection === "vertical"
+            ? "terminal-panel__viewports-vertical"
+            : "terminal-panel__viewports-horizontal"
         }
       >
         {selection.visibleIds.map((terminalId, index) => {
@@ -254,13 +255,11 @@ export function TerminalPanel({
               key={terminalId}
               className={
                 "terminal-panel__viewport" +
+                (selection.splitDirection === "vertical"
+                  ? " terminal-panel__viewport--vertical"
+                  : " terminal-panel__viewport--horizontal") +
                 (index > 0 ? " terminal-panel__viewport--divided" : "") +
                 (terminalId === selection.activeId ? " terminal-panel__viewport--active" : "")
-              }
-              style={
-                selection.splitDirection === "vertical"
-                  ? { height: "50%", width: "100%" }
-                  : { height: "100%", width: selection.visibleIds.length > 1 ? "50%" : "100%" }
               }
               data-terminal-viewport={terminalId}
               scroll-orientation="vertical"

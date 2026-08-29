@@ -495,10 +495,11 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain("data-terminal-session-count={String(selection.ids.length)}");
     expect(terminal).toContain('aria-label="Split terminal horizontally"');
     expect(terminal).toContain('aria-label="Split terminal vertically"');
+    expect(terminal).toContain('"terminal-panel__viewports-vertical"');
     expect(terminal).toContain("splitTerminalSession");
     expect(terminal).toContain("selection.visibleIds.map");
     expect(terminal).toContain("data-terminal-viewport={terminalId}");
-    expect(terminal).toContain('selection.visibleIds.length > 1 ? "50%" : "100%"');
+    expect(terminal).toContain('" terminal-panel__viewport--vertical"');
     expect(terminal).toContain('confirm-type="send"');
     expect(terminal).toContain("const commandInputRef = useRef<NodesRef>(null)");
     expect(terminal).toContain('method: "focus"');
@@ -515,7 +516,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".terminal-panel {");
     expect(overrides).toMatch(/\.terminal-panel \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/);
     expect(overrides).toMatch(
-      /\.terminal-panel__viewports \{[\s\S]*top: 60px;[\s\S]*bottom: 52px;/,
+      /\.terminal-panel__viewports-horizontal,[\s\S]*top: 60px;[\s\S]*bottom: 52px;/,
     );
     expect(overrides).toMatch(
       /\.terminal-panel__command-row \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/,
