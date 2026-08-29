@@ -18675,6 +18675,77 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-beta-mutation-browser-current",
+      "observedAt": "2026-08-28T20:49:00-07:00",
+      "commit": "20432a7c7",
+      "codeCommit": "face0167c",
+      "codeState": "commit",
+      "label": "Settings Beta Browser mutation coverage",
+      "narrative": "A dedicated same-snapshot light Browser-first flow closes the new Lynx-for-Web mutation state. Web and Lynx begin checked with value 3, receive real pointer toggles, both become unchecked and remove the days row, then restore checked state and value 3. The final 1280 by 820 frame preserves semantic identity and relative switch geometry with zero renderer errors. Stale bundles, invalid partial settings, srcdoc interpolation, and selector normalization failures are classified as harness loss and excluded. Native mutation remains independently covered by its existing exact-bundle evidence.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The dedicated dual-renderer interaction and reverse-state flow directly measures the newly registered Lynx-for-Web state without changing product behavior or weights."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-beta-mutation-browser.json",
+          "classification": "tracked-current",
+          "sha256": "d753e890d6a7db08d899bf46a2ccd8a7960d4a2507761671611adfcff17fdc15"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-beta-mutation-browser/workbench-report.json",
+          "classification": "tracked-current",
+          "sha256": "f277f8f5710fee186c6cbfdea7fa1b318d42ef7be50452a3773c8eed8368a291"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-mutation-browser"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-beta-mutation-content",
+              "source": "Both renderers expose the Auto-settle switch and conditionally render the days row with value 3"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 2, 2, 0.15625, 1.15625],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "browser-beta-mutation-relative-geometry",
+              "source": "Rows share x and width; switch size and relative vertical placement remain within two pixels"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "browser-beta-mutation-typography",
+              "source": "Shared title, description, and days-row hierarchy retains only platform font-shaping residual"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "browser-beta-mutation-visual-review",
+              "source": "Light switch, input, row, and navigation materials remain coherent with conservative rendering residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-browser-beta-toggle-reverse-state",
+              "source": "Real pointer input drives checked 3 to unchecked null and restores checked 3 in both renderers"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-beta-mutation-readiness",
+              "source": "One isolated shared server, matched light route and viewport, final reverse state, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

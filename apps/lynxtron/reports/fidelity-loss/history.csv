@@ -285,3 +285,4 @@ right-panel-terminal-native-focus-current,2026-08-27T23:45:00-07:00,71d08433c,co
 right-panel-terminal-native-return-current,2026-08-28T08:21:59-07:00,0ccf54584,commit,Native Terminal physical Return submission,0.211901,0.211901,0.040058,0.179014,0.820986,0.779724
 sidebar-native-project-context-menu-current,2026-08-28T08:51:44-07:00,ecd351d61,commit,Native project context menu measurement,0.208269,0.208269,0.04014,0.17516,0.82484,0.783356
 settings-provider-wizard-light-current,2026-08-28T18:10:00-07:00,bc432ad4e,commit,Light Add Provider wizard Browser lifecycle,0.203078,0.203078,0.03997,0.169899,0.830101,0.788547
+settings-beta-mutation-browser-current,2026-08-28T20:49:00-07:00,20432a7c7,commit,Settings Beta Browser mutation coverage,0.200483,0.200483,0.039886,0.167269,0.832731,0.791142
