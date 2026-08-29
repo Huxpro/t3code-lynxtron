@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-28T22:43:00-07:00",
+  "stateId": "right-panel-terminal-multi-session",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "702af36d4c958f308ea00b8f84dd89cc68d603ec",
+    "productCommit": "783ed411b",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "webBundleSha256Prefix": "a479565e2ca9",
+    "lynxBundleSha256Prefix": "784ba79a4a5b",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "interaction": {
+    "channel": "CDP pointer input against both production Browser renderers",
+    "steps": [
+      "Both renderers open the Terminal surface on the canonical seeded thread.",
+      "Both renderers receive a visible New Terminal pointer action and expose Terminal 2.",
+      "Lynx Terminal 2 writes and renders LYNX_TERM_2_MARKER.",
+      "Lynx switches to Terminal 1, writes and renders LYNX_TERM_1_MARKER, then switches back.",
+      "Terminal 2 history contains only its marker, proving per-ID history isolation.",
+      "Closing active Terminal 2 returns to Terminal 1 and restores its distinct history."
+    ]
+  },
+  "result": {
+    "status": "pass",
+    "webHasSecondTerminal": true,
+    "lynxPeakSessionCount": 2,
+    "lynxFinalSessionCount": 1,
+    "lynxFinalActiveId": "term-1",
+    "rendererErrors": 0,
+    "sameDimensions": true
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/workbench-report.json",
+      "sha256": "12e060bb564d8cd098e6f9af62beaed9778008f9048373edff2c4e8cd4024295"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/web.png",
+      "sha256": "c7820bda5e6557f629bb44027769956a24ac9a90001bd981ba9abff7754bebba"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/lynx.png",
+      "sha256": "0ffc13420001bf338296eb21e49fd2efcf0b176f2e3028e4a68a0ab30f685d57"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx is no longer limited to one hard-coded terminal ID.",
+      "New, switch, close, active-neighbor fallback, and per-session history isolation now match the Web authority lifecycle at the bounded tab/session level."
+    ],
+    "harnessLossExcluded": [
+      "Early runs omitted the new thread-route classification, selected a draft Web route, and were rejected by identity and geometry gates.",
+      "The Browser-preview adapter initially rejected the Native-only terminal focus handshake; the adapter now records an explicit no-op instead of emitting renderer errors.",
+      "One pristine diagnostic run had a transient VCS status read error and was rejected rather than filtered."
+    ],
+    "remainingProductResidual": [
+      "Terminal split groups, xterm key-by-key semantics, selection actions, and physical drag remain outside this bounded slice."
+    ],
+    "remainingBoundary": "Native exact-owned Computer Use correlation is still required before Native cells receive credit.",
+    "policy": "No state weight, threshold, bad sample filter, or scope reduction was used."
+  }
+}
