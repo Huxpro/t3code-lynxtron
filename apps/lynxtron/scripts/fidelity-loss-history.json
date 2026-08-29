@@ -19340,6 +19340,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-default-current-typography",
+      "observedAt": "2026-08-29T07:27:34-07:00",
+      "commit": "04ae11708",
+      "codeState": "commit",
+      "label": "Model Picker current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run opens the default Model Picker on one persisted canonical thread and shared isolated server. Both renderers expose the same seven Codex model rows, selected GPT-5.6-Sol key, 360 by 346 panel, anchor relation, and zero renderer errors. Computed visible text metrics close the previously unknown Lynx typography cell: model names use 12px weight 500 and provider labels use 12px weight 400 with matching letter spacing. The remaining 16.5px versus 17px line-box quantization and 0.21875px to 1.625px glyph-width deltas are retained as a small nonzero cross-renderer residual. The earlier rejected run failed only because an unrelated Hero gate required nodes behind a persisted-thread overlay.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head computed styles replace one unknown cell with measured accepted rendering noise; no product, denominator, weight, threshold, filter, material, Native, or screenshot change is credited."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/model-picker-default-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "35b1a2122bc7b14b2d933c4295ca332e4483e62a41a500d5ef186169212b04f1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.99,
+              "method": "current-model-picker-computed-typography",
+              "source": "Seven visible rows match 12px model-name and provider-label sizes, weights 500 and 400, and normal letter spacing; residual preserves 0.5px line-box and sub-2px glyph shaping differences"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-model-picker-shared-runtime",
+              "source": "Same isolated seed, persisted thread, GPT-5.6-Sol selection, route, dark theme, 1280 by 820 viewport, exact committed bundles, seven semantic rows, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
