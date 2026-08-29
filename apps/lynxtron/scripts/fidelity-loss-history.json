@@ -19056,6 +19056,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-current",
+      "observedAt": "2026-08-29T02:47:00-07:00",
+      "commit": "2b0e5de07",
+      "codeCommit": "c7f0c0f84",
+      "codeState": "commit",
+      "label": "Settings Source Control current Browser evidence",
+      "narrative": "A fresh paired Browser run holds the isolated snapshot, Source Control route, dark theme, 1280 by 820 viewport, shared server, and exact Web and Lynx bundles constant. Visible section and row content now match after replacing Lynx-only text controls and restoring stacked row rhythm. Section starts retain measured cumulative deltas of 0, 4.3125, and 9.40625 pixels, so geometry remains conservatively nonzero. The Web DOM proves the provider-update toast absent, but its iframe compositor retained the stale toast pixels after the exit animation and two animation frames; that frame is classified as harness loss and does not replace the prior material residual. Interaction is also unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Current same-state evidence measures content, layout rhythm, typography, and runtime after the Source Control product fixes. The stale Web compositor frame is excluded from material scoring without changing the denominator, weights, thresholds, or filters."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-current.json",
+          "classification": "tracked-current",
+          "sha256": "b369f17b4016da82df15cb0f8677c5df6e53f738afc77a30d6cb606e22fd4938"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-source-control-visible-content",
+              "source": "Three section titles and all visible row texts match exactly; Rescan and Select chevron controls no longer add Lynx-only text"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 4.3125, 9.40625],
+              "anchorScale": 90,
+              "confidence": 0.99,
+              "method": "current-source-control-section-rhythm",
+              "source": "Section-start deltas remain explicit while single-line and multi-line row-step deltas are only 0.15625 and 0.3125 pixels"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.98,
+              "method": "current-source-control-text-rhythm",
+              "source": "Shared headline and summary classes preserve explicit 20px and 19px line rhythm with a conservative cross-renderer shaping residual"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-source-control-shared-runtime",
+              "source": "Same isolated seed and shared server reach completed Source Control discovery with matching route and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
