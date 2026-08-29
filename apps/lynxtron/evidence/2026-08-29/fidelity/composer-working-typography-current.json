@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T08:05:00-07:00",
+  "stateId": "composer-working",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "bb4c25d5ba516c02e76827f8c9ca7373dc8fdf8f",
+    "seedSha256": "09c6de1ee5407af37b3f2f42221215b1470494406af88fb768f39dac7c686372",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "3c252a9cc661a2a5c069fc24eeb48dbbdaa5d84fa0e01f963da932a5becd90cd",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "sessionStatus": "running",
+    "sidebarStatus": "Working",
+    "composerState": "working",
+    "primaryAction": "stop",
+    "rendererErrors": 0,
+    "typographyResidual": 0.04
+  },
+  "typography": {
+    "editor": { "fontSize": 14, "fontWeight": 400, "webLineHeight": 22.75, "lynxLineHeight": 23 },
+    "toolbarLabels": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 },
+    "stopAction": "icon-only"
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-working-typography-current/workbench-report.json",
+      "sha256": "5a2322d7abae86b05b519db452c5c0441755103b06e4be78018d64d2565def46"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-working-typography-current/1280x820/web-assertions.json",
+      "sha256": "aa7032285be651a990dc289edf9300656e5d5e7b579a51610d3bbebae96d77b2"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-working-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "bd75f778712675be4b4a12203c0ae071cbb0c17b2fd3769f8874bb1e1cd8b84d"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head running-session Browser evidence replaces the unknown Lynx typography cell for Composer Working."
+    ],
+    "acceptedRenderingNoise": [
+      "Editor and toolbar tokens match; the editor line box differs by 0.25px."
+    ],
+    "evidenceBoundary": "This run updates Lynx typography only. Existing material, Native, Stop interaction, and provider lifecycle evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}

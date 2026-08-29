@@ -19477,7 +19477,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-29/fidelity/new-thread-hero-light-typography-current.json",
           "classification": "tracked-current",
-          "sha256": "6a652b42849d618531fd86e1baf5a25b48f0938ebda83fdbc321c3b3018cb822"
+          "sha256": "c137ebdde62262acfbb5e572d79392d7f662a4139d708792c6901876ca051e17"
         }
       ],
       "updates": [
@@ -19496,6 +19496,46 @@
               "confidence": 0.99,
               "method": "current-light-hero-shared-runtime",
               "source": "Same isolated snapshot, unpersisted Hero route, light theme, 1280 by 820 viewport, exact committed bundles, selected Claude Fable 5 model, and zero renderer errors"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-working-current-typography",
+      "observedAt": "2026-08-29T08:05:00-07:00",
+      "commit": "bb4c25d5b",
+      "codeState": "commit",
+      "label": "Composer Working current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run selects the same controlled running thread in both renderers. Both panes report the running session, Working sidebar status, one working transcript row, Working Composer state, Stop primary action, identical controls and placeholder, exact committed bundles, and zero renderer errors. Computed styles close the previously unknown Lynx typography cell: both editors use 14px weight 400 and toolbar labels use 14px weight 500 with 20px line height. Stop is icon-only. The quarter-pixel editor line-box quantization remains a small nonzero residual, while Native Stop interaction debt remains unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head running-state computed styles replace one unknown cell with measured accepted rendering noise; no product, denominator, weight, threshold, filter, material, Native, screenshot, or interaction change is credited."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-working-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "7e83582724ae4e66d1c01065c97f7a9901d158393bf2b265682d6e60282faae2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "current-working-composer-computed-typography",
+              "source": "Running-state editor and toolbar labels match authority size, weight, and line-height roles; residual preserves quarter-pixel editor line-box quantization"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-working-shared-runtime",
+              "source": "Same isolated running thread, Working sidebar and composer state, Stop action, one working row, 1280 by 820 viewport, exact committed bundles, and zero renderer errors"
             }
           }
         }
