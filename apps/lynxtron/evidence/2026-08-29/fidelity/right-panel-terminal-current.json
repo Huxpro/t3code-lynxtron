@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T04:25:00-07:00",
+  "stateId": "right-panel-terminal",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "interaction": "open terminal, write pwd through visible Lynx input and Run, retain terminal panes"
+  },
+  "identity": {
+    "commit": "89d255100c7deaa4ba1dfd522b809d2e01cff0b7",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "1aeb0e2e1e5713be0dba5d4c8cd2b27d08f8d1b26cedcae72778bbd4d06a9efa",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "rendererErrors": 0,
+    "realPty": true,
+    "command": "pwd",
+    "expectedOutputObserved": true
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-current/workbench-report.json",
+      "sha256": "5860ed27e7d75149bf0e777bd99acded0bded9eca8d0a185ff97a0c62a88f060"
+    },
+    "webTerminal": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-current/1280x820/terminal-web.png",
+      "sha256": "5e98f611662b79a16e72def1775492225848917abe4ebc8a98621fcc91704bfd"
+    },
+    "lynxTerminal": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-current/1280x820/terminal-lynx.png",
+      "sha256": "245dc1e9e61090890ebc45878ab020d75a4a66a171546f19c43f1f9f449de40a"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head Browser evidence covers base Terminal typography and material instead of leaving those Lynx cells unknown."
+    ],
+    "productResidualRetained": [
+      "Web renders a Ghostty canvas while Lynx renders structured text and a command row, so typography and material remain explicitly nonzero.",
+      "Lynx exposes cwd, running status, session controls, and Run input that are absent from the Web authority terminal chrome."
+    ],
+    "harnessLossExcluded": [
+      "Ordinary pane screenshots taken before Terminal opened and the reconstructible terminal composite are not retained."
+    ],
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed. Native remains unchanged."
+  }
+}
