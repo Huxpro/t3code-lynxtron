@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T07:38:54-07:00",
+  "stateId": "settings-keybindings",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-keybindings",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "1ae5eb7495ce3b45ab6afe7d9507109b8e0e85ba",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "3c252a9cc661a2a5c069fc24eeb48dbbdaa5d84fa0e01f963da932a5becd90cd",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "canonicalRows": 45,
+    "visibleConflictIndicators": 18,
+    "rendererErrors": 0,
+    "typographyResidual": 0.03
+  },
+  "typography": {
+    "sharedTokens": {
+      "header": {
+        "fontSize": 11,
+        "fontWeight": 600,
+        "letterSpacing": 0.77
+      },
+      "command": {
+        "fontSize": 13,
+        "fontWeight": 500,
+        "lineHeight": 20
+      },
+      "shortcutAndWhen": {
+        "fontSize": 12,
+        "fontWeight": 400,
+        "lineHeight": 20,
+        "family": "JetBrains Mono"
+      }
+    },
+    "acceptedRenderingNoise": {
+      "webHeaderLineHeight": 16.5,
+      "lynxHeaderLineHeight": 16,
+      "reason": "The two renderers use the same explicit text tokens but quantize the header line box by half a pixel."
+    }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-keybindings-typography-current/workbench-report.json",
+      "sha256": "e3be1c68e6606f77a47c69bfe5740232b590ab514e89eb05422402405fc26c63"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-keybindings-typography-current/1280x820/web-assertions.json",
+      "sha256": "8bd62a32360f9f09fb8d3322ea5eb61e6199ae27b62282f19af2795f666e2d70"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-keybindings-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "2f480bfbe6d38d653af51a36816f375fc98b7fa18883154ea7c511ebb730b641"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head Browser evidence replaces the unknown Lynx typography cell for Settings Keybindings."
+    ],
+    "acceptedRenderingNoise": [
+      "Header, command, shortcut, and when leaves match the authority font-size, weight, tracking, and sans or monospace family roles.",
+      "The header line box resolves to 16.5px on Web and 16px on Lynx and remains a small nonzero residual."
+    ],
+    "evidenceBoundary": "This run updates Lynx typography only. Existing material, Native, and physical scroll or keyboard evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}

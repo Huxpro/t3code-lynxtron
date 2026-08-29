@@ -19380,6 +19380,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-current-typography",
+      "observedAt": "2026-08-29T07:38:54-07:00",
+      "commit": "1ae5eb749",
+      "codeState": "commit",
+      "label": "Settings Keybindings current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run revalidates the complete Keybindings table on one immutable isolated snapshot. Both renderers expose the same 45 canonical records and 18 conflict indicators with matching table geometry and zero renderer errors. Computed visible text metrics close the previously unknown Lynx typography cell: headers use 11px weight 600 with 0.77px tracking, command labels use 13px weight 500, and shortcut and when values use 12px JetBrains Mono with 20px line height. The remaining 16.5px versus 16px header line-box quantization is retained as a small nonzero cross-renderer residual. Native physical scrolling and keyboard-focus debt remain unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head computed styles replace one unknown cell with measured accepted rendering noise; no product, denominator, weight, threshold, filter, material, Native, screenshot, or physical-input change is credited."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-keybindings-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "b0b6a5afa20ad0644a83a8e175c2df4053becb97713a1dd90ed2cbacfaff550a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.99,
+              "method": "current-keybindings-computed-typography",
+              "source": "Headers match 11px weight 600 and 0.77px tracking; commands match 13px weight 500; shortcut and when values match 12px monospace and 20px line height; residual preserves the half-pixel header line-box difference"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-keybindings-shared-runtime",
+              "source": "Same isolated snapshot, route, dark theme, 1280 by 820 viewport, exact committed bundles, 45 canonical records, 18 conflict indicators, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
