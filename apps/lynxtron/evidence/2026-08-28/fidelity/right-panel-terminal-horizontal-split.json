@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-28T23:39:00-07:00",
+  "stateId": "right-panel-terminal-horizontal-split",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "45de18619114eccc607744436e6da964d1d12f7c",
+    "productCommit": "b916927a5",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "webBundleSha256Prefix": "a479565e2ca9",
+    "lynxBundleSha256Prefix": "121ea7aa138a",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "interaction": {
+    "channel": "CDP pointer input against both production Browser renderers",
+    "steps": [
+      "Both renderers open the Terminal surface on the canonical seeded thread.",
+      "Both renderers receive the visible Split Terminal Horizontally pointer action.",
+      "Lynx keeps term-1 and term-2 simultaneously mounted at 269.5px each.",
+      "Lynx writes distinct markers through the shared command row after activating each pane.",
+      "Both pane transcripts retain only their own marker.",
+      "Closing term-2 restores term-1 as one full-width pane."
+    ]
+  },
+  "result": {
+    "status": "pass",
+    "webHasHorizontalSplit": true,
+    "lynxSplit": "horizontal",
+    "lynxPaneWidths": [269.5, 269.5],
+    "lynxFinalSessionCount": 1,
+    "lynxFinalActiveId": "term-1",
+    "rendererErrors": 0
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split/workbench-report.json",
+      "sha256": "df69545cc7f99a6102fe5b40a799c91042ce187d594e8c80922d342ec59a3a6e"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split/1280x820/terminal-web.png",
+      "sha256": "cc5865b54fb9376c61d03e24f01b84f07d38e0d80a15de0351ff521931a7ec7d"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split/1280x820/terminal-lynx.png",
+      "sha256": "97b87202e0c990007a6106f7f225cd44d94d11db7d89a894e1fc4d1b4b2b6835"
+    },
+    "sideBySide": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split/1280x820/terminal-side-by-side.png",
+      "sha256": "0d5e21f1aa0e01fce1974a9da74516710fcbb0f50548ae87b31215a924dd251a"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx now supports the Web authority horizontal split action rather than converting every new session into an exclusive tab.",
+      "Both live sessions remain visible, independently buffered, independently resized to half width, and selectable as the shared command target.",
+      "The first implementation rendered each Lynx pane at only 24px; strengthened geometry evidence found it and the product now renders two 269.5px panes."
+    ],
+    "missingCoverage": [
+      "Native split correlation remains unavailable because Computer Use repeatedly resolves exact owned Lynxtron pid and window requests to unrelated same-bundle-id processes."
+    ],
+    "remainingProductResidual": [
+      "Vertical split, more than two panes, xterm key-by-key behavior, and selection actions remain outside this slice."
+    ],
+    "acceptedRenderingNoise": [
+      "Web labels its currently allocated sessions Terminal 2 and Terminal 3 while the isolated Lynx client labels its locally allocated sessions Terminal 1 and Terminal 2; both show the same two-pane lifecycle against the shared server."
+    ],
+    "policy": "No state weight, threshold, bad sample filter, or scope reduction was used."
+  }
+}
