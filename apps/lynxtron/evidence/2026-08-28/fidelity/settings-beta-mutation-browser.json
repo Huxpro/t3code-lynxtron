@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-28T20:49:00-07:00",
+  "stateId": "settings-beta-mutation",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-beta",
+    "theme": "light"
+  },
+  "identity": {
+    "commit": "face0167ce459d5fdabc87d0205055a3899a874f",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "a479565e2ca99f1471453afa618331409b8891a08b36afabb064b221cb643960",
+    "lynxBundleSha256": "a6faa9d56fe661cd2c70caff1a2f9fa7fbe0a71ffba1ad18a10b899e83f02dc0",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true
+  },
+  "mutation": {
+    "input": "dual CDP pointer on visible Auto-settle switches",
+    "timeline": [
+      { "step": "initial", "value": 3 },
+      { "step": "disabled", "value": null },
+      { "step": "restored", "value": 3 }
+    ],
+    "finalWebChecked": true,
+    "finalLynxChecked": true,
+    "finalWebDays": 3,
+    "finalLynxDays": 3
+  },
+  "result": {
+    "status": "pass",
+    "rendererErrors": 0,
+    "sameDimensions": true
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-beta-mutation-browser/workbench-report.json",
+      "sha256": "cd9482bf16b615effa2bce39537d70b65820185a76d262b407b88762aece1949"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-beta-mutation-browser/1280x820/web.png",
+      "sha256": "3a6ead556f87b3af17aa433590bdb48472ec43cd4896f9ccf07d25eee51e40af"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-beta-mutation-browser/1280x820/lynx.png",
+      "sha256": "12739ef9a0dc1395c0ce4453b190c1f7e42fc7d350f00cc662a868e64ba359b7"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Lynx-for-Web now has a dedicated real toggle and reverse-state mutation trace instead of inheriting a broad static gate.",
+      "Both renderers remove the days row when disabled and restore value 3 when enabled."
+    ],
+    "harnessLossExcluded": [
+      "A stale browser-preview bundle omitted the new fixture flag.",
+      "A srcdoc template referenced its host variable instead of serializing the flag.",
+      "Early selectors did not normalize Lynx unchecked semantics or locate Web rows by visible authority titles."
+    ],
+    "remainingBoundary": "Native mutation and cold restart remain covered by the separate 2026-08-16 exact-bundle evidence; this run does not replace it or claim new Native pixels.",
+    "policy": "No state, weight, threshold, filter, or Native residual changed."
+  }
+}
