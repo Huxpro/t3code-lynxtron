@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T13:58:00-07:00",
+  "stateId": "settings-general",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-general",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "8643133b39416e640316e179fe341f14489f630d",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "sectionTitles": ["General", "Legacy features", "About"],
+    "commonVisibleRows": 6,
+    "rendererErrors": 0
+  },
+  "typography": {
+    "rowTitles": {
+      "fontSize": 14,
+      "fontWeight": 500,
+      "lineHeight": 20,
+      "letterSpacing": -0.07
+    },
+    "rowDescriptions": {
+      "fontSize": 13,
+      "fontWeight": 400,
+      "webLineHeight": 18.85,
+      "lynxLineHeight": 20
+    },
+    "visibleRows": [
+      "Project grouping",
+      "Time format",
+      "Hide whitespace changes",
+      "Assistant output",
+      "Provider update checks",
+      "Auto-open task panel"
+    ]
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-typography-current/workbench-report.json",
+      "sha256": "813520f9ce619bd79fdd7ccebae56256c00b145aa118ee73a235ff838cc65808"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-typography-current/1280x820/web-assertions.json",
+      "sha256": "6dd634bca9c495a00508caaa336b7f9b2a9da9af1841be85c2534e1d5c063c3d"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "9dd1bfbc85f4965cadacbcef6f773035d39982712280585df899ff53de98deb4"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head General typography replaces the early font-size-only proxy using the six rows visible in both panes."
+    ],
+    "intentionalPlatformDelta": [
+      "Non-visible capability-specific rows and truthful per-surface values remain outside this typography comparison."
+    ],
+    "acceptedRenderingNoise": [
+      "Titles match exactly; descriptions retain Web 18.85px versus Lynx 20px line height."
+    ],
+    "evidenceBoundary": "Only rows simultaneously visible in both panes are counted; no interaction or material update is claimed.",
+    "policy": "No denominator, state weight, threshold, scope, or bad-sample filter changed, and no screenshot is retained."
+  }
+}

@@ -20155,6 +20155,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-general-current-typography",
+      "observedAt": "2026-08-29T13:58:00-07:00",
+      "commit": "8643133b3",
+      "codeState": "commit",
+      "label": "Settings General current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run reaches General directly on both renderers with one isolated snapshot, three matching section titles, twelve canonical row ids, and zero renderer errors. Six rows are simultaneously visible in both panes. Their titles match at 14px weight 500, 20px line height, and minus 0.07px tracking; descriptions match at 13px weight 400 with Web 18.85px versus Lynx 20px line height. Capability-specific offscreen values remain excluded from this typography-only checkpoint.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact-head capture closes only the stale General typography-confidence gap and leaves product code, weights, thresholds, scope, material, and interaction unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "b3ca89902e1ef6c4350131234a3ab0214a5c12edb0b4bfce0e82191a2d1ab2df"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "current-general-visible-row-typography",
+              "source": "Six mutually visible row titles match 14px weight 500, 20px and minus 0.07px tracking; descriptions match 13px weight 400 with retained 18.85px versus 20px line-height delta"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-general-shared-runtime",
+              "source": "Same isolated snapshot, General route, dark theme, 1280 by 820 viewport, current bundles, three canonical sections, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
