@@ -19299,6 +19299,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-general-current-semantics",
+      "observedAt": "2026-08-29T07:05:00-07:00",
+      "commit": "07744918b",
+      "codeCommit": "613e949ee",
+      "codeState": "commit",
+      "label": "Settings General current semantic accounting",
+      "narrative": "A fresh current-head dark Browser run reaches General directly on both shipping renderers with one isolated snapshot, twelve matching canonical row ids, three matching section titles, matching canonical row titles, and zero renderer errors. The older four-of-fourteen content residual incorrectly counted Web Select option text that is present in the DOM but not simultaneously visible. Current accounting retains three explicit platform capability deltas: reduced Background activity controls, unavailable Text generation model selection, and terminal-log versus local-trace Diagnostics copy. Per-surface version text remains truthful and is not treated as a parity bug. Existing geometry and material measurements remain unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This exact-head semantic refresh removes hidden Select option text from mismatch accounting while preserving all visible platform capability differences. No product commit, denominator, weight, threshold, or filter changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-current.json",
+          "classification": "tracked-current",
+          "sha256": "c09083dab126c78066a610322bca8396cdfc48ca2c39140e0cee5bb9dd931dc9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "current-general-visible-content-accounting",
+              "source": "Twelve canonical rows and titles match; three explicit platform capability copy units remain, while hidden Web Select options and truthful per-surface version labels are excluded from visible-content mismatch"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-general-shared-runtime",
+              "source": "Same isolated seed, route, dark theme, viewport, exact committed bundles, canonical row ids, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
