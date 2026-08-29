@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T11:34:00-07:00",
+  "stateId": "settings-source-control-error",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-source-control-error",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "c350d57ff803d07a4905915d525d9559b6302731",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "1224ccca21eb",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "errorText": "Source-control discovery is unavailable in this test environment.",
+    "retryLabel": "Scan",
+    "geometryResidual": 0.001711,
+    "typographyResidual": 0.02,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "shared": {
+      "empty": [320, 132, 896, 352],
+      "media": [750, 204, 36, 36],
+      "header": [576, 288, 384, 72],
+      "description": [576, 320, 384, 40]
+    },
+    "titleAnchorDelta": [-4.28125, 0, 8.5625, 0],
+    "retryButtonAnchorDelta": [0.84375, 0, -1.671875, 0]
+  },
+  "typography": {
+    "title": { "fontSize": 20, "fontWeight": 600, "lineHeight": 28 },
+    "description": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+    "retry": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-error-typography-current/workbench-report.json",
+      "sha256": "0dece2c85c0fca1f5ae76a7fd70e3c2b3605dc1aad2cd29165439ddca02210e4"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-error-typography-current/1280x820/web-assertions.json",
+      "sha256": "e0d34e9a30b19e2995ec8c5e17d1fa481c6b51b371741d9bd395e0ca4711391c"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-error-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "361b5744988373c66202178f2f41fd05c5c56429c884f387b33efd589fcca9c2"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "The Lynx error-state media, title/description group, and Scan action now follow the Web authority's vertical hierarchy instead of one horizontal row.",
+      "The Scan action now has the authority 28px outer height and 14px weight 500, 20px label typography."
+    ],
+    "missingCoverageClosed": [
+      "Current exact-head fault-injection evidence replaces the unknown Lynx typography cell and refreshes internal error-state geometry."
+    ],
+    "acceptedRenderingNoise": [
+      "Title and Scan widths retain small cross-renderer glyph-shaping differences."
+    ],
+    "intentionalPlatformDelta": [
+      "The independent Text generation section has platform-specific content height; its x, y, and width remain aligned and it is excluded from the Source Control error-card geometry score."
+    ],
+    "interactionBoundary": "The Scan control is present but was not activated in this capture, so the Lynx interaction cell remains unchanged.",
+    "evidenceBoundary": "Existing material and Native evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}

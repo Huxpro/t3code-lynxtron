@@ -19888,6 +19888,57 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-error-current-layout-typography",
+      "observedAt": "2026-08-29T11:34:00-07:00",
+      "commit": "c350d57ff",
+      "codeCommit": "c350d57ff",
+      "codeState": "commit",
+      "label": "Source Control error current layout and typography",
+      "narrative": "A current exact-head dark 1280 by 820 Browser fault-injection run reaches the same Source Control error route and copy in both renderers. The first valid capture exposed a real Lynx layout failure: media, title, description, and Scan were arranged horizontally because the runtime ignored the intended column flex direction. The empty surface now uses an explicit Native-safe positioned composition. The final capture matches the 896 by 352 empty surface, 36px media at 750,204, 384 by 72 header at 576,288, 384 by 40 description at 576,320, and Scan y 384 with 28px height. Title, description, and Scan typography match authority size, weight, and line height. Small title and button width shaping differences remain explicit. The independent Text generation section retains platform-specific content height and is not used to judge the error card. Scan was not activated, so interaction remains unknown.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same injected error, route, theme, viewport, snapshot, and Web bundle. The product fix is scoped to the error-state internal layout and Retry sizing; the gate correction only excludes independent platform-specific trailing-section height."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-error-current.json",
+          "classification": "tracked-current",
+          "sha256": "d3144b86837cc6bcce44bd7a4bac460ad00947920a9b209c9ee54b2d3dfd6872"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4.28125, 0, 8.5625, 0, 0, 0, 0, 0,
+                0.84375, 0, -1.671875, 0
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "current-source-control-error-internal-geometry",
+              "source": "Empty surface, media, header, and description match exactly; title and Scan retain only centered text-shaping width differences"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "current-source-control-error-computed-typography",
+              "source": "Title matches 20px weight 600 and 28px line height, description matches 14px weight 400 and 20px line height, and Scan matches 14px weight 500 and 20px line height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-source-control-error-shared-runtime",
+              "source": "Same injected discovery error, route, dark theme, 1280 by 820 viewport, exact committed bundles, matching copy, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
