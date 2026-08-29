@@ -18604,6 +18604,77 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-provider-wizard-light-current",
+      "observedAt": "2026-08-28T18:10:00-07:00",
+      "commit": "bc432ad4e",
+      "codeCommit": "ba6bec483",
+      "codeState": "commit",
+      "label": "Light Add Provider wizard Browser lifecycle",
+      "narrative": "The newly admitted light 1280 by 820 Add Provider state now has same-snapshot Browser authority and Lynx-for-Web evidence. The run covers Driver, Identity, blocked invalid Config navigation, dismissal, reopen, composed input, Config, save, cross-renderer card projection, expansion, Delete instance, three consecutive reverse-state samples, and final dismissal with zero renderer errors. Discovery exposed and repaired a shared Settings description rhythm loss, a NumberField child-layout loss that visually merged minus, value, plus, and unit, and a stale custom-provider snapshot that could reappear after deletion. Failed runs with an appended derived ID, contaminated isolated settings, and missed delete pointers are classified as harness loss and excluded. Native light wizard coverage remains unknown.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The final production capture is tied to ba6bec483, one immutable seed, matched route, light theme, 1280 by 820 dimensions, explicit inner-control geometry, complete lifecycle postconditions, and a clean console. Browser evidence does not reduce Native debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-providers-add-dialog-light.json",
+          "classification": "tracked-current",
+          "sha256": "8bb1bef19761667cc41a8840afde032b814580eb2988769986a8e318304e4775"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-providers-add-dialog-light/workbench-report.json",
+          "classification": "tracked-current",
+          "sha256": "6a206859319ebfd604aa2919eaf58f2d62d7ef1f9f4570208126b4ce8a4938a2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "light-provider-wizard-content",
+              "source": "Driver, Identity, Config, validation, provider-card projection, deletion, and final reverse-state content match the Web authority"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 1.6875, 0, 1.6875, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "light-provider-settings-and-control-geometry",
+              "source": "Settings origins and widths match; the health row differs by 1.6875px, and decrement, value, increment, and unit occupy non-overlapping regions"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "light-provider-shared-typography",
+              "source": "The shared 20px title and 13px by 20px description rhythm matches, with fractional variable-font versus bundled-font shaping retained"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "light-provider-visual-review",
+              "source": "Cold-white backgrounds, borders, status colors, controls, and dialog glass remain visually coherent; full-frame pixels retain conservative rendering residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "light-provider-wizard-save-delete-flow",
+              "source": "Visible controls and composed input complete validation, Config, save, card expansion, delete, three stable reverse-state samples, and dismissal"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "light-provider-shared-server-readiness",
+              "source": "Matched production bundles use one isolated seed and shared server, reach semantic readiness, report zero renderer errors, and remove the temporary provider from settings and both clients"
+            }
+          }
+        }
+      ]
     }
   ]
 }

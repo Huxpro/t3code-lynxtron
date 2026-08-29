@@ -284,3 +284,4 @@ transcript-native-link-context-menus-current-baseline,2026-08-27T18:40:00-07:00,
 right-panel-terminal-native-focus-current,2026-08-27T23:45:00-07:00,71d08433c,commit,Native Terminal physical command focus,0.209917,0.209917,0.040212,0.176814,0.823186,0.781685
 right-panel-terminal-native-return-current,2026-08-28T08:21:59-07:00,0ccf54584,commit,Native Terminal physical Return submission,0.209789,0.209789,0.040058,0.176814,0.823186,0.781813
 sidebar-native-project-context-menu-current,2026-08-28T08:51:44-07:00,ecd351d61,commit,Native project context menu measurement,0.206148,0.206148,0.04014,0.17295,0.82705,0.785454
+settings-provider-wizard-light-current,2026-08-28T18:10:00-07:00,bc432ad4e,commit,Light Add Provider wizard Browser lifecycle,0.200943,0.200943,0.03997,0.167675,0.832325,0.790659
