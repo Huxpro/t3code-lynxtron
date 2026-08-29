@@ -1,6 +1,6 @@
 {
   "scannedCss": "apps/web/src/index.css",
-  "uniqueStaticUtilities": 1659,
+  "uniqueStaticUtilities": 1698,
   "syntax": {
     "oklch(": {
       "status": "build-transform",
@@ -366,6 +366,10 @@
     },
     {
       "utility": "group-hover:text-foreground/65",
+      "occurrences": 1
+    },
+    {
+      "utility": "group-hover:text-foreground",
       "occurrences": 1
     },
     {

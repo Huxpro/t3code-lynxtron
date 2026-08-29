@@ -472,9 +472,9 @@ describe("desktop shell interaction contract", () => {
       "layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}",
     );
     expect(panel).toContain('case "terminal":');
-    expect(panel).toContain(
-      "<TerminalPanel width={props.terminalWidth} height={props.terminalHeight} />",
-    );
+    expect(panel).toContain('key={props.activeThreadId ?? "no-thread"}');
+    expect(panel).toContain("width={props.terminalWidth}");
+    expect(panel).toContain("height={props.terminalHeight}");
     expect(panel).toContain("terminalHeight,");
     expect(panel).toContain("terminalWidth,");
     expect(terminal).toContain("terminalGridSize(width, height)");
@@ -486,6 +486,12 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain(".openTerminal({");
     expect(terminal).toContain(".writeTerminal({");
     expect(terminal).toContain(".closeTerminal({");
+    expect(terminal).toContain('aria-label="New terminal"');
+    expect(terminal).toContain("addTerminalSession");
+    expect(terminal).toContain("activateTerminalSession");
+    expect(terminal).toContain("removeTerminalSession");
+    expect(terminal).toContain("data-terminal-session-id={selection.activeId}");
+    expect(terminal).toContain("data-terminal-session-count={String(selection.ids.length)}");
     expect(terminal).toContain('confirm-type="send"');
     expect(terminal).toContain("const commandInputRef = useRef<NodesRef>(null)");
     expect(terminal).toContain('method: "focus"');
@@ -501,7 +507,7 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).not.toContain("Terminal sessions are not connected yet");
     expect(overrides).toContain(".terminal-panel {");
     expect(overrides).toMatch(/\.terminal-panel \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/);
-    expect(overrides).toMatch(/\.terminal-panel__viewport \{[\s\S]*top: 32px;[\s\S]*bottom: 52px;/);
+    expect(overrides).toMatch(/\.terminal-panel__viewport \{[\s\S]*top: 60px;[\s\S]*bottom: 52px;/);
     expect(overrides).toMatch(
       /\.terminal-panel__command-row \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/,
     );

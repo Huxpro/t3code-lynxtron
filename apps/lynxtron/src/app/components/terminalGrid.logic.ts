@@ -4,7 +4,7 @@ export interface TerminalGridSize {
 }
 
 const TERMINAL_HORIZONTAL_PADDING = 24;
-const TERMINAL_VERTICAL_CHROME = 104;
+const TERMINAL_VERTICAL_CHROME = 132;
 const TERMINAL_CELL_WIDTH = 7.2;
 const TERMINAL_CELL_HEIGHT = 18;
 

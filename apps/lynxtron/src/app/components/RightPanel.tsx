@@ -31,6 +31,7 @@ import { clientCapabilities, showNativeContextMenu } from "../platform/clientCap
 const LYNX_RIGHT_PANEL_SHEET_QUERY = "(max-width: 760px)";
 
 interface RightPanelContentProps {
+  activeThreadId: string | null;
   activePlan: ActivePlanState | null;
   activeProposedPlan: LatestProposedPlanState | null;
   terminalHeight: number;
@@ -115,7 +116,13 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
     case "file":
       return <FilePanel path={surface.path} />;
     case "terminal":
-      return <TerminalPanel width={props.terminalWidth} height={props.terminalHeight} />;
+      return (
+        <TerminalPanel
+          key={props.activeThreadId ?? "no-thread"}
+          width={props.terminalWidth}
+          height={props.terminalHeight}
+        />
+      );
   }
 }
 
@@ -382,6 +389,7 @@ export function RightPanel({
       <view className="right-panel__content">
         {hasActiveSurface ? (
           renderSurface(activeSurface, {
+            activeThreadId: activeThreadId ?? null,
             activePlan,
             activeProposedPlan,
             terminalHeight,

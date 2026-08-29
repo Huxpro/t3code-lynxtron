@@ -5,8 +5,13 @@ import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
 import { terminalGridSize } from "./terminalGrid.logic";
 import { terminalReturnController } from "../state/terminalKeyboard";
-
-const TERMINAL_ID = "term-1";
+import {
+  activateTerminalSession,
+  addTerminalSession,
+  initialTerminalSessionSelection,
+  removeTerminalSession,
+} from "./terminalSessions.logic";
+import { Icon } from "./Icon";
 
 function inputValue(event: unknown): string {
   const input = event as {
@@ -30,6 +35,7 @@ export function TerminalPanel({
   const [command, setCommand] = useState("");
   const [openError, setOpenError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [selection, setSelection] = useState(initialTerminalSessionSelection);
   const sendingRef = useRef(false);
   const commandInputRef = useRef<NodesRef>(null);
   const activeThread =
@@ -38,13 +44,16 @@ export function TerminalPanel({
   const project =
     projects.find((candidate) => candidate.id === activeThread?.projectId) ?? projects[0] ?? null;
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
-  const terminalKey = activeThreadId ? `${activeThreadId}\u0000${TERMINAL_ID}` : null;
+  const terminalKey = activeThreadId
+    ? activeThreadId + String.fromCharCode(0) + selection.activeId
+    : null;
   const session = terminalKey ? terminalSessions[terminalKey] : undefined;
   const output = useMemo(() => presentTerminalText(session?.history ?? ""), [session?.history]);
   const grid = useMemo(() => terminalGridSize(width, height), [height, width]);
   const resizedGridRef = useRef<string | null>(null);
 
   useEffect(() => {
+    setCommand("");
     commandInputRef.current
       ?.invoke({
         method: "focus",
@@ -56,7 +65,7 @@ export function TerminalPanel({
         },
       })
       .exec();
-  }, []);
+  }, [selection.activeId]);
 
   useEffect(() => {
     if (!activeThreadId || !cwd || status !== "ready") return;
@@ -65,7 +74,7 @@ export function TerminalPanel({
     void t3ClientActions
       .openTerminal({
         threadId: activeThreadId,
-        terminalId: TERMINAL_ID,
+        terminalId: selection.activeId,
         cwd,
         worktreePath: activeThread?.worktreePath ?? null,
         cols: grid.cols,
@@ -77,17 +86,17 @@ export function TerminalPanel({
     return () => {
       cancelled = true;
     };
-  }, [activeThread?.worktreePath, activeThreadId, cwd, status]);
+  }, [activeThread?.worktreePath, activeThreadId, cwd, selection.activeId, status]);
 
   useEffect(() => {
     if (!activeThreadId || session?.status !== "running") return;
-    const key = `${activeThreadId}:${grid.cols}x${grid.rows}`;
+    const key = `${activeThreadId}:${selection.activeId}:${grid.cols}x${grid.rows}`;
     if (resizedGridRef.current === key) return;
     resizedGridRef.current = key;
     void t3ClientActions
       .resizeTerminal({
         threadId: activeThreadId,
-        terminalId: TERMINAL_ID,
+        terminalId: selection.activeId,
         cols: grid.cols,
         rows: grid.rows,
       })
@@ -95,7 +104,7 @@ export function TerminalPanel({
         resizedGridRef.current = null;
         setOpenError(cause instanceof Error ? cause.message : String(cause));
       });
-  }, [activeThreadId, grid.cols, grid.rows, session?.status]);
+  }, [activeThreadId, grid.cols, grid.rows, selection.activeId, session?.status]);
 
   const runCommand = () => {
     const value = command.trim();
@@ -103,7 +112,11 @@ export function TerminalPanel({
     sendingRef.current = true;
     setSending(true);
     void t3ClientActions
-      .writeTerminal({ threadId: activeThreadId, terminalId: TERMINAL_ID, data: `${value}\n` })
+      .writeTerminal({
+        threadId: activeThreadId,
+        terminalId: selection.activeId,
+        data: `${value}\n`,
+      })
       .then(() => setCommand(""))
       .catch((cause: unknown) =>
         setOpenError(cause instanceof Error ? cause.message : String(cause)),
@@ -116,6 +129,16 @@ export function TerminalPanel({
   };
 
   terminalReturnController.setSubmitHandler(runCommand);
+
+  const closeSession = (terminalId: string) => {
+    if (!activeThreadId || selection.ids.length === 1) return;
+    void t3ClientActions
+      .closeTerminal({ threadId: activeThreadId, terminalId, deleteHistory: true })
+      .then(() => setSelection((current) => removeTerminalSession(current, terminalId)))
+      .catch((cause: unknown) =>
+        setOpenError(cause instanceof Error ? cause.message : String(cause)),
+      );
+  };
 
   useEffect(
     () => () => {
@@ -136,10 +159,52 @@ export function TerminalPanel({
     <view
       className="terminal-panel flex flex-col"
       data-terminal-session-status={session?.status ?? "starting"}
+      data-terminal-session-id={selection.activeId}
+      data-terminal-session-count={String(selection.ids.length)}
     >
       <view className="terminal-panel__meta">
         <text className="terminal-panel__cwd">{cwd}</text>
         <text className="terminal-panel__status">{session?.status ?? "starting"}</text>
+      </view>
+      <view className="terminal-panel__sessions">
+        <scroll-view className="terminal-panel__session-scroll" scroll-orientation="horizontal">
+          <view className="terminal-panel__session-list">
+            {selection.ids.map((terminalId, index) => (
+              <view
+                key={terminalId}
+                className={
+                  "terminal-panel__session" +
+                  (terminalId === selection.activeId ? " terminal-panel__session--active" : "")
+                }
+                data-terminal-session-tab={terminalId}
+                aria-label={"Activate Terminal " + (index + 1)}
+                aria-pressed={terminalId === selection.activeId ? "true" : "false"}
+                bindtap={() =>
+                  setSelection((current) => activateTerminalSession(current, terminalId))
+                }
+              >
+                <Icon name="terminal-square" size={12} color="#818181" />
+                <text className="terminal-panel__session-label">Terminal {index + 1}</text>
+                {selection.ids.length > 1 ? (
+                  <view
+                    className="terminal-panel__session-close"
+                    aria-label={"Close Terminal " + (index + 1)}
+                    catchtap={() => closeSession(terminalId)}
+                  >
+                    <Icon name="x" size={11} color="#818181" />
+                  </view>
+                ) : null}
+              </view>
+            ))}
+          </view>
+        </scroll-view>
+        <view
+          className="terminal-panel__session-new"
+          aria-label="New terminal"
+          bindtap={() => setSelection(addTerminalSession)}
+        >
+          <Icon name="plus" size={13} color="#818181" />
+        </view>
       </view>
       <scroll-view className="terminal-panel__viewport" scroll-orientation="vertical">
         <text className="terminal-panel__output whitespace-pre">{output || "Starting shell…"}</text>
@@ -176,7 +241,5 @@ export function TerminalPanel({
 
 export function closeTerminalSession(threadId: string | undefined): void {
   if (!threadId) return;
-  void t3ClientActions
-    .closeTerminal({ threadId, terminalId: TERMINAL_ID, deleteHistory: true })
-    .catch(() => undefined);
+  void t3ClientActions.closeTerminal({ threadId, deleteHistory: true }).catch(() => undefined);
 }
