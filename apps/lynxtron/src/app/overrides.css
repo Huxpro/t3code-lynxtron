@@ -5766,6 +5766,7 @@
   opacity: 0.64;
 }
 .ui-button__label {
+  pointer-events: none;
   color: var(--foreground);
   font-size: var(--settings-control-font-size);
   font-weight: 500;

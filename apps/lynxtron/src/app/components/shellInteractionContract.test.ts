@@ -334,6 +334,7 @@ describe("desktop shell interaction contract", () => {
     expect(uiState).toContain("useAddProviderDialogOpen");
     expect(uiState).toContain("openAddProviderDialog");
     expect(uiState).toContain("closeAddProviderDialog");
+    expect(overrides).toContain(".ui-button__label {\n  pointer-events: none;");
     expect(app).toContain('overlay === "add-provider"');
     expect(app).toContain("<AddProviderInstanceDialog");
     expect(app).toContain("open={addProviderDialogOpen}");
