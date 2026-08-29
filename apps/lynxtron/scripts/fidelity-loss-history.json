@@ -19767,6 +19767,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-empty-current-typography",
+      "observedAt": "2026-08-29T10:08:00-07:00",
+      "commit": "c253d1e1f",
+      "codeState": "commit",
+      "label": "Model Picker empty current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run enters the no-model query on one isolated persisted-thread snapshot. Both renderers expose zero rows, the same No models found copy, identical 360 by 346 panel and 342 by 68 empty region, exact committed bundles, and zero renderer errors. Runtime styles close the unknown Lynx typography cell: both empty labels use 14px weight 400, 20px line height, and normal tracking. Their measured glyph widths differ by 0.53125px, retained as a small nonzero shaping residual.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head no-model content, geometry, and computed text styles replace one unknown cell without product, denominator, weight, threshold, filter, material, Native, or screenshot credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/model-picker-empty-current.json",
+          "classification": "tracked-current",
+          "sha256": "3168c1f86b60c2083f73cc97bbe7e0d867003fe46c851e8508b812eed0a0a502"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "current-model-picker-empty-computed-typography",
+              "source": "Matching No models found copy uses 14px weight 400, 20px line height, and normal tracking; residual preserves the measured 0.53125px glyph-width difference"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-model-picker-empty-shared-runtime",
+              "source": "Same isolated snapshot, selected thread and model, no-model query, zero rows, exact committed bundles, matching empty geometry, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -307,3 +307,4 @@ quick-switch-default-current-geometry-typography,2026-08-29T09:20:00-07:00,defcd
 quick-switch-query-current-selection-typography,2026-08-29T09:43:00-07:00,a81ba8f46,commit,Quick Switch query selection and typography,0.199202,0.199202,0.039642,0.166146,0.833854,0.792688
 quick-switch-empty-current-typography,2026-08-29T09:52:00-07:00,0d85bac21,commit,Quick Switch empty current typography,0.19875,0.19875,0.039632,0.165685,0.834315,0.79314
 quick-switch-actions-only-current-typography,2026-08-29T09:58:00-07:00,6fb970ddc,commit,Quick Switch actions-only current typography,0.198325,0.198325,0.039632,0.165242,0.834758,0.793565
+model-picker-empty-current-typography,2026-08-29T10:08:00-07:00,c253d1e1f,commit,Model Picker empty current typography,0.197873,0.197873,0.039621,0.164781,0.835219,0.794017
