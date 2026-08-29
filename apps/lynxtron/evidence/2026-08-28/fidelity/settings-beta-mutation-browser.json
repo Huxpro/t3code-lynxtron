@@ -37,7 +37,7 @@
   "artifacts": {
     "report": {
       "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-beta-mutation-browser/workbench-report.json",
-      "sha256": "cd9482bf16b615effa2bce39537d70b65820185a76d262b407b88762aece1949"
+      "sha256": "f277f8f5710fee186c6cbfdea7fa1b318d42ef7be50452a3773c8eed8368a291"
     },
     "web": {
       "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-beta-mutation-browser/1280x820/web.png",
