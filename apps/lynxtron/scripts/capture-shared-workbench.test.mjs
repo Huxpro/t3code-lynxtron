@@ -284,10 +284,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"right-panel-terminal-multi-session": "existing-thread"');
     assert.include(source, 'stateId === "right-panel-terminal-horizontal-split"');
     assert.include(source, '"right-panel-terminal-horizontal-split": "existing-thread"');
+    assert.include(source, 'stateId === "right-panel-terminal-vertical-split"');
+    assert.include(source, '"right-panel-terminal-vertical-split": "existing-thread"');
     assert.include(source, "explicitExpectedThreadId || threadStateIds.has(stateId)");
     assert.include(source, 'aria-label="New terminal"');
     assert.include(source, 'aria-label="Split terminal horizontally"');
     assert.include(source, "lynxPaneWidths");
+    assert.include(source, "lynxPaneHeights");
     assert.include(source, 'const terminalOnlyImages = hasFlag("--terminal-only-images")');
     assert.include(source, "data-terminal-session-count");
     assert.include(source, "LYNX_TERM_2_MARKER");

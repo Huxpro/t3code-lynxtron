@@ -186,10 +186,12 @@ const isShortCompactControlsState = stateId === "composer-compact-controls-inlin
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
 const isRightPanelTerminalMultiSessionState = stateId === "right-panel-terminal-multi-session";
 const isRightPanelTerminalSplitState = stateId === "right-panel-terminal-horizontal-split";
+const isRightPanelTerminalVerticalSplitState = stateId === "right-panel-terminal-vertical-split";
 const isRightPanelTerminalState =
   stateId === "right-panel-terminal" ||
   isRightPanelTerminalMultiSessionState ||
-  isRightPanelTerminalSplitState;
+  isRightPanelTerminalSplitState ||
+  isRightPanelTerminalVerticalSplitState;
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
 const isComposerPlanModeState = stateId === "composer-plan-mode";
 const isFlatSidebarLayoutState = new Set([
@@ -4878,6 +4880,7 @@ async function main() {
     "right-panel-terminal",
     "right-panel-terminal-multi-session",
     "right-panel-terminal-horizontal-split",
+    "right-panel-terminal-vertical-split",
     "diff-scope-menu",
     "composer-connecting",
     "composer-disabled",
@@ -5357,6 +5360,7 @@ async function captureCell({
     "right-panel-terminal": "existing-thread",
     "right-panel-terminal-multi-session": "existing-thread",
     "right-panel-terminal-horizontal-split": "existing-thread",
+    "right-panel-terminal-vertical-split": "existing-thread",
     "diff-scope-menu": "existing-thread",
     "settled-banner-inline-files-narrow": "existing-thread",
     "composer-disabled": "existing-thread",
@@ -9270,7 +9274,11 @@ async function captureCell({
             `Lynx terminal command did not return the shared cwd: ${JSON.stringify(rightPanelTerminalCommand)}`,
           );
         }
-        if (isRightPanelTerminalMultiSessionState || isRightPanelTerminalSplitState) {
+        if (
+          isRightPanelTerminalMultiSessionState ||
+          isRightPanelTerminalSplitState ||
+          isRightPanelTerminalVerticalSplitState
+        ) {
           const clickTerminalControl = async (selector, label) => {
             const point = await evaluate(
               cdp,
@@ -9336,16 +9344,20 @@ async function captureCell({
                 web: pointFor(
                   'web-pane',
                   false,
-                  ${JSON.stringify(isRightPanelTerminalSplitState)}
-                    ? '[data-terminal-owner="right-panel"] [aria-label^="Split Terminal Horizontally"]'
-                    : '[data-terminal-owner="right-panel"] [aria-label^="New Terminal"]'
+                  ${JSON.stringify(isRightPanelTerminalVerticalSplitState)}
+                    ? '[data-terminal-owner="right-panel"] [aria-label^="Split Terminal Vertically"]'
+                    : ${JSON.stringify(isRightPanelTerminalSplitState)}
+                      ? '[data-terminal-owner="right-panel"] [aria-label^="Split Terminal Horizontally"]'
+                      : '[data-terminal-owner="right-panel"] [aria-label^="New Terminal"]'
                 ),
                 lynx: pointFor(
                   'lynx-pane',
                   true,
-                  ${JSON.stringify(isRightPanelTerminalSplitState)}
-                    ? '[aria-label="Split terminal horizontally"]'
-                    : '[aria-label="New terminal"]'
+                  ${JSON.stringify(isRightPanelTerminalVerticalSplitState)}
+                    ? '[aria-label="Split terminal vertically"]'
+                    : ${JSON.stringify(isRightPanelTerminalSplitState)}
+                      ? '[aria-label="Split terminal horizontally"]'
+                      : '[aria-label="New terminal"]'
                 ),
               };
             })()`,
@@ -9422,6 +9434,9 @@ async function captureCell({
               const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
                 ?.getElementById('t3-lynx-preview')?.shadowRoot;
               const panes = [...(lynx?.querySelectorAll('[data-terminal-viewport]') ?? [])];
+              const viewportContainer = lynx?.querySelector(
+                '.terminal-panel__viewports-horizontal, .terminal-panel__viewports-vertical'
+              );
               const output = lynx
                 ?.querySelector('.terminal-panel__viewport--active .terminal-panel__output')
                 ?.textContent ?? '';
@@ -9430,8 +9445,12 @@ async function captureCell({
                 lynxCount: Number(lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-count')),
                 lynxActiveId: lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-id') ?? null,
                 lynxSplit: lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-split') ?? null,
+                lynxViewportContainerClass: viewportContainer?.getAttribute('class') ?? null,
+                lynxPaneClasses: panes.map((pane) => pane.getAttribute('class') ?? ''),
                 lynxPaneWidths: [...(lynx?.querySelectorAll('[data-terminal-viewport]') ?? [])]
                   .map((pane) => pane.getBoundingClientRect().width),
+                lynxPaneHeights: [...(lynx?.querySelectorAll('[data-terminal-viewport]') ?? [])]
+                  .map((pane) => pane.getBoundingClientRect().height),
                 lynxPaneOutputs: panes.map((pane) => ({
                   id: pane.getAttribute('data-terminal-viewport'),
                   output: pane.querySelector('.terminal-panel__output')?.textContent ?? '',
@@ -9448,12 +9467,17 @@ async function captureCell({
               (isolated?.lynxSplit !== "horizontal" ||
                 isolated?.lynxPaneWidths?.length !== 2 ||
                 isolated.lynxPaneWidths.some((paneWidth) => paneWidth < 240))) ||
+            (isRightPanelTerminalVerticalSplitState &&
+              (isolated?.lynxSplit !== "vertical" ||
+                isolated?.lynxPaneHeights?.length !== 2 ||
+                isolated.lynxPaneHeights.some((paneHeight) => paneHeight < 300) ||
+                isolated.lynxPaneWidths.some((paneWidth) => paneWidth < 500))) ||
             !isolated?.output?.includes("LYNX_TERM_2_MARKER") ||
             isolated?.output?.includes("LYNX_TERM_1_MARKER")
           ) {
             throw new Error(`Terminal histories were not isolated: ${JSON.stringify(isolated)}`);
           }
-          if (isRightPanelTerminalSplitState) {
+          if (isRightPanelTerminalSplitState || isRightPanelTerminalVerticalSplitState) {
             rightPanelTerminalScreenshot = await capturePanePair({
               cdp,
               sessionId,
@@ -9503,9 +9527,11 @@ async function captureCell({
             );
           }
           rightPanelTerminalMultiSession = {
-            input: isRightPanelTerminalSplitState
-              ? "web-horizontal-split-pointer|lynx-horizontal-split-switch-write-close-pointers"
-              : "web-new-pointer|lynx-new-switch-write-close-pointers",
+            input: isRightPanelTerminalVerticalSplitState
+              ? "web-vertical-split-pointer|lynx-vertical-split-switch-write-close-pointers"
+              : isRightPanelTerminalSplitState
+                ? "web-horizontal-split-pointer|lynx-horizontal-split-switch-write-close-pointers"
+                : "web-new-pointer|lynx-new-switch-write-close-pointers",
             beforeNew,
             isolated,
             closed,
