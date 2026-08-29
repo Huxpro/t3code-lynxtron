@@ -699,16 +699,24 @@ function readAddProviderDialog(root) {
         ".provider-instance-dialog__error, .text-destructive, [aria-invalid='true'] + *",
       ),
     ),
-    next: readElementBox(
-      [...dialog.querySelectorAll("button, .provider-instance-dialog__save")].find(
+    next: (() => {
+      const control = [...dialog.querySelectorAll("button, .provider-instance-dialog__save")].find(
         (button) => readComposedText(button) === "Next",
-      ),
-    ),
-    cancel: readElementBox(
-      [...dialog.querySelectorAll("button, .ui-button")].find((button) =>
+      );
+      return {
+        box: readElementBox(control),
+        label: readElementBox(control?.querySelector("span, text, x-text")),
+      };
+    })(),
+    cancel: (() => {
+      const control = [...dialog.querySelectorAll("button, .ui-button")].find((button) =>
         ["Cancel", "Back"].includes(readComposedText(button)),
-      ),
-    ),
+      );
+      return {
+        box: readElementBox(control),
+        label: readElementBox(control?.querySelector("span, text, x-text")),
+      };
+    })(),
   };
 }
 

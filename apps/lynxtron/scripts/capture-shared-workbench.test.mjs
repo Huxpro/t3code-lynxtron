@@ -1328,6 +1328,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "addProviderDialog: readAddProviderDialog");
     assert.include(workbench, 'root?.querySelectorAll(".provider-instance-card")');
     assert.include(workbench, 'root?.querySelector(".provider-instance-create")');
+    assert.include(
+      workbench,
+      'label: readElementBox(control?.querySelector("span, text, x-text"))',
+    );
     assert.include(workbench, 'readComposedText(title) === "Health check interval"');
     assert.include(workbench, "healthControl: {");
     assert.include(workbench, '"Provider health check interval in seconds"');

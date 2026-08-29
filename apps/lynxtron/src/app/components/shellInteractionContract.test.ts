@@ -321,6 +321,10 @@ describe("desktop shell interaction contract", () => {
     expect(providers).toContain('label="Refresh provider status"');
     expect(providers).toContain("export function AddProviderInstanceDialog");
     expect(providers).toContain("data-provider-instance-dialog");
+    expect(overrides).toContain(
+      ".provider-instance-dialog__secondary .ui-button__label,\n.provider-instance-dialog__save-label {",
+    );
+    expect(overrides).toContain("font-size: 14px;\n  font-weight: 500;\n  line-height: 20px;");
     expect(providers).toContain("ADD_PROVIDER_WIZARD_STEPS");
     expect(providers).toContain("resolveWizardNavigation");
     expect(providers).toContain("COMING_SOON_PROVIDER_DRIVERS");

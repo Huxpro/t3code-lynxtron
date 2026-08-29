@@ -7123,6 +7123,12 @@
   padding: 0 12px;
   box-sizing: border-box;
 }
+.provider-instance-dialog__secondary .ui-button__label,
+.provider-instance-dialog__save-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
 .provider-instance-dialog__save {
   display: flex;
   align-items: center;
@@ -7139,8 +7145,6 @@
 .provider-instance-dialog__save-label {
   color: var(--primary-foreground);
   font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
 }
 
 /* ============= Keybindings table ============= */
