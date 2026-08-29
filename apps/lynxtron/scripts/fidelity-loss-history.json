@@ -18762,6 +18762,118 @@
       },
       "sources": [],
       "updates": []
+    },
+    {
+      "id": "right-panel-terminal-multi-session-current",
+      "observedAt": "2026-08-28T22:55:00-07:00",
+      "commit": "bc6356720",
+      "codeCommit": "783ed411b",
+      "codeState": "commit",
+      "label": "Right Panel Terminal multi-session lifecycle",
+      "narrative": "A dedicated same-snapshot dark Browser flow and an exact-owned Native partial flow measure the new Terminal multi-session state. Web and Lynx-for-Web both create a second session through visible New controls. Lynx writes distinct markers in term-1 and term-2, switches between them without history leakage, closes term-2, and falls back to term-1. Native Computer Use independently opens the Terminal surface, creates term-2, writes distinct markers in both sessions, and verifies the first switch without leakage. The remaining Native switch-back and close fallback receive no credit because Computer Use subsequently returned an unrelated Lynxtron process despite the exact pid and windowId.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.98,
+        "reason": "The product commit removes the hard-coded single terminal model, while the Browser and partial Native evidence independently measure the bounded session lifecycle without claiming split or selection parity."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session.json",
+          "classification": "tracked-current",
+          "sha256": "b3482ad533003c7234534437be1d5bdc7368078bce9eceb5ec245409eaa3ea52"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session-native-partial.json",
+          "classification": "tracked-current",
+          "sha256": "6f622bd3c5cb8f072a5555d20799a4ea83510f615c116e5a6117a4737961adac"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal-multi-session"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-session-content",
+              "source": "Both Browser renderers expose Terminal 1, Terminal 2, New, and per-session close affordances"
+            },
+            "geometry": {
+              "residual": 0.04,
+              "confidence": 0.98,
+              "method": "browser-terminal-session-geometry",
+              "source": "Matched 1280 by 820 panes retain compact terminal session navigation within the same 540px panel allocation"
+            },
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.98,
+              "method": "browser-terminal-session-typography",
+              "source": "Terminal labels preserve the shared compact hierarchy with only platform font shaping residual"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "browser-terminal-session-visual-review",
+              "source": "Active and inactive tabs, separators, and controls remain coherent with conservative rendering residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-session-lifecycle",
+              "source": "Real pointer input creates term-2, switches both ways, proves marker isolation, closes term-2, and restores term-1"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-session-runtime",
+              "source": "One isolated shared server, canonical thread, production bundles, advancing terminal commands, and zero renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["right-panel-terminal-multi-session"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.95,
+              "method": "native-terminal-session-visible-content",
+              "source": "Exact-owned 1280 by 820 window visibly exposes two session tabs, New, and close affordances"
+            },
+            "geometry": {
+              "residual": 0.04,
+              "confidence": 0.9,
+              "method": "native-terminal-session-visible-geometry",
+              "source": "Fresh Computer Use frames show the compact tab row within the expected panel bounds"
+            },
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.9,
+              "method": "native-terminal-session-visible-typography",
+              "source": "Terminal labels and transcripts remain legible and preserve the intended hierarchy"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.9,
+              "method": "native-terminal-session-visible-material",
+              "source": "Active session state and separators are visibly distinct in the exact owned process"
+            },
+            "interaction": {
+              "residual": 0.2,
+              "confidence": 0.72,
+              "method": "native-computer-use-partial-lifecycle",
+              "source": "Computer Use proves open, New, term-2 write, switch to term-1, and term-1 write; final switch-back and close fallback remain unverified after exact-window targeting loss"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-main-transport-readiness",
+              "source": "Owned PID 72195 loaded the staged production bundle from isolated state with main transport and lastSeq 15"
+            }
+          }
+        }
+      ]
     }
   ]
 }
