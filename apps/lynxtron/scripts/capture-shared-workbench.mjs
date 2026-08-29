@@ -2073,7 +2073,7 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
       addProviderDialogPairMatches(next, viewportWidth, viewportHeight, 1) &&
       Boolean(next?.web?.addProviderDialog?.error) &&
       Boolean(next?.lynx?.addProviderDialog?.error),
-    3_000,
+    5_000,
     "Add Provider invalid Config skip",
   );
   timeline.push({
@@ -2169,7 +2169,7 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
     3_000,
     "Lynx Add Provider Identity mutation step",
   );
-  const fillLynxInput = async (index, value) => {
+  const fillLynxInput = async (index, value, { replace = false } = {}) => {
     const focused = await focusRemoteElement(
       cdp,
       sessionId,
@@ -2178,7 +2178,9 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
         const root = frame?.contentWindow?.document
           ?.getElementById('t3-lynx-preview')?.shadowRoot;
         const host = root?.querySelectorAll('.provider-instance-dialog__input')?.[${index}];
-        return host?.shadowRoot?.querySelector('input') ?? host ?? null;
+        const input = host?.shadowRoot?.querySelector('input') ?? host ?? null;
+        if (${replace}) input?.select?.();
+        return input;
       })()`,
     );
     if (!focused) throw new Error(`Could not focus Lynx Add Provider input ${index}`);
@@ -2187,7 +2189,7 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
   const instanceLabel = "Fidelity Codex";
   const instanceId = "codex_fidelity_browser";
   await fillLynxInput(0, instanceLabel);
-  await fillLynxInput(1, instanceId);
+  await fillLynxInput(1, instanceId, { replace: true });
   await delay(300);
   if (!(await clickProviderDialogControl(cdp, sessionId, "lynx", "next"))) {
     throw new Error("Missing Lynx Add Provider Config navigation control");
@@ -2271,20 +2273,31 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
   );
   if (!removePoint) throw new Error("Missing saved Lynx provider Delete instance control");
   await dispatchPointerClickWithMove(cdp, sessionId, removePoint);
+  let stableDeleteSamples = 0;
   state = await waitForWorkbenchState(
     cdp,
     sessionId,
-    (next) =>
-      !(next?.web?.settingsMetrics?.providers?.cards ?? []).some(
-        (card) => card.title === instanceLabel,
-      ) &&
-      !(next?.lynx?.settingsMetrics?.providers?.cards ?? []).some(
-        (card) => card.title === instanceLabel,
-      ),
+    (next) => {
+      const reversed =
+        !(next?.web?.settingsMetrics?.providers?.cards ?? []).some(
+          (card) => card.title === instanceLabel,
+        ) &&
+        !(next?.lynx?.settingsMetrics?.providers?.cards ?? []).some(
+          (card) => card.title === instanceLabel,
+        ) &&
+        !(next?.lynx?.connectorDiagnostics?.providerInstanceIds ?? []).includes(instanceId);
+      stableDeleteSamples = reversed ? stableDeleteSamples + 1 : 0;
+      return stableDeleteSamples >= 3;
+    },
     5_000,
-    "shared Add Provider delete reversal",
+    "stable shared Add Provider delete reversal",
   );
-  timeline.push({ step: "deleted", instanceId, expanded: Boolean(expanded) });
+  timeline.push({
+    step: "deleted",
+    instanceId,
+    expanded: Boolean(expanded),
+    stableSamples: stableDeleteSamples,
+  });
   if (!(await clickProviderDialogControl(cdp, sessionId, "web", "backdrop"))) {
     throw new Error("Missing Web Add Provider backdrop after shared delete");
   }

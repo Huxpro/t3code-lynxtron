@@ -1274,11 +1274,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "function addProviderDialogPairMatches");
     assert.include(source, "async function runAddProviderDialogFlow");
     assert.include(source, 'step: "config-blocked"');
+    assert.include(source, "if (${replace}) input?.select?.()");
+    assert.include(source, "fillLynxInput(1, instanceId, { replace: true })");
     assert.include(source, 'step: "dismissed"');
     assert.include(source, 'step: "reopened"');
     assert.include(source, 'step: "config"');
     assert.include(source, 'step: "saved"');
     assert.include(source, 'step: "deleted"');
+    assert.include(source, "stableDeleteSamples >= 3");
+    assert.include(source, '"stable shared Add Provider delete reversal"');
     assert.include(source, 'step: "final-dismissed"');
     assert.include(source, "codex_fidelity_browser");
     assert.include(source, "provider-card__delete-instance");
