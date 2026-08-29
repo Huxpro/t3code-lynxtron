@@ -6913,8 +6913,9 @@
 .provider-instance-dialog__step-label {
   color: var(--muted-foreground);
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
+  line-height: 20px;
 }
 .provider-instance-dialog__step--active .provider-instance-dialog__step-label {
   color: var(--foreground);
@@ -7023,6 +7024,7 @@
   font-family: var(--font-sans);
   font-size: 10px;
   font-weight: 500;
+  line-height: 13.3333px;
   margin-left: auto;
 }
 .provider-instance-dialog__early-access + .provider-instance-dialog__driver-check {
@@ -7031,8 +7033,9 @@
 .provider-instance-dialog__driver-label {
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
+  line-height: 20px;
 }
 .provider-instance-dialog__input {
   width: 100%;

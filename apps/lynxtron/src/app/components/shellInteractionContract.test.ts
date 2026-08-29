@@ -325,6 +325,15 @@ describe("desktop shell interaction contract", () => {
       ".provider-instance-dialog__secondary .ui-button__label,\n.provider-instance-dialog__save-label {",
     );
     expect(overrides).toContain("font-size: 14px;\n  font-weight: 500;\n  line-height: 20px;");
+    expect(overrides).toContain(
+      ".provider-instance-dialog__step-number-label,\n.provider-instance-dialog__step-label {",
+    );
+    expect(overrides).toMatch(
+      /\.provider-instance-dialog__driver-label \{[\s\S]*font-size: 14px;[\s\S]*line-height: 20px;/,
+    );
+    expect(overrides).toMatch(
+      /\.provider-instance-dialog__early-access,[\s\S]*font-size: 10px;[\s\S]*line-height: 13\.3333px;/,
+    );
     expect(providers).toContain("ADD_PROVIDER_WIZARD_STEPS");
     expect(providers).toContain("resolveWizardNavigation");
     expect(providers).toContain("COMING_SOON_PROVIDER_DRIVERS");
