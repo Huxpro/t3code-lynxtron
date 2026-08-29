@@ -19460,6 +19460,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-hero-light-current-typography",
+      "observedAt": "2026-08-29T07:56:00-07:00",
+      "commit": "7a007f64b",
+      "codeState": "commit",
+      "label": "New Thread Hero light current typography",
+      "narrative": "A fresh exact-head light 1280 by 820 Browser run reaches the unpersisted New Thread Hero on one isolated snapshot with matching project, selected model, Composer state, controls, context, and zero renderer errors. Computed styles close the previously unknown Lynx typography cell: both headlines use 30px weight 400, 36px line height, and minus 0.75px tracking; both editors use 14px weight 400; toolbar labels use 14px weight 500 with 20px line height. The authority h1 and Lynx text use different centered container widths, which remains separately classified as geometry, while the quarter-pixel editor line-box quantization remains a small nonzero typography residual. Native interaction debt is unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head computed styles replace one unknown cell with measured accepted rendering noise; no product, denominator, weight, threshold, filter, geometry, material, Native, screenshot, or interaction change is credited."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/new-thread-hero-light-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "6a652b42849d618531fd86e1baf5a25b48f0938ebda83fdbc321c3b3018cb822"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.99,
+              "method": "current-light-hero-computed-typography",
+              "source": "Headline matches 30px weight 400, 36px line height, and minus 0.75px tracking; editor and toolbar roles match, with residual preserving quarter-pixel editor line-box quantization"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-hero-shared-runtime",
+              "source": "Same isolated snapshot, unpersisted Hero route, light theme, 1280 by 820 viewport, exact committed bundles, selected Claude Fable 5 model, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

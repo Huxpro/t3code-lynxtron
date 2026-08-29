@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T07:56:00-07:00",
+  "stateId": "new-thread-hero-light",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "new-thread",
+    "theme": "light"
+  },
+  "identity": {
+    "commit": "7a007f64bdbd56c38f30c686fd16c9a539e46c12",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "3c252a9cc661a2a5c069fc24eeb48dbbdaa5d84fa0e01f963da932a5becd90cd",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "rendererErrors": 0,
+    "typographyResidual": 0.03
+  },
+  "typography": {
+    "headline": {
+      "fontSize": 30,
+      "fontWeight": 400,
+      "lineHeight": 36,
+      "letterSpacing": -0.75,
+      "webBox": [276, 271, 984, 37],
+      "lynxBox": [384, 272, 768, 36]
+    },
+    "editor": {
+      "fontSize": 14,
+      "fontWeight": 400,
+      "webLineHeight": 22.75,
+      "lynxLineHeight": 23
+    },
+    "toolbarLabels": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/new-thread-hero-light-typography-current/workbench-report.json",
+      "sha256": "384ab4d8eff5dc658317e1f13420398c816be560fd89ed3618915858b9245358"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/new-thread-hero-light-typography-current/1280x820/web-assertions.json",
+      "sha256": "580cdb8780704a0b720db66c8a4370e832f82d40174b4ac83f43b460f658b9ec"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/new-thread-hero-light-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "77c3a7f8d765c45e75b8512b79c0c000d1cb859866758ce82036aa47f302ec6d"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head light Browser evidence replaces the unknown Lynx typography cell for the New Thread Hero."
+    ],
+    "acceptedRenderingNoise": [
+      "Headline tokens match exactly; its centered container-box difference remains geometry rather than typography.",
+      "Editor line-box quantization differs by 0.25px while size and weight match."
+    ],
+    "evidenceBoundary": "This run updates Lynx typography only. Existing geometry, material, Native, and physical interaction evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}
