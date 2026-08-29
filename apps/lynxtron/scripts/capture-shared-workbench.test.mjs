@@ -1348,6 +1348,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"settings-providers-add-dialog-light": "settings-general"');
     assert.include(source, "function addProviderDialogPairMatches");
     assert.include(source, "async function runAddProviderDialogFlow");
+    assert.include(
+      source,
+      'const providerDialogStopAt = argValue("--provider-dialog-stop-at", "complete")',
+    );
+    assert.include(source, 'if (providerDialogStopAt === "driver") return { state, timeline }');
+    assert.include(source, "addProviderDialogPairMatches(state, width, height, 0)");
     assert.include(source, "settings.providerInstances?.codex_fidelity_browser");
     assert.include(source, 'step: "config-blocked"');
     assert.include(source, "if (${replace}) input?.select?.()");

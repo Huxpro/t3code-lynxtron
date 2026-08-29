@@ -136,6 +136,7 @@ const expandThinking = hasFlag("--expand-thinking");
 const keepServer = hasFlag("--keep-server");
 const terminalOnlyImages = hasFlag("--terminal-only-images");
 const paneImagesOnly = hasFlag("--pane-images-only");
+const providerDialogStopAt = argValue("--provider-dialog-stop-at", "complete");
 const timeoutMs = Number(argValue("--timeout-ms", "35000"));
 const selectedModelFixture = {
   instanceId: "claudeAgent",
@@ -162,6 +163,9 @@ if (
 }
 if (stateId === "file-editor-editing-save" && !["web", "lynx"].includes(fileEditClient)) {
   throw new Error("--file-edit-client must be web or lynx for file-editor-editing-save.");
+}
+if (!["complete", "driver"].includes(providerDialogStopAt)) {
+  throw new Error("--provider-dialog-stop-at must be complete or driver.");
 }
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
@@ -2303,6 +2307,7 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
     web: state.web.addProviderDialog,
     lynx: state.lynx.addProviderDialog,
   });
+  if (providerDialogStopAt === "driver") return { state, timeline };
 
   for (const client of ["web", "lynx"]) {
     if (!(await clickProviderDialogControl(cdp, sessionId, client, "next"))) {
@@ -8659,20 +8664,24 @@ async function captureCell({
   const finalSettingsNavigationReady = settingsNavigationStateMatches(state);
   const finalAddProviderDialogReady =
     !isAddProviderDialogState ||
-    (addProviderDialogStage === "complete" &&
-      [
-        "opened",
-        "identity",
-        "config-blocked",
-        "dismissed",
-        "reopened",
-        "config",
-        "saved",
-        "deleted",
-        "final-dismissed",
-      ].every((step) => addProviderDialogTimeline.some((entry) => entry.step === step)) &&
-      state?.web?.addProviderDialog === null &&
-      state?.lynx?.addProviderDialog === null);
+    (providerDialogStopAt === "driver"
+      ? addProviderDialogStage === "complete" &&
+        addProviderDialogTimeline.some((entry) => entry.step === "opened") &&
+        addProviderDialogPairMatches(state, width, height, 0)
+      : addProviderDialogStage === "complete" &&
+        [
+          "opened",
+          "identity",
+          "config-blocked",
+          "dismissed",
+          "reopened",
+          "config",
+          "saved",
+          "deleted",
+          "final-dismissed",
+        ].every((step) => addProviderDialogTimeline.some((entry) => entry.step === step)) &&
+        state?.web?.addProviderDialog === null &&
+        state?.lynx?.addProviderDialog === null);
   const finalBetaMutationReady =
     !isBetaMutationState ||
     (betaMutationStage === "complete" &&
