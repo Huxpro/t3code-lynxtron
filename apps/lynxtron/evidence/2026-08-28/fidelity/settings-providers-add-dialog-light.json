@@ -46,7 +46,7 @@
   "artifacts": {
     "report": {
       "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-providers-add-dialog-light/workbench-report.json",
-      "sha256": "df48dcfa771d451b24114f55e21fdd00fdacb6f397a4eac1d754f9e8a7aa84b6"
+      "sha256": "6a206859319ebfd604aa2919eaf58f2d62d7ef1f9f4570208126b4ce8a4938a2"
     },
     "web": {
       "path": "apps/lynxtron/evidence/2026-08-28/fidelity/settings-providers-add-dialog-light/1280x820/web.png",
