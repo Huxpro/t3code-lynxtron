@@ -18874,6 +18874,77 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-horizontal-split-current",
+      "observedAt": "2026-08-28T23:39:00-07:00",
+      "commit": "a3d96bcd9",
+      "codeCommit": "b916927a5",
+      "codeState": "commit",
+      "label": "Right Panel Terminal horizontal split",
+      "narrative": "A denominator-first Browser run compares the Web authority and Lynx-for-Web on one canonical thread, dark theme, 1280 by 820 viewport, and shared server. Both receive the visible horizontal split action. Lynx keeps two live sessions mounted, routes the shared command input to the active pane, preserves distinct marker histories, and returns to one pane after close. The first implementation passed tests but measured only 24px per Lynx pane; the geometry gate rejected it and the product was corrected to explicit 50 percent panes measuring 269.5px each. Native receives no score because persistent Computer Use same-bundle-id targeting loss prevented an exact-owned split run.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The dedicated split flow measures simultaneous pane geometry and independent runtime behavior, including a real product layout defect found and fixed before retained evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split.json",
+          "classification": "tracked-current",
+          "sha256": "d6d3c6910a3c055f4528bda32dade229a59e1cf147ba6eff5278305ee2a8fe83"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split/workbench-report.json",
+          "classification": "tracked-current",
+          "sha256": "6d272e335d906f9ee4943ebb5adfbc7a04e7e95274b9cdda660e8c4684eb9c10"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal-horizontal-split"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-horizontal-split-content",
+              "source": "Both Browser renderers expose two simultaneous terminal panes after their visible horizontal split actions"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0],
+              "anchorScale": 269.5,
+              "confidence": 0.99,
+              "method": "browser-terminal-horizontal-split-geometry",
+              "source": "The two Lynx panes measure 269.5px each within the shared 540px right panel after the 24px collapsed-pane defect was fixed"
+            },
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.98,
+              "method": "browser-terminal-horizontal-split-typography",
+              "source": "Both pane transcripts remain legible at half width with conservative platform font-shaping residual"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "browser-terminal-horizontal-split-visual-review",
+              "source": "Divider, active-pane treatment, tabs, and transcript surfaces remain coherent with conservative rendering residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-horizontal-split-lifecycle",
+              "source": "Real pointer input splits, changes active command target, preserves independent marker histories, and closes back to one pane"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-horizontal-split-runtime",
+              "source": "One isolated shared server, canonical thread, production bundles, two live PTYs, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

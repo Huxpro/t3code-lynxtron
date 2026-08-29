@@ -288,3 +288,4 @@ settings-provider-wizard-light-current,2026-08-28T18:10:00-07:00,bc432ad4e,commi
 settings-beta-mutation-browser-current,2026-08-28T20:49:00-07:00,20432a7c7,commit,Settings Beta Browser mutation coverage,0.218239,0.218239,0.039886,0.185762,0.814238,0.773572
 settings-connections-mutation-browser-harness-blocked,2026-08-28T21:45:00-07:00,0472240e3,commit,Settings Connections Browser mutation harness boundary,0.218239,0.218239,0.039886,0.185762,0.814238,0.773572
 right-panel-terminal-multi-session-current,2026-08-28T22:55:00-07:00,bc6356720,commit,Right Panel Terminal multi-session lifecycle,0.209553,0.209553,0.039904,0.1767,0.8233,0.782258
+right-panel-terminal-horizontal-split-current,2026-08-28T23:39:00-07:00,a3d96bcd9,commit,Right Panel Terminal horizontal split,0.205755,0.205755,0.039785,0.172847,0.827153,0.786056
