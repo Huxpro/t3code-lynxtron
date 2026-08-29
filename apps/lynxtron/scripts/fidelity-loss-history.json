@@ -20035,6 +20035,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-idle-current-typography",
+      "observedAt": "2026-08-29T13:22:00-07:00",
+      "commit": "05a5fd904",
+      "codeState": "commit",
+      "label": "Existing Thread Idle current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run selects the same persisted idle thread and GPT-5.6-Sol model on one isolated snapshot. Both renderers show the shared follow-up placeholder, zero transcript rows, identical empty-transcript and Composer geometry, four canonical footer controls, and zero renderer errors. Computed current typography replaces the early font-size-only proxy: the editor is 14px weight 400 with 22.75px versus 23px line height, while all footer labels are 14px weight 500 with 20px line height. Static evidence does not claim interaction coverage.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact-head capture closes only the stale Lynx typography-confidence gap and leaves product code, weights, thresholds, scope, material, and interaction unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/existing-thread-idle-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "96aefe57ae4cb52fb6fb95e4b56ae90e2020f54ddcfc1a334be26a046c135250"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "current-idle-composer-computed-typography",
+              "source": "Editor matches 14px weight 400 with 22.75px versus 23px line height; GPT-5.6-Sol, Low, Full access, and Build match 14px weight 500 with 20px line height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-idle-shared-runtime",
+              "source": "Same isolated snapshot, thread, dark theme, 1280 by 820 viewport, exact committed bundles, zero transcript rows, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

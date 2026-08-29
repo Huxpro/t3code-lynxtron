@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T13:22:00-07:00",
+  "stateId": "existing-thread-idle",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "05a5fd9044af2e811533bd5ad4eb278037c009fe",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "webBundleSha256Prefix": "b841589f14c2",
+    "lynxBundleSha256Prefix": "606860316f38",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sameThread": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "visibleModelLabel": "GPT-5.6-Sol",
+    "placeholder": "Ask for follow-up changes or attach images",
+    "controlIds": ["model", "model-option", "runtime", "interaction"],
+    "rendererErrors": 0
+  },
+  "typography": {
+    "editor": {
+      "fontSize": 14,
+      "fontWeight": 400,
+      "webLineHeight": 22.75,
+      "lynxLineHeight": 23
+    },
+    "controls": {
+      "fontSize": 14,
+      "fontWeight": 500,
+      "lineHeight": 20,
+      "labels": ["GPT-5.6-Sol", "Low", "Full access", "Build"]
+    }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/existing-thread-idle-typography-current/workbench-report.json",
+      "sha256": "b06b585afef8a7df982c51ad61e18cd717c0d79051a3807a6d153a308e291e43"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/existing-thread-idle-typography-current/1280x820/web-assertions.json",
+      "sha256": "8beb96c9f974aeaa9fa0e000eeef563aa533805ae7b0230acc9091fbcee46ac2"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/existing-thread-idle-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "4234aa60ddf87fb8497f67769eb1be16ad191ef416dbadc044154bae2869135e"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head computed typography replaces the early font-size-only proxy for the idle Composer."
+    ],
+    "acceptedRenderingNoise": [
+      "Editor line height differs by 0.25px and footer label widths retain fractional variable-font versus bundled-font shaping."
+    ],
+    "evidenceBoundary": "This static state adds no interaction claim; prior content, geometry, material, and Native evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, scope, or bad-sample filter changed, and no screenshot is retained."
+  }
+}
