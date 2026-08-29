@@ -855,6 +855,22 @@ function providerSettingsGeometryMatches(webMetrics, lynxMetrics) {
   const lynxSection = lynxMetrics?.geometry?.sections?.[0]?.box?.rect;
   const webCards = webMetrics?.providers?.cards ?? [];
   const lynxCards = lynxMetrics?.providers?.cards ?? [];
+  const healthControlDoesNotOverlap = (metrics) => {
+    const group = metrics?.providers?.healthControl?.group?.rect;
+    const decrement = metrics?.providers?.healthControl?.decrement?.rect;
+    const increment = metrics?.providers?.healthControl?.increment?.rect;
+    const unit = metrics?.providers?.healthControl?.unit?.rect;
+    return (
+      group &&
+      decrement &&
+      increment &&
+      unit &&
+      decrement.x + decrement.width <= increment.x &&
+      decrement.x >= group.x &&
+      increment.x + increment.width <= group.x + group.width &&
+      unit.x >= group.x + group.width
+    );
+  };
   if (
     !webSection ||
     !lynxSection ||
@@ -862,7 +878,9 @@ function providerSettingsGeometryMatches(webMetrics, lynxMetrics) {
     Math.abs(webSection.y - lynxSection.y) > 1 ||
     Math.abs(webSection.width - lynxSection.width) > 1 ||
     webCards.length === 0 ||
-    webCards.length !== lynxCards.length
+    webCards.length !== lynxCards.length ||
+    !healthControlDoesNotOverlap(webMetrics) ||
+    !healthControlDoesNotOverlap(lynxMetrics)
   ) {
     return false;
   }

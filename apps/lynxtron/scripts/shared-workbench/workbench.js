@@ -420,12 +420,46 @@ function readProviderSettingsMetrics(root) {
     healthTitle?.closest(".settings-row") ??
     healthTitle?.parentElement?.parentElement?.parentElement?.parentElement ??
     null;
+  const healthDecrement =
+    root?.querySelector(".provider-health-number-field__stepper") ??
+    root?.querySelector('[aria-label="Decrease provider health check interval"]') ??
+    null;
+  const healthIncrement =
+    root?.querySelectorAll(".provider-health-number-field__stepper")?.[1] ??
+    root?.querySelector('[aria-label="Increase provider health check interval"]') ??
+    null;
+  const healthGroup =
+    root?.querySelector(".provider-health-number-field") ??
+    healthDecrement?.closest('[data-slot="number-field-group"]') ??
+    null;
+  const healthControl =
+    root?.querySelector(".provider-health-control") ??
+    healthGroup?.parentElement?.parentElement ??
+    null;
+  const healthUnit =
+    root?.querySelector(".provider-health-unit") ??
+    [...(healthRow?.querySelectorAll("span, text, x-text") ?? [])].find(
+      (item) => readComposedText(item) === "seconds",
+    ) ??
+    null;
   return {
     panel: readElementBox(root?.querySelector(".settings-panel")),
     addTrigger: readElementBox(root?.querySelector('[aria-label="Add provider instance"]')),
     refreshTrigger: readElementBox(root?.querySelector('[aria-label="Refresh provider status"]')),
     inlineCreate: readElementBox(root?.querySelector(".provider-instance-create")),
     healthRow: readElementBox(healthRow),
+    healthControl: {
+      root: readElementBox(healthControl),
+      group: readElementBox(healthGroup),
+      decrement: readElementBox(healthDecrement),
+      input: readElementBox(
+        root?.querySelector(
+          '.provider-health-number-field__input, [aria-label="Provider health check interval in seconds"]',
+        ),
+      ),
+      increment: readElementBox(healthIncrement),
+      unit: readElementBox(healthUnit),
+    },
     cards: cards.map((card) => {
       const toggleExpanded = card.querySelector(
         ".provider-instance-card__chevron, [data-provider-card-expanded]",

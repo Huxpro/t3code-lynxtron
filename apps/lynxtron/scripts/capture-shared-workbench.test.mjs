@@ -1242,6 +1242,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"settings-providers": "Providers"');
     assert.include(source, "function providerSettingsContentMatches");
     assert.include(source, "function providerSettingsGeometryMatches");
+    assert.include(source, "healthControlDoesNotOverlap");
+    assert.include(source, "unit.x >= group.x + group.width");
     assert.include(source, "webProviders?.inlineCreate === null");
     assert.include(source, "lynxProviders?.inlineCreate === null");
     assert.include(source, "providerSettingsContentMatches(");
@@ -1256,6 +1258,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelectorAll(".provider-instance-card")');
     assert.include(workbench, 'root?.querySelector(".provider-instance-create")');
     assert.include(workbench, 'readComposedText(title) === "Health check interval"');
+    assert.include(workbench, "healthControl: {");
+    assert.include(workbench, '"Provider health check interval in seconds"');
     assert.include(
       workbench,
       'const titleElement = card.querySelector(".provider-instance-card__title")',
