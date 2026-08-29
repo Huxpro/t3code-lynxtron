@@ -2254,44 +2254,60 @@ async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportH
     3_000,
     "saved Lynx provider card expansion",
   );
-  const removePoint = await evaluate(
-    cdp,
-    sessionId,
-    `(() => {
-      const frame = document.getElementById('lynx-pane');
-      const root = frame?.contentWindow?.document
-        ?.getElementById('t3-lynx-preview')?.shadowRoot;
-      const card = [...(root?.querySelectorAll('.provider-instance-card') ?? [])].find(
-        (candidate) => candidate.textContent?.includes(${JSON.stringify(instanceLabel)})
-      );
-      const target = card?.querySelector('.provider-card__delete-instance');
-      if (!frame || !target) return null;
-      const frameRect = frame.getBoundingClientRect();
-      const rect = target.getBoundingClientRect();
-      return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
-    })()`,
-  );
-  if (!removePoint) throw new Error("Missing saved Lynx provider Delete instance control");
-  await dispatchPointerClickWithMove(cdp, sessionId, removePoint);
   let stableDeleteSamples = 0;
-  state = await waitForWorkbenchState(
-    cdp,
-    sessionId,
-    (next) => {
-      const reversed =
-        !(next?.web?.settingsMetrics?.providers?.cards ?? []).some(
-          (card) => card.title === instanceLabel,
-        ) &&
-        !(next?.lynx?.settingsMetrics?.providers?.cards ?? []).some(
-          (card) => card.title === instanceLabel,
-        ) &&
-        !(next?.lynx?.connectorDiagnostics?.providerInstanceIds ?? []).includes(instanceId);
-      stableDeleteSamples = reversed ? stableDeleteSamples + 1 : 0;
-      return stableDeleteSamples >= 3;
-    },
-    5_000,
-    "stable shared Add Provider delete reversal",
-  );
+  const deleteReversed = (next) => {
+    const reversed =
+      !(next?.web?.settingsMetrics?.providers?.cards ?? []).some(
+        (card) => card.title === instanceLabel,
+      ) &&
+      !(next?.lynx?.settingsMetrics?.providers?.cards ?? []).some(
+        (card) => card.title === instanceLabel,
+      ) &&
+      !(next?.lynx?.connectorDiagnostics?.providerInstanceIds ?? []).includes(instanceId);
+    stableDeleteSamples = reversed ? stableDeleteSamples + 1 : 0;
+    return stableDeleteSamples >= 3;
+  };
+  for (let attempt = 1; attempt <= 3 && stableDeleteSamples < 3; attempt += 1) {
+    const removePoint = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const frame = document.getElementById('lynx-pane');
+        const root = frame?.contentWindow?.document
+          ?.getElementById('t3-lynx-preview')?.shadowRoot;
+        const card = [...(root?.querySelectorAll('.provider-instance-card') ?? [])].find(
+          (candidate) => candidate.textContent?.includes(${JSON.stringify(instanceLabel)})
+        );
+        const target = card?.querySelector('.provider-card__delete-instance');
+        if (!frame || !target) return null;
+        const frameRect = frame.getBoundingClientRect();
+        const rect = target.getBoundingClientRect();
+        return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+      })()`,
+    );
+    if (!removePoint) {
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        deleteReversed,
+        1_000,
+        "stable shared Add Provider delete reversal after control removal",
+      ).catch(() => state);
+      if (stableDeleteSamples >= 3) break;
+      throw new Error("Missing saved Lynx provider Delete instance control");
+    }
+    await dispatchPointerClickWithMove(cdp, sessionId, removePoint);
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      deleteReversed,
+      attempt === 3 ? 5_000 : 1_000,
+      `stable shared Add Provider delete reversal attempt ${attempt}`,
+    ).catch(() => state);
+  }
+  if (stableDeleteSamples < 3) {
+    throw new Error("Add Provider delete did not reach a stable shared reverse state");
+  }
   timeline.push({
     step: "deleted",
     instanceId,
@@ -4852,6 +4868,20 @@ async function main() {
     );
   }
   const fixturePreparation = await prepareStateFixture({ seed, expectedThreadFixture });
+  if (isAddProviderDialogState) {
+    const settingsPath = path.join(baseDir, "userdata", "settings.json");
+    if (existsSync(settingsPath)) {
+      const settings = JSON.parse(await readFile(settingsPath, "utf8"));
+      if (settings.providerInstances?.codex_fidelity_browser) {
+        const { codex_fidelity_browser: _fixture, ...providerInstances } =
+          settings.providerInstances;
+        await writeFile(
+          settingsPath,
+          `${JSON.stringify({ ...settings, providerInstances }, null, 2)}\n`,
+        );
+      }
+    }
+  }
   seed.fixturePreparation = fixturePreparation;
   await writeFile(seedReportPath, `${JSON.stringify(seed, null, 2)}\n`);
   const expectProject = semanticRoute.startsWith("settings-")

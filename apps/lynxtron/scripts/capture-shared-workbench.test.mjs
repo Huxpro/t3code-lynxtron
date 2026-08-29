@@ -1273,6 +1273,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"settings-providers-add-dialog-light": "settings-general"');
     assert.include(source, "function addProviderDialogPairMatches");
     assert.include(source, "async function runAddProviderDialogFlow");
+    assert.include(source, "settings.providerInstances?.codex_fidelity_browser");
     assert.include(source, 'step: "config-blocked"');
     assert.include(source, "if (${replace}) input?.select?.()");
     assert.include(source, "fillLynxInput(1, instanceId, { replace: true })");
@@ -1282,7 +1283,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'step: "saved"');
     assert.include(source, 'step: "deleted"');
     assert.include(source, "stableDeleteSamples >= 3");
-    assert.include(source, '"stable shared Add Provider delete reversal"');
+    assert.include(source, "attempt <= 3 && stableDeleteSamples < 3");
+    assert.include(source, "stable shared Add Provider delete reversal attempt");
     assert.include(source, 'step: "final-dismissed"');
     assert.include(source, "codex_fidelity_browser");
     assert.include(source, "provider-card__delete-instance");
