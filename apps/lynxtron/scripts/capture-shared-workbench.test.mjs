@@ -44,6 +44,9 @@ describe("shared workbench lifecycle fault capture", () => {
   it("only requires provider notification dismissal for states that clear it", () => {
     assert.include(source, "async function dismissWebProviderNotification");
     assert.include(source, "let clickAttempts = 0");
+    assert.include(source, "let absentSince = null");
+    assert.include(source, "const popup = doc?.querySelector('[data-slot=\"toast-popup\"]')");
+    assert.include(source, "if (!dismiss) return { present: true, point: null }");
     assert.include(source, "clickAttempts < 3");
     assert.include(source, "nextClickAt = Date.now() + 750");
     assert.include(source, "rect.width <= 0");
@@ -53,9 +56,16 @@ describe("shared workbench lifecycle fault capture", () => {
       source,
       "await dispatchPointerClickWithMove(cdp, sessionId, notification.point)",
     );
-    assert.include(source, "if (notification?.present === false) return true");
+    assert.include(source, "Date.now() - startedAt >= 1_500");
+    assert.include(source, "Date.now() - absentSince >= 500");
     assert.include(source, "await dismissWebProviderNotification(cdp, sessionId)");
     assert.include(source, "if (shouldClearWebNotification && !notificationDismissed)");
+    assert.include(source, "const finalNotificationDismissed =");
+    assert.include(source, "if (shouldClearWebNotification && !finalNotificationDismissed)");
+    assert.include(
+      source,
+      'throw new Error("Web pane did not commit notification dismissal before capture.")',
+    );
   });
 
   it("does not relabel a running canonical thread as completed or failed", () => {

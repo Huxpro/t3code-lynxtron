@@ -1963,9 +1963,11 @@ async function dispatchPointerClickWithMove(cdp, sessionId, point) {
 }
 
 async function dismissWebProviderNotification(cdp, sessionId, timeout = 8_000) {
+  const startedAt = Date.now();
   const deadline = Date.now() + timeout;
   let clickAttempts = 0;
   let nextClickAt = 0;
+  let absentSince = null;
   while (Date.now() < deadline) {
     const notification = await evaluate(
       cdp,
@@ -1973,8 +1975,19 @@ async function dismissWebProviderNotification(cdp, sessionId, timeout = 8_000) {
       `(() => {
         const pane = document.getElementById('web-pane');
         const doc = pane?.contentWindow?.document;
-        const dismiss = doc?.querySelector('button[aria-label="Dismiss notification"]');
-        if (!pane || !dismiss) return { present: false };
+        const popup = doc?.querySelector('[data-slot="toast-popup"]');
+        if (!pane || !popup) return { present: false };
+        const popupRect = popup.getBoundingClientRect();
+        const popupStyle = doc.defaultView?.getComputedStyle(popup);
+        const popupVisible =
+          popupRect.width > 0 &&
+          popupRect.height > 0 &&
+          popupStyle?.display !== 'none' &&
+          popupStyle?.visibility !== 'hidden' &&
+          Number(popupStyle?.opacity ?? 1) > 0;
+        if (!popupVisible) return { present: false };
+        const dismiss = popup.querySelector('button[aria-label="Dismiss notification"]');
+        if (!dismiss) return { present: true, point: null };
         const paneRect = pane.getBoundingClientRect();
         const rect = dismiss.getBoundingClientRect();
         const style = doc.defaultView?.getComputedStyle(dismiss);
@@ -1986,7 +1999,7 @@ async function dismissWebProviderNotification(cdp, sessionId, timeout = 8_000) {
           style?.pointerEvents === 'none' ||
           Number(style?.opacity ?? 1) <= 0
         ) {
-          return { present: false };
+          return { present: true, point: null };
         }
         return {
           present: true,
@@ -1997,7 +2010,12 @@ async function dismissWebProviderNotification(cdp, sessionId, timeout = 8_000) {
         };
       })()`,
     ).catch(() => null);
-    if (notification?.present === false) return true;
+    if (notification?.present === false) {
+      absentSince ??= Date.now();
+      if (Date.now() - startedAt >= 1_500 && Date.now() - absentSince >= 500) return true;
+    } else {
+      absentSince = null;
+    }
     if (notification?.point && clickAttempts < 3 && Date.now() >= nextClickAt) {
       await dispatchPointerClickWithMove(cdp, sessionId, notification.point);
       clickAttempts += 1;
@@ -8811,6 +8829,31 @@ async function captureCell({
         },
       })}`,
     );
+  }
+  const finalNotificationDismissed =
+    !shouldClearWebNotification || (await dismissWebProviderNotification(cdp, sessionId));
+  if (shouldClearWebNotification && !finalNotificationDismissed) {
+    throw new Error("Web provider-update notification remained visible before capture.");
+  }
+  if (shouldClearWebNotification) {
+    await delay(1_800);
+    const paintCommitted = await evaluate(
+      cdp,
+      sessionId,
+      `new Promise((resolve) => {
+        const frameWindow = document.getElementById('web-pane')?.contentWindow;
+        if (!frameWindow?.requestAnimationFrame) {
+          resolve(false);
+          return;
+        }
+        frameWindow.requestAnimationFrame(() => {
+          frameWindow.requestAnimationFrame(() => resolve(true));
+        });
+      })`,
+    ).catch(() => false);
+    if (!paintCommitted) {
+      throw new Error("Web pane did not commit notification dismissal before capture.");
+    }
   }
   const clip = (r) => ({
     x: Math.round(r.x),
