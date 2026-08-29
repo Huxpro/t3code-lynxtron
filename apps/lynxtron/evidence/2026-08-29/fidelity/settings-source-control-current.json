@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T02:47:00-07:00",
+  "stateId": "settings-source-control",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-source-control",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "43d0de00102f65cbc23e6d401711af95ae14cca4",
+    "productCommit": "c7f0c0f84",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256Prefix": "a479565e2ca9",
+    "lynxBundleSha256Prefix": "1aeb0e2e1e57",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "sectionTitlesMatch": true,
+    "sectionTextsMatch": true,
+    "sourceControlRowsMatch": true,
+    "rendererErrors": 0,
+    "sectionStartDeltas": [0, 4.3125, 9.40625],
+    "singleLineRowStepDelta": 0.15625,
+    "multiLineRowStepDelta": 0.3125
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-current/workbench-report.json",
+      "sha256": "025d52e9049c13ece91d85a1a702e9d11fea1e66d7986131555dac301ef614e3"
+    },
+    "web": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-current/1280x820/web.png",
+      "sha256": "368a1c87be0836d225aedff21d7c8fc979f55dd6ace32602c2fc8c66cb7eb49e"
+    },
+    "lynx": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-source-control-current/1280x820/lynx.png",
+      "sha256": "0ed916f835fb8ee9723a2fcfcd4fda585c520fefb3d9590f5620173bc6bd87cd"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Source Control Rescan is icon-only with an accessible label, matching the Web authority instead of adding visible button copy.",
+      "The shared Lynx Select chevron is decorative geometry rather than a text glyph that contaminates visible content.",
+      "Stacked Settings sections now use one canonical rows wrapper with 4px sibling rhythm, 16px wide-screen padding, and explicit 20px and 19px text rhythm."
+    ],
+    "harnessLossExcluded": [
+      "The earlier Lynx section-text selector ignored stacked source-control-section roots and falsely returned no content.",
+      "The Web iframe compositor repeatedly retained a dismissed provider-update toast after the DOM postcondition, two animation frames, and the 250ms exit animation. The Web screenshot is retained for diagnosis but is invalid for material scoring."
+    ],
+    "remainingProductResidual": [
+      "Section starts retain 4.3125px and 9.40625px cumulative differences from fractional Web font metrics and integer Lynx layout.",
+      "Material residual remains unchanged because no valid clean Web pixel frame was obtained."
+    ],
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed."
+  }
+}
