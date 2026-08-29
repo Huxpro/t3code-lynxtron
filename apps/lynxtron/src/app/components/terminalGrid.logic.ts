@@ -14,3 +14,15 @@ export function terminalGridSize(panelWidth: number, panelHeight: number): Termi
     rows: Math.max(1, Math.floor((panelHeight - TERMINAL_VERTICAL_CHROME) / TERMINAL_CELL_HEIGHT)),
   };
 }
+
+export function terminalSplitGridSize(
+  panelWidth: number,
+  panelHeight: number,
+  direction: "horizontal" | "vertical" | null,
+): TerminalGridSize {
+  const grid = terminalGridSize(panelWidth, panelHeight);
+  return {
+    cols: direction === "horizontal" ? Math.max(1, Math.floor(grid.cols / 2)) : grid.cols,
+    rows: direction === "vertical" ? Math.max(1, Math.floor(grid.rows / 2)) : grid.rows,
+  };
+}

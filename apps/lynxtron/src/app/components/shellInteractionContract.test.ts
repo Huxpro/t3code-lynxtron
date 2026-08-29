@@ -477,7 +477,7 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("height={props.terminalHeight}");
     expect(panel).toContain("terminalHeight,");
     expect(panel).toContain("terminalWidth,");
-    expect(terminal).toContain("terminalGridSize(width / selection.visibleIds.length, height)");
+    expect(terminal).toContain("terminalSplitGridSize(width, height, selection.splitDirection)");
     expect(terminal).toContain("runningIds.map((terminalId)");
     expect(terminal).toContain(".resizeTerminal({");
     expect(terminal).toContain("cols: grid.cols");
@@ -494,6 +494,7 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain("data-terminal-session-id={selection.activeId}");
     expect(terminal).toContain("data-terminal-session-count={String(selection.ids.length)}");
     expect(terminal).toContain('aria-label="Split terminal horizontally"');
+    expect(terminal).toContain('aria-label="Split terminal vertically"');
     expect(terminal).toContain("splitTerminalSession");
     expect(terminal).toContain("selection.visibleIds.map");
     expect(terminal).toContain("data-terminal-viewport={terminalId}");

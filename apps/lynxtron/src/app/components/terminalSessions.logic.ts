@@ -2,6 +2,7 @@ export interface TerminalSessionSelection {
   readonly activeId: string;
   readonly ids: ReadonlyArray<string>;
   readonly nextOrdinal: number;
+  readonly splitDirection: "horizontal" | "vertical" | null;
   readonly visibleIds: ReadonlyArray<string>;
 }
 
@@ -12,6 +13,7 @@ export function initialTerminalSessionSelection(): TerminalSessionSelection {
     activeId: INITIAL_TERMINAL_SESSION_ID,
     ids: [INITIAL_TERMINAL_SESSION_ID],
     nextOrdinal: 2,
+    splitDirection: null,
     visibleIds: [INITIAL_TERMINAL_SESSION_ID],
   };
 }
@@ -32,12 +34,14 @@ export function addTerminalSession(selection: TerminalSessionSelection): Termina
     activeId: next.id,
     ids: [...selection.ids, next.id],
     nextOrdinal: next.nextOrdinal,
+    splitDirection: null,
     visibleIds: [next.id],
   };
 }
 
 export function splitTerminalSession(
   selection: TerminalSessionSelection,
+  direction: "horizontal" | "vertical" = "horizontal",
 ): TerminalSessionSelection {
   if (selection.visibleIds.length >= 2) return selection;
   const next = allocateTerminalSession(selection);
@@ -45,6 +49,7 @@ export function splitTerminalSession(
     activeId: next.id,
     ids: [...selection.ids, next.id],
     nextOrdinal: next.nextOrdinal,
+    splitDirection: direction,
     visibleIds: [...selection.visibleIds, next.id],
   };
 }
@@ -57,6 +62,7 @@ export function activateTerminalSession(
   return {
     ...selection,
     activeId: id,
+    splitDirection: selection.visibleIds.includes(id) ? selection.splitDirection : null,
     visibleIds: selection.visibleIds.includes(id) ? selection.visibleIds : [id],
   };
 }
@@ -73,6 +79,7 @@ export function removeTerminalSession(
     return {
       ...selection,
       ids,
+      splitDirection: visibleIds.length > 1 ? selection.splitDirection : null,
       visibleIds: visibleIds.length > 0 ? visibleIds : [selection.activeId],
     };
   }
@@ -81,6 +88,7 @@ export function removeTerminalSession(
     ...selection,
     activeId,
     ids,
+    splitDirection: visibleIds.length > 1 ? selection.splitDirection : null,
     visibleIds: visibleIds.length > 0 ? visibleIds : [activeId],
   };
 }

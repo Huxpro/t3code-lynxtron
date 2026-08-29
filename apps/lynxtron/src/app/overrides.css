@@ -8132,6 +8132,9 @@
   flex-direction: row;
   min-height: 0;
 }
+.terminal-panel__viewports--vertical {
+  flex-direction: column;
+}
 .terminal-panel__viewport {
   position: relative;
   flex-shrink: 0;
@@ -8141,6 +8144,11 @@
 .terminal-panel__viewport--divided {
   border-left-width: 1px;
   border-left-color: var(--border);
+}
+.terminal-panel__viewports--vertical .terminal-panel__viewport--divided {
+  border-top-width: 1px;
+  border-top-color: var(--border);
+  border-left-width: 0;
 }
 .terminal-panel__viewport--active {
   background-color: var(--muted);

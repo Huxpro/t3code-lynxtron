@@ -14,6 +14,7 @@ describe("terminal session selection", () => {
       activeId: "term-2",
       ids: ["term-1", "term-2"],
       nextOrdinal: 3,
+      splitDirection: null,
       visibleIds: ["term-2"],
     });
   });
@@ -30,9 +31,18 @@ describe("terminal session selection", () => {
       activeId: "term-2",
       ids: ["term-1", "term-2"],
       nextOrdinal: 3,
+      splitDirection: "horizontal",
       visibleIds: ["term-1", "term-2"],
     });
     expect(splitTerminalSession(split)).toBe(split);
+  });
+
+  it("records a vertical split independently from a horizontal split", () => {
+    expect(splitTerminalSession(initialTerminalSessionSelection(), "vertical")).toMatchObject({
+      activeId: "term-2",
+      splitDirection: "vertical",
+      visibleIds: ["term-1", "term-2"],
+    });
   });
 
   it("keeps both split panes visible while changing the active target", () => {
@@ -66,6 +76,7 @@ describe("terminal session selection", () => {
       activeId: "term-3",
       ids: ["term-1", "term-3"],
       nextOrdinal: 4,
+      splitDirection: null,
       visibleIds: ["term-3"],
     });
   });

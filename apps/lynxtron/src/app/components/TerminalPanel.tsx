@@ -3,7 +3,7 @@ import type { NodesRef } from "@lynx-js/types";
 
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
-import { terminalGridSize } from "./terminalGrid.logic";
+import { terminalSplitGridSize } from "./terminalGrid.logic";
 import { terminalReturnController } from "../state/terminalKeyboard";
 import {
   activateTerminalSession,
@@ -50,8 +50,8 @@ export function TerminalPanel({
     : null;
   const session = terminalKey ? terminalSessions[terminalKey] : undefined;
   const grid = useMemo(
-    () => terminalGridSize(width / selection.visibleIds.length, height),
-    [height, selection.visibleIds.length, width],
+    () => terminalSplitGridSize(width, height, selection.splitDirection),
+    [height, selection.splitDirection, width],
   );
   const resizedGridRef = useRef<string | null>(null);
 
@@ -171,7 +171,7 @@ export function TerminalPanel({
       data-terminal-session-status={session?.status ?? "starting"}
       data-terminal-session-id={selection.activeId}
       data-terminal-session-count={String(selection.ids.length)}
-      data-terminal-split={selection.visibleIds.length > 1 ? "horizontal" : "none"}
+      data-terminal-split={selection.splitDirection ?? "none"}
     >
       <view className="terminal-panel__meta">
         <text className="terminal-panel__cwd">{cwd}</text>
@@ -221,6 +221,17 @@ export function TerminalPanel({
           <Icon name="columns-2" size={13} color="#818181" />
         </view>
         <view
+          className={
+            "terminal-panel__session-split" +
+            (selection.visibleIds.length > 1 ? " terminal-panel__session-split--disabled" : "")
+          }
+          aria-label="Split terminal vertically"
+          aria-disabled={selection.visibleIds.length > 1 ? "true" : "false"}
+          bindtap={() => setSelection((current) => splitTerminalSession(current, "vertical"))}
+        >
+          <Icon name="rows-3" size={13} color="#818181" />
+        </view>
+        <view
           className="terminal-panel__session-new"
           aria-label="New terminal"
           bindtap={() => setSelection(addTerminalSession)}
@@ -228,7 +239,12 @@ export function TerminalPanel({
           <Icon name="plus" size={13} color="#818181" />
         </view>
       </view>
-      <view className="terminal-panel__viewports">
+      <view
+        className={
+          "terminal-panel__viewports" +
+          (selection.splitDirection === "vertical" ? " terminal-panel__viewports--vertical" : "")
+        }
+      >
         {selection.visibleIds.map((terminalId, index) => {
           const key = activeThreadId + String.fromCharCode(0) + terminalId;
           const visibleSession = terminalSessions[key];
@@ -241,7 +257,11 @@ export function TerminalPanel({
                 (index > 0 ? " terminal-panel__viewport--divided" : "") +
                 (terminalId === selection.activeId ? " terminal-panel__viewport--active" : "")
               }
-              style={{ width: selection.visibleIds.length > 1 ? "50%" : "100%" }}
+              style={
+                selection.splitDirection === "vertical"
+                  ? { height: "50%", width: "100%" }
+                  : { height: "100%", width: selection.visibleIds.length > 1 ? "50%" : "100%" }
+              }
               data-terminal-viewport={terminalId}
               scroll-orientation="vertical"
               bindtap={() =>
