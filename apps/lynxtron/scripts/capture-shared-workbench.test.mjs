@@ -1358,6 +1358,8 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(source, 'if (providerDialogStopAt === "driver") return { state, timeline }');
     assert.include(source, "addProviderDialogPairMatches(state, width, height, 0)");
+    assert.include(workbench, 'textLeaves: [...step.querySelectorAll("span, text, x-text")]');
+    assert.include(workbench, 'textLeaves: [...driver.querySelectorAll("span, text, x-text")]');
     assert.include(source, "settings.providerInstances?.codex_fidelity_browser");
     assert.include(source, 'step: "config-blocked"');
     assert.include(source, "if (${replace}) input?.select?.()");

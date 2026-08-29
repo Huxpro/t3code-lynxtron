@@ -683,6 +683,11 @@ function readAddProviderDialog(root) {
         ? stepElements.indexOf(step) === wizardStep
         : step.getAttribute("aria-current") === "step",
       box: readElementBox(step),
+      textLeaves: [...step.querySelectorAll("span, text, x-text")]
+        .filter(
+          (leaf) => leaf.querySelector("span, text, x-text") === null && readComposedText(leaf),
+        )
+        .map((leaf) => ({ text: readComposedText(leaf), box: readElementBox(leaf) })),
     })),
     drivers: driverElements.map((driver) => ({
       label: readComposedText(driver),
@@ -693,6 +698,11 @@ function readAddProviderDialog(root) {
         driver.getAttribute("aria-disabled") === "true" ||
         driver.getAttribute("data-disabled") === "",
       box: readElementBox(driver),
+      textLeaves: [...driver.querySelectorAll("span, text, x-text")]
+        .filter(
+          (leaf) => leaf.querySelector("span, text, x-text") === null && readComposedText(leaf),
+        )
+        .map((leaf) => ({ text: readComposedText(leaf), box: readElementBox(leaf) })),
     })),
     error: readComposedText(
       dialog.querySelector(
