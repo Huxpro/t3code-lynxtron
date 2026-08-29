@@ -10140,6 +10140,12 @@ async function captureCell({
   );
   const confirmedTargetState =
     reachedTargetState ||
+    (semanticRoute.startsWith("settings-") &&
+      bothReady &&
+      finalSettingsAsyncReady &&
+      finalSettingsGeometryReady &&
+      finalSettingsNavigationReady &&
+      settingsContentMatch !== false) ||
     (isRightPanelTerminalState && rightPanelAddMenuTerminalSelected) ||
     (unpersistedHeroStateReady(state) && finalCoreGeometryReady && finalComposerReady) ||
     (isFlatSidebarLayoutState && bothReady && finalFlatSidebarLayoutReady) ||

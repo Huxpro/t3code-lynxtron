@@ -678,6 +678,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "hideAuthorizedClients");
   });
 
+  it("admits direct Settings routes only after their semantic and geometry gates pass", () => {
+    assert.include(source, 'semanticRoute.startsWith("settings-")');
+    assert.include(source, "finalSettingsAsyncReady");
+    assert.include(source, "finalSettingsGeometryReady");
+    assert.include(source, "finalSettingsNavigationReady");
+    assert.include(source, "settingsContentMatch !== false");
+  });
+
   it("runs the Browser Connections create and revoke lifecycle on both renderers", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
