@@ -44,12 +44,12 @@
       "sha256": "63c9ab6a7f8f7fe7a6727626fee190750327074bb7e1c56421c33c60432a0386"
     },
     "web": {
-      "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-web-dark.png",
-      "sha256": "3afcc79beac38e0635af1798ac315e40cfcbd55cd94d7dbf97dd6272d63a0dfc"
+      "supersededBy": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-current/1280x820/terminal-web.png",
+      "sha256": "5e98f611662b79a16e72def1775492225848917abe4ebc8a98621fcc91704bfd"
     },
     "lynx": {
-      "path": "apps/lynxtron/evidence/2026-08-25/fidelity/right-panel-terminal-lynx-dark.png",
-      "sha256": "62a3703039fb5b3cd9798e54111317156a8bc578df60ceaa0a9d9a3ff80449ed"
+      "supersededBy": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-current/1280x820/terminal-lynx.png",
+      "sha256": "245dc1e9e61090890ebc45878ab020d75a4a66a171546f19c43f1f9f449de40a"
     }
   },
   "classification": {
