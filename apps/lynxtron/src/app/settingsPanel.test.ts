@@ -302,6 +302,9 @@ describe("Lynx Settings route projection", () => {
     expect(emptyHeaderBlock).toContain("width: 384px;");
     expect(overrides).toContain("top: 32px;\n  left: 0;\n  width: 384px;");
     expect(overrides).toContain(".source-control-empty__content .ui-button__label {");
+    expect(overrides).toMatch(
+      /\.source-control-empty__content \.ui-button--xs \{[\s\S]*box-sizing: border-box;/,
+    );
   });
 
   it("matches the canonical Source Control initial loading anatomy", () => {

@@ -870,6 +870,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "sourceControlErrorSettingsGeometryMatches");
     assert.include(workbench, "sourceControlEmptyContent: readElementBox(");
     assert.include(workbench, "sourceControlRetryButton: readElementBox(");
+    assert.include(workbench, "sourceControlRetryLabel: readElementBox(");
     assert.include(source, "sourceControlLoadingSettingsGeometryMatches");
     assert.include(source, "T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING");
     assert.include(workbench, "sourceControlEmptyTitles:");

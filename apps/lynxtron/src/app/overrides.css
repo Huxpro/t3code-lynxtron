@@ -6367,6 +6367,7 @@
   height: 28px;
   min-width: 0;
   padding: 0 12px;
+  box-sizing: border-box;
 }
 .source-control-empty__content .ui-button__label {
   font-size: 14px;

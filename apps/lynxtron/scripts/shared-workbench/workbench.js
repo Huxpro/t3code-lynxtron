@@ -2457,6 +2457,9 @@ function readLynxPane() {
                 sourceControlRetryButton: readElementBox(
                   root?.querySelector("[data-source-control-retry] .ui-button"),
                 ),
+                sourceControlRetryLabel: readElementBox(
+                  root?.querySelector("[data-source-control-retry] .ui-button__label"),
+                ),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: settingsSections.map((item) => ({
                   title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
@@ -3498,6 +3501,9 @@ function readWebPane() {
                   settingsPanel?.querySelector("[data-source-control-retry]"),
                 ),
                 sourceControlRetryButton: readElementBox(
+                  settingsPanel?.querySelector('[data-source-control-retry][data-slot="button"]'),
+                ),
+                sourceControlRetryLabel: readElementBox(
                   settingsPanel?.querySelector('[data-source-control-retry][data-slot="button"]'),
                 ),
                 panelAncestors: readElementAncestors(settingsPanel),
