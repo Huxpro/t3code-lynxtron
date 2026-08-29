@@ -686,13 +686,15 @@ describe("shared workbench lifecycle fault capture", () => {
 
     assert.include(source, 'stateId === "settings-connections-mutation-browser"');
     assert.include(source, "async function runConnectionsMutationFlow");
+    assert.include(source, 'host: isConnectionsMutationState ? "0.0.0.0" : HOST');
     assert.include(source, '"web-created"');
     assert.include(source, '"web-revoked"');
     assert.include(source, '"lynx-created"');
     assert.include(source, '"lynx-revoked"');
     assert.include(source, "finalConnectionsMutationReady");
     assert.include(workbench, "function readConnectionsMutationSettings");
-    assert.include(workbench, "pairingLinkCount: pairingRows.length");
+    assert.include(workbench, "pairingLinkCount: pairingRevokeButtons.length");
+    assert.include(workbench, "createButton: readElementBox(createButton)");
     assert.include(workbench, 'readComposedText(button).trim() === "Revoke"');
   });
 

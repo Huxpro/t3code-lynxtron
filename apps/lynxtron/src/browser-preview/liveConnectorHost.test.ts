@@ -96,7 +96,7 @@ describe("LiveConnectorHost", () => {
           { method: "createPairingCredential", params: {} },
           "bridge",
         ),
-      /unavailable in the isolated browser preview/,
+      /not connected/,
     );
     assert.throws(
       () =>
@@ -198,6 +198,15 @@ describe("LiveConnectorHost", () => {
     assert.include(source, 'if (request.method === "closeTerminal")');
     assert.include(source, "this.#client[WS_METHODS.terminalClose](params)");
     assert.include(source, 'status: "closed"');
+  });
+
+  it("forwards access management through authenticated same-origin HTTP", () => {
+    const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
+    assert.include(source, 'credentials: "same-origin"');
+    assert.include(source, '"/api/auth/pairing-token"');
+    assert.include(source, '"/api/auth/pairing-links/revoke"');
+    assert.include(source, 'credential: "[redacted]"');
+    assert.notInclude(source, '"createPairingCredential",\n  "revokePairingLink"');
   });
 
   it("forwards one atomic draft promotion and subscribes only after dispatch succeeds", async () => {

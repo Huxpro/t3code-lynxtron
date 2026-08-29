@@ -760,6 +760,10 @@ async function clickExactButtonText(cdp, sessionId, client, label, withinDialog 
   return true;
 }
 
+async function readControlPoint(cdp, sessionId, client, selector) {
+  return sidebarControlPoint(cdp, sessionId, client, selector);
+}
+
 async function runConnectionsMutationFlow(cdp, sessionId) {
   const timeline = [];
   let state = await waitForWorkbenchState(
@@ -770,6 +774,40 @@ async function runConnectionsMutationFlow(cdp, sessionId) {
     "Connections mutation initial state",
   );
   timeline.push({ step: "initial", pairingLinkCount: 0 });
+
+  if (!(await clickExactButtonText(cdp, sessionId, "lynx", "Create"))) {
+    throw new Error("Missing Lynx Create pairing link action");
+  }
+  timeline.push({
+    step: "lynx-create-clicked",
+    control: await readControlPoint(cdp, sessionId, "lynx", ".settings-connections-create-pairing"),
+  });
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => connectionsMutationStateMatches(next, 1),
+    5_000,
+    "Lynx-created pairing link projection",
+  );
+  timeline.push({ step: "lynx-created", pairingLinkCount: 1 });
+  if (
+    !(await clickSidebarControl(
+      cdp,
+      sessionId,
+      "lynx",
+      '[class*="settings-connections-revoke-pairing--"]',
+    ))
+  ) {
+    throw new Error("Missing Lynx pairing link Revoke action");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => connectionsMutationStateMatches(next, 0),
+    5_000,
+    "Lynx-revoked pairing link projection",
+  );
+  timeline.push({ step: "lynx-revoked", pairingLinkCount: 0 });
 
   if (!(await clickExactButtonText(cdp, sessionId, "web", "Create link"))) {
     throw new Error("Missing Web Create link trigger");
@@ -792,7 +830,14 @@ async function runConnectionsMutationFlow(cdp, sessionId) {
     "Web-created pairing link projection",
   );
   timeline.push({ step: "web-created", pairingLinkCount: 1 });
-  if (!(await clickExactButtonText(cdp, sessionId, "web", "Revoke"))) {
+  if (
+    !(await clickSidebarControl(
+      cdp,
+      sessionId,
+      "web",
+      '[class*="settings-connections-revoke-pairing--"]',
+    ))
+  ) {
     throw new Error("Missing Web pairing link Revoke action");
   }
   state = await waitForWorkbenchState(
@@ -803,29 +848,6 @@ async function runConnectionsMutationFlow(cdp, sessionId) {
     "Web-revoked pairing link projection",
   );
   timeline.push({ step: "web-revoked", pairingLinkCount: 0 });
-
-  if (!(await clickExactButtonText(cdp, sessionId, "lynx", "Create"))) {
-    throw new Error("Missing Lynx Create pairing link action");
-  }
-  state = await waitForWorkbenchState(
-    cdp,
-    sessionId,
-    (next) => connectionsMutationStateMatches(next, 1),
-    5_000,
-    "Lynx-created pairing link projection",
-  );
-  timeline.push({ step: "lynx-created", pairingLinkCount: 1 });
-  if (!(await clickExactButtonText(cdp, sessionId, "lynx", "Revoke"))) {
-    throw new Error("Missing Lynx pairing link Revoke action");
-  }
-  state = await waitForWorkbenchState(
-    cdp,
-    sessionId,
-    (next) => connectionsMutationStateMatches(next, 0),
-    5_000,
-    "Lynx-revoked pairing link projection",
-  );
-  timeline.push({ step: "lynx-revoked", pairingLinkCount: 0 });
   return { state, timeline };
 }
 
@@ -2936,6 +2958,10 @@ async function waitForWorkbenchState(
       betaMutation: {
         web: state?.web?.settingsMetrics?.betaMutation ?? null,
         lynx: state?.lynx?.settingsMetrics?.betaMutation ?? null,
+      },
+      connectionsMutation: {
+        web: state?.web?.settingsMetrics?.connectionsMutation ?? null,
+        lynx: state?.lynx?.settingsMetrics?.connectionsMutation ?? null,
       },
     })}`,
   );
@@ -5143,7 +5169,7 @@ async function main() {
     mode: "desktop",
     noBrowser: true,
     port: serverPort,
-    host: HOST,
+    host: isConnectionsMutationState ? "0.0.0.0" : HOST,
     desktopBootstrapToken: bootstrapToken,
     tailscaleServeEnabled: false,
     tailscaleServePort: 3774,

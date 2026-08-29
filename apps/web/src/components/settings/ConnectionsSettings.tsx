@@ -846,6 +846,7 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
           <Button
             size="xs"
             variant="destructive-outline"
+            className={`settings-connections-revoke-pairing--${pairingLink.id}`}
             disabled={revokingPairingLinkId === pairingLink.id}
             onClick={() => void onRevoke(pairingLink.id)}
           >
@@ -990,7 +991,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
       >
         <DialogTrigger
           render={
-            <Button size="xs" variant="default">
+            <Button size="xs" variant="default" className="settings-connections-create-pairing">
               <PlusIcon className="size-3" />
               Create link
             </Button>

@@ -169,12 +169,7 @@ export interface LiveConnectorDiagnostics {
 }
 
 /** Commands the isolated browser pane cannot satisfy (no local fs/shell). */
-const UNSUPPORTED_COMMANDS = new Set([
-  "createPairingCredential",
-  "revokePairingLink",
-  "revokeClientSession",
-  "revokeOtherClientSessions",
-]);
+const UNSUPPORTED_COMMANDS = new Set<string>();
 
 type ThreadTurnStartCommand = Extract<
   DispatchableClientOrchestrationCommand,
@@ -606,6 +601,23 @@ export class LiveConnectorHost {
     });
   }
 
+  async #postAuthJson<A>(
+    requestPath: string,
+    payload?: Readonly<Record<string, unknown>>,
+  ): Promise<A> {
+    const response = await fetch(requestPath, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload ?? {}),
+    });
+    if (!response.ok) {
+      const detail = (await response.text()).slice(0, 240);
+      throw new Error(`access request failed (${response.status}): ${detail}`);
+    }
+    return (await response.json()) as A;
+  }
+
   #subscribeTerminal(input: TerminalOpenInput): void {
     const key = this.#terminalKey(input.threadId, input.terminalId);
     const existingFiber = this.#terminalFibers.get(key);
@@ -666,6 +678,46 @@ export class LiveConnectorHost {
       return undefined;
     }
     if (!this.#client) throw new Error("Live connector is not connected");
+    if (request.method === "createPairingCredential") {
+      const params = (request.params ?? {}) as { readonly label?: string };
+      return this.#postAuthJson<{
+        readonly id: string;
+        readonly credential: string;
+        readonly label?: string;
+        readonly expiresAt: string;
+      }>("/api/auth/pairing-token", params).then((value) => {
+        this.#recordCommandResult(request.method, { ...value, credential: "[redacted]" });
+        return value;
+      });
+    }
+    if (request.method === "revokePairingLink") {
+      const params = request.params as { readonly id: string };
+      return this.#postAuthJson<{ readonly revoked: boolean }>(
+        "/api/auth/pairing-links/revoke",
+        params,
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value.revoked;
+      });
+    }
+    if (request.method === "revokeClientSession") {
+      const params = request.params as { readonly sessionId: string };
+      return this.#postAuthJson<{ readonly revoked: boolean }>(
+        "/api/auth/clients/revoke",
+        params,
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value.revoked;
+      });
+    }
+    if (request.method === "revokeOtherClientSessions") {
+      return this.#postAuthJson<{ readonly revokedCount: number }>(
+        "/api/auth/clients/revoke-others",
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value.revokedCount;
+      });
+    }
     if (request.method === "openTerminal") {
       const params = request.params as TerminalOpenInput;
       return this.#runClient<TerminalSessionSnapshot>(

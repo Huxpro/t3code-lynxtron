@@ -429,20 +429,29 @@ function readConnectionsMutationSettings(root) {
     ...(authorizedSection?.querySelectorAll("button, [role='button'], .ui-button") ?? []),
   ];
   const labels = buttons.map((button) => readComposedText(button).trim());
-  const pairingRows = [...(authorizedSection?.querySelectorAll(".access-list-row") ?? [])].filter(
-    (row) =>
-      [...row.querySelectorAll("button, [role='button'], .ui-button")].some(
-        (button) => readComposedText(button).trim() === "Revoke",
-      ),
+  const pairingRevokeButtons = [
+    ...(authorizedSection?.querySelectorAll('[class*="settings-connections-revoke-pairing--"]') ??
+      []),
+  ];
+  const createButton = authorizedSection?.querySelector(".settings-connections-create-pairing");
+  const error = [...(authorizedSection?.querySelectorAll(".settings-row__desc, p") ?? [])].find(
+    (item) => /error|failed|forbidden|scope|unauthorized/iu.test(readComposedText(item)),
   );
   return {
     authorizedSection: readElementBox(authorizedSection),
-    canCreate: labels.includes("Create") || labels.includes("Create link"),
+    canCreate: Boolean(authorizedSection?.querySelector(".settings-connections-create-pairing")),
+    createButton: readElementBox(createButton),
+    createLabel: readComposedText(createButton).trim(),
+    createDisabled:
+      createButton?.disabled === true || createButton?.getAttribute("aria-disabled") === "true",
+    error: error ? readComposedText(error).trim() : null,
     createDialogOpen: [...(root?.querySelectorAll('[data-slot="dialog-popup"]') ?? [])].some(
       (dialog) => readComposedText(dialog).includes("Create pairing link"),
     ),
-    pairingLinkCount: pairingRows.length,
-    revokeCount: labels.filter((label) => label === "Revoke").length,
+    pairingLinkCount: pairingRevokeButtons.length,
+    revokeCount: pairingRevokeButtons.filter(
+      (button) => readComposedText(button).trim() === "Revoke",
+    ).length,
   };
 }
 
