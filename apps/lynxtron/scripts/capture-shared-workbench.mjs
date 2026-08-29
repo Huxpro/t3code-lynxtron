@@ -413,7 +413,23 @@ function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
   const keys = webEmpty
     ? ["panel", "search", "results", "footer", "empty"]
     : ["panel", "search", "results", "footer", "row"];
-  return keys.every((key) => rectDeltaWithin(webMetrics.anatomy[key], lynxMetrics.anatomy[key], 2));
+  return keys.every((key) => {
+    if (key !== "results") {
+      return rectDeltaWithin(webMetrics.anatomy[key], lynxMetrics.anatomy[key], 2);
+    }
+    const visibleResults = (metrics) => {
+      const results = metrics.anatomy.results?.rect;
+      const footer = metrics.anatomy.footer?.rect;
+      if (!results || !footer) return null;
+      return {
+        x: results.x,
+        y: results.y,
+        width: results.width,
+        height: Math.max(0, Math.min(results.y + results.height, footer.y) - results.y),
+      };
+    };
+    return rectDeltaWithin(visibleResults(webMetrics), visibleResults(lynxMetrics), 2);
+  });
 }
 
 function sidebarProjectGroupsMatch(state) {
