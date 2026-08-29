@@ -19640,6 +19640,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-current-selection-typography",
+      "observedAt": "2026-08-29T09:43:00-07:00",
+      "commit": "a81ba8f46",
+      "codeCommit": "a81ba8f46",
+      "codeState": "commit",
+      "label": "Quick Switch query selection and typography",
+      "narrative": "A current exact-head dark 1280 by 820 Browser capture enters settings through the Web pointer and key-character path and the Lynx focused key-character path on one isolated persisted-thread snapshot. Both renderers show one Open settings result and no active row. Before the product fix, Lynx reset its active index to the first enabled item every time filtered navigation items changed, while Web cleared its highlight on query changes. Lynx now keeps filtered and file results unselected until ArrowDown or ArrowUp explicitly enters the result set; Enter remains inert while unselected. Section, result-row, and footer typography match the authority. The Lynx input host still does not expose its text style through this probe, so typography remains a small nonzero residual instead of a zero claim.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures use the same query, result, selected thread, route, theme, viewport, and Web bundle. The code change is isolated to initial filtered selection; material and Native evidence are unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-query-current.json",
+          "classification": "tracked-current",
+          "sha256": "cfdcc2c7441c2ff39fc4ca8a64d661fa9c53d05bb0673a4ab3103201341807ce"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.95,
+              "method": "current-quick-switch-query-visible-typography",
+              "source": "Section label, single Open settings result row, and footer hints match authority size, weight, and line height; residual preserves unexposed input-host metrics"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-query-unselected-navigation-contract",
+              "source": "Real settings input leaves both renderers with one matching result and no active row; focused tests prove first ArrowDown or ArrowUp enters the enabled set and Enter is inert before selection"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-quick-switch-query-shared-runtime",
+              "source": "Same isolated snapshot, selected thread, settings query, one result, exact committed bundles, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

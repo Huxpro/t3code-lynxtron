@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T09:43:00-07:00",
+  "stateId": "quick-switch-query",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "query": "settings"
+  },
+  "identity": {
+    "commit": "a81ba8f46ca57be0a858751d98cea7961bf062cf",
+    "seedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "378fff3a8495",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "query": "settings",
+    "rows": ["Open settings"],
+    "webActiveRows": [],
+    "lynxActiveRows": [],
+    "typographyResidual": 0.04,
+    "rendererErrors": 0
+  },
+  "typography": {
+    "sectionLabel": { "fontSize": 12, "fontWeight": 500, "lineHeight": 16 },
+    "resultRow": { "fontSize": 14, "fontWeight": 400, "lineHeight": 20 },
+    "footerHints": { "fontSize": 14, "fontWeight": 500, "lineHeight": 20 }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-query-typography-current/workbench-report.json",
+      "sha256": "f80b55cb84bfabc0e05ecf0c6cf22d33cf4a9bb5393a2e1a198d05d44039f632"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-query-typography-current/1280x820/web-assertions.json",
+      "sha256": "db7c986262eff9b27bed9ad1564f32fb28ffb1e2caa7e8b852fb7d96cf54c4be"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/quick-switch-query-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "609ceee71f074c87aee1e41302e922153ddecac739fc4872ea317df40244cbbc"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Filtering no longer auto-selects the first Lynx result when Web has no highlighted row; first ArrowDown and ArrowUp still enter the enabled result set through the tested navigation contract."
+    ],
+    "missingCoverageClosed": [
+      "Current exact-head query evidence measures the visible section, result row, and footer typography after real input in both renderers."
+    ],
+    "typographyBoundary": "The Lynx input host does not expose its text style through this probe, so typography retains a small nonzero residual.",
+    "evidenceBoundary": "This run updates Lynx typography and query-selection interaction only. Existing material and Native evidence remain unchanged.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed, and no screenshot was retained."
+  }
+}
