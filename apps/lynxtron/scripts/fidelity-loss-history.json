@@ -19110,6 +19110,71 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-connections-mutation-browser-current",
+      "observedAt": "2026-08-29T03:42:00-07:00",
+      "commit": "099083ff0",
+      "codeCommit": "9dd09f61e",
+      "codeState": "commit",
+      "label": "Settings Connections Browser mutation coverage",
+      "narrative": "A dedicated dark Browser-first flow closes the previously unknown Lynx-for-Web Connections mutation state. On one isolated remote-reachable server, Lynx creates a real standard-scope pairing link, both renderers observe it, and Lynx revokes it; Web then opens its permission dialog, creates a real pairing link, both renderers observe it, and Web revokes it. The final state returns to zero pairing links with matching route, theme, viewport, snapshot, exact committed bundles, and zero renderer errors. Web keeps its richer permission dialog and header action while Lynx keeps a direct standard-scope row, and each renderer identifies its own session as This device; those intentional product differences remain explicit visual residual rather than being normalized away.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The live Lynx-for-Web adapter previously rejected valid access-management commands. Current exact-head evidence proves the same-origin authenticated HTTP repair through both create/revoke directions without changing the state denominator, weights, thresholds, or filters."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-connections-mutation-browser-current.json",
+          "classification": "tracked-current",
+          "sha256": "2cc00a4322d4ba958fa0467f77a5456e1c156502142c47861c519852cadf09c9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections-mutation-browser"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "browser-connections-mutation-content",
+              "source": "Both renderers expose network access, authorized clients, create and revoke capability, and the same live access projection; residual preserves the intentional direct-row versus permission-dialog copy difference"
+            },
+            "geometry": {
+              "residual": 0.14,
+              "confidence": 0.95,
+              "method": "browser-connections-mutation-geometry-review",
+              "source": "Both final frames retain the shared 896px settings column and section order; residual preserves Web header actions versus Lynx explicit rows and their different section heights"
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.98,
+              "method": "browser-connections-mutation-typography",
+              "source": "Shared headings, labels, descriptions, and access metadata remain legible with conservative variable-font and renderer shaping residual"
+            },
+            "material": {
+              "residual": 0.14,
+              "confidence": 0.95,
+              "method": "browser-connections-mutation-visual-review",
+              "source": "Dark surfaces, status dots, buttons, switch, and empty-state treatments are coherent; residual preserves differing control placement and renderer material"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-browser-pairing-create-revoke",
+              "source": "Real pointer input completes Lynx create, cross-renderer projection, Lynx revoke, Web dialog create, cross-renderer projection, Web revoke, and final zero-link reverse state"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-connections-shared-server-runtime",
+              "source": "One isolated remote-reachable server, authenticated same-origin requests, exact committed bundles, zero renderer errors, no retained credential, disposed state, and zero agent-browser leaks"
+            }
+          }
+        }
+      ]
     }
   ]
 }
