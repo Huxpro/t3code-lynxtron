@@ -300,6 +300,7 @@ describe("Lynx Settings route projection", () => {
     expect(emptyHeaderBlock).toContain("position: absolute;");
     expect(emptyHeaderBlock).toContain("top: 156px;");
     expect(emptyHeaderBlock).toContain("width: 384px;");
+    expect(overrides).toContain("top: 32px;\n  left: 0;\n  width: 384px;");
     expect(overrides).toContain(".source-control-empty__content .ui-button__label {");
   });
 

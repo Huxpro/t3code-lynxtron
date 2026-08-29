@@ -6344,12 +6344,16 @@
   text-align: center;
 }
 .source-control-empty__description {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  width: 384px;
   color: var(--muted-foreground);
   font-size: 14px;
   line-height: 20px;
   font-family: var(--font-sans);
   text-align: center;
-  margin-top: 4px;
+  margin-top: 0;
 }
 .source-control-empty__content {
   position: absolute;
