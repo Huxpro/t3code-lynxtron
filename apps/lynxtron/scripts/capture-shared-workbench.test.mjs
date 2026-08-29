@@ -1269,6 +1269,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "titleButtons:");
     assert.include(workbench, 'expectedSemanticRoute === "settings-providers"');
     assert.include(source, '"settings-providers-add-dialog": "settings-general"');
+    assert.include(source, 'stateId === "settings-providers-add-dialog-light"');
+    assert.include(source, '"settings-providers-add-dialog-light": "settings-general"');
     assert.include(source, "function addProviderDialogPairMatches");
     assert.include(source, "async function runAddProviderDialogFlow");
     assert.include(source, 'step: "config-blocked"');

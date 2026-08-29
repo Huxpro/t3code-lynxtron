@@ -164,7 +164,8 @@ const isMultiStepQuestionState = stateId === "existing-thread-question-multi-ste
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
-const isAddProviderDialogState = stateId === "settings-providers-add-dialog";
+const isAddProviderDialogState =
+  stateId === "settings-providers-add-dialog" || stateId === "settings-providers-add-dialog-light";
 const isProvidersSettingsState = stateId === "settings-providers" || isAddProviderDialogState;
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
@@ -5223,6 +5224,7 @@ async function captureCell({
     "settings-keybindings": "settings-general",
     "settings-providers": "settings-general",
     "settings-providers-add-dialog": "settings-general",
+    "settings-providers-add-dialog-light": "settings-general",
     "settings-connections": "settings-general",
     "settings-source-control": "settings-general",
     "settings-source-control-loading": "settings-general",
