@@ -2451,6 +2451,9 @@ function readLynxPane() {
                     '[data-slot="empty-description"], .source-control-empty__description',
                   ),
                 ),
+                sourceControlEmptyContent: readElementBox(
+                  root?.querySelector("[data-source-control-retry]"),
+                ),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: settingsSections.map((item) => ({
                   title: item.querySelector(".settings-section__title")?.textContent?.trim() ?? "",
@@ -3487,6 +3490,9 @@ function readWebPane() {
                 ),
                 sourceControlEmptyDescription: readElementBox(
                   settingsPanel?.querySelector('[data-slot="empty-description"]'),
+                ),
+                sourceControlEmptyContent: readElementBox(
+                  settingsPanel?.querySelector("[data-source-control-retry]"),
                 ),
                 panelAncestors: readElementAncestors(settingsPanel),
                 sections: [...(settingsPanel?.querySelectorAll(":scope > section") ?? [])].map(
