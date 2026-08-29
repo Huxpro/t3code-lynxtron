@@ -19016,6 +19016,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-split-reconciliation",
+      "observedAt": "2026-08-29T01:02:00-07:00",
+      "commit": "33af6cc6d",
+      "codeCommit": "c7a87011d",
+      "codeState": "commit",
+      "label": "Right Panel Terminal split residual reconciliation",
+      "narrative": "The base Terminal state previously retained a Lynx interaction residual that explicitly included both split directions as unclaimed. Dedicated denominator-first horizontal and vertical split states now prove real pointer activation, two live PTYs, active-pane command routing, isolated histories, direction-aware grid resizing, and close-to-single-pane recovery on the same canonical Browser snapshot. The base interaction residual is reduced only for that newly measured split scope. Key-by-key VT input and selection actions remain explicit product residual, and Native is unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This reconciles an older aggregate residual with two newer dedicated state measurements without changing any denominator entry, weight, threshold, filter, or Native cell."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-horizontal-split.json",
+          "classification": "tracked-current",
+          "sha256": "d6d3c6910a3c055f4528bda32dade229a59e1cf147ba6eff5278305ee2a8fe83"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split.json",
+          "classification": "tracked-current",
+          "sha256": "188a33339aa3c3ce60cdba38a03432a23d009b42f01b755c2c0733bdfdb5c3e8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "browser-terminal-split-reconciliation",
+              "source": "Horizontal and vertical split lifecycles are now directly measured; key-by-key VT input and selection actions remain unclaimed"
+            }
+          }
+        }
+      ]
     }
   ]
 }

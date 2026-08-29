@@ -290,3 +290,4 @@ settings-connections-mutation-browser-harness-blocked,2026-08-28T21:45:00-07:00,
 right-panel-terminal-multi-session-current,2026-08-28T22:55:00-07:00,bc6356720,commit,Right Panel Terminal multi-session lifecycle,0.217222,0.217222,0.039904,0.184688,0.815312,0.774668
 right-panel-terminal-horizontal-split-current,2026-08-28T23:39:00-07:00,a3d96bcd9,commit,Right Panel Terminal horizontal split,0.213461,0.213461,0.039785,0.180872,0.819128,0.778429
 right-panel-terminal-vertical-split-current,2026-08-29T00:35:00-07:00,bba7feeef,commit,Right Panel Terminal vertical split,0.209701,0.209701,0.039667,0.177057,0.822943,0.782189
+right-panel-terminal-split-reconciliation,2026-08-29T01:02:00-07:00,33af6cc6d,commit,Right Panel Terminal split residual reconciliation,0.209619,0.209619,0.039568,0.177057,0.822943,0.782271
