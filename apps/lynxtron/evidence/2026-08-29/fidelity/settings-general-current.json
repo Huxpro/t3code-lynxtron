@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T07:05:00-07:00",
+  "stateId": "settings-general",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-general",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "c1be6c60de0e21f75354f663a17c8da507312fe6",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256": "fc71341b3a855e26a8c71e782029c60a8e081ec506762e08c4d177c45f141cbe",
+    "lynxBundleSha256": "3c252a9cc661a2a5c069fc24eeb48dbbdaa5d84fa0e01f963da932a5becd90cd",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "navigationMatch": true,
+    "sectionTitlesMatch": true,
+    "canonicalRowIdsMatch": true,
+    "canonicalRowCount": 12,
+    "rendererErrors": 0
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-current/workbench-report.json",
+      "sha256": "e687a93947c41b29ef04c92e022b7855ba448d7f77bddfffd5c6fcb79d114377"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-current/1280x820/web-assertions.json",
+      "sha256": "e45304c0b2ce272d3433a31319a298762612c3f5763273d00911e0d7c95eb884"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-general-current/1280x820/lynx-assertions.json",
+      "sha256": "1734b9003ed41ba2ff36b631b9c8bb15518d6494730cbda2aecc76011d3213fb"
+    }
+  },
+  "classification": {
+    "currentParity": [
+      "All twelve canonical General row ids, titles, and descriptions match except the intentionally platform-specific Diagnostics description.",
+      "Time format and New threads show the same current values; Web exposes hidden Select options in textContent while Lynx exposes only the selected value."
+    ],
+    "intentionalPlatformDelta": [
+      "Lynx reports reduced Background activity controls and unavailable Text generation model selection instead of exposing unsupported mutations.",
+      "Diagnostics truthfully describes terminal logs on Lynx rather than Web's local trace file.",
+      "Each surface displays its own shipped application version."
+    ],
+    "harnessLossExcluded": [
+      "The first current run passed all semantic, geometry, and console gates but an outdated reachedTargetState latch rejected direct Settings routes; the strict compound admission gate was corrected before this exact-head run."
+    ],
+    "evidenceBoundary": "This refresh updates semantic content accounting only. Existing pixel material and geometry measurements remain unchanged, and no new screenshot is retained.",
+    "policy": "No denominator, state weight, threshold, or bad-sample filter changed."
+  }
+}
