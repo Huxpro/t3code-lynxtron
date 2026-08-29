@@ -18945,6 +18945,77 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-vertical-split-current",
+      "observedAt": "2026-08-29T00:35:00-07:00",
+      "commit": "bba7feeef",
+      "codeCommit": "c7a87011d",
+      "codeState": "commit",
+      "label": "Right Panel Terminal vertical split",
+      "narrative": "A denominator-first Browser run compares Web and Lynx-for-Web on one canonical thread, dark theme, 1280 by 820 viewport, and shared server. Both receive the visible vertical split action. Lynx keeps two live sessions mounted as full-width stacked panes, routes the shared command input to the active pane, preserves distinct histories, resizes both PTYs to 71 by 17, and restores term-1 to 71 by 35 after close. Two earlier implementations were rejected because their panes remained half-width despite vertical state; the retained evidence measures 539 by 352 for both panes. Native remains unknown because persistent Computer Use targeting loss prevents exact-owned interaction.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The dedicated vertical split flow measures simultaneous pane geometry, direction-aware PTY resizing, active routing, history isolation, and reverse-state close."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split.json",
+          "classification": "tracked-current",
+          "sha256": "188a33339aa3c3ce60cdba38a03432a23d009b42f01b755c2c0733bdfdb5c3e8"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-vertical-split/workbench-report.json",
+          "classification": "tracked-current",
+          "sha256": "5fb8d206db4d410efcffb2a1b5539795a4a66f09f404d426568e4e86e0cdcb68"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal-vertical-split"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-vertical-split-content",
+              "source": "Both Browser renderers expose two simultaneous terminal panes after their visible vertical split actions"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 539,
+              "confidence": 0.99,
+              "method": "browser-terminal-vertical-split-geometry",
+              "source": "Both Lynx panes measure 539 by 352 within the shared right panel after two half-width layout defects were rejected"
+            },
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.98,
+              "method": "browser-terminal-vertical-split-typography",
+              "source": "Both stacked transcripts remain legible with conservative platform font-shaping residual"
+            },
+            "material": {
+              "residual": 0.08,
+              "confidence": 0.95,
+              "method": "browser-terminal-vertical-split-visual-review",
+              "source": "Horizontal divider, active-pane treatment, tabs, and transcript surfaces remain coherent with conservative rendering residual"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-vertical-split-lifecycle",
+              "source": "Real pointer input splits vertically, changes active target, preserves marker isolation, and closes back to one pane"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "browser-terminal-vertical-split-runtime",
+              "source": "One isolated shared server, canonical thread, production bundles, two 71 by 17 PTYs, restored 71 by 35 PTY, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
