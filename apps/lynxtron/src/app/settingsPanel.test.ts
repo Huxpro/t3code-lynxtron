@@ -301,6 +301,10 @@ describe("Lynx Settings route projection", () => {
     expect(settings).toContain("SOURCE_CONTROL_LOADING_SECTIONS.map");
     expect(settings).toContain("data-source-control-loading-row={row}");
     expect(settings).toContain('label="Rescan server environment"');
+    expect(settings).toContain("const scanButton = (");
+    expect(settings).toContain("<SmallIconButton");
+    expect(settings).toContain('icon={<Icon name="refresh-cw"');
+    expect(settings).not.toContain('label={discovery.pending ? "Scanning…" : "Rescan"}');
     expect(settings).not.toContain("Scanning server integrations…");
     expect(settings).not.toContain("status={usesDedicatedModel");
     expect(settings).not.toContain('"Uses global model"');

@@ -165,8 +165,10 @@ export function SourceControlSettings() {
   );
 
   const scanButton = (
-    <SmallButton
-      label={discovery.pending ? "Scanning…" : "Rescan"}
+    <SmallIconButton
+      label="Rescan server environment"
+      icon={<Icon name="refresh-cw" size={12} color="#818181" />}
+      disabled={discovery.pending}
       onTap={() => setRefreshVersion((version) => version + 1)}
     />
   );

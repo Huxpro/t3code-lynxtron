@@ -6068,9 +6068,13 @@
   flex-grow: 1;
 }
 .ui-select-trigger__chevron {
-  color: var(--muted-foreground);
-  font-size: 12px;
+  width: 7px;
+  height: 7px;
   margin-left: 8px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+  border-color: var(--muted-foreground);
+  transform: rotate(45deg) translateY(-2px);
 }
 .ui-select-popup {
   position: absolute;

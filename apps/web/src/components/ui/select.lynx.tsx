@@ -88,7 +88,7 @@ export function SelectTrigger({
       bindtap={handleTap}
     >
       {children}
-      <text className="ui-select-trigger__chevron">⌄</text>
+      <view className="ui-select-trigger__chevron" aria-hidden />
     </view>
   );
 }
