@@ -2,9 +2,9 @@
   "version": 1,
   "id": "t3-lynxtron-fidelity-loss-v1",
   "description": "Fixed-denominator fidelity loss for the T3 Code Web to Lynx-for-Web to Lynxtron Native port.",
-  "expectedStateCount": 84,
-  "expectedCellCount": 930,
-  "expectedTotalWeight": 294.6,
+  "expectedStateCount": 85,
+  "expectedCellCount": 942,
+  "expectedTotalWeight": 298.6,
   "formula": {
     "commitSmoothingAlpha": 0.22,
     "unknownResidual": 1,
@@ -360,6 +360,13 @@
     {
       "id": "settings-providers-add-dialog",
       "label": "Settings · Add Provider Wizard",
+      "group": "settings",
+      "weight": 4,
+      "clients": ["lynx", "native"]
+    },
+    {
+      "id": "settings-providers-add-dialog-light",
+      "label": "Settings · Add Provider Wizard · Light",
       "group": "settings",
       "weight": 4,
       "clients": ["lynx", "native"]
