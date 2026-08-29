@@ -656,18 +656,40 @@ export function ArchiveSettings() {
             action:
               confirmingDeleteThreadId === thread.id ? (
                 <view className="settings-archive-delete-confirm">
-                  <SmallButton label="Cancel" onTap={() => setConfirmingDeleteThreadId(null)} />
-                  <SmallButton
-                    className={`settings-archive-delete-confirm--${thread.id}`}
-                    label="Confirm delete"
-                    onTap={() => {
+                  <view
+                    className="ui-button ui-button--xs ui-button--outline"
+                    bindtap={() => setConfirmingDeleteThreadId(null)}
+                  >
+                    <text
+                      className="ui-button__label"
+                      bindtap={() => setConfirmingDeleteThreadId(null)}
+                    >
+                      Cancel
+                    </text>
+                  </view>
+                  <view
+                    className={`ui-button ui-button--xs ui-button--outline settings-archive-delete-confirm--${thread.id}`}
+                    bindtap={() => {
                       void runArchiveMutation("Failed to delete thread", () =>
                         deleteThread(thread.id),
                       )
                         .catch(() => undefined)
                         .finally(() => setConfirmingDeleteThreadId(null));
                     }}
-                  />
+                  >
+                    <text
+                      className="ui-button__label"
+                      bindtap={() => {
+                        void runArchiveMutation("Failed to delete thread", () =>
+                          deleteThread(thread.id),
+                        )
+                          .catch(() => undefined)
+                          .finally(() => setConfirmingDeleteThreadId(null));
+                      }}
+                    >
+                      Confirm delete
+                    </text>
+                  </view>
                 </view>
               ) : (
                 <SmallButton
