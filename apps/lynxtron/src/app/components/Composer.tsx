@@ -56,6 +56,7 @@ interface ComposerProps {
   placeholder: string;
   projectName?: string;
   modelLabel?: string;
+  providerAvailable?: boolean;
   modelInstanceId?: string;
   modelDriverKind?: string;
   modelOptionLabel?: string;
@@ -104,6 +105,7 @@ export function Composer({
   placeholder,
   projectName,
   modelLabel,
+  providerAvailable = true,
   modelInstanceId,
   modelDriverKind,
   modelOptionLabel,
@@ -451,6 +453,7 @@ export function Composer({
                         />
                       ) : null}
                     </view>
+                    providerAvailable ? (
                     <view
                       className="composer-footer composer-footer--approval"
                       data-chat-composer-footer="true"
@@ -499,36 +502,48 @@ export function Composer({
                   }
                   separators={!compactFooter}
                   items={[
-                    <view
-                      key="model"
-                      className="model-picker-anchor"
-                      data-floating-anchor="composer-model-picker"
-                    >
-                      <ComposerToolbarControl
-                        className="composer-toolbar-control--model max-w-48"
-                        controlId="model"
-                        label={model}
-                        leading={
-                          modelDriverKind || modelInstanceId ? (
-                            <ProviderBrandIcon
-                              driverKind={modelDriverKind ?? modelInstanceId ?? null}
-                              size={16}
-                              className="pill__brand-img"
+                    providerAvailable ? (
+                      <view
+                        key="model"
+                        className="model-picker-anchor"
+                        data-floating-anchor="composer-model-picker"
+                      >
+                        <ComposerToolbarControl
+                          className="composer-toolbar-control--model max-w-48"
+                          controlId="model"
+                          label={model}
+                          leading={
+                            modelDriverKind || modelInstanceId ? (
+                              <ProviderBrandIcon
+                                driverKind={modelDriverKind ?? modelInstanceId ?? null}
+                                size={16}
+                                className="pill__brand-img"
+                              />
+                            ) : undefined
+                          }
+                          trailing={
+                            <Icon
+                              name="chevron-down"
+                              size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
+                              color="#818181"
+                              className="pill__chevron-img"
                             />
-                          ) : undefined
-                        }
-                        trailing={
-                          <Icon
-                            name="chevron-down"
-                            size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
-                            color="#818181"
-                            className="pill__chevron-img"
-                          />
-                        }
-                        onClick={onModelTap}
-                      />
-                      {modelPicker}
-                    </view>,
+                          }
+                          onClick={onModelTap}
+                        />
+                        {modelPicker}
+                      </view>
+                    ) : (
+                      <view
+                        key="provider-unavailable"
+                        className="composer-provider-unavailable"
+                        data-chat-provider-unavailable="true"
+                        aria-disabled="true"
+                      >
+                        <Icon name="circle-alert" size={16} color="#818181" />
+                        <text>No provider available</text>
+                      </view>
+                    ),
                     compactFooter && !questionMode ? (
                       <view key="compact-controls" className="composer-compact-controls-wrap">
                         <view

@@ -19,6 +19,19 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "!state?.lynx?.connectorDiagnostics?.commands?.some(");
   });
 
+  it("stabilizes provider presentation before capturing the disabled fault state", () => {
+    assert.include(
+      source,
+      'const requiresStableProviderFaultPreflight = stateId === "composer-disabled"',
+    );
+    assert.include(source, "let lifecycleFaultPreflightStablePolls");
+    assert.include(source, "webModel.length > 0");
+    assert.include(source, "webModel === lynxModel");
+    assert.include(source, "JSON.stringify(webControls) === JSON.stringify(lynxControls)");
+    assert.include(source, "lifecycleFaultPreflightStablePolls >= 3");
+    assert.include(source, "lifecycleFaultPreflight: {");
+  });
+
   it("admits the expected disconnected lifecycle without requiring semantic readiness", () => {
     assert.include(source, "const semanticStateReady = isLifecycleFaultState");
     assert.include(source, "? lifecycleReady");

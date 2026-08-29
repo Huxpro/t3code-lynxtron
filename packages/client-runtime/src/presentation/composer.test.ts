@@ -11,6 +11,7 @@ import {
   getNextComposerRuntimeMode,
   isComposerDraftThread,
   projectComposerContext,
+  projectComposerProviderAvailability,
   projectComposerPrimaryOption,
   projectComposerTraitsMenu,
   resolveDefaultComposerPlaceholder,
@@ -55,6 +56,32 @@ describe("composer controls presentation", () => {
         "Ask anything, @tag files/folders, $use skills, or / for commands",
       );
     }
+  });
+
+  it("hides stale model state when no provider can accept a turn", () => {
+    expect(
+      projectComposerProviderAvailability({
+        phase: "disconnected",
+        providerAvailable: false,
+        modelLabel: "GPT-5.6-Sol",
+      }),
+    ).toEqual({
+      placeholder: "Enable a provider in Settings to send a message",
+      modelLabel: undefined,
+    });
+  });
+
+  it("preserves ordinary disconnected-session state with an available provider", () => {
+    expect(
+      projectComposerProviderAvailability({
+        phase: "disconnected",
+        providerAvailable: true,
+        modelLabel: "GPT-5.6-Sol",
+      }),
+    ).toEqual({
+      placeholder: "Ask for follow-up changes or attach images",
+      modelLabel: "GPT-5.6-Sol",
+    });
   });
 
   it("reserves the hero layout for an empty idle local draft", () => {

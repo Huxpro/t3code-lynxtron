@@ -5,9 +5,9 @@ import {
 } from "@t3tools/client-runtime/presentation/session";
 import {
   isComposerDraftThread,
+  projectComposerProviderAvailability,
   projectComposerTraitsMenu,
   projectComposerTraitsTrigger,
-  resolveDefaultComposerPlaceholder,
   selectComposerTraitOption,
   shouldShowComposerContextStrip,
   shouldUseComposerHeroLayout,
@@ -29,7 +29,10 @@ import {
   type PendingUserInputDraftAnswer,
 } from "@t3tools/client-runtime/presentation/pending-user-input";
 import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
-import { projectProviderStatusNotice } from "@t3tools/client-runtime/presentation/provider";
+import {
+  projectProviderStatusNotice,
+  resolveSelectableProviderInstanceEntry,
+} from "@t3tools/client-runtime/presentation/provider";
 import {
   EMPTY_TRANSCRIPT_PLACEHOLDER,
   shouldShowEmptyTranscript,
@@ -199,7 +202,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     lastKnown: lastKnownModelSelection.current,
   });
   const projectName = activeProject?.title ?? "your project";
-  const modelLabel = presentedSelectedModel?.name ?? presentedModelSelection?.model;
+  const persistedModelLabel = presentedSelectedModel?.name ?? presentedModelSelection?.model;
   const modelInstanceId = presentedSelectedModel?.instanceId ?? presentedModelSelection?.instanceId;
   const activeProviderInstanceId =
     activeThread?.session?.providerInstanceId ?? activeThread?.modelSelection.instanceId ?? null;
@@ -248,9 +251,17 @@ export function ChatView({ threadId }: ChatViewProps) {
       messageCount: messages.length,
       proposedPlanCount: proposedPlans.length,
     });
-  const composerPlaceholder = resolveDefaultComposerPlaceholder(
-    deriveSessionPresentationPhase(activeThread?.session?.status),
-  );
+  const providerAvailable =
+    status === "ready" &&
+    resolveSelectableProviderInstanceEntry(
+      providerEntries,
+      activeProviderInstanceId ?? presentedModelSelection?.instanceId,
+    ) !== undefined;
+  const composerProviderAvailability = projectComposerProviderAvailability({
+    phase: deriveSessionPresentationPhase(activeThread?.session?.status),
+    providerAvailable,
+    modelLabel: persistedModelLabel,
+  });
   const modelPickerScopeKey = hero
     ? `new-thread:${activeProject?.id ?? "unselected"}`
     : (activeThreadId ?? "no-thread");
@@ -586,14 +597,6 @@ export function ChatView({ threadId }: ChatViewProps) {
               />
             }
           />
-        ) : shouldRenderConnectionLifecycleBanner({ hero }) ? (
-          <ConnectionLifecycleBannerSurface
-            presentation={connectionLifecycle}
-            onReconnect={() => {
-              void reconnect().catch(() => undefined);
-            }}
-            onOpenConnections={() => navigate("/settings/connections")}
-          />
         ) : null
       }
       bodyOverlay={
@@ -674,14 +677,15 @@ export function ChatView({ threadId }: ChatViewProps) {
         placeholder={
           activePendingQuestion
             ? "Type your own answer, or leave this blank to use the selected option"
-            : composerPlaceholder
+            : composerProviderAvailability.placeholder
         }
         projectName={projectName}
-        modelLabel={modelLabel}
+        modelLabel={composerProviderAvailability.modelLabel}
+        providerAvailable={providerAvailable}
         modelInstanceId={modelInstanceId}
         modelDriverKind={presentedSelectedModel?.driverKind}
-        modelOptionLabel={modelTraitsTrigger?.label}
-        modelOptionSections={modelOptionSections}
+        modelOptionLabel={providerAvailable ? modelTraitsTrigger?.label : undefined}
+        modelOptionSections={providerAvailable ? modelOptionSections : []}
         branch={activeThread?.branch ?? checkoutBranch ?? undefined}
         showContextStrip={showComposerContextStrip}
         worktreePath={activeThread?.worktreePath ?? undefined}
@@ -693,7 +697,17 @@ export function ChatView({ threadId }: ChatViewProps) {
         showInteractionModeToggle={showInteractionModeToggle}
         availableWidth={centerPanelWidth}
         statusBanner={
-          activeThreadSettled ? (
+          shouldRenderConnectionLifecycleBanner({ hero }) ? (
+            <view className="composer-lifecycle-banner">
+              <ConnectionLifecycleBannerSurface
+                presentation={connectionLifecycle}
+                onReconnect={() => {
+                  void reconnect().catch(() => undefined);
+                }}
+                onOpenConnections={() => navigate("/settings/connections")}
+              />
+            </view>
+          ) : activeThreadSettled ? (
             <view className="composer-settled-banner" data-composer-settled-banner>
               <view className="composer-settled-banner__icon">
                 <view className="composer-settled-banner__icon-ring">
@@ -845,9 +859,9 @@ export function ChatView({ threadId }: ChatViewProps) {
         busy={sessionWorking}
         onSend={handleSend}
         onStop={interrupt}
-        onModelTap={uiActions.toggleModelPicker}
+        onModelTap={providerAvailable ? uiActions.toggleModelPicker : undefined}
         modelPicker={
-          modelPickerOpen ? (
+          providerAvailable && modelPickerOpen ? (
             <ModelPicker
               models={presentationModels}
               providers={providerEntries}
@@ -874,7 +888,9 @@ export function ChatView({ threadId }: ChatViewProps) {
           ) : null
         }
         onSelectModelOption={
-          modelTraitsTrigger && modelOptionSections.length > 0 ? handleSelectModelOption : undefined
+          providerAvailable && modelTraitsTrigger && modelOptionSections.length > 0
+            ? handleSelectModelOption
+            : undefined
         }
         onRuntimeModeChange={setThreadRuntimeMode}
         onInteractionModeTap={handleInteractionModeTap}

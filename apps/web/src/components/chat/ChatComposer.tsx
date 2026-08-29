@@ -23,7 +23,7 @@ import {
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
   getComposerInteractionModePresentation,
   getComposerRuntimeModePresentation,
-  resolveDefaultComposerPlaceholder,
+  projectComposerProviderAvailability,
 } from "@t3tools/client-runtime/presentation/composer";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
 import { createModelSelection, normalizeModelSlug } from "@t3tools/shared/model";
@@ -863,6 +863,11 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     threadModelSelection: activeThreadModelSelection,
     projectModelSelection: activeProjectDefaultModelSelection,
     settings,
+  });
+  const composerProviderAvailability = projectComposerProviderAvailability({
+    phase,
+    providerAvailable: !noProviderAvailable,
+    modelLabel: selectedModel?.name,
   });
   const selectedProviderStatus = useMemo(
     () => selectedProviderEntry?.snapshot ?? null,
@@ -3108,9 +3113,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
                         ? "Add feedback to refine the plan, or leave this blank to implement it"
                         : projectSelectionRequired
                           ? "Choose a project above to start a thread"
-                          : noProviderAvailable
-                            ? "Enable a provider in Settings to send a message"
-                            : resolveDefaultComposerPlaceholder(phase)
+                          : composerProviderAvailability.placeholder
                 }
                 disabled={isConnecting || isComposerApprovalState || projectSelectionRequired}
               />

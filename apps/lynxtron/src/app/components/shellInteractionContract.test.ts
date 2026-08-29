@@ -114,6 +114,13 @@ const branchToolbarBranchSource = readFileSync(
 );
 
 describe("desktop shell interaction contract", () => {
+  it("keeps connection lifecycle feedback in the Composer overlay", () => {
+    const chatView = componentSource("ChatView.tsx");
+    expect(chatView).toContain('className="composer-lifecycle-banner"');
+    expect(chatView).toContain("shouldRenderConnectionLifecycleBanner({ hero })");
+    expect(overrides).toContain(".composer-lifecycle-banner {");
+  });
+
   it("reports archived thread identity to isolated Native readiness harnesses", () => {
     expect(clientSource).toContain("archivedThreads: next.archivedThreads.map");
   });

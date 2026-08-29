@@ -103,6 +103,28 @@ export function resolveDefaultComposerPlaceholder(phase: SessionPresentationPhas
     : "Ask anything, @tag files/folders, $use skills, or / for commands";
 }
 
+export interface ComposerProviderAvailabilityPresentation {
+  readonly placeholder: string;
+  readonly modelLabel: string | undefined;
+}
+
+/** A persisted model is not a visible dispatch target while its provider is unavailable. */
+export function projectComposerProviderAvailability(options: {
+  readonly phase: SessionPresentationPhase;
+  readonly providerAvailable: boolean;
+  readonly modelLabel: string | undefined;
+}): ComposerProviderAvailabilityPresentation {
+  return options.providerAvailable
+    ? {
+        placeholder: resolveDefaultComposerPlaceholder(options.phase),
+        modelLabel: options.modelLabel,
+      }
+    : {
+        placeholder: "Enable a provider in Settings to send a message",
+        modelLabel: undefined,
+      };
+}
+
 export function shouldUseComposerHeroLayout(options: {
   readonly isLocalDraftThread: boolean;
   readonly timelineEntryCount: number;

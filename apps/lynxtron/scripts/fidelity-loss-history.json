@@ -19979,6 +19979,62 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-disabled-current-provider-fault",
+      "observedAt": "2026-08-29T12:54:00-07:00",
+      "commit": "ba56c801e",
+      "codeState": "working-tree",
+      "label": "Composer disabled provider and fault layout parity",
+      "narrative": "A fresh dark 1280 by 820 Browser run first holds the same non-empty GPT-5.6-Sol provider projection and four Composer controls for three consecutive polls, then terminates the owned shared server. Both panes reach the same thread, connecting lifecycle, disabled Composer, provider-unavailable placeholder, hidden model, runtime and interaction controls, exact frame/editor/surface/footer/empty-transcript geometry, and zero renderer errors. Lynx now projects provider unavailability like Web and mounts its lifecycle notice in the Composer overlay instead of shifting the transcript down by 62px.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "The current capture closes a reproducible content and layout loss after an explicit stable-provider fault preflight; it does not alter weights, thresholds, scope, or filtering."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/composer-disabled-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "4021f2266a3a9f375ba438ea5ed50fb322ae9d5d77b38c77858188625732cd22"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-disabled"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-provider-unavailable-composer-content",
+              "source": "Both panes hide the stale model, show the provider-unavailable placeholder, and retain only runtime and interaction controls after the owned server disconnects"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.328125, 0,
+                -0.328125, 0
+              ],
+              "anchorScale": 1024,
+              "confidence": 0.99,
+              "method": "current-disabled-composer-and-transcript-geometry",
+              "source": "Composer frame, editor, surface, footer, empty transcript, and primary action match; toolbar allocation retains at most 0.328125px text-shaping drift"
+            },
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "current-disabled-composer-computed-typography",
+              "source": "Editor matches 14px weight 400 with 22.75px versus 23px line height; runtime and interaction labels match 14px weight 500 and 20px line height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "stable-provider-owned-server-disconnect",
+              "source": "Same isolated snapshot, thread, theme, viewport and bundles; provider presentation is stable for three polls before disconnect and the final frame has zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

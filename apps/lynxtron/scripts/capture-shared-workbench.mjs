@@ -168,6 +168,7 @@ if (!["complete", "driver"].includes(providerDialogStopAt)) {
   throw new Error("--provider-dialog-stop-at must be complete or driver.");
 }
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
+const requiresStableProviderFaultPreflight = stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isMultiStepQuestionState = stateId === "existing-thread-question-multi-step";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
@@ -5724,6 +5725,9 @@ async function captureCell({
   const reviewInteractionTimeline = [];
   let lastReviewTimelineKey = "";
   let ownedServerTerminated = false;
+  let lifecycleFaultPreflightStablePolls = requiresStableProviderFaultPreflight ? 0 : 3;
+  let lastLifecycleFaultPreflightKey = "";
+  const lifecycleFaultPreflightTimeline = [];
   let reachedTargetState = false;
   let webFilesBrowserInputSent = !isFilesSurfaceState;
   let lynxFilesBrowserInputSent = !isFilesSurfaceState;
@@ -6279,9 +6283,61 @@ async function captureCell({
         }
       }
     }
+    const lifecycleFaultPreflight = (() => {
+      if (!requiresStableProviderFaultPreflight) return { ready: true, key: "not-required" };
+      const webModel = state?.web?.productState?.visibleModelLabel?.trim() ?? "";
+      const lynxModel = state?.lynx?.productState?.visibleModelLabel?.trim() ?? "";
+      const webControls = (state?.web?.composerMetrics?.controls ?? []).map(({ id, label }) => ({
+        id,
+        label,
+      }));
+      const lynxControls = (state?.lynx?.composerMetrics?.controls ?? []).map(({ id, label }) => ({
+        id,
+        label,
+      }));
+      const key = JSON.stringify({
+        webModel,
+        lynxModel,
+        webControls,
+        lynxControls,
+        webPlaceholder: state?.web?.composerMetrics?.placeholder ?? null,
+        lynxPlaceholder: state?.lynx?.composerMetrics?.placeholder ?? null,
+      });
+      return {
+        key,
+        ready:
+          webModel.length > 0 &&
+          webModel === lynxModel &&
+          JSON.stringify(webControls) === JSON.stringify(lynxControls) &&
+          state?.web?.composerMetrics?.placeholder === state?.lynx?.composerMetrics?.placeholder,
+      };
+    })();
+    if (lifecycleFaultPreflight.ready) {
+      lifecycleFaultPreflightStablePolls =
+        lifecycleFaultPreflight.key === lastLifecycleFaultPreflightKey
+          ? lifecycleFaultPreflightStablePolls + 1
+          : 1;
+      lastLifecycleFaultPreflightKey = lifecycleFaultPreflight.key;
+    } else {
+      lifecycleFaultPreflightStablePolls = 0;
+      lastLifecycleFaultPreflightKey = lifecycleFaultPreflight.key;
+    }
+    const preflightTimelineKey = `${lifecycleFaultPreflightStablePolls}:${lifecycleFaultPreflight.key}`;
+    if (preflightTimelineKey !== lifecycleFaultPreflightTimeline.at(-1)?.key) {
+      lifecycleFaultPreflightTimeline.push({
+        key: preflightTimelineKey,
+        elapsedMs: Date.now() - readyStart,
+        ready: lifecycleFaultPreflight.ready,
+        stablePolls: lifecycleFaultPreflightStablePolls,
+        snapshot: JSON.parse(
+          lifecycleFaultPreflight.key === "not-required" ? "{}" : lifecycleFaultPreflight.key,
+        ),
+      });
+    }
     if (
       terminateOwnedServer &&
       !ownedServerTerminated &&
+      lifecycleFaultPreflightStablePolls >= 3 &&
       state?.web?.semanticReady === true &&
       state?.lynx?.semanticReady === true &&
       state?.web?.productState?.selectedProject === expectProject &&
@@ -10260,6 +10316,11 @@ async function captureCell({
       finalHeroGeometryReady,
       finalComposerReady,
       completedComposerProviderState: readCompletedComposerProviderState(state),
+      lifecycleFaultPreflight: {
+        required: requiresStableProviderFaultPreflight,
+        stablePolls: lifecycleFaultPreflightStablePolls,
+        timeline: lifecycleFaultPreflightTimeline,
+      },
       finalPlanModeReady,
       finalSessionProjectionReady,
       finalStageIdentityReady,
@@ -10422,6 +10483,11 @@ async function captureCell({
         },
       },
       completedComposerProviderState: readCompletedComposerProviderState(state),
+      lifecycleFaultPreflight: {
+        required: requiresStableProviderFaultPreflight,
+        stablePolls: lifecycleFaultPreflightStablePolls,
+        timeline: lifecycleFaultPreflightTimeline,
+      },
       failedTranscriptGeometry: {
         match: failedTranscriptGeometryMatches(
           state?.web?.timelineMetrics,
