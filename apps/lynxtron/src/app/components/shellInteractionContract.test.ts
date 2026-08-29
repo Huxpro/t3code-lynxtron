@@ -1540,8 +1540,10 @@ describe("desktop shell interaction contract", () => {
     expect(workspaceBlock).toContain("position: absolute;");
     expect(workspaceBlock).toContain("left: 0;");
     expect(workspaceBlock).toContain("bottom: 28px;");
+    expect(workspaceBlock).toContain("width: 100%;");
     expect(workspaceBlock).not.toContain("top: -178px;");
     expect(workspaceBlock).not.toContain("width: 310px;");
+    expect(composer).not.toContain('width: "158px"');
     expect(overrides).not.toContain(".composer-workspace-menu--worktree {\n  top: -236px;");
     expect(overrides).toContain("min-height: 29px;");
     expect(emptyTimelineBlock).toContain("pointer-events: none;");

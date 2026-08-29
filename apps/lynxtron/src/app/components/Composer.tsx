@@ -964,9 +964,6 @@ export function Composer({
                     data-floating-side="top"
                     data-floating-align="start"
                     data-floating-side-offset="4"
-                    style={{
-                      width: "158px",
-                    }}
                     catchtap={() => undefined}
                   >
                     <text className="composer-workspace-menu__eyebrow">Workspace</text>

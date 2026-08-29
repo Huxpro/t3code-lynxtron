@@ -3272,6 +3272,7 @@
   bottom: 28px;
   z-index: 3;
   display: block;
+  width: 100%;
   height: 96px;
   padding: 5px;
   border-width: 1px;
