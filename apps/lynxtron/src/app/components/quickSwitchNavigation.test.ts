@@ -22,8 +22,14 @@ describe("Quick Switch navigation", () => {
   });
 
   it("runs only the active enabled row", () => {
+    expect(runActiveQuickSwitchItem(-1, items)).toBe(false);
     expect(runActiveQuickSwitchItem(0, items)).toBe(false);
     expect(runActiveQuickSwitchItem(1, items)).toBe(true);
     expect(enabled).toHaveBeenCalledOnce();
+  });
+
+  it("enters navigation from an intentionally empty selection", () => {
+    expect(moveQuickSwitchActiveIndex(-1, 1, items)).toBe(1);
+    expect(moveQuickSwitchActiveIndex(-1, -1, items)).toBe(2);
   });
 });

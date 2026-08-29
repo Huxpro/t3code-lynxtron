@@ -26,6 +26,11 @@ export function moveQuickSwitchActiveIndex(
   items: ReadonlyArray<QuickSwitchNavigationItem>,
 ): number {
   if (items.length === 0) return 0;
+  if (activeIndex < 0) {
+    const ordered = direction === 1 ? items : [...items].reverse();
+    const item = ordered.find((candidate) => !candidate.disabled);
+    return item ? items.indexOf(item) : activeIndex;
+  }
   let next = clampQuickSwitchActiveIndex(activeIndex, items);
   for (let step = 0; step < items.length; step += 1) {
     next = (next + direction + items.length) % items.length;
@@ -45,6 +50,7 @@ export function runActiveQuickSwitchItem(
   activeIndex: number,
   items: ReadonlyArray<QuickSwitchNavigationItem>,
 ): boolean {
+  if (activeIndex < 0) return false;
   const item = items[clampQuickSwitchActiveIndex(activeIndex, items)];
   if (!item || item.disabled) return false;
   item.run();

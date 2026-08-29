@@ -120,7 +120,7 @@ export function QuickSwitch({
         ? "new-thread-projects"
         : "root",
   );
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(mode === "files" ? -1 : 0);
   const [sourceControlDiscovery, setSourceControlDiscovery] =
     useState<SourceControlDiscoveryResult | null>(null);
   const [sourceControlPending, setSourceControlPending] = useState(false);
@@ -660,8 +660,8 @@ export function QuickSwitch({
     view,
   ]);
   useEffect(() => {
-    setActiveIndex(firstEnabledQuickSwitchIndex(navigationItems));
-  }, [navigationItems]);
+    setActiveIndex(fileMode ? -1 : firstEnabledQuickSwitchIndex(navigationItems));
+  }, [fileMode, navigationItems]);
   const handlePaletteKeyDown = useCallback(
     (event: unknown) => {
       const key =
