@@ -14,6 +14,7 @@ import "./probe.css";
 import { BrowserPreviewConnectorHost } from "./previewConnectorHost.ts";
 import { LiveConnectorHost } from "./liveConnectorHost.ts";
 import { createBrowserPreviewNativeModules } from "./previewNativeModules.ts";
+import { handleBrowserPreviewTerminalFocus } from "./terminalFocusBridge.ts";
 import {
   BROWSER_PREVIEW_SCENARIOS,
   DEFAULT_BROWSER_PREVIEW_SCENARIO_ID,
@@ -213,6 +214,8 @@ const nativeCallHandler = (method: string, data: unknown, moduleName: string): u
     if (typeof value?.width !== "number" || typeof value.height !== "number") return false;
     return true;
   }
+  const terminalFocus = handleBrowserPreviewTerminalFocus(method, data);
+  if (terminalFocus !== null) return terminalFocus;
   const result = liveHost
     ? liveHost.handleNativeCall(method, data, moduleName)
     : connectorHost!.handleNativeCall(method, data, moduleName);

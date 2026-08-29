@@ -279,7 +279,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "data-right-panel-add-kind");
     assert.include(source, "rightPanelAddMenuDismissed");
     assert.include(source, "rightPanelAddMenuTerminalSelected");
-    assert.include(source, 'const isRightPanelTerminalState = stateId === "right-panel-terminal"');
+    assert.include(source, "const isRightPanelTerminalState =");
+    assert.include(source, 'stateId === "right-panel-terminal-multi-session"');
+    assert.include(source, '"right-panel-terminal-multi-session": "existing-thread"');
+    assert.include(source, "explicitExpectedThreadId || threadStateIds.has(stateId)");
+    assert.include(source, 'aria-label="New terminal"');
+    assert.include(source, "data-terminal-session-count");
+    assert.include(source, "LYNX_TERM_2_MARKER");
+    assert.include(source, "LYNX_TERM_1_MARKER");
     assert.include(source, "(isRightPanelAddMenuState || isRightPanelTerminalState)");
     assert.include(source, "isRightPanelTerminalState && rightPanelAddMenuTerminalSelected");
     assert.include(source, "shadow ? '.topbar__toggle--terminal'");
@@ -613,10 +620,7 @@ describe("shared workbench lifecycle fault capture", () => {
       "`/${encodeURIComponent(environmentId)}/${encodeURIComponent(expectThread)}`",
     );
     assert.include(source, "explicitExpectedThreadId ||");
-    assert.include(source, "isEmptyTranscriptState ||");
-    assert.include(source, 'stateId === "composer-docked" ||');
-    assert.include(source, 'stateId === "composer-working" ||');
-    assert.include(source, "isComposerPlanModeState ||");
+    assert.include(source, "threadStateIds.has(stateId)");
     assert.include(source, "webRoute: captureWebRoute");
     assert.include(source, "function composerPlanModeMatches(state)");
     assert.include(source, 'className.includes("bg-blue-500/10")');
@@ -1096,9 +1100,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "multiStepQuestionTimeline");
     assert.include(source, 'channel: fallback ? "dom-click-fallback" : "cdp-pointer"');
     assert.include(source, 'waitForPair("restored first answer", restoredFirstAnswer, 1_500)');
-    assert.include(source, "isEmptyTranscriptState ||");
-    assert.include(source, "isComposerPlanModeState ||");
-    assert.include(source, "isMultiStepQuestionState) &&");
+    assert.include(source, "explicitExpectedThreadId || threadStateIds.has(stateId)");
     assert.include(source, "pendingRequestSemantics");
     assert.include(workbench, 'data-pending-question-action="next"');
     assert.include(workbench, 'data-pending-question-action="previous"');

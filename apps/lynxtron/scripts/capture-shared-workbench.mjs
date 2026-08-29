@@ -183,7 +183,9 @@ const isCompactControlsState =
   stateId === "composer-compact-controls-inline-files-short";
 const isShortCompactControlsState = stateId === "composer-compact-controls-inline-files-short";
 const isRightPanelAddMenuState = stateId === "right-panel-add-menu";
-const isRightPanelTerminalState = stateId === "right-panel-terminal";
+const isRightPanelTerminalMultiSessionState = stateId === "right-panel-terminal-multi-session";
+const isRightPanelTerminalState =
+  stateId === "right-panel-terminal" || isRightPanelTerminalMultiSessionState;
 const isDiffScopeMenuState = stateId === "diff-scope-menu";
 const isComposerPlanModeState = stateId === "composer-plan-mode";
 const isFlatSidebarLayoutState = new Set([
@@ -4870,6 +4872,7 @@ async function main() {
     "composer-compact-controls-inline-files-short",
     "right-panel-add-menu",
     "right-panel-terminal",
+    "right-panel-terminal-multi-session",
     "diff-scope-menu",
     "composer-connecting",
     "composer-disabled",
@@ -5093,15 +5096,7 @@ async function main() {
     if (!ready) throw new Error("server not ready");
     for (let i = 0; i < 20 && !startupToken; i++) await delay(200);
     if (!startupToken) throw new Error("did not capture startup pairing token");
-    if (
-      (explicitExpectedThreadId ||
-        isEmptyTranscriptState ||
-        stateId === "composer-docked" ||
-        stateId === "composer-working" ||
-        isComposerPlanModeState ||
-        isMultiStepQuestionState) &&
-      expectThread
-    ) {
+    if ((explicitExpectedThreadId || threadStateIds.has(stateId)) && expectThread) {
       const environmentId = (
         await readFile(path.join(baseDir, "userdata", "environment-id"), "utf8")
       ).trim();
@@ -5355,6 +5350,7 @@ async function captureCell({
     "composer-compact-controls-inline-files-short": "existing-thread",
     "right-panel-add-menu": "existing-thread",
     "right-panel-terminal": "existing-thread",
+    "right-panel-terminal-multi-session": "existing-thread",
     "diff-scope-menu": "existing-thread",
     "settled-banner-inline-files-narrow": "existing-thread",
     "composer-disabled": "existing-thread",
@@ -5542,6 +5538,7 @@ async function captureCell({
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelTerminalScreenshot = null;
   let rightPanelTerminalCommand = null;
+  let rightPanelTerminalMultiSession = null;
   let diffScopeMenuDismissed = !isDiffScopeMenuState;
   let diffScopeWorkingTreeSelected = !isDiffScopeMenuState;
   let shortCompactControlsScrolled = !isShortCompactControlsState;
@@ -9265,10 +9262,218 @@ async function captureCell({
             `Lynx terminal command did not return the shared cwd: ${JSON.stringify(rightPanelTerminalCommand)}`,
           );
         }
-        const beforeResize = await evaluate(
-          cdp,
-          sessionId,
-          `(() => {
+        if (isRightPanelTerminalMultiSessionState) {
+          const clickTerminalControl = async (selector, label) => {
+            const point = await evaluate(
+              cdp,
+              sessionId,
+              `(() => {
+                const frame = document.getElementById('lynx-pane');
+                const root = frame?.contentWindow?.document
+                  ?.getElementById('t3-lynx-preview')?.shadowRoot;
+                const target = root?.querySelector(${JSON.stringify(selector)});
+                if (!frame || !target) return null;
+                const frameRect = frame.getBoundingClientRect();
+                const rect = target.getBoundingClientRect();
+                return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+              })()`,
+            );
+            if (!point) throw new Error(`Could not locate ${label}.`);
+            await dispatchPointerClickWithMove(cdp, sessionId, point);
+          };
+          const runLynxTerminalMarker = async (marker) => {
+            const focused = await focusRemoteElement(
+              cdp,
+              sessionId,
+              `document.getElementById('lynx-pane')?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot
+                ?.querySelector('.terminal-panel__input')?.shadowRoot?.querySelector('input') ??
+                document.getElementById('lynx-pane')?.contentWindow?.document
+                  ?.getElementById('t3-lynx-preview')?.shadowRoot
+                  ?.querySelector('.terminal-panel__input') ?? null`,
+            );
+            if (!focused) throw new Error(`Could not focus Lynx terminal for ${marker}.`);
+            await cdp.send("Input.insertText", { text: `printf ${marker}` }, sessionId);
+            await clickTerminalControl(".terminal-panel__run", `Run for ${marker}`);
+            const deadline = Date.now() + 5_000;
+            while (Date.now() < deadline) {
+              const output = await evaluate(
+                cdp,
+                sessionId,
+                `document.getElementById('lynx-pane')?.contentWindow?.document
+                  ?.getElementById('t3-lynx-preview')?.shadowRoot
+                  ?.querySelector('.terminal-panel__output')?.textContent ?? ''`,
+              ).catch(() => "");
+              if (output.includes(marker)) return;
+              await delay(100);
+            }
+            throw new Error(`Lynx terminal output did not include ${marker}.`);
+          };
+          const newPoints = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const pointFor = (frameId, shadow, selector) => {
+                const frame = document.getElementById(frameId);
+                const doc = frame?.contentWindow?.document;
+                const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+                const target = root?.querySelector(selector);
+                if (!frame || !target) return null;
+                const frameRect = frame.getBoundingClientRect();
+                const rect = target.getBoundingClientRect();
+                return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+              };
+              return {
+                web: pointFor(
+                  'web-pane',
+                  false,
+                  '[data-terminal-owner="right-panel"] [aria-label^="New Terminal"]'
+                ),
+                lynx: pointFor('lynx-pane', true, '[aria-label="New terminal"]'),
+              };
+            })()`,
+          );
+          if (!newPoints?.web || !newPoints?.lynx) {
+            throw new Error(
+              `Could not locate multi-session New controls: ${JSON.stringify(newPoints)}`,
+            );
+          }
+          const beforeNew = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const state = window.__T3_WORKBENCH__?.read();
+              const web = document.getElementById('web-pane')?.contentWindow?.document;
+              const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot;
+              return {
+                webThread: state?.web?.productState?.activeThreadId ?? null,
+                lynxThread: state?.lynx?.productState?.activeThreadId ?? null,
+                webTerminalText: web?.querySelector('[data-terminal-owner="right-panel"]')?.textContent?.trim() ?? null,
+                lynxCount: Number(lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-count')),
+              };
+            })()`,
+          );
+          await dispatchPointerClickWithMove(cdp, sessionId, newPoints.web);
+          await dispatchPointerClickWithMove(cdp, sessionId, newPoints.lynx);
+          let secondSessionReady = false;
+          for (let attempt = 0; attempt < 50; attempt += 1) {
+            const latest = await evaluate(
+              cdp,
+              sessionId,
+              `(() => {
+                const state = window.__T3_WORKBENCH__?.read();
+                const panel = document.getElementById('lynx-pane')?.contentWindow?.document
+                  ?.getElementById('t3-lynx-preview')?.shadowRoot
+                  ?.querySelector('.terminal-panel');
+                return {
+                  count: Number(panel?.getAttribute('data-terminal-session-count')),
+                  activeId: panel?.getAttribute('data-terminal-session-id') ?? null,
+                  openCount: state?.lynx?.connectorDiagnostics?.commands?.filter(
+                    ({ method }) => method === 'openTerminal'
+                  ).length ?? 0,
+                };
+              })()`,
+            ).catch(() => null);
+            if (latest?.count === 2 && latest?.activeId === "term-2" && latest?.openCount >= 2) {
+              secondSessionReady = true;
+              break;
+            }
+            await delay(100);
+          }
+          if (!secondSessionReady) throw new Error("Second Lynx terminal session did not open.");
+          await runLynxTerminalMarker("LYNX_TERM_2_MARKER");
+          await clickTerminalControl('[data-terminal-session-tab="term-1"]', "Terminal 1 tab");
+          await runLynxTerminalMarker("LYNX_TERM_1_MARKER");
+          await clickTerminalControl('[data-terminal-session-tab="term-2"]', "Terminal 2 tab");
+          for (let attempt = 0; attempt < 30; attempt += 1) {
+            const activeId = await evaluate(
+              cdp,
+              sessionId,
+              `document.getElementById('lynx-pane')?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot
+                ?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-id') ?? null`,
+            ).catch(() => null);
+            if (activeId === "term-2") break;
+            await delay(100);
+          }
+          const isolated = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const web = document.getElementById('web-pane')?.contentWindow?.document;
+              const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot;
+              const output = lynx?.querySelector('.terminal-panel__output')?.textContent ?? '';
+              return {
+                webHasSecondTerminal: web?.body?.innerText?.includes('Terminal 2') === true,
+                lynxCount: Number(lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-count')),
+                lynxActiveId: lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-id') ?? null,
+                output,
+              };
+            })()`,
+          );
+          if (
+            !isolated?.webHasSecondTerminal ||
+            isolated?.lynxCount !== 2 ||
+            isolated?.lynxActiveId !== "term-2" ||
+            !isolated?.output?.includes("LYNX_TERM_2_MARKER") ||
+            isolated?.output?.includes("LYNX_TERM_1_MARKER")
+          ) {
+            throw new Error(`Terminal histories were not isolated: ${JSON.stringify(isolated)}`);
+          }
+          await clickTerminalControl('[aria-label="Close Terminal 2"]', "Close Terminal 2");
+          for (let attempt = 0; attempt < 30; attempt += 1) {
+            const current = await evaluate(
+              cdp,
+              sessionId,
+              `(() => {
+                const panel = document.getElementById('lynx-pane')?.contentWindow?.document
+                  ?.getElementById('t3-lynx-preview')?.shadowRoot
+                  ?.querySelector('.terminal-panel');
+                return {
+                  count: Number(panel?.getAttribute('data-terminal-session-count')),
+                  activeId: panel?.getAttribute('data-terminal-session-id') ?? null,
+                };
+              })()`,
+            ).catch(() => null);
+            if (current?.count === 1 && current?.activeId === "term-1") break;
+            await delay(100);
+          }
+          const closed = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const lynx = document.getElementById('lynx-pane')?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot;
+              return {
+                count: Number(lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-count')),
+                activeId: lynx?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-id') ?? null,
+                output: lynx?.querySelector('.terminal-panel__output')?.textContent ?? '',
+              };
+            })()`,
+          );
+          if (
+            closed?.count !== 1 ||
+            closed?.activeId !== "term-1" ||
+            !closed?.output?.includes("LYNX_TERM_1_MARKER")
+          ) {
+            throw new Error(
+              `Terminal close did not fall back to term-1: ${JSON.stringify(closed)}`,
+            );
+          }
+          rightPanelTerminalMultiSession = {
+            input: "web-new-pointer|lynx-new-switch-write-close-pointers",
+            beforeNew,
+            isolated,
+            closed,
+          };
+        }
+        if (!isRightPanelTerminalMultiSessionState) {
+          const beforeResize = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
             const state = window.__T3_WORKBENCH__?.read();
             const panel = state?.lynx?.reviewMetrics?.panelRect;
             const grids = state?.lynx?.connectorDiagnostics?.commands
@@ -9276,22 +9481,22 @@ async function captureCell({
               .map(({ terminalGrid }) => terminalGrid) ?? [];
             return { panelWidth: panel?.rect?.width ?? null, grids };
           })()`,
-        );
-        const invokedResize = await evaluate(
-          cdp,
-          sessionId,
-          `document.getElementById('lynx-pane')?.contentWindow
-            ?.__T3_LYNX_WEB_PREVIEW__?.invokeResizeForHarness?.('right-panel', 740, 640) ?? false`,
-        );
-        if (invokedResize !== true)
-          throw new Error("Lynx right-panel resize probe is unavailable.");
-        const resizeDeadline = Date.now() + 3_000;
-        let afterResize = null;
-        while (Date.now() < resizeDeadline) {
-          afterResize = await evaluate(
+          );
+          const invokedResize = await evaluate(
             cdp,
             sessionId,
-            `(() => {
+            `document.getElementById('lynx-pane')?.contentWindow
+            ?.__T3_LYNX_WEB_PREVIEW__?.invokeResizeForHarness?.('right-panel', 740, 640) ?? false`,
+          );
+          if (invokedResize !== true)
+            throw new Error("Lynx right-panel resize probe is unavailable.");
+          const resizeDeadline = Date.now() + 3_000;
+          let afterResize = null;
+          while (Date.now() < resizeDeadline) {
+            afterResize = await evaluate(
+              cdp,
+              sessionId,
+              `(() => {
               const state = window.__T3_WORKBENCH__?.read();
               const panel = state?.lynx?.reviewMetrics?.panelRect;
               const grids = state?.lynx?.connectorDiagnostics?.commands
@@ -9299,41 +9504,42 @@ async function captureCell({
                 .map(({ terminalGrid }) => terminalGrid) ?? [];
               return { panelWidth: panel?.rect?.width ?? null, grids };
             })()`,
-          ).catch(() => null);
+            ).catch(() => null);
+            const beforeGrid = beforeResize?.grids?.at(-1);
+            const afterGrid = afterResize?.grids?.at(-1);
+            if (
+              typeof beforeResize?.panelWidth === "number" &&
+              typeof afterResize?.panelWidth === "number" &&
+              afterResize.panelWidth > beforeResize.panelWidth + 50 &&
+              typeof beforeGrid?.cols === "number" &&
+              typeof afterGrid?.cols === "number" &&
+              afterGrid.cols > beforeGrid.cols &&
+              afterGrid.rows === beforeGrid.rows
+            ) {
+              break;
+            }
+            await delay(100);
+          }
           const beforeGrid = beforeResize?.grids?.at(-1);
           const afterGrid = afterResize?.grids?.at(-1);
           if (
-            typeof beforeResize?.panelWidth === "number" &&
-            typeof afterResize?.panelWidth === "number" &&
-            afterResize.panelWidth > beforeResize.panelWidth + 50 &&
-            typeof beforeGrid?.cols === "number" &&
-            typeof afterGrid?.cols === "number" &&
-            afterGrid.cols > beforeGrid.cols &&
-            afterGrid.rows === beforeGrid.rows
+            typeof beforeResize?.panelWidth !== "number" ||
+            typeof afterResize?.panelWidth !== "number" ||
+            afterResize.panelWidth <= beforeResize.panelWidth + 50 ||
+            typeof beforeGrid?.cols !== "number" ||
+            typeof afterGrid?.cols !== "number" ||
+            afterGrid.cols <= beforeGrid.cols ||
+            afterGrid.rows !== beforeGrid.rows
           ) {
-            break;
+            throw new Error(
+              `Lynx terminal grid did not follow the committed panel resize: ${JSON.stringify({ beforeResize, afterResize })}`,
+            );
           }
-          await delay(100);
+          rightPanelTerminalCommand = {
+            ...rightPanelTerminalCommand,
+            resize: { before: beforeResize, after: afterResize },
+          };
         }
-        const beforeGrid = beforeResize?.grids?.at(-1);
-        const afterGrid = afterResize?.grids?.at(-1);
-        if (
-          typeof beforeResize?.panelWidth !== "number" ||
-          typeof afterResize?.panelWidth !== "number" ||
-          afterResize.panelWidth <= beforeResize.panelWidth + 50 ||
-          typeof beforeGrid?.cols !== "number" ||
-          typeof afterGrid?.cols !== "number" ||
-          afterGrid.cols <= beforeGrid.cols ||
-          afterGrid.rows !== beforeGrid.rows
-        ) {
-          throw new Error(
-            `Lynx terminal grid did not follow the committed panel resize: ${JSON.stringify({ beforeResize, afterResize })}`,
-          );
-        }
-        rightPanelTerminalCommand = {
-          ...rightPanelTerminalCommand,
-          resize: { before: beforeResize, after: afterResize },
-        };
         state =
           (await evaluate(
             cdp,
@@ -10091,6 +10297,7 @@ async function captureCell({
         terminalSelected: rightPanelAddMenuTerminalSelected,
         terminalScreenshot: rightPanelTerminalScreenshot,
         terminalCommand: rightPanelTerminalCommand,
+        terminalMultiSession: rightPanelTerminalMultiSession,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
       },
