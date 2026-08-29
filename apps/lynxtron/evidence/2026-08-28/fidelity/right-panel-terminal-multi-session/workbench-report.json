@@ -18175,7 +18175,7 @@
                 "height": 820
               }
             },
-            "sideBySide": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/terminal-side-by-side.png"
+            "sideBySide": null
           },
           "terminalCommand": {
             "output": "sh-3.2$ sh-3.2$ sh-3.2$ sh-3.2$ sh-3.2$ sh-3.2$ sh-3.2$ sh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ sh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ sh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ sh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ sh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ printf LYNX_TERM_1_MARKER\nLYNX_TERM_1_MARKERsh-3.2$ sh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ printf LYNX_TERM_1_MARKER\nLYNX_TERM_1_MARKERsh-3.2$ sh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ printf LYNX_TERM_1_MARKER\nLYNX_TERM_1_MARKERsh-3.2$ sh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ printf LYNX_TERM_1_MARKER\nLYNX_TERM_1_MARKERsh-3.2$ pwd\nsh-3.2$ pwd\n/Users/bytedance/github/t3code-lynxtron\nsh-3.2$ ",
@@ -20280,8 +20280,8 @@
       "images": {
         "web": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/web.png",
         "lynx": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/lynx.png",
-        "sideBySide": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/side-by-side.png",
-        "diff": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/diff.png",
+        "sideBySide": null,
+        "diff": null,
         "webDims": {
           "width": 1280,
           "height": 820

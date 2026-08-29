@@ -338777,7 +338777,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session.json",
           "classification": "tracked-current",
-          "sha256": "b3482ad533003c7234534437be1d5bdc7368078bce9eceb5ec245409eaa3ea52"
+          "sha256": "4de16ed6a33d064622cbf56693695637784c8c30ad8c3b3093fc7c8121235b29"
         },
         {
           "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session-native-partial.json",

@@ -43,7 +43,7 @@
   "artifacts": {
     "report": {
       "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/workbench-report.json",
-      "sha256": "12e060bb564d8cd098e6f9af62beaed9778008f9048373edff2c4e8cd4024295"
+      "sha256": "301a2468798d5f311fc67955efc3e7356f61498c4a0f8af7fbdafea6e9be562e"
     },
     "web": {
       "path": "apps/lynxtron/evidence/2026-08-28/fidelity/right-panel-terminal-multi-session/1280x820/web.png",
