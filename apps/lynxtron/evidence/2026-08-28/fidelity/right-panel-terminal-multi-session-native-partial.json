@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-28T22:55:00-07:00",
+  "stateId": "right-panel-terminal-multi-session",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "interactionChannel": "TraeX Computer Use MCP"
+  },
+  "identity": {
+    "harnessCommit": "702af36d4c958f308ea00b8f84dd89cc68d603ec",
+    "productCommit": "783ed411b",
+    "bundleSha256": "6b95b7e81a956d720d05e608583a23ba1b7e2b8fae620b37488a749915281d25",
+    "connectorSha256": "d19c485eb7079754502d277fc239f29ed6631f29f1cc16ebdc36c5ecf1cd5e44",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "ownedPid": 72195,
+    "windowId": 5700,
+    "bundlePath": "/private/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3-mts-product-jsU1Mt/desktop/main.lynx.bundle",
+    "stateDir": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3-mts-product-jsU1Mt/state",
+    "activeThreadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "transport": { "kind": "main", "lastSeq": 15 },
+    "exactWindowDimensions": [1280, 820]
+  },
+  "verifiedCausalChains": [
+    {
+      "preState": "Canonical thread visible; right panel closed.",
+      "input": "Computer Use pointer click on the visible Terminal titlebar control.",
+      "postcondition": "Terminal 1 appeared with running status."
+    },
+    {
+      "preState": "Terminal 1 was the only active session.",
+      "input": "Computer Use pointer click on the visible terminal-session New control.",
+      "postcondition": "Terminal 2 appeared and became active; both tabs exposed close affordances."
+    },
+    {
+      "preState": "Terminal 2 active with an empty transcript.",
+      "input": "Computer Use focus, type_text for printf NATIVE_TERM_2_MARKER, then pointer click Run.",
+      "postcondition": "NATIVE_TERM_2_MARKER appeared in the Terminal 2 transcript."
+    },
+    {
+      "preState": "Terminal 2 showed its marker.",
+      "input": "Computer Use pointer click on Terminal 1.",
+      "postcondition": "Terminal 1 became active with an empty transcript; the Terminal 2 marker was absent."
+    },
+    {
+      "preState": "Terminal 1 active with an empty transcript.",
+      "input": "Computer Use focus, type_text for printf NATIVE_TERM_1_MARKER, then pointer click Run.",
+      "postcondition": "NATIVE_TERM_1_MARKER appeared in the Terminal 1 transcript; the Terminal 2 marker remained absent."
+    }
+  ],
+  "unverified": [
+    "Switching back from Terminal 1 to Terminal 2 after both markers were written.",
+    "Closing active Terminal 2 and observing Terminal 1 as the neighbor fallback."
+  ],
+  "classification": {
+    "productEvidence": "Partial Native evidence only; no full Native interaction credit is claimed.",
+    "harnessLoss": "After five successful causal actions, Computer Use lost the exact window context. Two subsequent get_app_state calls with app=com.lynxjs.Lynxtron, pid=72195, windowId=5700 returned the unrelated Synara process pid=87228 and windowId=5748. No further input was sent.",
+    "missingCoverage": "The final switch-back and close-fallback steps remain unverified in Native.",
+    "policy": "No fallback automation channel was used, and the unrelated app was not touched."
+  }
+}
