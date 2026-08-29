@@ -19175,6 +19175,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-current-rendering",
+      "observedAt": "2026-08-29T04:25:00-07:00",
+      "commit": "1c5c51844",
+      "codeCommit": "89d255100",
+      "codeState": "commit",
+      "label": "Right Panel Terminal current rendering",
+      "narrative": "A fresh current-head Browser run opens the base Terminal on one canonical thread and shared isolated server, writes pwd through the visible Lynx command field and Run action, observes the exact workspace path from the real PTY, and retains the dedicated post-command Web and Lynx terminal panes. This closes the previously unknown Lynx typography and material cells with measured nonzero residuals. Web uses the Ghostty canvas surface while Lynx uses structured text, cwd and status chrome, session controls, and a command row, so the evidence explicitly records substantial renderer difference rather than claiming visual parity. Native and the remaining key-by-key and selection interaction residuals are unchanged.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Current exact-head terminal panes and real PTY output replace two unknown cells with conservative observed residuals; no product change, denominator change, weight change, threshold change, or filtering is credited."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/right-panel-terminal-current.json",
+          "classification": "tracked-current",
+          "sha256": "4b708a4b22f188dc9c56ec7d343e40192da5dcd911c0d6dd0b04c279c9e51fc1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.18,
+              "confidence": 0.99,
+              "method": "current-terminal-pane-typography-review",
+              "source": "The dedicated current terminal panes show readable monospace prompt, command, cwd, and output, while preserving the explicit Ghostty canvas versus Lynx text shaping and hierarchy difference"
+            },
+            "material": {
+              "residual": 0.28,
+              "confidence": 0.99,
+              "method": "current-terminal-pane-material-review",
+              "source": "Both panes use the dark terminal surface, but Lynx intentionally exposes extra cwd, status, session chrome, transcript background, and Run row absent from the Web Ghostty authority"
+            }
+          }
+        }
+      ]
     }
   ]
 }
