@@ -143,7 +143,10 @@ const selectedModelFixture = {
 };
 
 function webCredentialForState({ desktopBootstrapToken, startupToken, stateId: targetStateId }) {
-  return targetStateId === "settings-connections" ? desktopBootstrapToken : startupToken;
+  return targetStateId === "settings-connections" ||
+    targetStateId === "settings-connections-mutation-browser"
+    ? desktopBootstrapToken
+    : startupToken;
 }
 if (sidebarTargetState && !["expanded", "collapsed"].includes(sidebarTargetState)) {
   throw new Error(`Unsupported --sidebar-state: ${sidebarTargetState}`);
@@ -167,6 +170,7 @@ const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
 const isBetaMutationState = stateId === "settings-beta-mutation";
+const isConnectionsMutationState = stateId === "settings-connections-mutation-browser";
 const isAddProviderDialogState =
   stateId === "settings-providers-add-dialog" || stateId === "settings-providers-add-dialog-light";
 const isProvidersSettingsState = stateId === "settings-providers" || isAddProviderDialogState;
@@ -715,6 +719,114 @@ function betaMutationStateMatches(state, checked) {
         : mutation.daysInput === null && mutation.daysValue === null)
     );
   });
+}
+
+function connectionsMutationStateMatches(state, pairingLinkCount) {
+  if (!isConnectionsMutationState) return true;
+  return [state?.web, state?.lynx].every((client) => {
+    const mutation = client?.settingsMetrics?.connectionsMutation;
+    return (
+      mutation?.canCreate === true &&
+      mutation.pairingLinkCount === pairingLinkCount &&
+      mutation.revokeCount === pairingLinkCount
+    );
+  });
+}
+
+async function clickExactButtonText(cdp, sessionId, client, label, withinDialog = false) {
+  const selector = withinDialog
+    ? '[data-slot="dialog-popup"], [data-connections-create-dialog="true"]'
+    : ".settings-connections-panel, .settings-page-scroll-fade";
+  const point = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const scope = root?.querySelector(${JSON.stringify(selector)});
+      const target = [...(scope?.querySelectorAll('button, [role="button"], .ui-button') ?? [])]
+        .find((item) => item.textContent?.trim() === ${JSON.stringify(label)});
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+    })()`,
+  );
+  if (!point) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return true;
+}
+
+async function runConnectionsMutationFlow(cdp, sessionId) {
+  const timeline = [];
+  let state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => connectionsMutationStateMatches(next, 0),
+    5_000,
+    "Connections mutation initial state",
+  );
+  timeline.push({ step: "initial", pairingLinkCount: 0 });
+
+  if (!(await clickExactButtonText(cdp, sessionId, "web", "Create link"))) {
+    throw new Error("Missing Web Create link trigger");
+  }
+  await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => next?.web?.settingsMetrics?.connectionsMutation?.createDialogOpen === true,
+    3_000,
+    "Web Create pairing link dialog",
+  );
+  if (!(await clickExactButtonText(cdp, sessionId, "web", "Create link", true))) {
+    throw new Error("Missing Web Create link confirmation");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => connectionsMutationStateMatches(next, 1),
+    5_000,
+    "Web-created pairing link projection",
+  );
+  timeline.push({ step: "web-created", pairingLinkCount: 1 });
+  if (!(await clickExactButtonText(cdp, sessionId, "web", "Revoke"))) {
+    throw new Error("Missing Web pairing link Revoke action");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => connectionsMutationStateMatches(next, 0),
+    5_000,
+    "Web-revoked pairing link projection",
+  );
+  timeline.push({ step: "web-revoked", pairingLinkCount: 0 });
+
+  if (!(await clickExactButtonText(cdp, sessionId, "lynx", "Create"))) {
+    throw new Error("Missing Lynx Create pairing link action");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => connectionsMutationStateMatches(next, 1),
+    5_000,
+    "Lynx-created pairing link projection",
+  );
+  timeline.push({ step: "lynx-created", pairingLinkCount: 1 });
+  if (!(await clickExactButtonText(cdp, sessionId, "lynx", "Revoke"))) {
+    throw new Error("Missing Lynx pairing link Revoke action");
+  }
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => connectionsMutationStateMatches(next, 0),
+    5_000,
+    "Lynx-revoked pairing link projection",
+  );
+  timeline.push({ step: "lynx-revoked", pairingLinkCount: 0 });
+  return { state, timeline };
 }
 
 async function runBetaMutationFlow(cdp, sessionId) {
@@ -5391,6 +5503,7 @@ async function captureCell({
     "settings-providers-add-dialog": "settings-general",
     "settings-providers-add-dialog-light": "settings-general",
     "settings-connections": "settings-general",
+    "settings-connections-mutation-browser": "settings-general",
     "settings-source-control": "settings-general",
     "settings-source-control-loading": "settings-general",
     "settings-source-control-error": "settings-general",
@@ -5487,6 +5600,8 @@ async function captureCell({
   const addProviderDialogTimeline = [];
   let betaMutationStage = isBetaMutationState ? "waiting-settings" : "not-required";
   const betaMutationTimeline = [];
+  let connectionsMutationStage = isConnectionsMutationState ? "waiting-settings" : "not-required";
+  const connectionsMutationTimeline = [];
   let settingsAsyncReadyPolls =
     stateId === "settings-source-control" ||
     stateId === "settings-source-control-loading" ||
@@ -8196,6 +8311,13 @@ async function captureCell({
     betaMutationStage = "complete";
     reachedTargetState = true;
   }
+  if (isConnectionsMutationState) {
+    const flow = await runConnectionsMutationFlow(cdp, sessionId);
+    state = flow.state;
+    connectionsMutationTimeline.push(...flow.timeline);
+    connectionsMutationStage = "complete";
+    reachedTargetState = true;
+  }
   if (stateId === "add-project-sources") {
     state = await waitForSidebarV2Controls(cdp, sessionId);
     for (const client of ["web", "lynx"]) {
@@ -8523,6 +8645,13 @@ async function captureCell({
       ["initial", "disabled", "restored"].every((step) =>
         betaMutationTimeline.some((entry) => entry.step === step),
       ));
+  const finalConnectionsMutationReady =
+    !isConnectionsMutationState ||
+    (connectionsMutationStage === "complete" &&
+      connectionsMutationStateMatches(state, 0) &&
+      ["initial", "web-created", "web-revoked", "lynx-created", "lynx-revoked"].every((step) =>
+        connectionsMutationTimeline.some((entry) => entry.step === step),
+      ));
   const finalEmptyTranscriptReady =
     state?.web?.timelineMetrics?.threadSyncLabel === null &&
     state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&
@@ -8668,68 +8797,74 @@ async function captureCell({
     ? true
     : isBetaMutationState
       ? finalBetaMutationReady
-      : stateId === "settings-beta"
-        ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
-        : stateId === "settings-general"
-          ? generalSettingsContentMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics)
-          : stateId === "settings-appearance"
-            ? appearanceSettingsContentMatches(
+      : isConnectionsMutationState
+        ? finalConnectionsMutationReady
+        : stateId === "settings-beta"
+          ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
+          : stateId === "settings-general"
+            ? generalSettingsContentMatches(
                 state?.web?.settingsMetrics,
                 state?.lynx?.settingsMetrics,
               )
-            : stateId === "settings-keybindings"
-              ? keybindingsSettingsContentMatches(
+            : stateId === "settings-appearance"
+              ? appearanceSettingsContentMatches(
                   state?.web?.settingsMetrics,
                   state?.lynx?.settingsMetrics,
                 )
-              : isProvidersSettingsState
-                ? providerSettingsContentMatches(
+              : stateId === "settings-keybindings"
+                ? keybindingsSettingsContentMatches(
                     state?.web?.settingsMetrics,
                     state?.lynx?.settingsMetrics,
                   )
-                : stateId === "settings-connections"
-                  ? connectionsSettingsContentMatches(
+                : isProvidersSettingsState
+                  ? providerSettingsContentMatches(
                       state?.web?.settingsMetrics,
                       state?.lynx?.settingsMetrics,
                     )
-                  : stateId === "settings-source-control-loading"
-                    ? state?.web?.settingsMetrics?.loading === true &&
-                      state?.lynx?.settingsMetrics?.loading === true &&
-                      JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                      JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                        JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
-                    : stateId === "settings-source-control-error"
-                      ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                  : stateId === "settings-connections"
+                    ? connectionsSettingsContentMatches(
+                        state?.web?.settingsMetrics,
+                        state?.lynx?.settingsMetrics,
+                      )
+                    : stateId === "settings-source-control-loading"
+                      ? state?.web?.settingsMetrics?.loading === true &&
+                        state?.lynx?.settingsMetrics?.loading === true &&
                         JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
                           JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                        JSON.stringify(
-                          state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                        ) ===
+                        JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                          JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
+                      : stateId === "settings-source-control-error"
+                        ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                          JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
                           JSON.stringify(
-                            state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                          ) &&
-                        JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                        (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0 &&
-                        (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
-                      : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
-                        JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                        JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
-                        JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
-                        JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
-                        JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                        ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                          (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                          JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
+                            state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                          ) ===
+                            JSON.stringify(
+                              state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                            ) &&
+                          JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                          (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) >
+                            0 &&
+                          (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
+                        : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                          JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                          JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
+                          JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
+                          JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
+                          JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                          ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                            (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                            JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
 
   const layout = await evaluate(
     cdp,
@@ -10030,6 +10165,7 @@ async function captureCell({
     finalSettingsNavigationReady &&
     finalAddProviderDialogReady &&
     finalBetaMutationReady &&
+    finalConnectionsMutationReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
@@ -10092,6 +10228,7 @@ async function captureCell({
       finalSettingsNavigationReady,
       finalAddProviderDialogReady,
       finalBetaMutationReady,
+      finalConnectionsMutationReady,
       finalTranscriptReady,
       finalPendingRequestReady,
       multiStepQuestionStage,
@@ -10343,6 +10480,14 @@ async function captureCell({
         timeline: betaMutationTimeline,
         web: state?.web?.settingsMetrics?.betaMutation ?? null,
         lynx: state?.lynx?.settingsMetrics?.betaMutation ?? null,
+      },
+      connectionsMutation: {
+        match: finalConnectionsMutationReady,
+        stage: connectionsMutationStage,
+        inputChannel: isConnectionsMutationState ? "dual-cdp-pointer" : "not-required",
+        timeline: connectionsMutationTimeline,
+        web: state?.web?.settingsMetrics?.connectionsMutation ?? null,
+        lynx: state?.lynx?.settingsMetrics?.connectionsMutation ?? null,
       },
       sidebarFooterTheme: {
         match: finalSidebarFooterThemeReady,

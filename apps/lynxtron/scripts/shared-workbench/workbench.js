@@ -420,6 +420,32 @@ function readBetaMutationSettings(root) {
   };
 }
 
+function readConnectionsMutationSettings(root) {
+  const sections = [...(root?.querySelectorAll(".settings-section, section") ?? [])];
+  const authorizedSection = sections.find((section) =>
+    readComposedText(section).includes("Authorized clients"),
+  );
+  const buttons = [
+    ...(authorizedSection?.querySelectorAll("button, [role='button'], .ui-button") ?? []),
+  ];
+  const labels = buttons.map((button) => readComposedText(button).trim());
+  const pairingRows = [...(authorizedSection?.querySelectorAll(".access-list-row") ?? [])].filter(
+    (row) =>
+      [...row.querySelectorAll("button, [role='button'], .ui-button")].some(
+        (button) => readComposedText(button).trim() === "Revoke",
+      ),
+  );
+  return {
+    authorizedSection: readElementBox(authorizedSection),
+    canCreate: labels.includes("Create") || labels.includes("Create link"),
+    createDialogOpen: [...(root?.querySelectorAll('[data-slot="dialog-popup"]') ?? [])].some(
+      (dialog) => readComposedText(dialog).includes("Create pairing link"),
+    ),
+    pairingLinkCount: pairingRows.length,
+    revokeCount: labels.filter((label) => label === "Revoke").length,
+  };
+}
+
 function readSettingsNavigationChrome(root) {
   const back =
     root?.querySelector(".settings-nav__back") ??
@@ -2360,6 +2386,7 @@ function readLynxPane() {
               rows: readSettingsRows(root, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(root),
               betaMutation: readBetaMutationSettings(root),
+              connectionsMutation: readConnectionsMutationSettings(root),
               keybindings:
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(root)
@@ -3398,6 +3425,7 @@ function readWebPane() {
               rows: readSettingsRows(doc, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(doc),
               betaMutation: readBetaMutationSettings(doc),
+              connectionsMutation: readConnectionsMutationSettings(doc),
               keybindings:
                 expectedSemanticRoute === "settings-keybindings"
                   ? readKeybindingsMetrics(doc)

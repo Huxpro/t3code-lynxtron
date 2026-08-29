@@ -672,9 +672,28 @@ describe("shared workbench lifecycle fault capture", () => {
   it("uses the administrative desktop grant for comparable Connections panes", () => {
     assert.include(source, "function webCredentialForState");
     assert.include(source, 'targetStateId === "settings-connections"');
+    assert.include(source, 'targetStateId === "settings-connections-mutation-browser"');
     assert.include(source, "desktopBootstrapToken: bootstrapToken");
     assert.include(source, "startupToken,");
     assert.notInclude(source, "hideAuthorizedClients");
+  });
+
+  it("runs the Browser Connections create and revoke lifecycle on both renderers", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, 'stateId === "settings-connections-mutation-browser"');
+    assert.include(source, "async function runConnectionsMutationFlow");
+    assert.include(source, '"web-created"');
+    assert.include(source, '"web-revoked"');
+    assert.include(source, '"lynx-created"');
+    assert.include(source, '"lynx-revoked"');
+    assert.include(source, "finalConnectionsMutationReady");
+    assert.include(workbench, "function readConnectionsMutationSettings");
+    assert.include(workbench, "pairingLinkCount: pairingRows.length");
+    assert.include(workbench, 'readComposedText(button).trim() === "Revoke"');
   });
 
   it("reaps its exact browser process and removes the isolated profile", () => {
