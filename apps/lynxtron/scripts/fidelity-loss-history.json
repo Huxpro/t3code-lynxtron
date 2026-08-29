@@ -18746,6 +18746,22 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-connections-mutation-browser-harness-blocked",
+      "observedAt": "2026-08-28T21:45:00-07:00",
+      "commit": "0472240e3",
+      "codeCommit": "0472240e3",
+      "codeState": "commit",
+      "label": "Settings Connections Browser mutation harness boundary",
+      "narrative": "The newly registered Lynx-for-Web Connections mutation state remains unknown. Two isolated shared-server attempts reached matching light Connections routes with zero pairing links, but neither Web nor Lynx exposed the Authorized clients Create action under the available Browser harness credential. Extending the existing desktop-bootstrap routing to the new state did not grant access:write, so no Create or Revoke action was attempted and no credential was read or retained. The absence is classified as an authentication-scope harness limitation rather than product loss. The existing Native-only create, revoke, persistence, and cold-restart evidence remains unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Matched routes and zero-link state prove the requested surface was reached, while the missing access-management action prevents a valid mutation run; no product residual or confidence receives credit."
+      },
+      "sources": [],
+      "updates": []
     }
   ]
 }
