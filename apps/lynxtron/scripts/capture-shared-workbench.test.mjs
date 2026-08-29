@@ -115,6 +115,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "web.productState?.selectedThread === null");
     assert.include(source, "lynx.productState?.selectedThread === null");
     assert.include(source, "function heroGeometryMatches(state)");
+    assert.include(
+      source,
+      "if (!webHeroPresent && !lynxHeroPresent && selectedPersistedThread) return true",
+    );
+    assert.include(source, "if (webHeroPresent !== lynxHeroPresent) return false");
     assert.include(source, "finalHeroGeometryReady");
     assert.include(source, "unpersistedHeroStateReady(state)");
     assert.include(source, "heroGeometry:");

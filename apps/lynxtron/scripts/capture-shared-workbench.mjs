@@ -375,6 +375,13 @@ function unpersistedHeroStateReady(state) {
 
 function heroGeometryMatches(state) {
   if (semanticRoute !== "new-thread") return true;
+  const webHeroPresent = state?.web?.heroPresent === true;
+  const lynxHeroPresent = state?.lynx?.heroPresent === true;
+  const selectedPersistedThread =
+    state?.web?.productState?.selectedThread !== null &&
+    state?.lynx?.productState?.selectedThread !== null;
+  if (!webHeroPresent && !lynxHeroPresent && selectedPersistedThread) return true;
+  if (webHeroPresent !== lynxHeroPresent) return false;
   const webHeadline = state?.web?.heroMetrics?.headline;
   const lynxHeadline = state?.lynx?.heroMetrics?.headline;
   const webCheckout = state?.web?.composerMetrics?.anatomy?.contextControls?.[0]?.box;
