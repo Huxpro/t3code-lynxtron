@@ -58,7 +58,11 @@ describe("Quick Switch material", () => {
     expect(browserFilesPanel).toContain("max-height: 418px;");
     expect(filesResults).toContain("height: 330px;");
     expect(filesResults).toContain("max-height: 330px;");
-    expect(rule(".palette-panel")).toContain("max-height: 448px;");
+    expect(rule(".palette-panel")).toContain("max-height: 418px;");
+    expect(rule(".palette-search")).toContain("min-height: 48px;");
+    expect(rule(".palette-search")).toContain("max-height: 48px;");
+    expect(rule(".palette-search")).toContain("--flex-shrink: 0;");
+    expect(rule(".qs-results")).toContain("max-height: 330px;");
     expect(source).toContain('"palette-panel palette-panel--files"');
     expect(source).toContain('"qs-results qs-results--files"');
     expect(overrides).not.toContain('.palette-panel[data-search-overlay-mode="files"]');
