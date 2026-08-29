@@ -19252,6 +19252,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-default-initial-selection-current",
+      "observedAt": "2026-08-29T06:42:00-07:00",
+      "commit": "ec82babdf",
+      "codeCommit": "3603dfb76",
+      "codeState": "commit",
+      "label": "File Picker initial selection parity",
+      "narrative": "A fresh current-head dark 1280 by 820 Browser run fixes the File Picker identity contract by selecting the same seeded idle thread and model in both panes before opening through their shipping Meta-P paths. It then exposes a real Lynx product mismatch: the first file was highlighted before any navigation while the Web authority had no active row. File mode now starts unselected, Enter cannot implicitly open a file from that state, and first ArrowDown or ArrowUp selects the first or last enabled row. The retained exact-head frame has 65 matching rows, no active row in either renderer, matching 576 by 420 panel geometry, and zero renderer errors. Material improves conservatively while icon and raster differences remain explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The before and after diagnostics use the same snapshot, thread, model, route, theme, viewport, and Web bundle. Only the Lynx file-mode initial selection changes; malformed no-overlay and mismatched-thread attempts are excluded."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/file-picker-default-current.json",
+          "classification": "tracked-current",
+          "sha256": "1ab2e01ba11553c24cbac9818086def62478b7d15f56968cc51a35a79e1da9ba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.2,
+              "confidence": 0.99,
+              "method": "current-file-picker-visual-review",
+              "source": "The erroneous initial active-row fill is removed; remaining icon rasterization, backdrop, border, and surface differences remain explicit without inventing a new pixel metric"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shipping-meta-p-open-and-unselected-navigation-contract",
+              "source": "Both shipping Meta-P paths open the same 65-row picker; unit coverage proves unselected Enter is inert and first ArrowDown or ArrowUp enters the enabled row set"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-file-picker-shared-runtime",
+              "source": "Same isolated snapshot, selected thread, GPT-5.6-Sol model, route, theme, viewport, 65 rows, exact committed bundles, zero renderer errors, and clean process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
