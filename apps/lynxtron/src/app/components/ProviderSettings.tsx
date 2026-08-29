@@ -991,8 +991,14 @@ export function ProviderSettings() {
   );
   const defaultProviderHealthRefreshIntervalSeconds = durationToSeconds(providerHealthPreset);
   const sortedProviderEntries = useMemo(
-    () => sortProviderInstanceEntries(providerEntries, PROVIDER_SETTINGS_DRIVER_ORDER),
-    [providerEntries],
+    () =>
+      sortProviderInstanceEntries(
+        providerEntries.filter(
+          (entry) => entry.isDefault || settings?.providerInstances[entry.instanceId] !== undefined,
+        ),
+        PROVIDER_SETTINGS_DRIVER_ORDER,
+      ),
+    [providerEntries, settings?.providerInstances],
   );
 
   const handleSelectModel = useCallback(

@@ -326,6 +326,9 @@ describe("desktop shell interaction contract", () => {
     expect(providers).toContain("data-provider-dialog-motion={presence.phase}");
     expect(providers).toContain("data-provider-card-motion={bodyPresence.phase}");
     expect(providers).toContain(".createProviderInstance(");
+    expect(providers).toContain(
+      "entry.isDefault || settings?.providerInstances[entry.instanceId] !== undefined",
+    );
     expect(uiState).toContain("useAddProviderDialogOpen");
     expect(uiState).toContain("openAddProviderDialog");
     expect(uiState).toContain("closeAddProviderDialog");
