@@ -20115,6 +20115,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-archive-current-typography",
+      "observedAt": "2026-08-29T13:52:00-07:00",
+      "commit": "91924703b",
+      "codeState": "commit",
+      "label": "Settings Archive current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run reaches the canonical Archive route on one isolated snapshot. Both renderers expose Archived threads, No archived threads, and Archived threads will appear here with matching section identity and zero renderer errors. Computed visible typography closes the previously unknown Lynx cell: the title is 14px weight 500, 20px line height, and minus 0.07px tracking in both panes; the description is 13px weight 400 with Web 18.85px versus Lynx 20px line height. The empty view has no mutation action, so interaction remains assigned to the separate Archive mutation state.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact-head capture closes only the Archive typography evidence gap and leaves product code, weights, thresholds, scope, material, and mutation interaction unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-archive-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "8fe077885e3756f06528c83471677aa8506290e9542e1ef393c753bfc3419d3e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-archive"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "current-archive-empty-computed-typography",
+              "source": "Title matches 14px weight 500, 20px and minus 0.07px tracking; description matches 13px weight 400 with retained 18.85px versus 20px line-height delta"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-archive-shared-runtime",
+              "source": "Same isolated snapshot, canonical Archive route, dark theme, 1280 by 820 viewport, current bundles, matching empty content, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

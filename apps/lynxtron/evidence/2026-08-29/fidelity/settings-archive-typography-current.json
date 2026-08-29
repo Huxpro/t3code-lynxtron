@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T13:52:00-07:00",
+  "stateId": "settings-archive",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-archive",
+    "theme": "dark"
+  },
+  "identity": {
+    "commit": "91924703bfbdf539b1ce430bba1a275cba4d8501",
+    "seedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "webBundleSha256Prefix": "b841589f14c2",
+    "lynxBundleSha256Prefix": "606860316f38",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "sectionTitle": "Archived threads",
+    "title": "No archived threads",
+    "description": "Archived threads will appear here.",
+    "rendererErrors": 0
+  },
+  "typography": {
+    "title": {
+      "fontSize": 14,
+      "fontWeight": 500,
+      "lineHeight": 20,
+      "letterSpacing": -0.07
+    },
+    "description": {
+      "fontSize": 13,
+      "fontWeight": 400,
+      "webLineHeight": 18.85,
+      "lynxLineHeight": 20
+    }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-archive-typography-current/workbench-report.json",
+      "sha256": "4101970f43b16bb7c273c761848d0c9ff1f341b1057bfad3258680cdea9e0e55"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-archive-typography-current/1280x820/web-assertions.json",
+      "sha256": "38a73f2175eb90e1cc76cfcbddbf989048f182c5a1a117ac80d9dbbefdc4dce9"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/settings-archive-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "d849f9d822dc36a01f58b31869d8286aca5b01e4afbd6b8fc867620605649b4a"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head Archive empty-state typography replaces the previously unknown Lynx typography cell."
+    ],
+    "acceptedRenderingNoise": [
+      "The title matches exactly; the description retains Web 18.85px versus Lynx 20px line height and platform glyph shaping."
+    ],
+    "evidenceBoundary": "The empty Archive view has no mutation action; archive/unarchive/delete behavior remains in settings-archive-mutation.",
+    "policy": "No denominator, state weight, threshold, scope, or bad-sample filter changed, and no screenshot is retained."
+  }
+}
