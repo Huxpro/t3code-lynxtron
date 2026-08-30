@@ -404,7 +404,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "checkpointDiffPoints?.web");
     assert.include(source, "checkpointDiffPoints?.lynx");
     assert.include(source, "'[data-review-checkpoint-card] [data-review-open-diff]'");
-    assert.include(source, "!isDiffScopeMenuState &&");
+    assert.include(source, "if (!lynxReviewDiffInputSent && checkpointDiffPoints?.lynx)");
     assert.include(source, "webRows.length > 0");
     assert.include(source, "lynxRows.length > 0");
     assert.notInclude(
@@ -1477,5 +1477,16 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'lynxReadyCards[0]?.expandedState === "expanded"');
     assert.include(source, "webMetrics.treeCount === 1");
     assert.include(source, "lynxMetrics.treeCount === 1");
+  });
+
+  it("opens both right panels before driving a Review diff", () => {
+    assert.match(
+      source,
+      /let webReviewPanelInputSent =\s*!isReviewState \|\| reviewExpectation === "checkpoint" \|\| reviewExpectation === "tree";/,
+    );
+    assert.include(source, "!webReviewPanelInputSent && !state?.web?.reviewMetrics?.panelOpen");
+    assert.include(source, "!lynxReviewPanelInputSent &&");
+    assert.include(source, "if (!lynxReviewDiffInputSent && checkpointDiffPoints?.lynx)");
+    assert.notInclude(source, "'[data-right-panel-action=\"diff\"]'");
   });
 });

@@ -30,4 +30,9 @@ describe("review projection fixture preparation", () => {
     assert.include(source, "checkpoint_files_json");
     assert.notInclude(source, "orchestration_events");
   });
+
+  it("pins the completed review thread as settled for deterministic composer parity", () => {
+    assert.include(source, "has_actionable_proposed_plan, settled_override, settled_at");
+    assert.include(source, "'settled', ?");
+  });
 });

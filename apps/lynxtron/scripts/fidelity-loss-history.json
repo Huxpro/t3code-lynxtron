@@ -20235,6 +20235,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "review-diff-current-typography",
+      "observedAt": "2026-08-30T00:02:00-07:00",
+      "commit": "6525ba22e",
+      "codeCommit": "6525ba22ee2c59aaed3899351c1fdba62f318662",
+      "codeState": "working-tree",
+      "label": "Review Full Diff current typography and readiness",
+      "narrative": "A fresh dark 1280 by 820 Browser run rebuilds the disposable Review fixture from zero, explicitly persists its completed thread as settled, and opens the checkpoint-specific diff in both renderers. Both panes expose fidelity-review-turn-1, review-fixture.txt, one addition and deletion, and both expected patch lines with zero renderer errors. Checkpoint status, hint, open action, file name, and file-stat typography match exactly. The run also closes the Lynx product defect where an invisible ready-state connection banner prevented the settled-thread Composer banner from rendering.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "The product change restores settled-banner parity while the harness changes make checkpoint selection and fixture state deterministic; no weight, threshold, scope, or bad-sample filter changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/review-diff-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "9d274a8507898e4cacb8c4e32fcea65da06c9198a321106f285e93bd08d99d58"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-review-checkpoint-computed-typography",
+              "source": "Checkpoint status, hint, Open diff action, file name, and file stats match at 12/11/12/11/10px, weights 500/400/500/400/400, and 16px line height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-review-shared-runtime",
+              "source": "Same regenerated immutable fixture, selected thread, turn, file, dark theme, viewport, current bundles, complete patch, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

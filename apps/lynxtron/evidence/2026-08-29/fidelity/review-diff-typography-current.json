@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-30T00:02:00-07:00",
+  "stateId": "review-diff",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "existing-thread",
+    "theme": "dark",
+    "interaction": "open checkpoint-specific diff"
+  },
+  "identity": {
+    "commit": "6525ba22ee2c59aaed3899351c1fdba62f318662",
+    "codeState": "working-tree-product-change",
+    "snapshotSha256": "2076d9f851f850f07c219ad9130c8085062152f74cd7c73b85c260cbc6d40284",
+    "selectedThread": "fidelity-review-thread",
+    "selectedTurn": "fidelity-review-turn-1",
+    "filePath": "review-fixture.txt",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sameThread": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "checkpointStatus": "ready",
+    "fileCount": 1,
+    "additions": 1,
+    "deletions": 1,
+    "expectedPatchLinesPresent": true,
+    "settledBannerPresent": true,
+    "rendererErrors": 0
+  },
+  "typography": {
+    "checkpointStatus": { "fontSize": 12, "fontWeight": 500, "lineHeight": 16 },
+    "checkpointHint": { "fontSize": 11, "fontWeight": 400, "lineHeight": 16 },
+    "openDiffAction": { "fontSize": 12, "fontWeight": 500, "lineHeight": 16 },
+    "fileName": { "fontSize": 11, "fontWeight": 400, "lineHeight": 16 },
+    "fileStats": { "fontSize": 10, "fontWeight": 400, "lineHeight": 16 }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/review-diff-typography-current/workbench-report.json",
+      "sha256": "0ecbf555e3b589f39536d76e83dedd5af8615752ae97e842bfdb76d34b9dc49a"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/review-diff-typography-current/1280x820/web-assertions.json",
+      "sha256": "daf9dc69dba95190ebc3b750171086b9363e1a0b810da2bf582335fb6dee8c9f"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/review-diff-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "93062bdfb11458093724e4efdd70764f528ad7fc96c3cc0797ffb08cc9775bec"
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "The ready connection lifecycle no longer shadows the settled-thread Composer banner in Lynx.",
+      "Lynx now derives automatic settlement from the synchronized client preference instead of a fixed default."
+    ],
+    "harnessLossClosed": [
+      "Both renderers open the checkpoint-specific diff instead of allowing Lynx to fall through to the generic branch diff action.",
+      "The review fixture explicitly persists settled state, removing wall-clock-dependent banner behavior."
+    ],
+    "acceptedRenderingNoise": [
+      "Checkpoint status, hint, open action, file name, and file stats have identical font size, weight, and line height across both renderers."
+    ],
+    "policy": "No denominator, state weight, threshold, scope, or bad-sample filter changed, and no screenshot is retained."
+  }
+}

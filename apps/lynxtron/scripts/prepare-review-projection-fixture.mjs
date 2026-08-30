@@ -111,8 +111,9 @@ export function prepareReviewProjectionFixture(baseDirectory) {
           thread_id, project_id, title, branch, worktree_path, latest_turn_id, created_at,
           updated_at, deleted_at, runtime_mode, interaction_mode, model_selection_json,
           archived_at, latest_user_message_at, pending_approval_count, pending_user_input_count,
-          has_actionable_proposed_plan
-        ) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, NULL, 'full-access', 'default', ?, NULL, ?, 0, 0, 0)`,
+          has_actionable_proposed_plan, settled_override, settled_at
+        ) VALUES (?, ?, ?, ?, NULL, ?, ?, ?, NULL, 'full-access', 'default', ?, NULL, ?, 0, 0, 0,
+          'settled', ?)`,
       )
       .run(
         threadId,
@@ -124,6 +125,7 @@ export function prepareReviewProjectionFixture(baseDirectory) {
         now,
         JSON.stringify(modelSelection),
         requestedAt,
+        now,
       );
     database
       .prepare(

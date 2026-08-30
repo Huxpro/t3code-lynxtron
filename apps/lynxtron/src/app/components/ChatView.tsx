@@ -14,7 +14,6 @@ import {
   toggleComposerInteractionMode,
 } from "@t3tools/client-runtime/presentation/composer";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
-import { DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS } from "@t3tools/contracts";
 import { projectConnectionLifecycle } from "@t3tools/client-runtime/connection/presentation";
 import {
   derivePendingApprovals,
@@ -336,7 +335,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     serverConfig?.environment.capabilities.threadSettlement === true &&
     effectiveSettled(activeThread, {
       now: new Date().toISOString(),
-      autoSettleAfterDays: DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
+      autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays,
     });
   const workspaceMode =
     activeThread?.worktreePath != null
@@ -697,7 +696,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         showInteractionModeToggle={showInteractionModeToggle}
         availableWidth={centerPanelWidth}
         statusBanner={
-          shouldRenderConnectionLifecycleBanner({ hero }) ? (
+          shouldRenderConnectionLifecycleBanner({ hero }) && connectionLifecycle.visible ? (
             <view className="composer-lifecycle-banner">
               <ConnectionLifecycleBannerSurface
                 presentation={connectionLifecycle}

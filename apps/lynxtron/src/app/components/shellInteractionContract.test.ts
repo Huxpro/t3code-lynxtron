@@ -114,6 +114,22 @@ const branchToolbarBranchSource = readFileSync(
 );
 
 describe("desktop shell interaction contract", () => {
+  it("uses the synchronized client auto-settle preference for the active thread banner", () => {
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(chatView).toContain("autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays");
+    expect(chatView).not.toContain("DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS");
+  });
+
+  it("falls through to the settled banner when the connection lifecycle is ready", () => {
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(chatView).toContain(
+      "shouldRenderConnectionLifecycleBanner({ hero }) && connectionLifecycle.visible",
+    );
+    expect(chatView).toContain(") : activeThreadSettled ? (");
+  });
+
   it("keeps connection lifecycle feedback in the Composer overlay", () => {
     const chatView = componentSource("ChatView.tsx");
     expect(chatView).toContain('className="composer-lifecycle-banner"');

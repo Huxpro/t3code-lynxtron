@@ -5685,10 +5685,7 @@ async function captureCell({
   let composerInputChannel = composerInput.length === 0 ? "not-required" : "pending";
   let composerInputDiagnostics = null;
   let webReviewPanelInputSent =
-    !isReviewState ||
-    reviewExpectation === "checkpoint" ||
-    reviewExpectation === "tree" ||
-    reviewExpectation === "diff";
+    !isReviewState || reviewExpectation === "checkpoint" || reviewExpectation === "tree";
   let lynxReviewPanelInputSent =
     !isReviewState ||
     reviewExpectation === "checkpoint" ||
@@ -6800,8 +6797,7 @@ async function captureCell({
         shouldOpenDiff &&
         ((!webReviewDiffInputSent &&
           !reviewDiffHasExpectedPatch(state?.web?.reviewMetrics?.diff)) ||
-          (isDiffScopeMenuState &&
-            !lynxReviewDiffInputSent &&
+          (!lynxReviewDiffInputSent &&
             !reviewDiffHasExpectedPatch(state?.lynx?.reviewMetrics?.diff)))
       ) {
         const checkpointDiffPoints = await evaluate(
@@ -6835,47 +6831,8 @@ async function captureCell({
           await delay(100);
           continue;
         }
-        if (isDiffScopeMenuState && !lynxReviewDiffInputSent && checkpointDiffPoints?.lynx) {
+        if (!lynxReviewDiffInputSent && checkpointDiffPoints?.lynx) {
           await dispatchPointerClick(cdp, sessionId, checkpointDiffPoints.lynx);
-          lynxReviewDiffInputSent = true;
-          await delay(100);
-          continue;
-        }
-      }
-      if (
-        shouldOpenDiff &&
-        !isDiffScopeMenuState &&
-        state?.web?.reviewMetrics?.panelOpen &&
-        state?.lynx?.reviewMetrics?.panelOpen
-      ) {
-        const diffPoints = await evaluate(
-          cdp,
-          sessionId,
-          `(() => {
-            const pointFor = (frameId, shadow) => {
-              const frame = document.getElementById(frameId);
-              const doc = frame?.contentWindow?.document;
-              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
-              const target = root?.querySelector('[data-right-panel-action="diff"]');
-              if (!frame || !target || target.getAttribute('aria-disabled') === 'true') return null;
-              const frameRect = frame.getBoundingClientRect();
-              const rect = target.getBoundingClientRect();
-              return {
-                x: frameRect.x + rect.x + rect.width / 2,
-                y: frameRect.y + rect.y + rect.height / 2,
-              };
-            };
-            return {
-              lynx: pointFor('lynx-pane', true),
-            };
-          })()`,
-        ).catch(() => null);
-        if (
-          !lynxReviewDiffInputSent &&
-          !reviewDiffHasExpectedPatch(state?.lynx?.reviewMetrics?.diff) &&
-          diffPoints?.lynx
-        ) {
-          await dispatchPointerClick(cdp, sessionId, diffPoints.lynx);
           lynxReviewDiffInputSent = true;
           await delay(100);
           continue;
