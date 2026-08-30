@@ -539,7 +539,7 @@ export function TranscriptEmptySurface(input: {
           input.className,
         )}
       >
-        <HostText className="transcript-empty-title text-sm text-muted-foreground/30">
+        <HostText className="transcript-empty-title transcript-empty-title--single text-sm text-muted-foreground/30">
           {input.title}
         </HostText>
       </HostView>

@@ -229,6 +229,7 @@ describe("TranscriptRowSurface", () => {
       <TranscriptEmptySurface title={EMPTY_TRANSCRIPT_PLACEHOLDER} />,
     );
     expect(singleLine).toContain(EMPTY_TRANSCRIPT_PLACEHOLDER);
+    expect(singleLine).toContain("transcript-empty-title--single");
     expect(singleLine).toContain("text-muted-foreground/30");
     expect(singleLine).not.toContain("transcript-empty-subtitle");
   });

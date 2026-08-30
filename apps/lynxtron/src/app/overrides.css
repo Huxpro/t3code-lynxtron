@@ -3682,6 +3682,12 @@
   box-sizing: border-box;
   background-color: var(--accent);
 }
+.transcript-empty-title--single {
+  color: rgba(var(--muted-foreground-rgb), 0.3);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+}
 .transcript-user-authority-surface {
   position: absolute;
   top: 0;
