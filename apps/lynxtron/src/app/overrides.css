@@ -162,6 +162,17 @@
   flex-grow: 0;
   flex-shrink: 0;
 }
+.sidebar-v2-row-card .sidebar-v2-row-actions {
+  z-index: 2;
+  border-radius: 5px;
+  background-color: var(--sidebar-row-hover);
+}
+.sidebar-v2-row-card--active .sidebar-v2-row-actions {
+  background-color: var(--sidebar-row-active);
+}
+.sidebar-v2-row-card--selected .sidebar-v2-row-actions {
+  background-color: var(--sidebar-row-selected);
+}
 .sidebar-v2-working-duration {
   font-family: var(--font-mono);
   font-size: 12px;
