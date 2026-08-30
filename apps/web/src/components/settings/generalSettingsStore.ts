@@ -2,8 +2,12 @@ import { useSyncExternalStore } from "react";
 
 import type { GeneralSettingsPatch, GeneralSettingsValues } from "./GeneralSettingsContent";
 import { GENERAL_SETTINGS_DEFAULT_VALUES } from "./generalSettingsProjection";
+import type { BackgroundActivityProfile } from "@t3tools/contracts";
+
+export type BackgroundActivityProfileOption = BackgroundActivityProfile | "advanced";
 
 export interface GeneralSettingsSurfaceSnapshot {
+  readonly backgroundActivityProfileOption: BackgroundActivityProfileOption;
   readonly changedSettingLabels: ReadonlyArray<string>;
   readonly defaults: GeneralSettingsValues;
   readonly diagnosticsDescription: string;
@@ -20,11 +24,13 @@ export interface GeneralSettingsSurfaceActions {
   readonly resetTextGenerationModel: () => void;
   readonly restoreDefaults: () => Promise<void>;
   readonly setProjectGrouping: (enabled: boolean) => void;
+  readonly setBackgroundActivityProfile: (profile: BackgroundActivityProfile) => void;
   readonly update: (patch: GeneralSettingsPatch) => void;
 }
 
 const NOOP = () => {};
 const INITIAL_SNAPSHOT: GeneralSettingsSurfaceSnapshot = {
+  backgroundActivityProfileOption: "balanced",
   changedSettingLabels: [],
   defaults: GENERAL_SETTINGS_DEFAULT_VALUES,
   diagnosticsDescription: "Tracing is disabled.",
@@ -40,6 +46,7 @@ const INITIAL_ACTIONS: GeneralSettingsSurfaceActions = {
   resetTextGenerationModel: NOOP,
   restoreDefaults: async () => {},
   setProjectGrouping: NOOP,
+  setBackgroundActivityProfile: NOOP,
   update: NOOP,
 };
 

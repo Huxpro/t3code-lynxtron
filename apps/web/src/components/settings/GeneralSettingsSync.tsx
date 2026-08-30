@@ -3,7 +3,7 @@ import { useAtomValue } from "@effect/atom-react";
 import * as Equal from "effect/Equal";
 
 import { projectGeneralSettingsRestore } from "@t3tools/client-runtime/presentation/settings";
-import type { SidebarProjectGroupingMode } from "@t3tools/contracts";
+import type { BackgroundActivityProfile, SidebarProjectGroupingMode } from "@t3tools/contracts";
 import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
 
 import { APP_VERSION } from "../../branding";
@@ -19,6 +19,7 @@ import {
 } from "./generalSettingsStore";
 import {
   formatDiagnosticsDescription,
+  resolveBackgroundActivityProfileOption,
   hasChangedBackgroundActivitySettings,
   isProjectGroupingEnabled,
   projectGroupingModeFromToggle,
@@ -80,9 +81,17 @@ export function GeneralSettingsSync() {
       ...restoreProjection.serverPatch,
     });
   }, [restoreProjection, setTheme, updateSettings]);
+  const setBackgroundActivityProfile = useCallback(
+    (profile: BackgroundActivityProfile) =>
+      updateSettings({
+        backgroundActivity: { schemaVersion: 1, profile, overrides: {} },
+      }),
+    [updateSettings],
+  );
 
   useEffect(() => {
     const snapshot: GeneralSettingsSurfaceSnapshot = {
+      backgroundActivityProfileOption: resolveBackgroundActivityProfileOption(settings),
       changedSettingLabels: restoreProjection.changedSettingLabels,
       defaults: GENERAL_DEFAULTS,
       diagnosticsDescription: formatDiagnosticsDescription({
@@ -111,6 +120,7 @@ export function GeneralSettingsSync() {
           textGenerationModelSelection: DEFAULT_UNIFIED_SETTINGS.textGenerationModelSelection,
         }),
       restoreDefaults,
+      setBackgroundActivityProfile,
       setProjectGrouping,
       update,
     };
@@ -120,6 +130,7 @@ export function GeneralSettingsSync() {
     restoreProjection.changedSettingLabels,
     observability,
     setProjectGrouping,
+    setBackgroundActivityProfile,
     setTheme,
     settings,
     theme,

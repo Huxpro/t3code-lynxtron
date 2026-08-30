@@ -192,6 +192,7 @@ export function GeneralSettingsSelect<Value extends string>({
   return (
     <view
       aria-label={ariaLabel}
+      data-settings-select={ariaLabel}
       className={
         width === "wide"
           ? "select-box select-box--interactive select-box--wide"

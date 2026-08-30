@@ -1,5 +1,6 @@
 import { useEffect } from "@lynx-js/react";
 import {
+  backgroundActivityProfileSettings,
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
   projectPortableGeneralSettingsRestore,
   type PortableClientSettingsPatch,
@@ -11,7 +12,10 @@ import {
   GENERAL_SETTINGS_DEFAULT_VALUES,
   projectGeneralSettingsValues,
 } from "../../../../web/src/components/settings/generalSettingsProjection";
-import { formatDiagnosticsDescription } from "../../../../web/src/components/settings/SettingsPanels.logic";
+import {
+  formatDiagnosticsDescription,
+  resolveBackgroundActivityProfileOption,
+} from "../../../../web/src/components/settings/SettingsPanels.logic";
 import {
   publishGeneralSettingsSurface,
   type GeneralSettingsSurfaceActions,
@@ -87,6 +91,9 @@ export function GeneralSettingsSync() {
       if (Object.keys(serverPatch).length > 0) updateServerSettings(serverPatch);
     };
     const snapshot: GeneralSettingsSurfaceSnapshot = {
+      backgroundActivityProfileOption: settings
+        ? resolveBackgroundActivityProfileOption(settings)
+        : "balanced",
       changedSettingLabels: restoreProjection.changedSettingLabels,
       defaults: GENERAL_SETTINGS_DEFAULT_VALUES,
       diagnosticsDescription: DEFAULT_DIAGNOSTICS_DESCRIPTION,
@@ -107,6 +114,8 @@ export function GeneralSettingsSync() {
         update({
           sidebarProjectGroupingMode: enabled ? "repository" : "separate",
         }),
+      setBackgroundActivityProfile: (profile) =>
+        updateServerSettings(backgroundActivityProfileSettings(profile)),
       update,
     };
     publishGeneralSettingsSurface(snapshot, actions);

@@ -1,4 +1,10 @@
-import { GeneralSettingsValueButton, SettingsRow } from "./generalSettingsHost";
+import {
+  GeneralSettingsSelect,
+  GeneralSettingsValueButton,
+  SettingsRow,
+} from "./generalSettingsHost";
+import type { BackgroundActivityProfile } from "@t3tools/contracts";
+import type { BackgroundActivityProfileOption } from "./generalSettingsStore";
 
 export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS =
   "Text generation model selection is not yet available in Lynxtron.";
@@ -14,14 +20,43 @@ export function GeneralSettingsAboutContent({ versionLabel }: { readonly version
   );
 }
 
-export function GeneralSettingsBackgroundActivityContent() {
+const BACKGROUND_ACTIVITY_OPTIONS = [
+  { value: "balanced", label: "Balanced" },
+  { value: "performance", label: "Performance" },
+  { value: "battery-saver", label: "Battery saver" },
+] as const;
+
+export function GeneralSettingsBackgroundActivityContent({
+  onProfileChange,
+  profile,
+}: {
+  readonly onProfileChange: (profile: BackgroundActivityProfile) => void;
+  readonly profile: BackgroundActivityProfileOption;
+}) {
+  const options =
+    profile === "advanced"
+      ? ([{ value: "advanced", label: "Advanced" }, ...BACKGROUND_ACTIVITY_OPTIONS] as const)
+      : BACKGROUND_ACTIVITY_OPTIONS;
   return (
     <SettingsRow
       id="background-activity"
       title="Background activity"
       description="Control the shared policy for background Git refreshes and provider health checks."
-      status="Advanced background activity controls are not yet available in Lynxtron."
-      unavailable
+      status={
+        profile === "advanced"
+          ? "Advanced interval controls remain available in Electron."
+          : undefined
+      }
+      control={
+        <GeneralSettingsSelect
+          ariaLabel="Background activity profile"
+          options={options}
+          value={profile}
+          onValueChange={(value) => {
+            if (value !== "advanced") onProfileChange(value);
+          }}
+        />
+      }
     />
   );
 }

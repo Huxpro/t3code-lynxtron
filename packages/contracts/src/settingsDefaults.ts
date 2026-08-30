@@ -25,6 +25,7 @@ export const PORTABLE_CLIENT_SETTINGS_DEFAULTS = {
 
 export const PORTABLE_SERVER_SETTINGS_DEFAULTS = {
   addProjectBaseDirectory: "",
+  backgroundActivity: { schemaVersion: 1, profile: "balanced", overrides: {} },
   defaultThreadEnvMode: "local",
   enableAssistantStreaming: false,
   enableProviderUpdateChecks: true,

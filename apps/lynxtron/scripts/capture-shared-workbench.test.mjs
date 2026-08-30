@@ -839,6 +839,10 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(source, "function betaSettingsGeometryMatches");
     assert.include(source, '"settings-beta-mutation": "settings-general"');
+    assert.include(source, '"settings-background-activity-mutation": "settings-general"');
+    assert.include(source, "function backgroundActivityMutationStateMatches");
+    assert.include(source, "async function runBackgroundActivityMutationFlow");
+    assert.include(source, "finalBackgroundActivityMutationReady");
     assert.include(source, "function betaMutationStateMatches");
     assert.include(source, "async function runBetaMutationFlow");
     assert.include(source, '"Beta mutation disabled state"');

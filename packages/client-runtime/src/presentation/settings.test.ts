@@ -7,6 +7,7 @@ import * as Duration from "effect/Duration";
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  backgroundActivityProfileSettings,
   isProjectGroupingEnabled,
   mergeClientSettings,
   PORTABLE_CLIENT_SETTINGS_DEFAULTS,
@@ -23,6 +24,17 @@ describe("project grouping toggle", () => {
     expect(isProjectGroupingEnabled("separate")).toBe(false);
     expect(projectGroupingModeFromToggle(false, "repository_path")).toBe("separate");
     expect(projectGroupingModeFromToggle(true, "repository_path")).toBe("repository_path");
+  });
+});
+
+describe("background activity profile settings", () => {
+  it("projects a preset into the canonical server patch", () => {
+    expect(backgroundActivityProfileSettings("performance")).toEqual({
+      backgroundActivity: { schemaVersion: 1, profile: "performance", overrides: {} },
+    });
+    expect(backgroundActivityProfileSettings("battery-saver")).toEqual({
+      backgroundActivity: { schemaVersion: 1, profile: "battery-saver", overrides: {} },
+    });
   });
 });
 
@@ -91,6 +103,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
     });
     expect(PORTABLE_SERVER_SETTINGS_DEFAULTS).toMatchObject({
       addProjectBaseDirectory: DEFAULT_SERVER_SETTINGS.addProjectBaseDirectory,
+      backgroundActivity: DEFAULT_SERVER_SETTINGS.backgroundActivity,
       defaultThreadEnvMode: DEFAULT_SERVER_SETTINGS.defaultThreadEnvMode,
       enableAssistantStreaming: DEFAULT_SERVER_SETTINGS.enableAssistantStreaming,
       enableProviderUpdateChecks: DEFAULT_SERVER_SETTINGS.enableProviderUpdateChecks,
@@ -110,6 +123,11 @@ describe("projectPortableGeneralSettingsRestore", () => {
       serverSettings: {
         ...PORTABLE_SERVER_SETTINGS_DEFAULTS,
         addProjectBaseDirectory: "~/Projects",
+        backgroundActivity: {
+          schemaVersion: 1,
+          profile: "performance",
+          overrides: {},
+        },
         enableAssistantStreaming: true,
         newWorktreesStartFromOrigin: false,
       },
@@ -120,6 +138,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
       "Environment identification",
       "Word wrap",
       "Assistant output",
+      "Background activity",
       "New worktrees start from origin",
       "Add project base directory",
     ]);
@@ -136,6 +155,9 @@ describe("projectPortableGeneralSettingsRestore", () => {
     );
     expect(projection.serverPatch.addProjectBaseDirectory).toBe(
       DEFAULT_SERVER_SETTINGS.addProjectBaseDirectory,
+    );
+    expect(projection.serverPatch.backgroundActivity).toEqual(
+      DEFAULT_SERVER_SETTINGS.backgroundActivity,
     );
   });
 });

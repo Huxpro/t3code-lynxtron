@@ -136,6 +136,13 @@ describe("Lynx Settings route projection", () => {
       ),
       "utf8",
     );
+    const generalWebHost = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/generalSettingsPanelHost.web.tsx",
+      ),
+      "utf8",
+    );
     const generalPanel = readFileSync(
       path.resolve(
         import.meta.dirname,
@@ -161,7 +168,10 @@ describe("Lynx Settings route projection", () => {
     }
     expect(generalHost).toContain("GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = true");
     expect(generalHost).toContain('id="background-activity"');
-    expect(generalHost).toMatch(/title="Background activity"[\s\S]+?unavailable/);
+    expect(generalHost).toContain('ariaLabel="Background activity profile"');
+    expect(generalWebHost).toContain('id="background-activity"');
+    expect(generalHost).toContain("onProfileChange(value)");
+    expect(generalPanel).toContain("setBackgroundActivityProfile(profile)");
     expect(generalPanel).toContain(
       "textGenerationModelUnavailable={GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE}",
     );

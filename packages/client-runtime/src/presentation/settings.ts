@@ -1,4 +1,5 @@
 import type {
+  BackgroundActivityProfile,
   ClientSettings,
   ClientSettingsPatch,
   ServerSettings,
@@ -37,6 +38,7 @@ export type PortableClientSettingsPatch = Partial<PortableClientSettings>;
 export type PortableServerSettings = Pick<
   ServerSettings,
   | "addProjectBaseDirectory"
+  | "backgroundActivity"
   | "defaultThreadEnvMode"
   | "enableAssistantStreaming"
   | "enableProviderUpdateChecks"
@@ -44,6 +46,14 @@ export type PortableServerSettings = Pick<
 >;
 
 export type PortableServerSettingsPatch = Partial<PortableServerSettings>;
+
+export function backgroundActivityProfileSettings(
+  profile: BackgroundActivityProfile,
+): Pick<ServerSettings, "backgroundActivity"> {
+  return {
+    backgroundActivity: { schemaVersion: 1, profile, overrides: {} },
+  };
+}
 
 type GeneralClientSettingsPatch = Pick<
   PortableClientSettings,
@@ -221,6 +231,10 @@ export function projectPortableGeneralSettingsRestore(input: {
       ...(server.enableProviderUpdateChecks !== serverDefaults.enableProviderUpdateChecks
         ? ["Provider update checks"]
         : []),
+      ...(JSON.stringify(server.backgroundActivity) !==
+      JSON.stringify(serverDefaults.backgroundActivity)
+        ? ["Background activity"]
+        : []),
       ...(server.defaultThreadEnvMode !== serverDefaults.defaultThreadEnvMode
         ? ["New thread mode"]
         : []),
@@ -250,6 +264,7 @@ export function projectPortableGeneralSettingsRestore(input: {
     },
     serverPatch: {
       addProjectBaseDirectory: serverDefaults.addProjectBaseDirectory,
+      backgroundActivity: serverDefaults.backgroundActivity,
       defaultThreadEnvMode: serverDefaults.defaultThreadEnvMode,
       enableAssistantStreaming: serverDefaults.enableAssistantStreaming,
       enableProviderUpdateChecks: serverDefaults.enableProviderUpdateChecks,

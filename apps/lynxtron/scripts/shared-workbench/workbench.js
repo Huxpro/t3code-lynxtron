@@ -70,6 +70,7 @@ const SETTINGS_ANCHOR_BY_ROUTE = {
     "hide-whitespace-changes",
     "assistant-output",
     "provider-update-checks",
+    "background-activity",
     "auto-open-task-panel",
     "new-threads",
     "add-project-starts-in",

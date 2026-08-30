@@ -19,7 +19,14 @@ export function GeneralSettingsPanel() {
   return (
     <GeneralSettingsContent
       aboutContent={<GeneralSettingsAboutContent versionLabel={surface.versionLabel} />}
-      backgroundActivityContent={<GeneralSettingsBackgroundActivityContent />}
+      backgroundActivityContent={
+        <GeneralSettingsBackgroundActivityContent
+          profile={surface.backgroundActivityProfileOption}
+          onProfileChange={(profile) =>
+            getGeneralSettingsSurfaceActions().setBackgroundActivityProfile(profile)
+          }
+        />
+      }
       defaults={surface.defaults}
       diagnosticsControl={
         <GeneralSettingsDiagnosticsControl

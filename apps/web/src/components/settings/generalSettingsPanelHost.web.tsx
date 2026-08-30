@@ -13,6 +13,7 @@ import {
   deriveProviderInstanceEntries,
   sortProviderInstanceEntries,
 } from "@t3tools/client-runtime/presentation/provider";
+import { backgroundActivityProfileSettings } from "@t3tools/client-runtime/presentation/settings";
 import { resolveServerBackgroundActivitySettings } from "@t3tools/shared/backgroundActivitySettings";
 import { createModelSelection } from "@t3tools/shared/model";
 import * as Duration from "effect/Duration";
@@ -116,16 +117,6 @@ const BACKGROUND_ACTIVITY_BOOLEAN_OVERRIDES: ReadonlyArray<{
 export function resetBackgroundActivitySettings() {
   return {
     backgroundActivity: DEFAULT_UNIFIED_SETTINGS.backgroundActivity,
-  };
-}
-
-function backgroundActivityProfileSettings(profile: BackgroundActivityProfile) {
-  return {
-    backgroundActivity: {
-      schemaVersion: 1 as const,
-      profile,
-      overrides: {},
-    },
   };
 }
 
@@ -663,6 +654,7 @@ export function BackgroundActivitySettingsRow() {
 
   return (
     <SettingsRow
+      id="background-activity"
       title={
         <span className="inline-flex items-center gap-1.5">
           Background activity

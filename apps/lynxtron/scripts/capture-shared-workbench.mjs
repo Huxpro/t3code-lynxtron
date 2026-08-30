@@ -175,6 +175,7 @@ const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
 const isBetaMutationState = stateId === "settings-beta-mutation";
+const isBackgroundActivityMutationState = stateId === "settings-background-activity-mutation";
 const isConnectionsMutationState = stateId === "settings-connections-mutation-browser";
 const isAddProviderDialogState =
   stateId === "settings-providers-add-dialog" || stateId === "settings-providers-add-dialog-light";
@@ -749,6 +750,49 @@ function betaMutationStateMatches(state, checked) {
         : mutation.daysInput === null && mutation.daysValue === null)
     );
   });
+}
+
+function backgroundActivityMutationStateMatches(state, label) {
+  if (!isBackgroundActivityMutationState) return true;
+  return [state?.web, state?.lynx].every((client) => {
+    const row = client?.settingsMetrics?.rows?.find(
+      (candidate) => candidate.id === "background-activity",
+    );
+    return row?.controlText?.startsWith(label) === true;
+  });
+}
+
+async function runBackgroundActivityMutationFlow(cdp, sessionId) {
+  const timeline = [];
+  let state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => backgroundActivityMutationStateMatches(next, "Balanced"),
+    5_000,
+    "Background activity initial profile",
+  );
+  timeline.push({ step: "initial", profile: "Balanced" });
+  for (const profile of ["Performance", "Battery saver", "Balanced"]) {
+    if (
+      !(await clickSidebarControl(
+        cdp,
+        sessionId,
+        "lynx",
+        '[data-settings-select="Background activity profile"]',
+      ))
+    ) {
+      throw new Error("Missing Lynx Background activity profile control");
+    }
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => backgroundActivityMutationStateMatches(next, profile),
+      5_000,
+      `Background activity ${profile} projection`,
+    );
+    timeline.push({ step: profile.toLowerCase().replaceAll(" ", "-"), profile });
+  }
+  return { state, timeline };
 }
 
 function connectionsMutationStateMatches(state, pairingLinkCount) {
@@ -5568,6 +5612,7 @@ async function captureCell({
     "settings-source-control-error": "settings-general",
     "settings-beta": "settings-general",
     "settings-beta-mutation": "settings-general",
+    "settings-background-activity-mutation": "settings-general",
     "settings-archive": "settings-general",
     "review-checkpoint": "existing-thread",
     "review-tree": "existing-thread",
@@ -5659,6 +5704,10 @@ async function captureCell({
   const addProviderDialogTimeline = [];
   let betaMutationStage = isBetaMutationState ? "waiting-settings" : "not-required";
   const betaMutationTimeline = [];
+  let backgroundActivityMutationStage = isBackgroundActivityMutationState
+    ? "waiting-settings"
+    : "not-required";
+  const backgroundActivityMutationTimeline = [];
   let connectionsMutationStage = isConnectionsMutationState ? "waiting-settings" : "not-required";
   const connectionsMutationTimeline = [];
   let settingsAsyncReadyPolls =
@@ -8385,6 +8434,13 @@ async function captureCell({
     betaMutationStage = "complete";
     reachedTargetState = true;
   }
+  if (isBackgroundActivityMutationState) {
+    const flow = await runBackgroundActivityMutationFlow(cdp, sessionId);
+    state = flow.state;
+    backgroundActivityMutationTimeline.push(...flow.timeline);
+    backgroundActivityMutationStage = "complete";
+    reachedTargetState = true;
+  }
   if (isConnectionsMutationState) {
     const flow = await runConnectionsMutationFlow(cdp, sessionId);
     state = flow.state;
@@ -8723,6 +8779,13 @@ async function captureCell({
       ["initial", "disabled", "restored"].every((step) =>
         betaMutationTimeline.some((entry) => entry.step === step),
       ));
+  const finalBackgroundActivityMutationReady =
+    !isBackgroundActivityMutationState ||
+    (backgroundActivityMutationStage === "complete" &&
+      backgroundActivityMutationStateMatches(state, "Balanced") &&
+      ["initial", "performance", "battery-saver", "balanced"].every((step) =>
+        backgroundActivityMutationTimeline.some((entry) => entry.step === step),
+      ));
   const finalConnectionsMutationReady =
     !isConnectionsMutationState ||
     (connectionsMutationStage === "complete" &&
@@ -8875,74 +8938,83 @@ async function captureCell({
     ? true
     : isBetaMutationState
       ? finalBetaMutationReady
-      : isConnectionsMutationState
-        ? finalConnectionsMutationReady
-        : stateId === "settings-beta"
-          ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
-          : stateId === "settings-general"
-            ? generalSettingsContentMatches(
-                state?.web?.settingsMetrics,
-                state?.lynx?.settingsMetrics,
-              )
-            : stateId === "settings-appearance"
-              ? appearanceSettingsContentMatches(
+      : isBackgroundActivityMutationState
+        ? finalBackgroundActivityMutationReady
+        : isConnectionsMutationState
+          ? finalConnectionsMutationReady
+          : stateId === "settings-beta"
+            ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
+            : stateId === "settings-general"
+              ? generalSettingsContentMatches(
                   state?.web?.settingsMetrics,
                   state?.lynx?.settingsMetrics,
                 )
-              : stateId === "settings-keybindings"
-                ? keybindingsSettingsContentMatches(
+              : stateId === "settings-appearance"
+                ? appearanceSettingsContentMatches(
                     state?.web?.settingsMetrics,
                     state?.lynx?.settingsMetrics,
                   )
-                : isProvidersSettingsState
-                  ? providerSettingsContentMatches(
+                : stateId === "settings-keybindings"
+                  ? keybindingsSettingsContentMatches(
                       state?.web?.settingsMetrics,
                       state?.lynx?.settingsMetrics,
                     )
-                  : stateId === "settings-connections"
-                    ? connectionsSettingsContentMatches(
+                  : isProvidersSettingsState
+                    ? providerSettingsContentMatches(
                         state?.web?.settingsMetrics,
                         state?.lynx?.settingsMetrics,
                       )
-                    : stateId === "settings-source-control-loading"
-                      ? state?.web?.settingsMetrics?.loading === true &&
-                        state?.lynx?.settingsMetrics?.loading === true &&
-                        JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                        JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                          JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
-                      : stateId === "settings-source-control-error"
-                        ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
+                    : stateId === "settings-connections"
+                      ? connectionsSettingsContentMatches(
+                          state?.web?.settingsMetrics,
+                          state?.lynx?.settingsMetrics,
+                        )
+                      : stateId === "settings-source-control-loading"
+                        ? state?.web?.settingsMetrics?.loading === true &&
+                          state?.lynx?.settingsMetrics?.loading === true &&
                           JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
                             JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                          JSON.stringify(
-                            state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                          ) ===
+                          JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                            JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
+                        : stateId === "settings-source-control-error"
+                          ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                              JSON.stringify(
+                                state?.lynx?.settingsMetrics?.navigationLabels ?? [],
+                              ) &&
+                            JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
                             JSON.stringify(
-                              state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                            ) &&
-                          JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                          (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) >
-                            0 &&
-                          (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) > 0
-                        : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? []) &&
-                          JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                          JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
-                          JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.sourceControlRows ?? []) &&
-                          JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
-                          JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                          ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                            (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                            JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
-                              JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
+                              state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                            ) ===
+                              JSON.stringify(
+                                state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                              ) &&
+                            JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                            (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) >
+                              0 &&
+                            (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) >
+                              0
+                          : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                              JSON.stringify(
+                                state?.lynx?.settingsMetrics?.navigationLabels ?? [],
+                              ) &&
+                            JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                            JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
+                            JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
+                              JSON.stringify(
+                                state?.lynx?.settingsMetrics?.sourceControlRows ?? [],
+                              ) &&
+                            JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
+                            JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                            ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                              (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                              JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
+                                JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
 
   const layout = await evaluate(
     cdp,
@@ -10249,6 +10321,7 @@ async function captureCell({
     finalSettingsNavigationReady &&
     finalAddProviderDialogReady &&
     finalBetaMutationReady &&
+    finalBackgroundActivityMutationReady &&
     finalConnectionsMutationReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
@@ -10317,6 +10390,7 @@ async function captureCell({
       finalSettingsNavigationReady,
       finalAddProviderDialogReady,
       finalBetaMutationReady,
+      finalBackgroundActivityMutationReady,
       finalConnectionsMutationReady,
       finalTranscriptReady,
       finalPendingRequestReady,
@@ -10574,6 +10648,20 @@ async function captureCell({
         timeline: betaMutationTimeline,
         web: state?.web?.settingsMetrics?.betaMutation ?? null,
         lynx: state?.lynx?.settingsMetrics?.betaMutation ?? null,
+      },
+      backgroundActivityMutation: {
+        match: finalBackgroundActivityMutationReady,
+        stage: backgroundActivityMutationStage,
+        inputChannel: isBackgroundActivityMutationState
+          ? "lynx-cdp-pointer+shared-server"
+          : "not-required",
+        timeline: backgroundActivityMutationTimeline,
+        web:
+          state?.web?.settingsMetrics?.rows?.find((row) => row.id === "background-activity") ??
+          null,
+        lynx:
+          state?.lynx?.settingsMetrics?.rows?.find((row) => row.id === "background-activity") ??
+          null,
       },
       connectionsMutation: {
         match: finalConnectionsMutationReady,
