@@ -190,6 +190,7 @@ export const OpenInPicker = memo(function OpenInPicker({
   openInCwd,
   compact = false,
   enableShortcut = true,
+  anchor = "header-open-in-menu",
 }: {
   environmentId: EnvironmentId;
   keybindings: ResolvedKeybindingsConfig;
@@ -197,6 +198,7 @@ export const OpenInPicker = memo(function OpenInPicker({
   openInCwd: string | null;
   compact?: boolean;
   enableShortcut?: boolean;
+  anchor?: "header-open-in-menu" | "file-open-in-menu";
 }) {
   const openInEditorMutation = useAtomCommand(shellEnvironment.openInEditor, "open in editor");
   const [preferredEditor, setPreferredEditor] = usePreferredEditor(availableEditors);
@@ -287,7 +289,7 @@ export const OpenInPicker = memo(function OpenInPicker({
           render={
             <Button
               aria-label={compact ? "Choose editor" : "Copy options"}
-              data-floating-anchor="header-open-in-menu"
+              data-floating-anchor={anchor}
               size="icon-xs"
               variant="outline"
             />
@@ -295,7 +297,7 @@ export const OpenInPicker = memo(function OpenInPicker({
         >
           <ChevronDownIcon aria-hidden="true" className="size-4" />
         </MenuTrigger>
-        <MenuPopup align="end" data-floating-popup="header-open-in-menu">
+        <MenuPopup align="end" data-floating-popup={anchor}>
           {options.length === 0 && <MenuItem disabled>No installed editors found</MenuItem>}
           {options.map(({ label, Icon, value, kind }) => (
             <MenuItem key={value} onClick={() => openInEditor(value)}>

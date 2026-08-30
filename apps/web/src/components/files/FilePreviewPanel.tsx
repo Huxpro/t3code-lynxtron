@@ -993,6 +993,7 @@ export default function FilePreviewPanel({
               openInCwd={absolutePath}
               compact
               enableShortcut={false}
+              anchor="file-open-in-menu"
             />
           ) : null}
           {isMarkdown ? (

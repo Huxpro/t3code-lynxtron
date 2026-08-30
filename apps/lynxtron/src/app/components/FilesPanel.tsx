@@ -6,6 +6,7 @@ import {
   type ProjectEntryTreeNode,
 } from "@t3tools/client-runtime/presentation/files";
 import { getProjectFilePickerMatches } from "@t3tools/client-runtime/presentation/file-picker";
+import { resolvePathLinkTarget } from "@t3tools/client-runtime/presentation/paths";
 import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coordinator";
 import type { ProjectEntry, ProjectReadFileResult } from "@t3tools/contracts";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
@@ -23,6 +24,7 @@ import { clientCapabilities, showNativeContextMenu } from "../platform/clientCap
 import { requestComposerTextInsertion } from "../state/composerCommandBus";
 import { Icon } from "./Icon";
 import { ProjectFileIcon } from "./ProjectFileIcon";
+import { OpenInPicker } from "./OpenInPicker";
 
 interface ListingState {
   readonly cwd: string | null;
@@ -463,7 +465,7 @@ export function FilesPanel({
 }
 
 export function FilePanel({ path }: { readonly path: string }) {
-  const { activeThreadId, draftThread, projects, threads } = useT3ClientState();
+  const { activeThreadId, draftThread, projects, serverConfig, threads } = useT3ClientState();
   const [panelWidth, setPanelWidth] = useState<number | null>(null);
   const [explorerOpen, setExplorerOpen] = useState(true);
   const [preview, setPreview] = useState<PreviewState>({
@@ -478,6 +480,7 @@ export function FilePanel({ path }: { readonly path: string }) {
   const project =
     projects.find((candidate) => candidate.id === activeThread?.projectId) ?? projects[0] ?? null;
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
+  const absolutePath = cwd ? resolvePathLinkTarget(path, cwd) : null;
   const pathParts = path.split("/").filter(Boolean);
   const fileName = pathParts.at(-1) ?? path;
   const directoryParts = pathParts.slice(0, -1);
@@ -547,6 +550,13 @@ export function FilePanel({ path }: { readonly path: string }) {
             </view>
           </view>
         </scroll-view>
+        <OpenInPicker
+          availableEditors={serverConfig?.availableEditors ?? []}
+          cwd={absolutePath}
+          platform={serverConfig?.environment.platform.os}
+          compact
+          anchor="file-open-in-menu"
+        />
         <view
           className={`file-panel__explorer-toggle${
             explorerVisible ? " file-panel__explorer-toggle--active" : ""

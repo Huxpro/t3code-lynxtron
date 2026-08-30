@@ -814,6 +814,21 @@ describe("desktop shell interaction contract", () => {
     );
   });
 
+  it("reuses the Open in picker for project and file targets", () => {
+    const header = componentSource("ChatHeader.tsx");
+    const files = componentSource("FilesPanel.tsx");
+    const picker = componentSource("OpenInPicker.tsx");
+
+    expect(header).toContain("<OpenInPicker");
+    expect(header).toContain("platform={platform}");
+    expect(files).toContain("cwd={absolutePath}");
+    expect(files).toContain('anchor="file-open-in-menu"');
+    expect(picker).toContain("platformEditorLabel(editor, platform)");
+    expect(picker).toContain("editorIconKind(editor)");
+    expect(picker).not.toContain("open-in-menu__item--selected");
+    expect(picker).toContain("Math.min(Math.max(availableEditors.length, 1) * 32 + 10, 288)");
+  });
+
   it("projects every authority Diff scope through real typed data sources", () => {
     const diff = componentSource("DiffPanel.tsx");
     const bridge = readFileSync(path.join(import.meta.dirname, "../bridge.ts"), "utf8");

@@ -577,6 +577,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           vcsStatus={vcsStatusCwd === cwd ? vcsStatus : null}
           vcsStatusPending={vcsStatusCwd !== cwd || vcsStatusPending}
           availableEditors={serverConfig?.availableEditors ?? []}
+          platform={serverConfig?.environment.platform.os}
           rightPanelOpen={rightPanel.isOpen}
           centerPanelWidth={centerPanelWidth}
           onCenterPanelWidthChange={setCenterPanelWidth}

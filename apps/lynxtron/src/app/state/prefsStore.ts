@@ -12,6 +12,7 @@ import { clientCapabilities } from "../platform/clientCapabilities";
 import { appAtomRegistry } from "./atomRegistry";
 export { resolveLynxTheme, type LynxThemePreference } from "./themePreference.logic";
 import type { LynxThemePreference } from "./themePreference.logic";
+import type { EditorId } from "@t3tools/contracts";
 
 const cache = new Map<string, unknown>();
 const preferencesRevisionAtom = Atom.make(0).pipe(Atom.withLabel("lynx-preferences-revision"));
@@ -101,6 +102,12 @@ export function useClientSettingsState(): [
     updateClientSettingsState(patch);
   }, []);
   return [getClientSettingsState(), update];
+}
+
+export function usePreferredEditorState(): [EditorId | null, (editor: EditorId) => void] {
+  useAtomValue(preferencesRevisionAtom);
+  const update = useCallback((editor: EditorId) => setPref("t3code:last-editor", editor), []);
+  return [getPref<EditorId | null>("t3code:last-editor", null), update];
 }
 
 export function useThemePreferenceState(): [
