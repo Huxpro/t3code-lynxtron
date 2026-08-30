@@ -9738,7 +9738,7 @@
   box-sizing: border-box;
   border-radius: 8px;
   /* Native-safe counterpart to Web's dropdown-glass model picker surface. */
-  background-color: rgba(var(--popover-rgb), 0.836);
+  background-color: var(--popover);
   border-width: 1px;
   border-style: solid;
   border-color: rgba(var(--foreground-rgb), 0.1);

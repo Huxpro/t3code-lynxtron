@@ -15,7 +15,7 @@ describe("Model Picker material", () => {
     const panel = rule(".model-picker-panel");
     const darkPanel = rule(".theme-dark .model-picker-panel");
 
-    expect(panel).toContain("background-color: rgba(var(--popover-rgb), 0.836);");
+    expect(panel).toContain("background-color: var(--popover);");
     expect(panel).toContain("border-color: rgba(var(--foreground-rgb), 0.1);");
     expect(panel).toContain("box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);");
     expect(darkPanel).toContain("box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.8);");

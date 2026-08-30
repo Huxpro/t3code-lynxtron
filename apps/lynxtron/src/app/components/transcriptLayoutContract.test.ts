@@ -75,9 +75,7 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain(
       "main-thread:global-bindwheel={handleCompactControlsMenuWheel}",
     );
-    expect(composerSource).toContain(
-      "eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0",
-    );
+    expect(composerSource).toContain("responsiveMenuWheelDelta(");
     expect(composerSource).toContain("if (!Number.isFinite(deltaY) || deltaY === 0) return;");
     expect(composerSource).toContain('target.setAttribute("data-scroll-offset", `${nextOffset}`)');
     expect(composerSource).toContain('scroll-orientation="vertical"');

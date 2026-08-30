@@ -32,6 +32,7 @@ import { useClientSettingsState } from "../state/prefsStore";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { readModelPickerNavigation } from "../state/uiState";
 import { Icon } from "./Icon";
+import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import {
   projectModelPickerProviders,
@@ -211,7 +212,9 @@ export function ModelPicker({
     const eventWithDetail = event as MainThread.WheelEvent & {
       detail?: { deltaY?: number };
     };
-    const deltaY = eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0;
+    const deltaY = responsiveMenuWheelDelta(
+      eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0,
+    );
     if (!Number.isFinite(deltaY) || deltaY === 0) return;
     const nextOffset = Math.max(0, state.offset + deltaY);
     wheelStateRef.current = { key: scrollStateKey, offset: nextOffset };
@@ -495,7 +498,7 @@ export function ModelPicker({
       <view
         className="model-picker-dismiss-layer"
         aria-label="Dismiss model picker"
-        event-through
+        bindtap={onClose}
       />
     </>
   );

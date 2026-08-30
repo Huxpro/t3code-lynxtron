@@ -39,6 +39,7 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.logic";
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
+import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { appendComposerText, onComposerTextInsertion } from "../state/composerCommandBus";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import {
@@ -222,7 +223,9 @@ export function Composer({
     const eventWithDetail = event as MainThread.WheelEvent & {
       detail?: { deltaY?: number };
     };
-    const deltaY = eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0;
+    const deltaY = responsiveMenuWheelDelta(
+      eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0,
+    );
     if (!Number.isFinite(deltaY) || deltaY === 0) return;
     const nextOffset = Math.max(0, modelOptionMenuWheelRef.current.offset + deltaY);
     modelOptionMenuWheelRef.current = { offset: nextOffset };
@@ -253,7 +256,9 @@ export function Composer({
     const eventWithDetail = event as MainThread.WheelEvent & {
       detail?: { deltaY?: number };
     };
-    const deltaY = eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0;
+    const deltaY = responsiveMenuWheelDelta(
+      eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0,
+    );
     if (!Number.isFinite(deltaY) || deltaY === 0) return;
     const nextOffset = Math.max(0, compactControlsMenuWheelRef.current.offset + deltaY);
     const target =

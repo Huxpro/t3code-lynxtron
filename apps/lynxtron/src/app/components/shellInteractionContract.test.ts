@@ -180,7 +180,7 @@ describe("desktop shell interaction contract", () => {
 
     expect(source).toContain('className="model-picker-dismiss-layer"');
     expect(source).toContain('aria-label="Dismiss model picker"');
-    expect(source).toContain("event-through");
+    expect(source).toContain("bindtap={onClose}");
     expect(source).toContain("catchtap={handlePanelTap}");
     expect(source).not.toContain("dismissArmed");
     expect(source).not.toContain("setTimeout(() => setDismissArmed(true), 250)");
@@ -420,8 +420,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("background-color: rgba(var(--primary-rgb), 0.9);");
     expect(composer).toContain('name={busy ? "square" : "send-arrow"}');
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
-    expect(composer).toContain("eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0");
-    expect(modelPicker).toContain("eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0");
+    expect(composer).toContain("responsiveMenuWheelDelta(");
+    expect(modelPicker).toContain("responsiveMenuWheelDelta(");
     expect(modelPicker).toContain("if (!Number.isFinite(deltaY) || deltaY === 0) return;");
     expect(browserPreviewSource).toContain(
       '".composer-compact-controls-menu__scroll{overflow-y:auto;}" +',
