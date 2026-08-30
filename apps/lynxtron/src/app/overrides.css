@@ -125,10 +125,6 @@
   width: 100%;
   box-sizing: border-box;
 }
-.sidebar-v2-row-project-line {
-  padding-right: 132px;
-  box-sizing: border-box;
-}
 .sidebar-v2-row-card--selected {
   background-color: var(--sidebar-row-selected);
 }
@@ -163,14 +159,8 @@
   overflow: hidden;
 }
 .sidebar-v2-row-card .sidebar-v2-row-status-slot {
-  position: absolute;
-  top: 8px;
-  right: 0;
-  width: 128px;
+  flex-grow: 0;
   flex-shrink: 0;
-}
-.lynx-web-preview .sidebar-v2-row-card .sidebar-v2-row-status-slot {
-  right: 10px;
 }
 .sidebar-v2-working-duration {
   font-family: var(--font-mono);

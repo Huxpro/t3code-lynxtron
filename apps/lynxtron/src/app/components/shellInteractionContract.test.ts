@@ -1053,9 +1053,12 @@ describe("desktop shell interaction contract", () => {
     expect(componentSource("OtherSettings.tsx")).toContain('data-settings-archive-error="true"');
     expect(componentSource("OtherSettings.tsx")).toContain('"Failed to unarchive thread"');
     expect(componentSource("OtherSettings.tsx")).toContain('"Failed to delete thread"');
+    expect(sidebarSource).toContain("cardActionsVisible={");
     expect(sidebarSource).toContain(
       "disposableEmptyThread || actionMenuOpen || hoveredThreadId === thread.id",
     );
+    expect(sidebarRowSource).toContain('props.cardActionsVisible && "opacity-100"');
+    expect(sidebarRowSource).toContain("{props.settleIcon}\n                        Settle");
     expect(sidebarSource).toContain("setHoveredThreadId(thread.id)");
     expect(sidebarSource).toContain("if (!actionMenuOpen) {");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
@@ -1076,18 +1079,13 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".sidebar-v2-row-project-line,\n.sidebar-v2-row-title-line,\n.sidebar-v2-row-metadata-line {\n  width: 100%;\n  box-sizing: border-box;\n}",
     );
-    expect(overrides).toContain(
-      ".sidebar-v2-row-project-line {\n  padding-right: 132px;\n  box-sizing: border-box;\n}",
-    );
+    expect(overrides).not.toContain("padding-right: 132px");
     expect(overrides).not.toContain(".sidebar-v2-row-card:hover .sidebar-v2-row-actions,");
     expect(overrides).toContain(
       ".sidebar-v2-row-project-title {\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;\n  min-width: 0;\n}",
     );
     expect(overrides).toContain(
-      ".sidebar-v2-row-card .sidebar-v2-row-status-slot {\n  position: absolute;\n  top: 8px;\n  right: 0;\n  width: 128px;\n  flex-shrink: 0;\n}",
-    );
-    expect(overrides).toContain(
-      ".lynx-web-preview .sidebar-v2-row-card .sidebar-v2-row-status-slot {\n  right: 10px;\n}",
+      ".sidebar-v2-row-card .sidebar-v2-row-status-slot {\n  flex-grow: 0;\n  flex-shrink: 0;\n}",
     );
     expect(faviconSource).toContain('name="folder"');
     expect(faviconSource).not.toContain("background-color");

@@ -112,6 +112,20 @@ describe("SidebarV2RowSurface", () => {
     expect(markup).not.toMatch(/<span class="sidebar-v2-row-actions/u);
   });
 
+  it("keeps the Electron action label when a native hover makes actions visible", () => {
+    const markup = renderToStaticMarkup(
+      <SidebarV2RowSurface
+        {...baseProps}
+        cardActionsVisible
+        cardActionControl={<button aria-label="Thread actions">Actions</button>}
+      />,
+    );
+
+    expect(markup).toMatch(/sidebar-v2-row-status[^"]*opacity-0/u);
+    expect(markup).toMatch(/sidebar-v2-row-actions[^"]*opacity-100/u);
+    expect(markup).toContain(">Settle</button>");
+  });
+
   it("projects active project-card status and diff metadata without changing its hierarchy", () => {
     const markup = renderToStaticMarkup(
       <SidebarV2RowSurface

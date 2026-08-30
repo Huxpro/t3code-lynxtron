@@ -810,7 +810,7 @@ export default function SidebarV2() {
                 isWoke={false}
                 settlementSupported={settlementSupported}
                 snoozeSupported={false}
-                cardActionsPersistent={
+                cardActionsVisible={
                   disposableEmptyThread || actionMenuOpen || hoveredThreadId === thread.id
                 }
                 snoozeMenuOpen={false}

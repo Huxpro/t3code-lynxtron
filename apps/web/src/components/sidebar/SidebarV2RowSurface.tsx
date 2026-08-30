@@ -26,7 +26,7 @@ export interface SidebarV2RowSurfaceProps {
   readonly isWoke: boolean;
   readonly settlementSupported: boolean;
   readonly snoozeSupported: boolean;
-  readonly cardActionsPersistent?: boolean;
+  readonly cardActionsVisible?: boolean;
   readonly snoozeMenuOpen: boolean;
   readonly snoozeWakeLabelText: string | null;
   readonly projectTitle: string | null;
@@ -278,7 +278,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   className={cn(
                     "sidebar-v2-row-status pointer-events-none flex items-center justify-end tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
                     props.snoozeMenuOpen && "opacity-0",
-                    props.cardActionsPersistent && "opacity-0",
+                    props.cardActionsVisible && "opacity-0",
                   )}
                 >
                   {props.topStatus ? (
@@ -302,7 +302,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                     className={cn(
                       "sidebar-v2-row-actions absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/v2-row:opacity-100",
                       props.snoozeMenuOpen && "opacity-100",
-                      props.cardActionsPersistent && "opacity-100",
+                      props.cardActionsVisible && "opacity-100",
                     )}
                   >
                     {props.cardActionControl}
@@ -314,7 +314,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                         className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-transparent px-2 text-xs text-muted-foreground hover:text-foreground"
                       >
                         {props.settleIcon}
-                        {props.cardActionsPersistent ? null : "Settle"}
+                        Settle
                       </HostButton>
                     ) : null}
                   </HostView>
