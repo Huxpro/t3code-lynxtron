@@ -2,6 +2,9 @@ import { type TimestampFormat } from "@t3tools/contracts/settings";
 import {
   formatElapsedDurationLabel as formatElapsedDurationLabelAt,
   formatExpiresInLabel as formatExpiresInLabelAt,
+  formatShortTimestamp as formatShortTimestampShared,
+  formatTimestamp as formatTimestampShared,
+  getTimestampFormatOptions as getTimestampFormatOptionsShared,
   formatRelativeTime as formatRelativeTimeAt,
   formatRelativeTimeLabel as formatRelativeTimeLabelAt,
   formatRelativeTimeUntil as formatRelativeTimeUntilAt,
@@ -17,40 +20,7 @@ export function getTimestampFormatOptions(
   timestampFormat: TimestampFormat,
   includeSeconds: boolean,
 ): Intl.DateTimeFormatOptions {
-  const baseOptions: Intl.DateTimeFormatOptions = {
-    hour: "numeric",
-    minute: "2-digit",
-    ...(includeSeconds ? { second: "2-digit" } : {}),
-  };
-
-  if (timestampFormat === "locale") {
-    return baseOptions;
-  }
-
-  return {
-    ...baseOptions,
-    hour12: timestampFormat === "12-hour",
-  };
-}
-
-const timestampFormatterCache = new Map<string, Intl.DateTimeFormat>();
-
-function getTimestampFormatter(
-  timestampFormat: TimestampFormat,
-  includeSeconds: boolean,
-): Intl.DateTimeFormat {
-  const cacheKey = `${timestampFormat}:${includeSeconds ? "seconds" : "minutes"}`;
-  const cachedFormatter = timestampFormatterCache.get(cacheKey);
-  if (cachedFormatter) {
-    return cachedFormatter;
-  }
-
-  const formatter = new Intl.DateTimeFormat(
-    undefined,
-    getTimestampFormatOptions(timestampFormat, includeSeconds),
-  );
-  timestampFormatterCache.set(cacheKey, formatter);
-  return formatter;
+  return getTimestampFormatOptionsShared(timestampFormat, includeSeconds);
 }
 
 export function parseTimestampDate(isoDate: string): Date | null {
@@ -59,9 +29,7 @@ export function parseTimestampDate(isoDate: string): Date | null {
 }
 
 export function formatTimestamp(isoDate: string, timestampFormat: TimestampFormat): string {
-  const date = parseTimestampDate(isoDate);
-  if (!date) return "";
-  return getTimestampFormatter(timestampFormat, true).format(date);
+  return formatTimestampShared(isoDate, timestampFormat);
 }
 
 const monthNameFormatter = new Intl.DateTimeFormat(undefined, { month: "long" });
@@ -99,9 +67,7 @@ export function formatChatTimestampTooltip(
 }
 
 export function formatShortTimestamp(isoDate: string, timestampFormat: TimestampFormat): string {
-  const date = parseTimestampDate(isoDate);
-  if (!date) return "";
-  return getTimestampFormatter(timestampFormat, false).format(date);
+  return formatShortTimestampShared(isoDate, timestampFormat);
 }
 
 export function formatRelativeTime(isoDate: string): RelativeTimeParts | null {

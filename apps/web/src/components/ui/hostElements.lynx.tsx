@@ -8,6 +8,9 @@ interface MainThreadKeyEvent extends HostKeyEvent {}
 
 interface MainThreadMouseEvent {
   readonly button: number;
+  readonly currentTarget: {
+    querySelector(selector: string): { setStyleProperty(name: string, value: string): void } | null;
+  };
 }
 
 const ignoreTap = () => undefined;
@@ -15,6 +18,7 @@ const ignoreTap = () => undefined;
 export function HostView({
   children,
   eventThrough,
+  hoverRevealSelector,
   stopTapPropagation,
   onClick,
   onDoubleClick: _onDoubleClick,
@@ -27,6 +31,7 @@ export function HostView({
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly eventThrough?: boolean;
+  readonly hoverRevealSelector?: string;
   readonly stopTapPropagation?: boolean;
   readonly onClick?: (event: unknown) => void;
   readonly onDoubleClick?: (event: unknown) => void;
@@ -43,12 +48,18 @@ export function HostView({
       key: event.key,
     });
   };
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (event: MainThreadMouseEvent) => {
     "main thread";
+    if (hoverRevealSelector) {
+      event.currentTarget.querySelector(hoverRevealSelector)?.setStyleProperty("opacity", "1");
+    }
     if (onMouseEnter) runOnBackground(onMouseEnter)({});
   };
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (event: MainThreadMouseEvent) => {
     "main thread";
+    if (hoverRevealSelector) {
+      event.currentTarget.querySelector(hoverRevealSelector)?.setStyleProperty("opacity", "0");
+    }
     if (onMouseLeave) runOnBackground(onMouseLeave)({});
   };
   const handleMouseDown = (event: MainThreadMouseEvent) => {
@@ -64,12 +75,19 @@ export function HostView({
   return (
     <view
       {...props}
+      flatten={hoverRevealSelector ? false : undefined}
       event-through={eventThrough}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
-      {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
-      {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
-      {...(onMouseLeave ? { "main-thread:bindmouseleave": handleMouseLeave } : {})}
+      {...(onMouseEnter || hoverRevealSelector
+        ? { "main-thread:bindmouseenter": handleMouseEnter }
+        : {})}
+      {...(onMouseEnter || hoverRevealSelector
+        ? { "main-thread:bindmousemove": handleMouseEnter }
+        : {})}
+      {...(onMouseLeave || hoverRevealSelector
+        ? { "main-thread:bindmouseleave": handleMouseLeave }
+        : {})}
       bindmousemove={onMouseEnter}
       {...(stopTapPropagation ? { catchtap: onClick ?? ignoreTap } : { bindtap: onClick })}
       bindlongpress={onContextMenu}

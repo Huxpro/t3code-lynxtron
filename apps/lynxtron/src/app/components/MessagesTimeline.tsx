@@ -17,9 +17,11 @@ import {
   formatDuration,
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
   reduceTranscriptFollow,
+  resolveAssistantMessageCopyState,
   type MessagesTimelineRow,
   type TranscriptFollowState,
 } from "@t3tools/client-runtime/presentation/transcript";
+import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
 import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
 import type {
@@ -44,6 +46,9 @@ import { Icon } from "./Icon";
 import { InlineMarkdownRenderer, MarkdownRenderer } from "./MarkdownRenderer";
 import { shouldRenderBlockMarkdown } from "./markdownBlocks";
 import { uiActions } from "../state/uiState";
+import { clientCapabilities } from "../platform/clientCapabilities.lynx";
+import { useClientSettingsState } from "../state/prefsStore";
+import { deriveDisplayedUserMessageState } from "../../../../web/src/lib/terminalContext";
 import { LynxChangedFilesTree } from "./LynxChangedFilesTree";
 import {
   layoutWorkingLabel,
@@ -298,6 +303,10 @@ function LynxWorkingLabel({ createdAt }: { createdAt: string | null }) {
 function buildLynxTranscriptRowElements(
   cwd: string | undefined,
   latestTurnId: TurnId | null,
+  timestampFormat: Parameters<typeof formatShortTimestamp>[1],
+  hoveredMessageId: string | null,
+  copiedMessageId: string | null,
+  copyMessage: (messageId: string, text: string) => void,
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
   return {
     userBubbleClassName: ({ row }) => {
@@ -369,7 +378,32 @@ function buildLynxTranscriptRowElements(
         </view>
       );
     },
-    renderUserMeta: () => <view className="transcript-user-meta-spacer" />,
+    renderUserMeta: ({ row }) => {
+      const copyText = deriveDisplayedUserMessageState(row.message.text).copyText;
+      return (
+        <view
+          flatten={false}
+          className={`transcript-message-meta transcript-user-meta${
+            hoveredMessageId === row.message.id ? " transcript-message-meta--visible" : ""
+          }`}
+        >
+          <text className="transcript-message-meta__time">
+            {formatShortTimestamp(row.message.createdAt, timestampFormat)}
+          </text>
+          <view
+            className="transcript-message-meta__action"
+            aria-label="Copy link"
+            bindtap={() => copyMessage(row.message.id, copyText)}
+          >
+            <Icon
+              name={copiedMessageId === row.message.id ? "check" : "copy"}
+              size={14}
+              color="#818181"
+            />
+          </view>
+        </view>
+      );
+    },
     renderAssistantMarkdown: ({ row }) =>
       row.message.text && row.message.text.trim().length > 0 ? (
         shouldRenderBlockMarkdown(row.message.text) ? (
@@ -380,19 +414,45 @@ function buildLynxTranscriptRowElements(
       ) : row.message.streaming ? (
         <text className="lynx-host-text text-sm text-muted-foreground/60">Thinking…</text>
       ) : null,
-    renderAssistantMeta: ({ row }) =>
-      row.showAssistantMeta ? (
+    renderAssistantMeta: ({ row }) => {
+      const copyState = resolveAssistantMessageCopyState({
+        text: row.message.text,
+        showCopyButton: row.showAssistantCopyButton,
+        streaming: row.assistantCopyStreaming,
+      });
+      return row.showAssistantMeta ? (
         <view
-          className={`transcript-assistant-meta-spacer${
-            row.message.text.includes("```") ? " transcript-assistant-meta-spacer--code" : ""
+          flatten={false}
+          className={`transcript-message-meta transcript-assistant-meta${
+            row.message.text.includes("```") ? " transcript-assistant-meta--code" : ""
           }${
             row.assistantTurnDiffSummary?.files.length &&
             row.assistantTurnDiffSummary.turnId === latestTurnId
-              ? " transcript-assistant-meta-spacer--checkpoint"
+              ? " transcript-assistant-meta--checkpoint"
               : ""
-          }`}
-        />
-      ) : null,
+          }${hoveredMessageId === row.message.id ? " transcript-message-meta--visible" : ""}`}
+        >
+          {copyState.visible && copyState.text ? (
+            <view
+              className="transcript-message-meta__action"
+              aria-label="Copy link"
+              bindtap={() => copyMessage(row.message.id, copyState.text ?? "")}
+            >
+              <Icon
+                name={copiedMessageId === row.message.id ? "check" : "copy"}
+                size={14}
+                color="#818181"
+              />
+            </view>
+          ) : null}
+          {!row.message.streaming ? (
+            <text className="transcript-message-meta__time">
+              {formatShortTimestamp(row.message.updatedAt, timestampFormat)}
+            </text>
+          ) : null}
+        </view>
+      ) : null;
+    },
     renderCheckpointCard: ({ row }) =>
       row.assistantTurnDiffSummary ? (
         <LynxTurnDiffCard
@@ -488,6 +548,9 @@ export function MessagesTimeline({
   activeTurnId = null,
   checkpoints = [],
 }: MessagesTimelineProps) {
+  const [clientSettings] = useClientSettingsState();
+  const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
   const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
   const [followState, setFollowState] = useState<TranscriptFollowState>(
@@ -500,9 +563,32 @@ export function MessagesTimeline({
   const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
 
   const isWorking = isSessionWorking(sessionStatus);
+  const copyMessage = useCallback((messageId: string, text: string) => {
+    void clientCapabilities.clipboard.writeText(text).then(() => {
+      setCopiedMessageId(messageId);
+      setTimeout(() => {
+        setCopiedMessageId((current) => (current === messageId ? null : current));
+      }, 1_000);
+    });
+  }, []);
   const rowElements = useMemo(
-    () => buildLynxTranscriptRowElements(cwd, latestTurn?.turnId ?? null),
-    [cwd, latestTurn?.turnId],
+    () =>
+      buildLynxTranscriptRowElements(
+        cwd,
+        latestTurn?.turnId ?? null,
+        clientSettings.timestampFormat,
+        hoveredMessageId,
+        copiedMessageId,
+        copyMessage,
+      ),
+    [
+      clientSettings.timestampFormat,
+      copiedMessageId,
+      copyMessage,
+      cwd,
+      hoveredMessageId,
+      latestTurn?.turnId,
+    ],
   );
 
   const rows = useMemo<TimelineRow[]>(() => {
@@ -749,6 +835,11 @@ export function MessagesTimeline({
                 elements={rowElements}
                 onToggleTurnFold={handleToggleTurn}
                 onToggleWorkGroup={handleToggleWorkGroup}
+                onMessageHoverChange={(messageId, hovered) => {
+                  setHoveredMessageId((current) =>
+                    hovered ? messageId : current === messageId ? null : current,
+                  );
+                }}
               />
             </view>
           </list-item>

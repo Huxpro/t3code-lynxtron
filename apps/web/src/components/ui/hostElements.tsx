@@ -3,11 +3,13 @@ import type * as React from "react";
 export function HostView({
   children,
   eventThrough: _eventThrough,
+  hoverRevealSelector: _hoverRevealSelector,
   stopTapPropagation,
   onClick,
   ...props
 }: React.ComponentProps<"div"> & {
   readonly eventThrough?: boolean;
+  readonly hoverRevealSelector?: string;
   readonly stopTapPropagation?: boolean;
 }) {
   return (

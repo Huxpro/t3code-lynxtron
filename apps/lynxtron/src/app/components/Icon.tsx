@@ -124,6 +124,7 @@ export type IconName =
   | "trash-2"
   | "message-square"
   | "check"
+  | "copy"
   | "circle-alert"
   | "eye"
   | "globe"

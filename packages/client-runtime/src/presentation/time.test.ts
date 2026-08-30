@@ -3,6 +3,9 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   formatElapsedDurationLabel,
   formatExpiresInLabel,
+  formatShortTimestamp,
+  formatTimestamp,
+  getTimestampFormatOptions,
   formatRelativeTimeLabel,
   formatRelativeTimeUntilLabel,
   getRelativeTimeState,
@@ -11,6 +14,16 @@ import {
 const NOW = Date.parse("2026-04-07T12:00:00.000Z");
 
 describe("shared time presentation", () => {
+  it("formats renderer-neutral chat timestamps", () => {
+    expect(getTimestampFormatOptions("12-hour", false)).toMatchObject({ hour12: true });
+    expect(getTimestampFormatOptions("24-hour", true)).toMatchObject({
+      hour12: false,
+      second: "2-digit",
+    });
+    expect(formatShortTimestamp("not-a-date", "locale")).toBe("");
+    expect(formatTimestamp("not-a-date", "locale")).toBe("");
+  });
+
   it("formats relative history labels used by Web and Lynx", () => {
     expect(formatRelativeTimeLabel("2026-04-07T12:00:00.000Z", NOW)).toBe("just now");
     expect(formatRelativeTimeLabel("2026-04-07T11:45:00.000Z", NOW)).toBe("15m ago");
