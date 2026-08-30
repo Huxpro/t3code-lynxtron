@@ -20195,6 +20195,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-scope-open-current-typography",
+      "observedAt": "2026-08-29T17:19:00-07:00",
+      "commit": "a2096ea06",
+      "codeState": "commit",
+      "label": "Project Scope current typography",
+      "narrative": "A fresh exact-head dark 1280 by 820 Browser run uses a disposable two-project snapshot created from a read-only seed plus the real project add CLI, explicitly selects the canonical idle thread, and opens the project-scope overlay in both renderers. The accepted frame exposes All projects, Scope-B, and t3code-lynxtron with matching route, thread, theme, viewport, popup state, and zero renderer errors. Trigger and project-row typography match at 14px weight 500 and 20px line height. Two earlier attempts are excluded: the first had only one project, and the second left the popup closed despite a permissive aggregate gate.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The explicit two-project fixture and open-overlay postcondition close only the Project Scope typography evidence gap without changing product code, weights, thresholds, scope, material, or interaction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-08-29/fidelity/project-scope-open-typography-current.json",
+          "classification": "tracked-current",
+          "sha256": "e6c181053e9d83335870e6137f0adbab336f4a84d2ce1706c606dc0faf033899"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-scope-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-project-scope-computed-typography",
+              "source": "The trigger and visible Scope-B and t3code-lynxtron rows match 14px weight 500 and 20px line height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-project-scope-shared-runtime",
+              "source": "Same disposable two-project snapshot, selected thread, dark theme, viewport, current bundles, explicitly open overlay, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-08-29T17:19:00-07:00",
+  "stateId": "project-scope-open",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "project-scope-open",
+    "theme": "dark",
+    "overlay": "project-scope"
+  },
+  "identity": {
+    "commit": "a2096ea06903c268cb164e61471512d8205ed099",
+    "seedSource": "disposable two-project snapshot created from a read-only source plus the real project add CLI",
+    "selectedThread": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "sameState": true,
+    "sameTheme": true,
+    "sameDimensions": true,
+    "sameThread": true,
+    "sharedServer": true
+  },
+  "result": {
+    "status": "pass",
+    "triggerExpanded": true,
+    "rowLabels": ["All projects", "Scope-B", "t3code-lynxtron"],
+    "rendererErrors": 0
+  },
+  "typography": {
+    "trigger": {
+      "fontSize": 14,
+      "fontWeight": 500,
+      "lineHeight": 20
+    },
+    "projectRows": {
+      "fontSize": 14,
+      "fontWeight": 500,
+      "lineHeight": 20,
+      "labels": ["Scope-B", "t3code-lynxtron"]
+    }
+  },
+  "artifacts": {
+    "report": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/project-scope-open-typography-current/workbench-report.json",
+      "sha256": "c4e861d306bffc0d5b85823b0750d016dd329d5e5c502565a8f52219ddeb52f0"
+    },
+    "webAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/project-scope-open-typography-current/1280x820/web-assertions.json",
+      "sha256": "ad1d711b0324ee6b1bc5abecbdb27cad55cb4684066e64e679c7f8bc52a581e1"
+    },
+    "lynxAssertions": {
+      "path": "apps/lynxtron/evidence/2026-08-29/fidelity/project-scope-open-typography-current/1280x820/lynx-assertions.json",
+      "sha256": "8d48f4f3ec4bdb6b4db6f5f0526d12a2157d2622e2cc2096a8ae4f124e54d589"
+    }
+  },
+  "classification": {
+    "missingCoverageClosed": [
+      "Current exact-head Project Scope trigger and project-row typography replace the previously unknown Lynx typography cell."
+    ],
+    "harnessLossClosed": [
+      "The first run used the default one-project seed and the second omitted the explicit overlay; accepted evidence uses a disposable two-project seed, an explicit thread identity, and an explicitly open project-scope overlay."
+    ],
+    "acceptedRenderingNoise": [
+      "Trigger and row text use identical 14px weight 500 and 20px line-height metrics; popup placement retains the already accepted one-by-two-pixel host offset."
+    ],
+    "evidenceBoundary": "No new selection or dismissal interaction claim is added; existing Browser and Native interaction evidence remains authoritative.",
+    "policy": "No denominator, state weight, threshold, scope, or bad-sample filter changed, and no screenshot is retained."
+  }
+}
