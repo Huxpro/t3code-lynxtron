@@ -1020,6 +1020,12 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("resolveWorkingStartedAt(thread)");
     expect(sidebarSource).toContain("formatWorkingDurationLabel(Date.now() - startedMs)");
     expect(sidebarSource).toContain("workingDuration: <LynxWorkingDuration thread={thread} />");
+    expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-actions {");
+    expect(overrides).toContain("background-color: var(--sidebar-row-hover);");
+    expect(overrides).toContain(".sidebar-v2-row-card--active .sidebar-v2-row-actions {");
+    expect(overrides).toContain(
+      ".topbar__proj-name {\n  color: var(--header-project-foreground);\n  width: auto;",
+    );
     expect(sidebarSource).toContain("settlementSupported={settlementSupported}");
     expect(sidebarSource).toContain('"data-sidebar-thread-action-trigger": thread.id');
     expect(sidebarSource).toContain('"data-sidebar-empty-thread-delete": thread.id');
