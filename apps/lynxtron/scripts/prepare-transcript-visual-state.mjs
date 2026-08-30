@@ -121,6 +121,7 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
     }
     const modelSelection = options.modelSelection ?? project.defaultModelSelection ?? null;
     if (modelSelection) {
+      await connector.refreshProviders({ instanceId: modelSelection.instanceId });
       await connector.setModelSelection({ selection: modelSelection });
     }
 
@@ -147,8 +148,8 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
       threadId,
       (payload) => {
         const state = payload?.latestTurn?.state;
-        if (settleMode === "failed" && payload?.sessionStatus === "error" && state === "error") {
-          return payload;
+        if (settleMode === "failed") {
+          return payload?.sessionStatus === "error" && state === "error" ? payload : null;
         }
         if (payload?.sessionStatus === "error") {
           return { errorState: "session-error", payload };

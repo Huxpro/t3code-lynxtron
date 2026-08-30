@@ -30,6 +30,10 @@ describe("transcript visual-state preparation", () => {
   });
 
   it("accepts an explicit model selection for deterministic provider setup", () => {
+    assert.include(
+      source,
+      "await connector.refreshProviders({ instanceId: modelSelection.instanceId })",
+    );
     assert.include(source, "await connector.setModelSelection({ selection: modelSelection })");
     assert.include(source, 'argumentValue("--instance-id")');
     assert.include(source, 'argumentValue("--model")');
@@ -37,8 +41,11 @@ describe("transcript visual-state preparation", () => {
 
   it("admits failed fixtures only with matching turn, session, and persisted error state", () => {
     assert.include(source, 'settleMode === "failed"');
-    assert.include(source, 'payload?.sessionStatus === "error"');
-    assert.include(source, 'state === "error"');
+    assert.include(
+      source,
+      'return payload?.sessionStatus === "error" && state === "error" ? payload : null;',
+    );
+    assert.include(source, 'if (payload?.sessionStatus === "error")');
     assert.include(source, "SELECT last_error AS lastError");
     assert.include(source, "Failed transcript fixture has no persisted session error.");
   });
