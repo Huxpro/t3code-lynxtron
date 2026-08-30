@@ -1022,6 +1022,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".topbar__proj-name {\n  color: var(--header-project-foreground);\n  width: auto;",
     );
+    expect(overrides).toContain(
+      ".settings-topbar {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;",
+    );
     expect(sidebarSource).toContain("settlementSupported={settlementSupported}");
     expect(sidebarSource).toContain('"data-sidebar-thread-action-trigger": thread.id');
     expect(sidebarSource).toContain('"data-sidebar-empty-thread-delete": thread.id');

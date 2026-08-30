@@ -5047,9 +5047,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   height: 52px;
   flex-shrink: 0;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 .settings-topbar__title {
   color: var(--muted-foreground-70);
