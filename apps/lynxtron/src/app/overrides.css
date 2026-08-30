@@ -1440,7 +1440,26 @@
   transform: translateX(-0.5px);
 }
 .lynx-sidebar-wordmark {
+  position: relative;
+  width: 17px;
+  height: 10px;
   opacity: 0.96;
+}
+.lynx-sidebar-wordmark__dark,
+.lynx-sidebar-wordmark__light {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.theme-light .lynx-sidebar-wordmark__dark,
+.theme-dark .lynx-sidebar-wordmark__light,
+.lynx-sidebar-wordmark--backdrop .lynx-sidebar-wordmark__light {
+  opacity: 0;
+}
+.theme-light .lynx-sidebar-wordmark__light,
+.theme-dark .lynx-sidebar-wordmark__dark,
+.lynx-sidebar-wordmark--backdrop .lynx-sidebar-wordmark__dark {
+  opacity: 1;
 }
 
 /* Native reconstruction of the Web stage art. It fills the current sidebar

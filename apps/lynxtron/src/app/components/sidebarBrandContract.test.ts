@@ -15,8 +15,9 @@ const iconBuildSource = readFileSync(
 
 describe("sidebar brand contract", () => {
   it("uses the tested raster icon path instead of Lynx external SVG rendering", () => {
-    expect(source).toContain('name="t3-wordmark"');
-    expect(source).toContain('themeOverride={_onBackdrop ? "dark" : "light"}');
+    expect(source.match(/name="t3-wordmark"/gu)).toHaveLength(2);
+    expect(source).toContain('themeOverride="dark"');
+    expect(source).toContain('themeOverride="light"');
     expect(source).not.toContain("?external");
     expect(iconSource).toContain('if (name === "t3-wordmark")');
     expect(iconBuildSource).toContain('lightColor: "#27272a"');
