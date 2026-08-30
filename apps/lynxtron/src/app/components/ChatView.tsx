@@ -860,6 +860,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         onSend={handleSend}
         onStop={interrupt}
         onModelTap={providerAvailable ? uiActions.toggleModelPicker : undefined}
+        onModelPickerClose={uiActions.closeModelPicker}
         modelPicker={
           providerAvailable && modelPickerOpen ? (
             <ModelPicker

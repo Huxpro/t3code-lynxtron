@@ -84,6 +84,7 @@ interface ComposerProps {
   onSend: (text: string) => Promise<boolean>;
   onStop: () => void;
   onModelTap?: () => void;
+  onModelPickerClose?: () => void;
   modelPicker?: ReactNode;
   onSelectModelOption?: (descriptorId: string, value: string | boolean) => void;
   onRuntimeModeChange: (mode: RuntimeMode) => void;
@@ -133,6 +134,7 @@ export function Composer({
   onSend,
   onStop,
   onModelTap,
+  onModelPickerClose,
   modelPicker,
   onSelectModelOption,
   onRuntimeModeChange,
@@ -141,14 +143,28 @@ export function Composer({
   onStartFromOriginChange,
 }: ComposerProps) {
   const [value, setValue] = useState("");
-  const [runtimeModeMenuOpen, setRuntimeModeMenuOpen] = useState(false);
-  const [modelOptionMenuOpen, setModelOptionMenuOpen] = useState(false);
-  const [compactControlsMenuOpen, setCompactControlsMenuOpen] = useState(false);
+  const [openComposerMenu, setOpenComposerMenu] = useState<
+    "model-option" | "runtime" | "compact-controls" | "workspace" | null
+  >(null);
   const [compactControlsMeasuredContentHeight, setCompactControlsMeasuredContentHeight] = useState<
     number | null
   >(null);
-  const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
   const [editorRevision, setEditorRevision] = useState(0);
+  const runtimeModeMenuOpen = openComposerMenu === "runtime";
+  const modelOptionMenuOpen = openComposerMenu === "model-option";
+  const compactControlsMenuOpen = openComposerMenu === "compact-controls";
+  const workspaceMenuOpen = openComposerMenu === "workspace";
+  const toggleComposerMenu = useCallback(
+    (menu: Exclude<typeof openComposerMenu, null>) => {
+      if (modelPicker != null) onModelPickerClose?.();
+      setOpenComposerMenu((open) => (open === menu ? null : menu));
+    },
+    [modelPicker, onModelPickerClose],
+  );
+  const handleModelPickerTap = useCallback(() => {
+    setOpenComposerMenu(null);
+    onModelTap?.();
+  }, [onModelTap]);
   const activeBranch = branch?.trim() || null;
   const showBranchContextMenu = useCallback(async () => {
     if (!activeBranch) return;
@@ -214,7 +230,7 @@ export function Composer({
         "open" in value &&
         typeof value.open === "boolean"
       ) {
-        setWorkspaceMenuOpen(value.open);
+        setOpenComposerMenu(value.open ? "workspace" : null);
       }
     });
   }, [viewport.testResize]);
@@ -297,6 +313,19 @@ export function Composer({
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
+  useEffect(() => {
+    if (modelPicker != null) {
+      setOpenComposerMenu(null);
+      return;
+    }
+    if (compactFooter) {
+      if (openComposerMenu === "model-option" || openComposerMenu === "runtime") {
+        setOpenComposerMenu(null);
+      }
+      return;
+    }
+    if (openComposerMenu === "compact-controls") setOpenComposerMenu(null);
+  }, [compactFooter, modelPicker, openComposerMenu]);
   const compactControlsAlign = resolveCompactComposerControlsAlign(availableWidth);
   const compactControlsEstimatedContentHeight = compactControlsContentHeight(
     modelOptionSections,
@@ -500,7 +529,7 @@ export function Composer({
               approvalActions ? null : (
                 <ComposerToolbarRow
                   overlayOpen={
-                    modelPicker !== undefined ||
+                    modelPicker != null ||
                     modelOptionMenuOpen ||
                     runtimeModeMenuOpen ||
                     compactControlsMenuOpen
@@ -534,7 +563,7 @@ export function Composer({
                               className="pill__chevron-img"
                             />
                           }
-                          onClick={onModelTap}
+                          onClick={handleModelPickerTap}
                         />
                         {modelPicker}
                       </view>
@@ -554,7 +583,7 @@ export function Composer({
                         <view
                           className="composer-compact-controls-trigger"
                           aria-label="More composer controls"
-                          bindtap={() => setCompactControlsMenuOpen((open) => !open)}
+                          bindtap={() => toggleComposerMenu("compact-controls")}
                         >
                           <Icon name="ellipsis" size={16} color="#818181" />
                         </view>
@@ -620,7 +649,7 @@ export function Composer({
                                             aria-checked={item.selected ? "true" : "false"}
                                             bindtap={() => {
                                               onSelectModelOption?.(section.id, item.value);
-                                              setCompactControlsMenuOpen(false);
+                                              setOpenComposerMenu(null);
                                             }}
                                           >
                                             <text className="composer-compact-controls-menu__label">
@@ -655,7 +684,7 @@ export function Composer({
                                           aria-checked={interactionMode === mode ? "true" : "false"}
                                           bindtap={() => {
                                             if (interactionMode !== mode) onInteractionModeTap();
-                                            setCompactControlsMenuOpen(false);
+                                            setOpenComposerMenu(null);
                                           }}
                                         >
                                           <text className="composer-compact-controls-menu__label">
@@ -680,7 +709,7 @@ export function Composer({
                                       aria-checked={option.mode === runtimeMode ? "true" : "false"}
                                       bindtap={() => {
                                         onRuntimeModeChange(option.mode);
-                                        setCompactControlsMenuOpen(false);
+                                        setOpenComposerMenu(null);
                                       }}
                                     >
                                       <text className="composer-compact-controls-menu__label">
@@ -693,7 +722,7 @@ export function Composer({
                             </view>
                             <view
                               className="composer-compact-controls-dismiss"
-                              bindtap={() => setCompactControlsMenuOpen(false)}
+                              bindtap={() => setOpenComposerMenu(null)}
                             />
                           </>
                         ) : null}
@@ -719,9 +748,7 @@ export function Composer({
                             />
                           }
                           onClick={() => {
-                            setRuntimeModeMenuOpen(false);
-                            setCompactControlsMenuOpen(false);
-                            setModelOptionMenuOpen((open) => !open);
+                            toggleComposerMenu("model-option");
                           }}
                         />
                         {modelOptionMenuOpen ? (
@@ -759,7 +786,7 @@ export function Composer({
                                         data-composer-model-option-value-type={typeof item.value}
                                         bindtap={() => {
                                           onSelectModelOption?.(section.id, item.value);
-                                          setModelOptionMenuOpen(false);
+                                          setOpenComposerMenu(null);
                                         }}
                                       >
                                         <view className="composer-model-option-menu__copy">
@@ -784,7 +811,7 @@ export function Composer({
                             <view
                               className="composer-model-option-menu-dismiss-layer"
                               aria-label="Dismiss model options"
-                              bindtap={() => setModelOptionMenuOpen(false)}
+                              bindtap={() => setOpenComposerMenu(null)}
                             />
                           </>
                         ) : null}
@@ -817,9 +844,7 @@ export function Composer({
                             />
                           }
                           onClick={() => {
-                            setModelOptionMenuOpen(false);
-                            setCompactControlsMenuOpen(false);
-                            setRuntimeModeMenuOpen((open) => !open);
+                            toggleComposerMenu("runtime");
                           }}
                         />
                         {runtimeModeMenuOpen ? (
@@ -841,7 +866,7 @@ export function Composer({
                                   aria-checked={option.mode === runtimeMode ? "true" : "false"}
                                   bindtap={() => {
                                     onRuntimeModeChange(option.mode);
-                                    setRuntimeModeMenuOpen(false);
+                                    setOpenComposerMenu(null);
                                   }}
                                 >
                                   <view className="composer-runtime-menu__icon">
@@ -865,7 +890,7 @@ export function Composer({
                             <view
                               className="composer-runtime-menu-dismiss-layer"
                               aria-label="Dismiss runtime mode"
-                              bindtap={() => setRuntimeModeMenuOpen(false)}
+                              bindtap={() => setOpenComposerMenu(null)}
                             />
                           </>
                         ) : null}
@@ -950,9 +975,7 @@ export function Composer({
                 className="composer-context-control composer-context-control--checkout"
                 aria-label="Workspace"
                 aria-disabled={workspaceModeLocked ? "true" : "false"}
-                bindtap={
-                  workspaceModeLocked ? undefined : () => setWorkspaceMenuOpen((open) => !open)
-                }
+                bindtap={workspaceModeLocked ? undefined : () => toggleComposerMenu("workspace")}
               >
                 <Icon
                   name={workspaceMode === "worktree" ? "git-branch" : "folder"}
@@ -994,7 +1017,7 @@ export function Composer({
                         } composer-workspace-menu__item--local`}
                         bindtap={() => {
                           onWorkspaceModeChange("local");
-                          setWorkspaceMenuOpen(false);
+                          setOpenComposerMenu(null);
                         }}
                       >
                         <Icon name="folder" size={14} color="#818181" />
@@ -1010,7 +1033,7 @@ export function Composer({
                         } composer-workspace-menu__item--worktree`}
                         bindtap={() => {
                           onWorkspaceModeChange("worktree");
-                          setWorkspaceMenuOpen(false);
+                          setOpenComposerMenu(null);
                         }}
                       >
                         <Icon name="git-branch" size={14} color="#818181" />
@@ -1045,7 +1068,7 @@ export function Composer({
                   </view>
                   <view
                     className="composer-workspace-menu-dismiss"
-                    bindtap={() => setWorkspaceMenuOpen(false)}
+                    bindtap={() => setOpenComposerMenu(null)}
                   />
                 </>
               ) : null}

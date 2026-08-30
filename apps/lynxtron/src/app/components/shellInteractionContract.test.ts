@@ -238,11 +238,17 @@ describe("desktop shell interaction contract", () => {
 
     expect(source).toContain('className="composer-runtime-menu-dismiss-layer"');
     expect(source).toContain('aria-label="Dismiss runtime mode"');
-    expect(source).toContain("bindtap={() => setRuntimeModeMenuOpen(false)}");
+    expect(source).toContain("bindtap={() => setOpenComposerMenu(null)}");
+    expect(source).toContain("const [openComposerMenu, setOpenComposerMenu]");
+    expect(source).toContain('toggleComposerMenu("runtime")');
+    expect(source).toContain('toggleComposerMenu("model-option")');
+    expect(source).toContain('toggleComposerMenu("compact-controls")');
+    expect(source).toContain('toggleComposerMenu("workspace")');
+    expect(source).toContain("if (modelPicker != null) onModelPickerClose?.()");
     expect(source).toContain("modelOptionMenuOpen ||");
     expect(source).toContain("runtimeModeMenuOpen ||");
     expect(source).toContain("compactControlsMenuOpen");
-    expect(source).toContain("modelPicker !== undefined");
+    expect(source).toContain("modelPicker != null");
     expect(overrides).toContain(".composer-runtime-menu-dismiss-layer {");
     expect(overrides).toContain(".composer-runtime-control-wrap {");
   });
@@ -1590,7 +1596,7 @@ describe("desktop shell interaction contract", () => {
       composer.indexOf('className="composer-workspace-menu-dismiss"'),
     );
     expect(composer).toMatch(
-      /composer-workspace-menu__item--worktree[^]*onWorkspaceModeChange\("worktree"\);[^]*setWorkspaceMenuOpen\(false\);/,
+      /composer-workspace-menu__item--worktree[^]*onWorkspaceModeChange\("worktree"\);[^]*setOpenComposerMenu\(null\);/,
     );
     expect(workspaceBlock).toContain("position: absolute;");
     expect(workspaceBlock).toContain("left: 0;");
