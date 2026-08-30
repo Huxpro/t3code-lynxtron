@@ -855,6 +855,19 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "finalSettingsNavigationReady");
     assert.include(source, '"model-picker-empty": "model-picker"');
     assert.include(source, '"model-picker-selected": "model-picker"');
+    assert.include(source, '"settings-model-picker": "model-picker"');
+    assert.include(source, '"settings-model-picker": "settings-general"');
+    assert.include(source, '"settings-model-picker-mutation": "settings-general"');
+    assert.include(source, '#text-generation-model [data-chat-provider-model-picker=\"true\"]');
+    assert.include(
+      source,
+      'stateId === "settings-model-picker" ||\n        state?.web?.productState?.selectedProject === expectProject',
+    );
+    assert.include(source, 'stateId !== "settings-general" && stateId !== "settings-model-picker"');
+    assert.include(source, "[data-settings-model-picker-trigger]");
+    assert.include(source, "async function runSettingsModelMutationFlow");
+    assert.include(source, "finalSettingsModelMutationReady");
+    assert.include(source, '"lynx-cdp-pointer+shared-server"');
     assert.include(source, '"model-picker-empty": "__t3_no_models__"');
     assert.include(source, '"quick-switch-default": "quick-switch"');
     assert.include(source, '"quick-switch-query": "quick-switch"');

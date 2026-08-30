@@ -5082,6 +5082,23 @@
   font-family: var(--font-sans);
   margin-left: 4px;
 }
+.settings-model-picker-anchor {
+  position: relative;
+}
+.settings-model-picker-overlay {
+  position: absolute;
+  right: 0;
+  top: 38px;
+  width: 360px;
+  height: 346px;
+  z-index: 140;
+}
+.settings-model-picker-overlay .model-picker-panel {
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: auto;
+}
 .settings-restore-overlay {
   position: absolute;
   left: 0;

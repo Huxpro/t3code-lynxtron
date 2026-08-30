@@ -3,12 +3,18 @@ import {
   GeneralSettingsValueButton,
   SettingsRow,
 } from "./generalSettingsHost";
-import type { BackgroundActivityProfile } from "@t3tools/contracts";
-import type { BackgroundActivityProfileOption } from "./generalSettingsStore";
+import { useEffect, useState } from "@lynx-js/react";
+import type { BackgroundActivityProfile, ProviderInstanceId } from "@t3tools/contracts";
+import { createModelSelection } from "@t3tools/shared/model";
+import { ModelPicker } from "../../../../lynxtron/src/app/components/ModelPicker";
+import { useT3ClientState } from "../../../../lynxtron/src/app/state/t3Client";
+import {
+  getGeneralSettingsSurfaceActions,
+  type BackgroundActivityProfileOption,
+} from "./generalSettingsStore";
 
-export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS =
-  "Text generation model selection is not yet available in Lynxtron.";
-export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = true;
+export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_STATUS = undefined;
+export const GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = false;
 
 export function GeneralSettingsAboutContent({ versionLabel }: { readonly versionLabel: string }) {
   return (
@@ -74,11 +80,54 @@ export function GeneralSettingsDiagnosticsControl({ onOpen }: { onOpen: () => vo
 }
 
 export function GeneralSettingsTextGenerationModelControl({ label }: { label: string }) {
+  const { models, providerEntries, providers, settings } = useT3ClientState();
+  const [open, setOpen] = useState(false);
+  const [activeProvider, setActiveProvider] = useState<ProviderInstanceId | "favorites">(
+    settings?.textGenerationModelSelection?.instanceId ?? "favorites",
+  );
+  const selection = settings?.textGenerationModelSelection;
+  useEffect(() => {
+    if (!open && selection?.instanceId) setActiveProvider(selection.instanceId);
+  }, [open, selection?.instanceId]);
+  const selectedModel = models.find(
+    (model) => model.instanceId === selection?.instanceId && model.slug === selection?.model,
+  );
   return (
-    <GeneralSettingsValueButton
-      ariaLabel="Text generation model selection unavailable"
-      disabled
-      label={label}
-    />
+    <view className="settings-model-picker-anchor">
+      <view
+        aria-label="Text generation model"
+        data-chat-provider-model-picker="true"
+        data-floating-anchor="settings-model-picker"
+        data-settings-model-picker-trigger
+        className="select-box select-box--interactive"
+        bindtap={() => setOpen((current) => !current)}
+      >
+        <text className="select-box__label" text-maxline="1">
+          {selectedModel?.name ?? label}
+        </text>
+        <text className="select-box__chevron">⌄</text>
+      </view>
+      {open ? (
+        <view className="settings-model-picker-overlay" data-settings-model-picker-overlay>
+          <ModelPicker
+            models={models}
+            providers={providerEntries}
+            providerSnapshots={providers}
+            selectedModel={selectedModel}
+            currentModelSelection={selection}
+            currentProviderInstanceId={selection?.instanceId ?? null}
+            activeProvider={activeProvider}
+            onActiveProviderChange={setActiveProvider}
+            onSelect={(model) => {
+              getGeneralSettingsSurfaceActions().setTextGenerationModelSelection(
+                createModelSelection(model.instanceId, model.slug),
+              );
+              setOpen(false);
+            }}
+            onClose={() => setOpen(false)}
+          />
+        </view>
+      ) : null}
+    </view>
   );
 }

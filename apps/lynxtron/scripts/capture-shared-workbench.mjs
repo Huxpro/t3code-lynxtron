@@ -84,6 +84,7 @@ const defaultOverlayByStateId = {
   "diff-scope-menu": "diff-scope-menu",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
+  "settings-model-picker": "model-picker",
   "project-action-dialog": "project-action-dialog",
   "right-panel-add-menu": "right-panel-add-menu",
   "workspace-menu-open": "workspace-menu",
@@ -176,6 +177,7 @@ const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
 const isBetaMutationState = stateId === "settings-beta-mutation";
 const isBackgroundActivityMutationState = stateId === "settings-background-activity-mutation";
+const isSettingsModelMutationState = stateId === "settings-model-picker-mutation";
 const isConnectionsMutationState = stateId === "settings-connections-mutation-browser";
 const isAddProviderDialogState =
   stateId === "settings-providers-add-dialog" || stateId === "settings-providers-add-dialog-light";
@@ -762,6 +764,91 @@ function backgroundActivityMutationStateMatches(state, label) {
   });
 }
 
+function settingsModelMutationStateMatches(state, label) {
+  if (!isSettingsModelMutationState) return true;
+  return [state?.web, state?.lynx].every((client) => {
+    const row = client?.settingsMetrics?.rows?.find(
+      (candidate) => candidate.id === "text-generation-model",
+    );
+    return row?.controlText?.startsWith(label) === true;
+  });
+}
+
+async function clickLynxSettingsModelTarget(cdp, sessionId, selector) {
+  const point = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('lynx-pane');
+      const root = frame?.contentWindow?.document
+        ?.getElementById('t3-lynx-preview')?.shadowRoot;
+      const target = root?.querySelector(${JSON.stringify(selector)});
+      if (!frame || !target) return null;
+      target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+      };
+    })()`,
+  );
+  if (!point) return false;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return true;
+}
+
+async function runSettingsModelMutationFlow(cdp, sessionId) {
+  const timeline = [];
+  let state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => settingsModelMutationStateMatches(next, "GPT-5.6-Luna"),
+    5_000,
+    "Text generation model initial selection",
+  );
+  timeline.push({ step: "initial", model: "GPT-5.6-Luna" });
+  for (const target of [
+    { key: "codex:gpt-5.4-mini", label: "GPT-5.4-Mini", step: "cheap-model" },
+    { key: "codex:gpt-5.6-luna", label: "GPT-5.6-Luna", step: "restored" },
+  ]) {
+    if (
+      !(await clickLynxSettingsModelTarget(
+        cdp,
+        sessionId,
+        "#text-generation-model [data-settings-model-picker-trigger]",
+      ))
+    ) {
+      throw new Error("Missing Lynx text generation model trigger");
+    }
+    await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => next?.lynx?.productState?.overlay === "model-picker",
+      5_000,
+      `Text generation model picker open for ${target.label}`,
+    );
+    if (
+      !(await clickLynxSettingsModelTarget(
+        cdp,
+        sessionId,
+        `[data-model-picker-key=${JSON.stringify(target.key)}]`,
+      ))
+    ) {
+      throw new Error(`Missing Lynx model row ${target.key}`);
+    }
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => settingsModelMutationStateMatches(next, target.label),
+      5_000,
+      `Text generation model ${target.label} projection`,
+    );
+    timeline.push({ step: target.step, model: target.label });
+  }
+  return { state, timeline };
+}
+
 async function runBackgroundActivityMutationFlow(cdp, sessionId) {
   const timeline = [];
   let state = await waitForWorkbenchState(
@@ -999,7 +1086,7 @@ function settingsNavigationStateMatches(state) {
 }
 
 function generalSettingsContentMatches(webMetrics, lynxMetrics) {
-  if (stateId !== "settings-general") return true;
+  if (stateId !== "settings-general" && stateId !== "settings-model-picker") return true;
   const webRowIds = webMetrics?.rowIds ?? [];
   const lynxRowIds = lynxMetrics?.rowIds ?? [];
   return (
@@ -5600,6 +5687,8 @@ async function captureCell({
     "composer-disabled": "existing-thread",
     "workspace-menu-open": "existing-thread",
     "settings-general": "settings-general",
+    "settings-model-picker": "settings-general",
+    "settings-model-picker-mutation": "settings-general",
     "settings-appearance": "settings-general",
     "settings-keybindings": "settings-general",
     "settings-providers": "settings-general",
@@ -5659,6 +5748,8 @@ async function captureCell({
   let webSettingsInputChannel = webRoute === "/settings/general" ? "pending" : "not-required";
   let webDraftLandingStablePolls = webRoute === "/settings/general" ? 0 : 3;
   let webOverlayInputSent = false;
+  let webSettingsModelTriggerScrolled = stateId !== "settings-model-picker";
+  let webSettingsModelTriggerDiagnostics = null;
   let webOverlayWaitPolls = 0;
   let webProjectActionMenuOpened = false;
   let webProjectActionTriggerDiagnostics = null;
@@ -5708,6 +5799,10 @@ async function captureCell({
     ? "waiting-settings"
     : "not-required";
   const backgroundActivityMutationTimeline = [];
+  let settingsModelMutationStage = isSettingsModelMutationState
+    ? "waiting-settings"
+    : "not-required";
+  const settingsModelMutationTimeline = [];
   let connectionsMutationStage = isConnectionsMutationState ? "waiting-settings" : "not-required";
   const connectionsMutationTimeline = [];
   let settingsAsyncReadyPolls =
@@ -7066,13 +7161,59 @@ async function captureCell({
       !webOverlayInputSent &&
       webProviderNotificationCleared &&
       state?.web?.connected === true &&
-      state?.web?.productState?.selectedProject === expectProject &&
+      (stateId === "settings-model-picker" ||
+        state?.web?.productState?.selectedProject === expectProject) &&
       (!["workspace-menu", "compact-controls", "right-panel-add-menu", "diff-scope-menu"].includes(
         overlay,
       ) ||
         state?.lynx?.productState?.overlay === overlay) &&
       state?.web?.productState?.overlay !== overlay
     ) {
+      if (stateId === "settings-model-picker" && !webSettingsModelTriggerScrolled) {
+        const scrollState = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const frame = document.getElementById('web-pane');
+            const doc = frame?.contentWindow?.document;
+            const target = doc?.querySelector(
+              '#text-generation-model [data-chat-provider-model-picker="true"]'
+            );
+            if (!frame || !target) return { ready: false, reason: 'missing-target' };
+            const viewportHeight = frame.contentWindow?.innerHeight ?? frame.clientHeight;
+            const rect = target.getBoundingClientRect();
+            const ready = rect.top >= 0 && rect.bottom <= viewportHeight;
+            if (!ready) {
+              const scroller = target.closest('.settings-page-scroll-fade');
+              if (scroller) {
+                const scrollerRect = scroller.getBoundingClientRect();
+                const targetCenter = rect.top + rect.height / 2;
+                const scrollerCenter = scrollerRect.top + scrollerRect.height / 2;
+                scroller.scrollTop += targetCenter - scrollerCenter;
+              } else {
+                target.scrollIntoView?.({ behavior: 'instant', block: 'center', inline: 'nearest' });
+              }
+            }
+            const nextRect = target.getBoundingClientRect();
+            return {
+              ready: nextRect.top >= 0 && nextRect.bottom <= viewportHeight,
+              viewportHeight,
+              rect: {
+                x: nextRect.x,
+                y: nextRect.y,
+                width: nextRect.width,
+                height: nextRect.height,
+                bottom: nextRect.bottom,
+              },
+              scrollTop: target.closest('.settings-page-scroll-fade')?.scrollTop ?? null,
+            };
+          })()`,
+        ).catch((error) => ({ ready: false, reason: String(error) }));
+        webSettingsModelTriggerDiagnostics = scrollState;
+        webSettingsModelTriggerScrolled = scrollState?.ready === true;
+        await delay(50);
+        continue;
+      }
       if (overlay === "project-action-dialog") {
         webProjectActionTriggerDiagnostics = await evaluate(
           cdp,
@@ -7123,7 +7264,9 @@ async function captureCell({
                       ? '[data-floating-anchor="diff-scope-menu"]'
                       : overlay === "project-action-dialog"
                         ? '[aria-label="Add action"]'
-                        : '[data-composer-control="model"]';
+                        : stateId === "settings-model-picker"
+                          ? '#text-generation-model [data-chat-provider-model-picker="true"]'
+                          : '[data-composer-control="model"]';
       const point =
         overlay === "project-action-dialog"
           ? await evaluate(
@@ -7177,6 +7320,8 @@ async function captureCell({
           if (!frame || !target) return null;
           const fr = frame.getBoundingClientRect();
           const r = target.getBoundingClientRect();
+          const viewportHeight = frame.contentWindow?.innerHeight ?? frame.clientHeight;
+          if (r.top < 0 || r.bottom > viewportHeight) return null;
           return { x: fr.x + r.x + r.width / 2, y: fr.y + r.y + r.height / 2 };
         })()`,
               ).catch(() => null)
@@ -7350,7 +7495,9 @@ async function captureCell({
                       ? '[data-floating-anchor="diff-scope-menu"]'
                       : overlay === "project-action-dialog"
                         ? '[aria-label="Add action"]'
-                        : '[data-composer-control="model"]';
+                        : stateId === "settings-model-picker"
+                          ? "[data-settings-model-picker-trigger]"
+                          : '[data-composer-control="model"]';
         const point = await evaluate(
           cdp,
           sessionId,
@@ -7360,6 +7507,7 @@ async function captureCell({
             const root = doc?.getElementById('t3-lynx-preview')?.shadowRoot;
             const target = root?.querySelector(${JSON.stringify(triggerSelector)});
             if (!frame || !target || target.getAttribute('aria-disabled') === 'true') return null;
+            target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
             const fr = frame.getBoundingClientRect();
             const r = target.getBoundingClientRect();
             return { x: fr.x + r.x + r.width / 2, y: fr.y + r.y + r.height / 2 };
@@ -8441,6 +8589,13 @@ async function captureCell({
     backgroundActivityMutationStage = "complete";
     reachedTargetState = true;
   }
+  if (isSettingsModelMutationState) {
+    const flow = await runSettingsModelMutationFlow(cdp, sessionId);
+    state = flow.state;
+    settingsModelMutationTimeline.push(...flow.timeline);
+    settingsModelMutationStage = "complete";
+    reachedTargetState = true;
+  }
   if (isConnectionsMutationState) {
     const flow = await runConnectionsMutationFlow(cdp, sessionId);
     state = flow.state;
@@ -8786,6 +8941,13 @@ async function captureCell({
       ["initial", "performance", "battery-saver", "balanced"].every((step) =>
         backgroundActivityMutationTimeline.some((entry) => entry.step === step),
       ));
+  const finalSettingsModelMutationReady =
+    !isSettingsModelMutationState ||
+    (settingsModelMutationStage === "complete" &&
+      settingsModelMutationStateMatches(state, "GPT-5.6-Luna") &&
+      ["initial", "cheap-model", "restored"].every((step) =>
+        settingsModelMutationTimeline.some((entry) => entry.step === step),
+      ));
   const finalConnectionsMutationReady =
     !isConnectionsMutationState ||
     (connectionsMutationStage === "complete" &&
@@ -8940,81 +9102,89 @@ async function captureCell({
       ? finalBetaMutationReady
       : isBackgroundActivityMutationState
         ? finalBackgroundActivityMutationReady
-        : isConnectionsMutationState
-          ? finalConnectionsMutationReady
-          : stateId === "settings-beta"
-            ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
-            : stateId === "settings-general"
-              ? generalSettingsContentMatches(
-                  state?.web?.settingsMetrics,
-                  state?.lynx?.settingsMetrics,
-                )
-              : stateId === "settings-appearance"
-                ? appearanceSettingsContentMatches(
+        : isSettingsModelMutationState
+          ? finalSettingsModelMutationReady
+          : isConnectionsMutationState
+            ? finalConnectionsMutationReady
+            : stateId === "settings-beta"
+              ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
+              : stateId === "settings-general" || stateId === "settings-model-picker"
+                ? generalSettingsContentMatches(
                     state?.web?.settingsMetrics,
                     state?.lynx?.settingsMetrics,
                   )
-                : stateId === "settings-keybindings"
-                  ? keybindingsSettingsContentMatches(
+                : stateId === "settings-appearance"
+                  ? appearanceSettingsContentMatches(
                       state?.web?.settingsMetrics,
                       state?.lynx?.settingsMetrics,
                     )
-                  : isProvidersSettingsState
-                    ? providerSettingsContentMatches(
+                  : stateId === "settings-keybindings"
+                    ? keybindingsSettingsContentMatches(
                         state?.web?.settingsMetrics,
                         state?.lynx?.settingsMetrics,
                       )
-                    : stateId === "settings-connections"
-                      ? connectionsSettingsContentMatches(
+                    : isProvidersSettingsState
+                      ? providerSettingsContentMatches(
                           state?.web?.settingsMetrics,
                           state?.lynx?.settingsMetrics,
                         )
-                      : stateId === "settings-source-control-loading"
-                        ? state?.web?.settingsMetrics?.loading === true &&
-                          state?.lynx?.settingsMetrics?.loading === true &&
-                          JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                          JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                            JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
-                        : stateId === "settings-source-control-error"
-                          ? JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
-                              JSON.stringify(
-                                state?.lynx?.settingsMetrics?.navigationLabels ?? [],
-                              ) &&
+                      : stateId === "settings-connections"
+                        ? connectionsSettingsContentMatches(
+                            state?.web?.settingsMetrics,
+                            state?.lynx?.settingsMetrics,
+                          )
+                        : stateId === "settings-source-control-loading"
+                          ? state?.web?.settingsMetrics?.loading === true &&
+                            state?.lynx?.settingsMetrics?.loading === true &&
                             JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
                               JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                            JSON.stringify(
-                              state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                            ) ===
+                            JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                              JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
+                          : stateId === "settings-source-control-error"
+                            ? JSON.stringify(
+                                state?.web?.settingsMetrics?.navigationLabels ?? [],
+                              ) ===
+                                JSON.stringify(
+                                  state?.lynx?.settingsMetrics?.navigationLabels ?? [],
+                                ) &&
+                              JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                                JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
                               JSON.stringify(
-                                state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                              ) &&
-                            JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                              JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                            (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) >
-                              0 &&
-                            (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) >
-                              0
-                          : JSON.stringify(state?.web?.settingsMetrics?.navigationLabels ?? []) ===
+                                state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                              ) ===
+                                JSON.stringify(
+                                  state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                                ) &&
+                              JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                                JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                              (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ?? 0) >
+                                0 &&
+                              (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ??
+                                0) > 0
+                            : JSON.stringify(
+                                state?.web?.settingsMetrics?.navigationLabels ?? [],
+                              ) ===
+                                JSON.stringify(
+                                  state?.lynx?.settingsMetrics?.navigationLabels ?? [],
+                                ) &&
+                              JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                                JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
+                              JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+                                JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
                               JSON.stringify(
-                                state?.lynx?.settingsMetrics?.navigationLabels ?? [],
-                              ) &&
-                            JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                              JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                            JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
-                              JSON.stringify(state?.lynx?.settingsMetrics?.sectionTexts ?? []) &&
-                            JSON.stringify(state?.web?.settingsMetrics?.sourceControlRows ?? []) ===
-                              JSON.stringify(
-                                state?.lynx?.settingsMetrics?.sourceControlRows ?? [],
-                              ) &&
-                            JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
-                              JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
-                            JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                              JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                            ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                              (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                              JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
-                                JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
+                                state?.web?.settingsMetrics?.sourceControlRows ?? [],
+                              ) ===
+                                JSON.stringify(
+                                  state?.lynx?.settingsMetrics?.sourceControlRows ?? [],
+                                ) &&
+                              JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
+                                JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
+                              JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                                JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
+                              ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                                (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                                JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
+                                  JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
 
   const layout = await evaluate(
     cdp,
@@ -9104,6 +9274,7 @@ async function captureCell({
         web: {
           overlay: state?.web?.productState?.overlay ?? null,
           metrics: state?.web?.overlayMetrics ?? null,
+          settingsModelTrigger: webSettingsModelTriggerDiagnostics,
           inputSent: webOverlayInputSent,
           waitPolls: webOverlayWaitPolls,
         },
@@ -10322,6 +10493,7 @@ async function captureCell({
     finalAddProviderDialogReady &&
     finalBetaMutationReady &&
     finalBackgroundActivityMutationReady &&
+    finalSettingsModelMutationReady &&
     finalConnectionsMutationReady &&
     finalTranscriptReady &&
     finalPendingRequestReady &&
@@ -10661,6 +10833,20 @@ async function captureCell({
           null,
         lynx:
           state?.lynx?.settingsMetrics?.rows?.find((row) => row.id === "background-activity") ??
+          null,
+      },
+      settingsModelMutation: {
+        match: finalSettingsModelMutationReady,
+        stage: settingsModelMutationStage,
+        inputChannel: isSettingsModelMutationState
+          ? "lynx-cdp-pointer+shared-server"
+          : "not-required",
+        timeline: settingsModelMutationTimeline,
+        web:
+          state?.web?.settingsMetrics?.rows?.find((row) => row.id === "text-generation-model") ??
+          null,
+        lynx:
+          state?.lynx?.settingsMetrics?.rows?.find((row) => row.id === "text-generation-model") ??
           null,
       },
       connectionsMutation: {

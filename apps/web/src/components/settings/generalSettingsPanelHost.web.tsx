@@ -808,7 +808,15 @@ export function GeneralSettingsAboutContent({
   return <GeneralSettingsAboutVersionContent />;
 }
 
-export function GeneralSettingsBackgroundActivityContent() {
+export function GeneralSettingsBackgroundActivityContent({
+  description: _description,
+  onProfileChange: _onProfileChange,
+  profile: _profile,
+}: {
+  readonly description: string;
+  readonly onProfileChange: (profile: BackgroundActivityProfile) => void;
+  readonly profile: ReturnType<typeof resolveBackgroundActivityProfileOption>;
+}) {
   return <BackgroundActivitySettingsRow />;
 }
 

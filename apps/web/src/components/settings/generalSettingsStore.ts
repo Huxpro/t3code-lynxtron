@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 
 import type { GeneralSettingsPatch, GeneralSettingsValues } from "./GeneralSettingsContent";
 import { GENERAL_SETTINGS_DEFAULT_VALUES } from "./generalSettingsProjection";
-import type { BackgroundActivityProfile } from "@t3tools/contracts";
+import type { BackgroundActivityProfile, ModelSelection } from "@t3tools/contracts";
 
 export type BackgroundActivityProfileOption = BackgroundActivityProfile | "advanced";
 
@@ -26,6 +26,7 @@ export interface GeneralSettingsSurfaceActions {
   readonly restoreDefaults: () => Promise<void>;
   readonly setProjectGrouping: (enabled: boolean) => void;
   readonly setBackgroundActivityProfile: (profile: BackgroundActivityProfile) => void;
+  readonly setTextGenerationModelSelection: (selection: ModelSelection) => void;
   readonly update: (patch: GeneralSettingsPatch) => void;
 }
 
@@ -50,6 +51,7 @@ const INITIAL_ACTIONS: GeneralSettingsSurfaceActions = {
   restoreDefaults: async () => {},
   setProjectGrouping: NOOP,
   setBackgroundActivityProfile: NOOP,
+  setTextGenerationModelSelection: NOOP,
   update: NOOP,
 };
 

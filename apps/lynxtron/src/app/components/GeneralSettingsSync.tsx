@@ -120,6 +120,10 @@ export function GeneralSettingsSync() {
         }),
       setBackgroundActivityProfile: (profile) =>
         updateServerSettings(backgroundActivityProfileSettings(profile)),
+      setTextGenerationModelSelection: (selection) =>
+        void t3ClientActions
+          .updateServerSettings({ textGenerationModelSelection: selection })
+          .catch(() => {}),
       update,
     };
     publishGeneralSettingsSurface(snapshot, actions);

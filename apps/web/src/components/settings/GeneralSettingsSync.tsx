@@ -123,6 +123,8 @@ export function GeneralSettingsSync() {
         }),
       restoreDefaults,
       setBackgroundActivityProfile,
+      setTextGenerationModelSelection: (selection) =>
+        updateSettings({ textGenerationModelSelection: selection }),
       setProjectGrouping,
       update,
     };
