@@ -2570,14 +2570,6 @@
   font-weight: 500;
   opacity: 0.64;
 }
-.composer-interaction-mode-separator {
-  width: 1px;
-  height: 16px;
-  margin-right: 2px;
-  margin-left: 2px;
-  flex-shrink: 0;
-  background-color: var(--border);
-}
 .composer-toolbar-control--interaction-plan {
   border-radius: 8px;
   background-color: rgba(59, 130, 246, 0.1);

@@ -897,12 +897,6 @@ export function Composer({
                       </view>
                     ) : null,
                     !compactFooter && !questionMode && showInteractionModeToggle ? (
-                      <view
-                        key="interaction-separator"
-                        className="composer-interaction-mode-separator"
-                      />
-                    ) : null,
-                    !compactFooter && !questionMode && showInteractionModeToggle ? (
                       <ComposerToolbarControl
                         key="interaction"
                         className={`composer-toolbar-control--interaction${
