@@ -1,5 +1,5 @@
 import { strict as assert } from "node:assert";
-import { mkdtempSync, mkdirSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -9,6 +9,14 @@ import { describe, it } from "vite-plus/test";
 import { createIsolatedState, isExpectedReadiness } from "./retain-mts-product-app.mjs";
 
 describe("retain MTS product app", () => {
+  it("passes an explicit pairing URL without persisting its credential", () => {
+    const source = readFileSync(new URL("./retain-mts-product-app.mjs", import.meta.url), "utf8");
+    assert.match(source, /T3_LYNXTRON_PAIRING_URL: pairingUrl/u);
+    assert.match(source, /pairingOrigin: pairingUrl \? new URL\(pairingUrl\)\.origin : null/u);
+    assert.match(source, /expectedThreadId: pairingUrl \? undefined : expectedThreadId/u);
+    assert.doesNotMatch(source, /pairingUrl,\n\s+snapshotIdentity/u);
+  });
+
   it("retains database identity through the isolated snapshot", () => {
     const root = mkdtempSync(path.join(os.tmpdir(), "t3-retain-snapshot-test-"));
     const sourceRoot = path.join(root, "source");

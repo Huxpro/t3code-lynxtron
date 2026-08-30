@@ -34,6 +34,7 @@ const windowY = process.env.T3_MTS_PRODUCT_WINDOW_Y ?? "60";
 const initialRoute = process.env.T3_MTS_PRODUCT_INITIAL_ROUTE?.trim();
 const initialOverlay = process.env.T3_MTS_PRODUCT_INITIAL_OVERLAY?.trim();
 const expectedThreadId = process.env.T3_MTS_PRODUCT_EXPECTED_THREAD_ID?.trim();
+const pairingUrl = process.env.T3_MTS_PRODUCT_PAIRING_URL?.trim();
 
 function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -211,7 +212,10 @@ async function main() {
   let snapshotIdentity;
   try {
     cpSync(path.join(appRoot, "dist/desktop"), desktopDir, { recursive: true });
-    snapshotIdentity = createIsolatedState(stateDir);
+    snapshotIdentity = createIsolatedState(stateDir, {
+      sourceRoot,
+      expectedThreadId: pairingUrl ? undefined : expectedThreadId,
+    });
   } catch (error) {
     rmSync(root, { recursive: true, force: true });
     throw error;
@@ -225,6 +229,7 @@ async function main() {
       NODE_ENV: "production",
       T3_LYNXTRON_BASE_DIR: stateDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      ...(pairingUrl ? { T3_LYNXTRON_PAIRING_URL: pairingUrl } : {}),
       T3_LYNXTRON_READINESS_REPORT: readinessReportPath,
       T3_LYNXTRON_VIEWPORT_WIDTH: viewportWidth,
       T3_LYNXTRON_VIEWPORT_HEIGHT: viewportHeight,
@@ -249,6 +254,8 @@ async function main() {
           stateDir,
           sourceRoot,
           projectCwd,
+          connectionMode: pairingUrl ? "existing-environment" : "owned-local",
+          pairingOrigin: pairingUrl ? new URL(pairingUrl).origin : null,
           logPath,
           readinessReportPath,
           processId: child.pid,
