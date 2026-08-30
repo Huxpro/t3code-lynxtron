@@ -12,6 +12,7 @@ import {
   FileTreeFileRowSurface,
 } from "../../../../web/src/components/chat/FileTreeSurface";
 import { Icon } from "./Icon";
+import { ProjectFileIcon } from "./ProjectFileIcon";
 
 const EMPTY_DIRECTORY_OVERRIDES: Record<string, boolean> = {};
 
@@ -116,7 +117,7 @@ export function LynxChangedFilesTree({
           name={node.name}
           depth={depth}
           showLeadingSpacer={hasDirectoryNodes || depth > 0}
-          fileIcon={<Icon name="file-json" size={14} color="#818181" />}
+          fileIcon={<ProjectFileIcon path={node.path} />}
           onSelect={onOpenFile ? () => onOpenFile(node.path) : undefined}
           {...(node.stat
             ? {
@@ -134,7 +135,11 @@ export function LynxChangedFilesTree({
   };
 
   return (
-    <view className="lynx-changed-files-tree" data-review-tree data-review-file-count={String(files.length)}>
+    <view
+      className="lynx-changed-files-tree"
+      data-review-tree
+      data-review-file-count={String(files.length)}
+    >
       <FileTreeChildrenSurface>{tree.map((node) => renderNode(node, 0))}</FileTreeChildrenSurface>
     </view>
   );

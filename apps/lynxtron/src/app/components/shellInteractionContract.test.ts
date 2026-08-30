@@ -578,7 +578,10 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("getProjectFilePickerMatches");
     expect(files).toContain('className="files-panel__browser"');
     expect(files).toContain('folderIcon={<Icon name="folder" size={14}');
-    expect(files).toContain('fileIcon={<Icon name="file-json" size={14}');
+    expect(files).toContain("fileIcon={<ProjectFileIcon path={node.path} />}");
+    expect(componentSource("ProjectFileIcon.tsx")).toContain("projectFileIconPresentation(path)");
+    expect(overrides).toContain(".project-file-icon--typescript");
+    expect(overrides).toContain(".project-file-icon--image");
     expect(files).toContain("uiActions.openFileSurface(path)");
     expect(files).toContain("export function FilePanel");
     expect(files).toContain("const [explorerOpen, setExplorerOpen] = useState(true)");

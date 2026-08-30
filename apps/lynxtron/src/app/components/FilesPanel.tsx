@@ -22,6 +22,7 @@ import { uiActions } from "../state/uiState";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { requestComposerTextInsertion } from "../state/composerCommandBus";
 import { Icon } from "./Icon";
+import { ProjectFileIcon } from "./ProjectFileIcon";
 
 interface ListingState {
   readonly cwd: string | null;
@@ -281,7 +282,7 @@ function renderTreeNode(
       depth={depth}
       showLeadingSpacer={hasDirectoryNodes || depth > 0}
       selected={node.path === selectedPath}
-      fileIcon={<Icon name="file-json" size={14} color="#71717a" />}
+      fileIcon={<ProjectFileIcon path={node.path} />}
       onSelect={() => onSelectFile(node.path)}
       onContextMenu={() => onContextMenu(node.path)}
     />

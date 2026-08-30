@@ -21,6 +21,52 @@ export interface ProjectEntryTreeFileNode {
 
 export type ProjectEntryTreeNode = ProjectEntryTreeDirectoryNode | ProjectEntryTreeFileNode;
 
+export type ProjectFileIconTone =
+  | "default"
+  | "git"
+  | "image"
+  | "javascript"
+  | "markdown"
+  | "npm"
+  | "typescript"
+  | "yaml";
+
+export interface ProjectFileIconPresentation {
+  readonly label: string;
+  readonly tone: ProjectFileIconTone;
+}
+
+const fileExtension = (pathValue: string): string => {
+  const name = pathValue.split("/").at(-1)?.toLowerCase() ?? "";
+  const dot = name.lastIndexOf(".");
+  return dot > 0 ? name.slice(dot + 1) : "";
+};
+
+export function projectFileIconPresentation(pathValue: string): ProjectFileIconPresentation {
+  const name = pathValue.split("/").at(-1)?.toLowerCase() ?? "";
+  const extension = fileExtension(pathValue);
+  if (name === "package.json") return { label: "npm", tone: "npm" };
+  if (name === "pnpm-lock.yaml" || name === "pnpm-workspace.yaml") {
+    return { label: "▦", tone: "yaml" };
+  }
+  if (name === ".gitignore" || name === ".gitattributes") {
+    return { label: "◆", tone: "git" };
+  }
+  if (extension === "ts" || extension === "tsx") return { label: "TS", tone: "typescript" };
+  if (extension === "js" || extension === "jsx" || extension === "mjs" || extension === "cjs") {
+    return { label: "JS", tone: "javascript" };
+  }
+  if (extension === "md" || extension === "mdx") return { label: "M↓", tone: "markdown" };
+  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "ico"].includes(extension)) {
+    return { label: "◆", tone: "image" };
+  }
+  if (["yaml", "yml"].includes(extension)) return { label: "▦", tone: "yaml" };
+  if (["ttf", "otf", "woff", "woff2"].includes(extension)) {
+    return { label: "Aa", tone: "default" };
+  }
+  return { label: "◻", tone: "default" };
+}
+
 export const FILE_DETAIL_INLINE_EXPLORER_MIN_WIDTH = 512;
 
 export interface ProjectFileDetailLayout {

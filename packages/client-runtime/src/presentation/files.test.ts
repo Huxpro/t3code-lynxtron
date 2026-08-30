@@ -8,11 +8,47 @@ import {
   projectFileLineTokens,
   projectFileCacheKey,
   projectFileEditorCacheKey,
+  projectFileIconPresentation,
   setMarkdownTaskChecked,
   summarizeProjectEntries,
 } from "./files.ts";
 
 describe("project entries presentation", () => {
+  it("projects stable file icon labels and tones for native renderers", () => {
+    expect(projectFileIconPresentation("docs/PORT_WORKFLOW.md")).toEqual({
+      label: "M↓",
+      tone: "markdown",
+    });
+    expect(projectFileIconPresentation("screenshot.png")).toEqual({
+      label: "◆",
+      tone: "image",
+    });
+    expect(projectFileIconPresentation("scripts/build-icons.mjs")).toEqual({
+      label: "JS",
+      tone: "javascript",
+    });
+    expect(projectFileIconPresentation("src/index.ts")).toEqual({
+      label: "TS",
+      tone: "typescript",
+    });
+    expect(projectFileIconPresentation("public/dm-sans.ttf")).toEqual({
+      label: "Aa",
+      tone: "default",
+    });
+    expect(projectFileIconPresentation("package.json")).toEqual({
+      label: "npm",
+      tone: "npm",
+    });
+    expect(projectFileIconPresentation("pnpm-lock.yaml")).toEqual({
+      label: "▦",
+      tone: "yaml",
+    });
+    expect(projectFileIconPresentation(".gitignore")).toEqual({
+      label: "◆",
+      tone: "git",
+    });
+  });
+
   it("projects Pierre tree paths and counts without changing Web path spelling", () => {
     expect(
       summarizeProjectEntries([

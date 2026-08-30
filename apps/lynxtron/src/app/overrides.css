@@ -4253,6 +4253,52 @@
 .file-tree-row__chevron--expanded {
   transform: rotate(90deg);
 }
+.project-file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  color: #adadb1;
+}
+.project-file-icon__label {
+  color: inherit;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 12px;
+}
+.project-file-icon--typescript {
+  background-color: rgba(30, 136, 229, 0.3);
+  color: #69b1ff;
+}
+.project-file-icon--javascript {
+  background-color: rgba(213, 169, 16, 0.28);
+  color: #ffd452;
+}
+.project-file-icon--npm {
+  background-color: rgba(213, 44, 54, 0.3);
+  color: #ff6762;
+}
+.project-file-icon--markdown {
+  color: #5ecc71;
+}
+.project-file-icon--image {
+  background-color: rgba(211, 42, 97, 0.24);
+  color: #ff678d;
+}
+.project-file-icon--git {
+  color: #d5512f;
+  transform: rotate(45deg);
+}
+.project-file-icon--git .project-file-icon__label {
+  transform: rotate(-45deg);
+}
+.project-file-icon--yaml {
+  color: #ffd452;
+}
 .file-tree-row--selected {
   background-color: var(--accent);
 }
