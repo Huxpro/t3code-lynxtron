@@ -4391,7 +4391,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  height: 24px;
   gap: 4px;
 }
 .lynx-diff-stat__additions,

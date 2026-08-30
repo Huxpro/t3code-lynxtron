@@ -4,7 +4,6 @@ import type { ThreadId, TurnId } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
 
 import { DiffPanelSurface } from "../../../../web/src/components/DiffPanelSurface";
-import { DiffStatLabel } from "../../../../web/src/components/chat/DiffStatLabel";
 import { useT3ClientState } from "../state/t3Client";
 import { t3ClientActions } from "../state/t3Client";
 import { Icon } from "./Icon";
@@ -19,6 +18,21 @@ import {
 import { parseUnifiedDiff, type UnifiedDiffFile } from "./unifiedDiff";
 
 type DiffRenderMode = "stacked" | "split";
+
+function LynxDiffStatLabel({
+  additions,
+  deletions,
+}: {
+  readonly additions: number;
+  readonly deletions: number;
+}) {
+  return (
+    <view className="lynx-diff-stat" aria-label={`${additions} additions, ${deletions} deletions`}>
+      <text className="lynx-diff-stat__additions">+{additions}</text>
+      <text className="lynx-diff-stat__deletions">−{deletions}</text>
+    </view>
+  );
+}
 
 function latestFirst(
   checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>,
@@ -251,7 +265,7 @@ export function DiffPanel({
       </view>
       <view className="diff-panel-header__controls lynx-titlebar-no-drag">
         {orderedFiles.length > 0 || selectedCheckpoint ? (
-          <DiffStatLabel additions={total.additions} deletions={total.deletions} />
+          <LynxDiffStatLabel additions={total.additions} deletions={total.deletions} />
         ) : null}
         {orderedFiles.length > 0 ? (
           <view
@@ -365,7 +379,7 @@ export function DiffPanel({
                           : selectedScopeLabel}
                       </text>
                     </view>
-                    <DiffStatLabel additions={total.additions} deletions={total.deletions} />
+                    <LynxDiffStatLabel additions={total.additions} deletions={total.deletions} />
                   </view>
                   <LynxChangedFilesTree
                     files={scope.kind === "turn" ? (selectedCheckpoint?.files ?? []) : []}
