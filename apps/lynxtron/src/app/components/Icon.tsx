@@ -139,10 +139,12 @@ interface IconProps {
   size?: number;
   color?: string;
   className?: string;
+  themeOverride?: "dark" | "light";
 }
 
-export function Icon({ name, size = 18, color = "#f5f5f5", className }: IconProps) {
-  const theme = useResolvedTheme();
+export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverride }: IconProps) {
+  const resolvedTheme = useResolvedTheme();
+  const theme = themeOverride ?? resolvedTheme;
   const sources = useMemo(() => {
     // Fill icons (brand marks) have a single pre-colored variant.
     if (

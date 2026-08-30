@@ -1,15 +1,12 @@
-import externalWordmarkUrl from "../../../../lynxtron/src/app/assets/t3-wordmark.svg?external";
-import externalWordmarkLightUrl from "../../../../lynxtron/src/app/assets/t3-wordmark-light.svg?external";
-import { useResolvedTheme } from "../../../../lynxtron/src/app/state/resolvedThemeContext";
+import { Icon } from "../../../../lynxtron/src/app/components/Icon";
 
-export function T3Wordmark({ onBackdrop = false }: { readonly onBackdrop?: boolean }) {
-  const theme = useResolvedTheme();
+export function T3Wordmark({ onBackdrop: _onBackdrop = false }: { readonly onBackdrop?: boolean }) {
   return (
-    <svg
-      aria-label="T3"
+    <Icon
+      name="t3-wordmark"
+      size={10}
       className="lynx-sidebar-wordmark"
-      src={onBackdrop || theme === "dark" ? externalWordmarkUrl : externalWordmarkLightUrl}
-      style={{ width: "17px", height: "10px" }}
+      themeOverride={_onBackdrop ? "dark" : "light"}
     />
   );
 }
