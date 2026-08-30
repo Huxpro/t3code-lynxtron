@@ -8,6 +8,7 @@ export type BackgroundActivityProfileOption = BackgroundActivityProfile | "advan
 
 export interface GeneralSettingsSurfaceSnapshot {
   readonly backgroundActivityProfileOption: BackgroundActivityProfileOption;
+  readonly backgroundActivityDescription: string;
   readonly changedSettingLabels: ReadonlyArray<string>;
   readonly defaults: GeneralSettingsValues;
   readonly diagnosticsDescription: string;
@@ -31,6 +32,8 @@ export interface GeneralSettingsSurfaceActions {
 const NOOP = () => {};
 const INITIAL_SNAPSHOT: GeneralSettingsSurfaceSnapshot = {
   backgroundActivityProfileOption: "balanced",
+  backgroundActivityDescription:
+    "Pauses background probes when clients are idle, the host is locked, or low power mode is active.",
   changedSettingLabels: [],
   defaults: GENERAL_SETTINGS_DEFAULT_VALUES,
   diagnosticsDescription: "Tracing is disabled.",

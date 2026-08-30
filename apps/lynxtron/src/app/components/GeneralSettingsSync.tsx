@@ -14,6 +14,7 @@ import {
 } from "../../../../web/src/components/settings/generalSettingsProjection";
 import {
   formatDiagnosticsDescription,
+  backgroundActivityProfileDescription,
   resolveBackgroundActivityProfileOption,
 } from "../../../../web/src/components/settings/SettingsPanels.logic";
 import {
@@ -91,6 +92,9 @@ export function GeneralSettingsSync() {
       if (Object.keys(serverPatch).length > 0) updateServerSettings(serverPatch);
     };
     const snapshot: GeneralSettingsSurfaceSnapshot = {
+      backgroundActivityDescription: settings
+        ? backgroundActivityProfileDescription(settings)
+        : "Pauses background probes when clients are idle, the host is locked, or low power mode is active.",
       backgroundActivityProfileOption: settings
         ? resolveBackgroundActivityProfileOption(settings)
         : "balanced",

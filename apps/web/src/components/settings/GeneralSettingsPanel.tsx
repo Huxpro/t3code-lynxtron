@@ -21,6 +21,7 @@ export function GeneralSettingsPanel() {
       aboutContent={<GeneralSettingsAboutContent versionLabel={surface.versionLabel} />}
       backgroundActivityContent={
         <GeneralSettingsBackgroundActivityContent
+          description={surface.backgroundActivityDescription}
           profile={surface.backgroundActivityProfileOption}
           onProfileChange={(profile) =>
             getGeneralSettingsSurfaceActions().setBackgroundActivityProfile(profile)

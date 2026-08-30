@@ -27,9 +27,11 @@ const BACKGROUND_ACTIVITY_OPTIONS = [
 ] as const;
 
 export function GeneralSettingsBackgroundActivityContent({
+  description,
   onProfileChange,
   profile,
 }: {
+  readonly description: string;
   readonly onProfileChange: (profile: BackgroundActivityProfile) => void;
   readonly profile: BackgroundActivityProfileOption;
 }) {
@@ -41,7 +43,7 @@ export function GeneralSettingsBackgroundActivityContent({
     <SettingsRow
       id="background-activity"
       title="Background activity"
-      description="Control the shared policy for background Git refreshes and provider health checks."
+      description={description}
       status={
         profile === "advanced"
           ? "Advanced interval controls remain available in Electron."

@@ -19,6 +19,7 @@ import {
 } from "./generalSettingsStore";
 import {
   formatDiagnosticsDescription,
+  backgroundActivityProfileDescription,
   resolveBackgroundActivityProfileOption,
   hasChangedBackgroundActivitySettings,
   isProjectGroupingEnabled,
@@ -91,6 +92,7 @@ export function GeneralSettingsSync() {
 
   useEffect(() => {
     const snapshot: GeneralSettingsSurfaceSnapshot = {
+      backgroundActivityDescription: backgroundActivityProfileDescription(settings),
       backgroundActivityProfileOption: resolveBackgroundActivityProfileOption(settings),
       changedSettingLabels: restoreProjection.changedSettingLabels,
       defaults: GENERAL_DEFAULTS,
