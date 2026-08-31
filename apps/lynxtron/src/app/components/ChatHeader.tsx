@@ -1,6 +1,11 @@
 import { useMemo, useState } from "@lynx-js/react";
 import { resolveQuickAction, type GitQuickAction } from "@t3tools/client-runtime/state/git-actions";
-import type { EditorId, ExecutionEnvironmentPlatformOs, VcsStatusResult } from "@t3tools/contracts";
+import type {
+  EditorId,
+  ExecutionEnvironmentPlatformOs,
+  ResolvedKeybindingsConfig,
+  VcsStatusResult,
+} from "@t3tools/contracts";
 import { ChatHeaderSurface } from "../../../../web/src/components/chat/ChatHeaderSurface";
 import { t3ClientActions } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
@@ -17,6 +22,7 @@ interface ChatHeaderProps {
   vcsStatusPending?: boolean;
   availableEditors?: ReadonlyArray<EditorId>;
   platform?: ExecutionEnvironmentPlatformOs;
+  keybindings?: ResolvedKeybindingsConfig;
   sessionStatus?: unknown;
   connectionStatus?: unknown;
   statusDetail?: string;
@@ -137,6 +143,7 @@ export function ChatHeader({
   vcsStatusPending = false,
   availableEditors = [],
   platform,
+  keybindings,
   rightPanelOpen,
   centerPanelWidth = 1024,
   onCenterPanelWidthChange = () => undefined,
@@ -227,6 +234,7 @@ export function ChatHeader({
               availableEditors={availableEditors}
               cwd={cwd}
               platform={platform}
+              keybindings={keybindings}
               compact={compactActions}
             />
             <ActionButton

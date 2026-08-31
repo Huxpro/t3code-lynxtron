@@ -300,7 +300,13 @@ export const OpenInPicker = memo(function OpenInPicker({
         <MenuPopup align="end" data-floating-popup={anchor}>
           {options.length === 0 && <MenuItem disabled>No installed editors found</MenuItem>}
           {options.map(({ label, Icon, value, kind }) => (
-            <MenuItem key={value} onClick={() => openInEditor(value)}>
+            <MenuItem
+              key={value}
+              data-open-editor={value}
+              data-editor-label={label}
+              data-preferred-editor={value === preferredEditor ? "true" : "false"}
+              onClick={() => openInEditor(value)}
+            >
               <Icon aria-hidden="true" className={getOpenInIconClass(kind)} />
               {label}
               {value === preferredEditor && openFavoriteEditorShortcutLabel && (

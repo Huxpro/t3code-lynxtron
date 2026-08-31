@@ -185,11 +185,13 @@ const isProvidersSettingsState = stateId === "settings-providers" || isAddProvid
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
 const isFileEditingSaveState = stateId === "file-editor-editing-save";
+const isOpenInMenuState = stateId === "file-editor-open-in-menu";
 const isNarrowFileEditorState =
   stateId === "file-editor-detail-narrow-inline" || isFileEditingSaveState;
 const isFileEditorState =
   stateId === "file-editor-detail" ||
   stateId === "file-editor-detail-narrow-inline" ||
+  isOpenInMenuState ||
   isFileEditingSaveState;
 const isCompactControlsState =
   stateId === "composer-compact-controls-open" ||
@@ -5438,6 +5440,7 @@ async function main() {
     "settled-banner-inline-files-narrow",
     "file-editor-detail",
     "file-editor-detail-narrow-inline",
+    "file-editor-open-in-menu",
     "file-editor-editing-save",
     "git-publish-dialog",
     "project-action-dialog",
@@ -5963,6 +5966,7 @@ async function captureCell({
     "files-browser": "existing-thread",
     "file-editor-detail": "existing-thread",
     "file-editor-detail-narrow-inline": "existing-thread",
+    "file-editor-open-in-menu": "existing-thread",
     "file-editor-editing-save": "existing-thread",
   };
   const scenario = scenarioByStateId[stateId] ?? "existing-thread";
@@ -6138,10 +6142,14 @@ async function captureCell({
   let webFileEditorOpenAttempts = 0;
   let lynxFileEditorOpenAttempts = 0;
   let webFileEditorDomFallbackUsed = false;
-  let fileEditorSwitched = !isFileEditorState || isNarrowFileEditorState;
-  let fileEditorReturnedToBrowser = !isFileEditorState || isFileEditingSaveState;
-  let webFileEditorReturnedToBrowser = !isFileEditorState || isFileEditingSaveState;
-  let lynxFileEditorReturnedToBrowser = !isFileEditorState || isFileEditingSaveState;
+  let fileEditorSwitched = !isFileEditorState || isNarrowFileEditorState || isOpenInMenuState;
+  let fileEditorReturnedToBrowser =
+    !isFileEditorState || isFileEditingSaveState || isOpenInMenuState;
+  let webFileEditorReturnedToBrowser =
+    !isFileEditorState || isFileEditingSaveState || isOpenInMenuState;
+  let lynxFileEditorReturnedToBrowser =
+    !isFileEditorState || isFileEditingSaveState || isOpenInMenuState;
+  let openInMenuEvidence = null;
   let rightPanelAddMenuDismissed = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelTerminalScreenshot = null;
@@ -9500,6 +9508,104 @@ async function captureCell({
     webFileEditorReturnedToBrowser = true;
     lynxFileEditorReturnedToBrowser = true;
   }
+  if (isOpenInMenuState && finalFileEditorReady) {
+    const triggerPoints = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId, shadow) => {
+          const frame = document.getElementById(frameId);
+          const doc = frame?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const anchor = root?.querySelector('[data-floating-anchor="file-open-in-menu"]');
+          const trigger = anchor;
+          if (!frame || !trigger) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = trigger.getBoundingClientRect();
+          return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+        };
+        return { web: pointFor('web-pane', false), lynx: pointFor('lynx-pane', true) };
+      })()`,
+    );
+    if (!triggerPoints?.web || !triggerPoints?.lynx) {
+      throw new Error(`Open in menu triggers unavailable: ${JSON.stringify(triggerPoints)}`);
+    }
+    await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.web);
+    await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.lynx);
+    const readMenus = async () =>
+      evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const read = (frameId, shadow) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const anchor = root?.querySelector('[data-floating-anchor="file-open-in-menu"]');
+            const popup = root?.querySelector('[data-floating-popup="file-open-in-menu"]');
+            if (!anchor || !popup) return null;
+            const rectOf = (element) => {
+              const rect = element.getBoundingClientRect();
+              return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+            };
+            const style = getComputedStyle(popup);
+            const rows = [...popup.querySelectorAll('[data-open-editor]')].map((row) => ({
+              id: row.getAttribute('data-open-editor'),
+              preferred: row.getAttribute('data-preferred-editor') === 'true',
+              label: row.getAttribute('data-editor-label') ?? '',
+              rect: rectOf(row),
+              iconCount: row.querySelectorAll(
+                'svg, img, image, x-image, .open-in-menu__brand-icon'
+              ).length,
+            }));
+            return {
+              anchor: rectOf(anchor),
+              popup: rectOf(popup),
+              style: {
+                backgroundColor: style.backgroundColor,
+                borderRadius: style.borderRadius,
+                borderColor: style.borderColor,
+                boxShadow: style.boxShadow,
+                padding: style.padding,
+              },
+              rows,
+            };
+          };
+          return { web: read('web-pane', false), lynx: read('lynx-pane', true) };
+        })()`,
+      );
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+      openInMenuEvidence = await readMenus();
+      if (openInMenuEvidence?.web?.rows?.length > 0 && openInMenuEvidence?.lynx?.rows?.length > 0) {
+        break;
+      }
+      await delay(50);
+    }
+    const webRows = openInMenuEvidence?.web?.rows ?? [];
+    const lynxRows = openInMenuEvidence?.lynx?.rows ?? [];
+    const semanticMatch =
+      JSON.stringify(webRows.map(({ id }) => id)) ===
+        JSON.stringify(lynxRows.map(({ id }) => id)) &&
+      JSON.stringify(webRows.map(({ preferred }) => preferred)) ===
+        JSON.stringify(lynxRows.map(({ preferred }) => preferred)) &&
+      JSON.stringify(webRows.map(({ label }) => label)) ===
+        JSON.stringify(lynxRows.map(({ label }) => label)) &&
+      webRows.every(({ iconCount }) => iconCount > 0) &&
+      lynxRows.every(({ iconCount }) => iconCount > 0);
+    const geometryMatch =
+      Boolean(openInMenuEvidence?.web && openInMenuEvidence?.lynx) &&
+      Math.abs(openInMenuEvidence.web.popup.width - openInMenuEvidence.lynx.popup.width) <= 1 &&
+      Math.abs(openInMenuEvidence.web.popup.height - openInMenuEvidence.lynx.popup.height) <= 1 &&
+      webRows.every((row, index) => Math.abs(row.rect.height - lynxRows[index].rect.height) <= 1);
+    openInMenuEvidence = {
+      ...openInMenuEvidence,
+      triggerPoints,
+      inputChannel: "web-cdp-pointer|lynx-cdp-pointer",
+      semanticMatch,
+      geometryMatch,
+      match: semanticMatch && geometryMatch,
+    };
+  }
   webState = state?.web?.productState ?? null;
   lynxState = state?.lynx?.productState ?? null;
   stateIdentityMatch = currentStateIdentityMatches();
@@ -10548,7 +10654,7 @@ async function captureCell({
     }
   }
 
-  if (isFileEditorState && !isNarrowFileEditorState && finalFileEditorReady) {
+  if (isFileEditorState && !isNarrowFileEditorState && !isOpenInMenuState && finalFileEditorReady) {
     const switchPoints = await evaluate(
       cdp,
       sessionId,
@@ -10761,6 +10867,7 @@ async function captureCell({
     finalGitPublishDialogReady &&
     finalFilesBrowserReady &&
     finalFileEditorReady &&
+    (!isOpenInMenuState || openInMenuEvidence?.match === true) &&
     (!isFileEditingSaveState || fileEditingSaveEvidence !== null) &&
     fileEditorSwitched &&
     fileEditorReturnedToBrowser &&
@@ -11288,12 +11395,12 @@ async function captureCell({
             }
           : null,
         switchedBy:
-          isFileEditorState && !isNarrowFileEditorState
+          isFileEditorState && !isNarrowFileEditorState && !isOpenInMenuState
             ? "web-explorer-pointer|lynx-explorer-pointer"
             : "not-required",
         switched: fileEditorSwitched,
         returnedBy:
-          isFileEditorState && !isFileEditingSaveState
+          isFileEditorState && !isFileEditingSaveState && !isOpenInMenuState
             ? "web-back-pointer|lynx-back-pointer"
             : "not-required",
         returnedToBrowser: fileEditorReturnedToBrowser,
@@ -11309,6 +11416,7 @@ async function captureCell({
         web: state?.web?.fileEditorMetrics ?? null,
         lynx: state?.lynx?.fileEditorMetrics ?? null,
       },
+      openInMenu: openInMenuEvidence,
       fileEditingSave: fileEditingSaveEvidence,
       expectProject,
       webState,

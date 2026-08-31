@@ -30,6 +30,8 @@ export interface FileTreeRowBaseProps {
   /** Web transcript scroll anchors ignore this row's interactions. */
   readonly scrollAnchorIgnore?: boolean;
   readonly onContextMenu?: ((event: unknown) => void) | undefined;
+  /** Stable project-relative identity shared by Web, Lynx, and their harnesses. */
+  readonly itemPath?: string;
 }
 
 /** One directory row: chevron, folder icon, name, trailing stats. */
@@ -43,6 +45,7 @@ export function FileTreeDirectoryRowSurface({
   folderIcon,
   onToggle,
   onContextMenu,
+  itemPath,
 }: FileTreeRowBaseProps & {
   readonly expanded: boolean;
   /** Platform chevron leaf; the surface owns the expanded rotation. */
@@ -60,6 +63,7 @@ export function FileTreeDirectoryRowSurface({
       onClick={onToggle}
       onContextMenu={onContextMenu}
       aria-expanded={expanded}
+      data-item-path={itemPath}
     >
       <HostText
         aria-hidden
@@ -94,6 +98,7 @@ export function FileTreeFileRowSurface({
   selected = false,
   onSelect,
   onContextMenu,
+  itemPath,
 }: FileTreeRowBaseProps & {
   /** Platform file icon leaf. */
   readonly fileIcon?: ReactNode;
@@ -135,6 +140,7 @@ export function FileTreeFileRowSurface({
   return (
     <HostButton
       type="button"
+      data-item-path={itemPath}
       className={cn(
         ROW_CLASS,
         "file-tree-row--file",

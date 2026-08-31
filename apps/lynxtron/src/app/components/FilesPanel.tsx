@@ -251,6 +251,7 @@ function renderTreeNode(
         <FileTreeDirectoryRowSurface
           name={node.name}
           depth={depth}
+          itemPath={node.path}
           expanded={expanded}
           chevron={<text className="file-tree__chevron-glyph">▸</text>}
           folderIcon={<Icon name="folder" size={14} color="#71717a" />}
@@ -282,6 +283,7 @@ function renderTreeNode(
       key={`file:${node.path}`}
       name={node.name}
       depth={depth}
+      itemPath={node.path}
       showLeadingSpacer={hasDirectoryNodes || depth > 0}
       selected={node.path === selectedPath}
       fileIcon={<ProjectFileIcon path={node.path} />}
@@ -554,6 +556,7 @@ export function FilePanel({ path }: { readonly path: string }) {
           availableEditors={serverConfig?.availableEditors ?? []}
           cwd={absolutePath}
           platform={serverConfig?.environment.platform.os}
+          keybindings={serverConfig?.keybindings}
           compact
           anchor="file-open-in-menu"
         />

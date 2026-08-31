@@ -525,6 +525,19 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "editorValueLength:");
   });
 
+  it("opens and compares the file editor Open in menu", () => {
+    assert.include(source, 'stateId === "file-editor-open-in-menu"');
+    assert.include(source, '"file-editor-open-in-menu",');
+    assert.include(source, '"file-editor-open-in-menu": "existing-thread"');
+    assert.include(source, '[data-floating-anchor=\"file-open-in-menu\"]');
+    assert.include(source, '[data-floating-popup=\"file-open-in-menu\"]');
+    assert.include(source, "data-open-editor");
+    assert.include(source, "data-preferred-editor");
+    assert.include(source, "web-cdp-pointer|lynx-cdp-pointer");
+    assert.include(source, "openInMenu: openInMenuEvidence");
+    assert.include(source, "openInMenuEvidence?.match === true");
+  });
+
   it("captures editing and save lifecycle only in a disposable workspace", () => {
     const editingFlow = source.slice(
       source.indexOf("async function runFileEditingSaveFlow"),

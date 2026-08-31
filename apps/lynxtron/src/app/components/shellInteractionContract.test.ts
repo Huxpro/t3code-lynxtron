@@ -827,7 +827,13 @@ describe("desktop shell interaction contract", () => {
     expect(picker).toContain("platformEditorLabel(editor, platform)");
     expect(picker).toContain("editorIconKind(editor)");
     expect(picker).not.toContain("open-in-menu__item--selected");
-    expect(picker).toContain("Math.min(Math.max(availableEditors.length, 1) * 32 + 10, 288)");
+    expect(picker).toContain(
+      'data-preferred-editor={editor === preferredEditor ? "true" : "false"}',
+    );
+    expect(picker).toContain('command === "editor.openFavorite"');
+    expect(picker).toContain("formatKeybindingShortcutLabel(binding.shortcut");
+    expect(picker).toContain('className="open-in-menu__shortcut"');
+    expect(picker).toContain("Math.min(Math.max(availableEditors.length, 1) * 28 + 10, 288)");
   });
 
   it("projects every authority Diff scope through real typed data sources", () => {

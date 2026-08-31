@@ -1564,7 +1564,7 @@
 .sidebar__brand-fade {
   position: absolute;
   left: 0;
-  top: 28px;
+  top: 32px;
   right: 0;
   height: 52px;
   background-image: linear-gradient(
@@ -2155,16 +2155,24 @@
   right: 0;
   display: flex;
   flex-direction: column;
-  width: 196px;
+  width: 128px;
   max-height: 288px;
-  padding: 4px;
   overflow: hidden;
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   background-color: var(--popover);
+  box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
   z-index: 62;
+}
+.open-in-menu__content {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  padding: 4px;
+  box-sizing: border-box;
 }
 .open-in-menu__item {
   display: flex;
@@ -2172,7 +2180,7 @@
   align-items: center;
   flex-shrink: 0;
   width: 100%;
-  height: 32px;
+  height: 28px;
   padding: 0 8px;
   gap: 8px;
   border-radius: 6px;
@@ -2189,7 +2197,6 @@
 }
 .open-in-menu__label {
   flex-grow: 1;
-  width: 0;
   min-width: 0;
   overflow: hidden;
   color: var(--popover-foreground);
@@ -2198,6 +2205,13 @@
   line-height: 18px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.open-in-menu__shortcut {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
 }
 .action-btn__icon {
   color: var(--muted-foreground);
