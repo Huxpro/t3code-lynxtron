@@ -545,12 +545,15 @@ describe("shared workbench lifecycle fault capture", () => {
     );
 
     assert.include(source, 'stateId === "chat-thread-narrow"');
+    assert.include(source, 'stateId === "chat-input-narrow-expanded"');
     assert.include(source, 'kind: "narrow-chat-transcript"');
     assert.include(source, "function narrowChatResponsiveMatches");
     assert.include(source, "box?.scroll?.width <= box?.scroll?.clientWidth + 1");
     assert.include(source, "narrowChatResponsiveMatches(state?.web?.timelineMetrics");
     assert.include(source, "narrowChatHoverEvidence?.match === true");
     assert.include(source, 'inputChannel: "web-cdp-pointer|lynx-cdp-pointer"');
+    assert.include(source, '[aria-label=\"Expand composer\"]');
+    assert.include(source, "narrowComposerExpandEvidence?.match === true");
     assert.include(
       workbench,
       'userMeta: readElementBox(root?.querySelector(".transcript-user-meta"))',

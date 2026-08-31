@@ -172,7 +172,8 @@ if (!["complete", "driver"].includes(providerDialogStopAt)) {
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const requiresStableProviderFaultPreflight = stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
-const isNarrowChatThreadState = stateId === "chat-thread-narrow";
+const isNarrowComposerExpandState = stateId === "chat-input-narrow-expanded";
+const isNarrowChatThreadState = stateId === "chat-thread-narrow" || isNarrowComposerExpandState;
 const isMultiStepQuestionState = stateId === "existing-thread-question-multi-step";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
@@ -5550,6 +5551,7 @@ async function main() {
     "existing-thread-question",
     "existing-thread-question-multi-step",
     "chat-thread-narrow",
+    "chat-input-narrow-expanded",
     "sidebar-resize",
     "file-picker-default",
     "files-browser",
@@ -6026,6 +6028,7 @@ async function captureCell({
     "existing-thread-completed": "existing-thread",
     "existing-thread-failed": "existing-thread",
     "chat-thread-narrow": "existing-thread",
+    "chat-input-narrow-expanded": "existing-thread",
     "existing-thread-question-multi-step": "existing-thread",
     "sidebar-resize": "existing-thread",
     "project-scope-open": "project-scope-open",
@@ -6271,6 +6274,7 @@ async function captureCell({
   let openInMenuEvidence = null;
   let narrowChatHoverEvidence = null;
   let modelPickerInteractionEvidence = null;
+  let narrowComposerExpandEvidence = null;
   let rightPanelAddMenuDismissed = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelTerminalScreenshot = null;
@@ -9957,6 +9961,53 @@ async function captureCell({
         visible(lynxAssistant?.lynx?.assistant),
     };
   }
+  if (isNarrowComposerExpandState) {
+    const points = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId, shadow) => {
+          const frame = document.getElementById(frameId);
+          const doc = frame?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const target = root?.querySelector('[aria-label="Expand composer"]');
+          if (!frame || !target) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
+          return { x: frameRect.x + rect.x + 24, y: frameRect.y + rect.y + rect.height / 2 };
+        };
+        return { web: pointFor('web-pane', false), lynx: pointFor('lynx-pane', true) };
+      })()`,
+    );
+    if (!points?.web || !points?.lynx) {
+      throw new Error(`Missing narrow composer expand targets: ${JSON.stringify(points)}`);
+    }
+    await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+    await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) =>
+        next?.web?.composerMetrics?.editor?.rect?.rect?.height > 0 &&
+        next?.lynx?.composerMetrics?.editor?.rect?.rect?.height > 0 &&
+        next?.web?.composerMetrics?.anatomy?.surface?.attributes?.[
+          "data-chat-composer-mobile-collapsed"
+        ] !== "true" &&
+        next?.lynx?.composerMetrics?.anatomy?.surface?.attributes?.[
+          "data-chat-composer-mobile-collapsed"
+        ] !== "true",
+      3_000,
+      "narrow composer expanded",
+    );
+    narrowComposerExpandEvidence = {
+      inputChannel: "dual-cdp-pointer",
+      points,
+      web: state?.web?.composerMetrics ?? null,
+      lynx: state?.lynx?.composerMetrics ?? null,
+      match: true,
+    };
+    reachedTargetState = true;
+  }
   webState = state?.web?.productState ?? null;
   lynxState = state?.lynx?.productState ?? null;
   stateIdentityMatch = currentStateIdentityMatches();
@@ -11224,6 +11275,7 @@ async function captureCell({
     finalFileEditorReady &&
     (!isOpenInMenuState || openInMenuEvidence?.match === true) &&
     (!isNarrowChatThreadState || narrowChatHoverEvidence?.match === true) &&
+    (!isNarrowComposerExpandState || narrowComposerExpandEvidence?.match === true) &&
     (!isModelPickerInteractionState || modelPickerInteractionEvidence?.match === true) &&
     (!isFileEditingSaveState || fileEditingSaveEvidence !== null) &&
     fileEditorSwitched &&
@@ -11784,6 +11836,7 @@ async function captureCell({
             hover: narrowChatHoverEvidence,
           }
         : null,
+      narrowComposerExpand: narrowComposerExpandEvidence,
       fileEditingSave: fileEditingSaveEvidence,
       expectProject,
       webState,
