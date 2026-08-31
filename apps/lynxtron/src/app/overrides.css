@@ -526,7 +526,7 @@
   height: 32px;
   padding: 6px 8px;
   gap: 8px;
-  border-radius: 8px;
+  border-radius: 10px;
   box-sizing: border-box;
 }
 .sidebar-search-label {
@@ -961,7 +961,7 @@
   width: 152px;
   height: 100px;
   padding: 4px;
-  background-color: var(--popover);
+  background-color: rgba(var(--popover-rgb), 0.836);
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
@@ -9874,6 +9874,7 @@
   z-index: 1;
 }
 .theme-dark .model-picker-panel {
+  background-color: rgba(var(--popover-rgb), 0.836);
   box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.8);
 }
 .model-picker-body {

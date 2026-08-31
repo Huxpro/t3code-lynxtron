@@ -1502,6 +1502,18 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.notInclude(source, "lynxOverlaySemanticKeys");
   });
 
+  it("drives the model picker dismiss scroll and selection lifecycle", () => {
+    assert.include(source, 'stateId === "model-picker-interaction"');
+    assert.include(source, '"model-picker-interaction": "model-picker"');
+    assert.include(source, 'step: "outside-dismissed"');
+    assert.include(source, 'step: "close-dismissed"');
+    assert.include(source, 'step: "scrolled"');
+    assert.include(source, 'type: "mouseWheel"');
+    assert.include(source, 'lynx: ".model-picker-close"');
+    assert.include(source, "modelPickerInteractionEvidence?.match === true");
+    assert.include(source, "modelPickerInteraction: modelPickerInteractionEvidence");
+  });
+
   it("prepares the selected model through the isolated thread projection", () => {
     assert.include(source, "async function prepareStateFixture");
     assert.include(source, 'stateId !== "model-picker-selected"');

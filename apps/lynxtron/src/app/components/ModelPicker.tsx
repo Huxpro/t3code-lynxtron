@@ -1,13 +1,5 @@
-import {
-  runOnMainThread,
-  useState,
-  useCallback,
-  useEffect,
-  useMainThreadRef,
-  useMemo,
-  useRef,
-} from "@lynx-js/react";
-import type { MainThread, NodesRef } from "@lynx-js/types";
+import { useState, useCallback, useEffect, useMemo, useRef } from "@lynx-js/react";
+import type { NodesRef } from "@lynx-js/types";
 import type {
   ModelSelection,
   ProviderDriverKind,
@@ -32,7 +24,6 @@ import { useClientSettingsState } from "../state/prefsStore";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { readModelPickerNavigation } from "../state/uiState";
 import { Icon } from "./Icon";
-import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import {
   projectModelPickerProviders,
@@ -78,8 +69,6 @@ export function ModelPicker({
   const viewport = useViewportSnapshot();
   const searchInputRef = useRef<NodesRef>(null);
   const navigation = readModelPickerNavigation();
-  const listScrollRef = useMainThreadRef<MainThread.Element>(null);
-  const wheelStateRef = useMainThreadRef({ key: "", offset: 0 });
   const [clientSettings, updateClientSettings] = useClientSettingsState();
   const favoriteModelKeys = useMemo(
     () =>
@@ -177,9 +166,6 @@ export function ModelPicker({
       }),
     [activeProvider, context, favoriteModelKeys, models, providers, search],
   );
-  const scrollStateKey = `${activeProvider}:${search}:${rows
-    .map((row) => modelKey(row.model))
-    .join("|")}`;
   const selectedModelKey = resolveModelPickerSelectedKey(currentModelSelection, selectedModel);
 
   const handleSelect = useCallback(
@@ -203,32 +189,6 @@ export function ModelPicker({
     },
     [rows.length],
   );
-  const handleListWheel = (event: MainThread.WheelEvent) => {
-    "main thread";
-    const state =
-      wheelStateRef.current.key === scrollStateKey
-        ? wheelStateRef.current
-        : { key: scrollStateKey, offset: 0 };
-    const eventWithDetail = event as MainThread.WheelEvent & {
-      detail?: { deltaY?: number };
-    };
-    const deltaY = responsiveMenuWheelDelta(
-      eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0,
-    );
-    if (!Number.isFinite(deltaY) || deltaY === 0) return;
-    const nextOffset = Math.max(0, state.offset + deltaY);
-    wheelStateRef.current = { key: scrollStateKey, offset: nextOffset };
-    const target =
-      listScrollRef.current ?? event.currentTarget ?? lynx.querySelector(".picker-list");
-    if (!target) return;
-    target.setAttribute("data-wheel-offset", `${nextOffset}`);
-    target.invoke("scrollTo", {
-      offset: nextOffset,
-      smooth: false,
-    });
-    event.preventDefault?.();
-    event.stopPropagation?.();
-  };
   useEffect(() => {
     if (!viewport.testResize) return;
     const target = globalThis as {
@@ -256,21 +216,10 @@ export function ModelPicker({
         notice,
         search,
       });
-    (
-      target as typeof target & {
-        __T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
-      }
-    ).__T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__ = (deltaY) =>
-      runOnMainThread(handleListWheel)({ deltaY } as MainThread.WheelEvent);
     return () => {
       delete target.__T3_LYNXTRON_MODEL_PICKER_SEARCH__;
       delete target.__T3_LYNXTRON_MODEL_PICKER_PROVIDER__;
       delete target.__T3_LYNXTRON_MODEL_PICKER_STATE__;
-      delete (
-        target as typeof target & {
-          __T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
-        }
-      ).__T3_LYNXTRON_MTS_MODEL_PICKER_WHEEL_PROBE__;
     };
   }, [
     activeProvider,
@@ -394,9 +343,7 @@ export function ModelPicker({
             ) : (
               <>
                 <scroll-view
-                  key={scrollStateKey}
-                  main-thread:ref={listScrollRef}
-                  main-thread:global-bindwheel={handleListWheel}
+                  key={`${activeProvider}:${search}`}
                   className="picker-list"
                   scroll-y
                   scroll-orientation="vertical"

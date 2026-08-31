@@ -188,7 +188,7 @@ describe("desktop shell interaction contract", () => {
       source.indexOf('className="model-picker-dismiss-layer"'),
     );
     expect(source).toContain('className="model-picker-close"');
-    expect(source).toContain("bindtap={onClose}");
+    expect(source.match(/bindtap={onClose}/g)).toHaveLength(2);
     expect(chatView).toContain(
       "onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}",
     );
@@ -196,7 +196,7 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain("onActiveProviderChange={uiActions.selectModelPickerProvider}");
     expect(overrides).toContain(".model-picker-dismiss-layer {");
     expect(overrides).toContain("background-color: transparent;");
-    expect(overrides).toContain("background-color: var(--popover);");
+    expect(overrides).toContain("background-color: rgba(var(--popover-rgb), 0.836);");
     const dismissStart = overrides.indexOf(".model-picker-dismiss-layer {");
     const dismissBlock = overrides.slice(dismissStart, overrides.indexOf("}", dismissStart));
     expect(dismissBlock).toContain("z-index: 0;");
@@ -223,6 +223,7 @@ describe("desktop shell interaction contract", () => {
     expect(list).toContain("width: 100%;");
     expect(list).toContain("min-width: 0;");
     expect(list).toContain("height: 0;");
+    expect(source).not.toContain("handleListWheel");
     expect(list).toContain("min-height: 0;");
     expect(source).not.toContain('className="picker-list-shell"');
     expect(source).not.toContain('className="picker-list-inner"');
@@ -427,8 +428,9 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain('name={busy ? "square" : "send-arrow"}');
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
     expect(composer).toContain("responsiveMenuWheelDelta(");
-    expect(modelPicker).toContain("responsiveMenuWheelDelta(");
-    expect(modelPicker).toContain("if (!Number.isFinite(deltaY) || deltaY === 0) return;");
+    expect(modelPicker).toContain('className="picker-list"');
+    expect(modelPicker).toContain("scroll-y");
+    expect(modelPicker).not.toContain("main-thread:global-bindwheel");
     expect(browserPreviewSource).toContain(
       '".composer-compact-controls-menu__scroll{overflow-y:auto;}" +',
     );

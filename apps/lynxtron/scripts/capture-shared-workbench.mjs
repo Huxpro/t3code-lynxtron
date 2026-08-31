@@ -84,6 +84,7 @@ const defaultOverlayByStateId = {
   "diff-scope-menu": "diff-scope-menu",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
+  "model-picker-interaction": "model-picker",
   "settings-model-picker": "model-picker",
   "project-action-dialog": "project-action-dialog",
   "right-panel-add-menu": "right-panel-add-menu",
@@ -179,6 +180,7 @@ const isProjectSettingsState = stateId === "sidebar-project-settings";
 const isBetaMutationState = stateId === "settings-beta-mutation";
 const isBackgroundActivityMutationState = stateId === "settings-background-activity-mutation";
 const isSettingsModelMutationState = stateId === "settings-model-picker-mutation";
+const isModelPickerInteractionState = stateId === "model-picker-interaction";
 const isConnectionsMutationState = stateId === "settings-connections-mutation-browser";
 const isAddProviderDialogState =
   stateId === "settings-providers-add-dialog" || stateId === "settings-providers-add-dialog-light";
@@ -4578,7 +4580,6 @@ async function runFileEditingSaveFlow({
               action = panel ? 'open-files' : 'open-panel';
             }
             if (!target || target.getAttribute?.('aria-disabled') === 'true') return null;
-            target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
             const frameRect = frame.getBoundingClientRect();
             const rect = target.getBoundingClientRect();
             if (rect.width <= 0 || rect.height <= 0) return null;
@@ -5585,6 +5586,7 @@ async function main() {
     "model-picker-query",
     "model-picker-empty",
     "model-picker-selected",
+    "model-picker-interaction",
     "quick-switch-default",
     "quick-switch-query",
     "quick-switch-query-light",
@@ -6041,6 +6043,7 @@ async function captureCell({
     "model-picker-query": "model-picker",
     "model-picker-empty": "model-picker",
     "model-picker-selected": "model-picker",
+    "model-picker-interaction": "model-picker",
     "composer-hero": "new-thread",
     "composer-sendable": "new-thread",
     "composer-docked": "existing-thread",
@@ -6267,6 +6270,7 @@ async function captureCell({
     !isFileEditorState || isFileEditingSaveState || isOpenInMenuState;
   let openInMenuEvidence = null;
   let narrowChatHoverEvidence = null;
+  let modelPickerInteractionEvidence = null;
   let rightPanelAddMenuDismissed = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelTerminalScreenshot = null;
@@ -7293,6 +7297,7 @@ async function captureCell({
             const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
             const target = root?.querySelector(selector);
             if (!frame || !target) return null;
+            target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
             const frameRect = frame.getBoundingClientRect();
             const rect = target.getBoundingClientRect();
             return {
@@ -8497,6 +8502,159 @@ async function captureCell({
     webShortcutInputChannel = "cdp-meta-k";
     lynxShortcutInputChannel = "lynx-host-keyboard-packet:meta-k";
     reachedTargetState = true;
+  }
+  if (isModelPickerInteractionState) {
+    const readPair = () => readWorkbenchState(cdp, sessionId);
+    const waitForOverlay = async (open, label) =>
+      waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          (next?.web?.productState?.overlay === "model-picker") === open &&
+          (next?.lynx?.productState?.overlay === "model-picker") === open,
+        3_000,
+        label,
+      );
+    const pointsFor = (selectors) =>
+      evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const pointFor = (frameId, shadow, selector) => {
+            const frame = document.getElementById(frameId);
+            const doc = frame?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const target = root?.querySelector(selector);
+            if (!frame || !target) return null;
+            const frameRect = frame.getBoundingClientRect();
+            const rect = target.getBoundingClientRect();
+            return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+          };
+          return {
+            web: pointFor('web-pane', false, ${JSON.stringify(selectors.web)}),
+            lynx: pointFor('lynx-pane', true, ${JSON.stringify(selectors.lynx)}),
+          };
+        })()`,
+      );
+    const clickPair = async (selectors, label) => {
+      const points = await pointsFor(selectors);
+      if (!points?.web || !points?.lynx) {
+        throw new Error(`Missing model picker ${label}: ${JSON.stringify(points)}`);
+      }
+      await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+      await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+      return points;
+    };
+    const triggerSelectors = {
+      web: '[data-composer-control="model"]',
+      lynx: '[data-composer-control="model"]',
+    };
+    const timeline = [];
+    state = await waitForOverlay(true, "model picker interaction initial open");
+    timeline.push({ step: "opened" });
+    await clickPair(
+      { web: "[data-chat-header]", lynx: "[data-chat-header]" },
+      "outside dismiss target",
+    );
+    state = await waitForOverlay(false, "model picker outside dismiss");
+    timeline.push({ step: "outside-dismissed" });
+    await clickPair(triggerSelectors, "reopen trigger");
+    state = await waitForOverlay(true, "model picker reopen for close button");
+    const closePoints = await pointsFor({
+      web: '[data-composer-control="model"]',
+      lynx: ".model-picker-close",
+    });
+    if (!closePoints?.web || !closePoints?.lynx) {
+      throw new Error(`Missing model picker close targets: ${JSON.stringify(closePoints)}`);
+    }
+    await dispatchPointerClickWithMove(cdp, sessionId, closePoints.web);
+    await dispatchPointerClickWithMove(cdp, sessionId, closePoints.lynx);
+    state = await waitForOverlay(false, "model picker close button dismiss");
+    timeline.push({ step: "close-dismissed" });
+    await clickPair(triggerSelectors, "reopen trigger for scroll");
+    state = await waitForOverlay(true, "model picker reopen for scroll");
+    const beforeScroll = {
+      web: state?.web?.overlayMetrics?.anatomy?.list?.scroll ?? null,
+      lynx: state?.lynx?.overlayMetrics?.anatomy?.list?.scroll ?? null,
+    };
+    const targetKey = state?.web?.overlayMetrics?.semanticKeys?.find((key) => {
+      const webRow = state?.web?.overlayMetrics?.modelPickerRows?.find((row) => row.key === key);
+      const lynxRow = state?.lynx?.overlayMetrics?.modelPickerRows?.find((row) => row.key === key);
+      return (
+        key !== state?.web?.overlayMetrics?.selectedModelKey &&
+        webRow?.disabled !== true &&
+        lynxRow?.disabled !== true
+      );
+    });
+    if (!targetKey || !state?.lynx?.overlayMetrics?.semanticKeys?.includes(targetKey)) {
+      throw new Error(`No shared model-picker selection target: ${targetKey}`);
+    }
+    const selectionSelectors = {
+      web: `[data-model-picker-key=${JSON.stringify(targetKey)}]`,
+      lynx: `[data-model-picker-key=${JSON.stringify(targetKey)}]`,
+    };
+    const selectionPoints = await pointsFor(selectionSelectors);
+    if (!selectionPoints?.web || !selectionPoints?.lynx) {
+      throw new Error(`Missing model picker selection target: ${JSON.stringify(selectionPoints)}`);
+    }
+    timeline.push({
+      step: "before-selection",
+      targetKey,
+      selectionPoints,
+      webRow: state?.web?.overlayMetrics?.modelPickerRows?.find((row) => row.key === targetKey),
+      lynxRow: state?.lynx?.overlayMetrics?.modelPickerRows?.find((row) => row.key === targetKey),
+    });
+    await dispatchPointerClick(cdp, sessionId, selectionPoints.lynx);
+    await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => next?.lynx?.productState?.overlay !== "model-picker",
+      3_000,
+      "Lynx model picker selection dismiss",
+    );
+    await dispatchPointerClick(cdp, sessionId, selectionPoints.web);
+    state = await waitForOverlay(false, "model picker selection dismiss");
+    const expectedLabel = targetKey.split(":").at(-1);
+    const selected =
+      state?.web?.productState?.visibleModelLabel?.toLowerCase().includes(expectedLabel) === true &&
+      state?.lynx?.productState?.visibleModelLabel?.toLowerCase().includes(expectedLabel) === true;
+    await clickPair(triggerSelectors, "reopen trigger for scroll");
+    state = await waitForOverlay(true, "model picker reopen for scroll");
+    const listPoints = await pointsFor({
+      web: '[data-model-picker-content] [data-slot="combobox-list"]',
+      lynx: ".picker-list",
+    });
+    if (!listPoints?.web || !listPoints?.lynx) throw new Error("Missing model picker scroll lists");
+    await cdp.send(
+      "Input.dispatchMouseEvent",
+      { type: "mouseWheel", ...listPoints.web, deltaX: 0, deltaY: 180 },
+      sessionId,
+    );
+    await cdp.send(
+      "Input.dispatchMouseEvent",
+      { type: "mouseWheel", ...listPoints.lynx, deltaX: 0, deltaY: 180 },
+      sessionId,
+    );
+    await delay(500);
+    state = await readPair();
+    const afterScroll = {
+      web: state?.web?.overlayMetrics?.anatomy?.list?.scroll ?? null,
+      lynx: state?.lynx?.overlayMetrics?.anatomy?.list?.scroll ?? null,
+    };
+    timeline.push({ step: "scrolled", beforeScroll, afterScroll });
+    modelPickerInteractionEvidence = {
+      inputChannel: "dual-cdp-pointer|dual-cdp-wheel|lynx-main-thread-close",
+      timeline,
+      targetKey,
+      selectionPoints,
+      webLabel: state?.web?.productState?.visibleModelLabel ?? null,
+      lynxLabel: state?.lynx?.productState?.visibleModelLabel ?? null,
+      match:
+        selected &&
+        state?.web?.productState?.overlay === "model-picker" &&
+        state?.lynx?.productState?.overlay === "model-picker",
+    };
+    reachedTargetState = modelPickerInteractionEvidence.match;
   }
   if (isMultiStepQuestionState) {
     const readPair = () => readWorkbenchState(cdp, sessionId);
@@ -9811,6 +9969,7 @@ async function captureCell({
   reachedTargetState ||= isFileEditorState && finalFileEditorReady;
   if (
     overlay &&
+    !isModelPickerInteractionState &&
     !isRightPanelTerminalState &&
     (state?.web?.productState?.overlay !== overlay ||
       state?.lynx?.productState?.overlay !== overlay)
@@ -11065,6 +11224,7 @@ async function captureCell({
     finalFileEditorReady &&
     (!isOpenInMenuState || openInMenuEvidence?.match === true) &&
     (!isNarrowChatThreadState || narrowChatHoverEvidence?.match === true) &&
+    (!isModelPickerInteractionState || modelPickerInteractionEvidence?.match === true) &&
     (!isFileEditingSaveState || fileEditingSaveEvidence !== null) &&
     fileEditorSwitched &&
     fileEditorReturnedToBrowser &&
@@ -11444,6 +11604,7 @@ async function captureCell({
           state?.lynx?.settingsMetrics?.rows?.find((row) => row.id === "text-generation-model") ??
           null,
       },
+      modelPickerInteraction: modelPickerInteractionEvidence,
       connectionsMutation: {
         match: finalConnectionsMutationReady,
         stage: connectionsMutationStage,
