@@ -1390,6 +1390,20 @@ function readFilesBrowserMetrics(root) {
     rowCount: rows.length,
     rows: rows.slice(0, 8).map((row) => {
       const name = row.querySelector?.(".file-tree-row__name") ?? null;
+      const rowElements = [];
+      const visitRow = (node) => {
+        for (const child of node?.children ?? []) {
+          rowElements.push(child);
+          visitRow(child);
+          if (child.shadowRoot) visitRow(child.shadowRoot);
+        }
+      };
+      visitRow(row);
+      const icon =
+        rowElements.find((element) => element.getAttribute?.("data-pierre-icon")) ??
+        rowElements.find((element) => element.getAttribute?.("data-file-icon-tone")) ??
+        rowElements.find((element) => element.tagName?.toLowerCase() === "use") ??
+        null;
       return {
         text:
           row.getAttribute("aria-label") ??
@@ -1398,6 +1412,16 @@ function readFilesBrowserMetrics(root) {
           "",
         box: readElementBox(row),
         name: readElementBox(name),
+        icon: icon
+          ? {
+              pierre: icon.getAttribute("data-pierre-icon"),
+              token: icon.getAttribute("data-icon-token"),
+              href: icon.getAttribute("href") ?? icon.getAttribute("xlink:href"),
+              tone: icon.getAttribute("data-file-icon-tone"),
+              label: icon.textContent?.trim() ?? "",
+              box: readElementBox(icon),
+            }
+          : null,
       };
     }),
   };

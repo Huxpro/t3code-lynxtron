@@ -49,6 +49,23 @@ describe("project entries presentation", () => {
     });
   });
 
+  it("keeps the native tone vocabulary aligned with Web Pierre tokens", () => {
+    const cases = [
+      ["docs/guide.md", "markdown"],
+      ["assets/screenshot.png", "image"],
+      ["src/index.ts", "typescript"],
+      ["scripts/build.mjs", "javascript"],
+      ["package.json", "npm"],
+      ["pnpm-lock.yaml", "yaml"],
+      [".gitignore", "git"],
+      ["fonts/mono.woff2", "default"],
+    ] as const;
+
+    for (const [path, tone] of cases) {
+      expect(projectFileIconPresentation(path).tone).toBe(tone);
+    }
+  });
+
   it("projects Pierre tree paths and counts without changing Web path spelling", () => {
     expect(
       summarizeProjectEntries([

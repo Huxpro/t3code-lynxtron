@@ -442,6 +442,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "rectDeltaWithin(web.toolbar, lynx.toolbar, 1)");
     assert.include(source, 'webTypography?.fontSize === "12px"');
     assert.include(source, 'row.box?.style?.[key] === "5px"');
+    assert.include(source, "const expectedIconTone = (href)");
+    assert.include(source, "lynxRow?.icon?.tone === authorityTone");
+    assert.include(source, "iconMappingsMatch");
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, 'element.tagName?.toLowerCase() === "use"');
+    assert.include(workbench, 'href: icon.getAttribute("href")');
     assert.include(source, "filesBrowserReadyPolls >= (isFileEditorState ? 1 : 3)");
     assert.include(source, "isFileEditorState\n        ? filesBrowserReadyPolls");
     assert.include(source, "finalFilesBrowserReady = filesBrowserReady(state)");

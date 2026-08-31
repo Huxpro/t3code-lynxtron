@@ -2210,6 +2210,24 @@ function filesBrowserReady(state) {
         lynxTypography?.fontFamily?.includes("DM Sans") === true
       );
     });
+  const expectedIconTone = (href) => {
+    if (href?.includes("markdown")) return "markdown";
+    if (href?.includes("image")) return "image";
+    if (href?.includes("font")) return "default";
+    if (href?.includes("typescript")) return "typescript";
+    if (href?.includes("javascript")) return "javascript";
+    if (href?.includes("npm")) return "npm";
+    if (href?.includes("git")) return "git";
+    if (href?.includes("yml") || href?.includes("yaml") || href?.includes("pnpm")) {
+      return "yaml";
+    }
+    return null;
+  };
+  const iconMappingsMatch = (web?.rows ?? []).every((row, index) => {
+    const lynxRow = lynx?.rows?.[index];
+    const authorityTone = expectedIconTone(row.icon?.href);
+    return authorityTone === null || lynxRow?.icon?.tone === authorityTone;
+  });
   return (
     web?.present === true &&
     state?.lynx?.reviewMetrics?.activeKind === "files" &&
@@ -2226,7 +2244,8 @@ function filesBrowserReady(state) {
     web.refresh?.rect?.height === 24 &&
     web.search?.rect?.height === 28 &&
     web.browser?.rect?.height === 736 &&
-    comparableRows
+    comparableRows &&
+    iconMappingsMatch
   );
 }
 
