@@ -41,6 +41,15 @@ export function HostView({
   readonly onMouseEnter?: (event: unknown) => void;
   readonly onMouseLeave?: (event: unknown) => void;
 }) {
+  const injectedMouseEnter = props["main-thread:bindmouseenter"] as
+    | ((event: MainThreadMouseEvent) => void)
+    | undefined;
+  const injectedMouseMove = props["main-thread:bindmousemove"] as
+    | ((event: MainThreadMouseEvent) => void)
+    | undefined;
+  const injectedMouseLeave = props["main-thread:bindmouseleave"] as
+    | ((event: MainThreadMouseEvent) => void)
+    | undefined;
   const handleKeyDown = (event: MainThreadKeyEvent) => {
     "main thread";
     if (!onKeyDown) return;
@@ -50,6 +59,8 @@ export function HostView({
   };
   const handleMouseEnter = (event: MainThreadMouseEvent) => {
     "main thread";
+    injectedMouseEnter?.(event);
+    injectedMouseMove?.(event);
     if (hoverRevealSelector) {
       event.currentTarget.querySelector(hoverRevealSelector)?.setStyleProperty("opacity", "1");
     }
@@ -57,6 +68,7 @@ export function HostView({
   };
   const handleMouseLeave = (event: MainThreadMouseEvent) => {
     "main thread";
+    injectedMouseLeave?.(event);
     if (hoverRevealSelector) {
       event.currentTarget.querySelector(hoverRevealSelector)?.setStyleProperty("opacity", "0");
     }
@@ -79,13 +91,13 @@ export function HostView({
       event-through={eventThrough}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
-      {...(onMouseEnter || hoverRevealSelector
+      {...(onMouseEnter || hoverRevealSelector || injectedMouseEnter
         ? { "main-thread:bindmouseenter": handleMouseEnter }
         : {})}
-      {...(onMouseEnter || hoverRevealSelector
+      {...(onMouseEnter || hoverRevealSelector || injectedMouseMove
         ? { "main-thread:bindmousemove": handleMouseEnter }
         : {})}
-      {...(onMouseLeave || hoverRevealSelector
+      {...(onMouseLeave || hoverRevealSelector || injectedMouseLeave
         ? { "main-thread:bindmouseleave": handleMouseLeave }
         : {})}
       bindmousemove={onMouseEnter}

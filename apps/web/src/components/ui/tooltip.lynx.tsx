@@ -174,6 +174,7 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
     if (tooltipOpen) return;
     const trigger = triggerRef.current;
     if (!trigger) return;
+    trigger.setAttribute("data-tooltip-pointer-inside", "true");
     const measured = (await trigger.invoke("boundingClientRect", {
       relativeTo: null,
     })) as Partial<{
@@ -182,6 +183,7 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
       readonly top: number;
       readonly width: number;
     }> | null;
+    if (trigger.getAttribute("data-tooltip-pointer-inside") !== "true") return;
     if (
       !measured ||
       typeof measured.left !== "number" ||
@@ -202,6 +204,7 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
   };
   const handleMouseLeave = () => {
     "main thread";
+    triggerRef.current?.setAttribute("data-tooltip-pointer-inside", "false");
     runOnBackground(reportHover)(false);
   };
   const relationId =
