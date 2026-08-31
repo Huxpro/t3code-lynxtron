@@ -649,6 +649,11 @@ function narrowChatResponsiveMatches(webMetrics, lynxMetrics) {
     const userBubble = metrics?.anatomy?.userBubble;
     const assistant = metrics?.assistantGeometry?.body;
     const codeBlocks = metrics?.codeBlockGeometry ?? [];
+    const changedFilesCard = metrics?.anatomy?.changedFilesCard;
+    const changedFilesHeader = metrics?.anatomy?.changedFilesHeader;
+    const changedFilesPreview = metrics?.anatomy?.changedFilesPreview;
+    const changedFilesBody = metrics?.anatomy?.changedFilesBody;
+    const changedFilesContent = changedFilesPreview ?? changedFilesBody;
     const userRow = rows.find(({ role }) => role === "user");
     const assistantRow = rows.find(({ role }) => role === "assistant");
     const within = (child, parent) =>
@@ -662,7 +667,10 @@ function narrowChatResponsiveMatches(webMetrics, lynxMetrics) {
       within(assistant, assistantRow) &&
       codeBlocks.length === 1 &&
       within(codeBlocks[0]?.rect, assistantRow) &&
-      [userBubble, assistant, codeBlocks[0]?.rect].every(
+      within(changedFilesCard, assistantRow) &&
+      within(changedFilesHeader, changedFilesCard?.rect) &&
+      within(changedFilesContent, changedFilesCard?.rect) &&
+      [userBubble, assistant, codeBlocks[0]?.rect, changedFilesCard, changedFilesContent].every(
         (box) => box?.scroll?.width <= box?.scroll?.clientWidth + 1,
       )
     );
@@ -5213,6 +5221,26 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
       "Please keep this deliberately long request readable when the chat thread becomes very narrow, including `inline-code-that-must-wrap-safely` and the message hover controls.";
     const assistantText =
       'Implemented the responsive behavior while preserving the shared layout.\n\n```ts title="src/responsive.ts"\nexport const responsiveLayout = (width: number) => width < 520 ? "compact" : "wide";\n```\n\nLong prose should wrap inside the available column without forcing horizontal overflow.';
+    const checkpointFiles = [
+      {
+        path: "apps/lynxtron/src/app/components/ResponsiveConversationTimeline.tsx",
+        kind: "modified",
+        additions: 28,
+        deletions: 7,
+      },
+      {
+        path: "packages/client-runtime/src/presentation/transcript-responsive-layout.ts",
+        kind: "added",
+        additions: 41,
+        deletions: 0,
+      },
+      {
+        path: "apps/web/src/components/chat/ChangedFilesCardSurface.tsx",
+        kind: "modified",
+        additions: 12,
+        deletions: 3,
+      },
+    ];
     try {
       database.exec("BEGIN IMMEDIATE");
       database.prepare("DELETE FROM projection_thread_messages WHERE thread_id = ?").run(threadId);
@@ -5249,9 +5277,18 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
             thread_id, turn_id, pending_message_id, assistant_message_id, state, requested_at,
             started_at, completed_at, checkpoint_turn_count, checkpoint_ref, checkpoint_status,
             checkpoint_files_json, source_proposed_plan_thread_id, source_proposed_plan_id
-          ) VALUES (?, ?, NULL, ?, 'completed', ?, ?, ?, NULL, NULL, NULL, '[]', NULL, NULL)`,
+          ) VALUES (?, ?, NULL, ?, 'completed', ?, ?, ?, 1, ?, 'ready', ?, NULL, NULL)`,
         )
-        .run(threadId, turnId, assistantMessageId, requestedAt, requestedAt, completedAt);
+        .run(
+          threadId,
+          turnId,
+          assistantMessageId,
+          requestedAt,
+          requestedAt,
+          completedAt,
+          `refs/t3/checkpoints/${turnId}`,
+          JSON.stringify(checkpointFiles),
+        );
       database
         .prepare(
           `UPDATE projection_threads
@@ -5278,6 +5315,7 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
       threadId,
       turnId,
       messageIds: [userMessageId, assistantMessageId],
+      checkpointFiles,
     };
   }
   if (isFileEditingSaveState) {
@@ -9940,6 +9978,28 @@ async function captureCell({
         })()`,
       );
     const hoverRow = async (client, role) => {
+      const rowIndex = role === "user" ? 0 : 1;
+      await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+          const doc = frame?.contentWindow?.document;
+          const root = ${JSON.stringify(client)} === 'lynx'
+            ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+            : doc;
+          const target = root?.querySelector(${JSON.stringify(`.transcript-${role}-row`)});
+          if (!target) return false;
+          if (${JSON.stringify(client)} === 'lynx') {
+            const probe = doc?.defaultView?.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__;
+            if (typeof probe === 'function') probe(${rowIndex}, 'top');
+          } else {
+            target.scrollIntoView({ block: 'center', inline: 'nearest' });
+          }
+          return true;
+        })()`,
+      );
+      await delay(100);
       const point = await evaluate(
         cdp,
         sessionId,

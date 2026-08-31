@@ -98,10 +98,12 @@ function LynxTurnDiffCard({
   summary,
   isLatestTurn,
   compact,
+  compactActions,
 }: {
   summary: OrchestrationCheckpointSummary;
   isLatestTurn: boolean;
   compact: boolean;
+  compactActions: boolean;
 }) {
   const [expandedOverride, setExpandedOverride] = useState<boolean | null>(null);
   const [autoExpanded] = useState(() => shouldAutoExpandChangedFiles(summary.files, isLatestTurn));
@@ -169,7 +171,7 @@ function LynxTurnDiffCard({
           bindtap={() => openDiff(summary.files[0]?.path)}
         >
           <Icon name="file-json" size={12} color="#818181" />
-          {!compact ? (
+          {!compactActions ? (
             <text className="lynx-host-text turn-diff-card__open-label text-[11px] font-medium text-foreground">
               Open diff
             </text>
@@ -311,6 +313,7 @@ function buildLynxTranscriptRowElements(
   cwd: string | undefined,
   latestTurnId: TurnId | null,
   compactChangedFiles: boolean,
+  compactChangedFilesActions: boolean,
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
   hoveredMessageId: string | null,
   copiedMessageId: string | null,
@@ -459,6 +462,7 @@ function buildLynxTranscriptRowElements(
           summary={summary}
           isLatestTurn={summary.turnId === latestTurnId}
           compact={compactChangedFiles}
+          compactActions={compactChangedFilesActions}
         />
       ) : null;
     },
@@ -552,6 +556,7 @@ export function MessagesTimeline({
   availableWidth = 1024,
 }: MessagesTimelineProps) {
   const [clientSettings] = useClientSettingsState();
+  const [timelineViewportWidth, setTimelineViewportWidth] = useState(availableWidth);
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
@@ -579,7 +584,8 @@ export function MessagesTimeline({
       buildLynxTranscriptRowElements(
         cwd,
         latestTurn?.turnId ?? null,
-        availableWidth < 360,
+        timelineViewportWidth < 360,
+        timelineViewportWidth < 640,
         clientSettings.timestampFormat,
         hoveredMessageId,
         copiedMessageId,
@@ -587,7 +593,7 @@ export function MessagesTimeline({
       ),
     [
       clientSettings.timestampFormat,
-      availableWidth,
+      timelineViewportWidth,
       copiedMessageId,
       copyMessage,
       cwd,
@@ -792,6 +798,12 @@ export function MessagesTimeline({
       className="timeline-host"
       data-transcript-at-end={followState.atEnd ? "true" : "false"}
       data-transcript-following={followState.following ? "true" : "false"}
+      bindlayoutchange={(event: { detail?: { width?: unknown } }) => {
+        const width = event.detail?.width;
+        if (typeof width === "number" && Number.isFinite(width) && width > 0) {
+          setTimelineViewportWidth((current) => (current === width ? current : width));
+        }
+      }}
     >
       <list
         ref={listRef}

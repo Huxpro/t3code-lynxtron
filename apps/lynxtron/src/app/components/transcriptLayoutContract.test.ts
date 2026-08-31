@@ -16,6 +16,14 @@ const sharedRowSource = readFileSync(
 const appSource = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
 
 describe("transcript layout contract", () => {
+  it("measures changed-files compact mode from the transcript viewport like Web", () => {
+    expect(timelineSource).toContain("const [timelineViewportWidth, setTimelineViewportWidth]");
+    expect(timelineSource).toContain("timelineViewportWidth < 360");
+    expect(timelineSource).toContain("timelineViewportWidth < 640");
+    expect(timelineSource).toContain("!compactActions");
+    expect(timelineSource).toContain("bindlayoutchange={(event:");
+    expect(timelineSource).not.toContain("availableWidth < 360");
+  });
   it("matches the Web timeline top inset and working-row spacing", () => {
     expect(overrides).toContain("padding: 16px 26px 20px;");
     expect(overrides).toContain(

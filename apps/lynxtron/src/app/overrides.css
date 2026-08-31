@@ -4185,7 +4185,10 @@
   border-color: rgba(228, 228, 231, 0.7);
 }
 .turn-diff-card--expanded {
-  height: 79px;
+  /* Match the shared Web surface: expanded cards grow with their file tree.
+     A fixed height clips long paths and lets the tree overlap message meta at
+     narrow transcript widths. */
+  min-height: 79px;
 }
 .turn-diff-card--preview {
   height: 106px;

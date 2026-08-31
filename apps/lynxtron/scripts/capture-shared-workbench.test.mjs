@@ -556,11 +556,17 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "chat-thread-narrow"');
     assert.include(source, 'stateId === "chat-input-narrow-expanded"');
     assert.include(source, 'kind: "narrow-chat-transcript"');
+    assert.include(source, "checkpointFiles,");
+    assert.include(source, "within(changedFilesCard, assistantRow)");
+    assert.include(source, "const changedFilesContent = changedFilesPreview ?? changedFilesBody");
+    assert.include(source, "within(changedFilesContent, changedFilesCard?.rect)");
     assert.include(source, "function narrowChatResponsiveMatches");
     assert.include(source, "box?.scroll?.width <= box?.scroll?.clientWidth + 1");
     assert.include(source, "narrowChatResponsiveMatches(state?.web?.timelineMetrics");
     assert.include(source, "narrowChatHoverEvidence?.match === true");
     assert.include(source, 'inputChannel: "web-cdp-pointer|lynx-cdp-pointer"');
+    assert.include(source, "target.scrollIntoView({ block: 'center', inline: 'nearest' })");
+    assert.include(source, "__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__");
     assert.include(source, '[aria-label=\"Expand composer\"]');
     assert.include(source, "narrowComposerExpandEvidence?.match === true");
     assert.include(
@@ -573,6 +579,18 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(workbench, "width: element.scrollWidth");
     assert.include(workbench, "clientWidth: element.clientWidth");
+    assert.include(
+      workbench,
+      'changedFilesCard: readElementBox(root?.querySelector(".turn-diff-card"))',
+    );
+    assert.include(
+      workbench,
+      'changedFilesCard: readElementBox(doc.querySelector(".turn-diff-card"))',
+    );
+    assert.include(
+      workbench,
+      'changedFilesBody: readElementBox(root?.querySelector(".lynx-changed-files-tree"))',
+    );
   });
 
   it("captures editing and save lifecycle only in a disposable workspace", () => {
