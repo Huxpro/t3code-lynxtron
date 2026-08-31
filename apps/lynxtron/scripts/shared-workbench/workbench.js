@@ -198,6 +198,10 @@ function readSidebarThreadMetrics(item) {
     threadId: item.getAttribute("data-thread-id"),
     active: item.getAttribute("data-thread-active"),
     status: item.querySelector('[role="status"]')?.textContent?.trim() ?? null,
+    jumpLabel:
+      item
+        .querySelector("[data-sidebar-thread-jump-hint]")
+        ?.getAttribute("data-sidebar-thread-jump-hint") ?? null,
     className: item.getAttribute("class"),
     text: item.textContent?.trim().slice(0, 160) ?? "",
     rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },

@@ -48,6 +48,10 @@ interface BrowserPreviewDiagnostics {
   emitSequenceGapForDiagnostic(): number;
   switchScenario(scenarioId: BrowserPreviewScenarioId): number;
   dispatchKeyboardShortcut(shortcut: "command" | "files" | `thread-${number}`): boolean;
+  dispatchModifierState(
+    type: "keydown" | "keyup",
+    modifiers: { meta: boolean; ctrl: boolean; shift: boolean; alt: boolean },
+  ): boolean;
   openWorkspaceMenuForHarness(open: boolean): boolean;
   invokeTooltipForHarness(relationId: string, action: "hover" | "leave"): boolean;
   invokeResizeForHarness(target: "sidebar" | "right-panel", startX: number, endX: number): boolean;
@@ -284,6 +288,20 @@ const diagnostics: BrowserPreviewDiagnostics = {
       },
     ]);
     return true;
+  },
+  dispatchModifierState: (type, modifiers) => {
+    emitGlobalEvent("t3:keyboard", [
+      {
+        type: "keydown",
+        key: "Meta",
+        code: "MetaLeft",
+        modifiers,
+        repeat: false,
+        source: { kind: "lynxtron-menu", platform: "darwin" },
+        sequence: ++keyboardSequence,
+      },
+    ]);
+    return type === "keydown" || type === "keyup";
   },
   openWorkspaceMenuForHarness: (open) => {
     emitGlobalEvent("t3:workspace-menu-test", [{ open }]);

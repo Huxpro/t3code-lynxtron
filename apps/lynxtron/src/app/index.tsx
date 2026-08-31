@@ -1,7 +1,7 @@
 import "url-search-params-polyfill";
 
 import { RegistryContext } from "@effect/atom-react";
-import { root } from "@lynx-js/react";
+import { root, runOnBackground } from "@lynx-js/react";
 import { useEffect, useRef, useState } from "@lynx-js/react";
 import { viewportTier } from "@t3tools/client-runtime/platform";
 
@@ -50,6 +50,10 @@ import {
   subscribeSystemTheme,
 } from "./state/themeStore";
 import { ResolvedThemeContext } from "./state/resolvedThemeContext";
+import {
+  resetLynxShortcutModifierState,
+  updateLynxShortcutModifierState,
+} from "./state/shortcutModifierState";
 import dmSansVariableDataUrl from "./assets/dm-sans.woff2?inline";
 import jetBrainsMono400DataUrl from "./assets/jetbrains-mono-400.woff2?inline";
 import "./generated/lynx.css";
@@ -266,6 +270,41 @@ function ThemedApp() {
         data-viewport-height={String(viewport.height)}
         data-viewport-tier={tier}
         data-viewport-width={String(viewport.width)}
+        {...({ tabIndex: 0 } as object)}
+        main-thread:bindkeydown={(event) => {
+          "main thread";
+          const modifiers = event as unknown as {
+            altKey: boolean;
+            ctrlKey: boolean;
+            metaKey: boolean;
+            shiftKey: boolean;
+          };
+          runOnBackground(updateLynxShortcutModifierState)({
+            altKey: modifiers.altKey,
+            ctrlKey: modifiers.ctrlKey,
+            metaKey: modifiers.metaKey,
+            shiftKey: modifiers.shiftKey,
+          });
+        }}
+        main-thread:bindkeyup={(event) => {
+          "main thread";
+          const modifiers = event as unknown as {
+            altKey: boolean;
+            ctrlKey: boolean;
+            metaKey: boolean;
+            shiftKey: boolean;
+          };
+          runOnBackground(updateLynxShortcutModifierState)({
+            altKey: modifiers.altKey,
+            ctrlKey: modifiers.ctrlKey,
+            metaKey: modifiers.metaKey,
+            shiftKey: modifiers.shiftKey,
+          });
+        }}
+        main-thread:bindblur={() => {
+          "main thread";
+          runOnBackground(resetLynxShortcutModifierState)();
+        }}
       >
         <RootSwitch />
         <RootOverlays />

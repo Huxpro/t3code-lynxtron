@@ -8,6 +8,7 @@ import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarC
 import { threadJumpIndexFromCommand } from "../../../../web/src/keybindings";
 import { terminalReturnController } from "./terminalKeyboard";
 import { requestSidebarThreadJump } from "./sidebarThreadNavigation";
+import { updateLynxShortcutModifierState } from "./shortcutModifierState";
 
 interface GlobalEventEmitterLike {
   addListener?: (eventName: string, listener: (...args: unknown[]) => void) => void;
@@ -26,6 +27,12 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     return false;
   }
   lastSequence = input.sequence;
+  updateLynxShortcutModifierState({
+    metaKey: input.modifiers.meta,
+    ctrlKey: input.modifiers.ctrl,
+    shiftKey: input.modifiers.shift,
+    altKey: input.modifiers.alt,
+  });
   if (terminalReturnController.dispatch(input)) return true;
   if (
     input.key.toLowerCase() === "escape" &&

@@ -3182,6 +3182,10 @@ async function waitForWorkbenchState(
         web: state?.web?.settingsMetrics?.connectionsMutation ?? null,
         lynx: state?.lynx?.settingsMetrics?.connectionsMutation ?? null,
       },
+      sidebarThreadJumpLabels: {
+        web: (state?.web?.sidebarDiagnostics?.threads ?? []).map((row) => row.jumpLabel),
+        lynx: (state?.lynx?.sidebarDiagnostics?.threads ?? []).map((row) => row.jumpLabel),
+      },
     })}`,
   );
 }
@@ -3769,6 +3773,66 @@ async function runSidebarThreadShortcutFlow(cdp, sessionId) {
   const targetIndex = initialIndex === 0 ? 1 : 0;
   const targetThreadId = webThreadIds[targetIndex];
   const timeline = [{ step: "initial", threadId: initialThreadId, orderedThreadIds: webThreadIds }];
+  const allRowsHaveJumpLabels = (client) => {
+    const rows = client?.sidebarDiagnostics?.threads ?? [];
+    return (
+      rows.length >= 2 &&
+      rows.every((row) => typeof row.jumpLabel === "string" && row.jumpLabel.length > 0)
+    );
+  };
+  const allRowsHideJumpLabels = (client) =>
+    (client?.sidebarDiagnostics?.threads ?? []).every((row) => row.jumpLabel === null);
+
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    { type: "rawKeyDown", modifiers: 4, key: "Meta", code: "MetaLeft", windowsVirtualKeyCode: 91 },
+    sessionId,
+  );
+  const lynxModifierDown = await evaluate(
+    cdp,
+    sessionId,
+    `document.getElementById('lynx-pane')?.contentWindow
+      ?.__T3_LYNX_WEB_PREVIEW__?.dispatchModifierState(
+        'keydown',
+        { meta: true, ctrl: false, shift: false, alt: false }
+      ) ?? false`,
+  );
+  if (!lynxModifierDown) throw new Error("Lynx modifier-down event was not dispatched");
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => allRowsHaveJumpLabels(next?.web) && allRowsHaveJumpLabels(next?.lynx),
+    3_000,
+    "Sidebar thread jump hints visible",
+  );
+  timeline.push({
+    step: "modifier-down",
+    webLabels: state.web.sidebarDiagnostics.threads.map((row) => row.jumpLabel),
+    lynxLabels: state.lynx.sidebarDiagnostics.threads.map((row) => row.jumpLabel),
+  });
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    { type: "keyUp", modifiers: 0, key: "Meta", code: "MetaLeft", windowsVirtualKeyCode: 91 },
+    sessionId,
+  );
+  const lynxModifierUp = await evaluate(
+    cdp,
+    sessionId,
+    `document.getElementById('lynx-pane')?.contentWindow
+      ?.__T3_LYNX_WEB_PREVIEW__?.dispatchModifierState(
+        'keyup',
+        { meta: false, ctrl: false, shift: false, alt: false }
+      ) ?? false`,
+  );
+  if (!lynxModifierUp) throw new Error("Lynx modifier-up event was not dispatched");
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => allRowsHideJumpLabels(next?.web) && allRowsHideJumpLabels(next?.lynx),
+    3_000,
+    "Sidebar thread jump hints hidden",
+  );
+  timeline.push({ step: "modifier-up" });
 
   await dispatchMetaDigit(cdp, sessionId, targetIndex + 1);
   state = await waitForWorkbenchState(
@@ -10995,7 +11059,7 @@ async function captureCell({
           ? "web-cdp-keyboard|lynx-host-keyboard-packet"
           : "not-required",
         modifierOnlyVisibility: isSidebarThreadShortcutState
-          ? "pending-lynxtron-raw-modifier-events"
+          ? "web-keydown-up|lynx-clay-keydown-up"
           : "not-required",
         timeline: sidebarThreadShortcutTimeline,
       },

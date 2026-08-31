@@ -67,6 +67,7 @@ function JumpHintBadge({ label }: { readonly label: string }) {
   return (
     <HostText
       aria-hidden
+      data-sidebar-thread-jump-hint={label}
       className="pointer-events-none absolute right-1.5 top-1/2 z-10 inline-flex h-5 -translate-y-1/2 items-center rounded-full border border-border/80 bg-background/95 px-1.5 font-mono text-[10px] font-medium tracking-tight text-foreground shadow-sm"
     >
       {label}

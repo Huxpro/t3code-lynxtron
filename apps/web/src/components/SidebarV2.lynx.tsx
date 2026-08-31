@@ -11,7 +11,11 @@ import {
 import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
 import { DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS } from "@t3tools/contracts/settings";
 import { formatRelativeTimeLabel } from "../timestampFormat";
-import { shortcutLabelForCommand } from "../keybindings";
+import {
+  shortcutLabelForCommand,
+  shouldShowThreadJumpHintsForModifiers,
+  threadJumpCommandForIndex,
+} from "../keybindings";
 import { useProjects, useThreadShells } from "../state/entities";
 import { useViewportSnapshot } from "../hooks/useViewportSnapshot";
 import { ProjectFavicon } from "./ProjectFavicon";
@@ -50,6 +54,7 @@ import {
 } from "@t3tools/client-runtime/presentation/sidebar";
 import { getPref, setPref } from "../../../lynxtron/src/app/state/prefsStore";
 import { onSidebarThreadJump } from "../../../lynxtron/src/app/state/sidebarThreadNavigation";
+import { useLynxShortcutModifierState } from "../../../lynxtron/src/app/state/shortcutModifierState";
 
 const THREAD_VISITED_TIMESTAMPS_PREF = "threadLastVisitedAtById";
 
@@ -420,6 +425,7 @@ export default function SidebarV2() {
   const projects = useProjects();
   const threads = useThreadShells();
   const viewport = useViewportSnapshot();
+  const shortcutModifiers = useLynxShortcutModifierState();
   const [threadSearchQuery, setThreadSearchQuery] = useState("");
   const [activeSearchResultIndex, setActiveSearchResultIndex] = useState(0);
   const [projectScopeKey, setProjectScopeKey] = useState<string | null>(null);
@@ -516,6 +522,24 @@ export default function SidebarV2() {
     () => [...visibleActiveThreads, ...visibleSettledThreads],
     [visibleActiveThreads, visibleSettledThreads],
   );
+  const showJumpHints =
+    serverConfig !== null &&
+    serverConfig !== undefined &&
+    shouldShowThreadJumpHintsForModifiers(shortcutModifiers, serverConfig.keybindings, {
+      platform: "MacIntel",
+    });
+  const jumpLabelByThreadId = useMemo(() => {
+    const labels = new Map<string, string>();
+    if (!serverConfig || !showJumpHints) return labels;
+    const keybindings = serverConfig.keybindings;
+    for (const [index, thread] of orderedVisibleThreads.entries()) {
+      const command = threadJumpCommandForIndex(index);
+      if (!command) break;
+      const label = shortcutLabelForCommand(keybindings, command, "MacIntel");
+      if (label) labels.set(thread.id, label);
+    }
+    return labels;
+  }, [orderedVisibleThreads, serverConfig, showJumpHints]);
   useEffect(
     () =>
       onSidebarThreadJump((index) => {
@@ -837,7 +861,7 @@ export default function SidebarV2() {
                 threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
                 settledTimeLabel=""
                 topStatus={statusPresentation(status, thread)}
-                jumpLabel={null}
+                jumpLabel={jumpLabelByThreadId.get(thread.id) ?? null}
                 favicon={
                   <ProjectFavicon
                     environmentId={thread.environmentId}
@@ -1019,7 +1043,7 @@ export default function SidebarV2() {
                 threadTimeLabel=""
                 settledTimeLabel={settledTimeLabel(thread)}
                 topStatus={null}
-                jumpLabel={null}
+                jumpLabel={jumpLabelByThreadId.get(thread.id) ?? null}
                 favicon={
                   <Icon name="message-square" size={16} color="#818181" className="size-4" />
                 }
