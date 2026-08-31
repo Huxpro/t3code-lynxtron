@@ -1497,6 +1497,10 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("opens both right panels before driving a Review diff", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
     assert.match(
       source,
       /let webReviewPanelInputSent =\s*!isReviewState \|\| reviewExpectation === "checkpoint" \|\| reviewExpectation === "tree";/,
@@ -1505,5 +1509,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "!lynxReviewPanelInputSent &&");
     assert.include(source, "if (!lynxReviewDiffInputSent && checkpointDiffPoints?.lynx)");
     assert.notInclude(source, "'[data-right-panel-action=\"diff\"]'");
+    assert.include(source, "function reviewCheckpointCardGeometryMatches");
+    assert.include(source, "function reviewDiffGeometryMatches");
+    assert.include(source, "uniqueLineBands");
+    assert.include(workbench, "composedCodeGeometry");
+    assert.include(workbench, "visitDiffTree(child.shadowRoot)");
+    assert.include(workbench, "composedDiffHeaders.map(readElementBox)");
+    assert.include(workbench, "composedDiffLines.map(readElementBox)");
   });
 });

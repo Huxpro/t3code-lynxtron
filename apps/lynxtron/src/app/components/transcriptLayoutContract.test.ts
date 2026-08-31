@@ -97,8 +97,12 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".theme-light .composer-compact-controls-menu {");
     expect(overrides).toContain("background-color: rgba(255, 255, 255, 0.836);");
     expect(overrides).toContain("box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);");
-    expect(overrides).toContain(".composer-context-item {\n  position: relative;\n  min-width: 0;");
-    expect(overrides).toContain(".composer-context-control--checkout {\n  width: 100%;");
+    expect(overrides).toContain(
+      ".composer-context-item--checkout,\n.composer-context-item--branch {\n  position: relative;",
+    );
+    expect(overrides).toContain(
+      ".composer-context-control--checkout {\n  width: 100%;\n  min-width: 0;",
+    );
     expect(overrides).toContain(
       ".composer-context-label--checkout,\n.composer-context-label--branch {",
     );
@@ -154,5 +158,26 @@ describe("transcript layout contract", () => {
     const block = overrides.slice(start, overrides.indexOf("}", start));
     expect(block).toContain("width: 100%;");
     expect(block).toContain("min-width: 0;");
+  });
+
+  it("keeps shared user-row spacing in the native list-item measurement", () => {
+    expect(overrides).toContain(".timeline-row-root--user {");
+    expect(overrides).toContain(".timeline-row-root--user > .transcript-user-outer {");
+  });
+
+  it("retains the authority checkpoint border in light mode", () => {
+    const start = overrides.indexOf(".theme-light .turn-diff-card {");
+    const block = overrides.slice(start, overrides.indexOf("}", start));
+    expect(block).toContain("border-color: rgba(228, 228, 231, 0.7);");
+  });
+
+  it("keeps the Lynx patch surface flush with the Web diff renderer", () => {
+    const fileStart = overrides.indexOf(".diff-code-file {");
+    const fileBlock = overrides.slice(fileStart, overrides.indexOf("}", fileStart));
+    const headerStart = overrides.indexOf(".diff-code-file__header {");
+    const headerBlock = overrides.slice(headerStart, overrides.indexOf("}", headerStart));
+    expect(fileBlock).toContain("border-width: 0;");
+    expect(fileBlock).toContain("border-radius: 0;");
+    expect(headerBlock).toContain("height: 33px;");
   });
 });

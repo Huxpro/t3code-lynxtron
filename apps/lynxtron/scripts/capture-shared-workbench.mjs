@@ -1602,6 +1602,61 @@ function reviewDiffHasExpectedPatch(diff) {
   );
 }
 
+function reviewCheckpointCardGeometryMatches(webMetrics, lynxMetrics, expectation) {
+  if (expectation !== "checkpoint" && expectation !== "tree" && expectation !== "diff") {
+    return true;
+  }
+  const webCard = webMetrics?.checkpointCards?.find((card) => card.status === "ready");
+  const lynxCard = lynxMetrics?.checkpointCards?.find((card) => card.status === "ready");
+  if (!webCard || !lynxCard) return false;
+  const textLeafMatches = (webBox, lynxBox, size, lineHeight) =>
+    webBox?.style?.fontSize === size &&
+    lynxBox?.style?.fontSize === size &&
+    webBox?.style?.lineHeight === lineHeight &&
+    lynxBox?.style?.lineHeight === lineHeight &&
+    Math.abs(webBox.rect.y - lynxBox.rect.y) <= 1 &&
+    Math.abs(webBox.rect.height - lynxBox.rect.height) <= 1;
+  const lightBorderReady =
+    theme !== "light" || (lynxCard.rect?.style?.borderTopColor ?? "") !== "rgba(0, 0, 0, 0)";
+  return (
+    rectDeltaWithin(webCard.rect, lynxCard.rect, 1) &&
+    rectDeltaWithin(webCard.headerRect, lynxCard.headerRect, 1) &&
+    textLeafMatches(webCard.statusText, lynxCard.statusText, "12px", "16px") &&
+    textLeafMatches(webCard.hintText, lynxCard.hintText, "11px", "16px") &&
+    textLeafMatches(webCard.openLabel, lynxCard.openLabel, "12px", "16px") &&
+    lightBorderReady
+  );
+}
+
+function reviewDiffGeometryMatches(webMetrics, lynxMetrics, expectation) {
+  if (expectation !== "diff") return true;
+  const webDiff = webMetrics?.diff;
+  const lynxDiff = lynxMetrics?.diff;
+  const uniqueLineBands = (lines = []) =>
+    [
+      ...new Map(lines.map((line) => [`${line.rect.y}:${line.rect.height}`, line.rect])).values(),
+    ].sort((left, right) => left.y - right.y);
+  const webHeaders = webDiff?.composedCodeGeometry?.headers ?? [];
+  const lynxHeaders = lynxDiff?.composedCodeGeometry?.headers ?? [];
+  const webLines = uniqueLineBands(webDiff?.composedCodeGeometry?.lines);
+  const lynxLines = uniqueLineBands(lynxDiff?.composedCodeGeometry?.lines);
+  return (
+    rectDeltaWithin(webDiff?.surfaceRect, lynxDiff?.surfaceRect, 1) &&
+    rectDeltaWithin(webDiff?.subheaderRect, lynxDiff?.subheaderRect, 1) &&
+    rectDeltaWithin(webDiff?.viewportRect, lynxDiff?.viewportRect, 1) &&
+    webHeaders.length === 1 &&
+    lynxHeaders.length === 1 &&
+    rectDeltaWithin(webHeaders[0], lynxHeaders[0], 1) &&
+    webLines.length > 0 &&
+    webLines.length === lynxLines.length &&
+    webLines.every(
+      (line, index) =>
+        Math.abs(line.y - lynxLines[index].y) <= 1 &&
+        Math.abs(line.height - lynxLines[index].height) <= 1,
+    )
+  );
+}
+
 function checkpointCardTypographyMatches(webState, lynxState) {
   if (stateId !== "existing-thread-completed") return true;
   const webCard = webState?.reviewMetrics?.checkpointCards?.find((card) => card.status === "ready");
@@ -8868,6 +8923,16 @@ async function captureCell({
     : null;
   const finalReviewReady =
     reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
+    reviewCheckpointCardGeometryMatches(
+      state?.web?.reviewMetrics,
+      state?.lynx?.reviewMetrics,
+      reviewExpectation,
+    ) &&
+    reviewDiffGeometryMatches(
+      state?.web?.reviewMetrics,
+      state?.lynx?.reviewMetrics,
+      reviewExpectation,
+    ) &&
     checkpointCardTypographyMatches(state?.web, state?.lynx) &&
     sidebarDiffPairMatches(
       state?.web?.sidebarDiagnostics,

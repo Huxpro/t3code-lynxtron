@@ -1161,6 +1161,21 @@ function readReviewMetrics(root) {
   const emptySurface = root?.querySelector("[data-right-panel-empty-state]");
   const diffSurface = root?.querySelector("[data-review-surface='diff']");
   const codeDiff = diffSurface?.querySelector("[data-review-code-diff], .diff-render-surface");
+  const composedDiffElements = [];
+  const visitDiffTree = (node) => {
+    for (const child of node?.children ?? []) {
+      composedDiffElements.push(child);
+      visitDiffTree(child);
+      if (child.shadowRoot) visitDiffTree(child.shadowRoot);
+    }
+  };
+  visitDiffTree(codeDiff);
+  const composedDiffHeaders = composedDiffElements.filter((element) =>
+    element.matches?.("[data-diffs-header], .diff-code-file__header"),
+  );
+  const composedDiffLines = composedDiffElements.filter((element) =>
+    element.matches?.("[data-line], [data-line-type], [data-review-code-line], .diff-code-line"),
+  );
   const checkpointCards = [...(root?.querySelectorAll("[data-review-checkpoint-card]") ?? [])];
   const trees = [...(root?.querySelectorAll("[data-review-tree]") ?? [])];
   const terminal = root?.querySelector(".terminal-panel");
@@ -1227,6 +1242,10 @@ function readReviewMetrics(root) {
             diffSurface.querySelector(".diff-panel-viewport, .diff-panel"),
           ),
           codeDiffRect: readElementBox(codeDiff),
+          composedCodeGeometry: {
+            headers: composedDiffHeaders.map(readElementBox).filter(Boolean),
+            lines: composedDiffLines.map(readElementBox).filter(Boolean),
+          },
           codeFiles: [...diffSurface.querySelectorAll("[data-review-code-file]")].map((item) => ({
             path: item.getAttribute("data-review-code-file"),
             rect: readElementBox(item),
