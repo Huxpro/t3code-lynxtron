@@ -5,7 +5,9 @@ import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";
 import { dismissOpenSearchOverlay, uiActions } from "./uiState";
 import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
+import { threadJumpIndexFromCommand } from "../../../../web/src/keybindings";
 import { terminalReturnController } from "./terminalKeyboard";
+import { requestSidebarThreadJump } from "./sidebarThreadNavigation";
 
 interface GlobalEventEmitterLike {
   addListener?: (eventName: string, listener: (...args: unknown[]) => void) => void;
@@ -36,6 +38,8 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
   }
   const state = getT3ClientSnapshot();
   const command = resolveKeyboardPacketCommand(input, state.serverConfig?.keybindings ?? []);
+  const jumpIndex = threadJumpIndexFromCommand(command ?? "");
+  if (jumpIndex !== null) return requestSidebarThreadJump(jumpIndex);
 
   switch (command) {
     case "sidebar.toggle":

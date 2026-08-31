@@ -17,6 +17,15 @@ describe("Lynxtron keyboard command resolution", () => {
       "quick-switch": "commandPalette.toggle",
       "open-settings": "settings.open",
       "toggle-sidebar": "sidebar.toggle",
+      "thread-jump-1": "thread.jump.1",
+      "thread-jump-2": "thread.jump.2",
+      "thread-jump-3": "thread.jump.3",
+      "thread-jump-4": "thread.jump.4",
+      "thread-jump-5": "thread.jump.5",
+      "thread-jump-6": "thread.jump.6",
+      "thread-jump-7": "thread.jump.7",
+      "thread-jump-8": "thread.jump.8",
+      "thread-jump-9": "thread.jump.9",
     } as const;
 
     for (const [index, accelerator] of DISCRETE_KEYBOARD_ACCELERATORS.entries()) {
@@ -27,7 +36,7 @@ describe("Lynxtron keyboard command resolution", () => {
       });
       assert.equal(
         resolveKeyboardPacketCommand(packet, DEFAULT_RESOLVED_KEYBINDINGS),
-        expected[accelerator.id],
+        expected[accelerator.id as keyof typeof expected],
       );
     }
   });

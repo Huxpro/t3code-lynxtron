@@ -14,8 +14,31 @@ describe("Lynxtron discrete keyboard menu", () => {
         "quick-switch",
         "file-picker",
         "toggle-sidebar",
+        "thread-jump-1",
+        "thread-jump-2",
+        "thread-jump-3",
+        "thread-jump-4",
+        "thread-jump-5",
+        "thread-jump-6",
+        "thread-jump-7",
+        "thread-jump-8",
+        "thread-jump-9",
       ],
     );
+  });
+
+  it("registers hidden thread jump accelerators", () => {
+    const jumps = DISCRETE_KEYBOARD_ACCELERATORS.filter((entry) =>
+      entry.id.startsWith("thread-jump-"),
+    );
+    assert.equal(jumps.length, 9);
+    assert.deepInclude(jumps[0]!, {
+      accelerator: "CommandOrControl+1",
+      key: "1",
+      code: "Digit1",
+      visible: false,
+      acceleratorWorksWhenHidden: true,
+    });
   });
 
   it("keeps physical Return disabled until Terminal focus is reported", () => {

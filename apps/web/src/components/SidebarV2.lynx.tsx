@@ -49,6 +49,7 @@ import {
   sanitizeThreadVisitedTimestampRecord,
 } from "@t3tools/client-runtime/presentation/sidebar";
 import { getPref, setPref } from "../../../lynxtron/src/app/state/prefsStore";
+import { onSidebarThreadJump } from "../../../lynxtron/src/app/state/sidebarThreadNavigation";
 
 const THREAD_VISITED_TIMESTAMPS_PREF = "threadLastVisitedAtById";
 
@@ -511,6 +512,21 @@ export default function SidebarV2() {
     if (threadSearchQuery.trim()) return [];
     return settledShelfExpanded ? settledThreads : [];
   }, [settledShelfExpanded, settledThreads, threadSearchQuery]);
+  const orderedVisibleThreads = useMemo(
+    () => [...visibleActiveThreads, ...visibleSettledThreads],
+    [visibleActiveThreads, visibleSettledThreads],
+  );
+  useEffect(
+    () =>
+      onSidebarThreadJump((index) => {
+        const thread = orderedVisibleThreads[index];
+        if (!thread) return false;
+        markThreadVisited(thread);
+        t3ClientActions.selectThread(thread.id);
+        return true;
+      }),
+    [markThreadVisited, orderedVisibleThreads],
+  );
   useEffect(() => {
     setActiveSearchResultIndex(0);
   }, [threadSearchQuery]);

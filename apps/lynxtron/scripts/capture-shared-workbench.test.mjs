@@ -1169,7 +1169,12 @@ describe("shared workbench lifecycle fault capture", () => {
     );
 
     assert.include(source, '"sidebar-thread-hover-preview"');
+    assert.include(source, '"sidebar-thread-shortcuts"');
     assert.include(source, "runSidebarThreadHoverPreviewFlow");
+    assert.include(source, "runSidebarThreadShortcutFlow");
+    assert.include(source, "dispatchMetaDigit");
+    assert.include(source, "web-cdp-keyboard|lynx-host-keyboard-packet");
+    assert.include(source, "pending-lynxtron-raw-modifier-events");
     assert.include(source, 'step: "quick-leave"');
     assert.include(source, "Sidebar details opened after quick pointer leave");
     assert.include(source, 'step: "opened"');

@@ -212,12 +212,14 @@ const isFlatSidebarLayoutState = new Set([
   "sidebar-v2-new-thread-hover",
   "sidebar-v2-new-project-hover",
   "sidebar-v2-new-thread-projects",
+  "sidebar-thread-shortcuts",
   "add-project-sources",
   "command-palette-navigation",
 ]).has(stateId);
 const isSidebarControlHoverState =
   stateId === "sidebar-v2-new-thread-hover" || stateId === "sidebar-v2-new-project-hover";
 const isSidebarThreadHoverPreviewState = stateId === "sidebar-thread-hover-preview";
+const isSidebarThreadShortcutState = stateId === "sidebar-thread-shortcuts";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
 const composerExpectationByStateId = {
@@ -3686,6 +3688,88 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
   return { final, openedByClient, timeline };
 }
 
+async function dispatchMetaDigit(cdp, sessionId, digit) {
+  const code = `Digit${digit}`;
+  const keyCode = 48 + digit;
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    { type: "rawKeyDown", modifiers: 4, key: String(digit), code, windowsVirtualKeyCode: keyCode },
+    sessionId,
+  );
+  await cdp.send(
+    "Input.dispatchKeyEvent",
+    { type: "keyUp", modifiers: 4, key: String(digit), code, windowsVirtualKeyCode: keyCode },
+    sessionId,
+  );
+}
+
+async function runSidebarThreadShortcutFlow(cdp, sessionId) {
+  let state = await readWorkbenchState(cdp, sessionId);
+  const webThreadIds = (state?.web?.sidebarDiagnostics?.threads ?? [])
+    .map(({ threadId }) => threadId)
+    .filter(Boolean);
+  const lynxThreadIds = (state?.lynx?.sidebarDiagnostics?.threads ?? [])
+    .map(({ threadId }) => threadId)
+    .filter(Boolean);
+  if (webThreadIds.length < 2 || JSON.stringify(webThreadIds) !== JSON.stringify(lynxThreadIds)) {
+    throw new Error(
+      `Sidebar shortcut fixture requires two matching ordered threads: ${JSON.stringify({ webThreadIds, lynxThreadIds })}`,
+    );
+  }
+  const initialThreadId = state?.web?.productState?.selectedThread;
+  const initialIndex = webThreadIds.indexOf(initialThreadId);
+  const targetIndex = initialIndex === 0 ? 1 : 0;
+  const targetThreadId = webThreadIds[targetIndex];
+  const timeline = [{ step: "initial", threadId: initialThreadId, orderedThreadIds: webThreadIds }];
+
+  await dispatchMetaDigit(cdp, sessionId, targetIndex + 1);
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => next?.web?.productState?.selectedThread === targetThreadId,
+    3_000,
+    "Web thread jump shortcut",
+  );
+  timeline.push({ step: "web-jump", threadId: targetThreadId });
+
+  const lynxDispatched = await evaluate(
+    cdp,
+    sessionId,
+    `document.getElementById('lynx-pane')?.contentWindow
+      ?.__T3_LYNX_WEB_PREVIEW__?.dispatchKeyboardShortcut(${JSON.stringify(`thread-${targetIndex + 1}`)}) ?? false`,
+  );
+  if (!lynxDispatched) throw new Error("Lynx thread jump packet was not dispatched");
+  state = await waitForWorkbenchState(
+    cdp,
+    sessionId,
+    (next) => next?.lynx?.productState?.selectedThread === targetThreadId,
+    3_000,
+    "Lynx thread jump shortcut",
+  );
+  timeline.push({ step: "lynx-jump", threadId: targetThreadId });
+
+  if (initialIndex >= 0) {
+    await dispatchMetaDigit(cdp, sessionId, initialIndex + 1);
+    await evaluate(
+      cdp,
+      sessionId,
+      `document.getElementById('lynx-pane')?.contentWindow
+        ?.__T3_LYNX_WEB_PREVIEW__?.dispatchKeyboardShortcut(${JSON.stringify(`thread-${initialIndex + 1}`)}) ?? false`,
+    );
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) =>
+        next?.web?.productState?.selectedThread === initialThreadId &&
+        next?.lynx?.productState?.selectedThread === initialThreadId,
+      3_000,
+      "Thread jump shortcut restore",
+    );
+    timeline.push({ step: "restored", threadId: initialThreadId });
+  }
+  return { state, timeline };
+}
+
 async function waitForSidebarTooltip(cdp, sessionId, client, relationId, expectedText) {
   const deadline = Date.now() + 1_500;
   let tooltip = null;
@@ -5279,6 +5363,7 @@ async function main() {
     "sidebar-v2-new-thread-hover",
     "sidebar-v2-new-project-hover",
     "sidebar-thread-hover-preview",
+    "sidebar-thread-shortcuts",
     "sidebar-v2-new-thread-projects",
   ]);
   const seedSource =
@@ -5701,6 +5786,7 @@ async function captureCell({
     "sidebar-v2-new-thread-hover": "existing-thread",
     "sidebar-v2-new-project-hover": "existing-thread",
     "sidebar-thread-hover-preview": "existing-thread",
+    "sidebar-thread-shortcuts": "existing-thread",
     "sidebar-v2-new-thread-projects": "existing-thread",
     "existing-thread-working": "existing-thread",
     "git-publish-dialog": "existing-thread",
@@ -5839,6 +5925,10 @@ async function captureCell({
     ? "waiting-thread"
     : "not-required";
   let sidebarThreadHoverPreview = null;
+  let sidebarThreadShortcutStage = isSidebarThreadShortcutState
+    ? "waiting-threads"
+    : "not-required";
+  const sidebarThreadShortcutTimeline = [];
   let newThreadProjectsStage =
     stateId === "sidebar-v2-new-thread-projects" ? "waiting-controls" : "not-required";
   const newThreadProjectsTimeline = [];
@@ -8362,6 +8452,14 @@ async function captureCell({
     state = await readWorkbenchState(cdp, sessionId);
     reachedTargetState = true;
   }
+  if (isSidebarThreadShortcutState) {
+    state = await waitForSidebarV2Controls(cdp, sessionId);
+    const flow = await runSidebarThreadShortcutFlow(cdp, sessionId);
+    state = flow.state;
+    sidebarThreadShortcutTimeline.push(...flow.timeline);
+    sidebarThreadShortcutStage = "complete";
+    reachedTargetState = true;
+  }
   if (stateId === "sidebar-v2-new-thread-projects") {
     state = await waitForSidebarV2Controls(cdp, sessionId);
     const initialThreadIds = {
@@ -10570,6 +10668,7 @@ async function captureCell({
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
     (!isSidebarControlHoverState || sidebarControlHoverStage === "complete") &&
     (!isSidebarThreadHoverPreviewState || sidebarThreadHoverPreviewStage === "complete") &&
+    (!isSidebarThreadShortcutState || sidebarThreadShortcutStage === "complete") &&
     (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
     (stateId !== "add-project-sources" || addProjectSourcesStage === "complete") &&
     settingsContentMatch !== false &&
@@ -10840,6 +10939,17 @@ async function captureCell({
           placement: "right-start-4",
           popupTransition: "opacity+scale",
         },
+      },
+      sidebarThreadShortcuts: {
+        match: !isSidebarThreadShortcutState || sidebarThreadShortcutStage === "complete",
+        stage: sidebarThreadShortcutStage,
+        inputChannel: isSidebarThreadShortcutState
+          ? "web-cdp-keyboard|lynx-host-keyboard-packet"
+          : "not-required",
+        modifierOnlyVisibility: isSidebarThreadShortcutState
+          ? "pending-lynxtron-raw-modifier-events"
+          : "not-required",
+        timeline: sidebarThreadShortcutTimeline,
       },
       newThreadProjects: {
         match: finalNewThreadProjectsReady && newThreadProjectsStage === "complete",

@@ -47,7 +47,7 @@ interface BrowserPreviewDiagnostics {
   advanceToReady(): number;
   emitSequenceGapForDiagnostic(): number;
   switchScenario(scenarioId: BrowserPreviewScenarioId): number;
-  dispatchKeyboardShortcut(shortcut: "command" | "files"): boolean;
+  dispatchKeyboardShortcut(shortcut: "command" | "files" | `thread-${number}`): boolean;
   openWorkspaceMenuForHarness(open: boolean): boolean;
   invokeTooltipForHarness(relationId: string, action: "hover" | "leave"): boolean;
   invokeResizeForHarness(target: "sidebar" | "right-panel", startX: number, endX: number): boolean;
@@ -267,12 +267,16 @@ const diagnostics: BrowserPreviewDiagnostics = {
     return connectorHost.switchScenario(nextScenarioId);
   },
   dispatchKeyboardShortcut: (shortcut) => {
-    const key = shortcut === "files" ? "p" : "k";
+    const threadIndex = shortcut.startsWith("thread-")
+      ? Number(shortcut.slice("thread-".length))
+      : null;
+    const key = threadIndex === null ? (shortcut === "files" ? "p" : "k") : String(threadIndex);
+    const code = threadIndex === null ? `Key${key.toUpperCase()}` : `Digit${threadIndex}`;
     emitGlobalEvent("t3:keyboard", [
       {
         type: "keydown",
         key,
-        code: `Key${key.toUpperCase()}`,
+        code,
         modifiers: { meta: true, ctrl: false, shift: false, alt: false },
         repeat: false,
         source: { kind: "lynxtron-menu", platform: "darwin" },

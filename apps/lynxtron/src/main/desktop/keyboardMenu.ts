@@ -13,7 +13,8 @@ export interface DiscreteKeyboardAccelerator {
     | "new-thread"
     | "quick-switch"
     | "open-settings"
-    | "toggle-sidebar";
+    | "toggle-sidebar"
+    | `thread-jump-${number}`;
   readonly label: string;
   readonly accelerator: string;
   readonly key: string;
@@ -97,6 +98,17 @@ export const DISCRETE_KEYBOARD_ACCELERATORS: ReadonlyArray<DiscreteKeyboardAccel
     shift: false,
     menu: "view",
   },
+  ...Array.from({ length: 9 }, (_, index) => ({
+    id: `thread-jump-${index + 1}` as const,
+    label: `Jump to Thread ${index + 1}`,
+    accelerator: `CommandOrControl+${index + 1}`,
+    key: String(index + 1),
+    code: `Digit${index + 1}`,
+    shift: false,
+    menu: "view" as const,
+    visible: false,
+    acceleratorWorksWhenHidden: true,
+  })),
 ];
 
 export function keyboardPacketPlatformForProcess(platform: string): KeyboardPacketPlatform {
