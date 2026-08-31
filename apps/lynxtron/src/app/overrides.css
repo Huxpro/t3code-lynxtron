@@ -3747,8 +3747,20 @@
   max-width: 614px;
 }
 .transcript-user-body {
+  width: 100%;
+  min-width: 0;
   font-size: 14px;
   line-height: 23px;
+}
+.transcript-user-body .markdown-body,
+.transcript-user-body .md-paragraph {
+  width: 100%;
+  min-width: 0;
+}
+.transcript-user-body .md-paragraph {
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .inline-markdown-row {
   display: flex;

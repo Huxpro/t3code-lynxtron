@@ -538,6 +538,31 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "openInMenuEvidence?.match === true");
   });
 
+  it("seeds and contains a responsive narrow chat transcript", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(source, 'stateId === "chat-thread-narrow"');
+    assert.include(source, 'kind: "narrow-chat-transcript"');
+    assert.include(source, "function narrowChatResponsiveMatches");
+    assert.include(source, "box?.scroll?.width <= box?.scroll?.clientWidth + 1");
+    assert.include(source, "narrowChatResponsiveMatches(state?.web?.timelineMetrics");
+    assert.include(source, "narrowChatHoverEvidence?.match === true");
+    assert.include(source, 'inputChannel: "web-cdp-pointer|lynx-cdp-pointer"');
+    assert.include(
+      workbench,
+      'userMeta: readElementBox(root?.querySelector(".transcript-user-meta"))',
+    );
+    assert.include(
+      workbench,
+      'assistantMeta: readElementBox(doc.querySelector(".transcript-assistant-meta"))',
+    );
+    assert.include(workbench, "width: element.scrollWidth");
+    assert.include(workbench, "clientWidth: element.clientWidth");
+  });
+
   it("captures editing and save lifecycle only in a disposable workspace", () => {
     const editingFlow = source.slice(
       source.indexOf("async function runFileEditingSaveFlow"),
@@ -1066,7 +1091,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "function flatSidebarLayoutMatches");
     assert.include(source, '"sidebar-flat-layout",');
     assert.include(source, "finalFlatSidebarLayoutReady");
-    assert.include(source, "isFlatSidebarLayoutState || coreGeometryMatches");
+    assert.include(source, "isFlatSidebarLayoutState ||");
+    assert.include(source, "isNarrowChatThreadState ||");
+    assert.include(source, "coreGeometryMatches(state?.web, state?.lynx)");
     assert.include(source, "isFlatSidebarLayoutState || headerGitActionMatches");
     assert.notInclude(source, 'const initialOverlay = stateId === "add-project-sources"');
     assert.include(source, 'stateId !== "add-project-sources"');

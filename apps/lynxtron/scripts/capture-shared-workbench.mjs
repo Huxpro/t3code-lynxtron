@@ -171,6 +171,7 @@ if (!["complete", "driver"].includes(providerDialogStopAt)) {
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
 const requiresStableProviderFaultPreflight = stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
+const isNarrowChatThreadState = stateId === "chat-thread-narrow";
 const isMultiStepQuestionState = stateId === "existing-thread-question-multi-step";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
@@ -276,6 +277,7 @@ const shouldClearWebNotification =
   isComposerPlanModeState ||
   isProjectSettingsState ||
   isFilesSurfaceState ||
+  isNarrowChatThreadState ||
   isRightPanelTerminalState ||
   isReviewState;
 const reviewExpectation =
@@ -632,6 +634,37 @@ function failedTranscriptGeometryMatches(webMetrics, lynxMetrics) {
       )
     );
   });
+}
+
+function narrowChatResponsiveMatches(webMetrics, lynxMetrics) {
+  if (!isNarrowChatThreadState) return true;
+  const rowsMatch =
+    JSON.stringify((webMetrics?.rows ?? []).map(({ id, kind, role }) => ({ id, kind, role }))) ===
+    JSON.stringify((lynxMetrics?.rows ?? []).map(({ id, kind, role }) => ({ id, kind, role })));
+  const contained = (metrics) => {
+    const rows = metrics?.rowGeometry ?? [];
+    const userBubble = metrics?.anatomy?.userBubble;
+    const assistant = metrics?.assistantGeometry?.body;
+    const codeBlocks = metrics?.codeBlockGeometry ?? [];
+    const userRow = rows.find(({ role }) => role === "user");
+    const assistantRow = rows.find(({ role }) => role === "assistant");
+    const within = (child, parent) =>
+      child?.rect &&
+      parent &&
+      child.rect.x >= parent.x - 1 &&
+      child.rect.x + child.rect.width <= parent.x + parent.width + 1;
+    return (
+      rows.length === 2 &&
+      within(userBubble, userRow) &&
+      within(assistant, assistantRow) &&
+      codeBlocks.length === 1 &&
+      within(codeBlocks[0]?.rect, assistantRow) &&
+      [userBubble, assistant, codeBlocks[0]?.rect].every(
+        (box) => box?.scroll?.width <= box?.scroll?.clientWidth + 1,
+      )
+    );
+  };
+  return rowsMatch && contained(webMetrics) && contained(lynxMetrics);
 }
 
 function approvalComposerMatches(webMetrics, lynxMetrics) {
@@ -5145,6 +5178,87 @@ async function hashFile(filePath) {
 async function prepareStateFixture({ seed, expectedThreadFixture }) {
   const requiresRunningRuntime =
     stateId === "composer-working" || stateId === "existing-thread-working";
+  if (isNarrowChatThreadState) {
+    const threadId = expectedThreadFixture?.id;
+    if (!threadId) throw new Error("Narrow chat fixture requires a seeded thread.");
+    const databasePath = path.join(baseDir, "userdata", "state.sqlite");
+    const database = new (await import("node:sqlite")).DatabaseSync(databasePath);
+    const turnId = "fidelity-narrow-chat-turn";
+    const userMessageId = "fidelity-narrow-chat-user";
+    const assistantMessageId = "fidelity-narrow-chat-assistant";
+    const requestedAt = "2026-08-30T04:00:00.000Z";
+    const completedAt = "2026-08-30T04:01:00.000Z";
+    const userText =
+      "Please keep this deliberately long request readable when the chat thread becomes very narrow, including `inline-code-that-must-wrap-safely` and the message hover controls.";
+    const assistantText =
+      'Implemented the responsive behavior while preserving the shared layout.\n\n```ts title="src/responsive.ts"\nexport const responsiveLayout = (width: number) => width < 520 ? "compact" : "wide";\n```\n\nLong prose should wrap inside the available column without forcing horizontal overflow.';
+    try {
+      database.exec("BEGIN IMMEDIATE");
+      database.prepare("DELETE FROM projection_thread_messages WHERE thread_id = ?").run(threadId);
+      database
+        .prepare("DELETE FROM projection_thread_activities WHERE thread_id = ?")
+        .run(threadId);
+      database.prepare("DELETE FROM projection_turns WHERE thread_id = ?").run(threadId);
+      database
+        .prepare(
+          `INSERT INTO projection_thread_messages (
+            message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at,
+            attachments_json
+          ) VALUES
+            (?, ?, ?, 'user', ?, 0, ?, ?, '[]'),
+            (?, ?, ?, 'assistant', ?, 0, ?, ?, '[]')`,
+        )
+        .run(
+          userMessageId,
+          threadId,
+          turnId,
+          userText,
+          requestedAt,
+          requestedAt,
+          assistantMessageId,
+          threadId,
+          turnId,
+          assistantText,
+          completedAt,
+          completedAt,
+        );
+      database
+        .prepare(
+          `INSERT INTO projection_turns (
+            thread_id, turn_id, pending_message_id, assistant_message_id, state, requested_at,
+            started_at, completed_at, checkpoint_turn_count, checkpoint_ref, checkpoint_status,
+            checkpoint_files_json, source_proposed_plan_thread_id, source_proposed_plan_id
+          ) VALUES (?, ?, NULL, ?, 'completed', ?, ?, ?, NULL, NULL, NULL, '[]', NULL, NULL)`,
+        )
+        .run(threadId, turnId, assistantMessageId, requestedAt, requestedAt, completedAt);
+      database
+        .prepare(
+          `UPDATE projection_threads
+           SET latest_turn_id = ?, updated_at = ?, latest_user_message_at = ?,
+               settled_override = NULL, settled_at = NULL
+           WHERE thread_id = ?`,
+        )
+        .run(turnId, completedAt, requestedAt, threadId);
+      database.exec("COMMIT");
+      database.exec("PRAGMA wal_checkpoint(TRUNCATE)");
+    } catch (error) {
+      try {
+        database.exec("ROLLBACK");
+      } catch {}
+      throw error;
+    } finally {
+      database.close();
+    }
+    const prepared = await hashFile(databasePath);
+    return {
+      kind: "narrow-chat-transcript",
+      sourceSha256: seed?.snapshotSha256 ?? null,
+      preparedSha256: prepared.sha256,
+      threadId,
+      turnId,
+      messageIds: [userMessageId, assistantMessageId],
+    };
+  }
   if (isFileEditingSaveState) {
     const project = seed?.dataset?.projects?.find(
       (candidate) => candidate.id === expectedThreadFixture?.projectId,
@@ -5434,6 +5548,7 @@ async function main() {
     "existing-thread-approval",
     "existing-thread-question",
     "existing-thread-question-multi-step",
+    "chat-thread-narrow",
     "sidebar-resize",
     "file-picker-default",
     "files-browser",
@@ -5908,6 +6023,7 @@ async function captureCell({
     "project-action-dialog": "existing-thread",
     "existing-thread-completed": "existing-thread",
     "existing-thread-failed": "existing-thread",
+    "chat-thread-narrow": "existing-thread",
     "existing-thread-question-multi-step": "existing-thread",
     "sidebar-resize": "existing-thread",
     "project-scope-open": "project-scope-open",
@@ -6150,6 +6266,7 @@ async function captureCell({
   let lynxFileEditorReturnedToBrowser =
     !isFileEditorState || isFileEditingSaveState || isOpenInMenuState;
   let openInMenuEvidence = null;
+  let narrowChatHoverEvidence = null;
   let rightPanelAddMenuDismissed = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelAddMenuTerminalSelected = !isRightPanelAddMenuState && !isRightPanelTerminalState;
   let rightPanelTerminalScreenshot = null;
@@ -8202,7 +8319,7 @@ async function captureCell({
     const webTimelineRows = state?.web?.timelineMetrics?.rows ?? [];
     const lynxTimelineRows = state?.lynx?.timelineMetrics?.rows ?? [];
     const transcriptReady =
-      !stateId.startsWith("existing-thread-") ||
+      (!stateId.startsWith("existing-thread-") && !isNarrowChatThreadState) ||
       (isEmptyTranscriptState
         ? state?.web?.timelineMetrics?.threadSyncLabel === null &&
           state?.web?.timelineMetrics?.empty?.text === state?.lynx?.timelineMetrics?.empty?.text &&
@@ -8213,7 +8330,8 @@ async function captureCell({
           workingTranscriptGeometryMatches(
             state?.web?.timelineMetrics,
             state?.lynx?.timelineMetrics,
-          ));
+          ) &&
+          narrowChatResponsiveMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics));
     transcriptReadyPolls = transcriptReady ? transcriptReadyPolls + 1 : 0;
     const expectedPendingKind =
       stateId === "existing-thread-approval"
@@ -8243,6 +8361,7 @@ async function captureCell({
       );
     const composerReady =
       isFlatSidebarLayoutState ||
+      isNarrowChatThreadState ||
       (composerInputReady &&
         composerStateReady &&
         composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
@@ -8254,7 +8373,8 @@ async function captureCell({
     const sidebarProjectGroupsReady = sidebarProjectGroupsMatch(state);
     const flatSidebarLayoutReady = flatSidebarLayoutMatches(state);
     const addProjectSourcesReady = addProjectSourcesMatch(state);
-    const sidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
+    const sidebarFooterThemeReady =
+      isNarrowChatThreadState || sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
     const projectActionReady = projectActionDialogReady(state);
     const projectSettingsStateReady = projectSettingsReady(state, projectSettingsInteraction);
@@ -8304,7 +8424,9 @@ async function captureCell({
         normalizedChangedFilesState(state?.web?.reviewMetrics) === changedFilesTargetState &&
         normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
     const coreGeometryReady =
-      isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
+      isFlatSidebarLayoutState ||
+      isNarrowChatThreadState ||
+      coreGeometryMatches(state?.web, state?.lynx);
     const heroGeometryReady = heroGeometryMatches(state);
     const reviewReady =
       reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
@@ -9084,7 +9206,9 @@ async function captureCell({
       normalizedChangedFilesState(state?.web?.reviewMetrics) === changedFilesTargetState &&
       normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
   let finalCoreGeometryReady =
-    isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
+    isFlatSidebarLayoutState ||
+    isNarrowChatThreadState ||
+    coreGeometryMatches(state?.web, state?.lynx);
   const finalHeroGeometryReady = heroGeometryMatches(state);
   const finalComposerInputReady =
     !composerInput ||
@@ -9100,6 +9224,7 @@ async function captureCell({
     );
   const finalComposerReady =
     isFlatSidebarLayoutState ||
+    isNarrowChatThreadState ||
     (finalComposerInputReady &&
       finalComposerStateReady &&
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
@@ -9112,7 +9237,8 @@ async function captureCell({
   const finalFlatSidebarLayoutReady = flatSidebarLayoutMatches(state);
   const finalAddProjectSourcesReady = addProjectSourcesMatch(state);
   const finalNewThreadProjectsReady = newThreadProjectsMatch(state);
-  const finalSidebarFooterThemeReady = sidebarFooterThemeMatches(state, width, height);
+  const finalSidebarFooterThemeReady =
+    isNarrowChatThreadState || sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalProjectActionDialogReady = projectActionDialogReady(state);
   const finalProjectSettingsReady = projectSettingsReady(state, projectSettingsInteraction);
@@ -9260,6 +9386,7 @@ async function captureCell({
       JSON.stringify(state?.lynx?.timelineMetrics?.workEntries ?? []) &&
     workingTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     failedTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
+    narrowChatResponsiveMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     webTurnFoldInputSent &&
     lynxTurnFoldInputSent &&
     webThinkingInputSent &&
@@ -9275,7 +9402,7 @@ async function captureCell({
           (entry) => entry.tone === "thinking" && entry.state === "expanded" && entry.detail,
         )));
   const finalTranscriptReady =
-    !stateId.startsWith("existing-thread-") ||
+    (!stateId.startsWith("existing-thread-") && !isNarrowChatThreadState) ||
     (isEmptyTranscriptState ? finalEmptyTranscriptReady : finalPopulatedTranscriptReady);
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" &&
@@ -9606,10 +9733,79 @@ async function captureCell({
       match: semanticMatch && geometryMatch,
     };
   }
+  if (isNarrowChatThreadState && finalTranscriptReady) {
+    const readMeta = async () =>
+      evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const read = (frameId, shadow) => {
+            const doc = document.getElementById(frameId)?.contentWindow?.document;
+            const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+            const box = (element) => {
+              if (!element) return null;
+              const rect = element.getBoundingClientRect();
+              return {
+                rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+                opacity: getComputedStyle(element).opacity,
+              };
+            };
+            return {
+              user: box(root?.querySelector('.transcript-user-meta')),
+              assistant: box(root?.querySelector('.transcript-assistant-meta')),
+            };
+          };
+          return { web: read('web-pane', false), lynx: read('lynx-pane', true) };
+        })()`,
+      );
+    const hoverRow = async (client, role) => {
+      const point = await evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+          const doc = frame?.contentWindow?.document;
+          const root = ${JSON.stringify(client)} === 'lynx'
+            ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+            : doc;
+          const target = root?.querySelector(${JSON.stringify(`.transcript-${role}-row`)});
+          if (!frame || !target) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
+          return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + 8 };
+        })()`,
+      );
+      if (!point) throw new Error(`Missing ${client} ${role} row for narrow chat hover`);
+      await movePointer(cdp, sessionId, point);
+      await delay(client === "web" ? 250 : 75);
+      return readMeta();
+    };
+    const webUser = await hoverRow("web", "user");
+    const webAssistant = await hoverRow("web", "assistant");
+    const lynxUser = await hoverRow("lynx", "user");
+    const lynxAssistant = await hoverRow("lynx", "assistant");
+    const visible = (entry) =>
+      entry?.rect?.width > 0 && entry?.rect?.height > 0 && entry?.opacity === "1";
+    narrowChatHoverEvidence = {
+      inputChannel: "web-cdp-pointer|lynx-cdp-pointer",
+      webUser: webUser?.web?.user ?? null,
+      webAssistant: webAssistant?.web?.assistant ?? null,
+      lynxUser: lynxUser?.lynx?.user ?? null,
+      lynxAssistant: lynxAssistant?.lynx?.assistant ?? null,
+      match:
+        visible(webUser?.web?.user) &&
+        visible(webAssistant?.web?.assistant) &&
+        visible(lynxUser?.lynx?.user) &&
+        visible(lynxAssistant?.lynx?.assistant),
+    };
+  }
   webState = state?.web?.productState ?? null;
   lynxState = state?.lynx?.productState ?? null;
   stateIdentityMatch = currentStateIdentityMatches();
-  finalCoreGeometryReady = isFlatSidebarLayoutState || coreGeometryMatches(state?.web, state?.lynx);
+  finalCoreGeometryReady =
+    isFlatSidebarLayoutState ||
+    isNarrowChatThreadState ||
+    coreGeometryMatches(state?.web, state?.lynx);
   finalFilesBrowserReady = filesBrowserReady(state);
   finalFileEditorReady = fileEditorReady(state);
   reachedTargetState ||= isFileEditorState && finalFileEditorReady;
@@ -10868,6 +11064,7 @@ async function captureCell({
     finalFilesBrowserReady &&
     finalFileEditorReady &&
     (!isOpenInMenuState || openInMenuEvidence?.match === true) &&
+    (!isNarrowChatThreadState || narrowChatHoverEvidence?.match === true) &&
     (!isFileEditingSaveState || fileEditingSaveEvidence !== null) &&
     fileEditorSwitched &&
     fileEditorReturnedToBrowser &&
@@ -11417,6 +11614,15 @@ async function captureCell({
         lynx: state?.lynx?.fileEditorMetrics ?? null,
       },
       openInMenu: openInMenuEvidence,
+      narrowChat: isNarrowChatThreadState
+        ? {
+            responsive: narrowChatResponsiveMatches(
+              state?.web?.timelineMetrics,
+              state?.lynx?.timelineMetrics,
+            ),
+            hover: narrowChatHoverEvidence,
+          }
+        : null,
       fileEditingSave: fileEditingSaveEvidence,
       expectProject,
       webState,

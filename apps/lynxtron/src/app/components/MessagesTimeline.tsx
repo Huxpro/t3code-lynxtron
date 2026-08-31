@@ -366,22 +366,13 @@ function buildLynxTranscriptRowElements(
       const useAuthoritySurface =
         row.message.text ===
         "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval.";
-      const useBlockMarkdown = shouldRenderBlockMarkdown(row.message.text);
       return (
         <view
           className={`transcript-user-body lynx-host-text whitespace-pre-wrap text-sm leading-6 text-foreground/92${
             useAuthoritySurface ? " transcript-user-body--authority-hidden" : ""
           }`}
         >
-          {useBlockMarkdown ? (
-            <MarkdownRenderer text={row.message.text} cwd={cwd} />
-          ) : (
-            <InlineMarkdownRenderer
-              text={row.message.text}
-              cwd={cwd}
-              className="inline-markdown-row--user"
-            />
-          )}
+          <MarkdownRenderer text={row.message.text} cwd={cwd} />
         </view>
       );
     },

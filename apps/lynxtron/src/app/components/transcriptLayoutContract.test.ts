@@ -46,7 +46,9 @@ describe("transcript layout contract", () => {
       'row.kind === "working"\n                  ? "timeline-row-root timeline-row-root--working"',
     );
     expect(timelineSource).toContain('row.kind === "message" && row.message.role === "assistant"');
-    expect(timelineSource).not.toContain("wrapCodeWords");
+    expect(timelineSource).toContain("<MarkdownRenderer text={row.message.text} cwd={cwd} />");
+    expect(overrides).toContain(".transcript-user-body .md-paragraph {");
+    expect(overrides).toContain("overflow-wrap: anywhere;");
     expect(overrides).toContain(".timeline-row-root--assistant {\n  padding-bottom: 16px;");
     expect(overrides).toContain(".inline-markdown-code {\n  display: flex;\n  flex-shrink: 0;");
     expect(overrides).toContain(".turn-diff-card .lynx-changed-files-tree {\n  margin-top: 0;");

@@ -862,7 +862,7 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
       ),
       renderAssistantMeta: ({ row: messageRow }) =>
         messageRow.showAssistantMeta ? (
-          <div className="mt-1.5 flex items-center gap-2 text-xs tabular-nums opacity-0 transition-opacity duration-200 focus-within:opacity-100 group-hover/assistant:opacity-100">
+          <div className="transcript-message-meta transcript-assistant-meta mt-1.5 flex items-center gap-2 text-xs tabular-nums opacity-0 transition-opacity duration-200 focus-within:opacity-100 group-hover/assistant:opacity-100">
             <AssistantCopyButton row={messageRow} />
             {!messageRow.message.streaming && (
               <Tooltip>
@@ -1087,7 +1087,7 @@ function UserTimelineMessageMeta({ row }: { row: Extract<TimelineRow, { kind: "m
   const { displayedUserMessage } = extractUserRowState(row);
   const canRevertAgentWork = typeof row.revertTurnCount === "number";
   return (
-    <div className="flex w-full max-w-[80%] items-center justify-end pe-1 text-xs tabular-nums opacity-0 transition-opacity duration-200 focus-within:opacity-100 group-hover:opacity-100">
+    <div className="transcript-message-meta transcript-user-meta flex w-full max-w-[80%] items-center justify-end pe-1 text-xs tabular-nums opacity-0 transition-opacity duration-200 focus-within:opacity-100 group-hover:opacity-100">
       <div className="flex shrink-0 items-center gap-2">
         <Tooltip>
           <TooltipTrigger render={<p className="text-muted-foreground text-xs tabular-nums" />}>
