@@ -1070,6 +1070,10 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarRowSource).toContain('props.cardActionsVisible && "opacity-100"');
     expect(sidebarRowSource).toContain("{props.settleIcon}\n                        Settle");
     expect(sidebarSource).toContain("setHoveredThreadId(thread.id)");
+    const settledRowsStart = sidebarSource.indexOf("visibleSettledThreads.map");
+    const settledRows = sidebarSource.slice(settledRowsStart);
+    expect(settledRows).toContain("<LynxThreadDetails");
+    expect(settledRows).toContain("provider={providerProjection.provider}");
     expect(sidebarSource).toContain("if (!actionMenuOpen) {");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
     expect(overrides).toContain(".sidebar-v2-working-duration {");

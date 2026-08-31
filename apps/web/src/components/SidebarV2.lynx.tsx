@@ -990,6 +990,7 @@ export default function SidebarV2() {
             : []),
           ...visibleSettledThreads.map((thread) => {
             const project = projectById.get(thread.projectId) ?? null;
+            const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
             const actionMenuOpen = actionMenuThreadId === thread.id;
             const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
             const isUnread = hasUnseenThreadCompletion({
@@ -1047,7 +1048,16 @@ export default function SidebarV2() {
                 diff={null}
                 remoteIndicator={null}
                 providerIndicator={null}
-                detailsTooltip={null}
+                detailsTooltip={
+                  <LynxThreadDetails
+                    relationId={`sidebar-thread-details:${thread.id}`}
+                    thread={thread}
+                    projectTitle={project?.title ?? null}
+                    environmentLabel={serverConfig?.environment.label ?? null}
+                    provider={providerProjection.provider}
+                    modelLabel={providerProjection.modelLabel}
+                  />
+                }
                 detailsRelationId={`sidebar-thread-details:${thread.id}`}
                 detailsOverlay={
                   actionMenuOpen ? (
@@ -1087,6 +1097,12 @@ export default function SidebarV2() {
                   void showThreadContextMenu(thread, project?.workspaceRoot ?? null, true).catch(
                     () => undefined,
                   );
+                }}
+                onMouseEnter={() => setHoveredThreadId(thread.id)}
+                onMouseLeave={() => {
+                  if (!actionMenuOpen) {
+                    setHoveredThreadId((current) => (current === thread.id ? null : current));
+                  }
                 }}
                 onSettleClick={stopPropagation}
                 onUnsettleClick={(event) => {

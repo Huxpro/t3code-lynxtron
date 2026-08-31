@@ -3494,7 +3494,7 @@ async function readSidebarTooltip(cdp, sessionId, client, relationId) {
   );
 }
 
-async function sidebarThreadCardTarget(cdp, sessionId, client) {
+async function sidebarThreadCardTarget(cdp, sessionId, client, index = 0) {
   return evaluate(
     cdp,
     sessionId,
@@ -3504,7 +3504,7 @@ async function sidebarThreadCardTarget(cdp, sessionId, client) {
       const root = ${JSON.stringify(client)} === 'lynx'
         ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
         : doc;
-      const target = root?.querySelector('.sidebar-v2-row-card');
+      const target = root?.querySelectorAll('[data-thread-item] [data-floating-anchor]')?.[${index}];
       if (!frame || !target) return null;
       const frameRect = frame.getBoundingClientRect();
       const rect = target.getBoundingClientRect();
@@ -3649,6 +3649,54 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
     timeline.push({ client, step: "dismissed", ...dismissed });
     if (sidebarTooltipVisible(dismissed.tooltip)) {
       throw new Error(`${client} Sidebar details remained open after pointer leave`);
+    }
+
+    const siblingTarget = await sidebarThreadCardTarget(cdp, sessionId, client, 1);
+    if (siblingTarget?.relationId && siblingTarget.threadId) {
+      if (siblingTarget.threadId === target.threadId) {
+        throw new Error(`${client} Sidebar hover targets resolved to the same thread`);
+      }
+      if (client === "web") {
+        await movePointer(cdp, sessionId, siblingTarget.point);
+      } else {
+        await invokeLynxTooltipProbe(cdp, sessionId, siblingTarget.relationId, "hover");
+      }
+      const siblingOpened = await waitForSidebarTooltip(
+        cdp,
+        sessionId,
+        client,
+        siblingTarget.relationId,
+        "",
+      );
+      if (
+        !siblingOpened ||
+        !siblingOpened.text.includes(siblingTarget.text.split(/\d+[dhms]$/u)[0].trim())
+      ) {
+        throw new Error(
+          `${client} Sidebar sibling details did not match the hovered row: ${JSON.stringify({ siblingOpened, siblingTarget })}`,
+        );
+      }
+      timeline.push({
+        client,
+        step: "sibling-opened",
+        target: siblingTarget,
+        tooltip: siblingOpened,
+      });
+      if (client === "web") {
+        await movePointer(cdp, sessionId, siblingTarget.awayPoint);
+      } else {
+        await invokeLynxTooltipProbe(cdp, sessionId, siblingTarget.relationId, "leave");
+      }
+      const siblingDismissed = await waitForSidebarTooltipDismissed(
+        cdp,
+        sessionId,
+        client,
+        siblingTarget.relationId,
+      );
+      if (sidebarTooltipVisible(siblingDismissed.tooltip)) {
+        throw new Error(`${client} Sidebar sibling details remained open after pointer leave`);
+      }
+      timeline.push({ client, step: "sibling-dismissed", ...siblingDismissed });
     }
   }
   if (

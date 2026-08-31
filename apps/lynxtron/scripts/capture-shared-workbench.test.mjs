@@ -1128,6 +1128,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "runSidebarControlHoverFlow");
     assert.include(source, 'step: "before-delay"');
     assert.include(source, 'step: "opened"');
+    assert.include(source, 'step: "sibling-opened"');
+    assert.include(source, 'step: "sibling-dismissed"');
+    assert.include(source, "Sidebar hover targets resolved to the same thread");
     assert.include(source, 'step: "dismissed"');
     assert.include(source, "opened before the 600ms authority delay");
     assert.include(source, "clickSidebarControl");
