@@ -524,6 +524,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
               size: false,
             }}
             onScroll={handleScroll}
+            data-message-timeline-scroll
             className={cn(
               "scrollbar-gutter-both h-full min-h-0 overflow-x-hidden overscroll-y-contain px-3 [overflow-anchor:none] sm:px-5",
               topFadeEnabled && "chat-timeline-scroll-fade",
@@ -578,10 +579,6 @@ function resolveTimelineRowTop(state: TimelinePositionState, rowIndex: number) {
 function resolveTimelineRowHeight(state: TimelinePositionState, rowIndex: number) {
   const height = state.sizeAtIndex?.(rowIndex);
   return typeof height === "number" && Number.isFinite(height) ? height : null;
-}
-
-function timelineMinimapEventTargetsPreview(target: EventTarget): boolean {
-  return target instanceof Element && target.closest("[data-minimap-preview]") !== null;
 }
 
 function TimelineMinimap({
@@ -664,7 +661,9 @@ function TimelineMinimap({
       )}
       data-testid="timeline-minimap"
       data-timeline-minimap
+      data-timeline-minimap-active={resolvedActiveIndex ?? ""}
       data-persistent-gutter={hasPersistentGutter ? "true" : "false"}
+      onMouseLeave={() => setActiveIndex(null)}
       style={{ bottom: safeBottomInset }}
     >
       <div className="relative h-full w-full select-none">
@@ -678,9 +677,6 @@ function TimelineMinimap({
           )}
           onBlur={() => setActiveIndex(null)}
           onClick={(event) => {
-            if (timelineMinimapEventTargetsPreview(event.target)) {
-              return;
-            }
             const nextIndex = resolveActiveIndexFromPointer(event);
             const nextItem = nextIndex === null ? null : (items[nextIndex] ?? null);
             if (nextItem) {
@@ -709,17 +705,13 @@ function TimelineMinimap({
               }
             }
           }}
-          onMouseLeave={() => setActiveIndex(null)}
           onMouseMove={updateActiveIndexFromPointer}
           onMouseDown={(event) => {
-            if (timelineMinimapEventTargetsPreview(event.target)) {
-              return;
-            }
             event.preventDefault();
           }}
           style={{
             height: resolveTimelineMinimapHeightStyle(items.length),
-            width: resolveTimelineMinimapInteractiveWidth(hitStripWidth, activeItem !== null),
+            width: resolveTimelineMinimapInteractiveWidth(hitStripWidth, false),
           }}
           type="button"
         >
@@ -744,7 +736,9 @@ function TimelineMinimap({
                 data-in-view="false"
                 data-minimap-strip
                 data-timeline-minimap-item={item.id}
+                data-timeline-minimap-row-index={`${item.rowIndex}`}
                 onMouseEnter={() => setActiveIndex(index)}
+                onMouseMove={() => setActiveIndex(index)}
                 key={item.id}
                 ref={(node) => {
                   if (node) {
@@ -764,36 +758,35 @@ function TimelineMinimap({
               </span>
             );
           })}
-          {activeItem ? (
-            <span
-              className="pointer-events-auto absolute left-8 w-80 cursor-text select-text"
-              data-minimap-preview
-              onMouseMove={(event) => event.stopPropagation()}
-              style={{
-                top: `${activeTopPercent}%`,
-                transform: `translateY(${activeTooltipTranslate})`,
-              }}
-            >
-              <span className="dropdown-glass block rounded-xl p-3 text-left text-popover-foreground shadow-xl shadow-black/25">
-                <span className="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5">
-                  {activeItem.userText ?? "User message"}
-                </span>
-                {activeItem.assistantText ? (
-                  <span
-                    className="mt-1 max-h-[3.75rem] overflow-hidden text-muted-foreground text-sm leading-5"
-                    style={{
-                      display: "-webkit-box",
-                      WebkitBoxOrient: "vertical",
-                      WebkitLineClamp: 3,
-                    }}
-                  >
-                    {activeItem.assistantText}
-                  </span>
-                ) : null}
-              </span>
-            </span>
-          ) : null}
         </button>
+        {activeItem ? (
+          <span
+            className="pointer-events-auto absolute left-11 w-80 cursor-text select-text"
+            data-timeline-minimap-preview
+            style={{
+              top: `${activeTopPercent}%`,
+              transform: `translateY(${activeTooltipTranslate})`,
+            }}
+          >
+            <span className="dropdown-glass block rounded-xl p-3 text-left text-popover-foreground shadow-xl shadow-black/25">
+              <span className="block max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium leading-5">
+                {activeItem.userText ?? "User message"}
+              </span>
+              {activeItem.assistantText ? (
+                <span
+                  className="mt-1 max-h-[3.75rem] overflow-hidden text-muted-foreground text-sm leading-5"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 3,
+                  }}
+                >
+                  {activeItem.assistantText}
+                </span>
+              ) : null}
+            </span>
+          </span>
+        ) : null}
       </div>
     </div>
   );

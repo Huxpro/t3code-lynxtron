@@ -60,6 +60,10 @@ import {
   WORKING_LABEL_FULL_ATLAS,
 } from "./workingLabelAtlas";
 import { timelineRowReuseIdentifier } from "./timelineRowSize";
+import {
+  resolveTimelineMinimapHeightStyle,
+  resolveTimelineMinimapTopPercent,
+} from "../../../../web/src/components/chat/MessagesTimeline.logic";
 
 interface MessagesTimelineProps {
   messages: ReadonlyArray<ChatMessage>;
@@ -149,7 +153,7 @@ function LynxTurnDiffCard({
           className="turn-diff-card__folders-toggle inline-flex size-[22px] flex-col items-center justify-center rounded-md border border-border"
           aria-label={allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"}
           data-review-toggle-directories
-          bindtap={() => setAllDirectoriesExpanded((current) => !current)}
+          onClick={() => setAllDirectoriesExpanded((current) => !current)}
         >
           <Icon
             name="chevron-down"
@@ -170,7 +174,7 @@ function LynxTurnDiffCard({
           className="turn-diff-card__open inline-flex h-6 items-center justify-center gap-1 rounded-md border border-border bg-background px-2"
           aria-label="Open diff"
           data-review-open-diff
-          bindtap={() => openDiff(summary.files[0]?.path)}
+          onClick={() => openDiff(summary.files[0]?.path)}
         >
           <Icon name="file-json" size={12} color="#818181" />
           {!compactActions ? (
@@ -884,7 +888,10 @@ export function MessagesTimeline({
           data-timeline-minimap-active={activeMinimapIndex ?? ""}
           onMouseLeave={() => setActiveMinimapIndex(null)}
         >
-          <view className="timeline-minimap__rail" style={{ flexDirection: "column" } as object}>
+          <view
+            className="timeline-minimap__rail"
+            style={{ height: resolveTimelineMinimapHeightStyle(minimapItems.length) }}
+          >
             {minimapItems.map((item, index) => {
               const active = activeMinimapIndex === index;
               const distance =
@@ -894,6 +901,10 @@ export function MessagesTimeline({
                   key={item.id}
                   className={`timeline-minimap__target${active ? " timeline-minimap__target--active" : ""}`}
                   data-timeline-minimap-item={item.id}
+                  data-timeline-minimap-row-index={`${item.rowIndex}`}
+                  style={{
+                    top: `${resolveTimelineMinimapTopPercent(index, minimapItems.length)}%`,
+                  }}
                   onMouseEnter={() => setActiveMinimapIndex(index)}
                   onClick={() => {
                     setAnchorMessageId(null);

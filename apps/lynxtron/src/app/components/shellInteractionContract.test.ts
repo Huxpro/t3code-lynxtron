@@ -6,6 +6,7 @@ import { describe, expect, it } from "vite-plus/test";
 const componentSource = (name: string) =>
   readFileSync(path.resolve(import.meta.dirname, name), "utf8");
 const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
+const diffPanelSource = componentSource("DiffPanel.tsx");
 const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
@@ -717,6 +718,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  color: var(--foreground);\n  font-size: 12px;\n  line-height: 20px;",
     );
+    expect(diffPanelSource).toContain("projectFileLineTokens(file.path, line.content");
+    expect(overrides).toContain(".diff-code-token--keyword {");
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
     expect(files).toContain("projectFileLineTokens(path, line)");

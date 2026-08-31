@@ -27,9 +27,11 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("deriveTimelineMinimapItems(rows)");
     expect(timelineSource).toContain("timelineViewportWidth >= 864");
     expect(timelineSource).toContain("data-timeline-minimap-item");
+    expect(timelineSource).toContain("resolveTimelineMinimapHeightStyle(minimapItems.length)");
     expect(timelineSource).toContain(
-      'className="timeline-minimap__rail" style={{ flexDirection: "column" } as object}',
+      "resolveTimelineMinimapTopPercent(index, minimapItems.length)",
     );
+    expect(overrides).toContain(".timeline-minimap__target {\n  position: absolute;");
     expect(overrides).toContain(".timeline-minimap__preview {");
     expect(timelineSource).toContain("!compactActions");
     expect(timelineSource).toContain("bindlayoutchange={(event:");
@@ -214,7 +216,7 @@ describe("transcript layout contract", () => {
     const headerBlock = overrides.slice(headerStart, overrides.indexOf("}", headerStart));
     expect(fileBlock).toContain("border-width: 0;");
     expect(fileBlock).toContain("border-radius: 0;");
-    expect(headerBlock).toContain("height: 32px;");
+    expect(headerBlock).toContain("height: 33px;");
     expect(fileBlock).toContain("border-left-width: 0;");
   });
 });

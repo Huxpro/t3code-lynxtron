@@ -1653,7 +1653,7 @@ function reviewDiffHasExpectedPatch(diff) {
 }
 
 function reviewCheckpointCardGeometryMatches(webMetrics, lynxMetrics, expectation) {
-  if (expectation !== "checkpoint" && expectation !== "tree" && expectation !== "diff") {
+  if (expectation !== "checkpoint" && expectation !== "tree") {
     return true;
   }
   const webCard = webMetrics?.checkpointCards?.find((card) => card.status === "ready");
@@ -1690,13 +1690,35 @@ function reviewDiffGeometryMatches(webMetrics, lynxMetrics, expectation) {
   const lynxHeaders = lynxDiff?.composedCodeGeometry?.headers ?? [];
   const webLines = uniqueLineBands(webDiff?.composedCodeGeometry?.lines);
   const lynxLines = uniqueLineBands(lynxDiff?.composedCodeGeometry?.lines);
+  const webPanelMode = webMetrics?.panelRect?.attributes?.["data-preview-panel-mode"];
+  const lynxPanelMode = lynxMetrics?.panelRect?.attributes?.["data-right-panel-mode"];
+  const sheet = webPanelMode === "sheet" && lynxPanelMode === "sheet";
+  const rectShapeMatches = (left, right, tolerance = 1) =>
+    left &&
+    right &&
+    Math.abs(left.width - right.width) <= tolerance &&
+    Math.abs(left.height - right.height) <= tolerance;
+  const panelRectMatches = sheet
+    ? webDiff?.surfaceRect?.rect &&
+      lynxDiff?.surfaceRect?.rect &&
+      Math.abs(webDiff.surfaceRect.rect.height - lynxDiff.surfaceRect.rect.height) <= 1 &&
+      webDiff.surfaceRect.rect.width > 0 &&
+      lynxDiff.surfaceRect.rect.width > 0
+    : rectDeltaWithin(webDiff?.surfaceRect, lynxDiff?.surfaceRect, 1);
+  const correspondingRectMatches = (left, right) =>
+    sheet
+      ? (left?.rect ?? left) &&
+        (right?.rect ?? right) &&
+        Math.abs((left.rect ?? left).y - (right.rect ?? right).y) <= 1 &&
+        Math.abs((left.rect ?? left).height - (right.rect ?? right).height) <= 1
+      : rectDeltaWithin(left, right, 1);
   return (
-    rectDeltaWithin(webDiff?.surfaceRect, lynxDiff?.surfaceRect, 1) &&
-    rectDeltaWithin(webDiff?.subheaderRect, lynxDiff?.subheaderRect, 1) &&
-    rectDeltaWithin(webDiff?.viewportRect, lynxDiff?.viewportRect, 1) &&
+    panelRectMatches &&
+    correspondingRectMatches(webDiff?.subheaderRect, lynxDiff?.subheaderRect) &&
+    correspondingRectMatches(webDiff?.viewportRect, lynxDiff?.viewportRect) &&
     webHeaders.length === 1 &&
     lynxHeaders.length === 1 &&
-    rectDeltaWithin(webHeaders[0], lynxHeaders[0], 1) &&
+    correspondingRectMatches(webHeaders[0], lynxHeaders[0]) &&
     webLines.length > 0 &&
     webLines.length === lynxLines.length &&
     webLines.every(
@@ -1704,6 +1726,25 @@ function reviewDiffGeometryMatches(webMetrics, lynxMetrics, expectation) {
         Math.abs(line.y - lynxLines[index].y) <= 1 &&
         Math.abs(line.height - lynxLines[index].height) <= 1,
     )
+  );
+}
+
+function reviewSheetPreservesChatWidth(webState, lynxState, expectation, viewportWidth) {
+  if (expectation !== "diff" || viewportWidth > 1023) return true;
+  const mode = (metrics) =>
+    metrics?.reviewMetrics?.panelRect?.attributes?.["data-preview-panel-mode"] ??
+    metrics?.reviewMetrics?.panelRect?.attributes?.["data-right-panel-mode"];
+  const webComposer = webState?.composerMetrics?.rect?.rect;
+  const lynxComposer = lynxState?.composerMetrics?.rect?.rect;
+  const webPanel = webState?.reviewMetrics?.panelRect?.rect;
+  const lynxPanel = lynxState?.reviewMetrics?.panelRect?.rect;
+  return (
+    mode(webState) === "sheet" &&
+    mode(lynxState) === "sheet" &&
+    webComposer?.width === lynxComposer?.width &&
+    webComposer?.width >= viewportWidth - 40 &&
+    webPanel?.x > webComposer.x &&
+    lynxPanel?.x > lynxComposer.x
   );
 }
 
@@ -2335,13 +2376,15 @@ function fileEditorReady(state) {
     backReady &&
     editorTypographyReady &&
     (narrow
-      ? web.editor?.rect?.width >= 320 &&
+      ? web.editor?.rect?.width >= 319 &&
         lynx.editor?.rect?.width >= 320 &&
         web.explorer === null &&
         lynx.explorer === null &&
         (!sheet ||
           (Math.abs(web.editor.rect.width - webPanel.rect.width) <= 1 &&
-            Math.abs(lynx.editor.rect.width - lynxPanel.rect.width) <= 2))
+            Math.abs(lynx.editor.rect.width - lynxPanel.rect.width) <= 2 &&
+            webPanel.rect.x > 0 &&
+            lynxPanel.rect.x > 0))
       : web.explorer?.rect?.width >= 255 &&
         lynx.explorer?.rect?.width >= 255 &&
         Math.abs(web.explorer.rect.width - lynx.explorer.rect.width) <= 1 &&
@@ -2931,6 +2974,36 @@ function sidebarDiffPairMatches(webDiagnostics, lynxDiagnostics, expectation) {
   const webDiffs = webDiagnostics?.diffs ?? [];
   const lynxDiffs = lynxDiagnostics?.diffs ?? [];
   return JSON.stringify(webDiffs) === JSON.stringify(lynxDiffs);
+}
+
+function reviewReadinessBreakdown(webState, lynxState, expectation, viewportWidth) {
+  return {
+    semantics: reviewPairMatches(webState?.reviewMetrics, lynxState?.reviewMetrics, expectation),
+    checkpointGeometry:
+      (expectation === "diff" && viewportWidth <= 1023) ||
+      reviewCheckpointCardGeometryMatches(
+        webState?.reviewMetrics,
+        lynxState?.reviewMetrics,
+        expectation,
+      ),
+    diffGeometry: reviewDiffGeometryMatches(
+      webState?.reviewMetrics,
+      lynxState?.reviewMetrics,
+      expectation,
+    ),
+    sheetPreservesChat: reviewSheetPreservesChatWidth(
+      webState,
+      lynxState,
+      expectation,
+      viewportWidth,
+    ),
+    typography: checkpointCardTypographyMatches(webState, lynxState),
+    sidebar: sidebarDiffPairMatches(
+      webState?.sidebarDiagnostics,
+      lynxState?.sidebarDiagnostics,
+      expectation,
+    ),
+  };
 }
 
 function findFreePort() {
@@ -3964,15 +4037,29 @@ async function runChatOutlineFlow(cdp, sessionId) {
             : doc;
           const items = [...(root?.querySelectorAll('[data-timeline-minimap-item]') ?? [])];
           const first = items[0];
+          const frameRect = frame?.getBoundingClientRect();
+          const points = items.map((item) => {
+            const itemRect = item.getBoundingClientRect();
+            return frameRect ? {
+              x: frameRect.x + itemRect.x + Math.min(12, itemRect.width / 2),
+              y: frameRect.y + itemRect.y + Math.max(1, itemRect.height / 2),
+            } : null;
+          });
+          const rowIndexes = items.map((item) =>
+            Number(item.getAttribute('data-timeline-minimap-row-index')),
+          );
           const interactive = first;
           const row = root?.querySelector('[data-timeline-row-id="fidelity-outline-earlier-user"]');
-          const frameRect = frame?.getBoundingClientRect();
           const rect = first?.getBoundingClientRect();
           const interactiveRect = interactive?.getBoundingClientRect();
           return {
             count: items.length,
+            activeIndex: root?.querySelector('[data-timeline-minimap]')
+              ?.getAttribute('data-timeline-minimap-active') ?? null,
             preview: root?.querySelector('[data-timeline-minimap-preview]')?.textContent?.trim() ?? null,
             rowY: row?.getBoundingClientRect().y ?? null,
+            points,
+            rowIndexes,
             point: frameRect && rect && interactiveRect ? {
               x: frameRect.x + interactiveRect.x + Math.min(12, interactiveRect.width / 2),
               y: frameRect.y + interactiveRect.y + Math.max(1, interactiveRect.height / 2),
@@ -3984,17 +4071,54 @@ async function runChatOutlineFlow(cdp, sessionId) {
     if (initial?.count !== 2 || !initial.point) {
       throw new Error(`Missing ${client} chat outline items: ${JSON.stringify(initial)}`);
     }
-    await movePointer(cdp, sessionId, { x: initial.point.x + 96, y: initial.point.y + 96 });
-    await movePointer(cdp, sessionId, initial.point);
+    let positionedAtTail = initial;
+    if (client === "web" && initial.rowY !== null && initial.rowY > 0) {
+      const lastPoint = initial.points?.[initial.points.length - 1];
+      if (!lastPoint) {
+        throw new Error(`Missing ${client} chat outline tail item: ${JSON.stringify(initial)}`);
+      }
+      await dispatchPointerClickWithMove(cdp, sessionId, lastPoint);
+      await delay(100);
+      positionedAtTail = await read();
+      if (positionedAtTail?.rowY === null || Math.abs(positionedAtTail.rowY - initial.rowY) < 24) {
+        throw new Error(
+          `${client} chat outline tail jump did not scroll: ${JSON.stringify({ initial, positionedAtTail })}`,
+        );
+      }
+    }
+    const firstPoint = positionedAtTail.point;
+    if (!firstPoint) {
+      throw new Error(`Missing ${client} chat outline first target after tail jump.`);
+    }
+    await movePointer(cdp, sessionId, { x: firstPoint.x + 96, y: firstPoint.y + 96 });
+    await movePointer(cdp, sessionId, firstPoint);
     await delay(400);
     const hovered = await read();
     if (!hovered?.preview?.includes("Inspect the responsive chat outline")) {
       throw new Error(`${client} chat outline preview did not match: ${JSON.stringify(hovered)}`);
     }
-    await dispatchPointerClickWithMove(cdp, sessionId, hovered.point);
-    await delay(100);
-    const selected = await read();
-    evidence[client] = { initial, hovered, selected };
+    await dispatchPointerClickWithMove(cdp, sessionId, firstPoint);
+    if (client === "lynx") {
+      await delay(100);
+      const selected = await read();
+      evidence[client] = { initial, positionedAtTail, hovered, selected };
+      continue;
+    }
+    const jumpDeadline = Date.now() + 1_500;
+    let selected = await read();
+    while (
+      Date.now() < jumpDeadline &&
+      (selected?.rowY === null || Math.abs(selected.rowY - hovered.rowY) < 24)
+    ) {
+      await delay(50);
+      selected = await read();
+    }
+    if (selected?.rowY === null || Math.abs(selected.rowY - hovered.rowY) < 24) {
+      throw new Error(
+        `${client} chat outline jump did not scroll: ${JSON.stringify({ hovered, selected })}`,
+      );
+    }
+    evidence[client] = { initial, positionedAtTail, hovered, selected };
   }
   return evidence;
 }
@@ -5275,7 +5399,10 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
     const userText =
       "Please keep this deliberately long request readable when the chat thread becomes very narrow, including `inline-code-that-must-wrap-safely` and the message hover controls.";
     const assistantText =
-      'Implemented the responsive behavior while preserving the shared layout.\n\n- Router initialization\n- Navigation calls with target and current paths\n- Pathname changes from the core router\n- Navigation errors and warnings\n\n```ts title="src/responsive.ts"\nexport const responsiveLayout = (width: number) => width < 520 ? "compact" : "wide";\n```\n\nLong prose should wrap inside the available column without forcing horizontal overflow.';
+      'Implemented the responsive behavior while preserving the shared layout.\n\n- Router initialization\n- Navigation calls with target and current paths\n- Pathname changes from the core router\n- Navigation errors and warnings\n\n```ts title="src/responsive.ts"\nexport const responsiveLayout = (width: number) => width < 520 ? "compact" : "wide";\n```\n\nLong prose should wrap inside the available column without forcing horizontal overflow.' +
+      (isChatOutlineState
+        ? "\n\nThe outline fixture intentionally includes enough transcript content to require real scrolling.\n\n- Preserve readable wrapping at each responsive breakpoint.\n- Keep message hover controls within the transcript column.\n- Keep changed-file summaries contained by their card.\n- Keep expanded work logs readable in monospace.\n- Keep tool details aligned with their disclosure row.\n- Keep Markdown list markers small and optically centered.\n- Keep the diff sheet above the chat on compact windows.\n- Keep file headers visually attached to their code rows.\n- Keep line numbers aligned across additions and deletions.\n- Keep syntax colors sourced from the shared highlighter.\n- Keep outline previews attached to their owning marker.\n- Keep pointer movement between marker and preview stable.\n- Keep outline jumps deterministic in long conversations.\n- Keep the current thread unchanged while navigating turns.\n- Keep the composer available after transcript navigation.\n- Keep the shared Web and Lynx projection identical.\n\nThe final paragraphs make the first and second user turns occupy distinct scroll positions in both renderers.\n\nThis lets the interaction gate prove a causal jump instead of accepting a click that leaves an already-visible row unchanged."
+        : "");
     const checkpointFiles = [
       {
         path: "apps/lynxtron/src/app/components/ResponsiveConversationTimeline.tsx",
@@ -8599,6 +8726,7 @@ async function captureCell({
     const composerReady =
       isFlatSidebarLayoutState ||
       isNarrowChatThreadState ||
+      (isReviewState && width <= 1023) ||
       (composerInputReady &&
         composerStateReady &&
         composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
@@ -8611,7 +8739,9 @@ async function captureCell({
     const flatSidebarLayoutReady = flatSidebarLayoutMatches(state);
     const addProjectSourcesReady = addProjectSourcesMatch(state);
     const sidebarFooterThemeReady =
-      isNarrowChatThreadState || sidebarFooterThemeMatches(state, width, height);
+      isNarrowChatThreadState ||
+      (isReviewState && width <= 1023) ||
+      sidebarFooterThemeMatches(state, width, height);
     const compactControlsReady = compactControlsEvidenceReady(state);
     const projectActionReady = projectActionDialogReady(state);
     const projectSettingsStateReady = projectSettingsReady(state, projectSettingsInteraction);
@@ -8663,16 +8793,12 @@ async function captureCell({
     const coreGeometryReady =
       isFlatSidebarLayoutState ||
       isNarrowChatThreadState ||
+      (isReviewState && width <= 1023) ||
       coreGeometryMatches(state?.web, state?.lynx);
     const heroGeometryReady = heroGeometryMatches(state);
-    const reviewReady =
-      reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
-      checkpointCardTypographyMatches(state?.web, state?.lynx) &&
-      sidebarDiffPairMatches(
-        state?.web?.sidebarDiagnostics,
-        state?.lynx?.sidebarDiagnostics,
-        reviewExpectation,
-      );
+    const reviewReady = Object.values(
+      reviewReadinessBreakdown(state?.web, state?.lynx, reviewExpectation, width),
+    ).every(Boolean);
     const lifecycleReady =
       !isLifecycleFaultState ||
       (ownedServerTerminated &&
@@ -9603,6 +9729,7 @@ async function captureCell({
   let finalCoreGeometryReady =
     isFlatSidebarLayoutState ||
     isNarrowChatThreadState ||
+    (isReviewState && width <= 1023) ||
     isChatOutlineState ||
     coreGeometryMatches(state?.web, state?.lynx);
   const finalHeroGeometryReady = heroGeometryMatches(state);
@@ -9621,6 +9748,7 @@ async function captureCell({
   const finalComposerReady =
     isFlatSidebarLayoutState ||
     isNarrowChatThreadState ||
+    (isReviewState && width <= 1023) ||
     (finalComposerInputReady &&
       finalComposerStateReady &&
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
@@ -9634,7 +9762,9 @@ async function captureCell({
   const finalAddProjectSourcesReady = addProjectSourcesMatch(state);
   const finalNewThreadProjectsReady = newThreadProjectsMatch(state);
   const finalSidebarFooterThemeReady =
-    isNarrowChatThreadState || sidebarFooterThemeMatches(state, width, height);
+    isNarrowChatThreadState ||
+    (isReviewState && width <= 1023) ||
+    sidebarFooterThemeMatches(state, width, height);
   const finalCompactControlsReady = compactControlsEvidenceReady(state);
   const finalProjectActionDialogReady = projectActionDialogReady(state);
   const finalProjectSettingsReady = projectSettingsReady(state, projectSettingsInteraction);
@@ -9665,24 +9795,9 @@ async function captureCell({
         }),
       )
     : null;
-  const finalReviewReady =
-    reviewPairMatches(state?.web?.reviewMetrics, state?.lynx?.reviewMetrics, reviewExpectation) &&
-    reviewCheckpointCardGeometryMatches(
-      state?.web?.reviewMetrics,
-      state?.lynx?.reviewMetrics,
-      reviewExpectation,
-    ) &&
-    reviewDiffGeometryMatches(
-      state?.web?.reviewMetrics,
-      state?.lynx?.reviewMetrics,
-      reviewExpectation,
-    ) &&
-    checkpointCardTypographyMatches(state?.web, state?.lynx) &&
-    sidebarDiffPairMatches(
-      state?.web?.sidebarDiagnostics,
-      state?.lynx?.sidebarDiagnostics,
-      reviewExpectation,
-    );
+  const finalReviewReady = Object.values(
+    reviewReadinessBreakdown(state?.web, state?.lynx, reviewExpectation, width),
+  ).every(Boolean);
   const finalSettingsAsyncReady =
     stateId === "settings-source-control-loading"
       ? state?.web?.settingsMetrics?.loading === true &&
@@ -11626,6 +11741,7 @@ async function captureCell({
       fileEditorReturnedToBrowser,
       gitPublishDismissed,
       finalReviewReady,
+      reviewReadiness: reviewReadinessBreakdown(state?.web, state?.lynx, reviewExpectation, width),
       checkpointCardTypographyReady: checkpointCardTypographyMatches(state?.web, state?.lynx),
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
@@ -12285,9 +12401,17 @@ async function admitBrowserPairToManifest({ manifestPath, outputRoot, stateId, r
 }
 
 function failuresNote(label, gates) {
-  const failed = Object.entries(gates)
-    .filter(([, v]) => !v)
-    .map(([k]) => k);
+  const failed = [];
+  const visit = (value, path) => {
+    if (value === false || value === null || value === undefined) {
+      failed.push(path);
+      return;
+    }
+    if (typeof value === "object" && !Array.isArray(value)) {
+      for (const [key, child] of Object.entries(value)) visit(child, path ? `${path}.${key}` : key);
+    }
+  };
+  visit(gates, "");
   console.log(`[shared-workbench] ${label} FAIL gates: ${failed.join(", ")}`);
 }
 

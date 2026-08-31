@@ -1,4 +1,5 @@
 import { summarizeChangedFiles } from "@t3tools/client-runtime/presentation/diff";
+import { projectFileLineTokens } from "@t3tools/client-runtime/presentation/files";
 import type { OrchestrationCheckpointSummary } from "@t3tools/contracts";
 import type { ThreadId, TurnId } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
@@ -460,7 +461,18 @@ function LynxCodeDiffFile({
                 <text className="diff-code-line__marker">
                   {line.kind === "addition" ? "+" : line.kind === "deletion" ? "−" : " "}
                 </text>
-                <text className="diff-code-line__content">{line.content || " "}</text>
+                <text className="diff-code-line__content">
+                  {projectFileLineTokens(file.path, line.content || " ").map(
+                    (token, tokenIndex) => (
+                      <text
+                        key={`${file.path}:${index}:${tokenIndex}:${token.tone}`}
+                        className={`diff-code-token diff-code-token--${token.tone}`}
+                      >
+                        {token.text}
+                      </text>
+                    ),
+                  )}
+                </text>
               </view>
             ))}
           </view>
@@ -481,8 +493,8 @@ function LynxSplitDiffBody({
     <view className="diff-code-file__body diff-code-file__body--split">
       {pairSplitLines(file).map((pair, index) => (
         <view key={`${file.path}:split:${index}`} className="diff-code-split-row">
-          <LynxSplitDiffCell line={pair.left} side="left" wordWrap={wordWrap} />
-          <LynxSplitDiffCell line={pair.right} side="right" wordWrap={wordWrap} />
+          <LynxSplitDiffCell path={file.path} line={pair.left} side="left" wordWrap={wordWrap} />
+          <LynxSplitDiffCell path={file.path} line={pair.right} side="right" wordWrap={wordWrap} />
         </view>
       ))}
     </view>
@@ -490,10 +502,12 @@ function LynxSplitDiffBody({
 }
 
 function LynxSplitDiffCell({
+  path,
   line,
   side,
   wordWrap,
 }: {
+  readonly path: string;
   readonly line: UnifiedDiffFile["lines"][number] | null;
   readonly side: "left" | "right";
   readonly wordWrap: boolean;
@@ -511,7 +525,16 @@ function LynxSplitDiffCell({
       <text className="diff-code-line__marker">
         {line?.kind === "addition" ? "+" : line?.kind === "deletion" ? "−" : " "}
       </text>
-      <text className="diff-code-line__content">{line?.content || " "}</text>
+      <text className="diff-code-line__content">
+        {projectFileLineTokens(path, line?.content || " ").map((token, tokenIndex) => (
+          <text
+            key={`${path}:${side}:${tokenIndex}:${token.tone}`}
+            className={`diff-code-token diff-code-token--${token.tone}`}
+          >
+            {token.text}
+          </text>
+        ))}
+      </text>
     </view>
   );
 }

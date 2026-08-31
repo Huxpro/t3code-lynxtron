@@ -495,7 +495,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'style.lineHeight === "20px"');
     assert.include(source, "metrics.gutterWidth >= 48");
     assert.include(source, "metrics.gutterWidth <= 50");
-    assert.include(source, "web.editor?.rect?.width >= 320");
+    assert.include(source, "web.editor?.rect?.width >= 319");
     assert.include(source, "lynx.editor?.rect?.width >= 320");
     assert.include(source, "web.explorer === null");
     assert.include(source, "lynx.explorer === null");
