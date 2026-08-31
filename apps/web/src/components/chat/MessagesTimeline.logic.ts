@@ -1,6 +1,7 @@
 import {
   computeStableMessagesTimelineRows as computeSharedStableMessagesTimelineRows,
   deriveMessagesTimelineRows as deriveSharedMessagesTimelineRows,
+  deriveTimelineMinimapItems,
   type MessagesTimelineRow as TranscriptMessagesTimelineRow,
   type StableMessagesTimelineRowsState as TranscriptStableRowsState,
   type TimelineLatestTurn,
@@ -16,6 +17,7 @@ import type { TimelineEntry } from "../../session-logic";
 export {
   MAX_VISIBLE_WORK_LOG_ENTRIES,
   computeMessageDurationStart,
+  deriveTimelineMinimapItems,
   normalizeCompactToolLabel,
   resolveAssistantMessageCopyState,
   type TimelineDurationMessage,

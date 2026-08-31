@@ -298,7 +298,7 @@ function renderBlock(
     case "list": {
       const items = block.items ?? [];
       return (
-        <view key={key} className="md-list">
+        <view key={key} className="md-list" style={{ flexDirection: "column" } as object}>
           {items.map((item, j) => {
             const marker =
               item.taskChecked !== null

@@ -72,6 +72,7 @@ import { MessageCopyButton } from "./MessageCopyButton";
 import {
   computeStableMessagesTimelineRows,
   deriveMessagesTimelineRows,
+  deriveTimelineMinimapItems,
   normalizeCompactToolLabel,
   resolveAssistantMessageCopyState,
   resolveTimelineIsAtEnd,
@@ -559,12 +560,7 @@ function getItemType(item: MessagesTimelineRow) {
   return item.kind === "message" ? `message:${item.message.role}` : item.kind;
 }
 
-interface TimelineMinimapItem {
-  readonly id: string;
-  readonly rowIndex: number;
-  readonly userText: string | null;
-  readonly assistantText: string | null;
-}
+type TimelineMinimapItem = ReturnType<typeof deriveTimelineMinimapItems>[number];
 
 interface TimelinePositionState {
   readonly contentLength?: number;
@@ -572,51 +568,6 @@ interface TimelinePositionState {
   readonly scrollLength?: number;
   readonly positionAtIndex?: (index: number) => number | undefined;
   readonly sizeAtIndex?: (index: number) => number | undefined;
-}
-
-function deriveTimelineMinimapItems(
-  rows: ReadonlyArray<MessagesTimelineRow>,
-): TimelineMinimapItem[] {
-  const items: TimelineMinimapItem[] = [];
-  for (let index = 0; index < rows.length; index += 1) {
-    const row = rows[index];
-    if (row?.kind !== "message" || row.message.role !== "user") {
-      continue;
-    }
-
-    items.push({
-      id: row.id,
-      rowIndex: index,
-      userText: compactMinimapPreview(row.message.text),
-      assistantText: compactMinimapPreview(resolveFinalAssistantTextForTurn(rows, index)),
-    });
-  }
-  return items;
-}
-
-function resolveFinalAssistantTextForTurn(
-  rows: ReadonlyArray<MessagesTimelineRow>,
-  userRowIndex: number,
-) {
-  let finalAssistantText: string | null = null;
-  for (let index = userRowIndex + 1; index < rows.length; index += 1) {
-    const row = rows[index];
-    if (row?.kind !== "message") {
-      continue;
-    }
-    if (row.message.role === "user") {
-      break;
-    }
-    if (row.message.role === "assistant") {
-      finalAssistantText = row.message.text ?? null;
-    }
-  }
-  return finalAssistantText;
-}
-
-function compactMinimapPreview(text: string | null | undefined) {
-  const compact = text?.replace(/\s+/g, " ").trim() ?? "";
-  return compact.length > 0 ? compact : null;
 }
 
 function resolveTimelineRowTop(state: TimelinePositionState, rowIndex: number) {
@@ -712,6 +663,7 @@ function TimelineMinimap({
           : "opacity-0 transition-opacity duration-150 hover:opacity-100 focus-within:opacity-100",
       )}
       data-testid="timeline-minimap"
+      data-timeline-minimap
       data-persistent-gutter={hasPersistentGutter ? "true" : "false"}
       style={{ bottom: safeBottomInset }}
     >
@@ -780,9 +732,9 @@ function TimelineMinimap({
               <span
                 aria-hidden="true"
                 className={cn(
-                  "pointer-events-none absolute left-0 h-0.5 -translate-y-1/2 rounded-full bg-muted-foreground/35 transition-[background-color,width] duration-150 data-[in-view=true]:bg-foreground/90",
+                  "pointer-events-auto absolute left-0 flex h-2 -translate-y-1/2 items-center",
                   activeDistance === 0
-                    ? "w-6 bg-muted-foreground/75"
+                    ? "w-6"
                     : activeDistance === 1
                       ? "w-4"
                       : activeDistance === 2
@@ -791,6 +743,8 @@ function TimelineMinimap({
                 )}
                 data-in-view="false"
                 data-minimap-strip
+                data-timeline-minimap-item={item.id}
+                onMouseEnter={() => setActiveIndex(index)}
                 key={item.id}
                 ref={(node) => {
                   if (node) {
@@ -800,7 +754,14 @@ function TimelineMinimap({
                   }
                 }}
                 style={{ top }}
-              />
+              >
+                <span
+                  className={cn(
+                    "pointer-events-none h-0.5 w-full rounded-full bg-muted-foreground/35 transition-colors duration-150",
+                    activeDistance === 0 && "bg-muted-foreground/75",
+                  )}
+                />
+              </span>
             );
           })}
           {activeItem ? (

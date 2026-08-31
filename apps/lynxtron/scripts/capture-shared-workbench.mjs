@@ -174,6 +174,7 @@ const requiresStableProviderFaultPreflight = stateId === "composer-disabled";
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isNarrowComposerExpandState = stateId === "chat-input-narrow-expanded";
 const isNarrowChatThreadState = stateId === "chat-thread-narrow" || isNarrowComposerExpandState;
+const isChatOutlineState = stateId === "chat-outline";
 const isMultiStepQuestionState = stateId === "existing-thread-question-multi-step";
 const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
@@ -3948,6 +3949,56 @@ async function runSidebarThreadShortcutFlow(cdp, sessionId) {
   return { state, timeline };
 }
 
+async function runChatOutlineFlow(cdp, sessionId) {
+  const evidence = {};
+  for (const client of ["web", "lynx"]) {
+    const read = () =>
+      evaluate(
+        cdp,
+        sessionId,
+        `(() => {
+          const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+          const doc = frame?.contentWindow?.document;
+          const root = ${JSON.stringify(client)} === 'lynx'
+            ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+            : doc;
+          const items = [...(root?.querySelectorAll('[data-timeline-minimap-item]') ?? [])];
+          const first = items[0];
+          const interactive = first;
+          const row = root?.querySelector('[data-timeline-row-id="fidelity-outline-earlier-user"]');
+          const frameRect = frame?.getBoundingClientRect();
+          const rect = first?.getBoundingClientRect();
+          const interactiveRect = interactive?.getBoundingClientRect();
+          return {
+            count: items.length,
+            preview: root?.querySelector('[data-timeline-minimap-preview]')?.textContent?.trim() ?? null,
+            rowY: row?.getBoundingClientRect().y ?? null,
+            point: frameRect && rect && interactiveRect ? {
+              x: frameRect.x + interactiveRect.x + Math.min(12, interactiveRect.width / 2),
+              y: frameRect.y + interactiveRect.y + Math.max(1, interactiveRect.height / 2),
+            } : null,
+          };
+        })()`,
+      );
+    const initial = await read();
+    if (initial?.count !== 2 || !initial.point) {
+      throw new Error(`Missing ${client} chat outline items: ${JSON.stringify(initial)}`);
+    }
+    await movePointer(cdp, sessionId, { x: initial.point.x + 96, y: initial.point.y + 96 });
+    await movePointer(cdp, sessionId, initial.point);
+    await delay(400);
+    const hovered = await read();
+    if (!hovered?.preview?.includes("Inspect the responsive chat outline")) {
+      throw new Error(`${client} chat outline preview did not match: ${JSON.stringify(hovered)}`);
+    }
+    await dispatchPointerClickWithMove(cdp, sessionId, hovered.point);
+    await delay(100);
+    const selected = await read();
+    evidence[client] = { initial, hovered, selected };
+  }
+  return evidence;
+}
+
 async function waitForSidebarTooltip(cdp, sessionId, client, relationId, expectedText) {
   const deadline = Date.now() + 1_500;
   let tooltip = null;
@@ -5208,7 +5259,7 @@ async function hashFile(filePath) {
 async function prepareStateFixture({ seed, expectedThreadFixture }) {
   const requiresRunningRuntime =
     stateId === "composer-working" || stateId === "existing-thread-working";
-  if (isNarrowChatThreadState) {
+  if (isNarrowChatThreadState || isChatOutlineState) {
     const threadId = expectedThreadFixture?.id;
     if (!threadId) throw new Error("Narrow chat fixture requires a seeded thread.");
     const databasePath = path.join(baseDir, "userdata", "state.sqlite");
@@ -5216,6 +5267,9 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
     const turnId = "fidelity-narrow-chat-turn";
     const userMessageId = "fidelity-narrow-chat-user";
     const assistantMessageId = "fidelity-narrow-chat-assistant";
+    const earlierTurnId = "fidelity-outline-earlier-turn";
+    const earlierUserMessageId = "fidelity-outline-earlier-user";
+    const earlierAssistantMessageId = "fidelity-outline-earlier-assistant";
     const requestedAt = "2026-08-30T04:00:00.000Z";
     const completedAt = "2026-08-30T04:01:00.000Z";
     const userText =
@@ -5249,6 +5303,45 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
         .prepare("DELETE FROM projection_thread_activities WHERE thread_id = ?")
         .run(threadId);
       database.prepare("DELETE FROM projection_turns WHERE thread_id = ?").run(threadId);
+      if (isChatOutlineState) {
+        database
+          .prepare(
+            `INSERT INTO projection_thread_messages (
+              message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at,
+              attachments_json
+            ) VALUES
+              (?, ?, ?, 'user', 'Inspect the responsive chat outline and jump behavior.', 0, ?, ?, '[]'),
+              (?, ?, ?, 'assistant', 'The outline should preview this completed response and jump back to it.', 0, ?, ?, '[]')`,
+          )
+          .run(
+            earlierUserMessageId,
+            threadId,
+            earlierTurnId,
+            "2026-08-30T03:58:00.000Z",
+            "2026-08-30T03:58:00.000Z",
+            earlierAssistantMessageId,
+            threadId,
+            earlierTurnId,
+            "2026-08-30T03:58:20.000Z",
+            "2026-08-30T03:58:20.000Z",
+          );
+        database
+          .prepare(
+            `INSERT INTO projection_turns (
+              thread_id, turn_id, pending_message_id, assistant_message_id, state, requested_at,
+              started_at, completed_at, checkpoint_turn_count, checkpoint_ref, checkpoint_status,
+              checkpoint_files_json, source_proposed_plan_thread_id, source_proposed_plan_id
+            ) VALUES (?, ?, NULL, ?, 'completed', ?, ?, ?, NULL, NULL, NULL, '[]', NULL, NULL)`,
+          )
+          .run(
+            threadId,
+            earlierTurnId,
+            earlierAssistantMessageId,
+            "2026-08-30T03:58:00.000Z",
+            "2026-08-30T03:58:00.000Z",
+            "2026-08-30T03:58:20.000Z",
+          );
+      }
       database
         .prepare(
           `INSERT INTO projection_thread_activities (
@@ -5348,7 +5441,7 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
     }
     const prepared = await hashFile(databasePath);
     return {
-      kind: "narrow-chat-transcript",
+      kind: isChatOutlineState ? "chat-outline" : "narrow-chat-transcript",
       sourceSha256: seed?.snapshotSha256 ?? null,
       preparedSha256: prepared.sha256,
       threadId,
@@ -5648,6 +5741,7 @@ async function main() {
     "existing-thread-question-multi-step",
     "chat-thread-narrow",
     "chat-input-narrow-expanded",
+    "chat-outline",
     "sidebar-resize",
     "file-picker-default",
     "files-browser",
@@ -6125,6 +6219,7 @@ async function captureCell({
     "existing-thread-failed": "existing-thread",
     "chat-thread-narrow": "existing-thread",
     "chat-input-narrow-expanded": "existing-thread",
+    "chat-outline": "existing-thread",
     "existing-thread-question-multi-step": "existing-thread",
     "sidebar-resize": "existing-thread",
     "project-scope-open": "project-scope-open",
@@ -6259,6 +6354,7 @@ async function captureCell({
     ? "waiting-thread"
     : "not-required";
   let sidebarThreadHoverPreview = null;
+  let chatOutlineEvidence = null;
   let sidebarThreadShortcutStage = isSidebarThreadShortcutState
     ? "waiting-threads"
     : "not-required";
@@ -8996,6 +9092,11 @@ async function captureCell({
     sidebarThreadShortcutStage = "complete";
     reachedTargetState = true;
   }
+  if (isChatOutlineState) {
+    chatOutlineEvidence = await runChatOutlineFlow(cdp, sessionId);
+    state = await readWorkbenchState(cdp, sessionId);
+    reachedTargetState = true;
+  }
   if (stateId === "sidebar-v2-new-thread-projects") {
     state = await waitForSidebarV2Controls(cdp, sessionId);
     const initialThreadIds = {
@@ -9502,6 +9603,7 @@ async function captureCell({
   let finalCoreGeometryReady =
     isFlatSidebarLayoutState ||
     isNarrowChatThreadState ||
+    isChatOutlineState ||
     coreGeometryMatches(state?.web, state?.lynx);
   const finalHeroGeometryReady = heroGeometryMatches(state);
   const finalComposerInputReady =
@@ -9676,8 +9778,22 @@ async function captureCell({
     JSON.stringify(state?.web?.timelineMetrics?.turnFolds ?? []) ===
       JSON.stringify(state?.lynx?.timelineMetrics?.turnFolds ?? []) &&
     state?.web?.timelineMetrics?.workGroupCount === state?.lynx?.timelineMetrics?.workGroupCount &&
-    JSON.stringify(state?.web?.timelineMetrics?.workEntries ?? []) ===
-      JSON.stringify(state?.lynx?.timelineMetrics?.workEntries ?? []) &&
+    JSON.stringify(
+      (state?.web?.timelineMetrics?.workEntries ?? []).map(({ id, tone, state, detail }) => ({
+        id,
+        tone,
+        state,
+        detail,
+      })),
+    ) ===
+      JSON.stringify(
+        (state?.lynx?.timelineMetrics?.workEntries ?? []).map(({ id, tone, state, detail }) => ({
+          id,
+          tone,
+          state,
+          detail,
+        })),
+      ) &&
     workingTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     failedTranscriptGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     narrowChatResponsiveMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
@@ -9696,7 +9812,7 @@ async function captureCell({
           (entry) => entry.tone === "thinking" && entry.state === "expanded" && entry.detail,
         )));
   const finalTranscriptReady =
-    (!stateId.startsWith("existing-thread-") && !isNarrowChatThreadState) ||
+    (!stateId.startsWith("existing-thread-") && !isNarrowChatThreadState && !isChatOutlineState) ||
     (isEmptyTranscriptState ? finalEmptyTranscriptReady : finalPopulatedTranscriptReady);
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" &&
@@ -10168,6 +10284,7 @@ async function captureCell({
   finalCoreGeometryReady =
     isFlatSidebarLayoutState ||
     isNarrowChatThreadState ||
+    isChatOutlineState ||
     coreGeometryMatches(state?.web, state?.lynx);
   finalFilesBrowserReady = filesBrowserReady(state);
   finalFileEditorReady = fileEditorReady(state);
@@ -11450,6 +11567,9 @@ async function captureCell({
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
     (!isSidebarControlHoverState || sidebarControlHoverStage === "complete") &&
     (!isSidebarThreadHoverPreviewState || sidebarThreadHoverPreviewStage === "complete") &&
+    (!isChatOutlineState ||
+      (chatOutlineEvidence?.web?.hovered?.preview &&
+        chatOutlineEvidence?.lynx?.hovered?.preview)) &&
     (!isSidebarThreadShortcutState || sidebarThreadShortcutStage === "complete") &&
     (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
     (stateId !== "add-project-sources" || addProjectSourcesStage === "complete") &&
@@ -11722,6 +11842,7 @@ async function captureCell({
           popupTransition: "opacity+scale",
         },
       },
+      chatOutline: chatOutlineEvidence,
       sidebarThreadShortcuts: {
         match: !isSidebarThreadShortcutState || sidebarThreadShortcutStage === "complete",
         stage: sidebarThreadShortcutStage,

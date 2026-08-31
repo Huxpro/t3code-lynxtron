@@ -2321,6 +2321,11 @@ function readLynxPane() {
         empty: readElementBox(root?.querySelector(".transcript-empty")),
         threadSyncLabel: null,
         composerOverlay: readElementBox(root?.querySelector(".composer-overlay")),
+        minimap: readElementBox(root?.querySelector("[data-timeline-minimap]")),
+        minimapItems: [...(root?.querySelectorAll("[data-timeline-minimap-item]") ?? [])].map(
+          (item) => readElementBox(item),
+        ),
+        minimapPreview: readElementBox(root?.querySelector("[data-timeline-minimap-preview]")),
         inlineRuns: [
           ...(root?.querySelectorAll(
             ".transcript-user-bubble .md-inline, .transcript-user-bubble .md-inline-code, .transcript-user-bubble .inline-markdown-text, .transcript-user-bubble .inline-markdown-code, .transcript-assistant-row .md-inline, .transcript-assistant-row .md-inline-code, .transcript-assistant-row .inline-markdown-text, .transcript-assistant-row .inline-markdown-code",
@@ -3279,6 +3284,11 @@ function readWebPane() {
             .find((label) => label === "Loading messages..." || label === "Syncing messages...") ??
           null,
         composerOverlay: readElementBox(doc.querySelector("[data-chat-composer-overlay]")),
+        minimap: readElementBox(doc.querySelector("[data-testid='timeline-minimap']")),
+        minimapItems: [...doc.querySelectorAll("[data-minimap-strip]")].map((item) =>
+          readElementBox(item),
+        ),
+        minimapPreview: readElementBox(doc.querySelector("[data-minimap-preview]")),
         inlineRuns: [
           ...doc.querySelectorAll(
             ".transcript-user-bubble p, .transcript-user-bubble code, .transcript-assistant-row p, .transcript-assistant-row code",

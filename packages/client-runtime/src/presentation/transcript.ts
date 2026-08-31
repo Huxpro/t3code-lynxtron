@@ -101,6 +101,44 @@ export interface TranscriptMessage {
   readonly text?: string;
 }
 
+export interface TimelineMinimapItem {
+  readonly id: string;
+  readonly rowIndex: number;
+  readonly userText: string | null;
+  readonly assistantText: string | null;
+}
+
+function compactTimelineMinimapPreview(text: string | null | undefined): string | null {
+  const compact = text?.replace(/\s+/gu, " ").trim() ?? "";
+  return compact.length > 0 ? compact : null;
+}
+
+export function deriveTimelineMinimapItems(
+  rows: ReadonlyArray<MessagesTimelineRow>,
+): TimelineMinimapItem[] {
+  const items: TimelineMinimapItem[] = [];
+  for (let index = 0; index < rows.length; index += 1) {
+    const row = rows[index];
+    if (row?.kind !== "message" || row.message.role !== "user") continue;
+    let assistantText: string | null = null;
+    for (let cursor = index + 1; cursor < rows.length; cursor += 1) {
+      const candidate = rows[cursor];
+      if (candidate?.kind !== "message") continue;
+      if (candidate.message.role === "user") break;
+      if (candidate.message.role === "assistant") {
+        assistantText = compactTimelineMinimapPreview(candidate.message.text);
+      }
+    }
+    items.push({
+      id: row.id,
+      rowIndex: index,
+      userText: compactTimelineMinimapPreview(row.message.text),
+      assistantText,
+    });
+  }
+  return items;
+}
+
 /** Minimal proposed-plan shape the transcript projection needs. */
 export interface TranscriptProposedPlan {
   readonly id: string;

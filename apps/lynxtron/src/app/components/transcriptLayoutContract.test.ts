@@ -9,6 +9,10 @@ const timelineSource = readFileSync(
   "utf8",
 );
 const composerSource = readFileSync(path.resolve(import.meta.dirname, "Composer.tsx"), "utf8");
+const markdownSource = readFileSync(
+  path.resolve(import.meta.dirname, "MarkdownRenderer.tsx"),
+  "utf8",
+);
 const sharedRowSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/chat/TranscriptRowSurface.tsx"),
   "utf8",
@@ -20,6 +24,13 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("const [timelineViewportWidth, setTimelineViewportWidth]");
     expect(timelineSource).toContain("timelineViewportWidth < 360");
     expect(timelineSource).toContain("timelineViewportWidth < 640");
+    expect(timelineSource).toContain("deriveTimelineMinimapItems(rows)");
+    expect(timelineSource).toContain("timelineViewportWidth >= 864");
+    expect(timelineSource).toContain("data-timeline-minimap-item");
+    expect(timelineSource).toContain(
+      'className="timeline-minimap__rail" style={{ flexDirection: "column" } as object}',
+    );
+    expect(overrides).toContain(".timeline-minimap__preview {");
     expect(timelineSource).toContain("!compactActions");
     expect(timelineSource).toContain("bindlayoutchange={(event:");
     expect(timelineSource).not.toContain("availableWidth < 360");
@@ -38,6 +49,7 @@ describe("transcript layout contract", () => {
     expect(appSource).not.toContain("width:764px");
     expect(appSource).not.toContain("line-height:24px!important");
     expect(overrides).toContain(".md-list-dot {");
+    expect(markdownSource).toContain('style={{ flexDirection: "column" } as object}');
     expect(timelineSource).not.toContain("scaleX(1.096)");
     expect(timelineSource).toContain("estimated-main-axis-size-px={32}");
     expect(timelineSource).toContain("!isWorking && !hasTopBanner");
@@ -202,6 +214,7 @@ describe("transcript layout contract", () => {
     const headerBlock = overrides.slice(headerStart, overrides.indexOf("}", headerStart));
     expect(fileBlock).toContain("border-width: 0;");
     expect(fileBlock).toContain("border-radius: 0;");
-    expect(headerBlock).toContain("height: 33px;");
+    expect(headerBlock).toContain("height: 32px;");
+    expect(fileBlock).toContain("border-left-width: 0;");
   });
 });

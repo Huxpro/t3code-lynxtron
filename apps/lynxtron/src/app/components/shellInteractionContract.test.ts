@@ -715,7 +715,7 @@ describe("desktop shell interaction contract", () => {
       ".diff-code-line {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  min-height: 20px;",
     );
     expect(overrides).toContain(
-      ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  color: var(--foreground);\n  font-size: 13px;\n  line-height: 20px;",
+      ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  color: var(--foreground);\n  font-size: 12px;\n  line-height: 20px;",
     );
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
@@ -859,6 +859,11 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("width: 230px;");
     expect(overrides).toContain("height: 28px;");
     expect(overrides).toContain(".theme-light .diff-panel-header__scope-menu,");
+    expect(overrides).toContain(".diff-code-file--selected {\n  border-left-width: 0;");
+    expect(overrides).toContain(".diff-code-file {");
+    expect(overrides).toContain("  border-left-width: 0;");
+    expect(overrides).toContain("  height: 32px;");
+    expect(overrides).toContain("color-mix(in srgb, var(--background) 92%, var(--success))");
   });
 
   it("persists Project Action keybindings after the script update", () => {

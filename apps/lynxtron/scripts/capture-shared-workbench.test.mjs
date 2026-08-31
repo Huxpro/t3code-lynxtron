@@ -555,7 +555,11 @@ describe("shared workbench lifecycle fault capture", () => {
 
     assert.include(source, 'stateId === "chat-thread-narrow"');
     assert.include(source, 'stateId === "chat-input-narrow-expanded"');
-    assert.include(source, 'kind: "narrow-chat-transcript"');
+    assert.include(source, 'stateId === "chat-outline"');
+    assert.include(source, "runChatOutlineFlow");
+    assert.include(source, "chatOutline: chatOutlineEvidence");
+    assert.include(source, 'kind: isChatOutlineState ? "chat-outline"');
+    assert.include(source, '? "chat-outline" : "narrow-chat-transcript"');
     assert.include(source, "checkpointFiles,");
     assert.include(source, '"fidelity-narrow-thinking"');
     assert.include(source, '"fidelity-narrow-command"');
@@ -583,6 +587,10 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(workbench, "width: element.scrollWidth");
     assert.include(workbench, "clientWidth: element.clientWidth");
+    assert.include(
+      workbench,
+      'minimap: readElementBox(root?.querySelector("[data-timeline-minimap]"))',
+    );
     assert.include(
       workbench,
       'changedFilesCard: readElementBox(root?.querySelector(".turn-diff-card"))',

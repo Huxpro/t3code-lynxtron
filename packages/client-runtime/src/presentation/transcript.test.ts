@@ -6,6 +6,7 @@ import {
   computeMessageDurationStart,
   computeStableMessagesTimelineRows,
   deriveMessagesTimelineRows,
+  deriveTimelineMinimapItems,
   deriveTimelineEntries,
   deriveWorkLogEntries,
   formatDuration,
@@ -374,6 +375,34 @@ describe("deriveMessagesTimelineRows", () => {
     if (toggle?.kind !== "work-toggle") throw new Error("expected work toggle");
     expect(toggle.hiddenCount).toBe(2);
     expect(toggle.expanded).toBe(false);
+  });
+});
+
+describe("timeline minimap projection", () => {
+  it("pairs each user turn with its final assistant preview", () => {
+    const rows = [
+      {
+        kind: "message",
+        id: "u1",
+        message: message({ id: "u1", role: "user", text: " First   request " }),
+      },
+      {
+        kind: "message",
+        id: "a1",
+        message: message({ id: "a1", role: "assistant", text: "draft" }),
+      },
+      {
+        kind: "message",
+        id: "a2",
+        message: message({ id: "a2", role: "assistant", text: " Final   reply " }),
+      },
+      { kind: "message", id: "u2", message: message({ id: "u2", role: "user", text: "Second" }) },
+    ] as unknown as Parameters<typeof deriveTimelineMinimapItems>[0];
+
+    expect(deriveTimelineMinimapItems(rows)).toEqual([
+      { id: "u1", rowIndex: 0, userText: "First request", assistantText: "Final reply" },
+      { id: "u2", rowIndex: 3, userText: "Second", assistantText: null },
+    ]);
   });
 });
 

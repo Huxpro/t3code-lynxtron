@@ -11,6 +11,7 @@ import {
 import {
   deriveActiveWorkStartedAt,
   deriveMessagesTimelineRows,
+  deriveTimelineMinimapItems,
   deriveTranscriptNewTurnAnchor,
   deriveTimelineEntries,
   deriveWorkLogEntries,
@@ -36,6 +37,7 @@ import {
   type TranscriptRowElements,
 } from "../../../../web/src/components/chat/TranscriptRowSurface";
 import { ChangedFilesCardSurface } from "../../../../web/src/components/chat/ChangedFilesCardSurface";
+import { HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ActivityEntry, ChatMessage, SessionStatus } from "../bridge";
 import externalChevronDownUrl from "../assets/chevron-down.svg?external";
 import externalTerminalUrl from "../assets/terminal.svg?external";
@@ -143,7 +145,7 @@ function LynxTurnDiffCard({
         ) : undefined
       }
       foldersControl={
-        <view
+        <HostView
           className="turn-diff-card__folders-toggle inline-flex size-[22px] flex-col items-center justify-center rounded-md border border-border"
           aria-label={allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"}
           data-review-toggle-directories
@@ -161,10 +163,10 @@ function LynxTurnDiffCard({
             color="#818181"
             className={allDirectoriesExpanded ? "rotate-180" : undefined}
           />
-        </view>
+        </HostView>
       }
       openDiffControl={
-        <view
+        <HostView
           className="turn-diff-card__open inline-flex h-6 items-center justify-center gap-1 rounded-md border border-border bg-background px-2"
           aria-label="Open diff"
           data-review-open-diff
@@ -176,7 +178,7 @@ function LynxTurnDiffCard({
               Open diff
             </text>
           ) : null}
-        </view>
+        </HostView>
       }
       previewScopes={scopeSummary.map((scope) => ({
         key: scope.label,
@@ -569,6 +571,7 @@ export function MessagesTimeline({
   const listRef = useRef<NodesRef>(null);
   const newestUserMessageIdRef = useRef<string | null | undefined>(undefined);
   const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
+  const [activeMinimapIndex, setActiveMinimapIndex] = useState<number | null>(null);
 
   const isWorking = isSessionWorking(sessionStatus);
   const copyMessage = useCallback((messageId: string, text: string) => {
@@ -646,6 +649,7 @@ export function MessagesTimeline({
     expandedWorkGroupIds,
     checkpoints,
   ]);
+  const minimapItems = useMemo(() => deriveTimelineMinimapItems(rows), [rows]);
 
   useEffect(() => {
     const next = deriveTranscriptNewTurnAnchor(
@@ -873,6 +877,61 @@ export function MessagesTimeline({
           </list-item>
         ) : null}
       </list>
+      {timelineViewportWidth >= 864 && minimapItems.length >= 2 ? (
+        <HostView
+          className="timeline-minimap"
+          data-timeline-minimap
+          data-timeline-minimap-active={activeMinimapIndex ?? ""}
+          onMouseLeave={() => setActiveMinimapIndex(null)}
+        >
+          <view className="timeline-minimap__rail" style={{ flexDirection: "column" } as object}>
+            {minimapItems.map((item, index) => {
+              const active = activeMinimapIndex === index;
+              const distance =
+                activeMinimapIndex === null ? null : Math.abs(activeMinimapIndex - index);
+              return (
+                <HostView
+                  key={item.id}
+                  className={`timeline-minimap__target${active ? " timeline-minimap__target--active" : ""}`}
+                  data-timeline-minimap-item={item.id}
+                  onMouseEnter={() => setActiveMinimapIndex(index)}
+                  onClick={() => {
+                    setAnchorMessageId(null);
+                    listRef.current
+                      ?.invoke({
+                        method: "scrollToPosition",
+                        params: {
+                          index: item.rowIndex + (!isWorking && !hasTopBanner ? 1 : 0),
+                          alignTo: "top",
+                          smooth: false,
+                        },
+                      })
+                      .exec();
+                  }}
+                >
+                  <view
+                    className={`timeline-minimap__strip timeline-minimap__strip--${
+                      distance === 0 ? "active" : distance === 1 ? "near" : "idle"
+                    }`}
+                  />
+                </HostView>
+              );
+            })}
+          </view>
+          {activeMinimapIndex !== null && minimapItems[activeMinimapIndex] ? (
+            <view className="timeline-minimap__preview" data-timeline-minimap-preview>
+              <text className="timeline-minimap__preview-title" text-maxline="1">
+                {minimapItems[activeMinimapIndex]?.userText ?? "User message"}
+              </text>
+              {minimapItems[activeMinimapIndex]?.assistantText ? (
+                <text className="timeline-minimap__preview-detail" text-maxline="3">
+                  {minimapItems[activeMinimapIndex]?.assistantText}
+                </text>
+              ) : null}
+            </view>
+          ) : null}
+        </HostView>
+      ) : null}
       <view
         className={`timeline-jump ${
           followState.following ? "timeline-jump--hidden" : "timeline-jump--visible"
