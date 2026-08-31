@@ -9,6 +9,7 @@ import { parseScopedThreadKey } from "@t3tools/client-runtime/environment";
 import {
   EMPTY_TRANSCRIPT_PLACEHOLDER,
   formatDuration,
+  shouldShowAssistantChangedFiles,
 } from "@t3tools/client-runtime/presentation/transcript";
 import { resolveChatListAnchoredEndSpace } from "@t3tools/shared/chatList";
 import {
@@ -1193,9 +1194,8 @@ const AssistantChangedFilesSection = memo(function AssistantChangedFilesSection(
   compact: boolean;
   onOpenTurnDiff: (turnId: TurnId, filePath?: string) => void;
 }) {
-  if (!turnSummary) return null;
+  if (!shouldShowAssistantChangedFiles(turnSummary)) return null;
   const checkpointFiles = turnSummary.files;
-  if (checkpointFiles.length === 0) return null;
 
   return (
     <AssistantChangedFilesSectionInner

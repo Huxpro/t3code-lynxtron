@@ -15,6 +15,7 @@ import {
   deriveTimelineEntries,
   deriveWorkLogEntries,
   formatDuration,
+  shouldShowAssistantChangedFiles,
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
   reduceTranscriptFollow,
   resolveAssistantMessageCopyState,
@@ -451,14 +452,16 @@ function buildLynxTranscriptRowElements(
         </view>
       ) : null;
     },
-    renderCheckpointCard: ({ row }) =>
-      row.assistantTurnDiffSummary ? (
+    renderCheckpointCard: ({ row }) => {
+      const summary = row.assistantTurnDiffSummary;
+      return shouldShowAssistantChangedFiles(summary) && summary ? (
         <LynxTurnDiffCard
-          summary={row.assistantTurnDiffSummary}
-          isLatestTurn={row.assistantTurnDiffSummary.turnId === latestTurnId}
+          summary={summary}
+          isLatestTurn={summary.turnId === latestTurnId}
           compact={compactChangedFiles}
         />
-      ) : null,
+      ) : null;
+    },
     renderProposedPlanCard: ({ row }) => <LynxProposedPlanCard plan={row.proposedPlan} />,
     renderWorkIcon: ({ name, className }) =>
       name === "terminal" ? (

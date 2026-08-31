@@ -9,6 +9,7 @@ import {
   deriveTimelineEntries,
   deriveWorkLogEntries,
   formatDuration,
+  shouldShowAssistantChangedFiles,
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
   reduceTranscriptFollow,
   deriveTranscriptNewTurnAnchor,
@@ -529,5 +530,13 @@ describe("formatDuration", () => {
     expect(formatDuration(90_000)).toBe("1m 30s");
     expect(formatDuration(3_600_000)).toBe("1h");
     expect(formatDuration(8_100_000)).toBe("2h 15m");
+  });
+});
+
+describe("shouldShowAssistantChangedFiles", () => {
+  it("hides missing and empty checkpoint summaries", () => {
+    expect(shouldShowAssistantChangedFiles(undefined)).toBe(false);
+    expect(shouldShowAssistantChangedFiles({ files: [] })).toBe(false);
+    expect(shouldShowAssistantChangedFiles({ files: [{ path: "src/app.ts" }] })).toBe(true);
   });
 });

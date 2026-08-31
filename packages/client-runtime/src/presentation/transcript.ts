@@ -286,6 +286,12 @@ export function formatElapsed(startIso: string, endIso: string | undefined): str
   return formatDuration(endedAt - startedAt);
 }
 
+export function shouldShowAssistantChangedFiles(
+  summary: { readonly files: ReadonlyArray<unknown> } | null | undefined,
+): boolean {
+  return (summary?.files.length ?? 0) > 0;
+}
+
 type LatestTurnTiming = Pick<OrchestrationLatestTurn, "turnId" | "startedAt" | "completedAt">;
 type SessionActivityState = Pick<OrchestrationSession, "status" | "activeTurnId">;
 
