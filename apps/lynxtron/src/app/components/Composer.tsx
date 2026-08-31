@@ -150,6 +150,7 @@ export function Composer({
     number | null
   >(null);
   const [editorRevision, setEditorRevision] = useState(0);
+  const [mobileComposerExpanded, setMobileComposerExpanded] = useState(false);
   const runtimeModeMenuOpen = openComposerMenu === "runtime";
   const modelOptionMenuOpen = openComposerMenu === "model-option";
   const compactControlsMenuOpen = openComposerMenu === "compact-controls";
@@ -181,6 +182,8 @@ export function Composer({
   const compactControlsMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
   const questionMode = questionActions !== undefined;
+  const mobileCollapsed =
+    viewport.width < 640 && !mobileComposerExpanded && !approvalActions && !questionMode;
   const promptValueRef = useRef(value);
   promptValueRef.current = value;
   const applyExternalTextInsertion = (nextValue: string) => {
@@ -334,6 +337,10 @@ export function Composer({
   useEffect(() => {
     setCompactControlsMeasuredContentHeight(null);
   }, [compactControlsEstimatedContentHeight]);
+  useEffect(() => {
+    if (!mobileComposerExpanded || viewport.width >= 640) return;
+    lynx.createSelectorQuery().select("#composer-prompt-editor").invoke({ method: "focus" }).exec();
+  }, [mobileComposerExpanded, viewport.width]);
   const compactControlsMenuHeight = compactControlsPanelHeight({
     contentHeight: compactControlsMeasuredContentHeight ?? compactControlsEstimatedContentHeight,
     viewportHeight: viewport.height,
@@ -446,6 +453,9 @@ export function Composer({
           ]
             .filter(Boolean)
             .join(" ")}
+          surfaceProps={{
+            "data-chat-composer-mobile-collapsed": mobileCollapsed ? "true" : "false",
+          }}
           footerClassName={
             approvalActions
               ? "composer-footer--approval"
@@ -463,49 +473,72 @@ export function Composer({
                 : undefined
           }
           renderCollapsedBody={
-            approvalActions
+            mobileCollapsed
               ? () => (
-                  <>
-                    <view className="composer-editor-area composer-editor-area--approval">
-                      <text
-                        className={[
-                          "composer__input composer__input--approval composer__input--placeholder",
-                          approvalDetail === "printf pending-approval"
-                            ? "composer__input--authority-hidden"
-                            : undefined,
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                        data-composer-editor="true"
-                      >
-                        {approvalDetail ?? "Resolve this approval request to continue"}
-                      </text>
-                      {approvalDetail === "printf pending-approval" ? (
-                        <image
-                          className="composer-editor-authority-surface"
-                          src={approvalEditorPendingUrl}
-                        />
-                      ) : null}
-                    </view>
-                    providerAvailable ? (
+                  <view
+                    className="composer-mobile-collapsed"
+                    aria-label="Expand composer"
+                    bindtap={() => setMobileComposerExpanded(true)}
+                  >
+                    <text className="composer-mobile-collapsed__label" text-maxline="1">
+                      {editorValue.trim() || "Ask anything..."}
+                    </text>
                     <view
-                      className="composer-footer composer-footer--approval"
-                      data-chat-composer-footer="true"
-                      data-chat-composer-footer-compact={compactFooter ? "true" : "false"}
+                      className={`composer-mobile-collapsed__send${
+                        controlState.primaryActionState === "disabled"
+                          ? " composer-mobile-collapsed__send--disabled"
+                          : ""
+                      }`}
+                      aria-label={busy ? "Stop response" : "Send message"}
+                      catchtap={handleSend}
                     >
-                      <view
-                        className="composer-primary-actions"
-                        data-chat-composer-actions="right"
-                        data-chat-composer-primary-actions-compact={
-                          compactFooter ? "true" : "false"
-                        }
-                      >
-                        {approvalActions}
-                      </view>
+                      <Icon name={busy ? "square" : "send-arrow"} size={16} color="#ffffff" />
                     </view>
-                  </>
+                  </view>
                 )
-              : undefined
+              : approvalActions
+                ? () => (
+                    <>
+                      <view className="composer-editor-area composer-editor-area--approval">
+                        <text
+                          className={[
+                            "composer__input composer__input--approval composer__input--placeholder",
+                            approvalDetail === "printf pending-approval"
+                              ? "composer__input--authority-hidden"
+                              : undefined,
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                          data-composer-editor="true"
+                        >
+                          {approvalDetail ?? "Resolve this approval request to continue"}
+                        </text>
+                        {approvalDetail === "printf pending-approval" ? (
+                          <image
+                            className="composer-editor-authority-surface"
+                            src={approvalEditorPendingUrl}
+                          />
+                        ) : null}
+                      </view>
+                      providerAvailable ? (
+                      <view
+                        className="composer-footer composer-footer--approval"
+                        data-chat-composer-footer="true"
+                        data-chat-composer-footer-compact={compactFooter ? "true" : "false"}
+                      >
+                        <view
+                          className="composer-primary-actions"
+                          data-chat-composer-actions="right"
+                          data-chat-composer-primary-actions-compact={
+                            compactFooter ? "true" : "false"
+                          }
+                        >
+                          {approvalActions}
+                        </view>
+                      </view>
+                    </>
+                  )
+                : undefined
           }
           elements={{
             renderBanners: () => pendingBanner,

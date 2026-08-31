@@ -54,6 +54,11 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".turn-diff-card .lynx-changed-files-tree {\n  margin-top: 0;");
     expect(composerSource).toContain("compactFooter && !questionMode");
     expect(composerSource).toContain("shouldUseCompactComposerFooter(availableWidth");
+    expect(composerSource).toContain("viewport.width < 640 && !mobileComposerExpanded");
+    expect(composerSource).toContain('aria-label="Expand composer"');
+    expect(composerSource).toContain('className="composer-mobile-collapsed"');
+    expect(overrides).toContain(".composer-mobile-collapsed {");
+    expect(overrides).toContain("height: 48px;");
     expect(composerSource).toContain("separators={!compactFooter}");
     expect(composerSource).toContain("compactControlsPanelHeight({");
     expect(composerSource).toContain("const compactControlsEstimatedContentHeight");

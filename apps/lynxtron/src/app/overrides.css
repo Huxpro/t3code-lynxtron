@@ -2485,6 +2485,42 @@
   width: 100%;
   border-radius: 20px;
 }
+.composer-mobile-collapsed {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 48px;
+  padding: 8px 10px 8px 12px;
+  gap: 8px;
+  box-sizing: border-box;
+}
+.composer-mobile-collapsed__label {
+  flex-grow: 1;
+  width: 0;
+  min-width: 0;
+  color: rgba(var(--muted-foreground-rgb), 0.35);
+  font-family: "T3 DM Sans", var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.composer-mobile-collapsed__send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: rgba(var(--primary-rgb), 0.9);
+}
+.composer-mobile-collapsed__send--disabled {
+  opacity: 0.3;
+}
 .composer-editor-area {
   display: block;
   width: 100%;
