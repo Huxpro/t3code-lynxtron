@@ -4158,6 +4158,26 @@
   font-weight: 500;
   line-height: 16px;
 }
+.turn-diff-card__summary {
+  min-width: 0;
+}
+.turn-diff-card--compact .turn-diff-card__summary {
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 0;
+  overflow: hidden;
+}
+.turn-diff-card--compact .turn-diff-card__status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.turn-diff-card--compact .turn-diff-card__open {
+  width: 24px;
+  min-width: 24px;
+  padding-right: 0;
+  padding-left: 0;
+}
 .turn-diff-card__stat,
 .turn-diff-card__file-stat {
   font-family: var(--font-mono);
@@ -7493,8 +7513,6 @@
   top: 0;
   right: 0;
   z-index: 75;
-  width: calc(100% - 24px);
-  max-width: 340px;
   box-shadow: -16px 0 40px rgba(0, 0, 0, 0.35);
 }
 .right-panel--maximized {

@@ -41,6 +41,7 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
   onExpandedChange: (expanded: boolean) => void;
   onToggleAllDirectories: () => void;
   onOpenTurnDiff: (turnId: TurnId, filePath?: string) => void;
+  compact?: boolean;
 }) {
   const {
     turnId,
@@ -52,18 +53,19 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
     onExpandedChange,
     onToggleAllDirectories,
     onOpenTurnDiff,
+    compact = false,
   } = props;
   const summaryStat = useMemo(() => summarizeChangedFiles(files), [files]);
   const scopeSummary = useMemo(() => summarizeChangedFileScopes(files), [files]);
   const previewFiles = useMemo(() => selectChangedFilePreview(files), [files]);
   const compactPreviewVisible = showCompactPreview && !expanded;
-
   return (
     <ChangedFilesCardSurface
       turnId={String(turnId)}
       fileCount={files.length}
       expanded={expanded}
       compactPreviewVisible={compactPreviewVisible}
+      compact={compact}
       toggleIcon={<ChevronRightIcon aria-hidden="true" className="size-3.5" />}
       hintClassName="hidden group-hover:text-foreground/80 sm:inline"
       stat={
@@ -117,9 +119,11 @@ export const ChangedFilesCard = memo(function ChangedFilesCard(props: {
             }
           >
             <FileDiffIcon className="size-3" />
-            <span className="turn-diff-card__open-label hidden text-xs leading-4 sm:inline">
-              Open diff
-            </span>
+            {!compact ? (
+              <span className="turn-diff-card__open-label hidden text-xs leading-4 sm:inline">
+                Open diff
+              </span>
+            ) : null}
           </TooltipTrigger>
           <TooltipPopup side="top">Open the full diff</TooltipPopup>
         </Tooltip>

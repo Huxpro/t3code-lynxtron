@@ -2,9 +2,11 @@ import { useCallback, useState } from "@lynx-js/react";
 import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
 import {
   RIGHT_PANEL_DEFAULT_WIDTH,
+  RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY,
   RIGHT_PANEL_MIN_WIDTH,
   RIGHT_PANEL_WIDTH_STORAGE_KEY,
   resolveRightPanelMaximumWidth,
+  resolveRightPanelSheetWidth,
 } from "../../../../web/src/rightPanelLayout";
 import {
   RightPanelEmptySurface,
@@ -27,8 +29,6 @@ import { Icon, type IconName } from "./Icon";
 import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
 import { useT3ClientState } from "../state/t3Client";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
-
-const LYNX_RIGHT_PANEL_SHEET_QUERY = "(max-width: 760px)";
 
 interface RightPanelContentProps {
   activeThreadId: string | null;
@@ -134,7 +134,7 @@ export function RightPanel({
 }: RightPanelProps) {
   const { activeThreadId } = useT3ClientState();
   const state = useRightPanelState();
-  const sheet = useMediaQuery(LYNX_RIGHT_PANEL_SHEET_QUERY);
+  const sheet = useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY);
   const viewport = useViewportSnapshot();
   const [showAddMenu, setShowAddMenu] = useState(false);
   const resize = useResizableWidth({
@@ -223,7 +223,7 @@ export function RightPanel({
   const activeSurface = state.surfaces.find((s) => s.id === state.activeSurfaceId) ?? null;
   const hasActiveSurface = activeSurface !== null;
   const terminalWidth = sheet
-    ? Math.min(viewport.width - 24, 340)
+    ? resolveRightPanelSheetWidth(viewport.width)
     : maximized
       ? viewport.width
       : resize.width;
@@ -253,7 +253,13 @@ export function RightPanel({
       className={`right-panel${sheet ? " right-panel--sheet" : ""}${
         maximized ? " right-panel--maximized" : ""
       }`}
-      style={sheet || maximized ? undefined : { width: `${resize.width}px` }}
+      style={
+        sheet
+          ? { width: `${resolveRightPanelSheetWidth(viewport.width)}px` }
+          : maximized
+            ? undefined
+            : { width: `${resize.width}px` }
+      }
       data-right-panel-open="true"
       data-right-panel-mode={sheet ? "sheet" : "inline"}
       data-right-panel-active-kind={activeSurface?.kind ?? "empty"}

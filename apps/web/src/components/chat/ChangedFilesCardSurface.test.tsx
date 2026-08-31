@@ -6,9 +6,11 @@ import { ChangedFilesCardSurface } from "./ChangedFilesCardSurface";
 const renderCard = ({
   expanded,
   compactPreviewVisible,
+  compact = false,
 }: {
   readonly expanded: boolean;
   readonly compactPreviewVisible: boolean;
+  readonly compact?: boolean;
 }) =>
   renderToStaticMarkup(
     <ChangedFilesCardSurface
@@ -16,6 +18,7 @@ const renderCard = ({
       fileCount={2}
       expanded={expanded}
       compactPreviewVisible={compactPreviewVisible}
+      compact={compact}
       stat={<span data-stat>+4 −1</span>}
       toggleIcon={<span data-toggle>Toggle</span>}
       foldersControl={<button data-folders>Folders</button>}
@@ -74,5 +77,13 @@ describe("ChangedFilesCardSurface", () => {
     expect(expanded.indexOf("2 changed files")).toBeLessThan(expanded.indexOf("Expanded files"));
     expect(expanded).not.toMatch(/\bsticky\b/);
     expect(expanded).not.toMatch(/\btop-2\b/);
+  });
+
+  it("removes secondary header copy in compact chat columns", () => {
+    const compact = renderCard({ expanded: false, compactPreviewVisible: true, compact: true });
+
+    expect(compact).toContain('data-changed-files-compact="true"');
+    expect(compact).toContain("turn-diff-card--compact");
+    expect(compact).not.toContain("Show files");
   });
 });

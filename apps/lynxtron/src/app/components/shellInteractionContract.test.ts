@@ -201,7 +201,7 @@ describe("desktop shell interaction contract", () => {
     const dismissBlock = overrides.slice(dismissStart, overrides.indexOf("}", dismissStart));
     expect(dismissBlock).toContain("z-index: 0;");
     expect(dismissBlock).not.toContain("var(--overlay-backdrop)");
-    const panelStart = overrides.indexOf(".model-picker-panel {");
+    const panelStart = overrides.indexOf("\n.model-picker-panel {");
     const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
     expect(panelBlock).toContain("z-index: 1;");
     expect(modelPickerSurfaceSource).toContain(
@@ -802,9 +802,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".theme-light .right-panel__add-menu {");
     expect(panel).toContain('case "file":');
     expect(panel).toContain("<FilePanel path={surface.path} />");
-    expect(panel).toContain('const LYNX_RIGHT_PANEL_SHEET_QUERY = "(max-width: 760px)"');
-    expect(panel).toContain("useMediaQuery(LYNX_RIGHT_PANEL_SHEET_QUERY)");
-    expect(panel).not.toContain("useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY)");
+    expect(panel).toContain("useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY)");
+    expect(panel).toContain("resolveRightPanelSheetWidth(viewport.width)");
     expect(branchToolbarSource).toContain('className="min-w-0 flex-1 justify-end md:ml-auto"');
     expect(branchToolbarSource).not.toContain("md:flex-none");
     expect(branchToolbarEnvModeSource).toContain(

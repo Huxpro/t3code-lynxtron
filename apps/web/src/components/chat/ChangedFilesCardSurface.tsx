@@ -24,6 +24,7 @@ export function ChangedFilesCardSurface({
   statusLabel,
   expanded,
   compactPreviewVisible,
+  compact = false,
   stat,
   toggleIcon,
   hintClassName,
@@ -41,6 +42,7 @@ export function ChangedFilesCardSurface({
   readonly statusLabel?: string;
   readonly expanded: boolean;
   readonly compactPreviewVisible: boolean;
+  readonly compact?: boolean;
   readonly stat?: ReactNode;
   readonly toggleIcon: ReactNode;
   readonly hintClassName?: string;
@@ -52,7 +54,9 @@ export function ChangedFilesCardSurface({
   readonly onExpandedChange: (expanded: boolean) => void;
   readonly onShowAll: () => void;
 }) {
-  const label = statusLabel ?? `${fileCount} changed file${fileCount === 1 ? "" : "s"}`;
+  const label = compact
+    ? `${fileCount} file${fileCount === 1 ? "" : "s"}`
+    : (statusLabel ?? `${fileCount} changed file${fileCount === 1 ? "" : "s"}`);
 
   return (
     <HostView
@@ -63,6 +67,7 @@ export function ChangedFilesCardSurface({
           : compactPreviewVisible
             ? "turn-diff-card--preview"
             : "turn-diff-card--collapsed",
+        compact && "turn-diff-card--compact",
       )}
       data-review-checkpoint-card
       data-review-checkpoint-status={checkpointStatus}
@@ -71,6 +76,7 @@ export function ChangedFilesCardSurface({
       data-changed-files-state={
         expanded ? "expanded" : compactPreviewVisible ? "preview" : "collapsed"
       }
+      data-changed-files-compact={compact ? "true" : "false"}
     >
       <HostView
         className={cn(
@@ -95,18 +101,20 @@ export function ChangedFilesCardSurface({
           >
             {toggleIcon}
           </HostView>
-          <HostView className="flex min-w-0 items-center gap-1 whitespace-nowrap font-medium text-foreground text-xs leading-4">
+          <HostView className="turn-diff-card__summary flex min-w-0 items-center gap-1 whitespace-nowrap font-medium text-foreground text-xs leading-4">
             <HostText className="turn-diff-card__status text-xs leading-4">{label}</HostText>
             {stat}
           </HostView>
-          <HostText
-            className={cn(
-              "turn-diff-card__hint ml-1 truncate text-[11px] leading-4 text-muted-foreground",
-              hintClassName,
-            )}
-          >
-            {expanded ? "Hide files" : "Show files"}
-          </HostText>
+          {!compact ? (
+            <HostText
+              className={cn(
+                "turn-diff-card__hint ml-1 truncate text-[11px] leading-4 text-muted-foreground",
+                hintClassName,
+              )}
+            >
+              {expanded ? "Hide files" : "Show files"}
+            </HostText>
+          ) : null}
         </HostButton>
         <HostView className="flex items-center gap-1.5">
           {expanded ? foldersControl : null}

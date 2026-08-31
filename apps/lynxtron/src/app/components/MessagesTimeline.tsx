@@ -68,6 +68,7 @@ interface MessagesTimelineProps {
   proposedPlans?: ReadonlyArray<OrchestrationProposedPlan>;
   activeTurnId?: TurnId | null;
   checkpoints?: ReadonlyArray<OrchestrationCheckpointSummary>;
+  availableWidth?: number;
 }
 
 type TimelineRow = MessagesTimelineRow<
@@ -95,9 +96,11 @@ function reuseIdentifierForRow(row: TimelineRow): string {
 function LynxTurnDiffCard({
   summary,
   isLatestTurn,
+  compact,
 }: {
   summary: OrchestrationCheckpointSummary;
   isLatestTurn: boolean;
+  compact: boolean;
 }) {
   const [expandedOverride, setExpandedOverride] = useState<boolean | null>(null);
   const [autoExpanded] = useState(() => shouldAutoExpandChangedFiles(summary.files, isLatestTurn));
@@ -126,6 +129,7 @@ function LynxTurnDiffCard({
       statusLabel={statusLabel}
       expanded={expanded}
       compactPreviewVisible={isLatestTurn && !expanded}
+      compact={compact}
       toggleIcon={<Icon name="chevron-right" size={14} color="#818181" />}
       stat={
         summary.status === "ready" ? (
@@ -164,9 +168,11 @@ function LynxTurnDiffCard({
           bindtap={() => openDiff(summary.files[0]?.path)}
         >
           <Icon name="file-json" size={12} color="#818181" />
-          <text className="lynx-host-text turn-diff-card__open-label text-[11px] font-medium text-foreground">
-            Open diff
-          </text>
+          {!compact ? (
+            <text className="lynx-host-text turn-diff-card__open-label text-[11px] font-medium text-foreground">
+              Open diff
+            </text>
+          ) : null}
         </view>
       }
       previewScopes={scopeSummary.map((scope) => ({
@@ -303,6 +309,7 @@ function LynxWorkingLabel({ createdAt }: { createdAt: string | null }) {
 function buildLynxTranscriptRowElements(
   cwd: string | undefined,
   latestTurnId: TurnId | null,
+  compactChangedFiles: boolean,
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
   hoveredMessageId: string | null,
   copiedMessageId: string | null,
@@ -458,6 +465,7 @@ function buildLynxTranscriptRowElements(
         <LynxTurnDiffCard
           summary={row.assistantTurnDiffSummary}
           isLatestTurn={row.assistantTurnDiffSummary.turnId === latestTurnId}
+          compact={compactChangedFiles}
         />
       ) : null,
     renderProposedPlanCard: ({ row }) => <LynxProposedPlanCard plan={row.proposedPlan} />,
@@ -547,6 +555,7 @@ export function MessagesTimeline({
   proposedPlans = [],
   activeTurnId = null,
   checkpoints = [],
+  availableWidth = 1024,
 }: MessagesTimelineProps) {
   const [clientSettings] = useClientSettingsState();
   const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
@@ -576,6 +585,7 @@ export function MessagesTimeline({
       buildLynxTranscriptRowElements(
         cwd,
         latestTurn?.turnId ?? null,
+        availableWidth < 360,
         clientSettings.timestampFormat,
         hoveredMessageId,
         copiedMessageId,
@@ -583,6 +593,7 @@ export function MessagesTimeline({
       ),
     [
       clientSettings.timestampFormat,
+      availableWidth,
       copiedMessageId,
       copyMessage,
       cwd,

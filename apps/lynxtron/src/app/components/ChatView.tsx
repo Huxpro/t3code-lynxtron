@@ -669,6 +669,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           proposedPlans={proposedPlans}
           activeTurnId={activeTurnId}
           checkpoints={checkpoints}
+          availableWidth={centerPanelWidth}
         />
       ) : null}
       <Composer

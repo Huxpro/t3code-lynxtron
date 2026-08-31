@@ -1503,7 +1503,7 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.match(
       source,
-      /let webReviewPanelInputSent =\s*!isReviewState \|\| reviewExpectation === "checkpoint" \|\| reviewExpectation === "tree";/,
+      /let webReviewPanelInputSent =\s*!isReviewState \|\|\s*reviewExpectation === "checkpoint" \|\|\s*reviewExpectation === "tree" \|\|\s*\(reviewExpectation === "diff" && width <= 1023\);/,
     );
     assert.include(source, "!webReviewPanelInputSent && !state?.web?.reviewMetrics?.panelOpen");
     assert.include(source, "!lynxReviewPanelInputSent &&");

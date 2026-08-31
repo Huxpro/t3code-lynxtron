@@ -5884,11 +5884,15 @@ async function captureCell({
   let composerInputChannel = composerInput.length === 0 ? "not-required" : "pending";
   let composerInputDiagnostics = null;
   let webReviewPanelInputSent =
-    !isReviewState || reviewExpectation === "checkpoint" || reviewExpectation === "tree";
+    !isReviewState ||
+    reviewExpectation === "checkpoint" ||
+    reviewExpectation === "tree" ||
+    (reviewExpectation === "diff" && width <= 1023);
   let lynxReviewPanelInputSent =
     !isReviewState ||
     reviewExpectation === "checkpoint" ||
     reviewExpectation === "tree" ||
+    (reviewExpectation === "diff" && width <= 1023) ||
     (reviewExpectation === "diff" && isDiffScopeMenuState);
   let webReviewDiffInputSent =
     !isReviewState ||

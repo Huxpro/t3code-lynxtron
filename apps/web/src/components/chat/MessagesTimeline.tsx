@@ -138,6 +138,7 @@ interface TimelineRowSharedState {
   onOpenTurnDiff: (turnId: TurnId, filePath?: string) => void;
   onToggleTurnFold: (turnId: TurnId) => void;
   onToggleWorkGroup: (groupId: string, anchorElement?: HTMLElement) => void;
+  compactChangedFiles: boolean;
 }
 
 interface TimelineRowActivityState {
@@ -333,6 +334,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
   );
   const [minimapHasPersistentGutter, setMinimapHasPersistentGutter] = useState(false);
   const [minimapHitStripWidth, setMinimapHitStripWidth] = useState(0);
+  const [compactChangedFiles, setCompactChangedFiles] = useState(false);
   const handleAnchorReady = useCallback(
     (info: { anchorIndex: number | undefined }) => {
       if (anchorMessageId !== null && info.anchorIndex !== undefined) {
@@ -400,6 +402,9 @@ export const MessagesTimeline = memo(function MessagesTimeline({
 
     const measure = () => {
       const viewportWidth = timelineViewportElement.getBoundingClientRect().width;
+      setCompactChangedFiles((current) =>
+        current === viewportWidth < 360 ? current : viewportWidth < 360,
+      );
       const nextHasPersistentGutter = resolveTimelineMinimapHasPersistentGutter(viewportWidth);
       setMinimapHasPersistentGutter((current) =>
         current === nextHasPersistentGutter ? current : nextHasPersistentGutter,
@@ -433,6 +438,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
       onOpenTurnDiff,
       onToggleTurnFold,
       onToggleWorkGroup,
+      compactChangedFiles,
     }),
     [
       timestampFormat,
@@ -447,6 +453,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
       onOpenTurnDiff,
       onToggleTurnFold,
       onToggleWorkGroup,
+      compactChangedFiles,
     ],
   );
   const activityState = useMemo<TimelineRowActivityState>(
@@ -876,6 +883,7 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
           turnSummary={messageRow.assistantTurnDiffSummary}
           routeThreadKey={ctx.routeThreadKey}
           resolvedTheme={ctx.resolvedTheme}
+          compact={ctx.compactChangedFiles}
           onOpenTurnDiff={ctx.onOpenTurnDiff}
         />
       ),
@@ -1173,11 +1181,13 @@ const AssistantChangedFilesSection = memo(function AssistantChangedFilesSection(
   turnSummary,
   routeThreadKey,
   resolvedTheme,
+  compact,
   onOpenTurnDiff,
 }: {
   turnSummary: TurnDiffSummary | undefined;
   routeThreadKey: string;
   resolvedTheme: "light" | "dark";
+  compact: boolean;
   onOpenTurnDiff: (turnId: TurnId, filePath?: string) => void;
 }) {
   if (!turnSummary) return null;
@@ -1190,6 +1200,7 @@ const AssistantChangedFilesSection = memo(function AssistantChangedFilesSection(
       checkpointFiles={checkpointFiles}
       routeThreadKey={routeThreadKey}
       resolvedTheme={resolvedTheme}
+      compact={compact}
       onOpenTurnDiff={onOpenTurnDiff}
     />
   );
@@ -1202,12 +1213,14 @@ function AssistantChangedFilesSectionInner({
   checkpointFiles,
   routeThreadKey,
   resolvedTheme,
+  compact,
   onOpenTurnDiff,
 }: {
   turnSummary: TurnDiffSummary;
   checkpointFiles: TurnDiffSummary["files"];
   routeThreadKey: string;
   resolvedTheme: "light" | "dark";
+  compact: boolean;
   onOpenTurnDiff: (turnId: TurnId, filePath?: string) => void;
 }) {
   const activity = use(TimelineRowActivityCtx);
@@ -1230,6 +1243,7 @@ function AssistantChangedFilesSectionInner({
       showCompactPreview={isLatestTurn}
       allDirectoriesExpanded={allDirectoriesExpanded}
       resolvedTheme={resolvedTheme}
+      compact={compact}
       onExpandedChange={(nextExpanded) =>
         setExpanded(routeThreadKey, turnSummary.turnId, nextExpanded)
       }

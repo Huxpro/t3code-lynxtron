@@ -15,3 +15,9 @@ export function resolveRightPanelMaximumWidth(viewportWidth: number): number {
 
 export const RIGHT_PANEL_SHEET_CLASS_NAME =
   "w-[min(42vw,28rem)] min-w-80 max-w-[28rem] p-0 max-[760px]:w-[min(88vw,24rem)] max-[760px]:min-w-0 wco:mt-[env(titlebar-area-height)] wco:h-[calc(100%-env(titlebar-area-height))] wco:max-h-[calc(100%-env(titlebar-area-height))]";
+
+export function resolveRightPanelSheetWidth(viewportWidth: number): number {
+  return viewportWidth <= 760
+    ? Math.min(viewportWidth * 0.88, 384)
+    : Math.max(320, Math.min(viewportWidth * 0.42, 448));
+}
