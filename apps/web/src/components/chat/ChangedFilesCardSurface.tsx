@@ -54,6 +54,11 @@ export function ChangedFilesCardSurface({
   readonly onExpandedChange: (expanded: boolean) => void;
   readonly onShowAll: () => void;
 }) {
+  // Defensive shared boundary: callers may briefly observe a checkpoint row
+  // before its file projection is populated. No renderer should turn that
+  // transient/empty state into a visible "0 changed files" card.
+  if (fileCount <= 0) return null;
+
   const label = compact
     ? `${fileCount} file${fileCount === 1 ? "" : "s"}`
     : (statusLabel ?? `${fileCount} changed file${fileCount === 1 ? "" : "s"}`);

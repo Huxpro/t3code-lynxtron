@@ -1061,7 +1061,7 @@ export function deriveTimelineEntries<
   );
 }
 
-export const MAX_VISIBLE_WORK_LOG_ENTRIES = 1;
+export const MAX_VISIBLE_WORK_LOG_ENTRIES = 5;
 
 export interface TimelineDurationMessage {
   id: string;

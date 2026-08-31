@@ -320,16 +320,23 @@ describe("deriveMessagesTimelineRows", () => {
 
   it("collapses long unsettled work runs behind a work-toggle row", () => {
     const workEntries = deriveWorkLogEntries(
-      ["2026-01-01T00:00:02.000Z", "2026-01-01T00:00:03.000Z", "2026-01-01T00:00:04.000Z"].map(
-        (createdAt, index) =>
-          activity({
-            id: `w${index}`,
-            kind: "tool.completed",
-            summary: `Step ${index}`,
-            turnId: "turn-2",
-            createdAt,
-            payload: { data: { toolCallId: `call-${index}` } },
-          }),
+      [
+        "2026-01-01T00:00:02.000Z",
+        "2026-01-01T00:00:03.000Z",
+        "2026-01-01T00:00:04.000Z",
+        "2026-01-01T00:00:05.000Z",
+        "2026-01-01T00:00:06.000Z",
+        "2026-01-01T00:00:07.000Z",
+        "2026-01-01T00:00:08.000Z",
+      ].map((createdAt, index) =>
+        activity({
+          id: `w${index}`,
+          kind: "tool.completed",
+          summary: `Step ${index}`,
+          turnId: "turn-2",
+          createdAt,
+          payload: { data: { toolCallId: `call-${index}` } },
+        }),
       ),
     );
     const entries = deriveTimelineEntries(
@@ -353,8 +360,17 @@ describe("deriveMessagesTimelineRows", () => {
     });
 
     const kinds = rows.map((row) => row.kind);
-    expect(kinds).toEqual(["message", "work", "work-toggle", "working"]);
-    const toggle = rows[2];
+    expect(kinds).toEqual([
+      "message",
+      "work",
+      "work",
+      "work",
+      "work",
+      "work",
+      "work-toggle",
+      "working",
+    ]);
+    const toggle = rows[6];
     if (toggle?.kind !== "work-toggle") throw new Error("expected work toggle");
     expect(toggle.hiddenCount).toBe(2);
     expect(toggle.expanded).toBe(false);

@@ -39,6 +39,24 @@ const renderCard = ({
   );
 
 describe("ChangedFilesCardSurface", () => {
+  it("never renders an empty checkpoint shell", () => {
+    const markup = renderToStaticMarkup(
+      <ChangedFilesCardSurface
+        turnId="turn-empty"
+        fileCount={0}
+        expanded={false}
+        compactPreviewVisible={false}
+        toggleIcon={<span>Toggle</span>}
+        openDiffControl={<button>Open diff</button>}
+        previewScopes={[]}
+        previewFiles={[]}
+        onExpandedChange={() => undefined}
+        onShowAll={() => undefined}
+      />,
+    );
+    expect(markup).toBe("");
+  });
+
   it("renders collapsed, preview, and expanded content through one card root", () => {
     const collapsed = renderCard({ expanded: false, compactPreviewVisible: false });
     const preview = renderCard({ expanded: false, compactPreviewVisible: true });

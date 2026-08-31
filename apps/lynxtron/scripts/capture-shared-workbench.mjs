@@ -646,6 +646,7 @@ function narrowChatResponsiveMatches(webMetrics, lynxMetrics) {
     JSON.stringify((lynxMetrics?.rows ?? []).map(({ id, kind, role }) => ({ id, kind, role })));
   const contained = (metrics) => {
     const rows = metrics?.rowGeometry ?? [];
+    const messageRows = rows.filter(({ kind }) => kind === "message");
     const userBubble = metrics?.anatomy?.userBubble;
     const assistant = metrics?.assistantGeometry?.body;
     const codeBlocks = metrics?.codeBlockGeometry ?? [];
@@ -662,7 +663,7 @@ function narrowChatResponsiveMatches(webMetrics, lynxMetrics) {
       child.rect.x >= parent.x - 1 &&
       child.rect.x + child.rect.width <= parent.x + parent.width + 1;
     return (
-      rows.length === 2 &&
+      messageRows.length === 2 &&
       within(userBubble, userRow) &&
       within(assistant, assistantRow) &&
       codeBlocks.length === 1 &&
@@ -5220,7 +5221,7 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
     const userText =
       "Please keep this deliberately long request readable when the chat thread becomes very narrow, including `inline-code-that-must-wrap-safely` and the message hover controls.";
     const assistantText =
-      'Implemented the responsive behavior while preserving the shared layout.\n\n```ts title="src/responsive.ts"\nexport const responsiveLayout = (width: number) => width < 520 ? "compact" : "wide";\n```\n\nLong prose should wrap inside the available column without forcing horizontal overflow.';
+      'Implemented the responsive behavior while preserving the shared layout.\n\n- Router initialization\n- Navigation calls with target and current paths\n- Pathname changes from the core router\n- Navigation errors and warnings\n\n```ts title="src/responsive.ts"\nexport const responsiveLayout = (width: number) => width < 520 ? "compact" : "wide";\n```\n\nLong prose should wrap inside the available column without forcing horizontal overflow.';
     const checkpointFiles = [
       {
         path: "apps/lynxtron/src/app/components/ResponsiveConversationTimeline.tsx",
@@ -5248,6 +5249,44 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
         .prepare("DELETE FROM projection_thread_activities WHERE thread_id = ?")
         .run(threadId);
       database.prepare("DELETE FROM projection_turns WHERE thread_id = ?").run(threadId);
+      database
+        .prepare(
+          `INSERT INTO projection_thread_activities (
+            activity_id, thread_id, turn_id, tone, kind, summary, payload_json, sequence, created_at
+          ) VALUES
+            (?, ?, ?, 'info', 'task.progress', 'Thinking', ?, 1, ?),
+            (?, ?, ?, 'tool', 'tool.completed', 'Command run', ?, 2, ?),
+            (?, ?, ?, 'tool', 'tool.completed', 'Tool call', ?, 3, ?)`,
+        )
+        .run(
+          "fidelity-narrow-thinking",
+          threadId,
+          turnId,
+          JSON.stringify({
+            summary: "Thinking",
+            detail:
+              "The user is asking me to preserve every responsive chat state while matching the Electron source of truth.\n\nI should reuse the shared presentation contracts and verify each interaction.",
+          }),
+          "2026-08-30T04:00:10.000Z",
+          "fidelity-narrow-command",
+          threadId,
+          turnId,
+          JSON.stringify({
+            status: "completed",
+            command: "pnpm test transcript-responsive-layout",
+            detail: "66 focused tests passed",
+          }),
+          "2026-08-30T04:00:20.000Z",
+          "fidelity-narrow-tool",
+          threadId,
+          turnId,
+          JSON.stringify({
+            status: "completed",
+            title: "Inspect responsive transcript",
+            detail: "Compared Web and Lynx geometry at 360, 480, and 640 pixels.",
+          }),
+          "2026-08-30T04:00:30.000Z",
+        );
       database
         .prepare(
           `INSERT INTO projection_thread_messages (
@@ -6598,7 +6637,10 @@ async function captureCell({
                 return null;
               }
               return {
-                x: frameRect.x + rect.x + rect.width / 2,
+                // Hit the leading disclosure/label rather than the center of
+                // the full-width row; native flex children can otherwise own
+                // the center hit target without bubbling a tap to HostButton.
+                x: frameRect.x + rect.x + Math.min(32, rect.width / 2),
                 y: frameRect.y + rect.y + rect.height / 2,
               };
             };
@@ -6635,6 +6677,39 @@ async function captureCell({
       if (webThinking?.state === "expanded") webThinkingInputSent = true;
       if (lynxThinking?.state === "expanded") lynxThinkingInputSent = true;
       if (!webThinkingInputSent || !lynxThinkingInputSent) {
+        const workTogglePoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const pointFor = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const target = root?.querySelector(
+                '[data-timeline-row-kind="work-toggle"] .transcript-work-toggle[aria-expanded="false"]'
+              );
+              if (!frame || !target) return null;
+              target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return {
+                x: frameRect.x + rect.x + Math.min(32, rect.width / 2),
+                y: frameRect.y + rect.y + rect.height / 2,
+              };
+            };
+            return { web: pointFor('web-pane', false), lynx: pointFor('lynx-pane', true) };
+          })()`,
+        ).catch(() => null);
+        if (!webThinking && workTogglePoints?.web) {
+          await dispatchPointerClickWithMove(cdp, sessionId, workTogglePoints.web);
+          await delay(100);
+          continue;
+        }
+        if (!lynxThinking && workTogglePoints?.lynx) {
+          await dispatchPointerClickWithMove(cdp, sessionId, workTogglePoints.lynx);
+          await delay(100);
+          continue;
+        }
         const thinkingPoints = await evaluate(
           cdp,
           sessionId,
@@ -6662,12 +6737,12 @@ async function captureCell({
           })()`,
         ).catch(() => null);
         if (!webThinkingInputSent && thinkingPoints?.web) {
-          await dispatchPointerClick(cdp, sessionId, thinkingPoints.web);
+          await dispatchPointerClickWithMove(cdp, sessionId, thinkingPoints.web);
           await delay(100);
           continue;
         }
         if (!lynxThinkingInputSent && thinkingPoints?.lynx) {
-          await dispatchPointerClick(cdp, sessionId, thinkingPoints.lynx);
+          await dispatchPointerClickWithMove(cdp, sessionId, thinkingPoints.lynx);
           await delay(100);
           continue;
         }

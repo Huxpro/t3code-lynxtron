@@ -30,6 +30,15 @@ describe("transcript layout contract", () => {
       ".timeline-settled-header-space {\n  width: 100%;\n  height: 32px;",
     );
     expect(timelineSource).toContain('item-key="timeline-settled-header-space"');
+    expect(overrides).toContain(".transcript-turn-fold-outer {\n  width: 100%;\n  height: 29px;");
+    expect(overrides).toContain(".transcript-turn-fold-button {");
+    expect(overrides).toContain("  height: 16px;");
+    expect(overrides).toContain(".transcript-work-entry-body {");
+    expect(overrides).toContain("font-family: var(--font-mono);");
+    expect(appSource).not.toContain("width:764px");
+    expect(appSource).not.toContain("line-height:24px!important");
+    expect(overrides).toContain(".md-list-dot {");
+    expect(timelineSource).not.toContain("scaleX(1.096)");
     expect(timelineSource).toContain("estimated-main-axis-size-px={32}");
     expect(timelineSource).toContain("!isWorking && !hasTopBanner");
     expect(timelineSource).toContain(

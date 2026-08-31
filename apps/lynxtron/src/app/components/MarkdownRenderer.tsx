@@ -307,12 +307,16 @@ function renderBlock(
                   : "☐"
                 : item.kind === "ordered"
                   ? `${item.ordinal ?? j + 1}.`
-                  : "•";
+                  : null;
             return (
               <view key={`${key}-${j}`} className="md-list-item">
-                <text className="md-list-bullet" style={{ marginLeft: item.depth * 18 } as any}>
-                  {marker}
-                </text>
+                <view className="md-list-marker" style={{ marginLeft: item.depth * 18 } as any}>
+                  {marker === null ? (
+                    <view className="md-list-dot" />
+                  ) : (
+                    <text className="md-list-bullet">{marker}</text>
+                  )}
+                </view>
                 <text className="md-list-text">
                   {renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd)}
                 </text>

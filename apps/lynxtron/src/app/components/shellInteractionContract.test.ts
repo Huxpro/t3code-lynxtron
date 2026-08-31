@@ -1033,9 +1033,10 @@ describe("desktop shell interaction contract", () => {
       ".settings-topbar {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;",
     );
     expect(sidebarSource).toContain("settlementSupported={settlementSupported}");
-    expect(sidebarSource).toContain('"data-sidebar-thread-action-trigger": thread.id');
-    expect(sidebarSource).toContain('"data-sidebar-empty-thread-delete": thread.id');
-    expect(sidebarSource).toContain('? "Delete empty thread"');
+    expect(sidebarSource).not.toContain('"data-sidebar-thread-action-trigger": thread.id');
+    expect(sidebarSource).toContain("data-sidebar-snooze-trigger={thread.id}");
+    expect(sidebarSource).toContain("data-sidebar-empty-thread-delete={thread.id}");
+    expect(sidebarSource).toContain('aria-label="Delete empty thread"');
     expect(sidebarSource).toContain("data-sidebar-thread-delete={thread.id}");
     expect(sidebarSource).toContain("data-sidebar-thread-delete-confirm={thread.id}");
     expect(sidebarSource).toContain("bindtap={requestDelete}");
@@ -1072,9 +1073,9 @@ describe("desktop shell interaction contract", () => {
     expect(componentSource("OtherSettings.tsx")).toContain('"Failed to unarchive thread"');
     expect(componentSource("OtherSettings.tsx")).toContain('"Failed to delete thread"');
     expect(sidebarSource).toContain("cardActionsVisible={");
-    expect(sidebarSource).toContain(
-      "disposableEmptyThread || actionMenuOpen || hoveredThreadId === thread.id",
-    );
+    expect(sidebarSource).toContain("snoozeMenuOpen || hoveredThreadId === thread.id");
+    expect(sidebarSource).toContain("snoozeSupported && canSnooze(thread");
+    expect(sidebarSource).toContain('aria-label="Snooze thread"');
     expect(sidebarRowSource).toContain('props.cardActionsVisible && "opacity-100"');
     expect(sidebarRowSource).toContain("{props.settleIcon}\n                        Settle");
     expect(sidebarSource).toContain("setHoveredThreadId(thread.id)");
@@ -1228,6 +1229,13 @@ describe("desktop shell interaction contract", () => {
     expect(tooltipSource).toContain('typeof children === "string" || typeof children === "number"');
     expect(tooltipSource).toContain('<text className="lynx-tooltip-text">{children}</text>');
     expect(tooltipSource).toContain('trigger.invoke("boundingClientRect"');
+    expect(tooltipSource).toContain('trigger.setAttribute("data-tooltip-pointer-inside", "true")');
+    expect(tooltipSource).toContain(
+      'trigger.getAttribute("data-tooltip-pointer-inside") !== "true"',
+    );
+    expect(hostElementsSource).toContain('props["main-thread:bindmousemove"]');
+    expect(hostElementsSource).toContain("injectedMouseMove?.(event)");
+    expect(hostElementsSource).toContain("injectedMouseLeave?.(event)");
     expect(tooltipSource).toContain("resolveFloatingAnchorPoint(context.anchorRect");
     expect(tooltipSource).toContain("data-floating-side={side}");
   });

@@ -102,6 +102,7 @@ export type IconName =
   | "link-2"
   | "flask-conical"
   | "archive"
+  | "clock"
   | "arrow-left"
   | "rotate-ccw"
   | "refresh-cw"

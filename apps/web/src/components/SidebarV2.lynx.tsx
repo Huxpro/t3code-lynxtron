@@ -4,6 +4,7 @@ import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/sta
 import { uiActions } from "../../../lynxtron/src/app/state/uiState";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import {
+  canSnooze,
   effectiveSettled,
   effectiveSnoozed,
   resolveSnoozePresets,
@@ -433,6 +434,7 @@ export default function SidebarV2() {
   const [projectSettingsProjectId, setProjectSettingsProjectId] = useState<string | null>(null);
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
   const [actionMenuThreadId, setActionMenuThreadId] = useState<string | null>(null);
+  const [snoozeMenuThreadId, setSnoozeMenuThreadId] = useState<string | null>(null);
   const [nativeFollowup, setNativeFollowup] = useState<{
     readonly kind: "rename" | "delete";
     readonly threadId: string;
@@ -825,6 +827,11 @@ export default function SidebarV2() {
             const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
             const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
             const actionMenuOpen = actionMenuThreadId === thread.id;
+            const snoozeMenuOpen = snoozeMenuThreadId === thread.id;
+            const snoozeSupported = serverConfig?.environment.capabilities.threadSnooze === true;
+            const showSnoozeButton =
+              snoozeSupported && canSnooze(thread, { now: new Date().toISOString() });
+            const snoozePresets = snoozeMenuOpen ? resolveSnoozePresets(new Date()) : [];
             const detailsRelationId = `sidebar-thread-details:${thread.id}`;
             const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
             const isUnread = hasUnseenThreadCompletion({
@@ -849,11 +856,9 @@ export default function SidebarV2() {
                 isUnread={isUnread}
                 isWoke={false}
                 settlementSupported={settlementSupported}
-                snoozeSupported={false}
-                cardActionsVisible={
-                  disposableEmptyThread || actionMenuOpen || hoveredThreadId === thread.id
-                }
-                snoozeMenuOpen={false}
+                snoozeSupported={snoozeSupported}
+                cardActionsVisible={snoozeMenuOpen || hoveredThreadId === thread.id}
+                snoozeMenuOpen={snoozeMenuOpen}
                 snoozeWakeLabelText={null}
                 projectTitle={project?.title ?? null}
                 threadTitle={thread.title}
@@ -905,7 +910,33 @@ export default function SidebarV2() {
                 }
                 detailsRelationId={detailsRelationId}
                 detailsOverlay={
-                  actionMenuOpen ? (
+                  snoozeMenuOpen ? (
+                    <>
+                      <view
+                        className="sidebar-v2-snooze-dismiss"
+                        bindtap={() => setSnoozeMenuThreadId(null)}
+                      />
+                      <view className="sidebar-v2-snooze-menu" data-sidebar-snooze-menu={thread.id}>
+                        {snoozePresets.map((preset) => (
+                          <view
+                            key={preset.id}
+                            className="sidebar-v2-snooze-menu__item"
+                            data-sidebar-snooze-preset={preset.id}
+                            bindtap={(event: unknown) => {
+                              stopPropagation(event);
+                              setSnoozeMenuThreadId(null);
+                              void t3ClientActions
+                                .snoozeThread(thread.id, preset.snoozedUntil)
+                                .catch(() => undefined);
+                            }}
+                          >
+                            <text className="sidebar-v2-snooze-menu__label">{preset.label}</text>
+                            <text className="sidebar-v2-snooze-menu__time">{preset.whenLabel}</text>
+                          </view>
+                        ))}
+                      </view>
+                    </>
+                  ) : actionMenuOpen ? (
                     <LynxThreadActionMenu
                       thread={thread}
                       projectPath={project?.workspaceRoot ?? null}
@@ -923,31 +954,32 @@ export default function SidebarV2() {
                   ) : undefined
                 }
                 cardActionControl={
-                  <view
-                    className="sidebar-v2-card-action-icon"
-                    {...(disposableEmptyThread
-                      ? { "data-sidebar-empty-thread-delete": thread.id }
-                      : { "data-sidebar-thread-action-trigger": thread.id })}
-                    aria-label={
-                      disposableEmptyThread
-                        ? "Delete empty thread"
-                        : `Thread actions for ${thread.title}`
-                    }
-                    bindtap={(event: unknown) => {
-                      stopPropagation(event);
-                      if (disposableEmptyThread) {
+                  disposableEmptyThread ? (
+                    <view
+                      className="sidebar-v2-card-action-icon"
+                      data-sidebar-empty-thread-delete={thread.id}
+                      aria-label="Delete empty thread"
+                      bindtap={(event: unknown) => {
+                        stopPropagation(event);
                         void t3ClientActions.deleteThread(thread.id).catch(() => undefined);
-                        return;
-                      }
-                      setActionMenuThreadId(actionMenuOpen ? null : thread.id);
-                    }}
-                  >
-                    <Icon
-                      name={disposableEmptyThread ? "x" : "ellipsis"}
-                      size={12}
-                      color="#a1a1aa"
-                    />
-                  </view>
+                      }}
+                    >
+                      <Icon name="x" size={12} color="#a1a1aa" />
+                    </view>
+                  ) : showSnoozeButton ? (
+                    <view
+                      className="sidebar-v2-card-action-icon"
+                      data-sidebar-snooze-trigger={thread.id}
+                      aria-label="Snooze thread"
+                      bindtap={(event: unknown) => {
+                        stopPropagation(event);
+                        setActionMenuThreadId(null);
+                        setSnoozeMenuThreadId(snoozeMenuOpen ? null : thread.id);
+                      }}
+                    >
+                      <Icon name="clock" size={12} color="#a1a1aa" />
+                    </view>
+                  ) : null
                 }
                 settleIcon={<Icon name="check" size={12} color="#a1a1aa" className="size-3" />}
                 unsettleIcon={
@@ -973,7 +1005,7 @@ export default function SidebarV2() {
                   setHoveredThreadId(thread.id);
                 }}
                 onMouseLeave={() => {
-                  if (!actionMenuOpen) {
+                  if (!actionMenuOpen && !snoozeMenuOpen) {
                     setHoveredThreadId((current) => (current === thread.id ? null : current));
                   }
                 }}

@@ -208,6 +208,9 @@ function readSidebarThreadMetrics(item) {
       item
         .querySelector("[data-sidebar-thread-jump-hint]")
         ?.getAttribute("data-sidebar-thread-jump-hint") ?? null,
+    snoozeTrigger: Boolean(item.querySelector("[data-sidebar-snooze-trigger]")),
+    overflowTrigger: Boolean(item.querySelector("[data-sidebar-thread-action-trigger]")),
+    settleAction: Boolean(item.querySelector('[aria-label="Settle thread"]')),
     className: item.getAttribute("class"),
     text: item.textContent?.trim().slice(0, 160) ?? "",
     rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
@@ -2351,6 +2354,8 @@ function readLynxPane() {
             root?.querySelector(".transcript-work-entry-body .whitespace-pre-wrap raw-text"),
           ),
           workingRow: readElementBox(root?.querySelector(".transcript-working-row")),
+          turnFold: readElementBox(root?.querySelector(".transcript-turn-fold")),
+          workEntryLine: readElementBox(root?.querySelector(".transcript-work-entry-line")),
         },
         rows: [...(root?.querySelectorAll("[data-timeline-row-id]") ?? [])]
           .map((item) => ({
@@ -2434,6 +2439,14 @@ function readLynxPane() {
             id: item.getAttribute("data-transcript-work-entry"),
             tone: item.getAttribute("data-transcript-work-tone"),
             state: item.getAttribute("data-transcript-work-state"),
+            box: readElementBox(item),
+            line: readElementBox(item.querySelector(".transcript-work-entry-line")),
+            heading: readElementBox(item.querySelector(".transcript-work-entry-heading")),
+            preview: readElementBox(item.querySelector(".transcript-work-entry-preview")),
+            body: readElementBox(item.querySelector(".transcript-work-entry-body")),
+            bodyText: readElementBox(
+              item.querySelector(".transcript-work-entry-body .whitespace-pre-wrap"),
+            ),
             detail: item.querySelector(".transcript-work-entry-body")?.textContent?.trim() ?? "",
           }),
         ),
@@ -3299,6 +3312,8 @@ function readWebPane() {
             doc.querySelector(".transcript-work-entry-body .whitespace-pre-wrap"),
           ),
           workingRow: readElementBox(doc.querySelector(".transcript-working-row")),
+          turnFold: readElementBox(doc.querySelector(".transcript-turn-fold")),
+          workEntryLine: readElementBox(doc.querySelector(".transcript-work-entry-line")),
         },
         rows: [...doc.querySelectorAll("[data-timeline-row-id]")]
           .map((item) => ({
@@ -3378,6 +3393,14 @@ function readWebPane() {
           id: item.getAttribute("data-transcript-work-entry"),
           tone: item.getAttribute("data-transcript-work-tone"),
           state: item.getAttribute("data-transcript-work-state"),
+          box: readElementBox(item),
+          line: readElementBox(item.querySelector(".transcript-work-entry-line")),
+          heading: readElementBox(item.querySelector(".transcript-work-entry-heading")),
+          preview: readElementBox(item.querySelector(".transcript-work-entry-preview")),
+          body: readElementBox(item.querySelector(".transcript-work-entry-body")),
+          bodyText: readElementBox(
+            item.querySelector(".transcript-work-entry-body .whitespace-pre-wrap"),
+          ),
           detail: item.querySelector(".transcript-work-entry-body")?.textContent?.trim() ?? "",
         })),
       },

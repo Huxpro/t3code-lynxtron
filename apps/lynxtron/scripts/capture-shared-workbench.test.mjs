@@ -557,8 +557,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "chat-input-narrow-expanded"');
     assert.include(source, 'kind: "narrow-chat-transcript"');
     assert.include(source, "checkpointFiles,");
+    assert.include(source, '"fidelity-narrow-thinking"');
+    assert.include(source, '"fidelity-narrow-command"');
+    assert.include(source, '"fidelity-narrow-tool"');
     assert.include(source, "within(changedFilesCard, assistantRow)");
     assert.include(source, "const changedFilesContent = changedFilesPreview ?? changedFilesBody");
+    assert.include(source, 'data-timeline-row-kind=\"work-toggle\"');
     assert.include(source, "within(changedFilesContent, changedFilesCard?.rect)");
     assert.include(source, "function narrowChatResponsiveMatches");
     assert.include(source, "box?.scroll?.width <= box?.scroll?.clientWidth + 1");
@@ -1251,6 +1255,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'step: "modifier-down"');
     assert.include(source, 'step: "modifier-up"');
     assert.include(workbench, "jumpLabel:");
+    assert.include(workbench, "snoozeTrigger: Boolean");
+    assert.include(workbench, "overflowTrigger: Boolean");
+    assert.include(workbench, "settleAction: Boolean");
     assert.include(source, 'step: "quick-leave"');
     assert.include(source, "Sidebar details opened after quick pointer leave");
     assert.include(source, 'step: "opened"');

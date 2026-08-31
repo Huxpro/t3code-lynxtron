@@ -619,17 +619,17 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
       ".transcript-work-group:has([data-transcript-work-state='expanded']){height:auto;}" +
       ".transcript-work-entry[data-transcript-work-state='expanded']{height:auto;}" +
-      ".transcript-work-entry-body{display:block;box-sizing:border-box;width:764px;}" +
+      ".transcript-work-entry-body{display:block;box-sizing:border-box;width:100%;}" +
       ".transcript-work-entry-body .whitespace-pre-wrap{" +
       "display:block;" +
       "font-family:'SF Mono',SFMono-Regular,'T3 JetBrains Mono',Consolas,'Liberation Mono',Menlo,monospace;" +
-      "font-size:11px!important;line-height:24px!important;white-space:pre-wrap;}" +
+      "font-size:11px!important;line-height:16px!important;white-space:pre-wrap;}" +
       ".transcript-work-entry-body .whitespace-pre-wrap::part(inner-box){" +
       "display:block;white-space:pre-wrap;}" +
       ".transcript-work-entry-body .whitespace-pre-wrap raw-text{" +
       "display:block!important;" +
       "font-family:'SF Mono',SFMono-Regular,'T3 JetBrains Mono',Consolas,'Liberation Mono',Menlo,monospace;" +
-      "font-size:11px;line-height:24px;white-space:pre-wrap!important;" +
+      "font-size:11px;line-height:16px;white-space:pre-wrap!important;" +
       "white-space-collapse:preserve!important;}" +
       ".inline-markdown-text{font-family:'T3 DM Sans','DM Sans',-apple-system,system-ui,sans-serif;}" +
       ".markdown-body{display:flex;flex-direction:column;width:100%;flex-shrink:0;}" +
