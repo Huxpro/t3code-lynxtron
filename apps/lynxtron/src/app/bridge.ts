@@ -18,6 +18,8 @@ import type {
   EditorId,
   FilesystemBrowseInput,
   FilesystemBrowseResult,
+  GitRunStackedActionInput,
+  GitRunStackedActionResult,
   OrchestrationLatestTurn,
   OrchestrationMessage,
   OrchestrationMessageRole,
@@ -210,6 +212,7 @@ export interface T3ConnectorCommandBridge {
   readProjectBranch(input: { cwd: string }): Promise<ProjectRepoContext>;
   readVcsStatus(input: { cwd: string }): Promise<VcsStatusResult>;
   initializeRepository(input: VcsInitInput): Promise<void>;
+  runGitAction(input: GitRunStackedActionInput): Promise<GitRunStackedActionResult>;
   publishRepository(
     input: SourceControlPublishRepositoryInput,
   ): Promise<SourceControlPublishRepositoryResult>;

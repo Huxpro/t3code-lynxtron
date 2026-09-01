@@ -3670,6 +3670,42 @@ async function sidebarThreadCardTarget(cdp, sessionId, client, index = 0) {
   );
 }
 
+async function readSidebarThreadDisclosure(cdp, sessionId, client, threadId) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const item = [...(root?.querySelectorAll('[data-thread-item]') ?? [])]
+        .find((candidate) => candidate.getAttribute('data-thread-id') === ${JSON.stringify(threadId)});
+      const status = item?.querySelector('.sidebar-v2-row-status');
+      const actions = item?.querySelector('.sidebar-v2-row-actions');
+      const statusStyle = status ? getComputedStyle(status) : null;
+      const actionsStyle = actions ? getComputedStyle(actions) : null;
+      return {
+        statusOpacity: statusStyle?.opacity ?? null,
+        actionsOpacity: actionsStyle?.opacity ?? null,
+        actionsBackground: actionsStyle?.backgroundColor ?? null,
+      };
+    })()`,
+  );
+}
+
+async function waitForSidebarThreadDisclosure(cdp, sessionId, client, threadId, predicate) {
+  const deadline = Date.now() + 750;
+  let disclosure = null;
+  while (Date.now() < deadline) {
+    disclosure = await readSidebarThreadDisclosure(cdp, sessionId, client, threadId);
+    if (predicate(disclosure)) return disclosure;
+    await delay(25);
+  }
+  return disclosure;
+}
+
 async function movePointer(cdp, sessionId, point) {
   await cdp.send(
     "Input.dispatchMouseEvent",
@@ -3726,6 +3762,20 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
         `Missing ${client} Sidebar thread-card hover target: ${JSON.stringify(target)}`,
       );
     }
+    const initialDisclosure = await readSidebarThreadDisclosure(
+      cdp,
+      sessionId,
+      client,
+      target.threadId,
+    );
+    if (
+      Number(initialDisclosure?.statusOpacity) < 0.99 ||
+      Number(initialDisclosure?.actionsOpacity) > 0.01
+    ) {
+      throw new Error(
+        `${client} Sidebar date/actions initial state did not match: ${JSON.stringify(initialDisclosure)}`,
+      );
+    }
     if (client === "web") {
       await movePointer(cdp, sessionId, target.awayPoint);
       await movePointer(cdp, sessionId, target.point);
@@ -3777,7 +3827,28 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
       );
     }
     openedByClient[client] = { ...opened, align, alignDelta, contained, side, sideGap, target };
-    timeline.push({ client, step: "opened", tooltip: openedByClient[client] });
+    const hoveredDisclosure = await readSidebarThreadDisclosure(
+      cdp,
+      sessionId,
+      client,
+      target.threadId,
+    );
+    if (
+      Number(hoveredDisclosure?.statusOpacity) > 0.01 ||
+      Number(hoveredDisclosure?.actionsOpacity) < 0.99 ||
+      hoveredDisclosure?.actionsBackground !== "rgba(0, 0, 0, 0)"
+    ) {
+      throw new Error(
+        `${client} Sidebar date/actions hover state did not match: ${JSON.stringify(hoveredDisclosure)}`,
+      );
+    }
+    timeline.push({
+      client,
+      step: "opened",
+      initialDisclosure,
+      hoveredDisclosure,
+      tooltip: openedByClient[client],
+    });
 
     if (client === "web") {
       await movePointer(cdp, sessionId, target.awayPoint);
@@ -3790,10 +3861,26 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
       client,
       target.relationId,
     );
-    timeline.push({ client, step: "dismissed", ...dismissed });
     if (sidebarTooltipVisible(dismissed.tooltip)) {
       throw new Error(`${client} Sidebar details remained open after pointer leave`);
     }
+    const restoredDisclosure = await waitForSidebarThreadDisclosure(
+      cdp,
+      sessionId,
+      client,
+      target.threadId,
+      (disclosure) =>
+        Number(disclosure?.statusOpacity) >= 0.99 && Number(disclosure?.actionsOpacity) <= 0.01,
+    );
+    if (
+      Number(restoredDisclosure?.statusOpacity) < 0.99 ||
+      Number(restoredDisclosure?.actionsOpacity) > 0.01
+    ) {
+      throw new Error(
+        `${client} Sidebar date/actions did not restore: ${JSON.stringify(restoredDisclosure)}`,
+      );
+    }
+    timeline.push({ client, step: "dismissed", restoredDisclosure, ...dismissed });
 
     const siblingTarget = await sidebarThreadCardTarget(cdp, sessionId, client, 1);
     if (siblingTarget?.relationId && siblingTarget.threadId) {
@@ -3814,7 +3901,7 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
       );
       if (
         !siblingOpened ||
-        !siblingOpened.text.includes(siblingTarget.text.split(/\d+[dhms]$/u)[0].trim())
+        (siblingOpened.attributes["data-floating-popup"] ?? null) !== siblingTarget.relationId
       ) {
         throw new Error(
           `${client} Sidebar sibling details did not match the hovered row: ${JSON.stringify({ siblingOpened, siblingTarget })}`,
@@ -8792,6 +8879,7 @@ async function captureCell({
         normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
     const coreGeometryReady =
       isFlatSidebarLayoutState ||
+      isSidebarThreadHoverPreviewState ||
       isNarrowChatThreadState ||
       (isReviewState && width <= 1023) ||
       coreGeometryMatches(state?.web, state?.lynx);
@@ -9728,6 +9816,7 @@ async function captureCell({
       normalizedChangedFilesState(state?.lynx?.reviewMetrics) === changedFilesTargetState);
   let finalCoreGeometryReady =
     isFlatSidebarLayoutState ||
+    isSidebarThreadHoverPreviewState ||
     isNarrowChatThreadState ||
     (isReviewState && width <= 1023) ||
     isChatOutlineState ||
@@ -10398,6 +10487,7 @@ async function captureCell({
   stateIdentityMatch = currentStateIdentityMatches();
   finalCoreGeometryReady =
     isFlatSidebarLayoutState ||
+    isSidebarThreadHoverPreviewState ||
     isNarrowChatThreadState ||
     isChatOutlineState ||
     coreGeometryMatches(state?.web, state?.lynx);

@@ -39,6 +39,8 @@ import type {
   EditorId,
   FilesystemBrowseInput,
   FilesystemBrowseResult,
+  GitRunStackedActionInput,
+  GitRunStackedActionResult,
   ModelSelection,
   OrchestrationCheckpointSummary,
   OrchestrationGetTurnDiffInput,
@@ -1427,6 +1429,16 @@ async function initializeRepository(cwd: string): Promise<void> {
   refreshVcsStatusProjection();
 }
 
+async function runGitAction(input: GitRunStackedActionInput): Promise<GitRunStackedActionResult> {
+  const bridge = getBridge();
+  if (!bridge?.runGitAction) {
+    throw new Error("Git actions are unavailable.");
+  }
+  const result = await bridge.runGitAction(input);
+  refreshVcsStatusProjection();
+  return result;
+}
+
 function publishRepository(
   input: SourceControlPublishRepositoryInput,
 ): Promise<SourceControlPublishRepositoryResult> {
@@ -1984,6 +1996,7 @@ export const t3ClientActions = {
   readProjectFile,
   readProjectBranch,
   readVcsStatus,
+  runGitAction,
   reconnect,
   renameThread,
   regenerateThreadTitle,

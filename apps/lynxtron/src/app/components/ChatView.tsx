@@ -29,6 +29,10 @@ import {
 } from "@t3tools/client-runtime/presentation/pending-user-input";
 import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
 import {
+  deriveLatestContextWindowSnapshot,
+  formatProviderDisplayName,
+} from "@t3tools/client-runtime/presentation/composer";
+import {
   projectProviderStatusNotice,
   resolveSelectableProviderInstanceEntry,
 } from "@t3tools/client-runtime/presentation/provider";
@@ -316,6 +320,13 @@ export function ChatView({ threadId }: ChatViewProps) {
         selections: presentedModelSelection?.options,
       }),
     [presentedModelSelection?.options, presentedSelectedModel?.capabilities],
+  );
+  const activeContextWindow = useMemo(
+    () => deriveLatestContextWindowSnapshot(activities),
+    [activities],
+  );
+  const activeThreadProviderDisplayName = formatProviderDisplayName(
+    presentedSelectedModel?.driverKind ?? activeProviderEntry?.driverKind,
   );
   const connectionLifecycle = useMemo(
     () =>
@@ -688,6 +699,8 @@ export function ChatView({ threadId }: ChatViewProps) {
         modelDriverKind={presentedSelectedModel?.driverKind}
         modelOptionLabel={providerAvailable ? modelTraitsTrigger?.label : undefined}
         modelOptionSections={providerAvailable ? modelOptionSections : []}
+        activeContextWindow={activeContextWindow}
+        contextWindowProviderDisplayName={activeThreadProviderDisplayName}
         branch={activeThread?.branch ?? checkoutBranch ?? undefined}
         showContextStrip={showComposerContextStrip}
         worktreePath={activeThread?.worktreePath ?? undefined}

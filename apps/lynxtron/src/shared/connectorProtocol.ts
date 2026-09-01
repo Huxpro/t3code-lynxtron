@@ -265,6 +265,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "readProjectBranch",
   "readVcsStatus",
   "initializeRepository",
+  "runGitAction",
   "publishRepository",
   "lookupRepository",
   "cloneRepository",

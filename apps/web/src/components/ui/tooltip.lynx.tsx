@@ -210,6 +210,12 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
   const relationId =
     props["data-floating-anchor"] ??
     (isValidElement(render) ? render.props["data-floating-anchor"] : undefined);
+  const renderedMouseEnter = isValidElement(render)
+    ? (render.props.onMouseEnter as (() => void) | undefined)
+    : undefined;
+  const renderedMouseLeave = isValidElement(render)
+    ? (render.props.onMouseLeave as (() => void) | undefined)
+    : undefined;
   useEffect(() => {
     if (typeof relationId !== "string") return;
     const target = globalThis as {
@@ -223,10 +229,12 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
     const probes = target.__T3_LYNXTRON_TOOLTIP_PROBE__ ?? {};
     const probe = {
       hover: async () => {
+        renderedMouseEnter?.();
         await runOnMainThread(handleMouseMove)();
       },
       leave: async () => {
-        reportHover(false);
+        renderedMouseLeave?.();
+        await runOnMainThread(handleMouseLeave)();
       },
     };
     probes[relationId] = probe;
@@ -236,7 +244,7 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
       if (probes[relationId] === probe) delete probes[relationId];
       if (Object.keys(probes).length === 0) delete target.__T3_LYNXTRON_TOOLTIP_PROBE__;
     };
-  }, [handleMouseMove, relationId, reportHover]);
+  }, [handleMouseMove, relationId, renderedMouseEnter, renderedMouseLeave, reportHover]);
   const hoverProps = {
     "main-thread:ref": triggerRef,
     "main-thread:bindmouseleave": handleMouseLeave,

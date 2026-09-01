@@ -17,9 +17,11 @@ import {
   type ComposerTraitsMenuSectionPresentation,
   deriveComposerControlState,
   deriveComposerSendState,
+  formatContextWindowTokens,
   getComposerInteractionModePresentation,
   getComposerRuntimeModePresentation,
   projectComposerContext,
+  type ContextWindowSnapshot,
 } from "@t3tools/client-runtime/presentation/composer";
 import type { ProviderInteractionMode, RuntimeMode } from "@t3tools/contracts";
 import approvalEditorPendingUrl from "../assets/approval-editor-pending@2x.png?external";
@@ -62,6 +64,8 @@ interface ComposerProps {
   modelDriverKind?: string;
   modelOptionLabel?: string;
   modelOptionSections?: ReadonlyArray<ComposerTraitsMenuSectionPresentation>;
+  activeContextWindow?: ContextWindowSnapshot | null;
+  contextWindowProviderDisplayName?: string | null;
   branch?: string;
   showContextStrip: boolean;
   worktreePath?: string;
@@ -99,6 +103,7 @@ const RUNTIME_MODE_ICONS: Record<RuntimeMode, IconName> = {
   auto: "bot",
   "full-access": "lock-open",
 };
+const CONTEXT_WINDOW_RING_SEGMENTS = Array.from({ length: 20 }, (_, index) => index);
 
 export function Composer({
   disabled,
@@ -112,6 +117,8 @@ export function Composer({
   modelDriverKind,
   modelOptionLabel,
   modelOptionSections = [],
+  activeContextWindow = null,
+  contextWindowProviderDisplayName,
   branch,
   showContextStrip,
   worktreePath,
@@ -151,10 +158,21 @@ export function Composer({
   >(null);
   const [editorRevision, setEditorRevision] = useState(0);
   const [mobileComposerExpanded, setMobileComposerExpanded] = useState(false);
+  const [contextWindowOpen, setContextWindowOpen] = useState(false);
   const runtimeModeMenuOpen = openComposerMenu === "runtime";
   const modelOptionMenuOpen = openComposerMenu === "model-option";
   const compactControlsMenuOpen = openComposerMenu === "compact-controls";
   const workspaceMenuOpen = openComposerMenu === "workspace";
+  const contextWindowPercentage = Math.max(
+    0,
+    Math.min(100, activeContextWindow?.usedPercentage ?? 0),
+  );
+  const contextWindowPercentageLabel =
+    activeContextWindow?.usedPercentage == null
+      ? null
+      : activeContextWindow.usedPercentage < 10
+        ? `${activeContextWindow.usedPercentage.toFixed(1).replace(/\.0$/, "")}%`
+        : `${Math.round(activeContextWindow.usedPercentage)}%`;
   const toggleComposerMenu = useCallback(
     (menu: Exclude<typeof openComposerMenu, null>) => {
       if (modelPicker != null) onModelPickerClose?.();
@@ -565,7 +583,8 @@ export function Composer({
                     modelPicker != null ||
                     modelOptionMenuOpen ||
                     runtimeModeMenuOpen ||
-                    compactControlsMenuOpen
+                    compactControlsMenuOpen ||
+                    contextWindowOpen
                   }
                   separators={!compactFooter}
                   items={[
@@ -839,6 +858,80 @@ export function Composer({
                                     ))}
                                   </view>
                                 ))}
+                                {showInteractionModeToggle ? (
+                                  <view
+                                    className="composer-model-option-menu__section"
+                                    data-composer-model-option-section="mode"
+                                  >
+                                    <text className="composer-model-option-menu__section-label">
+                                      Mode
+                                    </text>
+                                    {(["default", "plan"] as const).map((mode) => (
+                                      <view
+                                        key={mode}
+                                        className={`composer-model-option-menu__item${
+                                          interactionMode === mode
+                                            ? " composer-model-option-menu__item--selected"
+                                            : " composer-model-option-menu__item--unselected"
+                                        }`}
+                                        aria-checked={interactionMode === mode ? "true" : "false"}
+                                        bindtap={() => {
+                                          if (interactionMode !== mode) onInteractionModeTap();
+                                          setOpenComposerMenu(null);
+                                        }}
+                                      >
+                                        <view className="composer-model-option-menu__copy">
+                                          <text className="composer-model-option-menu__label">
+                                            {mode === "default" ? "Build" : "Plan"}
+                                          </text>
+                                          <text className="composer-model-option-menu__description">
+                                            {mode === "default"
+                                              ? "Work directly on the task"
+                                              : "Plan the approach before making changes"}
+                                          </text>
+                                        </view>
+                                        {interactionMode === mode ? (
+                                          <Icon name="check" size={14} color="#818181" />
+                                        ) : null}
+                                      </view>
+                                    ))}
+                                  </view>
+                                ) : null}
+                                <view
+                                  className="composer-model-option-menu__section"
+                                  data-composer-model-option-section="access"
+                                >
+                                  <text className="composer-model-option-menu__section-label">
+                                    Access
+                                  </text>
+                                  {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
+                                    <view
+                                      key={option.mode}
+                                      className={`composer-model-option-menu__item${
+                                        option.mode === runtimeMode
+                                          ? " composer-model-option-menu__item--selected"
+                                          : " composer-model-option-menu__item--unselected"
+                                      }`}
+                                      aria-checked={option.mode === runtimeMode ? "true" : "false"}
+                                      bindtap={() => {
+                                        onRuntimeModeChange(option.mode);
+                                        setOpenComposerMenu(null);
+                                      }}
+                                    >
+                                      <view className="composer-model-option-menu__copy">
+                                        <text className="composer-model-option-menu__label">
+                                          {option.label}
+                                        </text>
+                                        <text className="composer-model-option-menu__description">
+                                          {option.description}
+                                        </text>
+                                      </view>
+                                      {option.mode === runtimeMode ? (
+                                        <Icon name="check" size={14} color="#818181" />
+                                      ) : null}
+                                    </view>
+                                  ))}
+                                </view>
                               </view>
                             </scroll-view>
                             <view
@@ -960,11 +1053,107 @@ export function Composer({
             renderFooterRightActions: () =>
               approvalActions ??
               questionActions ?? (
-                <ComposerPrimaryAction
-                  state={controlState.primaryActionState}
-                  icon={<Icon name={busy ? "square" : "send-arrow"} size={14} color="#ffffff" />}
-                  onClick={handleSend}
-                />
+                <>
+                  {activeContextWindow ? (
+                    <view className="composer-context-window-wrap">
+                      <HostView
+                        className={`composer-context-window-trigger${
+                          contextWindowOpen ? " composer-context-window-trigger--open" : ""
+                        }`}
+                        onMouseEnter={() => setContextWindowOpen(true)}
+                        onClick={() => setContextWindowOpen((open) => !open)}
+                        aria-label={
+                          contextWindowPercentageLabel
+                            ? `Context window ${contextWindowPercentageLabel} used`
+                            : `Context window ${formatContextWindowTokens(activeContextWindow.usedTokens)} tokens used`
+                        }
+                      >
+                        <view
+                          className={`composer-context-window-ring${
+                            contextWindowPercentage > 90
+                              ? " composer-context-window-ring--overloaded"
+                              : ""
+                          }`}
+                        >
+                          {CONTEXT_WINDOW_RING_SEGMENTS.map((segment) => (
+                            <view
+                              key={segment}
+                              className={`composer-context-window-ring__segment${
+                                segment < Math.ceil(contextWindowPercentage / 5)
+                                  ? " composer-context-window-ring__segment--filled"
+                                  : ""
+                              }`}
+                              style={{ transform: `rotate(${segment * 18}deg) translateY(-8px)` }}
+                            />
+                          ))}
+                        </view>
+                      </HostView>
+                      {contextWindowOpen ? (
+                        <>
+                          <view
+                            className="composer-context-window-popup"
+                            data-floating-popup="composer-context-window"
+                            catchtap={() => undefined}
+                          >
+                            <view className="composer-context-window-popup__header">
+                              <text className="composer-context-window-popup__title">
+                                Context Window
+                              </text>
+                              <text className="composer-context-window-popup__usage">
+                                {contextWindowPercentageLabel
+                                  ? `${contextWindowPercentageLabel} · ${formatContextWindowTokens(activeContextWindow.usedTokens)}/${formatContextWindowTokens(activeContextWindow.maxTokens ?? null)}`
+                                  : formatContextWindowTokens(activeContextWindow.usedTokens)}
+                              </text>
+                            </view>
+                            {activeContextWindow.maxTokens !== null ? (
+                              <view
+                                className="composer-context-window-progress"
+                                aria-label="Context window usage"
+                              >
+                                <view
+                                  className={`composer-context-window-progress__value${
+                                    contextWindowPercentage > 90
+                                      ? " composer-context-window-progress__value--overloaded"
+                                      : ""
+                                  }`}
+                                  style={{ width: `${contextWindowPercentage}%` }}
+                                />
+                              </view>
+                            ) : null}
+                            {(activeContextWindow.totalProcessedTokens ?? 0) > 0 ? (
+                              <view className="composer-context-window-popup__row">
+                                <text className="composer-context-window-popup__muted">
+                                  Total processed
+                                </text>
+                                <text className="composer-context-window-popup__total">
+                                  {formatContextWindowTokens(
+                                    activeContextWindow.totalProcessedTokens ?? null,
+                                  )}
+                                </text>
+                              </view>
+                            ) : null}
+                            {activeContextWindow.compactsAutomatically ? (
+                              <text className="composer-context-window-popup__note">
+                                {contextWindowProviderDisplayName ?? "It"} automatically compacts
+                                its context when needed.
+                              </text>
+                            ) : null}
+                          </view>
+                          <view
+                            className="composer-context-window-dismiss-layer"
+                            aria-label="Dismiss context window usage"
+                            bindtap={() => setContextWindowOpen(false)}
+                          />
+                        </>
+                      ) : null}
+                    </view>
+                  ) : null}
+                  <ComposerPrimaryAction
+                    state={controlState.primaryActionState}
+                    icon={<Icon name={busy ? "square" : "send-arrow"} size={14} color="#ffffff" />}
+                    onClick={handleSend}
+                  />
+                </>
               ),
           }}
         />

@@ -140,6 +140,9 @@
 .sidebar-v2-row-card .sidebar-v2-row-status {
   opacity: 1;
 }
+.sidebar-v2-row-card .sidebar-v2-row-status--actions-visible {
+  opacity: 0;
+}
 .sidebar-v2-row-project-title {
   flex-grow: 1;
   flex-shrink: 1;
@@ -164,14 +167,7 @@
 }
 .sidebar-v2-row-card .sidebar-v2-row-actions {
   z-index: 2;
-  border-radius: 5px;
-  background-color: var(--sidebar-row-hover);
-}
-.sidebar-v2-row-card--active .sidebar-v2-row-actions {
-  background-color: var(--sidebar-row-active);
-}
-.sidebar-v2-row-card--selected .sidebar-v2-row-actions {
-  background-color: var(--sidebar-row-selected);
+  background-color: transparent;
 }
 .sidebar-v2-working-duration {
   font-family: var(--font-mono);
@@ -633,7 +629,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 .sidebar-project-sort-icon {
   opacity: 0.82;
@@ -769,7 +765,7 @@
   width: 24px;
   height: 24px;
   margin-left: 6px;
-  border-radius: 6px;
+  border-radius: 8px;
   opacity: 0;
 }
 .lynx-sidebar-project-new-label {
@@ -2116,6 +2112,54 @@
 .action-btn--disabled {
   opacity: 0.45;
 }
+.topbar-git-menu-dismiss {
+  position: fixed;
+  inset: 0;
+  z-index: 92;
+  background-color: transparent;
+}
+.topbar-git-menu {
+  position: absolute;
+  top: 32px;
+  right: 64px;
+  z-index: 93;
+  display: flex;
+  flex-direction: column;
+  width: 224px;
+  min-height: 80px;
+  padding: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 12px;
+  background-color: var(--popover);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
+}
+.topbar-git-menu__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  gap: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.topbar-git-menu__item:hover {
+  background-color: var(--accent);
+}
+.topbar-git-menu__item--disabled {
+  opacity: 0.45;
+}
+.topbar-git-menu__label {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+}
 .topbar--compact-actions .topbar__actions,
 .topbar--compact-actions .topbar__actions-inner {
   gap: 8px;
@@ -2700,8 +2744,8 @@
   display: flex;
   flex-direction: column;
   width: 264px;
-  height: 280px;
-  max-height: 360px;
+  height: 480px;
+  max-height: calc(100vh - 140px);
   padding: 4px;
   border-width: 1px;
   border-style: solid;
@@ -2974,6 +3018,132 @@
 .composer-primary-action {
   width: 32px;
   height: 32px;
+}
+.composer-context-window-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 54;
+}
+.composer-context-window-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+}
+.composer-context-window-trigger:hover,
+.composer-context-window-trigger:active,
+.composer-context-window-trigger--open {
+  background-color: var(--accent);
+}
+.composer-context-window-ring {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+.composer-context-window-ring__segment {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  width: 2px;
+  height: 3px;
+  border-radius: 1px;
+  background-color: rgba(var(--muted-foreground-rgb), 0.24);
+  transform-origin: 1px 1px;
+}
+.composer-context-window-ring__segment--filled {
+  background-color: rgba(var(--muted-foreground-rgb), 0.72);
+}
+.composer-context-window-ring--overloaded .composer-context-window-ring__segment--filled {
+  background-color: #ef4444;
+}
+.composer-context-window-popup {
+  position: absolute;
+  right: 0;
+  bottom: 34px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 256px;
+  min-height: 110px;
+  padding: 12px;
+  gap: 8px;
+  border-radius: 10px;
+  background-color: var(--secondary);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
+}
+.composer-context-window-dismiss-layer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.001);
+}
+.composer-context-window-popup__header,
+.composer-context-window-popup__row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 16px;
+}
+.composer-context-window-popup__title {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.composer-context-window-popup__usage,
+.composer-context-window-popup__muted,
+.composer-context-window-popup__total,
+.composer-context-window-popup__note {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+}
+.composer-context-window-popup__usage,
+.composer-context-window-popup__total {
+  font-variant-numeric: tabular-nums;
+}
+.composer-context-window-popup__total {
+  color: rgba(var(--muted-foreground-rgb), 0.82);
+  font-weight: 500;
+}
+.composer-context-window-progress {
+  display: flex;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(var(--muted-foreground-rgb), 0.16);
+  overflow: hidden;
+}
+.composer-context-window-progress__value {
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(var(--muted-foreground-rgb), 0.72);
+}
+.composer-context-window-progress__value--overloaded {
+  background-color: #ef4444;
+}
+.composer-context-window-popup__note {
+  margin-top: 4px;
+  min-height: 32px;
+  font-weight: 500;
 }
 .composer-primary-action--send {
   background-color: rgba(var(--primary-rgb), 0.9);
@@ -4129,7 +4299,9 @@
   line-height: 20px;
 }
 .transcript-work-entry-preview--native {
-  flex: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 0;
   min-width: 0;
   height: 20px;
   overflow: hidden;
@@ -4443,7 +4615,7 @@
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
-  border-radius: 8px;
+  border-radius: 6px;
   box-sizing: border-box;
 }
 .turn-diff-card__open-label {

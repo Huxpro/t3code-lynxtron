@@ -176,7 +176,7 @@ function LynxTurnDiffCard({
           data-review-open-diff
           onClick={() => openDiff(summary.files[0]?.path)}
         >
-          <Icon name="file-json" size={12} color="#818181" />
+          <Icon name="file-diff" size={12} color="#818181" />
           {!compactActions ? (
             <text className="lynx-host-text turn-diff-card__open-label text-[11px] font-medium text-foreground">
               Open diff

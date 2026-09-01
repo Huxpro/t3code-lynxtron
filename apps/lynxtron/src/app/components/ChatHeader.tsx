@@ -1,5 +1,9 @@
 import { useMemo, useState } from "@lynx-js/react";
-import { resolveQuickAction, type GitQuickAction } from "@t3tools/client-runtime/state/git-actions";
+import {
+  buildMenuItems,
+  resolveQuickAction,
+  type GitQuickAction,
+} from "@t3tools/client-runtime/state/git-actions";
 import type {
   EditorId,
   ExecutionEnvironmentPlatformOs,
@@ -149,6 +153,8 @@ export function ChatHeader({
   onCenterPanelWidthChange = () => undefined,
 }: ChatHeaderProps) {
   const [gitInitPending, setGitInitPending] = useState(false);
+  const [gitActionPending, setGitActionPending] = useState(false);
+  const [gitMenuOpen, setGitMenuOpen] = useState(false);
   const useAuthoritySurface =
     projectName === "pending-fixture" && threadTitle === "Run printf pending-approval";
   const compactActions = shouldCompactHeaderActions(centerPanelWidth);
@@ -161,6 +167,10 @@ export function ChatHeader({
         vcsStatus?.hasPrimaryRemote ?? true,
       ),
     [gitInitPending, vcsStatus, vcsStatusPending],
+  );
+  const gitMenuItems = useMemo(
+    () => buildMenuItems(vcsStatus, vcsStatusPending || gitInitPending || gitActionPending),
+    [gitActionPending, gitInitPending, vcsStatus, vcsStatusPending],
   );
   const gitQuickActionIcon: IconName =
     gitQuickAction.kind === "initialize_repo"
@@ -186,12 +196,29 @@ export function ChatHeader({
         setGitInitPending(false);
       });
   };
+  const runGitAction = (action: "commit") => {
+    if (!cwd || gitActionPending) return;
+    setGitActionPending(true);
+    void t3ClientActions
+      .runGitAction({ actionId: `lynx-${action}-${Date.now()}`, cwd, action })
+      .catch((cause) => {
+        console.error("[chat-header] git action failed", { action, cause });
+      })
+      .finally(() => setGitActionPending(false));
+  };
   const gitActionImplemented =
-    gitQuickAction.kind === "initialize_repo" || gitQuickAction.kind === "open_publish";
-  const handleGitPrimaryTap =
-    gitQuickAction.kind === "initialize_repo"
-      ? initializeRepository
-      : uiActions.openGitPublishDialog;
+    gitQuickAction.kind === "initialize_repo" ||
+    gitQuickAction.kind === "open_publish" ||
+    (gitQuickAction.kind === "run_action" && gitQuickAction.action === "commit");
+  const handleGitPrimaryTap = () => {
+    if (gitQuickAction.kind === "initialize_repo") {
+      initializeRepository();
+    } else if (gitQuickAction.kind === "open_publish") {
+      uiActions.openGitPublishDialog();
+    } else if (gitQuickAction.kind === "run_action" && gitQuickAction.action === "commit") {
+      runGitAction("commit");
+    }
+  };
   return (
     <view
       className={`chat-header-reference topbar lynx-titlebar-drag-region${
@@ -252,9 +279,56 @@ export function ChatHeader({
               onOptionsTap={
                 gitQuickAction.kind === "initialize_repo"
                   ? undefined
-                  : uiActions.openGitPublishDialog
+                  : () => setGitMenuOpen((open) => !open)
               }
             />
+            {gitMenuOpen ? (
+              <>
+                <view
+                  className="topbar-git-menu-dismiss"
+                  aria-label="Dismiss Git action options"
+                  bindtap={() => setGitMenuOpen(false)}
+                />
+                <view className="topbar-git-menu" data-git-action-menu>
+                  {gitMenuItems
+                    .filter((item) => item.id === "commit")
+                    .map((item) => (
+                      <view
+                        key={item.id}
+                        className={`topbar-git-menu__item${
+                          item.disabled ? " topbar-git-menu__item--disabled" : ""
+                        }`}
+                        aria-disabled={item.disabled ? "true" : "false"}
+                        data-git-menu-action={item.id}
+                        bindtap={
+                          item.disabled
+                            ? undefined
+                            : () => {
+                                setGitMenuOpen(false);
+                                runGitAction("commit");
+                              }
+                        }
+                      >
+                        <Icon name="git-commit-horizontal" size={16} color="#818181" />
+                        <text className="topbar-git-menu__label">{item.label}</text>
+                      </view>
+                    ))}
+                  {vcsStatus?.isRepo && !vcsStatus.hasPrimaryRemote ? (
+                    <view
+                      className="topbar-git-menu__item"
+                      data-git-menu-action="publish"
+                      bindtap={() => {
+                        setGitMenuOpen(false);
+                        uiActions.openGitPublishDialog();
+                      }}
+                    >
+                      <Icon name="cloud-upload" size={16} color="#818181" />
+                      <text className="topbar-git-menu__label">Publish repository…</text>
+                    </view>
+                  ) : null}
+                </view>
+              </>
+            ) : null}
           </view>
         }
       />

@@ -122,6 +122,7 @@ describe("SidebarV2RowSurface", () => {
     );
 
     expect(markup).toMatch(/sidebar-v2-row-status[^"]*opacity-0/u);
+    expect(markup).toContain("sidebar-v2-row-status--actions-visible");
     expect(markup).toMatch(/sidebar-v2-row-actions[^"]*opacity-100/u);
     expect(markup).toContain(">Settle</button>");
   });

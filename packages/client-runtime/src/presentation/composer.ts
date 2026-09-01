@@ -13,6 +13,12 @@ import {
   getProviderOptionDescriptors,
 } from "@t3tools/shared/providerOptions";
 import type { SessionPresentationPhase } from "./session.ts";
+export {
+  deriveLatestContextWindowSnapshot,
+  formatContextWindowTokens,
+  formatProviderDisplayName,
+  type ContextWindowSnapshot,
+} from "./contextWindow.ts";
 
 const INLINE_TERMINAL_CONTEXT_PLACEHOLDER = "\uFFFC";
 

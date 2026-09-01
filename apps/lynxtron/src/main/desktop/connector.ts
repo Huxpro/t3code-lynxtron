@@ -62,6 +62,9 @@ import {
   type EditorId,
   type FilesystemBrowseInput,
   type FilesystemBrowseResult,
+  type GitActionProgressEvent,
+  type GitRunStackedActionInput,
+  type GitRunStackedActionResult,
   type AuthAccessSnapshot,
   type ApprovalRequestId,
   type AuthAccessStreamEvent,
@@ -1507,6 +1510,24 @@ export class T3Connector {
   async initializeRepository(input: VcsInitInput): Promise<void> {
     if (!this.client) throw new Error("not connected");
     await this.runClient(this.client[WS_METHODS.vcsInit](input));
+  }
+
+  async runGitAction(input: GitRunStackedActionInput): Promise<GitRunStackedActionResult> {
+    if (!this.client || !this.protocolContext) throw new Error("not connected");
+    let result: GitRunStackedActionResult | null = null;
+    let failure: string | null = null;
+    const stream = this.client[WS_METHODS.gitRunStackedAction](input);
+    await this.runClient(
+      Stream.runForEach(stream as Stream.Stream<GitActionProgressEvent, unknown, any>, (event) =>
+        Effect.sync(() => {
+          if (event.kind === "action_finished") result = event.result;
+          if (event.kind === "action_failed") failure = event.message;
+        }),
+      ),
+    );
+    if (failure) throw new Error(failure);
+    if (!result) throw new Error("Git action completed without a result.");
+    return result;
   }
 
   async publishRepository(

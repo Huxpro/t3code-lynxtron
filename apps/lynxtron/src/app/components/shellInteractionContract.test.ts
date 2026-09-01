@@ -418,11 +418,19 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain("selectComposerTraitOption");
     expect(chatView).not.toContain("handleModelOptionTap");
     expect(overrides).toContain(".composer-model-option-menu {");
-    expect(overrides).toContain("height: 280px;");
+    expect(overrides).toContain("height: 480px;");
     expect(composer).toContain('className="composer-model-option-menu__content"');
     expect(overrides).toContain(".composer-model-option-menu__content {");
     expect(overrides).toContain("flex-shrink: 0;");
     expect(overrides).toContain(".composer-model-option-menu__item--selected {");
+    expect(composer).toContain('data-composer-model-option-section="mode"');
+    expect(composer).toContain('data-composer-model-option-section="access"');
+    expect(composer.indexOf("{section.label}")).toBeLessThan(
+      composer.indexOf('data-composer-model-option-section="mode"'),
+    );
+    expect(composer.indexOf('data-composer-model-option-section="mode"')).toBeLessThan(
+      composer.indexOf('data-composer-model-option-section="access"'),
+    );
     expect(composer).toContain("getComposerModelOptionLetterSpacing(modelOptionLabel)");
     expect(overrides).toContain(".composer-primary-action--send {");
     expect(overrides).toContain("background-color: rgba(var(--primary-rgb), 0.9);");
@@ -435,6 +443,35 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain(
       '".composer-compact-controls-menu__scroll{overflow-y:auto;}" +',
     );
+  });
+
+  it("projects context-window usage into the Composer meter and dismissible detail popup", () => {
+    const composer = componentSource("Composer.tsx");
+    const chatView = componentSource("ChatView.tsx");
+
+    expect(chatView).toContain("deriveLatestContextWindowSnapshot(activities)");
+    expect(chatView).toContain("activeContextWindow={activeContextWindow}");
+    expect(composer).toContain("composer-context-window-trigger${");
+    expect(composer).toContain('data-floating-popup="composer-context-window"');
+    expect(composer).toContain("Total processed");
+    expect(composer).toContain("automatically compacts");
+    expect(composer).toContain('aria-label="Dismiss context window usage"');
+    expect(overrides).toContain(".composer-context-window-popup {");
+    expect(overrides).toContain(".composer-context-window-progress__value--overloaded {");
+  });
+
+  it("runs supported Git actions through the main connector and exposes the split menu", () => {
+    const header = componentSource("ChatHeader.tsx");
+
+    expect(header).toContain("buildMenuItems(vcsStatus");
+    expect(header).toContain('data-git-menu-action="publish"');
+    expect(header).toContain('aria-label="Dismiss Git action options"');
+    expect(header).toContain("t3ClientActions");
+    expect(header).toContain(".runGitAction({ actionId:");
+    expect(connectorSource).toContain("async runGitAction(");
+    expect(connectorSource).toContain("WS_METHODS.gitRunStackedAction");
+    expect(overrides).toContain(".topbar-git-menu {");
+    expect(overrides).toContain("min-height: 80px;");
   });
 
   it("matches the active Plan mode control from the Web authority", () => {
@@ -1032,8 +1069,9 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("formatWorkingDurationLabel(Date.now() - startedMs)");
     expect(sidebarSource).toContain("workingDuration: <LynxWorkingDuration thread={thread} />");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-actions {");
-    expect(overrides).toContain("background-color: var(--sidebar-row-hover);");
-    expect(overrides).toContain(".sidebar-v2-row-card--active .sidebar-v2-row-actions {");
+    expect(overrides).toContain("background-color: transparent;");
+    expect(overrides).not.toContain(".sidebar-v2-row-card--active .sidebar-v2-row-actions {");
+    expect(overrides).not.toContain(".sidebar-v2-row-card--selected .sidebar-v2-row-actions {");
     expect(overrides).toContain(
       ".topbar__proj-name {\n  color: var(--header-project-foreground);\n  width: auto;",
     );
@@ -1093,6 +1131,7 @@ describe("desktop shell interaction contract", () => {
     expect(settledRows).toContain("provider={providerProjection.provider}");
     expect(sidebarSource).toContain("if (!actionMenuOpen) {");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status {");
+    expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-status--actions-visible {");
     expect(overrides).toContain(".sidebar-v2-working-duration {");
     expect(overrides).not.toContain(".sidebar-v2-row-item--active {");
     expect(sidebarRowSource).toContain('"bg-sidebar-row-active text-sidebar-foreground"');
@@ -1234,6 +1273,9 @@ describe("desktop shell interaction contract", () => {
     expect(tooltipSource).toContain("runOnMainThread(handleMouseMove)");
     expect(tooltipSource).toContain("await runOnBackground(reportHover)(true, rect);");
     expect(tooltipSource).toContain("__T3_LYNXTRON_TOOLTIP_PROBE__");
+    expect(tooltipSource).toContain("renderedMouseEnter?.()");
+    expect(tooltipSource).toContain("renderedMouseLeave?.()");
+    expect(tooltipSource).toContain("await runOnMainThread(handleMouseLeave)()");
     expect(tooltipSource).toContain('typeof children === "string" || typeof children === "number"');
     expect(tooltipSource).toContain('<text className="lynx-tooltip-text">{children}</text>');
     expect(tooltipSource).toContain('trigger.invoke("boundingClientRect"');

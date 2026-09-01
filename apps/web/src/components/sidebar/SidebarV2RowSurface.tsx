@@ -279,7 +279,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   className={cn(
                     "sidebar-v2-row-status pointer-events-none flex items-center justify-end tabular-nums text-muted-foreground/65 transition-opacity group-hover/v2-row:opacity-0",
                     props.snoozeMenuOpen && "opacity-0",
-                    props.cardActionsVisible && "opacity-0",
+                    props.cardActionsVisible && "sidebar-v2-row-status--actions-visible opacity-0",
                   )}
                 >
                   {props.topStatus ? (

@@ -47,6 +47,9 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".transcript-turn-fold-button {");
     expect(overrides).toContain("  height: 16px;");
     expect(overrides).toContain(".transcript-work-entry-body {");
+    expect(overrides).toContain(
+      ".transcript-work-entry-preview--native {\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;",
+    );
     expect(overrides).toContain("font-family: var(--font-mono);");
     expect(appSource).not.toContain("width:764px");
     expect(appSource).not.toContain("line-height:24px!important");
