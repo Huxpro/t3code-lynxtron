@@ -19,6 +19,12 @@ describe("message hover actions contract", () => {
     expect(sharedRowSource).toContain("onMouseLeave={onHoverChange ? () => onHoverChange(false)");
     expect(sharedRowSource).toContain("onMessageHoverChange?.(row.message.id, hovered)");
     expect(sharedRowSource).toContain('hoverRevealSelector=".transcript-message-meta"');
+    expect(sharedRowSource).toContain("onMouseEnter={onHoverChange ? () => onHoverChange(true)");
+    const hostElementsSource = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
+      "utf8",
+    );
+    expect(hostElementsSource).toContain('"main-thread:bindmouseover": handleMouseEnter');
     expect(timelineSource.match(/flatten=\{false\}/gu)).toHaveLength(2);
     expect(timelineSource).toContain("resolveAssistantMessageCopyState");
     expect(timelineSource).toContain("deriveDisplayedUserMessageState(row.message.text).copyText");

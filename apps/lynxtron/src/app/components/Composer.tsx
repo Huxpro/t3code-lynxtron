@@ -151,18 +151,18 @@ export function Composer({
 }: ComposerProps) {
   const [value, setValue] = useState("");
   const [openComposerMenu, setOpenComposerMenu] = useState<
-    "model-option" | "runtime" | "compact-controls" | "workspace" | null
+    "model-option" | "runtime" | "compact-controls" | "workspace" | "context-window" | null
   >(null);
   const [compactControlsMeasuredContentHeight, setCompactControlsMeasuredContentHeight] = useState<
     number | null
   >(null);
   const [editorRevision, setEditorRevision] = useState(0);
   const [mobileComposerExpanded, setMobileComposerExpanded] = useState(false);
-  const [contextWindowOpen, setContextWindowOpen] = useState(false);
   const runtimeModeMenuOpen = openComposerMenu === "runtime";
   const modelOptionMenuOpen = openComposerMenu === "model-option";
   const compactControlsMenuOpen = openComposerMenu === "compact-controls";
   const workspaceMenuOpen = openComposerMenu === "workspace";
+  const contextWindowOpen = openComposerMenu === "context-window";
   const contextWindowPercentage = Math.max(
     0,
     Math.min(100, activeContextWindow?.usedPercentage ?? 0),
@@ -1060,8 +1060,8 @@ export function Composer({
                         className={`composer-context-window-trigger${
                           contextWindowOpen ? " composer-context-window-trigger--open" : ""
                         }`}
-                        onMouseEnter={() => setContextWindowOpen(true)}
-                        onClick={() => setContextWindowOpen((open) => !open)}
+                        onMouseEnter={() => setOpenComposerMenu("context-window")}
+                        onClick={() => toggleComposerMenu("context-window")}
                         aria-label={
                           contextWindowPercentageLabel
                             ? `Context window ${contextWindowPercentageLabel} used`
@@ -1142,7 +1142,7 @@ export function Composer({
                           <view
                             className="composer-context-window-dismiss-layer"
                             aria-label="Dismiss context window usage"
-                            bindtap={() => setContextWindowOpen(false)}
+                            bindtap={() => setOpenComposerMenu(null)}
                           />
                         </>
                       ) : null}

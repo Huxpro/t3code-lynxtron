@@ -456,6 +456,8 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("Total processed");
     expect(composer).toContain("automatically compacts");
     expect(composer).toContain('aria-label="Dismiss context window usage"');
+    expect(composer).toContain('openComposerMenu === "context-window"');
+    expect(composer).toContain('toggleComposerMenu("context-window")');
     expect(overrides).toContain(".composer-context-window-popup {");
     expect(overrides).toContain(".composer-context-window-progress__value--overloaded {");
   });

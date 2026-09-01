@@ -97,6 +97,9 @@ export function HostView({
       {...(onMouseEnter || hoverRevealSelector || injectedMouseMove
         ? { "main-thread:bindmousemove": handleMouseEnter }
         : {})}
+      {...(onMouseEnter || hoverRevealSelector
+        ? { "main-thread:bindmouseover": handleMouseEnter }
+        : {})}
       {...(onMouseLeave || hoverRevealSelector || injectedMouseLeave
         ? { "main-thread:bindmouseleave": handleMouseLeave }
         : {})}
