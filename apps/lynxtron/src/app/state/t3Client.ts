@@ -1195,6 +1195,16 @@ function interrupt(): void {
   });
 }
 
+function revertCheckpoint(turnCount: number): Promise<void> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const threadId = state.activeThreadId;
+  const bridge = getBridge();
+  if (!threadId || !bridge?.revertCheckpoint) {
+    return Promise.reject(new Error("Checkpoint revert is unavailable."));
+  }
+  return bridge.revertCheckpoint({ threadId, turnCount });
+}
+
 function respondToApproval(
   requestId: ApprovalRequestId,
   decision: ProviderApprovalDecision,
@@ -1998,6 +2008,7 @@ export const t3ClientActions = {
   readVcsStatus,
   runGitAction,
   reconnect,
+  revertCheckpoint,
   renameThread,
   regenerateThreadTitle,
   snoozeThread,

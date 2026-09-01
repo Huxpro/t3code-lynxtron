@@ -1061,7 +1061,7 @@ export function Composer({
                           contextWindowOpen ? " composer-context-window-trigger--open" : ""
                         }`}
                         onMouseEnter={() => setOpenComposerMenu("context-window")}
-                        onClick={() => toggleComposerMenu("context-window")}
+                        onClick={() => setOpenComposerMenu("context-window")}
                         aria-label={
                           contextWindowPercentageLabel
                             ? `Context window ${contextWindowPercentageLabel} used`

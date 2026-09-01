@@ -1,4 +1,4 @@
-import { app, clipboard, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
+import { app, clipboard, dialog, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
 import path from "path";
 
 import {
@@ -14,7 +14,7 @@ import { startLynxtronThemeHost } from "./themeHost.ts";
 import { createSystemThemeSource } from "./systemThemeSource.ts";
 import { createReloadMenuItem, reloadApplication } from "./reloadWindow.ts";
 import { T3_RELOAD_FOR_TEST_METHOD } from "../../shared/viewportProtocol.ts";
-import { startClipboardCapabilityHost } from "./capabilityHost.ts";
+import { startClipboardCapabilityHost, startConfirmCapabilityHost } from "./capabilityHost.ts";
 import { startContextMenuCapabilityHost } from "./contextMenuHost.ts";
 import { startTerminalKeyboardHost } from "./terminalKeyboardHost.ts";
 
@@ -241,6 +241,27 @@ app.whenReady().then(() => {
   win.on("closed", () => {
     clipboardCapabilityHost.dispose();
   });
+  const confirmCapabilityHost = startConfirmCapabilityHost(
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, (_event, params) => handler(params));
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    async ({ message, detail, confirmLabel }) => {
+      const result = await dialog.showMessageBox(win as never, {
+        type: "warning",
+        title: "T3 Code",
+        message,
+        ...(detail ? { detail } : {}),
+        buttons: [confirmLabel ?? "Confirm", "Cancel"],
+        defaultId: 1,
+        cancelId: 1,
+      });
+      return result.response === 0;
+    },
+  );
+  win.on("closed", () => confirmCapabilityHost.dispose());
   const contextMenuCapabilityHost = startContextMenuCapabilityHost(
     {
       handle: (method, handler) => {

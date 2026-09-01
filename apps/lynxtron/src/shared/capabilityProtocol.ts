@@ -1,5 +1,27 @@
 export const T3_CLIPBOARD_WRITE_TEXT_METHOD = "t3:capability.clipboard.write-text";
 export const T3_CONTEXT_MENU_SHOW_METHOD = "t3:capability.context-menu.show";
+export const T3_CONFIRM_METHOD = "t3:capability.confirm";
+
+export interface NativeConfirmInput {
+  readonly message: string;
+  readonly detail?: string;
+  readonly confirmLabel?: string;
+}
+
+export function parseNativeConfirmInput(input: unknown): NativeConfirmInput {
+  if (typeof input !== "object" || input === null) {
+    throw new Error("Confirm request must be an object.");
+  }
+  const candidate = input as Record<string, unknown>;
+  if (typeof candidate.message !== "string" || candidate.message.trim().length === 0) {
+    throw new Error("Confirm request requires a message.");
+  }
+  return {
+    message: candidate.message,
+    ...(typeof candidate.detail === "string" ? { detail: candidate.detail } : {}),
+    ...(typeof candidate.confirmLabel === "string" ? { confirmLabel: candidate.confirmLabel } : {}),
+  };
+}
 
 export interface NativeContextMenuItem {
   readonly id: string;

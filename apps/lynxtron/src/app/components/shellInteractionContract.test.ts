@@ -246,6 +246,7 @@ describe("desktop shell interaction contract", () => {
     expect(source).toContain('toggleComposerMenu("model-option")');
     expect(source).toContain('toggleComposerMenu("compact-controls")');
     expect(source).toContain('toggleComposerMenu("workspace")');
+    expect(source).toContain('openComposerMenu === "context-window"');
     expect(source).toContain("if (modelPicker != null) onModelPickerClose?.()");
     expect(source).toContain("modelOptionMenuOpen ||");
     expect(source).toContain("runtimeModeMenuOpen ||");
@@ -457,7 +458,7 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("automatically compacts");
     expect(composer).toContain('aria-label="Dismiss context window usage"');
     expect(composer).toContain('openComposerMenu === "context-window"');
-    expect(composer).toContain('toggleComposerMenu("context-window")');
+    expect(composer).toContain('onClick={() => setOpenComposerMenu("context-window")}');
     expect(overrides).toContain(".composer-context-window-popup {");
     expect(overrides).toContain(".composer-context-window-progress__value--overloaded {");
   });

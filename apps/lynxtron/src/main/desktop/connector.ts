@@ -1206,6 +1206,16 @@ export class T3Connector {
     }
   }
 
+  async revertCheckpoint(input: { threadId: string; turnCount: number }): Promise<void> {
+    await this.dispatchOrchestrationCommand({
+      type: "thread.checkpoint.revert",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      turnCount: input.turnCount,
+      createdAt: new Date().toISOString(),
+    });
+  }
+
   async respondToApproval(input: {
     threadId: string;
     requestId: ApprovalRequestId;

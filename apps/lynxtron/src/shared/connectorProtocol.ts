@@ -233,6 +233,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "selectThread",
   "sendPrompt",
   "interrupt",
+  "revertCheckpoint",
   "respondToApproval",
   "respondToUserInput",
   "setModelSelection",

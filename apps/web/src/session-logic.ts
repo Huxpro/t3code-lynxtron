@@ -11,6 +11,7 @@ import {
 import {
   compareActivitiesByOrder,
   deriveTimelineEntries as deriveTimelineEntriesShared,
+  inferCheckpointTurnCountByTurnId,
   workRequestKindFromRequestType,
   type TimelineEntry as TranscriptTimelineEntry,
   type WorkLogEntry,
@@ -19,7 +20,6 @@ import {
   ProviderDriverKind,
   type OrchestrationLatestTurn,
   type ThreadId,
-  type TurnId,
 } from "@t3tools/contracts";
 export {
   derivePendingApprovals,
@@ -28,14 +28,7 @@ export {
   type PendingUserInput,
 } from "@t3tools/client-runtime/presentation/pending-requests";
 
-import type {
-  ChatMessage,
-  ProposedPlan,
-  SessionPhase,
-  Thread,
-  ThreadSession,
-  TurnDiffSummary,
-} from "./types";
+import type { ChatMessage, ProposedPlan, SessionPhase, Thread, ThreadSession } from "./types";
 
 export {
   deriveActivePlanState,
@@ -156,19 +149,6 @@ function toLatestProposedPlanState(proposedPlan: ProposedPlan): LatestProposedPl
     implementedAt: proposedPlan.implementedAt,
     implementationThreadId: proposedPlan.implementationThreadId,
   };
-}
-
-export function inferCheckpointTurnCountByTurnId(
-  summaries: ReadonlyArray<TurnDiffSummary>,
-): Record<TurnId, number> {
-  const sorted = [...summaries].toSorted((a, b) => a.completedAt.localeCompare(b.completedAt));
-  const result: Record<TurnId, number> = {};
-  for (let index = 0; index < sorted.length; index += 1) {
-    const summary = sorted[index];
-    if (!summary) continue;
-    result[summary.turnId] = index + 1;
-  }
-  return result;
 }
 
 export function derivePhase(session: ThreadSession | null): SessionPhase {

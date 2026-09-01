@@ -1,11 +1,21 @@
 import {
   parseClipboardWriteTextInput,
   T3_CLIPBOARD_WRITE_TEXT_METHOD,
+  parseNativeConfirmInput,
+  T3_CONFIRM_METHOD,
 } from "../../shared/capabilityProtocol.ts";
 
 export interface CapabilityBridgeHost {
   handle(method: string, handler: (params: unknown) => void): void;
   removeHandler(method: string): void;
+}
+
+export function startConfirmCapabilityHost(
+  bridge: CapabilityBridgeHost,
+  confirm: (input: ReturnType<typeof parseNativeConfirmInput>) => Promise<boolean>,
+): { readonly dispose: () => void } {
+  bridge.handle(T3_CONFIRM_METHOD, (params) => confirm(parseNativeConfirmInput(params)));
+  return { dispose: () => bridge.removeHandler(T3_CONFIRM_METHOD) };
 }
 
 export function startClipboardCapabilityHost(

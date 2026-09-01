@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 
-import { T3_CLIPBOARD_WRITE_TEXT_METHOD } from "../../shared/capabilityProtocol";
-import { startClipboardCapabilityHost } from "./capabilityHost";
+import { T3_CLIPBOARD_WRITE_TEXT_METHOD, T3_CONFIRM_METHOD } from "../../shared/capabilityProtocol";
+import { startClipboardCapabilityHost, startConfirmCapabilityHost } from "./capabilityHost";
 
 describe("startClipboardCapabilityHost", () => {
   it("registers the typed clipboard handler and disposes it", () => {
@@ -40,5 +40,40 @@ describe("startClipboardCapabilityHost", () => {
 
     expect(() => handler?.({ value: 42 })).toThrow("Clipboard text must be a string.");
     host.dispose();
+  });
+});
+
+describe("startConfirmCapabilityHost", () => {
+  it("validates the request and returns the native confirmation result", async () => {
+    let handler: ((params: unknown) => unknown) | undefined;
+    const confirm = vi.fn().mockResolvedValue(true);
+    const removeHandler = vi.fn();
+    const host = startConfirmCapabilityHost(
+      {
+        handle(method, nextHandler) {
+          expect(method).toBe(T3_CONFIRM_METHOD);
+          handler = nextHandler;
+        },
+        removeHandler,
+      },
+      confirm,
+    );
+
+    await expect(
+      handler?.({
+        message: "Revert this thread?",
+        detail: "Cannot be undone.",
+        confirmLabel: "Revert",
+      }),
+    ).resolves.toBe(true);
+    expect(confirm).toHaveBeenCalledWith({
+      message: "Revert this thread?",
+      detail: "Cannot be undone.",
+      confirmLabel: "Revert",
+    });
+    expect(() => handler?.({ message: "" })).toThrow("Confirm request requires a message.");
+
+    host.dispose();
+    expect(removeHandler).toHaveBeenCalledWith(T3_CONFIRM_METHOD);
   });
 });

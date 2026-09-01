@@ -12,6 +12,7 @@ import {
   deriveActiveWorkStartedAt,
   deriveMessagesTimelineRows,
   deriveTimelineMinimapItems,
+  inferCheckpointTurnCountByTurnId,
   deriveTranscriptNewTurnAnchor,
   deriveTimelineEntries,
   deriveWorkLogEntries,
@@ -50,6 +51,8 @@ import { InlineMarkdownRenderer, MarkdownRenderer } from "./MarkdownRenderer";
 import { shouldRenderBlockMarkdown } from "./markdownBlocks";
 import { uiActions } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
+import { showNativeConfirm, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
+import { t3ClientActions } from "../state/t3Client";
 import { useClientSettingsState } from "../state/prefsStore";
 import { deriveDisplayedUserMessageState } from "../../../../web/src/lib/terminalContext";
 import { LynxChangedFilesTree } from "./LynxChangedFilesTree";
@@ -323,6 +326,7 @@ function buildLynxTranscriptRowElements(
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
   copiedMessageId: string | null,
   copyMessage: (messageId: string, text: string) => void,
+  revertMessage: (turnCount: number) => void,
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
   return {
     userBubbleClassName: ({ row }) => {
@@ -392,6 +396,15 @@ function buildLynxTranscriptRowElements(
           <text className="transcript-message-meta__time">
             {formatShortTimestamp(row.message.createdAt, timestampFormat)}
           </text>
+          {typeof row.revertTurnCount === "number" ? (
+            <view
+              className="transcript-message-meta__action"
+              aria-label="Revert to this message"
+              bindtap={() => revertMessage(row.revertTurnCount!)}
+            >
+              <Icon name="rotate-ccw" size={14} color="#818181" />
+            </view>
+          ) : null}
           <view
             className="transcript-message-meta__action"
             aria-label="Copy link"
@@ -579,6 +592,21 @@ export function MessagesTimeline({
       }, 1_000);
     });
   }, []);
+  const revertMessage = useCallback((turnCount: number) => {
+    void showNativeContextMenu([
+      { id: "revert", label: `Revert to checkpoint ${turnCount}`, destructive: true },
+    ]).then((selection) => {
+      if (selection !== "revert") return;
+      void showNativeConfirm({
+        message: `Revert this thread to checkpoint ${turnCount}?`,
+        detail:
+          "This will discard newer messages and turn diffs in this thread. This action cannot be undone.",
+        confirmLabel: "Revert",
+      }).then((confirmed) => {
+        if (confirmed) void t3ClientActions.revertCheckpoint(turnCount).catch(() => undefined);
+      });
+    });
+  }, []);
   const rowElements = useMemo(
     () =>
       buildLynxTranscriptRowElements(
@@ -589,6 +617,7 @@ export function MessagesTimeline({
         clientSettings.timestampFormat,
         copiedMessageId,
         copyMessage,
+        revertMessage,
       ),
     [
       clientSettings.timestampFormat,
@@ -597,6 +626,7 @@ export function MessagesTimeline({
       copyMessage,
       cwd,
       latestTurn?.turnId,
+      revertMessage,
     ],
   );
 
@@ -618,6 +648,25 @@ export function MessagesTimeline({
         turnDiffSummaryByAssistantMessageId.set(checkpoint.assistantMessageId, checkpoint);
       }
     }
+    const inferredCheckpointTurnCountByTurnId = inferCheckpointTurnCountByTurnId(checkpoints);
+    const revertTurnCountByUserMessageId = new Map<string, number>();
+    for (let index = 0; index < timelineEntries.length; index += 1) {
+      const entry = timelineEntries[index];
+      if (!entry || entry.kind !== "message" || entry.message.role !== "user") continue;
+      for (let cursor = index + 1; cursor < timelineEntries.length; cursor += 1) {
+        const next = timelineEntries[cursor];
+        if (!next || next.kind !== "message") continue;
+        if (next.message.role === "user") break;
+        const summary = turnDiffSummaryByAssistantMessageId.get(next.message.id);
+        if (!summary) continue;
+        const turnCount =
+          summary.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[summary.turnId];
+        if (typeof turnCount === "number") {
+          revertTurnCountByUserMessageId.set(entry.message.id, Math.max(0, turnCount - 1));
+        }
+        break;
+      }
+    }
     return deriveMessagesTimelineRows<
       ChatMessage,
       OrchestrationProposedPlan,
@@ -631,6 +680,7 @@ export function MessagesTimeline({
       isWorking,
       activeTurnStartedAt,
       turnDiffSummaryByAssistantMessageId,
+      revertTurnCountByUserMessageId,
     });
   }, [
     messages,

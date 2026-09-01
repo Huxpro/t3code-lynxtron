@@ -4085,7 +4085,7 @@
   align-items: center;
   height: 24px;
   gap: 8px;
-  opacity: 0;
+  opacity: 0.58;
 }
 .transcript-message-meta--visible {
   opacity: 1;

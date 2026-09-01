@@ -9,6 +9,7 @@ import { getViewportSnapshot, subscribeViewport } from "../state/viewportStore";
 import {
   T3_CLIPBOARD_WRITE_TEXT_METHOD,
   T3_CONTEXT_MENU_SHOW_METHOD,
+  T3_CONFIRM_METHOD,
   type NativeContextMenuItem,
 } from "../../shared/capabilityProtocol.ts";
 import { callBridge, type BridgeCallModule } from "../state/mainConnectorTransport";
@@ -19,6 +20,16 @@ interface PlatformBridge {
   writeClipboardText?: (value: string) => void;
   openExternal?: (url: string) => Promise<void>;
   openPath?: (path: string) => Promise<void>;
+}
+
+export async function showNativeConfirm(input: {
+  readonly message: string;
+  readonly detail?: string;
+  readonly confirmLabel?: string;
+}): Promise<boolean> {
+  "background only";
+  if (!NativeModules?.bridge?.call) throw new Error("Native confirmation is unavailable");
+  return (await callBridge(NativeModules.bridge, T3_CONFIRM_METHOD, input)) === true;
 }
 
 declare const NativeModules: {

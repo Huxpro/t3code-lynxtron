@@ -1,5 +1,6 @@
 import * as Equal from "effect/Equal";
 import type {
+  OrchestrationCheckpointSummary,
   OrchestrationLatestTurn,
   OrchestrationSession,
   OrchestrationThreadActivity,
@@ -106,6 +107,20 @@ export interface TimelineMinimapItem {
   readonly rowIndex: number;
   readonly userText: string | null;
   readonly assistantText: string | null;
+}
+
+export function inferCheckpointTurnCountByTurnId(
+  summaries: ReadonlyArray<OrchestrationCheckpointSummary>,
+): Record<TurnId, number> {
+  const sorted = [...summaries].toSorted((left, right) =>
+    left.completedAt.localeCompare(right.completedAt),
+  );
+  const result: Record<TurnId, number> = {};
+  for (let index = 0; index < sorted.length; index += 1) {
+    const summary = sorted[index];
+    if (summary) result[summary.turnId] = index + 1;
+  }
+  return result;
 }
 
 function compactTimelineMinimapPreview(text: string | null | undefined): string | null {

@@ -160,6 +160,7 @@ export interface T3ConnectorCommandBridge {
     bootstrap?: ThreadTurnStartBootstrap;
   }): Promise<void>;
   interrupt(input: { threadId: string; turnId?: TurnId }): Promise<void>;
+  revertCheckpoint(input: { threadId: string; turnCount: number }): Promise<void>;
   respondToApproval(input: {
     threadId: string;
     requestId: ApprovalRequestId;
