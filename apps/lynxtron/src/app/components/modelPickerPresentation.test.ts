@@ -120,8 +120,9 @@ describe("Lynx model picker presentation", () => {
   it("anchors the panel to the Composer authority offset", () => {
     const picker = readFileSync(path.resolve(import.meta.dirname, "ModelPicker.tsx"), "utf8");
     const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
-    const panelStart = overrides.indexOf(".model-picker-panel {");
-    const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
+    const panelBlock = overrides
+      .match(/\.model-picker-panel \{[^}]+\}/g)
+      ?.find((block) => block.includes("position: absolute;"));
 
     expect(picker).toContain('bottom: "32px"');
     expect(panelBlock).toContain("position: absolute;");

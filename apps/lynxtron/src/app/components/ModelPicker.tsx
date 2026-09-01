@@ -1,5 +1,12 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "@lynx-js/react";
-import type { NodesRef } from "@lynx-js/types";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useMainThreadRef,
+  useRef,
+} from "@lynx-js/react";
+import type { MainThread, NodesRef } from "@lynx-js/types";
 import type {
   ModelSelection,
   ProviderDriverKind,
@@ -24,6 +31,7 @@ import { useClientSettingsState } from "../state/prefsStore";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { readModelPickerNavigation } from "../state/uiState";
 import { Icon } from "./Icon";
+import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import {
   projectModelPickerProviders,
@@ -68,6 +76,8 @@ export function ModelPicker({
 }: ModelPickerProps) {
   const viewport = useViewportSnapshot();
   const searchInputRef = useRef<NodesRef>(null);
+  const listScrollRef = useMainThreadRef<MainThread.Element>(null);
+  const listWheelRef = useMainThreadRef({ offset: 0 });
   const navigation = readModelPickerNavigation();
   const [clientSettings, updateClientSettings] = useClientSettingsState();
   const favoriteModelKeys = useMemo(
@@ -189,6 +199,23 @@ export function ModelPicker({
     },
     [rows.length],
   );
+  const handleListWheel = (event: MainThread.WheelEvent) => {
+    "main thread";
+    const eventWithDetail = event as MainThread.WheelEvent & { detail?: { deltaY?: number } };
+    const deltaY = responsiveMenuWheelDelta(
+      eventWithDetail.deltaY ?? eventWithDetail.detail?.deltaY ?? 0,
+    );
+    if (!Number.isFinite(deltaY) || deltaY === 0) return;
+    const nextOffset = Math.max(0, listWheelRef.current.offset + deltaY);
+    listWheelRef.current = { offset: nextOffset };
+    const target =
+      listScrollRef.current ?? event.currentTarget ?? lynx.querySelector(".picker-list");
+    if (!target) return;
+    target.setAttribute("data-wheel-offset", `${nextOffset}`);
+    target.invoke("scrollTo", { offset: nextOffset, smooth: false });
+    event.preventDefault?.();
+    event.stopPropagation?.();
+  };
   useEffect(() => {
     if (!viewport.testResize) return;
     const target = globalThis as {
@@ -348,6 +375,8 @@ export function ModelPicker({
                   scroll-y
                   scroll-orientation="vertical"
                   scroll-event-throttle={16}
+                  main-thread:ref={listScrollRef}
+                  main-thread:global-bindwheel={handleListWheel}
                   bindscroll={handleListScroll}
                 >
                   {rows.map(({ model, favorite, disabledReason }) => {
