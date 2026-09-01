@@ -36,6 +36,7 @@ export {
   type ActivePlanState,
   type LatestProposedPlanState,
 };
+export { inferCheckpointTurnCountByTurnId };
 
 // The transcript projection (work-log derivation, timeline merging, tool
 // status affordances, durations) is shared with the Lynx client from
