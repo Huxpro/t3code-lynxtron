@@ -321,7 +321,6 @@ function buildLynxTranscriptRowElements(
   compactChangedFiles: boolean,
   compactChangedFilesActions: boolean,
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
-  hoveredMessageId: string | null,
   copiedMessageId: string | null,
   copyMessage: (messageId: string, text: string) => void,
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
@@ -389,12 +388,7 @@ function buildLynxTranscriptRowElements(
     renderUserMeta: ({ row }) => {
       const copyText = deriveDisplayedUserMessageState(row.message.text).copyText;
       return (
-        <view
-          flatten={false}
-          className={`transcript-message-meta transcript-user-meta${
-            hoveredMessageId === row.message.id ? " transcript-message-meta--visible" : ""
-          }`}
-        >
+        <view flatten={false} className="transcript-message-meta transcript-user-meta">
           <text className="transcript-message-meta__time">
             {formatShortTimestamp(row.message.createdAt, timestampFormat)}
           </text>
@@ -438,7 +432,7 @@ function buildLynxTranscriptRowElements(
             row.assistantTurnDiffSummary.turnId === latestTurnId
               ? " transcript-assistant-meta--checkpoint"
               : ""
-          }${hoveredMessageId === row.message.id ? " transcript-message-meta--visible" : ""}`}
+          }`}
         >
           {copyState.visible && copyState.text ? (
             <view
@@ -563,7 +557,6 @@ export function MessagesTimeline({
 }: MessagesTimelineProps) {
   const [clientSettings] = useClientSettingsState();
   const [timelineViewportWidth, setTimelineViewportWidth] = useState(availableWidth);
-  const [hoveredMessageId, setHoveredMessageId] = useState<string | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
   const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
@@ -594,7 +587,6 @@ export function MessagesTimeline({
         timelineViewportWidth < 360,
         timelineViewportWidth < 640,
         clientSettings.timestampFormat,
-        hoveredMessageId,
         copiedMessageId,
         copyMessage,
       ),
@@ -604,7 +596,6 @@ export function MessagesTimeline({
       copiedMessageId,
       copyMessage,
       cwd,
-      hoveredMessageId,
       latestTurn?.turnId,
     ],
   );
@@ -862,11 +853,6 @@ export function MessagesTimeline({
                 elements={rowElements}
                 onToggleTurnFold={handleToggleTurn}
                 onToggleWorkGroup={handleToggleWorkGroup}
-                onMessageHoverChange={(messageId, hovered) => {
-                  setHoveredMessageId((current) =>
-                    hovered ? messageId : current === messageId ? null : current,
-                  );
-                }}
               />
             </view>
           </list-item>

@@ -107,24 +107,19 @@ export interface TranscriptRowSurfaceProps<
   readonly elements: TranscriptRowElements<M, P, D>;
   readonly onToggleTurnFold: (turnId: TurnId) => void;
   readonly onToggleWorkGroup: (groupId: string, anchorElement?: unknown) => void;
-  readonly onMessageHoverChange?: (messageId: string, hovered: boolean) => void;
 }
 
 function UserRow({
   row,
   elements,
-  onHoverChange,
 }: {
   readonly row: Extract<TranscriptTimelineRow, { kind: "message" }>;
   readonly elements: TranscriptRowElements;
-  readonly onHoverChange?: (hovered: boolean) => void;
 }) {
   return (
     <HostView
       className="transcript-user-row group flex flex-col items-end gap-1"
       hoverRevealSelector=".transcript-message-meta"
-      onMouseEnter={onHoverChange ? () => onHoverChange(true) : undefined}
-      onMouseLeave={onHoverChange ? () => onHoverChange(false) : undefined}
     >
       <HostView
         className={cn(
@@ -151,18 +146,14 @@ function SystemRow({ row }: { readonly row: Extract<TranscriptTimelineRow, { kin
 function AssistantRow({
   row,
   elements,
-  onHoverChange,
 }: {
   readonly row: Extract<TranscriptTimelineRow, { kind: "message" }>;
   readonly elements: TranscriptRowElements;
-  readonly onHoverChange?: (hovered: boolean) => void;
 }) {
   return (
     <HostView
       className="transcript-assistant-row relative min-w-0 px-1 py-0.5"
       hoverRevealSelector=".transcript-message-meta"
-      onMouseEnter={onHoverChange ? () => onHoverChange(true) : undefined}
-      onMouseLeave={onHoverChange ? () => onHoverChange(false) : undefined}
     >
       {elements.renderAssistantMarkdown({ row })}
       {row.assistantTurnDiffSummary ? elements.renderCheckpointCard({ row }) : null}
@@ -467,7 +458,6 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
   elements,
   onToggleTurnFold,
   onToggleWorkGroup,
-  onMessageHoverChange,
 }: TranscriptRowSurfaceProps<M, P, D>) {
   const isCommentaryAssistant =
     row.kind === "message" && row.message.role === "assistant" && !row.showAssistantMeta;
@@ -491,19 +481,11 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
       data-timeline-row-text={row.kind === "message" ? row.message.text : undefined}
     >
       {row.kind === "message" && row.message.role === "user" ? (
-        <UserRow
-          row={row}
-          elements={elements}
-          onHoverChange={(hovered) => onMessageHoverChange?.(row.message.id, hovered)}
-        />
+        <UserRow row={row} elements={elements} />
       ) : null}
       {row.kind === "message" && row.message.role === "system" ? <SystemRow row={row} /> : null}
       {row.kind === "message" && row.message.role === "assistant" ? (
-        <AssistantRow
-          row={row}
-          elements={elements}
-          onHoverChange={(hovered) => onMessageHoverChange?.(row.message.id, hovered)}
-        />
+        <AssistantRow row={row} elements={elements} />
       ) : null}
       {row.kind === "work" ? (
         <WorkGroupRows
