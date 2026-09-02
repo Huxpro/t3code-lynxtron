@@ -10701,8 +10701,8 @@
   z-index: 121;
   display: flex;
   flex-direction: column;
-  width: 502px;
-  height: 662px;
+  width: 510px;
+  height: 669px;
   max-height: calc(100% - 32px);
   border-width: 1px;
   border-style: solid;
@@ -10876,12 +10876,14 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  height: 65px;
   padding: 16px 24px;
   border-top-width: 1px;
   border-top-style: solid;
   border-top-color: var(--border);
   gap: 8px;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 .project-action-dialog__button {
   display: flex;

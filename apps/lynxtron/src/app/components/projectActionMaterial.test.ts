@@ -28,11 +28,18 @@ describe("Project Action dialog material", () => {
     const dialog = rule(".project-action-dialog");
     const lightDialog = rule(".theme-light .project-action-dialog");
 
-    expect(dialog).toContain("width: 502px;");
-    expect(dialog).toContain("height: 662px;");
+    expect(dialog).toContain("width: 510px;");
+    expect(dialog).toContain("height: 669px;");
     expect(dialog).toContain("border-radius: 18px;");
     expect(lightDialog).toContain("border-color: rgba(39, 39, 42, 0.1);");
     expect(lightDialog).toContain("background-color: rgba(252, 252, 252, 0.8);");
     expect(lightDialog).toContain("0 24px 64px -24px rgba(0, 0, 0, 0.65);");
+  });
+
+  it("matches the authority footer box model", () => {
+    const footer = rule(".project-action-dialog__footer");
+
+    expect(footer).toContain("height: 65px;");
+    expect(footer).toContain("box-sizing: border-box;");
   });
 });
