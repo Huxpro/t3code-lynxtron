@@ -787,7 +787,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  color: var(--foreground);\n  font-size: 12px;\n  line-height: 20px;",
     );
-    expect(diffPanelSource).toContain("projectFileLineTokens(file.path, line.content");
+    expect(diffPanelSource).not.toContain("projectFileLineTokens");
+    expect(diffPanelSource).toContain('{line.content || " "}');
     expect(overrides).toContain(".diff-code-token--keyword {");
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
@@ -852,8 +853,8 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("uiActions.closeRightPanelSurfacesToRight(surface.id)");
     expect(panel).toContain("closeRemovedTerminal(state.surfaces");
     expect(rightPanelSurfaceSource).toContain("...(onContextMenu ? { onContextMenu } : {})");
-    expect(hostElementsSource.match(/event.button === 2 && onContextMenu/g)).toHaveLength(3);
-    expect(hostElementsSource.match(/event.button === 1 && onAuxClick/g)).toHaveLength(3);
+    expect(hostElementsSource.match(/event.button === 2 && onContextMenu/g)).toHaveLength(4);
+    expect(hostElementsSource.match(/event.button === 1 && onAuxClick/g)).toHaveLength(4);
     expect(panel).toContain("onAuxClick={() => handleCloseTab(surface)}");
     expect(rightPanelSurfaceSource).toContain("...(onAuxClick ? { onAuxClick } : {})");
     expect(panel).toContain('className="right-panel__add-menu-dismiss"');
