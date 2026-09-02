@@ -140,6 +140,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   } | null>(null);
   const [centerPanelWidth, setCenterPanelWidth] = useState(1024);
   const [rightPanelMaximized, setRightPanelMaximized] = useState(false);
+  const [gitMenuOpen, setGitMenuOpen] = useState(false);
   const [draftWorkspaceMode, setDraftWorkspaceMode] = useState<"local" | "worktree">("local");
   const [startFromOrigin, setStartFromOrigin] = useState(false);
   const {
@@ -576,7 +577,14 @@ export function ChatView({ threadId }: ChatViewProps) {
 
   return (
     <ChatRouteSurface
-      onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}
+      onClick={
+        modelPickerOpen || gitMenuOpen
+          ? () => {
+              if (modelPickerOpen) uiActions.closeModelPicker();
+              if (gitMenuOpen) setGitMenuOpen(false);
+            }
+          : undefined
+      }
       activeThreadKind={activeDraftThread ? "draft" : activeThread ? "server" : "none"}
       activeThreadId={activeThreadId}
       layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}
@@ -593,6 +601,8 @@ export function ChatView({ threadId }: ChatViewProps) {
           rightPanelOpen={rightPanel.isOpen}
           centerPanelWidth={centerPanelWidth}
           onCenterPanelWidthChange={setCenterPanelWidth}
+          gitMenuOpen={gitMenuOpen}
+          onGitMenuOpenChange={setGitMenuOpen}
         />
       }
       banner={

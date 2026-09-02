@@ -33,6 +33,8 @@ interface ChatHeaderProps {
   rightPanelOpen?: boolean;
   centerPanelWidth?: number;
   onCenterPanelWidthChange?: (width: number) => void;
+  gitMenuOpen?: boolean;
+  onGitMenuOpenChange?: (open: boolean) => void;
 }
 
 export function ChatLayoutControls({ rightPanelOpen = false }: { rightPanelOpen?: boolean }) {
@@ -151,10 +153,11 @@ export function ChatHeader({
   rightPanelOpen,
   centerPanelWidth = 1024,
   onCenterPanelWidthChange = () => undefined,
+  gitMenuOpen = false,
+  onGitMenuOpenChange = () => undefined,
 }: ChatHeaderProps) {
   const [gitInitPending, setGitInitPending] = useState(false);
   const [gitActionPending, setGitActionPending] = useState(false);
-  const [gitMenuOpen, setGitMenuOpen] = useState(false);
   const useAuthoritySurface =
     projectName === "pending-fixture" && threadTitle === "Run printf pending-approval";
   const compactActions = shouldCompactHeaderActions(centerPanelWidth);
@@ -279,55 +282,48 @@ export function ChatHeader({
               onOptionsTap={
                 gitQuickAction.kind === "initialize_repo"
                   ? undefined
-                  : () => setGitMenuOpen((open) => !open)
+                  : () => onGitMenuOpenChange(!gitMenuOpen)
               }
             />
             {gitMenuOpen ? (
-              <>
-                <view
-                  className="topbar-git-menu-dismiss"
-                  aria-label="Dismiss Git action options"
-                  bindtap={() => setGitMenuOpen(false)}
-                />
-                <view className="topbar-git-menu" data-git-action-menu>
-                  {gitMenuItems
-                    .filter((item) => item.id === "commit")
-                    .map((item) => (
-                      <view
-                        key={item.id}
-                        className={`topbar-git-menu__item${
-                          item.disabled ? " topbar-git-menu__item--disabled" : ""
-                        }`}
-                        aria-disabled={item.disabled ? "true" : "false"}
-                        data-git-menu-action={item.id}
-                        bindtap={
-                          item.disabled
-                            ? undefined
-                            : () => {
-                                setGitMenuOpen(false);
-                                runGitAction("commit");
-                              }
-                        }
-                      >
-                        <Icon name="git-commit-horizontal" size={16} color="#818181" />
-                        <text className="topbar-git-menu__label">{item.label}</text>
-                      </view>
-                    ))}
-                  {vcsStatus?.isRepo && !vcsStatus.hasPrimaryRemote ? (
+              <view className="topbar-git-menu" data-git-action-menu catchtap={() => undefined}>
+                {gitMenuItems
+                  .filter((item) => item.id === "commit")
+                  .map((item) => (
                     <view
-                      className="topbar-git-menu__item"
-                      data-git-menu-action="publish"
-                      bindtap={() => {
-                        setGitMenuOpen(false);
-                        uiActions.openGitPublishDialog();
-                      }}
+                      key={item.id}
+                      className={`topbar-git-menu__item${
+                        item.disabled ? " topbar-git-menu__item--disabled" : ""
+                      }`}
+                      aria-disabled={item.disabled ? "true" : "false"}
+                      data-git-menu-action={item.id}
+                      bindtap={
+                        item.disabled
+                          ? undefined
+                          : () => {
+                              onGitMenuOpenChange(false);
+                              runGitAction("commit");
+                            }
+                      }
                     >
-                      <Icon name="cloud-upload" size={16} color="#818181" />
-                      <text className="topbar-git-menu__label">Publish repository…</text>
+                      <Icon name="git-commit-horizontal" size={16} color="#818181" />
+                      <text className="topbar-git-menu__label">{item.label}</text>
                     </view>
-                  ) : null}
-                </view>
-              </>
+                  ))}
+                {vcsStatus?.isRepo && !vcsStatus.hasPrimaryRemote ? (
+                  <view
+                    className="topbar-git-menu__item"
+                    data-git-menu-action="publish"
+                    bindtap={() => {
+                      onGitMenuOpenChange(false);
+                      uiActions.openGitPublishDialog();
+                    }}
+                  >
+                    <Icon name="cloud-upload" size={16} color="#818181" />
+                    <text className="topbar-git-menu__label">Publish repository…</text>
+                  </view>
+                ) : null}
+              </view>
             ) : null}
           </view>
         }

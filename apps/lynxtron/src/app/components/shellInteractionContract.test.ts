@@ -183,9 +183,8 @@ describe("desktop shell interaction contract", () => {
     expect(source).not.toContain("catchtap={handlePanelTap}");
     expect(source).toContain('className="model-picker-close"');
     expect(source.match(/bindtap={onClose}/g)).toHaveLength(1);
-    expect(chatView).toContain(
-      "onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}",
-    );
+    expect(chatView).toContain("modelPickerOpen || gitMenuOpen");
+    expect(chatView).toContain("if (modelPickerOpen) uiActions.closeModelPicker()");
     expect(chatView).toContain("if (modelPickerOpen) return;");
     expect(chatView).toContain("onActiveProviderChange={uiActions.selectModelPickerProvider}");
     expect(overrides).not.toContain(".model-picker-dismiss-layer {");
@@ -490,15 +489,20 @@ describe("desktop shell interaction contract", () => {
 
   it("runs supported Git actions through the main connector and exposes the split menu", () => {
     const header = componentSource("ChatHeader.tsx");
+    const chatView = componentSource("ChatView.tsx");
 
     expect(header).toContain("buildMenuItems(vcsStatus");
     expect(header).toContain('data-git-menu-action="publish"');
-    expect(header).toContain('aria-label="Dismiss Git action options"');
+    expect(header).toContain("onGitMenuOpenChange(!gitMenuOpen)");
+    expect(header).toContain("catchtap={() => undefined}");
+    expect(chatView).toContain("modelPickerOpen || gitMenuOpen");
+    expect(chatView).toContain("if (gitMenuOpen) setGitMenuOpen(false)");
     expect(header).toContain("t3ClientActions");
     expect(header).toContain(".runGitAction({ actionId:");
     expect(connectorSource).toContain("async runGitAction(");
     expect(connectorSource).toContain("WS_METHODS.gitRunStackedAction");
     expect(overrides).toContain(".topbar-git-menu {");
+    expect(overrides).not.toContain(".topbar-git-menu-dismiss {");
     expect(overrides).toContain("min-height: 80px;");
   });
 
