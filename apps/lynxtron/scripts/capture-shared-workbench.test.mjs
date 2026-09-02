@@ -726,6 +726,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "fileEditingSaveEvidence !== null");
     assert.include(source, "fileEditingSave: fileEditingSaveEvidence");
     assert.include(source, "const currentStateIdentityMatches = () =>");
+    assert.include(source, "selectedProject: webState.selectedProject");
+    assert.include(source, "selectedProject: lynxState.selectedProject");
     assert.include(source, "stateIdentityMatch = currentStateIdentityMatches()");
     assert.include(source, "finalCoreGeometryReady =");
     assert.include(source, "fixturePreparation.disposed = true");
