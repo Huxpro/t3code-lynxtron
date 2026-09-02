@@ -133,8 +133,6 @@ export function ModelPicker({
     setSearch(e.detail.value);
     setNotice(null);
   }, []);
-  const handlePanelTap = useCallback(() => undefined, []);
-
   const context = useMemo(
     () => ({
       providers: providerSnapshots,
@@ -272,7 +270,6 @@ export function ModelPicker({
             }
           : {})}
         style={{ width: "360px", height: "346px", bottom: "32px" }}
-        catchtap={handlePanelTap}
       >
         <ModelPickerBodySurface>
           {!search.trim() ? (
@@ -471,11 +468,6 @@ export function ModelPicker({
           </ModelPickerContentSurface>
         </ModelPickerBodySurface>
       </view>
-      <view
-        className="model-picker-dismiss-layer"
-        aria-label="Dismiss model picker"
-        bindtap={onClose}
-      />
     </>
   );
 }

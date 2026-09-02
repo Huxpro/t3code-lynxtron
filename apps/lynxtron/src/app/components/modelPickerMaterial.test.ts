@@ -22,7 +22,7 @@ describe("Model Picker material", () => {
     expect(panel).toContain("box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);");
     expect(darkPanel).toContain("box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.8);");
     expect(darkPanel).toContain("background-color: var(--popover);");
-    expect(rule(".model-picker-dismiss-layer")).toContain("z-index: 50;");
+    expect(overrides).not.toContain(".model-picker-dismiss-layer {");
   });
 
   it("maps the shared muted content and rail surfaces without changing geometry", () => {

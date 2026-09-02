@@ -179,31 +179,19 @@ describe("desktop shell interaction contract", () => {
     const source = componentSource("ModelPicker.tsx");
     const chatView = componentSource("ChatView.tsx");
 
-    expect(source).toContain('className="model-picker-dismiss-layer"');
-    expect(source).toContain('aria-label="Dismiss model picker"');
-    expect(source).toContain("bindtap={onClose}");
-    expect(source).toContain("catchtap={handlePanelTap}");
-    expect(source).not.toContain("dismissArmed");
-    expect(source).not.toContain("setTimeout(() => setDismissArmed(true), 250)");
-    expect(source.indexOf('className="model-picker-panel"')).toBeLessThan(
-      source.indexOf('className="model-picker-dismiss-layer"'),
-    );
+    expect(source).not.toContain('className="model-picker-dismiss-layer"');
+    expect(source).not.toContain("catchtap={handlePanelTap}");
     expect(source).toContain('className="model-picker-close"');
-    expect(source.match(/bindtap={onClose}/g)).toHaveLength(2);
+    expect(source.match(/bindtap={onClose}/g)).toHaveLength(1);
     expect(chatView).toContain(
       "onClick={modelPickerOpen ? uiActions.closeModelPicker : undefined}",
     );
     expect(chatView).toContain("if (modelPickerOpen) return;");
     expect(chatView).toContain("onActiveProviderChange={uiActions.selectModelPickerProvider}");
-    expect(overrides).toContain(".model-picker-dismiss-layer {");
-    expect(overrides).toContain("background-color: transparent;");
+    expect(overrides).not.toContain(".model-picker-dismiss-layer {");
     expect(overrides).toContain(
       ".theme-dark .model-picker-panel {\n  background-color: var(--popover);",
     );
-    const dismissStart = overrides.lastIndexOf(".model-picker-dismiss-layer {");
-    const dismissBlock = overrides.slice(dismissStart, overrides.indexOf("}", dismissStart));
-    expect(dismissBlock).toContain("z-index: 50;");
-    expect(dismissBlock).not.toContain("var(--overlay-backdrop)");
     const panelStart = overrides.lastIndexOf("\n.model-picker-panel {");
     const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
     expect(panelBlock).toContain("z-index: 51;");
