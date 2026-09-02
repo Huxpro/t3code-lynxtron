@@ -39,7 +39,7 @@ function latestFirst(
   checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>,
 ): OrchestrationCheckpointSummary[] {
   return checkpoints
-    .filter((checkpoint) => checkpoint.status === "ready" && checkpoint.files.length > 0)
+    .filter((checkpoint) => checkpoint.status === "ready")
     .sort(
       (left, right) =>
         right.checkpointTurnCount - left.checkpointTurnCount ||

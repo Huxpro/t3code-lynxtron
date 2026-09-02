@@ -14,4 +14,9 @@ describe("diff panel header contract", () => {
     expect(styles).toContain("justify-content: center;\n  flex-shrink: 0;\n  height: 24px;");
     expect(styles).toContain(".lynx-diff-stat__additions,\n.lynx-diff-stat__deletions");
   });
+
+  it("keeps every ready checkpoint in the turn scope menu", () => {
+    expect(source).toContain('.filter((checkpoint) => checkpoint.status === "ready")');
+    expect(source).not.toContain('checkpoint.status === "ready" && checkpoint.files.length > 0');
+  });
 });

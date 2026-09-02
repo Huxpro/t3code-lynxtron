@@ -36,9 +36,11 @@ export function DiffPanelSurface({
   return (
     <HostView
       data-review-surface="diff"
-      data-review-checkpoint-count={reviewCheckpointCount}
+      data-review-checkpoint-count={
+        reviewCheckpointCount === undefined ? undefined : String(reviewCheckpointCount)
+      }
       data-review-selected-turn={reviewSelectedTurn}
-      data-review-file-count={reviewFileCount}
+      data-review-file-count={reviewFileCount === undefined ? undefined : String(reviewFileCount)}
       className={cn(
         "flex h-full min-h-0 min-w-0 flex-col bg-background",
         mode === "inline"
