@@ -20,6 +20,7 @@ import {
   type FloatingRect,
   type FloatingSide,
 } from "@t3tools/client-runtime/presentation/floating-relation";
+import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -62,6 +63,7 @@ interface GlobalEventEmitterLike {
 declare const lynx:
   | {
       getJSModule?: (name: string) => GlobalEventEmitterLike | undefined;
+      querySelectorAll(selector: string): MainThreadElement[];
     }
   | undefined;
 
@@ -162,6 +164,7 @@ export function Tooltip({ children }: ElementProps) {
 }
 
 export function TooltipTrigger({ children, render, ...props }: ElementProps) {
+  const tooltipProbeEnabled = useViewportSnapshot().testResize === true;
   const context = useContext(TooltipContext);
   const tooltipOpen = context?.open === true;
   const triggerRef = useMainThreadRef<MainThreadElement>(null);
@@ -169,10 +172,9 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
     (inside: boolean, rect?: FloatingRect) => context?.setHover(inside, rect),
     [context],
   );
-  const handleMouseMove = async () => {
+  const reportTriggerHover = async (trigger: MainThreadElement | null | undefined) => {
     "main thread";
     if (tooltipOpen) return;
-    const trigger = triggerRef.current;
     if (!trigger) return;
     trigger.setAttribute("data-tooltip-pointer-inside", "true");
     const measured = (await trigger.invoke("boundingClientRect", {
@@ -202,9 +204,28 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
     trigger.setAttribute("data-floating-anchor-rect", JSON.stringify(rect));
     await runOnBackground(reportHover)(true, rect);
   };
+  const handleMouseMove = async () => {
+    "main thread";
+    await reportTriggerHover(triggerRef.current);
+  };
   const handleMouseLeave = () => {
     "main thread";
     triggerRef.current?.setAttribute("data-tooltip-pointer-inside", "false");
+    runOnBackground(reportHover)(false);
+  };
+  const handleProbeMouseMove = async (probeRelationId: string) => {
+    "main thread";
+    const trigger = (lynx?.querySelectorAll("[data-floating-anchor]") ?? []).find(
+      (candidate) => candidate.getAttribute("data-floating-anchor") === probeRelationId,
+    );
+    await reportTriggerHover(trigger);
+  };
+  const handleProbeMouseLeave = (probeRelationId: string) => {
+    "main thread";
+    const trigger = (lynx?.querySelectorAll("[data-floating-anchor]") ?? []).find(
+      (candidate) => candidate.getAttribute("data-floating-anchor") === probeRelationId,
+    );
+    trigger?.setAttribute("data-tooltip-pointer-inside", "false");
     runOnBackground(reportHover)(false);
   };
   const relationId =
@@ -219,22 +240,21 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
   useEffect(() => {
     if (typeof relationId !== "string") return;
     const target = globalThis as {
-      __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
       __T3_LYNXTRON_TOOLTIP_PROBE__?: Record<
         string,
         { readonly hover: () => Promise<void>; readonly leave: () => Promise<void> }
       >;
     };
-    if (!target.__T3_LYNXTRON_VIEWPORT_PROBE__) return;
+    if (!tooltipProbeEnabled) return;
     const probes = target.__T3_LYNXTRON_TOOLTIP_PROBE__ ?? {};
     const probe = {
       hover: async () => {
         renderedMouseEnter?.();
-        await runOnMainThread(handleMouseMove)();
+        await runOnMainThread(handleProbeMouseMove)(relationId);
       },
       leave: async () => {
         renderedMouseLeave?.();
-        await runOnMainThread(handleMouseLeave)();
+        await runOnMainThread(handleProbeMouseLeave)(relationId);
       },
     };
     probes[relationId] = probe;
@@ -244,7 +264,15 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
       if (probes[relationId] === probe) delete probes[relationId];
       if (Object.keys(probes).length === 0) delete target.__T3_LYNXTRON_TOOLTIP_PROBE__;
     };
-  }, [handleMouseMove, relationId, renderedMouseEnter, renderedMouseLeave, reportHover]);
+  }, [
+    handleProbeMouseLeave,
+    handleProbeMouseMove,
+    relationId,
+    renderedMouseEnter,
+    renderedMouseLeave,
+    reportHover,
+    tooltipProbeEnabled,
+  ]);
   const hoverProps = {
     "main-thread:ref": triggerRef,
     "main-thread:bindmouseleave": handleMouseLeave,

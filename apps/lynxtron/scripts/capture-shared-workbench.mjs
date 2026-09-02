@@ -2461,8 +2461,7 @@ async function dismissWebProviderNotification(cdp, sessionId, timeout = 8_000) {
           rect.height <= 0 ||
           style?.display === 'none' ||
           style?.visibility === 'hidden' ||
-          style?.pointerEvents === 'none' ||
-          Number(style?.opacity ?? 1) <= 0
+          style?.pointerEvents === 'none'
         ) {
           return { present: true, point: null };
         }
@@ -3658,6 +3657,9 @@ async function sidebarThreadCardTarget(cdp, sessionId, client, index = 0) {
         relationId: target.getAttribute('data-floating-anchor'),
         threadId: target.closest('[data-thread-id]')?.getAttribute('data-thread-id') ?? null,
         text: target.textContent?.trim().replace(/\\s+/g, ' ') ?? '',
+        attributes: Object.fromEntries(
+          target.getAttributeNames().map((name) => [name, target.getAttribute(name)])
+        ),
         rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
         point: {
           x: frameRect.x + rect.x + rect.width / 2,
@@ -3667,6 +3669,40 @@ async function sidebarThreadCardTarget(cdp, sessionId, client, index = 0) {
           x: frameRect.x + frameRect.width - 24,
           y: frameRect.y + frameRect.height / 2,
         },
+      };
+    })()`,
+  );
+}
+
+async function readLynxSidebarTooltipDiagnostics(cdp, sessionId, relationId) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('lynx-pane');
+      const doc = frame?.contentWindow?.document;
+      const root = doc?.getElementById('t3-lynx-preview')?.shadowRoot;
+      const anchor = [...(root?.querySelectorAll('[data-floating-anchor]') ?? [])]
+        .find((candidate) => candidate.getAttribute('data-floating-anchor') === ${JSON.stringify(
+          relationId,
+        )});
+      const popup = root?.querySelector(${JSON.stringify(`[data-floating-popup="${relationId}"]`)});
+      const popupRect = popup?.getBoundingClientRect();
+      const popupStyle = popup ? getComputedStyle(popup) : null;
+      return {
+        relationId: ${JSON.stringify(relationId)},
+        pointerInside: anchor?.getAttribute('data-tooltip-pointer-inside') ?? null,
+        anchorRectAttribute: anchor?.getAttribute('data-floating-anchor-rect') ?? null,
+        anchorAttributes: anchor
+          ? Object.fromEntries(
+              anchor.getAttributeNames().map((name) => [name, anchor.getAttribute(name)])
+            )
+          : null,
+        popupExists: Boolean(popup),
+        popupOpacity: popupStyle?.opacity ?? null,
+        popupRect: popupRect
+          ? { x: popupRect.x, y: popupRect.y, width: popupRect.width, height: popupRect.height }
+          : null,
       };
     })()`,
   );
@@ -3807,7 +3843,17 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
     }
     const opened = await waitForSidebarTooltip(cdp, sessionId, client, target.relationId, "");
     if (!opened) {
-      throw new Error(`${client} Sidebar details did not open at the expected relation`);
+      const diagnostics =
+        client === "lynx"
+          ? await readLynxSidebarTooltipDiagnostics(cdp, sessionId, target.relationId)
+          : null;
+      throw new Error(
+        `${client} Sidebar details did not open at the expected relation: ${JSON.stringify({
+          diagnostics,
+          opened,
+          target,
+        })}`,
+      );
     }
     const side = opened.attributes["data-floating-side"] ?? opened.attributes["data-side"] ?? null;
     const align =
@@ -9300,6 +9346,9 @@ async function captureCell({
   }
   if (isSidebarThreadHoverPreviewState) {
     state = await waitForSidebarV2Controls(cdp, sessionId);
+    if (!(await dismissWebProviderNotification(cdp, sessionId))) {
+      throw new Error("Web provider-update notification did not dismiss before Sidebar hover.");
+    }
     sidebarThreadHoverPreview = await runSidebarThreadHoverPreviewFlow(cdp, sessionId, {
       width,
       height,
@@ -10590,6 +10639,12 @@ async function captureCell({
     if (!paintCommitted) {
       throw new Error("Web pane did not commit notification dismissal before capture.");
     }
+  }
+  if (isSidebarThreadHoverPreviewState) {
+    sidebarThreadHoverPreview = await runSidebarThreadHoverPreviewFlow(cdp, sessionId, {
+      width,
+      height,
+    });
   }
   const clip = (r) => ({
     x: Math.round(r.x),

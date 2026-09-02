@@ -61,10 +61,15 @@ describe("shared workbench lifecycle fault capture", () => {
 
   it("only requires provider notification dismissal for states that clear it", () => {
     assert.match(source, /const shouldClearWebNotification =[\s\S]*Boolean\(composerExpectation\)/);
+    assert.include(
+      source,
+      'throw new Error("Web provider-update notification did not dismiss before Sidebar hover.")',
+    );
     assert.match(
       source,
       /const shouldClearWebNotification =[\s\S]*isSidebarThreadHoverPreviewState/,
     );
+    assert.include(source, "if (isSidebarThreadHoverPreviewState) {");
     assert.include(source, "async function dismissWebProviderNotification");
     assert.include(source, "let clickAttempts = 0");
     assert.include(source, "let absentSince = null");
@@ -616,6 +621,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "const finalWeb = await waitForSidebarTooltip(");
     assert.include(source, "const finalLynx = await waitForSidebarTooltip(");
     assert.include(source, "await movePointer(cdp, sessionId, webTarget.point);");
+    assert.include(source, "Web provider-update notification remained visible before capture.");
     assert.include(source, "await movePointer(cdp, sessionId, target.awayPoint);");
     assert.include(
       source,

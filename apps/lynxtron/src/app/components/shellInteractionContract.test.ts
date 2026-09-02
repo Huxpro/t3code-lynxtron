@@ -1321,12 +1321,14 @@ describe("desktop shell interaction contract", () => {
     expect(tooltipSource).not.toContain(
       '"main-thread:global-bindmousemove": handleGlobalMouseMove',
     );
-    expect(tooltipSource).toContain("runOnMainThread(handleMouseMove)");
+    expect(tooltipSource).toContain("await reportTriggerHover(triggerRef.current)");
     expect(tooltipSource).toContain("await runOnBackground(reportHover)(true, rect);");
     expect(tooltipSource).toContain("__T3_LYNXTRON_TOOLTIP_PROBE__");
     expect(tooltipSource).toContain("renderedMouseEnter?.()");
     expect(tooltipSource).toContain("renderedMouseLeave?.()");
-    expect(tooltipSource).toContain("await runOnMainThread(handleMouseLeave)()");
+    expect(tooltipSource).toContain("await runOnMainThread(handleProbeMouseLeave)(relationId)");
+    expect(tooltipSource).toContain("await runOnMainThread(handleProbeMouseMove)(relationId)");
+    expect(tooltipSource).toContain('.querySelectorAll("[data-floating-anchor]")');
     expect(tooltipSource).toContain('typeof children === "string" || typeof children === "number"');
     expect(tooltipSource).toContain('<text className="lynx-tooltip-text">{children}</text>');
     expect(tooltipSource).toContain('trigger.invoke("boundingClientRect"');
