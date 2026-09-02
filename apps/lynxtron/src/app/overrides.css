@@ -8478,7 +8478,8 @@
 .diff-code-files {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 8px;
+  padding-bottom: 8px;
 }
 .diff-code-file {
   display: flex;

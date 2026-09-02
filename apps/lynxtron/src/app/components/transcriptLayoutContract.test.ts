@@ -213,10 +213,14 @@ describe("transcript layout contract", () => {
   });
 
   it("keeps the Lynx patch surface flush with the Web diff renderer", () => {
+    const filesStart = overrides.indexOf(".diff-code-files {");
+    const filesBlock = overrides.slice(filesStart, overrides.indexOf("}", filesStart));
     const fileStart = overrides.indexOf(".diff-code-file {");
     const fileBlock = overrides.slice(fileStart, overrides.indexOf("}", fileStart));
     const headerStart = overrides.indexOf(".diff-code-file__header {");
     const headerBlock = overrides.slice(headerStart, overrides.indexOf("}", headerStart));
+    expect(filesBlock).toContain("gap: 8px;");
+    expect(filesBlock).toContain("padding-bottom: 8px;");
     expect(fileBlock).toContain("border-width: 0;");
     expect(fileBlock).toContain("border-radius: 0;");
     expect(headerBlock).toContain("height: 33px;");
