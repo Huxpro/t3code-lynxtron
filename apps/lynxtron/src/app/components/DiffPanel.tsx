@@ -1,5 +1,4 @@
 import { summarizeChangedFiles } from "@t3tools/client-runtime/presentation/diff";
-import { projectFileLineTokens } from "@t3tools/client-runtime/presentation/files";
 import type { OrchestrationCheckpointSummary } from "@t3tools/contracts";
 import type { ThreadId, TurnId } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
@@ -461,17 +460,8 @@ function LynxCodeDiffFile({
                 <text className="diff-code-line__marker">
                   {line.kind === "addition" ? "+" : line.kind === "deletion" ? "−" : " "}
                 </text>
-                <text className="diff-code-line__content">
-                  {projectFileLineTokens(file.path, line.content || " ").map(
-                    (token, tokenIndex) => (
-                      <text
-                        key={`${file.path}:${index}:${tokenIndex}:${token.tone}`}
-                        className={`diff-code-token diff-code-token--${token.tone}`}
-                      >
-                        {token.text}
-                      </text>
-                    ),
-                  )}
+                <text className="diff-code-line__content" text-maxline={wordWrap ? undefined : "1"}>
+                  {line.content || " "}
                 </text>
               </view>
             ))}
@@ -525,15 +515,8 @@ function LynxSplitDiffCell({
       <text className="diff-code-line__marker">
         {line?.kind === "addition" ? "+" : line?.kind === "deletion" ? "−" : " "}
       </text>
-      <text className="diff-code-line__content">
-        {projectFileLineTokens(path, line?.content || " ").map((token, tokenIndex) => (
-          <text
-            key={`${path}:${side}:${tokenIndex}:${token.tone}`}
-            className={`diff-code-token diff-code-token--${token.tone}`}
-          >
-            {token.text}
-          </text>
-        ))}
+      <text className="diff-code-line__content" text-maxline={wordWrap ? undefined : "1"}>
+        {line?.content || " "}
       </text>
     </view>
   );

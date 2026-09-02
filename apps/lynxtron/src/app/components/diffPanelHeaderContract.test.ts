@@ -19,4 +19,9 @@ describe("diff panel header contract", () => {
     expect(source).toContain('.filter((checkpoint) => checkpoint.status === "ready")');
     expect(source).not.toContain('checkpoint.status === "ready" && checkpoint.files.length > 0');
   });
+
+  it("keeps source lines single-line while wrapping is disabled", () => {
+    expect(source.match(/text-maxline=\{wordWrap \? undefined : "1"\}/g)).toHaveLength(2);
+    expect(source).not.toContain("projectFileLineTokens");
+  });
 });
