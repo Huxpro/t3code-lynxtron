@@ -13,6 +13,10 @@ const markdownSource = readFileSync(
   path.resolve(import.meta.dirname, "MarkdownRenderer.tsx"),
   "utf8",
 );
+const hostElementsSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
+  "utf8",
+);
 const sharedRowSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/chat/TranscriptRowSurface.tsx"),
   "utf8",
@@ -53,8 +57,7 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain("font-family: var(--font-mono);");
     expect(appSource).not.toContain("width:764px");
     expect(appSource).not.toContain("line-height:24px!important");
-    expect(overrides).toContain(".md-list-dot {");
-    expect(markdownSource).toContain('style={{ flexDirection: "column" } as object}');
+    expect(markdownSource).toContain('className="md-list md-list-text"');
     expect(timelineSource).not.toContain("scaleX(1.096)");
     expect(timelineSource).toContain("estimated-main-axis-size-px={32}");
     expect(timelineSource).toContain("!isWorking && !hasTopBanner");
@@ -230,5 +233,27 @@ describe("transcript layout contract", () => {
     expect(fileBlock).toContain("border-radius: 0;");
     expect(headerBlock).toContain("height: 33px;");
     expect(fileBlock).toContain("border-left-width: 0;");
+  });
+
+  it("renders Markdown lists as vertical full-width text rows", () => {
+    expect(markdownSource).toContain('className="md-list md-list-text"');
+    expect(markdownSource).toContain("<Fragment key={`${key}-${j}`}>");
+    expect(markdownSource).toContain(
+      "renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd, true)",
+    );
+    expect(markdownSource).toContain('{j < items.length - 1 ? "\\n" : ""}');
+    expect(overrides).toContain(".md-list {\n  display: block;");
+    expect(overrides).toContain("white-space: pre-wrap;");
+    expect(overrides).toContain("line-height: 23px;");
+    expect(overrides).not.toContain(".md-list-line {");
+    expect(overrides).not.toContain(".md-list-item {");
+    const inlineTextStart = hostElementsSource.indexOf("export function HostInlineText");
+    const inlineTextBlock = hostElementsSource.slice(
+      inlineTextStart,
+      hostElementsSource.indexOf("export function HostButton", inlineTextStart),
+    );
+    expect(inlineTextBlock).toContain("<inline-text");
+    expect(inlineTextBlock).toContain("bindtap={onClick}");
+    expect(inlineTextBlock).toContain('"main-thread:bindmousedown": handleMouseDown');
   });
 });

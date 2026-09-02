@@ -5071,44 +5071,15 @@
   font-family: var(--font-mono);
 }
 .md-list {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 6px;
-}
-.md-list-item {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  margin-bottom: 2px;
-}
-.md-list-marker {
-  display: flex;
-  flex-shrink: 0;
-  align-items: flex-start;
-  justify-content: center;
-  margin-right: 8px;
-  width: 24px;
-  min-height: 23px;
-}
-.md-list-dot {
-  width: 4px;
-  height: 4px;
-  margin-top: 9px;
-  border-radius: 2px;
-  background-color: rgba(var(--foreground-rgb), 0.72);
-}
-.md-list-bullet {
-  color: var(--muted-foreground);
-  font-family: var(--font-sans);
-  font-size: 14px;
-  line-height: 23px;
-}
-.md-list-text {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  white-space: pre-wrap;
   color: rgba(var(--foreground-rgb), 0.8);
   font-size: 14px;
   line-height: 23px;
   font-family: var(--font-sans);
-  flex-grow: 1;
+  margin-bottom: 6px;
 }
 .md-blockquote {
   border-left-width: 2px;

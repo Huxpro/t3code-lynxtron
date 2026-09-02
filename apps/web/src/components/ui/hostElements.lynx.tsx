@@ -197,15 +197,33 @@ export function HostHeadline({
 export function HostInlineText({
   children,
   className,
+  onClick,
+  onAuxClick,
+  onContextMenu,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly className?: string;
+  readonly onClick?: () => void;
+  readonly onAuxClick?: (event: unknown) => void;
+  readonly onContextMenu?: (event: unknown) => void;
 }) {
+  const handleMouseDown = (event: MainThreadMouseEvent) => {
+    "main thread";
+    if (event.button === 1 && onAuxClick) {
+      runOnBackground(onAuxClick)({ button: event.button });
+      return;
+    }
+    if (event.button === 2 && onContextMenu) {
+      runOnBackground(onContextMenu)({ button: event.button });
+    }
+  };
   return (
     <inline-text
       {...props}
       className={className ? `lynx-host-inline-text ${className}` : "lynx-host-inline-text"}
+      {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
+      bindtap={onClick}
     >
       {children}
     </inline-text>

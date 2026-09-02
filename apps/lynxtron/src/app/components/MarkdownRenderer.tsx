@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "@lynx-js/react";
 import {
   parseMarkdownInline,
   resolveMarkdownFileLinkMeta,
@@ -6,7 +13,7 @@ import {
 } from "@t3tools/client-runtime/presentation/markdown";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { uiActions } from "../state/uiState";
-import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
+import { HostInlineText, HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import { resolveExternalWebLinkHost } from "../../../../web/src/components/chat/externalLinkContextMenu";
 import { parseMarkdownBlocks, type ParsedMarkdownBlock } from "./markdownBlocks";
 import { copyMarkdownCode } from "./markdownClipboard";
@@ -99,6 +106,7 @@ function renderInline(
   spans: ReadonlyArray<MarkdownInlinePresentation>,
   key: string,
   cwd: string | undefined,
+  inlineHost = false,
 ): ReactNode[] {
   return spans.map((span, index) => {
     const spanKey = `${key}-${index}`;
@@ -109,20 +117,21 @@ function renderInline(
         }
       : undefined;
     const handleContextMenu = markdownLinkContextMenuHandler(span.href, cwd);
+    const Inline = inlineHost ? HostInlineText : HostText;
     if (span.code) {
       return (
-        <HostText
+        <Inline
           key={spanKey}
           className={`md-inline-code ${span.href ? "md-link" : ""}`}
           onClick={handleTap}
           onContextMenu={handleContextMenu}
         >
           {span.text}
-        </HostText>
+        </Inline>
       );
     }
     return (
-      <HostText
+      <Inline
         key={spanKey}
         className={`md-inline${span.href ? " md-link" : ""}${
           span.strikethrough ? " md-strikethrough" : ""
@@ -137,7 +146,7 @@ function renderInline(
         onContextMenu={handleContextMenu}
       >
         {span.text}
-      </HostText>
+      </Inline>
     );
   });
 }
@@ -298,7 +307,7 @@ function renderBlock(
     case "list": {
       const items = block.items ?? [];
       return (
-        <view key={key} className="md-list" style={{ flexDirection: "column" } as object}>
+        <text key={key} className="md-list md-list-text">
           {items.map((item, j) => {
             const marker =
               item.taskChecked !== null
@@ -307,23 +316,16 @@ function renderBlock(
                   : "☐"
                 : item.kind === "ordered"
                   ? `${item.ordinal ?? j + 1}.`
-                  : null;
+                  : "•";
             return (
-              <view key={`${key}-${j}`} className="md-list-item">
-                <view className="md-list-marker" style={{ marginLeft: item.depth * 18 } as any}>
-                  {marker === null ? (
-                    <view className="md-list-dot" />
-                  ) : (
-                    <text className="md-list-bullet">{marker}</text>
-                  )}
-                </view>
-                <text className="md-list-text">
-                  {renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd)}
-                </text>
-              </view>
+              <Fragment key={`${key}-${j}`}>
+                {`${"  ".repeat(item.depth)}${marker} `}
+                {renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd, true)}
+                {j < items.length - 1 ? "\n" : ""}
+              </Fragment>
             );
           })}
-        </view>
+        </text>
       );
     }
 
