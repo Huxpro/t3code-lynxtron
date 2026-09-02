@@ -277,6 +277,7 @@ const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
 const shouldClearWebNotification =
   Boolean(overlay) ||
+  Boolean(composerExpectation) ||
   isAddProviderDialogState ||
   isComposerPlanModeState ||
   isProjectSettingsState ||

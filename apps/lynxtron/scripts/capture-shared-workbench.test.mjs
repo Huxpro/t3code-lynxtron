@@ -60,6 +60,7 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("only requires provider notification dismissal for states that clear it", () => {
+    assert.match(source, /const shouldClearWebNotification =[\s\S]*Boolean\(composerExpectation\)/);
     assert.include(source, "async function dismissWebProviderNotification");
     assert.include(source, "let clickAttempts = 0");
     assert.include(source, "let absentSince = null");
