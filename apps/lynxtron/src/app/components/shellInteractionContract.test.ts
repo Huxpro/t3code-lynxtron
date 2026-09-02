@@ -608,7 +608,9 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain("data-terminal-session-count={String(selection.ids.length)}");
     expect(terminal).toContain('aria-label="Split terminal horizontally"');
     expect(terminal).toContain('aria-label="Split terminal vertically"');
-    expect(terminal).toContain('"terminal-panel__viewports-vertical"');
+    expect(terminal).toContain(
+      '"terminal-panel__viewports-vertical terminal-panel__viewports--multi"',
+    );
     expect(terminal).toContain("splitTerminalSession");
     expect(terminal).toContain("selection.visibleIds.map");
     expect(terminal).toContain("data-terminal-viewport={terminalId}");
@@ -628,9 +630,15 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).not.toContain("Terminal sessions are not connected yet");
     expect(overrides).toContain(".terminal-panel {");
     expect(overrides).toMatch(/\.terminal-panel \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/);
+    expect(terminal).not.toContain('className="terminal-panel__meta"');
+    expect(terminal).toContain("selection.ids.length > 1");
+    expect(terminal).toContain("terminal-panel__sessions--single");
+    expect(terminal).toContain("terminal-panel__viewports--multi");
+    expect(terminal).toContain("terminal-panel__viewports--single");
     expect(overrides).toMatch(
-      /\.terminal-panel__viewports-horizontal,[\s\S]*top: 60px;[\s\S]*bottom: 52px;/,
+      /\.terminal-panel__viewports-horizontal,[\s\S]*top: 0;[\s\S]*bottom: 52px;/,
     );
+    expect(overrides).toContain(".terminal-panel__viewports--multi {\n  top: 28px;");
     expect(overrides).toMatch(
       /\.terminal-panel__command-row \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/,
     );

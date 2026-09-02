@@ -8791,26 +8791,9 @@
   min-height: 0;
   background-color: var(--background);
 }
-.terminal-panel__meta {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  height: 32px;
-  padding: 0 12px;
-  border-bottom-width: 1px;
-  border-bottom-color: var(--border);
-}
-.terminal-panel__cwd,
-.terminal-panel__status {
-  color: var(--muted-foreground);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 14px;
-}
 .terminal-panel__sessions {
   position: absolute;
-  top: 32px;
+  top: 0;
   right: 0;
   left: 0;
   display: flex;
@@ -8818,6 +8801,13 @@
   height: 28px;
   border-bottom-width: 1px;
   border-bottom-color: var(--border);
+}
+.terminal-panel__sessions--single {
+  left: auto;
+  right: 8px;
+  width: 84px;
+  border-bottom-width: 0;
+  z-index: 2;
 }
 .terminal-panel__session-scroll {
   flex-grow: 1;
@@ -8869,12 +8859,15 @@
 .terminal-panel__viewports-horizontal,
 .terminal-panel__viewports-vertical {
   position: absolute;
-  top: 60px;
+  top: 0;
   right: 0;
   bottom: 52px;
   left: 0;
   display: flex;
   min-height: 0;
+}
+.terminal-panel__viewports--multi {
+  top: 28px;
 }
 .terminal-panel__viewports-horizontal {
   flex-direction: row;

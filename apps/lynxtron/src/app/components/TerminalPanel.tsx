@@ -173,30 +173,32 @@ export function TerminalPanel({
       data-terminal-session-count={String(selection.ids.length)}
       data-terminal-split={selection.splitDirection ?? "none"}
     >
-      <view className="terminal-panel__meta">
-        <text className="terminal-panel__cwd">{cwd}</text>
-        <text className="terminal-panel__status">{session?.status ?? "starting"}</text>
-      </view>
-      <view className="terminal-panel__sessions">
-        <scroll-view className="terminal-panel__session-scroll" scroll-orientation="horizontal">
-          <view className="terminal-panel__session-list">
-            {selection.ids.map((terminalId, index) => (
-              <view
-                key={terminalId}
-                className={
-                  "terminal-panel__session" +
-                  (terminalId === selection.activeId ? " terminal-panel__session--active" : "")
-                }
-                data-terminal-session-tab={terminalId}
-                aria-label={"Activate Terminal " + (index + 1)}
-                aria-pressed={terminalId === selection.activeId ? "true" : "false"}
-                bindtap={() =>
-                  setSelection((current) => activateTerminalSession(current, terminalId))
-                }
-              >
-                <Icon name="terminal-square" size={12} color="#818181" />
-                <text className="terminal-panel__session-label">Terminal {index + 1}</text>
-                {selection.ids.length > 1 ? (
+      <view
+        className={
+          selection.ids.length > 1
+            ? "terminal-panel__sessions"
+            : "terminal-panel__sessions terminal-panel__sessions--single"
+        }
+      >
+        {selection.ids.length > 1 ? (
+          <scroll-view className="terminal-panel__session-scroll" scroll-orientation="horizontal">
+            <view className="terminal-panel__session-list">
+              {selection.ids.map((terminalId, index) => (
+                <view
+                  key={terminalId}
+                  className={
+                    "terminal-panel__session" +
+                    (terminalId === selection.activeId ? " terminal-panel__session--active" : "")
+                  }
+                  data-terminal-session-tab={terminalId}
+                  aria-label={"Activate Terminal " + (index + 1)}
+                  aria-pressed={terminalId === selection.activeId ? "true" : "false"}
+                  bindtap={() =>
+                    setSelection((current) => activateTerminalSession(current, terminalId))
+                  }
+                >
+                  <Icon name="terminal-square" size={12} color="#818181" />
+                  <text className="terminal-panel__session-label">Terminal {index + 1}</text>
                   <view
                     className="terminal-panel__session-close"
                     aria-label={"Close Terminal " + (index + 1)}
@@ -204,11 +206,11 @@ export function TerminalPanel({
                   >
                     <Icon name="x" size={11} color="#818181" />
                   </view>
-                ) : null}
-              </view>
-            ))}
-          </view>
-        </scroll-view>
+                </view>
+              ))}
+            </view>
+          </scroll-view>
+        ) : null}
         <view
           className={
             "terminal-panel__session-split" +
@@ -242,8 +244,10 @@ export function TerminalPanel({
       <view
         className={
           selection.splitDirection === "vertical"
-            ? "terminal-panel__viewports-vertical"
-            : "terminal-panel__viewports-horizontal"
+            ? "terminal-panel__viewports-vertical terminal-panel__viewports--multi"
+            : selection.ids.length > 1
+              ? "terminal-panel__viewports-horizontal terminal-panel__viewports--multi"
+              : "terminal-panel__viewports-horizontal terminal-panel__viewports--single"
         }
       >
         {selection.visibleIds.map((terminalId, index) => {
