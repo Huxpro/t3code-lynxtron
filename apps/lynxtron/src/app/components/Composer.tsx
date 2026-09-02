@@ -1026,9 +1026,9 @@ export function Composer({
                                   ) : null}
                                   {showInteractionModeToggle ? (
                                     <>
-                                      <view className="composer-compact-controls-menu__group-label">
+                                      <text className="composer-compact-controls-menu__section-label">
                                         Mode
-                                      </view>
+                                      </text>
                                       {(["default", "plan"] as const).map((mode) => (
                                         <view
                                           key={mode}
@@ -1051,9 +1051,9 @@ export function Composer({
                                       <view className="composer-compact-controls-menu__separator" />
                                     </>
                                   ) : null}
-                                  <view className="composer-compact-controls-menu__group-label">
+                                  <text className="composer-compact-controls-menu__section-label">
                                     Access
-                                  </view>
+                                  </text>
                                   {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
                                     <view
                                       key={option.mode}

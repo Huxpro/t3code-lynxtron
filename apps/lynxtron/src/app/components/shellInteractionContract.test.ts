@@ -490,6 +490,16 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".composer-context-picker__section-label {");
   });
 
+  it("renders compact Composer section headers through the proven text label style", () => {
+    const composer = componentSource("Composer.tsx");
+    expect(composer).toContain(
+      '<text className="composer-compact-controls-menu__section-label">\n                                        Mode',
+    );
+    expect(composer).toContain(
+      '<text className="composer-compact-controls-menu__section-label">\n                                    Access',
+    );
+  });
+
   it("runs supported Git actions through the main connector and exposes the split menu", () => {
     const header = componentSource("ChatHeader.tsx");
 
