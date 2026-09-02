@@ -265,4 +265,16 @@ describe("transcript layout contract", () => {
     expect(block).toContain("width: 100%;");
     expect(block).toContain("min-width: 0;");
   });
+
+  it("reanchors the native list after a turn fold changes row heights", () => {
+    expect(timelineSource).toContain(
+      "const pendingTurnFoldAnchorRef = useRef<string | null>(null);",
+    );
+    expect(timelineSource).toContain("pendingTurnFoldAnchorRef.current = `turn-fold:${turnId}`;");
+    expect(timelineSource).toContain("const anchorRowId = pendingTurnFoldAnchorRef.current;");
+    expect(timelineSource).toContain(
+      "const rowIndex = rows.findIndex((row) => row.id === anchorRowId);",
+    );
+    expect(timelineSource).toContain("index: rowIndex + (!isWorking && !hasTopBanner ? 1 : 0),");
+  });
 });

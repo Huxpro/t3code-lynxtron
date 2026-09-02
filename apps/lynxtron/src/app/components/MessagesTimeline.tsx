@@ -579,6 +579,7 @@ export function MessagesTimeline({
   const followStateRef = useRef(followState);
   followStateRef.current = followState;
   const listRef = useRef<NodesRef>(null);
+  const pendingTurnFoldAnchorRef = useRef<string | null>(null);
   const newestUserMessageIdRef = useRef<string | null | undefined>(undefined);
   const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
   const [activeMinimapIndex, setActiveMinimapIndex] = useState<number | null>(null);
@@ -717,6 +718,24 @@ export function MessagesTimeline({
       .exec();
   }, [messages, rows]);
 
+  useEffect(() => {
+    const anchorRowId = pendingTurnFoldAnchorRef.current;
+    if (!anchorRowId) return;
+    const rowIndex = rows.findIndex((row) => row.id === anchorRowId);
+    if (rowIndex < 0) return;
+    pendingTurnFoldAnchorRef.current = null;
+    listRef.current
+      ?.invoke({
+        method: "scrollToPosition",
+        params: {
+          index: rowIndex + (!isWorking && !hasTopBanner ? 1 : 0),
+          alignTo: "top",
+          smooth: false,
+        },
+      })
+      .exec();
+  }, [hasTopBanner, isWorking, rows]);
+
   const scrollToEnd = useCallback(
     (smooth: boolean) => {
       if (rows.length === 0) return;
@@ -816,6 +835,7 @@ export function MessagesTimeline({
   }, [scrollToEnd]);
 
   const handleToggleTurn = useCallback((turnId: TurnId) => {
+    pendingTurnFoldAnchorRef.current = `turn-fold:${turnId}`;
     setExpandedTurnIds((current) => {
       const next = new Set(current);
       if (next.has(turnId)) {
