@@ -3762,11 +3762,18 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
         `Missing ${client} Sidebar thread-card hover target: ${JSON.stringify(target)}`,
       );
     }
-    const initialDisclosure = await readSidebarThreadDisclosure(
+    if (client === "web") {
+      await movePointer(cdp, sessionId, target.awayPoint);
+    } else {
+      await invokeLynxTooltipProbe(cdp, sessionId, target.relationId, "leave");
+    }
+    const initialDisclosure = await waitForSidebarThreadDisclosure(
       cdp,
       sessionId,
       client,
       target.threadId,
+      (disclosure) =>
+        Number(disclosure?.statusOpacity) >= 0.99 && Number(disclosure?.actionsOpacity) <= 0.01,
     );
     if (
       Number(initialDisclosure?.statusOpacity) < 0.99 ||
@@ -3940,25 +3947,20 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
   }
 
   const webTarget = await sidebarThreadCardTarget(cdp, sessionId, "web");
-  const webFocused = await focusRemoteElement(
-    cdp,
-    sessionId,
-    `(() => document.getElementById('web-pane')?.contentWindow?.document
-      ?.querySelector('.sidebar-v2-row-card') ?? null)()`,
-  );
-  if (!webTarget?.relationId || !webFocused) {
-    throw new Error("Could not focus Web Sidebar thread card for the paired hover frame");
+  if (!webTarget?.relationId) {
+    throw new Error("Could not find Web Sidebar thread card for the paired hover frame");
   }
-  await delay(250);
+  await movePointer(cdp, sessionId, webTarget.point);
+  const finalWeb = await waitForSidebarTooltip(cdp, sessionId, "web", webTarget.relationId, "");
   const lynxTarget = await sidebarThreadCardTarget(cdp, sessionId, "lynx");
   if (!lynxTarget?.relationId) {
     throw new Error("Could not find Lynx Sidebar thread card for the paired hover frame");
   }
   await invokeLynxTooltipProbe(cdp, sessionId, lynxTarget.relationId, "hover");
-  await delay(250);
+  const finalLynx = await waitForSidebarTooltip(cdp, sessionId, "lynx", lynxTarget.relationId, "");
   const final = {
-    web: await readSidebarTooltip(cdp, sessionId, "web", webTarget.relationId),
-    lynx: await readSidebarTooltip(cdp, sessionId, "lynx", lynxTarget.relationId),
+    web: finalWeb,
+    lynx: finalLynx,
   };
   if (!final.web || !final.lynx) {
     throw new Error(`Could not retain paired Sidebar thread details: ${JSON.stringify(final)}`);

@@ -167,7 +167,11 @@
 }
 .sidebar-v2-row-card .sidebar-v2-row-actions {
   z-index: 2;
+  opacity: 0;
   background-color: transparent;
+}
+.sidebar-v2-row-card .sidebar-v2-row-actions.opacity-100 {
+  opacity: 1;
 }
 .sidebar-v2-working-duration {
   font-family: var(--font-mono);

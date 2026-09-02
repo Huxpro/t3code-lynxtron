@@ -605,6 +605,17 @@ describe("shared workbench lifecycle fault capture", () => {
     );
   });
 
+  it("waits for both Sidebar hover previews before retaining the paired frame", () => {
+    assert.include(source, "const finalWeb = await waitForSidebarTooltip(");
+    assert.include(source, "const finalLynx = await waitForSidebarTooltip(");
+    assert.include(source, "await movePointer(cdp, sessionId, webTarget.point);");
+    assert.include(source, "await movePointer(cdp, sessionId, target.awayPoint);");
+    assert.include(
+      source,
+      'await invokeLynxTooltipProbe(cdp, sessionId, target.relationId, "leave");',
+    );
+  });
+
   it("captures editing and save lifecycle only in a disposable workspace", () => {
     const editingFlow = source.slice(
       source.indexOf("async function runFileEditingSaveFlow"),

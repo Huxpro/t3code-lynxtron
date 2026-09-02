@@ -1109,6 +1109,12 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("formatWorkingDurationLabel(Date.now() - startedMs)");
     expect(sidebarSource).toContain("workingDuration: <LynxWorkingDuration thread={thread} />");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-actions {");
+    expect(overrides).toContain(
+      ".sidebar-v2-row-card .sidebar-v2-row-actions {\n  z-index: 2;\n  opacity: 0;",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-row-card .sidebar-v2-row-actions.opacity-100 {\n  opacity: 1;",
+    );
     expect(overrides).toContain("background-color: transparent;");
     expect(overrides).not.toContain(".sidebar-v2-row-card--active .sidebar-v2-row-actions {");
     expect(overrides).not.toContain(".sidebar-v2-row-card--selected .sidebar-v2-row-actions {");
