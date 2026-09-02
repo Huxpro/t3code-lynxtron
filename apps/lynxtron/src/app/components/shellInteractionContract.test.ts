@@ -742,7 +742,7 @@ describe("desktop shell interaction contract", () => {
       '".composer-pending-approval__detail{display:flex!important;flex-direction:row!important;}" +',
     );
     expect(browserPreviewSource).toContain(
-      '".right-panel__add-menu{display:flex;flex-direction:column;width:176px;height:122px;}" +',
+      '".right-panel__add-menu{display:flex;flex-direction:column;width:128px;height:122px;}" +',
     );
     expect(browserPreviewSource).toContain(
       '".right-panel__tab-list>[data-active-tab]{min-width:100px;max-width:176px;box-sizing:border-box;}" +',
@@ -751,7 +751,7 @@ describe("desktop shell interaction contract", () => {
       '".right-panel__tab-scroll{flex:none;width:max-content!important;max-width:calc(100% - 132px);}" +',
     );
     expect(browserPreviewSource).toContain(
-      '".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:166px;height:28px;}" +',
+      '".right-panel__add-item{display:flex;flex:none;flex-direction:row;width:118px;height:28px;}" +',
     );
     expect(browserPreviewSource).toContain(
       '".diff-panel-header__scope-menu,.diff-panel-header__scope-submenu{" +',
@@ -871,14 +871,14 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".right-panel__add-menu-dismiss {");
     const addMenuBlock = overrides.match(/\.right-panel__add-menu \{[^}]+\}/)?.[0] ?? "";
     expect(addMenuBlock).toContain("left: 0;");
-    expect(addMenuBlock).toContain("width: 176px;");
+    expect(addMenuBlock).toContain("width: 128px;");
     expect(addMenuBlock).toContain("height: 122px;");
     expect(addMenuBlock).toContain("border-radius: 10px;");
     expect(addMenuBlock).toContain("background-color: rgba(var(--popover-rgb), 0.836);");
     expect(overrides).toContain(".right-panel__tab-list > [data-active-tab] {");
     expect(overrides).toContain("min-width: 100px;");
     const addItemBlock = overrides.match(/\.right-panel__add-item \{[^}]+\}/)?.[0] ?? "";
-    expect(addItemBlock).toContain("width: 166px;");
+    expect(addItemBlock).toContain("width: 118px;");
     expect(addItemBlock).toContain("height: 28px;");
     expect(addItemBlock).toContain("padding: 4px 8px;");
     expect(overrides).toContain(".right-panel__add-item--disabled {\n  opacity: 0.64;");

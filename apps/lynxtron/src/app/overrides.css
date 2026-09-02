@@ -8078,7 +8078,7 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
-  width: 176px;
+  width: 128px;
   height: 122px;
   padding: 4px;
   border-width: 1px;
@@ -8104,7 +8104,7 @@
   flex-direction: row;
   align-items: center;
   flex-shrink: 0;
-  width: 166px;
+  width: 118px;
   height: 28px;
   padding: 4px 8px;
   border-radius: 6px;
