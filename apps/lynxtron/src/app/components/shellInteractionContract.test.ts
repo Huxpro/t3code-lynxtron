@@ -465,6 +465,31 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".composer-context-window-progress__value--overloaded {");
   });
 
+  it("uses shared composer triggers for real file, skill, and command context insertion", () => {
+    const composer = componentSource("Composer.tsx");
+    const chatView = componentSource("ChatView.tsx");
+    expect(composer).toContain("detectComposerTrigger(value, composerCursor)");
+    expect(composer).toContain(
+      "t3ClientActions.searchComposerProjectEntries(cwd, composerTrigger.query, 50)",
+    );
+    expect(clientSource).toContain("return bridge.searchProjectEntries({ cwd, query, limit });");
+    expect(composer).toContain("serializeComposerFileLink(entry.path)");
+    expect(composer).toContain("data-composer-context-picker={composerTrigger.kind}");
+    expect(composer).toContain("const contextPickerHeight = Math.min(288");
+    expect(composer).toContain("data-composer-context-path={entry.path}");
+    expect(composer).toContain("data-composer-context-skill={skill.name}");
+    expect(composer).toContain("data-composer-context-command={command.name}");
+    expect(composer).toContain("onClick={() => selectContextPath(entry)}");
+    expect(composer).toContain("stopTapPropagation");
+    expect(composer).toContain("aria-label={`Add ${entry.path} to context`}");
+    expect(composer).toContain('aria-label="Dismiss composer context menu"');
+    expect(composer).toContain('className="composer-context-picker__close"');
+    expect(chatView).toContain("providerSkills={activeProviderStatus?.skills ?? []}");
+    expect(chatView).toContain("providerSlashCommands={activeProviderStatus?.slashCommands ?? []}");
+    expect(overrides).toContain(".composer-context-picker {");
+    expect(overrides).toContain(".composer-context-picker__section-label {");
+  });
+
   it("runs supported Git actions through the main connector and exposes the split menu", () => {
     const header = componentSource("ChatHeader.tsx");
 

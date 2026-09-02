@@ -1376,6 +1376,18 @@ function searchProjectEntries(
   return bridge.searchProjectEntries({ cwd, query, limit, kind: "file" });
 }
 
+function searchComposerProjectEntries(
+  cwd: string,
+  query: string,
+  limit: number,
+): Promise<ProjectSearchEntriesResult> {
+  const bridge = getBridge();
+  if (!bridge?.searchProjectEntries) {
+    return Promise.reject(new Error("Project context search is unavailable."));
+  }
+  return bridge.searchProjectEntries({ cwd, query, limit });
+}
+
 function readProjectFile(cwd: string, relativePath: string): Promise<ProjectReadFileResult> {
   const bridge = getBridge();
   if (!bridge?.readProjectFile) {
@@ -2021,6 +2033,7 @@ export const t3ClientActions = {
   selectThread,
   sendPrompt,
   searchProjectEntries,
+  searchComposerProjectEntries,
   writeTerminal,
   resizeTerminal,
   closeTerminal,

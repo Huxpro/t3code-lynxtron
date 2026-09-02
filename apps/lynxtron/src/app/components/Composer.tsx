@@ -24,6 +24,17 @@ import {
   type ContextWindowSnapshot,
 } from "@t3tools/client-runtime/presentation/composer";
 import type { ProviderInteractionMode, RuntimeMode } from "@t3tools/contracts";
+import type {
+  ProjectEntry,
+  ServerProviderSkill,
+  ServerProviderSlashCommand,
+} from "@t3tools/contracts";
+import {
+  detectComposerTrigger,
+  replaceTextRange,
+  serializeComposerFileLink,
+  type ComposerTrigger,
+} from "@t3tools/shared/composerTrigger";
 import approvalEditorPendingUrl from "../assets/approval-editor-pending@2x.png?external";
 import {
   COMPOSER_SHELL_CLASS,
@@ -34,7 +45,12 @@ import {
   ComposerToolbarControl,
   ComposerToolbarRow,
 } from "../../../../web/src/components/chat/ComposerSurface";
-import { HostInlineText, HostText, HostView } from "../../../../web/src/components/ui/hostElements";
+import {
+  HostButton,
+  HostInlineText,
+  HostText,
+  HostView,
+} from "../../../../web/src/components/ui/hostElements";
 import { Icon, type IconName } from "./Icon";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
@@ -44,6 +60,7 @@ import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracki
 import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { appendComposerText, onComposerTextInsertion } from "../state/composerCommandBus";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
+import { t3ClientActions } from "../state/t3Client";
 import {
   compactControlsContentHeight,
   compactControlsPanelHeight,
@@ -69,6 +86,9 @@ interface ComposerProps {
   branch?: string;
   showContextStrip: boolean;
   worktreePath?: string;
+  cwd?: string;
+  providerSkills?: ReadonlyArray<ServerProviderSkill>;
+  providerSlashCommands?: ReadonlyArray<ServerProviderSlashCommand>;
   workspaceMode: "local" | "worktree";
   workspaceModeLocked: boolean;
   startFromOrigin: boolean;
@@ -104,6 +124,26 @@ const RUNTIME_MODE_ICONS: Record<RuntimeMode, IconName> = {
   "full-access": "lock-open",
 };
 const CONTEXT_WINDOW_RING_SEGMENTS = Array.from({ length: 20 }, (_, index) => index);
+const BUILT_IN_COMPOSER_COMMANDS = [
+  { name: "model", description: "Switch response model for this thread" },
+  { name: "plan", description: "Switch this thread into plan mode" },
+  { name: "default", description: "Switch this thread back to normal build mode" },
+] as const;
+
+function basenameOfComposerPath(path: string): string {
+  const separator = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
+  return separator >= 0 ? path.slice(separator + 1) : path;
+}
+
+function providerSkillLabel(skill: ServerProviderSkill): string {
+  const label = skill.displayName?.trim();
+  if (label) return label;
+  return skill.name
+    .split(/[\s:_-]+/)
+    .filter(Boolean)
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join(" ");
+}
 
 export function Composer({
   disabled,
@@ -122,6 +162,9 @@ export function Composer({
   branch,
   showContextStrip,
   worktreePath,
+  cwd,
+  providerSkills = [],
+  providerSlashCommands = [],
   workspaceMode,
   workspaceModeLocked,
   startFromOrigin,
@@ -149,6 +192,7 @@ export function Composer({
   onWorkspaceModeChange,
   onStartFromOriginChange,
 }: ComposerProps) {
+  const questionMode = questionActions !== undefined;
   const [value, setValue] = useState("");
   const [openComposerMenu, setOpenComposerMenu] = useState<
     "model-option" | "runtime" | "compact-controls" | "workspace" | "context-window" | null
@@ -158,11 +202,27 @@ export function Composer({
   >(null);
   const [editorRevision, setEditorRevision] = useState(0);
   const [mobileComposerExpanded, setMobileComposerExpanded] = useState(false);
+  const [composerCursor, setComposerCursor] = useState(0);
+  const [contextEntries, setContextEntries] = useState<ReadonlyArray<ProjectEntry>>([]);
+  const [contextSearchPending, setContextSearchPending] = useState(false);
+  const [contextSearchError, setContextSearchError] = useState<string | null>(null);
+  const [dismissedContextTrigger, setDismissedContextTrigger] = useState<string | null>(null);
   const runtimeModeMenuOpen = openComposerMenu === "runtime";
   const modelOptionMenuOpen = openComposerMenu === "model-option";
   const compactControlsMenuOpen = openComposerMenu === "compact-controls";
   const workspaceMenuOpen = openComposerMenu === "workspace";
   const contextWindowOpen = openComposerMenu === "context-window";
+  const composerTrigger = detectComposerTrigger(value, composerCursor);
+  const composerTriggerKey = composerTrigger
+    ? `${composerTrigger.kind}:${composerTrigger.rangeStart}:${composerTrigger.rangeEnd}:${composerTrigger.query}`
+    : null;
+  const contextPickerOpen =
+    composerTrigger !== null &&
+    composerTrigger.kind !== "slash-model" &&
+    composerTriggerKey !== dismissedContextTrigger &&
+    openComposerMenu === null &&
+    modelPicker == null &&
+    !questionMode;
   const contextWindowPercentage = Math.max(
     0,
     Math.min(100, activeContextWindow?.usedPercentage ?? 0),
@@ -181,9 +241,10 @@ export function Composer({
     [modelPicker, onModelPickerClose],
   );
   const handleModelPickerTap = useCallback(() => {
+    setDismissedContextTrigger(composerTriggerKey);
     setOpenComposerMenu(null);
     onModelTap?.();
-  }, [onModelTap]);
+  }, [composerTriggerKey, onModelTap]);
   const activeBranch = branch?.trim() || null;
   const showBranchContextMenu = useCallback(async () => {
     if (!activeBranch) return;
@@ -199,12 +260,11 @@ export function Composer({
   const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const compactControlsMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
-  const questionMode = questionActions !== undefined;
   const mobileCollapsed =
     viewport.width < 640 && !mobileComposerExpanded && !approvalActions && !questionMode;
   const promptValueRef = useRef(value);
   promptValueRef.current = value;
-  const applyExternalTextInsertion = (nextValue: string) => {
+  const applyExternalTextInsertion = (nextValue: string, cursor = nextValue.length) => {
     const invoke = (method: string, params?: Record<string, unknown>) => {
       lynx
         .createSelectorQuery()
@@ -220,8 +280,8 @@ export function Composer({
     };
     invoke("setValue", { value: nextValue });
     invoke("setSelectionRange", {
-      selectionStart: nextValue.length,
-      selectionEnd: nextValue.length,
+      selectionStart: cursor,
+      selectionEnd: cursor,
     });
     invoke("focus");
   };
@@ -237,6 +297,33 @@ export function Composer({
       }),
     [questionMode],
   );
+  useEffect(() => {
+    if (composerTrigger?.kind !== "path" || !cwd) {
+      setContextEntries([]);
+      setContextSearchPending(false);
+      setContextSearchError(null);
+      return;
+    }
+    let cancelled = false;
+    setContextSearchPending(true);
+    setContextSearchError(null);
+    void t3ClientActions.searchComposerProjectEntries(cwd, composerTrigger.query, 50).then(
+      (result) => {
+        if (cancelled) return;
+        setContextEntries(result.entries);
+        setContextSearchPending(false);
+      },
+      (cause: unknown) => {
+        if (cancelled) return;
+        setContextEntries([]);
+        setContextSearchPending(false);
+        setContextSearchError(cause instanceof Error ? cause.message : String(cause));
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [composerTrigger?.kind, composerTrigger?.query, cwd]);
   useEffect(() => {
     if (!viewport.testResize) return;
     const emitter = lynx.getJSModule?.("GlobalEventEmitter") as
@@ -317,6 +404,8 @@ export function Composer({
     };
     if (!viewport.testResize) return;
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__ = (nextValue) => {
+      setComposerCursor(nextValue.length);
+      setDismissedContextTrigger(null);
       if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
       else setValue(nextValue);
       return true;
@@ -396,11 +485,62 @@ export function Composer({
       const nextValue =
         inputEvent.detail?.value ?? inputEvent.target?.value ?? inputEvent.currentTarget?.value;
       if (typeof nextValue === "string") {
+        const selectionStart =
+          typeof inputEvent.detail === "object" &&
+          inputEvent.detail !== null &&
+          "selectionStart" in inputEvent.detail &&
+          typeof inputEvent.detail.selectionStart === "number"
+            ? inputEvent.detail.selectionStart
+            : nextValue.length;
+        setComposerCursor(selectionStart);
+        setDismissedContextTrigger(null);
         if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
         else setValue(nextValue);
       }
     },
     [onQuestionCustomAnswerChange, questionMode],
+  );
+  const replaceComposerTrigger = useCallback(
+    (trigger: ComposerTrigger, replacement: string) => {
+      const result = replaceTextRange(value, trigger.rangeStart, trigger.rangeEnd, replacement);
+      setValue(result.text);
+      setComposerCursor(result.cursor);
+      setDismissedContextTrigger(null);
+      applyExternalTextInsertion(result.text, result.cursor);
+    },
+    [value],
+  );
+  const selectContextPath = useCallback(
+    (entry: ProjectEntry) => {
+      if (!composerTrigger || composerTrigger.kind !== "path") return;
+      replaceComposerTrigger(composerTrigger, `${serializeComposerFileLink(entry.path)} `);
+    },
+    [composerTrigger, replaceComposerTrigger],
+  );
+  const selectContextSkill = useCallback(
+    (skill: ServerProviderSkill) => {
+      if (!composerTrigger || composerTrigger.kind !== "skill") return;
+      replaceComposerTrigger(composerTrigger, `$${skill.name} `);
+    },
+    [composerTrigger, replaceComposerTrigger],
+  );
+  const selectContextCommand = useCallback(
+    (command: string) => {
+      if (!composerTrigger || composerTrigger.kind !== "slash-command") return;
+      if (command === "model") {
+        replaceComposerTrigger(composerTrigger, "");
+        onModelTap?.();
+        return;
+      }
+      if (command === "plan" || command === "default") {
+        const nextMode = command === "plan" ? "plan" : "default";
+        if (interactionMode !== nextMode) onInteractionModeTap();
+        replaceComposerTrigger(composerTrigger, "");
+        return;
+      }
+      replaceComposerTrigger(composerTrigger, `/${command} `);
+    },
+    [composerTrigger, interactionMode, onInteractionModeTap, onModelTap, replaceComposerTrigger],
   );
 
   const handleSend = useCallback(async () => {
@@ -427,6 +567,8 @@ export function Composer({
     if (!text) return;
     if (await current.onSend(text)) {
       setValue("");
+      setComposerCursor(0);
+      setDismissedContextTrigger(null);
       setEditorRevision((revision) => revision + 1);
     }
   }, []);
@@ -449,6 +591,28 @@ export function Composer({
     !workspaceModeLocked && workspaceMode === "worktree" && !worktreePath
       ? resolveEnvModeLabel("worktree")
       : context.checkoutLabel;
+  const normalizedContextQuery = composerTrigger?.query.trim().toLowerCase() ?? "";
+  const contextSkills = providerSkills.filter(
+    (skill) =>
+      skill.enabled &&
+      (!normalizedContextQuery ||
+        skill.name.toLowerCase().includes(normalizedContextQuery) ||
+        providerSkillLabel(skill).toLowerCase().includes(normalizedContextQuery) ||
+        skill.description?.toLowerCase().includes(normalizedContextQuery)),
+  );
+  const contextCommands = [...BUILT_IN_COMPOSER_COMMANDS, ...providerSlashCommands].filter(
+    (command) =>
+      !normalizedContextQuery ||
+      command.name.toLowerCase().includes(normalizedContextQuery) ||
+      command.description?.toLowerCase().includes(normalizedContextQuery),
+  );
+  const contextPickerItemCount =
+    composerTrigger?.kind === "path"
+      ? Math.max(contextEntries.length, 1)
+      : composerTrigger?.kind === "skill"
+        ? Math.max(contextSkills.length, 1)
+        : Math.max(contextCommands.length, 1);
+  const contextPickerHeight = Math.min(288, 34 + contextPickerItemCount * 38 + 8);
   const card = (
     <view className="composer-stack">
       <view
@@ -574,6 +738,145 @@ export function Composer({
                   confirm-type="send"
                   bindconfirm={handleSend}
                 />
+                {contextPickerOpen && composerTrigger ? (
+                  <view
+                    className="composer-context-picker"
+                    data-composer-context-picker={composerTrigger.kind}
+                    style={{ height: `${contextPickerHeight}px` }}
+                  >
+                    <HostView
+                      className="composer-context-picker__close"
+                      aria-label="Dismiss composer context menu"
+                      stopTapPropagation
+                      onClick={() => setDismissedContextTrigger(composerTriggerKey)}
+                    >
+                      <Icon name="x" size={14} color="#818181" />
+                    </HostView>
+                    <scroll-view
+                      className="composer-context-picker__list"
+                      scroll-orientation="vertical"
+                      scroll-y
+                      style={{ height: `${contextPickerHeight - 10}px` }}
+                    >
+                      <view
+                        className="composer-context-picker__content"
+                        style={{ display: "flex", flexDirection: "column" }}
+                      >
+                        {composerTrigger.kind === "skill" ? (
+                          <text className="composer-context-picker__section-label">Skills</text>
+                        ) : null}
+                        {composerTrigger.kind === "slash-command" ? (
+                          <text className="composer-context-picker__section-label">Commands</text>
+                        ) : null}
+                        {composerTrigger.kind === "path"
+                          ? contextEntries.map((entry) => (
+                              <HostButton
+                                key={`${entry.kind}:${entry.path}`}
+                                className="composer-context-picker__item"
+                                data-composer-context-path={entry.path}
+                                stopTapPropagation
+                                aria-label={`Add ${entry.path} to context`}
+                                onClick={() => selectContextPath(entry)}
+                              >
+                                <Icon
+                                  name={entry.kind === "directory" ? "folder" : "file-json"}
+                                  size={14}
+                                  color="#818181"
+                                />
+                                <view className="composer-context-picker__copy">
+                                  <text className="composer-context-picker__label" text-maxline="1">
+                                    {basenameOfComposerPath(entry.path)}
+                                  </text>
+                                  <text
+                                    className="composer-context-picker__description"
+                                    text-maxline="1"
+                                  >
+                                    {entry.path.slice(0, Math.max(0, entry.path.lastIndexOf("/")))}
+                                  </text>
+                                </view>
+                              </HostButton>
+                            ))
+                          : composerTrigger.kind === "skill"
+                            ? contextSkills.map((skill) => (
+                                <HostButton
+                                  key={skill.name}
+                                  className="composer-context-picker__item"
+                                  data-composer-context-skill={skill.name}
+                                  stopTapPropagation
+                                  aria-label={`Add ${providerSkillLabel(skill)} skill`}
+                                  onClick={() => selectContextSkill(skill)}
+                                >
+                                  <Icon name="bot" size={14} color="#818181" />
+                                  <view className="composer-context-picker__copy">
+                                    <text className="composer-context-picker__label">
+                                      {providerSkillLabel(skill)}
+                                    </text>
+                                    <text
+                                      className="composer-context-picker__description"
+                                      text-maxline="1"
+                                    >
+                                      {skill.shortDescription ??
+                                        skill.description ??
+                                        skill.scope ??
+                                        "Provider skill"}
+                                    </text>
+                                  </view>
+                                </HostButton>
+                              ))
+                            : contextCommands.map((command) => (
+                                <HostButton
+                                  key={command.name}
+                                  className="composer-context-picker__item"
+                                  data-composer-context-command={command.name}
+                                  stopTapPropagation
+                                  aria-label={`Use /${command.name} command`}
+                                  onClick={() => selectContextCommand(command.name)}
+                                >
+                                  <Icon name="bot" size={14} color="#818181" />
+                                  <view className="composer-context-picker__copy">
+                                    <text className="composer-context-picker__label">
+                                      /{command.name}
+                                    </text>
+                                    <text
+                                      className="composer-context-picker__description"
+                                      text-maxline="1"
+                                    >
+                                      {command.description ?? command.input?.hint ?? "Run command"}
+                                    </text>
+                                  </view>
+                                </HostButton>
+                              ))}
+                        {composerTrigger.kind === "path" && contextSearchPending ? (
+                          <text className="composer-context-picker__empty">Searching files…</text>
+                        ) : null}
+                        {composerTrigger.kind === "path" && contextSearchError ? (
+                          <text className="composer-context-picker__empty">
+                            Project files are unavailable.
+                          </text>
+                        ) : null}
+                        {composerTrigger.kind === "path" &&
+                        !contextSearchPending &&
+                        !contextSearchError &&
+                        contextEntries.length === 0 ? (
+                          <text className="composer-context-picker__empty">
+                            No matching files or folders.
+                          </text>
+                        ) : null}
+                        {composerTrigger.kind === "skill" && contextSkills.length === 0 ? (
+                          <text className="composer-context-picker__empty">
+                            No skills found. Try / to browse provider commands.
+                          </text>
+                        ) : null}
+                        {composerTrigger.kind === "slash-command" &&
+                        contextCommands.length === 0 ? (
+                          <text className="composer-context-picker__empty">
+                            No matching command.
+                          </text>
+                        ) : null}
+                      </view>
+                    </scroll-view>
+                  </view>
+                ) : null}
               </>
             ),
             renderFooterLeftControls: () =>
@@ -584,7 +887,8 @@ export function Composer({
                     modelOptionMenuOpen ||
                     runtimeModeMenuOpen ||
                     compactControlsMenuOpen ||
-                    contextWindowOpen
+                    contextWindowOpen ||
+                    contextPickerOpen
                   }
                   separators={!compactFooter}
                   items={[

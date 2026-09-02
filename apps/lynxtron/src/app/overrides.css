@@ -2616,6 +2616,7 @@
   opacity: 0.3;
 }
 .composer-editor-area {
+  position: relative;
   display: block;
   width: 100%;
   padding-top: 16px;
@@ -2646,6 +2647,105 @@
   font-size: 14px;
   line-height: 23px;
   pointer-events: none;
+}
+.composer-context-picker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 54;
+  display: flex;
+  flex-direction: column;
+  max-height: 288px;
+  padding: 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 20px;
+  background-color: var(--popover);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.composer-context-picker__close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+.composer-context-picker__close:hover,
+.composer-context-picker__close:active {
+  background-color: var(--accent);
+}
+.composer-context-picker__section-label {
+  flex-shrink: 0;
+  padding: 6px 32px 4px 8px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.8px;
+}
+.composer-context-picker__list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 252px;
+}
+.composer-context-picker__content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.composer-context-picker__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-height: 38px;
+  padding: 6px 8px;
+  gap: 8px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.composer-context-picker__item:hover,
+.composer-context-picker__item:active {
+  background-color: var(--accent);
+}
+.composer-context-picker__copy {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+.composer-context-picker__label {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 17px;
+}
+.composer-context-picker__description,
+.composer-context-picker__empty {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 15px;
+}
+.composer-context-picker__empty {
+  padding: 8px;
+}
+.theme-light .composer-context-picker {
+  border-color: rgba(39, 39, 42, 0.1);
+  background-color: var(--popover);
+  box-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.55);
 }
 .composer__input--placeholder {
   color: rgba(var(--muted-foreground-rgb), 0.35);

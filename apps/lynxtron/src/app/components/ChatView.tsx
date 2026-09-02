@@ -704,6 +704,9 @@ export function ChatView({ threadId }: ChatViewProps) {
         branch={activeThread?.branch ?? checkoutBranch ?? undefined}
         showContextStrip={showComposerContextStrip}
         worktreePath={activeThread?.worktreePath ?? undefined}
+        cwd={cwd}
+        providerSkills={activeProviderStatus?.skills ?? []}
+        providerSlashCommands={activeProviderStatus?.slashCommands ?? []}
         workspaceMode={workspaceMode}
         workspaceModeLocked={workspaceModeLocked}
         startFromOrigin={startFromOrigin}
