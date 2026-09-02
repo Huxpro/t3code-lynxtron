@@ -121,17 +121,18 @@ export function createDiscreteKeyboardPacket(input: {
   readonly accelerator: DiscreteKeyboardAccelerator;
   readonly platform: string;
   readonly sequence: number;
+  readonly type?: "keydown" | "keyup";
 }): RendererNeutralKeyboardPacket {
   const mac = input.platform === "darwin";
   const usesCommandModifier = input.accelerator.usesCommandModifier !== false;
   return {
-    type: "keydown",
+    type: input.type ?? "keydown",
     key: input.accelerator.key,
     code: input.accelerator.code,
     modifiers: {
-      meta: usesCommandModifier && mac,
-      ctrl: usesCommandModifier && !mac,
-      shift: input.accelerator.shift,
+      meta: input.type === "keyup" ? false : usesCommandModifier && mac,
+      ctrl: input.type === "keyup" ? false : usesCommandModifier && !mac,
+      shift: input.type === "keyup" ? false : input.accelerator.shift,
       alt: false,
     },
     repeat: false,

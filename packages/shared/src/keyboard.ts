@@ -7,7 +7,7 @@ import type {
 export type KeyboardPacketPlatform = "darwin" | "linux" | "win32";
 
 export interface RendererNeutralKeyboardPacket {
-  readonly type: "keydown";
+  readonly type: "keydown" | "keyup";
   readonly key: string;
   readonly code: string;
   readonly modifiers: {
@@ -73,7 +73,7 @@ export function isRendererNeutralKeyboardPacket(
   const packet = value as Partial<RendererNeutralKeyboardPacket>;
   const source = packet.source as Partial<RendererNeutralKeyboardPacket["source"]> | undefined;
   return (
-    packet.type === "keydown" &&
+    (packet.type === "keydown" || packet.type === "keyup") &&
     typeof packet.key === "string" &&
     typeof packet.code === "string" &&
     isBooleanRecord(packet.modifiers) &&

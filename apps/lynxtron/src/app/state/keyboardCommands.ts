@@ -33,6 +33,7 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     shiftKey: input.modifiers.shift,
     altKey: input.modifiers.alt,
   });
+  if (input.type === "keyup") return true;
   if (terminalReturnController.dispatch(input)) return true;
   if (
     input.key.toLowerCase() === "escape" &&

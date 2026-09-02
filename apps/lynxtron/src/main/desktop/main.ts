@@ -51,12 +51,24 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
   let sequence = 0;
   let terminalReturnEnabled = false;
   const dispatch = (accelerator: DiscreteKeyboardAccelerator) => {
-    sequence += 1;
-    const delivered = win.sendGlobalEvent(
+    const keyDownDelivered = win.sendGlobalEvent(
       T3_KEYBOARD_EVENT,
-      createDiscreteKeyboardPacket({ accelerator, platform: process.platform, sequence }),
+      createDiscreteKeyboardPacket({
+        accelerator,
+        platform: process.platform,
+        sequence: ++sequence,
+      }),
     );
-    if (!delivered) {
+    const keyUpDelivered = win.sendGlobalEvent(
+      T3_KEYBOARD_EVENT,
+      createDiscreteKeyboardPacket({
+        accelerator,
+        platform: process.platform,
+        sequence: ++sequence,
+        type: "keyup",
+      }),
+    );
+    if (!keyDownDelivered || !keyUpDelivered) {
       console.warn(`[keyboard] ${accelerator.id} was not delivered to the renderer`);
     }
   };

@@ -49,4 +49,22 @@ describe("Lynxtron keyboard command resolution", () => {
       ),
     );
   });
+
+  it("does not execute a command for the paired keyup packet", () => {
+    const accelerator = DISCRETE_KEYBOARD_ACCELERATORS.find(
+      (entry) => entry.id === "thread-jump-2",
+    );
+    assert.isDefined(accelerator);
+    assert.isNull(
+      resolveKeyboardPacketCommand(
+        createDiscreteKeyboardPacket({
+          accelerator: accelerator!,
+          platform: "darwin",
+          sequence: 99,
+          type: "keyup",
+        }),
+        DEFAULT_RESOLVED_KEYBINDINGS,
+      ),
+    );
+  });
 });

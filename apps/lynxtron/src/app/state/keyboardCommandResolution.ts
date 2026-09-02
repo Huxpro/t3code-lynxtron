@@ -10,7 +10,7 @@ export function resolveKeyboardPacketCommand(
   input: unknown,
   keybindings: ResolvedKeybindingsConfig,
 ): KeybindingCommand | null {
-  if (!isRendererNeutralKeyboardPacket(input)) return null;
+  if (!isRendererNeutralKeyboardPacket(input) || input.type !== "keydown") return null;
   return resolveRendererNeutralShortcutCommand(keyboardPacketToEvent(input), keybindings, {
     platform: keyboardPacketPlatform(input),
     context: {

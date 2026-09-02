@@ -106,4 +106,22 @@ describe("Lynxtron discrete keyboard menu", () => {
     });
     assert.deepInclude(packet.modifiers, { meta: false, ctrl: true });
   });
+
+  it("encodes a modifier-clearing keyup packet after a menu accelerator", () => {
+    const accelerator = DISCRETE_KEYBOARD_ACCELERATORS.find(
+      (entry) => entry.id === "thread-jump-2",
+    );
+    assert.isDefined(accelerator);
+    const packet = createDiscreteKeyboardPacket({
+      accelerator: accelerator!,
+      platform: "darwin",
+      sequence: 10,
+      type: "keyup",
+    });
+    assert.deepInclude(packet, {
+      type: "keyup",
+      key: "2",
+      modifiers: { meta: false, ctrl: false, shift: false, alt: false },
+    });
+  });
 });
