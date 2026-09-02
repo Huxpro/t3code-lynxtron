@@ -226,6 +226,7 @@ const isFlatSidebarLayoutState = new Set([
 const isSidebarControlHoverState =
   stateId === "sidebar-v2-new-thread-hover" || stateId === "sidebar-v2-new-project-hover";
 const isSidebarThreadHoverPreviewState = stateId === "sidebar-thread-hover-preview";
+const isNewThreadHeroState = stateId === "new-thread-hero" || stateId === "new-thread-hero-light";
 const isSidebarThreadShortcutState = stateId === "sidebar-thread-shortcuts";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
@@ -278,6 +279,7 @@ const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
 const shouldClearWebNotification =
   Boolean(overlay) ||
   Boolean(composerExpectation) ||
+  isNewThreadHeroState ||
   isAddProviderDialogState ||
   isComposerPlanModeState ||
   isProjectSettingsState ||
@@ -10622,6 +10624,9 @@ async function captureCell({
   }
   if (shouldClearWebNotification) {
     await delay(1_800);
+    if (!(await dismissWebProviderNotification(cdp, sessionId))) {
+      throw new Error("Web provider-update notification appeared after initial cleanup.");
+    }
     const paintCommitted = await evaluate(
       cdp,
       sessionId,
@@ -10646,6 +10651,7 @@ async function captureCell({
       height,
     });
   }
+  state = await readWorkbenchState(cdp, sessionId);
   const clip = (r) => ({
     x: Math.round(r.x),
     y: Math.round(r.y),
