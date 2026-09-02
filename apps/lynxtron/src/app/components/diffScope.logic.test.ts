@@ -63,6 +63,14 @@ describe("Lynx Diff scope projection", () => {
     ).toBe(checkpoints[0]);
   });
 
+  it("keeps ready turns without file changes addressable in the scope menu", () => {
+    expect(checkpoints).toHaveLength(2);
+    expect(checkpoints.every((checkpoint) => checkpoint.files.length === 0)).toBe(true);
+    expect(diffScopeLabel(checkpoints, { kind: "turn", turnId: checkpoints[1]!.turnId })).toBe(
+      "Turn 1",
+    );
+  });
+
   it("maps Git scopes to the canonical preview source kinds", () => {
     const sources = [
       {
