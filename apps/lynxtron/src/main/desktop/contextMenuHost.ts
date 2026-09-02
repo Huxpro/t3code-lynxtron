@@ -17,7 +17,7 @@ export function startContextMenuCapabilityHost(
   buildMenu: (template: MenuItemConstructorOptions[]) => NativeMenuLike,
 ): { readonly dispose: () => void } {
   bridge.handle(T3_CONTEXT_MENU_SHOW_METHOD, (params) => {
-    const { items } = parseNativeContextMenuShowInput(params);
+    const { items, x, y } = parseNativeContextMenuShowInput(params);
     return new Promise<string | null>((resolve) => {
       let settled = false;
       const complete = (selection: string | null) => {
@@ -48,7 +48,11 @@ export function startContextMenuCapabilityHost(
         complete(null);
         return;
       }
-      buildMenu(buildItems(items)).popup({ window, callback: () => complete(null) });
+      buildMenu(buildItems(items)).popup({
+        window,
+        ...(x === undefined || y === undefined ? {} : { x, y }),
+        callback: () => complete(null),
+      });
     });
   });
   return { dispose: () => bridge.removeHandler(T3_CONTEXT_MENU_SHOW_METHOD) };

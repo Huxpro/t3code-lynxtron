@@ -48,10 +48,14 @@ function bridge(): PlatformBridge | undefined {
 
 export async function showNativeContextMenu(
   items: ReadonlyArray<NativeContextMenuItem>,
+  position?: { readonly x: number; readonly y: number },
 ): Promise<string | null> {
   "background only";
   if (!NativeModules?.bridge?.call) throw new Error("Native context menu is unavailable");
-  const value = await callBridge(NativeModules.bridge, T3_CONTEXT_MENU_SHOW_METHOD, { items });
+  const value = await callBridge(NativeModules.bridge, T3_CONTEXT_MENU_SHOW_METHOD, {
+    items,
+    ...position,
+  });
   return typeof value === "string" ? value : null;
 }
 

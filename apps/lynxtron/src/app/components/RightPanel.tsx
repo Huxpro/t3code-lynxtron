@@ -169,24 +169,32 @@ export function RightPanel({
   );
 
   const handleTabContextMenu = useCallback(
-    async (surface: RightPanelSurface) => {
+    async (surface: RightPanelSurface, event?: unknown) => {
       const surfaceIndex = state.surfaces.findIndex((entry) => entry.id === surface.id);
       if (surfaceIndex < 0) return;
-      const selection = await showNativeContextMenu([
-        ...(surface.kind === "file" ? [{ id: "copy-path", label: "Copy path" }] : []),
-        { id: "close", label: "Close" },
-        {
-          id: "close-others",
-          label: "Close others",
-          disabled: state.surfaces.length <= 1,
-        },
-        {
-          id: "close-to-right",
-          label: "Close to the right",
-          disabled: surfaceIndex >= state.surfaces.length - 1,
-        },
-        { id: "close-all", label: "Close all", disabled: state.surfaces.length === 0 },
-      ]);
+      const anchor = event as { readonly x?: unknown; readonly y?: unknown } | undefined;
+      const position =
+        typeof anchor?.x === "number" && typeof anchor.y === "number"
+          ? { x: anchor.x, y: anchor.y }
+          : undefined;
+      const selection = await showNativeContextMenu(
+        [
+          ...(surface.kind === "file" ? [{ id: "copy-path", label: "Copy path" }] : []),
+          { id: "close", label: "Close" },
+          {
+            id: "close-others",
+            label: "Close others",
+            disabled: state.surfaces.length <= 1,
+          },
+          {
+            id: "close-to-right",
+            label: "Close to the right",
+            disabled: surfaceIndex >= state.surfaces.length - 1,
+          },
+          { id: "close-all", label: "Close all", disabled: state.surfaces.length === 0 },
+        ],
+        position,
+      );
       if (selection === "copy-path" && surface.kind === "file") {
         await clientCapabilities.clipboard.writeText(surface.path);
       } else if (selection === "close") {
@@ -297,8 +305,8 @@ export function RightPanel({
                 onActivate={() => handleTabClick(surface)}
                 onClose={() => handleCloseTab(surface)}
                 onAuxClick={() => handleCloseTab(surface)}
-                onContextMenu={() => {
-                  void handleTabContextMenu(surface).catch(() => undefined);
+                onContextMenu={(event) => {
+                  void handleTabContextMenu(surface, event).catch(() => undefined);
                 }}
                 closeIcon={<Icon name="x" size={14} color="#818181" />}
                 closeVisible

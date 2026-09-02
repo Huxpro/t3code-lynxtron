@@ -851,7 +851,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("text-overflow: ellipsis;");
     expect(overrides).toContain("border-radius: 0;");
     expect(panel).toContain("data-right-panel-add-kind={item.kind}");
-    expect(panel).toContain("showNativeContextMenu([");
+    expect(panel).toContain("showNativeContextMenu(");
     expect(panel).toContain('{ id: "close", label: "Close" }');
     expect(panel).toContain('id: "close-others"');
     expect(panel).toContain('id: "close-to-right"');
@@ -861,6 +861,10 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("uiActions.closeRightPanelSurfacesToRight(surface.id)");
     expect(panel).toContain("closeRemovedTerminal(state.surfaces");
     expect(rightPanelSurfaceSource).toContain("...(onContextMenu ? { onContextMenu } : {})");
+    expect(hostElementsSource).toContain('contextMenuRef.current?.invoke("boundingClientRect"');
+    expect(hostElementsSource).toContain("{ x: measured.left, y: measured.top + measured.height }");
+    expect(panel).toContain("handleTabContextMenu(surface, event)");
+    expect(panel).toContain("{ x: anchor.x, y: anchor.y }");
     expect(hostElementsSource.match(/event.button === 2 && onContextMenu/g)).toHaveLength(4);
     expect(hostElementsSource.match(/event.button === 1 && onAuxClick/g)).toHaveLength(4);
     expect(panel).toContain("onAuxClick={() => handleCloseTab(surface)}");

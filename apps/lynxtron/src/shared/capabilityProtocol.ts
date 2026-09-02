@@ -33,6 +33,8 @@ export interface NativeContextMenuItem {
 
 export interface NativeContextMenuShowInput {
   readonly items: ReadonlyArray<NativeContextMenuItem>;
+  readonly x?: number;
+  readonly y?: number;
 }
 
 function parseMenuItems(input: unknown): ReadonlyArray<NativeContextMenuItem> {
@@ -57,7 +59,22 @@ export function parseNativeContextMenuShowInput(input: unknown): NativeContextMe
   if (typeof input !== "object" || input === null) {
     throw new Error("Context menu request must be an object.");
   }
-  return { items: parseMenuItems((input as { readonly items?: unknown }).items) };
+  const candidate = input as {
+    readonly items?: unknown;
+    readonly x?: unknown;
+    readonly y?: unknown;
+  };
+  const hasPosition =
+    typeof candidate.x === "number" &&
+    Number.isFinite(candidate.x) &&
+    candidate.x >= 0 &&
+    typeof candidate.y === "number" &&
+    Number.isFinite(candidate.y) &&
+    candidate.y >= 0;
+  return {
+    items: parseMenuItems(candidate.items),
+    ...(hasPosition ? { x: candidate.x as number, y: candidate.y as number } : {}),
+  };
 }
 
 export interface ClipboardWriteTextInput {

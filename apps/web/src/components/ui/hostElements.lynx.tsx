@@ -1,4 +1,4 @@
-import { runOnBackground, type ReactNode } from "@lynx-js/react";
+import { runOnBackground, type ReactNode, useMainThreadRef } from "@lynx-js/react";
 
 interface HostKeyEvent {
   readonly key: string;
@@ -11,6 +11,18 @@ interface MainThreadMouseEvent {
   readonly currentTarget: {
     querySelector(selector: string): { setStyleProperty(name: string, value: string): void } | null;
   };
+}
+
+interface MainThreadElement {
+  animate(keyframes: ReadonlyArray<Record<string, number | string>>, options?: unknown): never;
+  getAttribute(attributeName: string): unknown;
+  getAttributeNames(): string[];
+  invoke(methodName: string, params?: Record<string, unknown>): Promise<unknown>;
+  querySelector(selector: string): MainThreadElement | null;
+  querySelectorAll(selector: string): MainThreadElement[];
+  setAttribute(name: string, value: unknown): void;
+  setStyleProperties(styles: Record<string, string>): void;
+  setStyleProperty(name: string, value: string): void;
 }
 
 const ignoreTap = () => undefined;
@@ -41,6 +53,7 @@ export function HostView({
   readonly onMouseEnter?: (event: unknown) => void;
   readonly onMouseLeave?: (event: unknown) => void;
 }) {
+  const contextMenuRef = useMainThreadRef<MainThreadElement>(null);
   const injectedMouseEnter = props["main-thread:bindmouseenter"] as
     | ((event: MainThreadMouseEvent) => void)
     | undefined;
@@ -74,19 +87,32 @@ export function HostView({
     }
     if (onMouseLeave) runOnBackground(onMouseLeave)({});
   };
-  const handleMouseDown = (event: MainThreadMouseEvent) => {
+  const handleMouseDown = async (event: MainThreadMouseEvent) => {
     "main thread";
     if (event.button === 1 && onAuxClick) {
       runOnBackground(onAuxClick)({ button: event.button });
       return;
     }
     if (event.button === 2 && onContextMenu) {
-      runOnBackground(onContextMenu)({ button: event.button });
+      const measured = (await contextMenuRef.current?.invoke("boundingClientRect", {
+        relativeTo: null,
+      })) as Partial<{ left: number; top: number; width: number; height: number }> | null;
+      runOnBackground(onContextMenu)({
+        button: event.button,
+        ...(measured &&
+        typeof measured.left === "number" &&
+        typeof measured.top === "number" &&
+        typeof measured.width === "number" &&
+        typeof measured.height === "number"
+          ? { x: measured.left, y: measured.top + measured.height }
+          : {}),
+      });
     }
   };
   return (
     <view
       {...props}
+      {...(onContextMenu ? { "main-thread:ref": contextMenuRef } : {})}
       flatten={hoverRevealSelector ? false : undefined}
       event-through={eventThrough}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
