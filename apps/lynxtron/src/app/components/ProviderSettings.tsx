@@ -763,11 +763,15 @@ export function AddProviderInstanceDialog({
           <Icon name="x" size={16} color="#818181" />
         </view>
         <view className="provider-instance-dialog__header flex flex-col">
-          <text className="provider-instance-dialog__title">Add provider instance</text>
-          <text className="provider-instance-dialog__description">
-            Configure an additional provider instance — for example, a second Codex install pointed
-            at a different workspace.
-          </text>
+          <view className="provider-instance-dialog__title-frame" flatten={false}>
+            <text className="provider-instance-dialog__title">Add provider instance</text>
+          </view>
+          <view className="provider-instance-dialog__description-frame" flatten={false}>
+            <text className="provider-instance-dialog__description">
+              Configure an additional provider instance — for example, a second Codex install
+              pointed at a different workspace.
+            </text>
+          </view>
           <view className="provider-instance-dialog__steps">
             {ADD_PROVIDER_WIZARD_STEPS.map((step, index) => (
               <view

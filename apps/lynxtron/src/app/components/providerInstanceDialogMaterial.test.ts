@@ -34,4 +34,16 @@ describe("Provider instance dialog material", () => {
     expect(lightDialog).toContain("background-color: rgba(252, 252, 252, 0.8);");
     expect(lightDialog).toContain("0 24px 64px -24px rgba(0, 0, 0, 0.65);");
   });
+
+  it("reserves both description lines before the wizard steps", () => {
+    const title = rule(".provider-instance-dialog__title-frame");
+    const description = rule(".provider-instance-dialog__description-frame");
+    const steps = rule(".provider-instance-dialog__steps");
+
+    expect(title).toContain("height: 20px;");
+    expect(title).toContain("flex-shrink: 0;");
+    expect(description).toContain("height: 40px;");
+    expect(description).toContain("flex-shrink: 0;");
+    expect(steps).toContain("flex-shrink: 0;");
+  });
 });
