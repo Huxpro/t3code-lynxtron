@@ -6077,6 +6077,12 @@ async function main() {
     );
   }
   const fixturePreparation = await prepareStateFixture({ seed, expectedThreadFixture });
+  if (isRightPanelTerminalState) {
+    await rm(path.join(baseDir, "userdata", "logs", "terminals"), {
+      recursive: true,
+      force: true,
+    });
+  }
   if (isAddProviderDialogState) {
     const settingsPath = path.join(baseDir, "userdata", "settings.json");
     if (existsSync(settingsPath)) {
@@ -10982,7 +10988,11 @@ async function captureCell({
         }
         await delay(100);
       }
-      if (isRightPanelTerminalState && rightPanelAddMenuTerminalSelected) {
+      if (
+        isRightPanelTerminalState &&
+        rightPanelAddMenuTerminalSelected &&
+        rightPanelTerminalCommand === null
+      ) {
         const focused = await focusRemoteElement(
           cdp,
           sessionId,

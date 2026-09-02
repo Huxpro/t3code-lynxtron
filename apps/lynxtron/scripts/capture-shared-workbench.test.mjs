@@ -341,6 +341,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "method === 'writeTerminal'");
     assert.include(source, 'closed: "not-claimed"');
     assert.include(source, "terminalCommand: rightPanelTerminalCommand");
+    assert.include(source, "rightPanelTerminalCommand === null");
+    assert.include(source, 'path.join(baseDir, "userdata", "logs", "terminals")');
     assert.include(source, "invokeResizeForHarness?.('right-panel', 740, 640)");
     assert.include(source, "afterGrid.cols > beforeGrid.cols");
     assert.include(source, "afterGrid.rows === beforeGrid.rows");
