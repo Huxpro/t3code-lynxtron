@@ -256,4 +256,13 @@ describe("transcript layout contract", () => {
     expect(inlineTextBlock).toContain("bindtap={onClick}");
     expect(inlineTextBlock).toContain('"main-thread:bindmousedown": handleMouseDown');
   });
+
+  it("stacks expanded work-group labels above their entries", () => {
+    const start = overrides.indexOf(".transcript-work-group {");
+    const block = overrides.slice(start, overrides.indexOf("}", start));
+    expect(block).toContain("display: flex;");
+    expect(block).toContain("flex-direction: column;");
+    expect(block).toContain("width: 100%;");
+    expect(block).toContain("min-width: 0;");
+  });
 });
