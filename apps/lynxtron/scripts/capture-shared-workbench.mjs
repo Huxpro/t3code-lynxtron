@@ -283,6 +283,7 @@ const shouldClearWebNotification =
   isProjectSettingsState ||
   isFilesSurfaceState ||
   isNarrowChatThreadState ||
+  isSidebarThreadHoverPreviewState ||
   isRightPanelTerminalState ||
   isReviewState;
 const reviewExpectation =
