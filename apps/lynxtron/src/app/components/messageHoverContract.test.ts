@@ -21,6 +21,8 @@ describe("message hover actions contract", () => {
       "utf8",
     );
     expect(hostElementsSource).toContain('"main-thread:bindmouseover": handleMouseEnter');
+    expect(hostElementsSource).toContain('setStyleProperty("visibility", "visible")');
+    expect(hostElementsSource).toContain('setStyleProperty("visibility", "hidden")');
     expect(timelineSource.match(/flatten=\{false\}/gu)).toHaveLength(2);
     expect(timelineSource).toContain("resolveAssistantMessageCopyState");
     expect(timelineSource).toContain("deriveDisplayedUserMessageState(row.message.text).copyText");
@@ -32,14 +34,14 @@ describe("message hover actions contract", () => {
     expect(timelineSource).toContain("showNativeConfirm({");
     expect(timelineSource).toContain('confirmLabel: "Revert"');
     expect(timelineSource).toContain("}, 1_000);");
-    expect(timelineSource).not.toContain("hoveredMessageId");
-    expect(timelineSource).not.toContain("onMessageHoverChange=");
     expect(timelineSource).toContain("formatShortTimestamp(row.message.createdAt");
     expect(timelineSource).toContain("formatShortTimestamp(row.message.updatedAt");
     expect(overrides).toContain(".transcript-message-meta {");
-    expect(overrides).toContain("opacity: 0.58;");
+    expect(overrides).toContain("opacity: 1;");
+    expect(overrides).toContain("visibility: visible;");
     expect(overrides).toContain(".transcript-message-meta--visible {\n  opacity: 1;");
     expect(overrides).toContain(".transcript-user-row:hover > .transcript-message-meta");
     expect(overrides).toContain(".transcript-assistant-row:hover > .transcript-message-meta");
+    expect(overrides).toContain("visibility: visible;");
   });
 });

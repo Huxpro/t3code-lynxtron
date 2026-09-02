@@ -4183,14 +4183,17 @@
   align-items: center;
   height: 24px;
   gap: 8px;
-  opacity: 0.58;
+  opacity: 1;
+  visibility: visible;
 }
 .transcript-message-meta--visible {
   opacity: 1;
+  visibility: visible;
 }
 .transcript-user-row:hover > .transcript-message-meta,
 .transcript-assistant-row:hover > .transcript-message-meta {
   opacity: 1;
+  visibility: visible;
 }
 .transcript-user-meta {
   justify-content: flex-end;

@@ -122,9 +122,14 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain('scroll-orientation="vertical"');
     expect(composerSource).toContain('mode === "default" ? "Chat" : "Plan"');
     expect(composerSource).toContain("composer-compact-controls-menu__badge");
-    expect(
-      composerSource.indexOf("Mode\n                                      </view>"),
-    ).toBeLessThan(composerSource.indexOf("Access\n                                  </view>"));
+    const modeHeader = composerSource.search(
+      /composer-compact-controls-menu__section-label">\s*Mode\s*<\/text>/,
+    );
+    const accessHeader = composerSource.search(
+      /composer-compact-controls-menu__section-label">\s*Access\s*<\/text>/,
+    );
+    expect(modeHeader).toBeGreaterThan(-1);
+    expect(accessHeader).toBeGreaterThan(modeHeader);
     expect(overrides).toContain(".composer-compact-controls-menu__scroll {");
     expect(overrides).toContain("max-height: calc(100vh - 142px);");
     expect(overrides).toContain("width: 148px;");
