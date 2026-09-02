@@ -41,6 +41,7 @@ import {
   useAddProviderDialogOpen,
   useGitPublishDialogOpen,
   useProjectActionDialogOpen,
+  useProjectScopeKey,
   useSearchOverlayState,
 } from "./state/uiState";
 import { getViewportSnapshot, startViewportStore, subscribeViewport } from "./state/viewportStore";
@@ -214,6 +215,7 @@ function RootOverlays() {
   const addProviderDialogOpen = useAddProviderDialogOpen();
   const projectActionDialogOpen = useProjectActionDialogOpen();
   const gitPublishDialogOpen = useGitPublishDialogOpen();
+  const projectScopeKey = useProjectScopeKey();
   const { projects, threads, activeThreadId, draftThread } = useT3ClientState();
   const activeThread =
     threads.find((thread) => thread.id === activeThreadId) ??
@@ -230,6 +232,7 @@ function RootOverlays() {
           projects={projects}
           threads={threads}
           activeThreadId={activeThreadId}
+          projectScopeKey={projectScopeKey}
         />
       ) : null}
       {projectActionDialogOpen ? <ProjectActionDialog project={activeProject} /> : null}

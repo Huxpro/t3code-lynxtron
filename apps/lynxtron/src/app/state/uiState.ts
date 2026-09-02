@@ -180,6 +180,9 @@ const gitPublishDialogOpenAtom = Atom.make(false).pipe(
 const addProviderDialogOpenAtom = Atom.make(false).pipe(
   Atom.withLabel("lynx-add-provider-dialog-open"),
 );
+const projectScopeKeyAtom = Atom.make<string | null>(null).pipe(
+  Atom.withLabel("lynx-project-scope-key"),
+);
 const searchOverlayStateAtom = Atom.make<SearchOverlayState>(INITIAL_SEARCH_OVERLAY_STATE).pipe(
   Atom.withLabel("lynx-search-overlay-state"),
 );
@@ -240,6 +243,14 @@ export function useGitPublishDialogOpen(): boolean {
 
 export function useAddProviderDialogOpen(): boolean {
   return useAtomValue(addProviderDialogOpenAtom);
+}
+
+export function useProjectScopeKey(): string | null {
+  return useAtomValue(projectScopeKeyAtom);
+}
+
+export function readProjectScopeKey(): string | null {
+  return appAtomRegistry.get(projectScopeKeyAtom);
 }
 
 export function useQuickSwitchOpen(): boolean {
@@ -334,6 +345,9 @@ export const uiActions = {
   },
   openAddProviderDialog(): void {
     appAtomRegistry.set(addProviderDialogOpenAtom, true);
+  },
+  setProjectScopeKey(projectId: string | null): void {
+    appAtomRegistry.set(projectScopeKeyAtom, projectId);
   },
   openQuickSwitch(input?: SearchOverlayMode | unknown): void {
     const mode: SearchOverlayMode = input === "files" || input === "content" ? input : "command";

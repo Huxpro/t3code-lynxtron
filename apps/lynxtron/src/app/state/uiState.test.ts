@@ -7,6 +7,7 @@ import {
   INITIAL_RIGHT_PANEL_STATE,
   isModelPickerOpen,
   isSearchOverlayOpen,
+  readProjectScopeKey,
   selectModelPickerProvider,
   syncModelPickerProvider,
   uiActions,
@@ -26,6 +27,15 @@ describe("dismissOpenSearchOverlay", () => {
     expect(dismissOpenSearchOverlay()).toBe(true);
     expect(isSearchOverlayOpen()).toBe(false);
     expect(dismissOpenSearchOverlay()).toBe(false);
+  });
+});
+
+describe("project scope state", () => {
+  it("shares the selected project between Sidebar and root overlays", () => {
+    uiActions.setProjectScopeKey("project-b");
+    expect(readProjectScopeKey()).toBe("project-b");
+    uiActions.setProjectScopeKey(null);
+    expect(readProjectScopeKey()).toBe(null);
   });
 });
 

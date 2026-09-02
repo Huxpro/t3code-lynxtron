@@ -1544,7 +1544,14 @@ describe("desktop shell interaction contract", () => {
       "await t3ClientActions.createThread(projectRef.projectId, options)",
     );
     expect(sidebarSource).toContain("t3ClientActions.createThread(newThreadProject.id)");
+    expect(sidebarSource).toContain(
+      "const newThreadProject = scopedProject ?? projects[0] ?? null;",
+    );
     expect(quickSwitch).toContain("t3ClientActions.createThread(projectId)");
+    expect(quickSwitch).toContain(
+      "orderedProjects.find((project) => project.id === projectScopeKey) ??",
+    );
+    expect(quickSwitch).toContain("projects[0] ??");
     expect(keyboardCommandsSource).toContain("void t3ClientActions.createThread()");
     expect(connectorSource).toContain("buildThreadTurnStartCommand({");
     expect(connectorSource).toContain("bootstrap,");

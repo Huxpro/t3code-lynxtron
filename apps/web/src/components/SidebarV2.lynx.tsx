@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { t3ClientActions, useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
-import { uiActions } from "../../../lynxtron/src/app/state/uiState";
+import { uiActions, useProjectScopeKey } from "../../../lynxtron/src/app/state/uiState";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import {
   canSnooze,
@@ -429,7 +429,7 @@ export default function SidebarV2() {
   const shortcutModifiers = useLynxShortcutModifierState();
   const [threadSearchQuery, setThreadSearchQuery] = useState("");
   const [activeSearchResultIndex, setActiveSearchResultIndex] = useState(0);
-  const [projectScopeKey, setProjectScopeKey] = useState<string | null>(null);
+  const projectScopeKey = useProjectScopeKey();
   const [projectScopeMenuOpen, setProjectScopeMenuOpen] = useState(false);
   const [projectSettingsProjectId, setProjectSettingsProjectId] = useState<string | null>(null);
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
@@ -580,7 +580,12 @@ export default function SidebarV2() {
     projectScopeKey === null
       ? null
       : (orderedProjects.find((project) => project.id === projectScopeKey) ?? null);
-  const newThreadProject = scopedProject ?? orderedProjects[0] ?? null;
+  useEffect(() => {
+    if (projectScopeKey !== null && scopedProject === null) {
+      uiActions.setProjectScopeKey(null);
+    }
+  }, [projectScopeKey, scopedProject]);
+  const newThreadProject = scopedProject ?? projects[0] ?? null;
   const settlementSupported = serverConfig?.environment.capabilities.threadSettlement === true;
   const showThreadContextMenu = useCallback(
     async (thread: (typeof threads)[number], projectPath: string | null, settled: boolean) => {
@@ -764,7 +769,7 @@ export default function SidebarV2() {
           },
           projectScopeOptions,
           projectScopeKey,
-          onProjectScopeKeyChange: setProjectScopeKey,
+          onProjectScopeKeyChange: uiActions.setProjectScopeKey,
           projectScopeMenuOpen,
           onProjectScopeMenuOpenChange: setProjectScopeMenuOpen,
           projectScopePopupWidth: sidebarWidth - 53,

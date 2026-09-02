@@ -64,6 +64,7 @@ interface QuickSwitchProps {
   projects: ReadonlyArray<ProjectSummary>;
   threads: ReadonlyArray<ThreadSummary>;
   activeThreadId?: string;
+  projectScopeKey?: string | null;
 }
 
 interface FilePickerState {
@@ -108,6 +109,7 @@ export function QuickSwitch({
   projects,
   threads,
   activeThreadId,
+  projectScopeKey = null,
 }: QuickSwitchProps) {
   const viewport = useViewportSnapshot();
   const searchInputRef = useRef<NodesRef>(null);
@@ -149,7 +151,8 @@ export function QuickSwitch({
   );
   const activeProject =
     orderedProjects.find((project) => project.id === activeThread?.projectId) ??
-    orderedProjects[0] ??
+    orderedProjects.find((project) => project.id === projectScopeKey) ??
+    projects[0] ??
     null;
   const projectName = activeProject?.title ?? "workspace";
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot ?? null;
