@@ -21078,6 +21078,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-explorer-icon-current",
+      "observedAt": "2026-09-03T12:18:00-04:00",
+      "commit": "5d6b770d7",
+      "codeCommit": "5d6b770d7a2d52a0fdb91da617eab0cf3de4e878",
+      "codeState": "commit",
+      "label": "File Editor explorer control icon parity",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture replaces the Lynx file-explorer toggle's generic Files glyph with the same Folder Tree icon used by Web. The real explorer toggle remains active, the editor surface stays an exact 539 by 776 match with a 40px toolbar and 48.796875px gutter, and the open-switch-return interaction contract passes with matching state identity and zero renderer errors. Diagnostic ffmpeg difference YAVG improves from 8.12018 to 8.11617 full-frame and from 9.74838 to 9.55301 in the toolbar crop.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, file path, route, dark theme, viewport, editor geometry, and explorer state isolate the toolbar icon change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/file-editor-explorer-icon.json",
+          "classification": "tracked-current",
+          "sha256": "2d7ac463f003337ed27851cf6913d91092d35ba43bec3ff6d8375295bbe1ec8e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-explorer-toggle-icon",
+              "source": "Both file editor toolbars use the Folder Tree icon for the real explorer visibility toggle"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-editor-current-shared-runtime",
+              "source": "Same snapshot and path, matched editor geometry, successful open-switch-return flow, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
