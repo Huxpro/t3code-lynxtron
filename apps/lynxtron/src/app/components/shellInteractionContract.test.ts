@@ -266,6 +266,7 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain("projectProviderStatusNotice(activeProviderStatus)");
     expect(chatView).toContain("showEmptyTranscript || visibleProviderStatusNotice ? (");
     expect(chatView).toContain('className="provider-status-banner-overlay"');
+    expect(chatView).toContain('name="info"');
     expect(chatView).toContain("title={visibleProviderStatusNotice.title}");
     expect(chatView).toContain("description={visibleProviderStatusNotice.message}");
     expect(chatView).not.toContain(") : visibleProviderStatusNotice ? (");

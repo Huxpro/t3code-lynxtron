@@ -636,7 +636,7 @@ export function ChatView({ threadId }: ChatViewProps) {
                   description={visibleProviderStatusNotice.message}
                   icon={
                     <Icon
-                      name="circle-alert"
+                      name="info"
                       size={16}
                       color={visibleProviderStatusNotice.tone === "warning" ? "#f59e0b" : "#ef4444"}
                     />
