@@ -129,9 +129,11 @@ export function SettingsRow({
 export function SettingResetButton({
   label,
   onClick,
+  icon,
 }: {
   readonly label: string;
   readonly onClick: () => void;
+  readonly icon?: ReactNode;
 }) {
   return (
     <Button
@@ -141,7 +143,7 @@ export function SettingResetButton({
       size="icon-xs"
       variant="ghost"
     >
-      ↶
+      {icon ?? "↶"}
     </Button>
   );
 }

@@ -184,6 +184,7 @@ describe("desktop shell interaction contract", () => {
       '<view className="provider-instance-dialog__driver-check">',
     );
     expect(componentSource("ProviderSettings.tsx")).toContain("<ProviderLastChecked");
+    expect(componentSource("AppearanceSettings.tsx")).toContain("themeResetAction=");
   });
 
   it("keeps the anchored model picker selectable while outside taps dismiss", () => {

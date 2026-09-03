@@ -1,9 +1,11 @@
 import { AppearanceSettingsSurface } from "../../../../web/src/components/settings/SettingsSurfaces";
+import { SettingResetButton } from "../../../../web/src/components/settings/settingsLayout";
 import {
   resolveEnvironmentIdentificationPillLabel,
   useEnvironmentStageLabel,
 } from "../../../../web/src/components/SidebarStageBackdrop";
 import { SelectBox } from "./SettingsControls";
+import { Icon } from "./Icon";
 import { useThemePreferenceState } from "../state/prefsStore";
 import { LYNX_THEME_LABELS, NEXT_LYNX_THEME } from "../state/themePreference.logic";
 
@@ -23,6 +25,15 @@ export function AppearanceSettings() {
   return (
     <view className="settings-panel">
       <AppearanceSettingsSurface
+        themeResetAction={
+          themePreference !== "system" ? (
+            <SettingResetButton
+              label="theme"
+              icon={<Icon name="rotate-ccw" size={12} color="#818181" />}
+              onClick={() => setThemePreference("system")}
+            />
+          ) : null
+        }
         themeControl={
           <SelectBox
             label={LYNX_THEME_LABELS[themePreference]}
