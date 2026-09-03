@@ -330,3 +330,4 @@ file-picker-footer-actions-current,2026-09-03T07:14:41-04:00,42bdc9217,commit,Fi
 model-picker-empty-radius-current,2026-09-03T07:31:53-04:00,aeb3544f6,commit,Model Picker empty radius convergence,0.180529,0.180529,0.039269,0.147035,0.852965,0.811361
 project-action-dialog-helper-copy-current,2026-09-03T07:59:50-04:00,af3fc0d52,commit,Project Action dialog helper copy convergence,0.180237,0.180237,0.038926,0.147035,0.852965,0.811653
 settings-general-nested-row-current,2026-09-03T08:39:46-04:00,dd1dd06fb,commit,Settings General nested row convergence,0.180233,0.180233,0.038921,0.147035,0.852965,0.811657
+settings-keybindings-notice-icon-current,2026-09-03T09:05:38-04:00,249f94c0c,commit,Settings Keybindings warning anatomy,0.180233,0.180233,0.038921,0.147035,0.852965,0.811657

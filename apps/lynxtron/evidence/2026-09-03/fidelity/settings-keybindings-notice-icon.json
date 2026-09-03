@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T09:05:38-04:00",
+  "commit": "249f94c0c25132ffaece430bc7ff32f42afe6f3e",
+  "stateId": "settings-keybindings",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-keybindings",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "dd4dee427e1873f9ed6521a146ef8922f8e47b46dfc019c7d74bf0eabed68529",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "1d926d10ebd83169695638bcbf489f41157956a2d2a31ab8f259235a1b2265dd",
+    "webImageSha256": "bdf6c37692ccc40bad1c93862afbafe66493f6152f0c24e7b843a7403fe31842",
+    "lynxImageSha256": "304aa6fa8972b5c28b54dfe469d0527708542cd3d3abecc374651189732bf2af",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "canonicalRows": 45,
+    "conflictIndicators": 18
+  },
+  "content": {
+    "webNotice": "Some shortcuts may be claimed by the browser before T3 Code sees them. Use the desktop app for better keybinding support.",
+    "lynxNotice": "Keybindings are read-only on Lynxtron until renderer keyboard capture is verified.",
+    "sharedAnatomy": "Both warning strips now lead with a 14px amber information icon; copy remains platform-specific and truthful."
+  },
+  "pixelMetric": {
+    "definition": "Mean absolute RGB-channel difference and share of pixels whose maximum RGB-channel delta is at least 16",
+    "baseline": {
+      "fullFrame": { "mae": 8.379538, "significantShare": 0.216436 },
+      "settingsMain": { "mae": 5.871796, "significantShare": 0.051955 }
+    },
+    "current": {
+      "fullFrame": { "mae": 8.370311, "significantShare": 0.216395 },
+      "settingsMain": { "mae": 5.859607, "significantShare": 0.051901 }
+    }
+  },
+  "boundary": "The warning text intentionally differs because Web and Lynx have different keyboard-capture capabilities. The historical material cell is retained because it was measured under an older pixel run. Screenshots remain temporary because the tracked screenshot budget is full."
+}

@@ -20752,6 +20752,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-notice-icon-current",
+      "observedAt": "2026-09-03T09:05:38-04:00",
+      "commit": "249f94c0c",
+      "codeCommit": "249f94c0c25132ffaece430bc7ff32f42afe6f3e",
+      "codeState": "commit",
+      "label": "Settings Keybindings warning anatomy",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture adds the missing leading status icon to the Lynx Keybindings notice. Both warning strips now use a 14px amber information icon while retaining truthful platform-specific copy: Web warns about browser-reserved shortcuts and Lynx explains that editing remains read-only until renderer keyboard capture is verified. The same 45 canonical rows and 18 conflict indicators remain visible with matching state identity and zero renderer errors. Current full-frame MAE falls from 8.379538 to 8.370311 and settings-main MAE from 5.871796 to 5.859607; historical material accounting remains unchanged because its pixel run is not directly comparable.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, route, dark theme, viewport, 45-row inventory, and zero-error state isolate the warning-icon addition."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-keybindings-notice-icon.json",
+          "classification": "tracked-current",
+          "sha256": "5ba41b126dddc2555bce44291876873d648a808256ed993c9bd1298d9d979c1b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybindings-warning-anatomy",
+              "source": "Both clients expose a leading 14px amber information icon while retaining capability-specific warning copy"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybindings-current-shared-runtime",
+              "source": "Same snapshot and route, 45 canonical bindings, 18 conflict indicators, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
