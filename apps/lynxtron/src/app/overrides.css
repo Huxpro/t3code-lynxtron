@@ -520,6 +520,9 @@
 .sidebar {
   position: relative;
 }
+.theme-dark .sidebar--flat {
+  background-color: #111111;
+}
 .sidebar-grain {
   position: absolute;
   top: 0;

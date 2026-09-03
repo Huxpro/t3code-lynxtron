@@ -11,6 +11,10 @@ const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
 );
+const appSidebarLayoutSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/AppSidebarLayout.lynx.tsx"),
+  "utf8",
+);
 const sidebarCompositionSource = readFileSync(
   path.resolve(
     import.meta.dirname,
@@ -1031,6 +1035,8 @@ describe("desktop shell interaction contract", () => {
       ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n  transform: translateY(-0.5px);",
     );
     expect(overrides).not.toContain(".settings-nav__item--providers {");
+    expect(overrides).toContain(".theme-dark .sidebar--flat {\n  background-color: #111111;");
+    expect(appSidebarLayoutSource).toContain('useFlatSidebarTheme ? " sidebar--flat" : ""');
   });
 
   it("projects and opens the real repository Publish flow", () => {

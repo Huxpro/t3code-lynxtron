@@ -53,7 +53,7 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
           collapsible="offcanvas"
           data-app-sidebar=""
           data-sidebar-version={useFlatSidebarTheme ? "flat" : "legacy"}
-          className="sidebar border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
+          className={`sidebar border-r border-sidebar-border bg-sidebar text-sidebar-foreground${useFlatSidebarTheme ? " sidebar--flat" : ""}`}
         >
           <view className="sidebar-grain" aria-hidden>
             {[0, 1, 2, 3].map((tile) => (
