@@ -21037,6 +21037,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "providers-last-checked-current",
+      "observedAt": "2026-09-03T11:54:00-04:00",
+      "commit": "734edd898",
+      "codeCommit": "734edd8989430a02bfd31165435d8e8b3cff8234",
+      "codeState": "commit",
+      "label": "Providers last-checked status parity",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture adds the missing provider refresh status to the Lynx Providers header. Both clients now show Checked just now beside the add and refresh actions, derived from the latest checkedAt across current provider snapshots and refreshed every second. The complete Add Provider create/delete flow still passes with matching state identity and zero renderer errors. Diagnostic ffmpeg difference YAVG improves from 4.86037 to 4.86004 full-frame and from 1.32982 to 1.31971 in the header crop; historical material accounting remains unchanged because it uses a different pixel metric.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, Providers route, dark theme, viewport, provider inventory, and completed dialog mutation isolate the dynamic header status."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/providers-last-checked.json",
+          "classification": "tracked-current",
+          "sha256": "7dc95bada42f2bbb77312a817cbc2fe7cafe3390d8c586219726dce061213346"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-last-checked-presentation",
+              "source": "Both Providers headers render the same relative last-checked status from current provider snapshots"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "providers-current-shared-runtime",
+              "source": "Same snapshot and route, completed provider create-delete flow, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

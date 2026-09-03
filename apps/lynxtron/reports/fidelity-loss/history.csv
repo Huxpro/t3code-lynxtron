@@ -336,3 +336,4 @@ provider-driver-selection-indicator-current,2026-09-03T10:20:00-04:00,085d1c755,
 model-picker-jump-shortcuts-current,2026-09-03T10:55:00-04:00,a569261d5,commit,Model Picker jump shortcut parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
 quick-switch-new-thread-icon-current,2026-09-03T11:15:00-04:00,30e8cb34e,commit,Quick Switch new-thread action icon parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
 quick-switch-action-shortcuts-current,2026-09-03T11:38:00-04:00,a9396b666,commit,Quick Switch available action shortcuts,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
+providers-last-checked-current,2026-09-03T11:54:00-04:00,734edd898,commit,Providers last-checked status parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
