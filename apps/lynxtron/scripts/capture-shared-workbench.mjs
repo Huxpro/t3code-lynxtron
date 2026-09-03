@@ -12289,6 +12289,11 @@ async function captureCell({
         stablePolls: lifecycleFaultPreflightStablePolls,
         timeline: lifecycleFaultPreflightTimeline,
       },
+      settingsDesktopTopbar: {
+        match: finalSettingsDesktopTopbarReady,
+        web: state?.web?.settingsMetrics?.topbar ?? null,
+        lynx: state?.lynx?.settingsMetrics?.topbar ?? null,
+      },
       failedTranscriptGeometry: {
         match: failedTranscriptGeometryMatches(
           state?.web?.timelineMetrics,

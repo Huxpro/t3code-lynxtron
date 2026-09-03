@@ -424,11 +424,13 @@ function readSettingsScroll(root) {
 }
 
 function readSettingsTopbar(root) {
+  const frameWindow = root?.defaultView ?? root?.ownerDocument?.defaultView;
   const topbar = root?.querySelector(".settings-topbar");
   const title = topbar?.querySelector(".settings-topbar__title") ?? topbar?.querySelector("span");
   const restore =
     topbar?.querySelector(".settings-topbar__restore") ?? topbar?.querySelector("button");
   return {
+    desktopVisualHost: frameWindow?.__T3_WORKBENCH_DESKTOP_VISUAL__ === true,
     box: readElementBox(topbar),
     title: readElementBox(title),
     titleText: title?.textContent?.trim() ?? "",
