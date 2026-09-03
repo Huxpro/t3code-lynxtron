@@ -46,6 +46,7 @@ import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { Icon, type IconName } from "./Icon";
+import { ProjectFileIcon } from "./ProjectFileIcon";
 import {
   initialQuickSwitchActiveIndex,
   moveQuickSwitchActiveIndex,
@@ -900,14 +901,7 @@ export function QuickSwitch({
                     key={entry.path}
                     active={index === activeIndex}
                     semanticClassName="quick-switch-file-row quick-switch-file-row--detailed"
-                    icon={
-                      <Icon
-                        name="file-json"
-                        size={16}
-                        color="#a1a1aa"
-                        className="qs-row__icon-img"
-                      />
-                    }
+                    icon={<ProjectFileIcon path={entry.path} />}
                     title={entry.name}
                     description={entry.path}
                     onHoverStart={() => setActiveIndex(index)}
