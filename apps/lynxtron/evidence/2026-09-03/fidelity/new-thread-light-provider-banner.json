@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T04:57:42-04:00",
+  "stateId": "new-thread-hero-light",
+  "scope": {
+    "clients": ["web", "lynx"],
+    "viewport": [1280, 820],
+    "semanticRoute": "new-thread",
+    "theme": "light",
+    "snapshot": "shared isolated server and thread state"
+  },
+  "identity": {
+    "commit": "df6c74341",
+    "lynxBundleSha256": "db864786285005552a14900c673df9eb67447d5a1b45420a577693c10948b652",
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "banner": {
+    "text": "Claude is unauthenticated / Claude Agent CLI is not authenticated. Run `claude auth login` and try again.",
+    "web": {
+      "alert": [481.578125, 64, 572.828125, 70],
+      "icon": [496.578125, 91, 16, 16],
+      "copy": [524.578125, 77, 488.828125, 44],
+      "dismiss": [1021.40625, 73, 24, 24],
+      "actions": ["Dismiss Claude provider error"]
+    },
+    "lynx": {
+      "alert": [471.65625, 64, 592.671875, 70],
+      "icon": [486.65625, 91, 16, 16],
+      "copy": [514.65625, 77, 496.671875, 44],
+      "dismiss": [1031.328125, 73, 24, 24],
+      "actions": ["Dismiss Claude provider error"]
+    },
+    "deltas": {
+      "alertWidth": 19.84375,
+      "alertHeight": 0,
+      "iconInset": [0, 0],
+      "copyInset": [0, 0],
+      "copyHeight": 0,
+      "dismissInset": [0, 0],
+      "dismissSize": [0, 0]
+    }
+  },
+  "classification": {
+    "productLossClosed": [
+      "Lynx no longer renders the extra Refresh and Dismiss text-button group.",
+      "Both renderers use one icon-only dismiss affordance with matching relative geometry.",
+      "Both renderers share an explicit two-line title and description composition."
+    ],
+    "remainingBoundary": "The 19.84375px intrinsic width difference is retained as accepted variable-font versus bundled-font shaping noise.",
+    "harnessGate": "Capture now rejects missing banners, differing text, multiple actions, mismatched relative insets, height drift, or width drift above 24px.",
+    "screenshotPolicy": "The accepted paired frame remains in /tmp because the tracked screenshot budget is already 100 of 100."
+  }
+}

@@ -20455,6 +20455,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-light-provider-banner-current",
+      "observedAt": "2026-09-03T04:57:42-04:00",
+      "commit": "df6c74341",
+      "codeCommit": "df6c74341",
+      "codeState": "commit",
+      "label": "New Thread light provider banner convergence",
+      "narrative": "A post-commit light 1280 by 820 shared-server capture found and closed a structural provider-banner drift: Web rendered one icon-only dismiss action while Lynx rendered Refresh and Dismiss text buttons. The shared banner now uses explicit title and description rows, and Lynx keeps one absolute 24px dismiss affordance. A new anatomy gate requires identical text and action count, 70px alert height, 16px icon, 44px copy column, matching relative insets, and width drift no greater than 24px. The accepted run measures 19.84375px intrinsic width drift from variable versus bundled font shaping and zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same snapshot, route, light theme, viewport, and post-commit bundles isolate the banner composition change and add a regression gate."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/new-thread-light-provider-banner.json",
+          "classification": "tracked-current",
+          "sha256": "7b0a46068f2f55507c6523649cc3ac18120e194414d59287238b238c9661eab6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-provider-banner-anatomy",
+              "source": "Both renderers expose the same title, message, icon, and exactly one provider-specific dismiss action"
+            },
+            "geometry": {
+              "anchorDeltas": [19.84375, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 572.828125,
+              "confidence": 0.99,
+              "method": "current-provider-banner-relative-geometry",
+              "source": "Alert heights, icon/copy/dismiss relative insets, copy height, and dismiss size match; intrinsic width differs by 19.84375px"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-provider-banner-dismiss-contract",
+              "source": "Lynx now exposes the same single provider-specific dismiss affordance instead of a renderer-only Refresh and Dismiss action group"
+            }
+          }
+        }
+      ]
     }
   ]
 }
