@@ -195,6 +195,7 @@ describe("desktop shell interaction contract", () => {
     const panelStart = overrides.lastIndexOf("\n.model-picker-panel {");
     const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
     expect(panelBlock).toContain("z-index: 51;");
+    expect(panelBlock).toContain("border-radius: 10px;");
     expect(modelPickerSurfaceSource).toContain(
       '<HostView className="model-picker-rail-icon pointer-events-none">',
     );

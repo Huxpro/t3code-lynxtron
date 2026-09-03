@@ -10379,7 +10379,7 @@
   width: 360px;
   height: 346px;
   box-sizing: border-box;
-  border-radius: 8px;
+  border-radius: 10px;
   /* Native-safe counterpart to Web's dropdown-glass model picker surface. */
   background-color: var(--popover);
   border-width: 1px;
