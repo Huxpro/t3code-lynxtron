@@ -30954,6 +30954,1266 @@
       ],
       "fromPoint": "project-scope-open-current-typography",
       "toPoint": "review-diff-current-typography"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 70902,
+      "commit": "1e67f12e7be31405de8458a3a9401bc9844f0c70",
+      "committedAt": "2026-08-30T00:13:11-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): stabilize review diff parity",
+      "surfaces": [
+        "review",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 124,
+      "commit": "893d6119b45704f16e431c85adea39d5edbd7080",
+      "committedAt": "2026-08-30T00:37:40-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(review): allow registered project diff roots",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 158,
+      "commit": "1f547c1e3446a6c73b78028a45b4c12e2ac26002",
+      "committedAt": "2026-08-30T00:52:08-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): distinguish workspace file icons",
+      "surfaces": [
+        "shell",
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 343,
+      "commit": "af1b5228dfdc098b6fdec0d1f5da3c3de9025b8c",
+      "committedAt": "2026-08-30T03:05:53-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): match open in menus",
+      "surfaces": [
+        "shell",
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 48,
+      "commit": "bd71aa85c596ef7e150d94f414f4c68269886901",
+      "committedAt": "2026-08-30T03:33:31-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): stabilize sidebar card actions",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 16,
+      "commit": "32a79b6f218f7dd40eb2ddeb92f8e0c33b1bf993",
+      "committedAt": "2026-08-30T03:51:37-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): stabilize failed transcript fixtures",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 64,
+      "commit": "2ddfdbf0d5bf3eed68d5623128a6e259d31152c7",
+      "committedAt": "2026-08-30T04:56:28-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): make model menus responsive",
+      "surfaces": [
+        "composer",
+        "overlays",
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 92,
+      "commit": "a4b99eebcddfd6391e65ee0df4cf2d6b9a1f30ae",
+      "committedAt": "2026-08-30T05:20:56-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): coordinate composer menus",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 19,
+      "commit": "1021dcb1b52e586662c741b663f9b352c05a7aa6",
+      "committedAt": "2026-08-30T05:57:16-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): retain shared comparison clients",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 389,
+      "commit": "8f887ad2518dd8cb3bfca769f49ce43c2e733da4",
+      "committedAt": "2026-08-30T06:51:37-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): add transcript hover actions",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 39,
+      "commit": "258580bc1bd9100fcecef4decc8a3053604bf289",
+      "committedAt": "2026-08-30T07:18:56-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align diff header stats",
+      "surfaces": [
+        "review",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 11,
+      "commit": "fa6304f09873c2e9b61419cf2da31889c8fba0bb",
+      "committedAt": "2026-08-30T07:41:05-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): mask sidebar card actions",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 48,
+      "commit": "79964a2e14c1b48800610d639365181ef6984faf",
+      "committedAt": "2026-08-30T07:59:40-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): restore sidebar wordmark",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 9,
+      "commit": "82569c93c8136e44656b7f8334b0f2545436f28d",
+      "committedAt": "2026-08-30T08:07:06-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): soften empty thread copy",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8,
+      "commit": "186a5e49a57ad9e8b233fd14fab6138ffaee4443",
+      "committedAt": "2026-08-30T08:13:55-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): preserve header breadcrumb width",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 46,
+      "commit": "debe1e3fd60f3bb896d4ac12269cef70a7214391",
+      "committedAt": "2026-08-30T08:22:23-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): keep sidebar wordmark themed",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 22,
+      "commit": "67843bdc8b720c113723f9c27d4aecfc70d662ca",
+      "committedAt": "2026-08-30T08:31:03-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): remove duplicate composer separator",
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6,
+      "commit": "d4f417fc1d5f7b598dd35c84613661781d1f8675",
+      "committedAt": "2026-08-30T08:52:50-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align settings topbar actions",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 345,
+      "commit": "d5741e9295a37d5d6cc8d0170ceff93e9f9854b2",
+      "committedAt": "2026-08-30T09:52:23-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): enable background activity profiles",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 46,
+      "commit": "a7a0b4e6550e145e913d62b7dffa1849ea241b6a",
+      "committedAt": "2026-08-30T15:23:42-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(settings): share background activity copy",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 435,
+      "commit": "fafb37b2de2ab55428b558ae031b2d87f7342592",
+      "committedAt": "2026-08-30T16:42:23-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): enable settings model picker",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 165,
+      "commit": "fc1031150d99001e8544dc2021c372e6cbc5e15b",
+      "committedAt": "2026-08-30T17:29:50-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align checkpoint review flow",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 149,
+      "commit": "365841e481fcd33e4a04c05d747dd53c3a772d89",
+      "committedAt": "2026-08-30T18:27:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(chat): preserve narrow review layouts",
+      "surfaces": [
+        "shell",
+        "transcript",
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 225,
+      "commit": "fdbcc70205f8740f9ed69674c164b71332234fab",
+      "committedAt": "2026-08-30T19:10:25-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): enable thread jump shortcuts",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 77,
+      "commit": "8993da09e34348feefcc949d499b966820fe57ea",
+      "committedAt": "2026-08-30T19:33:44-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align sidebar thread previews",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 246,
+      "commit": "1d563f8101151be4a1be7af5e1b28b33ef24fd11",
+      "committedAt": "2026-08-30T21:06:34-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): show thread jump hints",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 267,
+      "commit": "0d9e7f28e758a58e83d973274e35359f2b4342f1",
+      "committedAt": "2026-08-30T22:00:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align open in menu",
+      "surfaces": [
+        "shell",
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 292,
+      "commit": "3277b820ced439a182c19128e96757708d7d2e63",
+      "committedAt": "2026-08-30T23:07:38-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(chat): preserve narrow transcript layout",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 249,
+      "commit": "a0e515052869ba2fe0dfc3de0fa9060632197415",
+      "committedAt": "2026-08-31T01:27:12-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): make model picker responsive",
+      "surfaces": [
+        "shell",
+        "overlays"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 148,
+      "commit": "124450a0bb486ba48983c373b61595c3ea532800",
+      "committedAt": "2026-08-31T01:57:01-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): collapse narrow chat input",
+      "surfaces": [
+        "composer",
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 58,
+      "commit": "c25fafc203b7bd07c7ae6bc02a1ec4fc79e07169",
+      "committedAt": "2026-08-31T02:08:59-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify narrow composer expansion",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 71,
+      "commit": "9dc1b0b27222f826293ce49ef53b6ad72607f9cf",
+      "committedAt": "2026-08-31T02:35:50-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): verify file icon fidelity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 32,
+      "commit": "a7ce384b5fca6e054c36bd72aa77751f6e317e29",
+      "committedAt": "2026-08-31T02:46:01-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "refactor(chat): share working timer format",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 32,
+      "commit": "4882a4bffabf39f8fee22406ee0a64ae7850d613",
+      "committedAt": "2026-08-31T02:54:48-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(chat): hide empty changed files cards",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 123,
+      "commit": "753fd1d1946a44086e32730aa9a52ec048186425",
+      "committedAt": "2026-08-31T03:36:48-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): contain narrow thread diffs",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 513,
+      "commit": "1b6758d2cc9ef8d85bf99dc04f50c9e18476f6f4",
+      "committedAt": "2026-08-31T06:11:33-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align sidebar and transcript states",
+      "surfaces": [
+        "shell",
+        "transcript",
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 21,
+      "commit": "d9567008afe735f278a32f429197749c6858789e",
+      "committedAt": "2026-08-31T06:15:59-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): stabilize sidebar hover details",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 478,
+      "commit": "e5ab4eef754608abcb62d4d535f6547bc5d9486b",
+      "committedAt": "2026-08-31T07:49:02-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): align transcript navigation details",
+      "surfaces": [
+        "shell",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 391,
+      "commit": "be2bff4bf51542022c7e1fa359b5d28421d63062",
+      "committedAt": "2026-08-31T10:11:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): align diff and transcript navigation",
+      "surfaces": [
+        "shell",
+        "review",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 925,
+      "commit": "a6fed5f198f4ea051b1d8f6c0ace203b73f27781",
+      "committedAt": "2026-09-01T05:47:25-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): align composer and header controls",
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 21,
+      "commit": "572fee51962ab9fc54dcd1a8296e8fca8ec9ac94",
+      "committedAt": "2026-09-01T07:04:07-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): stabilize composer and message hover",
+      "surfaces": [
+        "composer",
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 46,
+      "commit": "a053f57debb017c264ff6e03347d06606d8b933c",
+      "committedAt": "2026-09-01T07:34:31-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): keep hover interactions on main thread",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 234,
+      "commit": "1799d3c372f7246dd0303bd02afab20ce5e282a6",
+      "committedAt": "2026-09-01T09:12:37-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): add safe message revert controls",
+      "surfaces": [
+        "shell",
+        "composer",
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 77,
+      "commit": "04ee5cbc86bc175788eb2fe323e9ff834f9d3494",
+      "committedAt": "2026-09-01T09:57:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): sharpen model picker interactions",
+      "surfaces": [
+        "overlays",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 1,
+      "commit": "c64bdb5459e2a077a75c0cd243426711abef33ea",
+      "committedAt": "2026-09-01T10:33:17-07:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(web): preserve checkpoint helper export",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 7,
+      "commit": "df5f25e0d745e0894286f05e47e934065779f738",
+      "committedAt": "2026-09-02T02:31:30-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): match diff file spacing",
+      "surfaces": [
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 459,
+      "commit": "9ecf06df72f597a04c2d5ba91992c12764f53976",
+      "committedAt": "2026-09-02T04:01:03-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "feat(lynxtron): add composer context menus",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 18,
+      "commit": "9a3522dbc9a6630c94dc545e7e53b2143acef91b",
+      "committedAt": "2026-09-02T04:13:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): expose composer menu sections",
+      "surfaces": [
+        "composer",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 49,
+      "commit": "4a61371a1390b57ad575366ca04099a5467de05f",
+      "committedAt": "2026-09-02T05:38:15-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): restore sidebar hover disclosure",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 72,
+      "commit": "229f2028f577291830a3b6ed866d94b22f9aca93",
+      "committedAt": "2026-09-02T05:54:41-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): clear shortcut modifier state",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 39,
+      "commit": "c8222d264d9f30587cd0c8102e2b7368deaf217a",
+      "committedAt": "2026-09-02T07:24:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): keep model picker rows interactive",
+      "surfaces": [
+        "overlays",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 114,
+      "commit": "911ec14aa5f1be72f0cdbf1e619d72aa2209d742",
+      "committedAt": "2026-09-02T08:04:38-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): keep git menu actions interactive",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 24,
+      "commit": "95b4f1b21a6d4e408eb0936d3ce0764dd705a0dc",
+      "committedAt": "2026-09-02T09:25:43-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): keep message actions visible",
+      "surfaces": [
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 37,
+      "commit": "c98eb944d90352f7be6a47cc60d09c10ffdff1af",
+      "committedAt": "2026-09-02T10:09:05-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align diff panel review metadata",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 30,
+      "commit": "3b0685aa10216b180d3cd28e358ddc88296b0629",
+      "committedAt": "2026-09-02T10:28:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): keep diff source lines compact",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8,
+      "commit": "0d5252248cdff2e1e812730cf3cc6c4bf1716f19",
+      "committedAt": "2026-09-02T10:34:03-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): cover empty diff checkpoints",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 130,
+      "commit": "24a2fe46b237d4cd2d420dc3bf39402c13291d0f",
+      "committedAt": "2026-09-02T11:19:48-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): keep markdown lists compact",
+      "surfaces": [
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 14,
+      "commit": "0ce4f992c30fbbe99138f90a871673229c56e86b",
+      "committedAt": "2026-09-02T11:37:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): stack expanded work groups",
+      "surfaces": [
+        "transcript",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 32,
+      "commit": "0ce183e95e91e482a6ff28017ddf07e1f286cf7b",
+      "committedAt": "2026-09-02T12:01:26-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): preserve work log expansion anchor",
+      "surfaces": [
+        "transcript"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 4,
+      "commit": "ecb707eaf23b71a87070901e22f28873ce2fc45e",
+      "committedAt": "2026-09-02T13:06:58-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): require matching project identity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 52,
+      "commit": "1a7f9fbfa2b3d30e62c4e0fe2466c5dfde42350c",
+      "committedAt": "2026-09-02T13:26:03-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): share project scope with quick switch",
+      "surfaces": [
+        "overlays",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 7,
+      "commit": "f2810138ebadaeac7f5cdd5fa7f8f3d6650a333d",
+      "committedAt": "2026-09-02T13:31:51-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align quick switch project scope",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 14,
+      "commit": "518e509c01c87b765e2c62982c490c93bfd506af",
+      "committedAt": "2026-09-02T13:50:30-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): isolate terminal capture history",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 109,
+      "commit": "a45a3c9239e4e567da8a729b51fa368969795b93",
+      "committedAt": "2026-09-02T14:41:49-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align terminal panel chrome",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 43,
+      "commit": "2e751a0353865ff0b95c4f04efaf5f2176bb8eb8",
+      "committedAt": "2026-09-02T15:05:08-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): preserve provider dialog header flow",
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 2,
+      "commit": "f9f4a4f26c83db69d92f9d4cf38a7b843108bdc1",
+      "committedAt": "2026-09-02T15:24:28-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): clear composer capture notifications",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 17,
+      "commit": "a594b2966cddc9ed4b20bba296280626ddb85965",
+      "committedAt": "2026-09-02T16:01:13-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align project action dialog bounds",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 16,
+      "commit": "600a014a57df784373eb4cdc0b8168bf1c6014b9",
+      "committedAt": "2026-09-02T16:15:41-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): match add surface menu width",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 150,
+      "commit": "e8fcbe0c17c5d1e8724ada3b96ba9f725ec86123",
+      "committedAt": "2026-09-02T17:10:34-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): anchor native tab menus",
+      "surfaces": [
+        "review",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 5,
+      "commit": "8b30fd8b51b2200af0c775e70930b0969848c13d",
+      "committedAt": "2026-09-02T17:39:28-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): clear hover capture notifications",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 115,
+      "commit": "9fae3e85ecbc6178ff3ba4eb240e7dea8bc89d39",
+      "committedAt": "2026-09-02T19:02:58-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): stabilize sidebar hover evidence",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 7,
+      "commit": "e526696d1869e29c0fd8f7aa09df05fde562244c",
+      "committedAt": "2026-09-02T19:33:29-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): clean hero capture notifications",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 29,
+      "commit": "2fb6e6d52b25b40188483c03cef0f680358f0d47",
+      "committedAt": "2026-09-02T20:20:23-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align provider warning banner",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 8,
+      "commit": "c9064407711e1b72b6a81012490234c0a006955b",
+      "committedAt": "2026-09-02T20:45:57-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): use available picker model",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 136,
+      "commit": "abc7b2683ca7567339ea957575cbdab554da36c6",
+      "committedAt": "2026-09-02T21:10:24-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): stabilize sendable composer capture",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 4,
+      "commit": "d548b0c80f2528c9e9a6d816bf58151c189d9290",
+      "committedAt": "2026-09-02T21:18:53-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): hide browser textarea resize grip",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 5,
+      "commit": "8eaeb05cf3bce11d2ce32466e65bf6e0af589a62",
+      "committedAt": "2026-09-02T21:24:35-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): clean idle thread captures",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 43,
+      "commit": "2742756b8e9030af6097cc8f61bd085ea228346b",
+      "committedAt": "2026-09-02T22:39:25-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): render keybinding keycaps",
+      "surfaces": [
+        "settings",
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 2,
+      "commit": "de632f275248948a1825480507a632f29ed7ce5a",
+      "committedAt": "2026-09-02T22:47:02-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): stabilize sendable composer fixture",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 131,
+      "commit": "db0ac3cc6c821d66db1d92544c1ee9955cdc72e9",
+      "committedAt": "2026-09-03T00:12:23-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): infer capture semantic routes",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
+    },
+    {
+      "allocation": "evidence-session",
+      "changedLines": 0,
+      "commit": "db0ac3cc6c821d66db1d92544c1ee9955cdc72e9",
+      "committedAt": "2026-09-03T01:45:48-04:00",
+      "confidence": 0.98,
+      "delta": -0.00618,
+      "reason": "Exact PID/window Computer Use closes Native split interaction and runtime debt without claiming unmeasured pixel parity.",
+      "subject": "Right Panel Terminal Native split lifecycle",
+      "surfaces": [
+        "review"
+      ],
+      "fromPoint": "review-diff-current-typography",
+      "toPoint": "right-panel-terminal-native-splits-current"
     }
   ],
   "commitSeries": [
@@ -53462,6 +54722,897 @@
       "rawLoss": 0.191598,
       "smoothedLoss": 0.192879,
       "subject": "Review Full Diff current typography and readiness"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1e67f12e7be31405de8458a3a9401bc9844f0c70",
+      "committedAt": "2026-08-30T00:13:11-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.192597,
+      "subject": "fix(lynxtron): stabilize review diff parity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "893d6119b45704f16e431c85adea39d5edbd7080",
+      "committedAt": "2026-08-30T00:37:40-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.192377,
+      "subject": "fix(review): allow registered project diff roots"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1f547c1e3446a6c73b78028a45b4c12e2ac26002",
+      "committedAt": "2026-08-30T00:52:08-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.192206,
+      "subject": "feat(lynxtron): distinguish workspace file icons"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "af1b5228dfdc098b6fdec0d1f5da3c3de9025b8c",
+      "committedAt": "2026-08-30T03:05:53-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.192072,
+      "subject": "fix(lynxtron): match open in menus"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "bd71aa85c596ef7e150d94f414f4c68269886901",
+      "committedAt": "2026-08-30T03:33:31-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191968,
+      "subject": "fix(lynxtron): stabilize sidebar card actions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "32a79b6f218f7dd40eb2ddeb92f8e0c33b1bf993",
+      "committedAt": "2026-08-30T03:51:37-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191886,
+      "subject": "fix(lynxtron): stabilize failed transcript fixtures"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2ddfdbf0d5bf3eed68d5623128a6e259d31152c7",
+      "committedAt": "2026-08-30T04:56:28-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191823,
+      "subject": "fix(lynxtron): make model menus responsive"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a4b99eebcddfd6391e65ee0df4cf2d6b9a1f30ae",
+      "committedAt": "2026-08-30T05:20:56-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191773,
+      "subject": "fix(lynxtron): coordinate composer menus"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1021dcb1b52e586662c741b663f9b352c05a7aa6",
+      "committedAt": "2026-08-30T05:57:16-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191735,
+      "subject": "test(lynxtron): retain shared comparison clients"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8f887ad2518dd8cb3bfca769f49ce43c2e733da4",
+      "committedAt": "2026-08-30T06:51:37-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191705,
+      "subject": "fix(lynxtron): add transcript hover actions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "258580bc1bd9100fcecef4decc8a3053604bf289",
+      "committedAt": "2026-08-30T07:18:56-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191681,
+      "subject": "fix(lynxtron): align diff header stats"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fa6304f09873c2e9b61419cf2da31889c8fba0bb",
+      "committedAt": "2026-08-30T07:41:05-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191663,
+      "subject": "fix(lynxtron): mask sidebar card actions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "79964a2e14c1b48800610d639365181ef6984faf",
+      "committedAt": "2026-08-30T07:59:40-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191649,
+      "subject": "fix(lynxtron): restore sidebar wordmark"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "82569c93c8136e44656b7f8334b0f2545436f28d",
+      "committedAt": "2026-08-30T08:07:06-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191638,
+      "subject": "fix(lynxtron): soften empty thread copy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "186a5e49a57ad9e8b233fd14fab6138ffaee4443",
+      "committedAt": "2026-08-30T08:13:55-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191629,
+      "subject": "fix(lynxtron): preserve header breadcrumb width"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "debe1e3fd60f3bb896d4ac12269cef70a7214391",
+      "committedAt": "2026-08-30T08:22:23-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191622,
+      "subject": "fix(lynxtron): keep sidebar wordmark themed"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "67843bdc8b720c113723f9c27d4aecfc70d662ca",
+      "committedAt": "2026-08-30T08:31:03-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191617,
+      "subject": "fix(lynxtron): remove duplicate composer separator"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "d4f417fc1d5f7b598dd35c84613661781d1f8675",
+      "committedAt": "2026-08-30T08:52:50-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191613,
+      "subject": "fix(lynxtron): align settings topbar actions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "d5741e9295a37d5d6cc8d0170ceff93e9f9854b2",
+      "committedAt": "2026-08-30T09:52:23-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191609,
+      "subject": "feat(lynxtron): enable background activity profiles"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a7a0b4e6550e145e913d62b7dffa1849ea241b6a",
+      "committedAt": "2026-08-30T15:23:42-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191607,
+      "subject": "fix(settings): share background activity copy"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fafb37b2de2ab55428b558ae031b2d87f7342592",
+      "committedAt": "2026-08-30T16:42:23-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191605,
+      "subject": "feat(lynxtron): enable settings model picker"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fc1031150d99001e8544dc2021c372e6cbc5e15b",
+      "committedAt": "2026-08-30T17:29:50-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191603,
+      "subject": "fix(lynxtron): align checkpoint review flow"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "365841e481fcd33e4a04c05d747dd53c3a772d89",
+      "committedAt": "2026-08-30T18:27:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191602,
+      "subject": "fix(chat): preserve narrow review layouts"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "fdbcc70205f8740f9ed69674c164b71332234fab",
+      "committedAt": "2026-08-30T19:10:25-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191601,
+      "subject": "feat(lynxtron): enable thread jump shortcuts"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8993da09e34348feefcc949d499b966820fe57ea",
+      "committedAt": "2026-08-30T19:33:44-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191601,
+      "subject": "fix(lynxtron): align sidebar thread previews"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1d563f8101151be4a1be7af5e1b28b33ef24fd11",
+      "committedAt": "2026-08-30T21:06:34-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.1916,
+      "subject": "feat(lynxtron): show thread jump hints"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0d9e7f28e758a58e83d973274e35359f2b4342f1",
+      "committedAt": "2026-08-30T22:00:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.1916,
+      "subject": "fix(lynxtron): align open in menu"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3277b820ced439a182c19128e96757708d7d2e63",
+      "committedAt": "2026-08-30T23:07:38-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191599,
+      "subject": "fix(chat): preserve narrow transcript layout"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a0e515052869ba2fe0dfc3de0fa9060632197415",
+      "committedAt": "2026-08-31T01:27:12-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191599,
+      "subject": "fix(lynxtron): make model picker responsive"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "124450a0bb486ba48983c373b61595c3ea532800",
+      "committedAt": "2026-08-31T01:57:01-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191599,
+      "subject": "fix(lynxtron): collapse narrow chat input"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c25fafc203b7bd07c7ae6bc02a1ec4fc79e07169",
+      "committedAt": "2026-08-31T02:08:59-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191599,
+      "subject": "test(lynxtron): verify narrow composer expansion"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9dc1b0b27222f826293ce49ef53b6ad72607f9cf",
+      "committedAt": "2026-08-31T02:35:50-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): verify file icon fidelity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a7ce384b5fca6e054c36bd72aa77751f6e317e29",
+      "committedAt": "2026-08-31T02:46:01-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "refactor(chat): share working timer format"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4882a4bffabf39f8fee22406ee0a64ae7850d613",
+      "committedAt": "2026-08-31T02:54:48-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(chat): hide empty changed files cards"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "753fd1d1946a44086e32730aa9a52ec048186425",
+      "committedAt": "2026-08-31T03:36:48-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): contain narrow thread diffs"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1b6758d2cc9ef8d85bf99dc04f50c9e18476f6f4",
+      "committedAt": "2026-08-31T06:11:33-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): align sidebar and transcript states"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "d9567008afe735f278a32f429197749c6858789e",
+      "committedAt": "2026-08-31T06:15:59-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): stabilize sidebar hover details"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "e5ab4eef754608abcb62d4d535f6547bc5d9486b",
+      "committedAt": "2026-08-31T07:49:02-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "feat(lynxtron): align transcript navigation details"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "be2bff4bf51542022c7e1fa359b5d28421d63062",
+      "committedAt": "2026-08-31T10:11:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "feat(lynxtron): align diff and transcript navigation"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a6fed5f198f4ea051b1d8f6c0ace203b73f27781",
+      "committedAt": "2026-09-01T05:47:25-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "feat(lynxtron): align composer and header controls"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "572fee51962ab9fc54dcd1a8296e8fca8ec9ac94",
+      "committedAt": "2026-09-01T07:04:07-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): stabilize composer and message hover"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a053f57debb017c264ff6e03347d06606d8b933c",
+      "committedAt": "2026-09-01T07:34:31-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): keep hover interactions on main thread"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1799d3c372f7246dd0303bd02afab20ce5e282a6",
+      "committedAt": "2026-09-01T09:12:37-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "feat(lynxtron): add safe message revert controls"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "04ee5cbc86bc175788eb2fe323e9ff834f9d3494",
+      "committedAt": "2026-09-01T09:57:24-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): sharpen model picker interactions"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c64bdb5459e2a077a75c0cd243426711abef33ea",
+      "committedAt": "2026-09-01T10:33:17-07:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(web): preserve checkpoint helper export"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "df5f25e0d745e0894286f05e47e934065779f738",
+      "committedAt": "2026-09-02T02:31:30-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): match diff file spacing"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9ecf06df72f597a04c2d5ba91992c12764f53976",
+      "committedAt": "2026-09-02T04:01:03-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "feat(lynxtron): add composer context menus"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9a3522dbc9a6630c94dc545e7e53b2143acef91b",
+      "committedAt": "2026-09-02T04:13:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): expose composer menu sections"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4a61371a1390b57ad575366ca04099a5467de05f",
+      "committedAt": "2026-09-02T05:38:15-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): restore sidebar hover disclosure"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "229f2028f577291830a3b6ed866d94b22f9aca93",
+      "committedAt": "2026-09-02T05:54:41-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): clear shortcut modifier state"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c8222d264d9f30587cd0c8102e2b7368deaf217a",
+      "committedAt": "2026-09-02T07:24:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): keep model picker rows interactive"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "911ec14aa5f1be72f0cdbf1e619d72aa2209d742",
+      "committedAt": "2026-09-02T08:04:38-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): keep git menu actions interactive"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "95b4f1b21a6d4e408eb0936d3ce0764dd705a0dc",
+      "committedAt": "2026-09-02T09:25:43-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): keep message actions visible"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c98eb944d90352f7be6a47cc60d09c10ffdff1af",
+      "committedAt": "2026-09-02T10:09:05-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): align diff panel review metadata"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "3b0685aa10216b180d3cd28e358ddc88296b0629",
+      "committedAt": "2026-09-02T10:28:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): keep diff source lines compact"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0d5252248cdff2e1e812730cf3cc6c4bf1716f19",
+      "committedAt": "2026-09-02T10:34:03-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): cover empty diff checkpoints"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "24a2fe46b237d4cd2d420dc3bf39402c13291d0f",
+      "committedAt": "2026-09-02T11:19:48-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): keep markdown lists compact"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0ce4f992c30fbbe99138f90a871673229c56e86b",
+      "committedAt": "2026-09-02T11:37:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): stack expanded work groups"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "0ce183e95e91e482a6ff28017ddf07e1f286cf7b",
+      "committedAt": "2026-09-02T12:01:26-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): preserve work log expansion anchor"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "ecb707eaf23b71a87070901e22f28873ce2fc45e",
+      "committedAt": "2026-09-02T13:06:58-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): require matching project identity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "1a7f9fbfa2b3d30e62c4e0fe2466c5dfde42350c",
+      "committedAt": "2026-09-02T13:26:03-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): share project scope with quick switch"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "f2810138ebadaeac7f5cdd5fa7f8f3d6650a333d",
+      "committedAt": "2026-09-02T13:31:51-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): align quick switch project scope"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "518e509c01c87b765e2c62982c490c93bfd506af",
+      "committedAt": "2026-09-02T13:50:30-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): isolate terminal capture history"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a45a3c9239e4e567da8a729b51fa368969795b93",
+      "committedAt": "2026-09-02T14:41:49-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): align terminal panel chrome"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2e751a0353865ff0b95c4f04efaf5f2176bb8eb8",
+      "committedAt": "2026-09-02T15:05:08-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): preserve provider dialog header flow"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "f9f4a4f26c83db69d92f9d4cf38a7b843108bdc1",
+      "committedAt": "2026-09-02T15:24:28-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): clear composer capture notifications"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "a594b2966cddc9ed4b20bba296280626ddb85965",
+      "committedAt": "2026-09-02T16:01:13-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): align project action dialog bounds"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "600a014a57df784373eb4cdc0b8168bf1c6014b9",
+      "committedAt": "2026-09-02T16:15:41-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): match add surface menu width"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "e8fcbe0c17c5d1e8724ada3b96ba9f725ec86123",
+      "committedAt": "2026-09-02T17:10:34-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): anchor native tab menus"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8b30fd8b51b2200af0c775e70930b0969848c13d",
+      "committedAt": "2026-09-02T17:39:28-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): clear hover capture notifications"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9fae3e85ecbc6178ff3ba4eb240e7dea8bc89d39",
+      "committedAt": "2026-09-02T19:02:58-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): stabilize sidebar hover evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "e526696d1869e29c0fd8f7aa09df05fde562244c",
+      "committedAt": "2026-09-02T19:33:29-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): clean hero capture notifications"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2fb6e6d52b25b40188483c03cef0f680358f0d47",
+      "committedAt": "2026-09-02T20:20:23-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): align provider warning banner"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c9064407711e1b72b6a81012490234c0a006955b",
+      "committedAt": "2026-09-02T20:45:57-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): use available picker model"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "abc7b2683ca7567339ea957575cbdab554da36c6",
+      "committedAt": "2026-09-02T21:10:24-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): stabilize sendable composer capture"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "d548b0c80f2528c9e9a6d816bf58151c189d9290",
+      "committedAt": "2026-09-02T21:18:53-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): hide browser textarea resize grip"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8eaeb05cf3bce11d2ce32466e65bf6e0af589a62",
+      "committedAt": "2026-09-02T21:24:35-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): clean idle thread captures"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2742756b8e9030af6097cc8f61bd085ea228346b",
+      "committedAt": "2026-09-02T22:39:25-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "fix(lynxtron): render keybinding keycaps"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "de632f275248948a1825480507a632f29ed7ce5a",
+      "committedAt": "2026-09-02T22:47:02-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): stabilize sendable composer fixture"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "db0ac3cc6c821d66db1d92544c1ee9955cdc72e9",
+      "committedAt": "2026-09-03T00:12:23-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.191598,
+      "smoothedLoss": 0.191598,
+      "subject": "test(lynxtron): infer capture semantic routes"
+    },
+    {
+      "allocation": "evidence-session",
+      "commit": "db0ac3cc6c821d66db1d92544c1ee9955cdc72e9",
+      "committedAt": "2026-09-03T01:45:48-04:00",
+      "confidence": 0.98,
+      "delta": -0.00618,
+      "measuredCheckpoint": "right-panel-terminal-native-splits-current",
+      "rawLoss": 0.185418,
+      "smoothedLoss": 0.190238,
+      "subject": "Right Panel Terminal Native split lifecycle"
     }
   ],
   "generatedAt": "2026-08-25T00:45:00-07:00",
@@ -376860,6 +379011,1012 @@
       ],
       "bestLoss": 0.191598,
       "improvementFromBaseline": 0.800292
+    },
+    {
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.98,
+        "reason": "Exact PID/window Computer Use closes Native split interaction and runtime debt without claiming unmeasured pixel parity."
+      },
+      "commit": "db0ac3cc6",
+      "codeCommit": "db0ac3cc6c821d66db1d92544c1ee9955cdc72e9",
+      "codeState": "commit",
+      "id": "right-panel-terminal-native-splits-current",
+      "label": "Right Panel Terminal Native split lifecycle",
+      "narrative": "A fresh exact-owned Native run on a copied 14-event snapshot and the staged production bundle opens Terminal with a real pointer, creates and closes a horizontal split, creates a vertical split, and routes distinct physical-keyboard commands to the active pane. Terminal 2 receives NATIVE_VERTICAL_TERM_2 and NATIVE_HORIZONTAL_TERM_2; after selecting Terminal 1, only the left pane receives NATIVE_HORIZONTAL_TERM_1. The main transport advances from sequence 16 to 42. No new screenshot is retained because the repository screenshot budget is already full, so exact Native geometry and material remain conservative.",
+      "observedAt": "2026-09-03T01:45:48-04:00",
+      "screenshots": [],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/right-panel-terminal-native-splits.json",
+          "classification": "tracked-current",
+          "sha256": "c60cd7f6012526ad6a9bd9c49b3c4fd968000327ee572031abc82fbf76abd5a7"
+        }
+      ],
+      "confidence": 0.847821,
+      "evidenceDebt": 0.152179,
+      "loss": 0.185418,
+      "observedResidual": 0.039205,
+      "byDimension": {
+        "content": {
+          "confidence": 0.980142,
+          "evidenceDebt": 0.019858,
+          "loss": 0.024009,
+          "observedResidual": 0.004235
+        },
+        "geometry": {
+          "confidence": 0.902138,
+          "evidenceDebt": 0.097862,
+          "loss": 0.105922,
+          "observedResidual": 0.008934
+        },
+        "typography": {
+          "confidence": 0.672154,
+          "evidenceDebt": 0.327846,
+          "loss": 0.356208,
+          "observedResidual": 0.042196
+        },
+        "material": {
+          "confidence": 0.638871,
+          "evidenceDebt": 0.361129,
+          "loss": 0.471421,
+          "observedResidual": 0.172635
+        },
+        "interaction": {
+          "confidence": 0.819135,
+          "evidenceDebt": 0.180865,
+          "loss": 0.237626,
+          "observedResidual": 0.069294
+        },
+        "runtime": {
+          "confidence": 0.981501,
+          "evidenceDebt": 0.018499,
+          "loss": 0.02277,
+          "observedResidual": 0.004351
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.784563,
+          "evidenceDebt": 0.215437,
+          "loss": 0.23173,
+          "observedResidual": 0.020766
+        },
+        "composer": {
+          "confidence": 0.824815,
+          "evidenceDebt": 0.175185,
+          "loss": 0.202477,
+          "observedResidual": 0.033088
+        },
+        "transcript": {
+          "confidence": 0.822444,
+          "evidenceDebt": 0.177556,
+          "loss": 0.211603,
+          "observedResidual": 0.041397
+        },
+        "overlays": {
+          "confidence": 0.921975,
+          "evidenceDebt": 0.078025,
+          "loss": 0.124301,
+          "observedResidual": 0.050192
+        },
+        "settings": {
+          "confidence": 0.779373,
+          "evidenceDebt": 0.220627,
+          "loss": 0.245897,
+          "observedResidual": 0.032424
+        },
+        "review": {
+          "confidence": 0.868115,
+          "evidenceDebt": 0.131885,
+          "loss": 0.167057,
+          "observedResidual": 0.040516
+        }
+      },
+      "states": [
+        {
+          "confidence": 0.39376,
+          "evidenceDebt": 0.60624,
+          "group": "settings",
+          "id": "settings-providers-add-dialog-light",
+          "label": "Settings · Add Provider Wizard · Light",
+          "loss": 0.611476,
+          "observedResidual": 0.013298,
+          "weight": 4
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.54149,
+          "observedResidual": 0.244443,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 3
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.63756,
+          "evidenceDebt": 0.36244,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.366677,
+          "observedResidual": 0.006646,
+          "weight": 4
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "review",
+          "id": "right-panel-terminal",
+          "label": "Right Panel · Terminal Session",
+          "loss": 0.352461,
+          "observedResidual": 0.096575,
+          "weight": 4
+        },
+        {
+          "confidence": 0.65541,
+          "evidenceDebt": 0.34459,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.351272,
+          "observedResidual": 0.010196,
+          "weight": 4
+        },
+        {
+          "confidence": 0.65646,
+          "evidenceDebt": 0.34354,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.348676,
+          "observedResidual": 0.007824,
+          "weight": 5
+        },
+        {
+          "confidence": 0.68364,
+          "evidenceDebt": 0.31636,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.325822,
+          "observedResidual": 0.013841,
+          "weight": 5
+        },
+        {
+          "confidence": 0.9362,
+          "evidenceDebt": 0.0638,
+          "group": "transcript",
+          "id": "transcript-native-external-link-context-menu",
+          "label": "Transcript · Native External Link Context Menu",
+          "loss": 0.323136,
+          "observedResidual": 0.277009,
+          "weight": 2
+        },
+        {
+          "confidence": 0.9362,
+          "evidenceDebt": 0.0638,
+          "group": "transcript",
+          "id": "transcript-native-file-link-context-menu",
+          "label": "Transcript · Native File Link Context Menu",
+          "loss": 0.323136,
+          "observedResidual": 0.277009,
+          "weight": 2
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "settings",
+          "id": "settings-keybindings",
+          "label": "Settings · Keybindings",
+          "loss": 0.306563,
+          "observedResidual": 0.03254,
+          "weight": 4
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.304399,
+          "observedResidual": 0.02952,
+          "weight": 4
+        },
+        {
+          "confidence": 0.7126,
+          "evidenceDebt": 0.2874,
+          "group": "overlays",
+          "id": "sidebar-v2-new-thread-hover",
+          "label": "Sidebar V2 · New Thread Hover",
+          "loss": 0.295659,
+          "observedResidual": 0.01159,
+          "weight": 2
+        },
+        {
+          "confidence": 0.7126,
+          "evidenceDebt": 0.2874,
+          "group": "overlays",
+          "id": "sidebar-v2-new-project-hover",
+          "label": "Sidebar V2 · New Project Hover",
+          "loss": 0.29556,
+          "observedResidual": 0.011451,
+          "weight": 2
+        },
+        {
+          "confidence": 0.73734,
+          "evidenceDebt": 0.26266,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.294577,
+          "observedResidual": 0.043287,
+          "weight": 5
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.294352,
+          "observedResidual": 0.004504,
+          "weight": 4
+        },
+        {
+          "confidence": 0.71176,
+          "evidenceDebt": 0.28824,
+          "group": "review",
+          "id": "right-panel-terminal-horizontal-split",
+          "label": "Right Panel · Terminal Horizontal Split",
+          "loss": 0.293907,
+          "observedResidual": 0.007962,
+          "weight": 3
+        },
+        {
+          "confidence": 0.71176,
+          "evidenceDebt": 0.28824,
+          "group": "review",
+          "id": "right-panel-terminal-vertical-split",
+          "label": "Right Panel · Terminal Vertical Split",
+          "loss": 0.293907,
+          "observedResidual": 0.007962,
+          "weight": 3
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "settings",
+          "id": "settings-beta-light",
+          "label": "Settings · Beta · Light",
+          "loss": 0.293753,
+          "observedResidual": 0.014667,
+          "weight": 3
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "settings",
+          "id": "settings-archive-light",
+          "label": "Settings · Archive · Light",
+          "loss": 0.289037,
+          "observedResidual": 0.008087,
+          "weight": 3
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.287604,
+          "observedResidual": 0.006089,
+          "weight": 5
+        },
+        {
+          "confidence": 0.78576,
+          "evidenceDebt": 0.21424,
+          "group": "composer",
+          "id": "composer-plan-mode",
+          "label": "Composer · Plan Mode",
+          "loss": 0.279236,
+          "observedResidual": 0.082717,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75588,
+          "evidenceDebt": 0.24412,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 0.260741,
+          "observedResidual": 0.021989,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75444,
+          "evidenceDebt": 0.24556,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.253064,
+          "observedResidual": 0.009947,
+          "weight": 3
+        },
+        {
+          "confidence": 0.77421,
+          "evidenceDebt": 0.22579,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.252981,
+          "observedResidual": 0.035122,
+          "weight": 5
+        },
+        {
+          "confidence": 0.75204,
+          "evidenceDebt": 0.24796,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.252617,
+          "observedResidual": 0.006192,
+          "weight": 5
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.252138,
+          "observedResidual": 0.011236,
+          "weight": 3
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.251934,
+          "observedResidual": 0.010966,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.248661,
+          "observedResidual": 0.006638,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.248181,
+          "observedResidual": 0.006003,
+          "weight": 3
+        },
+        {
+          "confidence": 0.77436,
+          "evidenceDebt": 0.22564,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.233783,
+          "observedResidual": 0.010516,
+          "weight": 5
+        },
+        {
+          "confidence": 0.7774,
+          "evidenceDebt": 0.2226,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 0.229107,
+          "observedResidual": 0.00837,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.21661,
+          "observedResidual": 0.005901,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.216522,
+          "observedResidual": 0.005789,
+          "weight": 4
+        },
+        {
+          "confidence": 0.81636,
+          "evidenceDebt": 0.18364,
+          "group": "shell",
+          "id": "sidebar-inline-search",
+          "label": "Sidebar · Inline Search",
+          "loss": 0.215219,
+          "observedResidual": 0.038682,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83124,
+          "evidenceDebt": 0.16876,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.200734,
+          "observedResidual": 0.038465,
+          "weight": 4
+        },
+        {
+          "confidence": 0.81636,
+          "evidenceDebt": 0.18364,
+          "group": "overlays",
+          "id": "workspace-menu-open",
+          "label": "Workspace Menu · Open",
+          "loss": 0.195989,
+          "observedResidual": 0.015126,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83556,
+          "evidenceDebt": 0.16444,
+          "group": "composer",
+          "id": "settled-banner-inline-files-narrow",
+          "label": "Settled Banner · Inline Files · Narrow",
+          "loss": 0.182832,
+          "observedResidual": 0.022012,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83556,
+          "evidenceDebt": 0.16444,
+          "group": "shell",
+          "id": "sidebar-footer-inline-files-narrow",
+          "label": "Sidebar Footer · Inline Files · Narrow",
+          "loss": 0.181083,
+          "observedResidual": 0.019918,
+          "weight": 3
+        },
+        {
+          "confidence": 0.9054,
+          "evidenceDebt": 0.0946,
+          "group": "settings",
+          "id": "settings-providers-add-dialog",
+          "label": "Settings · Add Provider Wizard",
+          "loss": 0.176615,
+          "observedResidual": 0.090584,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83364,
+          "evidenceDebt": 0.16636,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.176393,
+          "observedResidual": 0.012035,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83556,
+          "evidenceDebt": 0.16444,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 0.170574,
+          "observedResidual": 0.007342,
+          "weight": 5
+        },
+        {
+          "confidence": 0.9736,
+          "evidenceDebt": 0.0264,
+          "group": "overlays",
+          "id": "right-panel-native-tab-context-menu",
+          "label": "Right Panel · Native Tab Context Menu",
+          "loss": 0.160484,
+          "observedResidual": 0.13772,
+          "weight": 2
+        },
+        {
+          "confidence": 0.85446,
+          "evidenceDebt": 0.14554,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.158522,
+          "observedResidual": 0.015193,
+          "weight": 5
+        },
+        {
+          "confidence": 0.85446,
+          "evidenceDebt": 0.14554,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.151034,
+          "observedResidual": 0.00643,
+          "weight": 5
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "overlays",
+          "id": "project-action-dialog",
+          "label": "Project Action · Add Dialog",
+          "loss": 0.149621,
+          "observedResidual": 0.062261,
+          "weight": 4
+        },
+        {
+          "confidence": 0.8514,
+          "evidenceDebt": 0.1486,
+          "group": "overlays",
+          "id": "git-publish-dialog",
+          "label": "Git Publish · Provider Step",
+          "loss": 0.1486,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.95948,
+          "evidenceDebt": 0.04052,
+          "group": "overlays",
+          "id": "command-palette-navigation",
+          "label": "Command Palette · Hover and Keyboard Navigation",
+          "loss": 0.144002,
+          "observedResidual": 0.107852,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9736,
+          "evidenceDebt": 0.0264,
+          "group": "overlays",
+          "id": "right-panel-native-file-context-menu",
+          "label": "Right Panel · Native File Row Context Menu",
+          "loss": 0.138336,
+          "observedResidual": 0.114971,
+          "weight": 2
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.127678,
+          "observedResidual": 0.038064,
+          "weight": 3
+        },
+        {
+          "confidence": 0.8962,
+          "evidenceDebt": 0.1038,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.122847,
+          "observedResidual": 0.021253,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98,
+          "evidenceDebt": 0.02,
+          "group": "overlays",
+          "id": "sidebar-native-thread-context-menu",
+          "label": "Sidebar · Native Thread Context Menu",
+          "loss": 0.118,
+          "observedResidual": 0.1,
+          "weight": 2
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "composer",
+          "id": "composer-compact-controls-open",
+          "label": "Composer · Compact Controls Open",
+          "loss": 0.117532,
+          "observedResidual": 0.026876,
+          "weight": 4
+        },
+        {
+          "confidence": 0.903,
+          "evidenceDebt": 0.097,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.115661,
+          "observedResidual": 0.020666,
+          "weight": 5
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "composer",
+          "id": "composer-compact-controls-light",
+          "label": "Composer · Compact Controls · Light",
+          "loss": 0.115032,
+          "observedResidual": 0.024119,
+          "weight": 4
+        },
+        {
+          "confidence": 0.92492,
+          "evidenceDebt": 0.07508,
+          "group": "review",
+          "id": "right-panel-terminal-multi-session",
+          "label": "Right Panel · Terminal Multi-session",
+          "loss": 0.113475,
+          "observedResidual": 0.041512,
+          "weight": 3
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "review",
+          "id": "files-browser",
+          "label": "Files Browser · Default",
+          "loss": 0.110848,
+          "observedResidual": 0.019505,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "file-picker-default",
+          "label": "File Picker · Default",
+          "loss": 0.096438,
+          "observedResidual": 0.081522,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "quick-switch-query-light",
+          "label": "Quick Switch · Query · Light",
+          "loss": 0.094,
+          "observedResidual": 0.079043,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9616,
+          "evidenceDebt": 0.0384,
+          "group": "overlays",
+          "id": "sidebar-native-project-context-menu",
+          "label": "Sidebar · Native Project Context Menu",
+          "loss": 0.093824,
+          "observedResidual": 0.057637,
+          "weight": 2
+        },
+        {
+          "confidence": 0.9722,
+          "evidenceDebt": 0.0278,
+          "group": "overlays",
+          "id": "sidebar-project-settings",
+          "label": "Sidebar · Project Settings",
+          "loss": 0.091707,
+          "observedResidual": 0.065735,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "review",
+          "id": "file-editor-detail",
+          "label": "File Editor · Detail",
+          "loss": 0.091589,
+          "observedResidual": 0.082414,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "review",
+          "id": "file-editor-detail-narrow-inline",
+          "label": "File Editor · Detail · Narrow Inline",
+          "loss": 0.091578,
+          "observedResidual": 0.082402,
+          "weight": 4
+        },
+        {
+          "confidence": 0.95668,
+          "evidenceDebt": 0.04332,
+          "group": "review",
+          "id": "file-editor-editing-save",
+          "label": "File Editor · Editing and Save",
+          "loss": 0.09042,
+          "observedResidual": 0.049233,
+          "weight": 5
+        },
+        {
+          "confidence": 0.9752,
+          "evidenceDebt": 0.0248,
+          "group": "settings",
+          "id": "settings-connections-mutation-browser",
+          "label": "Settings · Connections · Browser Mutation",
+          "loss": 0.08898,
+          "observedResidual": 0.065812,
+          "weight": 2
+        },
+        {
+          "confidence": 0.96496,
+          "evidenceDebt": 0.03504,
+          "group": "overlays",
+          "id": "add-project-sources",
+          "label": "Command Palette · Add Project Sources",
+          "loss": 0.087797,
+          "observedResidual": 0.054673,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98184,
+          "evidenceDebt": 0.01816,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.083531,
+          "observedResidual": 0.06658,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "composer",
+          "id": "composer-compact-controls-inline-files-short",
+          "label": "Composer · Compact Controls · Inline Files · Short",
+          "loss": 0.081718,
+          "observedResidual": 0.072442,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "overlays",
+          "id": "right-panel-add-menu",
+          "label": "Right Panel · Add Surface Menu",
+          "loss": 0.079223,
+          "observedResidual": 0.069922,
+          "weight": 4
+        },
+        {
+          "confidence": 0.97896,
+          "evidenceDebt": 0.02104,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.075032,
+          "observedResidual": 0.055152,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98184,
+          "evidenceDebt": 0.01816,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.072022,
+          "observedResidual": 0.054858,
+          "weight": 3
+        },
+        {
+          "confidence": 0.9648,
+          "evidenceDebt": 0.0352,
+          "group": "shell",
+          "id": "sidebar-project-groups",
+          "label": "Sidebar · Project Groups",
+          "loss": 0.071429,
+          "observedResidual": 0.037551,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.069255,
+          "observedResidual": 0.05389,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.068752,
+          "observedResidual": 0.053379,
+          "weight": 4
+        },
+        {
+          "confidence": 0.96268,
+          "evidenceDebt": 0.03732,
+          "group": "settings",
+          "id": "settings-providers",
+          "label": "Settings · Providers",
+          "loss": 0.065638,
+          "observedResidual": 0.029415,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9852,
+          "evidenceDebt": 0.0148,
+          "group": "composer",
+          "id": "composer-native-branch-context-menu",
+          "label": "Composer · Native Branch Context Menu",
+          "loss": 0.065136,
+          "observedResidual": 0.051092,
+          "weight": 2
+        },
+        {
+          "confidence": 0.9656,
+          "evidenceDebt": 0.0344,
+          "group": "overlays",
+          "id": "sidebar-thread-hover-preview",
+          "label": "Sidebar · Thread Hover Preview",
+          "loss": 0.064596,
+          "observedResidual": 0.031272,
+          "weight": 3
+        },
+        {
+          "confidence": 0.9796,
+          "evidenceDebt": 0.0204,
+          "group": "overlays",
+          "id": "sidebar-v2-new-thread-projects",
+          "label": "Command Palette · New Thread Projects",
+          "loss": 0.061459,
+          "observedResidual": 0.041914,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "review",
+          "id": "file-editor-detail-light",
+          "label": "File Editor · Detail · Light",
+          "loss": 0.060641,
+          "observedResidual": 0.051153,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "settings",
+          "id": "settings-appearance",
+          "label": "Settings · Appearance",
+          "loss": 0.059798,
+          "observedResidual": 0.044277,
+          "weight": 3
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "composer",
+          "id": "composer-compact-controls-inline-files-narrow",
+          "label": "Composer · Compact Controls · Inline Files · Narrow",
+          "loss": 0.059721,
+          "observedResidual": 0.050223,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9796,
+          "evidenceDebt": 0.0204,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.059364,
+          "observedResidual": 0.039776,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "overlays",
+          "id": "diff-scope-menu",
+          "label": "Diff · Scope Menu",
+          "loss": 0.058063,
+          "observedResidual": 0.048549,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9796,
+          "evidenceDebt": 0.0204,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.040228,
+          "observedResidual": 0.020241,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.033165,
+          "observedResidual": 0.017205,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "composer",
+          "id": "composer-inline-files-narrow",
+          "label": "Composer · Inline Files · Narrow",
+          "loss": 0.032843,
+          "observedResidual": 0.023074,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9844,
+          "evidenceDebt": 0.0156,
+          "group": "settings",
+          "id": "settings-beta-mutation-browser",
+          "label": "Settings · Beta · Browser Mutation",
+          "loss": 0.028812,
+          "observedResidual": 0.013421,
+          "weight": 2
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "overlays",
+          "id": "project-action-keybinding-mutation",
+          "label": "Project Action · Keybinding Mutation",
+          "loss": 0.01,
+          "observedResidual": 0,
+          "weight": 2
+        }
+      ],
+      "bestLoss": 0.185418,
+      "improvementFromBaseline": 0.806472
     }
   ],
   "provenance": {

@@ -319,3 +319,4 @@ settings-archive-current-typography,2026-08-29T13:52:00-07:00,91924703b,commit,S
 settings-general-current-typography,2026-08-29T13:58:00-07:00,8643133b3,commit,Settings General current typography,0.192982,0.192982,0.039558,0.159743,0.840257,0.798908
 project-scope-open-current-typography,2026-08-29T17:19:00-07:00,a2096ea06,commit,Project Scope current typography,0.192367,0.192367,0.039529,0.159128,0.840872,0.799523
 review-diff-current-typography,2026-08-30T00:02:00-07:00,6525ba22e,working-tree,Review Full Diff current typography and readiness,0.191598,0.191598,0.039493,0.158359,0.841641,0.800292
+right-panel-terminal-native-splits-current,2026-09-03T01:45:48-04:00,db0ac3cc6,commit,Right Panel Terminal Native split lifecycle,0.185418,0.185418,0.039205,0.152179,0.847821,0.806472

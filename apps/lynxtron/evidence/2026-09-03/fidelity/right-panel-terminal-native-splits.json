@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T01:45:48-04:00",
+  "stateIds": ["right-panel-terminal-horizontal-split", "right-panel-terminal-vertical-split"],
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "theme": "dark",
+    "interactionChannel": "built-in Computer Use against exact-owned PID and window"
+  },
+  "snapshot": {
+    "sha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "eventCountBeforeLaunch": 14,
+    "projectId": "3f7b91ef-32b7-4aae-803b-66b374485b39",
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 99758,
+    "windowId": 36453,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "7142feb7d1625f2ee0cd5600714ea95a81b098bde5ad7f19becc80d0a1539319",
+    "transportKind": "main",
+    "lastSeqBefore": 16,
+    "lastSeqAfter": 42
+  },
+  "observations": [
+    {
+      "name": "horizontal split lifecycle",
+      "result": "pass",
+      "detail": "A real pointer opened Terminal, activated the horizontal split control, rendered Terminal 1 and Terminal 2 as simultaneous side-by-side viewports, and closed Terminal 2 back to one pane."
+    },
+    {
+      "name": "vertical split lifecycle",
+      "result": "pass",
+      "detail": "From the restored single-pane state, a real pointer activated the vertical split control and rendered Terminal 1 and Terminal 2 as simultaneous stacked viewports."
+    },
+    {
+      "name": "active pane command routing",
+      "result": "pass",
+      "detail": "Real keyboard input and Run clicks routed NATIVE_VERTICAL_TERM_2 to the lower vertical pane, NATIVE_HORIZONTAL_TERM_2 to the right horizontal pane, and NATIVE_HORIZONTAL_TERM_1 to the left pane after selecting Terminal 1."
+    }
+  ],
+  "classification": {
+    "productLoss": "No functional Native split or command-routing loss was observed.",
+    "missingCoverage": [
+      "No additional screenshot was retained because the repository screenshot budget was already 100 of 100.",
+      "Exact Native pane dimensions were visually confirmed but not available through the accessibility tree."
+    ],
+    "harnessLoss": "None for the tested reveal, split, active routing, and close lifecycle.",
+    "intentionalPlatformDelta": "Terminal rendering uses the Native Lynx terminal surface rather than the Web terminal implementation.",
+    "acceptedRenderingNoise": ["Terminal shell prompts wrap according to the native pane width."]
+  }
+}

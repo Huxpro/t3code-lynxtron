@@ -20276,6 +20276,56 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-native-splits-current",
+      "observedAt": "2026-09-03T01:45:48-04:00",
+      "commit": "db0ac3cc6",
+      "codeCommit": "db0ac3cc6c821d66db1d92544c1ee9955cdc72e9",
+      "codeState": "commit",
+      "label": "Right Panel Terminal Native split lifecycle",
+      "narrative": "A fresh exact-owned Native run on a copied 14-event snapshot and the staged production bundle opens Terminal with a real pointer, creates and closes a horizontal split, creates a vertical split, and routes distinct physical-keyboard commands to the active pane. Terminal 2 receives NATIVE_VERTICAL_TERM_2 and NATIVE_HORIZONTAL_TERM_2; after selecting Terminal 1, only the left pane receives NATIVE_HORIZONTAL_TERM_1. The main transport advances from sequence 16 to 42. No new screenshot is retained because the repository screenshot budget is already full, so exact Native geometry and material remain conservative.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.98,
+        "reason": "Exact PID/window Computer Use closes Native split interaction and runtime debt without claiming unmeasured pixel parity."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/right-panel-terminal-native-splits.json",
+          "classification": "tracked-current",
+          "sha256": "c60cd7f6012526ad6a9bd9c49b3c4fd968000327ee572031abc82fbf76abd5a7"
+        }
+      ],
+      "updates": [
+        {
+          "states": [
+            "right-panel-terminal-horizontal-split",
+            "right-panel-terminal-vertical-split"
+          ],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "exact-native-terminal-split-content",
+              "source": "Both directions visibly render Terminal 1 and Terminal 2 in the exact-owned Native window"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "exact-native-terminal-split-lifecycle",
+              "source": "Real pointer and keyboard input prove horizontal split, close-to-single-pane, vertical split, tab switching, and active-pane command routing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-native-main-terminal-runtime",
+              "source": "Owned PID 99758 uses the staged production bundle, copied state, main transport, and advances lastSeq from 16 to 42 while PTY commands execute"
+            }
+          }
+        }
+      ]
     }
   ]
 }
