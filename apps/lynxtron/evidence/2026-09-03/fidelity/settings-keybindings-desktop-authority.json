@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T19:16:00-04:00",
+  "commit": "7d7188181e2a8e07e212d023e32ae8fd47f2df73",
+  "stateId": "settings-keybindings",
+  "scope": {
+    "authority": "electron-visual-web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-keybindings",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "21f0ef8d2c782d668b89d55e9eb330446a73305bfd963ade085105ede988875f",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "e0b2eb80da274107df892e94a817744d6cf8c70e57ba34bfeba10c6dcd378a24",
+    "webImageSha256": "10eef48a7ec8346e44a8179db4f2bc0d05ab0c248bcc569f5573a91bb02ab99b",
+    "lynxImageSha256": "bbb86b19ca03a2cfcbce66454df0730f431952dffc0788c62349f480941255ac",
+    "passed": true,
+    "desktopTopbarMatch": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "rowCount": 45,
+    "canonicalRowsMatch": true,
+    "webBrowserWarningRemoved": true,
+    "lynxCapabilityStatus": "Read-only · 45 bindings"
+  },
+  "geometry": {
+    "webHeader": [294, 144, 948, 33.5],
+    "lynxHeader": [294, 144, 948, 34],
+    "webFirstRow": [294, 177.5, 948, 41],
+    "lynxFirstRow": [294, 178, 948, 41]
+  },
+  "boundary": "The Web browser warning is absent under the Electron visual authority. Lynx retains a compact Read-only status because renderer keyboard capture is not verified. This evidence claims content, table geometry, and runtime parity, but does not claim editing or physical-keyboard interaction parity."
+}

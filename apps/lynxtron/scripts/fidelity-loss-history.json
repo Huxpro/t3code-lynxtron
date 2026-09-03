@@ -21744,6 +21744,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-desktop-authority-current",
+      "observedAt": "2026-09-03T19:16:00-04:00",
+      "commit": "7d7188181",
+      "codeCommit": "7d7188181e2a8e07e212d023e32ae8fd47f2df73",
+      "codeState": "commit",
+      "label": "Settings Keybindings desktop authority parity",
+      "narrative": "Under the hard-gated Electron visual authority, Web no longer renders its browser-only shortcut warning. Lynx keeps the truthful runtime limitation as a compact Read-only status in the section header instead of a 43px in-flow banner. The 45 canonical bindings remain identical. The table header now starts at x 294 y 144 on both renderers with only 0.5px height rounding, and the first 41px row starts at y 177.5 on Web and y 178 on Lynx. Desktop topbar identity, snapshot, route, and zero renderer errors all pass. Editing and physical-keyboard parity remain explicit residuals.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same Electron-visual authority, immutable snapshot, Keybindings route, dark theme, viewport, canonical rows, and exact product commit isolate the compact capability-status correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-keybindings-desktop-authority.json",
+          "classification": "tracked-current",
+          "sha256": "d1d7b0f73cd6cb114e4c48bd917d1abba929c43390d45191e4717db927bf08fe"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-keybindings-canonical-rows",
+              "source": "All 45 canonical binding rows match while Lynx retains an explicit compact read-only capability status"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.5, 0, 0.5, 0, 0],
+              "anchorScale": 948,
+              "confidence": 0.99,
+              "method": "settings-keybindings-table-geometry",
+              "source": "Table header and first row share x and width with only half-pixel vertical rounding"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-keybindings-desktop-runtime",
+              "source": "Desktop visual authority, matching snapshot and route, exact product commit, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
