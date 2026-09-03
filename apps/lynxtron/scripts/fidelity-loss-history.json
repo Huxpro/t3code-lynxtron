@@ -21160,6 +21160,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "appearance-theme-reset-current",
+      "observedAt": "2026-09-03T13:15:00-04:00",
+      "commit": "90189e4cd",
+      "codeCommit": "90189e4cd356dc80891086256bc6a627e77f3be2",
+      "codeState": "commit",
+      "label": "Appearance theme reset parity",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture adds the missing theme reset affordance to Lynx Appearance settings when the preference differs from system. It uses the shared Lynx settings reset control with a Rotate Counterclockwise icon and writes the real system preference. The route, selected dark theme, row geometry, and zero-error state remain matched. Diagnostic pixel difference increases slightly because a previously absent control is now present, so no material improvement is claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, Appearance route, dark theme, viewport, and settings values isolate the new reverse action."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/appearance-theme-reset.json",
+          "classification": "tracked-current",
+          "sha256": "c3a117ed296aaee08b202d4aef08d867dcbc40b44b71fc70955acfc102bf92db"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-appearance"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "appearance-theme-reset-control",
+              "source": "Both clients expose a Reset theme to default affordance whenever the theme preference is not system"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "theme-preference-reverse-action",
+              "source": "The Lynx reset control writes the real system preference through the existing theme preference state"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "appearance-current-shared-runtime",
+              "source": "Same snapshot and route, matched selected theme, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T13:15:00-04:00",
+  "commit": "90189e4cd356dc80891086256bc6a627e77f3be2",
+  "stateId": "settings-appearance",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-appearance",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "ab9e9f161f8e4383e38f17406e888bd7d5c84d979cefa305cff53314c91afe59",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "3f24ec7d2dfc8392eab043bb7f213568ef56c907ee903aa5888aecf16f638c8b",
+    "webImageSha256": "99eb4975438035a5388761a822db93466cb06ee124d616959036e59a44f7d249",
+    "lynxImageSha256": "b3e06e56ab4bae12e2faaa6404b89fb7a47fa80c67f34fb74c142757330c631c",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "preference": "dark",
+    "reverseAction": "Reset theme to default",
+    "resetTarget": "system",
+    "icon": "rotate-ccw"
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baseline": { "fullFrame": 4.27836, "themeRow": 1.66839 },
+    "current": { "fullFrame": 4.2823, "themeRow": 1.74811 }
+  },
+  "boundary": "The reset action restores a real theme preference to system and uses the matching semantic icon. The new visible control slightly increases the diagnostic pixel delta, so no material improvement is claimed. Glass opacity and word wrap remain explicitly unavailable in Lynxtron. Screenshots remain temporary because the tracked screenshot budget is full."
+}
