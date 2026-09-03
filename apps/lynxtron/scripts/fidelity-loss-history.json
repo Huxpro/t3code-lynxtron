@@ -20592,6 +20592,50 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-footer-actions-current",
+      "observedAt": "2026-09-03T07:14:41-04:00",
+      "commit": "42bdc9217",
+      "codeCommit": "42bdc92170e3fcc201ad69631be109d7bd7da1ce",
+      "codeState": "commit",
+      "label": "File Picker footer action convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture aligns File Picker footer semantics with Web. Lynx previously labeled Enter as Select and Escape as Close; file mode now renders Open file and Back while ordinary Quick Switch retains Select and Close. The overlay remains an exact 576 by 420 geometry match with the same rows, shared icons, real Meta-P harness paths, and zero renderer errors. Footer MAE falls from 5.958101 to 4.855357 and significant pixels from 8.1228% to 6.1498%; full-frame MAE falls from 3.176572 to 3.152450. Physical Native Arrow and Enter delivery remains a separate runtime-input residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, route, dark theme, viewport, rows, icons, and exact overlay geometry isolate the file-mode footer label change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/file-picker-footer-actions.json",
+          "classification": "tracked-current",
+          "sha256": "ca58f5bba48f049b62b58d5cd855fc3e393f5c27b714eb56d4e41bfb6958fcaf"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-mode-specific-footer-actions",
+              "source": "Both renderers label Enter as Open file and Escape as Back in file mode"
+            },
+            "material": {
+              "pixel": {
+                "mae": 3.15245,
+                "significantShare": 0.021443
+              },
+              "confidence": 0.99,
+              "method": "file-picker-full-frame-footer-actions-pixel",
+              "source": "Same-snapshot 1280 by 820 full-frame comparison after aligning footer action labels"
+            }
+          }
+        }
+      ]
     }
   ]
 }
