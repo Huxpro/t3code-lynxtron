@@ -20990,6 +20990,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-action-shortcuts-current",
+      "observedAt": "2026-09-03T11:38:00-04:00",
+      "commit": "a9396b666",
+      "codeCommit": "a9396b666cb2f5bba667057e876ec53caa15a92e",
+      "codeState": "commit",
+      "label": "Quick Switch available action shortcuts",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture adds truthful shortcut hints to the Lynx Quick Switch for actions already reachable through native keyboard packets: Command-Shift-O for New thread and Command-P for Go to file. Search project contents remains intentionally unlabelled because the Lynx native menu does not yet emit projectSearch.toggle. The same action order, selected row, query, overlay geometry, and zero-error state remain intact. Diagnostic pixel difference increases slightly because the new glyphs add real content, so no material improvement is claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, query, route, dark theme, viewport, action order, and overlay geometry isolate the two truthful shortcut hints."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/quick-switch-action-shortcuts.json",
+          "classification": "tracked-current",
+          "sha256": "89a3b5b178b244a0ac980f4e3313499638b9bfda580e2280193af3b6061db927"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-native-action-shortcuts",
+              "source": "Lynx shows canonical labels for the New thread and Go to file commands supported by its native keyboard menu"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-command-availability",
+              "source": "Only native commands already routed by the desktop keyboard packet path receive visible shortcut hints"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-actions-current-shared-runtime",
+              "source": "Same snapshot and route, matched query and action order, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
