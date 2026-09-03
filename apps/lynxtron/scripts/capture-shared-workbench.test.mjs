@@ -6,6 +6,17 @@ import { assert, describe, it } from "vite-plus/test";
 const source = readFileSync(path.join(import.meta.dirname, "capture-shared-workbench.mjs"), "utf8");
 
 describe("shared workbench lifecycle fault capture", () => {
+  it("infers and gates the semantic route for the requested state", () => {
+    assert.include(source, "inferSemanticRoute(stateId)");
+    assert.include(source, "Cannot infer semantic route for ${stateId}");
+    assert.include(
+      source,
+      'const semanticRoute = argValue("--semantic-route", inferredSemanticRoute)',
+    );
+    assert.include(source, "webState.semanticRoute === semanticRoute");
+    assert.include(source, "lynxState.semanticRoute === semanticRoute");
+  });
+
   it("filters only expected transport errors during the injected disconnect", () => {
     assert.include(source, "isLifecycleFaultState");
     assert.include(source, "/WebSocket connection .* failed:/");

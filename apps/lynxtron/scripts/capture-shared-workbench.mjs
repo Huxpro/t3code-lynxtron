@@ -37,6 +37,7 @@ import {
   sourceControlErrorSettingsGeometryMatches,
   sourceControlLoadingSettingsGeometryMatches,
 } from "./shared-workbench/settingsGates.mjs";
+import { inferSemanticRoute } from "./shared-workbench/semanticRoute.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const lynxAppDir = path.resolve(scriptDir, "..");
@@ -62,7 +63,11 @@ const manifestPath = process.argv.includes("--manifest")
   ? path.resolve(argValue("--manifest", ""))
   : null;
 const stateId = argValue("--state-id", "new-thread-hero");
-const semanticRoute = argValue("--semantic-route", "new-thread");
+const inferredSemanticRoute = inferSemanticRoute(stateId);
+if (!inferredSemanticRoute && !hasFlag("--semantic-route")) {
+  throw new Error(`Cannot infer semantic route for ${stateId}; pass --semantic-route explicitly.`);
+}
+const semanticRoute = argValue("--semantic-route", inferredSemanticRoute);
 const settingsWebRouteBySemanticRoute = {
   "settings-archive": "/settings/archived",
   "settings-beta": "/settings/general",
@@ -10186,6 +10191,8 @@ async function captureCell({
       webState?.selectedThread === lynxState?.selectedThread;
     const commonStateIdentityMatch =
       Boolean(webState && lynxState) &&
+      webState.semanticRoute === semanticRoute &&
+      lynxState.semanticRoute === semanticRoute &&
       JSON.stringify({
         route: webState.route,
         semanticRoute: webState.semanticRoute,
