@@ -14,6 +14,11 @@ const generatedSource = readFileSync(
 );
 
 describe("Lynx icon raster contracts", () => {
+  it("precomposes a compressible flat-sidebar grain on the Web card layer", () => {
+    assert.include(scriptSource, 'rasterSidebarGrain("#111111", "0.035", 64)');
+    assert.include(generatedSource, '"sidebar-grain-flat@fill"');
+  });
+
   it("tracks the current Lucide GitBranch path", () => {
     assert.include(scriptSource, '<path d="M15 6a9 9 0 0 0-9 9V3"/>');
     assert.notInclude(scriptSource, '<line x1="6" x2="6" y1="3" y2="15"/>');

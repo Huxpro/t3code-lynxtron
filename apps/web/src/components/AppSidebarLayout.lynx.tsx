@@ -61,7 +61,11 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
                 key={tile}
                 className="sidebar-grain__tile"
                 style={{ top: `${tile * 256}px` }}
-                src={ICON_PNGS["sidebar-grain@fill"] ?? ""}
+                src={
+                  ICON_PNGS[
+                    useFlatSidebarTheme ? "sidebar-grain-flat@fill" : "sidebar-grain@fill"
+                  ] ?? ""
+                }
               />
             ))}
           </view>

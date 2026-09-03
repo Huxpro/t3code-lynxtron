@@ -1037,6 +1037,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).not.toContain(".settings-nav__item--providers {");
     expect(overrides).toContain(".theme-dark .sidebar--flat {\n  background-color: #111111;");
     expect(appSidebarLayoutSource).toContain('useFlatSidebarTheme ? " sidebar--flat" : ""');
+    expect(appSidebarLayoutSource).toContain(
+      'useFlatSidebarTheme ? "sidebar-grain-flat@fill" : "sidebar-grain@fill"',
+    );
   });
 
   it("projects and opens the real repository Publish flow", () => {
