@@ -20294,7 +20294,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-03/fidelity/right-panel-terminal-native-splits.json",
           "classification": "tracked-current",
-          "sha256": "c60cd7f6012526ad6a9bd9c49b3c4fd968000327ee572031abc82fbf76abd5a7"
+          "sha256": "4d8e11baaf774d46ef31388c063f875cf04aa0ce87335b87c9eee983e9c67e89"
         }
       ],
       "updates": [
@@ -20322,6 +20322,53 @@
               "confidence": 0.99,
               "method": "exact-native-main-terminal-runtime",
               "source": "Owned PID 99758 uses the staged production bundle, copied state, main transport, and advances lastSeq from 16 to 42 while PTY commands execute"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-provider-dialog-light-native-current",
+      "observedAt": "2026-09-03T02:14:29-04:00",
+      "commit": "4094b40e6",
+      "codeCommit": "4094b40e62b6a13dcff58c42eb5498cd1395e32c",
+      "codeState": "commit",
+      "label": "Light Add Provider dialog Native correlation",
+      "narrative": "A fresh exact-owned Native run uses a copied 14-event snapshot, explicit light preference, the Providers route, 1280 by 820 viewport, and the staged production bundle. A real pointer opens Add provider instance; the Driver step visibly contains the shared title, description, three-step rail, selected Codex card, nine provider choices, status badges, Cancel, Next, and the full-window dim layer. A real close click restores the unchanged light Providers page, while main transport advances from sequence 15 to 22. Identity, Config, save, and delete remain covered by dark Native and light Browser evidence rather than inferred here; exact Native pixels remain conservative because the screenshot budget is full.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.98,
+        "reason": "Exact PID/window Computer Use closes only the light Native Driver-step content, reveal, dismissal, and runtime debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-provider-dialog-light-native.json",
+          "classification": "tracked-current",
+          "sha256": "de2aebfd507e9d6b877fa3792fc3820efef029a7f7600971298c97ab31f4e85a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0.05,
+              "confidence": 0.98,
+              "method": "exact-native-light-provider-driver-content",
+              "source": "The light Native Driver step exposes the shared hierarchy, selected Codex card, nine choices, status badges, and footer actions"
+            },
+            "interaction": {
+              "residual": 0.25,
+              "confidence": 0.98,
+              "method": "exact-native-light-provider-reveal-dismiss",
+              "source": "Real pointer input opens the Driver dialog and closes it back to Providers; later wizard steps are not repeated in light Native"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "exact-native-light-provider-main-runtime",
+              "source": "Owned PID 70184 and window 36620 use copied state, explicit light preference, the staged bundle, main transport, and advance lastSeq from 15 to 22"
             }
           }
         }

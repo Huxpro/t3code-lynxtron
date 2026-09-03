@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T02:14:29-04:00",
+  "stateId": "settings-providers-add-dialog-light",
+  "scope": {
+    "client": "native",
+    "viewport": [1280, 820],
+    "semanticRoute": "settings-providers",
+    "theme": "light",
+    "interactionChannel": "built-in Computer Use against exact-owned PID and window"
+  },
+  "snapshot": {
+    "sha256": "5e4b4a2df0da7420241d3bf19433d828bbf3a19f25572f19a6dd5df1fa7bc7b8",
+    "eventCountBeforeLaunch": 14,
+    "projectId": "3f7b91ef-32b7-4aae-803b-66b374485b39",
+    "liveUserDataWritten": false
+  },
+  "native": {
+    "processId": 70184,
+    "windowId": 36620,
+    "runtimePackage": "@lynx-js/lynxtron@0.0.16",
+    "bundleSha256": "7142feb7d1625f2ee0cd5600714ea95a81b098bde5ad7f19becc80d0a1539319",
+    "transportKind": "main",
+    "lastSeqBefore": 15,
+    "lastSeqAfter": 22
+  },
+  "observations": [
+    {
+      "name": "light Providers route",
+      "result": "pass",
+      "detail": "The exact-owned Native window renders the cold-white Providers route with its active navigation row, health interval, provider cards, status badges, and enabled controls."
+    },
+    {
+      "name": "Driver dialog reveal",
+      "result": "pass",
+      "detail": "A real pointer on the header add control opens Add provider instance with the three-step rail, selected Codex driver, nine visible provider choices, Early Access and Coming Soon states, Cancel, Next, and the full-window dim layer."
+    },
+    {
+      "name": "close reverse state",
+      "result": "pass",
+      "detail": "A real pointer on the dialog close control removes the dialog and restores the unchanged light Providers page."
+    }
+  ],
+  "classification": {
+    "productLoss": "No Native light-theme Driver-step content, reveal, dismissal, or runtime loss was observed.",
+    "missingCoverage": [
+      "Identity, Config, save, and delete are already covered in dark Native and light Browser evidence but were not repeated in this light Native run.",
+      "No additional screenshot was retained because the repository screenshot budget was already 100 of 100.",
+      "Exact Native pixel and text metrics were not available through the accessibility tree."
+    ],
+    "harnessLoss": "One earlier launch targeted Synara despite the requested PID; no input was sent, that owned T3 process was stopped, and the accepted run used exact PID 70184 and window 36620.",
+    "intentionalPlatformDelta": "Native uses the Lynx-rendered dialog and platform text shaping.",
+    "acceptedRenderingNoise": []
+  }
+}
