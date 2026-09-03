@@ -6738,6 +6738,7 @@
 .ui-switch {
   width: var(--settings-switch-width);
   height: var(--settings-switch-height);
+  box-sizing: border-box;
   border-radius: var(--settings-switch-radius);
   background-color: var(--input);
   padding: 1px;

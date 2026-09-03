@@ -1024,6 +1024,9 @@ describe("desktop shell interaction contract", () => {
       ".select-box {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  height: var(--settings-control-height);\n  box-sizing: border-box;",
     );
     expect(overrides).toContain(".select-box--interactive {\n  border-color: var(--input);");
+    expect(overrides).toContain(
+      ".ui-switch {\n  width: var(--settings-switch-width);\n  height: var(--settings-switch-height);\n  box-sizing: border-box;",
+    );
     expect(overrides).not.toContain(
       ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n  transform: translateY(-0.5px);",
     );
