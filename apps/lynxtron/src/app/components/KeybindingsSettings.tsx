@@ -3,9 +3,17 @@ import {
   commandLabel,
   formatKeybindingShortcutLabel,
 } from "../../../../web/src/components/settings/KeybindingsSettings.logic";
+import type { KeybindingShortcut } from "@t3tools/contracts";
 import { useT3ClientState } from "../state/t3Client";
+import { Kbd, KbdGroup } from "../../../../web/src/components/ui/kbd";
 import { Icon } from "./Icon";
 import { SettingsSection } from "./SettingsControls";
+
+function shortcutParts(shortcut: KeybindingShortcut, platform: string): ReadonlyArray<string> {
+  const label = formatKeybindingShortcutLabel(shortcut, platform);
+  if (!platform.toLowerCase().includes("darwin")) return label.split("+");
+  return label.match(/[⌘⇧⌥⌃]|[^⌘⇧⌥⌃]+/gu)?.filter(Boolean) ?? [label];
+}
 
 export function KeybindingsSettings() {
   const { serverConfig } = useT3ClientState();
@@ -50,9 +58,15 @@ export function KeybindingsSettings() {
             data-keybinding-conflicts={JSON.stringify(row.conflicts)}
           >
             <text className="keybindings-table__command">{commandLabel(row.command)}</text>
-            <text className="keybindings-table__key">
-              {formatKeybindingShortcutLabel(row.binding.shortcut, platform)}
-            </text>
+            <view className="keybindings-table__key">
+              <KbdGroup className="keybindings-table__keycaps">
+                {shortcutParts(row.binding.shortcut, platform).map((part, partIndex) => (
+                  <Kbd key={`${row.id}:${part}:${partIndex}`} className="keybindings-table__keycap">
+                    {part}
+                  </Kbd>
+                ))}
+              </KbdGroup>
+            </view>
             <text className="keybindings-table__when">{row.when || "Always"}</text>
             <view
               className={

@@ -80,6 +80,7 @@ const browserPreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
   "utf8",
 );
+const keybindingsSettingsSource = componentSource("KeybindingsSettings.tsx");
 const settingsNavigationSource = readFileSync(
   path.resolve(
     import.meta.dirname,
@@ -1345,6 +1346,13 @@ describe("desktop shell interaction contract", () => {
     expect(hostElementsSource).toContain("injectedMouseLeave?.(event)");
     expect(tooltipSource).toContain("resolveFloatingAnchorPoint(context.anchorRect");
     expect(tooltipSource).toContain("data-floating-side={side}");
+  });
+
+  it("renders keybinding shortcuts with shared keycap primitives", () => {
+    expect(keybindingsSettingsSource).toContain('from "../../../../web/src/components/ui/kbd"');
+    expect(keybindingsSettingsSource).toContain("shortcutParts(row.binding.shortcut, platform)");
+    expect(keybindingsSettingsSource).toContain('className="keybindings-table__keycap"');
+    expect(overrides).toContain(".keybindings-table__keycap {");
   });
 
   it("keeps Sidebar versions, project groups, and Add Project intents aligned with Web", () => {
