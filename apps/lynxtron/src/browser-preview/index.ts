@@ -698,7 +698,8 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "background:transparent!important;}" +
       "x-textarea.composer__input::part(textarea){" +
       "display:block!important;width:100%!important;height:70px!important;border:0!important;" +
-      "padding:0!important;font-size:14px!important;line-height:23px!important;background:transparent!important;}" +
+      "padding:0!important;resize:none!important;font-size:14px!important;line-height:23px!important;" +
+      "background:transparent!important;}" +
       "x-textarea.files-panel__editor::part(textarea){" +
       "display:block!important;width:100%!important;height:100%!important;border:0!important;" +
       "padding:14px 16px 24px!important;font-family:inherit!important;font-size:13px!important;" +

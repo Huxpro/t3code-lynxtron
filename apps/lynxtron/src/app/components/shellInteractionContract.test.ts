@@ -540,6 +540,7 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("questionEditorKey?: string;");
     expect(composer).toContain('question-editor:${questionEditorKey ?? ""}');
     expect(chatView).toContain("questionEditorKey={activePendingQuestion?.id}");
+    expect(browserPreviewSource).toContain("resize:none!important");
   });
 
   it("keeps model-selection bridge failures on a fulfilled settled-result path", () => {
