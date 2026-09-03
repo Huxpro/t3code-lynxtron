@@ -1034,6 +1034,10 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".settings-topbar__restore {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  height: 28px;\n  padding: 0 8px;\n  box-sizing: border-box;",
     );
+    expect(componentSource("KeybindingsSettings.tsx")).toContain("Read-only · {rows.length}");
+    expect(componentSource("KeybindingsSettings.tsx")).not.toContain(
+      "Keybindings are read-only on Lynxtron until renderer keyboard capture is verified.",
+    );
     expect(overrides).not.toContain(
       ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n  transform: translateY(-0.5px);",
     );

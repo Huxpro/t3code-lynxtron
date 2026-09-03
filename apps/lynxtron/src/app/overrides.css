@@ -5737,25 +5737,11 @@
   font-family: var(--font-sans);
   margin-left: auto;
 }
-.keybindings-settings__notice {
+.keybindings-settings__status {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-  height: 43px;
-  padding: 10px 16px;
-  box-sizing: border-box;
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  border-bottom-color: var(--border);
-  background-color: rgba(245, 158, 11, 0.05);
-}
-.keybindings-settings__notice-text {
-  color: var(--muted-foreground);
-  font-size: 12px;
-  line-height: 20px;
-  font-family: var(--font-sans);
+  align-items: center;
+  gap: 5px;
 }
 .keybindings-table__header,
 .keybindings-table__row {

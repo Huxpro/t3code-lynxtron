@@ -33,7 +33,7 @@ import {
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
 
-import { isElectron } from "../../env";
+import { isDesktopVisualHost } from "../../env";
 import { useOpenInPreferredEditor } from "../../editorPreferences";
 import { cn } from "../../lib/utils";
 import {
@@ -1287,7 +1287,7 @@ export function KeybindingsSettingsPanel() {
           </div>
         }
       >
-        {!isElectron ? (
+        {!isDesktopVisualHost ? (
           <div className="flex items-start gap-2 border-b border-warning/20 bg-warning/5 px-3 py-2.5 text-[12px] leading-relaxed text-muted-foreground sm:px-4">
             <InfoIcon className="mt-0.5 size-3.5 shrink-0 text-warning" />
             <p>
