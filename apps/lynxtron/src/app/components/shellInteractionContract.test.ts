@@ -1440,6 +1440,7 @@ describe("desktop shell interaction contract", () => {
     expect(projectSettings).toContain("t3ClientActions");
     expect(projectSettings).toContain(".deleteProject(member.id, true)");
     expect(quickSwitch).toContain('data-quick-switch-mode="add-project-sources"');
+    expect(quickSwitch).toContain('id: "new-thread-in",\n        icon: "square-pen"');
     expect(quickSwitch).not.toContain('setView(\n      openIntent?.kind === "add-project"');
     expect(quickSwitch).not.toContain("clearQuickSwitchOpenIntent");
     expect(appIndex).toContain("if (appliedInitialRoute.current) return;");

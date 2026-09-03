@@ -411,7 +411,7 @@ export function QuickSwitch({
       },
       {
         id: "new-thread-in",
-        icon: "message-square-plus",
+        icon: "square-pen",
         label: "New thread in...",
         searchTerms: ["new thread in", "project"],
         run: openNewThreadProjects,
