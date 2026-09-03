@@ -1022,7 +1022,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".settings-nav__item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  box-sizing: border-box;\n  height: 32px;",
     );
-    expect(overrides).toContain("padding: 40px 32px 40px 32px;");
+    expect(overrides).toContain("padding: 48px 32px 40px 32px;");
     expect(overrides).toContain("line-height: var(--settings-row-description-line-height);");
     expect(overrides).toContain(
       ".select-box {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  height: var(--settings-control-height);\n  box-sizing: border-box;",
