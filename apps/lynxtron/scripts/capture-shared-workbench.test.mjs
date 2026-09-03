@@ -865,6 +865,17 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, ": isBetaSettingsState");
   });
 
+  it("measures Settings controls through one shared row geometry reader", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+
+    assert.include(workbench, "function readSettingsRowGeometry(item)");
+    assert.include(workbench, "controlBox: readElementBox(control)");
+    assert.equal(workbench.match(/readSettingsRowGeometry,/g)?.length, 2);
+  });
+
   it("runs the Browser Connections create and revoke lifecycle on both renderers", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
@@ -1061,9 +1072,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "sourceControlEmptyContent: readElementBox(");
     assert.include(workbench, "sourceControlRetryButton: readElementBox(");
     assert.include(workbench, "sourceControlRetryLabel: readElementBox(");
+    assert.include(workbench, "function readSettingsRowGeometry(item)");
     assert.include(
       workbench,
-      'titleBox: readElementBox(item.querySelector(".settings-row__title"))',
+      'titleBox: readElementBox(item.querySelector(".settings-row__title, h3"))',
     );
     assert.include(workbench, "descriptionBox: readElementBox(");
     assert.include(source, "sourceControlLoadingSettingsGeometryMatches");

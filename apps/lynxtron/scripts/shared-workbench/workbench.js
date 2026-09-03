@@ -386,6 +386,27 @@ function readSettingsRows(root, ids) {
   });
 }
 
+function readSettingsRowGeometry(item) {
+  const text = item.querySelector(".settings-row__text");
+  const webGrid = text ? null : item.firstElementChild;
+  const control =
+    item.querySelector(".settings-row__control") ??
+    (webGrid && webGrid.children.length > 1 ? webGrid.children[1] : null);
+  return {
+    title: item.querySelector(".settings-row__title, h3")?.textContent?.trim() ?? "",
+    titleBox: readElementBox(item.querySelector(".settings-row__title, h3")),
+    descriptionBox: readElementBox(item.querySelector(".settings-row__desc, p")),
+    controlText: control?.textContent?.trim().replace(/\s+/g, " ") ?? "",
+    controlBox: readElementBox(control),
+    box: readElementBox(item),
+    children: [...item.children].map((child) => ({
+      className: child.getAttribute("class") ?? "",
+      text: child.textContent?.trim() ?? "",
+      box: readElementBox(child),
+    })),
+  };
+}
+
 function readLegacySidebarSettings(root) {
   const trigger = root?.querySelector(".settings-legacy-section__trigger");
   const control = root?.querySelector('[data-setting-control="legacy-sidebar"]');
@@ -2579,17 +2600,9 @@ function readLynxPane() {
                     })),
                   }),
                 ),
-                settingsRows: [...(root?.querySelectorAll(".settings-row") ?? [])].map((item) => ({
-                  title: item.querySelector(".settings-row__title")?.textContent?.trim() ?? "",
-                  titleBox: readElementBox(item.querySelector(".settings-row__title")),
-                  descriptionBox: readElementBox(item.querySelector(".settings-row__desc")),
-                  box: readElementBox(item),
-                  children: [...item.children].map((child) => ({
-                    className: child.getAttribute("class") ?? "",
-                    text: child.textContent?.trim() ?? "",
-                    box: readElementBox(child),
-                  })),
-                })),
+                settingsRows: [...(root?.querySelectorAll(".settings-row") ?? [])].map(
+                  readSettingsRowGeometry,
+                ),
                 loadingRows: [
                   ...(root?.querySelectorAll("[data-source-control-loading-row]") ?? []),
                 ].map((item) => ({
@@ -3652,17 +3665,9 @@ function readWebPane() {
                     })),
                   }),
                 ),
-                settingsRows: [...doc.querySelectorAll(".settings-row")].map((item) => ({
-                  title: item.querySelector(".settings-row__title, h3")?.textContent?.trim() ?? "",
-                  titleBox: readElementBox(item.querySelector(".settings-row__title, h3")),
-                  descriptionBox: readElementBox(item.querySelector(".settings-row__desc, p")),
-                  box: readElementBox(item),
-                  children: [...item.children].map((child) => ({
-                    className: child.getAttribute("class") ?? "",
-                    text: child.textContent?.trim() ?? "",
-                    box: readElementBox(child),
-                  })),
-                })),
+                settingsRows: [...doc.querySelectorAll(".settings-row")].map(
+                  readSettingsRowGeometry,
+                ),
                 loadingRows: [...doc.querySelectorAll('[data-slot="skeleton"]')].map((item) => ({
                   id: item.getAttribute("data-source-control-loading-row"),
                   box: readElementBox(item),
