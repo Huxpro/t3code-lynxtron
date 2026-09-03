@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T07:31:53-04:00",
+  "commit": "aeb3544f6d76c222a92b81be0140b5e7f808eddd",
+  "stateId": "model-picker-empty",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "8d96cdf645bcef5cc6fb5166d481d053ac9fdbb60dded2ff45df85c956b040dd",
+    "webBundleSha256": "2595ab7b3df0a8a5c3d81f32cd3125f04c13b1d2410ee97291db6f955d2b7546",
+    "lynxBundleSha256": "1cb4644f2c355390b1d45eb18b3bf5ea39b871ae126fbf77b30639255deff000",
+    "webImageSha256": "ded09f5e5e90675d765f7b3e4baef0a91b8f1b29da200c9e306cf89db467f5cd",
+    "lynxImageSha256": "3108219a16e009562e10b3c4d3abf7ed7052bd4209a668c53771ef22dba88612",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "overlayGeometryDelta": { "x": 0, "y": 0, "width": 0, "height": 0 }
+  },
+  "geometry": {
+    "webRadius": 10,
+    "lynxRadiusBefore": 8,
+    "lynxRadiusAfter": 10
+  },
+  "pixelMetric": {
+    "definition": "Mean absolute RGB-channel difference and share of pixels whose maximum RGB-channel delta is at least 16",
+    "baseline": {
+      "fullFrame": { "mae": 4.291649, "significantShare": 0.176855 },
+      "panel": { "mae": 2.199417, "significantShare": 0.012596 },
+      "topCorners": { "mae": 11.953079, "significantShare": 0.080764 }
+    },
+    "current": {
+      "fullFrame": { "mae": 4.290369, "significantShare": 0.176808 },
+      "panel": { "mae": 2.189566, "significantShare": 0.012243 },
+      "topCorners": { "mae": 11.900718, "significantShare": 0.079028 }
+    }
+  },
+  "boundary": "The radius now matches Web without removing the Lynx close affordance required by existing Native dismissal evidence. Screenshots remain temporary because the tracked screenshot budget is full."
+}

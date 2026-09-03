@@ -20636,6 +20636,42 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-empty-radius-current",
+      "observedAt": "2026-09-03T07:31:53-04:00",
+      "commit": "aeb3544f6",
+      "codeCommit": "aeb3544f6d76c222a92b81be0140b5e7f808eddd",
+      "codeState": "commit",
+      "label": "Model Picker empty radius convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture aligns the empty Model Picker panel radius with Web. Both panels already matched at 360 by 346 and showed the same no-match query, zero rows, and No models found copy; Web resolved 10px corners while Lynx retained 8px. Lynx now resolves 10px on all corners. Panel MAE falls from 2.199417 to 2.189566 and top-corner MAE from 11.953079 to 11.900718 with zero renderer errors. The Lynx-only close affordance remains because current exact-Native dismissal evidence depends on it.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, route, dark theme, query, empty result, viewport, and exact overlay geometry isolate the radius correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/model-picker-empty-radius.json",
+          "classification": "tracked-current",
+          "sha256": "9a193c717a996a7eb2200a4f03757acecbffa2a2cce87c57e3ebbd541c6739ab"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "model-picker-empty-radius-geometry",
+              "source": "Both 360 by 346 panels resolve 10px on all four corners"
+            }
+          }
+        }
+      ]
     }
   ]
 }
