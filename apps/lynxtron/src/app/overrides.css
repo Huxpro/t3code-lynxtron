@@ -5700,7 +5700,7 @@
   min-width: 0;
   align-self: stretch;
   box-sizing: border-box;
-  padding: 36px 32px 40px 32px;
+  padding: 40px 32px 40px 32px;
 }
 /* ============= Settings Panel ============= */
 .settings-panel {
@@ -6123,9 +6123,9 @@
   color: var(--muted-foreground-80);
   max-width: 576px;
   font-size: var(--settings-row-description-font-size);
-  line-height: 20px;
+  line-height: var(--settings-row-description-line-height);
   font-family: var(--font-sans);
-  margin-top: 2px;
+  margin-top: 4px;
 }
 .settings-row__control {
   display: flex;
