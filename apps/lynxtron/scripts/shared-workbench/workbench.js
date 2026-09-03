@@ -393,11 +393,11 @@ function readSettingsRowGeometry(item) {
     item.querySelector(".settings-row__control") ??
     (webGrid && webGrid.children.length > 1 ? webGrid.children[1] : null);
   const controlLeaf = control?.matches(
-    "select, input, button, [data-settings-select], [data-setting-control]",
+    'select, input, button, [role="switch"], [data-settings-select], [data-setting-control]',
   )
     ? control
     : control?.querySelector(
-        "select, input, button, [data-settings-select], [data-setting-control]",
+        'select, input, button, [role="switch"], [data-settings-select], [data-setting-control]',
       );
   return {
     title: item.querySelector(".settings-row__title, h3")?.textContent?.trim() ?? "",
