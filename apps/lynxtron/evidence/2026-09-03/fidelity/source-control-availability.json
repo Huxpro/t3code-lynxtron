@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T13:36:00-04:00",
+  "commit": "15723207a3c96a3d57f2c2eeee02579cd6cdd53a",
+  "stateId": "settings-source-control",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-source-control",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "795be86f5e19db82078d0bb1eae00df55c7b7d16405db4de2c0843445cb1d42b",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "778c5c9c17f1b0481b71a9376a96c77425ab7740f0da174e2fcaf1559b4ccd99",
+    "webImageSha256": "95c8a5aa35c18f55946ad72ffd0f4cbc01e105a29556d78ef387521253e9076b",
+    "lynxImageSha256": "b9d2cbfe3e14974cef23e59417f3243f97f64a74051a571df408270bcfeb5257",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "availabilityIndicators": ["Git", "GitHub", "GitLab", "Azure DevOps", "Bitbucket"],
+    "enabled": ["Git", "GitHub"],
+    "disabled": ["GitLab", "Azure DevOps", "Bitbucket"],
+    "controlMode": "disabled status indicator"
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baseline": { "fullFrame": 8.88757, "content": 8.14002 },
+    "current": { "fullFrame": 8.89613, "content": 8.10654 }
+  },
+  "boundary": "These controls mirror Web's disabled availability indicators; they do not claim a new mutation capability. The content crop improves while the full-frame diagnostic varies slightly, so no material improvement is claimed. Screenshots remain temporary because the tracked screenshot budget is full."
+}
